@@ -11,7 +11,7 @@ var AllTests = []*tests.SpecTest{
 	tests.TenOperators(),
 	tests.ThirteenOperators(),
 
-	commit.SingleCommit(),
+	commit.HappyFlow(),
 	commit.MultiSignerWithOverlap(),
 	commit.MultiSignerNoOverlap(),
 	commit.Decided(),

@@ -1,4 +1,4 @@
-package commit
+package proposal
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// SingleCommit tests a single commit received after prepare quorum
-func SingleCommit() *tests.SpecTest {
+// WrongRound tests a proposal msg received with the wrong round
+func WrongRound() *tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -42,15 +42,16 @@ func SingleCommit() *tests.SpecTest {
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.CommitMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
+			Round:      10,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
 	return &tests.SpecTest{
-		Name:     "single signer",
-		Pre:      pre,
-		PostRoot: "8a6a660d010979213ddd3d93a34810fa8e0a5d3f505c2c0c02502522faabed67",
-		Messages: msgs,
+		Name:          "wrong commit round",
+		Pre:           pre,
+		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
+		Messages:      msgs,
+		ExpectedError: "commit msg invalid: commit round is wrong",
 	}
 }
