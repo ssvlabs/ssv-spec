@@ -58,7 +58,7 @@ func Decided() *tests.SpecTest {
 	return &tests.SpecTest{
 		Name:     "decided, with overlap",
 		Pre:      pre,
-		PostRoot: "8f5385deff4e83bef4234760b896aabc58cef756ed7bbd56da6418edc35a67b8",
+		PostRoot: "215f7d37b8d6819e377359bdc6e751b48a3d5d6d5f8f9109d56a1acedcef317d",
 		Messages: msgs,
 	}
 }
