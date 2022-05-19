@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/bloxapp/ssv/docs/spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 )
 

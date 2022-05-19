@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	altair "github.com/attestantio/go-eth2-client/spec/altair"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv/docs/spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/prysmaticlabs/go-bitfield"
 )

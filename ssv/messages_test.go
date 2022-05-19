@@ -1,7 +1,7 @@
 package ssv_test
 
 import (
-	"github.com/bloxapp/ssv/docs/spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 	"testing"

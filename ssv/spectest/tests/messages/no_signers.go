@@ -2,9 +2,9 @@ package messages
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv/docs/spec/ssv/spectest/tests"
 )
 
 // NoSigners tests an empty SignedPostConsensusMessage Signers
