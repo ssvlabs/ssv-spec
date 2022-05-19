@@ -194,7 +194,7 @@ Share1 = f(NodeID1)\
 ...
 
 ### Spec tests
-The [spec tests](./spectest) are a generated as a json file that can be run in any implementation. They test the various flows within the SSV package, treating the consensus protocol as as black box.
+The [spec tests](ssv/spectest) are a generated as a json file that can be run in any implementation. They test the various flows within the SSV package, treating the consensus protocol as as black box.
 
 ## TODO
 - [//] Proposal duty execution + spec test + consensus validator
