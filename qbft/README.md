@@ -1,7 +1,3 @@
-[<img src="./../../resources/bloxstaking_header_image.png" >](https://www.bloxstaking.com/)
-
-<br>
-<br>
 
 # QBFT
 
@@ -11,4 +7,4 @@ This is a spec implementation for the QBFT protocol, following [formal verificat
 ## TODO
 - [ ] Unified test suite, compatible with the formal verification spec
 - [ ] Align according to spec and [Roberto's comments](./roberto_comments)
-- [ ] Verifying support for aggregated message processing
+- [ ] Remove round check from upon commit as it can be for any round?
