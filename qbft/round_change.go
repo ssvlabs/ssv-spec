@@ -163,7 +163,19 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 	} else if signedMsg.Message.GetRoundChangeData().GetPreparedRound() != NoRound &&
 		signedMsg.Message.GetRoundChangeData().GetPreparedValue() != nil {
 
-		// TODO Roberto comment: we should add a validation for justification data (sigs and so on)
+		// validate prepare message justifications
+		prepareMsgs := signedMsg.Message.GetRoundChangeData().GetRoundChangeJustification()
+		for _, pm := range prepareMsgs {
+			if err := validSignedPrepareForHeightRoundAndValue(
+				config,
+				pm,
+				state.Height,
+				signedMsg.Message.GetRoundChangeData().GetPreparedRound(),
+				signedMsg.Message.GetRoundChangeData().GetPreparedValue(),
+				state.Share.Committee); err != nil {
+				return errors.Wrap(err, "round change justification invalid")
+			}
+		}
 
 		if signedMsg.Message.GetRoundChangeData().GetPreparedRound() < round {
 			return nil

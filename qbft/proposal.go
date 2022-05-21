@@ -164,7 +164,6 @@ func isProposalJustification(
 			// validate each prepare message against the highest previously prepared value and round
 			for _, pm := range prepareMsgs {
 				if err := validSignedPrepareForHeightRoundAndValue(
-					state,
 					config,
 					pm,
 					height,

@@ -17,7 +17,6 @@ func uponPrepare(state *State, config IConfig, signedPrepare *SignedMessage, pre
 		return errors.Wrap(err, "could not get accepted proposal data")
 	}
 	if err := validSignedPrepareForHeightRoundAndValue(
-		state,
 		config,
 		signedPrepare,
 		state.Height,
@@ -67,7 +66,7 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	}
 
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
-	validPrepares := validPreparesForHeightRoundAndDigest(
+	validPrepares := validPreparesForHeightRoundAndValue(
 		state,
 		config,
 		prepareMsgs,
@@ -82,8 +81,8 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	return nil
 }
 
-// validPreparesForHeightRoundAndDigest returns an aggregated prepare msg for a specific Height and round
-func validPreparesForHeightRoundAndDigest(
+// validPreparesForHeightRoundAndValue returns an aggregated prepare msg for a specific Height and round
+func validPreparesForHeightRoundAndValue(
 	state *State,
 	config IConfig,
 	prepareMessages []*SignedMessage,
@@ -93,7 +92,7 @@ func validPreparesForHeightRoundAndDigest(
 	operators []*types.Operator) *SignedMessage {
 	var aggregatedPrepareMsg *SignedMessage
 	for _, signedMsg := range prepareMessages {
-		if err := validSignedPrepareForHeightRoundAndValue(state, config, signedMsg, height, round, value, operators); err == nil {
+		if err := validSignedPrepareForHeightRoundAndValue(config, signedMsg, height, round, value, operators); err == nil {
 			if aggregatedPrepareMsg == nil {
 				aggregatedPrepareMsg = signedMsg
 			} else {
@@ -107,7 +106,6 @@ func validPreparesForHeightRoundAndDigest(
 // validSignedPrepareForHeightRoundAndValue known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
 func validSignedPrepareForHeightRoundAndValue(
-	state *State,
 	config IConfig,
 	signedPrepare *SignedMessage,
 	height Height,
