@@ -4,6 +4,17 @@
 ## Introduction
 This is a spec implementation for the QBFT protocol, following [formal verification spec](https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification).
 
+## Important note on message processing
+The spec only deals with message process logic but there is a lot of importance on they way controller.ProcessMsg is called.
+Message queueing and retry are important as there is no guarantee as to when a message is delivered.
+Examples:
+* A proposal message can be delivered after its respective prepare
+* A next round message can be delivered before the timer hits timeout
+* A late commit message can decide the instance even if it started the next round
+* A message can fail to process because it's "too early" or "too late"
+
+Because of the above, there is a need to order and queue messages based on their round and type so to not lose message and make the protocol round change.
+
 ## TODO
 - [X] Support 4,7,10,13 committee sizes
 - [ ] Unified test suite, compatible with the formal verification spec

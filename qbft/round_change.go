@@ -25,12 +25,7 @@ func uponRoundChange(
 		return nil // UponCommit was already called
 	}
 
-	if highestJustifiedRoundChangeMsg := hasReceivedProposalJustification(state, config, signedRoundChange, roundChangeMsgContainer, valCheck); highestJustifiedRoundChangeMsg != nil {
-		// check if this node is the proposer
-		if proposer(state, highestJustifiedRoundChangeMsg.Message.Round) != state.Share.OperatorID {
-			return nil
-		}
-
+	if highestJustifiedRoundChangeMsg := hasReceivedProposalJustificationForLeadingRound(state, config, signedRoundChange, roundChangeMsgContainer, valCheck); highestJustifiedRoundChangeMsg != nil {
 		proposal, err := createProposal(
 			state,
 			config,
@@ -72,7 +67,8 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 	return state.Share.HasPartialQuorum(len(rc)), rc
 }
 
-func hasReceivedProposalJustification(
+// hasReceivedProposalJustificationForLeadingRound returns the highest justified round change message (if this node is also a leader)
+func hasReceivedProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
 	signedRoundChange *SignedMessage,
@@ -86,16 +82,20 @@ func hasReceivedProposalJustification(
 	// Important!
 	// We iterate on all round chance msgs for liveliness in case the last round change msg is malicious.
 	for _, msg := range roundChanges {
-		prepares := msg.Message.GetRoundChangeData().GetRoundChangeJustification()
 		if isReceivedProposalJustification(
 			state,
 			config,
 			roundChanges,
-			prepares,
+			msg.Message.GetRoundChangeData().GetRoundChangeJustification(),
 			signedRoundChange.Message.Round,
 			msg.Message.GetRoundChangeData().GetNextProposalData(),
 			valCheck,
+			proposer(state, signedRoundChange.Message.Round), // TODO - should we pass this operator's ID to include check if it's the leader?
 		) != nil {
+			// check if this node is the proposer
+			if proposer(state, msg.Message.Round) != state.Share.OperatorID {
+				return nil
+			}
 			return msg
 		}
 	}
@@ -110,6 +110,7 @@ func isReceivedProposalJustification(
 	newRound Round,
 	value []byte,
 	valCheck ProposedValueCheck,
+	proposer types.OperatorID,
 ) error {
 	if err := isProposalJustification(
 		state,
@@ -120,7 +121,7 @@ func isReceivedProposalJustification(
 		newRound,
 		value,
 		valCheck,
-		proposer(state, newRound),
+		proposer,
 	); err != nil {
 		return errors.Wrap(err, "round change ")
 	}

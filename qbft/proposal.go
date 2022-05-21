@@ -97,7 +97,7 @@ func isValidProposal(
 	return errors.New("proposal is not valid with current state")
 }
 
-// isProposalJustification returns nil if the signed proposal msg is justified
+// isProposalJustification returns nil if the proposal and round change messages are valid and justify a proposal message for the provided round, value and leader
 func isProposalJustification(
 	state *State,
 	config IConfig,
@@ -119,18 +119,21 @@ func isProposalJustification(
 		}
 		return nil
 	} else {
-		if !state.Share.HasQuorum(len(roundChangeMsgs)) {
-			return errors.New("change round has not quorum")
-		}
-
+		// check all round changes are valid for height and round
 		for _, rc := range roundChangeMsgs {
 			if err := validRoundChange(state, config, rc, height, round); err != nil {
 				return errors.Wrap(err, "change round msg not valid")
 			}
 		}
 
+		// check there is a quorum
+		if !state.Share.HasQuorum(len(roundChangeMsgs)) {
+			return errors.New("change round has not quorum")
+		}
+
+		// previouslyPreparedF returns true if any on the round change messages have a prepare round and value
 		previouslyPreparedF := func() bool {
-			for _, rc := range roundChangeMsgs { // TODO - might be redundant as it's checked in validRoundChange
+			for _, rc := range roundChangeMsgs {
 				if rc.Message.GetRoundChangeData().GetPreparedRound() != NoRound &&
 					rc.Message.GetRoundChangeData().GetPreparedValue() != nil {
 					return true
@@ -145,15 +148,20 @@ func isProposalJustification(
 			}
 			return nil
 		} else {
+			// TODO should we check the proposer is correct?
+
+			// check prepare quorum
 			if !state.Share.HasQuorum(len(prepareMsgs)) {
 				return errors.New("change round has not quorum")
 			}
 
+			// get a round change data for which there is a justification for the highest previously prepared round
 			rcm := highestPrepared(roundChangeMsgs)
 			if rcm == nil {
 				return errors.New("no highest prepared")
 			}
 
+			// validate each prepare message against the highest previously prepared value and round
 			for _, pm := range prepareMsgs {
 				if err := validSignedPrepareForHeightRoundAndValue(
 					state,

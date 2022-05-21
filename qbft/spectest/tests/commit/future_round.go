@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongRound tests a commit msg received with the wrong round
+// WrongRound tests a commit msg received with a future round, should error
 func WrongRound() *tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{

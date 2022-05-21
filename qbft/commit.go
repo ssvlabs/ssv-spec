@@ -145,7 +145,7 @@ func validateCommit(
 	if signedCommit.Message.Height != height {
 		return errors.New("commit Height is wrong")
 	}
-	if signedCommit.Message.Round != round {
+	if signedCommit.Message.Round != round { // TODO - should we validate the round? aren't all round commit messages should be processed as they might decide the instance?
 		return errors.New("commit round is wrong")
 	}
 
