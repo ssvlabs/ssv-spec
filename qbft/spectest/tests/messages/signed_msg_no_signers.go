@@ -3,6 +3,6 @@ package messages
 import "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 
 // SignedMsgNoSigners tests SignedMessage len(signers) == 0
-func SignedMsgNoSigners() *tests.SpecTest {
+func SignedMsgNoSigners() *tests.MsgProcessingSpecTest {
 	panic("implement")
 }

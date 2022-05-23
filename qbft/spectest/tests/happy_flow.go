@@ -7,7 +7,7 @@ import (
 )
 
 // HappyFlow tests a simple full happy flow until decided
-func HappyFlow() *SpecTest {
+func HappyFlow() *MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -60,7 +60,7 @@ func HappyFlow() *SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	return &SpecTest{
+	return &MsgProcessingSpecTest{
 		Name:     "happy flow",
 		Pre:      pre,
 		PostRoot: "7a305edc0784ac3a70285e9404d403aac1dd9c5cd4f7b70cac3824d026cc9804",

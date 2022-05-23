@@ -9,7 +9,7 @@ import (
 )
 
 // MultiSignerNoOverlap tests a multi signer commit msg which doesn't overlap previous valid commits
-func MultiSignerNoOverlap() *tests.SpecTest {
+func MultiSignerNoOverlap() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -55,7 +55,7 @@ func MultiSignerNoOverlap() *tests.SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:     "multi signer, no overlap",
 		Pre:      pre,
 		PostRoot: "06d5ce6451794fb52e39a83d48aa559b9d23ce7241be9d70d33968f4bf8c3000",

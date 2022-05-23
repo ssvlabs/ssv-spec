@@ -8,7 +8,7 @@ import (
 )
 
 // WrongRound tests a proposal msg received with the wrong round
-func WrongRound() *tests.SpecTest {
+func WrongRound() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -47,7 +47,7 @@ func WrongRound() *tests.SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong commit round",
 		Pre:           pre,
 		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",

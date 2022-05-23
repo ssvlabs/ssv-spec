@@ -3,9 +3,15 @@ package spectest
 import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
+	"testing"
 )
 
-var AllTests = []*tests.SpecTest{
+type SpecTest interface {
+	TestName() string
+	Run(t *testing.T)
+}
+
+var AllTests = []SpecTest{
 	tests.HappyFlow(),
 	tests.SevenOperators(),
 	tests.TenOperators(),

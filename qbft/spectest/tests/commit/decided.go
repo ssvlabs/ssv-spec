@@ -9,7 +9,7 @@ import (
 )
 
 // Decided tests a multi signer commit msg with a quorum which does overlap with previous valid commits
-func Decided() *tests.SpecTest {
+func Decided() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -55,7 +55,7 @@ func Decided() *tests.SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:     "decided, with overlap",
 		Pre:      pre,
 		PostRoot: "215f7d37b8d6819e377359bdc6e751b48a3d5d6d5f8f9109d56a1acedcef317d",

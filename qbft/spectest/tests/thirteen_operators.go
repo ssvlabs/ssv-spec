@@ -7,7 +7,7 @@ import (
 )
 
 // ThirteenOperators tests a simple full happy flow until decided
-func ThirteenOperators() *SpecTest {
+func ThirteenOperators() *MsgProcessingSpecTest {
 	pre := testingutils.ThirteenOperatorsInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -146,7 +146,7 @@ func ThirteenOperators() *SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	return &SpecTest{
+	return &MsgProcessingSpecTest{
 		Name:     "happy flow thirteen operators",
 		Pre:      pre,
 		PostRoot: "19ca526d736aa0f589085724e838d8f6c36c4bc562065d70fdebdfde0a769e54",

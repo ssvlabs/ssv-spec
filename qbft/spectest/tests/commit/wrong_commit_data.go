@@ -8,7 +8,7 @@ import (
 )
 
 // WrongCommitData tests a single commit received with a different commit data than the prepared data
-func WrongCommitData() *tests.SpecTest {
+func WrongCommitData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -47,7 +47,7 @@ func WrongCommitData() *tests.SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 3}),
 		}),
 	}
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong commit data",
 		Pre:           pre,
 		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",

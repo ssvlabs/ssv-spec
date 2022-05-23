@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	all := map[string]*tests.SpecTest{}
+	all := map[string]*tests.MsgProcessingSpecTest{}
 	for _, t := range spectest.AllTests {
 		all[t.Name] = t
 	}

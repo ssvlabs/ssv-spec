@@ -8,7 +8,7 @@ import (
 )
 
 // ImparsableProposalData tests a prepare msg received with imparsable data
-func ImparsableProposalData() *tests.SpecTest {
+func ImparsableProposalData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -47,7 +47,7 @@ func ImparsableProposalData() *tests.SpecTest {
 			Data:       []byte{1, 2, 3, 4},
 		}),
 	}
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:          "imparsable commit data",
 		Pre:           pre,
 		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",

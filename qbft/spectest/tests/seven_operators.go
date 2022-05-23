@@ -7,7 +7,7 @@ import (
 )
 
 // SevenOperators tests a simple full happy flow until decided
-func SevenOperators() *SpecTest {
+func SevenOperators() *MsgProcessingSpecTest {
 	pre := testingutils.SevenOperatorsInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -88,7 +88,7 @@ func SevenOperators() *SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	return &SpecTest{
+	return &MsgProcessingSpecTest{
 		Name:     "happy flow seven operators",
 		Pre:      pre,
 		PostRoot: "e2e1e11bda5f17f3e6fea1dccc8a9de97c96dbfa2f99bc95cfec915c68941db9",

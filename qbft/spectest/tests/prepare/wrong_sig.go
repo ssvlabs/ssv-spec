@@ -8,7 +8,7 @@ import (
 )
 
 // WrongSignature tests a single prepare received with a wrong signature
-func WrongSignature() *tests.SpecTest {
+func WrongSignature() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -47,7 +47,7 @@ func WrongSignature() *tests.SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong commit signature",
 		Pre:           pre,
 		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",

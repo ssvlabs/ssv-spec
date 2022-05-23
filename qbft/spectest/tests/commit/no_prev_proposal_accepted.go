@@ -8,7 +8,7 @@ import (
 )
 
 // NoPrevAcceptedProposal tests a commit msg received without a previous accepted proposal
-func NoPrevAcceptedProposal() *tests.SpecTest {
+func NoPrevAcceptedProposal() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil
 	msgs := []*qbft.SignedMessage{
@@ -20,7 +20,7 @@ func NoPrevAcceptedProposal() *tests.SpecTest {
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:          "no previous accepted proposal",
 		Pre:           pre,
 		PostRoot:      "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
