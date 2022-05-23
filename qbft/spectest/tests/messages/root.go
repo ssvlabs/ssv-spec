@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// SignedMessageEncoding tests encoding SignedMessage
-func SignedMessageEncoding() *tests.MsgSpecTest {
+// GetRoot tests GetRoot on SignedMessage
+func GetRoot() *tests.MsgSpecTest {
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		MsgType:    qbft.ProposalMsgType,
 		Height:     qbft.FirstHeight,
@@ -37,15 +37,15 @@ func SignedMessageEncoding() *tests.MsgSpecTest {
 		),
 	})
 
-	b, _ := msg.Encode()
+	r, _ := msg.GetRoot()
 
 	return &tests.MsgSpecTest{
-		Name: "signed message encoding",
+		Name: "get root",
 		Messages: []*qbft.SignedMessage{
 			msg,
 		},
-		EncodedMessages: [][]byte{
-			b,
+		ExpectedRoots: [][]byte{
+			r,
 		},
 	}
 }

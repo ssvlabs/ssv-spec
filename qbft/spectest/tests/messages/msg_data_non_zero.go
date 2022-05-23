@@ -7,18 +7,18 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// CommitDataNil tests CommitData with len(data) == 0
-func CommitDataNil() *tests.MsgSpecTest {
+// MsgDataNonZero tests len(data) == 0
+func MsgDataNonZero() *tests.MsgSpecTest {
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.CommitMsgType,
+		MsgType:    qbft.ProposalMsgType,
 		Height:     qbft.FirstHeight,
 		Round:      qbft.FirstRound,
 		Identifier: []byte{1, 2, 3, 4},
-		Data:       nil,
+		Data:       []byte{},
 	})
 
 	return &tests.MsgSpecTest{
-		Name: "commit data nil or len 0",
+		Name: "msg data len 0",
 		Messages: []*qbft.SignedMessage{
 			msg,
 		},
