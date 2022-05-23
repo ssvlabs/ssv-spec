@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft/spectest"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 )
 
 func main() {
-	all := map[string]*tests.MsgProcessingSpecTest{}
+	all := map[string]spectest.SpecTest{}
 	for _, t := range spectest.AllTests {
-		all[t.Name] = t
+		all[reflect.TypeOf(t).String()+"_"+t.TestName()] = t
 	}
 
 	byts, _ := json.Marshal(all)
@@ -23,7 +23,7 @@ func main() {
 
 func writeJson(data []byte) {
 	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "docs", "spec", "qbft", "spectest", "generate")
+	path := filepath.Join(basedir, "qbft", "spectest", "generate")
 	fileName := "tests.json"
 	fullPath := path + "/" + fileName
 
