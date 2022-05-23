@@ -37,7 +37,7 @@ func UponCommit(state *State, config IConfig, signedCommit *SignedMessage, commi
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not get msg commit data")
 	}
-	quorum, commitMsgs, err := commitQuorumForValue(state, commitMsgContainer, msgCommitData.Data)
+	quorum, commitMsgs, err := commitQuorumForCurrentRoundValue(state, commitMsgContainer, msgCommitData.Data)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}
@@ -51,8 +51,9 @@ func UponCommit(state *State, config IConfig, signedCommit *SignedMessage, commi
 	return false, nil, nil, nil
 }
 
-func commitQuorumForValue(state *State, commitMsgContainer *MsgContainer, value []byte) (bool, []*SignedMessage, error) {
-	signers, msgs := commitMsgContainer.UniqueSignersSetForRound(state.Round)
+// returns true if there is a quorum for the current round for this provided value
+func commitQuorumForCurrentRoundValue(state *State, commitMsgContainer *MsgContainer, value []byte) (bool, []*SignedMessage, error) {
+	signers, msgs := commitMsgContainer.UniqueSignersSetForRoundAndValue(state.Round, value)
 	return state.Share.HasQuorum(len(signers)), msgs, nil
 }
 

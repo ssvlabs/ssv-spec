@@ -85,7 +85,6 @@ func isValidProposal(
 		signedProposal.Message.Round,
 		proposalData.Data,
 		valCheck,
-		signedProposal.Signers[0], // already verified sig so we know there is 1 signer
 	); err != nil {
 		return errors.Wrap(err, "proposal not justified")
 	}
@@ -107,16 +106,12 @@ func isProposalJustification(
 	round Round,
 	value []byte,
 	valCheck ProposedValueCheck,
-	roundLeader types.OperatorID,
 ) error {
 	if err := valCheck(value); err != nil {
 		return errors.Wrap(err, "proposal value invalid")
 	}
 
 	if round == FirstRound {
-		if proposer(state, round) != roundLeader {
-			return errors.New("round leader is wrong")
-		}
 		return nil
 	} else {
 		// check all round changes are valid for height and round
@@ -143,12 +138,8 @@ func isProposalJustification(
 		}
 
 		if !previouslyPreparedF() {
-			if proposer(state, round) != roundLeader {
-				return errors.New("round leader is wrong")
-			}
 			return nil
 		} else {
-			// TODO should we check the proposer is correct?
 
 			// check prepare quorum
 			if !state.Share.HasQuorum(len(prepareMsgs)) {

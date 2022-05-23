@@ -92,12 +92,8 @@ func hasReceivedProposalJustificationForLeadingRound(
 			signedRoundChange.Message.Round,
 			msg.Message.GetRoundChangeData().GetNextProposalData(),
 			valCheck,
-			proposer(state, signedRoundChange.Message.Round), // TODO - should we pass this operator's ID to include check if it's the leader?
-		) != nil {
-			// check if this node is the proposer
-			if proposer(state, msg.Message.Round) != state.Share.OperatorID {
-				return nil
-			}
+		) != nil &&
+			proposer(state, msg.Message.Round) != state.Share.OperatorID {
 			return msg
 		}
 	}
@@ -112,7 +108,6 @@ func isReceivedProposalJustification(
 	newRound Round,
 	value []byte,
 	valCheck ProposedValueCheck,
-	proposer types.OperatorID,
 ) error {
 	if err := isProposalJustification(
 		state,
@@ -123,7 +118,6 @@ func isReceivedProposalJustification(
 		newRound,
 		value,
 		valCheck,
-		proposer,
 	); err != nil {
 		return errors.Wrap(err, "round change ")
 	}
