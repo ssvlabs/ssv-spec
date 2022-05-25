@@ -6,9 +6,9 @@ type Round uint64
 type Height int64
 
 const (
-	NoRound     = 0 // NoRound represents a nil/ zero round
-	FirstRound  = 1 // FirstRound value is the first round in any QBFT instance start
-	FirstHeight = 0
+	NoRound     Round  = 0 // NoRound represents a nil/ zero round
+	FirstRound  Round  = 1 // FirstRound value is the first round in any QBFT instance start
+	FirstHeight Height = 0
 )
 
 // Network is a collection of funcs for the QBFT Network

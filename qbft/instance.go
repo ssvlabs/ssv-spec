@@ -83,7 +83,7 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 			}
 			return err
 		case RoundChangeMsgType:
-			return uponRoundChange(i.State, i.config, msg, i.State.RoundChangeContainer, i.config.GetValueCheck())
+			return uponRoundChange(i.State, i.config, i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheck())
 		default:
 			return errors.New("signed message type not supported")
 		}

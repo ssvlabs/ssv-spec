@@ -6,7 +6,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-func uponPrepare(state *State, config IConfig, signedPrepare *SignedMessage, prepareMsgContainer, commitMsgContainer *MsgContainer) error {
+func uponPrepare(
+	state *State,
+	config IConfig,
+	signedPrepare *SignedMessage,
+	prepareMsgContainer,
+	commitMsgContainer *MsgContainer) error {
 	// TODO - if we receive a prepare before a proposal and return an error we will never process the prepare msg, we still need to add it to the container
 	if state.ProposalAcceptedForCurrentRound == nil {
 		return errors.New("no proposal accepted for prepare")
@@ -60,30 +65,23 @@ func uponPrepare(state *State, config IConfig, signedPrepare *SignedMessage, pre
 	return nil
 }
 
-func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer MsgContainer) *SignedMessage {
+func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) []*SignedMessage {
 	if state.LastPreparedValue == nil {
 		return nil
 	}
 
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
-	validPrepares := validPreparesForHeightRoundAndValue(
-		state,
-		config,
-		prepareMsgs,
-		state.Height,
-		state.LastPreparedRound,
-		state.LastPreparedValue,
-		state.Share.Committee,
-	)
-	if state.Share.HasQuorum(len(prepareMsgs)) {
-		return validPrepares
+	ret := make([]*SignedMessage, 0)
+	for _, msg := range prepareMsgs {
+		if err := validSignedPrepareForHeightRoundAndValue(config, msg, state.Height, state.LastPreparedRound, state.LastPreparedValue, state.Share.Committee); err == nil {
+			ret = append(ret, msg)
+		}
 	}
-	return nil
+	return ret
 }
 
 // validPreparesForHeightRoundAndValue returns an aggregated prepare msg for a specific Height and round
 func validPreparesForHeightRoundAndValue(
-	state *State,
 	config IConfig,
 	prepareMessages []*SignedMessage,
 	height Height,

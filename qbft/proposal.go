@@ -126,18 +126,24 @@ func isProposalJustification(
 			return errors.New("change round has not quorum")
 		}
 
-		// previouslyPreparedF returns true if any on the round change messages have a prepare round and value
-		previouslyPreparedF := func() bool {
+		// previouslyPreparedF returns true if any on the round change messages have a prepared round and value
+		previouslyPrepared, err := func() (bool, error) {
 			for _, rc := range roundChangeMsgs {
-				if rc.Message.GetRoundChangeData().GetPreparedRound() != NoRound &&
-					rc.Message.GetRoundChangeData().GetPreparedValue() != nil {
-					return true
+				rcData, err := rc.Message.GetRoundChangeData()
+				if err != nil {
+					return false, errors.Wrap(err, "could not get round change data")
+				}
+				if rcData.Prepared() {
+					return true, nil
 				}
 			}
-			return false
+			return false, nil
+		}()
+		if err != nil {
+			return errors.Wrap(err, "could not calculate if previously prepared")
 		}
 
-		if !previouslyPreparedF() {
+		if !previouslyPrepared {
 			return nil
 		} else {
 
@@ -147,9 +153,16 @@ func isProposalJustification(
 			}
 
 			// get a round change data for which there is a justification for the highest previously prepared round
-			rcm := highestPrepared(roundChangeMsgs)
+			rcm, err := highestPrepared(roundChangeMsgs)
+			if err != nil {
+				return errors.Wrap(err, "could not get highest prepared")
+			}
 			if rcm == nil {
 				return errors.New("no highest prepared")
+			}
+			rcmData, err := rcm.Message.GetRoundChangeData()
+			if err != nil {
+				return errors.Wrap(err, "could not get round change data")
 			}
 
 			// validate each prepare message against the highest previously prepared value and round
@@ -158,8 +171,8 @@ func isProposalJustification(
 					config,
 					pm,
 					height,
-					rcm.Message.GetRoundChangeData().GetPreparedRound(),
-					rcm.Message.GetRoundChangeData().GetPreparedValue(),
+					rcmData.PreparedRound,
+					rcmData.PreparedValue,
 					state.Share.Committee,
 				); err != nil {
 					return errors.New("signed prepare not valid")

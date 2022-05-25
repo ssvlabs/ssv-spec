@@ -60,3 +60,12 @@ var CommitDataBytes = func(data []byte) []byte {
 	ret, _ := d.Encode()
 	return ret
 }
+var RoundChangeDataBytes = func(preparedValue []byte, preparedRound qbft.Round, nextProposalData []byte) []byte {
+	d := &qbft.RoundChangeData{
+		PreparedValue:    preparedValue,
+		PreparedRound:    preparedRound,
+		NextProposalData: nextProposalData,
+	}
+	ret, _ := d.Encode()
+	return ret
+}

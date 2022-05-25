@@ -33,15 +33,16 @@ func UponCommit(state *State, config IConfig, signedCommit *SignedMessage, commi
 	}
 
 	// calculate commit quorum and act upon it
-	msgCommitData, err := signedCommit.Message.GetCommitData()
-	if err != nil {
-		return false, nil, nil, errors.Wrap(err, "could not get msg commit data")
-	}
-	quorum, commitMsgs, err := commitQuorumForCurrentRoundValue(state, commitMsgContainer, msgCommitData.Data)
+	quorum, commitMsgs, err := commitQuorumForCurrentRoundValue(state, commitMsgContainer, signedCommit.Message.Data)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}
 	if quorum {
+		msgCommitData, err := signedCommit.Message.GetCommitData()
+		if err != nil {
+			return false, nil, nil, errors.Wrap(err, "could not get msg commit data")
+		}
+
 		agg, err := aggregateCommitMsgs(commitMsgs)
 		if err != nil {
 			return false, nil, nil, errors.Wrap(err, "could not aggregate commit msgs")
