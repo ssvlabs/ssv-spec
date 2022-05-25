@@ -121,7 +121,7 @@ func TenOperators() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:     "happy flow ten operators",
 		Pre:      pre,
-		PostRoot: "482ea44c55db3d74f8ab649670f42ee7f74222f342d6f09cadfd12131279f149",
+		PostRoot: "6a61afbda62663ca50e75e1d183a92f6e227da8736abbef7c325e7daad828456",
 		Messages: msgs,
 	}
 }

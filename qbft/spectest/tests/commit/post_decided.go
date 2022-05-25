@@ -52,7 +52,7 @@ func PostDecided() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:     "post decided",
 		Pre:      pre,
-		PostRoot: "f5169bbfc4a1f9daec702a306a5a67a36b52db42dc8a413b1e5bc33c1ce7f462",
+		PostRoot: "4378dc7bd8cdf8d8900e79ca17ce35724d79ebcf038fe7156dafce3fcc9fdfb5",
 		Messages: msgs,
 	}
 }

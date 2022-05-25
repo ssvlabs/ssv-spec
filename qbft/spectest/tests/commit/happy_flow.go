@@ -66,7 +66,7 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:     "commit happy flow",
 		Pre:      pre,
-		PostRoot: "656f8fef7ea0884cd7dd970662eb6257aa0c408e0c904f254332e68103579fe1",
+		PostRoot: "7a305edc0784ac3a70285e9404d403aac1dd9c5cd4f7b70cac3824d026cc9804",
 		Messages: msgs,
 	}
 }
