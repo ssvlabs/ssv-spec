@@ -96,7 +96,7 @@ type RoundChangeData struct {
 }
 
 func (d *RoundChangeData) Prepared() bool {
-	if d.PreparedRound != NoRound {
+	if d.PreparedRound != NoRound || len(d.PreparedValue) != 0 {
 		return true
 	}
 	return false

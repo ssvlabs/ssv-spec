@@ -62,6 +62,7 @@ func uponRoundChange(
 		}
 
 		state.Round = newRound
+		// TODO - should we reset timeout here for the new round?
 		state.ProposalAcceptedForCurrentRound = nil
 
 		roundChange, err := createRoundChange(state, config, newRound, instanceStartValue)
@@ -183,8 +184,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 
 	if !rcData.Prepared() {
 		return nil
-	} else {
-		// validate prepare message justifications
+	} else { // validate prepare message justifications
 		prepareMsgs := rcData.RoundChangeJustification
 		for _, pm := range prepareMsgs {
 			if err := validSignedPrepareForHeightRoundAndValue(
@@ -198,10 +198,10 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 			}
 		}
 
-		if rcData.PreparedRound < round {
+		if rcData.PreparedRound <= round {
 			return nil
 		}
-		return errors.New("prepared round >= round")
+		return errors.New("prepared round > round")
 	}
 	return errors.New("round change prepare round & value are wrong")
 }
@@ -219,14 +219,16 @@ func highestPrepared(roundChanges []*SignedMessage) (*SignedMessage, error) {
 			continue
 		}
 
-		retRCData, err := ret.Message.GetRoundChangeData()
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get round change data")
-		}
 		if ret == nil {
 			ret = rc
-		} else if retRCData.PreparedRound < rcData.PreparedRound {
-			ret = rc
+		} else {
+			retRCData, err := ret.Message.GetRoundChangeData()
+			if err != nil {
+				return nil, errors.Wrap(err, "could not get round change data")
+			}
+			if retRCData.PreparedRound < rcData.PreparedRound {
+				ret = rc
+			}
 		}
 	}
 	return ret, nil

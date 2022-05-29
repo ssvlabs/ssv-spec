@@ -23,6 +23,7 @@ func uponProposal(state *State, config IConfig, signedProposal *SignedMessage, p
 
 	// set state to new round and proposal accepted
 	state.ProposalAcceptedForCurrentRound = signedProposal
+	// TODO - why is this here? we shouldn't timout on just a simple proposal
 	if signedProposal.Message.Round > state.Round {
 		config.GetTimer().TimeoutForRound(signedProposal.Message.Round)
 	}
@@ -127,8 +128,8 @@ func isProposalJustification(
 		}
 
 		// previouslyPreparedF returns true if any on the round change messages have a prepared round and value
-		previouslyPrepared, err := func() (bool, error) {
-			for _, rc := range roundChangeMsgs {
+		previouslyPrepared, err := func(rcMsgs []*SignedMessage) (bool, error) {
+			for _, rc := range rcMsgs {
 				rcData, err := rc.Message.GetRoundChangeData()
 				if err != nil {
 					return false, errors.Wrap(err, "could not get round change data")
@@ -138,7 +139,7 @@ func isProposalJustification(
 				}
 			}
 			return false, nil
-		}()
+		}(roundChangeMsgs)
 		if err != nil {
 			return errors.Wrap(err, "could not calculate if previously prepared")
 		}

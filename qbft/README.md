@@ -2,7 +2,7 @@
 # QBFT
 
 ## Introduction
-This is a spec implementation for the QBFT protocol, following [formal verification spec](https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification).
+This is a spec implementation for the QBFT protocol, following [formal verification spec](https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification) / [github repo](https://github.com/ConsenSys/qbft-formal-spec-and-verification).
 
 ## Important note on message processing
 The spec only deals with message process logic but there is a lot of importance on they way controller.ProcessMsg is called.

@@ -53,4 +53,5 @@ var AllTests = []SpecTest{
 	commit.WrongSignature(),
 
 	roundchange.HappyFlow(),
+	roundchange.PreviouslyPrepared(),
 }
