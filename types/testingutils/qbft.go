@@ -18,7 +18,7 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	}
 }
 
-var testShare = func(keysSet *TestKeySet) *types.Share {
+var TestingShare = func(keysSet *TestKeySet) *types.Share {
 	return &types.Share{
 		OperatorID:      1,
 		ValidatorPubKey: keysSet.PK.Serialize(),
@@ -31,19 +31,19 @@ var testShare = func(keysSet *TestKeySet) *types.Share {
 }
 
 var BaseInstance = func() *qbft.Instance {
-	return baseInstance(testShare(Testing4SharesSet()), Testing4SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingShare(Testing4SharesSet()), Testing4SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var SevenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(testShare(Testing7SharesSet()), Testing7SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingShare(Testing7SharesSet()), Testing7SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var TenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(testShare(Testing10SharesSet()), Testing10SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingShare(Testing10SharesSet()), Testing10SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var ThirteenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(testShare(Testing13SharesSet()), Testing13SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingShare(Testing13SharesSet()), Testing13SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {

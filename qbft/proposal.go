@@ -189,6 +189,7 @@ func proposer(state *State, round Round) types.OperatorID {
 	return 1
 }
 
+// CreateProposal
 /**
   	Proposal(
                         signProposal(
@@ -201,7 +202,7 @@ func proposer(state *State, round Round) types.OperatorID {
                         extractSignedRoundChanges(roundChanges),
                         extractSignedPrepares(prepares));
 */
-func createProposal(state *State, config IConfig, value []byte, roundChanges, prepares []*SignedMessage) (*SignedMessage, error) {
+func CreateProposal(state *State, config IConfig, value []byte, roundChanges, prepares []*SignedMessage) (*SignedMessage, error) {
 	proposalData := &ProposalData{
 		Data:                     value,
 		RoundChangeJustification: roundChanges,

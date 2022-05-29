@@ -41,7 +41,7 @@ func uponRoundChange(
 			return errors.Wrap(err, "could not round change data from highestJustifiedRoundChangeMsg")
 		}
 
-		proposal, err := createProposal(
+		proposal, err := CreateProposal(
 			state,
 			config,
 			highestRCData.NextProposalData,
