@@ -31,6 +31,8 @@ var AllTests = []SpecTest{
 	messages.SignedMessageEncoding(),
 	messages.CreateProposal(),
 	messages.CreateProposalPreviouslyPrepared(),
+	messages.CreatePrepare(),
+	messages.CreateCommit(),
 
 	tests.HappyFlow(),
 	tests.SevenOperators(),

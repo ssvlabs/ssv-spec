@@ -53,7 +53,7 @@ func uponPrepare(
 	state.LastPreparedValue = proposedValue
 	state.LastPreparedRound = state.Round
 
-	commitMsg, err := createCommit(state, config, proposedValue)
+	commitMsg, err := CreateCommit(state, config, proposedValue)
 	if err != nil {
 		return errors.Wrap(err, "could not create commit msg")
 	}
@@ -142,6 +142,7 @@ func validSignedPrepareForHeightRoundAndValue(
 	return nil
 }
 
+// CreatePrepare
 /**
 Prepare(
                     signPrepare(
@@ -153,7 +154,7 @@ Prepare(
                         )
                 );
 */
-func createPrepare(state *State, config IConfig, newRound Round, value []byte) (*SignedMessage, error) {
+func CreatePrepare(state *State, config IConfig, newRound Round, value []byte) (*SignedMessage, error) {
 	prepareData := &PrepareData{
 		Data: value,
 	}

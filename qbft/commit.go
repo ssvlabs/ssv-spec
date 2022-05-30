@@ -94,6 +94,7 @@ func didSendCommitForHeightAndRound(state *State, commitMsgContainer *MsgContain
 	return false
 }
 
+// CreateCommit
 /**
 Commit(
                     signCommit(
@@ -106,7 +107,7 @@ Commit(
                         )
                     );
 */
-func createCommit(state *State, config IConfig, value []byte) (*SignedMessage, error) {
+func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, error) {
 	commitData := &CommitData{
 		Data: value,
 	}

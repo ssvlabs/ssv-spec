@@ -34,7 +34,7 @@ func uponProposal(state *State, config IConfig, signedProposal *SignedMessage, p
 		return errors.Wrap(err, "could not get proposal data")
 	}
 
-	prepare, err := createPrepare(state, config, newRound, proposalData.Data)
+	prepare, err := CreatePrepare(state, config, newRound, proposalData.Data)
 	if err != nil {
 		return errors.Wrap(err, "could not create prepare msg")
 	}

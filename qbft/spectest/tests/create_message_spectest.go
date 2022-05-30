@@ -10,11 +10,14 @@ import (
 
 const (
 	CreateProposal = "createProposal"
+	CreatePrepare  = "CreatePrepare"
+	CreateCommit   = "CreateCommit"
 )
 
 type CreateMsgSpecTest struct {
 	Name                                             string
 	Value                                            []byte
+	Round                                            qbft.Round
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
 	ExpectedRoot                                     string
@@ -27,6 +30,10 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	switch test.CreateType {
 	case CreateProposal:
 		msg, lastErr = test.createProposal()
+	case CreatePrepare:
+		msg, lastErr = test.createPrepare()
+	case CreateCommit:
+		msg, lastErr = test.createCommit()
 	default:
 		t.Fail()
 	}
@@ -43,6 +50,28 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r))
+}
+
+func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
+	ks := testingutils.Testing4SharesSet()
+	state := &qbft.State{
+		Share: testingutils.TestingShare(ks),
+		ID:    []byte{1, 2, 3, 4},
+	}
+	config := testingutils.TestingConfig(ks)
+
+	return qbft.CreateCommit(state, config, test.Value)
+}
+
+func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
+	ks := testingutils.Testing4SharesSet()
+	state := &qbft.State{
+		Share: testingutils.TestingShare(ks),
+		ID:    []byte{1, 2, 3, 4},
+	}
+	config := testingutils.TestingConfig(ks)
+
+	return qbft.CreatePrepare(state, config, test.Round, test.Value)
 }
 
 func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
