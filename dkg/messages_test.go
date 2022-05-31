@@ -1,4 +1,4 @@
-package types
+package dkg
 
 import (
 	"encoding/hex"
@@ -16,9 +16,9 @@ var TestingValidatorPubKey = func() spec.BLSPubKey {
 }()
 
 func TestDKGOutput_GetRoot(t *testing.T) {
-	dkg := &DKGOutput{
+	dkg := &Output{
 		WithdrawalCredentials: make([]byte, 100),
-		DKGSize:               4,
+		DKGSetSize:            4,
 		ValidatorPubKey:       TestingValidatorPubKey[:],
 		EncryptedShare:        make([]byte, 50),
 	}
