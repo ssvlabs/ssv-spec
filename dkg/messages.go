@@ -65,6 +65,9 @@ func (o *Output) GetRoot() ([]byte, error) {
 		{
 			Type: bytesSolidity,
 		},
+		{
+			Type: bytesSolidity,
+		},
 	}
 
 	bytes, _ := arguments.Pack(
@@ -72,6 +75,7 @@ func (o *Output) GetRoot() ([]byte, error) {
 		o.DKGSetSize,
 		o.ValidatorPubKey,
 		o.WithdrawalCredentials,
+		o.PartialSignedDepositData,
 	)
 
 	return crypto.Keccak256(bytes), nil
