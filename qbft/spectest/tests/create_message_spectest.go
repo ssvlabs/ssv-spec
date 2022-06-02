@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	CreateProposal = "createProposal"
-	CreatePrepare  = "CreatePrepare"
-	CreateCommit   = "CreateCommit"
+	CreateProposal    = "createProposal"
+	CreatePrepare     = "CreatePrepare"
+	CreateCommit      = "CreateCommit"
+	CreateRoundChange = "CreateRoundChange"
 )
 
 type CreateMsgSpecTest struct {
@@ -34,6 +35,8 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 		msg, lastErr = test.createPrepare()
 	case CreateCommit:
 		msg, lastErr = test.createCommit()
+	case CreateRoundChange:
+		msg, lastErr = test.createRoundChange()
 	default:
 		t.Fail()
 	}
@@ -83,6 +86,26 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	config := testingutils.TestingConfig(ks)
 
 	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, test.PrepareJustifications)
+}
+
+func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
+	ks := testingutils.Testing4SharesSet()
+	state := &qbft.State{
+		Share: testingutils.TestingShare(ks),
+		ID:    []byte{1, 2, 3, 4},
+	}
+	config := testingutils.TestingConfig(ks)
+
+	if len(test.PrepareJustifications) > 0 {
+		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
+		state.LastPreparedValue = test.Value
+
+		for _, msg := range test.PrepareJustifications {
+			state.PrepareContainer.AddIfDoesntExist(msg)
+		}
+	}
+
+	return qbft.CreateRoundChange(state, config, 1, test.Value)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

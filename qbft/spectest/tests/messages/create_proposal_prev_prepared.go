@@ -9,7 +9,6 @@ import (
 
 // CreateProposalPreviouslyPrepared tests creating a proposal msg,previously prepared
 func CreateProposalPreviouslyPrepared() *tests.CreateMsgSpecTest {
-
 	return &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateProposal,
 		Name:       "create proposal previously prepared",
