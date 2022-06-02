@@ -17,6 +17,7 @@ func SevenOperators() *MsgProcessingSpecTest {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
 		}),
+
 		testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,
@@ -52,6 +53,7 @@ func SevenOperators() *MsgProcessingSpecTest {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 		}),
+
 		testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.CommitMsgType,
 			Height:     qbft.FirstHeight,
@@ -89,9 +91,25 @@ func SevenOperators() *MsgProcessingSpecTest {
 		}),
 	}
 	return &MsgProcessingSpecTest{
-		Name:     "happy flow seven operators",
-		Pre:      pre,
-		PostRoot: "e2e1e11bda5f17f3e6fea1dccc8a9de97c96dbfa2f99bc95cfec915c68941db9",
-		Messages: msgs,
+		Name:          "happy flow seven operators",
+		Pre:           pre,
+		PostRoot:      "e2e1e11bda5f17f3e6fea1dccc8a9de97c96dbfa2f99bc95cfec915c68941db9",
+		InputMessages: msgs,
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.PrepareMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+			}),
+			testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+			}),
+		},
 	}
 }

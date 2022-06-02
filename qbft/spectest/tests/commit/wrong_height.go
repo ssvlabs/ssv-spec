@@ -51,7 +51,7 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 		Name:          "wrong commit height",
 		Pre:           pre,
 		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
-		Messages:      msgs,
+		InputMessages: msgs,
 		ExpectedError: "commit msg invalid: commit Height is wrong",
 	}
 }

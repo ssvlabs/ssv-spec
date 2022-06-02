@@ -56,9 +56,9 @@ func Decided() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:     "decided, with overlap",
-		Pre:      pre,
-		PostRoot: "215f7d37b8d6819e377359bdc6e751b48a3d5d6d5f8f9109d56a1acedcef317d",
-		Messages: msgs,
+		Name:          "decided, with overlap",
+		Pre:           pre,
+		PostRoot:      "215f7d37b8d6819e377359bdc6e751b48a3d5d6d5f8f9109d56a1acedcef317d",
+		InputMessages: msgs,
 	}
 }

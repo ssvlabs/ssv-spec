@@ -182,7 +182,7 @@ func (c *Controller) Decode(data []byte) error {
 	config := c.generateConfig()
 	for _, i := range c.StoredInstances {
 		if i != nil {
-			i.config = config
+			i.Config = config
 		}
 	}
 	return nil

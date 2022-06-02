@@ -47,7 +47,9 @@ var ThirteenOperatorsInstance = func() *qbft.Instance {
 }
 
 var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {
-	return qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
+	ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
+	ret.StartValue = []byte{1, 2, 3, 4}
+	return ret
 }
 
 func NewTestingQBFTController(identifier []byte, share *types.Share, valCheck qbft.ProposedValueCheck) *qbft.Controller {

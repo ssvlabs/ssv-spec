@@ -50,9 +50,10 @@ func PostDecided() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:     "post decided",
-		Pre:      pre,
-		PostRoot: "4378dc7bd8cdf8d8900e79ca17ce35724d79ebcf038fe7156dafce3fcc9fdfb5",
-		Messages: msgs,
+		Name:           "post decided",
+		Pre:            pre,
+		PostRoot:       "4378dc7bd8cdf8d8900e79ca17ce35724d79ebcf038fe7156dafce3fcc9fdfb5",
+		InputMessages:  msgs,
+		OutputMessages: []*qbft.SignedMessage{},
 	}
 }
