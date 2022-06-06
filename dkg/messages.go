@@ -44,8 +44,8 @@ type Output struct {
 	ValidatorPubKey types.ValidatorPK
 	// WithdrawalCredentials same as in Init
 	WithdrawalCredentials []byte
-	// PartialSignedDepositData partial signature of DepositMessage according to eth2 spec
-	PartialSignedDepositData types.Signature
+	// SignedDepositData reconstructed signature of DepositMessage according to eth2 spec
+	SignedDepositData types.Signature
 }
 
 func (o *Output) GetRoot() ([]byte, error) {
