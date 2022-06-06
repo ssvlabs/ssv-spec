@@ -37,7 +37,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test output message
 	if len(test.OutputMessages) > 0 {
-		broadcastedMsgs := test.Pre.Config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+		broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 
 		for i, msg := range test.OutputMessages {

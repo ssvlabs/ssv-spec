@@ -13,7 +13,7 @@ type ProposedValueCheck func(data []byte) error
 // Every new msg the ProcessMsg function needs to be called
 type Instance struct {
 	State  *State
-	Config IConfig
+	config IConfig
 
 	processMsgF *types.ThreadSafeF
 	startOnce   sync.Once
@@ -38,7 +38,7 @@ func NewInstance(
 			CommitContainer:      NewMsgContainer(),
 			RoundChangeContainer: NewMsgContainer(),
 		},
-		Config:      config,
+		config:      config,
 		processMsgF: types.NewThreadSafeF(),
 	}
 }
@@ -52,11 +52,11 @@ func (i *Instance) Start(value []byte, height Height) {
 
 		// propose if this node is the proposer
 		if proposer(i.State, FirstRound) == i.State.Share.OperatorID {
-			proposal, err := CreateProposal(i.State, i.Config, i.StartValue, nil, nil)
+			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			if err != nil {
 				// TODO log
 			}
-			if err := i.Config.GetNetwork().Broadcast(proposal); err != nil {
+			if err := i.config.GetNetwork().Broadcast(proposal); err != nil {
 				// TODO - log
 			}
 		}
@@ -72,18 +72,18 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 	res := i.processMsgF.Run(func() interface{} {
 		switch msg.Message.MsgType {
 		case ProposalMsgType:
-			return uponProposal(i.State, i.Config, msg, i.State.ProposeContainer)
+			return uponProposal(i.State, i.config, msg, i.State.ProposeContainer)
 		case PrepareMsgType:
-			return uponPrepare(i.State, i.Config, msg, i.State.PrepareContainer, i.State.CommitContainer)
+			return uponPrepare(i.State, i.config, msg, i.State.PrepareContainer, i.State.CommitContainer)
 		case CommitMsgType:
-			decided, decidedValue, aggregatedCommit, err = UponCommit(i.State, i.Config, msg, i.State.CommitContainer)
+			decided, decidedValue, aggregatedCommit, err = UponCommit(i.State, i.config, msg, i.State.CommitContainer)
 			i.State.Decided = decided
 			if decided {
 				i.State.DecidedValue = decidedValue
 			}
 			return err
 		case RoundChangeMsgType:
-			return uponRoundChange(i.State, i.Config, i.StartValue, msg, i.State.RoundChangeContainer, i.Config.GetValueCheck())
+			return uponRoundChange(i.State, i.config, i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheck())
 		default:
 			return errors.New("signed message type not supported")
 		}
@@ -97,6 +97,11 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 // IsDecided interface implementation
 func (i *Instance) IsDecided() (bool, []byte) {
 	return i.State.Decided, i.State.DecidedValue
+}
+
+// GetConfig returns the instance config
+func (i *Instance) GetConfig() IConfig {
+	return i.config
 }
 
 // GetHeight interface implementation

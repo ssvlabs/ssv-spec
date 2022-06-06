@@ -11,7 +11,7 @@ import (
 func CreateProposalNotPreviouslyPrepared() *tests.CreateMsgSpecTest {
 	return &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateProposal,
-		Name:       "create proposal previously prepared",
+		Name:       "create proposal not previously prepared",
 		Value:      []byte{1, 2, 3, 4},
 		RoundChangeJustifications: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

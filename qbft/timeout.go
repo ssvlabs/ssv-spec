@@ -5,14 +5,14 @@ type Timer interface {
 	TimeoutForRound(round Round)
 }
 
-//func uponRoundTimeout(state *State, Config IConfig) error {
+//func uponRoundTimeout(state *State, config IConfig) error {
 //	state.Round++
-//	roundChange, err := CreateRoundChange(state, Config, state.Round)
+//	roundChange, err := CreateRoundChange(state, config, state.Round)
 //	if err != nil {
 //		return errors.Wrap(err, "could not generate round change msg")
 //	}
 //
-//	if err := Config.GetNetwork().Broadcast(roundChange); err != nil {
+//	if err := config.GetNetwork().Broadcast(roundChange); err != nil {
 //		return errors.Wrap(err, "failed to broadcast round change message")
 //	}
 //
