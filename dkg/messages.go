@@ -75,7 +75,7 @@ func (o *Output) GetRoot() ([]byte, error) {
 		o.DKGSetSize,
 		o.ValidatorPubKey,
 		o.WithdrawalCredentials,
-		o.PartialSignedDepositData,
+		o.SignedDepositData,
 	)
 
 	return crypto.Keccak256(bytes), nil
