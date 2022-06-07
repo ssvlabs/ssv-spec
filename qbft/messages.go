@@ -203,11 +203,6 @@ func (msg *Message) GetRoot() ([]byte, error) {
 	return ret[:], nil
 }
 
-// DeepCopy returns a new instance of Message, deep copied
-func (msg *Message) DeepCopy() *Message {
-	panic("implement")
-}
-
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (msg *Message) Validate() error {
