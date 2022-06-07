@@ -2,6 +2,7 @@ package dkg
 
 import (
 	"crypto/ecdsa"
+	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -16,8 +17,19 @@ const (
 )
 
 type Message struct {
-	MsgType MsgType
-	Data    []byte
+	MsgType    MsgType
+	Identifier types.MessageID
+	Data       []byte
+}
+
+// Encode returns a msg encoded bytes or error
+func (msg *Message) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *Message) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
 }
 
 type SignedMessage struct {
@@ -26,12 +38,32 @@ type SignedMessage struct {
 	Signature types.Signature
 }
 
+// Encode returns a msg encoded bytes or error
+func (signedMsg *SignedMessage) Encode() ([]byte, error) {
+	return json.Marshal(signedMsg)
+}
+
+// Decode returns error if decoding failed
+func (signedMsg *SignedMessage) Decode(data []byte) error {
+	return json.Unmarshal(data, signedMsg)
+}
+
 // Init is the first message in a DKG which initiates a DKG
 type Init struct {
 	// OperatorIDs are the operators selected for the DKG
 	OperatorIDs []types.OperatorID
 	// WithdrawalCredentials used when signing the deposit data
 	WithdrawalCredentials []byte
+}
+
+// Encode returns a msg encoded bytes or error
+func (msg *Init) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *Init) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
 }
 
 // Output is the last message in every DKG which marks a specific node's end of process

@@ -3,9 +3,18 @@ package ssv
 import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"time"
 )
+
+// DKGRunners is a map of dkg runners mapped by dkg ID.
+type DKGRunners map[string]*dkg.Runner
+
+// DKGRunnerForID returns a Runner from the provided msg ID, or nil if not found
+func (runners DKGRunners) DKGRunnerForID(msgID types.MessageID) *dkg.Runner {
+	panic("implement")
+}
 
 // DutyRunners is a map of duty runners mapped by msg id hex.
 type DutyRunners map[types.BeaconRole]*Runner
