@@ -5,17 +5,21 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-type testingNetwork struct {
+type TestingNetwork struct {
+	BroadcastedMsgs []*qbft.SignedMessage
 }
 
 func NewTestingNetwork() qbft.Network {
-	return &testingNetwork{}
+	return &TestingNetwork{
+		BroadcastedMsgs: make([]*qbft.SignedMessage, 0),
+	}
 }
 
-func (net *testingNetwork) Broadcast(message types.Encoder) error {
+func (net *TestingNetwork) Broadcast(message types.Encoder) error {
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*qbft.SignedMessage))
 	return nil
 }
 
-func (net *testingNetwork) BroadcastDecided(msg types.Encoder) error {
+func (net *TestingNetwork) BroadcastDecided(msg types.Encoder) error {
 	return nil
 }

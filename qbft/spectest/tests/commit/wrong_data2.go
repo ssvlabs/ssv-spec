@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongCommitData tests a single commit received with a different commit data than the prepared data
-func WrongCommitData() *tests.MsgProcessingSpecTest {
+// WrongData2 tests a single commit received with a different commit data than the prepared data
+func WrongData2() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -48,10 +48,10 @@ func WrongCommitData() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "wrong commit data",
+		Name:          "commit data != prepared data",
 		Pre:           pre,
 		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
-		Messages:      msgs,
+		InputMessages: msgs,
 		ExpectedError: "commit msg invalid: proposed data different than commit msg data",
 	}
 }

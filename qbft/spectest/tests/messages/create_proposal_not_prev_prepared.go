@@ -7,35 +7,35 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// CreateRoundChangePreviouslyPrepared tests creating a round change msg,previously prepared
-func CreateRoundChangePreviouslyPrepared() *tests.CreateMsgSpecTest {
+// CreateProposalNotPreviouslyPrepared tests creating a proposal msg, non-first round and not previously prepared
+func CreateProposalNotPreviouslyPrepared() *tests.CreateMsgSpecTest {
 	return &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateProposal,
-		Name:       "create round change previously prepared",
+		Name:       "create proposal not previously prepared",
 		Value:      []byte{1, 2, 3, 4},
-		PrepareJustifications: []*qbft.SignedMessage{
+		RoundChangeJustifications: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
+				MsgType:    qbft.RoundChangeMsgType,
 				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
+				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
 			}),
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
+				MsgType:    qbft.RoundChangeMsgType,
 				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
+				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
 			}),
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
+				MsgType:    qbft.RoundChangeMsgType,
 				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
+				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
 			}),
 		},
-		ExpectedRoot: "de421aca0c42404cea60b6a9dea40457831eed611b78dd529e022fc54e81af44",
+		ExpectedRoot: "f910e0dbee145020bdf670ba9c8474b3e4941e528fc08f52e9a3ccbf9b5abd74",
 	}
 }

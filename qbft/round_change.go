@@ -65,7 +65,7 @@ func uponRoundChange(
 		// TODO - should we reset timeout here for the new round?
 		state.ProposalAcceptedForCurrentRound = nil
 
-		roundChange, err := createRoundChange(state, config, newRound, instanceStartValue)
+		roundChange, err := CreateRoundChange(state, config, newRound, instanceStartValue)
 		if err != nil {
 			return errors.Wrap(err, "failed to create round change message")
 		}
@@ -261,6 +261,7 @@ func getRoundChangeData(state *State, config IConfig, instanceStartValue []byte)
 	}, nil
 }
 
+// CreateRoundChange
 /**
 RoundChange(
            signRoundChange(
@@ -274,7 +275,7 @@ RoundChange(
            getRoundChangeJustification(current)
        )
 */
-func createRoundChange(state *State, config IConfig, newRound Round, instanceStartValue []byte) (*SignedMessage, error) {
+func CreateRoundChange(state *State, config IConfig, newRound Round, instanceStartValue []byte) (*SignedMessage, error) {
 	rcData, err := getRoundChangeData(state, config, instanceStartValue)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not generate round change data")

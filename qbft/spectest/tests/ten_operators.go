@@ -119,9 +119,25 @@ func TenOperators() *MsgProcessingSpecTest {
 		}),
 	}
 	return &MsgProcessingSpecTest{
-		Name:     "happy flow ten operators",
-		Pre:      pre,
-		PostRoot: "6a61afbda62663ca50e75e1d183a92f6e227da8736abbef7c325e7daad828456",
-		Messages: msgs,
+		Name:          "happy flow ten operators",
+		Pre:           pre,
+		PostRoot:      "6a61afbda62663ca50e75e1d183a92f6e227da8736abbef7c325e7daad828456",
+		InputMessages: msgs,
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.PrepareMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+			}),
+			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+			}),
+		},
 	}
 }

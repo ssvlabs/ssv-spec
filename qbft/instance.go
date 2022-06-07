@@ -99,6 +99,11 @@ func (i *Instance) IsDecided() (bool, []byte) {
 	return i.State.Decided, i.State.DecidedValue
 }
 
+// GetConfig returns the instance config
+func (i *Instance) GetConfig() IConfig {
+	return i.config
+}
+
 // GetHeight interface implementation
 func (i *Instance) GetHeight() Height {
 	return i.State.Height

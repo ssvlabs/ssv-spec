@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// MsgSpecTest tests encoding and decoding of a msg
 type MsgSpecTest struct {
 	Name            string
 	Messages        []*qbft.SignedMessage
