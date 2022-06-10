@@ -27,6 +27,8 @@ func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) *Runner {
 
 type Network interface {
 	Broadcast(message types.Encoder) error
+	// StreamDKGOutput will stream to any subscriber the result of the DKG
+	StreamDKGOutput(output *dkg.SignedOutput) error
 }
 
 // Storage is a persistent storage for the SSV

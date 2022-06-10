@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"encoding/hex"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/dkg"
@@ -87,11 +88,21 @@ func (v *Validator) startNewDKGMsg(message *dkg.SignedMessage) error {
 		return errors.Wrap(err, "could not get dkg init Message from signed Messages")
 	}
 
-	runner, err := dkg.StartNewDKG(initMsg)
+	// TODO - validate message
+	// check instance not running already
+	if v.DKGRunners.DKGRunnerForID(message.Message.Identifier) != nil {
+		return errors.New("dkg started already")
+	}
+
+	runner, err := dkg.StartNewDKG(initMsg, &dkg.Config{
+		Network: v.network,
+	})
 	if err != nil {
 		return errors.Wrap(err, "could not start new DKG")
 	}
+
 	// add runner to runners
+	v.DKGRunners[hex.EncodeToString(message.Message.Identifier)] = runner
 
 	return nil
 }
@@ -106,6 +117,13 @@ func (v *Validator) processDKGMsg(message *dkg.SignedMessage) error {
 	if err != nil {
 		return errors.Wrap(err, "could not process DKG message")
 	}
+
+	if finished {
+		if err := v.network.StreamDKGOutput(output); err != nil {
+			return errors.Wrap(err, "failed to stream dkg output")
+		}
+	}
+
 	return nil
 }
 

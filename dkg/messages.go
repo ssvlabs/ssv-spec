@@ -68,6 +68,8 @@ func (msg *Init) Decode(data []byte) error {
 
 // Output is the last message in every DKG which marks a specific node's end of process
 type Output struct {
+	// Identifier of the DKG
+	Identifier types.MessageID
 	// EncryptedShare standard SSV encrypted shares
 	EncryptedShare []byte
 	// DKGSize number of participants in the DKG
