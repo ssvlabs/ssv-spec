@@ -5,16 +5,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-func uponRoundChange(
-	state *State,
-	config IConfig,
+func (i *Instance) uponRoundChange(
 	instanceStartValue []byte,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheck,
 ) error {
 	// TODO - Roberto comment: could happen we received a round change before we switched the round and this msg will be rejected (lost)
-	if err := validRoundChange(state, config, signedRoundChange, state.Height, state.Round); err != nil {
+	if err := validRoundChange(i.State, i.config, signedRoundChange, i.State.Height, i.State.Round); err != nil {
 		return errors.Wrap(err, "round change msg invalid")
 	}
 
@@ -27,8 +25,8 @@ func uponRoundChange(
 	}
 
 	highestJustifiedRoundChangeMsg, err := hasReceivedProposalJustificationForLeadingRound(
-		state,
-		config,
+		i.State,
+		i.config,
 		signedRoundChange,
 		roundChangeMsgContainer,
 		valCheck)
@@ -42,34 +40,34 @@ func uponRoundChange(
 		}
 
 		proposal, err := CreateProposal(
-			state,
-			config,
+			i.State,
+			i.config,
 			highestRCData.NextProposalData,
-			roundChangeMsgContainer.MessagesForRound(state.Round), // TODO - might be optimized to include only necessary quorum
+			roundChangeMsgContainer.MessagesForRound(i.State.Round), // TODO - might be optimized to include only necessary quorum
 			highestRCData.RoundChangeJustification,
 		)
 		if err != nil {
 			return errors.Wrap(err, "failed to create proposal")
 		}
 
-		if err := config.GetNetwork().Broadcast(proposal); err != nil {
+		if err := i.Broadcast(proposal); err != nil {
 			return errors.Wrap(err, "failed to broadcast proposal message")
 		}
-	} else if partialQuorum, rcs := hasReceivedPartialQuorum(state, roundChangeMsgContainer); partialQuorum {
+	} else if partialQuorum, rcs := hasReceivedPartialQuorum(i.State, roundChangeMsgContainer); partialQuorum {
 		newRound := minRound(rcs)
-		if newRound <= state.Round {
+		if newRound <= i.State.Round {
 			return nil // no need to advance round
 		}
 
-		state.Round = newRound
+		i.State.Round = newRound
 		// TODO - should we reset timeout here for the new round?
-		state.ProposalAcceptedForCurrentRound = nil
+		i.State.ProposalAcceptedForCurrentRound = nil
 
-		roundChange, err := CreateRoundChange(state, config, newRound, instanceStartValue)
+		roundChange, err := CreateRoundChange(i.State, i.config, newRound, instanceStartValue)
 		if err != nil {
 			return errors.Wrap(err, "failed to create round change message")
 		}
-		if err := config.GetNetwork().Broadcast(roundChange); err != nil {
+		if err := i.Broadcast(roundChange); err != nil {
 			return errors.Wrap(err, "failed to broadcast round change message")
 		}
 	}

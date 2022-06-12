@@ -42,7 +42,11 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 		for i, msg := range test.OutputMessages {
 			r1, _ := msg.GetRoot()
-			r2, _ := broadcastedMsgs[i].GetRoot()
+
+			msg2 := &qbft.SignedMessage{}
+			require.NoError(t, msg2.Decode(broadcastedMsgs[i].Data))
+
+			r2, _ := msg2.GetRoot()
 			require.EqualValues(t, r1, r2)
 		}
 	}

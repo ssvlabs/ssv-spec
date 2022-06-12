@@ -5,9 +5,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-func uponProposal(state *State, config IConfig, signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
-	valCheck := config.GetValueCheck()
-	if err := isValidProposal(state, config, signedProposal, valCheck, state.Share.Committee); err != nil {
+func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
+	valCheck := i.config.GetValueCheck()
+	if err := isValidProposal(i.State, i.config, signedProposal, valCheck, i.State.Share.Committee); err != nil {
 		return errors.Wrap(err, "proposal invalid")
 	}
 
@@ -22,24 +22,24 @@ func uponProposal(state *State, config IConfig, signedProposal *SignedMessage, p
 	newRound := signedProposal.Message.Round
 
 	// set state to new round and proposal accepted
-	state.ProposalAcceptedForCurrentRound = signedProposal
+	i.State.ProposalAcceptedForCurrentRound = signedProposal
 	// TODO - why is this here? we shouldn't timout on just a simple proposal
-	if signedProposal.Message.Round > state.Round {
-		config.GetTimer().TimeoutForRound(signedProposal.Message.Round)
+	if signedProposal.Message.Round > i.State.Round {
+		i.config.GetTimer().TimeoutForRound(signedProposal.Message.Round)
 	}
-	state.Round = newRound
+	i.State.Round = newRound
 
 	proposalData, err := signedProposal.Message.GetProposalData()
 	if err != nil {
 		return errors.Wrap(err, "could not get proposal data")
 	}
 
-	prepare, err := CreatePrepare(state, config, newRound, proposalData.Data)
+	prepare, err := CreatePrepare(i.State, i.config, newRound, proposalData.Data)
 	if err != nil {
 		return errors.Wrap(err, "could not create prepare msg")
 	}
 
-	if err := config.GetNetwork().Broadcast(prepare); err != nil {
+	if err := i.Broadcast(prepare); err != nil {
 		return errors.Wrap(err, "failed to broadcast prepare message")
 	}
 
