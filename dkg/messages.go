@@ -2,12 +2,44 @@ package dkg
 
 import (
 	"crypto/ecdsa"
+	"encoding/binary"
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/pkg/errors"
 )
+
+type RequestID [24]byte
+
+const (
+	ethAddressSize     = 20
+	ethAddressStartPos = 0
+	indexSize          = 4
+	indexStartPos      = ethAddressStartPos + ethAddressSize
+)
+
+func (msg RequestID) GetETHAddress() common.Address {
+	ret := common.Address{}
+	copy(ret[:], msg[ethAddressStartPos:ethAddressStartPos+ethAddressSize])
+	return ret
+}
+
+func (msg RequestID) GetRoleType() uint32 {
+	indexByts := msg[indexStartPos : indexStartPos+indexSize]
+	return binary.LittleEndian.Uint32(indexByts)
+}
+
+func NewMsgID(ethAddress common.Address, index uint32) RequestID {
+	indexByts := make([]byte, 4)
+	binary.LittleEndian.PutUint32(indexByts, index)
+
+	ret := RequestID{}
+	copy(ret[ethAddressStartPos:ethAddressStartPos+ethAddressSize], ethAddress[:])
+	copy(ret[indexStartPos:indexStartPos+indexSize], indexByts[:])
+	return ret
+}
 
 type MsgType int
 
