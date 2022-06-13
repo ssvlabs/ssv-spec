@@ -84,6 +84,7 @@ Signature type Constants:
 |----------------------|----------------------|------------------------------------------|
 | QBFTSignatureType          | [] byte {1, 0, 0, 0} | SignedMessage specific signatures        |
 | PartialSignatureType | [] byte {2, 0, 0, 0} | PostConsensusMessage specific signatures |
+| DKGSignatureType | [] byte {3, 0, 0, 0} | PostConsensusMessage specific signatures |
 
 ## Validator and Runners
 A validator instance is created for each validator independently, each validator will have multiple Runner for each beacon chain duty type (Attestations, Blocks, etc.)
@@ -93,12 +94,6 @@ Each duty starts by calling the StartNewDuty func in the respective Runner.
 StartNewDuty might return error if can't start a new duty, depending on the previous duty life cycle.
 As a general rule, when a runner is executing a duty in the consensus phase, a new duty can't start.
 Pre/ Post partial signature collection will not enable starting a new duty if not completed except if timed out.
-
-Constants:
-
-| Constant                              | Value | Description                                                                                                                            |
-|---------------------------------------|-------|----------------------------------------------------------------------------------------------------------------------------------------|
-| DutyExecutionSlotTimeout | 32    | How many slots pass until a new QBFT instance can start without waiting for all pre/ post consensus partial signatures to be collected |
 
 **Attestation Duty Full Cycle:**\
 -> Wait to slot 1/3\

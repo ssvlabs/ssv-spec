@@ -1,10 +1,8 @@
 package ssv
 
 import (
-	"encoding/hex"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -51,16 +49,6 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 		}
 
 		return v.processPostConsensusSig(dutyRunner, signedMsg)
-	case types.DKGMsgType:
-		signedMsg := &dkg.SignedMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
-			return errors.Wrap(err, "could not get dkg Message from network Messages")
-		}
-
-		if signedMsg.Message.MsgType == dkg.InitMsgType {
-
-		}
-		return v.processDKGMsg(signedMsg)
 	default:
 		return errors.New("unknown msg")
 	}
@@ -77,51 +65,6 @@ func (v *Validator) validateMessage(runner *Runner, msg *types.SSVMessage) error
 
 	if len(msg.GetData()) == 0 {
 		return errors.New("msg data is invalid")
-	}
-
-	return nil
-}
-
-func (v *Validator) startNewDKGMsg(message *dkg.SignedMessage) error {
-	initMsg := &dkg.Init{}
-	if err := initMsg.Decode(message.Message.Data); err != nil {
-		return errors.Wrap(err, "could not get dkg init Message from signed Messages")
-	}
-
-	// TODO - validate message
-	// check instance not running already
-	if v.DKGRunners.DKGRunnerForID(message.Message.Identifier) != nil {
-		return errors.New("dkg started already")
-	}
-
-	runner, err := dkg.StartNewDKG(initMsg, &dkg.Config{
-		Network: v.network,
-	})
-	if err != nil {
-		return errors.Wrap(err, "could not start new DKG")
-	}
-
-	// add runner to runners
-	v.DKGRunners[hex.EncodeToString(message.Message.Identifier)] = runner
-
-	return nil
-}
-
-func (v *Validator) processDKGMsg(message *dkg.SignedMessage) error {
-	runner := v.DKGRunners.DKGRunnerForID(message.Message.Identifier)
-	if runner == nil {
-		return errors.New("could not find DKG runner")
-	}
-
-	finished, output, err := runner.ProcessMsg(message)
-	if err != nil {
-		return errors.Wrap(err, "could not process DKG message")
-	}
-
-	if finished {
-		if err := v.network.StreamDKGOutput(output); err != nil {
-			return errors.Wrap(err, "failed to stream dkg output")
-		}
 	}
 
 	return nil

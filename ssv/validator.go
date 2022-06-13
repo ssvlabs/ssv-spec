@@ -9,7 +9,6 @@ import (
 // Each validator has multiple DutyRunners, for each duty type.
 type Validator struct {
 	DutyRunners DutyRunners
-	DKGRunners  DKGRunners
 	network     Network
 	beacon      BeaconNode
 	storage     Storage

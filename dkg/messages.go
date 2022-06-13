@@ -13,7 +13,8 @@ type MsgType int
 
 const (
 	InitMsgType MsgType = iota
-	OutputMsgType
+	ProtocolMsgType
+	DepositDataMsgType
 )
 
 type Message struct {
@@ -52,6 +53,8 @@ func (signedMsg *SignedMessage) Decode(data []byte) error {
 type Init struct {
 	// OperatorIDs are the operators selected for the DKG
 	OperatorIDs []types.OperatorID
+	// Threshold DKG threshold for signature reconstruction
+	Threshold uint16
 	// WithdrawalCredentials used when signing the deposit data
 	WithdrawalCredentials []byte
 }
@@ -74,6 +77,8 @@ type Output struct {
 	EncryptedShare []byte
 	// DKGSize number of participants in the DKG
 	DKGSetSize uint16
+	// Threshold DKG threshold for signature reconstruction
+	Threshold uint16
 	// ValidatorPubKey the resulting public key corresponding to the shared private key
 	ValidatorPubKey types.ValidatorPK
 	// WithdrawalCredentials same as in Init
@@ -94,6 +99,9 @@ func (o *Output) GetRoot() ([]byte, error) {
 			Type: uint16Solidity,
 		},
 		{
+			Type: uint16Solidity,
+		},
+		{
 			Type: bytesSolidity,
 		},
 		{
@@ -107,6 +115,7 @@ func (o *Output) GetRoot() ([]byte, error) {
 	bytes, _ := arguments.Pack(
 		o.EncryptedShare,
 		o.DKGSetSize,
+		o.Threshold,
 		o.ValidatorPubKey,
 		o.WithdrawalCredentials,
 		o.SignedDepositData,
@@ -131,4 +140,21 @@ func SignOutput(output *Output, privKey *ecdsa.PrivateKey) (types.Signature, err
 	}
 
 	return crypto.Sign(root, privKey)
+}
+
+// PartialDepositData contains a partial deposit data signature
+type PartialDepositData struct {
+	Signer    types.OperatorID
+	Root      types.Root
+	Signature types.Signature
+}
+
+// Encode returns a msg encoded bytes or error
+func (msg *PartialDepositData) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *PartialDepositData) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
 }

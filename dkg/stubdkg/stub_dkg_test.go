@@ -1,4 +1,4 @@
-package dkg
+package stubdkg
 
 import (
 	"encoding/hex"
@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestNewSimpleDKG(t *testing.T) {
+func TestSimpleDKG(t *testing.T) {
 	types.InitBLS()
 
 	operators := []types.OperatorID{
