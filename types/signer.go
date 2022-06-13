@@ -1,6 +1,8 @@
 package types
 
 import (
+	"crypto/ecdsa"
+	"crypto/rsa"
 	altair "github.com/attestantio/go-eth2-client/spec/altair"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -18,6 +20,7 @@ type SignatureType []byte
 var (
 	QBFTSignatureType    = []byte{1, 0, 0, 0}
 	PartialSignatureType = []byte{2, 0, 0, 0}
+	DKGSignatureType     = []byte{3, 0, 0, 0}
 )
 
 type AttesterCalls interface {
@@ -55,6 +58,14 @@ type SyncCommitteeContributionCalls interface {
 	SignContribution(contribution *altair.ContributionAndProof, pk []byte) (*altair.SignedContributionAndProof, []byte, error)
 }
 
+// EncryptionCalls captures all RSA share encryption calls
+type EncryptionCalls interface {
+	// Decrypt given a rsa pubkey and a PKCS1v15 cipher text byte array, returns the decrypted data
+	Decrypt(pk *rsa.PublicKey, cipher []byte) ([]byte, error)
+	// Encrypt given a rsa pubkey and data returns an PKCS1v15 encrypted cipher
+	Encrypt(pk *rsa.PublicKey, data []byte) ([]byte, error)
+}
+
 type BeaconSigner interface {
 	AttesterCalls
 	ProposerCalls
@@ -65,7 +76,14 @@ type BeaconSigner interface {
 
 // SSVSigner used for all SSV specific signing
 type SSVSigner interface {
+	EncryptionCalls
 	SignRoot(data Root, sigType SignatureType, pk []byte) (Signature, error)
+}
+
+type DKGSigner interface {
+	SSVSigner
+	// SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
+	SignDKGOutput(output Root, key *ecdsa.PublicKey) (Signature, error)
 }
 
 // KeyManager is an interface responsible for all key manager functions

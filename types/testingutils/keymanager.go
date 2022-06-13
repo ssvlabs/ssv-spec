@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"crypto/rsa"
 	"encoding/hex"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -177,6 +178,16 @@ func (km *testingKeyManager) SignContribution(contribution *altair.ContributionA
 		}, TestingContributionRoots[contribution.Contribution.SubcommitteeIndex], nil
 	}
 	return nil, nil, errors.New("pk not found")
+}
+
+// Decrypt given a rsa pubkey and a PKCS1v15 cipher text byte array, returns the decrypted data
+func (km *testingKeyManager) Decrypt(pk *rsa.PublicKey, cipher []byte) ([]byte, error) {
+	panic("implement")
+}
+
+// Encrypt given a rsa pubkey and data returns an PKCS1v15 e
+func (km *testingKeyManager) Encrypt(pk *rsa.PublicKey, data []byte) ([]byte, error) {
+	panic("implement")
 }
 
 func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {

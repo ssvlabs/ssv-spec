@@ -65,6 +65,8 @@ const (
 	SSVDecidedMsgType
 	// SSVPartialSignatureMsgType are all partial signatures msgs over beacon chain specific signatures
 	SSVPartialSignatureMsgType
+	// DKGMsgType represent all DKG related messages
+	DKGMsgType
 )
 
 type Root interface {

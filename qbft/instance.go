@@ -56,11 +56,25 @@ func (i *Instance) Start(value []byte, height Height) {
 			if err != nil {
 				// TODO log
 			}
-			if err := i.config.GetNetwork().Broadcast(proposal); err != nil {
+			if err := i.Broadcast(proposal); err != nil {
 				// TODO - log
 			}
 		}
 	})
+}
+
+func (i *Instance) Broadcast(msg *SignedMessage) error {
+	byts, err := msg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not encode message")
+	}
+
+	msgToBroadcast := &types.SSVMessage{
+		MsgType: types.SSVConsensusMsgType,
+		MsgID:   msg.Message.Identifier,
+		Data:    byts,
+	}
+	return i.config.GetNetwork().Broadcast(msgToBroadcast)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
@@ -72,18 +86,18 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 	res := i.processMsgF.Run(func() interface{} {
 		switch msg.Message.MsgType {
 		case ProposalMsgType:
-			return uponProposal(i.State, i.config, msg, i.State.ProposeContainer)
+			return i.uponProposal(msg, i.State.ProposeContainer)
 		case PrepareMsgType:
-			return uponPrepare(i.State, i.config, msg, i.State.PrepareContainer, i.State.CommitContainer)
+			return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
 		case CommitMsgType:
-			decided, decidedValue, aggregatedCommit, err = UponCommit(i.State, i.config, msg, i.State.CommitContainer)
+			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
 			i.State.Decided = decided
 			if decided {
 				i.State.DecidedValue = decidedValue
 			}
 			return err
 		case RoundChangeMsgType:
-			return uponRoundChange(i.State, i.config, i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheck())
+			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheck())
 		default:
 			return errors.New("signed message type not supported")
 		}

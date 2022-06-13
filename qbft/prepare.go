@@ -6,28 +6,26 @@ import (
 	"github.com/pkg/errors"
 )
 
-func uponPrepare(
-	state *State,
-	config IConfig,
+func (i *Instance) uponPrepare(
 	signedPrepare *SignedMessage,
 	prepareMsgContainer,
 	commitMsgContainer *MsgContainer) error {
 	// TODO - if we receive a prepare before a proposal and return an error we will never process the prepare msg, we still need to add it to the container
-	if state.ProposalAcceptedForCurrentRound == nil {
+	if i.State.ProposalAcceptedForCurrentRound == nil {
 		return errors.New("no proposal accepted for prepare")
 	}
 
-	acceptedProposalData, err := state.ProposalAcceptedForCurrentRound.Message.GetProposalData()
+	acceptedProposalData, err := i.State.ProposalAcceptedForCurrentRound.Message.GetProposalData()
 	if err != nil {
 		return errors.Wrap(err, "could not get accepted proposal data")
 	}
 	if err := validSignedPrepareForHeightRoundAndValue(
-		config,
+		i.config,
 		signedPrepare,
-		state.Height,
-		state.Round,
+		i.State.Height,
+		i.State.Round,
 		acceptedProposalData.Data,
-		state.Share.Committee,
+		i.State.Share.Committee,
 	); err != nil {
 		return errors.Wrap(err, "invalid prepare msg")
 	}
@@ -40,25 +38,25 @@ func uponPrepare(
 		return nil // uponPrepare was already called
 	}
 
-	if !state.Share.HasQuorum(len(prepareMsgContainer.MessagesForRound(state.Round))) {
+	if !i.State.Share.HasQuorum(len(prepareMsgContainer.MessagesForRound(i.State.Round))) {
 		return nil // no quorum yet
 	}
 
-	if didSendCommitForHeightAndRound(state, commitMsgContainer) {
+	if didSendCommitForHeightAndRound(i.State, commitMsgContainer) {
 		return nil // already moved to commit stage
 	}
 
 	proposedValue := acceptedProposalData.Data
 
-	state.LastPreparedValue = proposedValue
-	state.LastPreparedRound = state.Round
+	i.State.LastPreparedValue = proposedValue
+	i.State.LastPreparedRound = i.State.Round
 
-	commitMsg, err := CreateCommit(state, config, proposedValue)
+	commitMsg, err := CreateCommit(i.State, i.config, proposedValue)
 	if err != nil {
 		return errors.Wrap(err, "could not create commit msg")
 	}
 
-	if err := config.GetNetwork().Broadcast(commitMsg); err != nil {
+	if err := i.Broadcast(commitMsg); err != nil {
 		return errors.Wrap(err, "failed to broadcast commit message")
 	}
 
