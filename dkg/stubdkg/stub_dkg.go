@@ -15,7 +15,7 @@ type s struct {
 	operatorID types.OperatorID
 	threshold  uint16
 
-	msgs map[stage][]*protocolMsg
+	msgs map[Round][]*KeygenProtocolMsg
 }
 
 func New(network dkg.Network, operatorID types.OperatorID, identifier types.MessageID) dkg.Protocol {
@@ -23,7 +23,7 @@ func New(network dkg.Network, operatorID types.OperatorID, identifier types.Mess
 		identifier: identifier,
 		network:    network,
 		operatorID: operatorID,
-		msgs:       map[stage][]*protocolMsg{},
+		msgs:       map[Round][]*KeygenProtocolMsg{},
 	}
 }
 
@@ -33,29 +33,36 @@ func (s *s) Start(init *dkg.Init) error {
 	return nil
 }
 
-func (s *s) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutput, error) {
-	// TODO validate msg
+func (s *s) ProcessMsg(msg *dkg.SignedMessage) (bool, []dkg.Message, error) {
+	// TODO validate msg signature is valid and i'm in the audience
 
-	dataMsg := &protocolMsg{}
+	dataMsg := &KeygenProtocolMsg{}
 	if err := dataMsg.Decode(msg.Message.Data); err != nil {
 		return false, nil, errors.Wrap(err, "could not decode protocol msg")
 	}
 
-	if s.msgs[dataMsg.Stage] == nil {
-		s.msgs[dataMsg.Stage] = []*protocolMsg{}
+	if s.msgs[dataMsg.RoundNumber] == nil {
+		s.msgs[dataMsg.RoundNumber] = []*KeygenProtocolMsg{}
 	}
-	s.msgs[dataMsg.Stage] = append(s.msgs[dataMsg.Stage], dataMsg)
+	s.msgs[dataMsg.RoundNumber] = append(s.msgs[dataMsg.RoundNumber], dataMsg)
 
-	switch dataMsg.Stage {
-	case stubStage1:
+	switch dataMsg.RoundNumber {
+	case KG_R1:
+		data := dataMsg.GetRound1Data()
+		// assert it's for me
 		if len(s.msgs[stubStage1]) >= int(s.threshold) {
 			// TODO send stage 2 msg
 		}
-	case stubStage2:
+	case KG_R2:
+		data := dataMsg.GetRound2Data()
 		if len(s.msgs[stubStage2]) >= int(s.threshold) {
 			// TODO send stage 3 msg
 		}
-	case stubStage3:
+	case KG_R3:
+		data := dataMsg.GetRound3Data()
+		// pass
+	case KG_R4:
+		data := dataMsg.GetRound4Data()
 		if len(s.msgs[stubStage3]) >= int(s.threshold) {
 			ret := &dkg.ProtocolOutput{
 				Share:       testingutils.Testing4SharesSet().Shares[s.operatorID],

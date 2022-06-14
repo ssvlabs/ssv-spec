@@ -15,6 +15,9 @@ const (
 	InitMsgType MsgType = iota
 	ProtocolMsgType
 	DepositDataMsgType
+	KeygenProtocolMsgType
+	LocalKeyShareType
+	PartialOutputMsgType
 )
 
 type Message struct {
@@ -51,6 +54,8 @@ func (signedMsg *SignedMessage) Decode(data []byte) error {
 
 // Init is the first message in a DKG which initiates a DKG
 type Init struct {
+	// Nonce is used to differentiate DKG tasks of the same OperatorIDs and WithdrawalCredentials
+	Nonce int64
 	// OperatorIDs are the operators selected for the DKG
 	OperatorIDs []types.OperatorID
 	// Threshold DKG threshold for signature reconstruction

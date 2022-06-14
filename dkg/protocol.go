@@ -8,7 +8,8 @@ import (
 // ProtocolOutput is the bare minimum output from the protocol
 type ProtocolOutput struct {
 	Share           *bls.SecretKey
-	OperatorPubKeys map[types.OperatorID]*bls.PublicKey
+	OperatorIDs     []types.OperatorID
+	OperatorPubKeys []bls.PublicKey
 	ValidatorPK     types.ValidatorPK
 }
 
@@ -16,5 +17,5 @@ type ProtocolOutput struct {
 type Protocol interface {
 	Start(init *Init) error
 	// ProcessMsg returns true and a bls share if finished
-	ProcessMsg(msg *SignedMessage) (bool, *ProtocolOutput, error)
+	ProcessMsg(msg *SignedMessage) (bool, []Message, error)
 }
