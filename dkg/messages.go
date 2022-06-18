@@ -2,6 +2,7 @@ package dkg
 
 import (
 	"crypto/ecdsa"
+	"crypto/sha256"
 	"encoding/binary"
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
@@ -51,7 +52,7 @@ const (
 
 type Message struct {
 	MsgType    MsgType
-	Identifier types.MessageID
+	Identifier RequestID
 	Data       []byte
 }
 
@@ -63,6 +64,21 @@ func (msg *Message) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *Message) Decode(data []byte) error {
 	return json.Unmarshal(data, msg)
+}
+
+func (msg *Message) Validate() error {
+	// TODO msg type
+	// TODO len(data)
+	return nil
+}
+
+func (msg *Message) GetRoot() ([]byte, error) {
+	marshaledRoot, err := msg.Encode()
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode PartialSignatureMessage")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret[:], nil
 }
 
 type SignedMessage struct {
@@ -81,6 +97,16 @@ func (signedMsg *SignedMessage) Decode(data []byte) error {
 	return json.Unmarshal(data, signedMsg)
 }
 
+func (signedMsg *SignedMessage) Validate() error {
+	// TODO len(sig) == ecdsa sig lenth
+
+	return signedMsg.Message.Validate()
+}
+
+func (signedMsg *SignedMessage) GetRoot() ([]byte, error) {
+	return signedMsg.Message.GetRoot()
+}
+
 // Init is the first message in a DKG which initiates a DKG
 type Init struct {
 	// OperatorIDs are the operators selected for the DKG
@@ -89,6 +115,13 @@ type Init struct {
 	Threshold uint16
 	// WithdrawalCredentials used when signing the deposit data
 	WithdrawalCredentials []byte
+}
+
+func (msg *Init) Validate() error {
+	// TODO len(operators == 4,7,10,13
+	// threshold equal to 2/3 of 4,7,10,13
+	// len(WithdrawalCredentials) is valid
+	return nil
 }
 
 // Encode returns a msg encoded bytes or error
@@ -104,7 +137,7 @@ func (msg *Init) Decode(data []byte) error {
 // Output is the last message in every DKG which marks a specific node's end of process
 type Output struct {
 	// Identifier of the DKG
-	Identifier types.MessageID
+	Identifier RequestID
 	// EncryptedShare standard SSV encrypted shares
 	EncryptedShare []byte
 	// DKGSize number of participants in the DKG
@@ -159,7 +192,7 @@ func (o *Output) GetRoot() ([]byte, error) {
 type SignedOutput struct {
 	// Data signed
 	Data *Output
-	// Signer operator ID which signed
+	// Signer Operator ID which signed
 	Signer types.OperatorID
 	// Signature over Data.GetRoot()
 	Signature types.Signature

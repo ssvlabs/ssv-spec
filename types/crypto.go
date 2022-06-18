@@ -1,8 +1,11 @@
 package types
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
@@ -74,6 +77,12 @@ func (s Signature) VerifyMultiPubKey(data Root, domain DomainType, sigType Signa
 }
 
 func (s Signature) Verify(data Root, domain DomainType, sigType SignatureType, pkByts []byte) error {
+
+	computedRoot, err := ComputeSigningRoot(data, ComputeSignatureDomain(domain, sigType))
+	if err != nil {
+		return errors.Wrap(err, "could not compute signing root")
+	}
+
 	sign := &bls.Sign{}
 	if err := sign.Deserialize(s); err != nil {
 		return errors.Wrap(err, "failed to deserialize signature")
@@ -84,12 +93,24 @@ func (s Signature) Verify(data Root, domain DomainType, sigType SignatureType, p
 		return errors.Wrap(err, "failed to deserialize public key")
 	}
 
+	if res := sign.VerifyByte(pk, computedRoot); !res {
+		return errors.New("failed to verify signature")
+	}
+	return nil
+}
+
+func (s Signature) ECRecover(data Root, domain DomainType, sigType SignatureType, address common.Address) error {
 	computedRoot, err := ComputeSigningRoot(data, ComputeSignatureDomain(domain, sigType))
 	if err != nil {
 		return errors.Wrap(err, "could not compute signing root")
 	}
-	if res := sign.VerifyByte(pk, computedRoot); !res {
-		return errors.New("failed to verify signature")
+
+	recoveredAddr, err := crypto.Ecrecover(computedRoot, s)
+	if err != nil {
+		return errors.Wrap(err, "could not recover ethereum address")
+	}
+	if !bytes.Equal(address[:], recoveredAddr) {
+		return errors.Wrap(err, "message EC recover doesn't match address")
 	}
 	return nil
 }
@@ -120,7 +141,7 @@ func ComputeSigningRoot(data Root, domain SignatureDomain) ([]byte, error) {
 }
 
 func ComputeSignatureDomain(domain DomainType, sigType SignatureType) SignatureDomain {
-	return SignatureDomain(append(domain, sigType...))
+	return SignatureDomain(append(domain, sigType[:]...))
 }
 
 // ReconstructSignatures receives a map of user indexes and serialized bls.Sign.

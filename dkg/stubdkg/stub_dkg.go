@@ -10,7 +10,7 @@ import (
 
 // s is a stub dkg protocol simulating a real DKG protocol with 3 stages in it
 type s struct {
-	identifier types.MessageID
+	identifier dkg.RequestID
 	network    dkg.Network
 	operatorID types.OperatorID
 	threshold  uint16
@@ -18,7 +18,7 @@ type s struct {
 	msgs map[stage][]*protocolMsg
 }
 
-func New(network dkg.Network, operatorID types.OperatorID, identifier types.MessageID) dkg.Protocol {
+func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
 	return &s{
 		identifier: identifier,
 		network:    network,

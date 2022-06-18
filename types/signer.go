@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/rsa"
 	altair "github.com/attestantio/go-eth2-client/spec/altair"
@@ -15,12 +16,16 @@ var (
 	PrimusTestnet = DomainType("primus_testnet")
 )
 
-type SignatureType []byte
+type SignatureType [4]byte
+
+func (sigType SignatureType) Equal(other SignatureType) bool {
+	return bytes.Equal(sigType[:], other[:])
+}
 
 var (
-	QBFTSignatureType    = []byte{1, 0, 0, 0}
-	PartialSignatureType = []byte{2, 0, 0, 0}
-	DKGSignatureType     = []byte{3, 0, 0, 0}
+	QBFTSignatureType    SignatureType = [4]byte{1, 0, 0, 0}
+	PartialSignatureType SignatureType = [4]byte{2, 0, 0, 0}
+	DKGSignatureType     SignatureType = [4]byte{3, 0, 0, 0}
 )
 
 type AttesterCalls interface {

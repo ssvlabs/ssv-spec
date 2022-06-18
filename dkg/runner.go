@@ -1,57 +1,24 @@
 package dkg
 
 import (
-	"crypto/ecdsa"
-	"crypto/rsa"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
-type Config struct {
-	// Protocol the DKG protocol implementation
-	Protocol Protocol
-	Network  Network
-	// OperatorID the node's operator ID
-	OperatorID types.OperatorID
-	// Identifier unique for DKG session
-	Identifier types.MessageID
-	Signer     types.DKGSigner
-	// PubKey signing key for all message
-	PubKey *ecdsa.PublicKey
-	// EncryptionPubKey encryption pubkey for shares
-	EncryptionPubKey *rsa.PublicKey
-}
-
 // Runner manages the execution of a DKG, start to finish.
 type Runner struct {
-	Operators             []types.OperatorID
-	Threshold             uint16
-	WithdrawalCredentials []byte
-
-	ProtocolOutput        *ProtocolOutput
+	Operator *Operator
+	// InitMsg holds the init method which started this runner
+	InitMsg *Init
+	// Identifier unique for DKG session
+	Identifier RequestID
+	// ProtocolOutput holds the protocol output once it finishes
+	ProtocolOutput *ProtocolOutput
+	// DepositDataSignatures holds partial sigs on deposit data
 	DepositDataSignatures map[types.OperatorID]*PartialDepositData
 
 	protocol Protocol
 	config   *Config
-}
-
-func NewRunner(initMsg *Init, config *Config) (*Runner, error) {
-	runner := &Runner{
-		Operators:             initMsg.OperatorIDs,
-		Threshold:             initMsg.Threshold,
-		WithdrawalCredentials: initMsg.WithdrawalCredentials,
-
-		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
-
-		protocol: config.Protocol,
-		config:   config,
-	}
-
-	if err := runner.protocol.Start(initMsg); err != nil {
-		return nil, errors.Wrap(err, "could not start dkg protocol")
-	}
-
-	return runner, nil
 }
 
 // ProcessMsg processes a DKG signed message and returns true and signed output if finished
@@ -71,7 +38,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 
 		// TODO broadcast partial deposit data
 	case DepositDataMsgType:
-		// TODO validate (including which operator it is)
+		// TODO validate (including which Operator it is)
 
 		depSig := &PartialDepositData{}
 		if err := depSig.Decode(msg.Message.Data); err != nil {
@@ -79,25 +46,25 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 		}
 
 		r.DepositDataSignatures[msg.Signer] = depSig
-		if len(r.DepositDataSignatures) >= int(r.Threshold) {
+		if len(r.DepositDataSignatures) >= int(r.InitMsg.Threshold) {
 			// reconstruct deposit data sig
 			depositSig, err := r.reconstructDepositDataSignature()
 			if err != nil {
 				return false, nil, errors.Wrap(err, "could not reconstruct deposit data sig")
 			}
 
-			// encrypt operator's share
-			encryptedShare, err := r.config.Signer.Encrypt(r.config.EncryptionPubKey, r.ProtocolOutput.Share.Serialize())
+			// encrypt Operator's share
+			encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.ProtocolOutput.Share.Serialize())
 			if err != nil {
 				return false, nil, errors.Wrap(err, "could not encrypt share")
 			}
 
 			ret, err := r.generateSignedOutput(&Output{
-				Identifier:            r.config.Identifier,
+				Identifier:            r.Identifier,
 				EncryptedShare:        encryptedShare,
-				DKGSetSize:            uint16(len(r.Operators)),
+				DKGSetSize:            uint16(len(r.InitMsg.OperatorIDs)),
 				ValidatorPubKey:       r.ProtocolOutput.ValidatorPK,
-				WithdrawalCredentials: r.WithdrawalCredentials,
+				WithdrawalCredentials: r.InitMsg.WithdrawalCredentials,
 				SignedDepositData:     depositSig,
 			})
 			if err != nil {
@@ -117,14 +84,14 @@ func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
 }
 
 func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
-	sig, err := r.config.Signer.SignDKGOutput(o, r.config.PubKey)
+	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.PubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign output")
 	}
 
 	return &SignedOutput{
 		Data:      o,
-		Signer:    r.config.OperatorID,
+		Signer:    r.Operator.OperatorID,
 		Signature: sig,
 	}, nil
 }
