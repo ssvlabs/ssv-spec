@@ -24,18 +24,25 @@ func (runners Runners) DeleteRunner(id RequestID) {
 
 type Node struct {
 	operator *Operator
-	// identifier unique for DKG session
-	identifier RequestID
 	// runners holds all active running DKG runners
 	runners Runners
 	config  *Config
 }
 
-func (n *Node) newRunner(initMsg *Init) (*Runner, error) {
+func NewNode(operator *Operator, config *Config) *Node {
+	return &Node{
+		operator: operator,
+		config:   config,
+		runners:  make(Runners, 0),
+	}
+}
+
+func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 	runner := &Runner{
 		Operator:              n.operator,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		config:                n.config,
+		protocol:              n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
 	}
 
 	if err := runner.protocol.Start(initMsg); err != nil {
@@ -70,7 +77,7 @@ func (n *Node) startNewDKGMsg(message *SignedMessage) error {
 		return errors.Wrap(err, "could not process new dkg msg")
 	}
 
-	runner, err := n.newRunner(initMsg)
+	runner, err := n.newRunner(message.Message.Identifier, initMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not start new dkg")
 	}

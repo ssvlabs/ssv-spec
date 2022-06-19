@@ -69,9 +69,12 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 		return errors.Wrap(err, "could not encode message")
 	}
 
+	msgID := types.MessageID{}
+	copy(msgID[:], msg.Message.Identifier)
+
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVConsensusMsgType,
-		MsgID:   msg.Message.Identifier,
+		MsgID:   msgID,
 		Data:    byts,
 	}
 	return i.config.GetNetwork().Broadcast(msgToBroadcast)

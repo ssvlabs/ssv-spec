@@ -84,7 +84,7 @@ func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
 }
 
 func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
-	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.PubKey)
+	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign output")
 	}

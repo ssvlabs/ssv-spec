@@ -2,10 +2,10 @@ package types
 
 import (
 	"bytes"
-	"crypto/ecdsa"
 	"crypto/rsa"
 	altair "github.com/attestantio/go-eth2-client/spec/altair"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
@@ -88,7 +88,7 @@ type SSVSigner interface {
 type DKGSigner interface {
 	SSVSigner
 	// SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
-	SignDKGOutput(output Root, key *ecdsa.PublicKey) (Signature, error)
+	SignDKGOutput(output Root, address common.Address) (Signature, error)
 }
 
 // KeyManager is an interface responsible for all key manager functions

@@ -448,7 +448,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 
 	msgs := ssv.PartialSignatureMessages{}
 	for index, c := range TestingSyncCommitteeContributions {
-		signedProof, _, _ := signer.SignContributionProof(TestingDutySlot, uint64(index), keySet.SK.GetPublicKey().Serialize())
+		signedProof, _, _ := signer.SignContributionProof(TestingDutySlot, uint64(index), keySet.ValidatorSK.GetPublicKey().Serialize())
 		signedProofbls := spec.BLSSignature{}
 		copy(signedProofbls[:], signedProof)
 

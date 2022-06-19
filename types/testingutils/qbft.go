@@ -21,7 +21,7 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 var TestingShare = func(keysSet *TestKeySet) *types.Share {
 	return &types.Share{
 		OperatorID:      1,
-		ValidatorPubKey: keysSet.PK.Serialize(),
+		ValidatorPubKey: keysSet.ValidatorPK.Serialize(),
 		SharePubKey:     keysSet.Shares[1].GetPublicKey().Serialize(),
 		DomainType:      types.PrimusTestnet,
 		Quorum:          keysSet.Threshold,

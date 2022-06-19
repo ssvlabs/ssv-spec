@@ -32,7 +32,7 @@ func (msg RequestID) GetRoleType() uint32 {
 	return binary.LittleEndian.Uint32(indexByts)
 }
 
-func NewMsgID(ethAddress common.Address, index uint32) RequestID {
+func NewRequestID(ethAddress common.Address, index uint32) RequestID {
 	indexByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(indexByts, index)
 

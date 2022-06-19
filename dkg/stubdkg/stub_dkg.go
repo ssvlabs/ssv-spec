@@ -3,23 +3,26 @@ package stubdkg
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
-// s is a stub dkg protocol simulating a real DKG protocol with 3 stages in it
-type s struct {
+// DKG is a stub dkg protocol simulating a real DKG protocol with 3 stages in it
+type DKG struct {
 	identifier dkg.RequestID
 	network    dkg.Network
 	operatorID types.OperatorID
 	threshold  uint16
 
+	//
+	validatorPK    []byte
+	operatorShares map[types.OperatorID]*bls.SecretKey
+
 	msgs map[stage][]*protocolMsg
 }
 
 func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
-	return &s{
+	return &DKG{
 		identifier: identifier,
 		network:    network,
 		operatorID: operatorID,
@@ -27,13 +30,18 @@ func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.Reques
 	}
 }
 
-func (s *s) Start(init *dkg.Init) error {
+func (s *DKG) SetOperators(validatorPK []byte, operatorShares map[types.OperatorID]*bls.SecretKey) {
+	s.validatorPK = validatorPK
+	s.operatorShares = operatorShares
+}
+
+func (s *DKG) Start(init *dkg.Init) error {
 	s.threshold = init.Threshold
 	// TODO send stage 1 msg
 	return nil
 }
 
-func (s *s) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutput, error) {
+func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutput, error) {
 	// TODO validate msg
 
 	dataMsg := &protocolMsg{}
@@ -58,13 +66,13 @@ func (s *s) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutput, error
 	case stubStage3:
 		if len(s.msgs[stubStage3]) >= int(s.threshold) {
 			ret := &dkg.ProtocolOutput{
-				Share:       testingutils.Testing4SharesSet().Shares[s.operatorID],
-				ValidatorPK: testingutils.Testing4SharesSet().PK.Serialize(),
+				Share:       s.operatorShares[s.operatorID],
+				ValidatorPK: s.validatorPK,
 				OperatorPubKeys: map[types.OperatorID]*bls.PublicKey{
-					1: testingutils.Testing4SharesSet().Shares[1].GetPublicKey(),
-					2: testingutils.Testing4SharesSet().Shares[2].GetPublicKey(),
-					3: testingutils.Testing4SharesSet().Shares[3].GetPublicKey(),
-					4: testingutils.Testing4SharesSet().Shares[4].GetPublicKey(),
+					1: s.operatorShares[1].GetPublicKey(),
+					2: s.operatorShares[2].GetPublicKey(),
+					3: s.operatorShares[3].GetPublicKey(),
+					4: s.operatorShares[4].GetPublicKey(),
 				},
 			}
 			return true, ret, nil
@@ -73,7 +81,7 @@ func (s *s) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutput, error
 	return false, nil, nil
 }
 
-func (s *s) signDKGMsg(data []byte) *dkg.SignedMessage {
+func (s *DKG) signDKGMsg(data []byte) *dkg.SignedMessage {
 	return &dkg.SignedMessage{
 		Message: &dkg.Message{
 			MsgType:    dkg.ProtocolMsgType,
