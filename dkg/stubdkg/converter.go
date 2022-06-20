@@ -1,60 +1,29 @@
-package bls12_381
+package stubdkg
 
 import (
 	"encoding/json"
-	bls_tss "github.com/RockX-SG/bls-tss"
-	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
+	blstss "github.com/RockX-SG/bls-tss"
 )
 
 const (
 	blsCurve1 = "bls12_381_1"
 )
 
-type IKeygen interface {
-	Init() []stubdkg.KeygenProtocolMsg
-	Output() *stubdkg.LocalKeyShare
-	HandleMessage(msg *stubdkg.KeygenProtocolMsg) (bool, []stubdkg.KeygenProtocolMsg, error)
-}
-
-type KeygenWrapper struct {
-	inner *bls_tss.KeygenSimple
-}
-
-func New(myIndex, threshold, groupSize int) *KeygenWrapper {
-	inner := bls_tss.NewKeygenSimple(myIndex, threshold, groupSize)
-	return &KeygenWrapper{
-		inner: inner,
-	}
-}
-
-func (k *KeygenWrapper) Init() ([]stubdkg.KeygenProtocolMsg, error) {
-	innerOutgoing := k.inner.Init()
-	outgoing, err := decodeOutgoing(innerOutgoing)
+func normalizeAndDecodeOutput(data string) (*LocalKeyShare, error) {
+	innerOutput := blstss.LocalKey{}
+	err := json.Unmarshal([]byte(data), innerOutput)
 	if err != nil {
 		return nil, err
 	}
-	return outgoing, nil
-}
 
-func (k *KeygenWrapper) Output() *stubdkg.LocalKeyShare {
-	if k.inner.Output() == nil {
-		return nil
-	}
-	jsonStr := *k.inner.Output()
-	innerOutput := bls_tss.LocalKey{}
-	err := json.Unmarshal([]byte(jsonStr), innerOutput)
-	if err != nil {
-		return nil
-	}
-
-	var sharePubKeys []stubdkg.BlsPublicKey
+	var sharePubKeys []BlsPublicKey
 	for _, pk := range innerOutput.VkVec {
-		var pk48 stubdkg.BlsPublicKey
+		var pk48 BlsPublicKey
 		copy(pk48[:], i2b(pk.Point))
 		sharePubKeys = append(sharePubKeys, pk48)
 	}
 
-	share := stubdkg.LocalKeyShare{
+	share := LocalKeyShare{
 		Index:           uint16(innerOutput.SharedKey.I),
 		Threshold:       uint16(innerOutput.SharedKey.T),
 		ShareCount:      uint16(innerOutput.SharedKey.N),
@@ -63,28 +32,28 @@ func (k *KeygenWrapper) Output() *stubdkg.LocalKeyShare {
 
 	copy(share.PublicKey[:], i2b(innerOutput.SharedKey.Vk.Point))
 	copy(share.SecretShare[:], i2b(innerOutput.SharedKey.SkI.Scalar))
-	return &share
+	return &share, nil
 }
 
-func (k *KeygenWrapper) HandleMessage(msg *stubdkg.KeygenProtocolMsg) (bool, []stubdkg.KeygenProtocolMsg, error) {
-	innerMsg := bls_tss.KeygenRoundMsg{
+func normalizeAndEncodeMessage(msg *KeygenProtocolMsg) (*string, error) {
+	innerMsg := blstss.KeygenRoundMsg{
 		Sender:   int(msg.Sender),
 		Receiver: msg.Receiver,
 	}
 
 	switch msg.RoundNumber {
-	case stubdkg.KG_R1:
+	case KG_R1:
 		roundMsg, err := msg.GetRound1Data()
 		if err != nil {
-			return false, nil, err
+			return nil, err
 		}
-		innerMsg.Body.Round1 = &bls_tss.KeygenRound1{Com: b2i(roundMsg.Commitment[:])}
-	case stubdkg.KG_R2:
+		innerMsg.Body.Round1 = &blstss.KeygenRound1{Com: b2i(roundMsg.Commitment[:])}
+	case KG_R2:
 		roundMsg, err := msg.GetRound2Data()
 		if err != nil {
-			return false, nil, err
+			return nil, err
 		}
-		innerMsg.Body.Round2 = &bls_tss.KeygenRound2{
+		innerMsg.Body.Round2 = &blstss.KeygenRound2{
 			BlindFactor: b2i(roundMsg.BlindFactor[:]),
 			YI: struct {
 				Curve string `json:"curve"`
@@ -94,10 +63,10 @@ func (k *KeygenWrapper) HandleMessage(msg *stubdkg.KeygenProtocolMsg) (bool, []s
 				Point: b2i(roundMsg.YI[:]),
 			},
 		}
-	case stubdkg.KG_R3:
+	case KG_R3:
 		roundMsg, err := msg.GetRound3Data()
 		if err != nil {
-			return false, nil, err
+			return nil, err
 		}
 		var coms []struct {
 			Curve string `json:"curve"`
@@ -112,7 +81,7 @@ func (k *KeygenWrapper) HandleMessage(msg *stubdkg.KeygenProtocolMsg) (bool, []s
 			com.Point = b2i(commitment[:])
 			coms = append(coms, com)
 		}
-		innerMsg.Body.Round3 = &bls_tss.KeygenRound3{
+		innerMsg.Body.Round3 = &blstss.KeygenRound3{
 			I:           int(msg.Sender),
 			T:           roundMsg.Parameters.Threshold,
 			N:           roundMsg.Parameters.ShareCount,
@@ -126,12 +95,12 @@ func (k *KeygenWrapper) HandleMessage(msg *stubdkg.KeygenProtocolMsg) (bool, []s
 				Scalar: b2i(roundMsg.ShareIJ[:]),
 			},
 		}
-	case stubdkg.KG_R4:
+	case KG_R4:
 		roundMsg, err := msg.GetRound4Data()
 		if err != nil {
-			return false, nil, err
+			return nil, err
 		}
-		innerMsg.Body.Round4 = &bls_tss.KeygenRound4{
+		innerMsg.Body.Round4 = &blstss.KeygenRound4{
 			Pk: struct {
 				Curve string `json:"curve"`
 				Point []int  `json:"point"`
@@ -156,30 +125,29 @@ func (k *KeygenWrapper) HandleMessage(msg *stubdkg.KeygenProtocolMsg) (bool, []s
 		}
 	}
 	bytes, err := json.Marshal(innerMsg)
-	finished, innerOutgoing, err := k.inner.Handle(string(bytes))
-	outgoing, err := decodeOutgoing(innerOutgoing)
 	if err != nil {
-		return false, nil, err
+		return nil, err
 	}
-	return finished, outgoing, err
+	out := string(bytes)
+	return &out, nil
 }
 
-func decodeOutgoing(innerOutgoing []string) ([]stubdkg.KeygenProtocolMsg, error) {
-	var outgoing []stubdkg.KeygenProtocolMsg
+func decodeOutgoing(innerOutgoing []string) ([]KeygenProtocolMsg, error) {
+	var outgoing []KeygenProtocolMsg
 	for _, msg0 := range innerOutgoing {
-		out0 := bls_tss.KeygenRoundMsg{}
+		out0 := blstss.KeygenRoundMsg{}
 		err := json.Unmarshal([]byte(msg0), out0)
 		if err != nil {
 			return nil, err
 		}
 
-		out := stubdkg.KeygenProtocolMsg{}
+		out := KeygenProtocolMsg{}
 
 		if out0.Body.Round4 != nil {
-			data := &stubdkg.KeygenRound4Data{
-				Pk:                stubdkg.BlsPublicKey{},
-				PkTRandCommitment: stubdkg.BlsPublicKey{},
-				ChallengeResponse: stubdkg.BlsScalar{},
+			data := &KeygenRound4Data{
+				Pk:                BlsPublicKey{},
+				PkTRandCommitment: BlsPublicKey{},
+				ChallengeResponse: BlsScalar{},
 			}
 			copy(data.Pk[:], i2b(out0.Body.Round4.Pk.Point))
 			copy(data.PkTRandCommitment[:], i2b(out0.Body.Round4.PkTRandCommitment.Point))
@@ -189,7 +157,7 @@ func decodeOutgoing(innerOutgoing []string) ([]stubdkg.KeygenProtocolMsg, error)
 				return nil, err
 			}
 		} else if out0.Body.Round3 != nil {
-			data := &stubdkg.KeygenRound3Data{
+			data := &KeygenRound3Data{
 				Parameters: struct {
 					Threshold  int `json:"threshold"`
 					ShareCount int `json:"share_count"`
@@ -198,9 +166,9 @@ func decodeOutgoing(innerOutgoing []string) ([]stubdkg.KeygenProtocolMsg, error)
 					ShareCount: out0.Body.Round3.N,
 				},
 			}
-			var commitments []stubdkg.BlsPublicKey
+			var commitments []BlsPublicKey
 			for _, commitment := range out0.Body.Round3.Commitments {
-				var pt stubdkg.BlsPublicKey
+				var pt BlsPublicKey
 				copy(pt[:], i2b(commitment.Point))
 				commitments = append(commitments, pt)
 			}
@@ -213,7 +181,7 @@ func decodeOutgoing(innerOutgoing []string) ([]stubdkg.KeygenProtocolMsg, error)
 			}
 		} else if out0.Body.Round2 != nil {
 
-			data := &stubdkg.KeygenRound2Data{}
+			data := &KeygenRound2Data{}
 			data.BlindFactor = i2b(out0.Body.Round2.BlindFactor)
 			copy(data.YI[:], i2b(out0.Body.Round2.YI.Point))
 			err := out.SetRound2Data(data)
@@ -225,7 +193,7 @@ func decodeOutgoing(innerOutgoing []string) ([]stubdkg.KeygenProtocolMsg, error)
 			for _, i := range out0.Body.Round1.Com {
 				com = append(com, byte(i))
 			}
-			data := &stubdkg.KeygenRound1Data{}
+			data := &KeygenRound1Data{}
 			copy(data.Commitment[:], com)
 			err := out.SetRound1Data(data)
 			if err != nil {

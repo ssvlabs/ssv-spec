@@ -1,8 +1,8 @@
 package stubdkg
 
 import (
+	blstss "github.com/RockX-SG/bls-tss"
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/dkg/bls12_381"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -17,26 +17,31 @@ type DKG struct {
 	validatorPK    []byte
 	operatorShares map[types.OperatorID]*bls.SecretKey
 	msgs           map[Round][]*KeygenProtocolMsg
-	state          *bls12_381.KeygenWrapper
+	state          *blstss.KeygenSimple
 }
 
 func (s *DKG) Output() (*dkg.KeygenOutput, error) {
-	localKeyShare := s.state.Output()
-	if localKeyShare == nil {
+	jsonStr := s.state.Output()
+	if jsonStr == nil {
 		return nil, errors.New("unable to find output")
 	}
+
+	share, err := normalizeAndDecodeOutput(*jsonStr)
+	if err != nil {
+		return nil, err
+	}
 	var sharePubKeys [][]byte
-	for _, pk48 := range localKeyShare.SharePublicKeys {
+	for _, pk48 := range share.SharePublicKeys {
 		var pk []byte
 		copy(pk, pk48[:])
 		sharePubKeys = append(sharePubKeys, pk)
 	}
 	return &dkg.KeygenOutput{
-		Index:           localKeyShare.Index,
-		Threshold:       localKeyShare.Threshold,
-		ShareCount:      localKeyShare.ShareCount,
-		PublicKey:       localKeyShare.PublicKey[:],
-		SecretShare:     localKeyShare.SecretShare[:],
+		Index:           share.Index,
+		Threshold:       share.Threshold,
+		ShareCount:      share.ShareCount,
+		PublicKey:       share.PublicKey[:],
+		SecretShare:     share.SecretShare[:],
 		SharePublicKeys: sharePubKeys,
 	}, nil
 }
@@ -62,8 +67,10 @@ func (s *DKG) Start(init *dkg.Init) ([]dkg.Message, error) {
 		}
 	}
 	s.threshold = init.Threshold
-	s.state = bls12_381.New(myIndex, int(init.Threshold), len(init.OperatorIDs))
-	outgoing0, err := s.state.Init()
+
+	s.state = blstss.NewKeygenSimple(myIndex, int(init.Threshold), len(init.OperatorIDs))
+	innerOutgoing := s.state.Init()
+	outgoing0, err := decodeOutgoing(innerOutgoing)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +95,19 @@ func (s *DKG) ProcessMsg(msg0 *dkg.Message) (bool, []dkg.Message, error) {
 		return false, nil, errors.New("wrong round number")
 	}
 
-	finished, outgoing0, err := s.state.HandleMessage(msg)
+	data, err := normalizeAndEncodeMessage(msg)
+	if err != nil {
+		return false, nil, err
+	}
+	finished, innerOutgoing, err := s.state.Handle(*data)
+	if err != nil {
+		return false, nil, err
+	}
+	outgoing0, err := decodeOutgoing(innerOutgoing)
+	if err != nil {
+		return false, nil, err
+	}
+
 	if err != nil {
 		return false, nil, err
 	}
