@@ -25,6 +25,17 @@ type Runner struct {
 	config   *Config
 }
 
+func (r *Runner) Start() error {
+	outgoing, err := r.protocol.Start(r.InitMsg)
+	if err != nil {
+		return err
+	}
+	for _, message := range outgoing {
+		r.signAndBroadcast(&message)
+	}
+	return nil
+}
+
 // ProcessMsg processes a DKG signed message and returns true and signed output if finished
 func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 	// TODO - validate message
@@ -38,7 +49,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 		}
 
 		for _, message := range outgoing {
-			r.config.Network.Broadcast(&message)
+			r.signAndBroadcast(&message)
 		}
 
 		if finished {
@@ -59,8 +70,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 				Identifier: r.Identifier,
 				Data:       data,
 			}
-			r.config.Network.Broadcast(&partialSigMsg)
-
+			r.signAndBroadcast(&partialSigMsg)
 		}
 	case PartialSigType:
 		pMsg := PartialSignature{}
@@ -183,4 +193,14 @@ func (r *Runner) getDepositDataSigningRoot(pubKey []byte) (spec.Root, error) {
 		return [32]byte{}, err
 	}
 	return root, nil
+}
+
+func (r *Runner) signAndBroadcast(msg *Message) {
+	signed := SignedMessage{
+		Message:   msg,
+		Signer:    r.Operator.OperatorID,
+		Signature: nil, // TODO: Add signature
+	}
+	panic("complete me")
+	r.config.Network.Broadcast(&signed)
 }

@@ -12,8 +12,7 @@ type Network interface {
 	// StreamDKGOutput will stream to any subscriber the result of the DKG
 	StreamDKGOutput(output *SignedOutput) error
 	// Broadcast will broadcast a msg to the dkg network
-	Broadcast(msg *Message) error
-	BroadcastPartialSignature(msg *PartialSignature) error
+	Broadcast(msg *SignedMessage) error
 }
 
 type Storage interface {

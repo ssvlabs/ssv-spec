@@ -59,10 +59,6 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 		protocol:          n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
 	}
 
-	if err := runner.protocol.Start(initMsg); err != nil {
-		return nil, errors.Wrap(err, "could not start dkg protocol")
-	}
-
 	return runner, nil
 }
 
@@ -100,6 +96,10 @@ func (n *Node) startNewDKGMsg(message *SignedMessage) error {
 
 	// add runner to runners
 	n.runners.AddRunner(message.Message.Identifier, runner)
+	err = runner.Start()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
