@@ -166,6 +166,7 @@ func (o *Output) GetRoot() ([]byte, error) {
 	uint16Solidity, _ := abi.NewType("uint16", "", nil)
 	bytesSolidity, _ := abi.NewType("bytes", "", nil)
 
+	// TODO: Include RequestID, SharePubKeys and ShareIndex
 	arguments := abi.Arguments{
 		{
 			Type: bytesSolidity,
