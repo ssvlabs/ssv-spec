@@ -144,9 +144,13 @@ func (msg *Init) Decode(data []byte) error {
 type Output struct {
 	// Identifier of the DKG
 	Identifier RequestID
+	// ShareIndex the 1-based index of the share
+	ShareIndex uint16
 	// EncryptedShare standard SSV encrypted shares
 	EncryptedShare []byte
-	// DKGSize number of participants in the DKG
+	// SharePubKeys the public keys corresponding to the shares
+	SharePubKeys [][]byte
+	// DKGSetSize number of participants in the DKG
 	DKGSetSize uint16
 	// Threshold DKG threshold for signature reconstruction
 	Threshold uint16
