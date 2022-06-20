@@ -2,7 +2,6 @@ package dkg
 
 import (
 	"crypto/rsa"
-	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -13,9 +12,8 @@ type Network interface {
 	// StreamDKGOutput will stream to any subscriber the result of the DKG
 	StreamDKGOutput(output *SignedOutput) error
 	// Broadcast will broadcast a msg to the dkg network
-	Broadcast(msg *stubdkg.KeygenProtocolMsg) error
-	BroadcastPartialSignature(msg *stubdkg.PartialSignature) error
-
+	Broadcast(msg *Message) error
+	BroadcastPartialSignature(msg *PartialSignature) error
 }
 
 type Storage interface {
@@ -35,9 +33,9 @@ type Operator struct {
 
 type Config struct {
 	// Protocol the DKG protocol implementation
-	Protocol      func(network Network, operatorID types.OperatorID, identifier RequestID) Protocol
-	BeaconNetwork ssv.BeaconNetwork
-	Network       Network
+	Protocol            func(network Network, operatorID types.OperatorID, identifier RequestID) Protocol
+	BeaconNetwork       ssv.BeaconNetwork
+	Network             Network
 	Storage             Storage
 	SignatureDomainType types.DomainType
 	Signer              types.DKGSigner

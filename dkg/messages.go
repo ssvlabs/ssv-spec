@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/json"
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -138,6 +139,31 @@ func (msg *Init) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *Init) Decode(data []byte) error {
 	return json.Unmarshal(data, msg)
+}
+
+// TODO: What's the difference / intention of this vs Output.
+type KeygenOutput struct {
+	Index           uint16
+	Threshold       uint16
+	ShareCount      uint16
+	PublicKey       []byte
+	SecretShare     []byte
+	SharePublicKeys [][]byte
+}
+
+type PartialSignature struct {
+	I      uint16
+	SigmaI spec.BLSSignature
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *PartialSignature) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *PartialSignature) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
 }
 
 // Output is the last message in every DKG which marks a specific node's end of process

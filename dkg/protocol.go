@@ -1,7 +1,6 @@
 package dkg
 
 import (
-	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
@@ -16,8 +15,8 @@ type ProtocolOutput struct {
 
 // Protocol is an interface for all DKG protocol to support a variety of protocols for future upgrades
 type Protocol interface {
-	Start(init *Init) error
+	Start(init *Init) ([]Message, error)
 	// ProcessMsg returns true and a bls share if finished
-	ProcessMsg(msg *stubdkg.KeygenProtocolMsg) (bool, []stubdkg.KeygenProtocolMsg, error)
-	Output() *stubdkg.LocalKeyShare
+	ProcessMsg(msg *Message) (bool, []Message, error)
+	Output() (*KeygenOutput, error)
 }

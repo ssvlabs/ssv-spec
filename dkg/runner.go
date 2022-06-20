@@ -3,7 +3,6 @@ package dkg
 import (
 	"bytes"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -32,12 +31,8 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 
 	switch msg.Message.MsgType {
 	case ProtocolMsgType:
-		pMsg := stubdkg.KeygenProtocolMsg{}
-		err := pMsg.Decode(msg.Message.Data)
-		if err != nil {
-			return false, nil, err
-		}
-		finished, outgoing, err := r.protocol.ProcessMsg(&pMsg)
+
+		finished, outgoing, err := r.protocol.ProcessMsg(msg.Message)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to process dkg msg")
 		}
@@ -47,40 +42,28 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 		}
 
 		if finished {
-			keygenOutput := r.protocol.Output()
-			if keygenOutput != nil {
-				share := bls.SecretKey{} // TODO: when to drop this object?
-				share.Deserialize(keygenOutput.SecretShare[:])
-				var pubkeys []bls.PublicKey // TODO: when to drop these objects?
-				for _, key := range keygenOutput.SharePublicKeys {
-					pk := bls.PublicKey{}
-					pk.Deserialize(key[:])
-					pubkeys = append(pubkeys, pk)
-				}
-				r.ProtocolOutput = &ProtocolOutput{
-					&share,
-					r.InitMsg.OperatorIDs,
-					pubkeys,
-					keygenOutput.PublicKey[:],
-				}
-				// TODO broadcast partial deposit data
-				root, err := r.getDepositDataSigningRoot(keygenOutput.PublicKey)
-				if err != nil {
-					return false, nil, err
-				}
-				sig := share.SignByte(root[:])
-				sig.Serialize()
-				pSig := &stubdkg.PartialSignature{}
-				pSig.I = r.I
-				copy(pSig.SigmaI[:], sig.Serialize()[:])
-				r.PartialSignatures[r.Operator.OperatorID] = pSig.SigmaI[:]
-				r.config.Network.BroadcastPartialSignature(pSig)
-			} else {
-				return false, nil, errors.New("Unexpected state")
+			keygenOutput, err := r.protocol.Output()
+			if err != nil {
+				return false, nil, err
 			}
+			pSig, err := r.partialSign(keygenOutput)
+			if err != nil {
+				return false, nil, err
+			}
+			data, err := pSig.Encode()
+			if err != nil {
+				return false, nil, err
+			}
+			partialSigMsg := Message{
+				MsgType:    PartialSigType,
+				Identifier: r.Identifier,
+				Data:       data,
+			}
+			r.config.Network.Broadcast(&partialSigMsg)
+
 		}
 	case PartialSigType:
-		pMsg := stubdkg.PartialSignature{}
+		pMsg := PartialSignature{}
 		err := pMsg.Decode(msg.Message.Data)
 		if err != nil {
 			return false, nil, err
@@ -143,13 +126,36 @@ func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
 	}, nil
 }
 
-func (r *Runner) getDepositDataSigningRoot(pubKey stubdkg.BlsPublicKey) (spec.Root, error) {
+func (r *Runner) partialSign(keygenOutput *KeygenOutput) (*PartialSignature, error) {
+	share := bls.SecretKey{}
+	err := share.Deserialize(keygenOutput.SecretShare)
+	if err != nil {
+		return nil, err
+	}
+
+	root, err := r.getDepositDataSigningRoot(keygenOutput.PublicKey)
+	if err != nil {
+		return nil, err
+	}
+	rawSig := share.SignByte(root[:])
+	sigBytes := rawSig.Serialize()
+	var sig spec.BLSSignature
+	copy(sig[:], sigBytes)
+	return &PartialSignature{
+		I:      r.I,
+		SigmaI: sig,
+	}, nil
+}
+
+func (r *Runner) getDepositDataSigningRoot(pubKey []byte) (spec.Root, error) {
 	var (
 		domain   spec.Domain
 		forkData spec.ForkData
+		pk48     spec.BLSPubKey
 	)
+	copy(pk48[:], pubKey)
 	message := spec.DepositMessage{
-		PublicKey:             spec.BLSPubKey(pubKey),
+		PublicKey:             pk48,
 		WithdrawalCredentials: r.InitMsg.WithdrawalCredentials,
 		Amount:                32_000_000_000,
 	}
