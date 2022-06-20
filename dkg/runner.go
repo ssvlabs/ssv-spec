@@ -2,74 +2,28 @@ package dkg
 
 import (
 	"bytes"
-	"crypto/ecdsa"
-	"crypto/rsa"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
-type Config struct {
-	// Protocol the DKG protocol implementation
-	Protocol      Protocol
-	BeaconNetwork ssv.BeaconNetwork
-	Network       Network
-	// OperatorID the node's operator ID
-	OperatorID types.OperatorID
-	// Identifier unique for DKG session
-	Identifier types.MessageID
-	Signer     types.DKGSigner
-	// PubKey signing key for all message
-	PubKey *ecdsa.PublicKey
-	// EncryptionPubKey encryption pubkey for shares
-	EncryptionPubKey *rsa.PublicKey
-}
-
 // Runner manages the execution of a DKG, start to finish.
 type Runner struct {
-	Operators             []types.OperatorID
-	I                     uint16
-	Threshold             uint16
-	WithdrawalCredentials []byte
-
-	ProtocolOutput        *ProtocolOutput
-	PartialSignatures     map[types.OperatorID][]byte
-	DepositDataSignatures map[types.OperatorID]*PartialDepositData
+	Operator *Operator
+	// InitMsg holds the init method which started this runner
+	InitMsg *Init
+	// Identifier unique for DKG session
+	Identifier RequestID
+	// ProtocolOutput holds the protocol output once it finishes
+	ProtocolOutput *ProtocolOutput
+	// DepositDataSignatures holds partial sigs on deposit data
+	PartialSignatures map[types.OperatorID][]byte
+	I                 uint16
 
 	protocol Protocol
 	config   *Config
-}
-
-func NewRunner(initMsg *Init, config *Config) (*Runner, error) {
-	var i uint16
-	for i0, id := range initMsg.OperatorIDs {
-		if id == config.OperatorID {
-			i = uint16(i0) + 1
-		}
-	}
-	if i == 0 {
-		return nil, errors.New("invalid request")
-	}
-	runner := &Runner{
-		I:                     i,
-		Operators:             initMsg.OperatorIDs,
-		Threshold:             initMsg.Threshold,
-		WithdrawalCredentials: initMsg.WithdrawalCredentials,
-		PartialSignatures:     map[types.OperatorID][]byte{},
-		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
-
-		protocol: config.Protocol,
-		config:   config,
-	}
-
-	if err := runner.protocol.Start(initMsg); err != nil {
-		return nil, errors.Wrap(err, "could not start dkg protocol")
-	}
-
-	return runner, nil
 }
 
 // ProcessMsg processes a DKG signed message and returns true and signed output if finished
@@ -105,7 +59,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 				}
 				r.ProtocolOutput = &ProtocolOutput{
 					&share,
-					r.Operators,
+					r.InitMsg.OperatorIDs,
 					pubkeys,
 					keygenOutput.PublicKey[:],
 				}
@@ -119,12 +73,11 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 				pSig := &stubdkg.PartialSignature{}
 				pSig.I = r.I
 				copy(pSig.SigmaI[:], sig.Serialize()[:])
-				r.PartialSignatures[r.config.OperatorID] = pSig.SigmaI[:]
+				r.PartialSignatures[r.Operator.OperatorID] = pSig.SigmaI[:]
 				r.config.Network.BroadcastPartialSignature(pSig)
 			} else {
 				return false, nil, errors.New("Unexpected state")
 			}
-
 		}
 	case PartialSigType:
 		pMsg := stubdkg.PartialSignature{}
@@ -132,31 +85,32 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 		if err != nil {
 			return false, nil, err
 		}
-		id := r.Operators[pMsg.I-1]
+		id := r.InitMsg.OperatorIDs[pMsg.I-1]
 		if found := r.PartialSignatures[id]; found == nil {
 			r.PartialSignatures[id] = pMsg.SigmaI[:]
 		} else if bytes.Compare(found, pMsg.SigmaI[:]) != 0 {
 			return false, nil, errors.New("inconsistent partial signature received")
 		}
-		if len(r.PartialSignatures) > int(r.Threshold) {
+		if len(r.PartialSignatures) > int(r.InitMsg.Threshold) {
 
 			sig, err := types.ReconstructSignatures(r.PartialSignatures)
 			if err != nil {
 				return false, nil, err
 			}
-			// encrypt operator's share
-			encryptedShare, err := r.config.Signer.Encrypt(r.config.EncryptionPubKey, r.ProtocolOutput.Share.Serialize())
+
+			// encrypt Operator's share
+			encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.ProtocolOutput.Share.Serialize())
 			if err != nil {
 				return false, nil, errors.Wrap(err, "could not encrypt share")
 			}
 
 			ret, err := r.generateSignedOutput(&Output{
-				Identifier:            r.config.Identifier,
+				Identifier:            r.Identifier,
 				EncryptedShare:        encryptedShare,
-				DKGSetSize:            uint16(len(r.Operators)),
-				Threshold:             r.Threshold,
+				DKGSetSize:            uint16(len(r.InitMsg.OperatorIDs)),
+				Threshold:             r.InitMsg.Threshold,
 				ValidatorPubKey:       r.ProtocolOutput.ValidatorPK,
-				WithdrawalCredentials: r.WithdrawalCredentials,
+				WithdrawalCredentials: r.InitMsg.WithdrawalCredentials,
 				SignedDepositData:     sig.Serialize(),
 			})
 			if err != nil {
@@ -177,14 +131,14 @@ func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
 }
 
 func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
-	sig, err := r.config.Signer.SignDKGOutput(o, r.config.PubKey)
+	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign output")
 	}
 
 	return &SignedOutput{
 		Data:      o,
-		Signer:    r.config.OperatorID,
+		Signer:    r.Operator.OperatorID,
 		Signature: sig,
 	}, nil
 }
@@ -196,7 +150,7 @@ func (r *Runner) getDepositDataSigningRoot(pubKey stubdkg.BlsPublicKey) (spec.Ro
 	)
 	message := spec.DepositMessage{
 		PublicKey:             spec.BLSPubKey(pubKey),
-		WithdrawalCredentials: r.WithdrawalCredentials,
+		WithdrawalCredentials: r.InitMsg.WithdrawalCredentials,
 		Amount:                32_000_000_000,
 	}
 	depositDomain := spec.DomainType{0x03, 0x00, 0x00, 0x00}

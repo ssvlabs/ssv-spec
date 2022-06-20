@@ -1,6 +1,8 @@
 package qbft
 
-import "github.com/bloxapp/ssv-spec/types"
+import (
+	"github.com/bloxapp/ssv-spec/types"
+)
 
 type Round uint64
 type Height int64

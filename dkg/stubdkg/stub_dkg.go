@@ -4,26 +4,29 @@ import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/bls12_381"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
-// s is a stub dkg protocol simulating a real DKG protocol with 3 stages in it
-type s struct {
-	identifier types.MessageID
+// DKG is a stub dkg protocol simulating a real DKG protocol with 3 stages in it
+type DKG struct {
+	identifier dkg.RequestID
 	network    dkg.Network
 	operatorID types.OperatorID
 	threshold  uint16
 
+	validatorPK[] byte
+	operatorShares map[types.OperatorID]*bls.SecretKey
 	msgs  map[Round][]*KeygenProtocolMsg
 	state *bls12_381.KeygenWrapper
 }
 
-func (s s) Output() *LocalKeyShare {
+func (s DKG) Output() *LocalKeyShare {
 	panic("implement me")
 }
 
-func New(network dkg.Network, operatorID types.OperatorID, identifier types.MessageID) dkg.Protocol {
-	return &s{
+func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
+	return &DKG{
 		identifier: identifier,
 		network:    network,
 		operatorID: operatorID,
@@ -31,7 +34,12 @@ func New(network dkg.Network, operatorID types.OperatorID, identifier types.Mess
 	}
 }
 
-func (s *s) Start(init *dkg.Init) error {
+func (s *DKG) SetOperators(validatorPK []byte, operatorShares map[types.OperatorID]*bls.SecretKey) {
+	s.validatorPK = validatorPK
+	s.operatorShares = operatorShares
+}
+
+func (s *DKG) Start(init *dkg.Init) error {
 	var myIndex = -1
 	for i, id := range init.OperatorIDs {
 		if id == s.operatorID {
@@ -50,7 +58,7 @@ func (s *s) Start(init *dkg.Init) error {
 	return nil
 }
 
-func (s *s) ProcessMsg(msg *KeygenProtocolMsg) (bool, []KeygenProtocolMsg, error) {
+func (s *DKG) ProcessMsg(msg *KeygenProtocolMsg) (bool, []KeygenProtocolMsg, error) {
 
 	if s.msgs[msg.RoundNumber] == nil {
 		s.msgs[msg.RoundNumber] = []*KeygenProtocolMsg{}
@@ -59,6 +67,7 @@ func (s *s) ProcessMsg(msg *KeygenProtocolMsg) (bool, []KeygenProtocolMsg, error
 	if msg.RoundNumber < 1 || msg.RoundNumber > 4 {
 		return false, nil, errors.New("wrong round number")
 	}
+
 	finished, outgoing, err := s.state.HandleMessage(msg)
 	if err != nil {
 		return false, nil, err
@@ -70,7 +79,7 @@ func (s *s) ProcessMsg(msg *KeygenProtocolMsg) (bool, []KeygenProtocolMsg, error
 
 }
 
-func (s *s) signDKGMsg(data []byte) *dkg.SignedMessage {
+func (s *DKG) signDKGMsg(data []byte) *dkg.SignedMessage {
 	return &dkg.SignedMessage{
 		Message: &dkg.Message{
 			MsgType:    dkg.ProtocolMsgType,

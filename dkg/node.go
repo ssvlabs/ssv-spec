@@ -1,9 +1,7 @@
 package dkg
 
 import (
-	"crypto/ecdsa"
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -11,23 +9,61 @@ import (
 // Runners is a map of dkg runners mapped by dkg ID.
 type Runners map[string]*Runner
 
-func (runners Runners) AddRunner(id types.MessageID, runner *Runner) {
-	runners[hex.EncodeToString(id)] = runner
+func (runners Runners) AddRunner(id RequestID, runner *Runner) {
+	runners[hex.EncodeToString(id[:])] = runner
 }
 
 // RunnerForID returns a Runner from the provided msg ID, or nil if not found
-func (runners Runners) RunnerForID(msgID types.MessageID) *Runner {
-	panic("implement")
+func (runners Runners) RunnerForID(id RequestID) *Runner {
+	return runners[hex.EncodeToString(id[:])]
+}
+
+func (runners Runners) DeleteRunner(id RequestID) {
+	delete(runners, hex.EncodeToString(id[:]))
 }
 
 type Node struct {
-	OperatorID types.OperatorID
-	// KeyPK signing public key
-	KeyPK *ecdsa.PublicKey
-
+	operator *Operator
+	// runners holds all active running DKG runners
 	runners Runners
-	network Network
-	signer  types.DKGSigner
+	config  *Config
+}
+
+func NewNode(operator *Operator, config *Config) *Node {
+	return &Node{
+		operator: operator,
+		config:   config,
+		runners:  make(Runners, 0),
+	}
+}
+
+func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
+
+	var i uint16
+	for i0, id := range initMsg.OperatorIDs {
+		if id == n.operator.OperatorID {
+			i = uint16(i0) + 1
+		}
+	}
+	if i == 0 {
+		return nil, errors.New("invalid request")
+	}
+
+	runner := &Runner{
+		Operator:          n.operator,
+		InitMsg:           initMsg,
+		Identifier:        id,
+		I:                 i,
+		PartialSignatures: map[types.OperatorID][]byte{},
+		config:            n.config,
+		protocol:          n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
+	}
+
+	if err := runner.protocol.Start(initMsg); err != nil {
+		return nil, errors.Wrap(err, "could not start dkg protocol")
+	}
+
+	return runner, nil
 }
 
 // ProcessMessage processes network Messages of all types
@@ -50,24 +86,12 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 }
 
 func (n *Node) startNewDKGMsg(message *SignedMessage) error {
-	initMsg := &Init{}
-	if err := initMsg.Decode(message.Message.Data); err != nil {
-		return errors.Wrap(err, "could not get dkg init Message from signed Messages")
+	initMsg, err := n.validateInitMsg(message)
+	if err != nil {
+		return errors.Wrap(err, "could not process new dkg msg")
 	}
 
-	// TODO - validate message
-	// check instance not running already
-	if n.runners.RunnerForID(message.Message.Identifier) != nil {
-		return errors.New("dkg started already")
-	}
-
-	runner, err := NewRunner(initMsg, &Config{
-		Protocol:   stubdkg.New(n.network, n.OperatorID, message.Message.Identifier),
-		Network:    n.network,
-		OperatorID: n.OperatorID,
-		Identifier: message.Message.Identifier,
-		Signer:     n.signer,
-	})
+	runner, err := n.newRunner(message.Message.Identifier, initMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not start new dkg")
 	}
@@ -76,6 +100,33 @@ func (n *Node) startNewDKGMsg(message *SignedMessage) error {
 	n.runners.AddRunner(message.Message.Identifier, runner)
 
 	return nil
+}
+
+func (n *Node) validateInitMsg(message *SignedMessage) (*Init, error) {
+	if err := message.Validate(); err != nil {
+		return nil, errors.Wrap(err, "message invalid")
+	}
+
+	// validate identifier.GetEthAddress is the signer for message
+	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, message.Message.Identifier.GetETHAddress()); err != nil {
+		return nil, errors.Wrap(err, "signed message invalid")
+	}
+
+	initMsg := &Init{}
+	if err := initMsg.Decode(message.Message.Data); err != nil {
+		return nil, errors.Wrap(err, "could not get dkg init Message from signed Messages")
+	}
+
+	if err := initMsg.Validate(); err != nil {
+		return nil, errors.Wrap(err, "init message invalid")
+	}
+
+	// check instance not running already
+	if n.runners.RunnerForID(message.Message.Identifier) != nil {
+		return nil, errors.New("dkg started already")
+	}
+
+	return initMsg, nil
 }
 
 func (n *Node) processDKGMsg(message *SignedMessage) error {
@@ -90,9 +141,10 @@ func (n *Node) processDKGMsg(message *SignedMessage) error {
 	}
 
 	if finished {
-		if err := n.network.StreamDKGOutput(output); err != nil {
+		if err := n.config.Network.StreamDKGOutput(output); err != nil {
 			return errors.Wrap(err, "failed to stream dkg output")
 		}
+		n.runners.DeleteRunner(message.Message.Identifier)
 	}
 
 	return nil
