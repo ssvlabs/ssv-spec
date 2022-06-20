@@ -116,15 +116,3 @@ func (s *DKG) packMessages(msgs []KeygenProtocolMsg) ([]dkg.Message, error) {
 	}
 	return outgoing, nil
 }
-
-func (s *DKG) signDKGMsg(data []byte) *dkg.SignedMessage {
-	return &dkg.SignedMessage{
-		Message: &dkg.Message{
-			MsgType:    dkg.ProtocolMsgType,
-			Identifier: s.identifier,
-			Data:       data,
-		},
-		Signer: s.operatorID,
-		// TODO - how do we sign?
-	}
-}
