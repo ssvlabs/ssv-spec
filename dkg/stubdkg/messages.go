@@ -6,6 +6,7 @@ import (
 )
 
 type Sha256Hash [32]byte
+type BlsSignature [96]byte
 type BlsPublicKey [48]byte
 type BlsScalar [32]byte
 type BigInt []byte
@@ -77,6 +78,46 @@ func (msg *KeygenProtocolMsg) GetRound4Data() (*KeygenRound4Data, error) {
 		return nil, errors.Wrap(err, "could not decode round4 data from message")
 	}
 	return ret, nil
+}
+
+func (msg *KeygenProtocolMsg) SetRound1Data(data *KeygenRound1Data) error {
+	bytes, err := data.Encode()
+	if err != nil {
+		return errors.New("unable to encode data")
+	}
+	msg.RoundNumber = 1
+	msg.Data = bytes
+	return nil
+}
+
+func (msg *KeygenProtocolMsg) SetRound2Data(data *KeygenRound2Data) error {
+	bytes, err := data.Encode()
+	if err != nil {
+		return errors.New("unable to encode data")
+	}
+	msg.RoundNumber = 2
+	msg.Data = bytes
+	return nil
+}
+
+func (msg *KeygenProtocolMsg) SetRound3Data(data *KeygenRound3Data) error {
+	bytes, err := data.Encode()
+	if err != nil {
+		return errors.New("unable to encode data")
+	}
+	msg.RoundNumber = 3
+	msg.Data = bytes
+	return nil
+}
+
+func (msg *KeygenProtocolMsg) SetRound4Data(data *KeygenRound4Data) error {
+	bytes, err := data.Encode()
+	if err != nil {
+		return errors.New("unable to encode data")
+	}
+	msg.RoundNumber = 4
+	msg.Data = bytes
+	return nil
 }
 
 // KeygenRound1Data contains the commitment data
@@ -154,4 +195,19 @@ type LocalKeyShare struct {
 	PublicKey       BlsPublicKey   `json:"vk"`
 	SecretShare     BlsScalar      `json:"sk_i"`
 	SharePublicKeys []BlsPublicKey `json:"vk_vec"`
+}
+
+type PartialSignature struct {
+	I      uint16       `json:"i"`
+	SigmaI BlsSignature `json:"sigma_i"`
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *PartialSignature) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *PartialSignature) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
 }

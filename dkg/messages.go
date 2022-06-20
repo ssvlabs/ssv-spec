@@ -14,6 +14,7 @@ type MsgType int
 const (
 	InitMsgType MsgType = iota
 	ProtocolMsgType
+	PartialSigType
 	DepositDataMsgType
 	KeygenProtocolMsgType
 	LocalKeyShareType
@@ -22,7 +23,7 @@ const (
 
 type Message struct {
 	MsgType    MsgType
-	Identifier types.MessageID
+	Identifier types.MessageID // Carries the information to identify the dkg request
 	Data       []byte
 }
 

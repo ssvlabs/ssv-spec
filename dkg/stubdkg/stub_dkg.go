@@ -2,9 +2,8 @@ package stubdkg
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/bls12_381"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
@@ -15,7 +14,12 @@ type s struct {
 	operatorID types.OperatorID
 	threshold  uint16
 
-	msgs map[Round][]*KeygenProtocolMsg
+	msgs  map[Round][]*KeygenProtocolMsg
+	state *bls12_381.KeygenWrapper
+}
+
+func (s s) Output() *LocalKeyShare {
+	panic("implement me")
 }
 
 func New(network dkg.Network, operatorID types.OperatorID, identifier types.MessageID) dkg.Protocol {
@@ -28,56 +32,42 @@ func New(network dkg.Network, operatorID types.OperatorID, identifier types.Mess
 }
 
 func (s *s) Start(init *dkg.Init) error {
+	var myIndex = -1
+	for i, id := range init.OperatorIDs {
+		if id == s.operatorID {
+			myIndex = i + 1
+		}
+	}
 	s.threshold = init.Threshold
-	// TODO send stage 1 msg
+	s.state = bls12_381.New(myIndex, int(init.Threshold), len(init.OperatorIDs))
+	outgoing, err := s.state.Init()
+	if err != nil {
+		return err
+	}
+	for _, msg := range outgoing {
+		s.network.Broadcast(&msg)
+	}
 	return nil
 }
 
-func (s *s) ProcessMsg(msg *dkg.SignedMessage) (bool, []dkg.Message, error) {
-	// TODO validate msg signature is valid and i'm in the audience
+func (s *s) ProcessMsg(msg *KeygenProtocolMsg) (bool, []KeygenProtocolMsg, error) {
 
-	dataMsg := &KeygenProtocolMsg{}
-	if err := dataMsg.Decode(msg.Message.Data); err != nil {
-		return false, nil, errors.Wrap(err, "could not decode protocol msg")
+	if s.msgs[msg.RoundNumber] == nil {
+		s.msgs[msg.RoundNumber] = []*KeygenProtocolMsg{}
 	}
+	s.msgs[msg.RoundNumber] = append(s.msgs[msg.RoundNumber], msg)
+	if msg.RoundNumber < 1 || msg.RoundNumber > 4 {
+		return false, nil, errors.New("wrong round number")
+	}
+	finished, outgoing, err := s.state.HandleMessage(msg)
+	if err != nil {
+		return false, nil, err
+	}
+	for _, outMsg := range outgoing {
+		s.network.Broadcast(&outMsg)
+	}
+	return finished, outgoing, nil
 
-	if s.msgs[dataMsg.RoundNumber] == nil {
-		s.msgs[dataMsg.RoundNumber] = []*KeygenProtocolMsg{}
-	}
-	s.msgs[dataMsg.RoundNumber] = append(s.msgs[dataMsg.RoundNumber], dataMsg)
-
-	switch dataMsg.RoundNumber {
-	case KG_R1:
-		data := dataMsg.GetRound1Data()
-		// assert it's for me
-		if len(s.msgs[stubStage1]) >= int(s.threshold) {
-			// TODO send stage 2 msg
-		}
-	case KG_R2:
-		data := dataMsg.GetRound2Data()
-		if len(s.msgs[stubStage2]) >= int(s.threshold) {
-			// TODO send stage 3 msg
-		}
-	case KG_R3:
-		data := dataMsg.GetRound3Data()
-		// pass
-	case KG_R4:
-		data := dataMsg.GetRound4Data()
-		if len(s.msgs[stubStage3]) >= int(s.threshold) {
-			ret := &dkg.ProtocolOutput{
-				Share:       testingutils.Testing4SharesSet().Shares[s.operatorID],
-				ValidatorPK: testingutils.Testing4SharesSet().PK.Serialize(),
-				OperatorPubKeys: map[types.OperatorID]*bls.PublicKey{
-					1: testingutils.Testing4SharesSet().Shares[1].GetPublicKey(),
-					2: testingutils.Testing4SharesSet().Shares[2].GetPublicKey(),
-					3: testingutils.Testing4SharesSet().Shares[3].GetPublicKey(),
-					4: testingutils.Testing4SharesSet().Shares[4].GetPublicKey(),
-				},
-			}
-			return true, ret, nil
-		}
-	}
-	return false, nil, nil
 }
 
 func (s *s) signDKGMsg(data []byte) *dkg.SignedMessage {
