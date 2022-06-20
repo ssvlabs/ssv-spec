@@ -1,6 +1,7 @@
 package stubdkg
 
 import (
+	"fmt"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -12,13 +13,12 @@ type DKG struct {
 	identifier dkg.RequestID
 	network    dkg.Network
 	operatorID types.OperatorID
-	threshold  uint16
+	operators  []types.OperatorID
 
-	//
 	validatorPK    []byte
 	operatorShares map[types.OperatorID]*bls.SecretKey
 
-	msgs map[stage][]*protocolMsg
+	msgs map[Stage][]*ProtocolMsg
 }
 
 func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
@@ -26,7 +26,7 @@ func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.Reques
 		identifier: identifier,
 		network:    network,
 		operatorID: operatorID,
-		msgs:       map[stage][]*protocolMsg{},
+		msgs:       map[Stage][]*ProtocolMsg{},
 	}
 }
 
@@ -36,35 +36,37 @@ func (s *DKG) SetOperators(validatorPK []byte, operatorShares map[types.Operator
 }
 
 func (s *DKG) Start(init *dkg.Init) error {
-	s.threshold = init.Threshold
-	// TODO send stage 1 msg
+	s.operators = init.OperatorIDs
+	// TODO send Stage 1 msg
 	return nil
 }
 
 func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutput, error) {
 	// TODO validate msg
 
-	dataMsg := &protocolMsg{}
+	dataMsg := &ProtocolMsg{}
 	if err := dataMsg.Decode(msg.Message.Data); err != nil {
 		return false, nil, errors.Wrap(err, "could not decode protocol msg")
 	}
 
 	if s.msgs[dataMsg.Stage] == nil {
-		s.msgs[dataMsg.Stage] = []*protocolMsg{}
+		s.msgs[dataMsg.Stage] = []*ProtocolMsg{}
 	}
 	s.msgs[dataMsg.Stage] = append(s.msgs[dataMsg.Stage], dataMsg)
 
 	switch dataMsg.Stage {
-	case stubStage1:
-		if len(s.msgs[stubStage1]) >= int(s.threshold) {
-			// TODO send stage 2 msg
+	case StubStage1:
+		if len(s.msgs[StubStage1]) == len(s.operators) {
+			fmt.Printf("stage 1 done\n")
+			// TODO send Stage 2 msg
 		}
-	case stubStage2:
-		if len(s.msgs[stubStage2]) >= int(s.threshold) {
-			// TODO send stage 3 msg
+	case StubStage2:
+		if len(s.msgs[StubStage2]) == len(s.operators) {
+			fmt.Printf("stage 2 done\n")
+			// TODO send Stage 3 msg
 		}
-	case stubStage3:
-		if len(s.msgs[stubStage3]) >= int(s.threshold) {
+	case StubStage3:
+		if len(s.msgs[StubStage3]) == len(s.operators) {
 			ret := &dkg.ProtocolOutput{
 				Share:       s.operatorShares[s.operatorID],
 				ValidatorPK: s.validatorPK,

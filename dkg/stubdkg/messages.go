@@ -2,29 +2,28 @@ package stubdkg
 
 import (
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-type stage int
+type Stage int
 
 const (
-	stubStage1 stage = iota
-	stubStage2
-	stubStage3
+	StubStage1 Stage = iota
+	StubStage2
+	StubStage3
 )
 
-type protocolMsg struct {
-	Stage  stage
-	Points map[types.OperatorID]*bls.Fr // TODO this needs to be encrypted somehow
+type ProtocolMsg struct {
+	Stage Stage
+	// Data is any data a real DKG implementation will need
+	Data interface{}
 }
 
 // Encode returns a msg encoded bytes or error
-func (msg *protocolMsg) Encode() ([]byte, error) {
+func (msg *ProtocolMsg) Encode() ([]byte, error) {
 	return json.Marshal(msg)
 }
 
 // Decode returns error if decoding failed
-func (msg *protocolMsg) Decode(data []byte) error {
+func (msg *ProtocolMsg) Decode(data []byte) error {
 	return json.Unmarshal(data, msg)
 }

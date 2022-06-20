@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"fmt"
+	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -105,11 +106,19 @@ func (s Signature) ECRecover(data Root, domain DomainType, sigType SignatureType
 		return errors.Wrap(err, "could not compute signing root")
 	}
 
-	recoveredAddr, err := crypto.Ecrecover(computedRoot, s)
+	recoveredUncompressedPubKey, err := crypto.Ecrecover(computedRoot, s)
 	if err != nil {
 		return errors.Wrap(err, "could not recover ethereum address")
 	}
-	if !bytes.Equal(address[:], recoveredAddr) {
+
+	pk, err := secp256k1.ParsePubKey(recoveredUncompressedPubKey)
+	if err != nil {
+		return errors.Wrap(err, "could not parse ecdsa pubkey")
+	}
+
+	recoveredAdd := crypto.PubkeyToAddress(*pk.ToECDSA())
+
+	if !bytes.Equal(address[:], recoveredAdd[:]) {
 		return errors.Wrap(err, "message EC recover doesn't match address")
 	}
 	return nil
