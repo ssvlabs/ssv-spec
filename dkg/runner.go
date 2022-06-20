@@ -18,7 +18,7 @@ type Runner struct {
 	Identifier RequestID
 	// ProtocolOutput holds the protocol output once it finishes
 	ProtocolOutput *ProtocolOutput
-	// DepositDataSignatures holds partial sigs on deposit data
+	// PartialSignatures holds partial sigs on deposit data
 	PartialSignatures map[types.OperatorID][]byte
 	I                 uint16
 
