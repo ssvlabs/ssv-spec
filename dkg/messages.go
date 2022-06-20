@@ -50,8 +50,6 @@ const (
 	ProtocolMsgType
 	PartialSigType
 	DepositDataMsgType
-	KeygenProtocolMsgType
-	LocalKeyShareType
 	PartialOutputMsgType
 )
 

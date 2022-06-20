@@ -108,7 +108,7 @@ func (s *DKG) packMessages(msgs []KeygenProtocolMsg) ([]dkg.Message, error) {
 			return nil, err
 		}
 		outMsg := dkg.Message{
-			MsgType:    dkg.KeygenProtocolMsgType,
+			MsgType:    dkg.ProtocolMsgType,
 			Identifier: s.identifier,
 			Data:       data,
 		}
