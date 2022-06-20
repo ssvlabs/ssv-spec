@@ -31,7 +31,10 @@ func (r *Runner) Start() error {
 		return err
 	}
 	for _, message := range outgoing {
-		r.signAndBroadcast(&message)
+		err = r.signAndBroadcast(&message)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -49,7 +52,10 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 		}
 
 		for _, message := range outgoing {
-			r.signAndBroadcast(&message)
+			err = r.signAndBroadcast(&message)
+			if err != nil {
+				return false, nil, err
+			}
 		}
 
 		if finished {
@@ -70,7 +76,10 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 				Identifier: r.Identifier,
 				Data:       data,
 			}
-			r.signAndBroadcast(&partialSigMsg)
+			err = r.signAndBroadcast(&partialSigMsg)
+			if err != nil {
+				return false, nil, err
+			}
 		}
 	case PartialSigType:
 		pMsg := PartialSignature{}
@@ -195,12 +204,15 @@ func (r *Runner) getDepositDataSigningRoot(pubKey []byte) (spec.Root, error) {
 	return root, nil
 }
 
-func (r *Runner) signAndBroadcast(msg *Message) {
-	signed := SignedMessage{
+func (r *Runner) signAndBroadcast(msg *Message) error {
+	sig, err := r.config.Signer.SignDKGOutput(msg, r.Operator.ETHAddress)
+	if err != nil {
+		return err
+	}
+	r.config.Network.Broadcast(&SignedMessage{
 		Message:   msg,
 		Signer:    r.Operator.OperatorID,
-		Signature: nil, // TODO: Add signature
-	}
-	panic("complete me")
-	r.config.Network.Broadcast(&signed)
+		Signature: sig, // TODO: Add signature
+	})
+	return nil
 }
