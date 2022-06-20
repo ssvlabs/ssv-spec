@@ -14,8 +14,8 @@ var TestingWithdrawalCredentials, _ = hex.DecodeString("0x0100000000000000000000
 var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
 	config := &dkg.Config{
-		Protocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
-			ret := stubdkg.New(network, operatorID, identifier)
+		Protocol: func(operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
+			ret := stubdkg.New(operatorID, identifier)
 			ret.(*stubdkg.DKG).SetOperators(
 				Testing4SharesSet().ValidatorPK.Serialize(),
 				Testing4SharesSet().Shares,

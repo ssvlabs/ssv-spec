@@ -12,7 +12,7 @@ type Network interface {
 	// StreamDKGOutput will stream to any subscriber the result of the DKG
 	StreamDKGOutput(output *SignedOutput) error
 	// Broadcast will broadcast a msg to the dkg network
-	Broadcast(msg *SignedMessage) error
+	Broadcast(msg types.Encoder) error
 }
 
 type Storage interface {
@@ -32,7 +32,7 @@ type Operator struct {
 
 type Config struct {
 	// Protocol the DKG protocol implementation
-	Protocol            func(network Network, operatorID types.OperatorID, identifier RequestID) Protocol
+	Protocol            func(operatorID types.OperatorID, identifier RequestID) Protocol
 	BeaconNetwork       ssv.BeaconNetwork
 	Network             Network
 	Storage             Storage
