@@ -128,10 +128,6 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 	return false, nil, nil
 }
 
-func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
-	panic("implement")
-}
-
 func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
 	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
 	if err != nil {
@@ -212,7 +208,7 @@ func (r *Runner) signAndBroadcast(msg *Message) error {
 	r.config.Network.Broadcast(&SignedMessage{
 		Message:   msg,
 		Signer:    r.Operator.OperatorID,
-		Signature: sig, // TODO: Add signature
+		Signature: sig,
 	})
 	return nil
 }
