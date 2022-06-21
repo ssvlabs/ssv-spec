@@ -11,7 +11,7 @@ const (
 
 func normalizeAndDecodeOutput(data string) (*LocalKeyShare, error) {
 	innerOutput := blstss.LocalKey{}
-	err := json.Unmarshal([]byte(data), innerOutput)
+	err := json.Unmarshal([]byte(data), &innerOutput)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,10 @@ func normalizeAndDecodeOutput(data string) (*LocalKeyShare, error) {
 func normalizeAndEncodeMessage(msg *KeygenProtocolMsg) (*string, error) {
 	innerMsg := blstss.KeygenRoundMsg{
 		Sender:   int(msg.Sender),
-		Receiver: msg.Receiver,
+		Receiver: nil,
+	}
+	if msg.Receiver > 0 {
+		innerMsg.Receiver = msg.Receiver
 	}
 
 	switch msg.RoundNumber {
@@ -205,6 +208,8 @@ func decodeOutgoing(innerOutgoing []string) ([]KeygenProtocolMsg, error) {
 
 		if receiver, ok := out0.Receiver.(uint16); ok {
 			out.Receiver = receiver
+		} else if receiver, ok := out0.Receiver.(float64); ok {
+			out.Receiver = uint16(receiver)
 		}
 		outgoing = append(outgoing, out)
 	}
