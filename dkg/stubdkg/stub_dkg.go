@@ -25,16 +25,15 @@ func (s *DKG) Output() (*dkg.KeygenOutput, error) {
 	if jsonStr == nil {
 		return nil, errors.New("unable to find output")
 	}
-
 	share, err := normalizeAndDecodeOutput(*jsonStr)
 	if err != nil {
 		return nil, err
 	}
 	var sharePubKeys [][]byte
 	for _, pk48 := range share.SharePublicKeys {
-		var pk []byte
-		copy(pk, pk48[:])
-		sharePubKeys = append(sharePubKeys, pk)
+		pk := make([]byte, 48)
+		copy(pk[:], pk48[:])
+		sharePubKeys = append(sharePubKeys, pk[:])
 	}
 	return &dkg.KeygenOutput{
 		Index:           share.Index,

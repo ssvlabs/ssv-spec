@@ -31,7 +31,7 @@ func normalizeAndDecodeOutput(data string) (*LocalKeyShare, error) {
 	}
 
 	copy(share.PublicKey[:], i2b(innerOutput.SharedKey.Vk.Point))
-	copy(share.SecretShare[:], i2b(innerOutput.SharedKey.SkI.Scalar))
+	copy(share.SecretShare[:], i2b(reverse(innerOutput.SharedKey.SkI.Scalar))) // Original is little-endian, reverse it to make big-endian
 	return &share, nil
 }
 
@@ -230,4 +230,17 @@ func b2i(input []byte) []int {
 		out = append(out, int(b))
 	}
 	return out
+}
+
+func reverse(input []int) []int {
+	inputLen := len(input)
+	output := make([]int, inputLen)
+
+	for i, n := range input {
+		j := inputLen - i - 1
+
+		output[j] = n
+	}
+
+	return output
 }
