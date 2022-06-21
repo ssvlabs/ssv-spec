@@ -136,7 +136,7 @@ func decodeOutgoing(innerOutgoing []string) ([]KeygenProtocolMsg, error) {
 	var outgoing []KeygenProtocolMsg
 	for _, msg0 := range innerOutgoing {
 		out0 := blstss.KeygenRoundMsg{}
-		err := json.Unmarshal([]byte(msg0), out0)
+		err := json.Unmarshal([]byte(msg0), &out0)
 		if err != nil {
 			return nil, err
 		}
