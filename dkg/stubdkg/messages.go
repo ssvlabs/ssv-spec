@@ -189,18 +189,3 @@ type LocalKeyShare struct {
 	SecretShare     BlsScalar      `json:"sk_i"`
 	SharePublicKeys []BlsPublicKey `json:"vk_vec"`
 }
-//
-//type PartialSignature struct {
-//	I      uint16       `json:"i"`
-//	SigmaI BlsSignature `json:"sigma_i"`
-//}
-//
-//// Encode returns a msg encoded bytes or error
-//func (d *PartialSignature) Encode() ([]byte, error) {
-//	return json.Marshal(d)
-//}
-//
-//// Decode returns error if decoding failed
-//func (d *PartialSignature) Decode(data []byte) error {
-//	return json.Unmarshal(data, &d)
-//}
