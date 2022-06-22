@@ -69,7 +69,7 @@ func (s *DKG) SetOperators(validatorPK []byte, operatorShares map[types.Operator
 	s.operatorShares = operatorShares
 }
 
-func (s *DKG) Start(init *dkg.Init) ([]dkg.Message, error) {
+func (s *DKG) start(init *dkg.Init) ([]dkg.Message, error) {
 	var myIndex = -1
 	for i, id := range init.OperatorIDs {
 		if id == s.operatorID {
@@ -92,6 +92,17 @@ func (s *DKG) Start(init *dkg.Init) ([]dkg.Message, error) {
 }
 
 func (s *DKG) ProcessMsg(msg0 *dkg.Message) ([]dkg.Message, error) {
+	if msg0.MsgType == dkg.InitMsgType {
+		if s.state != nil {
+			return nil, errors.New("already initialized")
+		}
+		ini := &dkg.Init{}
+		err := ini.Decode(msg0.Data)
+		if err != nil {
+			return nil, err
+		}
+		return s.start(ini)
+	}
 	msg := &KeygenProtocolMsg{}
 	err := msg.Decode(msg0.Data)
 	if err != nil {

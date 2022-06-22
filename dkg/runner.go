@@ -26,7 +26,15 @@ type Runner struct {
 }
 
 func (r *Runner) Start() error {
-	outgoing, err := r.protocol.Start(r.InitMsg)
+	data, err := r.InitMsg.Encode()
+	if err != nil {
+		return err
+	}
+	outgoing, err := r.protocol.ProcessMsg(&Message{
+		MsgType:    InitMsgType,
+		Identifier: r.Identifier,
+		Data:       data,
+	})
 	if err != nil {
 		return err
 	}

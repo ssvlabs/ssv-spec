@@ -136,6 +136,26 @@ func (s *simulator) feedSuccess(t *testing.T, index int, msg *dkg.Message) []dkg
 	return out
 }
 
+func (s *simulator) initSuccess(t *testing.T, init *dkg.Init) []dkg.Message {
+	var round1 []dkg.Message
+	for _, machine := range s.machines {
+		data, err := init.Encode()
+		assert.Nil(t, err)
+		out, err := machine.ProcessMsg(&dkg.Message{
+			MsgType:    dkg.InitMsgType,
+			Identifier: s.identifier,
+			Data:       data,
+		})
+		assert.Nil(t, err)
+		for _, message := range out {
+			assert.Equal(t, dkg.ProtocolMsgType, message.MsgType)
+			round1 = append(round1, message)
+		}
+	}
+
+	return round1
+}
+
 func (s *simulator) checkAndFeedRoundMessages(t *testing.T, round Round, messages []dkg.Message, finished bool) []dkg.Message {
 	groupSize := len(s.operators)
 	var nextRound []dkg.Message
@@ -179,21 +199,14 @@ func TestStub(t *testing.T) {
 	threshold := uint16(1)
 	groupSize := uint16(3)
 	simulator := makeSimulator(groupSize)
-	init := dkg.Init{
+
+	round1 := simulator.initSuccess(t, &dkg.Init{
 		Nonce:                 0,
 		OperatorIDs:           simulator.operators,
 		Threshold:             threshold,
 		WithdrawalCredentials: []byte(""),
-	}
-	var round1 []dkg.Message
-	for _, machine := range simulator.machines {
-		out, err := machine.Start(&init)
-		assert.Nil(t, err)
-		for _, message := range out {
-			assert.Equal(t, dkg.ProtocolMsgType, message.MsgType)
-			round1 = append(round1, message)
-		}
-	}
+	})
+
 	assert.Equal(t, 3, len(round1))
 	round2 := simulator.checkAndFeedRoundMessages(t, Round(1), round1, false)
 	assert.Equal(t, 3, len(round2))
