@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 	altair "github.com/attestantio/go-eth2-client/spec/altair"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/prysmaticlabs/go-bitfield"
 )
@@ -227,8 +226,8 @@ func NewTestingBeaconNode() *testingBeaconNode {
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
-func (bn *testingBeaconNode) GetBeaconNetwork() ssv.BeaconNetwork {
-	return ssv.NowTestNetwork
+func (bn *testingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
+	return types.NowTestNetwork
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
