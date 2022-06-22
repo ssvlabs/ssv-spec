@@ -12,13 +12,6 @@ type BlsScalar [32]byte
 type BigInt []byte
 type Round uint16
 
-const (
-	KG_R1 = 1
-	KG_R2 = 2
-	KG_R3 = 3
-	KG_R4 = 4
-)
-
 type KeygenProtocolMsg struct {
 	RoundNumber Round
 	Sender      uint16

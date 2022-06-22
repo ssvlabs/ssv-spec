@@ -45,13 +45,13 @@ func normalizeAndEncodeMessage(msg *KeygenProtocolMsg) (*string, error) {
 	}
 
 	switch msg.RoundNumber {
-	case KG_R1:
+	case Round(1):
 		roundMsg, err := msg.GetRound1Data()
 		if err != nil {
 			return nil, err
 		}
 		innerMsg.Body.Round1 = &blstss.KeygenRound1{Com: b2i(roundMsg.Commitment[:])}
-	case KG_R2:
+	case Round(2):
 		roundMsg, err := msg.GetRound2Data()
 		if err != nil {
 			return nil, err
@@ -66,7 +66,7 @@ func normalizeAndEncodeMessage(msg *KeygenProtocolMsg) (*string, error) {
 				Point: b2i(roundMsg.YI[:]),
 			},
 		}
-	case KG_R3:
+	case Round(3):
 		roundMsg, err := msg.GetRound3Data()
 		if err != nil {
 			return nil, err
@@ -98,7 +98,7 @@ func normalizeAndEncodeMessage(msg *KeygenProtocolMsg) (*string, error) {
 				Scalar: b2i(roundMsg.ShareIJ[:]),
 			},
 		}
-	case KG_R4:
+	case Round(4):
 		roundMsg, err := msg.GetRound4Data()
 		if err != nil {
 			return nil, err
