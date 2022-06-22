@@ -30,6 +30,14 @@ type Operator struct {
 	EncryptionPubKey *rsa.PublicKey
 }
 
+type ProtocolConfig struct {
+	// Identifier unique for DKG session
+	Identifier RequestID
+	Operator *Operator
+	BeaconNetwork       ssv.BeaconNetwork
+	Signer              types.DKGSigner
+}
+
 type Config struct {
 	// Protocol the DKG protocol implementation
 	Protocol            func(operatorID types.OperatorID, identifier RequestID) Protocol

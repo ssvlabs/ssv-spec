@@ -56,7 +56,7 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 		I:                 i,
 		PartialSignatures: map[types.OperatorID][]byte{},
 		config:            n.config,
-		protocol:          n.config.Protocol(n.operator.OperatorID, id),
+		keygenSubProtocol: n.config.Protocol(n.operator.OperatorID, id),
 	}
 
 	return runner, nil

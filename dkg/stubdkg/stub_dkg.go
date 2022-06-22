@@ -20,6 +20,10 @@ type DKG struct {
 	state          *blstss.KeygenSimple
 }
 
+func (s *DKG) Start() ([]dkg.Message, error) {
+	panic("implement me")
+}
+
 func (s *DKG) getOutput() (*dkg.Message, error) {
 	jsonStr := s.state.Output()
 	if jsonStr == nil {

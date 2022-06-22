@@ -1,10 +1,7 @@
 package dkg
 
 import (
-	"bytes"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
@@ -21,8 +18,9 @@ type Runner struct {
 	PartialSignatures map[types.OperatorID][]byte
 	I                 uint16
 
-	protocol Protocol
-	config   *Config
+	keygenSubProtocol Protocol
+	signSubProtocol   Protocol
+	config            *Config
 }
 
 func (r *Runner) Start() error {
@@ -30,7 +28,7 @@ func (r *Runner) Start() error {
 	if err != nil {
 		return err
 	}
-	outgoing, err := r.protocol.ProcessMsg(&Message{
+	outgoing, err := r.keygenSubProtocol.ProcessMsg(&Message{
 		MsgType:    InitMsgType,
 		Identifier: r.Identifier,
 		Data:       data,
@@ -53,80 +51,43 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 
 	switch msg.Message.MsgType {
 	case ProtocolMsgType:
-		outgoing, err := r.protocol.ProcessMsg(msg.Message)
+		outgoing, err := r.keygenSubProtocol.ProcessMsg(msg.Message)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to process dkg msg")
 		}
-
-		for _, message := range outgoing {
-			if message.MsgType == ProtocolMsgType {
-				err = r.signAndBroadcast(&message)
-				if err != nil {
-					return false, nil, err
-				}
-			}
-		}
-		if outgoing != nil && len(outgoing) > 0 && outgoing[len(outgoing)-1].MsgType == KeygenOutputType {
-			outputMsg := outgoing[len(outgoing)-1]
-			keygenOutput := &KeygenOutput{}
-			keygenOutput.Decode(outputMsg.Data)
-			pSig, err := r.partialSign(keygenOutput)
-			if err != nil {
-				return false, nil, err
-			}
-			data, err := pSig.Encode()
-			if err != nil {
-				return false, nil, err
-			}
-			partialSigMsg := Message{
-				MsgType:    PartialSigType,
-				Identifier: r.Identifier,
-				Data:       data,
-			}
-			err = r.signAndBroadcast(&partialSigMsg)
-			if err != nil {
-				return false, nil, err
-			}
-		}
-	case PartialSigType:
-		pMsg := PartialSignature{}
-		err := pMsg.Decode(msg.Message.Data)
+		err = r.broadcastMessages(outgoing, ProtocolMsgType)
 		if err != nil {
 			return false, nil, err
 		}
-		id := r.InitMsg.OperatorIDs[pMsg.I-1]
-		if found := r.PartialSignatures[id]; found == nil {
-			r.PartialSignatures[id] = pMsg.SigmaI[:]
-		} else if bytes.Compare(found, pMsg.SigmaI[:]) != 0 {
-			return false, nil, errors.New("inconsistent partial signature received")
-		}
-		if len(r.PartialSignatures) > int(r.InitMsg.Threshold) {
 
-			sig, err := types.ReconstructSignatures(r.PartialSignatures)
+		if hasOutput(outgoing, KeygenOutputType) {
+			outputMsg := outgoing[len(outgoing)-1]
+			keygenOutput := &KeygenOutput{}
+			err = keygenOutput.Decode(outputMsg.Data)
 			if err != nil {
 				return false, nil, err
 			}
-
-			// encrypt Operator's share
-			encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.ProtocolOutput.Share.Serialize())
-			if err != nil {
-				return false, nil, errors.Wrap(err, "could not encrypt share")
-			}
-
-			ret, err := r.generateSignedOutput(&Output{
-				Identifier:            r.Identifier,
-				EncryptedShare:        encryptedShare,
-				DKGSetSize:            uint16(len(r.InitMsg.OperatorIDs)),
-				Threshold:             r.InitMsg.Threshold,
-				ValidatorPubKey:       r.ProtocolOutput.ValidatorPK,
-				WithdrawalCredentials: r.InitMsg.WithdrawalCredentials,
-				SignedDepositData:     sig.Serialize(),
+			r.signSubProtocol = NewSignDepositData(r.InitMsg, keygenOutput, ProtocolConfig{
+				Identifier:    r.Identifier,
+				Operator:      r.Operator,
+				BeaconNetwork: r.config.BeaconNetwork,
+				Signer:        r.config.Signer,
 			})
+			outgoing1, err := r.signSubProtocol.Start()
 			if err != nil {
-				return false, nil, errors.Wrap(err, "could not generate dkg SignedOutput")
+				return false, nil, err
 			}
-			return true, ret, nil
+			err = r.broadcastMessages(outgoing1, ProtocolMsgType)
 		}
+	case PartialSigType:
+		outgoing, err := r.signSubProtocol.ProcessMsg(msg.Message)
+		if err != nil {
+			return false, nil, errors.Wrap(err, "failed to partial sig msg")
+		}
+		if hasOutput(outgoing, PartialOutputMsgType) {
+			return true, nil, err
+		}
+
 		// TODO: Do we need to aggregate the signed outputs.
 	default:
 		return false, nil, errors.New("msg type invalid")
@@ -148,63 +109,16 @@ func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
 	}, nil
 }
 
-func (r *Runner) partialSign(keygenOutput *KeygenOutput) (*PartialSignature, error) {
-	share := bls.SecretKey{}
-	err := share.Deserialize(keygenOutput.SecretShare)
-	if err != nil {
-		return nil, err
+func (r *Runner) broadcastMessages(msgs []Message, msgType MsgType) error {
+	for _, message := range msgs {
+		if message.MsgType == msgType {
+			err := r.signAndBroadcast(&message)
+			if err != nil {
+				return err
+			}
+		}
 	}
-
-	root, err := r.getDepositDataSigningRoot(keygenOutput.PublicKey)
-	if err != nil {
-		return nil, err
-	}
-	rawSig := share.SignByte(root[:])
-	sigBytes := rawSig.Serialize()
-	var sig spec.BLSSignature
-	copy(sig[:], sigBytes)
-	return &PartialSignature{
-		I:      r.I,
-		SigmaI: sig,
-	}, nil
-}
-
-func (r *Runner) getDepositDataSigningRoot(pubKey []byte) (spec.Root, error) {
-	var (
-		domain   spec.Domain
-		forkData spec.ForkData
-		pk48     spec.BLSPubKey
-	)
-	copy(pk48[:], pubKey)
-	message := spec.DepositMessage{
-		PublicKey:             pk48,
-		WithdrawalCredentials: r.InitMsg.WithdrawalCredentials,
-		Amount:                32_000_000_000,
-	}
-	depositDomain := spec.DomainType{0x03, 0x00, 0x00, 0x00}
-
-	msgRoot, err := message.HashTreeRoot()
-	if err != nil {
-		return [32]byte{}, err
-	}
-
-	copy(forkData.CurrentVersion[:], r.config.BeaconNetwork.ForkVersion())
-	forkDataRoot, err := forkData.HashTreeRoot()
-	if err != nil {
-		return [32]byte{}, err
-	}
-
-	copy(domain[:], depositDomain[:])
-	copy(domain[4:], forkDataRoot[:])
-	signingData := spec.SigningData{
-		ObjectRoot: msgRoot,
-		Domain:     domain,
-	}
-	root, err := signingData.HashTreeRoot()
-	if err != nil {
-		return [32]byte{}, err
-	}
-	return root, nil
+	return nil
 }
 
 func (r *Runner) signAndBroadcast(msg *Message) error {
@@ -218,4 +132,8 @@ func (r *Runner) signAndBroadcast(msg *Message) error {
 		Signature: sig,
 	})
 	return nil
+}
+
+func hasOutput(msgs []Message, msgType MsgType) bool {
+	return msgs != nil && len(msgs) > 0 && msgs[len(msgs)-1].MsgType == msgType
 }

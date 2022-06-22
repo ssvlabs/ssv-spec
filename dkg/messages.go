@@ -146,7 +146,7 @@ type KeygenOutput struct {
 	Threshold       uint16
 	ShareCount      uint16
 	PublicKey       []byte
-	SecretShare     []byte
+	SecretShare     []byte // TODO: Maybe only keep the encrypted version?
 	SharePublicKeys [][]byte
 }
 
@@ -242,6 +242,16 @@ type SignedOutput struct {
 	Signer types.OperatorID
 	// Signature over Data.GetRoot()
 	Signature types.Signature
+}
+
+// Encode returns a msg encoded bytes or error
+func (msg *SignedOutput) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *SignedOutput) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
 }
 
 func SignOutput(output *Output, privKey *ecdsa.PrivateKey) (types.Signature, error) {
