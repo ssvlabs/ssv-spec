@@ -13,7 +13,7 @@ import (
 // Prev duty must finish before the next one can start.
 type Runner struct {
 	BeaconRoleType types.BeaconRole
-	BeaconNetwork  BeaconNetwork
+	BeaconNetwork  types.BeaconNetwork
 	Share          *types.Share
 	// State holds all relevant params for a full duty execution (consensus & post consensus)
 	State *State
@@ -26,7 +26,7 @@ type Runner struct {
 
 func NewDutyRunner(
 	beaconRoleType types.BeaconRole,
-	beaconNetwork BeaconNetwork,
+	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
 	qbftController *qbft.Controller,
 	storage Storage,

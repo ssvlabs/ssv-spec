@@ -1,7 +1,6 @@
 package processmsg
 
 import (
-	"github.com/bloxapp/ssv/beacon"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -14,7 +13,7 @@ func InvalidConsensusMsg() *tests.SpecTest {
 	msgs := []*types.SSVMessage{
 		{
 			MsgType: types.SSVConsensusMsgType,
-			MsgID:   types.NewMsgID(testingutils.TestingValidatorPubKey[:], beacon.RoleTypeAttester),
+			MsgID:   types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester),
 			Data:    []byte{1, 2, 3, 4},
 		},
 	}

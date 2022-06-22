@@ -1,7 +1,6 @@
 package processmsg
 
 import (
-	"github.com/bloxapp/ssv/beacon"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -14,7 +13,7 @@ func MsgNotBelonging() *tests.SpecTest {
 	msgs := []*types.SSVMessage{
 		{
 			MsgType: 100,
-			MsgID:   types.NewMsgID(testingutils.TestingWrongValidatorPubKey[:], beacon.RoleTypeAttester),
+			MsgID:   types.NewMsgID(testingutils.TestingWrongValidatorPubKey[:], types.BNRoleAttester),
 			Data:    []byte{1, 2, 3, 4},
 		},
 	}
