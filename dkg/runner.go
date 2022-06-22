@@ -45,24 +45,23 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 
 	switch msg.Message.MsgType {
 	case ProtocolMsgType:
-
-		finished, outgoing, err := r.protocol.ProcessMsg(msg.Message)
+		outgoing, err := r.protocol.ProcessMsg(msg.Message)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to process dkg msg")
 		}
 
 		for _, message := range outgoing {
-			err = r.signAndBroadcast(&message)
-			if err != nil {
-				return false, nil, err
+			if message.MsgType == ProtocolMsgType {
+				err = r.signAndBroadcast(&message)
+				if err != nil {
+					return false, nil, err
+				}
 			}
 		}
-
-		if finished {
-			keygenOutput, err := r.protocol.Output()
-			if err != nil {
-				return false, nil, err
-			}
+		if outgoing != nil && len(outgoing) > 0 && outgoing[len(outgoing)-1].MsgType == KeygenOutputType {
+			outputMsg := outgoing[len(outgoing)-1]
+			keygenOutput := &KeygenOutput{}
+			keygenOutput.Decode(outputMsg.Data)
 			pSig, err := r.partialSign(keygenOutput)
 			if err != nil {
 				return false, nil, err

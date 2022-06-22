@@ -20,7 +20,7 @@ type DKG struct {
 	state          *blstss.KeygenSimple
 }
 
-func (s *DKG) Output() (*dkg.KeygenOutput, error) {
+func (s *DKG) getOutput() (*dkg.Message, error) {
 	jsonStr := s.state.Output()
 	if jsonStr == nil {
 		return nil, errors.New("unable to find output")
@@ -35,13 +35,24 @@ func (s *DKG) Output() (*dkg.KeygenOutput, error) {
 		copy(pk[:], pk48[:])
 		sharePubKeys = append(sharePubKeys, pk[:])
 	}
-	return &dkg.KeygenOutput{
+	output := &dkg.KeygenOutput{
 		Index:           share.Index,
 		Threshold:       share.Threshold,
 		ShareCount:      share.ShareCount,
 		PublicKey:       share.PublicKey[:],
 		SecretShare:     share.SecretShare[:],
 		SharePublicKeys: sharePubKeys,
+	}
+
+	data, err := output.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	return &dkg.Message{
+		MsgType:    dkg.KeygenOutputType,
+		Identifier: s.identifier,
+		Data:       data,
 	}, nil
 }
 
@@ -80,41 +91,49 @@ func (s *DKG) Start(init *dkg.Init) ([]dkg.Message, error) {
 	return outgoing, nil
 }
 
-func (s *DKG) ProcessMsg(msg0 *dkg.Message) (bool, []dkg.Message, error) {
+func (s *DKG) ProcessMsg(msg0 *dkg.Message) ([]dkg.Message, error) {
 	msg := &KeygenProtocolMsg{}
 	err := msg.Decode(msg0.Data)
 	if err != nil {
-		return false, nil, err
+		return nil, err
 	}
 	if s.msgs[msg.RoundNumber] == nil {
 		s.msgs[msg.RoundNumber] = []*KeygenProtocolMsg{}
 	}
 	s.msgs[msg.RoundNumber] = append(s.msgs[msg.RoundNumber], msg)
 	if msg.RoundNumber < 1 || msg.RoundNumber > 4 {
-		return false, nil, errors.New("wrong round number")
+		return nil, errors.New("wrong round number")
 	}
 
 	data, err := normalizeAndEncodeMessage(msg)
 	if err != nil {
-		return false, nil, err
+		return nil, err
 	}
 	finished, innerOutgoing, err := s.state.Handle(*data)
 	if err != nil {
-		return false, nil, err
+		return nil, err
 	}
 	outgoing0, err := decodeOutgoing(innerOutgoing)
 	if err != nil {
-		return false, nil, err
+		return nil, err
 	}
 
 	if err != nil {
-		return false, nil, err
+		return nil, err
 	}
 	outgoing, err := s.packMessages(outgoing0)
 	if err != nil {
-		return false, nil, err
+		return nil, err
 	}
-	return finished, outgoing, nil
+	if finished {
+		output, err := s.getOutput()
+		if err != nil {
+			return nil, nil
+		}
+		outgoing = append(outgoing, *output)
+		s.state.Free()
+	}
+	return outgoing, nil
 
 }
 

@@ -48,6 +48,7 @@ type MsgType int
 const (
 	InitMsgType MsgType = iota
 	ProtocolMsgType
+	KeygenOutputType
 	PartialSigType
 	DepositDataMsgType
 	PartialOutputMsgType
@@ -147,6 +148,16 @@ type KeygenOutput struct {
 	PublicKey       []byte
 	SecretShare     []byte
 	SharePublicKeys [][]byte
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *KeygenOutput) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *KeygenOutput) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
 }
 
 type PartialSignature struct {

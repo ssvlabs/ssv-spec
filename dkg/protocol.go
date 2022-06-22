@@ -17,6 +17,5 @@ type ProtocolOutput struct {
 type Protocol interface {
 	Start(init *Init) ([]Message, error)
 	// ProcessMsg returns true and a bls share if finished
-	ProcessMsg(msg *Message) (bool, []Message, error)
-	Output() (*KeygenOutput, error)
+	ProcessMsg(msg *Message) ([]Message, error)
 }

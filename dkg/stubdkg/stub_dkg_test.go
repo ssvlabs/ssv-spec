@@ -130,16 +130,16 @@ func makeSimulator(n uint16) *simulator {
 	}
 }
 
-func (s *simulator) feedSuccess(t *testing.T, index int, msg *dkg.Message) (bool, []dkg.Message) {
-	fin, out, err := s.machines[index-1].ProcessMsg(msg)
+func (s *simulator) feedSuccess(t *testing.T, index int, msg *dkg.Message) []dkg.Message {
+	out, err := s.machines[index-1].ProcessMsg(msg)
 	assert.Nil(t, err)
-	return fin, out
+	return out
 }
 
 func (s *simulator) checkAndFeedRoundMessages(t *testing.T, round Round, messages []dkg.Message, finished bool) []dkg.Message {
 	groupSize := len(s.operators)
 	var nextRound []dkg.Message
-	machineFinished := make([]bool, groupSize)
+
 	for _, message := range messages {
 		msg := KeygenProtocolMsg{}
 		err := msg.Decode(message.Data)
@@ -148,15 +148,15 @@ func (s *simulator) checkAndFeedRoundMessages(t *testing.T, round Round, message
 
 		for i := 1; i < int(groupSize)+1; i++ {
 			if i == int(msg.Receiver) || (msg.Receiver == uint16(0) && msg.Sender != uint16(i)) {
-				fin, out := s.feedSuccess(t, i, &message)
-				machineFinished[i-1] = machineFinished[i-1] || fin
+				out := s.feedSuccess(t, i, &message)
 				nextRound = append(nextRound, out...)
 			}
 		}
 	}
-	for i := 0; i < groupSize; i++ {
-		assert.Equal(t, finished, machineFinished[i])
+	if finished {
+		assert.Equal(t, dkg.KeygenOutputType, nextRound[len(nextRound)-1].MsgType)
 	}
+
 	return nextRound
 }
 
@@ -201,40 +201,36 @@ func TestStub(t *testing.T) {
 	assert.Equal(t, 6, len(round3))
 	round4 := simulator.checkAndFeedRoundMessages(t, Round(3), round3, false)
 	assert.Equal(t, 3, len(round4))
-	noMore := simulator.checkAndFeedRoundMessages(t, Round(4), round4, true)
-	assert.Equal(t, 0, len(noMore))
+	outputMsgs := simulator.checkAndFeedRoundMessages(t, Round(4), round4, true)
+	assert.Equal(t, 3, len(outputMsgs))
 	var lastOut *dkg.KeygenOutput
-	var secretKeys []bls.SecretKey
-	var indices []bls.Fr
-	var shares []bls.Fr
-
-	for i, machine := range simulator.machines {
-		out0, err := machine.Output()
+	indices := make([]bls.Fr, groupSize)
+	shares := make([]bls.Fr, groupSize)
+	for _, outputMsg := range outputMsgs {
+		assert.Equal(t, dkg.KeygenOutputType, outputMsg.MsgType)
+		output := dkg.KeygenOutput{}
+		err := output.Decode(outputMsg.Data)
 		assert.Nil(t, err)
-		assert.NotNil(t, out0)
-		assert.Equal(t, uint16(i+1), out0.Index)
-		assert.Equal(t, threshold, out0.Threshold)
-		assert.Equal(t, groupSize, out0.ShareCount)
+		assert.Equal(t, threshold, output.Threshold)
+		assert.Equal(t, groupSize, output.ShareCount)
 		if lastOut != nil {
-			assert.Equal(t, lastOut.PublicKey, out0.PublicKey)
-			assert.Equal(t, lastOut.SharePublicKeys, out0.SharePublicKeys)
+			assert.Equal(t, lastOut.PublicKey, output.PublicKey)
+			assert.Equal(t, lastOut.SharePublicKeys, output.SharePublicKeys)
 		}
-		skBytes := make([]byte, len(out0.SecretShare))
-		copy(skBytes, out0.SecretShare)
-		sk := bls.SecretKey{}
-		err = sk.Deserialize(skBytes)
+		skBytes := make([]byte, len(output.SecretShare))
+		copy(skBytes, output.SecretShare)
+		i := output.Index - 1
+		err = shares[i].SetBigEndianMod(skBytes)
 		assert.Nil(t, err)
-		secretKeys = append(secretKeys, sk)
-		fr := bls.Fr{}
-		err = fr.SetBigEndianMod(skBytes)
-		assert.Nil(t, err)
-		shares = append(shares, fr)
-		lastOut = out0
+		indices[i].SetInt64(int64(output.Index))
+
+		lastOut = &output
 	}
+
 	var pubKeys [][]byte
 
-	for _, sk := range secretKeys {
-		pubKeys = append(pubKeys, sk.GetPublicKey().Serialize())
+	for _, share := range shares {
+		pubKeys = append(pubKeys, bls.CastToSecretKey(&share).GetPublicKey().Serialize())
 	}
 	assert.Equal(t, lastOut.SharePublicKeys, pubKeys)
 
