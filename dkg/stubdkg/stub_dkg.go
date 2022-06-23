@@ -21,7 +21,7 @@ type DKG struct {
 	msgs map[Stage][]*ProtocolMsg
 }
 
-func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
+func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.KeyGenProtocol {
 	return &DKG{
 		identifier: identifier,
 		network:    network,
@@ -41,7 +41,7 @@ func (s *DKG) Start(init *dkg.Init) error {
 	return nil
 }
 
-func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutput, error) {
+func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, error) {
 	// TODO validate msg
 
 	dataMsg := &ProtocolMsg{}
@@ -67,7 +67,7 @@ func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutput, err
 		}
 	case StubStage3:
 		if len(s.msgs[StubStage3]) == len(s.operators) {
-			ret := &dkg.ProtocolOutput{
+			ret := &dkg.KeyGenOutput{
 				Share:       s.operatorShares[s.operatorID],
 				ValidatorPK: s.validatorPK,
 				OperatorPubKeys: map[types.OperatorID]*bls.PublicKey{

@@ -9,7 +9,7 @@ import (
 // Network is a collection of funcs for DKG
 type Network interface {
 	// StreamDKGOutput will stream to any subscriber the result of the DKG
-	StreamDKGOutput(output *SignedOutput) error
+	StreamDKGOutput(output map[types.OperatorID]*SignedOutput) error
 	// BroadcastDKGMessage will broadcast a msg to the dkg network
 	BroadcastDKGMessage(msg *SignedMessage) error
 }
@@ -31,7 +31,7 @@ type Operator struct {
 
 type Config struct {
 	// Protocol the DKG protocol implementation
-	Protocol            func(network Network, operatorID types.OperatorID, identifier RequestID) Protocol
+	Protocol            func(network Network, operatorID types.OperatorID, identifier RequestID) KeyGenProtocol
 	Network             Network
 	Storage             Storage
 	SignatureDomainType types.DomainType

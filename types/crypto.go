@@ -78,7 +78,6 @@ func (s Signature) VerifyMultiPubKey(data Root, domain DomainType, sigType Signa
 }
 
 func (s Signature) Verify(data Root, domain DomainType, sigType SignatureType, pkByts []byte) error {
-
 	computedRoot, err := ComputeSigningRoot(data, ComputeSignatureDomain(domain, sigType))
 	if err != nil {
 		return errors.Wrap(err, "could not compute signing root")
