@@ -8,7 +8,8 @@ import (
 
 // MsgNotBelonging tests an SSVMessage ID that doesn't belong to the validator
 func MsgNotBelonging() *tests.SpecTest {
-	dr := testingutils.AttesterRunner()
+	ks := testingutils.Testing4SharesSet()
+	dr := testingutils.AttesterRunner(ks)
 
 	msgs := []*types.SSVMessage{
 		{

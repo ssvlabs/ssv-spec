@@ -8,7 +8,8 @@ import (
 
 // InvalidDecidedMsg tests an invalid decided SSVMessage data
 func InvalidDecidedMsg() *tests.SpecTest {
-	dr := testingutils.AttesterRunner()
+	ks := testingutils.Testing4SharesSet()
+	dr := testingutils.AttesterRunner(ks)
 
 	msgs := []*types.SSVMessage{
 		{

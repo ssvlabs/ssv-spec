@@ -9,7 +9,8 @@ import (
 
 // DutyCommitteeIndexNotMatchingAttestations tests that a duty committee index == attestation committee index
 func DutyCommitteeIndexNotMatchingAttestations() *tests.SpecTest {
-	dr := testingutils.AttesterRunner()
+	ks := testingutils.Testing4SharesSet()
+	dr := testingutils.AttesterRunner(ks)
 
 	consensusData := &types.ConsensusData{
 		Duty: &types.Duty{

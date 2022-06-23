@@ -9,7 +9,8 @@ import (
 
 // FarFutureDuty tests a far future duty data
 func FarFutureDuty() *tests.SpecTest {
-	dr := testingutils.AttesterRunner()
+	ks := testingutils.Testing4SharesSet()
+	dr := testingutils.AttesterRunner(ks)
 
 	consensusData := &types.ConsensusData{
 		Duty: &types.Duty{
