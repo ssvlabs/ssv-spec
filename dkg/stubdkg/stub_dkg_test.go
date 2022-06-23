@@ -139,7 +139,6 @@ func makeSimulator(init *dkg.Init) *simulator {
 
 func (s *simulator) feedSuccess(t *testing.T, index int, msg *dkg.Message) []dkg.Message {
 	out, err := s.machines[index-1].ProcessMsg(msg)
-	fmt.Printf("%v\n", out)
 	require.Nil(t, err)
 	return out
 }
@@ -167,7 +166,6 @@ func (s *simulator) checkAndFeedRoundMessages(t *testing.T, round Round, message
 		err := msg.Decode(message.Data)
 		require.Nil(t, err)
 		require.Equal(t, round, msg.RoundNumber)
-		fmt.Printf("%v\n", groupSize)
 		for i := 1; i < int(groupSize)+1; i++ {
 			if i == int(msg.Receiver) || (msg.Receiver == uint16(0) && msg.Sender != uint16(i)) {
 
