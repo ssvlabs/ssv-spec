@@ -79,6 +79,8 @@ github.com/RockX-SG/bls-tss v0.1.3 h1:tp+Ws03Vjw8Mj425EiOht99G31+Jluu2ayWuRSTsSv
 github.com/RockX-SG/bls-tss v0.1.3/go.mod h1:7pY1UerM/lisd3Y0MaNJXwyejybUcb1+BJyBx5PRK6o=
 github.com/RockX-SG/bls-tss v0.1.4 h1:cjLN7AI+M+InOQrvcmEq2XJg0trhMkJX9eOoHovFLZk=
 github.com/RockX-SG/bls-tss v0.1.4/go.mod h1:i8lsOImJSp21DoOKurcjxuXzoq58a/VVgiEjqsYPcYc=
+github.com/RockX-SG/bls-tss v0.1.5 h1:JLYITMTvsRLK9rvxMhdtSKRLWLGmCDUQlj9KQn7KnFc=
+github.com/RockX-SG/bls-tss v0.1.5/go.mod h1:i8lsOImJSp21DoOKurcjxuXzoq58a/VVgiEjqsYPcYc=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
 github.com/Shopify/sarama v1.26.1/go.mod h1:NbSGBSSndYaIhRcBtY9V0U7AyH+x71bG668AuWys/yU=
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
@@ -1668,6 +1670,8 @@ golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d h1:Zu/JngovGLVi6t2J3nmAf3AoT
 golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c h1:aFV+BgZ4svzjfabn8ERpuB4JI4N6/rdy1iusx77G3oU=
 golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20220622161953-175b2fd9d664 h1:wEZYwx+kK+KlZ0hpvP2Ls1Xr4+RWnlzGFwPP0aiDjIU=
+golang.org/x/sys v0.0.0-20220622161953-175b2fd9d664/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201117132131-f5c789dd3221/go.mod h1:Nr5EML6q2oocZ2LXRh80K7BxOlk5/8JxuGnuhpl+muw=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/term v0.0.0-20210927222741-03fcf44c2211/go.mod h1:jbD1KX2456YbFQfuXm/mYQcufACuNUgVhRMnK/tPxf8=
