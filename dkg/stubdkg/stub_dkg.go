@@ -12,16 +12,14 @@ import (
 type DKG struct {
 	identifier dkg.RequestID
 	operatorID types.OperatorID
+	init       dkg.Init
+	myIndex    uint16
 	threshold  uint16
 
 	validatorPK    []byte
 	operatorShares map[types.OperatorID]*bls.SecretKey
 	msgs           map[Round][]*KeygenProtocolMsg
 	state          *blstss.KeygenSimple
-}
-
-func (s *DKG) Start() ([]dkg.Message, error) {
-	panic("implement me")
 }
 
 func (s *DKG) getOutput() (*dkg.Message, error) {
@@ -60,10 +58,19 @@ func (s *DKG) getOutput() (*dkg.Message, error) {
 	}, nil
 }
 
-func New(operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
+func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) dkg.Protocol {
+	var myIndex uint16 = 0
+	for i, id := range init.OperatorIDs {
+		if id == config.Operator.OperatorID {
+			myIndex = uint16(i) + 1
+		}
+	}
 	return &DKG{
+		init:       *init,
+		myIndex:    myIndex,
+		threshold:  init.Threshold,
 		identifier: identifier,
-		operatorID: operatorID,
+		operatorID: config.Operator.OperatorID,
 		msgs:       map[Round][]*KeygenProtocolMsg{},
 	}
 }
@@ -73,16 +80,8 @@ func (s *DKG) SetOperators(validatorPK []byte, operatorShares map[types.Operator
 	s.operatorShares = operatorShares
 }
 
-func (s *DKG) start(init *dkg.Init) ([]dkg.Message, error) {
-	var myIndex = -1
-	for i, id := range init.OperatorIDs {
-		if id == s.operatorID {
-			myIndex = i + 1
-		}
-	}
-	s.threshold = init.Threshold
-
-	s.state = blstss.NewKeygenSimple(myIndex, int(init.Threshold), len(init.OperatorIDs))
+func (s *DKG) Start() ([]dkg.Message, error) {
+	s.state = blstss.NewKeygenSimple(int(s.myIndex), int(s.threshold), len(s.init.OperatorIDs))
 	innerOutgoing := s.state.Init()
 	outgoing0, err := decodeOutgoing(innerOutgoing)
 	if err != nil {
@@ -96,17 +95,6 @@ func (s *DKG) start(init *dkg.Init) ([]dkg.Message, error) {
 }
 
 func (s *DKG) ProcessMsg(msg0 *dkg.Message) ([]dkg.Message, error) {
-	if msg0.MsgType == dkg.InitMsgType {
-		if s.state != nil {
-			return nil, errors.New("already initialized")
-		}
-		ini := &dkg.Init{}
-		err := ini.Decode(msg0.Data)
-		if err != nil {
-			return nil, err
-		}
-		return s.start(ini)
-	}
 	msg := &KeygenProtocolMsg{}
 	err := msg.Decode(msg0.Data)
 	if err != nil {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/herumi/bls-eth-go-binary/bls"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -112,43 +112,45 @@ type simulator struct {
 	machines   []dkg.Protocol
 }
 
-func makeSimulator(n uint16) *simulator {
-	var operators []types.OperatorID
+func makeSimulator(init *dkg.Init) *simulator {
+
 	var identifier dkg.RequestID
-	for i := 1; i < int(n)+1; i++ {
-		operators = append(operators, types.OperatorID(i))
-	}
+
 	var machines []dkg.Protocol
-	for _, operator := range operators {
-		m := New(operator, identifier)
+	for _, operator := range init.OperatorIDs {
+		m := New(init, identifier, dkg.ProtocolConfig{
+			Identifier: identifier,
+			Operator: &dkg.Operator{
+				OperatorID:       operator,
+				ETHAddress:       common.Address{},
+				EncryptionPubKey: nil,
+			},
+			BeaconNetwork: "",
+			Signer:        nil,
+		})
 		machines = append(machines, m)
 	}
 	return &simulator{
-		operators:  operators,
 		identifier: identifier,
+		operators:  init.OperatorIDs,
 		machines:   machines,
 	}
 }
 
 func (s *simulator) feedSuccess(t *testing.T, index int, msg *dkg.Message) []dkg.Message {
 	out, err := s.machines[index-1].ProcessMsg(msg)
-	assert.Nil(t, err)
+	fmt.Printf("%v\n", out)
+	require.Nil(t, err)
 	return out
 }
 
-func (s *simulator) initSuccess(t *testing.T, init *dkg.Init) []dkg.Message {
+func (s *simulator) initSuccess(t *testing.T) []dkg.Message {
 	var round1 []dkg.Message
 	for _, machine := range s.machines {
-		data, err := init.Encode()
-		assert.Nil(t, err)
-		out, err := machine.ProcessMsg(&dkg.Message{
-			MsgType:    dkg.InitMsgType,
-			Identifier: s.identifier,
-			Data:       data,
-		})
-		assert.Nil(t, err)
+		out, err := machine.Start()
+		require.Nil(t, err)
 		for _, message := range out {
-			assert.Equal(t, dkg.ProtocolMsgType, message.MsgType)
+			require.Equal(t, dkg.ProtocolMsgType, message.MsgType)
 			round1 = append(round1, message)
 		}
 	}
@@ -163,18 +165,19 @@ func (s *simulator) checkAndFeedRoundMessages(t *testing.T, round Round, message
 	for _, message := range messages {
 		msg := KeygenProtocolMsg{}
 		err := msg.Decode(message.Data)
-		assert.Nil(t, err)
-		assert.Equal(t, round, msg.RoundNumber)
-
+		require.Nil(t, err)
+		require.Equal(t, round, msg.RoundNumber)
+		fmt.Printf("%v\n", groupSize)
 		for i := 1; i < int(groupSize)+1; i++ {
 			if i == int(msg.Receiver) || (msg.Receiver == uint16(0) && msg.Sender != uint16(i)) {
+
 				out := s.feedSuccess(t, i, &message)
 				nextRound = append(nextRound, out...)
 			}
 		}
 	}
 	if finished {
-		assert.Equal(t, dkg.KeygenOutputType, nextRound[len(nextRound)-1].MsgType)
+		require.Equal(t, dkg.KeygenOutputType, nextRound[len(nextRound)-1].MsgType)
 	}
 
 	return nextRound
@@ -191,50 +194,54 @@ func checkTwoOfThree(t *testing.T, pubKey []byte, indices []bls.Fr, shares []bls
 	secretBytes := secret.Serialize()
 	var sk bls.SecretKey
 	sk.Deserialize(secretBytes)
-	assert.Equal(t, pubKey, sk.GetPublicKey().Serialize())
+	require.Equal(t, pubKey, sk.GetPublicKey().Serialize())
 }
 
 func TestStub(t *testing.T) {
 	types.InitBLS()
+	var operators []types.OperatorID
 	threshold := uint16(1)
 	groupSize := uint16(3)
-	simulator := makeSimulator(groupSize)
-
-	round1 := simulator.initSuccess(t, &dkg.Init{
+	for i := 1; i < int(groupSize)+1; i++ {
+		operators = append(operators, types.OperatorID(i))
+	}
+	simulator := makeSimulator(&dkg.Init{
 		Nonce:                 0,
-		OperatorIDs:           simulator.operators,
+		OperatorIDs:           operators,
 		Threshold:             threshold,
 		WithdrawalCredentials: []byte(""),
 	})
 
-	assert.Equal(t, 3, len(round1))
+	round1 := simulator.initSuccess(t)
+
+	require.Equal(t, 3, len(round1))
 	round2 := simulator.checkAndFeedRoundMessages(t, Round(1), round1, false)
-	assert.Equal(t, 3, len(round2))
+	require.Equal(t, 3, len(round2))
 	round3 := simulator.checkAndFeedRoundMessages(t, Round(2), round2, false)
-	assert.Equal(t, 6, len(round3))
+	require.Equal(t, 6, len(round3))
 	round4 := simulator.checkAndFeedRoundMessages(t, Round(3), round3, false)
-	assert.Equal(t, 3, len(round4))
+	require.Equal(t, 3, len(round4))
 	outputMsgs := simulator.checkAndFeedRoundMessages(t, Round(4), round4, true)
-	assert.Equal(t, 3, len(outputMsgs))
+	require.Equal(t, 3, len(outputMsgs))
 	var lastOut *dkg.KeygenOutput
 	indices := make([]bls.Fr, groupSize)
 	shares := make([]bls.Fr, groupSize)
 	for _, outputMsg := range outputMsgs {
-		assert.Equal(t, dkg.KeygenOutputType, outputMsg.MsgType)
+		require.Equal(t, dkg.KeygenOutputType, outputMsg.MsgType)
 		output := dkg.KeygenOutput{}
 		err := output.Decode(outputMsg.Data)
-		assert.Nil(t, err)
-		assert.Equal(t, threshold, output.Threshold)
-		assert.Equal(t, groupSize, output.ShareCount)
+		require.Nil(t, err)
+		require.Equal(t, threshold, output.Threshold)
+		require.Equal(t, groupSize, output.ShareCount)
 		if lastOut != nil {
-			assert.Equal(t, lastOut.PublicKey, output.PublicKey)
-			assert.Equal(t, lastOut.SharePublicKeys, output.SharePublicKeys)
+			require.Equal(t, lastOut.PublicKey, output.PublicKey)
+			require.Equal(t, lastOut.SharePublicKeys, output.SharePublicKeys)
 		}
 		skBytes := make([]byte, len(output.SecretShare))
 		copy(skBytes, output.SecretShare)
 		i := output.Index - 1
 		err = shares[i].SetBigEndianMod(skBytes)
-		assert.Nil(t, err)
+		require.Nil(t, err)
 		indices[i].SetInt64(int64(output.Index))
 
 		lastOut = &output
@@ -245,7 +252,7 @@ func TestStub(t *testing.T) {
 	for _, share := range shares {
 		pubKeys = append(pubKeys, bls.CastToSecretKey(&share).GetPublicKey().Serialize())
 	}
-	assert.Equal(t, lastOut.SharePublicKeys, pubKeys)
+	require.Equal(t, lastOut.SharePublicKeys, pubKeys)
 
 	for i := 1; i < int(groupSize)+1; i++ {
 		fr := bls.Fr{}
