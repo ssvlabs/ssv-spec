@@ -125,9 +125,14 @@ func (s *SignDepositData) partialSign() (*PartialSignature, error) {
 		return nil, err
 	}
 
-	root, err := s.getDepositDataSigningRoot(s.key.PublicKey)
+	root, _, err := types.GenerateETHDepositData(
+		s.key.PublicKey,
+		s.InitMsg.WithdrawalCredentials,
+		s.InitMsg.Fork,
+		types.DomainDeposit,
+	)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not generate deposit data")
 	}
 	rawSig := share.SignByte(root[:])
 	sigBytes := rawSig.Serialize()
@@ -137,45 +142,6 @@ func (s *SignDepositData) partialSign() (*PartialSignature, error) {
 		I:      s.key.Index,
 		SigmaI: sig,
 	}, nil
-}
-
-func (s *SignDepositData) getDepositDataSigningRoot(pubKey []byte) (spec.Root, error) {
-	var (
-		domain   spec.Domain
-		forkData spec.ForkData
-		pk48     spec.BLSPubKey
-	)
-	copy(pk48[:], pubKey)
-	message := spec.DepositMessage{
-		PublicKey:             pk48,
-		WithdrawalCredentials: s.InitMsg.WithdrawalCredentials,
-		Amount:                32_000_000_000,
-	}
-	depositDomain := spec.DomainType{0x03, 0x00, 0x00, 0x00}
-
-	msgRoot, err := message.HashTreeRoot()
-	if err != nil {
-		return [32]byte{}, err
-	}
-
-	forkVersion := s.config.BeaconNetwork.ForkVersion()
-	copy(forkData.CurrentVersion[:], forkVersion[:])
-	forkDataRoot, err := forkData.HashTreeRoot()
-	if err != nil {
-		return [32]byte{}, err
-	}
-
-	copy(domain[:], depositDomain[:])
-	copy(domain[4:], forkDataRoot[:])
-	signingData := spec.SigningData{
-		ObjectRoot: msgRoot,
-		Domain:     domain,
-	}
-	root, err := signingData.HashTreeRoot()
-	if err != nil {
-		return [32]byte{}, err
-	}
-	return root, nil
 }
 
 // TODO: Standardize PartialDepositData and PartialSignature
