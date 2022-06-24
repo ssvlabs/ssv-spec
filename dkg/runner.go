@@ -12,8 +12,6 @@ type Runner struct {
 	InitMsg *Init
 	// Identifier unique for DKG session
 	Identifier RequestID
-	// ProtocolOutput holds the protocol output once it finishes
-	//ProtocolOutput *ProtocolOutput
 	// DepositDataRoot is the signing root for the deposit data
 	DepositDataRoot []byte
 	// DepositDataSignatures holds partial sigs on deposit data
