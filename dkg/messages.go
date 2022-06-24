@@ -46,12 +46,17 @@ func NewRequestID(ethAddress common.Address, index uint32) RequestID {
 type MsgType int
 
 const (
+	// InitMsgType sent when DKG instance is started by requester
 	InitMsgType MsgType = iota
+	// ProtocolMsgType is the DKG itself
 	ProtocolMsgType
 	KeygenOutputType
 	PartialSigType
-	DepositDataMsgType
 	PartialOutputMsgType
+	// DepositDataMsgType post DKG deposit data signatures
+	DepositDataMsgType
+	// OutputMsgType final output msg used by requester to make deposits and register validator with SSV
+	OutputMsgType
 )
 
 type Message struct {
@@ -121,6 +126,8 @@ type Init struct {
 	Threshold uint16
 	// WithdrawalCredentials used when signing the deposit data
 	WithdrawalCredentials []byte
+	// Fork is eth2 fork version
+	Fork spec.Version
 }
 
 func (msg *Init) Validate() error {
@@ -177,8 +184,8 @@ func (d *PartialSignature) Decode(data []byte) error {
 
 // Output is the last message in every DKG which marks a specific node's end of process
 type Output struct {
-	// Identifier of the DKG
-	Identifier RequestID
+	// RequestID for the DKG instance (not used for signing)
+	RequestID RequestID
 	// ShareIndex the 1-based index of the share
 	ShareIndex uint16
 	// EncryptedShare standard SSV encrypted shares
@@ -193,24 +200,17 @@ type Output struct {
 	ValidatorPubKey types.ValidatorPK
 	// WithdrawalCredentials same as in Init
 	WithdrawalCredentials []byte
-	// SignedDepositData reconstructed signature of DepositMessage according to eth2 spec
-	SignedDepositData types.Signature
+	// DepositDataSignature reconstructed signature of DepositMessage according to eth2 spec
+	DepositDataSignature types.Signature
 }
 
 func (o *Output) GetRoot() ([]byte, error) {
-	uint16Solidity, _ := abi.NewType("uint16", "", nil)
 	bytesSolidity, _ := abi.NewType("bytes", "", nil)
 
 	// TODO: Include RequestID, SharePubKeys and ShareIndex
 	arguments := abi.Arguments{
 		{
 			Type: bytesSolidity,
-		},
-		{
-			Type: uint16Solidity,
-		},
-		{
-			Type: uint16Solidity,
 		},
 		{
 			Type: bytesSolidity,
@@ -225,11 +225,9 @@ func (o *Output) GetRoot() ([]byte, error) {
 
 	bytes, _ := arguments.Pack(
 		o.EncryptedShare,
-		o.DKGSetSize,
-		o.Threshold,
+		//o.SharePubKeys, // TODO: Add later
 		o.ValidatorPubKey,
-		o.WithdrawalCredentials,
-		o.SignedDepositData,
+		o.DepositDataSignature,
 	)
 
 	return crypto.Keccak256(bytes), nil
@@ -266,7 +264,7 @@ func SignOutput(output *Output, privKey *ecdsa.PrivateKey) (types.Signature, err
 // PartialDepositData contains a partial deposit data signature
 type PartialDepositData struct {
 	Signer    types.OperatorID
-	Root      types.Root
+	Root      []byte
 	Signature types.Signature
 }
 

@@ -199,3 +199,4 @@ The [spec tests](ssv/spectest) are a generated as a json file that can be run in
 - [X] pre and post consensus timeout redesign as 32 slot timeout can cause the next duty not to start (if it starts in less than 32 slots)
 - [ ] Move ConsensusData struct to ssv package
 - [ ] Remove? storage interface? do we use it?
+- [ ] move spec structs from go-eth2-client to protolambda/zrnt?

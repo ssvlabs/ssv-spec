@@ -2,11 +2,12 @@ package testingutils
 
 import (
 	"crypto/ecdsa"
-	"crypto/rand"
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 var TestingWithdrawalCredentials, _ = hex.DecodeString("0x010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f")
@@ -14,8 +15,17 @@ var TestingWithdrawalCredentials, _ = hex.DecodeString("0x0100000000000000000000
 var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
 	config := &dkg.Config{
-		Protocol: func(operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
-			ret := stubdkg.New(operatorID, identifier)
+		Protocol: func(init *dkg.Init, operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
+			ret := stubdkg.New(init, identifier, dkg.ProtocolConfig{
+				Identifier:    identifier,
+				Operator:      &dkg.Operator{
+					OperatorID:       operatorID,
+					ETHAddress:       common.Address{},
+					EncryptionPubKey: nil,
+				}, // TODO: Fix this
+				BeaconNetwork: "",
+				Signer:        nil,
+			})
 			ret.(*stubdkg.DKG).SetOperators(
 				Testing4SharesSet().ValidatorPK.Serialize(),
 				Testing4SharesSet().Shares,
@@ -40,7 +50,7 @@ var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *dkg.Messag
 	sigType := types.DKGSignatureType
 
 	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
-	sig, _ := sk.Sign(rand.Reader, r, nil)
+	sig, _ := crypto.Sign(r, sk)
 
 	return &dkg.SignedMessage{
 		Message:   msg,
@@ -57,4 +67,13 @@ var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, 
 	}
 	byts, _ := m.Encode()
 	return byts
+}
+
+var ProtocolMsgDataBytes = func(stage stubdkg.Stage) []byte {
+	d := &stubdkg.ProtocolMsg{
+		Stage: stage,
+	}
+
+	ret, _ := d.Encode()
+	return ret
 }

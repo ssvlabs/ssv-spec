@@ -13,9 +13,16 @@ type Runner struct {
 	// Identifier unique for DKG session
 	Identifier RequestID
 	// ProtocolOutput holds the protocol output once it finishes
-	ProtocolOutput *ProtocolOutput
+	//ProtocolOutput *ProtocolOutput
+	// DepositDataRoot is the signing root for the deposit data
+	DepositDataRoot []byte
+	// DepositDataSignatures holds partial sigs on deposit data
+	DepositDataSignatures map[types.OperatorID]*PartialDepositData
 	// PartialSignatures holds partial sigs on deposit data
 	PartialSignatures map[types.OperatorID][]byte
+	// OutputMsgs holds all output messages received
+	OutputMsgs map[types.OperatorID]*SignedOutput
+
 	I                 uint16
 
 	keygenSubProtocol Protocol
@@ -46,7 +53,7 @@ func (r *Runner) Start() error {
 }
 
 // ProcessMsg processes a DKG signed message and returns true and signed output if finished
-func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
+func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*SignedOutput, error) {
 	// TODO - validate message
 
 	switch msg.Message.MsgType {
@@ -88,7 +95,63 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, *SignedOutput, error) {
 			return true, nil, err
 		}
 
+		/*
 		// TODO: Do we need to aggregate the signed outputs.
+	case DepositDataMsgType:
+		depSig := &PartialDepositData{}
+		if err := depSig.Decode(msg.Message.Data); err != nil {
+			return false, nil, errors.Wrap(err, "could not decode PartialDepositData")
+		}
+
+		if err := r.validateDepositDataSig(depSig); err != nil {
+			return false, nil, errors.Wrap(err, "PartialDepositData invalid")
+		}
+
+		r.DepositDataSignatures[msg.Signer] = depSig
+		if len(r.DepositDataSignatures) == int(r.InitMsg.Threshold) {
+			// reconstruct deposit data sig
+			depositSig, err := r.reconstructDepositDataSignature()
+			if err != nil {
+				return false, nil, errors.Wrap(err, "could not reconstruct deposit data sig")
+			}
+
+			// encrypt Operator's share
+			encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeyGenOutput.Share.Serialize())
+			if err != nil {
+				return false, nil, errors.Wrap(err, "could not encrypt share")
+			}
+
+			ret, err := r.generateSignedOutput(&Output{
+				RequestID:            r.Identifier,
+				EncryptedShare:       encryptedShare,
+				SharePubKey:          r.KeyGenOutput.Share.GetPublicKey().Serialize(),
+				ValidatorPubKey:      r.KeyGenOutput.ValidatorPK,
+				DepositDataSignature: depositSig,
+			})
+			if err != nil {
+				return false, nil, errors.Wrap(err, "could not generate dkg SignedOutput")
+			}
+
+			if err := r.signAndBroadcastMsg(ret, OutputMsgType); err != nil {
+				return false, nil, errors.Wrap(err, "could not broadcast SignedOutput")
+			}
+			return false, nil, nil
+		} */
+	case OutputMsgType:
+		output := &SignedOutput{}
+		if err := output.Decode(msg.Message.Data); err != nil {
+			return false, nil, errors.Wrap(err, "could not decode SignedOutput")
+		}
+
+		if err := r.validateSignedOutput(output); err != nil {
+			return false, nil, errors.Wrap(err, "signed output invali")
+		}
+
+		r.OutputMsgs[msg.Signer] = output
+		if len(r.OutputMsgs) == int(r.InitMsg.Threshold) {
+			return true, r.OutputMsgs, nil
+		}
+		return false, nil, nil
 	default:
 		return false, nil, errors.New("msg type invalid")
 	}
@@ -136,4 +199,8 @@ func (r *Runner) signAndBroadcast(msg *Message) error {
 
 func hasOutput(msgs []Message, msgType MsgType) bool {
 	return msgs != nil && len(msgs) > 0 && msgs[len(msgs)-1].MsgType == msgType
+}
+
+func (r *Runner) validateSignedOutput(msg *SignedOutput) error {
+	panic("implement")
 }

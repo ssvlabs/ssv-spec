@@ -25,7 +25,7 @@ func (net *TestingNetwork) BroadcastDecided(msg types.Encoder) error {
 }
 
 // StreamDKGOutput will stream to any subscriber the result of the DKG
-func (net *TestingNetwork) StreamDKGOutput(output *dkg.SignedOutput) error {
+func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.SignedOutput) error {
 	return nil
 }
 

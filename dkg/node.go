@@ -55,8 +55,9 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 		Identifier:        id,
 		I:                 i,
 		PartialSignatures: map[types.OperatorID][]byte{},
+		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		config:            n.config,
-		keygenSubProtocol: n.config.Protocol(n.operator.OperatorID, id),
+		keygenSubProtocol: n.config.Protocol(initMsg, n.operator.OperatorID, id),
 	}
 
 	return runner, nil
@@ -64,11 +65,13 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 
 // ProcessMessage processes network Messages of all types
 func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
-	// TODO validate msg
-
 	signedMsg := &SignedMessage{}
 	if err := signedMsg.Decode(msg.GetData()); err != nil {
 		return errors.Wrap(err, "could not get dkg Message from network Messages")
+	}
+
+	if err := n.validateSignedMessage(signedMsg); err != nil {
+		return errors.Wrap(err, "signed message doesn't pass validation")
 	}
 
 	switch signedMsg.Message.MsgType {
@@ -83,10 +86,18 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 	}
 }
 
+func (n *Node) validateSignedMessage(message *SignedMessage) error {
+	if err := message.Validate(); err != nil {
+		return errors.Wrap(err, "message invalid")
+	}
+
+	return nil
+}
+
 func (n *Node) startNewDKGMsg(message *SignedMessage) error {
 	initMsg, err := n.validateInitMsg(message)
 	if err != nil {
-		return errors.Wrap(err, "could not process new dkg msg")
+		return errors.Wrap(err, "could not start new dkg")
 	}
 
 	runner, err := n.newRunner(message.Message.Identifier, initMsg)
@@ -105,10 +116,6 @@ func (n *Node) startNewDKGMsg(message *SignedMessage) error {
 }
 
 func (n *Node) validateInitMsg(message *SignedMessage) (*Init, error) {
-	if err := message.Validate(); err != nil {
-		return nil, errors.Wrap(err, "message invalid")
-	}
-
 	// validate identifier.GetEthAddress is the signer for message
 	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, message.Message.Identifier.GetETHAddress()); err != nil {
 		return nil, errors.Wrap(err, "signed message invalid")
@@ -132,9 +139,9 @@ func (n *Node) validateInitMsg(message *SignedMessage) (*Init, error) {
 }
 
 func (n *Node) processDKGMsg(message *SignedMessage) error {
-	runner := n.runners.RunnerForID(message.Message.Identifier)
-	if runner == nil {
-		return errors.New("could not find dkg runner")
+	runner, err := n.validateDKGMsg(message)
+	if err != nil {
+		return errors.Wrap(err, "dkg msg not valid")
 	}
 
 	finished, output, err := runner.ProcessMsg(message)
@@ -150,4 +157,25 @@ func (n *Node) processDKGMsg(message *SignedMessage) error {
 	}
 
 	return nil
+}
+
+func (n *Node) validateDKGMsg(message *SignedMessage) (*Runner, error) {
+	runner := n.runners.RunnerForID(message.Message.Identifier)
+	if runner == nil {
+		return nil, errors.New("could not find dkg runner")
+	}
+
+	// find signing operator and verify sig
+	found, signingOperator, err := n.config.Storage.GetDKGOperator(message.Signer)
+	if err != nil {
+		return nil, errors.Wrap(err, "can't fetch operator")
+	}
+	if !found {
+		return nil, errors.New("can't find operator")
+	}
+	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, signingOperator.ETHAddress); err != nil {
+		return nil, errors.Wrap(err, "signed message invalid")
+	}
+
+	return runner, nil
 }

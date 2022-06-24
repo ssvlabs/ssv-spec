@@ -5,8 +5,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// ProtocolOutput is the bare minimum output from the protocol
-type ProtocolOutput struct {
+// KeyGenOutput is the bare minimum output from the protocol
+type KeyGenOutput struct {
 	Share           *bls.SecretKey
 	OperatorIDs     []types.OperatorID
 	OperatorPubKeys []bls.PublicKey

@@ -1,7 +1,7 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"testing"
 )
 
@@ -11,5 +11,5 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	roundchange.HappyFlow(),
+	tests.HappyFlow(),
 }

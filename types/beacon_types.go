@@ -1,6 +1,17 @@
 package types
 
-import spec "github.com/attestantio/go-eth2-client/spec/phase0"
+import (
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"time"
+)
+
+var DomainDeposit = [4]byte{0x03, 0x00, 0x00, 0x00}
+
+// MaxEffectiveBalanceInGwei is the max effective balance
+const MaxEffectiveBalanceInGwei uint64 = 32000000000
+
+// BLSWithdrawalPrefixByte is the BLS withdrawal prefix
+const BLSWithdrawalPrefixByte = byte(0)
 
 // BeaconRole type of the validator role for a specific duty
 type BeaconRole int
@@ -50,4 +61,96 @@ type Duty struct {
 	CommitteesAtSlot uint64
 	// ValidatorCommitteeIndex is the index of the validator in the list of validators in the committee.
 	ValidatorCommitteeIndex uint64
+}
+
+// Available networks.
+const (
+	// PraterNetwork represents the Prater test network.
+	PraterNetwork BeaconNetwork = "prater"
+
+	// MainNetwork represents the main network.
+	MainNetwork BeaconNetwork = "mainnet"
+
+	// NowTestNetwork is a simple test network with genesis time always equal to now, meaning now is slot 0
+	NowTestNetwork BeaconNetwork = "now_test_network"
+)
+
+// BeaconNetwork represents the network.
+type BeaconNetwork string
+
+// NetworkFromString returns network from the given string value
+func NetworkFromString(n string) BeaconNetwork {
+	switch n {
+	case string(PraterNetwork):
+		return PraterNetwork
+	case string(MainNetwork):
+		return MainNetwork
+	case string(NowTestNetwork):
+		return NowTestNetwork
+	default:
+		return ""
+	}
+}
+
+// ForkVersion returns the fork version of the network.
+func (n BeaconNetwork) ForkVersion() [4]byte {
+	switch n {
+	case PraterNetwork:
+		return [4]byte{0x00, 0x00, 0x10, 0x20}
+	case MainNetwork:
+		return [4]byte{0, 0, 0, 0}
+	case NowTestNetwork:
+		return [4]byte{0x99, 0x99, 0x99, 0x99}
+	default:
+		return [4]byte{0x98, 0x98, 0x98, 0x98}
+	}
+}
+
+// MinGenesisTime returns min genesis time value
+func (n BeaconNetwork) MinGenesisTime() uint64 {
+	switch n {
+	case PraterNetwork:
+		return 1616508000
+	case MainNetwork:
+		return 1606824023
+	case NowTestNetwork:
+		return uint64(time.Now().Unix())
+	default:
+		return 0
+	}
+}
+
+// SlotDurationSec returns slot duration
+func (n BeaconNetwork) SlotDurationSec() time.Duration {
+	return 12 * time.Second
+}
+
+// SlotsPerEpoch returns number of slots per one epoch
+func (n BeaconNetwork) SlotsPerEpoch() uint64 {
+	return 32
+}
+
+// EstimatedCurrentSlot returns the estimation of the current slot
+func (n BeaconNetwork) EstimatedCurrentSlot() spec.Slot {
+	return n.EstimatedSlotAtTime(time.Now().Unix())
+}
+
+// EstimatedSlotAtTime estimates slot at the given time
+func (n BeaconNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
+	genesis := int64(n.MinGenesisTime())
+	if time < genesis {
+		return 0
+	}
+	return spec.Slot(uint64(time-genesis) / uint64(n.SlotDurationSec().Seconds()))
+}
+
+// EstimatedCurrentEpoch estimates the current epoch
+// https://github.com/ethereum/eth2.0-specs/blob/dev/specs/phase0/beacon-chain.md#compute_start_slot_at_epoch
+func (n BeaconNetwork) EstimatedCurrentEpoch() spec.Epoch {
+	return n.EstimatedEpochAtSlot(n.EstimatedCurrentSlot())
+}
+
+// EstimatedEpochAtSlot estimates epoch at the given slot
+func (n BeaconNetwork) EstimatedEpochAtSlot(slot spec.Slot) spec.Epoch {
+	return spec.Epoch(slot / spec.Slot(n.SlotsPerEpoch()))
 }

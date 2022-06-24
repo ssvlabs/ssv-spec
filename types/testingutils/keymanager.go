@@ -199,6 +199,10 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 	panic("implemet")
 }
 
+func (km *testingKeyManager) SignETHDepositRoot(root []byte, pk []byte) (types.Signature, error) {
+	panic("implemet")
+}
+
 func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {
 	km.keys[hex.EncodeToString(shareKey.GetPublicKey().Serialize())] = shareKey
 	return nil

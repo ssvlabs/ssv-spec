@@ -1,7 +1,6 @@
 package processmsg
 
 import (
-	"github.com/bloxapp/ssv/beacon"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -9,12 +8,13 @@ import (
 
 // MsgNotBelonging tests an SSVMessage ID that doesn't belong to the validator
 func MsgNotBelonging() *tests.SpecTest {
-	dr := testingutils.AttesterRunner()
+	ks := testingutils.Testing4SharesSet()
+	dr := testingutils.AttesterRunner(ks)
 
 	msgs := []*types.SSVMessage{
 		{
 			MsgType: 100,
-			MsgID:   types.NewMsgID(testingutils.TestingWrongValidatorPubKey[:], beacon.RoleTypeAttester),
+			MsgID:   types.NewMsgID(testingutils.TestingWrongValidatorPubKey[:], types.BNRoleAttester),
 			Data:    []byte{1, 2, 3, 4},
 		},
 	}

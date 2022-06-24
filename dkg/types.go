@@ -2,7 +2,6 @@ package dkg
 
 import (
 	"crypto/rsa"
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -10,9 +9,10 @@ import (
 // Network is a collection of funcs for DKG
 type Network interface {
 	// StreamDKGOutput will stream to any subscriber the result of the DKG
-	StreamDKGOutput(output *SignedOutput) error
+	StreamDKGOutput(output map[types.OperatorID]*SignedOutput) error
 	// Broadcast will broadcast a msg to the dkg network
 	Broadcast(msg types.Encoder) error
+
 }
 
 type Storage interface {
@@ -34,14 +34,14 @@ type ProtocolConfig struct {
 	// Identifier unique for DKG session
 	Identifier RequestID
 	Operator *Operator
-	BeaconNetwork       ssv.BeaconNetwork
+	BeaconNetwork       types.BeaconNetwork
 	Signer              types.DKGSigner
 }
 
 type Config struct {
 	// Protocol the DKG protocol implementation
-	Protocol            func(operatorID types.OperatorID, identifier RequestID) Protocol
-	BeaconNetwork       ssv.BeaconNetwork
+	Protocol            func(init *Init, operatorID types.OperatorID, identifier RequestID) Protocol
+	BeaconNetwork       types.BeaconNetwork
 	Network             Network
 	Storage             Storage
 	SignatureDomainType types.DomainType

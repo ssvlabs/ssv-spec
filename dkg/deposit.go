@@ -15,6 +15,7 @@ type SignDepositData struct {
 	InitMsg *Init
 	// PartialSignatures holds partial sigs on deposit data
 	PartialSignatures map[types.OperatorID][]byte
+	DepositDataRoot   spec.Root
 	key               *KeygenOutput
 	config            ProtocolConfig
 }
@@ -77,13 +78,15 @@ func (s *SignDepositData) ProcessMsg(msg *Message) ([]Message, error) {
 		}
 
 		signedOut, err := s.generateSignedOutput(&Output{
-			Identifier:            s.Identifier,
+			RequestID:             s.Identifier,
+			ShareIndex:            s.key.Index,
 			EncryptedShare:        encryptedShare,
 			DKGSetSize:            uint16(len(s.InitMsg.OperatorIDs)),
 			Threshold:             s.InitMsg.Threshold,
+			SharePubKeys:          s.key.SharePublicKeys,
 			ValidatorPubKey:       s.key.PublicKey,
 			WithdrawalCredentials: s.InitMsg.WithdrawalCredentials,
-			SignedDepositData:     sig.Serialize(),
+			DepositDataSignature:  sig.Serialize(),
 		})
 		if err != nil {
 			return nil, errors.Wrap(err, "could not generate dkg SignedOutput")
@@ -155,7 +158,8 @@ func (s *SignDepositData) getDepositDataSigningRoot(pubKey []byte) (spec.Root, e
 		return [32]byte{}, err
 	}
 
-	copy(forkData.CurrentVersion[:], s.config.BeaconNetwork.ForkVersion())
+	forkVersion := s.config.BeaconNetwork.ForkVersion()
+	copy(forkData.CurrentVersion[:], forkVersion[:])
 	forkDataRoot, err := forkData.HashTreeRoot()
 	if err != nil {
 		return [32]byte{}, err
@@ -172,4 +176,39 @@ func (s *SignDepositData) getDepositDataSigningRoot(pubKey []byte) (spec.Root, e
 		return [32]byte{}, err
 	}
 	return root, nil
+}
+
+// TODO: Standardize PartialDepositData and PartialSignature
+func (s *SignDepositData) validateDepositDataSig(msg *PartialDepositData) error {
+	if !bytes.Equal(s.DepositDataRoot[:], msg.Root) {
+		return errors.New("deposit data roots not equal")
+	}
+
+	index := -1
+	for i, d := range s.InitMsg.OperatorIDs {
+		if d == msg.Signer {
+			index = i
+		}
+	}
+
+	if index == -1 {
+		return errors.New("signer not part of committee")
+	}
+
+	// find operator and verify msg
+	sharePkBytes := s.key.SharePublicKeys[index]
+	sharePk := &bls.PublicKey{} // TODO: cache this PubKey
+	if err := sharePk.Deserialize(sharePkBytes); err != nil {
+		return errors.Wrap(err, "could not deserialize public key")
+	}
+
+	sig := &bls.Sign{}
+	if err := sig.Deserialize(msg.Signature); err != nil {
+		return errors.Wrap(err, "could not deserialize partial sig")
+	}
+	if !sig.VerifyByte(sharePk, s.DepositDataRoot[:]) {
+		return errors.New("partial deposit data sig invalid")
+	}
+
+	return nil
 }

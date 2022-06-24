@@ -7,27 +7,27 @@ import (
 )
 
 var AttesterRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleAttester, ssv.BeaconAttestationValueCheck(NewTestingKeyManager(), ssv.NowTestNetwork), keySet)
+	return baseRunner(types.BNRoleAttester, ssv.BeaconAttestationValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
 }
 
 var AttesterRunner7Operators = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleAttester, ssv.BeaconAttestationValueCheck(NewTestingKeyManager(), ssv.NowTestNetwork), keySet)
+	return baseRunner(types.BNRoleAttester, ssv.BeaconAttestationValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
 }
 
 var ProposerRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleProposer, ssv.BeaconBlockValueCheck(NewTestingKeyManager(), ssv.NowTestNetwork), keySet)
+	return baseRunner(types.BNRoleProposer, ssv.BeaconBlockValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
 }
 
 var AggregatorRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleAggregator, ssv.AggregatorValueCheck(NewTestingKeyManager(), ssv.NowTestNetwork), keySet)
+	return baseRunner(types.BNRoleAggregator, ssv.AggregatorValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
 }
 
 var SyncCommitteeRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleSyncCommittee, ssv.SyncCommitteeValueCheck(NewTestingKeyManager(), ssv.NowTestNetwork), keySet)
+	return baseRunner(types.BNRoleSyncCommittee, ssv.SyncCommitteeValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
 }
 
 var SyncCommitteeContributionRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheck(NewTestingKeyManager(), ssv.NowTestNetwork), keySet)
+	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
 }
 
 var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheck, keySet *TestKeySet) *ssv.Runner {
@@ -36,7 +36,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheck, k
 
 	return ssv.NewDutyRunner(
 		role,
-		ssv.NowTestNetwork,
+		types.NowTestNetwork,
 		share,
 		NewTestingQBFTController(identifier[:], share, valCheck),
 		NewTestingStorage(),

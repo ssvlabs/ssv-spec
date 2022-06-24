@@ -27,8 +27,7 @@ func Encoding() *tests.EncodingSpecTest {
 	}
 
 	return &tests.EncodingSpecTest{
-		Name:     "encoding ConsensusData",
-		DataType: tests.ConsensusDataType,
-		Data:     byts,
+		Name: "encoding ConsensusData",
+		Data: byts,
 	}
 }

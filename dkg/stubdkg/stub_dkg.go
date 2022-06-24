@@ -15,6 +15,7 @@ type DKG struct {
 	init       dkg.Init
 	myIndex    uint16
 	threshold  uint16
+	operators  []types.OperatorID // TODO: Remove? Already included in init.
 
 	validatorPK    []byte
 	operatorShares map[types.OperatorID]*bls.SecretKey
