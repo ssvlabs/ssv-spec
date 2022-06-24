@@ -51,7 +51,6 @@ const (
 	// ProtocolMsgType is the DKG itself
 	ProtocolMsgType
 	KeygenOutputType
-	PartialSigType
 	PartialOutputMsgType
 	// DepositDataMsgType post DKG deposit data signatures
 	DepositDataMsgType
@@ -164,21 +163,6 @@ func (d *KeygenOutput) Encode() ([]byte, error) {
 
 // Decode returns error if decoding failed
 func (d *KeygenOutput) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-type PartialSignature struct {
-	I      uint16
-	SigmaI spec.BLSSignature
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *PartialSignature) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *PartialSignature) Decode(data []byte) error {
 	return json.Unmarshal(data, &d)
 }
 

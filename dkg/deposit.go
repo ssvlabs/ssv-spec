@@ -40,7 +40,7 @@ func (s *SignDepositData) Start() ([]Message, error) {
 		return nil, err
 	}
 	partialSigMsg := Message{
-		MsgType:    PartialSigType,
+		MsgType:    DepositDataMsgType,
 		Identifier: s.Identifier,
 		Data:       data,
 	}
@@ -49,19 +49,22 @@ func (s *SignDepositData) Start() ([]Message, error) {
 
 func (s *SignDepositData) ProcessMsg(msg *Message) ([]Message, error) {
 
-	if msg.MsgType != PartialSigType {
+	if msg.MsgType != DepositDataMsgType {
 		return nil, errors.New("invalid message type")
 	}
 
-	pMsg := PartialSignature{}
+	pMsg := &PartialDepositData{}
 	err := pMsg.Decode(msg.Data)
 	if err != nil {
 		return nil, err
 	}
-	id := s.InitMsg.OperatorIDs[pMsg.I-1]
-	if found := s.PartialSignatures[id]; found == nil {
-		s.PartialSignatures[id] = pMsg.SigmaI[:]
-	} else if bytes.Compare(found, pMsg.SigmaI[:]) != 0 {
+	if err = s.validateDepositDataSig(pMsg); err != nil {
+		return nil, errors.Wrap(err, "PartialDepositData invalid")
+	}
+
+	if found := s.PartialSignatures[pMsg.Signer]; found == nil {
+		s.PartialSignatures[pMsg.Signer] = pMsg.Signature
+	} else if bytes.Compare(found, pMsg.Signature) != 0 {
 		return nil, errors.New("inconsistent partial signature received")
 	}
 	if len(s.PartialSignatures) > int(s.InitMsg.Threshold) {
@@ -118,7 +121,7 @@ func (s *SignDepositData) generateSignedOutput(o *Output) (*SignedOutput, error)
 	}, nil
 }
 
-func (s *SignDepositData) partialSign() (*PartialSignature, error) {
+func (s *SignDepositData) partialSign() (*PartialDepositData, error) {
 	share := bls.SecretKey{}
 	err := share.Deserialize(s.key.SecretShare)
 	if err != nil {
@@ -138,13 +141,13 @@ func (s *SignDepositData) partialSign() (*PartialSignature, error) {
 	sigBytes := rawSig.Serialize()
 	var sig spec.BLSSignature
 	copy(sig[:], sigBytes)
-	return &PartialSignature{
-		I:      s.key.Index,
-		SigmaI: sig,
+	return &PartialDepositData{
+		Signer:    s.config.Operator.OperatorID,
+		Root:      root,
+		Signature: sig[:],
 	}, nil
 }
 
-// TODO: Standardize PartialDepositData and PartialSignature
 func (s *SignDepositData) validateDepositDataSig(msg *PartialDepositData) error {
 	if !bytes.Equal(s.DepositDataRoot[:], msg.Root) {
 		return errors.New("deposit data roots not equal")

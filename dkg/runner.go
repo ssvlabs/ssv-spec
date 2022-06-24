@@ -86,7 +86,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			}
 			err = r.broadcastMessages(outgoing1, ProtocolMsgType)
 		}
-	case PartialSigType:
+	case DepositDataMsgType:
 		outgoing, err := r.signSubProtocol.ProcessMsg(msg.Message)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to partial sig msg")
