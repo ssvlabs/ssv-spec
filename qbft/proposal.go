@@ -1,6 +1,7 @@
 package qbft
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -164,6 +165,11 @@ func isProposalJustification(
 			rcmData, err := rcm.Message.GetRoundChangeData()
 			if err != nil {
 				return errors.Wrap(err, "could not get round change data")
+			}
+
+			// proposed value must equal highest prepared value
+			if !bytes.Equal(value, rcmData.PreparedValue) {
+				return errors.New("proposed data doesn't match highest prepared")
 			}
 
 			// validate each prepare message against the highest previously prepared value and round

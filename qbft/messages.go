@@ -122,8 +122,9 @@ func (d *RoundChangeData) Validate() error {
 		if len(d.RoundChangeJustification) == 0 {
 			return errors.New("round change justification invalid")
 		}
+		// TODO - should next proposal data be equal to prepared value?
 	}
-	
+
 	if len(d.NextProposalData) == 0 {
 		return errors.New("round change next value invalid")
 	}

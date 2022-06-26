@@ -5,6 +5,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
 	"testing"
 )
@@ -15,6 +16,13 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	proposal.HappyFlow(),
+	proposal.NotPreparedPreviouslyJustification(),
+	proposal.PreparedPreviouslyJustification(),
+	proposal.DifferentJustifications(),
+	proposal.JustificationsNotHeighest(),
+	proposal.JustificationsValueNotJustified(),
+
 	messages.RoundChangeDataInvalidJustifications(),
 	messages.RoundChangeDataInvalidPreparedRound(),
 	messages.RoundChangeDataInvalidPreparedValue(),
