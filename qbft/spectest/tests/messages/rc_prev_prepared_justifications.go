@@ -1,4 +1,4 @@
-package prepare
+package messages
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,17 +7,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongRound tests prepare msg received with the wrong round
-func WrongRound() *tests.MsgProcessingSpecTest {
-	pre := testingutils.BaseInstance()
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-		}),
+// RoundChangePrePreparedJustifications tests valid justified change round (prev prepared)
+func RoundChangePrePreparedJustifications() *tests.MsgSpecTest {
+	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,
@@ -39,19 +31,20 @@ func WrongRound() *tests.MsgProcessingSpecTest {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "wrong commit round",
-		Pre:           pre,
-		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
-		InputMessages: msgs,
-		ExpectedError: "commit msg invalid: commit round is wrong",
+
+	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		MsgType:    qbft.RoundChangeMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      10,
+		Identifier: []byte{1, 2, 3, 4},
+		Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+	})
+
+	return &tests.MsgSpecTest{
+		Name: "rc prev prepared justifications",
+		Messages: []*qbft.SignedMessage{
+			msg,
+		},
 	}
 }

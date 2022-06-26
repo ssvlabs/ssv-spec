@@ -115,16 +115,7 @@ func (d *RoundChangeData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *RoundChangeData) Validate() error {
-	if len(d.PreparedValue) != 0 {
-		if d.PreparedRound == NoRound {
-			return errors.New("round change prepared round invalid")
-		}
-		if len(d.RoundChangeJustification) == 0 {
-			return errors.New("round change justification invalid")
-		}
-	}
-
-	if d.PreparedRound != NoRound {
+	if d.Prepared() {
 		if len(d.PreparedValue) == 0 {
 			return errors.New("round change prepared value invalid")
 		}
@@ -132,7 +123,7 @@ func (d *RoundChangeData) Validate() error {
 			return errors.New("round change justification invalid")
 		}
 	}
-
+	
 	if len(d.NextProposalData) == 0 {
 		return errors.New("round change next value invalid")
 	}

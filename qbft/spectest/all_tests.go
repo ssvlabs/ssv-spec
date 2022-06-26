@@ -4,6 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
 	"testing"
 )
@@ -14,6 +15,11 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	messages.RoundChangeDataInvalidJustifications(),
+	messages.RoundChangeDataInvalidPreparedRound(),
+	messages.RoundChangeDataInvalidPreparedValue(),
+	messages.RoundChangePrePreparedJustifications(),
+	messages.RoundChangeNotPreparedJustifications(),
 	messages.CommitDataEncoding(),
 	messages.DecidedMsgEncoding(),
 	messages.MsgNilIdentifier(),
@@ -41,6 +47,19 @@ var AllTests = []SpecTest{
 	tests.SevenOperators(),
 	tests.TenOperators(),
 	tests.ThirteenOperators(),
+
+	prepare.DuplicateMsg(),
+	prepare.HappyFlow(),
+	prepare.ImparsableProposalData(),
+	prepare.InvalidPrepareData(),
+	prepare.MultiSigner(),
+	prepare.NoPreviousProposal(),
+	prepare.OldRound(),
+	prepare.FutureRound(),
+	prepare.PostDecided(),
+	prepare.WrongData(),
+	prepare.WrongHeight(),
+	prepare.WrongSignature(),
 
 	commit.CurrentRound(),
 	commit.FutureRound(),

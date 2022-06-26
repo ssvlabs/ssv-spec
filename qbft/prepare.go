@@ -127,7 +127,7 @@ func validSignedPrepareForHeightRoundAndValue(
 	}
 
 	if bytes.Compare(prepareData.Data, value) != 0 {
-		return errors.New("msg Identifier wrong")
+		return errors.New("prepare data != proposed data")
 	}
 
 	if len(signedPrepare.GetSigners()) != 1 {
