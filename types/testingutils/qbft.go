@@ -1,8 +1,10 @@
 package testingutils
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/pkg/errors"
 )
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
@@ -11,12 +13,17 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 		SigningPK: keySet.Shares[1].GetPublicKey().Serialize(),
 		Domain:    types.PrimusTestnet,
 		ValueCheck: func(data []byte) error {
+			if bytes.Equal(data, TestingInvalidValueCheck) {
+				return errors.New("invalid value")
+			}
 			return nil
 		},
 		Storage: NewTestingStorage(),
 		Network: NewTestingNetwork(),
 	}
 }
+
+var TestingInvalidValueCheck = []byte{1, 1, 1, 1}
 
 var TestingShare = func(keysSet *TestKeySet) *types.Share {
 	return &types.Share{
