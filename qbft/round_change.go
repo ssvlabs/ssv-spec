@@ -12,7 +12,7 @@ func (i *Instance) uponRoundChange(
 	valCheck ProposedValueCheck,
 ) error {
 	// TODO - Roberto comment: could happen we received a round change before we switched the round and this msg will be rejected (lost)
-	if err := validRoundChange(i.State, i.config, signedRoundChange, i.State.Height, i.State.Round); err != nil {
+	if err := basicRoundChangeValidation(i.State, i.config, signedRoundChange, i.State.Height); err != nil {
 		return errors.Wrap(err, "round change msg invalid")
 	}
 
@@ -96,8 +96,9 @@ func hasReceivedProposalJustificationForLeadingRound(
 	valCheck ProposedValueCheck,
 ) (*SignedMessage, error) {
 	roundChanges := roundChangeMsgContainer.MessagesForRound(state.Round)
+
 	// optimization, if no round change quorum can return false
-	if !state.Share.HasQuorum(len(roundChanges)) {
+	if !HasQuorum(state.Share, roundChanges) {
 		return nil, nil
 	}
 
@@ -156,7 +157,7 @@ func isReceivedProposalJustification(
 	return nil
 }
 
-func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, height Height, round Round) error {
+func basicRoundChangeValidation(state *State, config IConfig, signedMsg *SignedMessage, height Height) error {
 	if signedMsg.Message.MsgType != RoundChangeMsgType {
 		return errors.New("round change msg type is wrong")
 	}
@@ -170,6 +171,16 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 
 	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
 		return errors.Wrap(err, "round change msg signature invalid")
+	}
+	return nil
+}
+
+func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, height Height, round Round) error {
+	if err := basicRoundChangeValidation(state, config, signedMsg, height); err != nil {
+		return errors.Wrap(err, "basic round Change validation failed")
+	}
+	if signedMsg.Message.Round != round {
+		return errors.New("msg round wrong")
 	}
 
 	rcData, err := signedMsg.Message.GetRoundChangeData()

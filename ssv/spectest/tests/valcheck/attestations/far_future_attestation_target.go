@@ -10,7 +10,8 @@ import (
 
 // FarFutureAttestationTarget tests a far future attestation target epoch
 func FarFutureAttestationTarget() *tests.SpecTest {
-	dr := testingutils.AttesterRunner()
+	ks := testingutils.Testing4SharesSet()
+	dr := testingutils.AttesterRunner(ks)
 
 	consensusData := &types.ConsensusData{
 		Duty: testingutils.TestingAttesterDuty,

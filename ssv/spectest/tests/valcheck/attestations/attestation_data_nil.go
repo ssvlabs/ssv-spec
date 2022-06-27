@@ -9,7 +9,8 @@ import (
 
 // AttestationDataNil tests attestation data != nil
 func AttestationDataNil() *tests.SpecTest {
-	dr := testingutils.AttesterRunner()
+	ks := testingutils.Testing4SharesSet()
+	dr := testingutils.AttesterRunner(ks)
 
 	consensusData := &types.ConsensusData{
 		Duty:            testingutils.TestingAttesterDuty,

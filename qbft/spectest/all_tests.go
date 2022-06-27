@@ -103,4 +103,5 @@ var AllTests = []SpecTest{
 	roundchange.HappyFlow(),
 	roundchange.PreviouslyPrepared(),
 	roundchange.F1Speedup(),
+	roundchange.F1SpeedupPrepared(),
 }

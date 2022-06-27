@@ -62,21 +62,21 @@ func DifferentJustifications() *tests.MsgProcessingSpecTest {
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      2,
+			Round:      3,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs1),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      2,
+			Round:      3,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 2, []byte{1, 2, 3, 4}, prepareMsgs2),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      2,
+			Round:      3,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
 		}),
@@ -94,7 +94,7 @@ func DifferentJustifications() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "different proposal round change justification",
 		Pre:           pre,
-		PostRoot:      "85faadc13b2e68bb3b4f94699d0267280bcc368333a313eccf5e8af91f41b16d",
+		PostRoot:      "8979bd521bda529efc4cc9babcb5a9a28f1ecd2e8c77e1576f0c71834264b16b",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
