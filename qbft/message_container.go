@@ -36,8 +36,25 @@ func (c *MsgContainer) MessagesForRound(round Round) []*SignedMessage {
 	return make([]*SignedMessage, 0)
 }
 
-// UniqueSignersSetForRoundAndValue returns the longest set of unique signers and msgs for a specific round and value
-func (c *MsgContainer) UniqueSignersSetForRoundAndValue(round Round, value []byte) ([]types.OperatorID, []*SignedMessage) {
+// MessagesForRoundAndValue returns all msgs for round and value, empty slice otherwise
+func (c *MsgContainer) MessagesForRoundAndValue(round Round, value []byte) []*SignedMessage {
+	if c.Msgs[round] != nil {
+		ret := make([]*SignedMessage, 0)
+		for i := 0; i < len(c.Msgs[round]); i++ {
+			m := c.Msgs[round][i]
+
+			if !bytes.Equal(m.Message.Data, value) {
+				continue
+			}
+			ret = append(ret, m)
+		}
+		return ret
+	}
+	return make([]*SignedMessage, 0)
+}
+
+// LongestUniqueSignersForRoundAndValue returns the longest set of unique signers and msgs for a specific round and value
+func (c *MsgContainer) LongestUniqueSignersForRoundAndValue(round Round, value []byte) ([]types.OperatorID, []*SignedMessage) {
 	signersRet := make([]types.OperatorID, 0)
 	msgsRet := make([]*SignedMessage, 0)
 	if c.Msgs[round] == nil {
