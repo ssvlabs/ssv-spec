@@ -84,7 +84,7 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 		}
 	}
 
-	return state.Share.HasPartialQuorum(len(rc)), rc
+	return HasPartialQuorum(state.Share, rc), rc
 }
 
 // hasReceivedProposalJustificationForLeadingRound returns the highest justified round change message (if this node is also a leader)

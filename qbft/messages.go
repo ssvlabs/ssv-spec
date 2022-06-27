@@ -19,6 +19,17 @@ func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	return share.HasQuorum(len(uniqueSigners))
 }
 
+// HasPartialQuorum returns true if a unique set of signers has partial quorum
+func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
+	uniqueSigners := make(map[types.OperatorID]bool)
+	for _, msg := range msgs {
+		for _, signer := range msg.GetSigners() {
+			uniqueSigners[signer] = true
+		}
+	}
+	return share.HasPartialQuorum(len(uniqueSigners))
+}
+
 type MessageType int
 
 const (
