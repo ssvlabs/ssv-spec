@@ -195,6 +195,11 @@ func proposer(state *State, round Round) types.OperatorID {
 	return 1
 }
 
+// IsProposerForRound returns true if operator is the proposer for current round
+func (i *Instance) IsProposerForRound() bool {
+	return proposer(i.State, i.State.Round) == i.State.Share.OperatorID
+}
+
 // CreateProposal
 /**
   	Proposal(

@@ -116,12 +116,14 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 	}
 
 	// Broadcast Decided msg
-	decidedMsg := &DecidedMessage{
-		SignedMessage: aggregatedCommit,
-	}
-	if err := c.network.BroadcastDecided(decidedMsg); err != nil {
-		// We do not return error here, just Log broadcasting error.
-		return decided, decidedValue, nil
+	if inst.IsProposerForRound() {
+		decidedMsg := &DecidedMessage{
+			SignedMessage: aggregatedCommit,
+		}
+		if err := c.network.BroadcastDecided(decidedMsg); err != nil {
+			// We do not return error here, just Log broadcasting error.
+			return decided, decidedValue, nil
+		}
 	}
 
 	return decided, decidedValue, nil
