@@ -38,7 +38,7 @@ func (i *Instance) uponPrepare(
 		return nil // uponPrepare was already called
 	}
 
-	if !i.State.Share.HasQuorum(len(prepareMsgContainer.MessagesForRound(i.State.Round))) {
+	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
 		return nil // no quorum yet
 	}
 

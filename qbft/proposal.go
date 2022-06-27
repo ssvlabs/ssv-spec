@@ -124,7 +124,7 @@ func isProposalJustification(
 		}
 
 		// check there is a quorum
-		if !state.Share.HasQuorum(len(roundChangeMsgs)) {
+		if !HasQuorum(state.Share, roundChangeMsgs) {
 			return errors.New("change round has not quorum")
 		}
 
@@ -150,8 +150,8 @@ func isProposalJustification(
 		} else {
 
 			// check prepare quorum
-			if !state.Share.HasQuorum(len(prepareMsgs)) {
-				return errors.New("change round has not quorum")
+			if !HasQuorum(state.Share, prepareMsgs) {
+				return errors.New("prepares has no quorum")
 			}
 
 			// get a round change data for which there is a justification for the highest previously prepared round

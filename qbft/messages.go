@@ -8,6 +8,17 @@ import (
 	"github.com/pkg/errors"
 )
 
+// HasQuorum returns true if a unique set of signers has quorum
+func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
+	uniqueSigners := make(map[types.OperatorID]bool)
+	for _, msg := range msgs {
+		for _, signer := range msg.GetSigners() {
+			uniqueSigners[signer] = true
+		}
+	}
+	return share.HasQuorum(len(uniqueSigners))
+}
+
 type MessageType int
 
 const (
