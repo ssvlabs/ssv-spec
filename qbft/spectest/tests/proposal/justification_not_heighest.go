@@ -92,7 +92,7 @@ func JustificationsNotHeighest() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "different proposal round change justification",
+		Name:           "proposal justification not highest",
 		Pre:            pre,
 		PostRoot:       "5a71daf1a4ee817826596858f76e56a1a85aedd85b9c4e65e73fc4c4667e65b0",
 		InputMessages:  msgs,

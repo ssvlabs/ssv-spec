@@ -38,7 +38,7 @@ func NoRCJustification() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "no rc quorum (prepared)",
+		Name:           "no rc quorum",
 		Pre:            pre,
 		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
 		InputMessages:  msgs,

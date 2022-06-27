@@ -18,7 +18,7 @@ func RoundChangeDataInvalidPreparedValue() *tests.MsgSpecTest {
 	})
 
 	return &tests.MsgSpecTest{
-		Name: "rc prev prepared no justifications",
+		Name: "rc prepared no value",
 		Messages: []*qbft.SignedMessage{
 			msg,
 		},
