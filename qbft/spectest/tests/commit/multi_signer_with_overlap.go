@@ -67,5 +67,21 @@ func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
 		Pre:           pre,
 		PostRoot:      "e88d50d70124c38a25c6ed2ff13bf204b728df7160161e57534a7b9cc610e8cb",
 		InputMessages: msgs,
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.PrepareMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+			}),
+			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+			}),
+		},
 	}
 }

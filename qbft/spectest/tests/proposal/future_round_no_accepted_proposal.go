@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// FutureRound tests a proposal for state.ProposalAcceptedForCurrentRound == nil && signedProposal.Message.Round > state.Round
-func FutureRound() *tests.MsgProcessingSpecTest {
+// FutureRoundNoAcceptedProposal tests a proposal for state.ProposalAcceptedForCurrentRound == nil && signedProposal.Message.Round > state.Round
+func FutureRoundNoAcceptedProposal() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 
 	rcMsgs := []*qbft.SignedMessage{
@@ -45,7 +45,7 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal future round",
+		Name:           "proposal future round (no accepted proposal)",
 		Pre:            pre,
 		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
 		InputMessages:  msgs,

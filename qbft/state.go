@@ -31,6 +31,7 @@ type Config struct {
 	ValueCheck ProposedValueCheck
 	Storage    Storage
 	Network    Network
+	Timer      Timer
 }
 
 // GetSigner returns a Signer instance
@@ -60,7 +61,7 @@ func (c *Config) GetNetwork() Network {
 
 // GetTimer returns round timer
 func (c *Config) GetTimer() Timer {
-	return nil
+	return c.Timer
 }
 
 type State struct {

@@ -1,4 +1,4 @@
-package prepare
+package proposal
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,55 +7,63 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// OldRound tests prepare for signedProposal.Message.Round < state.Round
-func OldRound() *tests.MsgProcessingSpecTest {
+// FutureRoundAcceptedProposal tests a proposal for state.ProposalAcceptedForCurrentRound != nil && signedProposal.Message.Round > state.Round
+func FutureRoundAcceptedProposal() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	pre.State.Round = 10
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: []byte{1, 2, 3, 4},
+		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
+	})
+
 	rcMsgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      10,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      10,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      10,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
 		}),
 	}
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      10,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, rcMsgs, nil),
-	})
 
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
+			MsgType:    qbft.ProposalMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      9,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, rcMsgs, nil),
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "prepare prev round",
+		Name:          "proposal future round (accepted proposal)",
 		Pre:           pre,
-		PostRoot:      "94401eae7fd634e7b3b2259389991b3ca1080873db986d71e070f63df58b91ec",
+		PostRoot:      "2d30e8227ef6aaa325c5cb025737690ebfb4d5ba44197645eae6dc9d3b67f3ed",
 		InputMessages: msgs,
-		ExpectedError: "invalid prepare msg: msg round wrong",
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.PrepareMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      2,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+			}),
+		},
 	}
 }

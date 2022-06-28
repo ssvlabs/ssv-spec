@@ -20,6 +20,7 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 		},
 		Storage: NewTestingStorage(),
 		Network: NewTestingNetwork(),
+		Timer:   NewTestingTimer(),
 	}
 }
 
