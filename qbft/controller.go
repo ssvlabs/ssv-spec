@@ -43,7 +43,7 @@ type Controller struct {
 	Domain          types.DomainType
 	Share           *types.Share
 	signer          types.SSVSigner
-	valueCheck      ProposedValueCheck
+	valueCheck      ProposedValueCheckF
 	storage         Storage
 	network         Network
 }
@@ -53,7 +53,7 @@ func NewController(
 	share *types.Share,
 	domain types.DomainType,
 	signer types.SSVSigner,
-	valueCheck ProposedValueCheck,
+	valueCheck ProposedValueCheckF,
 	storage Storage,
 	network Network,
 ) *Controller {
@@ -190,11 +190,11 @@ func (c *Controller) Decode(data []byte) error {
 
 func (c *Controller) generateConfig() IConfig {
 	return &Config{
-		Signer:     c.signer,
-		SigningPK:  c.Share.ValidatorPubKey,
-		Domain:     c.Domain,
-		ValueCheck: c.valueCheck,
-		Storage:    c.storage,
-		Network:    c.network,
+		Signer:      c.signer,
+		SigningPK:   c.Share.ValidatorPubKey,
+		Domain:      c.Domain,
+		ValueCheckF: c.valueCheck,
+		Storage:     c.storage,
+		Network:     c.network,
 	}
 }

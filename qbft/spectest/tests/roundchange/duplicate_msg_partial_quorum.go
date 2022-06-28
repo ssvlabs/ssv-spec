@@ -4,7 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 )
 
-// DuplicateMsgQuorum tests a duplicate rc msg that is added to container but shouldn't result in a quorum
-func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
+// DuplicateMsgPartialQuorum tests a duplicate rc msg that is added to container but shouldn't result in a  partial quorum
+func DuplicateMsgPartialQuorum() *tests.MsgProcessingSpecTest {
 	panic("implement")
 }

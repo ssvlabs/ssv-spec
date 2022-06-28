@@ -9,7 +9,7 @@ func (i *Instance) uponRoundChange(
 	instanceStartValue []byte,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
-	valCheck ProposedValueCheck,
+	valCheck ProposedValueCheckF,
 ) error {
 	// TODO - Roberto comment: could happen we received a round change before we switched the round and this msg will be rejected (lost)
 	if err := basicRoundChangeValidation(i.State, i.config, signedRoundChange, i.State.Height); err != nil {
@@ -93,7 +93,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 	config IConfig,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
-	valCheck ProposedValueCheck,
+	valCheck ProposedValueCheckF,
 ) (*SignedMessage, error) {
 	roundChanges := roundChangeMsgContainer.MessagesForRound(state.Round)
 
@@ -119,7 +119,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 			rcData.NextProposalData,
 			valCheck,
 		) == nil &&
-			proposer(state, msg.Message.Round) == state.Share.OperatorID {
+			proposer(state, config, msg.Message.Round) == state.Share.OperatorID {
 			return msg, nil
 		}
 	}
@@ -133,7 +133,7 @@ func isReceivedProposalJustification(
 	roundChanges, prepares []*SignedMessage,
 	newRound Round,
 	value []byte,
-	valCheck ProposedValueCheck,
+	valCheck ProposedValueCheckF,
 ) error {
 	if err := isProposalJustification(
 		state,
