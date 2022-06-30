@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
 	"testing"
 )
@@ -16,6 +17,11 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	proposer.FourOperators(),
+	proposer.SevenOperators(),
+	proposer.TenOperators(),
+	proposer.ThirteenOperators(),
+
 	proposal.HappyFlow(),
 	proposal.NotPreparedPreviouslyJustification(),
 	proposal.PreparedPreviouslyJustification(),
