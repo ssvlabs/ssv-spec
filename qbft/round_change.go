@@ -12,7 +12,7 @@ func (i *Instance) uponRoundChange(
 	valCheck ProposedValueCheckF,
 ) error {
 	// TODO - Roberto comment: could happen we received a round change before we switched the round and this msg will be rejected (lost)
-	if err := basicRoundChangeValidation(i.State, i.config, signedRoundChange, i.State.Height); err != nil {
+	if err := validRoundChange(i.State, i.config, signedRoundChange, i.State.Height, signedRoundChange.Message.Round); err != nil {
 		return errors.Wrap(err, "round change msg invalid")
 	}
 
@@ -157,30 +157,21 @@ func isReceivedProposalJustification(
 	return nil
 }
 
-func basicRoundChangeValidation(state *State, config IConfig, signedMsg *SignedMessage, height Height) error {
+func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, height Height, round Round) error {
 	if signedMsg.Message.MsgType != RoundChangeMsgType {
 		return errors.New("round change msg type is wrong")
 	}
 	if signedMsg.Message.Height != height {
 		return errors.New("round change Height is wrong")
 	}
-
+	if signedMsg.Message.Round != round {
+		return errors.New("msg round wrong")
+	}
 	if len(signedMsg.GetSigners()) != 1 {
 		return errors.New("round change msg allows 1 signer")
 	}
-
 	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
 		return errors.Wrap(err, "round change msg signature invalid")
-	}
-	return nil
-}
-
-func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, height Height, round Round) error {
-	if err := basicRoundChangeValidation(state, config, signedMsg, height); err != nil {
-		return errors.Wrap(err, "basic round Change validation failed")
-	}
-	if signedMsg.Message.Round != round {
-		return errors.New("msg round wrong")
 	}
 
 	rcData, err := signedMsg.Message.GetRoundChangeData()
