@@ -1,6 +1,7 @@
 package qbft
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -182,6 +183,8 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 		return errors.Wrap(err, "roundChangeData invalid")
 	}
 
+	// Addition to formal spec
+	// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
 	if !rcData.Prepared() {
 		return nil
 	} else { // validate prepare message justifications
@@ -198,10 +201,19 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 			}
 		}
 
-		if rcData.PreparedRound <= round {
-			return nil
+		if !HasQuorum(state.Share, prepareMsgs) {
+			return errors.New("no justifications quorum")
 		}
-		return errors.New("prepared round > round")
+
+		if rcData.PreparedRound > round {
+			return errors.New("prepared round > round")
+		}
+
+		if !bytes.Equal(rcData.NextProposalData, rcData.PreparedValue) {
+			return errors.New("next proposal data != prepared value")
+		}
+
+		return nil
 	}
 	return errors.New("round change prepare round & value are wrong")
 }

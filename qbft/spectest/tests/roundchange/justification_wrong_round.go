@@ -7,30 +7,30 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// DuplicateMsgQuorum tests a duplicate rc msg that is added to container but shouldn't result in a quorum
-func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
+// JustificationWrongRound tests a single prepare justification with round != prepared round
+func JustificationWrongRound() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	pre.State.Round = 2
+	pre.State.Round = 5
 
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 		}),
@@ -39,31 +39,18 @@ func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
+			Round:      5,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
 		}),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:           "round change duplicate msg",
+		Name:           "round change justification wrong round",
 		Pre:            pre,
-		PostRoot:       "0bc9f67cd0038e7c64e63bb64ad6309b3b9ba78c95f66edb3730f329866d9a64",
+		PostRoot:       "e64e526f363f8f9b654f7aa11001d71c5df4edf3b094df0a9725e570a3db27e7",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
+		ExpectedError:  "round change msg invalid: round change justification invalid: msg round wrong",
 	}
 }

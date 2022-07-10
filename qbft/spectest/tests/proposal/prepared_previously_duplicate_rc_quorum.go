@@ -7,9 +7,10 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidRoundChangeJustificationPrepared tests a proposal for > 1 round, prepared previously but one of the round change justifications has validRoundChange != nil
-func InvalidRoundChangeJustificationPrepared() *tests.MsgProcessingSpecTest {
+// PreparedPreviouslyDuplicateRCQuorum tests a proposal for > 1 round, prepared previously with quorum of round change but 2 are duplicates
+func PreparedPreviouslyDuplicateRCQuorum() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	pre.State.Round = 2
 
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -35,7 +36,14 @@ func InvalidRoundChangeJustificationPrepared() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	rcMsgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(2), &qbft.Message{
+		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+			MsgType:    qbft.RoundChangeMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      2,
+			Identifier: []byte{1, 2, 3, 4},
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+		}),
+		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      2,
@@ -68,11 +76,24 @@ func InvalidRoundChangeJustificationPrepared() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal rc msg invalid (prepared)",
-		Pre:            pre,
-		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
-		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "proposal invalid: proposal not justified: change round msg not valid: round change msg signature invalid: failed to verify signature",
+		Name:     "duplicate rc msg justification (prepared) quorum",
+		Pre:      pre,
+		PostRoot: "e6d00e90279e18a2e73153005de9746bb56dc260760677df00c640f60a197fdf",
+		InputMessages: append(msgs, testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+			MsgType:    qbft.PrepareMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      2,
+			Identifier: []byte{1, 2, 3, 4},
+			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+		})),
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.PrepareMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      2,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+			}),
+		},
 	}
 }
