@@ -1,6 +1,9 @@
 package keygen
 
-import "errors"
+import (
+	"encoding/json"
+	"errors"
+)
 
 type Round1Msg struct {
 	Commitment []byte `json:"commitment"`
@@ -34,7 +37,15 @@ type Message struct {
 	Body     MessageBody `json:"body"`
 }
 
-type Messages = []*Message
+// Encode returns a msg encoded bytes or error
+func (m *Message) Encode() ([]byte, error) {
+	return json.Marshal(m)
+}
+
+// Decode returns error if decoding failed
+func (m *Message) Decode(data []byte) error {
+	return json.Unmarshal(data, m)
+}
 
 func (m *Message) IsValid() bool {
 	cnt := 0
@@ -76,4 +87,16 @@ type LocalKeyShare struct {
 	PublicKey       []byte   `json:"vk"`
 	SecretShare     []byte   `json:"sk_i"`
 	SharePublicKeys [][]byte `json:"vk_vec"`
+}
+
+type Messages = []*Message
+
+// Encode returns a msg encoded bytes or error
+func (msgs *Messages) Encode() ([]byte, error) {
+	return json.Marshal(msgs)
+}
+
+// Decode returns error if decoding failed
+func (msgs *Messages) Decode(data []byte) error {
+	return json.Unmarshal(data, msgs)
 }
