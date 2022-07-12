@@ -1,7 +1,5 @@
 package keygen
 
-import "errors"
-
 func (k *Keygen) r1Proceed() error {
 	if k.Round != 1 {
 		return ErrInvalidRound
@@ -10,8 +8,8 @@ func (k *Keygen) r1Proceed() error {
 		Sender: k.PartyI,
 		Body: MessageBody{
 			Round2: &Round2Msg{
-				DeCommmitment:          k.GetDecommitment(),
-				BlindFactor: k.BlindFactor[:],
+				DeCommmitment: k.GetDecommitment(),
+				BlindFactor:   k.BlindFactor[:],
 			},
 		},
 	}
@@ -26,7 +24,7 @@ func (k *Keygen) r1CanProceed() error {
 	}
 	for _, message := range k.Round1Msgs {
 		if message == nil {
-			return errors.New("waiting for more messages")
+			return ErrExpectMessage
 		}
 	}
 	return nil

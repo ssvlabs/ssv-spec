@@ -6,6 +6,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
+var (
+	ErrInvalidProof = errors.New("invalid proof")
+)
+
 func (k *Keygen) r4Proceed() error {
 	if k.Round != 4 {
 		return ErrInvalidRound
@@ -39,7 +43,7 @@ func (k *Keygen) r4CanProceed() error {
 	}
 	for _, r4Msg := range k.Round4Msgs {
 		if r4Msg == nil || r4Msg.Body.Round4 == nil {
-			return errors.New("expected message not found")
+			return ErrExpectMessage
 		}
 		proof := &dlog.Proof{
 			Commitment: new(bls.PublicKey),
@@ -50,7 +54,7 @@ func (k *Keygen) r4CanProceed() error {
 		proof.PubKey.Deserialize(r4Msg.Body.Round4.PubKey)
 		proof.Response.Deserialize(r4Msg.Body.Round4.ChallengeResponse)
 		if !proof.Verify() {
-			return errors.New("invalid proof")
+			return ErrInvalidProof
 		}
 	}
 	return nil

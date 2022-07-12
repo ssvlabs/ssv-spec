@@ -20,7 +20,8 @@ const (
 )
 
 var (
-	ErrInvalidRound = errors.New("invalid round")
+	ErrInvalidRound  = errors.New("invalid round")
+	ErrExpectMessage = errors.New("expected message not found")
 )
 
 func init() {

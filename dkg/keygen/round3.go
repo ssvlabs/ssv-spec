@@ -7,6 +7,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
+var (
+	ErrInvalidShare = errors.New("invalid share")
+)
+
 func (k *Keygen) calcSkI() *bls.SecretKey {
 	skI := new(bls.SecretKey)
 	skI.Deserialize(k.ownShare.Serialize())
@@ -49,9 +53,6 @@ func (k *Keygen) r3Proceed() error {
 }
 
 func (k *Keygen) r3CanProceed() error {
-	var (
-		ErrInvalidShare                 = errors.New("invalid share")
-	)
 
 	if k.Round != 3 {
 		return ErrInvalidRound
@@ -62,7 +63,7 @@ func (k *Keygen) r3CanProceed() error {
 		}
 		r2Msg := k.Round2Msgs[i]
 		if r2Msg == nil || r2Msg.Body.Round2 == nil || r2Msg.Body.Round2.DeCommmitment == nil || r3Msg == nil || r3Msg.Body.Round3 == nil {
-			return errors.New("expected message not found")
+			return ErrExpectMessage
 		}
 		shareBytes := r3Msg.Body.Round3.Share
 		share := &vss.Share{

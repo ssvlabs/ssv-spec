@@ -34,14 +34,14 @@ func (k *Keygen) r2Proceed() error {
 	}
 
 	for i, share := range allShares {
-		receiver := uint16(i+1)
+		receiver := uint16(i + 1)
 		if i+1 != int(k.PartyI) {
 			msg := &Message{
 				Sender:   k.PartyI,
 				Receiver: &receiver,
 				Body: MessageBody{
 					Round3: &Round3Msg{
-						Share:       share.Share.Serialize(),
+						Share: share.Share.Serialize(),
 					},
 				},
 			}
@@ -62,7 +62,7 @@ func (k *Keygen) r2CanProceed() error {
 	for i, r2Msg := range k.Round2Msgs {
 		r1Msg := k.Round1Msgs[i]
 		if r1Msg == nil || r2Msg == nil || r1Msg.Body.Round1 == nil || r2Msg.Body.Round2 == nil {
-			return errors.New("expected message not found")
+			return ErrExpectMessage
 		}
 		if !k.VerifyCommitment(*r1Msg.Body.Round1, *r2Msg.Body.Round2, r2Msg.Sender) {
 			// TODO: Handle blame?
