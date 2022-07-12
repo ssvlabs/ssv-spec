@@ -28,28 +28,29 @@ func (k *Keygen) r2Proceed() error {
 		return errors.New("invalid length of shares")
 	}
 	yiComms := make([][]byte, len(k.Coefficients))
-	distributableShares := make([][]byte, int(k.PartyCount))
+
 	for i, commitment := range commitments {
 		yiComms[i] = commitment.Serialize()
 	}
+
 	for i, share := range allShares {
+		receiver := uint16(i+1)
 		if i+1 != int(k.PartyI) {
-			distributableShares[i] = share.Share.Serialize()
+			msg := &Message{
+				Sender:   k.PartyI,
+				Receiver: &receiver,
+				Body: MessageBody{
+					Round3: &Round3Msg{
+						Commitments: yiComms,
+						Share:       share.Share.Serialize(),
+					},
+				},
+			}
+			k.pushOutgoing(msg)
 		} else {
 			k.ownShare = share.Share
 		}
 	}
-
-	msg := &Message{
-		Sender: k.PartyI,
-		Body: MessageBody{
-			Round3: &Round3Msg{
-				Commitments: yiComms,
-				Shares:      distributableShares,
-			},
-		},
-	}
-	k.pushOutgoing(msg)
 
 	k.Round = 3
 	return nil

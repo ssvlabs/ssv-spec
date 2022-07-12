@@ -17,7 +17,7 @@ func (k *Keygen)calcSkI() *bls.SecretKey {
 			continue
 		}
 		temp := new(bls.SecretKey)
-		temp.Deserialize(r3Msg.Body.Round3.Shares[ind])
+		temp.Deserialize(r3Msg.Body.Round3.Share)
 		skI.Add(temp)
 	}
 	return skI
@@ -52,7 +52,6 @@ func (k *Keygen) r3Proceed() error {
 func (k *Keygen) r3CanProceed() error {
 	var (
 		ErrInvalidCoefficientCommitment = errors.New("invalid coefficient commitments")
-		ErrInvalidSharesCount           = errors.New("invalid number of shares")
 		ErrInvalidShare                 = errors.New("invalid share")
 	)
 
@@ -70,13 +69,10 @@ func (k *Keygen) r3CanProceed() error {
 		if len(r3Msg.Body.Round3.Commitments) != len(k.Coefficients) {
 			return ErrInvalidCoefficientCommitment
 		}
-		if len(r3Msg.Body.Round3.Shares) != int(k.PartyCount) {
-			return ErrInvalidSharesCount
-		}
 		if bytes.Compare(r2Msg.Body.Round2.YI, r3Msg.Body.Round3.Commitments[0]) != 0 {
 			return ErrInvalidCoefficientCommitment
 		}
-		shareBytes := r3Msg.Body.Round3.Shares[int(k.PartyI)-1]
+		shareBytes := r3Msg.Body.Round3.Share
 		share := &vss.Share{
 			Threshold: len(k.Coefficients) - 1,
 			ID:        new(bls.Fr),

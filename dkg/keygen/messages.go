@@ -13,7 +13,7 @@ type Round2Msg struct {
 
 type Round3Msg struct {
 	Commitments [][]byte `json:"commitments"`
-	Shares      [][]byte `json:"shares"`
+	Share       []byte   `json:"share"`
 }
 
 type Round4Msg struct {
@@ -30,8 +30,9 @@ type MessageBody struct {
 }
 
 type Message struct {
-	Sender uint16      `json:"sender"`
-	Body   MessageBody `json:"body"`
+	Sender   uint16      `json:"sender"`
+	Receiver *uint16     `json:"receiver"`
+	Body     MessageBody `json:"body"`
 }
 
 type Messages = []*Message

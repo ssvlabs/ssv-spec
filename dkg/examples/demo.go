@@ -51,10 +51,20 @@ func main() {
 
 	go func(o1 <-chan M, o2 <-chan M, o3 <-chan M, o4 <-chan M, i1 chan<- M, i2 chan<- M, i3 chan<- M, i4 chan<- M) {
 		send := func(msg keygen.Message) {
-			i1 <- msg
-			i2 <- msg
-			i3 <- msg
-			i4 <- msg
+			if msg.Receiver == nil {
+				i1 <- msg
+				i2 <- msg
+				i3 <- msg
+				i4 <- msg
+			} else if *msg.Receiver == 1 {
+				i1 <- msg
+			} else if *msg.Receiver == 2 {
+				i2 <- msg
+			} else if *msg.Receiver == 3 {
+				i3 <- msg
+			} else if *msg.Receiver == 4 {
+				i4 <- msg
+			}
 		}
 		for {
 			select {
