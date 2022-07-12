@@ -22,6 +22,7 @@ func (runners Runners) DeleteRunner(id RequestID) {
 	delete(runners, hex.EncodeToString(id[:]))
 }
 
+// Node is responsible for receiving and managing DKG session and messages
 type Node struct {
 	operator *Operator
 	// runners holds all active running DKG runners

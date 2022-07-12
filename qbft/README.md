@@ -18,10 +18,9 @@ Because of the above, there is a need to order and queue messages based on their
 ## TODO
 - [X] Support 4,7,10,13 committee sizes
 - [X] Message encoding and validation spec tests
-- [//] proposal/ prepare/ commit spec tests
-- [//] round change spec tests
-- [ ] Unified test suite, compatible with the formal verification spec
-- [ ] Align according to spec and [Roberto's comments](./roberto_comments)
+- [X] proposal/ prepare/ commit spec tests
+- [X] round change spec tests
+- [//] Unified test suite, compatible with the formal verification spec
+- [//] Align according to spec and [Roberto's comments](./roberto_comments)
 - [ ] Remove round check from upon commit as it can be for any round?
-- [ ] RoundChange spec tests
-- [ ] Should remove NextProposalData from RoundChangeData? What use it has?
+- [ ] Use data hashes instead of full data in msgs to save space in justifications
