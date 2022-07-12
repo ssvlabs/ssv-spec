@@ -9,7 +9,7 @@ func (k *Keygen) r0Proceed() error {
 		Sender: k.PartyI,
 		Body: MessageBody{
 			Round1: &Round1Msg{
-				Commitment: k.GetYiCommitment(),
+				Commitment: k.GetCommitment(),
 			},
 		},
 	}

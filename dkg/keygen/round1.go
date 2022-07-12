@@ -10,7 +10,7 @@ func (k *Keygen) r1Proceed() error {
 		Sender: k.PartyI,
 		Body: MessageBody{
 			Round2: &Round2Msg{
-				YI:          k.GetYi(),
+				DeCommmitment:          k.GetDecommitment(),
 				BlindFactor: k.BlindFactor[:],
 			},
 		},

@@ -41,7 +41,6 @@ func (k *Keygen) r2Proceed() error {
 				Receiver: &receiver,
 				Body: MessageBody{
 					Round3: &Round3Msg{
-						Commitments: yiComms,
 						Share:       share.Share.Serialize(),
 					},
 				},
@@ -65,7 +64,7 @@ func (k *Keygen) r2CanProceed() error {
 		if r1Msg == nil || r2Msg == nil || r1Msg.Body.Round1 == nil || r2Msg.Body.Round2 == nil {
 			return errors.New("expected message not found")
 		}
-		if !VerifyYiCommitment(*r1Msg.Body.Round1, *r2Msg.Body.Round2, r2Msg.Sender) {
+		if !k.VerifyCommitment(*r1Msg.Body.Round1, *r2Msg.Body.Round2, r2Msg.Sender) {
 			// TODO: Handle blame?
 			return fmt.Errorf("decomm doesn't match comm for party %d", r2Msg.Sender)
 		}

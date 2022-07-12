@@ -166,26 +166,38 @@ func (k *Keygen) pushOutgoing(msg *Message) {
 	k.Outgoing = append(k.Outgoing, msg)
 }
 
-func (k *Keygen) GetYi() []byte {
-	return bls.CastToSecretKey(&k.Coefficients[0]).GetPublicKey().Serialize()
+func (k *Keygen) GetDecommitment() [][]byte {
+	decomm := make([][]byte, len(k.Coefficients))
+	for i, coefficient := range k.Coefficients {
+		decomm[i] = bls.CastToSecretKey(&coefficient).GetPublicKey().Serialize()
+	}
+	return decomm
 }
 
-func (k *Keygen) GetYiCommitment() []byte {
+func (k *Keygen) GetCommitment() []byte {
 
 	var data []byte
-	data = append(data, k.GetYi()...)
+	decomm := k.GetDecommitment()
 	data = append(data, Uint16ToBytes(k.PartyI)...)
 	data = append(data, k.BlindFactor[:]...)
+	for _, bytes := range decomm {
+		data = append(data, bytes...)
+	}
 	hash := crypto.SHA256.New()
 	hash.Write(data)
 	return hash.Sum(nil)
 }
 
-func VerifyYiCommitment(r1 Round1Msg, r2 Round2Msg, partyI uint16) bool {
+func (k *Keygen) VerifyCommitment(r1 Round1Msg, r2 Round2Msg, partyI uint16) bool {
+	if len(k.Coefficients) != len(r2.DeCommmitment) {
+		return false
+	}
 	var data []byte
-	data = append(data, r2.YI...)
 	data = append(data, Uint16ToBytes(partyI)...)
 	data = append(data, r2.BlindFactor...)
+	for _, bytes := range r2.DeCommmitment {
+		data = append(data, bytes...)
+	}
 	hash := crypto.SHA256.New()
 	hash.Write(data)
 	comm := hash.Sum(nil)

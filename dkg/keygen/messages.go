@@ -7,12 +7,11 @@ type Round1Msg struct {
 }
 
 type Round2Msg struct {
-	YI          []byte `json:"yI"`
-	BlindFactor []byte `json:"blindFactor"`
+	DeCommmitment [][]byte `json:"deCommitment"`
+	BlindFactor   []byte   `json:"blindFactor"`
 }
 
 type Round3Msg struct {
-	Commitments [][]byte `json:"commitments"`
 	Share       []byte   `json:"share"`
 }
 

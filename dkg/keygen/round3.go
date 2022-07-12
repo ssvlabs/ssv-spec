@@ -1,14 +1,13 @@
 package keygen
 
 import (
-	"bytes"
 	"errors"
 	"github.com/bloxapp/ssv-spec/dkg/dlog"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-func (k *Keygen)calcSkI() *bls.SecretKey {
+func (k *Keygen) calcSkI() *bls.SecretKey {
 	skI := new(bls.SecretKey)
 	skI.Deserialize(k.ownShare.Serialize())
 	ind := int(k.PartyI - 1)
@@ -51,7 +50,6 @@ func (k *Keygen) r3Proceed() error {
 
 func (k *Keygen) r3CanProceed() error {
 	var (
-		ErrInvalidCoefficientCommitment = errors.New("invalid coefficient commitments")
 		ErrInvalidShare                 = errors.New("invalid share")
 	)
 
@@ -59,18 +57,12 @@ func (k *Keygen) r3CanProceed() error {
 		return ErrInvalidRound
 	}
 	for i, r3Msg := range k.Round3Msgs {
-		if i == int(k.PartyI) -1 {
+		if i == int(k.PartyI)-1 {
 			continue
 		}
 		r2Msg := k.Round2Msgs[i]
-		if r2Msg == nil || r2Msg.Body.Round2 == nil || r2Msg.Body.Round2.YI == nil || r3Msg == nil || r3Msg.Body.Round3 == nil {
+		if r2Msg == nil || r2Msg.Body.Round2 == nil || r2Msg.Body.Round2.DeCommmitment == nil || r3Msg == nil || r3Msg.Body.Round3 == nil {
 			return errors.New("expected message not found")
-		}
-		if len(r3Msg.Body.Round3.Commitments) != len(k.Coefficients) {
-			return ErrInvalidCoefficientCommitment
-		}
-		if bytes.Compare(r2Msg.Body.Round2.YI, r3Msg.Body.Round3.Commitments[0]) != 0 {
-			return ErrInvalidCoefficientCommitment
 		}
 		shareBytes := r3Msg.Body.Round3.Share
 		share := &vss.Share{
@@ -84,7 +76,7 @@ func (k *Keygen) r3CanProceed() error {
 			share.Share = k.ownShare
 		}
 		commitments := make([]*bls.PublicKey, len(k.Coefficients))
-		for j, commBytes := range r3Msg.Body.Round3.Commitments {
+		for j, commBytes := range r2Msg.Body.Round2.DeCommmitment {
 			// TODO: Improve conversion of multiple times
 			commitments[j] = new(bls.PublicKey)
 			commitments[j].Deserialize(commBytes)
