@@ -2,7 +2,6 @@ package keygen
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
-	types2 "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -14,7 +13,7 @@ type KGProtocol struct {
 	state      *Keygen
 }
 
-func New(init *dkg.Init, identifier dkg.RequestID, config types2.ProtocolConfig) (dkg.Protocol, error) {
+func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) (dkg.Protocol, error) {
 	var myIndex uint16 = 0
 	for i, id := range init.OperatorIDs {
 		if id == config.Operator.OperatorID {
