@@ -1,7 +1,7 @@
 package dlog_test
 
 import (
-	"github.com/RockX-SG/bls-dkg/dlog"
+	"github.com/bloxapp/ssv-spec/dkg/dlog"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/stretchr/testify/require"
 	"testing"
