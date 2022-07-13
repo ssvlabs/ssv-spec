@@ -1,12 +1,19 @@
 package keygen
 
+import "github.com/bloxapp/ssv-spec/dkg/base"
+
 func (k *Keygen) r1Proceed() error {
 	if k.Round != 1 {
 		return ErrInvalidRound
 	}
-	msg := &Message{
-		Sender: k.PartyI,
-		Body: MessageBody{
+	msg := &ParsedMessage{
+		Header: &base.MessageHeader{
+			SessionId: k.SessionID,
+			MsgType:   k.HandleMessageType,
+			Sender:    k.PartyI,
+			Receiver:  0,
+		},
+		Body: &KeygenMsgBody{
 			Round2: &Round2Msg{
 				DeCommmitment: k.GetDecommitment(),
 				BlindFactor:   k.BlindFactor[:],

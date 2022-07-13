@@ -3,6 +3,7 @@ package keygen
 import (
 	"errors"
 	"fmt"
+	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
@@ -34,12 +35,16 @@ func (k *Keygen) r2Proceed() error {
 	}
 
 	for i, share := range allShares {
-		receiver := uint16(i + 1)
+		receiver := uint32(i + 1)
 		if i+1 != int(k.PartyI) {
-			msg := &Message{
-				Sender:   k.PartyI,
-				Receiver: &receiver,
-				Body: MessageBody{
+			msg := &ParsedMessage{
+				Header: &base.MessageHeader{
+					SessionId: k.SessionID,
+					MsgType:   k.HandleMessageType,
+					Sender:    k.PartyI,
+					Receiver:  receiver,
+				},
+				Body: &KeygenMsgBody{
 					Round3: &Round3Msg{
 						Share: share.Share.Serialize(),
 					},
@@ -64,9 +69,9 @@ func (k *Keygen) r2CanProceed() error {
 		if r1Msg == nil || r2Msg == nil || r1Msg.Body.Round1 == nil || r2Msg.Body.Round2 == nil {
 			return ErrExpectMessage
 		}
-		if !k.VerifyCommitment(*r1Msg.Body.Round1, *r2Msg.Body.Round2, r2Msg.Sender) {
+		if !k.VerifyCommitment(*r1Msg.Body.Round1, *r2Msg.Body.Round2, r2Msg.Header.Sender) {
 			// TODO: Handle blame?
-			return fmt.Errorf("decomm doesn't match comm for party %d", r2Msg.Sender)
+			return fmt.Errorf("decomm doesn't match comm for party %d", r2Msg.Header.Sender)
 		}
 
 	}

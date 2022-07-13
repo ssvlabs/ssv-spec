@@ -1,9 +1,12 @@
 package keygen
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 type KGProtocol struct {
@@ -14,13 +17,13 @@ type KGProtocol struct {
 }
 
 func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) (dkg.Protocol, error) {
-	var myIndex uint16 = 0
+	var myIndex uint32 = 0
 	for i, id := range init.OperatorIDs {
 		if id == config.Operator.OperatorID {
-			myIndex = uint16(i) + 1
+			myIndex = uint32(i) + 1
 		}
 	}
-	state, err := NewKeygen(myIndex, init.Threshold, uint16(len(init.OperatorIDs)))
+	state, err := NewKeygen(identifier[:], myIndex, uint32(init.Threshold), uint32(len(init.OperatorIDs)))
 	if err != nil {
 		return nil, err
 	}
@@ -32,46 +35,45 @@ func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) (d
 	}, nil
 }
 
-func (k *KGProtocol) Start() ([]dkg.Message, error) {
+func (k *KGProtocol) Start() ([]base.Message, error) {
 	if err := k.state.Proceed(); err != nil {
 		return nil, err
 	}
 	return k.getAndEncodeOutgoing()
 }
 
-func (k *KGProtocol) ProcessMsg(msg *dkg.Message) ([]dkg.Message, error) {
+func (k *KGProtocol) ProcessMsg(msg *base.Message) ([]base.Message, error) {
 	if msg == nil {
 		return nil, errors.New("nil message")
 	}
-	if msg.MsgType != dkg.ProtocolMsgType {
+	if msg.Header.MsgType != k.state.HandleMessageType {
 		return nil, errors.New("not valid message type")
 	}
-	if msg.Identifier != k.identifier {
+	if bytes.Compare(msg.Header.SessionId, k.state.SessionID) != 0 {
 		return nil, errors.New("invalid identifier")
 	}
-	pMsg := new(Message)
-	pMsg.Decode(msg.Data)
+	pMsg := &ParsedMessage{}
+	if err := pMsg.FromBase(msg); err != nil {
+		return nil, err
+	}
 	k.state.PushMessage(pMsg)
 	return k.getAndEncodeOutgoing()
 }
 
-func (k *KGProtocol) getAndEncodeOutgoing() ([]dkg.Message, error) {
+func (k *KGProtocol) getAndEncodeOutgoing() ([]base.Message, error) {
 	outgoingInner, err := k.state.GetOutgoing()
+	log.Trace("here")
 	if err != nil {
 		return nil, err
 	}
-	var outgoing []dkg.Message
-	for _, msg := range outgoingInner {
-		data, err := msg.Encode()
-		if err != nil {
-			return nil, err
+	var outgoing []base.Message
+	for _, out := range outgoingInner {
+		if msg, err := out.ToBase(); err == nil {
+			outgoing = append(outgoing, *msg)
+		} else {
+			// TODO: Log error
+			log.Errorf("error: %v", err)
 		}
-		outMsg := dkg.Message{
-			MsgType:    dkg.ProtocolMsgType,
-			Identifier: k.identifier,
-			Data:       data,
-		}
-		outgoing = append(outgoing, outMsg)
 	}
 	return outgoing, nil
 }

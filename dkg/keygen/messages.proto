@@ -1,0 +1,39 @@
+syntax = "proto3";
+package ssv.dkg.keygen;
+option go_package = "dkg/keygen";
+import "base/messages.proto";
+
+message Round1Msg{
+  bytes Commitment = 1;
+}
+
+message Round2Msg{
+  repeated bytes DeCommmitment = 1;
+  bytes BlindFactor = 2;
+}
+
+message Round3Msg {
+  bytes Share = 3 ;
+}
+
+message Round4Msg {
+  bytes Commitment = 1;
+  bytes PubKey = 2;
+  bytes ChallengeResponse = 3;
+}
+
+message KeygenMsgBody {
+  Round1Msg round1 = 1;
+  Round2Msg round2 = 2;
+  Round3Msg round3 = 3;
+  Round4Msg round4 = 4;
+}
+
+/*
+ * It has the same shape as base.Message except the data is parsed into KeygenMsgBody
+ */
+message ParsedMessage {
+  ssv.dkg.base.MessageHeader header = 1;
+  KeygenMsgBody body = 2;
+  bytes signature = 3;
+}

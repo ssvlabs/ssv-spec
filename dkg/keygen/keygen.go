@@ -7,6 +7,7 @@ import (
 	_ "crypto/sha256"
 	"errors"
 	"fmt"
+	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	log "github.com/sirupsen/logrus"
@@ -30,44 +31,48 @@ func init() {
 }
 
 type Keygen struct {
-	Round        Round
-	Coefficients vss.Coefficients
-	BlindFactor  [32]byte // A random number
-	DlogR        *bls.Fr
-	PartyI       uint16
-	PartyCount   uint16
-	skI          *bls.SecretKey
-	Round1Msgs   Messages
-	Round2Msgs   Messages
-	Round3Msgs   Messages
-	Round4Msgs   Messages
-	Outgoing     Messages
-	Output       *LocalKeyShare
-	ownShare     *bls.Fr
-	inMutex      sync.Mutex
-	outMutex     sync.Mutex
+	SessionID         []byte
+	Round             Round
+	Coefficients      vss.Coefficients
+	BlindFactor       [32]byte // A random number
+	DlogR             *bls.Fr
+	PartyI            uint32
+	PartyCount        uint32
+	skI               *bls.SecretKey
+	Round1Msgs        ParsedMessages
+	Round2Msgs        ParsedMessages
+	Round3Msgs        ParsedMessages
+	Round4Msgs        ParsedMessages
+	Outgoing          ParsedMessages
+	Output            *LocalKeyShare
+	HandleMessageType int32
+	ownShare          *bls.Fr
+	inMutex           sync.Mutex
+	outMutex          sync.Mutex
 }
 
-func NewKeygen(i, t, n uint16) (*Keygen, error) {
+func NewKeygen(sessionId []byte, i, t, n uint32) (*Keygen, error) {
 	coefficients := vss.CreatePolynomial(int(t + 1))
 	bf := MustGetRandomInt(SECURITY)
 	kg := &Keygen{
-		Round:        0,
-		Coefficients: coefficients,
-		BlindFactor:  [32]byte{},
-		DlogR:        new(bls.Fr),
-		PartyI:       i,
-		PartyCount:   n,
-		skI:          nil,
-		Round1Msgs:   make(Messages, n),
-		Round2Msgs:   make(Messages, n),
-		Round3Msgs:   make(Messages, n),
-		Round4Msgs:   make(Messages, n),
-		Outgoing:     nil,
-		Output:       nil,
-		ownShare:     nil,
-		inMutex:      sync.Mutex{},
-		outMutex:     sync.Mutex{},
+		SessionID:         sessionId,
+		Round:             0,
+		Coefficients:      coefficients,
+		BlindFactor:       [32]byte{},
+		DlogR:             new(bls.Fr),
+		PartyI:            i,
+		PartyCount:        n,
+		skI:               nil,
+		Round1Msgs:        make(ParsedMessages, n),
+		Round2Msgs:        make(ParsedMessages, n),
+		Round3Msgs:        make(ParsedMessages, n),
+		Round4Msgs:        make(ParsedMessages, n),
+		Outgoing:          nil,
+		Output:            nil,
+		HandleMessageType: int32(dkg.ProtocolMsgType),
+		ownShare:          nil,
+		inMutex:           sync.Mutex{},
+		outMutex:          sync.Mutex{},
 	}
 	copy(kg.BlindFactor[:], bf.Bytes())
 	kg.DlogR.SetByCSPRNG()
@@ -116,11 +121,11 @@ func (k *Keygen) Proceed() error {
 	return nil
 }
 
-func (k *Keygen) PushMessage(msg *Message) error {
+func (k *Keygen) PushMessage(msg *ParsedMessage) error {
 	if msg == nil || !msg.IsValid() {
 		return errors.New("invalid message")
 	}
-	if msg.Sender <= 0 || msg.Sender > k.PartyCount {
+	if msg.Header.Sender <= 0 || msg.Header.Sender > k.PartyCount {
 		return errors.New("invalid sender")
 	}
 	rn, err := msg.GetRoundNumber()
@@ -131,23 +136,23 @@ func (k *Keygen) PushMessage(msg *Message) error {
 	defer k.inMutex.Unlock()
 	switch rn {
 	case 1:
-		k.Round1Msgs[msg.Sender-1] = msg
+		k.Round1Msgs[msg.Header.Sender-1] = msg
 		return nil
 	case 2:
-		k.Round2Msgs[msg.Sender-1] = msg
+		k.Round2Msgs[msg.Header.Sender-1] = msg
 		return nil
 	case 3:
-		k.Round3Msgs[msg.Sender-1] = msg
+		k.Round3Msgs[msg.Header.Sender-1] = msg
 		return nil
 	case 4:
-		k.Round4Msgs[msg.Sender-1] = msg
+		k.Round4Msgs[msg.Header.Sender-1] = msg
 		return nil
 	}
 	return errors.New("unable to handle message")
 
 }
 
-func (k *Keygen) GetOutgoing() (Messages, error) {
+func (k *Keygen) GetOutgoing() (ParsedMessages, error) {
 	if success := k.outMutex.TryLock(); success {
 		defer k.outMutex.Unlock()
 		out := k.Outgoing[:]
@@ -161,7 +166,7 @@ func (k *Keygen) GetOutgoing() (Messages, error) {
 	}
 }
 
-func (k *Keygen) pushOutgoing(msg *Message) {
+func (k *Keygen) pushOutgoing(msg *ParsedMessage) {
 	k.outMutex.Lock()
 	defer k.outMutex.Unlock()
 	k.Outgoing = append(k.Outgoing, msg)
@@ -179,7 +184,7 @@ func (k *Keygen) GetCommitment() []byte {
 
 	var data []byte
 	decomm := k.GetDecommitment()
-	data = append(data, Uint16ToBytes(k.PartyI)...)
+	data = append(data, Uint32ToBytes(k.PartyI)...)
 	data = append(data, k.BlindFactor[:]...)
 	for _, bytes := range decomm {
 		data = append(data, bytes...)
@@ -189,12 +194,12 @@ func (k *Keygen) GetCommitment() []byte {
 	return hash.Sum(nil)
 }
 
-func (k *Keygen) VerifyCommitment(r1 Round1Msg, r2 Round2Msg, partyI uint16) bool {
+func (k *Keygen) VerifyCommitment(r1 Round1Msg, r2 Round2Msg, partyI uint32) bool {
 	if len(k.Coefficients) != len(r2.DeCommmitment) {
 		return false
 	}
 	var data []byte
-	data = append(data, Uint16ToBytes(partyI)...)
+	data = append(data, Uint32ToBytes(partyI)...)
 	data = append(data, r2.BlindFactor...)
 	for _, bytes := range r2.DeCommmitment {
 		data = append(data, bytes...)

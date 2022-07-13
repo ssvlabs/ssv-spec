@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -90,7 +91,7 @@ func (msg *Message) GetRoot() ([]byte, error) {
 }
 
 type SignedMessage struct {
-	Message   *Message
+	Message   *base.Message
 	Signer    types.OperatorID
 	Signature types.Signature
 }

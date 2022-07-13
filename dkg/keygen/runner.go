@@ -2,18 +2,20 @@ package keygen
 
 import (
 	"errors"
+	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/base"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
 
 type Runner struct {
 	Keygen   *Keygen
-	incoming <-chan Message
-	outgoing chan<- Message
+	incoming <-chan base.Message
+	outgoing chan<- base.Message
 }
 
-func NewRunner(i, t, n uint16, incoming <-chan Message, outgoing chan<- Message) (*Runner, error) {
-	kg, err := NewKeygen(i, t, n)
+func NewRunner(identifier dkg.RequestID, i, t, n uint32, incoming <-chan base.Message, outgoing chan<- base.Message) (*Runner, error) {
+	kg, err := NewKeygen(identifier[:], i, t, n)
 	if err != nil {
 		return nil, err
 	}
@@ -37,14 +39,26 @@ func (r *Runner) ProcessLoop() {
 		select {
 		case msg, ok := <-r.incoming:
 			if ok {
-				r.Keygen.PushMessage(&msg)
+				parsed := &ParsedMessage{}
+				if err := parsed.FromBase(&msg); err == nil {
+					r.Keygen.PushMessage(parsed)
+				} else {
+					// TODO: Log error
+				}
+
 			}
 		case <-time.After(1 * time.Second):
 			finished = r.Keygen.Output != nil
 			_ = r.Keygen.Proceed()
 			if outgoing, _ := r.Keygen.GetOutgoing(); outgoing != nil {
 				for _, out := range outgoing {
-					r.outgoing <- *out
+					if msg, err := out.ToBase(); err == nil {
+						r.outgoing <- *msg
+					} else {
+						// TODO: Standardize log error
+						log.Errorf("err: %v", err)
+					}
+
 				}
 			}
 			if finished {

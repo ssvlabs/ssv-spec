@@ -74,12 +74,12 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 		return errors.Wrap(err, "signed message doesn't pass validation")
 	}
 
-	switch signedMsg.Message.MsgType {
-	case InitMsgType:
+	switch signedMsg.Message.Header.MsgType {
+	case int32(InitMsgType):
 		return n.startNewDKGMsg(signedMsg)
-	case ProtocolMsgType:
+	case int32(ProtocolMsgType):
 		return n.processDKGMsg(signedMsg)
-	case DepositDataMsgType:
+	case int32(DepositDataMsgType):
 		return n.processDKGMsg(signedMsg)
 	default:
 		return errors.New("unknown msg type")
@@ -100,13 +100,13 @@ func (n *Node) startNewDKGMsg(message *SignedMessage) error {
 		return errors.Wrap(err, "could not start new dkg")
 	}
 
-	runner, err := n.newRunner(message.Message.Identifier, initMsg)
+	runner, err := n.newRunner(message.Message.Header.RequestID(), initMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not start new dkg")
 	}
 
 	// add runner to runners
-	n.runners.AddRunner(message.Message.Identifier, runner)
+	n.runners.AddRunner(message.Message.Header.RequestID(), runner)
 	err = runner.Start()
 	if err != nil {
 		return err
@@ -117,7 +117,7 @@ func (n *Node) startNewDKGMsg(message *SignedMessage) error {
 
 func (n *Node) validateInitMsg(message *SignedMessage) (*Init, error) {
 	// validate identifier.GetEthAddress is the signer for message
-	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, message.Message.Identifier.GetETHAddress()); err != nil {
+	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, RequestID(message.Message.Header.RequestID()).GetETHAddress()); err != nil {
 		return nil, errors.Wrap(err, "signed message invalid")
 	}
 
@@ -131,7 +131,7 @@ func (n *Node) validateInitMsg(message *SignedMessage) (*Init, error) {
 	}
 
 	// check instance not running already
-	if n.runners.RunnerForID(message.Message.Identifier) != nil {
+	if n.runners.RunnerForID(message.Message.Header.RequestID()) != nil {
 		return nil, errors.New("dkg started already")
 	}
 
@@ -153,14 +153,14 @@ func (n *Node) processDKGMsg(message *SignedMessage) error {
 		if err := n.config.Network.StreamDKGOutput(output); err != nil {
 			return errors.Wrap(err, "failed to stream dkg output")
 		}
-		n.runners.DeleteRunner(message.Message.Identifier)
+		n.runners.DeleteRunner(message.Message.Header.RequestID())
 	}
 
 	return nil
 }
 
 func (n *Node) validateDKGMsg(message *SignedMessage) (*Runner, error) {
-	runner := n.runners.RunnerForID(message.Message.Identifier)
+	runner := n.runners.RunnerForID(message.Message.Header.RequestID())
 	if runner == nil {
 		return nil, errors.New("could not find dkg runner")
 	}

@@ -3,6 +3,8 @@ package main
 import "C"
 import (
 	"encoding/hex"
+	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	log "github.com/sirupsen/logrus"
@@ -10,7 +12,7 @@ import (
 	"time"
 )
 
-type M = keygen.Message
+type M = base.Message
 
 func init() {
 	log.SetFormatter(&log.TextFormatter{})
@@ -40,29 +42,33 @@ func main() {
 		}
 	}()
 
+	id := dkg.RequestID{}
+	for i, _ := range id {
+		id[i] = 1
+	}
 	for i := 1; i < n+1; i++ {
 		in := make(chan M, n)
 		out := make(chan M, n)
-		keygen, _ := keygen.NewRunner(uint16(i), uint16(t), uint16(n), in, out)
+		keygen, _ := keygen.NewRunner(id, uint32(i), uint32(t), uint32(n), in, out)
 		ins = append(ins, in)
 		outs = append(outs, out)
 		kMachines = append(kMachines, keygen)
 	}
 
 	go func(o1 <-chan M, o2 <-chan M, o3 <-chan M, o4 <-chan M, i1 chan<- M, i2 chan<- M, i3 chan<- M, i4 chan<- M) {
-		send := func(msg keygen.Message) {
-			if msg.Receiver == nil {
+		send := func(msg base.Message) {
+			if msg.Header.Receiver == 0 {
 				i1 <- msg
 				i2 <- msg
 				i3 <- msg
 				i4 <- msg
-			} else if *msg.Receiver == 1 {
+			} else if msg.Header.Receiver == 1 {
 				i1 <- msg
-			} else if *msg.Receiver == 2 {
+			} else if msg.Header.Receiver == 2 {
 				i2 <- msg
-			} else if *msg.Receiver == 3 {
+			} else if msg.Header.Receiver == 3 {
 				i3 <- msg
-			} else if *msg.Receiver == 4 {
+			} else if msg.Header.Receiver == 4 {
 				i4 <- msg
 			}
 		}

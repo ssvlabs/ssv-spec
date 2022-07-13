@@ -2,6 +2,7 @@ package keygen
 
 import (
 	"errors"
+	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/dkg/dlog"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -37,9 +38,14 @@ func (k *Keygen) r3Proceed() error {
 		RandomNumber: k.DlogR,
 	}
 	proof := knowledge.Prove()
-	msg := &Message{
-		Sender: k.PartyI,
-		Body: MessageBody{
+	msg := &ParsedMessage{
+		Header: &base.MessageHeader{
+			SessionId:     k.SessionID,
+			MsgType:       k.HandleMessageType,
+			Sender:        k.PartyI,
+			Receiver:      0,
+		},
+		Body: &KeygenMsgBody{
 			Round4: &Round4Msg{
 				Commitment:        proof.Commitment.Serialize(),
 				PubKey:            proof.PubKey.Serialize(),
@@ -73,7 +79,7 @@ func (k *Keygen) r3CanProceed() error {
 		}
 		share.ID.SetInt64(int64(k.PartyI))
 		share.Share.Deserialize(shareBytes)
-		if r3Msg.Sender == k.PartyI {
+		if r3Msg.Header.Sender == k.PartyI {
 			share.Share = k.ownShare
 		}
 		commitments := make([]*bls.PublicKey, len(k.Coefficients))

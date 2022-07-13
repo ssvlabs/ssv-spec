@@ -7,10 +7,13 @@ require (
 	github.com/attestantio/go-eth2-client v0.11.3
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/ethereum/go-ethereum v1.10.18
+	github.com/golang/protobuf v1.5.2
 	github.com/herumi/bls-eth-go-binary v0.0.0-20220509081320-2d8ab06de53c
 	github.com/pkg/errors v0.9.1
 	github.com/prysmaticlabs/go-bitfield v0.0.0-20210809151128-385d8c5e3fb7
+	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.2
+	google.golang.org/protobuf v1.26.0
 )
 
 require (
@@ -25,7 +28,6 @@ require (
 	github.com/minio/sha256-simd v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/sirupsen/logrus v1.8.1 // indirect
 	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e // indirect
 	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
