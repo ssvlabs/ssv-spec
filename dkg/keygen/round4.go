@@ -18,7 +18,7 @@ func (k *Keygen) r4Proceed() error {
 	pk := new(bls.PublicKey)
 	for _, r2Msg := range k.Round2Msgs {
 		temp := new(bls.PublicKey)
-		temp.Deserialize(r2Msg.Body.Round2.DeCommmitment[0])
+		temp.Deserialize(r2Msg.Body.Round2.DeCommitment[0])
 		pk.Add(temp)
 	}
 	vkVec := make([][]byte, int(k.PartyCount))

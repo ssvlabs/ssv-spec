@@ -8,7 +8,7 @@ message Round1Msg{
 }
 
 message Round2Msg{
-  repeated bytes DeCommmitment = 1;
+  repeated bytes DeCommitment = 1;
   bytes BlindFactor = 2;
 }
 

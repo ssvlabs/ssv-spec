@@ -51,8 +51,8 @@ func (s DkgPartyDataSet) R2(operatorId types.OperatorID) *keygen.ParsedMessage {
 		},
 		Body: &keygen.KeygenMsgBody{
 			Round2: &keygen.Round2Msg{
-				DeCommmitment: s.PartyData[operatorId].DeCommitment,
-				BlindFactor:   s.PartyData[operatorId].BlindFactor,
+				DeCommitment: s.PartyData[operatorId].DeCommitment,
+				BlindFactor:  s.PartyData[operatorId].BlindFactor,
 			},
 		},
 		Signature: nil,

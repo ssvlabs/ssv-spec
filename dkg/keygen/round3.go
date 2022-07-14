@@ -68,7 +68,7 @@ func (k *Keygen) r3CanProceed() error {
 			continue
 		}
 		r2Msg := k.Round2Msgs[i]
-		if r2Msg == nil || r2Msg.Body.Round2 == nil || r2Msg.Body.Round2.DeCommmitment == nil || r3Msg == nil || r3Msg.Body.Round3 == nil {
+		if r2Msg == nil || r2Msg.Body.Round2 == nil || r2Msg.Body.Round2.DeCommitment == nil || r3Msg == nil || r3Msg.Body.Round3 == nil {
 			return ErrExpectMessage
 		}
 		shareBytes := r3Msg.Body.Round3.Share
@@ -83,7 +83,7 @@ func (k *Keygen) r3CanProceed() error {
 			share.Share = k.ownShare
 		}
 		commitments := make([]*bls.PublicKey, len(k.Coefficients))
-		for j, commBytes := range r2Msg.Body.Round2.DeCommmitment {
+		for j, commBytes := range r2Msg.Body.Round2.DeCommitment {
 			// TODO: Improve conversion of multiple times
 			commitments[j] = new(bls.PublicKey)
 			commitments[j].Deserialize(commBytes)
