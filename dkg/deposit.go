@@ -21,6 +21,10 @@ type SignDepositData struct {
 	config            ProtocolConfig
 }
 
+func (s *SignDepositData) Output() ([]byte, error) {
+	panic("implement me")
+}
+
 func NewSignDepositData(init *Init, key *KeygenOutput, config ProtocolConfig) *SignDepositData {
 
 	return &SignDepositData{

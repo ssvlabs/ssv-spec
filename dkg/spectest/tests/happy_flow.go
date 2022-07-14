@@ -1,5 +1,5 @@
 package tests
-
+/*
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
@@ -89,3 +89,4 @@ func HappyFlow() *MsgProcessingSpecTest {
 		},
 	}
 }
+*/

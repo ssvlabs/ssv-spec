@@ -59,6 +59,7 @@ func (s *DKG) getOutput() (*dkg.Message, error) {
 	}, nil
 }
 
+/*
 func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) dkg.Protocol {
 	var myIndex uint16 = 0
 	for i, id := range init.OperatorIDs {
@@ -75,6 +76,7 @@ func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) dk
 		msgs:       map[Round][]*KeygenProtocolMsg{},
 	}
 }
+*/
 
 func (s *DKG) SetOperators(validatorPK []byte, operatorShares map[types.OperatorID]*bls.SecretKey) {
 	s.validatorPK = validatorPK

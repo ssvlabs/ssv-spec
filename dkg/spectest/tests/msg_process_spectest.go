@@ -1,5 +1,5 @@
 package tests
-
+/*
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
@@ -41,3 +41,4 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 }
+*/

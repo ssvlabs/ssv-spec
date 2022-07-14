@@ -122,7 +122,7 @@ func (k *Keygen) Proceed() error {
 	default:
 		return fmt.Errorf("invalid round of State machine: %d", k.Round)
 	}
-	return nil
+	return err
 }
 
 func (k *Keygen) PushMessage(msg *ParsedMessage) error {

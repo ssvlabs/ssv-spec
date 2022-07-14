@@ -2,6 +2,7 @@ package keygen
 
 import (
 	"bytes"
+	"encoding/json"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/types"
@@ -14,6 +15,17 @@ type KGProtocol struct {
 	Operator   types.OperatorID
 	Init       dkg.Init
 	State      *Keygen
+}
+
+func (k *KGProtocol) Output() ([]byte, error) {
+	if k.State == nil || k.State.Output == nil {
+		return nil, nil
+	}
+	jStr, err := json.Marshal(k.State.Output)
+	if err != nil {
+		return nil, err
+	}
+	return jStr, nil
 }
 
 func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) (dkg.Protocol, error) {
@@ -56,13 +68,19 @@ func (k *KGProtocol) ProcessMsg(msg *base.Message) ([]base.Message, error) {
 	if err := pMsg.FromBase(msg); err != nil {
 		return nil, err
 	}
-	k.State.PushMessage(pMsg)
+
+	if err := k.State.PushMessage(pMsg); err != nil {
+		return nil, err
+	}
+
+	if err := k.State.Proceed(); err != nil {
+		return nil, err
+	}
 	return k.getAndEncodeOutgoing()
 }
 
 func (k *KGProtocol) getAndEncodeOutgoing() ([]base.Message, error) {
 	outgoingInner, err := k.State.GetOutgoing()
-	log.Trace("here")
 	if err != nil {
 		return nil, err
 	}
