@@ -123,6 +123,118 @@ func h2b(str string) []byte {
 
 func TestSuiteThreeOfFour() DkgPartyDataSet {
 	return DkgPartyDataSet{
+		PublicKey: h2b("8adbbb94ab3b4741e651e20255ad33e73483d0c83181b3aedad5fec9d648e952bfd4baeef8236781ce00300d17ae31ad"),
+		SecretShares: map[types.OperatorID][]byte{
+			1: h2b("159208425a2e719697647e32b745f3108505694422f8780304b4c7a0a588c83a"),
+			2: h2b("477d0d26c8bda3bc5e77efb961f4105bee19fbb5fbd35c94785a48574f7b12fc"),
+			3: h2b("526882bfa229b2ca61166e4e36680ba85e817b9fc0670cb273e4e143735c4d49"),
+			4: h2b("3654690ce6729ec09f3ff9f134a1e4f5d63be90170b3885cf7549265112c7721"),
+		},
+		SharePublicKeys: map[types.OperatorID][]byte{
+			1: h2b("8ef0df412670cc9b838e61d29052a2b730c816cd516e84346fa575022296bf62046f8e28433ed2cce18537c64456b3bb"),
+			2: h2b("8172a74048867bce1860dfc077a0034aaabc1b4a151efc27806f8e92161efd90bc9546041a6b5142ccfc03550bcf0568"),
+			3: h2b("b8ec7b107017fce6cf6c3fa1ec3ce02cdf0b271a10d0559f880006fff0154b3e4e39a0bce54315bbb0f2cb28701d1923"),
+			4: h2b("8b72e8714bb9b80416eb11dd2a62144367932eebf22511c1c12150b3d123aee8ef351222ae1c8fccee68a7b8a880b755"),
+		},
+		PartyData: map[types.OperatorID]*DkgPartyData{
+			1: {
+				Coefficients: [][]byte{
+					h2b("34a77f6219fe5e3fd77444167eb842e7ca4505b988e049709935c98a7f7423b9"),
+					h2b("0c23d2ca0c6cabfe335989e0dec2896ecda50c55a1360e4fe285dcc11d074a5c"),
+					h2b("39fc21c50f44805588427be8048c3413b4d929c15bf154383229bd2509ac950f"),
+				},
+				BlindFactor: h2b("a7eacdba5e614ab343adfdc2e2273ff30e9b31abc27ec84bec67b4862e841386"),
+				DlogR:       h2b("14c03aadeea18b95888cef14ce7d577e78f1611c6dfa5c580b271cb3bac3468b"),
+				Commitment:  h2b("c242ab540de0ccf6107ddc1a3b494ec4f93621d4b09a443a025f83b90ce8b462"),
+				DeCommitment: [][]byte{
+					h2b("b736d5228eb746e7338f46682c62ba72afc02c2dc27cb053000abc3ee3ddbb98947cd34d2062bf9073cdef07cd76110f"),
+					h2b("8216fc394fc2452dad2dfa99c859ca92240647ba551892e4cd77f14dd026984ca81f44ef208551a13b1d2c6bd6bedd73"),
+					h2b("aedde85b96669b526186a576cded3e5d01ed5ea488d058496375eef7255fc5ea44d8c7dfcc58dbdec0db57b8ab2c03b9"),
+				},
+				Shares: map[types.OperatorID][]byte{
+					1: h2b("06d9cc9e0c120d4b5fd671d758652864f90597cd86094ff9ade56371a6280323"),
+					2: h2b("4d045d641caebd01f8bd97683b2a760991787d643b14fef326e877a2e0350cab"),
+					3: h2b("1f4be30df89972d33bb604b913c47bcaec226e77a8069e5f043f06202d9b404f"),
+					4: h2b("658bac41f30d294f8f3369d9f576e9b3b07eb30dccdae63b45e90ee78e5a9e11"),
+				},
+				ProofCommitment: h2b("b3d1dbe5efcd55f5bfa0d055ab4376270ae2789a695e3f4f0759708079126f0e978a7a23bbe192635c2e69687a81bcf2"),
+				ProofResponse:   h2b("3267dd6ffb1f6f08f24be34a9092151d79b6df9521b9305163c17789b57ad4e6"),
+			},
+			2: {
+				Coefficients: [][]byte{
+					h2b("1b38be7959a9d6bb404e6348ea87e00feafea1fa5c952ad57b484d5b93646df3"),
+					h2b("106def05f6a35564b6d441f3412640efe6b179dd89b98d7f0d6fdaf54c4bc633"),
+					h2b("4d2ce8c5db08b12d0fcf77849dd17315cb6b6127c9c1ec887d0c203044e649c3"),
+				},
+				BlindFactor: h2b("60488a81b35fba615578f46cc1aee060bf3bf660e2ca0d54c4fb93dd85246556"),
+				DlogR:       h2b("1eff751418c65956dab0b57573334a752661b1b683fd7abe35cdf771345da1a5"),
+				Commitment:  h2b("ae24241d1b463462c2acb4c0f37c1708b5ff4f80bf50998e97842afe1a3c1eb1"),
+				DeCommitment: [][]byte{
+					h2b("ab9b709d18eb1335e2fba7ca953c43e6a83f3e97e9872c4f89379c661398189d5ab8b63b64b3d44408ac943618c33e89"),
+					h2b("8c6527ab4f466abb16ec5682a5b332875e0bb3d6de3d0a913b541a6a2ca300e0cc766b3ccda775c599141562290e72f4"),
+					h2b("af64fba748ebb6a3ced81b7a58400d3249b7c4712bc3f672f5f568f5dd4d4740672d69624c05739244c9105d021e1a58"),
+				},
+				Shares: map[types.OperatorID][]byte{
+					1: h2b("04e5eef201b86004d3b844b8bfddbc10495dd8fcb01248de05c4488224967de8"),
+					2: h2b("14ff49a3363ace6053873d29c734a636ead62e4b9714e3f88a58840a3f952162"),
+					3: h2b("4b84ce8cf73121cdbfbb4c9c008c9e83cf67a1e7119cfc250904fff3e4605861"),
+					4: h2b("3488d65c1afddd04e51a9b076243ccf1a3548fcc1fac356481c9bc4012f822e4"),
+				},
+				ProofCommitment: h2b("8308a8376b2a49ea6dcd239763ae59bdc1f2951fe5be7c0797256abf02f2d08f3857970954de573663ed6d74e0efa08a"),
+				ProofResponse:   h2b("13cffd5645b07c00e7cf015ce57758b0dab6836d010cd7b394d9a3cf046f7e7a"),
+			},
+			3: {
+				Coefficients: [][]byte{
+					h2b("1b429e2c309895e87e381af5ffb17bb3a910ce2b691cf9a6c1174b5339d8340a"),
+					h2b("48314e157ee9fd3ed7c89d55a53b95dd863ff60faa2455ea1bde5360cf706d87"),
+					h2b("5a343ac5d3a42c9c78f4430f0cd91f26c1be35c826e26227a9927c8d883f81cb"),
+				},
+				BlindFactor: h2b("f950232571ad809e466ddad4f2122dbef5e2b45f351e845d4ce5d5702e2c0420"),
+				DlogR:       h2b("2f038de1506ff2f2c26016b5cfecdea578e9c271fd049726cc7ada0b1bac1d82"),
+				Commitment:  h2b("68997f5b0cceff6e1ea3b1b483ace3778dae3db2e25ebd5f819b0be56eabce12"),
+				DeCommitment: [][]byte{
+					h2b("8aa955f38e9d87ea6b8f5ed96c9080455db8a7dbd1fab67d070e4f6f40f84f0f9f43dfc1e0f4a75f4b922a8594981e6d"),
+					h2b("925bda96685f2076914495ccc6f14c6d4b14933e5bad1b1d7dfb4d8bd5c706e56f6004cef1f555574af3aaf5edd6e31c"),
+					h2b("99a5b3c6674846bdacfb235ea4a06259e3c09d4ddf8cb15d1aa033e7190cd04abd129f282056f897077e198557ec0cfe"),
+				},
+				Shares: map[types.OperatorID][]byte{
+					1: h2b("49ba7fb45989427b9bbb2352a82458b29d5156003a2555b986881b429188235b"),
+					2: h2b("44bf8821d6874db744b301bd5705c3f46d93015f58f5be1d9f1de44ef9b71640"),
+					3: h2b("0c51b774a792b79b791fb6360c55bd7919d5d048c58e32d30ad8a67872650cb9"),
+					4: h2b("145eb4fff648fd706c3b18c4d1b61d45f5d766bf7fed0fd8c9b861bdfb9206c7"),
+				},
+				ProofCommitment: h2b("868a51a2664ccbd0ac5d1c5aeaf766ecf692dc5d498077b0e555e133f5eeebdb18733122eaf7e1a26384c538940c2150"),
+				ProofResponse:   h2b("2c59ab12f76bb4a81884c880acd4afd6bad8d79a7d0d4cb4c6569b024fa9187b"),
+			},
+			4: {
+				Coefficients: [][]byte{
+					h2b("395fe6b105764c05dc550774e0afc5256c6a9670e740a90f435efce428d4a74f"),
+					h2b("419e1f99e118a6cbc56960cbabb1dc104d6083fca230ef851bf9d14eba48655c"),
+					h2b("2cf515595f86c9898ccfec1f7dc0c4bd9300d0122942a8db6b2a32356625172b"),
+				},
+				BlindFactor: h2b("367dd5b9259f4169fcf372f277d67d645704edd9bd7597a04b75f1d2d2a6e4de"),
+				DlogR:       h2b("433963c95f02f4887211840f8c4a37c3f2511a2d48f726d4e44edbb2e5c8bec3"),
+				Commitment:  h2b("924699f92ba71c39903f491fdb08a13c1dbe5eeda83fdf164110cca7e03ae054"),
+				DeCommitment: [][]byte{
+					h2b("adf941c332d05482288513313cb0c072502c6a7ac7bc6d770eebe4dd3b900c9a2b5fd163ef03f60de0946ad182c5ae56"),
+					h2b("b0221d757dce658b6c219bfecc4fc9ec2814bef1bc480fe84c0c15cd08220eb6c63b22a5d69b727ad944d1c2750875f2"),
+					h2b("b0fd7e0c8de1a2f178d10bf205a6feaa56e629788f1008c0a37f7ee2b3216e90f722de4cece1e4a311ff584a38f54159"),
+				},
+				Shares: map[types.OperatorID][]byte{
+					1: h2b("340574511c783f12fb547c5800808dedf90e467cb2b5e570ca830069494223d5"),
+					2: h2b("14a78550c8ea47eb00b9f1721231082c57f5f2a9d0b2178a27fb685a35f9ceb0"),
+					3: h2b("4f33c1033469e3d61fbf3ecb1f630be5dcdf3efb41339b5a5bc834b5eefba7e1"),
+					4: h2b("6fbc80153559958c252a8c5b1e74c115340c876e043c14e265e9657d7447af67"),
+				},
+				ProofCommitment: h2b("9592a0296fb0ba33474371e80f92739ec454e01c4fc343cf94b4632a115d03fd8484bee8100bd71ecfc2fe48158767b6"),
+				ProofResponse:   h2b("25e1299915bcae87b1e89241ecb25535545ccc8fa93d8ad225e6acf620a322ab"),
+			},
+		},
+	}
+}
+
+func TestSuiteThreeOfFourSmallValues() DkgPartyDataSet {
+	return DkgPartyDataSet{
 		PublicKey: h2b("b5f7fb0f225f4efee8fafb9117f21e4c0a82f1b5e31e9a4aad46ca618a1dbec125f76480792bc7665f5ec2ad265642c5"),
 		SecretShares: map[types.OperatorID][]byte{
 			1: h2b("00000000000000000000000000000000000000000000000000000000000004fe"),
@@ -235,7 +347,7 @@ func TestSuiteThreeOfFour() DkgPartyDataSet {
 
 var BaseInstance = func() dkg.Protocol {
 	state := keygen.EmptyKeygen(2, 4)
-	partyData := TestSuiteThreeOfFour().PartyData[1]
+	partyData := TestSuiteThreeOfFourSmallValues().PartyData[1]
 	state.PartyI = 1
 	state.Coefficients = make(vss.Coefficients, len(partyData.Coefficients))
 	for i, bytes := range partyData.Coefficients {
