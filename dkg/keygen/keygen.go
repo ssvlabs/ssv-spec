@@ -51,18 +51,15 @@ type Keygen struct {
 	outMutex          sync.Mutex
 }
 
-func NewKeygen(sessionId []byte, i, t, n uint32) (*Keygen, error) {
-	coefficients := vss.CreatePolynomial(int(t + 1))
-	bf := MustGetRandomInt(SECURITY)
-	kg := &Keygen{
-		SessionID:         sessionId,
+func EmptyKeygen(t, n uint32) Keygen {
+	return Keygen{
+		SessionID:         []byte{},
 		Round:             0,
-		Coefficients:      coefficients,
+		Coefficients:      make(vss.Coefficients, t+1),
 		BlindFactor:       [32]byte{},
 		DlogR:             new(bls.Fr),
-		PartyI:            i,
+		PartyI:            0,
 		PartyCount:        n,
-		skI:               nil,
 		Round1Msgs:        make(ParsedMessages, n),
 		Round2Msgs:        make(ParsedMessages, n),
 		Round3Msgs:        make(ParsedMessages, n),
@@ -74,9 +71,16 @@ func NewKeygen(sessionId []byte, i, t, n uint32) (*Keygen, error) {
 		inMutex:           sync.Mutex{},
 		outMutex:          sync.Mutex{},
 	}
-	copy(kg.BlindFactor[:], bf.Bytes())
+}
+
+func NewKeygen(sessionId []byte, i, t, n uint32) (*Keygen, error) {
+	kg := EmptyKeygen(t, n)
+	kg.SessionID = sessionId
+	kg.PartyI = i
+	kg.Coefficients = vss.CreatePolynomial(int(t + 1))
+	copy(kg.BlindFactor[:], MustGetRandomInt(SECURITY).Bytes())
 	kg.DlogR.SetByCSPRNG()
-	return kg, nil
+	return &kg, nil
 }
 
 func (k *Keygen) Proceed() error {
@@ -116,7 +120,7 @@ func (k *Keygen) Proceed() error {
 			}
 		}
 	default:
-		return fmt.Errorf("invalid round of state machine: %d", k.Round)
+		return fmt.Errorf("invalid round of State machine: %d", k.Round)
 	}
 	return nil
 }
