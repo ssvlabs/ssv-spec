@@ -6,6 +6,14 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
+func (x *ParsedMessage) GetRoot() ([]byte, error) {
+	baseMsg, err := x.ToBase()
+	if err != nil {
+		return nil, err
+	}
+	return baseMsg.GetRoot()
+}
+
 func (x *ParsedMessage) FromBase(base *base.Message) error {
 	raw, err := proto.Marshal(base)
 	if err != nil {

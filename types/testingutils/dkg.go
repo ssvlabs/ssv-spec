@@ -1,10 +1,13 @@
 package testingutils
 
 import (
+	"crypto/ecdsa"
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 var TestingWithdrawalCredentials, _ = hex.DecodeString("0x010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f")
@@ -41,21 +44,22 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 		EncryptionPubKey: &keySet.DKGOperators[1].EncryptionKey.PublicKey,
 	}, config)
 }
+*/
 
-var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *dkg.Message) *dkg.SignedMessage {
+var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *base.Message) *base.Message {
 	domain := types.PrimusTestnet
 	sigType := types.DKGSignatureType
 
 	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
 	sig, _ := crypto.Sign(r, sk)
 
-	return &dkg.SignedMessage{
-		Message:   msg,
-		Signer:    id,
+	return &base.Message{
+		Header: msg.Header,
+		Data:   msg.Data,
 		Signature: sig,
 	}
 }
-*/
+
 var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte) []byte {
 	m := &dkg.Init{
 		OperatorIDs:           operators,
