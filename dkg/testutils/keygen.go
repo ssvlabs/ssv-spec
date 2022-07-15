@@ -123,7 +123,7 @@ func h2b(str string) []byte {
 
 var BaseInstance = func() dkg.Protocol {
 	state := keygen.EmptyKeygen(2, 4)
-	partyData := TestSuiteThreeOfFourSmallValues().PartyData[1]
+	partyData := TestSuiteThreeOfFour().PartyData[1]
 	state.PartyI = 1
 	state.Coefficients = make(vss.Coefficients, len(partyData.Coefficients))
 	for i, bytes := range partyData.Coefficients {
