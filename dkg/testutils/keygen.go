@@ -121,6 +121,44 @@ func h2b(str string) []byte {
 	return b
 }
 
+var BaseInstance = func() dkg.Protocol {
+	state := keygen.EmptyKeygen(2, 4)
+	partyData := TestSuiteThreeOfFourSmallValues().PartyData[1]
+	state.PartyI = 1
+	state.Coefficients = make(vss.Coefficients, len(partyData.Coefficients))
+	for i, bytes := range partyData.Coefficients {
+		state.Coefficients[i].Deserialize(bytes)
+	}
+	copy(state.BlindFactor[:], partyData.BlindFactor)
+	state.DlogR.Deserialize(partyData.DlogR)
+	return &keygen.KGProtocol{
+		Identifier: dkg.RequestID{},
+		Operator:   1,
+		Init: dkg.Init{
+			Nonce:                 0,
+			OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
+			Threshold:             2,
+			WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
+			Fork:                  spec.Version{},
+		},
+		State: &state,
+	}
+}
+
+var SignDKGMsg = func(sk *ecdsa.PrivateKey, msg *keygen.ParsedMessage) *keygen.ParsedMessage {
+	domain := types.PrimusTestnet
+	sigType := types.DKGSignatureType
+
+	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
+	sig, _ := crypto.Sign(r, sk)
+
+	return &keygen.ParsedMessage{
+		Header:    msg.Header,
+		Body:      msg.Body,
+		Signature: sig,
+	}
+}
+
 func TestSuiteThreeOfFour() DkgPartyDataSet {
 	return DkgPartyDataSet{
 		PublicKey: h2b("8adbbb94ab3b4741e651e20255ad33e73483d0c83181b3aedad5fec9d648e952bfd4baeef8236781ce00300d17ae31ad"),
@@ -342,43 +380,5 @@ func TestSuiteThreeOfFourSmallValues() DkgPartyDataSet {
 				ProofResponse:   h2b("71cba0135f3b81949434f0ef92aecb74f9feaacde42ae3ad2bb5e27cb83e121d"),
 			},
 		},
-	}
-}
-
-var BaseInstance = func() dkg.Protocol {
-	state := keygen.EmptyKeygen(2, 4)
-	partyData := TestSuiteThreeOfFourSmallValues().PartyData[1]
-	state.PartyI = 1
-	state.Coefficients = make(vss.Coefficients, len(partyData.Coefficients))
-	for i, bytes := range partyData.Coefficients {
-		state.Coefficients[i].Deserialize(bytes)
-	}
-	copy(state.BlindFactor[:], partyData.BlindFactor)
-	state.DlogR.Deserialize(partyData.DlogR)
-	return &keygen.KGProtocol{
-		Identifier: dkg.RequestID{},
-		Operator:   1,
-		Init: dkg.Init{
-			Nonce:                 0,
-			OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
-			Threshold:             2,
-			WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
-			Fork:                  spec.Version{},
-		},
-		State: &state,
-	}
-}
-
-var SignDKGMsg = func(sk *ecdsa.PrivateKey, msg *keygen.ParsedMessage) *keygen.ParsedMessage {
-	domain := types.PrimusTestnet
-	sigType := types.DKGSignatureType
-
-	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
-	sig, _ := crypto.Sign(r, sk)
-
-	return &keygen.ParsedMessage{
-		Header:    msg.Header,
-		Body:      msg.Body,
-		Signature: sig,
 	}
 }
