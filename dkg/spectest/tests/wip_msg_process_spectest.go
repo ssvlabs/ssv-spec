@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
-	"github.com/bloxapp/ssv-spec/dkg/testutils"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -24,8 +23,7 @@ func (test *WipMsgProcessingSpecTest) TestName() string {
 }
 
 func (test *WipMsgProcessingSpecTest) Run(t *testing.T) {
-	pre := testutils.BaseInstance()
-
+	pre := test.Pre
 
 	var lastErr, err error
 	_, err = pre.Start()

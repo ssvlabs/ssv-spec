@@ -13,4 +13,7 @@ type SpecTest interface {
 var AllTests = []SpecTest{
 	//tests.HappyFlow(),
 	tests.WipHappyFlow(),
+	tests.SevenOperators(),
+	tests.TenOperators(),
+	tests.ThirteenOperators(),
 }
