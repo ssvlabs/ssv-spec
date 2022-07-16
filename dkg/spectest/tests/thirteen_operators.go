@@ -6,11 +6,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func ThirteenOperators() *WipMsgProcessingSpecTest {
+func ThirteenOperators() *MsgProcessingSpecTest {
 	ks := testingutils.Testing13SharesSet()
 	suite := testutils.TestSuiteThirteenOperators()
 	pre := testutils.ThirteenOperatorsInstance
-	return &WipMsgProcessingSpecTest{
+	return &MsgProcessingSpecTest{
 		Name:   "happy flow",
 		Pre:    pre,
 		KeySet: ks,

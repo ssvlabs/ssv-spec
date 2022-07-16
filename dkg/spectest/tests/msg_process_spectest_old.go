@@ -1,9 +1,8 @@
 package tests
-
+/*
 import (
-	"encoding/json"
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/dkg/keygen"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -11,9 +10,7 @@ import (
 
 type MsgProcessingSpecTest struct {
 	Name          string
-	Pre           dkg.Protocol
-	Messages      []*keygen.ParsedMessage
-	Output        *keygen.LocalKeyShare
+	Messages      []*dkg.SignedMessage
 	KeySet        *testingutils.TestKeySet
 	ExpectedError string
 }
@@ -23,40 +20,25 @@ func (test *MsgProcessingSpecTest) TestName() string {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	pre := test.Pre
+	node := testingutils.TestingDKGNode(test.KeySet)
 
-	var lastErr, err error
-	_, err = pre.Start()
-	if err != nil {
-		lastErr = err
-	}
+	var lastErr error
 	for _, msg := range test.Messages {
-
-		if baseMsg, err := msg.ToBase(); err == nil {
-			_, err = pre.ProcessMsg(baseMsg)
-		}
+		byts, _ := msg.Encode()
+		err := node.ProcessMessage(&types.SSVMessage{
+			MsgType: types.DKGMsgType,
+			Data:    byts,
+		})
 
 		if err != nil {
 			lastErr = err
 		}
 	}
 
-	output, err := pre.Output()
-	if err != nil {
-		lastErr = err
-	}
-
-	lks := keygen.LocalKeyShare{}
-	err = json.Unmarshal(output, &lks)
-
-	if err != nil {
-		lastErr = err
-	}
-
 	if len(test.ExpectedError) > 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
 		require.NoError(t, lastErr)
-		require.Equal(t, lks, *test.Output)
 	}
 }
+*/
