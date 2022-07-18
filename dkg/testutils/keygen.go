@@ -32,7 +32,7 @@ func (s DkgPartyDataSet) R1(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
 		Header: &base.MessageHeader{
 			MsgType: int32(dkg.ProtocolMsgType),
-			Sender:  uint32(operatorId),
+			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
 			Round1: &keygen.Round1Msg{
@@ -47,7 +47,7 @@ func (s DkgPartyDataSet) R2(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
 		Header: &base.MessageHeader{
 			MsgType: int32(dkg.ProtocolMsgType),
-			Sender:  uint32(operatorId),
+			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
 			Round2: &keygen.Round2Msg{
@@ -63,8 +63,8 @@ func (s DkgPartyDataSet) R3(operatorId types.OperatorID, receiver types.Operator
 	return &keygen.ParsedMessage{
 		Header: &base.MessageHeader{
 			MsgType:  int32(dkg.ProtocolMsgType),
-			Sender:   uint32(operatorId),
-			Receiver: uint32(receiver),
+			Sender:   uint64(operatorId),
+			Receiver: uint64(receiver),
 		},
 		Body: &keygen.KeygenMsgBody{
 			Round3: &keygen.Round3Msg{
@@ -79,7 +79,7 @@ func (s DkgPartyDataSet) R4(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
 		Header: &base.MessageHeader{
 			MsgType: int32(dkg.ProtocolMsgType),
-			Sender:  uint32(operatorId),
+			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
 			Round4: &keygen.Round4Msg{
@@ -121,7 +121,7 @@ func h2b(str string) []byte {
 	return b
 }
 
-var baseInstance = func(partyData *DkgPartyData, threshold, partyCount uint32) dkg.Protocol {
+var baseInstance = func(partyData *DkgPartyData, threshold, partyCount uint64) dkg.Protocol {
 	state := keygen.EmptyKeygen(threshold, partyCount)
 	state.PartyI = 1
 	state.Coefficients = make(vss.Coefficients, len(partyData.Coefficients))
