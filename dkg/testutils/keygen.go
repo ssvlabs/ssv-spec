@@ -303,7 +303,7 @@ func TestSuiteFourOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("a7eacdba5e614ab343adfdc2e2273ff30e9b31abc27ec84bec67b4862e841386"),
 				DlogR:       h2b("14c03aadeea18b95888cef14ce7d577e78f1611c6dfa5c580b271cb3bac3468b"),
-				Commitment:  h2b("c242ab540de0ccf6107ddc1a3b494ec4f93621d4b09a443a025f83b90ce8b462"),
+				Commitment:  h2b("4c4d00683f5bc74e8cbc40d493dc10e571b5b7791593efa684e511661dcdf5ff"),
 				DeCommitment: [][]byte{
 					h2b("b736d5228eb746e7338f46682c62ba72afc02c2dc27cb053000abc3ee3ddbb98947cd34d2062bf9073cdef07cd76110f"),
 					h2b("8216fc394fc2452dad2dfa99c859ca92240647ba551892e4cd77f14dd026984ca81f44ef208551a13b1d2c6bd6bedd73"),
@@ -326,7 +326,7 @@ func TestSuiteFourOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("60488a81b35fba615578f46cc1aee060bf3bf660e2ca0d54c4fb93dd85246556"),
 				DlogR:       h2b("1eff751418c65956dab0b57573334a752661b1b683fd7abe35cdf771345da1a5"),
-				Commitment:  h2b("ae24241d1b463462c2acb4c0f37c1708b5ff4f80bf50998e97842afe1a3c1eb1"),
+				Commitment:  h2b("545f29e48b5a0bc2f5a7189c0ef985232bda7db4f809d41e6b38450ea889533d"),
 				DeCommitment: [][]byte{
 					h2b("ab9b709d18eb1335e2fba7ca953c43e6a83f3e97e9872c4f89379c661398189d5ab8b63b64b3d44408ac943618c33e89"),
 					h2b("8c6527ab4f466abb16ec5682a5b332875e0bb3d6de3d0a913b541a6a2ca300e0cc766b3ccda775c599141562290e72f4"),
@@ -349,7 +349,7 @@ func TestSuiteFourOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("f950232571ad809e466ddad4f2122dbef5e2b45f351e845d4ce5d5702e2c0420"),
 				DlogR:       h2b("2f038de1506ff2f2c26016b5cfecdea578e9c271fd049726cc7ada0b1bac1d82"),
-				Commitment:  h2b("68997f5b0cceff6e1ea3b1b483ace3778dae3db2e25ebd5f819b0be56eabce12"),
+				Commitment:  h2b("e2c8cc98479332d5ab88156e508b2b7648f36c7b5140ad4331f71b4ca3ede6f1"),
 				DeCommitment: [][]byte{
 					h2b("8aa955f38e9d87ea6b8f5ed96c9080455db8a7dbd1fab67d070e4f6f40f84f0f9f43dfc1e0f4a75f4b922a8594981e6d"),
 					h2b("925bda96685f2076914495ccc6f14c6d4b14933e5bad1b1d7dfb4d8bd5c706e56f6004cef1f555574af3aaf5edd6e31c"),
@@ -372,7 +372,7 @@ func TestSuiteFourOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("367dd5b9259f4169fcf372f277d67d645704edd9bd7597a04b75f1d2d2a6e4de"),
 				DlogR:       h2b("433963c95f02f4887211840f8c4a37c3f2511a2d48f726d4e44edbb2e5c8bec3"),
-				Commitment:  h2b("924699f92ba71c39903f491fdb08a13c1dbe5eeda83fdf164110cca7e03ae054"),
+				Commitment:  h2b("a8187fdf9eace26e1c9f06d0483655b8ab50ae746cf2276f729c857337bdb3ba"),
 				DeCommitment: [][]byte{
 					h2b("adf941c332d05482288513313cb0c072502c6a7ac7bc6d770eebe4dd3b900c9a2b5fd163ef03f60de0946ad182c5ae56"),
 					h2b("b0221d757dce658b6c219bfecc4fc9ec2814bef1bc480fe84c0c15cd08220eb6c63b22a5d69b727ad944d1c2750875f2"),
@@ -423,7 +423,7 @@ func TestSuiteSevenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("8d96657177334a3cec149210d706fd9d9bf96f667d16edb07d94c8b97ec9d757"),
 				DlogR:       h2b("62394aa67ce0c8580100bd23b660d508f102533b8e9bb927558164dc40a948db"),
-				Commitment:  h2b("ead1c52cc47316e3d884be17f9f5c3fb3efb84592a88e97ea597d814fb99ca23"),
+				Commitment:  h2b("28bb83e28d34d90d3f8aa7b573f259062fbd962dc2ee95ca3f585cad97959e73"),
 				DeCommitment: [][]byte{
 					h2b("af058c84fd3294ab891b55b0bc6478dc0019dda6ecf0b24796170f2776891327ac4476f39034eba5ac4a65fae39d7ed6"),
 					h2b("b2a6b6914b2cc480fa89fa500f069a0645b37703bba53197ddd7bf4f5896e2bbf855ac6cfe8cb0156cd34a4ff8b7bf52"),
@@ -453,7 +453,7 @@ func TestSuiteSevenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("6d7751c3ef030c184d9403b1638165073da70b8ddc813ca3face9c8cd4aeaccf"),
 				DlogR:       h2b("29c23390ca68c9408ed334639f1925db92829f6c87eff4d45b8913e58f1f369d"),
-				Commitment:  h2b("dfc08e42c690cb445bf4953aaa50bdea660bde5580642a1ade87d682bc07b365"),
+				Commitment:  h2b("5f6ecc574893b1ed0f2bbffa784b1a249bd3a68cf0b2c481db5badea1db2c050"),
 				DeCommitment: [][]byte{
 					h2b("a8b9bd16cef31ba17dff590a999003fbee17e891e42e3ef5c26b4a12fba25d19934905363aaff3ba935f9c9da02104a6"),
 					h2b("ae7478e5966d2b13247220eec277cab34e38c2a0e1aeaaf6a69a59fe4e6857034590f1d546403dce05df3e7aaefd9754"),
@@ -483,7 +483,7 @@ func TestSuiteSevenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("210e1ee349fbf40dfa32ed9b50e4dfc31b70e9adc88220f54603fc04a09bf988"),
 				DlogR:       h2b("0c938e1fbc3fa91b5aeeecb10bb29c6ec93e43d3d5d5c6656b7aa979c58c1064"),
-				Commitment:  h2b("811e379e887dea96a6f79941a9a0157c8fcedaad02ac4e16e71d76977ba2541e"),
+				Commitment:  h2b("882700ce8066d60a86324cac3319dd66b7638228e4126a37875b4ace99f3bd51"),
 				DeCommitment: [][]byte{
 					h2b("9698939427566257c5fe94fa2f3019a66f670fb070394589ac462723f7d700316201e25b99c96302b268134b5622df19"),
 					h2b("95d16adb8cce8b49c289ff26042f1a9fe08a4847257f121414d1f53fdde6bb31cd191e00e601a9153b7b71eb49d17ac2"),
@@ -513,7 +513,7 @@ func TestSuiteSevenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("b4b06d0eac14b567d406138eeaa730d9038407d4b505dbfe6455b7108e666068"),
 				DlogR:       h2b("3c6e168b7280ec67f373c4f692cbde5fdf927fe3cba3848f5b15b9c999790f77"),
-				Commitment:  h2b("7710a98e72073e6ba76c6ce0aaa0c90cf36775b23cdf273b0098dae564763427"),
+				Commitment:  h2b("c454404a237594edeb2c1e3dc296777b127a8a81393c30c0dc59a846abb3fbd2"),
 				DeCommitment: [][]byte{
 					h2b("8d71c20e8b23e1ce507f3f20beeefebcfff06879b829bd68b136cbdfee111169e5ba426f15ae4e075f79de9a2f1a08b5"),
 					h2b("ada5b0c6a9b79b3fabdfaa15902193cb476289dab71813ec3faae07f4ab5b1b45c923285abf843ebd8844c797ed3fb08"),
@@ -543,7 +543,7 @@ func TestSuiteSevenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("cfb13c78d1a0a813a22815147ce6955dc43cbe618b079b65174ed2322f32faf1"),
 				DlogR:       h2b("06ffaa5fb8a48e55e456e2c175e137cdf59d0be900f45f0f0ce50b5a46ee8105"),
-				Commitment:  h2b("68c17ce232b5b11b588ff671b6e16c1e768c487bb949afe088d4737412b5c9bd"),
+				Commitment:  h2b("1a47addc0f4954286c79c32ed9b5a3152a471d47a9f930b39bf2887f0e624983"),
 				DeCommitment: [][]byte{
 					h2b("a9572e9f4372192c9334a36d9290c434c2a2cf9861c44351feb292ef8b2be806c12be556a4c4ca1aba05449e8751d070"),
 					h2b("85798936d068d71b60618b9c57514b3a9cdbce58e82079f7c9dfbd9431f39fca7876bf8835f6827e0b3602bae261bd21"),
@@ -573,7 +573,7 @@ func TestSuiteSevenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("c9fc22ba534500cfbfadb01eb71aed3cf20df1e2d91d96e3a40f3385c03d18a0"),
 				DlogR:       h2b("2d6078a1527f3daf508b03a0298a6741c80a7c23a6184c8c4818f4f51bf05d49"),
-				Commitment:  h2b("d759d8cf499cc4ce1027670ca4640d3ee21ceb66e7762bddd5bb4bee8d8c4aaa"),
+				Commitment:  h2b("9f97ee92b5789d10a8db7a89f026adc6023c566d2890f6531779950cd51472e1"),
 				DeCommitment: [][]byte{
 					h2b("ab674bf91f128c0927df20c41ebeec644267d82762e110e1ab11558631d31f91c41d6bc0c647f3d7370f988b81c47e3a"),
 					h2b("a269b052554191a631dffc61719ab57d8fdb899eebc829d880ac74183b31f378e79feca53ad68c07574562f1f90ebae9"),
@@ -603,7 +603,7 @@ func TestSuiteSevenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("d6f97ce469c4330cdab27a5025c19f5b2d240d7cfd22f9dc94578792f293c010"),
 				DlogR:       h2b("398882c82b76172069a6c064d20c836583a96adc7b0523bc605346eba7ecd863"),
-				Commitment:  h2b("ab07a97e94b5e0e0fbdadcc2dc8d336c3046c6d5a1de39c2b96b1a49e57ead8a"),
+				Commitment:  h2b("8a534869330e99f526d22ff57d5bf424090817d4c06febd98e2ab8f44386e9d0"),
 				DeCommitment: [][]byte{
 					h2b("83add110064e1c19b2b43625711080f179e1570b9cc72f207ee5e479c837ab5d9c8c7dc8cd0c9291e173ded4156819a3"),
 					h2b("b3acc1e6633dbf7952ec4e93875e4a671b7f43cd87e8ea237573703a9ef7c40b5748d087f1f0c72d5959385aa0939a10"),
@@ -667,7 +667,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("6abaf09d1d9300d35eaee712e322f297cdce4190be3d43c6a923c1f1de38c619"),
 				DlogR:       h2b("390ca389ba25854355384e2926d25c1af24d441bb026d930658f4699a786b685"),
-				Commitment:  h2b("cf5e80558ba6f61663a62c02cb0e51505745084731ecf755bb6881c3fa5b896d"),
+				Commitment:  h2b("c2e15d5a6eec1889c8957d769197ab4ad523639cbc8d2519ffbbe26aebf88e1a"),
 				DeCommitment: [][]byte{
 					h2b("b298615ac307eab463769ed6ed8dfabdc4c50e44b85f068faa34b6d3fe9f054d8ffcb9c50225b6770d6aa8e3c31650da"),
 					h2b("80be95c9f162b7cb8ae6f7f087c0180575781a9f7411ec1beb87b3bfdbde432666a30bfbb829e4b3ca2287396d42c330"),
@@ -704,7 +704,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("1b644cf789d2bc94561416db05f70c25adf9bcebd1f0227e07b118e79f6502a3"),
 				DlogR:       h2b("7260d3e1a13c3f39882a9721796b42e4fdd996873f0ff7d7537fd6daab52d72a"),
-				Commitment:  h2b("545700bc2b5eff55a5cd275b71ab1d3092f8c5286ecbc8612cca8fa8ac873b65"),
+				Commitment:  h2b("eb7cf510a40b40a90c422243e2511ece5bacd8159846646cf018968dd0da4520"),
 				DeCommitment: [][]byte{
 					h2b("a9f4a935e416454e1b3b6d8e6cf9a4c8cdbf0767f01aec0fb2852dd9c590ac27df2d6e54155b117aae48d9eb907b4f1f"),
 					h2b("81c13f36c0251a7bc21ec5970674400ee3697c3c08db76083f550681a3d53550e0c9129657592586417d69f38d2f637f"),
@@ -741,7 +741,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("e68c8322393a99dc018f5c2599b9a9e542e6cc6a2905c469695ce575fedbac76"),
 				DlogR:       h2b("347b578e0638d16f780e2751ad6ba59ed1b84f3b7986f441b9ff0e2e9fcd74e6"),
-				Commitment:  h2b("f31a2674b886a64a58b7a24cd9fbc33e63ccea9915bf0467f50b6da1798fa19a"),
+				Commitment:  h2b("91f710397a08ef431f0a5fd0e7bfe97973cccf7ea36e149efc46613d907e23a3"),
 				DeCommitment: [][]byte{
 					h2b("a9089f5c6221bfd006570a373105fa258b4cff735a5f31da4107070629b8aad3452cafeef10d05e73c2be59017e5d9bd"),
 					h2b("82b7559a9eeb55bf53331195e876a0de4afe9b3946f1c8babe38d64f2bb8695d2ff68411abbe679015d963918a4c7930"),
@@ -778,7 +778,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("a1bdd82cf7a524531ccf073c74dfefa7118c1b3495247854e06dd91837ca00a1"),
 				DlogR:       h2b("53b502820600ab57249b7254813f5c01fd9d61220dc04a6191050a6ed340b01b"),
-				Commitment:  h2b("e38bfba739d5d5aa0d19cd20f54e3f4157039db05211e5ddf7ce698981175a31"),
+				Commitment:  h2b("22844e74c20b6ee1c1db238ebd71665c1f4c16bba6fcb8c46993fe9c42322ca6"),
 				DeCommitment: [][]byte{
 					h2b("b259850b10869fea69f0bd49d0e107979843635f7c09fd80ed5e89286e6917cdeb8b0b1e4ec9fb0b6602751c8047663f"),
 					h2b("ae84bce486839eb6ae12c7e2d74b8caa11b12bc0c79003562c6411b74b0a8400a39f6b0bea2fd1f6e79779118dbac3d0"),
@@ -815,7 +815,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("8e6115e751b9585e22dc16febbe146155a6dfe6c52f9177cb4657b937a21aba9"),
 				DlogR:       h2b("12578469c48458bd2baf595d3943eef7453921787e960e2a588bd8d0de3467b4"),
-				Commitment:  h2b("fbbf7ec40d2884de4ce9bd1fab5b71f739e1d35dbc8ef365f323f91f3c54a711"),
+				Commitment:  h2b("11fbaf68022348b508891aa533ffca7b1bf0f5c14ee2f9c025fc029b50814977"),
 				DeCommitment: [][]byte{
 					h2b("8ac71e72058e564c1fd2953d1e94de0a4e7ddb7546fc7f9133abd78a129de99ad9f5f9abd37ac3bd607d4c4602edc416"),
 					h2b("91de7eb3235336aec65fb2b965bfaf2b4f9b8d0b5e5c264543a60cc4212f7677680a330814b255198c9cb2f5809d77d7"),
@@ -852,7 +852,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("1dbde427ff6cdb5fdb42f979ae1ef130c03382ae4e118136c8aded80995e2f03"),
 				DlogR:       h2b("52eb47d7125c837d86b243f948d235c75d5cac136e34ec8d72418fe5daf418c9"),
-				Commitment:  h2b("5d1755336d2da93e8b0dd01d530de7edee31728c4e773affeed96bfe457833b5"),
+				Commitment:  h2b("336fbfdfe449d7d88176bc094a3c6dea732f7550947f88c25cb73ee7d62e2f1e"),
 				DeCommitment: [][]byte{
 					h2b("8511e42c962171bedddbb6b0188306b993b52c8ed1a1960776e70eb59d8626f1a62d3e4645bbd8e941637aa2c1239304"),
 					h2b("a2e976998cedc0cee86718552344cf96b7d38f4420e7f793012cdaebb7f94fa52aa58d6a0f2effeb9033cc283cae42a6"),
@@ -889,7 +889,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("69e544b1128d29131a5475b5f972f72c1d7926afb6fa2c16195082e7787fdc8a"),
 				DlogR:       h2b("10290e9020f1fe90eaaea784fd8769189f8bf45fee2a33f40d434568764810b2"),
-				Commitment:  h2b("8ab44a07f0a10cb4379f2de93134b76546fff1b3e28dab4e0285241e20a78bec"),
+				Commitment:  h2b("1316028c45d82b7ed1bc5a6bd9b4473dcc62cb6437054365d5d2c594fd43b43d"),
 				DeCommitment: [][]byte{
 					h2b("a22b626af5c1f352882d221d18baa1a1f220579a527885fb53adec588bbce56c8cebb53cc2af6aa9d2f4bb0e9acb9a2c"),
 					h2b("8e3fd4aa3cdfcc12d177fd05142e50237ce5a8c15e6b8893ff5ffbaa15f3cd047d4db93ba737bd2c736fc8449a62bc64"),
@@ -926,7 +926,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("4fab8d4264817ecb7d6e5494ef8eaec5f9b55436ba667b9b3db1280ee58c1681"),
 				DlogR:       h2b("183572957cc6c90105beff11f07ee23c547734528a5f9b78a57e1a34e244c9f0"),
-				Commitment:  h2b("b761ed8aa04e68ba2c728150c5c0d2f3ecf9771d0d8e68c3ffbfcdf926f65d69"),
+				Commitment:  h2b("93dba508221f91ea653f63091ed1e057fde03944d9a2b49034226332887bf09e"),
 				DeCommitment: [][]byte{
 					h2b("8b037b6c362ca6b9470fa9508b42680d1fa5ae9a756780d4c2d6a285969a9d72ba044aaa2e4e3356aba103987ff7a025"),
 					h2b("86606c04d70a0dc2a48210caf04819d69fb7179476b7cfcfd453380234040cb52d36cc08cd7f6a0bc70f028a2404a788"),
@@ -963,7 +963,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("278b1a6bf2f2fa963c41d3efd8614d993819c92b095bfdf13e20f878815d6270"),
 				DlogR:       h2b("222c8c131e5639aa246f89f0cc7fb94a4378d521c19c08bbaa82b2c39d77a673"),
-				Commitment:  h2b("940efcdac8580d2b8c8c5d8a716c2179b8d9a317026eb0b0c061718c513bb9a6"),
+				Commitment:  h2b("d4e420fb772f141affd30bcdb19c496a2eaaf15ee496533ac48beb001407fa55"),
 				DeCommitment: [][]byte{
 					h2b("889db2a6a7389a1e7f5368768d66f422025d114e1136d9f6b2e35155daaee2e3d49151a9c91edb09e204dd0e0aa20bd7"),
 					h2b("b96e54636c3186a03f5809e73e537a88130fe46a376e9656d013c20d1d0c889909e758d4d56321bac668bb242b1f10d8"),
@@ -1000,7 +1000,7 @@ func TestSuiteTenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("649c13b329e73c32bc4476069e450d5d43fcbec71e457382ee2f9fd54d65a3fb"),
 				DlogR:       h2b("5260911ae752b5b8e95f637b0c422cc52c784c99cf2899c1530c5105eed40c31"),
-				Commitment:  h2b("aff2b424ae8949b66026f14b5e4be86e480c8346d07b122f5643d84a5ac02ed3"),
+				Commitment:  h2b("24c0361f5bf6e8b5bc1d569ad14d079dce49de033f8b51d710dc0752a42cb447"),
 				DeCommitment: [][]byte{
 					h2b("91ee90abd429b5738459c8472b4f157e7087e25d0ad3420b31352c791d70a46023ba48517c95aa7497b4c7c2be92adeb"),
 					h2b("8763aaf2a072a20c66031e1dcafc29212058ee54dbf9f9c86975a01ae3f0310eeaf47208e1b100cdc1c2593d5364c7ef"),
@@ -1077,7 +1077,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("a3ff9c91a47446ff4793937690d45dc1dcc79ff4ac906cfab8178333a5307de8"),
 				DlogR:       h2b("19899e212f108b83696342570c18a691b5f43dd12d3ee0dd3d60c1826dbc28e1"),
-				Commitment:  h2b("052f3877f611a0614a139e600d5db84ecec952b40b0442d246b676bfb5983107"),
+				Commitment:  h2b("21c29dfab217f4dec1f57bc2f827fea461126dae0d7603fdf19a2cc531ce24a7"),
 				DeCommitment: [][]byte{
 					h2b("903fdbf5287e829666771b283bbc789c925b1c294be7931d1c294084ca81cf8c0e281eecad21b6869b667615e375a743"),
 					h2b("9041875c00fecb11d4d5e96480abaffd384331e4b0b0988faa4ad541751af5437503f093bdcdec952e5ecbd030f365c1"),
@@ -1121,7 +1121,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("8cd4aff31b851c830f2f4e24b343fc8fd3841ed778d2cac1ed772f7a26f73d4b"),
 				DlogR:       h2b("52b9ca7c10158be78f2234cda8cf567f04274e2d0c8f6380fda9154f074b982c"),
-				Commitment:  h2b("feb1eddf06ca471de052506e6b8d0e524b5634998db67ad47939d728ac8b29d9"),
+				Commitment:  h2b("d715efa79321f697adebdab919b0be1a35845be8daa718d29c14b0d384f1da3d"),
 				DeCommitment: [][]byte{
 					h2b("b1a32612f268ca6bdbef2c5c8f98e514473936d24648ebcf1a5c3f5c71f3fc122ba63c1b33b4cfa5f95916cc819648cf"),
 					h2b("86da56e029194aaa42231139784223687f600ef9066ed8f0ae9283bfaf0a1c18fd6ce63724a9cd7d79d444f4c1f95212"),
@@ -1165,7 +1165,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("a1449485366b5119b182be2d74cda6d801fbf0a99b8990e8c83634db6f7d7712"),
 				DlogR:       h2b("58e427e5fb0508a8a61aa82022426be71dbe56cd5e5d977241e7f16f3a523ff4"),
-				Commitment:  h2b("4551ea7e15ae565a78db44d6498100d279c87cbb237e37b82cb38329ec6016e9"),
+				Commitment:  h2b("85c67914127efd9758e34abcd67ba8b5caf34fb00d8e9b99b57cdb29081fd8b3"),
 				DeCommitment: [][]byte{
 					h2b("8814e0f2b46247052a80e682e7df02a5f20ea938f62dc22adf4c766bed47d104433d387587de83b1fb04fc60674c1cd8"),
 					h2b("852c2285d32a37ccb3268e5ecd3c7a9d6fa1780afbe6fa44a60927072794f313bd02d8d3ef6f71ecd8040d3ad3838c0c"),
@@ -1209,7 +1209,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("74d466fd9e2fa605f26fc9c7b81323da35c116fca22cef911e5ed5f617942762"),
 				DlogR:       h2b("2fca19d127fc8071d48bbca8c5bf4d5dce3f1d971da041ee219306075bbfb385"),
-				Commitment:  h2b("0ee54866287e59a2254b9da8bb36d77abdda6a1bcb92e3fbd212b71db2092d3c"),
+				Commitment:  h2b("a65596120b020cd5b2a6f788af4078018775e51517031b086a52005df04d38cb"),
 				DeCommitment: [][]byte{
 					h2b("a4f2b028b0cd40fd2c1739cd1cb8bf012f729696cf29a69917f7c903f13b52db986f11cb373b4ae1cc2a052cb662f8e8"),
 					h2b("b0efe39f791fa0a6c57d0fa160aa2826cbc427a3291660fb5511601f6cdeee0600a6f32116838d7e4008b72406cac4d0"),
@@ -1253,7 +1253,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("686a6d591ce87f496d71f3a7efb808dc4836689a0392577cc2028ea61018509d"),
 				DlogR:       h2b("6bdecab2956ab2c4d091d228338b2eb62e9aa4df5ddc82c1cba7a68195c223e5"),
-				Commitment:  h2b("d397806a20a6597c402e612830ae4403f695aa89f1b8feebe4e5f0621d97ab32"),
+				Commitment:  h2b("5ded6ed313f19fc4e02a1c742be216d4f5c4f4b76c77f67e4157ae7bc91bf0b0"),
 				DeCommitment: [][]byte{
 					h2b("950b62fbff5a0d4e3fbe39e20df82572b04a99b9cc20e04924f9e56ef168c14f6cd355c6bb446dbb185e1604194ef3e6"),
 					h2b("a6e63a66f9f5febc2b2de0102e50021cb875707e2ccca2e4f60364357111aa0d9aa06535693c07bbc1112633ad1a5ed2"),
@@ -1297,7 +1297,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("36ffee6042f276b1d1f59bd822b35057991628139f5895a7c91c7df4b389fe98"),
 				DlogR:       h2b("3e23290b83897bc1c454a264126696882d357e7e0e9ce1dbdc2cf73da7799719"),
-				Commitment:  h2b("37bf92ee7b59ed23a4fba3b588d6cee0b227db6dea097e566b030df0f37609fc"),
+				Commitment:  h2b("130227e79d8c2545a6075f45ddb61b4f6d1ed24ae3534a98d20b6cac8c74fe36"),
 				DeCommitment: [][]byte{
 					h2b("ad28e6a76331bf6a8422bc3085c218d2cbfee849825d6f89d3a944c02ee18bdd89c7fe92251d300507308bdf9067bf7d"),
 					h2b("988749ac55896dffa5c426d066e5da1f66ac4bcfc373c9bfbaf66c3c83e565480757cec4bc29575dd0c1ebbc973b9c56"),
@@ -1341,7 +1341,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("6a0eeb316be2e778751e08a3189f263cb1d701cf78e35067e4b3952b937e21de"),
 				DlogR:       h2b("02345b1c9c6dc550443fafc8117ec6859b8744a41982937653b3368a7829f085"),
-				Commitment:  h2b("a781cd8b5c86aae4375f74554bbf3bb39538134ea9a1c9e12cfc79326450fa2b"),
+				Commitment:  h2b("3e6307678a71ebc47a813ce7bdd9c2739293b4396eab18b502d136651f29eb86"),
 				DeCommitment: [][]byte{
 					h2b("86391539e8911c08955d1302beea4446cc5b197268de7a325b9fd813df60df702bdd75944338f8032a273dd2568f6237"),
 					h2b("a1af4356657e0bbe32f25a1fa1418ef72a3d7d415be38a32869ce1a7656297cd3b818b040071f6878de86304f2780987"),
@@ -1385,7 +1385,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("203fa9c7b7e8fd0fe8a9fcd7afb0119d207745c7c1c35a7850f30bd6fb2898e9"),
 				DlogR:       h2b("6fb4840092b238cdc3651797595d729caf0733d1c578f2f4567612c509c5ff20"),
-				Commitment:  h2b("fcfaa8998b9ed7e2b5c1f5dec28b6c205fe59643271379c39c1ff9f7fd37e8ac"),
+				Commitment:  h2b("b315446fd0ce53ff7faf8592b6e8af106efb6f9092ab0ada0560a0b1655169e3"),
 				DeCommitment: [][]byte{
 					h2b("835650ca0f5c1c18f1dab1035b1fba463071ffcb73ca228166d0162fbff6955e720945f112f9aec2a381d1b6d317f128"),
 					h2b("b82e070972e6edb1dc2764ee8463ee481acb5c654607b926777911c8ac15d2a52676ff52fde91cd921acf2a355e7feb5"),
@@ -1429,7 +1429,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("549c9417c8272038a7a4fa975323cb3264d1c4a0e12772c0b3d00a342843f175"),
 				DlogR:       h2b("0da340a5469cec0b08b3164e029f716bc72cf8c46f957703b02392ae329c32ab"),
-				Commitment:  h2b("55308920edc1c6bebda7dbbdf333ecb8cf5e8f673a50cf253a597cee529098ae"),
+				Commitment:  h2b("9331acc2dc29e2914c79fd4e8834607a32e5ca6dd3a51be046aff3bdc73be374"),
 				DeCommitment: [][]byte{
 					h2b("820a4f955828420ff9b0c8e5d5cf20fea5c789fe11f46fe24a98e771ceeba8a63e797f5e9698546f5fde0904bc0fb08d"),
 					h2b("b274b87c84c39770ebef8eea234ee2bc15b8a5463e87f8cda60f5043b0983fb0b1bcbdca1ef4e11b1166ccaa0be27b52"),
@@ -1473,7 +1473,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("e5315adb4993adf3115e70ae21613b2244242cd8415519ded9b66abe1b0fa31b"),
 				DlogR:       h2b("228ed2dd245b6d3cf52e98a27e1c766205d8f75dc86134dc914f38b82b92e393"),
-				Commitment:  h2b("2906c0765c0cd889346a787d844d456581681fd928c7adfa07540ede048f30bb"),
+				Commitment:  h2b("28c818531569d89b066c595742ca8f00ab9f6d7fbb7b0f1d532df333dffc1d67"),
 				DeCommitment: [][]byte{
 					h2b("a448308867a5b9a64fcab5fd141dcf157576f7d80de4d15360b3a30cd9f5b3cb66dba5f601139c245957862b89eee62e"),
 					h2b("85eb9a6e7a8433bfd88cf42266de2083c472145f273d4393b89b2ca8e83662819f9c9f9e6f85913bb700dddce13387e9"),
@@ -1517,7 +1517,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("8801f1ad7471bd9225f2bae6b06d9ccbf517bf9b60445a5dcae9a3e197aa07c0"),
 				DlogR:       h2b("35bfd92707aa153ff3e76a94f43548176bcb70bfb27688c85c991ff6e220dac3"),
-				Commitment:  h2b("67075ad8320a2539b8b2f808dc2739306c6c71043d1d4cbccecbd1ec89a8d588"),
+				Commitment:  h2b("87940726bd4d42f76faf224ee1ce26fafb5efe0d72436b84ec389b7385b36178"),
 				DeCommitment: [][]byte{
 					h2b("85ffb477b22b2a0909303e4d4dd8fc0cb689c32a2e05b92b8dc6bd625a52eb9a0ff95296a499d7a6d60fb611a82c2172"),
 					h2b("99d3ab129855517c1902bd4eca35ee6968cc93710a1e6a4e47590c7e368a8d8a97b27ad4f3a454dcf71080ae588e51af"),
@@ -1561,7 +1561,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("64a2822fd4b24d71d2de2e4b19feccf1b060c562d0e4cb61f35f9f6efb695906"),
 				DlogR:       h2b("33eb9c361ee84f17788c97b412441b9042d9b3d20f1e9d7ec8498f77476b78c4"),
-				Commitment:  h2b("87c1211b91efc5f41f470e96c288cb088cbd1c585a17afe6606127432aa467f1"),
+				Commitment:  h2b("a08459ee1d8f6ec5b28154d190e403bd79d1abc0e103db93292d1000172de961"),
 				DeCommitment: [][]byte{
 					h2b("876ca867f0522c5993d04fc4fd10ab239015b7fad82bfe7b14b70f0794c7a1dd3f9e8ddea11da2d725777fc733353f65"),
 					h2b("8eddce0b6e06854129c07ec2e0ce3dd457d9073ee41974dcc407766972efbdec0057e0a3e3eb90e9c2d2d6aca9bc62e9"),
@@ -1605,7 +1605,7 @@ func TestSuiteThirteenOperators() DkgPartyDataSet {
 				},
 				BlindFactor: h2b("2e37a7e3f2dee7176ca5a768285d39da4b56714274cab101874a4f28b56b0187"),
 				DlogR:       h2b("15f9c4b8a599a0266bfb862f03bbf9ea961af7c27c6e25c6b68ba1884e5d8bcc"),
-				Commitment:  h2b("e95845701f6d1888f01189d0e3c1380e834dc36e673191d9a189ca8c75463632"),
+				Commitment:  h2b("9bdd6c811312c4a8e8a745e8d445d7f50d0fe170a0ac40475a5378995118a5b6"),
 				DeCommitment: [][]byte{
 					h2b("af897b227a3d2294a70e9c7cc50e97259d4e006b85a4aeeb73e48c30ff75ceb817b99028d1317f9606e528a90389274a"),
 					h2b("96d27d536df80e326abd76cd8ba0555012ea4d2e8bb5594967d6d2b77b7409bfaa72c4d8cb6c7f4b16ef1bbaaf0ea1b8"),
