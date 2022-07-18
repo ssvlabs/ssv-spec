@@ -35,7 +35,11 @@ func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) (d
 			myIndex = uint64(i) + 1
 		}
 	}
-	state, err := NewKeygen(identifier[:], myIndex, uint64(init.Threshold), uint64(len(init.OperatorIDs)))
+	var ids []uint64
+	for _, id := range init.OperatorIDs {
+		ids = append(ids, uint64(id))
+	}
+	state, err := NewKeygen(identifier[:], myIndex, uint64(init.Threshold), ids)
 	if err != nil {
 		return nil, err
 	}

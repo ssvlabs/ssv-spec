@@ -7,6 +7,7 @@ require (
 	github.com/attestantio/go-eth2-client v0.11.3
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
 	github.com/ethereum/go-ethereum v1.10.18
+	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.5.2
 	github.com/herumi/bls-eth-go-binary v0.0.0-20220509081320-2d8ab06de53c
 	github.com/pkg/errors v0.9.1

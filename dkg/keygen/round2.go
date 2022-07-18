@@ -1,6 +1,7 @@
 package keygen
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/dkg/base"
@@ -13,10 +14,12 @@ func (k *Keygen) r2Proceed() error {
 		return ErrInvalidRound
 	}
 	ids := make([]*bls.Fr, k.PartyCount)
-	for i := 0; i < int(k.PartyCount); i++ {
-		id := new(bls.Fr)
-		id.SetInt64(int64(i + 1))
-		ids[i] = id
+	for i, id := range k.Committee {
+		bytes := make([]byte, 8)
+		binary.LittleEndian.PutUint64(bytes, id)
+		fe := new(bls.Fr)
+		fe.SetLittleEndian(bytes)
+		ids[i] = fe
 	}
 	commitments, allShares, err := vss.Create(k.Coefficients, ids)
 	if err != nil {
@@ -35,7 +38,7 @@ func (k *Keygen) r2Proceed() error {
 	}
 
 	for i, share := range allShares {
-		receiver := uint64(i + 1)
+		receiver := k.Committee[i]
 		if i+1 != int(k.PartyI) {
 			msg := &ParsedMessage{
 				Header: &base.MessageHeader{
@@ -64,8 +67,9 @@ func (k *Keygen) r2CanProceed() error {
 	if k.Round != 2 {
 		return ErrInvalidRound
 	}
-	for i, r2Msg := range k.Round2Msgs {
-		r1Msg := k.Round1Msgs[i]
+	for _, id := range k.Committee {
+		r1Msg := k.Round1Msgs[id]
+		r2Msg := k.Round2Msgs[id]
 		if r1Msg == nil || r2Msg == nil || r1Msg.Body.Round1 == nil || r2Msg.Body.Round2 == nil {
 			return ErrExpectMessage
 		}
@@ -73,7 +77,6 @@ func (k *Keygen) r2CanProceed() error {
 			// TODO: Handle blame?
 			return fmt.Errorf("decomm doesn't match comm for party %d", r2Msg.Header.Sender)
 		}
-
 	}
 	return nil
 }

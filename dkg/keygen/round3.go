@@ -15,9 +15,8 @@ var (
 func (k *Keygen) calcSkI() *bls.SecretKey {
 	skI := new(bls.SecretKey)
 	skI.Deserialize(k.ownShare.Serialize())
-	ind := int(k.PartyI - 1)
-	for i, r3Msg := range k.Round3Msgs {
-		if i == ind {
+	for ind, r3Msg := range k.Round3Msgs {
+		if ind == k.PartyI {
 			continue
 		}
 		temp := new(bls.SecretKey)
@@ -63,11 +62,12 @@ func (k *Keygen) r3CanProceed() error {
 	if k.Round != 3 {
 		return ErrInvalidRound
 	}
-	for i, r3Msg := range k.Round3Msgs {
-		if i == int(k.PartyI)-1 {
+	for _, ind := range k.Committee {
+		if ind == k.PartyI {
 			continue
 		}
-		r2Msg := k.Round2Msgs[i]
+		r3Msg := k.Round3Msgs[ind]
+		r2Msg := k.Round2Msgs[ind]
 		if r2Msg == nil || r2Msg.Body.Round2 == nil || r2Msg.Body.Round2.DeCommitment == nil || r3Msg == nil || r3Msg.Body.Round3 == nil {
 			return ErrExpectMessage
 		}

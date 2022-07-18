@@ -11,8 +11,8 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	//tests.HappyFlow(),
 	tests.HappyFlow(),
+	tests.HappyFlowNonContinuous(),
 	tests.SevenOperators(),
 	tests.TenOperators(),
 	tests.ThirteenOperators(),

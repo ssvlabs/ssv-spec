@@ -57,6 +57,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
 		require.NoError(t, lastErr)
-		require.Equal(t, lks, *test.Output)
+		require.Equal(t, *test.Output, lks)
 	}
 }

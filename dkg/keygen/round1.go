@@ -29,8 +29,8 @@ func (k *Keygen) r1CanProceed() error {
 	if k.Round != 1 {
 		return ErrInvalidRound
 	}
-	for _, message := range k.Round1Msgs {
-		if message == nil {
+	for _, id := range k.Committee {
+		if msg := k.Round1Msgs[id]; msg == nil {
 			return ErrExpectMessage
 		}
 	}

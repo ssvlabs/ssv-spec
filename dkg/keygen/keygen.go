@@ -33,16 +33,17 @@ func init() {
 type Keygen struct {
 	SessionID         []byte
 	Round             Round
+	Committee         []uint64
 	Coefficients      vss.Coefficients
 	BlindFactor       [32]byte // A random number
 	DlogR             *bls.Fr
 	PartyI            uint64
 	PartyCount        uint64
 	skI               *bls.SecretKey
-	Round1Msgs        ParsedMessages
-	Round2Msgs        ParsedMessages
-	Round3Msgs        ParsedMessages
-	Round4Msgs        ParsedMessages
+	Round1Msgs        map[uint64]*ParsedMessage
+	Round2Msgs        map[uint64]*ParsedMessage
+	Round3Msgs        map[uint64]*ParsedMessage
+	Round4Msgs        map[uint64]*ParsedMessage
 	Outgoing          ParsedMessages
 	Output            *LocalKeyShare
 	HandleMessageType int32
@@ -55,15 +56,17 @@ func EmptyKeygen(t, n uint64) Keygen {
 	return Keygen{
 		SessionID:         []byte{},
 		Round:             0,
+		Committee:         nil,
 		Coefficients:      make(vss.Coefficients, t+1),
 		BlindFactor:       [32]byte{},
 		DlogR:             new(bls.Fr),
 		PartyI:            0,
 		PartyCount:        n,
-		Round1Msgs:        make(ParsedMessages, n),
-		Round2Msgs:        make(ParsedMessages, n),
-		Round3Msgs:        make(ParsedMessages, n),
-		Round4Msgs:        make(ParsedMessages, n),
+		skI:               nil,
+		Round1Msgs:        make(map[uint64]*ParsedMessage, n),
+		Round2Msgs:        make(map[uint64]*ParsedMessage, n),
+		Round3Msgs:        make(map[uint64]*ParsedMessage, n),
+		Round4Msgs:        make(map[uint64]*ParsedMessage, n),
 		Outgoing:          nil,
 		Output:            nil,
 		HandleMessageType: int32(dkg.ProtocolMsgType),
@@ -73,8 +76,13 @@ func EmptyKeygen(t, n uint64) Keygen {
 	}
 }
 
-func NewKeygen(sessionId []byte, i, t, n uint64) (*Keygen, error) {
-	kg := EmptyKeygen(t, n)
+func NewKeygen(sessionId []byte, i, t uint64, committee []uint64) (*Keygen, error) {
+	err := checkIndexes(committee)
+	if err != nil {
+		return nil, err
+	}
+	kg := EmptyKeygen(t, uint64(len(committee)))
+	kg.Committee = committee
 	kg.SessionID = sessionId
 	kg.PartyI = i
 	kg.Coefficients = vss.CreatePolynomial(int(t + 1))
@@ -125,11 +133,34 @@ func (k *Keygen) Proceed() error {
 	return err
 }
 
+func checkIndexes(committee []uint64) error {
+	visited := make(map[uint64]struct{})
+	for _, v := range committee {
+		if v == 0 {
+			return errors.New("party index should not be 0")
+		}
+		if _, ok := visited[v]; ok {
+			return fmt.Errorf("duplicate indexes %d", v)
+		}
+		visited[v] = struct{}{}
+	}
+	return nil
+}
+
+func (k *Keygen) ValidSender(sender uint64) bool {
+	for _, u := range k.Committee {
+		if u == sender {
+			return true
+		}
+	}
+	return false
+}
+
 func (k *Keygen) PushMessage(msg *ParsedMessage) error {
 	if msg == nil || !msg.IsValid() {
 		return errors.New("invalid message")
 	}
-	if msg.Header.Sender <= 0 || msg.Header.Sender > k.PartyCount {
+	if !k.ValidSender(msg.Header.Sender) {
 		return errors.New("invalid sender")
 	}
 	rn, err := msg.GetRoundNumber()
@@ -140,16 +171,16 @@ func (k *Keygen) PushMessage(msg *ParsedMessage) error {
 	defer k.inMutex.Unlock()
 	switch rn {
 	case 1:
-		k.Round1Msgs[msg.Header.Sender-1] = msg
+		k.Round1Msgs[msg.Header.Sender] = msg
 		return nil
 	case 2:
-		k.Round2Msgs[msg.Header.Sender-1] = msg
+		k.Round2Msgs[msg.Header.Sender] = msg
 		return nil
 	case 3:
-		k.Round3Msgs[msg.Header.Sender-1] = msg
+		k.Round3Msgs[msg.Header.Sender] = msg
 		return nil
 	case 4:
-		k.Round4Msgs[msg.Header.Sender-1] = msg
+		k.Round4Msgs[msg.Header.Sender] = msg
 		return nil
 	}
 	return errors.New("unable to handle message")

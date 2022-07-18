@@ -3,6 +3,7 @@ package keygen
 import (
 	"errors"
 	"github.com/bloxapp/ssv-spec/dkg/dlog"
+	"github.com/gogo/protobuf/sortkeys"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
@@ -21,9 +22,11 @@ func (k *Keygen) r4Proceed() error {
 		temp.Deserialize(r2Msg.Body.Round2.DeCommitment[0])
 		pk.Add(temp)
 	}
-	vkVec := make([][]byte, int(k.PartyCount))
-	for i, r4Msg := range k.Round4Msgs {
-		vkVec[i] = r4Msg.Body.Round4.PubKey
+	var vkVec [][]byte
+	sortkeys.Uint64s(k.Committee)
+	for _, id := range k.Committee {
+		r4Msg := k.Round4Msgs[id]
+		vkVec = append(vkVec, r4Msg.Body.Round4.PubKey)
 	}
 	k.Output = &LocalKeyShare{
 		Index:           k.PartyI,
@@ -41,7 +44,8 @@ func (k *Keygen) r4CanProceed() error {
 	if k.Round != 4 {
 		return ErrInvalidRound
 	}
-	for _, r4Msg := range k.Round4Msgs {
+	for _, id := range k.Committee {
+		r4Msg := k.Round4Msgs[id]
 		if r4Msg == nil || r4Msg.Body.Round4 == nil {
 			return ErrExpectMessage
 		}
