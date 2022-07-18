@@ -11,7 +11,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 	suite := testutils.TestSuiteThirteenOperators()
 	pre := testutils.ThirteenOperatorsInstance
 	return &MsgProcessingSpecTest{
-		Name:   "happy flow",
+		Name:   "happy flow thirteen operators",
 		Pre:    pre,
 		KeySet: ks,
 		Output: &keygen.LocalKeyShare{
