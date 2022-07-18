@@ -69,9 +69,9 @@ func (x *ParsedMessage) GetRoundNumber() (int, error) {
 }
 
 type LocalKeyShare struct {
-	Index           uint32   `json:"i"`
-	Threshold       uint32   `json:"threshold"`
-	ShareCount      uint32   `json:"share_count"`
+	Index           uint64   `json:"i"`
+	Threshold       uint64   `json:"threshold"`
+	ShareCount      uint64   `json:"share_count"`
 	PublicKey       []byte   `json:"vk"`
 	SecretShare     []byte   `json:"sk_i"`
 	SharePublicKeys [][]byte `json:"vk_vec"`

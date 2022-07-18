@@ -48,7 +48,7 @@ func (s *SignDepositData) Start() ([]base.Message, error) {
 		Header: &base.MessageHeader{
 			SessionId: s.Identifier[:],
 			MsgType:   int32(DepositDataMsgType),
-			Sender: uint32(s.config.Operator.OperatorID),
+			Sender: uint64(s.config.Operator.OperatorID),
 			Receiver:  0,
 		},
 		Data:       data,
@@ -111,7 +111,7 @@ func (s *SignDepositData) ProcessMsg(msg *base.Message) ([]base.Message, error) 
 			Header: &base.MessageHeader{
 				SessionId: s.Identifier[:],
 				MsgType:   int32(PartialOutputMsgType),
-				Sender: uint32(s.config.Operator.OperatorID),
+				Sender: uint64(s.config.Operator.OperatorID),
 				Receiver:  0,
 			},
 			Data:       data,

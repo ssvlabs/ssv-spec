@@ -5,8 +5,8 @@ option go_package = "github.com/bloxapp/ssv-spec/dkg/base";
 message MessageHeader {
   bytes session_id = 1;
   int32 msg_type = 2;
-  uint32 sender = 3;
-  uint32 receiver = 4;
+  uint64 sender = 3;
+  uint64 receiver = 4;
 }
 
 /*

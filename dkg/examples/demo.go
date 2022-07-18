@@ -49,7 +49,7 @@ func main() {
 	for i := 1; i < n+1; i++ {
 		in := make(chan M, n)
 		out := make(chan M, n)
-		keygen, _ := keygen.NewRunner(id, uint32(i), uint32(t), uint32(n), in, out)
+		keygen, _ := keygen.NewRunner(id, uint64(i), uint64(t), uint64(n), in, out)
 		ins = append(ins, in)
 		outs = append(outs, out)
 		kMachines = append(kMachines, keygen)

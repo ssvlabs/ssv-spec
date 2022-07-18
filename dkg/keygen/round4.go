@@ -27,7 +27,7 @@ func (k *Keygen) r4Proceed() error {
 	}
 	k.Output = &LocalKeyShare{
 		Index:           k.PartyI,
-		Threshold:       uint32(len(k.Coefficients) - 1),
+		Threshold:       uint64(len(k.Coefficients) - 1),
 		ShareCount:      k.PartyCount,
 		PublicKey:       pk.Serialize(),
 		SecretShare:     k.skI.Serialize(),

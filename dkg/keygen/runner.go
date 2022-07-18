@@ -14,7 +14,7 @@ type Runner struct {
 	outgoing chan<- base.Message
 }
 
-func NewRunner(identifier dkg.RequestID, i, t, n uint32, incoming <-chan base.Message, outgoing chan<- base.Message) (*Runner, error) {
+func NewRunner(identifier dkg.RequestID, i, t, n uint64, incoming <-chan base.Message, outgoing chan<- base.Message) (*Runner, error) {
 	kg, err := NewKeygen(identifier[:], i, t, n)
 	if err != nil {
 		return nil, err

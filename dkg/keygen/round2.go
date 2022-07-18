@@ -35,7 +35,7 @@ func (k *Keygen) r2Proceed() error {
 	}
 
 	for i, share := range allShares {
-		receiver := uint32(i + 1)
+		receiver := uint64(i + 1)
 		if i+1 != int(k.PartyI) {
 			msg := &ParsedMessage{
 				Header: &base.MessageHeader{

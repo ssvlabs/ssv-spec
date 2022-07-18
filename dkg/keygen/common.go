@@ -34,8 +34,8 @@ func MustGetRandomInt(bits int) *big.Int {
 	return n
 }
 
-func Uint32ToBytes(val uint32) []byte {
-	bytes := make([]byte, 4)
-	binary.BigEndian.PutUint32(bytes, val)
+func Uint64ToBytes(val uint64) []byte {
+	bytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(bytes, val)
 	return bytes
 }

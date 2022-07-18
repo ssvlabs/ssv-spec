@@ -36,8 +36,8 @@ type Keygen struct {
 	Coefficients      vss.Coefficients
 	BlindFactor       [32]byte // A random number
 	DlogR             *bls.Fr
-	PartyI            uint32
-	PartyCount        uint32
+	PartyI            uint64
+	PartyCount        uint64
 	skI               *bls.SecretKey
 	Round1Msgs        ParsedMessages
 	Round2Msgs        ParsedMessages
@@ -51,7 +51,7 @@ type Keygen struct {
 	outMutex          sync.Mutex
 }
 
-func EmptyKeygen(t, n uint32) Keygen {
+func EmptyKeygen(t, n uint64) Keygen {
 	return Keygen{
 		SessionID:         []byte{},
 		Round:             0,
@@ -73,7 +73,7 @@ func EmptyKeygen(t, n uint32) Keygen {
 	}
 }
 
-func NewKeygen(sessionId []byte, i, t, n uint32) (*Keygen, error) {
+func NewKeygen(sessionId []byte, i, t, n uint64) (*Keygen, error) {
 	kg := EmptyKeygen(t, n)
 	kg.SessionID = sessionId
 	kg.PartyI = i
@@ -188,7 +188,7 @@ func (k *Keygen) GetCommitment() []byte {
 
 	var data []byte
 	decomm := k.GetDecommitment()
-	data = append(data, Uint32ToBytes(k.PartyI)...)
+	data = append(data, Uint64ToBytes(k.PartyI)...)
 	data = append(data, k.BlindFactor[:]...)
 	for _, bytes := range decomm {
 		data = append(data, bytes...)
@@ -198,12 +198,12 @@ func (k *Keygen) GetCommitment() []byte {
 	return hash.Sum(nil)
 }
 
-func (k *Keygen) VerifyCommitment(r1 Round1Msg, r2 Round2Msg, partyI uint32) bool {
+func (k *Keygen) VerifyCommitment(r1 Round1Msg, r2 Round2Msg, partyI uint64) bool {
 	if len(k.Coefficients) != len(r2.DeCommitment) {
 		return false
 	}
 	var data []byte
-	data = append(data, Uint32ToBytes(partyI)...)
+	data = append(data, Uint64ToBytes(partyI)...)
 	data = append(data, r2.BlindFactor...)
 	for _, bytes := range r2.DeCommitment {
 		data = append(data, bytes...)
