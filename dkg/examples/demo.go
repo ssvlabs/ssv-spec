@@ -46,10 +46,14 @@ func main() {
 	for i, _ := range id {
 		id[i] = 1
 	}
+	var committee []uint64
+	for i := 0; i < n; i++ {
+		committee = append(committee, uint64(i+1))
+	}
 	for i := 1; i < n+1; i++ {
 		in := make(chan M, n)
 		out := make(chan M, n)
-		keygen, _ := keygen.NewRunner(id, uint64(i), uint64(t), uint64(n), in, out)
+		keygen, _ := keygen.NewRunner(id, uint64(i), uint64(t), committee, in, out)
 		ins = append(ins, in)
 		outs = append(outs, out)
 		kMachines = append(kMachines, keygen)
