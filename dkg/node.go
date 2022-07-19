@@ -2,7 +2,7 @@ package dkg
 
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -10,27 +10,27 @@ import (
 // Runners is a map of dkg runners mapped by dkg ID.
 type Runners map[string]*Runner
 
-func (runners Runners) AddRunner(id base.RequestID, runner *Runner) {
+func (runners Runners) AddRunner(id dkgtypes.RequestID, runner *Runner) {
 	runners[hex.EncodeToString(id[:])] = runner
 }
 
 // RunnerForID returns a Runner from the provided msg ID, or nil if not found
-func (runners Runners) RunnerForID(id base.RequestID) *Runner {
+func (runners Runners) RunnerForID(id dkgtypes.RequestID) *Runner {
 	return runners[hex.EncodeToString(id[:])]
 }
 
-func (runners Runners) DeleteRunner(id base.RequestID) {
+func (runners Runners) DeleteRunner(id dkgtypes.RequestID) {
 	delete(runners, hex.EncodeToString(id[:]))
 }
 
 type Node struct {
-	operator *base.Operator
+	operator *dkgtypes.Operator
 	// runners holds all active running DKG runners
 	runners Runners
-	config  *base.Config
+	config  *dkgtypes.Config
 }
 
-func NewNode(operator *base.Operator, config *base.Config) *Node {
+func NewNode(operator *dkgtypes.Operator, config *dkgtypes.Config) *Node {
 	return &Node{
 		operator: operator,
 		config:   config,
@@ -38,7 +38,7 @@ func NewNode(operator *base.Operator, config *base.Config) *Node {
 	}
 }
 
-func (n *Node) newRunner(id base.RequestID, initMsg *base.Init) (*Runner, error) {
+func (n *Node) newRunner(id dkgtypes.RequestID, initMsg *dkgtypes.Init) (*Runner, error) {
 
 	var i uint64
 	for i0, id := range initMsg.OperatorIDs {
@@ -56,7 +56,7 @@ func (n *Node) newRunner(id base.RequestID, initMsg *base.Init) (*Runner, error)
 		Identifier:            id,
 		I:                     i,
 		PartialSignatures:     map[types.OperatorID][]byte{},
-		DepositDataSignatures: map[types.OperatorID]*base.PartialDepositData{},
+		DepositDataSignatures: map[types.OperatorID]*dkgtypes.PartialDepositData{},
 		config:                n.config,
 		KeygenSubProtocol:     n.config.Protocol(initMsg, n.operator.OperatorID, id),
 	}
@@ -66,7 +66,7 @@ func (n *Node) newRunner(id base.RequestID, initMsg *base.Init) (*Runner, error)
 
 // ProcessMessage processes network Messages of all types
 func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
-	signedMsg := &base.Message{}
+	signedMsg := &dkgtypes.Message{}
 	if err := signedMsg.Decode(msg.GetData()); err != nil {
 		return errors.Wrap(err, "could not get dkg Message from network Messages")
 	}
@@ -76,18 +76,18 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 	}
 
 	switch signedMsg.Header.MsgType {
-	case int32(base.InitMsgType):
+	case int32(dkgtypes.InitMsgType):
 		return n.startNewDKGMsg(signedMsg)
-	case int32(base.ProtocolMsgType):
+	case int32(dkgtypes.ProtocolMsgType):
 		return n.processDKGMsg(signedMsg)
-	case int32(base.DepositDataMsgType):
+	case int32(dkgtypes.DepositDataMsgType):
 		return n.processDKGMsg(signedMsg)
 	default:
 		return errors.New("unknown msg type")
 	}
 }
 
-func (n *Node) validateSignedMessage(message *base.Message) error {
+func (n *Node) validateSignedMessage(message *dkgtypes.Message) error {
 	if err := message.Validate(); err != nil {
 		return errors.Wrap(err, "message invalid")
 	}
@@ -95,7 +95,7 @@ func (n *Node) validateSignedMessage(message *base.Message) error {
 	return nil
 }
 
-func (n *Node) startNewDKGMsg(message *base.Message) error {
+func (n *Node) startNewDKGMsg(message *dkgtypes.Message) error {
 	initMsg, err := n.validateInitMsg(message)
 	if err != nil {
 		return errors.Wrap(err, "could not start new dkg")
@@ -116,13 +116,13 @@ func (n *Node) startNewDKGMsg(message *base.Message) error {
 	return nil
 }
 
-func (n *Node) validateInitMsg(message *base.Message) (*base.Init, error) {
+func (n *Node) validateInitMsg(message *dkgtypes.Message) (*dkgtypes.Init, error) {
 	// validate identifier.GetEthAddress is the signer for message
-	if err := types.Signature(message.Signature).ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, base.RequestID(message.Header.RequestID()).GetETHAddress()); err != nil {
+	if err := types.Signature(message.Signature).ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, dkgtypes.RequestID(message.Header.RequestID()).GetETHAddress()); err != nil {
 		return nil, errors.Wrap(err, "signed message invalid")
 	}
 
-	initMsg := &base.Init{}
+	initMsg := &dkgtypes.Init{}
 	if err := initMsg.Decode(message.Data); err != nil {
 		return nil, errors.Wrap(err, "could not get dkg init Message from signed Messages")
 	}
@@ -139,7 +139,7 @@ func (n *Node) validateInitMsg(message *base.Message) (*base.Init, error) {
 	return initMsg, nil
 }
 
-func (n *Node) processDKGMsg(message *base.Message) error {
+func (n *Node) processDKGMsg(message *dkgtypes.Message) error {
 	runner, err := n.validateDKGMsg(message)
 	if err != nil {
 		return errors.Wrap(err, "dkg msg not valid")
@@ -160,7 +160,7 @@ func (n *Node) processDKGMsg(message *base.Message) error {
 	return nil
 }
 
-func (n *Node) validateDKGMsg(message *base.Message) (*Runner, error) {
+func (n *Node) validateDKGMsg(message *dkgtypes.Message) (*Runner, error) {
 	runner := n.runners.RunnerForID(message.Header.RequestID())
 	if runner == nil {
 		return nil, errors.New("could not find dkg runner")

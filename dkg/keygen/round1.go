@@ -1,13 +1,13 @@
 package keygen
 
-import "github.com/bloxapp/ssv-spec/dkg/base"
+import "github.com/bloxapp/ssv-spec/dkg/types"
 
 func (k *Keygen) r1Proceed() error {
 	if k.Round != 1 {
 		return ErrInvalidRound
 	}
 	msg := &ParsedMessage{
-		Header: &base.MessageHeader{
+		Header: &types.MessageHeader{
 			SessionId: k.SessionID,
 			MsgType:   k.HandleMessageType,
 			Sender:    k.PartyI,

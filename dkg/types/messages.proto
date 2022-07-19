@@ -1,6 +1,6 @@
 syntax = "proto3";
-package ssv.dkg.base;
-option go_package = "github.com/bloxapp/ssv-spec/dkg/base";
+package ssv.dkg.types;
+option go_package = "github.com/bloxapp/ssv-spec/dkg/types";
 
 message MessageHeader {
   bytes session_id = 1;

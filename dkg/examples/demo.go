@@ -4,7 +4,7 @@ import "C"
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	log "github.com/sirupsen/logrus"
@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-type M = base.Message
+type M = types.Message
 
 func init() {
 	log.SetFormatter(&log.TextFormatter{})
@@ -60,7 +60,7 @@ func main() {
 	}
 
 	go func(o1 <-chan M, o2 <-chan M, o3 <-chan M, o4 <-chan M, i1 chan<- M, i2 chan<- M, i3 chan<- M, i4 chan<- M) {
-		send := func(msg base.Message) {
+		send := func(msg types.Message) {
 			if msg.Header.Receiver == 0 {
 				i1 <- msg
 				i2 <- msg

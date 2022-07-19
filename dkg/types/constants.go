@@ -1,4 +1,4 @@
-package base
+package types
 
 const (
 	// InitMsgType sent when DKG instance is started by requester

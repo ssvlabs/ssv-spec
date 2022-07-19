@@ -2,7 +2,7 @@ package keygen
 
 import (
 	"errors"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -19,7 +19,7 @@ func (x *ParsedMessage) SetSignature(bytes []byte) error {
 	return nil
 }
 
-func (x *ParsedMessage) FromBase(base *base.Message) error {
+func (x *ParsedMessage) FromBase(base *types.Message) error {
 	raw, err := proto.Marshal(base)
 	if err != nil {
 		return err
@@ -27,12 +27,12 @@ func (x *ParsedMessage) FromBase(base *base.Message) error {
 	return proto.Unmarshal(raw, x)
 }
 
-func (x *ParsedMessage) ToBase() (*base.Message, error) {
+func (x *ParsedMessage) ToBase() (*types.Message, error) {
 	raw, err := proto.Marshal(x)
 	if err != nil {
 		return nil, err
 	}
-	base := &base.Message{}
+	base := &types.Message{}
 	err = proto.Unmarshal(raw, base)
 	if err != nil {
 		return nil, err

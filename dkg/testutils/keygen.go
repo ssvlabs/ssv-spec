@@ -4,7 +4,7 @@ import (
 	"crypto/ecdsa"
 	"encoding/hex"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/bloxapp/ssv-spec/types"
@@ -41,9 +41,9 @@ func (s DkgPartyDataSet) VkVec() [][]byte {
 	return out
 }
 
-func (s DkgPartyDataSet) MakeLocalKeyShare(index uint64) *base.LocalKeyShare {
+func (s DkgPartyDataSet) MakeLocalKeyShare(index uint64) *dkgtypes.LocalKeyShare {
 	threshold := len(s.PartyData[types.OperatorID(index)].Coefficients) - 1
-	return &base.LocalKeyShare{
+	return &dkgtypes.LocalKeyShare{
 		Index:           index,
 		Threshold:       uint64(threshold),
 		PublicKey:       s.PublicKey,
@@ -55,8 +55,8 @@ func (s DkgPartyDataSet) MakeLocalKeyShare(index uint64) *base.LocalKeyShare {
 
 func (s DkgPartyDataSet) R1(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
-		Header: &base.MessageHeader{
-			MsgType: int32(base.ProtocolMsgType),
+		Header: &dkgtypes.MessageHeader{
+			MsgType: int32(dkgtypes.ProtocolMsgType),
 			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
@@ -70,8 +70,8 @@ func (s DkgPartyDataSet) R1(operatorId types.OperatorID) *keygen.ParsedMessage {
 
 func (s DkgPartyDataSet) R2(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
-		Header: &base.MessageHeader{
-			MsgType: int32(base.ProtocolMsgType),
+		Header: &dkgtypes.MessageHeader{
+			MsgType: int32(dkgtypes.ProtocolMsgType),
 			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
@@ -86,8 +86,8 @@ func (s DkgPartyDataSet) R2(operatorId types.OperatorID) *keygen.ParsedMessage {
 
 func (s DkgPartyDataSet) R3(operatorId types.OperatorID, receiver types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
-		Header: &base.MessageHeader{
-			MsgType:  int32(base.ProtocolMsgType),
+		Header: &dkgtypes.MessageHeader{
+			MsgType:  int32(dkgtypes.ProtocolMsgType),
 			Sender:   uint64(operatorId),
 			Receiver: uint64(receiver),
 		},
@@ -102,8 +102,8 @@ func (s DkgPartyDataSet) R3(operatorId types.OperatorID, receiver types.Operator
 
 func (s DkgPartyDataSet) R4(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
-		Header: &base.MessageHeader{
-			MsgType: int32(base.ProtocolMsgType),
+		Header: &dkgtypes.MessageHeader{
+			MsgType: int32(dkgtypes.ProtocolMsgType),
 			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
@@ -138,7 +138,7 @@ type KeygenPartyData struct {
 	R3Messages    []keygen.ParsedMessage
 	R4Message     keygen.ParsedMessage
 	OwnShare      []byte
-	LocalKeyShare base.LocalKeyShare
+	LocalKeyShare dkgtypes.LocalKeyShare
 }
 
 func h2b(str string) []byte {
@@ -146,7 +146,7 @@ func h2b(str string) []byte {
 	return b
 }
 
-var baseInstance = func(dataset DkgPartyDataSet) base.Protocol {
+var baseInstance = func(dataset DkgPartyDataSet) dkgtypes.Protocol {
 	partyData := dataset.PartyData[1]
 	threshold := uint64(len(partyData.Coefficients) - 1)
 	state := keygen.EmptyKeygen(threshold, uint64(len(dataset.PartyData)))
@@ -173,9 +173,9 @@ var baseInstance = func(dataset DkgPartyDataSet) base.Protocol {
 	}
 
 	return &keygen.KGProtocol{
-		Identifier: base.RequestID{},
+		Identifier: dkgtypes.RequestID{},
 		Operator:   1,
-		Init: base.Init{
+		Init: dkgtypes.Init{
 			Nonce:                 0,
 			OperatorIDs:           ids,
 			Threshold:             uint16(threshold),
@@ -192,7 +192,7 @@ var SevenOperatorsInstance = baseInstance(TestSuiteSevenOperators())
 var TenOperatorsInstance = baseInstance(TestSuiteTenOperators())
 var ThirteenOperatorsInstance = baseInstance(TestSuiteThirteenOperators())
 
-var SignDKGMsg = func(sk *ecdsa.PrivateKey, msg base.Signable) base.Signable {
+var SignDKGMsg = func(sk *ecdsa.PrivateKey, msg dkgtypes.Signable) dkgtypes.Signable {
 	domain := types.PrimusTestnet
 	sigType := types.DKGSignatureType
 

@@ -2,7 +2,7 @@ package keygen
 
 import (
 	"errors"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/dlog"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -38,7 +38,7 @@ func (k *Keygen) r3Proceed() error {
 	}
 	proof := knowledge.Prove()
 	msg := &ParsedMessage{
-		Header: &base.MessageHeader{
+		Header: &types.MessageHeader{
 			SessionId:     k.SessionID,
 			MsgType:       k.HandleMessageType,
 			Sender:        k.PartyI,

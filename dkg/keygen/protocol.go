@@ -3,16 +3,16 @@ package keygen
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
 type KGProtocol struct {
-	Identifier base.RequestID
+	Identifier dkgtypes.RequestID
 	Operator   types.OperatorID
-	Init       base.Init
+	Init       dkgtypes.Init
 	State      *Keygen
 }
 
@@ -27,7 +27,7 @@ func (k *KGProtocol) Output() ([]byte, error) {
 	return jStr, nil
 }
 
-func New(init *base.Init, identifier base.RequestID, config base.ProtocolConfig) (base.Protocol, error) {
+func New(init *dkgtypes.Init, identifier dkgtypes.RequestID, config dkgtypes.ProtocolConfig) (dkgtypes.Protocol, error) {
 	var myIndex uint64 = 0
 	for i, id := range init.OperatorIDs {
 		if id == config.Operator.OperatorID {
@@ -50,14 +50,14 @@ func New(init *base.Init, identifier base.RequestID, config base.ProtocolConfig)
 	}, nil
 }
 
-func (k *KGProtocol) Start() ([]base.Message, error) {
+func (k *KGProtocol) Start() ([]dkgtypes.Message, error) {
 	if err := k.State.Proceed(); err != nil {
 		return nil, err
 	}
 	return k.getAndEncodeOutgoing()
 }
 
-func (k *KGProtocol) ProcessMsg(msg *base.Message) ([]base.Message, error) {
+func (k *KGProtocol) ProcessMsg(msg *dkgtypes.Message) ([]dkgtypes.Message, error) {
 	if msg == nil {
 		return nil, errors.New("nil message")
 	}
@@ -82,12 +82,12 @@ func (k *KGProtocol) ProcessMsg(msg *base.Message) ([]base.Message, error) {
 	return k.getAndEncodeOutgoing()
 }
 
-func (k *KGProtocol) getAndEncodeOutgoing() ([]base.Message, error) {
+func (k *KGProtocol) getAndEncodeOutgoing() ([]dkgtypes.Message, error) {
 	outgoingInner, err := k.State.GetOutgoing()
 	if err != nil {
 		return nil, err
 	}
-	var outgoing []base.Message
+	var outgoing []dkgtypes.Message
 	for _, out := range outgoingInner {
 		if msg, err := out.ToBase(); err == nil {
 			outgoing = append(outgoing, *msg)

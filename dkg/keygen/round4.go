@@ -2,7 +2,7 @@ package keygen
 
 import (
 	"errors"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/dlog"
 	"github.com/gogo/protobuf/sortkeys"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -29,7 +29,7 @@ func (k *Keygen) r4Proceed() error {
 		r4Msg := k.Round4Msgs[id]
 		vkVec = append(vkVec, r4Msg.Body.Round4.PubKey)
 	}
-	k.Output = &base.LocalKeyShare{
+	k.Output = &types.LocalKeyShare{
 		Index:           k.PartyI,
 		Threshold:       uint64(len(k.Coefficients) - 1),
 		PublicKey:       pk.Serialize(),

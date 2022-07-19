@@ -1,7 +1,7 @@
 syntax = "proto3";
 package ssv.dkg.keygen;
 option go_package = "dkg/keygen";
-import "base/messages.proto";
+import "types/messages.proto";
 
 message Round1Msg{
   bytes Commitment = 1;
@@ -33,7 +33,7 @@ message KeygenMsgBody {
  * It has the same shape as base.Message except the data is parsed into KeygenMsgBody
  */
 message ParsedMessage {
-  ssv.dkg.base.MessageHeader header = 1;
+  ssv.dkg.types.MessageHeader header = 1;
   KeygenMsgBody body = 2;
   bytes signature = 3;
 }

@@ -1,13 +1,13 @@
 package testutils
 
 import (
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 )
 
-func PlaceholderMessage() *base.Message {
-	return &base.Message{
-		Header: &base.MessageHeader{
-			MsgType: int32(base.ProtocolMsgType),
+func PlaceholderMessage() *types.Message {
+	return &types.Message{
+		Header: &types.MessageHeader{
+			MsgType: int32(types.ProtocolMsgType),
 			Sender:  uint64(1),
 		},
 	}

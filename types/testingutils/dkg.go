@@ -3,7 +3,7 @@ package testingutils
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -44,14 +44,14 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 }
 */
 
-var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *base.Message) *base.Message {
+var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *dkgtypes.Message) *dkgtypes.Message {
 	domain := types.PrimusTestnet
 	sigType := types.DKGSignatureType
 
 	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
 	sig, _ := crypto.Sign(r, sk)
 
-	return &base.Message{
+	return &dkgtypes.Message{
 		Header: msg.Header,
 		Data:   msg.Data,
 		Signature: sig,
@@ -59,7 +59,7 @@ var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *base.Messa
 }
 
 var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte) []byte {
-	m := &base.Init{
+	m := &dkgtypes.Init{
 		OperatorIDs:           operators,
 		Threshold:             threshold,
 		WithdrawalCredentials: withdrawalCred,

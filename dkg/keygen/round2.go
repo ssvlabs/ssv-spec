@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
@@ -41,7 +41,7 @@ func (k *Keygen) r2Proceed() error {
 		receiver := k.Committee[i]
 		if i+1 != int(k.PartyI) {
 			msg := &ParsedMessage{
-				Header: &base.MessageHeader{
+				Header: &types.MessageHeader{
 					SessionId: k.SessionID,
 					MsgType:   k.HandleMessageType,
 					Sender:    k.PartyI,

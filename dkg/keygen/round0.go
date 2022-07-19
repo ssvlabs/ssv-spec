@@ -1,6 +1,6 @@
 package keygen
 
-import "github.com/bloxapp/ssv-spec/dkg/base"
+import "github.com/bloxapp/ssv-spec/dkg/types"
 
 func (k *Keygen) r0Proceed() error {
 	if k.Round != 0 {
@@ -8,7 +8,7 @@ func (k *Keygen) r0Proceed() error {
 	}
 
 	msg := &ParsedMessage{
-		Header: &base.MessageHeader{
+		Header: &types.MessageHeader{
 			MsgType:  k.HandleMessageType,
 			Sender:   k.PartyI,
 			Receiver: 0,

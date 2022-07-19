@@ -1,2 +1,2 @@
-//go:generate protoc --proto_path=. --go_out=. --go_opt=paths=source_relative  ./base/messages.proto ./keygen/messages.proto
+//go:generate protoc --proto_path=. --go_out=. --go_opt=paths=source_relative  ./types/messages.proto ./keygen/messages.proto
 package dkg

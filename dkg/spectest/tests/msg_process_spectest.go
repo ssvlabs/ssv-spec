@@ -2,7 +2,7 @@ package tests
 
 import (
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/dkg/base"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
@@ -11,10 +11,10 @@ import (
 
 type MsgProcessingSpecTest struct {
 	Name     string
-	Pre      base.Protocol
+	Pre      types.Protocol
 	Messages []*keygen.ParsedMessage
-	Output        *base.LocalKeyShare
-	KeySet        *testingutils.TestKeySet
+	Output   *types.LocalKeyShare
+	KeySet   *testingutils.TestKeySet
 	ExpectedError string
 }
 
@@ -46,7 +46,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		lastErr = err
 	}
 
-	lks := base.LocalKeyShare{}
+	lks := types.LocalKeyShare{}
 	err = json.Unmarshal(output, &lks)
 
 	if err != nil {
