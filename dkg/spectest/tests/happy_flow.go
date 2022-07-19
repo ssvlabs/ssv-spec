@@ -21,6 +21,7 @@ func HappyFlow() *MsgProcessingSpecTest {
 			ShareCount:      4,
 			PublicKey:       suite.PublicKey,
 			SecretShare:     suite.SecretShares[1],
+			Committee:       suite.IndicesVec(),
 			SharePublicKeys: suite.VkVec(),
 		},
 		Messages: []*keygen.ParsedMessage{

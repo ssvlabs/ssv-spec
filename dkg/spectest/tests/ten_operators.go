@@ -20,6 +20,7 @@ func TenOperators() *MsgProcessingSpecTest {
 			ShareCount:      10,
 			PublicKey:       suite.PublicKey,
 			SecretShare:     suite.SecretShares[1],
+			Committee:       suite.IndicesVec(),
 			SharePublicKeys: suite.VkVec(),
 		},
 		Messages: []*keygen.ParsedMessage{

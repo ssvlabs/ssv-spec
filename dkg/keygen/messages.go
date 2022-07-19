@@ -74,6 +74,7 @@ type LocalKeyShare struct {
 	ShareCount      uint64   `json:"share_count"`
 	PublicKey       []byte   `json:"vk"`
 	SecretShare     []byte   `json:"sk_i"`
+	Committee       []uint64 `json:"committee"`
 	SharePublicKeys [][]byte `json:"vk_vec"`
 }
 

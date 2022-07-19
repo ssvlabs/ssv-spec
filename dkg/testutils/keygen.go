@@ -21,7 +21,7 @@ type DkgPartyDataSet struct {
 	PartyData       map[types.OperatorID]*DkgPartyData
 }
 
-func (s DkgPartyDataSet) VkVec() [][]byte {
+func (s DkgPartyDataSet) IndicesVec() []uint64 {
 	ids := make([]uint64, len(s.SharePublicKeys))
 	count := 0
 	for id, _ := range s.SharePublicKeys {
@@ -29,6 +29,11 @@ func (s DkgPartyDataSet) VkVec() [][]byte {
 		count++
 	}
 	sortkeys.Uint64s(ids)
+	return ids
+}
+
+func (s DkgPartyDataSet) VkVec() [][]byte {
+	ids := s.IndicesVec()
 	var out [][]byte
 
 	for _, id := range ids {

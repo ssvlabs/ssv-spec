@@ -34,6 +34,7 @@ func (k *Keygen) r4Proceed() error {
 		ShareCount:      k.PartyCount,
 		PublicKey:       pk.Serialize(),
 		SecretShare:     k.skI.Serialize(),
+		Committee:       k.Committee,
 		SharePublicKeys: vkVec,
 	}
 	k.Round = 5
