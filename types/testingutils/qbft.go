@@ -2,9 +2,11 @@ package testingutils
 
 import (
 	"bytes"
+
+	"github.com/pkg/errors"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/pkg/errors"
 )
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
@@ -18,12 +20,10 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 			}
 			return nil
 		},
-		ProposerF: func(state *qbft.State, round qbft.Round) types.OperatorID {
-			return 1
-		},
-		Storage: NewTestingStorage(),
-		Network: NewTestingNetwork(),
-		Timer:   NewTestingTimer(),
+		ProposerF: qbft.RoundRobinProposer,
+		Storage:   NewTestingStorage(),
+		Network:   NewTestingNetwork(),
+		Timer:     NewTestingTimer(),
 	}
 }
 

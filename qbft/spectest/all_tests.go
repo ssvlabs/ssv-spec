@@ -1,6 +1,8 @@
 package spectest
 
 import (
+	"testing"
+
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
@@ -8,7 +10,6 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
-	"testing"
 )
 
 type SpecTest interface {
