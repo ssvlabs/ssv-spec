@@ -1,9 +1,8 @@
 package tests
 
 import (
-	"encoding/json"
-	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -46,8 +45,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		lastErr = err
 	}
 
-	lks := types.LocalKeyShare{}
-	err = json.Unmarshal(output, &lks)
+	expected, err := test.Output.Encode()
+	require.NoError(t, err)
 
 	if err != nil {
 		lastErr = err
@@ -57,6 +56,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
 		require.NoError(t, lastErr)
-		require.Equal(t, *test.Output, lks)
+		require.Equal(t, expected, output)
 	}
 }

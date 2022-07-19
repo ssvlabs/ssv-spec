@@ -2,7 +2,6 @@ package keygen
 
 import (
 	"bytes"
-	"encoding/json"
 	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -20,11 +19,8 @@ func (k *KGProtocol) Output() ([]byte, error) {
 	if k.State == nil || k.State.Output == nil {
 		return nil, nil
 	}
-	jStr, err := json.Marshal(k.State.Output)
-	if err != nil {
-		return nil, err
-	}
-	return jStr, nil
+
+	return k.State.Output.Encode()
 }
 
 func New(init *dkgtypes.Init, identifier dkgtypes.RequestID, config dkgtypes.ProtocolConfig) (dkgtypes.Protocol, error) {

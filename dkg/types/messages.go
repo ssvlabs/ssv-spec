@@ -9,7 +9,6 @@ import (
 
 type MsgType int
 
-
 type SessionId = []byte
 
 type Signable interface {
@@ -96,4 +95,12 @@ func (signedMsg *SignedMessage) Validate() error {
 
 func (signedMsg *SignedMessage) GetRoot() ([]byte, error) {
 	return signedMsg.Message.GetRoot()
+}
+
+func (x *LocalKeyShare) Encode() ([]byte, error) {
+	return proto.Marshal(x)
+}
+
+func (x *LocalKeyShare) Decode(data []byte) error {
+	return proto.Unmarshal(data, x)
 }
