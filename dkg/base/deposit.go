@@ -1,9 +1,8 @@
-package dkg
+package base
 
 import (
 	"bytes"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -35,7 +34,7 @@ func NewSignDepositData(init *Init, key *KeygenOutput, config ProtocolConfig) *S
 	}
 }
 
-func (s *SignDepositData) Start() ([]base.Message, error) {
+func (s *SignDepositData) Start() ([]Message, error) {
 	pSig, err := s.partialSign()
 	if err != nil {
 		return nil, err
@@ -44,8 +43,8 @@ func (s *SignDepositData) Start() ([]base.Message, error) {
 	if err != nil {
 		return nil, err
 	}
-	partialSigMsg := base.Message{
-		Header: &base.MessageHeader{
+	partialSigMsg := Message{
+		Header: &MessageHeader{
 			SessionId: s.Identifier[:],
 			MsgType:   int32(DepositDataMsgType),
 			Sender: uint64(s.config.Operator.OperatorID),
@@ -53,10 +52,10 @@ func (s *SignDepositData) Start() ([]base.Message, error) {
 		},
 		Data:       data,
 	}
-	return []base.Message{partialSigMsg}, nil
+	return []Message{partialSigMsg}, nil
 }
 
-func (s *SignDepositData) ProcessMsg(msg *base.Message) ([]base.Message, error) {
+func (s *SignDepositData) ProcessMsg(msg *Message) ([]Message, error) {
 
 	if msg.Header.MsgType != int32(DepositDataMsgType) {
 		return nil, errors.New("invalid message type")
@@ -107,8 +106,8 @@ func (s *SignDepositData) ProcessMsg(msg *base.Message) ([]base.Message, error) 
 		if err != nil {
 			return nil, err
 		}
-		outMsg := base.Message{
-			Header: &base.MessageHeader{
+		outMsg := Message{
+			Header: &MessageHeader{
 				SessionId: s.Identifier[:],
 				MsgType:   int32(PartialOutputMsgType),
 				Sender: uint64(s.config.Operator.OperatorID),
@@ -116,7 +115,7 @@ func (s *SignDepositData) ProcessMsg(msg *base.Message) ([]base.Message, error) 
 			},
 			Data:       data,
 		}
-		return []base.Message{outMsg}, nil
+		return []Message{outMsg}, nil
 	}
 	return nil, nil
 }

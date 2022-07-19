@@ -4,7 +4,6 @@ import (
 	"crypto/ecdsa"
 	"encoding/hex"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
@@ -42,13 +41,11 @@ func (s DkgPartyDataSet) VkVec() [][]byte {
 	return out
 }
 
-func (s DkgPartyDataSet) MakeLocalKeyShare(index uint64) *keygen.LocalKeyShare {
+func (s DkgPartyDataSet) MakeLocalKeyShare(index uint64) *base.LocalKeyShare {
 	threshold := len(s.PartyData[types.OperatorID(index)].Coefficients) - 1
-	shareCount := len(s.PartyData)
-	return &keygen.LocalKeyShare{
+	return &base.LocalKeyShare{
 		Index:           index,
 		Threshold:       uint64(threshold),
-		ShareCount:      uint64(shareCount),
 		PublicKey:       s.PublicKey,
 		SecretShare:     s.SecretShares[types.OperatorID(index)],
 		Committee:       s.IndicesVec(),
@@ -59,7 +56,7 @@ func (s DkgPartyDataSet) MakeLocalKeyShare(index uint64) *keygen.LocalKeyShare {
 func (s DkgPartyDataSet) R1(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
 		Header: &base.MessageHeader{
-			MsgType: int32(dkg.ProtocolMsgType),
+			MsgType: int32(base.ProtocolMsgType),
 			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
@@ -74,7 +71,7 @@ func (s DkgPartyDataSet) R1(operatorId types.OperatorID) *keygen.ParsedMessage {
 func (s DkgPartyDataSet) R2(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
 		Header: &base.MessageHeader{
-			MsgType: int32(dkg.ProtocolMsgType),
+			MsgType: int32(base.ProtocolMsgType),
 			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
@@ -90,7 +87,7 @@ func (s DkgPartyDataSet) R2(operatorId types.OperatorID) *keygen.ParsedMessage {
 func (s DkgPartyDataSet) R3(operatorId types.OperatorID, receiver types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
 		Header: &base.MessageHeader{
-			MsgType:  int32(dkg.ProtocolMsgType),
+			MsgType:  int32(base.ProtocolMsgType),
 			Sender:   uint64(operatorId),
 			Receiver: uint64(receiver),
 		},
@@ -106,7 +103,7 @@ func (s DkgPartyDataSet) R3(operatorId types.OperatorID, receiver types.Operator
 func (s DkgPartyDataSet) R4(operatorId types.OperatorID) *keygen.ParsedMessage {
 	return &keygen.ParsedMessage{
 		Header: &base.MessageHeader{
-			MsgType: int32(dkg.ProtocolMsgType),
+			MsgType: int32(base.ProtocolMsgType),
 			Sender:  uint64(operatorId),
 		},
 		Body: &keygen.KeygenMsgBody{
@@ -141,7 +138,7 @@ type KeygenPartyData struct {
 	R3Messages    []keygen.ParsedMessage
 	R4Message     keygen.ParsedMessage
 	OwnShare      []byte
-	LocalKeyShare keygen.LocalKeyShare
+	LocalKeyShare base.LocalKeyShare
 }
 
 func h2b(str string) []byte {
@@ -149,7 +146,7 @@ func h2b(str string) []byte {
 	return b
 }
 
-var baseInstance = func(dataset DkgPartyDataSet) dkg.Protocol {
+var baseInstance = func(dataset DkgPartyDataSet) base.Protocol {
 	partyData := dataset.PartyData[1]
 	threshold := uint64(len(partyData.Coefficients) - 1)
 	state := keygen.EmptyKeygen(threshold, uint64(len(dataset.PartyData)))
@@ -176,9 +173,9 @@ var baseInstance = func(dataset DkgPartyDataSet) dkg.Protocol {
 	}
 
 	return &keygen.KGProtocol{
-		Identifier: dkg.RequestID{},
+		Identifier: base.RequestID{},
 		Operator:   1,
-		Init: dkg.Init{
+		Init: base.Init{
 			Nonce:                 0,
 			OperatorIDs:           ids,
 			Threshold:             uint16(threshold),
@@ -195,18 +192,15 @@ var SevenOperatorsInstance = baseInstance(TestSuiteSevenOperators())
 var TenOperatorsInstance = baseInstance(TestSuiteTenOperators())
 var ThirteenOperatorsInstance = baseInstance(TestSuiteThirteenOperators())
 
-var SignDKGMsg = func(sk *ecdsa.PrivateKey, msg *keygen.ParsedMessage) *keygen.ParsedMessage {
+var SignDKGMsg = func(sk *ecdsa.PrivateKey, msg base.Signable) base.Signable {
 	domain := types.PrimusTestnet
 	sigType := types.DKGSignatureType
 
 	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
 	sig, _ := crypto.Sign(r, sk)
+	_ = msg.SetSignature(sig)
 
-	return &keygen.ParsedMessage{
-		Header:    msg.Header,
-		Body:      msg.Body,
-		Signature: sig,
-	}
+	return msg
 }
 
 func TestSuiteThreeOfFourSmallValues() DkgPartyDataSet {

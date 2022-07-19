@@ -17,3 +17,12 @@ message Message {
   bytes data = 2;
   bytes signature = 3;
 }
+
+message LocalKeyShare {
+  uint64 Index = 1;
+  uint64 Threshold = 2;
+  repeated uint64 Committee = 3;
+  repeated bytes SharePublicKeys = 4;
+  bytes PublicKey = 5;
+  bytes SecretShare = 6;
+}

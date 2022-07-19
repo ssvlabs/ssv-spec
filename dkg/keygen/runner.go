@@ -2,7 +2,6 @@ package keygen
 
 import (
 	"errors"
-	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/base"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -14,7 +13,7 @@ type Runner struct {
 	outgoing chan<- base.Message
 }
 
-func NewRunner(identifier dkg.RequestID, i, t uint64, committee []uint64, incoming <-chan base.Message, outgoing chan<- base.Message) (*Runner, error) {
+func NewRunner(identifier base.RequestID, i, t uint64, committee []uint64, incoming <-chan base.Message, outgoing chan<- base.Message) (*Runner, error) {
 	kg, err := NewKeygen(identifier[:], i, t, committee)
 	if err != nil {
 		return nil, err

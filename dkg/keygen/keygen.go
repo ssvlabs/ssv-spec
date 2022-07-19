@@ -7,7 +7,7 @@ import (
 	_ "crypto/sha256"
 	"errors"
 	"fmt"
-	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	log "github.com/sirupsen/logrus"
@@ -45,7 +45,7 @@ type Keygen struct {
 	Round3Msgs        map[uint64]*ParsedMessage
 	Round4Msgs        map[uint64]*ParsedMessage
 	Outgoing          ParsedMessages
-	Output            *LocalKeyShare
+	Output            *base.LocalKeyShare
 	HandleMessageType int32
 	ownShare          *bls.Fr
 	inMutex           sync.Mutex
@@ -69,7 +69,7 @@ func EmptyKeygen(t, n uint64) Keygen {
 		Round4Msgs:        make(map[uint64]*ParsedMessage, n),
 		Outgoing:          nil,
 		Output:            nil,
-		HandleMessageType: int32(dkg.ProtocolMsgType),
+		HandleMessageType: int32(base.ProtocolMsgType),
 		ownShare:          nil,
 		inMutex:           sync.Mutex{},
 		outMutex:          sync.Mutex{},

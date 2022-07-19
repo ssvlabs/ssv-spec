@@ -14,6 +14,11 @@ func (x *ParsedMessage) GetRoot() ([]byte, error) {
 	return baseMsg.GetRoot()
 }
 
+func (x *ParsedMessage) SetSignature(bytes []byte) error {
+	x.Signature = bytes
+	return nil
+}
+
 func (x *ParsedMessage) FromBase(base *base.Message) error {
 	raw, err := proto.Marshal(base)
 	if err != nil {
@@ -66,16 +71,6 @@ func (x *ParsedMessage) GetRoundNumber() (int, error) {
 		return 4, nil
 	}
 	return 0, errors.New("invalid round")
-}
-
-type LocalKeyShare struct {
-	Index           uint64   `json:"i"`
-	Threshold       uint64   `json:"threshold"`
-	ShareCount      uint64   `json:"share_count"`
-	PublicKey       []byte   `json:"vk"`
-	SecretShare     []byte   `json:"sk_i"`
-	Committee       []uint64 `json:"committee"`
-	SharePublicKeys [][]byte `json:"vk_vec"`
 }
 
 type ParsedMessages = []*ParsedMessage

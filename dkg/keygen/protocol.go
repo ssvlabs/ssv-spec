@@ -3,7 +3,6 @@ package keygen
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -11,9 +10,9 @@ import (
 )
 
 type KGProtocol struct {
-	Identifier dkg.RequestID
+	Identifier base.RequestID
 	Operator   types.OperatorID
-	Init       dkg.Init
+	Init       base.Init
 	State      *Keygen
 }
 
@@ -28,7 +27,7 @@ func (k *KGProtocol) Output() ([]byte, error) {
 	return jStr, nil
 }
 
-func New(init *dkg.Init, identifier dkg.RequestID, config dkg.ProtocolConfig) (dkg.Protocol, error) {
+func New(init *base.Init, identifier base.RequestID, config base.ProtocolConfig) (base.Protocol, error) {
 	var myIndex uint64 = 0
 	for i, id := range init.OperatorIDs {
 		if id == config.Operator.OperatorID {

@@ -2,11 +2,20 @@ package base
 
 import (
 	"crypto/sha256"
+	"encoding/json"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/golang/protobuf/proto"
 )
 
+type MsgType int
+
+
 type SessionId = []byte
-type RequestID = [24]byte
+
+type Signable interface {
+	types.Root
+	SetSignature([]byte) error
+}
 
 func toRequestID(id SessionId) RequestID {
 	// TODO: Check size
@@ -55,4 +64,36 @@ func (x *Message) GetRoot() ([]byte, error) {
 	copy(root, rootFixed[:])
 
 	return root, nil
+}
+
+func (x *Message) SetSignature(bytes []byte) error {
+	x.Signature = bytes
+	return nil
+}
+
+// SignedMessage Deprecated
+type SignedMessage struct {
+	Message   *Message
+	Signer    types.OperatorID
+	Signature types.Signature
+}
+
+// Encode returns a msg encoded bytes or error
+func (signedMsg *SignedMessage) Encode() ([]byte, error) {
+	return json.Marshal(signedMsg)
+}
+
+// Decode returns error if decoding failed
+func (signedMsg *SignedMessage) Decode(data []byte) error {
+	return json.Unmarshal(data, signedMsg)
+}
+
+func (signedMsg *SignedMessage) Validate() error {
+	// TODO len(sig) == ecdsa sig lenth
+
+	return signedMsg.Message.Validate()
+}
+
+func (signedMsg *SignedMessage) GetRoot() ([]byte, error) {
+	return signedMsg.Message.GetRoot()
 }

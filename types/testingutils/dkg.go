@@ -3,7 +3,6 @@ package testingutils
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -60,7 +59,7 @@ var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *base.Messa
 }
 
 var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte) []byte {
-	m := &dkg.Init{
+	m := &base.Init{
 		OperatorIDs:           operators,
 		Threshold:             threshold,
 		WithdrawalCredentials: withdrawalCred,

@@ -1,6 +1,8 @@
 package dkg
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/dkg/base"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -8,25 +10,25 @@ import (
 
 // Runner manages the execution of a DKG, start to finish.
 type Runner struct {
-	Operator *Operator
+	Operator *base.Operator
 	// InitMsg holds the init method which started this runner
-	InitMsg *Init
+	InitMsg *base.Init
 	// Identifier unique for DKG session
-	Identifier RequestID
+	Identifier base.RequestID
 	// DepositDataRoot is the signing root for the deposit data
 	DepositDataRoot []byte
 	// DepositDataSignatures holds partial sigs on deposit data
-	DepositDataSignatures map[types.OperatorID]*PartialDepositData
+	DepositDataSignatures map[types.OperatorID]*base.PartialDepositData
 	// PartialSignatures holds partial sigs on deposit data
 	PartialSignatures map[types.OperatorID][]byte
 	// OutputMsgs holds all output messages received
-	OutputMsgs map[types.OperatorID]*SignedOutput
+	OutputMsgs map[types.OperatorID]*base.SignedOutput
 
-	I uint16
+	I uint64
 
-	keygenSubProtocol Protocol
-	signSubProtocol   Protocol
-	config            *Config
+	KeygenSubProtocol base.Protocol
+	signSubProtocol   base.Protocol
+	config            *base.Config
 }
 
 func (r *Runner) Start() error {
@@ -34,10 +36,10 @@ func (r *Runner) Start() error {
 	if err != nil {
 		return err
 	}
-	outgoing, err := r.keygenSubProtocol.ProcessMsg(&base.Message{
+	outgoing, err := r.KeygenSubProtocol.ProcessMsg(&base.Message{
 		Header: &base.MessageHeader{
 			SessionId: r.Identifier[:],
-			MsgType:   int32(InitMsgType),
+			MsgType:   int32(base.InitMsgType),
 			Sender:    0,
 			Receiver:  0,
 		},
@@ -56,28 +58,36 @@ func (r *Runner) Start() error {
 }
 
 // ProcessMsg processes a DKG signed message and returns true and signed output if finished
-func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*SignedOutput, error) {
+func (r *Runner) ProcessMsg(msg *base.Message) (bool, map[types.OperatorID]*base.SignedOutput, error) {
 	// TODO - validate message
 
-	switch msg.Message.Header.MsgType {
-	case int32(ProtocolMsgType):
-		outgoing, err := r.keygenSubProtocol.ProcessMsg(msg.Message)
+	switch msg.Header.MsgType {
+	case int32(base.ProtocolMsgType):
+		outgoing, err := r.KeygenSubProtocol.ProcessMsg(msg)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to process dkg msg")
 		}
-		err = r.broadcastMessages(outgoing, ProtocolMsgType)
+		err = r.broadcastMessages(outgoing, base.ProtocolMsgType)
 		if err != nil {
 			return false, nil, err
 		}
 
-		if hasOutput(outgoing, KeygenOutputType) {
+		output, err := r.KeygenSubProtocol.Output()
+		if err != nil {
+			return false, nil, err
+		}
+		lks := &base.LocalKeyShare{}
+		json.Unmarshal(output, lks)
+		jstr, err := json.Marshal(lks)
+		fmt.Printf("output is %v\n", string(jstr))
+		if hasOutput(outgoing, base.KeygenOutputType) {
 			outputMsg := outgoing[len(outgoing)-1]
-			keygenOutput := &KeygenOutput{}
+			keygenOutput := &base.KeygenOutput{}
 			err = keygenOutput.Decode(outputMsg.Data)
 			if err != nil {
 				return false, nil, err
 			}
-			r.signSubProtocol = NewSignDepositData(r.InitMsg, keygenOutput, ProtocolConfig{
+			r.signSubProtocol = base.NewSignDepositData(r.InitMsg, keygenOutput, base.ProtocolConfig{
 				Identifier:    r.Identifier,
 				Operator:      r.Operator,
 				BeaconNetwork: r.config.BeaconNetwork,
@@ -87,14 +97,15 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			if err != nil {
 				return false, nil, err
 			}
-			err = r.broadcastMessages(outgoing1, ProtocolMsgType)
+			err = r.broadcastMessages(outgoing1, base.ProtocolMsgType)
 		}
-	case int32(DepositDataMsgType):
-		outgoing, err := r.signSubProtocol.ProcessMsg(msg.Message)
+	case int32(base.DepositDataMsgType):
+		outgoing, err := r.signSubProtocol.ProcessMsg(msg)
+		fmt.Printf("outgoing is %v\n", outgoing)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to partial sig msg")
 		}
-		if hasOutput(outgoing, PartialOutputMsgType) {
+		if hasOutput(outgoing, base.PartialOutputMsgType) {
 			return true, nil, err
 		}
 
@@ -140,9 +151,9 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 					}
 					return false, nil, nil
 				} */
-	case int32(OutputMsgType):
-		output := &SignedOutput{}
-		if err := output.Decode(msg.Message.Data); err != nil {
+	case int32(base.OutputMsgType):
+		output := &base.SignedOutput{}
+		if err := output.Decode(msg.Data); err != nil {
 			return false, nil, errors.Wrap(err, "could not decode SignedOutput")
 		}
 
@@ -150,7 +161,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			return false, nil, errors.Wrap(err, "signed output invali")
 		}
 
-		r.OutputMsgs[msg.Signer] = output
+		r.OutputMsgs[types.OperatorID(msg.Header.Sender)] = output
 		if len(r.OutputMsgs) == int(r.InitMsg.Threshold) {
 			return true, r.OutputMsgs, nil
 		}
@@ -162,20 +173,20 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 	return false, nil, nil
 }
 
-func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
+func (r *Runner) generateSignedOutput(o *base.Output) (*base.SignedOutput, error) {
 	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign output")
 	}
 
-	return &SignedOutput{
+	return &base.SignedOutput{
 		Data:      o,
 		Signer:    r.Operator.OperatorID,
 		Signature: sig,
 	}, nil
 }
 
-func (r *Runner) broadcastMessages(msgs []base.Message, msgType MsgType) error {
+func (r *Runner) broadcastMessages(msgs []base.Message, msgType base.MsgType) error {
 	for _, message := range msgs {
 		if message.Header.MsgType == int32(msgType) {
 			err := r.signAndBroadcast(&message)
@@ -192,7 +203,7 @@ func (r *Runner) signAndBroadcast(msg *base.Message) error {
 	if err != nil {
 		return err
 	}
-	r.config.Network.Broadcast(&SignedMessage{
+	r.config.Network.Broadcast(&base.SignedMessage{
 		Message:   msg,
 		Signer:    r.Operator.OperatorID,
 		Signature: sig,
@@ -200,10 +211,10 @@ func (r *Runner) signAndBroadcast(msg *base.Message) error {
 	return nil
 }
 
-func hasOutput(msgs []base.Message, msgType MsgType) bool {
+func hasOutput(msgs []base.Message, msgType base.MsgType) bool {
 	return msgs != nil && len(msgs) > 0 && msgs[len(msgs)-1].Header.MsgType == int32(msgType)
 }
 
-func (r *Runner) validateSignedOutput(msg *SignedOutput) error {
+func (r *Runner) validateSignedOutput(msg *base.SignedOutput) error {
 	panic("implement")
 }
