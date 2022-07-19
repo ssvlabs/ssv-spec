@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/base"
-	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -70,11 +69,11 @@ var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, 
 	return byts
 }
 
-var ProtocolMsgDataBytes = func(stage stubdkg.Stage) []byte {
-	d := &stubdkg.ProtocolMsg{
-		Stage: stage,
-	}
-
-	ret, _ := d.Encode()
-	return ret
-}
+//var ProtocolMsgDataBytes = func(stage stubdkg.Stage) []byte {
+//	d := &stubdkg.ProtocolMsg{
+//		Stage: stage,
+//	}
+//
+//	ret, _ := d.Encode()
+//	return ret
+//}
