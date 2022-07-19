@@ -14,15 +14,7 @@ func HappyFlowNonContinuous() *MsgProcessingSpecTest {
 		Name:   "happy flow non-continuous",
 		Pre:    pre,
 		KeySet: ks,
-		Output: &keygen.LocalKeyShare{
-			Index:           1,
-			Threshold:       2,
-			ShareCount:      4,
-			PublicKey:       suite.PublicKey,
-			SecretShare:     suite.SecretShares[1],
-			Committee:       suite.IndicesVec(),
-			SharePublicKeys: suite.VkVec(),
-		},
+		Output: suite.MakeLocalKeyShare(1),
 		Messages: []*keygen.ParsedMessage{
 			testutils.SignDKGMsg(ks.DKGOperators[1].SK, suite.R1(1)),
 			testutils.SignDKGMsg(ks.DKGOperators[2].SK, suite.R1(2)),

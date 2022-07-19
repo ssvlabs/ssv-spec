@@ -37,9 +37,23 @@ func (s DkgPartyDataSet) VkVec() [][]byte {
 	var out [][]byte
 
 	for _, id := range ids {
-		out = append(out,  s.SharePublicKeys[types.OperatorID(id)])
+		out = append(out, s.SharePublicKeys[types.OperatorID(id)])
 	}
 	return out
+}
+
+func (s DkgPartyDataSet) MakeLocalKeyShare(index uint64) *keygen.LocalKeyShare {
+	threshold := len(s.PartyData[types.OperatorID(index)].Coefficients) - 1
+	shareCount := len(s.PartyData)
+	return &keygen.LocalKeyShare{
+		Index:           index,
+		Threshold:       uint64(threshold),
+		ShareCount:      uint64(shareCount),
+		PublicKey:       s.PublicKey,
+		SecretShare:     s.SecretShares[types.OperatorID(index)],
+		Committee:       s.IndicesVec(),
+		SharePublicKeys: s.VkVec(),
+	}
 }
 
 func (s DkgPartyDataSet) R1(operatorId types.OperatorID) *keygen.ParsedMessage {
