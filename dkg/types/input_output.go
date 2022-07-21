@@ -3,9 +3,11 @@ package types
 import (
 	"crypto/ecdsa"
 	"encoding/json"
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/golang/protobuf/proto"
 	"github.com/pkg/errors"
 )
 
@@ -14,21 +16,36 @@ type Output struct {
 	// RequestID for the DKG instance (not used for signing)
 	RequestID RequestID
 	// ShareIndex the 1-based index of the share
-	ShareIndex uint16
+	ShareIndex uint64
 	// EncryptedShare standard SSV encrypted shares
 	EncryptedShare []byte
 	// SharePubKeys the public keys corresponding to the shares
 	SharePubKeys [][]byte
 	// DKGSetSize number of participants in the DKG
-	DKGSetSize uint16
+	DKGSetSize uint64
 	// Threshold DKG threshold for signature reconstruction
-	Threshold uint16
+	Threshold uint64
 	// ValidatorPubKey the resulting public key corresponding to the shared private key
 	ValidatorPubKey types.ValidatorPK
 	// WithdrawalCredentials same as in Init
 	WithdrawalCredentials []byte
 	// DepositDataSignature reconstructed signature of DepositMessage according to eth2 spec
 	DepositDataSignature types.Signature
+}
+
+func (o *Output) ToExtendedDepositData(forkVersion spec.Version, cliVersion string) (*types.ExtendedDepositData, error) {
+	_, depData, err := types.GenerateETHDepositData(
+		o.ValidatorPubKey,
+		o.WithdrawalCredentials,
+		forkVersion,
+		types.DomainDeposit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	copy(depData.DepositData.Signature[:], o.DepositDataSignature)
+	depData.CliVersion = cliVersion
+	return depData, nil
 }
 
 func (o *Output) GetRoot() ([]byte, error) {
@@ -60,6 +77,16 @@ func (o *Output) GetRoot() ([]byte, error) {
 	return crypto.Keccak256(bytes), nil
 }
 
+// Encode returns a msg encoded bytes or error
+func (o *Output) Encode() ([]byte, error) {
+	return json.Marshal(o)
+}
+
+// Decode returns error if decoding failed
+func (o *Output) Decode(data []byte) error {
+	return json.Unmarshal(data, o)
+}
+
 type SignedOutput struct {
 	// Data signed
 	Data *Output
@@ -88,7 +115,6 @@ func SignOutput(output *Output, privKey *ecdsa.PrivateKey) (types.Signature, err
 	return crypto.Sign(root, privKey)
 }
 
-
 // TODO: What's the difference / intention of this vs Output.
 type KeygenOutput struct {
 	Index           uint16
@@ -109,20 +135,12 @@ func (d *KeygenOutput) Decode(data []byte) error {
 	return json.Unmarshal(data, &d)
 }
 
-
-// PartialDepositData contains a partial deposit data signature
-type PartialDepositData struct {
-	Signer    types.OperatorID
-	Root      []byte
-	Signature types.Signature
-}
-
 // Encode returns a msg encoded bytes or error
-func (msg *PartialDepositData) Encode() ([]byte, error) {
-	return json.Marshal(msg)
+func (msg *PartialSigMsgBody) Encode() ([]byte, error) {
+	return proto.Marshal(msg)
 }
 
 // Decode returns error if decoding failed
-func (msg *PartialDepositData) Decode(data []byte) error {
-	return json.Unmarshal(data, msg)
+func (msg *PartialSigMsgBody) Decode(data []byte) error {
+	return proto.Unmarshal(data, msg)
 }

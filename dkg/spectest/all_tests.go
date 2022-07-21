@@ -1,7 +1,7 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/runnertests"
 	"testing"
 )
 
@@ -11,10 +11,10 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	tests.HappyFlow(),
-	tests.HappyFlowNonContinuous(),
-	tests.SevenOperators(),
-	tests.TenOperators(),
-	tests.ThirteenOperators(),
-	//runnertests.HappyFlow(),
+	//tests.HappyFlow(),
+	//tests.HappyFlowNonContinuous(),
+	//tests.SevenOperators(),
+	//tests.TenOperators(),
+	//tests.ThirteenOperators(),
+	runnertests.HappyFlow(),
 }

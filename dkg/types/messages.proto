@@ -26,3 +26,15 @@ message LocalKeyShare {
   bytes PublicKey = 5;
   bytes SecretShare = 6;
 }
+
+message PartialSigMsgBody {
+  uint64 Signer = 1;
+  bytes Root = 2;
+  bytes Signature = 3;
+}
+
+message ParsedPartialSigMessage {
+  MessageHeader header = 1;
+  PartialSigMsgBody body = 2;
+  bytes signature = 3;
+}

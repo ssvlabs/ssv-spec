@@ -1,8 +1,7 @@
 package dkg
 
 import (
-	"encoding/json"
-	"fmt"
+	"github.com/bloxapp/ssv-spec/dkg/sign"
 	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -18,7 +17,7 @@ type Runner struct {
 	// DepositDataRoot is the signing root for the deposit data
 	DepositDataRoot []byte
 	// DepositDataSignatures holds partial sigs on deposit data
-	DepositDataSignatures map[types.OperatorID]*dkgtypes.PartialDepositData
+	DepositDataSignatures map[types.OperatorID]*dkgtypes.PartialSigMsgBody
 	// PartialSignatures holds partial sigs on deposit data
 	PartialSignatures map[types.OperatorID][]byte
 	// OutputMsgs holds all output messages received
@@ -27,8 +26,9 @@ type Runner struct {
 	I uint64
 
 	KeygenSubProtocol dkgtypes.Protocol
-	signSubProtocol   dkgtypes.Protocol
-	config            *dkgtypes.Config
+	SignSubProtocol   dkgtypes.Protocol
+	keygenOutput      *dkgtypes.LocalKeyShare
+	Config            *dkgtypes.Config
 }
 
 func (r *Runner) Start() error {
@@ -67,6 +67,7 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to process dkg msg")
 		}
+
 		err = r.broadcastMessages(outgoing, dkgtypes.ProtocolMsgType)
 		if err != nil {
 			return false, nil, err
@@ -76,49 +77,43 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 		if err != nil {
 			return false, nil, err
 		}
-		lks := &dkgtypes.LocalKeyShare{}
-		json.Unmarshal(output, lks)
-		jstr, err := json.Marshal(lks)
-		fmt.Printf("output is %v\n", string(jstr))
-		if hasOutput(outgoing, dkgtypes.KeygenOutputType) {
-			outputMsg := outgoing[len(outgoing)-1]
-			keygenOutput := &dkgtypes.KeygenOutput{}
-			err = keygenOutput.Decode(outputMsg.Data)
-			if err != nil {
+
+		if output != nil {
+			r.keygenOutput = &dkgtypes.LocalKeyShare{}
+			if err = r.keygenOutput.Decode(output); err != nil {
 				return false, nil, err
 			}
-			r.signSubProtocol = dkgtypes.NewSignDepositData(r.InitMsg, keygenOutput, dkgtypes.ProtocolConfig{
-				Identifier:    r.Identifier,
-				Operator:      r.Operator,
-				BeaconNetwork: r.config.BeaconNetwork,
-				Signer:        r.config.Signer,
-			})
-			outgoing1, err := r.signSubProtocol.Start()
-			if err != nil {
+			if err = r.startSigning(); err != nil {
 				return false, nil, err
 			}
-			err = r.broadcastMessages(outgoing1, dkgtypes.ProtocolMsgType)
 		}
 	case int32(dkgtypes.DepositDataMsgType):
-		outgoing, err := r.signSubProtocol.ProcessMsg(msg)
-		fmt.Printf("outgoing is %v\n", outgoing)
+		_, err := r.SignSubProtocol.ProcessMsg(msg)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to partial sig msg")
 		}
-		if hasOutput(outgoing, dkgtypes.PartialOutputMsgType) {
-			return true, nil, err
+		output, err := r.SignSubProtocol.Output()
+		if err != nil {
+			return false, nil, err
 		}
+		if output != nil {
+			// TODO do we need to store the output?
+			return true, nil, nil
+		}
+		//if hasOutput(outgoing, dkgtypes.PartialOutputMsgType) {
+		//	return true, nil, err
+		//}
 
 		/*
 				// TODO: Do we need to aggregate the signed outputs.
 			case DepositDataMsgType:
-				depSig := &PartialDepositData{}
+				depSig := &PartialSigMsgBody{}
 				if err := depSig.Decode(msg.Message.Data); err != nil {
-					return false, nil, errors.Wrap(err, "could not decode PartialDepositData")
+					return false, nil, errors.Wrap(err, "could not decode PartialSigMsgBody")
 				}
 
 				if err := r.validateDepositDataSig(depSig); err != nil {
-					return false, nil, errors.Wrap(err, "PartialDepositData invalid")
+					return false, nil, errors.Wrap(err, "PartialSigMsgBody invalid")
 				}
 
 				r.DepositDataSignatures[msg.Signer] = depSig
@@ -130,7 +125,7 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 					}
 
 					// encrypt Operator's share
-					encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeyGenOutput.Share.Serialize())
+					encryptedShare, err := r.Config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeyGenOutput.Share.Serialize())
 					if err != nil {
 						return false, nil, errors.Wrap(err, "could not encrypt share")
 					}
@@ -173,8 +168,26 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 	return false, nil, nil
 }
 
+func (r *Runner) startSigning() error {
+
+	r.SignSubProtocol = sign.NewSignDepositData(r.InitMsg, r.keygenOutput, dkgtypes.ProtocolConfig{
+		Identifier:    r.Identifier,
+		Operator:      r.Operator,
+		BeaconNetwork: r.Config.BeaconNetwork,
+		Signer:        r.Config.Signer,
+	})
+
+	outgoing, err := r.SignSubProtocol.Start()
+	if err != nil {
+		return err
+	}
+	err = r.broadcastMessages(outgoing, dkgtypes.ProtocolMsgType)
+	err = r.broadcastMessages(outgoing, dkgtypes.DepositDataMsgType)
+	return nil
+}
+
 func (r *Runner) generateSignedOutput(o *dkgtypes.Output) (*dkgtypes.SignedOutput, error) {
-	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
+	sig, err := r.Config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign output")
 	}
@@ -199,15 +212,15 @@ func (r *Runner) broadcastMessages(msgs []dkgtypes.Message, msgType dkgtypes.Msg
 }
 
 func (r *Runner) signAndBroadcast(msg *dkgtypes.Message) error {
-	sig, err := r.config.Signer.SignDKGOutput(msg, r.Operator.ETHAddress)
+	sig, err := r.Config.Signer.SignDKGOutput(msg, r.Operator.ETHAddress)
 	if err != nil {
 		return err
 	}
-	r.config.Network.Broadcast(&dkgtypes.SignedMessage{
-		Message:   msg,
-		Signer:    r.Operator.OperatorID,
-		Signature: sig,
-	})
+	err = msg.SetSignature(sig)
+	if err != nil {
+		return err
+	}
+	r.Config.Network.Broadcast(msg)
 	return nil
 }
 

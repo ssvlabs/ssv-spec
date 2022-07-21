@@ -3,12 +3,10 @@ package testutils
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
+	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/gogo/protobuf/sortkeys"
 )
@@ -178,9 +176,9 @@ var baseInstance = func(dataset DkgPartyDataSet) dkgtypes.Protocol {
 		Init: dkgtypes.Init{
 			Nonce:                 0,
 			OperatorIDs:           ids,
-			Threshold:             uint16(threshold),
-			WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
-			Fork:                  spec.Version{},
+			Threshold:             threshold,
+			WithdrawalCredentials: TestingWithdrawalCredentials,
+			Fork:                  TestingForkVersion,
 		},
 		State: &state,
 	}
@@ -192,12 +190,17 @@ var SevenOperatorsInstance = baseInstance(TestSuiteSevenOperators())
 var TenOperatorsInstance = baseInstance(TestSuiteTenOperators())
 var ThirteenOperatorsInstance = baseInstance(TestSuiteThirteenOperators())
 
-var SignDKGMsg = func(sk *ecdsa.PrivateKey, msg dkgtypes.Signable) dkgtypes.Signable {
+var SignDKGMsgRoot = func(sk *ecdsa.PrivateKey, msg types.Root) []byte {
 	domain := types.PrimusTestnet
 	sigType := types.DKGSignatureType
 
 	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
 	sig, _ := crypto.Sign(r, sk)
+	return sig
+}
+
+var SignDKGMsg = func(sk *ecdsa.PrivateKey, msg dkgtypes.Signable) dkgtypes.Signable {
+	sig := SignDKGMsgRoot(sk, msg)
 	_ = msg.SetSignature(sig)
 
 	return msg

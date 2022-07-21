@@ -104,3 +104,24 @@ func (x *LocalKeyShare) Encode() ([]byte, error) {
 func (x *LocalKeyShare) Decode(data []byte) error {
 	return proto.Unmarshal(data, x)
 }
+
+func (x *ParsedPartialSigMessage) FromBase(base *Message) error {
+	raw, err := proto.Marshal(base)
+	if err != nil {
+		return err
+	}
+	return proto.Unmarshal(raw, x)
+}
+
+func (x *ParsedPartialSigMessage) ToBase() (*Message, error) {
+	raw, err := proto.Marshal(x)
+	if err != nil {
+		return nil, err
+	}
+	base := &Message{}
+	err = proto.Unmarshal(raw, base)
+	if err != nil {
+		return nil, err
+	}
+	return base, nil
+}

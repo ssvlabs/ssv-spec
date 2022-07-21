@@ -13,7 +13,7 @@ type Init struct {
 	// OperatorIDs are the operators selected for the DKG
 	OperatorIDs []types.OperatorID
 	// Threshold DKG threshold for signature reconstruction
-	Threshold uint16
+	Threshold uint64
 	// WithdrawalCredentials used when signing the deposit data
 	WithdrawalCredentials []byte
 	// Fork is eth2 fork version

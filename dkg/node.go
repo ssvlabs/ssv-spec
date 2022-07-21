@@ -56,8 +56,8 @@ func (n *Node) newRunner(id dkgtypes.RequestID, initMsg *dkgtypes.Init) (*Runner
 		Identifier:            id,
 		I:                     i,
 		PartialSignatures:     map[types.OperatorID][]byte{},
-		DepositDataSignatures: map[types.OperatorID]*dkgtypes.PartialDepositData{},
-		config:                n.config,
+		DepositDataSignatures: map[types.OperatorID]*dkgtypes.PartialSigMsgBody{},
+		Config:                n.config,
 		KeygenSubProtocol:     n.config.Protocol(initMsg, n.operator.OperatorID, id),
 	}
 
