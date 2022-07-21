@@ -18,7 +18,7 @@ func newMockNetwork() *MockNetwork {
 	}
 }
 
-func (m *MockNetwork) StreamDKGOutput(output map[types.OperatorID]*dkgtypes.SignedOutput) error {
+func (m *MockNetwork) StreamDKGOutput(output map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage) error {
 	panic("implement me")
 }
 

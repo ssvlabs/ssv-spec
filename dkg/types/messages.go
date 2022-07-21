@@ -3,7 +3,10 @@ package types
 import (
 	"crypto/sha256"
 	"encoding/json"
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -105,6 +108,16 @@ func (x *LocalKeyShare) Decode(data []byte) error {
 	return proto.Unmarshal(data, x)
 }
 
+// Encode returns a msg encoded bytes or error
+func (x *PartialSigMsgBody) Encode() ([]byte, error) {
+	return proto.Marshal(x)
+}
+
+// Decode returns error if decoding failed
+func (x *PartialSigMsgBody) Decode(data []byte) error {
+	return proto.Unmarshal(data, x)
+}
+
 func (x *ParsedPartialSigMessage) FromBase(base *Message) error {
 	raw, err := proto.Marshal(base)
 	if err != nil {
@@ -114,6 +127,82 @@ func (x *ParsedPartialSigMessage) FromBase(base *Message) error {
 }
 
 func (x *ParsedPartialSigMessage) ToBase() (*Message, error) {
+	raw, err := proto.Marshal(x)
+	if err != nil {
+		return nil, err
+	}
+	base := &Message{}
+	err = proto.Unmarshal(raw, base)
+	if err != nil {
+		return nil, err
+	}
+	return base, nil
+}
+
+func (x *SignedDepositDataMsgBody) ToExtendedDepositData(forkVersion spec.Version, cliVersion string) (*types.ExtendedDepositData, error) {
+	_, depData, err := types.GenerateETHDepositData(
+		x.ValidatorPublicKey,
+		x.WithdrawalCredentials,
+		forkVersion,
+		types.DomainDeposit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	copy(depData.DepositData.Signature[:], x.DepositDataSignature)
+	depData.CliVersion = cliVersion
+	return depData, nil
+}
+
+func (x *SignedDepositDataMsgBody) GetRoot() ([]byte, error) {
+	bytesSolidity, _ := abi.NewType("bytes", "", nil)
+
+	// TODO: Include RequestID, SharePubKeys and ShareIndex
+	arguments := abi.Arguments{
+		{
+			Type: bytesSolidity,
+		},
+		{
+			Type: bytesSolidity,
+		},
+		{
+			Type: bytesSolidity,
+		},
+		{
+			Type: bytesSolidity,
+		},
+	}
+
+	bytes, _ := arguments.Pack(
+		x.EncryptedShare,
+		//o.SharePubKeys, // TODO: Add later
+		x.ValidatorPublicKey,
+		x.DepositDataSignature,
+	)
+
+	return crypto.Keccak256(bytes), nil
+}
+
+// Encode returns a msg encoded bytes or error
+func (x *SignedDepositDataMsgBody) Encode() ([]byte, error) {
+	return proto.Marshal(x)
+}
+
+// Decode returns error if decoding failed
+func (x *SignedDepositDataMsgBody) Decode(data []byte) error {
+	return proto.Unmarshal(data, x)
+}
+
+
+func (x *ParsedSignedDepositDataMessage) FromBase(base *Message) error {
+	raw, err := proto.Marshal(base)
+	if err != nil {
+		return err
+	}
+	return proto.Unmarshal(raw, x)
+}
+
+func (x *ParsedSignedDepositDataMessage) ToBase() (*Message, error) {
 	raw, err := proto.Marshal(x)
 	if err != nil {
 		return nil, err

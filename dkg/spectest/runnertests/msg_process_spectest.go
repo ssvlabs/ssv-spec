@@ -4,6 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -13,7 +14,7 @@ type MsgProcessingSpecTest struct {
 	Pre           *dkg.Runner
 	Messages      []*types.Message
 	Outgoing      []*types.Message
-	Output        *types.Output
+	Output        *types.SignedDepositDataMsgBody
 	KeySet        *testingutils.TestKeySet
 	ExpectedError string
 }
@@ -28,7 +29,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	var (
 		lastErr, err error
 		finished     bool
-		output       *types.Output
+		output       *types.SignedDepositDataMsgBody
 	)
 
 	err = pre.Start()
@@ -53,8 +54,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		//outgoing := test.Pre.Config.Network.(*testutils.MockNetwork).Broadcasted
 		// TODO: Compare outgoing messages
 		o, _ := test.Pre.SignSubProtocol.Output()
-		output = &types.Output{}
+		output = &types.SignedDepositDataMsgBody{}
 		output.Decode(o)
-		require.Equal(t, *test.Output, *output)
+		require.True(t, proto.Equal(test.Output, output))
 	}
 }

@@ -38,3 +38,20 @@ message ParsedPartialSigMessage {
   PartialSigMsgBody body = 2;
   bytes signature = 3;
 }
+
+message SignedDepositDataMsgBody {
+  bytes RequestID = 1;
+  uint64 OperatorID = 2;
+  bytes EncryptedShare = 3;
+  repeated uint64 Committee = 4;
+  uint64 threshold = 5;
+  bytes ValidatorPublicKey = 6;
+  bytes WithdrawalCredentials = 7;
+  bytes DepositDataSignature = 8;
+}
+
+message ParsedSignedDepositDataMessage {
+  MessageHeader header = 1;
+  SignedDepositDataMsgBody body = 2;
+  bytes signature = 3;
+}

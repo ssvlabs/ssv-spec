@@ -46,17 +46,18 @@ func TestDepositSignDataSetFourOperators() DepositSignDataSet {
 	}
 }
 
-func (s *DepositSignDataSet) MakeOutput(operatorId types.OperatorID) *dkgtypes.Output {
-
-	return &dkgtypes.Output{
-		RequestID:             dkgtypes.RequestID{},
-		ShareIndex:            uint64(operatorId),
+func (s *DepositSignDataSet) MakeOutput(operatorId types.OperatorID) *dkgtypes.SignedDepositDataMsgBody {
+	reqID := dkgtypes.RequestID{}
+	out := &dkgtypes.SignedDepositDataMsgBody{
+		RequestID:             make([]byte, len(reqID)),
+		OperatorID:            uint64(operatorId),
 		EncryptedShare:        FakeEncryption(s.SecretShares[operatorId]),
-		SharePubKeys:          s.DkgPartyDataSet.VkVec(),
-		DKGSetSize:            uint64(len(s.PartyData)),
+		Committee:             s.DkgPartyDataSet.IndicesVec(),
 		Threshold:             uint64(len(s.PartyData[operatorId].Coefficients) - 1),
-		ValidatorPubKey:       s.DkgPartyDataSet.PublicKey,
+		ValidatorPublicKey:    s.PublicKey,
 		WithdrawalCredentials: TestingWithdrawalCredentials,
 		DepositDataSignature:  s.FinalSignature,
 	}
+	copy(out.RequestID, reqID[:])
+	return out
 }

@@ -17,7 +17,7 @@ type SignDepositData struct {
 	// PartialSignatures holds partial sigs on deposit data
 	PartialSignatures map[types.OperatorID][]byte
 	DepositDataRoot   spec.Root
-	output            *dkgtypes.Output
+	output            *dkgtypes.SignedDepositDataMsgBody
 	key               *dkgtypes.LocalKeyShare
 	config            dkgtypes.ProtocolConfig
 }
@@ -102,14 +102,13 @@ func (s *SignDepositData) ProcessMsg(msg *dkgtypes.Message) ([]dkgtypes.Message,
 			return nil, errors.Wrap(err, "could not encrypt share")
 		}
 
-		s.output= &dkgtypes.Output{
-			RequestID:             s.Identifier,
-			ShareIndex:            s.key.Index,
+		s.output = &dkgtypes.SignedDepositDataMsgBody{
+			RequestID:             s.Identifier[:],
+			OperatorID:            uint64(s.config.Operator.OperatorID),
 			EncryptedShare:        encryptedShare,
-			DKGSetSize:            uint64(len(s.InitMsg.OperatorIDs)),
+			Committee:             s.key.Committee,
 			Threshold:             s.InitMsg.Threshold,
-			SharePubKeys:          s.key.SharePublicKeys,
-			ValidatorPubKey:       s.key.PublicKey,
+			ValidatorPublicKey:    s.key.PublicKey,
 			WithdrawalCredentials: s.InitMsg.WithdrawalCredentials,
 			DepositDataSignature:  sig.Serialize(),
 		}
@@ -118,18 +117,18 @@ func (s *SignDepositData) ProcessMsg(msg *dkgtypes.Message) ([]dkgtypes.Message,
 	return nil, nil
 }
 
-func (s *SignDepositData) generateSignedOutput(o *dkgtypes.Output) (*dkgtypes.SignedOutput, error) {
-	sig, err := s.config.Signer.SignDKGOutput(o, s.config.Operator.ETHAddress)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign output")
-	}
-
-	return &dkgtypes.SignedOutput{
-		Data:      o,
-		Signer:    s.config.Operator.OperatorID,
-		Signature: sig,
-	}, nil
-}
+//func (s *SignDepositData) generateSignedOutput(o *dkgtypes.Output) (*dkgtypes.SignedOutput, error) {
+//	sig, err := s.config.Signer.SignDKGOutput(o, s.config.Operator.ETHAddress)
+//	if err != nil {
+//		return nil, errors.Wrap(err, "could not sign output")
+//	}
+//
+//	return &dkgtypes.SignedOutput{
+//		Data:      o,
+//		Signer:    s.config.Operator.OperatorID,
+//		Signature: sig,
+//	}, nil
+//}
 
 func (s *SignDepositData) partialSign() (*dkgtypes.PartialSigMsgBody, error) {
 	share := bls.SecretKey{}

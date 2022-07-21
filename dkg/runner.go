@@ -21,7 +21,7 @@ type Runner struct {
 	// PartialSignatures holds partial sigs on deposit data
 	PartialSignatures map[types.OperatorID][]byte
 	// OutputMsgs holds all output messages received
-	OutputMsgs map[types.OperatorID]*dkgtypes.SignedOutput
+	OutputMsgs map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage
 
 	I uint64
 
@@ -58,7 +58,7 @@ func (r *Runner) Start() error {
 }
 
 // ProcessMsg processes a DKG signed message and returns true and signed output if finished
-func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*dkgtypes.SignedOutput, error) {
+func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage, error) {
 	// TODO - validate message
 
 	switch msg.Header.MsgType {
@@ -147,8 +147,8 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 					return false, nil, nil
 				} */
 	case int32(dkgtypes.OutputMsgType):
-		output := &dkgtypes.SignedOutput{}
-		if err := output.Decode(msg.Data); err != nil {
+		output := &dkgtypes.ParsedSignedDepositDataMessage{}
+		if err := output.FromBase(msg); err != nil {
 			return false, nil, errors.Wrap(err, "could not decode SignedOutput")
 		}
 
@@ -186,18 +186,18 @@ func (r *Runner) startSigning() error {
 	return nil
 }
 
-func (r *Runner) generateSignedOutput(o *dkgtypes.Output) (*dkgtypes.SignedOutput, error) {
-	sig, err := r.Config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign output")
-	}
-
-	return &dkgtypes.SignedOutput{
-		Data:      o,
-		Signer:    r.Operator.OperatorID,
-		Signature: sig,
-	}, nil
-}
+//func (r *Runner) generateSignedOutput(o *dkgtypes.Output) (*dkgtypes.SignedOutput, error) {
+//	sig, err := r.Config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
+//	if err != nil {
+//		return nil, errors.Wrap(err, "could not sign output")
+//	}
+//
+//	return &dkgtypes.SignedOutput{
+//		Data:      o,
+//		Signer:    r.Operator.OperatorID,
+//		Signature: sig,
+//	}, nil
+//}
 
 func (r *Runner) broadcastMessages(msgs []dkgtypes.Message, msgType dkgtypes.MsgType) error {
 	for _, message := range msgs {
@@ -228,6 +228,6 @@ func hasOutput(msgs []dkgtypes.Message, msgType dkgtypes.MsgType) bool {
 	return msgs != nil && len(msgs) > 0 && msgs[len(msgs)-1].Header.MsgType == int32(msgType)
 }
 
-func (r *Runner) validateSignedOutput(msg *dkgtypes.SignedOutput) error {
+func (r *Runner) validateSignedOutput(msg *dkgtypes.ParsedSignedDepositDataMessage) error {
 	panic("implement")
 }
