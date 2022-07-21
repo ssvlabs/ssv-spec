@@ -28,6 +28,7 @@ type Runner struct {
 	KeygenSubProtocol dkgtypes.Protocol
 	SignSubProtocol   dkgtypes.Protocol
 	keygenOutput      *dkgtypes.LocalKeyShare
+	signOutput        *dkgtypes.SignedDepositDataMsgBody
 	Config            *dkgtypes.Config
 }
 
@@ -98,7 +99,30 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 		}
 		if output != nil {
 			// TODO do we need to store the output?
-			return true, nil, nil
+			r.signOutput = &dkgtypes.SignedDepositDataMsgBody{}
+			err = r.signOutput.Decode(output)
+			sig, err := r.Config.Signer.SignDKGOutput(r.signOutput, r.Operator.ETHAddress)
+			if err != nil {
+				return false, nil, err
+			}
+			r.signOutput.OperatorSignature = sig
+			out := &dkgtypes.ParsedSignedDepositDataMessage{
+				Header: &dkgtypes.MessageHeader{
+					SessionId: r.Identifier[:],
+					MsgType:   int32(dkgtypes.OutputMsgType),
+					Sender:    uint64(r.Operator.OperatorID),
+					Receiver:  0,
+				},
+				Body:      r.signOutput,
+				Signature: nil,
+			}
+			base, err := out.ToBase()
+			if err != nil {
+				return false, nil, err
+			}
+			r.OutputMsgs[r.Operator.OperatorID] = out
+			r.broadcastMessages([]dkgtypes.Message{*base}, dkgtypes.OutputMsgType)
+			return false, nil, nil
 		}
 		//if hasOutput(outgoing, dkgtypes.PartialOutputMsgType) {
 		//	return true, nil, err
@@ -153,11 +177,10 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 		}
 
 		if err := r.validateSignedOutput(output); err != nil {
-			return false, nil, errors.Wrap(err, "signed output invali")
+			return false, nil, errors.Wrap(err, "signed output invalid")
 		}
-
 		r.OutputMsgs[types.OperatorID(msg.Header.Sender)] = output
-		if len(r.OutputMsgs) == int(r.InitMsg.Threshold) {
+		if len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs) {
 			return true, r.OutputMsgs, nil
 		}
 		return false, nil, nil
@@ -229,5 +252,12 @@ func hasOutput(msgs []dkgtypes.Message, msgType dkgtypes.MsgType) bool {
 }
 
 func (r *Runner) validateSignedOutput(msg *dkgtypes.ParsedSignedDepositDataMessage) error {
-	panic("implement")
+	if msg == nil {
+		return errors.New("msg is nil")
+	}
+	if !r.signOutput.SameDepositData(msg.Body) {
+		return errors.New("deposit data doesn't match")
+	}
+	// TODO: Verify OperatorSignature
+	return nil
 }

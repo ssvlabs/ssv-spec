@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/json"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -154,6 +155,33 @@ func (x *SignedDepositDataMsgBody) ToExtendedDepositData(forkVersion spec.Versio
 	return depData, nil
 }
 
+func (x *SignedDepositDataMsgBody) SameDepositData(other *SignedDepositDataMsgBody) bool {
+	if bytes.Compare(x.RequestID, other.RequestID) != 0 {
+		return false
+	}
+	if x.Threshold != other.Threshold {
+		return false
+	}
+	if len(x.Committee) != len(other.Committee) {
+		return false
+	}
+	for i, member := range x.Committee {
+		if other.Committee[i] != member {
+			return false
+		}
+	}
+	if bytes.Compare(x.ValidatorPublicKey, other.ValidatorPublicKey) != 0 {
+		return false
+	}
+	if bytes.Compare(x.WithdrawalCredentials, other.WithdrawalCredentials) != 0 {
+		return false
+	}
+	if bytes.Compare(x.DepositDataSignature, other.DepositDataSignature) != 0 {
+		return false
+	}
+	return true
+}
+
 func (x *SignedDepositDataMsgBody) GetRoot() ([]byte, error) {
 	bytesSolidity, _ := abi.NewType("bytes", "", nil)
 
@@ -192,7 +220,6 @@ func (x *SignedDepositDataMsgBody) Encode() ([]byte, error) {
 func (x *SignedDepositDataMsgBody) Decode(data []byte) error {
 	return proto.Unmarshal(data, x)
 }
-
 
 func (x *ParsedSignedDepositDataMessage) FromBase(base *Message) error {
 	raw, err := proto.Marshal(base)

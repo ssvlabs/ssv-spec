@@ -33,7 +33,7 @@ func TestRunner(dataset DepositSignDataSet, keyset testingutils.TestKeySet, inde
 		DepositDataRoot:       nil,
 		DepositDataSignatures: nil,
 		PartialSignatures:     nil,
-		OutputMsgs:            nil,
+		OutputMsgs:            map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage{},
 		I:                     index,
 		KeygenSubProtocol:     kgProtocol,
 		Config: &dkgtypes.Config{
@@ -42,7 +42,7 @@ func TestRunner(dataset DepositSignDataSet, keyset testingutils.TestKeySet, inde
 			Network:             newMockNetwork(),
 			Storage:             nil,
 			SignatureDomainType: nil,
-			Signer:              &MockSigner{
+			Signer: &MockSigner{
 				SK:            keyset.DKGOperators[types.OperatorID(index)].SK,
 				ETHAddress:    keyset.DKGOperators[types.OperatorID(index)].ETHAddress,
 				EncryptionKey: keyset.DKGOperators[types.OperatorID(index)].EncryptionKey,

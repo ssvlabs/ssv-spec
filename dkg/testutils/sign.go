@@ -30,6 +30,34 @@ func (s DepositSignDataSet) ParsedPartialSigMessage(operatorId types.OperatorID)
 	return base
 }
 
+func (s DepositSignDataSet) ParsedSignedDepositDataMessage(operatorId types.OperatorID) *dkgtypes.Message {
+	reqId := dkgtypes.RequestID{}
+	body := &dkgtypes.SignedDepositDataMsgBody{
+		RequestID:             reqId[:],
+		OperatorID:            uint64(operatorId),
+		EncryptedShare:        FakeEncryption(s.SecretShares[operatorId]),
+		Committee:             s.IndicesVec(),
+		Threshold:             uint64(len(s.PartyData[operatorId].Coefficients) - 1),
+		ValidatorPublicKey:    s.PublicKey,
+		WithdrawalCredentials: TestingWithdrawalCredentials,
+		DepositDataSignature:  s.FinalSignature,
+		OperatorSignature:     nil,
+	}
+	root, _ := body.GetRoot()
+	sig := FakeEcdsaSign(root, s.DKGOperators[operatorId].ETHAddress.Bytes())
+	body.OperatorSignature = sig
+	msg := &dkgtypes.ParsedSignedDepositDataMessage{
+		Header: &dkgtypes.MessageHeader{
+			MsgType: int32(dkgtypes.OutputMsgType),
+			Sender:  uint64(operatorId),
+		},
+		Body:      body,
+		Signature: nil,
+	}
+	base, _ := msg.ToBase()
+	return base
+}
+
 func TestDepositSignDataSetFourOperators() DepositSignDataSet {
 	ds := TestSuiteFourOperators()
 	return DepositSignDataSet{

@@ -22,6 +22,9 @@ func HappyFlow() *MsgProcessingSpecTest {
 			testutils.SignDKGMsg(ks.DKGOperators[1].SK, testutils.PlaceholderMessage()).(*types.Message),
 			testutils.SignDKGMsg(ks.DKGOperators[2].SK, dataSet.ParsedPartialSigMessage(2)).(*types.Message),
 			testutils.SignDKGMsg(ks.DKGOperators[3].SK, dataSet.ParsedPartialSigMessage(3)).(*types.Message),
+			testutils.SignDKGMsg(ks.DKGOperators[1].SK, dataSet.ParsedSignedDepositDataMessage(1)).(*types.Message),
+			testutils.SignDKGMsg(ks.DKGOperators[2].SK, dataSet.ParsedSignedDepositDataMessage(2)).(*types.Message),
+			testutils.SignDKGMsg(ks.DKGOperators[3].SK, dataSet.ParsedSignedDepositDataMessage(3)).(*types.Message),
 		},
 	}
 }

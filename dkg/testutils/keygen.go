@@ -7,11 +7,13 @@ import (
 	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/gogo/protobuf/sortkeys"
 )
 
 type DkgPartyDataSet struct {
+	testingutils.TestKeySet
 	PublicKey       []byte
 	SecretShares    map[types.OperatorID][]byte
 	SharePublicKeys map[types.OperatorID][]byte

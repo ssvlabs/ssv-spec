@@ -48,10 +48,11 @@ message SignedDepositDataMsgBody {
   bytes ValidatorPublicKey = 6;
   bytes WithdrawalCredentials = 7;
   bytes DepositDataSignature = 8;
+  bytes OperatorSignature = 9;
 }
 
 message ParsedSignedDepositDataMessage {
   MessageHeader header = 1;
   SignedDepositDataMsgBody body = 2;
-  bytes signature = 3;
+  bytes signature = 3; // ecdsa signature
 }

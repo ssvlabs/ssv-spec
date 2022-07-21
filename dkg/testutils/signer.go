@@ -41,10 +41,11 @@ func (m MockSigner) SignRoot(data types.Root, sigType types.SignatureType, pk []
 }
 
 func (m MockSigner) SignDKGOutput(output types.Root, address common.Address) (types.Signature, error) {
-	if address != m.ETHAddress {
-		return nil, errors.New("address doesn't match the signer's")
+	root, err := output.GetRoot()
+	if err != nil {
+		return nil, err
 	}
-	sig := SignDKGMsgRoot(m.SK, output)
+	sig := FakeEcdsaSign(root, address[:])
 	return sig, nil
 }
 

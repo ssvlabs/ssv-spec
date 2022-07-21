@@ -57,5 +57,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		output = &types.SignedDepositDataMsgBody{}
 		output.Decode(o)
 		require.True(t, proto.Equal(test.Output, output))
+		require.True(t, finished)
 	}
 }
