@@ -34,7 +34,6 @@ func TestRunner(dataset DepositSignDataSet, keyset testingutils.TestKeySet, inde
 		DepositDataSignatures: nil,
 		PartialSignatures:     nil,
 		OutputMsgs:            map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage{},
-		I:                     index,
 		KeygenSubProtocol:     kgProtocol,
 		Config: &dkgtypes.Config{
 			Protocol:            nil,

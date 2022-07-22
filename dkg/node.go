@@ -54,7 +54,6 @@ func (n *Node) newRunner(id dkgtypes.RequestID, initMsg *dkgtypes.Init) (*Runner
 		Operator:              n.operator,
 		InitMsg:               initMsg,
 		Identifier:            id,
-		I:                     i,
 		PartialSignatures:     map[types.OperatorID][]byte{},
 		DepositDataSignatures: map[types.OperatorID]*dkgtypes.PartialSigMsgBody{},
 		Config:                n.config,

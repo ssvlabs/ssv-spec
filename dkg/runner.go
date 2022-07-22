@@ -23,8 +23,6 @@ type Runner struct {
 	// OutputMsgs holds all output messages received
 	OutputMsgs map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage
 
-	I uint64
-
 	KeygenSubProtocol dkgtypes.Protocol
 	SignSubProtocol   dkgtypes.Protocol
 	keygenOutput      *dkgtypes.LocalKeyShare
