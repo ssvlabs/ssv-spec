@@ -2,7 +2,9 @@ package runnertests
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/dkg/types"
+	"github.com/bloxapp/ssv-spec/dkg/testutils"
+	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/require"
@@ -12,9 +14,9 @@ import (
 type MsgProcessingSpecTest struct {
 	Name          string
 	Pre           *dkg.Runner
-	Messages      []*types.Message
-	Outgoing      []*types.Message
-	Output        *types.SignedDepositDataMsgBody
+	Messages      []*dkgtypes.Message
+	Outgoing      []*dkgtypes.Message
+	Output        map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage
 	KeySet        *testingutils.TestKeySet
 	ExpectedError string
 }
@@ -29,7 +31,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	var (
 		lastErr, err error
 		finished     bool
-		output       *types.SignedDepositDataMsgBody
+		output       map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage
 	)
 
 	err = pre.Start()
@@ -51,12 +53,17 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
 		require.NoError(t, lastErr)
-		//outgoing := test.Pre.Config.Network.(*testutils.MockNetwork).Broadcasted
-		// TODO: Compare outgoing messages
-		o, _ := test.Pre.SignSubProtocol.Output()
-		output = &types.SignedDepositDataMsgBody{}
-		output.Decode(o)
-		require.True(t, proto.Equal(test.Output, output))
+		outgoing := test.Pre.Config.Network.(*testutils.MockNetwork).Broadcasted
+		require.Equal(t, len(test.Outgoing), len(outgoing))
+		for i, message := range outgoing {
+			message.Signature = nil // Signature is not deterministic, so skip
+			require.True(t, proto.Equal(outgoing[i], message))
+		}
+		output = test.Output
+		require.Equal(t, len(test.Output), len(output))
+		for id, message := range test.Output {
+			require.True(t, proto.Equal(message, output[id]))
+		}
 		require.True(t, finished)
 	}
 }
