@@ -13,7 +13,7 @@ func dutyValueCheck(duty *types.Duty, network types.BeaconNetwork) error {
 	return nil
 }
 
-func BeaconAttestationValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheck {
+func BeaconAttestationValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
 		if err := cd.Decode(data); err != nil {
@@ -54,25 +54,25 @@ func BeaconAttestationValueCheck(signer types.BeaconSigner, network types.Beacon
 	}
 }
 
-func BeaconBlockValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheck {
+func BeaconBlockValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		return nil
 	}
 }
 
-func AggregatorValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheck {
+func AggregatorValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		return nil
 	}
 }
 
-func SyncCommitteeValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheck {
+func SyncCommitteeValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		return nil
 	}
 }
 
-func SyncCommitteeContributionValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheck {
+func SyncCommitteeContributionValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
 		if err := cd.Decode(data); err != nil {

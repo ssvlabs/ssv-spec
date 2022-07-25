@@ -7,7 +7,8 @@ import (
 	"sync"
 )
 
-type ProposedValueCheck func(data []byte) error
+type ProposedValueCheckF func(data []byte) error
+type ProposerF func(state *State, round Round) types.OperatorID
 
 // Instance is a single QBFT instance that starts with a Start call (including a value).
 // Every new msg the ProcessMsg function needs to be called
@@ -51,7 +52,7 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.State.Height = height
 
 		// propose if this node is the proposer
-		if proposer(i.State, FirstRound) == i.State.Share.OperatorID {
+		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			if err != nil {
 				// TODO log
@@ -100,7 +101,7 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 			}
 			return err
 		case RoundChangeMsgType:
-			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheck())
+			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
 		default:
 			return errors.New("signed message type not supported")
 		}

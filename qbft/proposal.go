@@ -1,12 +1,13 @@
 package qbft
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
 func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
-	valCheck := i.config.GetValueCheck()
+	valCheck := i.config.GetValueCheckF()
 	if err := isValidProposal(i.State, i.config, signedProposal, valCheck, i.State.Share.Committee); err != nil {
 		return errors.Wrap(err, "proposal invalid")
 	}
@@ -20,10 +21,9 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	}
 
 	newRound := signedProposal.Message.Round
-
-	// set state to new round and proposal accepted
 	i.State.ProposalAcceptedForCurrentRound = signedProposal
-	// TODO - why is this here? we shouldn't timout on just a simple proposal
+
+	// A future justified proposal should bump us into future round and reset timer
 	if signedProposal.Message.Round > i.State.Round {
 		i.config.GetTimer().TimeoutForRound(signedProposal.Message.Round)
 	}
@@ -50,7 +50,7 @@ func isValidProposal(
 	state *State,
 	config IConfig,
 	signedProposal *SignedMessage,
-	valCheck ProposedValueCheck,
+	valCheck ProposedValueCheckF,
 	operators []*types.Operator,
 ) error {
 	if signedProposal.Message.MsgType != ProposalMsgType {
@@ -65,7 +65,7 @@ func isValidProposal(
 	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "proposal msg signature invalid")
 	}
-	if !signedProposal.MatchedSigners([]types.OperatorID{proposer(state, signedProposal.Message.Round)}) {
+	if !signedProposal.MatchedSigners([]types.OperatorID{proposer(state, config, signedProposal.Message.Round)}) {
 		return errors.New("proposal leader invalid")
 	}
 
@@ -106,7 +106,7 @@ func isProposalJustification(
 	height Height,
 	round Round,
 	value []byte,
-	valCheck ProposedValueCheck,
+	valCheck ProposedValueCheckF,
 ) error {
 	if err := valCheck(value); err != nil {
 		return errors.Wrap(err, "proposal value invalid")
@@ -116,6 +116,8 @@ func isProposalJustification(
 		return nil
 	} else {
 		// check all round changes are valid for height and round
+		// no quorum, duplicate signers,  invalid still has quorum, invalid no quorum
+		// prepared
 		for _, rc := range roundChangeMsgs {
 			if err := validRoundChange(state, config, rc, height, round); err != nil {
 				return errors.Wrap(err, "change round msg not valid")
@@ -123,7 +125,7 @@ func isProposalJustification(
 		}
 
 		// check there is a quorum
-		if !state.Share.HasQuorum(len(roundChangeMsgs)) {
+		if !HasQuorum(state.Share, roundChangeMsgs) {
 			return errors.New("change round has not quorum")
 		}
 
@@ -149,8 +151,8 @@ func isProposalJustification(
 		} else {
 
 			// check prepare quorum
-			if !state.Share.HasQuorum(len(prepareMsgs)) {
-				return errors.New("change round has not quorum")
+			if !HasQuorum(state.Share, prepareMsgs) {
+				return errors.New("prepares has no quorum")
 			}
 
 			// get a round change data for which there is a justification for the highest previously prepared round
@@ -164,6 +166,11 @@ func isProposalJustification(
 			rcmData, err := rcm.Message.GetRoundChangeData()
 			if err != nil {
 				return errors.Wrap(err, "could not get round change data")
+			}
+
+			// proposed value must equal highest prepared value
+			if !bytes.Equal(value, rcmData.PreparedValue) {
+				return errors.New("proposed data doesn't match highest prepared")
 			}
 
 			// validate each prepare message against the highest previously prepared value and round
@@ -184,9 +191,9 @@ func isProposalJustification(
 	}
 }
 
-func proposer(state *State, round Round) types.OperatorID {
+func proposer(state *State, config IConfig, round Round) types.OperatorID {
 	// TODO - https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/29ae5a44551466453a84d4d17b9e083ecf189d97/dafny/spec/L1/node_auxiliary_functions.dfy#L304-L323
-	return 1
+	return config.GetProposerF()(state, round)
 }
 
 // CreateProposal

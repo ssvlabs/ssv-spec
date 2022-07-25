@@ -10,7 +10,8 @@ import (
 
 // AttestationSourceValid tests attestation source epoch < target epoch
 func AttestationSourceValid() *tests.SpecTest {
-	dr := testingutils.AttesterRunner()
+	ks := testingutils.Testing4SharesSet()
+	dr := testingutils.AttesterRunner(ks)
 
 	consensusData := &types.ConsensusData{
 		Duty: testingutils.TestingAttesterDuty,

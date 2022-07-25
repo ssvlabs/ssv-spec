@@ -30,7 +30,7 @@ var SyncCommitteeContributionRunner = func(keySet *TestKeySet) *ssv.Runner {
 	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
 }
 
-var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheck, keySet *TestKeySet) *ssv.Runner {
+var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) *ssv.Runner {
 	share := TestingShare(keySet)
 	identifier := types.NewMsgID(TestingValidatorPubKey[:], role)
 

@@ -38,7 +38,7 @@ func (i *Instance) uponPrepare(
 		return nil // uponPrepare was already called
 	}
 
-	if !i.State.Share.HasQuorum(len(prepareMsgContainer.MessagesForRound(i.State.Round))) {
+	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
 		return nil // no quorum yet
 	}
 
@@ -127,7 +127,7 @@ func validSignedPrepareForHeightRoundAndValue(
 	}
 
 	if bytes.Compare(prepareData.Data, value) != 0 {
-		return errors.New("msg Identifier wrong")
+		return errors.New("prepare data != proposed data")
 	}
 
 	if len(signedPrepare.GetSigners()) != 1 {

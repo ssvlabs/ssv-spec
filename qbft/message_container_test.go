@@ -82,10 +82,10 @@ func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 			{Signers: []types.OperatorID{1, 2}, Message: &Message{Data: []byte{1, 2, 3, 5}}},
 			{Signers: []types.OperatorID{4}, Message: &Message{Data: []byte{1, 2, 3, 6}}},
 		}
-		cnt, _ := c.UniqueSignersSetForRoundAndValue(1, []byte{1, 2, 3, 4})
+		cnt, _ := c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{1, 2, 3}, cnt)
 
-		cnt, _ = c.UniqueSignersSetForRoundAndValue(1, []byte{1, 2, 3, 6})
+		cnt, _ = c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 6})
 		require.EqualValues(t, []types.OperatorID{4}, cnt)
 	})
 
@@ -99,7 +99,7 @@ func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 			{Signers: []types.OperatorID{1, 2}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 			{Signers: []types.OperatorID{4}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 		}
-		cnt, _ := c.UniqueSignersSetForRoundAndValue(1, []byte{1, 2, 3, 4})
+		cnt, _ := c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{1, 2, 3, 4}, cnt)
 	})
 
@@ -113,7 +113,7 @@ func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 			{Signers: []types.OperatorID{1, 2, 5}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 			{Signers: []types.OperatorID{4}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 		}
-		cnt, _ := c.UniqueSignersSetForRoundAndValue(1, []byte{1, 2, 3, 4})
+		cnt, _ := c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{1, 2, 3, 4}, cnt)
 	})
 
@@ -128,7 +128,7 @@ func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 			{Signers: []types.OperatorID{4}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 			{Signers: []types.OperatorID{3, 7, 8, 9, 10}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 		}
-		cnt, _ := c.UniqueSignersSetForRoundAndValue(1, []byte{1, 2, 3, 4})
+		cnt, _ := c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{1, 2, 5, 4, 3, 7, 8, 9, 10}, cnt)
 	})
 
@@ -141,7 +141,7 @@ func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 			{Signers: []types.OperatorID{1}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 			{Signers: []types.OperatorID{1, 2, 3}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 		}
-		cnt, _ := c.UniqueSignersSetForRoundAndValue(1, []byte{1, 2, 3, 4})
+		cnt, _ := c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{1, 2, 3}, cnt)
 	})
 
@@ -154,7 +154,7 @@ func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 			{Signers: []types.OperatorID{1, 2, 3}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 			{Signers: []types.OperatorID{1}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 		}
-		cnt, _ := c.UniqueSignersSetForRoundAndValue(1, []byte{1, 2, 3, 4})
+		cnt, _ := c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{1, 2, 3}, cnt)
 	})
 
@@ -168,7 +168,7 @@ func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 			{Signers: []types.OperatorID{6}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 			{Signers: []types.OperatorID{4, 7}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 		}
-		cnt, _ := c.UniqueSignersSetForRoundAndValue(1, []byte{1, 2, 3, 4})
+		cnt, _ := c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{1, 2, 3, 6, 4, 7}, cnt)
 	})
 
@@ -182,7 +182,7 @@ func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 			{Signers: []types.OperatorID{6}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 			{Signers: []types.OperatorID{4, 7}, Message: &Message{Data: []byte{1, 2, 3, 4}}},
 		}
-		cnt, _ := c.UniqueSignersSetForRoundAndValue(2, []byte{1, 2, 3, 4})
+		cnt, _ := c.LongestUniqueSignersForRoundAndValue(2, []byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{}, cnt)
 	})
 }

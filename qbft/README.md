@@ -24,3 +24,4 @@ Because of the above, there is a need to order and queue messages based on their
 - [ ] Align according to spec and [Roberto's comments](./roberto_comments)
 - [ ] Remove round check from upon commit as it can be for any round?
 - [ ] RoundChange spec tests
+- [ ] Should remove NextProposalData from RoundChangeData? What use it has?

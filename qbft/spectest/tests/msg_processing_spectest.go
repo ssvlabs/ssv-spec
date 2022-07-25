@@ -2,6 +2,7 @@ package tests
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
@@ -36,8 +37,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 
 	// test output message
-	if len(test.OutputMessages) > 0 {
-		broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 
 		for i, msg := range test.OutputMessages {
@@ -47,7 +48,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 			require.NoError(t, msg2.Decode(broadcastedMsgs[i].Data))
 
 			r2, _ := msg2.GetRoot()
-			require.EqualValues(t, r1, r2)
+			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
 		}
 	}
 

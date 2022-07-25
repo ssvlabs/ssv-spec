@@ -16,8 +16,10 @@ type signing interface {
 
 type IConfig interface {
 	signing
-	// GetValueCheck returns value check instance
-	GetValueCheck() ProposedValueCheck
+	// GetValueCheckF returns value check function
+	GetValueCheckF() ProposedValueCheckF
+	// GetProposerF returns func used to calculate proposer
+	GetProposerF() ProposerF
 	// GetNetwork returns a p2p Network instance
 	GetNetwork() Network
 	// GetTimer returns round timer
@@ -25,12 +27,14 @@ type IConfig interface {
 }
 
 type Config struct {
-	Signer     types.SSVSigner
-	SigningPK  []byte
-	Domain     types.DomainType
-	ValueCheck ProposedValueCheck
-	Storage    Storage
-	Network    Network
+	Signer      types.SSVSigner
+	SigningPK   []byte
+	Domain      types.DomainType
+	ValueCheckF ProposedValueCheckF
+	ProposerF   ProposerF
+	Storage     Storage
+	Network     Network
+	Timer       Timer
 }
 
 // GetSigner returns a Signer instance
@@ -49,8 +53,13 @@ func (c *Config) GetSignatureDomainType() types.DomainType {
 }
 
 // GetValueCheck returns value check instance
-func (c *Config) GetValueCheck() ProposedValueCheck {
-	return c.ValueCheck
+func (c *Config) GetValueCheckF() ProposedValueCheckF {
+	return c.ValueCheckF
+}
+
+// GetProposerFunc returns func used to calculate proposer
+func (c *Config) GetProposerF() ProposerF {
+	return c.ProposerF
 }
 
 // GetNetwork returns a p2p Network instance
@@ -60,7 +69,7 @@ func (c *Config) GetNetwork() Network {
 
 // GetTimer returns round timer
 func (c *Config) GetTimer() Timer {
-	return nil
+	return c.Timer
 }
 
 type State struct {

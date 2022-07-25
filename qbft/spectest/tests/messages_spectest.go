@@ -41,6 +41,17 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			lastErr = err
 		}
 
+		switch msg.Message.MsgType {
+		case qbft.RoundChangeMsgType:
+			rc := qbft.RoundChangeData{}
+			if err := rc.Decode(msg.Message.Data); err != nil {
+				lastErr = err
+			}
+			if err := rc.Validate(); err != nil {
+				lastErr = err
+			}
+		}
+
 		if len(test.Messages) > 0 {
 			r1, err := msg.Encode()
 			if err != nil {

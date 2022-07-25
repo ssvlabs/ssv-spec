@@ -1,6 +1,7 @@
 package qbft
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -9,10 +10,10 @@ func (i *Instance) uponRoundChange(
 	instanceStartValue []byte,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
-	valCheck ProposedValueCheck,
+	valCheck ProposedValueCheckF,
 ) error {
 	// TODO - Roberto comment: could happen we received a round change before we switched the round and this msg will be rejected (lost)
-	if err := validRoundChange(i.State, i.config, signedRoundChange, i.State.Height, i.State.Round); err != nil {
+	if err := validRoundChange(i.State, i.config, signedRoundChange, i.State.Height, signedRoundChange.Message.Round); err != nil {
 		return errors.Wrap(err, "round change msg invalid")
 	}
 
@@ -84,7 +85,7 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 		}
 	}
 
-	return state.Share.HasPartialQuorum(len(rc)), rc
+	return HasPartialQuorum(state.Share, rc), rc
 }
 
 // hasReceivedProposalJustificationForLeadingRound returns the highest justified round change message (if this node is also a leader)
@@ -93,11 +94,12 @@ func hasReceivedProposalJustificationForLeadingRound(
 	config IConfig,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
-	valCheck ProposedValueCheck,
+	valCheck ProposedValueCheckF,
 ) (*SignedMessage, error) {
 	roundChanges := roundChangeMsgContainer.MessagesForRound(state.Round)
+
 	// optimization, if no round change quorum can return false
-	if !state.Share.HasQuorum(len(roundChanges)) {
+	if !HasQuorum(state.Share, roundChanges) {
 		return nil, nil
 	}
 
@@ -118,7 +120,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 			rcData.NextProposalData,
 			valCheck,
 		) == nil &&
-			proposer(state, msg.Message.Round) == state.Share.OperatorID {
+			proposer(state, config, msg.Message.Round) == state.Share.OperatorID {
 			return msg, nil
 		}
 	}
@@ -132,7 +134,7 @@ func isReceivedProposalJustification(
 	roundChanges, prepares []*SignedMessage,
 	newRound Round,
 	value []byte,
-	valCheck ProposedValueCheck,
+	valCheck ProposedValueCheckF,
 ) error {
 	if err := isProposalJustification(
 		state,
@@ -163,11 +165,12 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 	if signedMsg.Message.Height != height {
 		return errors.New("round change Height is wrong")
 	}
-
+	if signedMsg.Message.Round != round {
+		return errors.New("msg round wrong")
+	}
 	if len(signedMsg.GetSigners()) != 1 {
 		return errors.New("round change msg allows 1 signer")
 	}
-
 	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
 		return errors.Wrap(err, "round change msg signature invalid")
 	}
@@ -180,6 +183,8 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 		return errors.Wrap(err, "roundChangeData invalid")
 	}
 
+	// Addition to formal spec
+	// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
 	if !rcData.Prepared() {
 		return nil
 	} else { // validate prepare message justifications
@@ -196,10 +201,19 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 			}
 		}
 
-		if rcData.PreparedRound <= round {
-			return nil
+		if !HasQuorum(state.Share, prepareMsgs) {
+			return errors.New("no justifications quorum")
 		}
-		return errors.New("prepared round > round")
+
+		if rcData.PreparedRound > round {
+			return errors.New("prepared round > round")
+		}
+
+		if !bytes.Equal(rcData.NextProposalData, rcData.PreparedValue) {
+			return errors.New("next proposal data != prepared value")
+		}
+
+		return nil
 	}
 	return errors.New("round change prepare round & value are wrong")
 }

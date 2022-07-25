@@ -199,7 +199,7 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 	panic("implemet")
 }
 
-func (km *testingKeyManager) SignETHDepositRoot(root []byte, pk []byte) (types.Signature, error) {
+func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {
 	panic("implemet")
 }
 

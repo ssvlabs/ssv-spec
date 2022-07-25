@@ -8,6 +8,28 @@ import (
 	"github.com/pkg/errors"
 )
 
+// HasQuorum returns true if a unique set of signers has quorum
+func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
+	uniqueSigners := make(map[types.OperatorID]bool)
+	for _, msg := range msgs {
+		for _, signer := range msg.GetSigners() {
+			uniqueSigners[signer] = true
+		}
+	}
+	return share.HasQuorum(len(uniqueSigners))
+}
+
+// HasPartialQuorum returns true if a unique set of signers has partial quorum
+func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
+	uniqueSigners := make(map[types.OperatorID]bool)
+	for _, msg := range msgs {
+		for _, signer := range msg.GetSigners() {
+			uniqueSigners[signer] = true
+		}
+	}
+	return share.HasPartialQuorum(len(uniqueSigners))
+}
+
 type MessageType int
 
 const (
@@ -115,22 +137,14 @@ func (d *RoundChangeData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *RoundChangeData) Validate() error {
-	if len(d.PreparedValue) != 0 {
-		if d.PreparedRound == NoRound {
-			return errors.New("round change prepared round invalid")
-		}
-		if len(d.RoundChangeJustification) == 0 {
-			return errors.New("round change justification invalid")
-		}
-	}
-
-	if d.PreparedRound != NoRound {
+	if d.Prepared() {
 		if len(d.PreparedValue) == 0 {
 			return errors.New("round change prepared value invalid")
 		}
 		if len(d.RoundChangeJustification) == 0 {
 			return errors.New("round change justification invalid")
 		}
+		// TODO - should next proposal data be equal to prepared value?
 	}
 
 	if len(d.NextProposalData) == 0 {

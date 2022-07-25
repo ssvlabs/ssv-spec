@@ -47,7 +47,7 @@ func TestJson(t *testing.T) {
 			test.Runner.QBFTController.Share,
 			testingutils.TestingConfig(ks).Domain,
 			testingutils.TestingConfig(ks).Signer,
-			testingutils.TestingConfig(ks).ValueCheck,
+			testingutils.TestingConfig(ks).ValueCheckF,
 			testingutils.TestingConfig(ks).Storage,
 			testingutils.TestingConfig(ks).Network,
 		)
