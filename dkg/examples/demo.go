@@ -3,9 +3,8 @@ package main
 import "C"
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -42,7 +41,7 @@ func main() {
 		}
 	}()
 
-	id := dkg.RequestID{}
+	id := types.RequestID{}
 	for i, _ := range id {
 		id[i] = 1
 	}
