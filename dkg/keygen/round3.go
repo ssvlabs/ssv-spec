@@ -2,9 +2,9 @@ package keygen
 
 import (
 	"errors"
-	"github.com/bloxapp/ssv-spec/dkg/dlog"
+	"github.com/bloxapp/ssv-spec/dkg/algorithms/dlog"
+	"github.com/bloxapp/ssv-spec/dkg/algorithms/vss"
 	"github.com/bloxapp/ssv-spec/dkg/types"
-	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 

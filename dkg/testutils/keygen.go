@@ -3,9 +3,9 @@ package testutils
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
+	"github.com/bloxapp/ssv-spec/dkg/algorithms/vss"
 	"github.com/bloxapp/ssv-spec/dkg/keygen"
 	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
-	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/ethereum/go-ethereum/crypto"

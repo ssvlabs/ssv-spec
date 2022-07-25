@@ -2,11 +2,10 @@ package vss_test
 
 import (
 	"encoding/hex"
+	"github.com/bloxapp/ssv-spec/dkg/algorithms/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/stretchr/testify/require"
 	"testing"
-
-	"github.com/bloxapp/ssv-spec/dkg/vss"
 )
 
 func init() {
