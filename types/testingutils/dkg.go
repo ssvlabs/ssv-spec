@@ -65,7 +65,7 @@ var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint64, 
 		ids[i] = uint64(operator)
 	}
 	m := &dkgtypes.Init{
-		OperatorIDs:           ids,
+		OperatorIds:           ids,
 		Threshold:             threshold,
 		WithdrawalCredentials: withdrawalCred,
 	}

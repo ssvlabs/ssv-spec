@@ -104,8 +104,8 @@ func (r *Runner) handlePartialSigMessage(baseMsg *dkgtypes.Message) error {
 		}
 
 		r.signOutput = &dkgtypes.SignedDepositDataMsgBody{
-			RequestID:             r.Identifier[:],
-			OperatorID:            uint64(r.Operator.OperatorID),
+			RequestId:             r.Identifier[:],
+			OperatorId:            uint64(r.Operator.OperatorID),
 			EncryptedShare:        encryptedShare,
 			Committee:             r.keygenOutput.Committee,
 			Threshold:             r.InitMsg.Threshold,
@@ -148,7 +148,7 @@ func (r *Runner) validateDepositDataSig(msg *dkgtypes.PartialSigMsgBody) error {
 func (r *Runner) findSignerPubKey(signer uint64) ([]byte, error) {
 
 	index := -1
-	for i, d := range r.InitMsg.OperatorIDs {
+	for i, d := range r.InitMsg.OperatorIds {
 		if d == signer {
 			index = i
 		}

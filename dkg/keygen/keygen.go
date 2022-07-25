@@ -230,13 +230,13 @@ func (k *Keygen) GetCommitment() []byte {
 }
 
 func (k *Keygen) VerifyCommitment(r1 Round1Msg, r2 Round2Msg, partyI uint64) bool {
-	if len(k.Coefficients) != len(r2.DeCommitment) {
+	if len(k.Coefficients) != len(r2.Decommitment) {
 		return false
 	}
 	var data []byte
 	data = append(data, Uint64ToBytes(partyI)...)
 	data = append(data, r2.BlindFactor...)
-	for _, bytes := range r2.DeCommitment {
+	for _, bytes := range r2.Decommitment {
 		data = append(data, bytes...)
 	}
 	hash := crypto.SHA256.New()

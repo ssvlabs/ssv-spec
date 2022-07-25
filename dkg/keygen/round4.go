@@ -2,8 +2,8 @@ package keygen
 
 import (
 	"errors"
-	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/dlog"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/gogo/protobuf/sortkeys"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
@@ -20,7 +20,7 @@ func (k *Keygen) r4Proceed() error {
 	pk := new(bls.PublicKey)
 	for _, r2Msg := range k.Round2Msgs {
 		temp := new(bls.PublicKey)
-		temp.Deserialize(r2Msg.Body.Round2.DeCommitment[0])
+		temp.Deserialize(r2Msg.Body.Round2.Decommitment[0])
 		pk.Add(temp)
 	}
 	var vkVec [][]byte

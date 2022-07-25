@@ -25,13 +25,13 @@ func (k *KGProtocol) Output() ([]byte, error) {
 
 func New(init *dkgtypes.Init, identifier dkgtypes.RequestID, config dkgtypes.ProtocolConfig) (dkgtypes.Protocol, error) {
 	var myIndex uint64 = 0
-	for i, id := range init.OperatorIDs {
+	for i, id := range init.OperatorIds {
 		if id == uint64(config.Operator.OperatorID) {
 			myIndex = uint64(i) + 1
 		}
 	}
 	var ids []uint64
-	for _, id := range init.OperatorIDs {
+	for _, id := range init.OperatorIds {
 		ids = append(ids, uint64(id))
 	}
 	state, err := NewKeygen(identifier[:], myIndex, uint64(init.Threshold), ids)

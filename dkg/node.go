@@ -41,7 +41,7 @@ func NewNode(operator *dkgtypes.Operator, config *dkgtypes.Config) *Node {
 func (n *Node) newRunner(id dkgtypes.RequestID, initMsg *dkgtypes.Init) (*Runner, error) {
 
 	var i uint64
-	for i0, id := range initMsg.OperatorIDs {
+	for i0, id := range initMsg.OperatorIds {
 		if id == uint64(n.operator.OperatorID) {
 			i = uint64(i0) + 1
 		}

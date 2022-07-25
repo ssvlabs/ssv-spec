@@ -31,7 +31,7 @@ func (s DepositSignDataSet) ParsedInitMessage(operatorId types.OperatorID) *dkgt
 			Receiver:  0,
 		},
 		Body: &dkgtypes.Init{
-			OperatorIDs:           s.IndicesVec(),
+			OperatorIds:           s.IndicesVec(),
 			Threshold:             s.Threshold(),
 			WithdrawalCredentials: TestingWithdrawalCredentials,
 			Fork:                  TestingForkVersion[:],
@@ -63,8 +63,8 @@ func (s DepositSignDataSet) ParsedPartialSigMessage(operatorId types.OperatorID)
 func (s DepositSignDataSet) ParsedSignedDepositDataMessage(operatorId types.OperatorID) *dkgtypes.Message {
 	reqId := TestingRequestID
 	body := &dkgtypes.SignedDepositDataMsgBody{
-		RequestID:             reqId[:],
-		OperatorID:            uint64(operatorId),
+		RequestId:             reqId[:],
+		OperatorId:            uint64(operatorId),
 		EncryptedShare:        FakeEncryption(s.SecretShares[operatorId]),
 		Committee:             s.IndicesVec(),
 		Threshold:             uint64(len(s.PartyData[operatorId].Coefficients) - 1),
@@ -108,8 +108,8 @@ func TestDepositSignDataSetFourOperators() DepositSignDataSet {
 func (s *DepositSignDataSet) MakeOutput(operatorId types.OperatorID) *dkgtypes.SignedDepositDataMsgBody {
 	reqID := TestingRequestID
 	out := &dkgtypes.SignedDepositDataMsgBody{
-		RequestID:             make([]byte, len(reqID)),
-		OperatorID:            uint64(operatorId),
+		RequestId:             make([]byte, len(reqID)),
+		OperatorId:            uint64(operatorId),
 		EncryptedShare:        FakeEncryption(s.SecretShares[operatorId]),
 		Committee:             s.DkgPartyDataSet.IndicesVec(),
 		Threshold:             uint64(len(s.PartyData[operatorId].Coefficients) - 1),
@@ -117,6 +117,6 @@ func (s *DepositSignDataSet) MakeOutput(operatorId types.OperatorID) *dkgtypes.S
 		WithdrawalCredentials: TestingWithdrawalCredentials,
 		DepositDataSignature:  s.FinalSignature,
 	}
-	copy(out.RequestID, reqID[:])
+	copy(out.RequestId, reqID[:])
 	return out
 }

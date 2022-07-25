@@ -194,7 +194,7 @@ func (x *SignedDepositDataMsgBody) ToExtendedDepositData(forkVersion spec.Versio
 }
 
 func (x *SignedDepositDataMsgBody) SameDepositData(other *SignedDepositDataMsgBody) bool {
-	if bytes.Compare(x.RequestID, other.RequestID) != 0 {
+	if bytes.Compare(x.RequestId, other.RequestId) != 0 {
 		return false
 	}
 	if x.Threshold != other.Threshold {

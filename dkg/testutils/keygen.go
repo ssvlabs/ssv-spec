@@ -93,7 +93,7 @@ func (s DkgPartyDataSet) R2(operatorId types.OperatorID) *keygen.ParsedMessage {
 		},
 		Body: &keygen.KeygenMsgBody{
 			Round2: &keygen.Round2Msg{
-				DeCommitment: s.PartyData[operatorId].DeCommitment,
+				Decommitment: s.PartyData[operatorId].DeCommitment,
 				BlindFactor:  s.PartyData[operatorId].BlindFactor,
 			},
 		},
@@ -193,7 +193,7 @@ var baseInstance = func(dataset DkgPartyDataSet) dkgtypes.Protocol {
 		Identifier: dkgtypes.RequestID{},
 		Operator:   1,
 		Init: dkgtypes.Init{
-			OperatorIDs:           dataset.IndicesVec(),
+			OperatorIds:           dataset.IndicesVec(),
 			Threshold:             threshold,
 			WithdrawalCredentials: TestingWithdrawalCredentials,
 			Fork:                  TestingForkVersion[:],

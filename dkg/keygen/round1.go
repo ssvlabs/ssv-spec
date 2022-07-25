@@ -15,7 +15,7 @@ func (k *Keygen) r1Proceed() error {
 		},
 		Body: &KeygenMsgBody{
 			Round2: &Round2Msg{
-				DeCommitment: k.GetDecommitment(),
+				Decommitment: k.GetDecommitment(),
 				BlindFactor:  k.BlindFactor[:],
 			},
 		},

@@ -60,7 +60,7 @@ func TestRunner(dataset DepositSignDataSet, keyset testingutils.TestKeySet, inde
 	partyData := dataset.PartyData[types.OperatorID(index)]
 	threshold := uint64(len(partyData.Coefficients) - 1)
 	init := dkgtypes.Init{
-		OperatorIDs:           dataset.IndicesVec(),
+		OperatorIds:           dataset.IndicesVec(),
 		Threshold:             threshold,
 		WithdrawalCredentials: TestingWithdrawalCredentials,
 		Fork:                  TestingForkVersion[:],

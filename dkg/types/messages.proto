@@ -19,7 +19,7 @@ message Message {
 }
 
 message Init {
-  repeated uint64 OperatorIDs = 1;
+  repeated uint64 operator_ids = 1;
   uint64 threshold = 2;
   bytes withdrawal_credentials = 3;
   bytes fork = 4;
@@ -32,18 +32,18 @@ message ParsedInitMessage {
 }
 
 message LocalKeyShare {
-  uint64 Index = 1;
-  uint64 Threshold = 2;
-  repeated uint64 Committee = 3;
-  repeated bytes SharePublicKeys = 4;
-  bytes PublicKey = 5;
-  bytes SecretShare = 6;
+  uint64 index = 1;
+  uint64 threshold = 2;
+  repeated uint64 committee = 3;
+  repeated bytes share_public_keys = 4;
+  bytes public_key = 5;
+  bytes secret_share = 6;
 }
 
 message PartialSigMsgBody {
-  uint64 Signer = 1;
-  bytes Root = 2;
-  bytes Signature = 3;
+  uint64 signer = 1;
+  bytes root = 2;
+  bytes signature = 3;
 }
 
 message ParsedPartialSigMessage {
@@ -53,15 +53,15 @@ message ParsedPartialSigMessage {
 }
 
 message SignedDepositDataMsgBody {
-  bytes RequestID = 1;
-  uint64 OperatorID = 2;
-  bytes EncryptedShare = 3;
-  repeated uint64 Committee = 4;
+  bytes request_id = 1;
+  uint64 operator_id = 2;
+  bytes encrypted_share = 3;
+  repeated uint64 committee = 4;
   uint64 threshold = 5;
-  bytes ValidatorPublicKey = 6;
-  bytes WithdrawalCredentials = 7;
-  bytes DepositDataSignature = 8;
-  bytes OperatorSignature = 9;
+  bytes validatorPublicKey = 6;
+  bytes withdrawal_credentials = 7;
+  bytes deposit_data_signature = 8;
+  bytes operator_signature = 9;
 }
 
 message ParsedSignedDepositDataMessage {

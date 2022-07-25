@@ -4,22 +4,22 @@ option go_package = "dkg/keygen";
 import "types/messages.proto";
 
 message Round1Msg{
-  bytes Commitment = 1;
+  bytes commitment = 1;
 }
 
 message Round2Msg{
-  repeated bytes DeCommitment = 1;
-  bytes BlindFactor = 2;
+  repeated bytes decommitment = 1;
+  bytes blind_factor = 2;
 }
 
 message Round3Msg {
-  bytes Share = 3 ;
+  bytes share = 3 ;
 }
 
 message Round4Msg {
-  bytes Commitment = 1;
-  bytes PubKey = 2;
-  bytes ChallengeResponse = 3;
+  bytes commitment = 1;
+  bytes pub_key = 2;
+  bytes challenge_response = 3;
 }
 
 message KeygenMsgBody {

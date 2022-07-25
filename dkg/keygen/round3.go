@@ -2,8 +2,8 @@ package keygen
 
 import (
 	"errors"
-	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/dlog"
+	"github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/dkg/vss"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
@@ -39,10 +39,10 @@ func (k *Keygen) r3Proceed() error {
 	proof := knowledge.Prove()
 	msg := &ParsedMessage{
 		Header: &types.MessageHeader{
-			SessionId:     k.SessionID,
-			MsgType:       k.HandleMessageType,
-			Sender:        k.PartyI,
-			Receiver:      0,
+			SessionId: k.SessionID,
+			MsgType:   k.HandleMessageType,
+			Sender:    k.PartyI,
+			Receiver:  0,
 		},
 		Body: &KeygenMsgBody{
 			Round4: &Round4Msg{
@@ -68,7 +68,7 @@ func (k *Keygen) r3CanProceed() error {
 		}
 		r3Msg := k.Round3Msgs[ind]
 		r2Msg := k.Round2Msgs[ind]
-		if r2Msg == nil || r2Msg.Body.Round2 == nil || r2Msg.Body.Round2.DeCommitment == nil || r3Msg == nil || r3Msg.Body.Round3 == nil {
+		if r2Msg == nil || r2Msg.Body.Round2 == nil || r2Msg.Body.Round2.Decommitment == nil || r3Msg == nil || r3Msg.Body.Round3 == nil {
 			return ErrExpectMessage
 		}
 		shareBytes := r3Msg.Body.Round3.Share
@@ -83,7 +83,7 @@ func (k *Keygen) r3CanProceed() error {
 			share.Share = k.ownShare
 		}
 		commitments := make([]*bls.PublicKey, len(k.Coefficients))
-		for j, commBytes := range r2Msg.Body.Round2.DeCommitment {
+		for j, commBytes := range r2Msg.Body.Round2.Decommitment {
 			// TODO: Improve conversion of multiple times
 			commitments[j] = new(bls.PublicKey)
 			commitments[j].Deserialize(commBytes)

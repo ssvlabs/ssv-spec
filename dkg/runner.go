@@ -116,7 +116,7 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 			return false, nil, errors.New("request id mismatch")
 		}
 		r.OutputMsgs[types.OperatorID(msg.Header.Sender)] = output
-		if len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs) {
+		if len(r.OutputMsgs) == len(r.InitMsg.OperatorIds) {
 			for _, message := range r.OutputMsgs {
 				if message.Header.RequestID() != r.Identifier {
 					return true, r.OutputMsgs, errors.New("one of more messages have mismatched request id")
