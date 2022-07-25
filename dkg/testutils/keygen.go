@@ -17,3 +17,13 @@ func (m MockProtocol) ProcessMsg(msg *dkgtypes.Message) ([]dkgtypes.Message, err
 func (m MockProtocol) Output() ([]byte, error) {
 	return m.LocalKeyShare.Encode()
 }
+
+func PlaceholderMessage() *dkgtypes.Message {
+	return &dkgtypes.Message{
+		Header: &dkgtypes.MessageHeader{
+			SessionId: TestingRequestID[:],
+			MsgType:   int32(dkgtypes.ProtocolMsgType),
+			Sender:    uint64(1),
+		},
+	}
+}

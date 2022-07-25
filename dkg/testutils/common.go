@@ -14,14 +14,9 @@ var TestingForkVersion = types.PraterNetwork.ForkVersion()
 var TestingAddress = common.HexToAddress("535953b5a6040074948cf185eaa7d2abbd66808f")
 var TestingRequestID = dkgtypes.NewRequestID(TestingAddress, 1)
 
-func PlaceholderMessage() *dkgtypes.Message {
-	return &dkgtypes.Message{
-		Header: &dkgtypes.MessageHeader{
-			SessionId: TestingRequestID[:],
-			MsgType:   int32(dkgtypes.ProtocolMsgType),
-			Sender:    uint64(1),
-		},
-	}
+func h2b(str string) []byte {
+	b, _ := hex.DecodeString(str)
+	return b
 }
 
 func FakeEncryption(data []byte) []byte {

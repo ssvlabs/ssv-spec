@@ -1,17 +1,11 @@
 package testutils
 
 import (
-	"encoding/hex"
 	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/gogo/protobuf/sortkeys"
 )
-
-func h2b(str string) []byte {
-	b, _ := hex.DecodeString(str)
-	return b
-}
 
 type DepositSignDataSet struct {
 	testingutils.TestKeySet
