@@ -82,9 +82,9 @@ func (n *Node) ProcessMessage(msg *dkgtypes.Message) error {
 		return n.startNewDKGMsg(msg)
 	case int32(dkgtypes.ProtocolMsgType):
 		return n.processDKGMsg(msg)
-	case int32(dkgtypes.DepositDataMsgType):
+	case int32(dkgtypes.PartialSingatureMsgType):
 		return n.processDKGMsg(msg)
-	case int32(dkgtypes.OutputMsgType):
+	case int32(dkgtypes.SignedDepositDataMsgType):
 		return n.processDKGMsg(msg)
 	default:
 		return errors.New("unknown msg type")

@@ -8,10 +8,10 @@ const (
 	ProtocolMsgType
 	KeygenOutputType
 	PartialOutputMsgType
-	// DepositDataMsgType post DKG deposit data signatures
-	DepositDataMsgType
-	// OutputMsgType final output msg used by requester to make deposits and register validator with SSV
-	OutputMsgType
+	// PartialSingatureMsgType post DKG deposit data signatures
+	PartialSingatureMsgType
+	// SignedDepositDataMsgType final output msg used by requester to make deposits and register validator with SSV
+	SignedDepositDataMsgType
 )
 
 const (

@@ -45,7 +45,7 @@ func (s DepositSignDataSet) ParsedInitMessage(operatorId types.OperatorID) *dkgt
 func (s DepositSignDataSet) ParsedPartialSigMessage(operatorId types.OperatorID) *dkgtypes.Message {
 	msg := &dkgtypes.ParsedPartialSigMessage{
 		Header: &dkgtypes.MessageHeader{
-			MsgType: int32(dkgtypes.DepositDataMsgType),
+			MsgType: int32(dkgtypes.PartialSingatureMsgType),
 			Sender:  uint64(operatorId),
 		},
 		Body: &dkgtypes.PartialSigMsgBody{
@@ -77,7 +77,7 @@ func (s DepositSignDataSet) ParsedSignedDepositDataMessage(operatorId types.Oper
 	body.OperatorSignature = sig
 	msg := &dkgtypes.ParsedSignedDepositDataMessage{
 		Header: &dkgtypes.MessageHeader{
-			MsgType: int32(dkgtypes.OutputMsgType),
+			MsgType: int32(dkgtypes.SignedDepositDataMsgType),
 			Sender:  uint64(operatorId),
 		},
 		Body:      body,
