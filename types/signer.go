@@ -99,4 +99,6 @@ type KeyManager interface {
 	SSVSigner
 	// AddShare saves a share key
 	AddShare(shareKey *bls.SecretKey) error
+	// RemoveShare removes a share key
+	RemoveShare(pubKey string) error
 }
