@@ -20,6 +20,23 @@ type DkgPartyDataSet struct {
 	PartyData       map[types.OperatorID]*DkgPartyData
 }
 
+func (s DkgPartyDataSet) Threshold() uint64 {
+	out := uint64(0)
+	for _, data := range s.PartyData {
+		out = uint64(len(data.Coefficients) - 1)
+		break
+	}
+	return out
+}
+
+func (s DkgPartyDataSet) OperatorIDs() []types.OperatorID {
+	var opIds []types.OperatorID
+	for _, id := range s.IndicesVec() {
+		opIds = append(opIds, types.OperatorID(id))
+	}
+	return opIds
+}
+
 func (s DkgPartyDataSet) IndicesVec() []uint64 {
 	ids := make([]uint64, len(s.SharePublicKeys))
 	count := 0
@@ -176,11 +193,10 @@ var baseInstance = func(dataset DkgPartyDataSet) dkgtypes.Protocol {
 		Identifier: dkgtypes.RequestID{},
 		Operator:   1,
 		Init: dkgtypes.Init{
-			Nonce:                 0,
-			OperatorIDs:           ids,
+			OperatorIDs:           dataset.IndicesVec(),
 			Threshold:             threshold,
 			WithdrawalCredentials: TestingWithdrawalCredentials,
-			Fork:                  TestingForkVersion,
+			Fork:                  TestingForkVersion[:],
 		},
 		State: &state,
 	}
@@ -322,7 +338,8 @@ func TestSuiteThreeOfFourSmallValues() DkgPartyDataSet {
 
 func TestSuiteFourOperators() DkgPartyDataSet {
 	return DkgPartyDataSet{
-		PublicKey: h2b("8adbbb94ab3b4741e651e20255ad33e73483d0c83181b3aedad5fec9d648e952bfd4baeef8236781ce00300d17ae31ad"),
+		TestKeySet: *testingutils.Testing4SharesSet(),
+		PublicKey:  h2b("8adbbb94ab3b4741e651e20255ad33e73483d0c83181b3aedad5fec9d648e952bfd4baeef8236781ce00300d17ae31ad"),
 		SecretShares: map[types.OperatorID][]byte{
 			1: h2b("159208425a2e719697647e32b745f3108505694422f8780304b4c7a0a588c83a"),
 			2: h2b("477d0d26c8bda3bc5e77efb961f4105bee19fbb5fbd35c94785a48574f7b12fc"),

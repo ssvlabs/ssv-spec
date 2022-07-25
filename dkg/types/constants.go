@@ -1,8 +1,9 @@
 package types
 
 const (
+	UnknownMsgType MsgType = iota
 	// InitMsgType sent when DKG instance is started by requester
-	InitMsgType MsgType = iota
+	InitMsgType
 	// ProtocolMsgType is the DKG itself
 	ProtocolMsgType
 	KeygenOutputType
@@ -19,4 +20,3 @@ const (
 	indexSize          = 4
 	indexStartPos      = ethAddressStartPos + ethAddressSize
 )
-

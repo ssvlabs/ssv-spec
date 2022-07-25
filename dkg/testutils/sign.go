@@ -13,6 +13,35 @@ type DepositSignDataSet struct {
 	FinalSignature    []byte
 }
 
+func (s DepositSignDataSet) Operator(operatorId types.OperatorID) *dkgtypes.Operator {
+	return &dkgtypes.Operator{
+		OperatorID:       operatorId,
+		ETHAddress:       s.DKGOperators[operatorId].ETHAddress,
+		EncryptionPubKey: &s.DKGOperators[operatorId].EncryptionKey.PublicKey,
+	}
+}
+
+func (s DepositSignDataSet) ParsedInitMessage(operatorId types.OperatorID) *dkgtypes.Message {
+	reqId := dkgtypes.RequestID{}
+	msg := dkgtypes.ParsedInitMessage{
+		Header: &dkgtypes.MessageHeader{
+			SessionId: reqId[:],
+			MsgType:   int32(dkgtypes.InitMsgType),
+			Sender:    uint64(operatorId),
+			Receiver:  0,
+		},
+		Body: &dkgtypes.Init{
+			OperatorIDs:           s.IndicesVec(),
+			Threshold:             s.Threshold(),
+			WithdrawalCredentials: TestingWithdrawalCredentials,
+			Fork:                  TestingForkVersion[:],
+		},
+		Signature: nil,
+	}
+	base, _ := msg.ToBase()
+	return base
+}
+
 func (s DepositSignDataSet) ParsedPartialSigMessage(operatorId types.OperatorID) *dkgtypes.Message {
 	msg := &dkgtypes.ParsedPartialSigMessage{
 		Header: &dkgtypes.MessageHeader{

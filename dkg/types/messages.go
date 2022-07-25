@@ -74,6 +74,44 @@ func (x *Message) SetSignature(bytes []byte) error {
 	return nil
 }
 
+func (x *Init) Validate() error {
+	// TODO len(operators == 4,7,10,13
+	// threshold equal to 2/3 of 4,7,10,13
+	// len(WithdrawalCredentials) is valid
+	return nil
+}
+
+// Encode returns a msg encoded bytes or error
+func (x *Init) Encode() ([]byte, error) {
+	return proto.Marshal(x)
+}
+
+// Decode returns error if decoding failed
+func (x *Init) Decode(data []byte) error {
+	return json.Unmarshal(data, x)
+}
+
+func (x *ParsedInitMessage) FromBase(base *Message) error {
+	raw, err := proto.Marshal(base)
+	if err != nil {
+		return err
+	}
+	return proto.Unmarshal(raw, x)
+}
+
+func (x *ParsedInitMessage) ToBase() (*Message, error) {
+	raw, err := proto.Marshal(x)
+	if err != nil {
+		return nil, err
+	}
+	base := &Message{}
+	err = proto.Unmarshal(raw, base)
+	if err != nil {
+		return nil, err
+	}
+	return base, nil
+}
+
 // SignedMessage Deprecated
 type SignedMessage struct {
 	Message   *Message

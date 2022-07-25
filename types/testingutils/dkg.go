@@ -9,6 +9,7 @@ import (
 )
 
 var TestingWithdrawalCredentials, _ = hex.DecodeString("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f")
+
 /*
 var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
@@ -52,15 +53,19 @@ var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *dkgtypes.M
 	sig, _ := crypto.Sign(r, sk)
 
 	return &dkgtypes.Message{
-		Header: msg.Header,
-		Data:   msg.Data,
+		Header:    msg.Header,
+		Data:      msg.Data,
 		Signature: sig,
 	}
 }
 
 var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint64, withdrawalCred []byte) []byte {
+	ids := make([]uint64, len(operators))
+	for i, operator := range operators {
+		ids[i] = uint64(operator)
+	}
 	m := &dkgtypes.Init{
-		OperatorIDs:           operators,
+		OperatorIDs:           ids,
 		Threshold:             threshold,
 		WithdrawalCredentials: withdrawalCred,
 	}

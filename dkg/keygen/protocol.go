@@ -26,7 +26,7 @@ func (k *KGProtocol) Output() ([]byte, error) {
 func New(init *dkgtypes.Init, identifier dkgtypes.RequestID, config dkgtypes.ProtocolConfig) (dkgtypes.Protocol, error) {
 	var myIndex uint64 = 0
 	for i, id := range init.OperatorIDs {
-		if id == config.Operator.OperatorID {
+		if id == uint64(config.Operator.OperatorID) {
 			myIndex = uint64(i) + 1
 		}
 	}

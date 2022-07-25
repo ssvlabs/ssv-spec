@@ -18,6 +18,19 @@ message Message {
   bytes signature = 3;
 }
 
+message Init {
+  repeated uint64 OperatorIDs = 1;
+  uint64 threshold = 2;
+  bytes withdrawal_credentials = 3;
+  bytes fork = 4;
+}
+
+message ParsedInitMessage {
+  MessageHeader header = 1;
+  Init body = 2;
+  bytes signature = 3;
+}
+
 message LocalKeyShare {
   uint64 Index = 1;
   uint64 Threshold = 2;

@@ -137,10 +137,12 @@ func (s *SignDepositData) partialSign() (*dkgtypes.PartialSigMsgBody, error) {
 		return nil, err
 	}
 
+	fork := spec.Version{}
+	copy(fork[:], s.InitMsg.Fork)
 	root, depData, err := types.GenerateETHDepositData(
 		s.key.PublicKey,
 		s.InitMsg.WithdrawalCredentials,
-		s.InitMsg.Fork,
+		fork,
 		types.DomainDeposit,
 	)
 	if err != nil {
@@ -171,7 +173,7 @@ func (s *SignDepositData) validateDepositDataSig(msg *dkgtypes.PartialSigMsgBody
 
 	index := -1
 	for i, d := range s.InitMsg.OperatorIDs {
-		if d == types.OperatorID(msg.Signer) {
+		if d == msg.Signer {
 			index = i
 		}
 	}

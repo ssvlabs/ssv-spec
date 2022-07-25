@@ -42,7 +42,7 @@ func (n *Node) newRunner(id dkgtypes.RequestID, initMsg *dkgtypes.Init) (*Runner
 
 	var i uint64
 	for i0, id := range initMsg.OperatorIDs {
-		if id == n.operator.OperatorID {
+		if id == uint64(n.operator.OperatorID) {
 			i = uint64(i0) + 1
 		}
 	}
@@ -54,33 +54,40 @@ func (n *Node) newRunner(id dkgtypes.RequestID, initMsg *dkgtypes.Init) (*Runner
 		Operator:              n.operator,
 		InitMsg:               initMsg,
 		Identifier:            id,
-		PartialSignatures:     map[types.OperatorID][]byte{},
+		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*dkgtypes.PartialSigMsgBody{},
-		Config:                n.config,
+		PartialSignatures:     map[types.OperatorID][]byte{},
+		OutputMsgs:            map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage{},
 		KeygenSubProtocol:     n.config.Protocol(initMsg, n.operator.OperatorID, id),
+		SignSubProtocol:       nil,
+		keygenOutput:          nil,
+		signOutput:            nil,
+		Config:                n.config,
 	}
 
 	return runner, nil
 }
 
 // ProcessMessage processes network Messages of all types
-func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
-	signedMsg := &dkgtypes.Message{}
-	if err := signedMsg.Decode(msg.GetData()); err != nil {
-		return errors.Wrap(err, "could not get dkg Message from network Messages")
-	}
+func (n *Node) ProcessMessage(msg *dkgtypes.Message) error {
+	//signedMsg := &dkgtypes.Message{}
+	//if err := signedMsg.Decode(msg.GetData()); err != nil {
+	//	return errors.Wrap(err, "could not get dkg Message from network Messages")
+	//}
 
-	if err := n.validateSignedMessage(signedMsg); err != nil {
+	if err := n.validateSignedMessage(msg); err != nil {
 		return errors.Wrap(err, "signed message doesn't pass validation")
 	}
 
-	switch signedMsg.Header.MsgType {
+	switch msg.Header.MsgType {
 	case int32(dkgtypes.InitMsgType):
-		return n.startNewDKGMsg(signedMsg)
+		return n.startNewDKGMsg(msg)
 	case int32(dkgtypes.ProtocolMsgType):
-		return n.processDKGMsg(signedMsg)
+		return n.processDKGMsg(msg)
 	case int32(dkgtypes.DepositDataMsgType):
-		return n.processDKGMsg(signedMsg)
+		return n.processDKGMsg(msg)
+	case int32(dkgtypes.OutputMsgType):
+		return n.processDKGMsg(msg)
 	default:
 		return errors.New("unknown msg type")
 	}
@@ -100,7 +107,7 @@ func (n *Node) startNewDKGMsg(message *dkgtypes.Message) error {
 		return errors.Wrap(err, "could not start new dkg")
 	}
 
-	runner, err := n.newRunner(message.Header.RequestID(), initMsg)
+	runner, err := n.newRunner(message.Header.RequestID(), initMsg.Body)
 	if err != nil {
 		return errors.Wrap(err, "could not start new dkg")
 	}
@@ -115,18 +122,22 @@ func (n *Node) startNewDKGMsg(message *dkgtypes.Message) error {
 	return nil
 }
 
-func (n *Node) validateInitMsg(message *dkgtypes.Message) (*dkgtypes.Init, error) {
+func (n *Node) validateInitMsg(message *dkgtypes.Message) (*dkgtypes.ParsedInitMessage, error) {
+	if message.Header.MsgType != int32(dkgtypes.InitMsgType) {
+		return nil, errors.New("the message is not of InitMsgType")
+	}
 	// validate identifier.GetEthAddress is the signer for message
 	if err := types.Signature(message.Signature).ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, dkgtypes.RequestID(message.Header.RequestID()).GetETHAddress()); err != nil {
 		return nil, errors.Wrap(err, "signed message invalid")
 	}
 
-	initMsg := &dkgtypes.Init{}
-	if err := initMsg.Decode(message.Data); err != nil {
-		return nil, errors.Wrap(err, "could not get dkg init Message from signed Messages")
+	initMsg := &dkgtypes.ParsedInitMessage{}
+	err := initMsg.FromBase(message)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not convert the message to ParsedInitMessage")
 	}
 
-	if err := initMsg.Validate(); err != nil {
+	if err := initMsg.Body.Validate(); err != nil {
 		return nil, errors.Wrap(err, "init message invalid")
 	}
 

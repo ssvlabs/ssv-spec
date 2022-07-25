@@ -13,7 +13,8 @@ import (
 
 type MsgProcessingSpecTest struct {
 	Name          string
-	Pre           *dkg.Runner
+	Operator      *dkgtypes.Operator
+	Config        *dkgtypes.Config
 	Messages      []*dkgtypes.Message
 	Outgoing      []*dkgtypes.Message
 	Output        map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage
@@ -26,26 +27,20 @@ func (test *MsgProcessingSpecTest) TestName() string {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	pre := test.Pre
+	node := dkg.NewNode(test.Operator, test.Config)
 
 	var (
 		lastErr, err error
-		finished     bool
 		output       map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage
 	)
-
-	err = pre.Start()
 
 	if err != nil {
 		lastErr = err
 	}
 	for _, msg := range test.Messages {
-		finished, _, err = pre.ProcessMsg(msg)
+		node.ProcessMessage(msg)
 		if err != nil {
 			lastErr = err
-		}
-		if finished {
-			break
 		}
 	}
 
@@ -53,7 +48,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
 		require.NoError(t, lastErr)
-		outgoing := test.Pre.Config.Network.(*testutils.MockNetwork).Broadcasted
+		outgoing := test.Config.Network.(*testutils.MockNetwork).Broadcasted
 		require.Equal(t, len(test.Outgoing), len(outgoing))
 		for i, message := range outgoing {
 			message.Signature = nil // Signature is not deterministic, so skip
@@ -64,6 +59,5 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		for id, message := range test.Output {
 			require.True(t, proto.Equal(message, output[id]))
 		}
-		require.True(t, finished)
 	}
 }
