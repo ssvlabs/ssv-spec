@@ -30,27 +30,26 @@ type Runner struct {
 }
 
 func (r *Runner) Start() error {
-	data, err := r.InitMsg.Encode()
-	if err != nil {
-		return err
-	}
-	outgoing, err := r.KeygenSubProtocol.ProcessMsg(&dkgtypes.Message{
+	initMsg := &dkgtypes.ParsedInitMessage{
 		Header: &dkgtypes.MessageHeader{
 			SessionId: r.Identifier[:],
 			MsgType:   int32(dkgtypes.InitMsgType),
 			Sender:    0,
 			Receiver:  0,
 		},
-		Data: data,
-	})
+		Body: r.InitMsg,
+	}
+	base, err := initMsg.ToBase()
 	if err != nil {
 		return err
 	}
-	for _, message := range outgoing {
-		err = r.signAndBroadcast(&message)
-		if err != nil {
-			return err
-		}
+	outgoing, err := r.KeygenSubProtocol.ProcessMsg(base)
+	if err != nil {
+		return err
+	}
+	err = r.broadcastMessages(outgoing, dkgtypes.ProtocolMsgType)
+	if err != nil {
+		return err
 	}
 	return nil
 }
