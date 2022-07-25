@@ -65,16 +65,16 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
 		require.NoError(t, lastErr)
-		outgoing := network.Broadcasted
-		require.Equal(t, len(test.Outgoing), len(outgoing))
-		for i, message := range outgoing {
-			message.Signature = nil // Signature is not deterministic, so skip
-			require.True(t, proto.Equal(outgoing[i], message))
-		}
-		output = test.Output
-		require.Equal(t, len(test.Output), len(output))
-		for id, message := range test.Output {
-			require.True(t, proto.Equal(message, output[id]))
-		}
+	}
+	outgoing := network.Broadcasted
+	require.Equal(t, len(test.Outgoing), len(outgoing))
+	for i, message := range outgoing {
+		message.Signature = nil // Signature is not deterministic, so skip
+		require.True(t, proto.Equal(outgoing[i], message))
+	}
+	output = test.Output
+	require.Equal(t, len(test.Output), len(output))
+	for id, message := range test.Output {
+		require.True(t, proto.Equal(message, output[id]))
 	}
 }
