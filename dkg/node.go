@@ -59,7 +59,6 @@ func (n *Node) newRunner(id dkgtypes.RequestID, initMsg *dkgtypes.Init) (*Runner
 		PartialSignatures:     map[types.OperatorID][]byte{},
 		OutputMsgs:            map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage{},
 		KeygenSubProtocol:     n.config.Protocol(initMsg, n.operator.OperatorID, id),
-		SignSubProtocol:       nil,
 		keygenOutput:          nil,
 		signOutput:            nil,
 		Config:                n.config,

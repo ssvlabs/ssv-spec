@@ -1,9 +1,11 @@
 package dkg
 
 import (
-	"github.com/bloxapp/ssv-spec/dkg/sign"
+	"bytes"
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
@@ -24,7 +26,6 @@ type Runner struct {
 	OutputMsgs map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage
 
 	KeygenSubProtocol dkgtypes.Protocol
-	SignSubProtocol   dkgtypes.Protocol
 	keygenOutput      *dkgtypes.LocalKeyShare
 	signOutput        *dkgtypes.SignedDepositDataMsgBody
 	Config            *dkgtypes.Config
@@ -87,18 +88,26 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 			}
 		}
 	case int32(dkgtypes.DepositDataMsgType):
-		_, err := r.SignSubProtocol.ProcessMsg(msg)
-		if err != nil {
-			return false, nil, errors.Wrap(err, "failed to partial sig msg")
+
+		if msg.Header.MsgType != int32(dkgtypes.DepositDataMsgType) {
+			return false, nil, errors.New("invalid message type")
 		}
-		output, err := r.SignSubProtocol.Output()
+
+		pMsg := &dkgtypes.ParsedPartialSigMessage{}
+		err := pMsg.FromBase(msg)
 		if err != nil {
 			return false, nil, err
 		}
-		if output != nil {
-			// TODO do we need to store the output?
-			r.signOutput = &dkgtypes.SignedDepositDataMsgBody{}
-			err = r.signOutput.Decode(output)
+		err = r.handlePartialSigMessage(pMsg)
+		if err != nil {
+			return false, nil, err
+		}
+
+		if err != nil {
+			return false, nil, errors.Wrap(err, "failed to partial sig msg")
+		}
+
+		if r.signOutput != nil {
 			sig, err := r.Config.Signer.SignDKGOutput(r.signOutput, r.Operator.ETHAddress)
 			if err != nil {
 				return false, nil, err
@@ -173,7 +182,6 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 		if err := output.FromBase(msg); err != nil {
 			return false, nil, errors.Wrap(err, "could not decode SignedOutput")
 		}
-
 		if err := r.validateSignedOutput(output); err != nil {
 			return false, nil, errors.Wrap(err, "signed output invalid")
 		}
@@ -191,19 +199,139 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 
 func (r *Runner) startSigning() error {
 
-	r.SignSubProtocol = sign.NewSignDepositData(r.InitMsg, r.keygenOutput, dkgtypes.ProtocolConfig{
-		Identifier:    r.Identifier,
-		Operator:      r.Operator,
-		BeaconNetwork: r.Config.BeaconNetwork,
-		Signer:        r.Config.Signer,
-	})
-
-	outgoing, err := r.SignSubProtocol.Start()
+	pSig, err := r.partialSign()
 	if err != nil {
 		return err
 	}
-	err = r.broadcastMessages(outgoing, dkgtypes.ProtocolMsgType)
-	err = r.broadcastMessages(outgoing, dkgtypes.DepositDataMsgType)
+	r.PartialSignatures[r.Operator.OperatorID] = pSig.Signature
+	partialSigMsg := dkgtypes.ParsedPartialSigMessage{
+		Header: &dkgtypes.MessageHeader{
+			SessionId: r.Identifier[:],
+			MsgType:   int32(dkgtypes.DepositDataMsgType),
+			Sender:    uint64(r.Operator.OperatorID),
+			Receiver:  0,
+		},
+		Body: pSig,
+	}
+	base, err := partialSigMsg.ToBase()
+	if err != nil {
+		return err
+	}
+	err = r.broadcastMessages([]dkgtypes.Message{*base}, dkgtypes.DepositDataMsgType)
+	return nil
+}
+
+func (r *Runner) handlePartialSigMessage(msg *dkgtypes.ParsedPartialSigMessage) error {
+
+	if err := r.validateDepositDataSig(msg.Body); err != nil {
+		return errors.Wrap(err, "PartialSigMsgBody invalid")
+	}
+
+	if found := r.PartialSignatures[types.OperatorID(msg.Header.Sender)]; found == nil {
+		r.PartialSignatures[types.OperatorID(msg.Header.Sender)] = msg.Body.Signature
+	} else if bytes.Compare(found, msg.Body.Signature) != 0 {
+		return errors.New("inconsistent partial signature received")
+	}
+
+	if len(r.PartialSignatures) > int(r.InitMsg.Threshold) {
+
+		sig, err := types.ReconstructSignatures(r.PartialSignatures)
+		if err != nil {
+			return err
+		}
+
+		// encrypt Operator's share
+		encryptedShare, err := r.Config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.keygenOutput.SecretShare)
+		if err != nil {
+			return errors.Wrap(err, "could not encrypt share")
+		}
+
+		r.signOutput = &dkgtypes.SignedDepositDataMsgBody{
+			RequestID:             r.Identifier[:],
+			OperatorID:            uint64(r.Operator.OperatorID),
+			EncryptedShare:        encryptedShare,
+			Committee:             r.keygenOutput.Committee,
+			Threshold:             r.InitMsg.Threshold,
+			ValidatorPublicKey:    r.keygenOutput.PublicKey,
+			WithdrawalCredentials: r.InitMsg.WithdrawalCredentials,
+			DepositDataSignature:  sig.Serialize(),
+		}
+		return nil
+	}
+	return nil
+}
+
+func (r *Runner) partialSign() (*dkgtypes.PartialSigMsgBody, error) {
+	share := bls.SecretKey{}
+	err := share.Deserialize(r.keygenOutput.SecretShare)
+	if err != nil {
+		return nil, err
+	}
+
+	fork := spec.Version{}
+	copy(fork[:], r.InitMsg.Fork)
+	root, depData, err := types.GenerateETHDepositData(
+		r.keygenOutput.PublicKey,
+		r.InitMsg.WithdrawalCredentials,
+		fork,
+		types.DomainDeposit,
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not generate deposit data")
+	}
+	r.DepositDataRoot = make([]byte, len(root))
+	copy(r.DepositDataRoot[:], root)
+
+	//root := make([]byte, len(depData.DepositDataRoot))
+	//copy(root, depData.DepositDataRoot[:])
+	rawSig := share.SignByte(root[:])
+	sigBytes := rawSig.Serialize()
+	var sig spec.BLSSignature
+	copy(sig[:], sigBytes)
+
+	copy(depData.DepositData.Signature[:], sigBytes)
+
+	return &dkgtypes.PartialSigMsgBody{
+		Signer:    uint64(r.Operator.OperatorID),
+		Root:      root,
+		Signature: sig[:],
+	}, nil
+}
+
+func (r *Runner) validateDepositDataSig(msg *dkgtypes.PartialSigMsgBody) error {
+	if !bytes.Equal(r.DepositDataRoot[:], msg.Root) {
+		return errors.New("deposit data roots not equal")
+	}
+
+	index := -1
+	for i, d := range r.InitMsg.OperatorIDs {
+		if d == msg.Signer {
+			index = i
+		}
+	}
+
+	if index == -1 {
+		return errors.New("signer not part of committee")
+	}
+
+	// find operator and verify msg
+	sharePkBytes := r.keygenOutput.SharePublicKeys[index]
+	sharePk := &bls.PublicKey{} // TODO: cache this PubKey
+	if err := sharePk.Deserialize(sharePkBytes); err != nil {
+		return errors.Wrap(err, "could not deserialize public key")
+	}
+
+	sig := &bls.Sign{}
+	if err := sig.Deserialize(msg.Signature); err != nil {
+		return errors.Wrap(err, "could not deserialize partial sig")
+	}
+
+	root := make([]byte, 32)
+	copy(root, r.DepositDataRoot[:])
+	if !sig.VerifyByte(sharePk, root) {
+		return errors.New("partial deposit data sig invalid")
+	}
+
 	return nil
 }
 
