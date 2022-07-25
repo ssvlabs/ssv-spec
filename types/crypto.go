@@ -118,7 +118,7 @@ func (s Signature) ECRecover(data Root, domain DomainType, sigType SignatureType
 	recoveredAdd := crypto.PubkeyToAddress(*pk.ToECDSA())
 
 	if !bytes.Equal(address[:], recoveredAdd[:]) {
-		return errors.Wrap(err, "message EC recover doesn't match address")
+		return errors.New("message EC recover doesn't match address")
 	}
 	return nil
 }

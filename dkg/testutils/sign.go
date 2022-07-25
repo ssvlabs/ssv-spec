@@ -22,7 +22,7 @@ func (s DepositSignDataSet) Operator(operatorId types.OperatorID) *dkgtypes.Oper
 }
 
 func (s DepositSignDataSet) ParsedInitMessage(operatorId types.OperatorID) *dkgtypes.Message {
-	reqId := dkgtypes.RequestID{}
+	reqId := TestingRequestID
 	msg := dkgtypes.ParsedInitMessage{
 		Header: &dkgtypes.MessageHeader{
 			SessionId: reqId[:],
@@ -45,8 +45,9 @@ func (s DepositSignDataSet) ParsedInitMessage(operatorId types.OperatorID) *dkgt
 func (s DepositSignDataSet) ParsedPartialSigMessage(operatorId types.OperatorID) *dkgtypes.Message {
 	msg := &dkgtypes.ParsedPartialSigMessage{
 		Header: &dkgtypes.MessageHeader{
-			MsgType: int32(dkgtypes.PartialSingatureMsgType),
-			Sender:  uint64(operatorId),
+			SessionId: TestingRequestID[:],
+			MsgType:   int32(dkgtypes.PartialSingatureMsgType),
+			Sender:    uint64(operatorId),
 		},
 		Body: &dkgtypes.PartialSigMsgBody{
 			Signer:    uint64(operatorId),
@@ -60,7 +61,7 @@ func (s DepositSignDataSet) ParsedPartialSigMessage(operatorId types.OperatorID)
 }
 
 func (s DepositSignDataSet) ParsedSignedDepositDataMessage(operatorId types.OperatorID) *dkgtypes.Message {
-	reqId := dkgtypes.RequestID{}
+	reqId := TestingRequestID
 	body := &dkgtypes.SignedDepositDataMsgBody{
 		RequestID:             reqId[:],
 		OperatorID:            uint64(operatorId),
@@ -77,8 +78,9 @@ func (s DepositSignDataSet) ParsedSignedDepositDataMessage(operatorId types.Oper
 	body.OperatorSignature = sig
 	msg := &dkgtypes.ParsedSignedDepositDataMessage{
 		Header: &dkgtypes.MessageHeader{
-			MsgType: int32(dkgtypes.SignedDepositDataMsgType),
-			Sender:  uint64(operatorId),
+			SessionId: reqId[:],
+			MsgType:   int32(dkgtypes.SignedDepositDataMsgType),
+			Sender:    uint64(operatorId),
 		},
 		Body:      body,
 		Signature: nil,
@@ -104,7 +106,7 @@ func TestDepositSignDataSetFourOperators() DepositSignDataSet {
 }
 
 func (s *DepositSignDataSet) MakeOutput(operatorId types.OperatorID) *dkgtypes.SignedDepositDataMsgBody {
-	reqID := dkgtypes.RequestID{}
+	reqID := TestingRequestID
 	out := &dkgtypes.SignedDepositDataMsgBody{
 		RequestID:             make([]byte, len(reqID)),
 		OperatorID:            uint64(operatorId),

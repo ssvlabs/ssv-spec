@@ -55,7 +55,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		lastErr = err
 	}
 	for _, msg := range test.Messages {
-		node.ProcessMessage(msg)
+		err = node.ProcessMessage(msg)
 		if err != nil {
 			lastErr = err
 		}

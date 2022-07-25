@@ -62,7 +62,7 @@ func (x *Message) GetRoot() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var root []byte
+	root := make([]byte, len(bytes))
 	rootFixed := sha256.Sum256(bytes)
 	copy(root, rootFixed[:])
 
