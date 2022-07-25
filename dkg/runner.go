@@ -18,10 +18,8 @@ type Runner struct {
 	Identifier dkgtypes.RequestID
 	// DepositDataRoot is the signing root for the deposit data
 	DepositDataRoot []byte
-	// DepositDataSignatures holds partial sigs on deposit data
-	DepositDataSignatures map[types.OperatorID]*dkgtypes.PartialSigMsgBody
 	// PartialSignatures holds partial sigs on deposit data
-	PartialSignatures map[types.OperatorID][]byte
+	PartialSignatures map[types.OperatorID]*dkgtypes.ParsedPartialSigMessage
 	// OutputMsgs holds all output messages received
 	OutputMsgs map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage
 
@@ -182,11 +180,16 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 		if err := output.FromBase(msg); err != nil {
 			return false, nil, errors.Wrap(err, "could not decode SignedOutput")
 		}
-		if err := r.validateSignedOutput(output); err != nil {
-			return false, nil, errors.Wrap(err, "signed output invalid")
+		if output.Header.RequestID() != r.Identifier {
+			return false, nil, errors.New("request id mismatch")
 		}
 		r.OutputMsgs[types.OperatorID(msg.Header.Sender)] = output
 		if len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs) {
+			for _, message := range r.OutputMsgs {
+				if message.Header.RequestID() != r.Identifier {
+					return true, r.OutputMsgs, errors.New("one of more messages have mismatched request id")
+				}
+			}
 			return true, r.OutputMsgs, nil
 		}
 		return false, nil, nil
@@ -203,7 +206,6 @@ func (r *Runner) startSigning() error {
 	if err != nil {
 		return err
 	}
-	r.PartialSignatures[r.Operator.OperatorID] = pSig.Signature
 	partialSigMsg := dkgtypes.ParsedPartialSigMessage{
 		Header: &dkgtypes.MessageHeader{
 			SessionId: r.Identifier[:],
@@ -213,6 +215,7 @@ func (r *Runner) startSigning() error {
 		},
 		Body: pSig,
 	}
+	r.PartialSignatures[r.Operator.OperatorID] = &partialSigMsg
 	base, err := partialSigMsg.ToBase()
 	if err != nil {
 		return err
@@ -223,19 +226,22 @@ func (r *Runner) startSigning() error {
 
 func (r *Runner) handlePartialSigMessage(msg *dkgtypes.ParsedPartialSigMessage) error {
 
-	if err := r.validateDepositDataSig(msg.Body); err != nil {
-		return errors.Wrap(err, "PartialSigMsgBody invalid")
-	}
-
 	if found := r.PartialSignatures[types.OperatorID(msg.Header.Sender)]; found == nil {
-		r.PartialSignatures[types.OperatorID(msg.Header.Sender)] = msg.Body.Signature
-	} else if bytes.Compare(found, msg.Body.Signature) != 0 {
+		r.PartialSignatures[types.OperatorID(msg.Header.Sender)] = msg
+	} else if bytes.Compare(found.Body.Signature, msg.Body.Signature) != 0 {
 		return errors.New("inconsistent partial signature received")
 	}
 
 	if len(r.PartialSignatures) > int(r.InitMsg.Threshold) {
+		sigBytes := map[types.OperatorID][]byte{}
+		for id, pSig := range r.PartialSignatures {
+			if err := r.validateDepositDataSig(pSig.Body); err != nil {
+				return errors.Wrap(err, "PartialSigMsgBody invalid")
+			}
+			sigBytes[id] = pSig.Body.Signature
+		}
 
-		sig, err := types.ReconstructSignatures(r.PartialSignatures)
+		sig, err := types.ReconstructSignatures(sigBytes)
 		if err != nil {
 			return err
 		}

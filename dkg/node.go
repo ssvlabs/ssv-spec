@@ -51,17 +51,16 @@ func (n *Node) newRunner(id dkgtypes.RequestID, initMsg *dkgtypes.Init) (*Runner
 	}
 
 	runner := &Runner{
-		Operator:              n.operator,
-		InitMsg:               initMsg,
-		Identifier:            id,
-		DepositDataRoot:       nil,
-		DepositDataSignatures: map[types.OperatorID]*dkgtypes.PartialSigMsgBody{},
-		PartialSignatures:     map[types.OperatorID][]byte{},
-		OutputMsgs:            map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage{},
-		KeygenSubProtocol:     n.config.Protocol(initMsg, n.operator.OperatorID, id),
-		keygenOutput:          nil,
-		signOutput:            nil,
-		Config:                n.config,
+		Operator:          n.operator,
+		InitMsg:           initMsg,
+		Identifier:        id,
+		DepositDataRoot:   nil,
+		PartialSignatures: map[types.OperatorID]*dkgtypes.ParsedPartialSigMessage{},
+		OutputMsgs:        map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage{},
+		KeygenSubProtocol: n.config.Protocol(initMsg, n.operator.OperatorID, id),
+		keygenOutput:      nil,
+		signOutput:        nil,
+		Config:            n.config,
 	}
 
 	return runner, nil
