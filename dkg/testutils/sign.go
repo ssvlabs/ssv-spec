@@ -1,16 +1,57 @@
 package testutils
 
 import (
+	"encoding/hex"
 	dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/gogo/protobuf/sortkeys"
 )
 
+func h2b(str string) []byte {
+	b, _ := hex.DecodeString(str)
+	return b
+}
+
 type DepositSignDataSet struct {
-	DkgPartyDataSet
-	PublicKey         []byte
+	testingutils.TestKeySet
 	Root              []byte
 	PartialSignatures map[types.OperatorID][]byte
 	FinalSignature    []byte
+}
+
+func (s DepositSignDataSet) GetVkVec() [][]byte {
+	var vkVec [][]byte
+	for _, opId := range s.GetOperatorIds() {
+		vkVec = append(vkVec, s.Shares[types.OperatorID(opId)].GetPublicKey().Serialize())
+	}
+	return vkVec
+}
+
+func (s DepositSignDataSet) MakeLocalKeyShare(index uint64) *dkgtypes.LocalKeyShare {
+	return &dkgtypes.LocalKeyShare{
+		Index:           index,
+		Threshold:       s.GetDkgThreshold(),
+		PublicKey:       s.ValidatorPK.Serialize(),
+		SecretShare:     s.Shares[types.OperatorID(index)].Serialize(),
+		Committee:       s.GetOperatorIds(),
+		SharePublicKeys: s.GetVkVec(),
+	}
+}
+
+func (s DepositSignDataSet) GetDkgThreshold() uint64 {
+	return s.TestKeySet.Threshold - 1 // Different threshold standard
+}
+
+func (s DepositSignDataSet) GetOperatorIds() []uint64 {
+	ids := make([]uint64, len(s.Shares))
+	count := 0
+	for id, _ := range s.Shares {
+		ids[count] = uint64(id)
+		count++
+	}
+	sortkeys.Uint64s(ids)
+	return ids
 }
 
 func (s DepositSignDataSet) Operator(operatorId types.OperatorID) *dkgtypes.Operator {
@@ -31,8 +72,8 @@ func (s DepositSignDataSet) ParsedInitMessage(operatorId types.OperatorID) *dkgt
 			Receiver:  0,
 		},
 		Body: &dkgtypes.Init{
-			OperatorIds:           s.IndicesVec(),
-			Threshold:             s.Threshold(),
+			OperatorIds:           s.GetOperatorIds(),
+			Threshold:             s.GetDkgThreshold(), // Different threshold standard
 			WithdrawalCredentials: TestingWithdrawalCredentials,
 			Fork:                  TestingForkVersion[:],
 		},
@@ -65,10 +106,10 @@ func (s DepositSignDataSet) ParsedSignedDepositDataMessage(operatorId types.Oper
 	body := &dkgtypes.SignedDepositDataMsgBody{
 		RequestId:             reqId[:],
 		OperatorId:            uint64(operatorId),
-		EncryptedShare:        FakeEncryption(s.SecretShares[operatorId]),
-		Committee:             s.IndicesVec(),
-		Threshold:             uint64(len(s.PartyData[operatorId].Coefficients) - 1),
-		ValidatorPublicKey:    s.PublicKey,
+		EncryptedShare:        FakeEncryption(s.Shares[operatorId].Serialize()),
+		Committee:             s.GetOperatorIds(),
+		Threshold:             s.GetDkgThreshold(),
+		ValidatorPublicKey:    s.ValidatorPK.Serialize(),
 		WithdrawalCredentials: TestingWithdrawalCredentials,
 		DepositDataSignature:  s.FinalSignature,
 		OperatorSignature:     nil,
@@ -90,16 +131,15 @@ func (s DepositSignDataSet) ParsedSignedDepositDataMessage(operatorId types.Oper
 }
 
 func TestDepositSignDataSetFourOperators() DepositSignDataSet {
-	ds := TestSuiteFourOperators()
+	ks := testingutils.Testing4SharesSet()
 	return DepositSignDataSet{
-		DkgPartyDataSet: ds,
-		PublicKey:       h2b("8adbbb94ab3b4741e651e20255ad33e73483d0c83181b3aedad5fec9d648e952bfd4baeef8236781ce00300d17ae31ad"),
-		Root:            h2b("fd42dbe9b7d9a89973682d8a0e4f106bacc6c0c9a0a274b984179460f8a15494"),
+		TestKeySet: *ks,
+		Root:       h2b("1fa0068233c6c0ffedd8fb1c6dea0fd13d67d5a558b803acecf15601e36dd8d9"),
 		PartialSignatures: map[types.OperatorID][]byte{
-			1: h2b("a718e6bde435b2c451d2563e0e4191365ebf343062d89cc178b93a6d5bc3cd00627b03bdf2270cb955d85c1dadafb2050364f04a813a12b71de5a8ea9bd59f2b95a1402b00bd6d8628e6d3617c59511b7e543b46e341d9c88815972bd22be009"),
-			2: h2b("aefeffccb022b9e262142a6b9bc52a1b8cdfa2235b27754c73baf53efa90c4163d35eb3d316177bbc93dbadc4976c6a4107a8631d615ff07d47c0d39636fe9478d1b5cb3b1b7bfe06b59d04fc76b504a79cc7a9b70d61a17989e59575d37eb04"),
-			3: h2b("a547ebdbe91074474230ec6c05ef289c7eeb2156b2ae4aabdb20b676c65d3666ebf8e3e63a0c38842616986413d40ce90deb431608230756dab597c7673e26c4b1b8ef6dbd63213c8cbe73ea2edf3f514022f54f21566821d5068f04ad635260"),
-			4: h2b("b13373f8cb291e083e437fa805950731e8ead7629afdd29ed38e63155b32fb98cabf731644465068d94bac0d7f118e940c27ae8e296710f32e578225cbef9dc657808a5f0c00b70da00db8d47b525ae076e58285fd7ac17ec1aee4d1d5b46ac6"),
+			1: h2b("a2eba343f78bb70fca2f0fe45880f1770d0797b96f26f393243a3941aebf47a55205a1a0cda6558120a067cb11a653f418fa27946c315d67a3d86c48db27d2977e58c59acd8fe60219d89e68c4a8151307a8372be015c3d25a01d0e5a0263d24"),
+			2: h2b("b2fce5a84f7c8c641ec0e59a12840a8ffc4e7b95078cb8919f960dac2f5aba157b71cc6d562d2aa7126d0e19e142b1a616c8c03a6274df51a50a856c0ee732605ccbea74091b1e6f7f819cf7d3c57e074a9d227aad2be0bca5448008782e433a"),
+			3: h2b("865c9e5e9041a8ecfa3a04d940de408cd6a99be48c81ca69b4f22ed57a9ec3b406bc60e65e7118c6b770e41d456c54b40aaad0c6362176136bb0d1cd845bc4bce13ec113ff2b291e556a44f13a2bed864a21eb3034c1111767ec3b6c2a909e1e"),
+			4: h2b("94a7257ac6be9bd2110059ff2990700ed7390315779758920f2af1d1a86dbdeca7af022624e6a624840a786e88b6538506be9fd6f1e25b633707dd0cc5c36bcceb3b4cb9512f4f36a7b8f53a8e1d7efa16b6b860b35301347ee85a7c4f50462f"),
 		},
 		FinalSignature: h2b("8367b439510a7eca0921c81cb05fb39e8a4d7460ca638aa77db4dc5f48085d2c23eaf9ef99eb919ba86ad7910145ac1709422a5604a2181e81324136e11a7810dc193d2f8bf480e7899cb1edb9e9b032a26d3260ff531972a4757cf042d61f7c"),
 	}
@@ -110,10 +150,10 @@ func (s *DepositSignDataSet) MakeOutput(operatorId types.OperatorID) *dkgtypes.S
 	out := &dkgtypes.SignedDepositDataMsgBody{
 		RequestId:             make([]byte, len(reqID)),
 		OperatorId:            uint64(operatorId),
-		EncryptedShare:        FakeEncryption(s.SecretShares[operatorId]),
-		Committee:             s.DkgPartyDataSet.IndicesVec(),
-		Threshold:             uint64(len(s.PartyData[operatorId].Coefficients) - 1),
-		ValidatorPublicKey:    s.PublicKey,
+		EncryptedShare:        FakeEncryption(s.Shares[operatorId].Serialize()),
+		Committee:             s.GetOperatorIds(),
+		Threshold:             s.GetDkgThreshold(),
+		ValidatorPublicKey:    s.ValidatorPK.Serialize(),
 		WithdrawalCredentials: TestingWithdrawalCredentials,
 		DepositDataSignature:  s.FinalSignature,
 	}

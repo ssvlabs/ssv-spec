@@ -1,0 +1,39 @@
+syntax = "proto3";
+package ssv.gg20;
+option go_package = "gg20/types";
+import "dkg/types/messages.proto";
+
+message Round1Msg{
+  bytes commitment = 1;
+}
+
+message Round2Msg{
+  repeated bytes decommitment = 1;
+  bytes blind_factor = 2;
+}
+
+message Round3Msg {
+  bytes share = 3 ;
+}
+
+message Round4Msg {
+  bytes commitment = 1;
+  bytes pub_key = 2;
+  bytes challenge_response = 3;
+}
+
+message KeygenMsgBody {
+  Round1Msg round1 = 1;
+  Round2Msg round2 = 2;
+  Round3Msg round3 = 3;
+  Round4Msg round4 = 4;
+}
+
+/*
+ * It has the same shape as base.Message except the data is parsed into KeygenMsgBody
+ */
+message ParsedMessage {
+  ssv.dkg.types.MessageHeader header = 1;
+  KeygenMsgBody body = 2;
+  bytes signature = 3;
+}
