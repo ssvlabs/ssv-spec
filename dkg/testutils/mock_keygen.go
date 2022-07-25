@@ -2,18 +2,18 @@ package testutils
 
 import dkgtypes "github.com/bloxapp/ssv-spec/dkg/types"
 
-type mockProtocol struct {
-	localKeyShare *dkgtypes.LocalKeyShare
+type MockProtocol struct {
+	LocalKeyShare *dkgtypes.LocalKeyShare
 }
 
-func (m mockProtocol) Start() ([]dkgtypes.Message, error) {
+func (m MockProtocol) Start() ([]dkgtypes.Message, error) {
 	return nil, nil
 }
 
-func (m mockProtocol) ProcessMsg(msg *dkgtypes.Message) ([]dkgtypes.Message, error) {
+func (m MockProtocol) ProcessMsg(msg *dkgtypes.Message) ([]dkgtypes.Message, error) {
 	return nil, nil
 }
 
-func (m mockProtocol) Output() ([]byte, error) {
-	return m.localKeyShare.Encode()
+func (m MockProtocol) Output() ([]byte, error) {
+	return m.LocalKeyShare.Encode()
 }

@@ -12,7 +12,7 @@ type MockNetwork struct {
 	mutex       sync.Mutex
 }
 
-func newMockNetwork() *MockNetwork {
+func NewMockNetwork() *MockNetwork {
 	return &MockNetwork{
 		Broadcasted: make([]*dkgtypes.Message, 0),
 		Output:      map[types.OperatorID]*dkgtypes.ParsedSignedDepositDataMessage{},

@@ -20,13 +20,13 @@ func TestNode(dataset DepositSignDataSet, index uint64) *dkg.Node {
 	}
 
 	var protocol = func(init *dkgtypes.Init, operatorID types.OperatorID, identifier dkgtypes.RequestID) dkgtypes.Protocol {
-		return mockProtocol{localKeyShare: dataset.MakeLocalKeyShare(index)}
+		return MockProtocol{LocalKeyShare: dataset.MakeLocalKeyShare(index)}
 	}
 	config := &dkgtypes.Config{
 		Protocol:            protocol,
 		BeaconNetwork:       types.PraterNetwork,
-		Network:             newMockNetwork(),
-		Storage:             newMockStorage(dataset.TestKeySet),
+		Network:             NewMockNetwork(),
+		Storage:             NewMockStorage(dataset.TestKeySet),
 		SignatureDomainType: types.PrimusTestnet,
 		Signer: &MockSigner{
 			SK:            dataset.DKGOperators[types.OperatorID(index)].SK,
@@ -39,13 +39,13 @@ func TestNode(dataset DepositSignDataSet, index uint64) *dkg.Node {
 
 func TestConfig(dataset DepositSignDataSet, index uint64) *dkgtypes.Config {
 	var protocol = func(init *dkgtypes.Init, operatorID types.OperatorID, identifier dkgtypes.RequestID) dkgtypes.Protocol {
-		return mockProtocol{localKeyShare: dataset.MakeLocalKeyShare(index)}
+		return MockProtocol{LocalKeyShare: dataset.MakeLocalKeyShare(index)}
 	}
 	return &dkgtypes.Config{
 		Protocol:            protocol,
 		BeaconNetwork:       types.PraterNetwork,
-		Network:             newMockNetwork(),
-		Storage:             newMockStorage(dataset.TestKeySet),
+		Network:             NewMockNetwork(),
+		Storage:             NewMockStorage(dataset.TestKeySet),
 		SignatureDomainType: types.PrimusTestnet,
 		Signer: &MockSigner{
 			SK:            dataset.DKGOperators[types.OperatorID(index)].SK,
@@ -56,7 +56,7 @@ func TestConfig(dataset DepositSignDataSet, index uint64) *dkgtypes.Config {
 }
 
 func TestRunner(dataset DepositSignDataSet, keyset testingutils.TestKeySet, index uint64) *dkg.Runner {
-	kgProtocol := mockProtocol{localKeyShare: dataset.MakeLocalKeyShare(index)}
+	kgProtocol := MockProtocol{LocalKeyShare: dataset.MakeLocalKeyShare(index)}
 	partyData := dataset.PartyData[types.OperatorID(index)]
 	threshold := uint64(len(partyData.Coefficients) - 1)
 	init := dkgtypes.Init{
@@ -81,7 +81,7 @@ func TestRunner(dataset DepositSignDataSet, keyset testingutils.TestKeySet, inde
 		Config: &dkgtypes.Config{
 			Protocol:            nil,
 			BeaconNetwork:       "",
-			Network:             newMockNetwork(),
+			Network:             NewMockNetwork(),
 			Storage:             nil,
 			SignatureDomainType: nil,
 			Signer: &MockSigner{

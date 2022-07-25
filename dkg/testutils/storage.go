@@ -22,7 +22,7 @@ func (m MockStorage) GetDKGOperator(operatorID types.OperatorID) (bool, *dkgtype
 	return true, o, nil
 }
 
-func newMockStorage(keySet testingutils.TestKeySet) *MockStorage {
+func NewMockStorage(keySet testingutils.TestKeySet) *MockStorage {
 	return &MockStorage{
 		keySet: keySet,
 	}
