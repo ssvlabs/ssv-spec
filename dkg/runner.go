@@ -30,20 +30,7 @@ type Runner struct {
 }
 
 func (r *Runner) Start() error {
-	initMsg := &dkgtypes.ParsedInitMessage{
-		Header: &dkgtypes.MessageHeader{
-			SessionId: r.Identifier[:],
-			MsgType:   int32(dkgtypes.InitMsgType),
-			Sender:    0,
-			Receiver:  0,
-		},
-		Body: r.InitMsg,
-	}
-	base, err := initMsg.ToBase()
-	if err != nil {
-		return err
-	}
-	outgoing, err := r.KeygenSubProtocol.ProcessMsg(base)
+	outgoing, err := r.KeygenSubProtocol.Start()
 	if err != nil {
 		return err
 	}
