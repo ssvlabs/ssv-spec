@@ -115,52 +115,6 @@ func (r *Runner) ProcessMsg(msg *dkgtypes.Message) (bool, map[types.OperatorID]*
 			r.broadcastMessages([]dkgtypes.Message{*base}, dkgtypes.OutputMsgType)
 			return false, nil, nil
 		}
-		//if hasOutput(outgoing, dkgtypes.PartialOutputMsgType) {
-		//	return true, nil, err
-		//}
-
-		/*
-				// TODO: Do we need to aggregate the signed outputs.
-			case DepositDataMsgType:
-				depSig := &PartialSigMsgBody{}
-				if err := depSig.Decode(msg.Message.Data); err != nil {
-					return false, nil, errors.Wrap(err, "could not decode PartialSigMsgBody")
-				}
-
-				if err := r.validateDepositDataSig(depSig); err != nil {
-					return false, nil, errors.Wrap(err, "PartialSigMsgBody invalid")
-				}
-
-				r.DepositDataSignatures[msg.Signer] = depSig
-				if len(r.DepositDataSignatures) == int(r.InitMsg.Threshold) {
-					// reconstruct deposit data sig
-					depositSig, err := r.reconstructDepositDataSignature()
-					if err != nil {
-						return false, nil, errors.Wrap(err, "could not reconstruct deposit data sig")
-					}
-
-					// encrypt Operator's share
-					encryptedShare, err := r.Config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeyGenOutput.Share.Serialize())
-					if err != nil {
-						return false, nil, errors.Wrap(err, "could not encrypt share")
-					}
-
-					ret, err := r.generateSignedOutput(&Output{
-						RequestID:            r.Identifier,
-						EncryptedShare:       encryptedShare,
-						SharePubKey:          r.KeyGenOutput.Share.GetPublicKey().Serialize(),
-						ValidatorPubKey:      r.KeyGenOutput.ValidatorPK,
-						DepositDataSignature: depositSig,
-					})
-					if err != nil {
-						return false, nil, errors.Wrap(err, "could not generate dkg SignedOutput")
-					}
-
-					if err := r.signAndBroadcastMsg(ret, OutputMsgType); err != nil {
-						return false, nil, errors.Wrap(err, "could not broadcast SignedOutput")
-					}
-					return false, nil, nil
-				} */
 	case int32(dkgtypes.OutputMsgType):
 		output := &dkgtypes.ParsedSignedDepositDataMessage{}
 		if err := output.FromBase(msg); err != nil {
@@ -327,19 +281,6 @@ func (r *Runner) validateDepositDataSig(msg *dkgtypes.PartialSigMsgBody) error {
 	return nil
 }
 
-//func (r *Runner) generateSignedOutput(o *dkgtypes.Output) (*dkgtypes.SignedOutput, error) {
-//	sig, err := r.Config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
-//	if err != nil {
-//		return nil, errors.Wrap(err, "could not sign output")
-//	}
-//
-//	return &dkgtypes.SignedOutput{
-//		Data:      o,
-//		Signer:    r.Operator.OperatorID,
-//		Signature: sig,
-//	}, nil
-//}
-
 func (r *Runner) broadcastMessages(msgs []dkgtypes.Message, msgType dkgtypes.MsgType) error {
 	for _, message := range msgs {
 		if message.Header.MsgType == int32(msgType) {
@@ -363,10 +304,6 @@ func (r *Runner) signAndBroadcast(msg *dkgtypes.Message) error {
 	}
 	r.Config.Network.Broadcast(msg)
 	return nil
-}
-
-func hasOutput(msgs []dkgtypes.Message, msgType dkgtypes.MsgType) bool {
-	return msgs != nil && len(msgs) > 0 && msgs[len(msgs)-1].Header.MsgType == int32(msgType)
 }
 
 func (r *Runner) validateSignedOutput(msg *dkgtypes.ParsedSignedDepositDataMessage) error {
