@@ -122,20 +122,10 @@ func (r *Runner) validateDepositDataSig(msg *dkgtypes.PartialSigMsgBody) error {
 	if !bytes.Equal(r.DepositDataRoot[:], msg.Root) {
 		return errors.New("deposit data roots not equal")
 	}
-
-	index := -1
-	for i, d := range r.InitMsg.OperatorIDs {
-		if d == msg.Signer {
-			index = i
-		}
+	sharePkBytes, err := r.findSignerPubKey(msg.Signer)
+	if err != nil {
+		return err
 	}
-
-	if index == -1 {
-		return errors.New("signer not part of committee")
-	}
-
-	// find operator and verify msg
-	sharePkBytes := r.keygenOutput.SharePublicKeys[index]
 	sharePk := &bls.PublicKey{} // TODO: cache this PubKey
 	if err := sharePk.Deserialize(sharePkBytes); err != nil {
 		return errors.Wrap(err, "could not deserialize public key")
@@ -153,4 +143,22 @@ func (r *Runner) validateDepositDataSig(msg *dkgtypes.PartialSigMsgBody) error {
 	}
 
 	return nil
+}
+
+func (r *Runner) findSignerPubKey(signer uint64) ([]byte, error) {
+
+	index := -1
+	for i, d := range r.InitMsg.OperatorIDs {
+		if d == signer {
+			index = i
+		}
+	}
+
+	if index == -1 {
+		return nil, errors.New("signer not part of committee")
+	}
+
+	// find operator and verify msg
+	sharePkBytes := r.keygenOutput.SharePublicKeys[index]
+	return sharePkBytes, nil
 }
