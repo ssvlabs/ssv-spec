@@ -14,7 +14,7 @@ func RoundChangeDataInvalidPreparedValue() *tests.MsgSpecTest {
 		Height:     qbft.FirstHeight,
 		Round:      10,
 		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.RoundChangePreparedDataBytes(nil, 2, []byte{1, 2, 3, 4}, nil),
+		Data:       testingutils.RoundChangePreparedDataBytes(nil, 2, nil),
 	})
 
 	return &tests.MsgSpecTest{

@@ -1,7 +1,6 @@
 package qbft
 
 import (
-	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -43,7 +42,7 @@ func (i *Instance) uponRoundChange(
 		proposal, err := CreateProposal(
 			i.State,
 			i.config,
-			highestRCData.NextProposalData,
+			highestRCData.PreparedValue,
 			roundChangeMsgContainer.MessagesForRound(i.State.Round), // TODO - might be optimized to include only necessary quorum
 			highestRCData.RoundChangeJustification,
 		)
@@ -117,7 +116,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 			roundChanges,
 			rcData.RoundChangeJustification,
 			signedRoundChange.Message.Round,
-			rcData.NextProposalData,
+			rcData.PreparedValue,
 			valCheck,
 		) == nil &&
 			proposer(state, config, msg.Message.Round) == state.Share.OperatorID {
@@ -209,13 +208,9 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 			return errors.New("prepared round > round")
 		}
 
-		if !bytes.Equal(rcData.NextProposalData, rcData.PreparedValue) {
-			return errors.New("next proposal data != prepared value")
-		}
-
 		return nil
 	}
-	return errors.New("round change prepare round & value are wrong")
+	return nil
 }
 
 // highestPrepared returns a round change message with the highest prepared round, returns nil if none found
@@ -263,13 +258,11 @@ func getRoundChangeData(state *State, config IConfig, instanceStartValue []byte)
 		return &RoundChangeData{
 			PreparedRound:            state.LastPreparedRound,
 			PreparedValue:            state.LastPreparedValue,
-			NextProposalData:         state.LastPreparedValue,
 			RoundChangeJustification: justifications,
 		}, nil
 	}
 	return &RoundChangeData{
-		PreparedRound:    NoRound,
-		NextProposalData: instanceStartValue,
+		PreparedRound: NoRound,
 	}, nil
 }
 

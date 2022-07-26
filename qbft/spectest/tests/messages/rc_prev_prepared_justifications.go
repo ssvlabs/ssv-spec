@@ -38,7 +38,7 @@ func RoundChangePrePreparedJustifications() *tests.MsgSpecTest {
 		Height:     qbft.FirstHeight,
 		Round:      10,
 		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+		Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 	})
 
 	return &tests.MsgSpecTest{
