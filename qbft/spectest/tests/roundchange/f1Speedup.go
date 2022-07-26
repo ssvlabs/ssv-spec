@@ -17,14 +17,14 @@ func F1Speedup() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      10,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      10,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 
 		// this is the catchup round change sent by the node
@@ -33,7 +33,7 @@ func F1Speedup() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      10,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 	}
 
@@ -104,7 +104,7 @@ func F1Speedup() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up",
 		Pre:           pre,
-		PostRoot:      "08a9b9917bbe9bca58bfe6c83075732947a473fdd4b35ae8939bb071113728f9",
+		PostRoot:      "e5406983af0358fe74fd280b41b2450a5c2a52f9216f27ee6a92f2be73959850",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -121,7 +121,7 @@ func F1Speedup() *tests.MsgProcessingSpecTest {
 				Height:     qbft.FirstHeight,
 				Round:      10,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 			}),
 
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

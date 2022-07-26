@@ -9,6 +9,7 @@ import (
 )
 
 // FutureDecided tests a multi signer commit msg with a quorum from a future round
+// Currently failing!
 func FutureDecided() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{

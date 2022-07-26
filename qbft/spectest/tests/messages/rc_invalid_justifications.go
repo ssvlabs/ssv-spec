@@ -14,7 +14,7 @@ func RoundChangeDataInvalidJustifications() *tests.MsgSpecTest {
 		Height:     qbft.FirstHeight,
 		Round:      10,
 		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 1, []byte{1, 2, 3, 4}, nil),
+		Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 1, nil),
 	})
 
 	return &tests.MsgSpecTest{

@@ -1,4 +1,4 @@
-package proposal
+package roundchange
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// JustificationsValueNotJustified tests a proposal for > 1 round, prepared previously with rc justification prepares at different heights but the prepare value is not the highest
-func JustificationsValueNotJustified() *tests.MsgProcessingSpecTest {
+// PeerPreparedDifferentHeights tests a round change quorum where peers prepared on different heights
+func PeerPreparedDifferentHeights() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 3
 
@@ -58,45 +58,43 @@ func JustificationsValueNotJustified() *tests.MsgProcessingSpecTest {
 			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-	rcMsgs := []*qbft.SignedMessage{
+	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      3,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs1),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      3,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 2, prepareMsgs2),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      3,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
-	}
-
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
+		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      3,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 3}, rcMsgs, prepareMsgs2),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs1),
+		}),
+		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+			MsgType:    qbft.RoundChangeMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      3,
+			Identifier: []byte{1, 2, 3, 4},
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 2, prepareMsgs2),
 		}),
 	}
+
 	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal value not justified",
-		Pre:            pre,
-		PostRoot:       "5a71daf1a4ee817826596858f76e56a1a85aedd85b9c4e65e73fc4c4667e65b0",
-		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "proposal invalid: proposal not justified: proposed data doesn't match highest prepared",
+		Name:          "round change peer prepared different heights",
+		Pre:           pre,
+		PostRoot:      "1708814818466ce0225a3b5c6ac00089275f9e39aa99e5440e2cc6d952d4c630",
+		InputMessages: msgs,
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.ProposalMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      3,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, msgs, prepareMsgs2),
+			}),
+		},
 	}
 }

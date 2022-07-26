@@ -19,23 +19,23 @@ func CreateProposalNotPreviouslyPrepared() *tests.CreateMsgSpecTest {
 				Height:     qbft.FirstHeight,
 				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 			}),
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 				MsgType:    qbft.RoundChangeMsgType,
 				Height:     qbft.FirstHeight,
 				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 			}),
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 				MsgType:    qbft.RoundChangeMsgType,
 				Height:     qbft.FirstHeight,
 				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 			}),
 		},
-		ExpectedRoot: "f910e0dbee145020bdf670ba9c8474b3e4941e528fc08f52e9a3ccbf9b5abd74",
+		ExpectedRoot: "89f88f24f9aa3496d925cb869b9de51b3be1379f1957fff15a0ba0ae83e241de",
 	}
 }
