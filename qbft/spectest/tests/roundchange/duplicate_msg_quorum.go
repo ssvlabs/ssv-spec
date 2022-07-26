@@ -62,7 +62,7 @@ func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change duplicate msg",
 		Pre:            pre,
-		PostRoot:       "0bc9f67cd0038e7c64e63bb64ad6309b3b9ba78c95f66edb3730f329866d9a64",
+		PostRoot:       "3f60e8a4d86fb1655b908cac2356f5d95ccc0baf54745cb7d821f94ceef3e0b0",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

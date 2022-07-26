@@ -36,6 +36,6 @@ func CreateProposalNotPreviouslyPrepared() *tests.CreateMsgSpecTest {
 				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 			}),
 		},
-		ExpectedRoot: "f910e0dbee145020bdf670ba9c8474b3e4941e528fc08f52e9a3ccbf9b5abd74",
+		ExpectedRoot: "89f88f24f9aa3496d925cb869b9de51b3be1379f1957fff15a0ba0ae83e241de",
 	}
 }

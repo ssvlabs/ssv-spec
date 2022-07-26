@@ -59,6 +59,6 @@ func CreateProposalPreviouslyPrepared() *tests.CreateMsgSpecTest {
 				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
-		ExpectedRoot: "17edc6990c2b955ccc4945f63b5d5a920dd5851d408dc0a335780d7fdaeb8cf3",
+		ExpectedRoot: "15a4700a55577a524a147d348d35aaeafbd04b478ba963988e7af3647b9dbb8c",
 	}
 }

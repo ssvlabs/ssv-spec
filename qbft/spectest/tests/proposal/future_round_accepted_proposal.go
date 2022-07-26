@@ -54,7 +54,7 @@ func FutureRoundAcceptedProposal() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal future round (accepted proposal)",
 		Pre:           pre,
-		PostRoot:      "2d30e8227ef6aaa325c5cb025737690ebfb4d5ba44197645eae6dc9d3b67f3ed",
+		PostRoot:      "3dfa199089fad45cc37b1435f2a3376a29717e13824bd861a91859c4b58112b3",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

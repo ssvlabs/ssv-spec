@@ -63,7 +63,7 @@ func PastRound() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change past round",
 		Pre:            pre,
-		PostRoot:       "dba44db6adef02925922323057f119234ab1b424083e14346d2ae03ba8cfba54",
+		PostRoot:       "76290e82be38ed177a3084e880b32968930b58c2c803093b0d56230b7c2fa0a2",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

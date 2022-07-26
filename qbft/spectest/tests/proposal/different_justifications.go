@@ -94,7 +94,7 @@ func DifferentJustifications() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "different proposal round change justification",
 		Pre:           pre,
-		PostRoot:      "8979bd521bda529efc4cc9babcb5a9a28f1ecd2e8c77e1576f0c71834264b16b",
+		PostRoot:      "30e4900b9844296559d2ea3f4411dbe20c2a23586fc0a3ab4c76d1f3e9b826dd",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

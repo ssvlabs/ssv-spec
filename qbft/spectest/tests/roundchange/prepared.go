@@ -48,7 +48,7 @@ func Prepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change prepared",
 		Pre:            pre,
-		PostRoot:       "52671ab7bb1eccc5e567983c08bef29eb90a9c324ceb0bba8301658931e4b99c",
+		PostRoot:       "a2972f1ad5c0fce5c1f203bb2e33123ce2caa7abdd5d50266c88c37708c185d0",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

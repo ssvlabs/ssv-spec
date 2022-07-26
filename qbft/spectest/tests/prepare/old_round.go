@@ -54,7 +54,7 @@ func OldRound() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare prev round",
 		Pre:           pre,
-		PostRoot:      "94401eae7fd634e7b3b2259389991b3ca1080873db986d71e070f63df58b91ec",
+		PostRoot:      "3a85ee7abc9275684534414a639bd4d968f66bb319214da057a47ab8f9a881b4",
 		InputMessages: msgs,
 		ExpectedError: "invalid prepare msg: msg round wrong",
 	}

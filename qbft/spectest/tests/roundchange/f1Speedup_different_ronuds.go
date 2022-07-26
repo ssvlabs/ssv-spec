@@ -62,7 +62,7 @@ func F1SpeedupDifferentRounds() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change speedup different rounds",
 		Pre:           pre,
-		PostRoot:      "449a9e0d833690261044a9d6f678579659a7ee41b092f28643758ec89a2f294f",
+		PostRoot:      "b74ff3e5b4de7bad91ec0fe43df0cda913470edfb93357798343c5d7aaf2bdd0",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

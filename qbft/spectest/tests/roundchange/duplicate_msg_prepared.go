@@ -69,7 +69,7 @@ func DuplicateMsgPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:     "round change duplicate prepared msg",
 		Pre:      pre,
-		PostRoot: "198445399b9ba4575f1553d7fd43e28d6a18a0a288736b9e379ffb8bb12d38f2",
+		PostRoot: "278cb56a09a35f6f648ec3ad2341032ec07921680f7ee0c48776a79e2f6dc33c",
 		InputMessages: append(msgs, testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
 			Height:     qbft.FirstHeight,

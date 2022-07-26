@@ -25,7 +25,7 @@ func NotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change not prepared",
 		Pre:            pre,
-		PostRoot:       "26b54c2cc1b6f0cf3b7e49345afc6dc2211f3b895831ed7d383de38650b364e5",
+		PostRoot:       "d505d40779a07ddd392d4da88a33a2bf67775777eb5227a53cdd3421d5efa28a",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

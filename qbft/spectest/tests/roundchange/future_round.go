@@ -62,7 +62,7 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change future round",
 		Pre:            pre,
-		PostRoot:       "7f0ff6182b0802a8ad593660992891d9aa2c489ed8cdbb403eb9f54ffc60142b",
+		PostRoot:       "68f282c2174c4f87911a52b0bc7fb25af8b5c1dffcb98d653ac1e46d0d56c3e3",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

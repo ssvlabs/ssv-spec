@@ -24,7 +24,7 @@ func (i *Instance) uponRoundChange(
 		return nil // UponCommit was already called
 	}
 
-	highestJustifiedRoundChangeMsg, err := hasReceivedProposalJustificationForLeadingRound(
+	justifiedRoundChangeMsg, err := hasReceivedProposalJustificationForLeadingRound(
 		i.State,
 		i.config,
 		signedRoundChange,
@@ -33,16 +33,24 @@ func (i *Instance) uponRoundChange(
 	if err != nil {
 		return errors.Wrap(err, "could not get proposal justification for leading ronud")
 	}
-	if highestJustifiedRoundChangeMsg != nil {
-		highestRCData, err := highestJustifiedRoundChangeMsg.Message.GetRoundChangeData()
+	if justifiedRoundChangeMsg != nil {
+		highestRCData, err := justifiedRoundChangeMsg.Message.GetRoundChangeData()
 		if err != nil {
 			return errors.Wrap(err, "could not round change data from highestJustifiedRoundChangeMsg")
+		}
+
+		// Chose proposal value.
+		// If justifiedRoundChangeMsg has no prepare justification chose state value
+		// If justifiedRoundChangeMsg has prepare justification chose prepared value
+		valueToPropose := instanceStartValue
+		if highestRCData.Prepared() {
+			valueToPropose = highestRCData.PreparedValue
 		}
 
 		proposal, err := CreateProposal(
 			i.State,
 			i.config,
-			highestRCData.PreparedValue,
+			valueToPropose,
 			roundChangeMsgContainer.MessagesForRound(i.State.Round), // TODO - might be optimized to include only necessary quorum
 			highestRCData.RoundChangeJustification,
 		)
@@ -87,7 +95,10 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 	return HasPartialQuorum(state.Share, rc), rc
 }
 
-// hasReceivedProposalJustificationForLeadingRound returns the highest justified round change message (if this node is also a leader)
+// hasReceivedProposalJustificationForLeadingRound returns
+// if first round or not received round change msgs with prepare justification - returns first rc msg in container
+// if received round change msgs with prepare justification - returns the highest prepare justification round change msg
+// (all the above considering the operator is a leader for the round
 func hasReceivedProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
