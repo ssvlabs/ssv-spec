@@ -50,6 +50,9 @@ func TestJson(t *testing.T) {
 			testingutils.TestingConfig(ks).ValueCheckF,
 			testingutils.TestingConfig(ks).Storage,
 			testingutils.TestingConfig(ks).Network,
+			func(state *qbft.State, round qbft.Round) types.OperatorID {
+				return 1
+			},
 		)
 		require.NoError(t, newContr.Decode(byts))
 		test.Runner.QBFTController = newContr

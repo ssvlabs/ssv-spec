@@ -63,7 +63,7 @@ var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byt
 	return ret
 }
 
-func NewTestingQBFTController(identifier []byte, share *types.Share, valCheck qbft.ProposedValueCheckF) *qbft.Controller {
+func NewTestingQBFTController(identifier []byte, share *types.Share, valCheck qbft.ProposedValueCheckF, proposerF qbft.ProposerF) *qbft.Controller {
 	return qbft.NewController(
 		identifier,
 		share,
@@ -72,5 +72,6 @@ func NewTestingQBFTController(identifier []byte, share *types.Share, valCheck qb
 		valCheck,
 		NewTestingStorage(),
 		NewTestingNetwork(),
+		proposerF,
 	)
 }

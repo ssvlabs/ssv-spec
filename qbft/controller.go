@@ -46,6 +46,7 @@ type Controller struct {
 	valueCheck      ProposedValueCheckF
 	storage         Storage
 	network         Network
+	proposerF       ProposerF
 }
 
 func NewController(
@@ -56,6 +57,7 @@ func NewController(
 	valueCheck ProposedValueCheckF,
 	storage Storage,
 	network Network,
+	proposerF ProposerF,
 ) *Controller {
 	return &Controller{
 		Identifier:      identifier,
@@ -67,12 +69,13 @@ func NewController(
 		valueCheck:      valueCheck,
 		storage:         storage,
 		network:         network,
+		proposerF:       proposerF,
 	}
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
 func (c *Controller) StartNewInstance(value []byte) error {
-	if err := c.canStartInstance(value); err != nil {
+	if err := c.canStartInstance(c.Height+1, value); err != nil {
 		return errors.Wrap(err, "can't start new QBFT instance")
 	}
 
@@ -147,10 +150,10 @@ func (c *Controller) addAndStoreNewInstance() *Instance {
 	return i
 }
 
-func (c *Controller) canStartInstance(value []byte) error {
-	if c.Height > FirstHeight {
+func (c *Controller) canStartInstance(height Height, value []byte) error {
+	if height > FirstHeight {
 		// check prev instance if prev instance is not the first instance
-		inst := c.StoredInstances.FindInstance(c.Height)
+		inst := c.StoredInstances.FindInstance(height - 1)
 		if inst == nil {
 			return errors.New("could not find previous instance")
 		}
@@ -196,5 +199,6 @@ func (c *Controller) generateConfig() IConfig {
 		ValueCheckF: c.valueCheck,
 		Storage:     c.storage,
 		Network:     c.network,
+		ProposerF:   c.proposerF,
 	}
 }
