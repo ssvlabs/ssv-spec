@@ -17,12 +17,14 @@ func StartInstancePreviousDecided() *tests.ControllerSpecTest {
 			InputMessages []*qbft.SignedMessage
 			Decided       bool
 			DecidedVal    []byte
+			DecidedCnt    uint
 		}{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet()),
 				Decided:       true,
 				DecidedVal:    []byte{1, 2, 3, 4},
+				DecidedCnt:    1,
 			},
 			{
 				InputValue: []byte{1, 2, 3, 4},

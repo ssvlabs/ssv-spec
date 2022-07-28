@@ -109,5 +109,5 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 }
 
 func (test *CreateMsgSpecTest) TestName() string {
-	return test.Name
+	return "qbft create message " + test.Name
 }

@@ -42,5 +42,5 @@ func (test *DecidedMsgSpecTest) Run(t *testing.T) {
 }
 
 func (test *DecidedMsgSpecTest) TestName() string {
-	return test.Name
+	return "qbft decided message " + test.Name
 }

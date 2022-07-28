@@ -14,6 +14,7 @@ func StartInstancePreviousNotDecided() *tests.ControllerSpecTest {
 			InputMessages []*qbft.SignedMessage
 			Decided       bool
 			DecidedVal    []byte
+			DecidedCnt    uint
 		}{
 			{
 				InputValue: []byte{1, 2, 3, 4},

@@ -76,5 +76,5 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 }
 
 func (test *MsgSpecTest) TestName() string {
-	return test.Name
+	return "qbft message " + test.Name
 }
