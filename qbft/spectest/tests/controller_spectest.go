@@ -1,10 +1,12 @@
 package tests
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
+	"reflect"
 	"testing"
 )
 
@@ -16,6 +18,7 @@ type ControllerSpecTest struct {
 		Decided       bool
 		DecidedVal    []byte
 		DecidedCnt    uint
+		SavedDecided  *qbft.SignedMessage
 	}
 	ValCheck       qbft.ProposedValueCheckF
 	OutputMessages []*qbft.SignedMessage
@@ -63,6 +66,43 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		isDecided, decidedVal := contr.InstanceForHeight(contr.Height).IsDecided()
 		require.EqualValues(t, runData.Decided, isDecided)
 		require.EqualValues(t, runData.DecidedVal, decidedVal)
+
+		if runData.SavedDecided != nil {
+			// test saved to storage
+			decided, err := contr.GenerateConfig().GetStorage().GetHighestDecided(identifier[:])
+			require.NoError(t, err)
+			require.NotNil(t, decided)
+			r1, err := decided.GetRoot()
+			require.NoError(t, err)
+
+			r2, err := runData.SavedDecided.GetRoot()
+			require.NoError(t, err)
+
+			require.EqualValues(t, r2, r1)
+			require.EqualValues(t, runData.SavedDecided.Signers, decided.Signers)
+			require.EqualValues(t, runData.SavedDecided.Signature, decided.Signature)
+
+			// test broadcasted
+			broadcastedMsgs := contr.GenerateConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+			require.Greater(t, len(broadcastedMsgs), 0)
+			found := false
+			for _, msg := range broadcastedMsgs {
+				if msg.MsgType == types.SSVDecidedMsgType && bytes.Equal(identifier[:], msg.MsgID[:]) {
+					msg2 := &qbft.DecidedMessage{}
+					require.NoError(t, msg2.Decode(msg.Data))
+					r1, err := msg2.SignedMessage.GetRoot()
+					require.NoError(t, err)
+
+					if bytes.Equal(r1, r2) &&
+						reflect.DeepEqual(runData.SavedDecided.Signers, msg2.SignedMessage.Signers) &&
+						reflect.DeepEqual(runData.SavedDecided.Signature, msg2.SignedMessage.Signature) {
+						require.False(t, found)
+						found = true
+					}
+				}
+			}
+			require.True(t, found)
+		}
 	}
 
 	if len(test.ExpectedError) != 0 {

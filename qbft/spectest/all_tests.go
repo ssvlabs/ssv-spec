@@ -28,6 +28,7 @@ var AllTests = []SpecTest{
 	controller.NotFirstDecided(),
 	controller.NotDecided(),
 	controller.ProcessMsgError(),
+	controller.SavedAndBroadcastedDecided(),
 
 	proposer.FourOperators(),
 	proposer.SevenOperators(),

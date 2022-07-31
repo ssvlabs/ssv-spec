@@ -114,19 +114,9 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 		return false, nil, nil
 	}
 
-	if err := c.storage.SaveHighestDecided(aggregatedCommit); err != nil {
-		// TODO - LOG
+	if err := c.saveAndBroadcastDecided(aggregatedCommit); err != nil {
+		// TODO - we do not return error, should log?
 	}
-
-	// Broadcast Decided msg
-	decidedMsg := &DecidedMessage{
-		SignedMessage: aggregatedCommit,
-	}
-	if err := c.network.BroadcastDecided(decidedMsg); err != nil {
-		// We do not return error here, just Log broadcasting error.
-		return decided, decidedValue, nil
-	}
-
 	return decided, decidedValue, nil
 }
 
@@ -145,7 +135,7 @@ func (c *Controller) GetIdentifier() []byte {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.generateConfig(), c.Share, c.Identifier, c.Height)
+	i := NewInstance(c.GenerateConfig(), c.Share, c.Identifier, c.Height)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
@@ -182,7 +172,7 @@ func (c *Controller) Decode(data []byte) error {
 		return errors.Wrap(err, "could not decode controller")
 	}
 
-	config := c.generateConfig()
+	config := c.GenerateConfig()
 	for _, i := range c.StoredInstances {
 		if i != nil {
 			i.config = config
@@ -191,7 +181,33 @@ func (c *Controller) Decode(data []byte) error {
 	return nil
 }
 
-func (c *Controller) generateConfig() IConfig {
+func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) error {
+	if err := c.storage.SaveHighestDecided(aggregatedCommit); err != nil {
+		return errors.Wrap(err, "could not save decided")
+	}
+
+	// Broadcast Decided msg
+	decidedMsg := &DecidedMessage{
+		SignedMessage: aggregatedCommit,
+	}
+	byts, err := decidedMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not encode decided message")
+	}
+
+	msgToBroadcast := &types.SSVMessage{
+		MsgType: types.SSVDecidedMsgType,
+		MsgID:   ControllerIdToMessageID(c.Identifier),
+		Data:    byts,
+	}
+	if err := c.network.BroadcastDecided(msgToBroadcast); err != nil {
+		// We do not return error here, just Log broadcasting error.
+		return errors.Wrap(err, "could not broadcast decided")
+	}
+	return nil
+}
+
+func (c *Controller) GenerateConfig() IConfig {
 	return &Config{
 		Signer:      c.signer,
 		SigningPK:   c.Share.ValidatorPubKey,

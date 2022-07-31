@@ -15,6 +15,7 @@ func StartInstanceFirstHeight() *tests.ControllerSpecTest {
 			Decided       bool
 			DecidedVal    []byte
 			DecidedCnt    uint
+			SavedDecided  *qbft.SignedMessage
 		}{
 			{
 				InputValue: []byte{1, 2, 3, 4},

@@ -20,7 +20,8 @@ func (net *TestingNetwork) Broadcast(message types.Encoder) error {
 	return nil
 }
 
-func (net *TestingNetwork) BroadcastDecided(msg types.Encoder) error {
+func (net *TestingNetwork) BroadcastDecided(message types.Encoder) error {
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.SSVMessage))
 	return nil
 }
 
