@@ -49,26 +49,197 @@ Note that in order to have a detail log, the node operator must set log level (`
 
 The following parameters are used when initializing and interaction with the pubsub router.
 
-Note that we compare default values with both libp2p and ETH2.0 nodes. For more information regards ETH2.0 configuration please refer to [their p2p spec](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#the-gossip-domain-gossipsub).
+Note that we compare default values with both libp2p defaults and ETH2.0 nodes. 
+For more information regards ETH2.0 configuration please refer to 
+[their p2p spec](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#the-gossip-domain-gossipsub).
 
-| Parameter            |  Description | Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2.0) | Comments |
-| ---                  | ---          | ---                    | ---                 | ---                    | ---      |
-| `lastSeen` | Specifies how long a message will be remembered as seen | `2min` | `6.4min` | `6.4min` | The value (6.4m) is the duration of one epoch as message become redundant afterwards |
-| `peerOutboundQueueSize` | The size of the queue that is used for outbound messages | `32` | `256` | `600` | The value was increased to support high load of messages, using a larger value might cause high memory usage |
-| `validationQueueSize`| The size of the queue that is used for validation of incoming messages  | `32` | `256` | `600` | The value was increased to support high load of messages, using a larger value might cause high memory usage |
-| `validateThrottle`   | The upper bound on the number of active validation goroutines across all topics | `8192` | `4096` | N/A | The value was decreased to avoid high resource usage and reduce overloading on the node |
-| `msgID`    | A function that calculates an identifier for messages, to be used across pubsub components | `(msg) => msg.GetFrom() + msg.GetSeqno()` | `(msg) => sha256(msg.GetData())[:20]` | `(msg) => sha256(MESSAGE_DOMAIN_VALID_SNAPPY + snappy_decompress(message.data))[:20]` | We use a custom function that returns the content hash, so we won't process the same message multiple times
-| `subscriptionFilter` | Allows to control the topics that the node will subscribe to | `nil` | Accept topics with the same fork if the node has interest in them, if we didn't reach subscriptions limit (`129`) | accept topics with supported fork digest if the node has interest in them and we didn't reach subscriptions limit (`200`) | - |
-| `floodPublish`       | Force peer's own messages to be published to all known peers for the topic | `false` | `false` | `false` | When turned on, this feature ensures reliability and protects from eclipse attacks. On the other hand it floods the network with duplicated message and therefore it was turned off |
-| `signaturePolicy`    | The mode of operation for producing and verifying message signatures in the pubsub router level | `StrictSign` | `StrictSign` | `StrictNoSign` | **TODO** |
-| `msgValidator`       | A function that is invoked by pubsub for incoming messages before they are being processed | `None` | Decodes the message and validate that it was sent on the right topic | A more complete validation, according to message type (according to topic). More details can be [found here](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#global-topics) | **TODO** |
-| **Gossipsub**  | | | | |
-| `D`       | Sets the optimal degree for a GossipSub topic mesh. D should be set somewhere between Dlo and Dhi | `6` | `8`| `8` | - |
-| `Dlo`       | Sets the lower bound on the number of peers we keep in a GossipSub topic mesh | `5` | `6` | `6` | - |
-| `Dhi`       | Sets the upper bound on the number of peers we keep in a GossipSub topic mesh | `12` | `12` | `12` | - |
-| `HeartbeatInterval` | Controls the time between heartbeats | `1s` | `700ms` | `700ms` | As we work intensively with pubsub, we had to decrease the heartbeet interval to reduce the latency created by a higher heartbeat |
-| `HistoryLength` | Controls the size of the message cache used for gossip (`IWANT` responses) | `5` | `6` | `6` | The value was increased to reduce the number of `IWANT` messages in the network |
-| `HistoryGossip` | Controls how many cached message ids we will advertise in IHAVE gossip messages | `3` | `4` | `3` | - |
-| `MaxIHaveLength` | Sets the maximum number of messages to include in an IHAVE message | `5000` | `1500` | N/A | Decreased value to avoid ihave floods |
-| `MaxIHaveMessages` | Sets the maximum number of IHAVE messages to accept from a peer within a heartbeat | `10` | `32` | N/A | Increased as we want messages to be sent in batches, to reduce the amount of requests |
-| **Scoring** (**TODO**) | | | | |
+### Last Seen
+
+Specifies how long a message will be remembered as seen.
+
+**Default Value (libp2p):** `2min` \
+**Default Value (SSV):** `6.4min` \
+**Default Value (ETH2):** `6.4min`
+
+Was increased to `6.4m` which is the duration of one epoch, as messages become redundant afterwards.
+
+### Outbound Queue Size
+
+The size of the queue that is used for outbound messages.
+
+**Default Value (libp2p):** `32` \
+**Default Value (SSV):** `256` \
+**Default Value (ETH2):** `600`
+
+The value was increased to support higher load of messages.
+SSV uses a smaller number than ETH2.0 due to high memory usage, 
+which is caused by the size of raw JSON messages.
+
+**NOTE** This parameter will be considered once encoding is changed to `SSZ` and compression is applied (`snappy` or `s2`). 
+
+### Validation Queue Size
+
+The size of the queue that is used for validation of incoming messages.
+
+**Default Value (libp2p):** `32` \
+**Default Value (SSV):** `256` \
+**Default Value (ETH2):** `600`
+
+The value was increased to support higher load of messages.
+SSV uses a smaller number than ETH2.0 due to high memory usage,
+which is caused by the size of raw JSON messages.
+
+**NOTE** This parameter will be considered once encoding is changed to `SSZ` and compression is applied (`snappy` or `s2`).
+
+### Msg ID
+
+A function that calculates an identifier for messages, to be used across pubsub components.
+
+**Default Value (libp2p):** 
+```go
+func MsgID(msg) string {
+	return msg.GetFrom() + msg.GetSeqno()
+}
+```
+**Default Value (SSV):**
+```go
+func MsgID(msg) string {
+    return string(sha256(msg.GetData())[:20])
+}
+```
+**Default Value (ETH2):**
+```go
+func MsgID(msg) string {
+    h := sha256(MESSAGE_DOMAIN_VALID_SNAPPY + snappy_decompress(message.data))
+    return string(h[:20])
+}
+```
+
+SSV uses a custom function that returns the content hash, so we won't process the same message multiple times.
+
+
+### Subscription Filter
+
+Allows to control the topics that the node will subscribe to.
+
+**Default Value (libp2p):** Accept all topics \
+**Default Value (SSV):** Accept topics with the same fork if the node has interest in them, 
+if we didn't reach subscriptions limit (`129`) \
+**Default Value (ETH2):** Accept topics with supported fork digest if the node has interest in them,
+and it didn't reach subscriptions limit (`200`)
+
+
+### Flood Publish
+
+Force peer's own messages to be published to all known peers for the topic.
+
+**Default Value (libp2p):** `false` \
+**Default Value (SSV):** `false` \
+**Default Value (ETH2):** `false`
+
+When turned on, this feature ensures reliability and protects from eclipse attacks. 
+On the other hand it floods the network with duplicated message and therefore it was turned off.
+
+
+### Signature Policy
+
+The mode of operation for producing and verifying message signatures in the pubsub router level.
+
+**Default Value (libp2p):** `StrictSign` \
+**Default Value (SSV):** `StrictSign` \
+**Default Value (ETH2):** `StrictNoSign`
+
+**TODO**
+
+
+### Topic Message Validator
+
+A function that is invoked by pubsub for incoming messages before they are being processed.
+
+**Default Value (libp2p):** None \
+**Default Value (SSV):** Decodes the message and validate that it was sent on the right topic \
+**Default Value (ETH2):** A more complete validation, according to message type (according to topic). \
+More details can be [found here](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#global-topics)
+
+**TODO**
+
+
+### Gossipsub: D
+
+Sets the optimal degree for a GossipSub topic mesh. D should be set somewhere between Dlo and Dhi.
+
+**Default Value (libp2p):** `6` \
+**Default Value (SSV):** `8` \
+**Default Value (ETH2):** `8`
+
+### Gossipsub: Dlo
+
+Sets the lower bound on the number of peers we keep in a GossipSub topic mesh.
+
+**Default Value (libp2p):** `5` \
+**Default Value (SSV):** `6` \
+**Default Value (ETH2):** `6`
+
+### Gossipsub: Dhi
+
+Sets the upper bound on the number of peers we keep in a GossipSub topic mesh.
+
+**Default Value (libp2p):** `5` \
+**Default Value (SSV):** `6` \
+**Default Value (ETH2):** `6`
+
+### Gossipsub: HeartbeatInterval
+
+Controls the time between heartbeats, which are used across pubsub components to align on timing.
+
+**Default Value (libp2p):** `1s` \
+**Default Value (SSV):** `700ms` \
+**Default Value (ETH2):** `700ms`
+
+As SSV nodes work intensively with pubsub, we had to decrease the heartbeat interval 
+to reduce the latency created by a higher heartbeat.
+
+### Gossipsub: HistoryLength
+
+Controls the size of the message cache used for gossip (`IWANT` responses).
+
+**Default Value (libp2p):** `5` \
+**Default Value (SSV):** `6` \
+**Default Value (ETH2):** `6`
+
+The value was increased to reduce the number of `IWANT` messages in the network.
+
+### Gossipsub: HistoryGossip
+
+Controls how many cached message ids we will advertise in IHAVE gossip messages.
+
+**Default Value (libp2p):** `3` \
+**Default Value (SSV):** `4` \
+**Default Value (ETH2):** `3`
+
+**TODO**
+
+### Gossipsub: MaxIHaveLength
+
+Sets the maximum number of messages to include in an IHAVE message.
+
+**Default Value (libp2p):** `5000` \
+**Default Value (SSV):** `1500` \
+**Default Value (ETH2):** `5000`
+
+Decreased value to avoid ihave floods.
+**TODO**
+
+### Gossipsub: MaxIHaveMessages
+
+Sets the maximum number of IHAVE messages to accept from a peer within a heartbeat.
+
+**Default Value (libp2p):** `10` \
+**Default Value (SSV):** `32` \
+**Default Value (ETH2):** `10`
+
+Increased as we want messages to be sent in batches, to reduce the amount of requests.
+
+<br />
+
+**TODO: Scoring Params**
