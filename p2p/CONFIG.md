@@ -63,12 +63,12 @@ Note that we compare default values with both libp2p and ETH2.0 nodes. For more 
 | `signaturePolicy`    | The mode of operation for producing and verifying message signatures in the pubsub router level | `StrictSign` | `StrictSign` | `StrictNoSign` | **TODO** |
 | `msgValidator`       | A function that is invoked by pubsub for incoming messages before they are being processed | `None` | Decodes the message and validate that it was sent on the right topic | A more complete validation, according to message type (according to topic). More details can be [found here](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#global-topics) | **TODO** |
 | **Gossipsub**  | | | | |
-| `D`       | Sets the optimal degree for a GossipSub topic mesh. D should be set somewhere between Dlo and Dhi | `6` | `5`| `8` | Decreased as we want to reduce loading coming from pubsub |
-| `Dlo`       | Sets the lower bound on the number of peers we keep in a GossipSub topic mesh | `5` | `3` | `6` | Decreased as we want to reduce loading coming from pubsub |
-| `Dhi`       | Sets the upper bound on the number of peers we keep in a GossipSub topic mesh | `12` | `9` | `12` | Decreased as we want to reduce loading coming from pubsub |
+| `D`       | Sets the optimal degree for a GossipSub topic mesh. D should be set somewhere between Dlo and Dhi | `6` | `8`| `8` | - |
+| `Dlo`       | Sets the lower bound on the number of peers we keep in a GossipSub topic mesh | `5` | `6` | `6` | - |
+| `Dhi`       | Sets the upper bound on the number of peers we keep in a GossipSub topic mesh | `12` | `12` | `12` | - |
 | `HeartbeatInterval` | Controls the time between heartbeats | `1s` | `700ms` | `700ms` | As we work intensively with pubsub, we had to decrease the heartbeet interval to reduce the latency created by a higher heartbeat |
-| `HistoryLength` | Controls the size of the message cache used for gossip (`IWANT` responses) | `5` | `100` | `6` | The value was increased to reduce the number of `IWANT` messages in the network |
-| `HistoryGossip` | Controls how many cached message ids we will advertise in IHAVE gossip messages | `3` | `3` | `3` | - |
-| `MaxIHaveLength` | Sets the maximum number of messages to include in an IHAVE message | `5000` | `1000` | N/A | Decreased value to avoid ihave floods |
+| `HistoryLength` | Controls the size of the message cache used for gossip (`IWANT` responses) | `5` | `6` | `6` | The value was increased to reduce the number of `IWANT` messages in the network |
+| `HistoryGossip` | Controls how many cached message ids we will advertise in IHAVE gossip messages | `3` | `4` | `3` | - |
+| `MaxIHaveLength` | Sets the maximum number of messages to include in an IHAVE message | `5000` | `1500` | N/A | Decreased value to avoid ihave floods |
 | `MaxIHaveMessages` | Sets the maximum number of IHAVE messages to accept from a peer within a heartbeat | `10` | `32` | N/A | Increased as we want messages to be sent in batches, to reduce the amount of requests |
 | **Scoring** (**TODO**) | | | | |
