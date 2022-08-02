@@ -1,4 +1,4 @@
-name: Test
+name: Lint
 
 on:
   push:
@@ -21,14 +21,8 @@ jobs:
       - name: Get Dependencies
         run: go get -v -t -d ./...
 
-      - name: Test Types
-        run: TEST_PKG=./types/... make test
+      - name: Prepare
+        run: make lint-prepare
 
-      - name: Test QBFT
-        run: TEST_PKG=./qbft/... make test
-
-      - name: Test SSV
-        run: TEST_PKG=./ssv/... make test
-
-      - name: Test DKG
-        run: TEST_PKG=./dkg/... make test
+      - name: Lint
+        run: make lint
