@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.17
+
+      - name: Get Dependencies
+        run: go get -v -t -d ./...
+
+      - name: Lint
+        run: make lint-prepare && make lint
+
+      - name: Test Types
+        run: TEST_PKG=./types/... make test
+
+      - name: Test QBFT
+        run: TEST_PKG=./qbft/... make test
+
+      - name: Test SSV
+        run: TEST_PKG=./ssv/... make test
