@@ -6,10 +6,6 @@ import (
 	"testing"
 )
 
-func init() {
-	bls.Init(0)
-}
-
 type testSigningRoot struct {
 	root      []byte
 	Signature []byte
