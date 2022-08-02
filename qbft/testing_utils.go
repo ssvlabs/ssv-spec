@@ -17,7 +17,7 @@ var testingSignedMsg = func() *SignedMessage {
 	return SignMsg(TestingSK, 1, TestingMessage)
 }()
 var SignMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *Message) *SignedMessage {
-	domain := types.PrimusTestnet
+	domain := types.GetDefaultDomain()
 	sigType := types.QBFTSignatureType
 
 	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
@@ -40,7 +40,7 @@ var testingShare = &types.Share{
 	OperatorID:      1,
 	ValidatorPubKey: testingValidatorPK[:],
 	SharePubKey:     TestingSK.GetPublicKey().Serialize(),
-	DomainType:      types.PrimusTestnet,
+	DomainType:      types.GetDefaultDomain(),
 	Quorum:          3,
 	PartialQuorum:   2,
 	Committee: []*types.Operator{

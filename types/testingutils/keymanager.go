@@ -25,7 +25,7 @@ type testingKeyManager struct {
 func NewTestingKeyManager() *testingKeyManager {
 	ret := &testingKeyManager{
 		keys:   map[string]*bls.SecretKey{},
-		domain: types.PrimusTestnet,
+		domain: types.GetDefaultDomain(),
 	}
 
 	ret.AddShare(Testing4SharesSet().ValidatorSK)
