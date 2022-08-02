@@ -32,3 +32,6 @@ jobs:
 
       - name: Test SSV
         run: TEST_PKG=./ssv/... make test
+
+      - name: Test DKG
+        run: TEST_PKG=./dkg/... make test
