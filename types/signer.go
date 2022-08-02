@@ -7,7 +7,6 @@ import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/herumi/bls-eth-go-binary/bls"
-	"sync"
 )
 
 type SignatureType [4]byte

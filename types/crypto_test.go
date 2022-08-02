@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+func init() {
+	bls.Init(0)
+}
+
 type testSigningRoot struct {
 	root      []byte
 	Signature []byte
@@ -51,12 +55,12 @@ func TestComputeSigningRoot(t *testing.T) {
 }
 
 func TestComputeSignatureDomain(t *testing.T) {
-	require.EqualValues(t, []byte{1, 2, 3, 4, 1, 2, 3, 4}, ComputeSignatureDomain([]byte{1, 2, 3, 4}, []byte{1, 2, 3, 4}))
+	require.EqualValues(t, []byte{1, 2, 3, 4, 1, 2, 3, 4}, ComputeSignatureDomain([]byte{1, 2, 3, 4}, [4]byte{1, 2, 3, 4}))
 }
 
 func TestSignature_Verify(t *testing.T) {
 	msgRoot := &testSigningRoot{root: []byte{1, 2, 3, 4}}
-	domain := PrimusTestnet
+	domain := GetDefaultDomain()
 	sigType := QBFTSignatureType
 
 	computedRoot, err := ComputeSigningRoot(msgRoot, ComputeSignatureDomain(domain, sigType))
@@ -87,7 +91,7 @@ func TestSignature_Verify(t *testing.T) {
 
 func TestSignature_VerifyMultiPubKey(t *testing.T) {
 	msgRoot := &testSigningRoot{root: []byte{1, 2, 3, 4}}
-	domain := PrimusTestnet
+	domain := GetDefaultDomain()
 	sigType := QBFTSignatureType
 
 	computedRoot, err := ComputeSigningRoot(msgRoot, ComputeSignatureDomain(domain, sigType))
@@ -160,7 +164,7 @@ func TestSignature_VerifyMultiPubKey(t *testing.T) {
 
 func TestSignature_VerifyByNodes(t *testing.T) {
 	msgRoot := &testSigningRoot{root: []byte{1, 2, 3, 4}}
-	domain := PrimusTestnet
+	domain := GetDefaultDomain()
 	sigType := QBFTSignatureType
 
 	computedRoot, err := ComputeSigningRoot(msgRoot, ComputeSignatureDomain(domain, sigType))
@@ -226,7 +230,7 @@ func TestSignature_VerifyByNodes(t *testing.T) {
 
 func TestSignature_Aggregate(t *testing.T) {
 	msgRoot := &testSigningRoot{root: []byte{1, 2, 3, 4}}
-	domain := PrimusTestnet
+	domain := GetDefaultDomain()
 	sigType := QBFTSignatureType
 
 	computedRoot, err := ComputeSigningRoot(msgRoot, ComputeSignatureDomain(domain, sigType))
