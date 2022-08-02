@@ -24,8 +24,3 @@ func GetDefaultDomain() DomainType {
 	})
 	return domain
 }
-
-// SetDefaultDomain updates the global domain
-func SetDefaultDomain(d DomainType) {
-	domain = d
-}
