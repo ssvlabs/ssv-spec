@@ -13,7 +13,10 @@ import (
 type DomainType []byte
 
 var (
+	// PrimusTestnet is the domain for primus testnet
 	PrimusTestnet = DomainType("primus_testnet")
+	// ShifuTestnet is the domain for shifu testnet
+	ShifuTestnet  = DomainType("shifu")
 )
 
 type SignatureType [4]byte
