@@ -11,7 +11,7 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
 		Signer:    NewTestingKeyManager(),
 		SigningPK: keySet.Shares[1].GetPublicKey().Serialize(),
-		Domain:    types.PrimusTestnet,
+		Domain:    types.GetDefaultDomain(),
 		ValueCheckF: func(data []byte) error {
 			if bytes.Equal(data, TestingInvalidValueCheck) {
 				return errors.New("invalid value")
@@ -34,7 +34,7 @@ var TestingShare = func(keysSet *TestKeySet) *types.Share {
 		OperatorID:      1,
 		ValidatorPubKey: keysSet.ValidatorPK.Serialize(),
 		SharePubKey:     keysSet.Shares[1].GetPublicKey().Serialize(),
-		DomainType:      types.PrimusTestnet,
+		DomainType:      types.GetDefaultDomain(),
 		Quorum:          keysSet.Threshold,
 		PartialQuorum:   keysSet.PartialThreshold,
 		Committee:       keysSet.Committee(),
@@ -67,7 +67,7 @@ func NewTestingQBFTController(identifier []byte, share *types.Share, valCheck qb
 	return qbft.NewController(
 		identifier,
 		share,
-		types.PrimusTestnet,
+		types.GetDefaultDomain(),
 		NewTestingKeyManager(),
 		valCheck,
 		NewTestingStorage(),

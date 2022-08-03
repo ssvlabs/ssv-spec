@@ -24,7 +24,7 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 		},
 		Network:             network,
 		Storage:             NewTestingStorage(),
-		SignatureDomainType: types.PrimusTestnet,
+		SignatureDomainType: types.GetDefaultDomain(),
 		Signer:              NewTestingKeyManager(),
 	}
 
@@ -36,7 +36,7 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 }
 
 var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *dkg.Message) *dkg.SignedMessage {
-	domain := types.PrimusTestnet
+	domain := types.GetDefaultDomain()
 	sigType := types.DKGSignatureType
 
 	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))

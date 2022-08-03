@@ -9,13 +9,6 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// DomainType is a unique identifier for signatures, 2 identical pieces of data signed with different domains will result in different sigs
-type DomainType []byte
-
-var (
-	PrimusTestnet = DomainType("primus_testnet")
-)
-
 type SignatureType [4]byte
 
 func (sigType SignatureType) Equal(other SignatureType) bool {
