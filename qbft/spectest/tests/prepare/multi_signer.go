@@ -1,11 +1,12 @@
 package prepare
 
 import (
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // MultiSigner tests prepare msg with > 1 signers
@@ -32,6 +33,6 @@ func MultiSigner() *tests.MsgProcessingSpecTest {
 		Pre:           pre,
 		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
 		InputMessages: msgs,
-		ExpectedError: "invalid prepare msg: prepare msg allows 1 signer",
+		ExpectedError: "invalid prepare message: prepare msg allows 1 signer",
 	}
 }

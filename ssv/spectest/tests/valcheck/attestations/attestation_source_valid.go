@@ -2,6 +2,7 @@ package attestations
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -51,6 +52,6 @@ func AttestationSourceValid() *tests.SpecTest {
 		Runner:                  dr,
 		Messages:                msgs,
 		PostDutyRunnerStateRoot: "c4eb0bb42cc382e468b2362e9d9cc622f388eef6a266901535bb1dfcc51e8868",
-		ExpectedError:           "failed to process valcheck msg: could not process msg: proposal invalid: proposal not justified: proposal value invalid: attestation data source and target epochs invalid",
+		ExpectedError:           "failed to process valcheck msg: could not process msg: invalid proposal message: proposal not justified: proposal value invalid: attestation data source and target epochs invalid",
 	}
 }

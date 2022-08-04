@@ -92,6 +92,6 @@ func PostDecided() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
-		ExpectedError: "proposal invalid: proposal is not valid with current state",
+		ExpectedError: "invalid proposal message: proposal is not valid with current state",
 	}
 }

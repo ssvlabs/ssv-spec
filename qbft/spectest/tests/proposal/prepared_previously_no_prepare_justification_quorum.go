@@ -66,6 +66,6 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() *tests.MsgProcessingSpecTe
 		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "proposal invalid: proposal not justified: change round msg not valid: no justifications quorum",
+		ExpectedError:  "invalid proposal message: proposal not justified: change round msg not valid: no justifications quorum",
 	}
 }

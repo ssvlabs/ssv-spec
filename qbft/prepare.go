@@ -2,8 +2,10 @@ package qbft
 
 import (
 	"bytes"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 func (i *Instance) uponPrepare(
@@ -27,7 +29,7 @@ func (i *Instance) uponPrepare(
 		acceptedProposalData.Data,
 		i.State.Share.Committee,
 	); err != nil {
-		return errors.Wrap(err, "invalid prepare msg")
+		return errors.Wrap(err, "invalid prepare message")
 	}
 
 	addedMsg, err := prepareMsgContainer.AddIfDoesntExist(signedPrepare)
@@ -112,7 +114,7 @@ func validSignedPrepareForHeightRoundAndValue(
 		return errors.New("prepare msg type is wrong")
 	}
 	if signedPrepare.Message.Height != height {
-		return errors.New("msg Height wrong")
+		return errors.New("message height is wrong")
 	}
 	if signedPrepare.Message.Round != round {
 		return errors.New("msg round wrong")
@@ -135,7 +137,7 @@ func validSignedPrepareForHeightRoundAndValue(
 	}
 
 	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "prepare msg signature invalid")
+		return errors.Wrap(err, "invalid message signature")
 	}
 	return nil
 }

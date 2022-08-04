@@ -47,6 +47,6 @@ func FarFutureDuty() *tests.SpecTest {
 		Runner:                  dr,
 		Messages:                msgs,
 		PostDutyRunnerStateRoot: "c4eb0bb42cc382e468b2362e9d9cc622f388eef6a266901535bb1dfcc51e8868",
-		ExpectedError:           "failed to process valcheck msg: could not process msg: proposal invalid: proposal not justified: proposal value invalid: duty invalid: duty epoch is into far future",
+		ExpectedError:           "failed to process valcheck msg: could not process msg: invalid proposal message: proposal not justified: proposal value invalid: duty invalid: duty epoch is into far future",
 	}
 }

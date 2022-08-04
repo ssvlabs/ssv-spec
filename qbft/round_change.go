@@ -1,8 +1,9 @@
 package qbft
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 func (i *Instance) uponRoundChange(
@@ -13,7 +14,7 @@ func (i *Instance) uponRoundChange(
 ) error {
 	// TODO - Roberto comment: could happen we received a round change before we switched the round and this msg will be rejected (lost)
 	if err := validRoundChange(i.State, i.config, signedRoundChange, i.State.Height, signedRoundChange.Message.Round); err != nil {
-		return errors.Wrap(err, "round change msg invalid")
+		return errors.Wrap(err, "invalid round change message")
 	}
 
 	addedMsg, err := roundChangeMsgContainer.AddIfDoesntExist(signedRoundChange)
@@ -173,7 +174,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 		return errors.New("round change msg type is wrong")
 	}
 	if signedMsg.Message.Height != height {
-		return errors.New("round change Height is wrong")
+		return errors.New("message height is wrong")
 	}
 	if signedMsg.Message.Round != round {
 		return errors.New("msg round wrong")
@@ -182,7 +183,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 		return errors.New("round change msg allows 1 signer")
 	}
 	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
-		return errors.Wrap(err, "round change msg signature invalid")
+		return errors.Wrap(err, "invalid message signature")
 	}
 
 	rcData, err := signedMsg.Message.GetRoundChangeData()

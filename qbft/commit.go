@@ -2,8 +2,10 @@ package qbft
 
 import (
 	"bytes"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 // UponCommit returns true if a quorum of commit messages was received.
@@ -21,7 +23,7 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 		i.State.ProposalAcceptedForCurrentRound,
 		i.State.Share.Committee,
 	); err != nil {
-		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
+		return false, nil, nil, errors.Wrap(err, "invalid commit message")
 	}
 
 	addMsg, err := commitMsgContainer.AddIfDoesntExist(signedCommit)
@@ -146,7 +148,7 @@ func validateCommit(
 		return errors.New("commit msg type is wrong")
 	}
 	if signedCommit.Message.Height != height {
-		return errors.New("commit Height is wrong")
+		return errors.New("message height is wrong")
 	}
 	if signedCommit.Message.Round != round { // TODO - should we validate the round? aren't all round commit messages should be processed as they might decide the instance?
 		return errors.New("commit round is wrong")
@@ -170,7 +172,7 @@ func validateCommit(
 	}
 
 	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "commit msg signature invalid")
+		return errors.Wrap(err, "invalid message signature")
 	}
 	return nil
 }

@@ -2,14 +2,16 @@ package qbft
 
 import (
 	"bytes"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
 	valCheck := i.config.GetValueCheckF()
 	if err := isValidProposal(i.State, i.config, signedProposal, valCheck, i.State.Share.Committee); err != nil {
-		return errors.Wrap(err, "proposal invalid")
+		return errors.Wrap(err, "invalid proposal message")
 	}
 
 	addedMsg, err := proposeMsgContainer.AddIfDoesntExist(signedProposal)
@@ -57,13 +59,13 @@ func isValidProposal(
 		return errors.New("msg type is not proposal")
 	}
 	if signedProposal.Message.Height != state.Height {
-		return errors.New("proposal Height is wrong")
+		return errors.New("message height is wrong")
 	}
 	if len(signedProposal.GetSigners()) != 1 {
 		return errors.New("proposal msg allows 1 signer")
 	}
 	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "proposal msg signature invalid")
+		return errors.Wrap(err, "invalid message signature")
 	}
 	if !signedProposal.MatchedSigners([]types.OperatorID{proposer(state, config, signedProposal.Message.Round)}) {
 		return errors.New("proposal leader invalid")
