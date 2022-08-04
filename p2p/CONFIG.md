@@ -91,6 +91,20 @@ which is caused by the size of raw JSON messages.
 
 **NOTE** This parameter will be considered once encoding is changed to `SSZ` and compression is applied (`snappy` or `s2`).
 
+### Validation Throttle
+
+The upper bound on the number of active validation goroutines across all topics
+
+**Default Value (libp2p):** `8192` \
+**Default Value (SSV):** `4096` \
+**Default Value (ETH2):** `8192`
+
+The value was decreased to avoid high resource usage and reduce overloading on the node.
+SSV uses a smaller number than ETH2.0 due to high memory usage,
+which is caused by the size of raw JSON messages.
+
+**NOTE** This parameter will be considered once encoding is changed to `SSZ` and compression is applied (`snappy` or `s2`).
+
 ### Msg ID
 
 A function that calculates an identifier for messages, to be used across pubsub components.
@@ -168,6 +182,7 @@ More details can be [found here](https://github.com/ethereum/consensus-specs/blo
 
 Sets the optimal degree for a GossipSub topic mesh. D should be set somewhere between Dlo and Dhi.
 
+
 **Default Value (libp2p):** `6` \
 **Default Value (SSV):** `8` \
 **Default Value (ETH2):** `8`
@@ -184,9 +199,9 @@ Sets the lower bound on the number of peers we keep in a GossipSub topic mesh.
 
 Sets the upper bound on the number of peers we keep in a GossipSub topic mesh.
 
-**Default Value (libp2p):** `5` \
-**Default Value (SSV):** `6` \
-**Default Value (ETH2):** `6`
+**Default Value (libp2p):** `12` \
+**Default Value (SSV):** `12` \
+**Default Value (ETH2):** `12`
 
 ### Gossipsub: HeartbeatInterval
 
