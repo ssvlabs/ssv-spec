@@ -19,6 +19,7 @@ This document contains the networking specification for `SSV.Network`.
 - [Wire](#wire)
     - [Consensus](#consensus-protocol)
     - [Sync](#sync-protocols)
+    - [Handshake](#handshake-protocol)
 - [Networking](#networking)
     - [PubSub](#pubsub)
     - [PubSub Scoring](#pubsub-scoring)
@@ -445,6 +446,53 @@ Response:
 ---
 
 
+## Handshake Protocol
+
+`/ssv/info/0.0.1`
+
+The handshake protocol allows peers to identify, by exchanging signed information AKA `Node Info`. \
+It must be performed for every connection, and check that the other node is on the same ssv network.
+
+[go-libp2p-core/record.Record](https://github.com/libp2p/go-libp2p-core/blob/master/record/record.go) and
+[go-libp2p-core/record.Envelope](https://github.com/libp2p/go-libp2p-core/blob/master/record/envelope.go)
+are a common utilities that libp2p provides for these cases,
+therefore they are used for signing and verification in SSV. 
+
+<details>
+  <summary><b>protobuf</b></summary>
+
+  ```protobuf
+  syntax = "proto3";
+  import "gogo.proto";
+
+  // NodeInfo contains node's information
+  message NodeInfo {
+    // network_id is the id of the node's network
+    bytes network_id   = 1 [(gogoproto.nullable) = false];
+    // fork_version is the current fork used by the nodee
+    bytes fork_version = 2 [(gogoproto.nullable) = true];
+    // metadata of the node
+    Metadata metadata  = 3;
+  }
+  
+  // Metadata holds node's general information
+  message Metadata {
+    // operator_id of the node
+    string operator_id     = 1;
+    // subnets is an hex string that represents subnets with interest
+    string subnets         = 2;
+    // node_version is the current ssv-node version
+    string node_version    = 3;
+    // execution_node is the eth1 node used by the node
+    string execution_node  = 4;
+    // consesnsus_node is the eth2 node used by the node
+    string consesnsus_node = 5;
+  }
+  ```
+</details>
+
+<br />
+<br />
 
 ## Networking
 
