@@ -128,20 +128,23 @@ For more info please refer to the following sections:
 
 ## Wire
 
-All the messages that are being transmitted over the network must be wrapped with the following structure:
+All the messages that are being transmitted over the network are wrapped with the following structure:
 
-```protobuf
+<details>
+  <summary><b>protobuf</b></summary>
+
+  ```protobuf
 syntax = "proto3";
 import "gogo.proto";
 
 // SignedMessage holds a message and it's corresponding signature
 message SSVMessage {
   // type of the message
-  MsgType MsgType = 1 [(gogoproto.nullable) = false];
+  MsgType msg_type = 1 [(gogoproto.nullable) = false];
   // id of the message
-  bytes MsgID     = 2 [(gogoproto.nullable) = false];
+  bytes msg_id     = 2 [(gogoproto.nullable) = false];
   // message data (encoded)
-  bytes Data      = 3 [(gogoproto.nullable) = false];
+  bytes data      = 3 [(gogoproto.nullable) = false];
 }
 
 // MsgType is an enum that represents the type of message 
@@ -154,6 +157,8 @@ enum MsgType {
   Signature = 2;
 }
 ```
+
+</details>
 
 Note that all pubsub messages in the network are wrapped with libp2p's message structure ([see RPC](https://github.com/libp2p/specs/blob/master/pubsub/README.md#the-rpc)).
 
@@ -253,8 +258,6 @@ Sync is done over streams as pubsub is not suitable in this case due to several 
   message SyncMessage {
     // protocol is the type of sync message
     string protocol       = 1;
-    // identifier of the message
-    bytes identifier      = 2;
     // params holds the requests parameters
     repeated bytes params = 3;
     // data holds the results
@@ -277,21 +280,20 @@ Sync is done over streams as pubsub is not suitable in this case due to several 
   ```
 </details>
 
-A successful response message usually includes a list of results and the corresponding message type and identifier:
+A successful response message usually includes a list of results in `data` field:
 ```
 {
   "protocol": "<protocol>",
-  "identifier": "..."
   "data": [ ... ],
   "statusCode": 0,
 }
 ```
 
-An error response includes an error string (as bytes) in the `data` field, plus the corresponding `status code`:
+An error response has an empty `data` field, and the `statusCode` field 
+contains the actual error code (see protobuf enum above):
 ```
 {
   "protocol": "<protocol>",
-  "identifier": "..."
   "data": [],
   "statusCode": 1, // not found
 }
