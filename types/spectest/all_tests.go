@@ -15,7 +15,7 @@ type SpecTest interface {
 var AllTests = []SpecTest{
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
-
+	
 	consensusdata.Encoding(),
 	beacon.DepositData(),
 }
