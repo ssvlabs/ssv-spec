@@ -5,6 +5,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"reflect"
 	"testing"
@@ -20,7 +21,6 @@ type ControllerSpecTest struct {
 		DecidedCnt    uint
 		SavedDecided  *qbft.SignedMessage
 	}
-	ValCheck       qbft.ProposedValueCheckF
 	OutputMessages []*qbft.SignedMessage
 	ExpectedError  string
 }
@@ -30,7 +30,12 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		test.ValCheck,
+		func(data []byte) error {
+			if bytes.Equal([]byte{1, 2, 3, 4}, data) {
+				return nil
+			}
+			return errors.New("invalid value")
+		},
 		func(state *qbft.State, round qbft.Round) types.OperatorID {
 			return 1
 		},

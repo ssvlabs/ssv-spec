@@ -35,9 +35,6 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ValCheck: func(data []byte) error {
-			return nil
-		},
 		ExpectedError: "instance not found",
 	}
 }

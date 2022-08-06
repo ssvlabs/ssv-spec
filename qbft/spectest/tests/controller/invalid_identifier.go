@@ -33,9 +33,6 @@ func InvalidIdentifier() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ValCheck: func(data []byte) error {
-			return nil
-		},
 		ExpectedError: "message doesn't belong to Identifier",
 	}
 }

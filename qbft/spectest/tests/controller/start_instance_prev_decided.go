@@ -33,8 +33,5 @@ func StartInstancePreviousDecided() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ValCheck: func(data []byte) error {
-			return nil
-		},
 	}
 }

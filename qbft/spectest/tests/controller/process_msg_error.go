@@ -35,9 +35,6 @@ func ProcessMsgError() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ValCheck: func(data []byte) error {
-			return nil
-		},
 		ExpectedError: "could not process msg: proposal invalid: proposal not justified: change round has not quorum",
 	}
 }

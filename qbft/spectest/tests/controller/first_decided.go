@@ -28,8 +28,5 @@ func FirstDecided() *tests.ControllerSpecTest {
 				DecidedCnt:    1,
 			},
 		},
-		ValCheck: func(data []byte) error {
-			return nil
-		},
 	}
 }

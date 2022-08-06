@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/pkg/errors"
 )
 
 // StartInstanceInvalidValue tests a starting an instance for an invalid value (not passing value check)
@@ -19,13 +18,10 @@ func StartInstanceInvalidValue() *tests.ControllerSpecTest {
 			SavedDecided  *qbft.SignedMessage
 		}{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: []byte{1, 2, 3, 3},
 				Decided:    false,
 				DecidedVal: nil,
 			},
-		},
-		ValCheck: func(data []byte) error {
-			return errors.New("invalid value")
 		},
 		ExpectedError: "can't start new QBFT instance: value invalid: invalid value",
 	}

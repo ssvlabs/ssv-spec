@@ -35,8 +35,5 @@ func NotDecided() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ValCheck: func(data []byte) error {
-			return nil
-		},
 	}
 }

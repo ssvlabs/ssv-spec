@@ -28,9 +28,6 @@ func StartInstancePreviousNotDecided() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ValCheck: func(data []byte) error {
-			return nil
-		},
 		ExpectedError: "can't start new QBFT instance: previous instance hasn't Decided",
 	}
 }

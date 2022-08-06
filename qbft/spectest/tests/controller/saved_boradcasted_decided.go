@@ -39,8 +39,5 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 					}),
 			},
 		},
-		ValCheck: func(data []byte) error {
-			return nil
-		},
 	}
 }
