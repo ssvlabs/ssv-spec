@@ -8,9 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// FutureDecided tests a multi signer commit msg with a quorum from a future round
-// Currently failing!
-func FutureDecided() *tests.MsgProcessingSpecTest {
+// CurrentDecided tests a decided msg received for current round
+func CurrentDecided() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -46,15 +45,15 @@ func FutureDecided() *tests.MsgProcessingSpecTest {
 		testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]}, []types.OperatorID{1, 2, 3}, &qbft.Message{
 			MsgType:    qbft.CommitMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      5,
+			Round:      qbft.FirstRound,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "future decided",
+		Name:          "current round decided",
 		Pre:           pre,
-		PostRoot:      "e48ba694c3a071cb2edcbaadec2163084012b7ca2e0e027aebb5fb25c42d19da",
+		PostRoot:      "b0ace0c71cb410e8a5fb6fb18eb8bc8816b58c2f9cc82b9117754171cf0b8b13",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

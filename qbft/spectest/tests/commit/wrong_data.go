@@ -31,8 +31,7 @@ func WrongData1() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit data != acceptedProposalData.Data",
 		Pre:           pre,
-		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
+		PostRoot:      "a3a7c262aa628478b5cbfc252ebfa4d16b143d0096639dfdf72eb8ad85ae8374",
 		InputMessages: msgs,
-		ExpectedError: "commit msg invalid: proposed data different than commit msg data",
 	}
 }

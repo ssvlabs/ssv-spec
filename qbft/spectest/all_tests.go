@@ -131,6 +131,8 @@ var AllTests = []SpecTest{
 	commit.DuplicateSigners(),
 	commit.Decided(),
 	commit.FutureDecided(),
+	commit.PastDecided(),
+	commit.CurrentDecided(),
 	commit.NoPrevAcceptedProposal(),
 	commit.WrongHeight(),
 	commit.ImparsableCommitData(),

@@ -1,24 +1,16 @@
 package qbft
 
 import (
-	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
 // UponCommit returns true if a quorum of commit messages was received.
 func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *MsgContainer) (bool, []byte, *SignedMessage, error) {
-	if i.State.ProposalAcceptedForCurrentRound == nil {
-		return false, nil, nil, errors.New("did not receive proposal for this round")
-	}
-
 	if err := validateCommit(
-		i.State,
 		i.config,
 		signedCommit,
 		i.State.Height,
-		i.State.Round,
-		i.State.ProposalAcceptedForCurrentRound,
 		i.State.Share.Committee,
 	); err != nil {
 		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
@@ -33,7 +25,7 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 	}
 
 	// calculate commit quorum and act upon it
-	quorum, commitMsgs, err := commitQuorumForCurrentRoundValue(i.State, commitMsgContainer, signedCommit.Message.Data)
+	quorum, commitMsgs, err := commitQuorumForRoundValue(i.State, commitMsgContainer, signedCommit.Message.Data, signedCommit.Message.Round)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}
@@ -53,8 +45,8 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 }
 
 // returns true if there is a quorum for the current round for this provided value
-func commitQuorumForCurrentRoundValue(state *State, commitMsgContainer *MsgContainer, value []byte) (bool, []*SignedMessage, error) {
-	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndValue(state.Round, value)
+func commitQuorumForRoundValue(state *State, commitMsgContainer *MsgContainer, value []byte, round Round) (bool, []*SignedMessage, error) {
+	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndValue(round, value)
 	return state.Share.HasQuorum(len(signers)), msgs, nil
 }
 
@@ -134,12 +126,9 @@ func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, e
 }
 
 func validateCommit(
-	state *State,
 	config IConfig,
 	signedCommit *SignedMessage,
 	height Height,
-	round Round,
-	proposedMsg *SignedMessage,
 	operators []*types.Operator,
 ) error {
 	if signedCommit.Message.MsgType != CommitMsgType {
@@ -148,14 +137,6 @@ func validateCommit(
 	if signedCommit.Message.Height != height {
 		return errors.New("commit Height is wrong")
 	}
-	if signedCommit.Message.Round != round { // TODO - should we validate the round? aren't all round commit messages should be processed as they might decide the instance?
-		return errors.New("commit round is wrong")
-	}
-
-	proposedCommitData, err := proposedMsg.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get proposed commit data")
-	}
 
 	msgCommitData, err := signedCommit.Message.GetCommitData()
 	if err != nil {
@@ -163,10 +144,6 @@ func validateCommit(
 	}
 	if err := msgCommitData.Validate(); err != nil {
 		return errors.Wrap(err, "msgCommitData invalid")
-	}
-
-	if !bytes.Equal(proposedCommitData.Data, msgCommitData.Data) {
-		return errors.New("proposed data different than commit msg data")
 	}
 
 	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
