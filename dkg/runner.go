@@ -54,16 +54,19 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			r.DepositDataRoot = root
 
 			// sign
+			sig := r.KeyGenOutput.Share.SignByte(root)
+			/* GLNOTE: we should use secret share to sign ===>
 			sig, err := r.config.Signer.SignETHDepositRoot(root, r.Operator.ETHAddress)
 			if err != nil {
 				return false, nil, errors.Wrap(err, "could not sign deposit data")
 			}
+			<=== */
 
 			// broadcast
 			if err := r.signAndBroadcastMsg(&PartialDepositData{
 				Signer:    r.Operator.OperatorID,
 				Root:      r.DepositDataRoot,
-				Signature: sig,
+				Signature: sig.Serialize(),
 			}, DepositDataMsgType); err != nil {
 				return false, nil, errors.Wrap(err, "could not broadcast partial deposit data")
 			}
@@ -132,7 +135,29 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 }
 
 func (r *Runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {
-	panic("implement")
+	data, err := msg.Encode()
+	if err != nil {
+		return err
+	}
+	signedMessage := &SignedMessage{
+		Message: &Message{
+			MsgType:    msgType,
+			Identifier: r.Identifier,
+			Data:       data,
+		},
+		Signer:    r.Operator.OperatorID,
+		Signature: nil,
+	}
+	// GLNOTE: Should we use SignDKGOutput?
+	sig, err := r.config.Signer.SignDKGOutput(signedMessage, r.Operator.ETHAddress)
+	if err != nil {
+		return errors.Wrap(err, "failed to sign message")
+	}
+	signedMessage.Signature = sig
+	if err = r.config.Network.BroadcastDKGMessage(signedMessage); err != nil {
+		return errors.Wrap(err, "failed to broadcast message")
+	}
+	return nil
 }
 
 func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {

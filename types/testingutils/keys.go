@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/hex"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -386,4 +387,18 @@ func (ks *TestKeySet) Committee() []*types.Operator {
 		}
 	}
 	return committee
+}
+
+func (ks *TestKeySet) KeyGenOutput(opId types.OperatorID) *dkg.KeyGenOutput {
+	opPks := make(map[types.OperatorID]*bls.PublicKey)
+	for id, share := range ks.Shares {
+		opPks[id] = share.GetPublicKey()
+	}
+
+	return &dkg.KeyGenOutput{
+		Share:           ks.Shares[opId],
+		OperatorPubKeys: opPks,
+		ValidatorPK:     ks.ValidatorPK.Serialize(),
+		Threshold:       ks.Threshold,
+	}
 }

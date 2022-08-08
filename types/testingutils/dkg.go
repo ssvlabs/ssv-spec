@@ -15,12 +15,9 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
 	config := &dkg.Config{
 		Protocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.KeyGenProtocol {
-			ret := stubdkg.New(network, operatorID, identifier)
-			ret.(*stubdkg.DKG).SetOperators(
-				Testing4SharesSet().ValidatorPK.Serialize(),
-				Testing4SharesSet().Shares,
-			)
-			return ret
+			return &MockKeygenProtocol{
+				KeyGenOutput: keySet.KeyGenOutput(1),
+			}
 		},
 		Network:             network,
 		Storage:             NewTestingStorage(),

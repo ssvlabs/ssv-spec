@@ -163,3 +163,7 @@ func (n *Node) validateDKGMsg(message *SignedMessage) (*Runner, error) {
 
 	return runner, nil
 }
+
+func (n *Node) GetConfig() *Config {
+	return n.config
+}

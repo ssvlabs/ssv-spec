@@ -6,12 +6,14 @@ import (
 )
 
 type TestingNetwork struct {
-	BroadcastedMsgs []*types.SSVMessage
+	BroadcastedMsgs    []*types.SSVMessage
+	BroadcastedDKGMsgs []*dkg.SignedMessage // GLNOTE: Should we use two fields or should make a new TestingNetwork instance?
 }
 
 func NewTestingNetwork() *TestingNetwork {
 	return &TestingNetwork{
-		BroadcastedMsgs: make([]*types.SSVMessage, 0),
+		BroadcastedMsgs:    make([]*types.SSVMessage, 0),
+		BroadcastedDKGMsgs: make([]*dkg.SignedMessage, 0),
 	}
 }
 
@@ -31,5 +33,6 @@ func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.Sign
 
 // BroadcastDKGMessage will broadcast a msg to the dkg network
 func (net *TestingNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {
+	net.BroadcastedDKGMsgs = append(net.BroadcastedDKGMsgs, msg)
 	return nil
 }
