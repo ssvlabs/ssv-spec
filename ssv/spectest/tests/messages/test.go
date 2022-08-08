@@ -1,8 +1,6 @@
 package messages
 
 import (
-	"bytes"
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -23,43 +21,21 @@ func (test *MsgSpecTest) TestName() string {
 func (test *MsgSpecTest) Run(t *testing.T) {
 	var lastErr error
 
-	// test expected roots
-	for i, byts := range test.EncodedMessages {
-		m := &qbft.SignedMessage{}
-		if err := m.Decode(byts); err != nil {
-			lastErr = err
-		}
-
-		if len(test.ExpectedRoots) > 0 {
-			r, err := m.GetRoot()
-			if err != nil {
-				lastErr = err
-			}
-			if !bytes.Equal(test.ExpectedRoots[i], r) {
-				t.Fail()
-			}
-		}
-	}
-
-	// test encoding and validation
 	for i, msg := range test.Messages {
 		if err := msg.Validate(); err != nil {
 			lastErr = err
 		}
 
-		if len(test.Messages) > 0 {
-			r1, err := msg.Encode()
-			if err != nil {
-				lastErr = err
-			}
+		if len(test.EncodedMessages) > 0 {
+			byts, err := msg.Encode()
+			require.NoError(t, err)
+			require.EqualValues(t, test.EncodedMessages[i], byts)
+		}
 
-			r2, err := test.Messages[i].Encode()
-			if err != nil {
-				lastErr = err
-			}
-			if !bytes.Equal(r2, r1) {
-				t.Fail()
-			}
+		if len(test.ExpectedRoots) > 0 {
+			r, err := msg.GetRoot()
+			require.NoError(t, err)
+			require.EqualValues(t, test.ExpectedRoots[i], r)
 		}
 	}
 

@@ -25,6 +25,7 @@ var AllTests = []SpecTest{
 	//postconsensus.MsgAfterReconstruction(),
 	//postconsensus.DuplicateMsg(),
 
+	messages.EncodingAndRoot(),
 	messages.NoMsgs(),
 	messages.InvalidMsg(),
 	messages.InvalidContributionProofMetaData(),
@@ -38,11 +39,6 @@ var AllTests = []SpecTest{
 	messages.PartialRootValid(),
 	messages.PartialRootTooShort(),
 	messages.PartialRootTooLong(),
-	//messages.NoMessageSigners(),
-	//messages.MultipleMessageSigners(),
-	//messages.WrongMsgID(),
-	//messages.UnknownMsgType(),
-	//messages.NoDutyRunner(),
 
 	//valcheck.WrongDutyPubKey(),
 
