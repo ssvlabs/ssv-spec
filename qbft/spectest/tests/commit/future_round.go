@@ -33,6 +33,6 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 		Pre:           pre,
 		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
 		InputMessages: msgs,
-		ExpectedError: "invalid commit message: commit round is wrong",
+		ExpectedError: "invalid commit message: round is wrong",
 	}
 }
