@@ -33,6 +33,9 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 
 	switch msg.Message.MsgType {
 	case ProtocolMsgType:
+		if r.DepositDataSignatures[r.Operator.OperatorID] != nil {
+			return false, nil, errors.New("keygen has already completed")
+		}
 		finished, o, err := r.protocol.ProcessMsg(msg)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to process dkg msg")
@@ -63,13 +66,15 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			<=== */
 
 			// broadcast
-			if err := r.signAndBroadcastMsg(&PartialDepositData{
+			pdd := &PartialDepositData{
 				Signer:    r.Operator.OperatorID,
 				Root:      r.DepositDataRoot,
 				Signature: sig.Serialize(),
-			}, DepositDataMsgType); err != nil {
+			}
+			if err := r.signAndBroadcastMsg(pdd, DepositDataMsgType); err != nil {
 				return false, nil, errors.Wrap(err, "could not broadcast partial deposit data")
 			}
+			r.DepositDataSignatures[r.Operator.OperatorID] = pdd
 		}
 		return false, nil, nil
 	case DepositDataMsgType:
