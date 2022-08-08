@@ -91,6 +91,7 @@ type SignedMessage struct {
 	Message   *Message
 	Signer    types.OperatorID
 	Signature types.Signature
+	Addressee types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
