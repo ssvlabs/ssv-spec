@@ -8,14 +8,14 @@ import (
 )
 
 // ValidMessage tests a full valid SignedPostConsensusMessage
-func ValidMessage() *tests.SpecTest {
+func ValidMessage() *tests.MsgProcessingSpecTest {
 	dr := testingutils.DecidedRunner()
 
 	msgs := []*types.SSVMessage{
 		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "valid SignedPostConsensusMessage",
 		Runner:                  dr,
 		Messages:                msgs,

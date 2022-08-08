@@ -7,7 +7,7 @@ import (
 )
 
 // InvalidConsensusMsg tests an invalid valcheck SSVMessage data
-func InvalidConsensusMsg() *tests.SpecTest {
+func InvalidConsensusMsg() *tests.MsgProcessingSpecTest {
 	dr := testingutils.AttesterRunner()
 
 	msgs := []*types.SSVMessage{
@@ -18,7 +18,7 @@ func InvalidConsensusMsg() *tests.SpecTest {
 		},
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "ssv msg invalid valcheck data",
 		Runner:                  dr,
 		Messages:                msgs,

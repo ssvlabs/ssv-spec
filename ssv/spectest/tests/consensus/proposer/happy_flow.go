@@ -8,7 +8,7 @@ import (
 )
 
 // HappyFlow tests a full valcheck + post valcheck + duty sig reconstruction flow
-func HappyFlow() *tests.SpecTest {
+func HappyFlow() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
@@ -72,7 +72,7 @@ func HappyFlow() *tests.SpecTest {
 		testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "proposer happy flow",
 		Runner:                  dr,
 		Duty:                    testingutils.TestProposerConsensusData.Duty,

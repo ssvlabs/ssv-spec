@@ -19,6 +19,7 @@ type MsgSpecTest struct {
 func (test *MsgSpecTest) Run(t *testing.T) {
 	var lastErr error
 
+	// test expected roots
 	for i, byts := range test.EncodedMessages {
 		m := &qbft.SignedMessage{}
 		if err := m.Decode(byts); err != nil {
@@ -36,6 +37,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 		}
 	}
 
+	// test encoding and validation
 	for i, msg := range test.Messages {
 		if err := msg.Validate(); err != nil {
 			lastErr = err
@@ -68,6 +70,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 		}
 	}
 
+	// check error
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {

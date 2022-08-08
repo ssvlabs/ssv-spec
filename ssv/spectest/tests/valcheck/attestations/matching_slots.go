@@ -8,7 +8,7 @@ import (
 )
 
 // DutySlotNotMatchingAttestationSlot tests that a duty slot = attestation slot
-func DutySlotNotMatchingAttestationSlot() *tests.SpecTest {
+func DutySlotNotMatchingAttestationSlot() *tests.MsgProcessingSpecTest {
 	dr := testingutils.AttesterRunner()
 
 	consensusData := &types.ConsensusData{
@@ -41,7 +41,7 @@ func DutySlotNotMatchingAttestationSlot() *tests.SpecTest {
 		}), nil),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "duty slot matches attestation slot",
 		Runner:                  dr,
 		Messages:                msgs,

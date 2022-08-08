@@ -7,7 +7,7 @@ import (
 )
 
 // InvalidDecidedMsg tests an invalid decided SSVMessage data
-func InvalidDecidedMsg() *tests.SpecTest {
+func InvalidDecidedMsg() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -19,7 +19,7 @@ func InvalidDecidedMsg() *tests.SpecTest {
 		},
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "ssv msg invalid decided data",
 		Runner:                  dr,
 		Messages:                msgs,

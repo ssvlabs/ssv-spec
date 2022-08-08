@@ -10,43 +10,43 @@ import (
 func TestSignedPostConsensusMessage_MatchedSigners(t *testing.T) {
 	t.Run("matched same order", func(t *testing.T) {
 		msg := &ssv.SignedPartialSignatureMessage{}
-		msg.Signers = []types.OperatorID{1, 2, 3, 4}
+		msg.Signer = []types.OperatorID{1, 2, 3, 4}
 		require.True(t, msg.MatchedSigners([]types.OperatorID{1, 2, 3, 4}))
 	})
 
 	t.Run("matched different order", func(t *testing.T) {
 		msg := &ssv.SignedPartialSignatureMessage{}
-		msg.Signers = []types.OperatorID{1, 2, 3, 4}
+		msg.Signer = []types.OperatorID{1, 2, 3, 4}
 		require.True(t, msg.MatchedSigners([]types.OperatorID{2, 1, 4, 3}))
 	})
 
 	t.Run("matched same order with duplicate", func(t *testing.T) {
 		msg := &ssv.SignedPartialSignatureMessage{}
-		msg.Signers = []types.OperatorID{3, 1, 2, 3}
+		msg.Signer = []types.OperatorID{3, 1, 2, 3}
 		require.True(t, msg.MatchedSigners([]types.OperatorID{3, 1, 2, 3}))
 	})
 
 	t.Run("matched different duplicate", func(t *testing.T) {
 		msg := &ssv.SignedPartialSignatureMessage{}
-		msg.Signers = []types.OperatorID{1, 2, 3, 3}
+		msg.Signer = []types.OperatorID{1, 2, 3, 3}
 		require.True(t, msg.MatchedSigners([]types.OperatorID{3, 1, 2, 3}))
 	})
 
 	t.Run("not matched same order", func(t *testing.T) {
 		msg := &ssv.SignedPartialSignatureMessage{}
-		msg.Signers = []types.OperatorID{1, 2, 3, 4, 4}
+		msg.Signer = []types.OperatorID{1, 2, 3, 4, 4}
 		require.False(t, msg.MatchedSigners([]types.OperatorID{1, 2, 3, 4}))
 	})
 
 	t.Run("not matched", func(t *testing.T) {
 		msg := &ssv.SignedPartialSignatureMessage{}
-		msg.Signers = []types.OperatorID{1, 2, 3, 3}
+		msg.Signer = []types.OperatorID{1, 2, 3, 3}
 		require.False(t, msg.MatchedSigners([]types.OperatorID{1, 2, 3, 4}))
 	})
 
 	t.Run("not matched", func(t *testing.T) {
 		msg := &ssv.SignedPartialSignatureMessage{}
-		msg.Signers = []types.OperatorID{1, 2, 3}
+		msg.Signer = []types.OperatorID{1, 2, 3}
 		require.False(t, msg.MatchedSigners([]types.OperatorID{1, 2, 3, 4}))
 	})
 }
@@ -67,12 +67,12 @@ func TestSignedPostConsensusMessage_MatchedSigners(t *testing.T) {
 //		sig.Add(sk2.SignByte([]byte{1, 2, 3, 4}))
 //		msg1 := &PartialSignatureMessage{
 //			PartialSignature:   sk1.SignByte([]byte{1, 2, 3, 4}).Serialize(),
-//			Signers:         []types.NodeID{1},
+//			Signer:         []types.NodeID{1},
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //		msg2 := &PartialSignatureMessage{
 //			PartialSignature:   sk2.SignByte([]byte{1, 2, 3, 4}).Serialize(),
-//			Signers:         []types.NodeID{2},
+//			Signer:         []types.NodeID{2},
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //
@@ -80,15 +80,15 @@ func TestSignedPostConsensusMessage_MatchedSigners(t *testing.T) {
 //		msg1.MatchedSigners([]types.NodeID{1, 2})
 //	})
 //
-//	t.Run("partially matching Signers", func(t *testing.T) {
+//	t.Run("partially matching Signer", func(t *testing.T) {
 //		sig := sk1.SignByte([]byte{1, 2, 3, 4})
 //		sig.Add(sk2.SignByte([]byte{1, 2, 3, 4}))
 //		msg1 := &PartialSignatureMessage{
-//			Signers:         []types.NodeID{1, 2},
+//			Signer:         []types.NodeID{1, 2},
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //		msg2 := &PartialSignatureMessage{
-//			Signers:         []types.NodeID{2},
+//			Signer:         []types.NodeID{2},
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //
@@ -115,10 +115,10 @@ func TestSignedPartialSignatureMessage_Marshaling(t *testing.T) {
 					Slot:             1,
 					PartialSignature: []byte{1, 2, 3, 4},
 					SigningRoot:      []byte{1, 1, 1, 1},
-					Signers:          []types.OperatorID{1},
+					Signer:           []types.OperatorID{1},
 				},
 			},
-			Signers:   []types.OperatorID{1},
+			Signer:    []types.OperatorID{1},
 			Signature: []byte{1, 2, 3, 4},
 		}
 
@@ -135,7 +135,7 @@ func TestPartialSignatureMessage_Validate(t *testing.T) {
 		m := &ssv.PartialSignatureMessage{
 			PartialSignature: make([]byte, 96),
 			SigningRoot:      make([]byte, 32),
-			Signers:          []types.OperatorID{1},
+			Signer:           []types.OperatorID{1},
 		}
 		require.NoError(t, m.Validate())
 	})
@@ -144,7 +144,7 @@ func TestPartialSignatureMessage_Validate(t *testing.T) {
 		m := &ssv.PartialSignatureMessage{
 			PartialSignature: make([]byte, 95),
 			SigningRoot:      make([]byte, 32),
-			Signers:          []types.OperatorID{1},
+			Signer:           []types.OperatorID{1},
 		}
 		require.EqualError(t, m.Validate(), "PartialSignatureMessage sig invalid")
 
@@ -159,7 +159,7 @@ func TestPartialSignatureMessage_Validate(t *testing.T) {
 		m := &ssv.PartialSignatureMessage{
 			PartialSignature: make([]byte, 96),
 			SigningRoot:      make([]byte, 31),
-			Signers:          []types.OperatorID{1},
+			Signer:           []types.OperatorID{1},
 		}
 		require.EqualError(t, m.Validate(), "SigningRoot invalid")
 
@@ -174,14 +174,14 @@ func TestPartialSignatureMessage_Validate(t *testing.T) {
 		m := &ssv.PartialSignatureMessage{
 			PartialSignature: make([]byte, 96),
 			SigningRoot:      make([]byte, 32),
-			Signers:          []types.OperatorID{},
+			Signer:           []types.OperatorID{},
 		}
 		require.EqualError(t, m.Validate(), "invalid PartialSignatureMessage signers")
 
-		m.Signers = []types.OperatorID{1, 2}
+		m.Signer = []types.OperatorID{1, 2}
 		require.EqualError(t, m.Validate(), "invalid PartialSignatureMessage signers")
 
-		m.Signers = nil
+		m.Signer = nil
 		require.EqualError(t, m.Validate(), "invalid PartialSignatureMessage signers")
 	})
 }
@@ -190,12 +190,12 @@ func TestSignedPartialSignatureMessage_Validate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		m := &ssv.SignedPartialSignatureMessage{
 			Signature: make([]byte, 96),
-			Signers:   []types.OperatorID{1},
+			Signer:    []types.OperatorID{1},
 			Messages: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					PartialSignature: make([]byte, 96),
 					SigningRoot:      make([]byte, 32),
-					Signers:          []types.OperatorID{1},
+					Signer:           []types.OperatorID{1},
 				},
 			},
 		}
@@ -205,12 +205,12 @@ func TestSignedPartialSignatureMessage_Validate(t *testing.T) {
 	t.Run("invalid sig", func(t *testing.T) {
 		m := &ssv.SignedPartialSignatureMessage{
 			Signature: make([]byte, 95),
-			Signers:   []types.OperatorID{1},
+			Signer:    []types.OperatorID{1},
 			Messages: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					PartialSignature: make([]byte, 96),
 					SigningRoot:      make([]byte, 32),
-					Signers:          []types.OperatorID{1},
+					Signer:           []types.OperatorID{1},
 				},
 			},
 		}
@@ -226,33 +226,33 @@ func TestSignedPartialSignatureMessage_Validate(t *testing.T) {
 	t.Run("invalid signers", func(t *testing.T) {
 		m := &ssv.SignedPartialSignatureMessage{
 			Signature: make([]byte, 95),
-			Signers:   []types.OperatorID{},
+			Signer:    []types.OperatorID{},
 			Messages: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					PartialSignature: make([]byte, 96),
 					SigningRoot:      make([]byte, 32),
-					Signers:          []types.OperatorID{1},
+					Signer:           []types.OperatorID{1},
 				},
 			},
 		}
 		require.EqualError(t, m.Validate(), "SignedPartialSignatureMessage sig invalid")
 
-		m.Signers = []types.OperatorID{1, 2}
+		m.Signer = []types.OperatorID{1, 2}
 		require.EqualError(t, m.Validate(), "SignedPartialSignatureMessage sig invalid")
 
-		m.Signers = nil
+		m.Signer = nil
 		require.EqualError(t, m.Validate(), "SignedPartialSignatureMessage sig invalid")
 	})
 
 	t.Run("invalid msg", func(t *testing.T) {
 		m := &ssv.SignedPartialSignatureMessage{
 			Signature: make([]byte, 96),
-			Signers:   []types.OperatorID{1},
+			Signer:    []types.OperatorID{1},
 			Messages: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					PartialSignature: make([]byte, 95),
 					SigningRoot:      make([]byte, 32),
-					Signers:          []types.OperatorID{1},
+					Signer:           []types.OperatorID{1},
 				},
 			},
 		}

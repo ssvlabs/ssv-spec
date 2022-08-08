@@ -9,7 +9,7 @@ import (
 )
 
 // AttestationSourceValid tests attestation source epoch < target epoch
-func AttestationSourceValid() *tests.SpecTest {
+func AttestationSourceValid() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -46,7 +46,7 @@ func AttestationSourceValid() *tests.SpecTest {
 		}), nil),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "attestation source < target epoch",
 		Runner:                  dr,
 		Messages:                msgs,

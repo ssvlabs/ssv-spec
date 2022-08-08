@@ -19,7 +19,7 @@ func (dr *Runner) SignSyncSubCommitteeContributionProof(slot spec.Slot, indexes 
 			Slot:             slot,
 			PartialSignature: sig,
 			SigningRoot:      r,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Signer:           dr.Share.OperatorID,
 			MetaData: &PartialSignatureMetaData{
 				ContributionSubCommitteeIndex: index,
 			},

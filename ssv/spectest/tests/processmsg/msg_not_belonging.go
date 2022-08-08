@@ -7,7 +7,7 @@ import (
 )
 
 // MsgNotBelonging tests an SSVMessage ID that doesn't belong to the validator
-func MsgNotBelonging() *tests.SpecTest {
+func MsgNotBelonging() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -19,7 +19,7 @@ func MsgNotBelonging() *tests.SpecTest {
 		},
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "ssv msg wrong pubkey in msg id",
 		Runner:                  dr,
 		Messages:                msgs,

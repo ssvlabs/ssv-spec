@@ -8,7 +8,7 @@ import (
 )
 
 // SevenOperators tests a full attestation duty execution with 7 operators
-func SevenOperators() *tests.SpecTest {
+func SevenOperators() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing7SharesSet()
 	dr := testingutils.AttesterRunner7Operators(ks)
 
@@ -98,7 +98,7 @@ func SevenOperators() *tests.SpecTest {
 		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[5], 5, qbft.FirstHeight)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "attester 7 operators happy flow",
 		Runner:                  dr,
 		Duty:                    testingutils.TestAttesterConsensusData.Duty,

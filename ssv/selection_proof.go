@@ -17,7 +17,7 @@ func (dr *Runner) SignSlotWithSelectionProofPreConsensus(slot spec.Slot, signer 
 		Slot:             slot,
 		PartialSignature: sig,
 		SigningRoot:      ensureRoot(r),
-		Signers:          []types.OperatorID{dr.Share.OperatorID},
+		Signer:           dr.Share.OperatorID,
 	}
 
 	return msg, nil

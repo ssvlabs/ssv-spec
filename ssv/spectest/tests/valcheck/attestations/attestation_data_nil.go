@@ -8,7 +8,7 @@ import (
 )
 
 // AttestationDataNil tests attestation data != nil
-func AttestationDataNil() *tests.SpecTest {
+func AttestationDataNil() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -33,7 +33,7 @@ func AttestationDataNil() *tests.SpecTest {
 		}), nil),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "attestation data nil",
 		Runner:                  dr,
 		Messages:                msgs,

@@ -7,7 +7,7 @@ import (
 )
 
 // InvalidPartialSigMsg tests an invalid partial sig SSVMessage data
-func InvalidPartialSigMsg() *tests.SpecTest {
+func InvalidPartialSigMsg() *tests.MsgProcessingSpecTest {
 	dr := testingutils.AttesterRunner()
 	msgs := []*types.SSVMessage{
 		{
@@ -17,7 +17,7 @@ func InvalidPartialSigMsg() *tests.SpecTest {
 		},
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "ssv msg invalid post valcheck data",
 		Runner:                  dr,
 		Messages:                msgs,

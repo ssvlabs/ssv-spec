@@ -8,7 +8,7 @@ import (
 )
 
 // SevenOperators tests a full valcheck + post valcheck + duty sig reconstruction flow for 7 operators
-func SevenOperators() *tests.SpecTest {
+func SevenOperators() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing7SharesSet()
 	dr := testingutils.AggregatorRunner(ks)
 
@@ -106,7 +106,7 @@ func SevenOperators() *tests.SpecTest {
 		testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[5], 5)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "aggregator 7 operator happy flow",
 		Runner:                  dr,
 		Duty:                    testingutils.TestAggregatorConsensusData.Duty,

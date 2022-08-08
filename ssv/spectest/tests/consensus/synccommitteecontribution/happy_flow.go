@@ -8,7 +8,7 @@ import (
 )
 
 // HappyFlow tests a full valcheck + post valcheck + duty sig reconstruction flow
-func HappyFlow() *tests.SpecTest {
+func HappyFlow() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.SyncCommitteeContributionRunner(ks)
 
@@ -74,7 +74,7 @@ func HappyFlow() *tests.SpecTest {
 		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "sync committee contribution happy flow",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingSyncCommitteeContributionDuty,

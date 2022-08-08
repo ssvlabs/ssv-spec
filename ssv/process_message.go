@@ -316,6 +316,6 @@ func (v *Validator) signPostConsensusMsg(msg PartialSignatureMessages) (*SignedP
 		Type:      PostConsensusPartialSig,
 		Messages:  msg,
 		Signature: signature,
-		Signers:   []types.OperatorID{v.share.OperatorID},
+		Signer:    v.share.OperatorID,
 	}, nil
 }

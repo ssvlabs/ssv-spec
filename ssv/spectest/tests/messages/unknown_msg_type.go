@@ -8,17 +8,17 @@ import (
 )
 
 // UnknownMsgType tests an unknown SSVMessage type
-func UnknownMsgType() *tests.SpecTest {
+func UnknownMsgType() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
-	msg := testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsgWithNoMsgSigners(ks.Shares[1], 1, qbft.FirstHeight))
+	msg := testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))
 	msg.MsgType = 3
 	msgs := []*types.SSVMessage{
 		msg,
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "wrong SSVMessage type",
 		Runner:                  dr,
 		Messages:                msgs,

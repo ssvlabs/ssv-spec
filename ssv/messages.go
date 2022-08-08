@@ -53,7 +53,7 @@ type PartialSignatureMessage struct {
 	Slot             spec.Slot // Slot represents the slot for which the partial BN signature is for
 	PartialSignature []byte    // The beacon chain partial Signature for a duty
 	SigningRoot      []byte    // the root signed in PartialSignature
-	Signers          []types.OperatorID
+	Signer           types.OperatorID
 	MetaData         *PartialSignatureMetaData
 }
 
@@ -83,9 +83,6 @@ func (pcsm *PartialSignatureMessage) Validate() error {
 	if len(pcsm.SigningRoot) != 32 {
 		return errors.New("SigningRoot invalid")
 	}
-	if len(pcsm.Signers) != 1 {
-		return errors.New("invalid PartialSignatureMessage signers")
-	}
 	return nil
 }
 
@@ -94,7 +91,7 @@ type SignedPartialSignatureMessage struct {
 	Type      PartialSigMsgType
 	Messages  PartialSignatureMessages
 	Signature types.Signature
-	Signers   []types.OperatorID
+	Signer    types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -112,7 +109,7 @@ func (spcsm *SignedPartialSignatureMessage) GetSignature() types.Signature {
 }
 
 func (spcsm *SignedPartialSignatureMessage) GetSigners() []types.OperatorID {
-	return spcsm.Signers
+	return []types.OperatorID{spcsm.Signer}
 }
 
 func (spcsm *SignedPartialSignatureMessage) GetRoot() ([]byte, error) {
@@ -124,8 +121,8 @@ func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg types.MessageSig
 	//	return errors.New("can't aggregate msgs with different roots")
 	//}
 	//
-	//// verify no matching Signers
-	//for _, signerID := range spcsm.Signers {
+	//// verify no matching Signer
+	//for _, signerID := range spcsm.Signer {
 	//	for _, toMatchID := range signedMsg.GetSigners() {
 	//		if signerID == toMatchID {
 	//			return errors.New("signer IDs partially/ fully match")
@@ -133,7 +130,7 @@ func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg types.MessageSig
 	//	}
 	//}
 	//
-	//allSigners := append(spcsm.Signers, signedMsg.GetSigners()...)
+	//allSigners := append(spcsm.Signer, signedMsg.GetSigners()...)
 	//
 	//// verify and aggregate
 	//sig1, err := blsSig(spcsm.Signature)
@@ -148,7 +145,7 @@ func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg types.MessageSig
 	//
 	//sig1.Add(sig2)
 	//spcsm.Signature = sig1.Serialize()
-	//spcsm.Signers = allSigners
+	//spcsm.Signer = allSigners
 	//return nil
 	panic("implement")
 }
@@ -184,9 +181,6 @@ func blsSig(sig []byte) (*bls.Sign, error) {
 func (spcsm *SignedPartialSignatureMessage) Validate() error {
 	if len(spcsm.Signature) != 96 {
 		return errors.New("SignedPartialSignatureMessage sig invalid")
-	}
-	if len(spcsm.Signers) != 1 {
-		return errors.New("no SignedPartialSignatureMessage signers")
 	}
 	if len(spcsm.Messages) == 0 {
 		return errors.New("no SignedPartialSignatureMessage messages")

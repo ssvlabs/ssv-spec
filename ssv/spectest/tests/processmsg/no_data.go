@@ -7,7 +7,7 @@ import (
 )
 
 // NoData tests a SSVMessage with no data
-func NoData() *tests.SpecTest {
+func NoData() *tests.MsgProcessingSpecTest {
 	dr := testingutils.AttesterRunner()
 
 	msgs := []*types.SSVMessage{
@@ -18,7 +18,7 @@ func NoData() *tests.SpecTest {
 		},
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "ssv msg no data",
 		Runner:                  dr,
 		Messages:                msgs,

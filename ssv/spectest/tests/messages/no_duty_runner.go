@@ -8,17 +8,17 @@ import (
 )
 
 // NoDutyRunner tests an SSVMessage ID that doesn't belong to any duty runner
-func NoDutyRunner() *tests.SpecTest {
+func NoDutyRunner() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
-	msg := testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsgWithNoMsgSigners(ks.Shares[1], 1, qbft.FirstHeight))
+	msg := testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))
 	msg.MsgID = types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAggregator)
 	msgs := []*types.SSVMessage{
 		msg,
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "no duty runner found",
 		Runner:                  dr,
 		Messages:                msgs,

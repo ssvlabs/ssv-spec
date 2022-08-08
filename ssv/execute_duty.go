@@ -58,7 +58,7 @@ func (v *Validator) executeSyncCommitteeContributionDuty(duty *types.Duty, dutyR
 		Type:      ContributionProofs,
 		Messages:  msgs,
 		Signature: signature,
-		Signers:   []types.OperatorID{v.share.OperatorID},
+		Signer:    v.share.OperatorID,
 	}
 
 	// broadcast
@@ -121,7 +121,7 @@ func (v *Validator) executeAggregatorDuty(duty *types.Duty, dutyRunner *Runner) 
 		Type:      SelectionProofPartialSig,
 		Messages:  PartialSignatureMessages{msg},
 		Signature: signature,
-		Signers:   []types.OperatorID{v.share.OperatorID},
+		Signer:    v.share.OperatorID,
 	}
 
 	// broadcast
@@ -163,7 +163,7 @@ func (v *Validator) executeBlockProposalDuty(duty *types.Duty, dutyRunner *Runne
 		Type:      RandaoPartialSig,
 		Messages:  PartialSignatureMessages{msg},
 		Signature: signature,
-		Signers:   []types.OperatorID{v.share.OperatorID},
+		Signer:    v.share.OperatorID,
 	}
 
 	// broadcast

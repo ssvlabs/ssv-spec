@@ -17,7 +17,7 @@ func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signe
 		Slot:             slot,
 		PartialSignature: sig,
 		SigningRoot:      ensureRoot(r),
-		Signers:          []types.OperatorID{dr.Share.OperatorID},
+		Signer:           dr.Share.OperatorID,
 	}
 
 	return msg, nil

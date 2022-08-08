@@ -8,7 +8,7 @@ import (
 )
 
 // DutyCommitteeIndexNotMatchingAttestations tests that a duty committee index == attestation committee index
-func DutyCommitteeIndexNotMatchingAttestations() *tests.SpecTest {
+func DutyCommitteeIndexNotMatchingAttestations() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -42,7 +42,7 @@ func DutyCommitteeIndexNotMatchingAttestations() *tests.SpecTest {
 		}), nil),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "duty committee index matches attestation committee index",
 		Runner:                  dr,
 		Messages:                msgs,

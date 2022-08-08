@@ -8,15 +8,15 @@ import (
 )
 
 // WrongMsgID tests a SSVMessage ID which doesn't belong to the validator
-func WrongMsgID() *tests.SpecTest {
+func WrongMsgID() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
 	msgs := []*types.SSVMessage{
-		testingutils.SSVMsgWrongID(nil, testingutils.PostConsensusAttestationMsgWithNoMsgSigners(ks.Shares[1], 1, qbft.FirstHeight)),
+		testingutils.SSVMsgWrongID(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "wrong SSVMessage ID",
 		Runner:                  dr,
 		Messages:                msgs,

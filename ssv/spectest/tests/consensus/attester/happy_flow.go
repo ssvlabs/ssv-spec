@@ -8,7 +8,7 @@ import (
 )
 
 // HappyFlow tests a full valcheck + post valcheck + duty sig reconstruction flow
-func HappyFlow() *tests.SpecTest {
+func HappyFlow() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -68,7 +68,7 @@ func HappyFlow() *tests.SpecTest {
 		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "attester happy flow",
 		Runner:                  dr,
 		Duty:                    testingutils.TestAttesterConsensusData.Duty,

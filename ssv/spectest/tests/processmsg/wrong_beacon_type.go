@@ -7,7 +7,7 @@ import (
 )
 
 // WrongBeaconType tests an SSVMessage with the wrong beacon type
-func WrongBeaconType() *tests.SpecTest {
+func WrongBeaconType() *tests.MsgProcessingSpecTest {
 	dr := testingutils.AttesterRunner()
 	msgs := []*types.SSVMessage{
 		{
@@ -17,7 +17,7 @@ func WrongBeaconType() *tests.SpecTest {
 		},
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "ssv msg wrong beacon type in msg id",
 		Runner:                  dr,
 		Messages:                msgs,

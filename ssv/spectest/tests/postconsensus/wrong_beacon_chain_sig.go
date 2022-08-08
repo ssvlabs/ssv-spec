@@ -8,14 +8,14 @@ import (
 )
 
 // WrongBeaconChainSig tests an invalid PostConsensusMessage PartialSignature
-func WrongBeaconChainSig() *tests.SpecTest {
+func WrongBeaconChainSig() *tests.MsgProcessingSpecTest {
 	dr := testingutils.DecidedRunner()
 
 	msgs := []*types.SSVMessage{
 		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsgWithWrongSig(ks.Shares[1], 1, qbft.FirstHeight)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "Invalid PostConsensusMessage PartialSignature",
 		Runner:                  dr,
 		Messages:                msgs,

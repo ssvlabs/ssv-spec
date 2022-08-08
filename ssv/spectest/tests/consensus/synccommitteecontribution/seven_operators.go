@@ -8,7 +8,7 @@ import (
 )
 
 // SevenOperators tests a full valcheck + post valcheck + duty sig reconstruction flow for 7 operators
-func SevenOperators() *tests.SpecTest {
+func SevenOperators() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing7SharesSet()
 	dr := testingutils.SyncCommitteeContributionRunner(ks)
 
@@ -106,7 +106,7 @@ func SevenOperators() *tests.SpecTest {
 		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[5], 5, ks)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "sync committee contribution 7 operators happy flow",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingSyncCommitteeContributionDuty,

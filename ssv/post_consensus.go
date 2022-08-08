@@ -56,7 +56,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedAttestation.Signature[:],
 			Slot:             decidedValue.Duty.Slot,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
 		return PartialSignatureMessages{
@@ -73,7 +73,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedProposal.Signature[:],
 			Slot:             decidedValue.Duty.Slot,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
 		return PartialSignatureMessages{
@@ -91,7 +91,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedAggregate.Signature[:],
 			Slot:             decidedValue.Duty.Slot,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
 		return PartialSignatureMessages{
@@ -109,7 +109,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedSyncCommittee.Signature[:],
 			Slot:             decidedValue.Duty.Slot,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
 		return PartialSignatureMessages{
@@ -135,7 +135,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 				SigningRoot:      r,
 				PartialSignature: signed.Signature[:],
 				Slot:             decidedValue.Duty.Slot,
-				Signers:          []types.OperatorID{dr.Share.OperatorID},
+				Signer:           dr.Share.OperatorID,
 			}
 			dr.State.PostConsensusPartialSig.AddSignature(m)
 			ret = append(ret, m)
@@ -164,11 +164,7 @@ func (dr *Runner) canProcessPostConsensusMsg(msg *SignedPartialSignatureMessage)
 }
 
 func (dr *Runner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) error {
-	if len(msg.Signers) != 1 {
-		return errors.New("PartialSignatureMessage allows 1 signer")
-	}
-
-	signer := msg.Signers[0]
+	signer := msg.Signer
 	signature := msg.PartialSignature
 	root := msg.SigningRoot
 
