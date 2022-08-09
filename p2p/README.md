@@ -29,6 +29,7 @@ This document contains the networking specification for `SSV.Network`.
     - [Peers Connectivity](#peers-connectivity)
     - [Connection Gating](#connection-gating)
     - [Security](#security)
+    - [Configurations](#configurations)
     - [Forks](#forks)
 
 ## Fundamentals
@@ -696,55 +697,13 @@ known and ignored all over the system.
 
 <br />
 
+### Configurations
+
+Configuration set used in `SSV.network` is described in [this document](./CONFIG.md).
+
 ### Forks
 
 Future network forks will follow the general forks mechanism and design in SSV,
 where some procedures are called in the context of current fork version.
 
-The following procedures will be part of each fork:
-
-**validator topic mapping**
-
-`genesis` - Validator public key hash is used to determine the validator's subnet: \
-`bloxstaking.ssv.{{hash(validatiorPubKey) % num_of_subnets}}`
-
-**number of subnets**
-
-`genesis` - number of subnets for this fork is `128`.
-
-**msgID function**
-
-msgID function to use by libp2p's `pubsub.Router` for calculating `msg_id`.
-
-`genesis` - a content based msgID function is used, see [msg-id](#message-id): \
-`hash(msg-data)[:20]`
-
-<br />
-
-**message encoding**
-
-`genesis` - JSON is used for encoding/decoding of messages.
-
-<br />
-
-**TBD** [SSZ](https://github.com/ethereum/consensus-specs/blob/v0.11.1/ssz/simple-serialize.md)
-will be used to encode/decode network messages.
-It is efficient with traversing on fields, and is the standard encoding in ETH 2.0.
-
-<br />
-
-**sync protocols ID**
-
-`genesis` - the following sync protocols are used with the
-corresponding number of peers that are being called for a single request:
-
-- `/ssv/sync/decided/last/0.0.1`, 10 peers
-- `/ssv/sync/decided/history/0.0.1`, 10 peers
-- `/ssv/sync/round/0.0.1`, 5 peers
-
-<br />
-
-**user agent**
-
-`genesis` - User Agent contains the node version and type
-`SSV-Node/v0.x.x`
+See [network forks](./FORKS.md) for more information.
