@@ -31,6 +31,7 @@ This document contains the networking specification for `SSV.Network`.
     - [Security](#security)
     - [Configurations](#configurations)
     - [Forks](#forks)
+    - [Relayers](#relayers)
 
 ## Fundamentals
 
@@ -707,3 +708,9 @@ Future network forks will follow the general forks mechanism and design in SSV,
 where some procedures are called in the context of current fork version.
 
 See [network forks](./FORKS.md) for more information.
+
+### Relayers
+
+Libp2p offers a [circuit relay](https://github.com/libp2p/specs/blob/master/relay/circuit-v2.md) 
+component to boost reachability in the network. /
+Currently used by ETH2 nodes, will be considered in the future for `SSV`.
