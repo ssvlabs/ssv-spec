@@ -23,7 +23,6 @@ This document contains the networking specification for `SSV.Network`.
 - [Network Layer ](#networking)
     - [PubSub](#pubsub)
     - [PubSub Scoring](#pubsub-scoring)
-    - [Message Scoring](#consensus-scoring)
     - [Discovery](#discovery)
     - [Subnets](#subnets)
     - [Peers Connectivity](#peers-connectivity)
@@ -481,46 +480,14 @@ See [Config > Msg ID](./CONFIG.md#msg-id):
 the idea is that each individual peer maintains a score for other peers.
 The score is locally computed by each individual peer based on observed behaviour and is not shared.
 
-An application specific scoring is used to apply scoring asynchronously as specified below in [consensus scoring](#consensus-scoring).
-
 Score thresholds are used by libp2p to determine whether a peer should be removed from topic's mesh,
 penalized or even ignored if the score drops too low. \
 See [this section](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#score-thresholds)
 for more details regards the different thresholds. \
-Thresholds values **TBD**, this section will be updated once that work is complete:
 
-- `gossipThreshold`: -4000
-- `publishThreshold`: -8000
-- `graylistThreshold`: -16000
-- `acceptPXThreshold`: 100
-- `opportunisticGraftThreshold`: 5
+Thresholds values can be found in the [configuration doc](./CONFIG.md#gossipsub-scoring-thresholds)
 
-Pubsub runs a `Score Function` periodically to determine the score of peers.
-During heartbeat, the score it checked and bad peers are handled accordingly. see
-[gossipsub v1.1 spec](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#the-score-function)
-for more information.
-
-
-#### Consensus Scoring
-
-Message scorers track on operators' behavior w.r.t incoming QBFT messages.
-
-The full validation of messages is done by other components,
-but will be reported asynchronously and scores will be set
-with application specific scoring upon gossipsub heartbeat.
-
-Other components will report validation results,
-that will be converted to meaningful scores for the publisher of the message.
-Note that the relaying peers won't get a bad score.
-
-The following results can be reported:
-
-- `Accept` is the result of a valid message
-- `Ignore` is the result in case the validation should be ignored
-- `RejectLow` is the result for invalid message, with low severity (e.g. late message)
-- `RejectMedium` is the result for invalid message, with medium severity (e.g. wrong height)
-- `RejectHigh` is the result for invalid message, with high severity (e.g. invalid signature)
-
+**NOTE** scoring is turned off by default until we'll run a full validation pipeline in topic validation
 
 #### Topic Message Validation
 
@@ -543,7 +510,7 @@ The following validations will take place as part of message validation:
 As invalid messages might pass this light validation, signing policy of pubsub is turned on 
 to ensure integrity of message senders.
 
-In the future the plan is to run a more complete validation and avoid signing/verification in the pubsub router level.
+**NOTE** In the future the plan is to run full validation pipeline and avoid signing/verification in the pubsub router level.
 Overall that should ease up on the node's resource consumption.
 
 #### Subscription Filter
