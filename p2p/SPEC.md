@@ -472,16 +472,8 @@ and therefore creates multiple IDs for the same logical message, causing it to b
 
 See [pubsub spec > message identification](https://github.com/libp2p/specs/blob/master/pubsub/README.md#message-identification) for more details.
 
-The `msg-id` function that is used in `SSV.Network` creates the ID based on the message content:
-
-`msg-id = hash(signed-consensus-msg)`
-
-**TBD** As hashing is CPU intensive, an optimized version of this function would be to hash specific values from the message,
-which will reduce the overhead created by hashing the entire message:
-
-`msg-id = hash(identifier + height + round + msg_type + signature + signers)`
-
-**TBD** check [ETH2 altair spec](https://github.com/ethereum/consensus-specs/blob/dev/specs/altair/p2p-interface.md#topics-and-messages)
+The `msg-id` function that is used in `SSV.Network` creates the ID based on the message content. \
+See [Config > Msg ID](./CONFIG.md#msg-id):
 
 #### Pubsub Scoring
 
