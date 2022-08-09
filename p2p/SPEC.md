@@ -118,10 +118,7 @@ More information is available in [Discovery section](#discovery)
 Peer scoring in `SSV.Network` is how we protect the network from bad peers,
 by scoring them according to a predefined set of scores.
 
-For more info please refer to the following sections:
-
-- [Pubsub Scoring](#pubsub-scoring) - calculated by libp2p, configured by us
-- [Consensus Scoring](#consensus-scoring) - calculated by internal components during message processing
+For more info please refer to [Pubsub Scoring](#pubsub-scoring) section
 
 
 ------
