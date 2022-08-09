@@ -2,6 +2,7 @@ package proposer
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -77,6 +78,10 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestProposerConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "1f02115b7be1c89f0138d5b93756bb211f08b1594419edb353477c0ab679221c",
+		PostDutyRunnerStateRoot: "d27ec16033845bc523b16d9443cafcd62ea39eab0b996485a74c52ab2de2e5ea",
+		OutputMessages: []*ssv.SignedPartialSignatureMessage{
+			testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+			testingutils.PostConsensusProposerMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+		},
 	}
 }

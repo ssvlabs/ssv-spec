@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (dr *Runner) SignSyncSubCommitteeContributionProof(slot spec.Slot, indexes []uint64, signer types.KeyManager) (PartialSignatureMessages, error) {
-	ret := make(PartialSignatureMessages, 0)
+func (dr *Runner) SignSyncSubCommitteeContributionProof(slot spec.Slot, indexes []uint64, signer types.KeyManager) (*PartialSignatureMessages, error) {
+	ret := make([]*PartialSignatureMessage, 0)
 	for _, index := range indexes {
 		sig, r, err := signer.SignContributionProof(slot, index, dr.Share.SharePubKey)
 		if err != nil {
@@ -25,7 +25,10 @@ func (dr *Runner) SignSyncSubCommitteeContributionProof(slot spec.Slot, indexes 
 			},
 		})
 	}
-	return ret, nil
+	return &PartialSignatureMessages{
+		Type:     ContributionProofs,
+		Messages: ret,
+	}, nil
 }
 
 // ProcessContributionProofsMessage process contribution proofs msg (an array), returns true if it has quorum for partial signatures.
@@ -37,7 +40,7 @@ func (dr *Runner) ProcessContributionProofsMessage(signedMsg *SignedPartialSigna
 
 	roots := make([][]byte, 0)
 	anyQuorum := false
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		prevQuorum := dr.State.ContributionProofs.HasQuorum(msg.SigningRoot)
 
 		if err := dr.State.ContributionProofs.AddSignature(msg); err != nil {

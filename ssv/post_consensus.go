@@ -18,7 +18,7 @@ func (dr *Runner) ProcessPostConsensusMessage(signedMsg *SignedPartialSignatureM
 
 	roots := make([][]byte, 0)
 	anyQuorum := false
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		prevQuorum := dr.State.PostConsensusPartialSig.HasQuorum(msg.SigningRoot)
 
 		if err := dr.State.PostConsensusPartialSig.AddSignature(msg); err != nil {
@@ -41,7 +41,7 @@ func (dr *Runner) ProcessPostConsensusMessage(signedMsg *SignedPartialSignatureM
 }
 
 // SignDutyPostConsensus sets the Decided duty and partially signs the Decided data, returns a PartialSignatureMessage to be broadcasted or error
-func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signer types.KeyManager) (PartialSignatureMessages, error) {
+func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signer types.KeyManager) (*PartialSignatureMessages, error) {
 	dr.State.DecidedValue = decidedValue
 
 	switch dr.BeaconRoleType {
@@ -59,8 +59,9 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
-		return PartialSignatureMessages{
-			ret,
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleProposer:
 		signedBlock, r, err := signer.SignBeaconBlock(decidedValue.BlockData, decidedValue.Duty, dr.Share.SharePubKey)
@@ -76,8 +77,9 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
-		return PartialSignatureMessages{
-			ret,
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleAggregator:
 		signed, r, err := signer.SignAggregateAndProof(decidedValue.AggregateAndProof, decidedValue.Duty, dr.Share.SharePubKey)
@@ -94,8 +96,9 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
-		return PartialSignatureMessages{
-			ret,
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleSyncCommittee:
 		signed, r, err := signer.SignSyncCommitteeBlockRoot(decidedValue.Duty.Slot, decidedValue.SyncCommitteeBlockRoot, decidedValue.Duty.ValidatorIndex, dr.Share.SharePubKey)
@@ -112,11 +115,12 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
-		return PartialSignatureMessages{
-			ret,
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleSyncCommitteeContribution:
-		ret := PartialSignatureMessages{}
+		ret := make([]*PartialSignatureMessage, 0)
 		dr.State.SignedContributions = make(map[string]*altair.SignedContributionAndProof)
 		for proof, c := range decidedValue.SyncCommitteeContribution {
 			contribAndProof := &altair.ContributionAndProof{
@@ -140,7 +144,10 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			dr.State.PostConsensusPartialSig.AddSignature(m)
 			ret = append(ret, m)
 		}
-		return ret, nil
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: ret,
+		}, nil
 	default:
 		return nil, errors.Errorf("unknown duty %s", decidedValue.Duty.Type.String())
 	}
@@ -188,7 +195,7 @@ func (dr *Runner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) err
 			return nil
 		}
 	}
-	return errors.New("beacon partial Signature signer not found")
+	return errors.New("Beacon partial Signature Signer not found")
 }
 
 // ensureRoot ensures that SigningRoot will have sufficient allocated memory

@@ -2,6 +2,7 @@ package proposer
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -111,6 +112,10 @@ func SevenOperators() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestProposerConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "d9e680a7304a5040e546041c0af28b6817951a2b18f39d59e236e6511efefd0f",
+		PostDutyRunnerStateRoot: "304b6a3a30bdfcd491f35273ea132df2e2aafd05006388bf0fe3fa4ae22b2d35",
+		OutputMessages: []*ssv.SignedPartialSignatureMessage{
+			testingutils.PreConsensusRandaoMsg(testingutils.Testing7SharesSet().Shares[1], 1),
+			testingutils.PostConsensusProposerMsg(testingutils.Testing7SharesSet().Shares[1], 1),
+		},
 	}
 }

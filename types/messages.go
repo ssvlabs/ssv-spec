@@ -61,8 +61,6 @@ type MsgType uint64
 const (
 	// SSVConsensusMsgType are all QBFT consensus related messages
 	SSVConsensusMsgType MsgType = iota
-	// SSVDecidedMsgType are all QBFT decided messages
-	SSVDecidedMsgType
 	// SSVPartialSignatureMsgType are all partial signatures msgs over beacon chain specific signatures
 	SSVPartialSignatureMsgType
 	// DKGMsgType represent all DKG related messages

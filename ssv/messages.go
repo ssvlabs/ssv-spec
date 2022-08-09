@@ -22,7 +22,10 @@ const (
 	ContributionProofs
 )
 
-type PartialSignatureMessages []*PartialSignatureMessage
+type PartialSignatureMessages struct {
+	Type     PartialSigMsgType
+	Messages []*PartialSignatureMessage
+}
 
 // Encode returns a msg encoded bytes or error
 func (msgs *PartialSignatureMessages) Encode() ([]byte, error) {
@@ -44,14 +47,30 @@ func (msgs PartialSignatureMessages) GetRoot() ([]byte, error) {
 	return ret[:], nil
 }
 
+func (msgs PartialSignatureMessages) Validate() error {
+	if len(msgs.Messages) == 0 {
+		return errors.New("no PartialSignatureMessages messages")
+	}
+	for _, m := range msgs.Messages {
+		if err := m.Validate(); err != nil {
+			return errors.Wrap(err, "message invalid")
+		}
+
+		if msgs.Type == ContributionProofs && m.MetaData == nil {
+			return errors.New("metadata nil for contribution proofs")
+		}
+	}
+	return nil
+}
+
 type PartialSignatureMetaData struct {
 	ContributionSubCommitteeIndex uint64
 }
 
-// PartialSignatureMessage is a msg for partial beacon chain related signatures (like partial attestation, block, randao sigs)
+// PartialSignatureMessage is a msg for partial Beacon chain related signatures (like partial attestation, block, randao sigs)
 type PartialSignatureMessage struct {
 	Slot             spec.Slot // Slot represents the slot for which the partial BN signature is for
-	PartialSignature []byte    // The beacon chain partial Signature for a duty
+	PartialSignature []byte    // The Beacon chain partial Signature for a duty
 	SigningRoot      []byte    // the root signed in PartialSignature
 	Signer           types.OperatorID
 	MetaData         *PartialSignatureMetaData
@@ -88,8 +107,7 @@ func (pcsm *PartialSignatureMessage) Validate() error {
 
 // SignedPartialSignatureMessage is an operator's signature over PartialSignatureMessage
 type SignedPartialSignatureMessage struct {
-	Type      PartialSigMsgType
-	Messages  PartialSignatureMessages
+	Message   PartialSignatureMessages
 	Signature types.Signature
 	Signer    types.OperatorID
 }
@@ -113,7 +131,7 @@ func (spcsm *SignedPartialSignatureMessage) GetSigners() []types.OperatorID {
 }
 
 func (spcsm *SignedPartialSignatureMessage) GetRoot() ([]byte, error) {
-	return spcsm.Messages.GetRoot()
+	return spcsm.Message.GetRoot()
 }
 
 func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg types.MessageSignature) error {
@@ -125,7 +143,7 @@ func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg types.MessageSig
 	//for _, signerID := range spcsm.Signer {
 	//	for _, toMatchID := range signedMsg.GetSigners() {
 	//		if signerID == toMatchID {
-	//			return errors.New("signer IDs partially/ fully match")
+	//			return errors.New("Signer IDs partially/ fully match")
 	//		}
 	//	}
 	//}
@@ -150,7 +168,7 @@ func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg types.MessageSig
 	panic("implement")
 }
 
-// MatchedSigners returns true if the provided signer ids are equal to GetSignerIds() without order significance
+// MatchedSigners returns true if the provided Signer ids are equal to GetSignerIds() without order significance
 func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []types.OperatorID) bool {
 	toMatchCnt := make(map[types.OperatorID]int)
 	for _, id := range ids {
@@ -182,17 +200,5 @@ func (spcsm *SignedPartialSignatureMessage) Validate() error {
 	if len(spcsm.Signature) != 96 {
 		return errors.New("SignedPartialSignatureMessage sig invalid")
 	}
-	if len(spcsm.Messages) == 0 {
-		return errors.New("no SignedPartialSignatureMessage messages")
-	}
-	for _, m := range spcsm.Messages {
-		if err := m.Validate(); err != nil {
-			return errors.Wrap(err, "message invalid")
-		}
-
-		if spcsm.Type == ContributionProofs && m.MetaData == nil {
-			return errors.New("metadata nil for contribution proofs")
-		}
-	}
-	return nil
+	return spcsm.Message.Validate()
 }

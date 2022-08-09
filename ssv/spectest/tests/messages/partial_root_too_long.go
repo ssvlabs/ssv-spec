@@ -11,7 +11,7 @@ func PartialRootTooLong() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Messages[0].SigningRoot = make([]byte, 33)
+	msg.Message.Messages[0].SigningRoot = make([]byte, 33)
 
 	return &MsgSpecTest{
 		Name: "partial root too long",

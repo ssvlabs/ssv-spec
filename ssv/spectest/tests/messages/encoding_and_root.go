@@ -7,23 +7,25 @@ import (
 // EncodingAndRoot tests SignedPartialSignatureMessage encoding + root
 func EncodingAndRoot() *MsgSpecTest {
 	msg := &ssv.SignedPartialSignatureMessage{
-		Type:      ssv.PostConsensusPartialSig,
 		Signature: make([]byte, 96),
 		Signer:    11,
-		Messages: []*ssv.PartialSignatureMessage{
-			{
-				Slot:             12,
-				PartialSignature: make([]byte, 96),
-				Signer:           11,
-				SigningRoot:      make([]byte, 32),
-			},
-			{
-				Slot:             12,
-				PartialSignature: make([]byte, 96),
-				Signer:           11,
-				SigningRoot:      make([]byte, 32),
-				MetaData: &ssv.PartialSignatureMetaData{
-					ContributionSubCommitteeIndex: 1,
+		Message: ssv.PartialSignatureMessages{
+			Type: ssv.PostConsensusPartialSig,
+			Messages: []*ssv.PartialSignatureMessage{
+				{
+					Slot:             12,
+					PartialSignature: make([]byte, 96),
+					Signer:           11,
+					SigningRoot:      make([]byte, 32),
+				},
+				{
+					Slot:             12,
+					PartialSignature: make([]byte, 96),
+					Signer:           11,
+					SigningRoot:      make([]byte, 32),
+					MetaData: &ssv.PartialSignatureMetaData{
+						ContributionSubCommitteeIndex: 1,
+					},
 				},
 			},
 		},

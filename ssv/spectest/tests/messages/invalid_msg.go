@@ -11,7 +11,7 @@ func InvalidMsg() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Messages = append(msg.Messages, &ssv.PartialSignatureMessage{})
+	msg.Message.Messages = append(msg.Message.Messages, &ssv.PartialSignatureMessage{})
 
 	return &MsgSpecTest{
 		Name:          "no messages",

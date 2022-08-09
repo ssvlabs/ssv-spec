@@ -92,7 +92,7 @@ func TestSignedPostConsensusMessage_MatchedSigners(t *testing.T) {
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //
-//		require.EqualError(t, msg1.Aggregate(msg2), "signer IDs partially/ fully match")
+//		require.EqualError(t, msg1.Aggregate(msg2), "Signer IDs partially/ fully match")
 //	})
 //
 //	t.Run("different roots", func(t *testing.T) {
@@ -110,7 +110,7 @@ func TestSignedPostConsensusMessage_MatchedSigners(t *testing.T) {
 func TestSignedPartialSignatureMessage_Marshaling(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		signed := &ssv.SignedPartialSignatureMessage{
-			Messages: ssv.PartialSignatureMessages{
+			Message: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					Slot:             1,
 					PartialSignature: []byte{1, 2, 3, 4},
@@ -191,7 +191,7 @@ func TestSignedPartialSignatureMessage_Validate(t *testing.T) {
 		m := &ssv.SignedPartialSignatureMessage{
 			Signature: make([]byte, 96),
 			Signer:    []types.OperatorID{1},
-			Messages: ssv.PartialSignatureMessages{
+			Message: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					PartialSignature: make([]byte, 96),
 					SigningRoot:      make([]byte, 32),
@@ -206,7 +206,7 @@ func TestSignedPartialSignatureMessage_Validate(t *testing.T) {
 		m := &ssv.SignedPartialSignatureMessage{
 			Signature: make([]byte, 95),
 			Signer:    []types.OperatorID{1},
-			Messages: ssv.PartialSignatureMessages{
+			Message: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					PartialSignature: make([]byte, 96),
 					SigningRoot:      make([]byte, 32),
@@ -227,7 +227,7 @@ func TestSignedPartialSignatureMessage_Validate(t *testing.T) {
 		m := &ssv.SignedPartialSignatureMessage{
 			Signature: make([]byte, 95),
 			Signer:    []types.OperatorID{},
-			Messages: ssv.PartialSignatureMessages{
+			Message: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					PartialSignature: make([]byte, 96),
 					SigningRoot:      make([]byte, 32),
@@ -248,7 +248,7 @@ func TestSignedPartialSignatureMessage_Validate(t *testing.T) {
 		m := &ssv.SignedPartialSignatureMessage{
 			Signature: make([]byte, 96),
 			Signer:    []types.OperatorID{1},
-			Messages: ssv.PartialSignatureMessages{
+			Message: ssv.PartialSignatureMessages{
 				&ssv.PartialSignatureMessage{
 					PartialSignature: make([]byte, 95),
 					SigningRoot:      make([]byte, 32),

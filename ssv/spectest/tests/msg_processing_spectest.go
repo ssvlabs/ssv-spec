@@ -2,6 +2,7 @@ package tests
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -15,6 +16,7 @@ type MsgProcessingSpecTest struct {
 	Duty                    *types.Duty
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
+	OutputMessages          []*ssv.SignedPartialSignatureMessage
 	ExpectedError           string
 }
 
@@ -40,6 +42,31 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 
+	// test output message
+	broadcastedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
+	if len(broadcastedMsgs) > 0 {
+		index := 0
+		for i, msg := range broadcastedMsgs {
+			if msg.MsgType != types.SSVPartialSignatureMsgType {
+				continue
+			}
+
+			msg1 := &ssv.SignedPartialSignatureMessage{}
+			require.NoError(t, msg1.Decode(msg.Data))
+			r1, _ := msg1.GetRoot()
+
+			msg2 := test.OutputMessages[index]
+			r2, _ := msg2.GetRoot()
+
+			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+
+			index++
+		}
+
+		require.Len(t, test.OutputMessages, index)
+	}
+
+	// post root
 	postRoot, err := test.Runner.State.GetRoot()
 	require.NoError(t, err)
 

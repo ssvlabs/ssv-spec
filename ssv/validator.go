@@ -4,16 +4,16 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-// Validator represents an SSV ETH consensus validator share assigned, coordinates duty execution and more.
+// Validator represents an SSV ETH consensus validator Share assigned, coordinates duty execution and more.
 // Every validator has a validatorID which is validator's public key.
 // Each validator has multiple DutyRunners, for each duty type.
 type Validator struct {
 	DutyRunners DutyRunners
-	network     Network
-	beacon      BeaconNode
-	storage     Storage
-	share       *types.Share
-	signer      types.KeyManager
+	Network     Network
+	Beacon      BeaconNode
+	Storage     Storage
+	Share       *types.Share
+	Signer      types.KeyManager
 }
 
 func NewValidator(
@@ -25,10 +25,10 @@ func NewValidator(
 ) *Validator {
 	return &Validator{
 		DutyRunners: map[types.BeaconRole]*Runner{},
-		network:     network,
-		beacon:      beacon,
-		storage:     storage,
-		share:       share,
-		signer:      signer,
+		Network:     network,
+		Beacon:      beacon,
+		Storage:     storage,
+		Share:       share,
+		Signer:      signer,
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessage, error) {
+func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessages, error) {
 	sig, r, err := signer.SignRandaoReveal(epoch, dr.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign partial randao reveal")
@@ -20,7 +20,10 @@ func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signe
 		Signer:           dr.Share.OperatorID,
 	}
 
-	return msg, nil
+	return &PartialSignatureMessages{
+		Type:     RandaoPartialSig,
+		Messages: []*PartialSignatureMessage{msg},
+	}, nil
 }
 
 // ProcessRandaoMessage process randao msg, returns true if it has quorum for partial signatures.
@@ -32,7 +35,7 @@ func (dr *Runner) ProcessRandaoMessage(signedMsg *SignedPartialSignatureMessage)
 
 	roots := make([][]byte, 0)
 	anyQuorum := false
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		prevQuorum := dr.State.RandaoPartialSig.HasQuorum(msg.SigningRoot)
 
 		if err := dr.State.RandaoPartialSig.AddSignature(msg); err != nil {

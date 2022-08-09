@@ -11,8 +11,8 @@ func InvalidContributionProofMetaData() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Type = ssv.ContributionProofs
-	msg.Messages[0].MetaData = nil
+	msg.Message.Type = ssv.ContributionProofs
+	msg.Message.Messages[0].MetaData = nil
 
 	return &MsgSpecTest{
 		Name:          "invalid meta data when type ContributionProofs",

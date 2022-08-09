@@ -16,14 +16,14 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	//postconsensus.ValidMessage(),
-	//postconsensus.InvaliSignature(),
-	//postconsensus.WrongSigningRoot(),
-	//postconsensus.WrongBeaconChainSig(),
-	//postconsensus.FutureConsensusState(),
-	//postconsensus.PastConsensusState(),
-	//postconsensus.MsgAfterReconstruction(),
-	//postconsensus.DuplicateMsg(),
+	////postconsensus.ValidMessage(),
+	////postconsensus.InvaliSignature(),
+	////postconsensus.WrongSigningRoot(),
+	////postconsensus.WrongBeaconChainSig(),
+	////postconsensus.FutureConsensusState(),
+	////postconsensus.PastConsensusState(),
+	////postconsensus.MsgAfterReconstruction(),
+	////postconsensus.DuplicateMsg(),
 
 	messages.EncodingAndRoot(),
 	messages.NoMsgs(),
@@ -39,26 +39,27 @@ var AllTests = []SpecTest{
 	messages.PartialRootValid(),
 	messages.PartialRootTooShort(),
 	messages.PartialRootTooLong(),
-
-	//valcheck.WrongDutyPubKey(),
-
+	//
+	////valcheck.WrongDutyPubKey(),
+	//
 	attester.HappyFlow(),
 	attester.SevenOperators(),
-	//attestations.FarFutureDuty(),
-	//attestations.DutySlotNotMatchingAttestationSlot(),
-	//attestations.DutyCommitteeIndexNotMatchingAttestations(),
-	//attestations.FarFutureAttestationTarget(),
-	//attestations.AttestationSourceValid(),
-	//attestations.DutyTypeWrong(),
-	//attestations.AttestationDataNil(),
-	//
+	////attestations.FarFutureDuty(),
+	////attestations.DutySlotNotMatchingAttestationSlot(),
+	////attestations.DutyCommitteeIndexNotMatchingAttestations(),
+	////attestations.FarFutureAttestationTarget(),
+	////attestations.AttestationSourceValid(),
+	////attestations.DutyTypeWrong(),
+	////attestations.AttestationDataNil(),
+
+	//processmsg.UnknownRunner(),
+	//processmsg.NoRunningDuty(),
+	//processmsg.MsgNotBelonging(),
 	//processmsg.NoData(),
-	//processmsg.InvalidConsensusMsg(),
-	//processmsg.InvalidDecidedMsg(),
-	//processmsg.InvalidPostConsensusMsg(),
-	//processmsg.UnknownType(),
-	//processmsg.WrongPubKey(),
-	//processmsg.WrongBeaconType(),
+	//processmsg.ValidConsensusMsg(),
+	//processmsg.ValidDecidedConsensusMsg(),
+	//processmsg.InvalidValcheckConsensusMsg(),
+	//processmsg.InvalidPostconsensusPartialSigMsg(),
 
 	proposer.HappyFlow(),
 	proposer.SevenOperators(),

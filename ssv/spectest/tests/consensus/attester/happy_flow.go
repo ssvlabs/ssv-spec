@@ -2,6 +2,7 @@ package attester
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -20,6 +21,7 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			Identifier: testingutils.AttesterMsgID,
 			Data:       testingutils.ProposalDataBytes(testingutils.TestAttesterConsensusDataByts, nil, nil),
 		}), nil),
+
 		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,
@@ -41,6 +43,7 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			Identifier: testingutils.AttesterMsgID,
 			Data:       testingutils.PrepareDataBytes(testingutils.TestAttesterConsensusDataByts),
 		}), nil),
+
 		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
 			MsgType:    qbft.CommitMsgType,
 			Height:     qbft.FirstHeight,
@@ -74,5 +77,8 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		Duty:                    testingutils.TestAttesterConsensusData.Duty,
 		Messages:                msgs,
 		PostDutyRunnerStateRoot: "5dfb3ba03010b92fcd7404dc1f8e7d43e0ebfcdbe63e46fec25c358d500eb26f",
+		OutputMessages: []*ssv.SignedPartialSignatureMessage{
+			testingutils.PostConsensusAttestationMsg(testingutils.Testing4SharesSet().Shares[1], 1, qbft.FirstHeight),
+		},
 	}
 }
