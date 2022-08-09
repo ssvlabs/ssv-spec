@@ -168,7 +168,7 @@ func validateCommit(
 	}
 
 	if !bytes.Equal(proposedCommitData.Data, msgCommitData.Data) {
-		return errors.New("proposed data different than commit msg data")
+		return errors.New("message data is different from proposed data")
 	}
 
 	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {

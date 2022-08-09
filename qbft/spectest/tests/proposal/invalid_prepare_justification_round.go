@@ -72,6 +72,6 @@ func InvalidPrepareJustificationRound() *tests.MsgProcessingSpecTest {
 		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid proposal message: proposal not justified: change round msg not valid: round change justification invalid: msg round wrong",
+		ExpectedError:  "invalid proposal message: proposal not justified: change round msg not valid: round change justification invalid: round is wrong",
 	}
 }

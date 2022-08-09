@@ -117,7 +117,7 @@ func validSignedPrepareForHeightRoundAndValue(
 		return errors.New("message height is wrong")
 	}
 	if signedPrepare.Message.Round != round {
-		return errors.New("msg round wrong")
+		return errors.New("round is wrong")
 	}
 
 	prepareData, err := signedPrepare.Message.GetPrepareData()
