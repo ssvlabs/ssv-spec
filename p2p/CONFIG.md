@@ -57,9 +57,9 @@ For more information regards ETH2.0 configuration please refer to
 
 Specifies how long a message will be remembered as seen.
 
-**Default Value (libp2p):** `2min` \
-**Default Value (SSV):** `6.4min` \
-**Default Value (ETH2):** `6.4min`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `2min`                 | `6.4min`            | `6.4min`             |
 
 Was increased to `6.4m` which is the duration of one epoch, as messages become redundant afterwards.
 
@@ -67,43 +67,46 @@ Was increased to `6.4m` which is the duration of one epoch, as messages become r
 
 The size of the queue that is used for outbound messages.
 
-**Default Value (libp2p):** `32` \
-**Default Value (SSV):** `256` \
-**Default Value (ETH2):** `600`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `32`                   | `256`               | `600`                |
 
 The value was increased to support higher load of messages.
 SSV uses a smaller number than ETH2.0 due to high memory usage, 
 which is caused by the size of raw JSON messages.
 
-**NOTE** This parameter will be considered once encoding is changed to `SSZ` and compression is applied (`snappy` or `s2`). 
+**NOTE** This parameter should be increased once we do full validation in the topic level. 
+Also depends on encoding changed to `SSZ` and compression as well (`snappy` or `s2`). 
 
 ### Validation Queue Size
 
 The size of the queue that is used for validation of incoming messages.
 
-**Default Value (libp2p):** `32` \
-**Default Value (SSV):** `256` \
-**Default Value (ETH2):** `600`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `32`                   | `256`               | `600`                |
 
 The value was increased to support higher load of messages.
 SSV uses a smaller number than ETH2.0 due to high memory usage,
 which is caused by the size of raw JSON messages.
 
-**NOTE** This parameter will be considered once encoding is changed to `SSZ` and compression is applied (`snappy` or `s2`).
+**NOTE** This parameter should be increased once we do full validation in the topic level.
+Also depends on encoding changed to `SSZ` and compression as well (`snappy` or `s2`).
 
 ### Validation Throttle
 
 The upper bound on the number of active validation goroutines across all topics
 
-**Default Value (libp2p):** `8192` \
-**Default Value (SSV):** `4096` \
-**Default Value (ETH2):** `8192`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `8192`                 | `4096`              | `8192`               |
 
 The value was decreased to avoid high resource usage and reduce overloading on the node.
 SSV uses a smaller number than ETH2.0 due to high memory usage,
 which is caused by the size of raw JSON messages.
 
-**NOTE** This parameter will be considered once encoding is changed to `SSZ` and compression is applied (`snappy` or `s2`).
+**NOTE** This parameter should be increased once we do full validation in the topic level.
+Also depends on encoding changed to `SSZ` and compression as well (`snappy` or `s2`).
 
 ### Msg ID
 
@@ -134,22 +137,20 @@ SSV uses a custom function that returns the content hash, so we won't process th
 
 ### Subscription Filter
 
-Allows to control the topics that the node will subscribe to.
+Allows to control the topics that the node will accept to subscribe.
 
-**Default Value (libp2p):** Accept all topics \
-**Default Value (SSV):** Accept topics with the same fork if the node has interest in them, 
-if we didn't reach subscriptions limit (`129`) \
-**Default Value (ETH2):** Accept topics with supported fork digest if the node has interest in them,
-and it didn't reach subscriptions limit (`200`)
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| -                      | Accept topics with the same fork if the node has interest in them, if we didn't reach subscriptions limit (`129`) | Accept topics with supported fork digest if the node has interest in them, and it didn't reach subscriptions limit (`200`) |
 
 
 ### Flood Publish
 
 Force peer's own messages to be published to all known peers for the topic.
 
-**Default Value (libp2p):** `false` \
-**Default Value (SSV):** `false` \
-**Default Value (ETH2):** `false`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `false`                | `false`             | `false`              |
 
 When turned on, this feature ensures reliability and protects from eclipse attacks. 
 On the other hand it floods the network with duplicated message and therefore it was turned off.
@@ -159,57 +160,60 @@ On the other hand it floods the network with duplicated message and therefore it
 
 The mode of operation for producing and verifying message signatures in the pubsub router level.
 
-**Default Value (libp2p):** `StrictSign` \
-**Default Value (SSV):** `StrictSign` \
-**Default Value (ETH2):** `StrictNoSign`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `StrictSign`           | `StrictSign`        | `StrictNoSign`       |
 
-**TODO**
+Will be changed to `StrictNoSign` once we do full validation in the topic level, 
+as other peers shouldn't send invalid messages and that makes the integrity of the owner irrelevant.
 
 
 ### Topic Message Validator
 
 A function that is invoked by pubsub for incoming messages before they are being processed.
 
-**Default Value (libp2p):** None \
-**Default Value (SSV):** Decodes the message and validate that it was sent on the right topic \
-**Default Value (ETH2):** A more complete validation, according to message type (according to topic). \
-More details can be [found here](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#global-topics)
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| -                      | Decodes the message and validate that it was sent on the right topic | A full validation pipeline, according to message type (according to topic). |
 
-**TODO**
+**NOTE** Will be changed to be similar to ETH2.0 approach, 
+where validation pipelines will run on the topic validation level.
+expected to affect other configurations as well.
 
+More details on ETH2 message validators can be found 
+[here](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#global-topics)
 
 ### Gossipsub: D
 
 Sets the optimal degree for a GossipSub topic mesh. D should be set somewhere between Dlo and Dhi.
 
-
-**Default Value (libp2p):** `6` \
-**Default Value (SSV):** `8` \
-**Default Value (ETH2):** `8`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `6`                    | `8`                 | `8`                  |
 
 ### Gossipsub: Dlo
 
 Sets the lower bound on the number of peers we keep in a GossipSub topic mesh.
 
-**Default Value (libp2p):** `5` \
-**Default Value (SSV):** `6` \
-**Default Value (ETH2):** `6`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `5`                    | `6`                 | `6`                  |
 
 ### Gossipsub: Dhi
 
 Sets the upper bound on the number of peers we keep in a GossipSub topic mesh.
 
-**Default Value (libp2p):** `12` \
-**Default Value (SSV):** `12` \
-**Default Value (ETH2):** `12`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `12`                   | `12`                | `12`                 |
 
 ### Gossipsub: HeartbeatInterval
 
 Controls the time between heartbeats, which are used across pubsub components to align on timing.
 
-**Default Value (libp2p):** `1s` \
-**Default Value (SSV):** `700ms` \
-**Default Value (ETH2):** `700ms`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `1s`                   | `700ms`             | `700ms`             |
 
 As SSV nodes work intensively with pubsub, we had to decrease the heartbeat interval 
 to reduce the latency created by a higher heartbeat.
@@ -218,9 +222,9 @@ to reduce the latency created by a higher heartbeat.
 
 Controls the size of the message cache used for gossip (`IWANT` responses).
 
-**Default Value (libp2p):** `5` \
-**Default Value (SSV):** `6` \
-**Default Value (ETH2):** `6`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `5`                    | `6`                 | `6`                  |
 
 The value was increased to reduce the number of `IWANT` messages in the network.
 
@@ -228,9 +232,9 @@ The value was increased to reduce the number of `IWANT` messages in the network.
 
 Controls how many cached message ids we will advertise in IHAVE gossip messages.
 
-**Default Value (libp2p):** `3` \
-**Default Value (SSV):** `4` \
-**Default Value (ETH2):** `3`
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `3`                    | `4`                 | `3`                  |
 
 **TODO**
 
@@ -238,23 +242,29 @@ Controls how many cached message ids we will advertise in IHAVE gossip messages.
 
 Sets the maximum number of messages to include in an IHAVE message.
 
-**Default Value (libp2p):** `5000` \
-**Default Value (SSV):** `1500` \
-**Default Value (ETH2):** `5000`
+
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `5000`                 | `1500`              | `5000`               |
+
 
 Decreased value to avoid ihave floods.
+
 **TODO**
 
 ### Gossipsub: MaxIHaveMessages
 
 Sets the maximum number of IHAVE messages to accept from a peer within a heartbeat.
 
-**Default Value (libp2p):** `10` \
-**Default Value (SSV):** `32` \
-**Default Value (ETH2):** `10`
+
+| Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
+| ---                    | ---                 | ---                  |
+| `10`                   | `32`                | `10`                 |
+
 
 Increased as we want messages to be sent in batches, to reduce the amount of requests.
 
+<br />
 <br />
 
 **TODO: Scoring Params**
