@@ -160,7 +160,8 @@ enum MsgType {
 
 </details>
 
-Note that all pubsub messages in the network are wrapped with libp2p's message structure ([see RPC](https://github.com/libp2p/specs/blob/master/pubsub/README.md#the-rpc)).
+Note that all pubsub messages in the network are wrapped with libp2p's message structure 
+([see pubsub RPC](https://github.com/libp2p/specs/blob/master/pubsub/README.md#the-rpc)).
 
 ## Consensus Protocol
 
@@ -177,66 +178,15 @@ More information regarding the protocol can be found in [iBFT annotated paper (B
 
 ### Message Structure
 
-`SignedMessage` is a wrapper for QBFT messages, it holds a message and its signature with a list of signer IDs:
-
-More details can be found in the [QBFT spec](https://github.com/bloxapp/ssv/blob/ssv_spec/docs/spec/qbft/messages.go).
-
-<details>
-  <summary><b>protobuf</b></summary>
-
-  ```protobuf
-  syntax = "proto3";
-  import "gogo.proto";
-  
-  // SignedMessage holds a message and it's corresponding signature
-  message SignedMessage {
-    // message is the QBFT message
-    Message message            = 1 [(gogoproto.nullable) = false];
-    // signature is a signature of the QBFT message
-    bytes signature            = 2 [(gogoproto.nullable) = false];
-    // signer_ids is a sorted list of the IDs of the signing operators
-    repeated uint64 signer_ids = 3;
-  }
-  
-  // Message represents an QBFT message
-  message Message {
-    // type is the QBFT state / stage
-    Stage type       = 1;
-    // round is the current round where the message was sent
-    uint64 round     = 2;
-    // identifier is the message identifier
-    bytes identifier = 3;
-    // height is the instance height
-    uint64 height    = 4;
-    // value holds the message data in bytes
-    bytes value      = 5;
-  }
-  ```
-</details>
-
-<details>
-  <summary><b>JSON example</b></summary>
-
-  ```json
-  {
-    "message": {
-      "type": 3,
-      "round": 1,
-      "identifier": "OTFiZGZjOWQxYzU4NzZkYTEwY...",
-      "height": 28276,
-      "value": "mB0aAAAAAAA4AAAAAAAAADpTC1djq..."
-    },
-    "signature": "jrB0+Z9zyzzVaUpDMTlCt6Om9mj...",
-    "signer_ids": [2, 3, 4]
-  }
-  ```
-</details>
+Messages structure and more information can be found in 
+[ssv-spec/types](https://github.com/bloxapp/ssv-spec/blob/main/types/messages.go).
 
 ---
 
 ## Sync Protocols
 
-There are several sync protocols, tha main purpose is to enable operator nodes to sync past decided message or to catch up with round changes.
+There are several sync protocols, 
+tha main purpose is to enable operator nodes to sync past decided message or to catch up with round changes.
 
 In order to participate in some validator's consensus, a peer will first use sync protocols to align on past information.
 
@@ -348,7 +298,8 @@ Response:
 
 This protocol enables to sync historical decided messages in some specific range.
 
-The request should specify the desired range, while the response will include all the found messages for that range.
+The request should specify the desired range, while the response will include all 
+the found messages for that range.
 
 **NOTE** that this protocol is optional. by default nodes won't save history,
 only those who turn on the corresponding flag will support this protocol.
@@ -452,13 +403,13 @@ Response:
 
 `/ssv/info/0.0.1`
 
-The handshake protocol allows peers to identify, by exchanging signed information AKA `Node Info`. \
+The handshake protocol allows peers to identify, by exchanging signed information AKA `NodeInfo`. \
 It must be performed for every connection, and check that the other node is on the same ssv network.
 
 [go-libp2p-core/record.Record](https://github.com/libp2p/go-libp2p-core/blob/master/record/record.go) and
 [go-libp2p-core/record.Envelope](https://github.com/libp2p/go-libp2p-core/blob/master/record/envelope.go)
 are a common utilities that libp2p provides for these cases,
-therefore they are used for signing and verification in SSV. 
+therefore they are used for signing and verification of `NodeInfo` messages in SSV. 
 
 <details>
   <summary><b>protobuf</b></summary>
@@ -487,8 +438,8 @@ therefore they are used for signing and verification in SSV.
     string node_version    = 3;
     // execution_node is the eth1 node used by the node
     string execution_node  = 4;
-    // consesnsus_node is the eth2 node used by the node
-    string consesnsus_node = 5;
+    // consensus_node is the eth2 node used by the node
+    string consensus_node = 5;
   }
   ```
 </details>
