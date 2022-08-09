@@ -49,8 +49,10 @@ Note that in order to have a detail log, the node operator must set log level (`
 
 The following parameters are used when initializing and interaction with the pubsub router.
 
-Note that we compare default values with both libp2p defaults and ETH2.0 nodes. 
-For more information regards ETH2.0 configuration please refer to 
+**NOTE** that we compare default values with both libp2p defaults and ETH2.0 nodes. \
+For more information on libp2p defaults see 
+[gossipsub-v1.0 spec > parameters](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.0.md#parameters). \
+For more information on ETH2.0 configuration please refer to 
 [their p2p spec](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#the-gossip-domain-gossipsub).
 
 ### Last Seen
@@ -236,21 +238,19 @@ Controls how many cached message ids we will advertise in IHAVE gossip messages.
 | ---                    | ---                 | ---                  |
 | `3`                    | `4`                 | `3`                  |
 
-**TODO**
+The value was increased to ensure message delivery.
 
 ### Gossipsub: MaxIHaveLength
 
 Sets the maximum number of messages to include in an IHAVE message.
 
-
 | Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
 | ---                    | ---                 | ---                  |
 | `5000`                 | `1500`              | `5000`               |
 
+Decreased value to avoid ihave floods, as our network produces a large number of messages.
 
-Decreased value to avoid ihave floods.
-
-**TODO**
+**NOTE** Will be increased once encoding changes to `SSZ` and compression as well (`snappy` or `s2`)
 
 ### Gossipsub: MaxIHaveMessages
 
@@ -263,6 +263,8 @@ Sets the maximum number of IHAVE messages to accept from a peer within a heartbe
 
 
 Increased as we want messages to be sent in batches, to reduce the amount of requests.
+
+**NOTE** Will be re-visited once encoding changes to `SSZ` and compression as well (`snappy` or `s2`)
 
 <br />
 <br />
