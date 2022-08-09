@@ -29,14 +29,6 @@ a content based msgID function is used, see [msg-id](#message-id): \
 
 JSON is used for encoding/decoding of messages.
 
-<br />
-
-**TBD** [SSZ](https://github.com/ethereum/consensus-specs/blob/v0.11.1/ssz/simple-serialize.md)
-will be used to encode/decode network messages.
-It is efficient with traversing on fields, and is the standard encoding in ETH 2.0.
-
-<br />
-
 ### sync protocols ID
 
 The following sync protocols are used with the
