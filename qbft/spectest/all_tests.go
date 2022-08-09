@@ -41,7 +41,6 @@ var AllTests = []SpecTest{
 	messages.RoundChangePrePreparedJustifications(),
 	messages.RoundChangeNotPreparedJustifications(),
 	messages.CommitDataEncoding(),
-	messages.DecidedMsgEncoding(),
 	messages.MsgNilIdentifier(),
 	messages.MsgNonZeroIdentifier(),
 	messages.MsgTypeUnknown(),
