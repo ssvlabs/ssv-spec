@@ -545,20 +545,12 @@ The following validations will take place as part of message validation:
 - message structure check will:
     - `REJECT` messages with corrupted or invalid structure
     - `REJECT` empty messages
-- **TBD** operator check will make sure the operator is eligible
-  to send a message on behalf of the given validator
 
+As invalid messages might pass this light validation, signing policy of pubsub is turned on 
+to ensure integrity of message senders.
 
-
-#### Flood Publishing
-
-`floodPublish` was turned on for ensuring better reliability, as peer's own messages will be propagated to a larger set of peers
-(see [Flood Publishing](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#flood-publishing))
-In addition it is mentioned as a mitigation strategy for attacks,
-as it helps to overcome situations where most of the node’s mesh connections were occupied by Sybils.
-
-[Gossipsub v1.1 Evaluation Report > 2.2 Mitigation Strategies](https://gateway.ipfs.io/ipfs/QmRAFP5DBnvNjdYSbWhEhVRJJDFCLpPyvew5GwCCB4VxM4)
-
+In the future the plan is to run a more complete validation and avoid signing/verification in the pubsub router level.
+Overall that should ease up on the node's resource consumption.
 
 #### Subscription Filter
 
@@ -576,9 +568,8 @@ Consensus messages are being sent in the network over a pubsub topic.
 
 A subnet of peers consists of
 operators that are responsible for multiple committees,
-reusing the same topic to communicate on behalf of multiple validators.
-
-Operator nodes, will validate and store highest decided messages and last change round messages
+reusing the same topic to communicate on behalf of multiple validators. \
+Operator nodes will validate and store highest decided messages and last change round messages
 of all the committees in the subnets they participate.
 
 `Decided` topic is used for propagation of decided messages across all the nodes in the network,
