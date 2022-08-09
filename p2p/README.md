@@ -20,7 +20,7 @@ This document contains the networking specification for `SSV.Network`.
     - [Consensus](#consensus-protocol)
     - [Sync](#sync-protocols)
     - [Handshake](#handshake-protocol)
-- [Networking](#networking)
+- [Network Layer ](#networking)
     - [PubSub](#pubsub)
     - [PubSub Scoring](#pubsub-scoring)
     - [Message Scoring](#consensus-scoring)
@@ -48,7 +48,7 @@ a modular framework for P2P networking that is used by multiple decentralized pr
 Network peers must support the following transports:
 - `TCP` is used by libp2p for setting up communication channels between peers.
   default port: `12001`
-- `UDP` is used for discovery by[discv5](https://github.com/ethereum/devp2p/blob/master/discv5/discv5.md).
+- `UDP` is used for discovery by [discv5](https://github.com/ethereum/devp2p/blob/master/discv5/discv5.md).
   default port: `13001`
 
 [go-libp2p-noise](https://github.com/libp2p/go-libp2p-noise)
@@ -712,5 +712,5 @@ See [network forks](./FORKS.md) for more information.
 ### Relayers
 
 Libp2p offers a [circuit relay](https://github.com/libp2p/specs/blob/master/relay/circuit-v2.md) 
-component to boost reachability in the network. /
+component to boost reachability in the network. \
 Currently used by ETH2 nodes, will be considered in the future for `SSV`.
