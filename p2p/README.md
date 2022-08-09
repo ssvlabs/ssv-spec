@@ -574,44 +574,16 @@ e.g. if we are already subscribed to a large number of topics.
 
 Consensus messages are being sent in the network over a pubsub topic.
 
-In `v0`, each validator had a topic for its committee.
-The issue with that approach is the number of topics. It will grow up to the number of validators,
-which is not scalable. \
-In order to have more redundancy, a global topic (AKA `main topic`) was used
-to publish all the decided messages in the network.
-
-`v1` introduces **subnets** - a subnet of peers consists of
+A subnet of peers consists of
 operators that are responsible for multiple committees,
 reusing the same topic to communicate on behalf of multiple validators.
 
-Operator nodes, will validate and store highest decided messages (and potentially historical data)
+Operator nodes, will validate and store highest decided messages and last change round messages
 of all the committees in the subnets they participate.
 
-In comparison to `v0`, the number of messages sent over the network should grow. \
-To calculate the amount of messages, when each operator get every message (once) for all committees in subnet,
-w/o taking into account gossip overhead, we use the following function:
-
-`msgs_in_subnet = msgs_per_committee * operators_per_subnet * committees_per_subnet`
-
-| Validators | Operators | Subnets | Committee - Messages (6min) | Subnet - Messages (6min) | Total Messages (6min) |
-|:-----------|:----------|:--------|:----------------------------|:-------------------------|:----------------------|
-| 10000      | 1000      | 64      | 12                          | ~29300                   | 1875000               |
-| 10000      | 1000      | 128     | 12                          | ~7325                    | 937500                |
-| 10000      | 1000      | 256     | 12                          | ~1830                    | 468750                |
-
-**TODO: define a more accurate function to calculate the amount of messages**
-
-The amount of message a peer will get from a single subnet is defined in
-`Subnet - Messages` column, and in `Total Messages`
-you can find the amount of messages for a peer that is subscribed to all subnets.
-
-On the other hand, more nodes in a topic results
-increased reliability and security as more nodes will validate messages
-and score peers accordingly.
-
-**TBD** Main topic will be used to propagate decided messages across all the nodes in the network,
-which will store the last decided message of each committee.
-This will provide more redundancy that helps to maintain a consistent state across the network.
+`Decided` topic is used for propagation of decided messages across all the nodes in the network,
+that should store the last decided message of each committee in the network.
+Having such redundancy of decided messages helps to maintain the multiple states (per validator) across the network.
 
 **Validators Mapping**
 
@@ -624,9 +596,9 @@ Deterministic mapping is ensured as long as the number of subnets doesn't change
 therefore it's a fixed number.
 
 A dynamic number of subnets (e.g. `log(numOfValidators)`) was also considered,
-but might require a different approach to ensure deterministic mapping.
+but requires consistent hashing technics that can be investigated if we need so in the future.
 
-
+<br />
 
 ### Discovery
 
@@ -665,10 +637,8 @@ Records contain a signature, sequence (for republishing record) and arbitrary ke
 | `tcp`       | TCP port, big endian integer                                   |
 | `udp`       | UDP port, big endian integer                                   |
 | `type`      | node type, integer; 1 (operator), 2 (exporter), 3 (bootnode)   |
-| `oid`       | operator id, 32 bytes, hash of operator public key             |
 | `forkv`     | fork version, integer                                          |
 | `subnets`   | bitlist, 0 for irrelevant and 1 for assigned subnet            |
-
 
 
 #### Subnets Discovery
@@ -702,9 +672,7 @@ running nodes will consume many resources to process all network related tasks e
 
 To lower resource consumption, the number of connected peers is limited, configurable via flag. \
 Once reached to peer limit, the node will stop looking for new nodes,
-but will accept incoming connections from relevant peers.
-
-In addition, the limit of peers per topic is also configurable.
+and won't accept incoming connections from relevant peers.
 
 
 #### Connection Gating
@@ -715,6 +683,7 @@ Inbound and outbound connections are intercepted and being checked before other 
 See libp2p's [ConnectionGater](https://github.com/libp2p/go-libp2p-core/blob/master/connmgr/gater.go)
 interface for more info.
 
+<br />
 
 ### Security
 
@@ -734,60 +703,57 @@ The major ones includes routing table pollution, traffic redirection, spamming o
 Peers with bad scores will be filtered during discovery, ensuring that attacking peers are
 known and ignored all over the system.
 
-
+<br />
 
 ### Forks
 
 Future network forks will follow the general forks mechanism and design in SSV,
-where fork versions will be applied on their target epoch.
+where some procedures are called in the context of current fork version.
 
 The following procedures will be part of each fork:
 
-
 **validator topic mapping**
 
-`v0` - Validator public key is used as the topic name: \
-`bloxstaking.ssv.{{hex(validator-public-key)}}`
-
-`v1` - Validator public key hash is used to determine the validator's subnet: \
+`genesis` - Validator public key hash is used to determine the validator's subnet: \
 `bloxstaking.ssv.{{hash(validatiorPubKey) % num_of_subnets}}`
 
-Number of subnets for this version is 128
+**number of subnets**
 
-
-**Sync Protocol ID**
-
-`v0` - all protocols resides on a single stream protocol `/sync/0.0.1`
-
-`v1` - each protocol has its own id, as specified in [Sync Protocols](#sync-protocols)
-
-
-**message encoding**
-
-`v0` - JSON is used for encoding/decoding of messages.
-
-`v1` - **TBD** \
-[SSZ](https://github.com/ethereum/consensus-specs/blob/v0.11.1/ssz/simple-serialize.md)
-will be used to encode/decode network messages.
-It is efficient with traversing on fields, and is the standard encoding in ETH 2.0.
-
+`genesis` - number of subnets for this fork is `128`.
 
 **msgID function**
 
-msgID function to use by libp2p's `pubsub.Router` for calculating `msg_id`:
+msgID function to use by libp2p's `pubsub.Router` for calculating `msg_id`.
 
-`v0` - no msgID function (using default function)
+`genesis` - a content based msgID function is used, see [msg-id](#message-id): \
+`hash(msg-data)[:20]`
 
-`v1` - a content based msgID function is used, see [msg-id](#message-id): \
-`hash(signed-consensus-msg)`
+<br />
 
+**message encoding**
+
+`genesis` - JSON is used for encoding/decoding of messages.
+
+<br />
+
+**TBD** [SSZ](https://github.com/ethereum/consensus-specs/blob/v0.11.1/ssz/simple-serialize.md)
+will be used to encode/decode network messages.
+It is efficient with traversing on fields, and is the standard encoding in ETH 2.0.
+
+<br />
+
+**sync protocols ID**
+
+`genesis` - the following sync protocols are used with the
+corresponding number of peers that are being called for a single request:
+
+- `/ssv/sync/decided/last/0.0.1`, 10 peers
+- `/ssv/sync/decided/history/0.0.1`, 10 peers
+- `/ssv/sync/round/0.0.1`, 5 peers
+
+<br />
 
 **user agent**
 
-`v0` - User Agent contains the node version and type, and in addition the operator id.
-`SSV-Node:v0.x.x:<node-type>:<?operator-id>`
-
-`v1` - User Agent will be reduced in the favor of the custom handshake process (TBD).
-
-A short and simple user agent is kept for achieving libp2p interoperability: \
+`genesis` - User Agent contains the node version and type
 `SSV-Node/v0.x.x`
