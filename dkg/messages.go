@@ -175,13 +175,15 @@ func (o *Output) GetRoot() ([]byte, error) {
 		},
 	}
 
-	bytes, _ := arguments.Pack(
-		o.EncryptedShare,
-		o.SharePubKey,
-		o.ValidatorPubKey,
-		o.DepositDataSignature,
+	bytes, err := arguments.Pack(
+		[]byte(o.EncryptedShare),
+		[]byte(o.SharePubKey),
+		[]byte(o.ValidatorPubKey),
+		[]byte(o.DepositDataSignature),
 	)
-
+	if err != nil {
+		return nil, err
+	}
 	return crypto.Keccak256(bytes), nil
 }
 
