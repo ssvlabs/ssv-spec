@@ -13,6 +13,7 @@ type MsgProcessingSpecTest struct {
 	Name           string
 	InputMessages  []*dkg.SignedMessage
 	OutputMessages []*dkg.SignedMessage
+	Output         map[types.OperatorID]*dkg.SignedOutput
 	KeySet         *testingutils.TestKeySet
 	ExpectedError  string
 }
@@ -45,7 +46,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedMsgs := node.GetConfig().Network.(*testingutils.TestingNetwork).BroadcastedDKGMsgs
-	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
+	if len(test.OutputMessages) > 0 {
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 
 		for i, msg := range test.OutputMessages {
@@ -54,5 +55,15 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
 		}
 	}
-
+	streamed := node.GetConfig().Network.(*testingutils.TestingNetwork).Outputs
+	if len(test.Output) > 0 {
+		require.Len(t, streamed, len(test.Output))
+		for id, output := range test.Output {
+			s := streamed[id]
+			require.NotNilf(t, s, "output for operator %d not found", id)
+			r1, _ := output.Data.GetRoot()
+			r2, _ := s.Data.GetRoot()
+			require.EqualValues(t, r1, r2, fmt.Sprintf("output for operator %d roots not equal", id))
+		}
+	}
 }

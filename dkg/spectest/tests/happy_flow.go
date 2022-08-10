@@ -20,8 +20,7 @@ func HappyFlow() *MsgProcessingSpecTest {
 	root := testingutils.DespositDataSigningRoot(ks, init)
 
 	return &MsgProcessingSpecTest{
-		Name:   "happy flow",
-		KeySet: testingutils.Testing4SharesSet(),
+		Name: "happy flow",
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,
@@ -67,5 +66,12 @@ func HappyFlow() *MsgProcessingSpecTest {
 				Data:       testingutils.SignedOutputBytes(identifier, 1, root, ks.DKGOperators[1].ETHAddress, ks.Shares[1], ks.ValidatorSK),
 			}),
 		},
+		Output: map[types.OperatorID]*dkg.SignedOutput{
+			1: testingutils.SignedOutputObject(identifier, 1, root, ks.DKGOperators[1].ETHAddress, ks.Shares[1], ks.ValidatorSK),
+			2: testingutils.SignedOutputObject(identifier, 2, root, ks.DKGOperators[2].ETHAddress, ks.Shares[2], ks.ValidatorSK),
+			3: testingutils.SignedOutputObject(identifier, 3, root, ks.DKGOperators[3].ETHAddress, ks.Shares[3], ks.ValidatorSK),
+		},
+		KeySet:        testingutils.Testing4SharesSet(),
+		ExpectedError: "",
 	}
 }

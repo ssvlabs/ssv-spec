@@ -92,7 +92,7 @@ var DespositDataSigningRoot = func(keySet *TestKeySet, initMsg *dkg.Init) []byte
 	return root
 }
 
-var SignedOutputBytes = func(requestID dkg.RequestID, signer types.OperatorID, root []byte, address common.Address, share *bls.SecretKey, validatorSk *bls.SecretKey) []byte {
+var SignedOutputObject = func(requestID dkg.RequestID, signer types.OperatorID, root []byte, address common.Address, share *bls.SecretKey, validatorSk *bls.SecretKey) *dkg.SignedOutput {
 	// TODO: Move FakeEncryption and FakeEcdsaSign to before calling this function?
 	o := &dkg.Output{
 		RequestID:            requestID,
@@ -102,11 +102,15 @@ var SignedOutputBytes = func(requestID dkg.RequestID, signer types.OperatorID, r
 		DepositDataSignature: validatorSk.SignByte(root).Serialize(),
 	}
 	root1, _ := o.GetRoot()
-	d := &dkg.SignedOutput{
+	return &dkg.SignedOutput{
 		Data:      o,
 		Signer:    signer,
 		Signature: FakeEcdsaSign(root1, address[:]),
 	}
+}
+
+var SignedOutputBytes = func(requestID dkg.RequestID, signer types.OperatorID, root []byte, address common.Address, share *bls.SecretKey, validatorSk *bls.SecretKey) []byte {
+	d := SignedOutputObject(requestID, signer, root, address, share, validatorSk)
 	ret, _ := d.Encode()
 	return ret
 }
