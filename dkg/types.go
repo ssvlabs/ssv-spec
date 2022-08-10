@@ -36,4 +36,5 @@ type Config struct {
 	Storage             Storage
 	SignatureDomainType types.DomainType
 	Signer              types.DKGSigner
+	Verifier            types.DKGVerifier
 }

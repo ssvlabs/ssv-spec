@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
@@ -202,6 +203,14 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 	}
 	sig := FakeEcdsaSign(root, address[:]) // GLNOTE: Use fake so that we have deterministic message
 	return sig, nil
+}
+
+func (km *testingKeyManager) VerifyDKGOutput(signature types.Signature, output types.Root, address common.Address) bool {
+	sig, err := km.SignDKGOutput(output, address)
+	if err != nil {
+		return false
+	}
+	return bytes.Equal(sig, signature)
 }
 
 func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {

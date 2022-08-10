@@ -119,6 +119,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 				return false, nil, errors.Wrap(err, "could not generate dkg SignedOutput")
 			}
 
+			r.OutputMsgs[r.Operator.OperatorID] = ret
 			if err := r.signAndBroadcastMsg(ret, OutputMsgType); err != nil {
 				return false, nil, errors.Wrap(err, "could not broadcast SignedOutput")
 			}
@@ -189,7 +190,28 @@ func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
 }
 
 func (r *Runner) validateSignedOutput(msg *SignedOutput) error {
-	panic("implement")
+	// TODO: Separate fields match and signature validation
+	output := r.ownOutput()
+	if output != nil {
+		if output.Data.RequestID != msg.Data.RequestID {
+			return errors.New("got mismatching RequestID")
+		}
+		if !bytes.Equal(output.Data.ValidatorPubKey, msg.Data.ValidatorPubKey) {
+			return errors.New("got mismatching ValidatorPubKey")
+		}
+	}
+	found, operator, err := r.config.Storage.GetDKGOperator(msg.Signer)
+	if !found {
+		return errors.New("unable to find signer")
+	}
+	if err != nil {
+		return errors.Wrap(err, "unable to find signer")
+	}
+	valid := r.config.Verifier.VerifyDKGOutput(msg.Signature, msg.Data, operator.ETHAddress)
+	if !valid {
+		return errors.New("invalid signature")
+	}
+	return nil
 }
 
 func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
@@ -224,4 +246,8 @@ func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
 		Signer:    r.Operator.OperatorID,
 		Signature: sig,
 	}, nil
+}
+
+func (r *Runner) ownOutput() *SignedOutput {
+	return r.OutputMsgs[r.Operator.OperatorID]
 }

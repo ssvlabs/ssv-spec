@@ -7,6 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
@@ -16,6 +17,7 @@ var TestingForkVersion = types.PraterNetwork.ForkVersion()
 
 var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
+	km := NewTestingKeyManager()
 	config := &dkg.Config{
 		Protocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.KeyGenProtocol {
 			return &MockKeygenProtocol{
@@ -25,7 +27,8 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 		Network:             network,
 		Storage:             NewTestingStorage(),
 		SignatureDomainType: types.PrimusTestnet,
-		Signer:              NewTestingKeyManager(),
+		Signer:              km,
+		Verifier:            km,
 	}
 
 	return dkg.NewNode(&dkg.Operator{
@@ -87,4 +90,23 @@ var DespositDataSigningRoot = func(keySet *TestKeySet, initMsg *dkg.Init) []byte
 		types.DomainDeposit,
 	)
 	return root
+}
+
+var SignedOutputBytes = func(requestID dkg.RequestID, signer types.OperatorID, root []byte, address common.Address, share *bls.SecretKey, validatorSk *bls.SecretKey) []byte {
+	// TODO: Move FakeEncryption and FakeEcdsaSign to before calling this function?
+	o := &dkg.Output{
+		RequestID:            requestID,
+		EncryptedShare:       FakeEncryption(share.Serialize()),
+		SharePubKey:          share.GetPublicKey().Serialize(),
+		ValidatorPubKey:      validatorSk.GetPublicKey().Serialize(),
+		DepositDataSignature: validatorSk.SignByte(root).Serialize(),
+	}
+	root1, _ := o.GetRoot()
+	d := &dkg.SignedOutput{
+		Data:      o,
+		Signer:    signer,
+		Signature: FakeEcdsaSign(root1, address[:]),
+	}
+	ret, _ := d.Encode()
+	return ret
 }

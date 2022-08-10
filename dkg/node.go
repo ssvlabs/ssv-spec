@@ -40,10 +40,14 @@ func NewNode(operator *Operator, config *Config) *Node {
 func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 	runner := &Runner{
 		Operator:              n.operator,
-		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
-		config:                n.config,
-		protocol:              n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
 		InitMsg:               initMsg,
+		Identifier:            id,
+		KeyGenOutput:          nil,
+		DepositDataRoot:       nil,
+		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
+		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
+		protocol:              n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
+		config:                n.config,
 	}
 
 	if err := runner.protocol.Start(initMsg); err != nil {
@@ -70,6 +74,8 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 	case ProtocolMsgType:
 		return n.processDKGMsg(signedMsg)
 	case DepositDataMsgType:
+		return n.processDKGMsg(signedMsg)
+	case OutputMsgType:
 		return n.processDKGMsg(signedMsg)
 	default:
 		return errors.New("unknown msg type")
