@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -9,10 +10,11 @@ import (
 )
 
 type MsgProcessingSpecTest struct {
-	Name          string
-	Messages      []*dkg.SignedMessage
-	KeySet        *testingutils.TestKeySet
-	ExpectedError string
+	Name           string
+	InputMessages  []*dkg.SignedMessage
+	OutputMessages []*dkg.SignedMessage
+	KeySet         *testingutils.TestKeySet
+	ExpectedError  string
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -23,7 +25,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	node := testingutils.TestingDKGNode(test.KeySet)
 
 	var lastErr error
-	for _, msg := range test.Messages {
+	for _, msg := range test.InputMessages {
 		byts, _ := msg.Encode()
 		err := node.ProcessMessage(&types.SSVMessage{
 			MsgType: types.DKGMsgType,
@@ -40,4 +42,17 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, lastErr)
 	}
+
+	// test output message
+	broadcastedMsgs := node.GetConfig().Network.(*testingutils.TestingNetwork).BroadcastedDKGMsgs
+	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
+		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
+
+		for i, msg := range test.OutputMessages {
+			r1, _ := msg.GetRoot()
+			r2, _ := broadcastedMsgs[i].GetRoot()
+			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+		}
+	}
+
 }
