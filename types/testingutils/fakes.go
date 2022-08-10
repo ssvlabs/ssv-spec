@@ -1,5 +1,12 @@
 package testingutils
 
+func FakeEncryption(data []byte) []byte {
+	out := []byte("__fake_encrypted(")
+	out = append(out, data...)
+	out = append(out, []byte(")")...)
+	return out
+}
+
 func FakeEcdsaSign(root []byte, address []byte) []byte {
 	out := []byte("__fake_ecdsa_sign(root=")
 	out = append(out, root...)

@@ -54,6 +54,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			if err != nil {
 				return false, nil, errors.Wrap(err, "could not generate deposit data")
 			}
+
 			r.DepositDataRoot = root
 
 			// sign
@@ -83,11 +84,17 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			return false, nil, errors.Wrap(err, "could not decode PartialDepositData")
 		}
 
+		// TODO: Skip checking for root so that we can still receive message before we prepare own sig.
 		if err := r.validateDepositDataSig(depSig); err != nil {
 			return false, nil, errors.Wrap(err, "PartialDepositData invalid")
 		}
 
-		r.DepositDataSignatures[msg.Signer] = depSig
+		if found := r.DepositDataSignatures[msg.Signer]; found == nil {
+			r.DepositDataSignatures[msg.Signer] = depSig
+		} else if bytes.Compare(found.Signature, msg.Signature) != 0 {
+			return false, nil, errors.New("inconsistent partial signature received")
+		}
+
 		if len(r.DepositDataSignatures) == int(r.InitMsg.Threshold) {
 			// reconstruct deposit data sig
 			depositSig, err := r.reconstructDepositDataSignature()
@@ -166,7 +173,19 @@ func (r *Runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {
 }
 
 func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
-	panic("implement")
+	sigBytes := map[types.OperatorID][]byte{}
+	for id, d := range r.DepositDataSignatures {
+		if err := r.validateDepositDataSig(d); err != nil {
+			return nil, errors.Wrap(err, "PartialDepositData invalid")
+		}
+		sigBytes[id] = d.Signature
+	}
+
+	sig, err := types.ReconstructSignatures(sigBytes)
+	if err != nil {
+		return nil, err
+	}
+	return sig.Serialize(), nil
 }
 
 func (r *Runner) validateSignedOutput(msg *SignedOutput) error {

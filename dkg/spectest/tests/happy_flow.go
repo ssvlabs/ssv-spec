@@ -11,6 +11,15 @@ import (
 func HappyFlow() *MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
+	init := &dkg.Init{
+		OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
+		Threshold:             3,
+		WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
+		Fork:                  testingutils.TestingForkVersion,
+	}
+	initBytes, _ := init.Encode()
+	root := testingutils.DespositDataSigningRoot(ks, init)
+
 	return &MsgProcessingSpecTest{
 		Name:   "happy flow",
 		KeySet: testingutils.Testing4SharesSet(),
@@ -18,7 +27,22 @@ func HappyFlow() *MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,
 				Identifier: identifier,
-				Data:       testingutils.InitMessageDataBytes([]types.OperatorID{1, 2, 3, 4}, 3, testingutils.TestingWithdrawalCredentials),
+				Data:       initBytes,
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       nil, // GLNOTE: Dummy message simulating the KeyGenProtocol to complete
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
+				MsgType:    dkg.DepositDataMsgType,
+				Identifier: identifier,
+				Data:       testingutils.PartialDepositDataBytes(2, root, ks.Shares[2]),
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
+				MsgType:    dkg.DepositDataMsgType,
+				Identifier: identifier,
+				Data:       testingutils.PartialDepositDataBytes(3, root, ks.Shares[3]),
 			}),
 
 			// stage 1

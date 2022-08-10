@@ -3,13 +3,16 @@ package testingutils
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 var TestingWithdrawalCredentials, _ = hex.DecodeString("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f")
+var TestingForkVersion = types.PraterNetwork.ForkVersion()
 
 var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
@@ -46,11 +49,12 @@ var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *dkg.Messag
 	}
 }
 
-var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte) []byte {
+var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte, fork spec.Version) []byte {
 	m := &dkg.Init{
 		OperatorIDs:           operators,
 		Threshold:             threshold,
 		WithdrawalCredentials: withdrawalCred,
+		Fork:                  fork,
 	}
 	byts, _ := m.Encode()
 	return byts
@@ -63,4 +67,24 @@ var ProtocolMsgDataBytes = func(stage stubdkg.Stage) []byte {
 
 	ret, _ := d.Encode()
 	return ret
+}
+
+var PartialDepositDataBytes = func(signer types.OperatorID, root []byte, sk *bls.SecretKey) []byte {
+	d := &dkg.PartialDepositData{
+		Signer:    signer,
+		Root:      root,
+		Signature: sk.SignByte(root).Serialize(),
+	}
+	ret, _ := d.Encode()
+	return ret
+}
+
+var DespositDataSigningRoot = func(keySet *TestKeySet, initMsg *dkg.Init) []byte {
+	root, _, _ := types.GenerateETHDepositData(
+		keySet.ValidatorPK.Serialize(),
+		initMsg.WithdrawalCredentials,
+		initMsg.Fork,
+		types.DomainDeposit,
+	)
+	return root
 }
