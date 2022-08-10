@@ -1,12 +1,12 @@
 package ssv
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
-func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessage, error) {
+func (dr *Runner) SignRandaoPreConsensus(epoch phase0.Epoch, slot phase0.Slot, signer types.KeyManager) (*PartialSignatureMessage, error) {
 	sig, r, err := signer.SignRandaoReveal(epoch, dr.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign partial randao reveal")

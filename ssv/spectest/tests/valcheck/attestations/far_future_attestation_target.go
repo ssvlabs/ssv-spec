@@ -1,7 +1,8 @@
 package attestations
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -15,17 +16,17 @@ func FarFutureAttestationTarget() *tests.SpecTest {
 
 	consensusData := &types.ConsensusData{
 		Duty: testingutils.TestingAttesterDuty,
-		AttestationData: &spec.AttestationData{
+		AttestationData: &phase0.AttestationData{
 			Slot:            12,
 			Index:           3,
-			BeaconBlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-			Source: &spec.Checkpoint{
+			BeaconBlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+			Source: &phase0.Checkpoint{
 				Epoch: 0,
-				Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+				Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 			},
-			Target: &spec.Checkpoint{
+			Target: &phase0.Checkpoint{
 				Epoch: 2,
-				Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+				Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 			},
 		},
 	}

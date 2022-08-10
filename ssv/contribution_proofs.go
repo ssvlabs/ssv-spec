@@ -2,12 +2,12 @@ package ssv
 
 import (
 	"encoding/hex"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
-func (dr *Runner) SignSyncSubCommitteeContributionProof(slot spec.Slot, indexes []uint64, signer types.KeyManager) (PartialSignatureMessages, error) {
+func (dr *Runner) SignSyncSubCommitteeContributionProof(slot phase0.Slot, indexes []uint64, signer types.KeyManager) (PartialSignatureMessages, error) {
 	ret := make(PartialSignatureMessages, 0)
 	for _, index := range indexes {
 		sig, r, err := signer.SignContributionProof(slot, index, dr.Share.SharePubKey)

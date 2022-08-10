@@ -88,8 +88,8 @@ type MessageSignature interface {
 // SSVMessage is the main message passed within the SSV network, it can contain different types of messages (QBTF, Sync, etc.)
 type SSVMessage struct {
 	MsgType MsgType
-	MsgID   MessageID
-	Data    []byte
+	MsgID   MessageID `ssz-size:"52"`
+	Data    []byte    `ssz-max:"5000"`
 }
 
 func (msg *SSVMessage) GetType() MsgType {

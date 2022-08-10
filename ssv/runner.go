@@ -3,10 +3,12 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/pkg/errors"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/pkg/errors"
 )
 
 // Runner is manages the execution of a duty from start to finish, it can only execute 1 duty at a time.
@@ -87,7 +89,7 @@ func (dr *Runner) Decode(data []byte) error {
 	return json.Unmarshal(data, &dr)
 }
 
-func (dr *Runner) validatePartialSigMsg(signedMsg *SignedPartialSignatureMessage, slot spec.Slot) error {
+func (dr *Runner) validatePartialSigMsg(signedMsg *SignedPartialSignatureMessage, slot phase0.Slot) error {
 	if err := signedMsg.Validate(); err != nil {
 		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
 	}

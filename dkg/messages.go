@@ -5,12 +5,14 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 type RequestID [24]byte

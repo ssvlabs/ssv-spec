@@ -59,7 +59,9 @@ func (c *Config) GetValueCheckF() ProposedValueCheckF {
 
 // GetProposerFunc returns func used to calculate proposer
 func (c *Config) GetProposerF() ProposerF {
-	return c.ProposerF
+	return func(state *State, round Round) types.OperatorID {
+		return 1
+	}
 }
 
 // GetNetwork returns a p2p Network instance

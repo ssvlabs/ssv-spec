@@ -1,7 +1,7 @@
 package types
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"time"
 )
 
@@ -48,13 +48,32 @@ type Duty struct {
 	// Type is the duty type (attest, propose)
 	Type BeaconRole
 	// PubKey is the public key of the validator that should attest.
-	PubKey spec.BLSPubKey
+	PubKey phase0.BLSPubKey `ssz-size:"48"`
 	// Slot is the slot in which the validator should attest.
-	Slot spec.Slot
+	Slot phase0.Slot
 	// ValidatorIndex is the index of the validator that should attest.
-	ValidatorIndex spec.ValidatorIndex
+	ValidatorIndex phase0.ValidatorIndex
 	// CommitteeIndex is the index of the committee in which the attesting validator has been placed.
-	CommitteeIndex spec.CommitteeIndex
+	CommitteeIndex phase0.CommitteeIndex
+	// CommitteeLength is the length of the committee in which the attesting validator has been placed.
+	CommitteeLength uint64
+	// CommitteesAtSlot is the number of committees in the slot.
+	CommitteesAtSlot uint64
+	// ValidatorCommitteeIndex is the index of the validator in the list of validators in the committee.
+	ValidatorCommitteeIndex uint64
+}
+
+type dutySSZ struct {
+	// Type is the duty type (attest, propose)
+	Type uint8
+	// PubKey is the public key of the validator that should attest.
+	PubKey phase0.BLSPubKey `ssz-size:"48"`
+	// Slot is the slot in which the validator should attest.
+	Slot phase0.Slot
+	// ValidatorIndex is the index of the validator that should attest.
+	ValidatorIndex phase0.ValidatorIndex
+	// CommitteeIndex is the index of the committee in which the attesting validator has been placed.
+	CommitteeIndex phase0.CommitteeIndex
 	// CommitteeLength is the length of the committee in which the attesting validator has been placed.
 	CommitteeLength uint64
 	// CommitteesAtSlot is the number of committees in the slot.
@@ -131,26 +150,26 @@ func (n BeaconNetwork) SlotsPerEpoch() uint64 {
 }
 
 // EstimatedCurrentSlot returns the estimation of the current slot
-func (n BeaconNetwork) EstimatedCurrentSlot() spec.Slot {
+func (n BeaconNetwork) EstimatedCurrentSlot() phase0.Slot {
 	return n.EstimatedSlotAtTime(time.Now().Unix())
 }
 
 // EstimatedSlotAtTime estimates slot at the given time
-func (n BeaconNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
+func (n BeaconNetwork) EstimatedSlotAtTime(time int64) phase0.Slot {
 	genesis := int64(n.MinGenesisTime())
 	if time < genesis {
 		return 0
 	}
-	return spec.Slot(uint64(time-genesis) / uint64(n.SlotDurationSec().Seconds()))
+	return phase0.Slot(uint64(time-genesis) / uint64(n.SlotDurationSec().Seconds()))
 }
 
 // EstimatedCurrentEpoch estimates the current epoch
 // https://github.com/ethereum/eth2.0-specs/blob/dev/specs/phase0/beacon-chain.md#compute_start_slot_at_epoch
-func (n BeaconNetwork) EstimatedCurrentEpoch() spec.Epoch {
+func (n BeaconNetwork) EstimatedCurrentEpoch() phase0.Epoch {
 	return n.EstimatedEpochAtSlot(n.EstimatedCurrentSlot())
 }
 
 // EstimatedEpochAtSlot estimates epoch at the given slot
-func (n BeaconNetwork) EstimatedEpochAtSlot(slot spec.Slot) spec.Epoch {
-	return spec.Epoch(slot / spec.Slot(n.SlotsPerEpoch()))
+func (n BeaconNetwork) EstimatedEpochAtSlot(slot phase0.Slot) phase0.Epoch {
+	return phase0.Epoch(slot / phase0.Slot(n.SlotsPerEpoch()))
 }

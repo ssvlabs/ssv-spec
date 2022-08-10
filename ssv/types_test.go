@@ -2,11 +2,13 @@ package ssv_test
 
 import (
 	"encoding/hex"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"testing"
+
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestConsensusData_Marshaling(t *testing.T) {
@@ -24,6 +26,6 @@ func TestConsensusData_Marshaling(t *testing.T) {
 		require.NoError(t, c.Decode(expected))
 		require.EqualValues(t, types.BNRoleAttester, c.Duty.Type)
 		require.EqualValues(t, testingutils.TestingValidatorPubKey, c.Duty.PubKey)
-		require.EqualValues(t, spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2}, c.AttestationData.BeaconBlockRoot)
+		require.EqualValues(t, phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2}, c.AttestationData.BeaconBlockRoot)
 	})
 }

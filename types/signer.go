@@ -3,8 +3,9 @@ package types
 import (
 	"bytes"
 	"crypto/rsa"
-	altair "github.com/attestantio/go-eth2-client/spec/altair"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+
+	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
@@ -30,14 +31,14 @@ var (
 
 type AttesterCalls interface {
 	// SignAttestation signs the given attestation
-	SignAttestation(data *spec.AttestationData, duty *Duty, pk []byte) (*spec.Attestation, []byte, error)
+	SignAttestation(data *phase0.AttestationData, duty *Duty, pk []byte) (*phase0.Attestation, []byte, error)
 	// IsAttestationSlashable returns error if attestation is slashable
-	IsAttestationSlashable(data *spec.AttestationData) error
+	IsAttestationSlashable(data *phase0.AttestationData) error
 }
 
 type ProposerCalls interface {
 	// SignRandaoReveal signs randao
-	SignRandaoReveal(epoch spec.Epoch, pk []byte) (Signature, []byte, error)
+	SignRandaoReveal(epoch phase0.Epoch, pk []byte) (Signature, []byte, error)
 	// IsBeaconBlockSlashable returns true if the given block is slashable
 	IsBeaconBlockSlashable(block *altair.BeaconBlock) error
 	// SignBeaconBlock signs the given beacon block
@@ -46,19 +47,19 @@ type ProposerCalls interface {
 
 type AggregatorCalls interface {
 	// SignSlotWithSelectionProof signs slot for aggregator selection proof
-	SignSlotWithSelectionProof(slot spec.Slot, pk []byte) (Signature, []byte, error)
+	SignSlotWithSelectionProof(slot phase0.Slot, pk []byte) (Signature, []byte, error)
 	// SignAggregateAndProof returns a signed aggregate and proof msg
-	SignAggregateAndProof(msg *spec.AggregateAndProof, duty *Duty, pk []byte) (*spec.SignedAggregateAndProof, []byte, error)
+	SignAggregateAndProof(msg *phase0.AggregateAndProof, duty *Duty, pk []byte) (*phase0.SignedAggregateAndProof, []byte, error)
 }
 
 type SyncCommitteeCalls interface {
 	// SignSyncCommitteeBlockRoot returns a signed sync committee msg
-	SignSyncCommitteeBlockRoot(slot spec.Slot, root spec.Root, validatorIndex spec.ValidatorIndex, pk []byte) (*altair.SyncCommitteeMessage, []byte, error)
+	SignSyncCommitteeBlockRoot(slot phase0.Slot, root phase0.Root, validatorIndex phase0.ValidatorIndex, pk []byte) (*altair.SyncCommitteeMessage, []byte, error)
 }
 
 type SyncCommitteeContributionCalls interface {
 	// SignContributionProof signs contribution proof
-	SignContributionProof(slot spec.Slot, index uint64, pk []byte) (Signature, []byte, error)
+	SignContributionProof(slot phase0.Slot, index uint64, pk []byte) (Signature, []byte, error)
 	// SignContribution signs a SyncCommitteeContribution
 	SignContribution(contribution *altair.ContributionAndProof, pk []byte) (*altair.SignedContributionAndProof, []byte, error)
 }

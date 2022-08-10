@@ -40,9 +40,9 @@ const (
 )
 
 type ProposalData struct {
-	Data                     []byte
-	RoundChangeJustification []*SignedMessage
-	PrepareJustification     []*SignedMessage
+	Data                     []byte           `ssz-max:"1161"` // TODO(olegshmuelov): check if the ssz-max is correct
+	RoundChangeJustification []*SignedMessage `ssz-max:"10"`   // TODO(olegshmuelov): check if the ssz-max is correct
+	PrepareJustification     []*SignedMessage `ssz-max:"10"`   // TODO(olegshmuelov): check if the ssz-max is correct
 }
 
 // Encode returns a msg encoded bytes or error
@@ -157,59 +157,67 @@ type Message struct {
 	MsgType    MessageType
 	Height     Height // QBFT instance Height
 	Round      Round  // QBFT round for which the msg is for
-	Identifier []byte // instance Identifier this msg belongs to
-	Data       []byte
+	Identifier []byte `ssz-max:"96"`   // instance Identifier this msg belongs to // TODO(olegshmuelov): check if the ssz-max is correct
+	Data       []byte `ssz-max:"2000"` // TODO(olegshmuelov): check if the ssz-max is correct
+}
+
+type messageSSZ struct {
+	MsgType    uint8
+	Height     uint64
+	Round      Round
+	Identifier []byte `ssz-max:"96"`   // TODO(olegshmuelov): check if the ssz-max is correct
+	Data       []byte `ssz-max:"2000"` // TODO(olegshmuelov): check if the ssz-max is correct
 }
 
 // GetProposalData returns proposal specific data
-func (msg *Message) GetProposalData() (*ProposalData, error) {
+func (m *Message) GetProposalData() (*ProposalData, error) {
 	ret := &ProposalData{}
-	if err := ret.Decode(msg.Data); err != nil {
+	if err := ret.Decode(m.Data); err != nil {
 		return nil, errors.Wrap(err, "could not decode proposal data from message")
 	}
 	return ret, nil
 }
 
 // GetPrepareData returns prepare specific data
-func (msg *Message) GetPrepareData() (*PrepareData, error) {
+func (m *Message) GetPrepareData() (*PrepareData, error) {
 	ret := &PrepareData{}
-	if err := ret.Decode(msg.Data); err != nil {
+	if err := ret.Decode(m.Data); err != nil {
 		return nil, errors.Wrap(err, "could not decode prepare data from message")
 	}
 	return ret, nil
 }
 
 // GetCommitData returns commit specific data
-func (msg *Message) GetCommitData() (*CommitData, error) {
+func (m *Message) GetCommitData() (*CommitData, error) {
 	ret := &CommitData{}
-	if err := ret.Decode(msg.Data); err != nil {
+	if err := ret.Decode(m.Data); err != nil {
 		return nil, errors.Wrap(err, "could not decode commit data from message")
 	}
 	return ret, nil
 }
 
 // GetRoundChangeData returns round change specific data
-func (msg *Message) GetRoundChangeData() (*RoundChangeData, error) {
+func (m *Message) GetRoundChangeData() (*RoundChangeData, error) {
 	ret := &RoundChangeData{}
-	if err := ret.Decode(msg.Data); err != nil {
+	if err := ret.Decode(m.Data); err != nil {
 		return nil, errors.Wrap(err, "could not decode round change data from message")
 	}
 	return ret, nil
 }
 
 // Encode returns a msg encoded bytes or error
-func (msg *Message) Encode() ([]byte, error) {
-	return json.Marshal(msg)
+func (m *Message) Encode() ([]byte, error) {
+	return json.Marshal(m)
 }
 
 // Decode returns error if decoding failed
-func (msg *Message) Decode(data []byte) error {
-	return json.Unmarshal(data, &msg)
+func (m *Message) Decode(data []byte) error {
+	return json.Unmarshal(data, &m)
 }
 
 // GetRoot returns the root used for signing and verification
-func (msg *Message) GetRoot() ([]byte, error) {
-	marshaledRoot, err := msg.Encode()
+func (m *Message) GetRoot() ([]byte, error) {
+	marshaledRoot, err := m.Encode()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode message")
 	}
@@ -219,39 +227,45 @@ func (msg *Message) GetRoot() ([]byte, error) {
 
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
-func (msg *Message) Validate() error {
-	if len(msg.Identifier) == 0 {
+func (m *Message) Validate() error {
+	if len(m.Identifier) == 0 {
 		return errors.New("message identifier is invalid")
 	}
-	if len(msg.Data) == 0 {
+	if len(m.Data) == 0 {
 		return errors.New("message data is invalid")
 	}
-	if msg.MsgType > 5 {
+	if m.MsgType > 5 {
 		return errors.New("message type is invalid")
 	}
 	return nil
 }
 
 type SignedMessage struct {
-	Signature types.Signature
-	Signers   []types.OperatorID
-	Message   *Message // message for which this signature is for
+	Signature types.Signature    `ssz-max:"100"`
+	Signers   []types.OperatorID `ssz-max:"7"`
+	Message   *Message           // message for which this signature is for
 }
 
-func (signedMsg *SignedMessage) GetSignature() types.Signature {
-	return signedMsg.Signature
+type signedMessageSSZ struct {
+	Signature types.Signature `ssz-max:"100"`
+	Signers   []uint64        `ssz-max:"7"`
+	Message   *Message        // message for which this signature is for
 }
-func (signedMsg *SignedMessage) GetSigners() []types.OperatorID {
-	return signedMsg.Signers
+
+func (sm *SignedMessage) GetSignature() types.Signature {
+	return sm.Signature
+}
+func (sm *SignedMessage) GetSigners() []types.OperatorID {
+	return sm.Signers
 }
 
 // MatchedSigners returns true if the provided signer ids are equal to GetSignerIds() without order significance
-func (signedMsg *SignedMessage) MatchedSigners(ids []types.OperatorID) bool {
-	if len(signedMsg.Signers) != len(ids) {
+func (sm *SignedMessage) MatchedSigners(ids []types.OperatorID) bool {
+	if len(sm.Signers) != len(ids) {
 		return false
 	}
 
-	for _, id := range signedMsg.Signers {
+	for _, id := range sm.Signers {
 		found := false
 		for _, id2 := range ids {
 			if id == id2 {
@@ -267,8 +281,8 @@ func (signedMsg *SignedMessage) MatchedSigners(ids []types.OperatorID) bool {
 }
 
 // CommonSigners returns true if there is at least 1 common signer
-func (signedMsg *SignedMessage) CommonSigners(ids []types.OperatorID) bool {
-	for _, id := range signedMsg.Signers {
+func (sm *SignedMessage) CommonSigners(ids []types.OperatorID) bool {
+	for _, id := range sm.Signers {
 		for _, id2 := range ids {
 			if id == id2 {
 				return true
@@ -279,12 +293,12 @@ func (signedMsg *SignedMessage) CommonSigners(ids []types.OperatorID) bool {
 }
 
 // Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
-func (signedMsg *SignedMessage) Aggregate(sig types.MessageSignature) error {
-	if signedMsg.CommonSigners(sig.GetSigners()) {
+func (sm *SignedMessage) Aggregate(sig types.MessageSignature) error {
+	if sm.CommonSigners(sig.GetSigners()) {
 		return errors.New("can't aggregate 2 signed messages with mutual signers")
 	}
 
-	r1, err := signedMsg.GetRoot()
+	r1, err := sm.GetRoot()
 	if err != nil {
 		return errors.Wrap(err, "could not get signature root")
 	}
@@ -296,62 +310,62 @@ func (signedMsg *SignedMessage) Aggregate(sig types.MessageSignature) error {
 		return errors.New("can't aggregate, roots not equal")
 	}
 
-	aggregated, err := signedMsg.Signature.Aggregate(sig.GetSignature())
+	aggregated, err := sm.Signature.Aggregate(sig.GetSignature())
 	if err != nil {
 		return errors.Wrap(err, "could not aggregate signatures")
 	}
-	signedMsg.Signature = aggregated
-	signedMsg.Signers = append(signedMsg.Signers, sig.GetSigners()...)
+	sm.Signature = aggregated
+	sm.Signers = append(sm.Signers, sig.GetSigners()...)
 
 	return nil
 }
 
 // Encode returns a msg encoded bytes or error
-func (signedMsg *SignedMessage) Encode() ([]byte, error) {
-	return json.Marshal(signedMsg)
+func (sm *SignedMessage) Encode() ([]byte, error) {
+	return json.Marshal(sm)
 }
 
 // Decode returns error if decoding failed
-func (signedMsg *SignedMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &signedMsg)
+func (sm *SignedMessage) Decode(data []byte) error {
+	return json.Unmarshal(data, &sm)
 }
 
 // GetRoot returns the root used for signing and verification
-func (signedMsg *SignedMessage) GetRoot() ([]byte, error) {
-	return signedMsg.Message.GetRoot()
+func (sm *SignedMessage) GetRoot() ([]byte, error) {
+	return sm.Message.GetRoot()
 }
 
 // DeepCopy returns a new instance of SignedMessage, deep copied
-func (signedMsg *SignedMessage) DeepCopy() *SignedMessage {
+func (sm *SignedMessage) DeepCopy() *SignedMessage {
 	ret := &SignedMessage{
-		Signers:   make([]types.OperatorID, len(signedMsg.Signers)),
-		Signature: make([]byte, len(signedMsg.Signature)),
+		Signers:   make([]types.OperatorID, len(sm.Signers)),
+		Signature: make([]byte, len(sm.Signature)),
 	}
-	copy(ret.Signers, signedMsg.Signers)
-	copy(ret.Signature, signedMsg.Signature)
+	copy(ret.Signers, sm.Signers)
+	copy(ret.Signature, sm.Signature)
 
 	ret.Message = &Message{
-		MsgType:    signedMsg.Message.MsgType,
-		Height:     signedMsg.Message.Height,
-		Round:      signedMsg.Message.Round,
-		Identifier: make([]byte, len(signedMsg.Message.Identifier)),
-		Data:       make([]byte, len(signedMsg.Message.Data)),
+		MsgType:    sm.Message.MsgType,
+		Height:     sm.Message.Height,
+		Round:      sm.Message.Round,
+		Identifier: make([]byte, len(sm.Message.Identifier)),
+		Data:       make([]byte, len(sm.Message.Data)),
 	}
-	copy(ret.Message.Identifier, signedMsg.Message.Identifier)
-	copy(ret.Message.Data, signedMsg.Message.Data)
+	copy(ret.Message.Identifier, sm.Message.Identifier)
+	copy(ret.Message.Data, sm.Message.Data)
 	return ret
 }
 
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
-func (signedMsg *SignedMessage) Validate() error {
-	if len(signedMsg.Signature) != 96 {
+func (sm *SignedMessage) Validate() error {
+	if len(sm.Signature) != 96 {
 		return errors.New("message signature is invalid")
 	}
-	if len(signedMsg.Signers) == 0 {
+	if len(sm.Signers) == 0 {
 		return errors.New("message signers is empty")
 	}
-	return signedMsg.Message.Validate()
+	return sm.Message.Validate()
 }
 
 type DecidedMessage struct {

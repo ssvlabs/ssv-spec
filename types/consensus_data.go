@@ -51,10 +51,24 @@ type ConsensusData struct {
 	SyncCommitteeContribution ContributionsMap
 }
 
-func (cid *ConsensusData) Encode() ([]byte, error) {
-	return json.Marshal(cid)
+type consensusDataSSZ struct {
+	Duty *dutySSZ
+	Data []byte `ssz-max:"5000"`
 }
 
-func (cid *ConsensusData) Decode(data []byte) error {
-	return json.Unmarshal(data, &cid)
+type contributionEntries struct {
+	SyncCommitteeContribution []*ContributionEntry `ssz-max:"7"`
+}
+
+type ContributionEntry struct {
+	Sig   phase0.BLSSignature `ssz-size:"96"`
+	Contr *altair.SyncCommitteeContribution
+}
+
+func (cd *ConsensusData) Encode() ([]byte, error) {
+	return json.Marshal(cd)
+}
+
+func (cd *ConsensusData) Decode(data []byte) error {
+	return json.Unmarshal(data, &cd)
 }

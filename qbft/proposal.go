@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"github.com/sanity-io/litter"
 )
 
 func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
@@ -215,6 +216,7 @@ func CreateProposal(state *State, config IConfig, value []byte, roundChanges, pr
 		RoundChangeJustification: roundChanges,
 		PrepareJustification:     prepares,
 	}
+	litter.Dump(proposalData)
 	dataByts, err := proposalData.Encode()
 
 	msg := &Message{

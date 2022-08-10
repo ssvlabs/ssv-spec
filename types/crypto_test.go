@@ -50,9 +50,9 @@ func TestComputeSigningRoot(t *testing.T) {
 	})
 }
 
-func TestComputeSignatureDomain(t *testing.T) {
-	require.EqualValues(t, []byte{1, 2, 3, 4, 1, 2, 3, 4}, ComputeSignatureDomain([]byte{1, 2, 3, 4}, []byte{1, 2, 3, 4}))
-}
+//func TestComputeSignatureDomain(t *testing.T) {
+//	require.EqualValues(t, []byte{1, 2, 3, 4, 1, 2, 3, 4}, ComputeSignatureDomain([]byte{1, 2, 3, 4}, []byte{1, 2, 3, 4}))
+//}
 
 func TestSignature_Verify(t *testing.T) {
 	msgRoot := &testSigningRoot{root: []byte{1, 2, 3, 4}}

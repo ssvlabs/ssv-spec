@@ -2,11 +2,12 @@ package testingutils
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 var AttesterMsgID = func() []byte {
@@ -57,7 +58,7 @@ var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encod
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty: TestingSyncCommitteeContributionDuty,
-	SyncCommitteeContribution: map[spec.BLSSignature]*altair.SyncCommitteeContribution{
+	SyncCommitteeContribution: map[phase0.BLSSignature]*altair.SyncCommitteeContribution{
 		TestingContributionProofsSigned[0]: TestingSyncCommitteeContributions[0],
 		TestingContributionProofsSigned[1]: TestingSyncCommitteeContributions[1],
 		TestingContributionProofsSigned[2]: TestingSyncCommitteeContributions[2],
@@ -437,7 +438,7 @@ var PostConsensusSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types
 var postConsensusSyncCommitteeContributionMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
-	validatorIndex spec.ValidatorIndex,
+	validatorIndex phase0.ValidatorIndex,
 	keySet *TestKeySet,
 	wrongRoot bool,
 	wrongBeaconSig bool,
@@ -449,7 +450,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 	msgs := ssv.PartialSignatureMessages{}
 	for index, c := range TestingSyncCommitteeContributions {
 		signedProof, _, _ := signer.SignContributionProof(TestingDutySlot, uint64(index), keySet.ValidatorSK.GetPublicKey().Serialize())
-		signedProofbls := spec.BLSSignature{}
+		signedProofbls := phase0.BLSSignature{}
 		copy(signedProofbls[:], signedProof)
 
 		signed, root, _ := signer.SignContribution(&altair.ContributionAndProof{

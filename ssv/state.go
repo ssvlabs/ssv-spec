@@ -4,11 +4,13 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/pkg/errors"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/pkg/errors"
 )
 
 // State holds all the relevant progress the duty execution progress
@@ -25,9 +27,9 @@ type State struct {
 	DecidedValue    *types.ConsensusData
 
 	// post consensus signed objects
-	SignedAttestation   *spec.Attestation
+	SignedAttestation   *phase0.Attestation
 	SignedProposal      *altair.SignedBeaconBlock
-	SignedAggregate     *spec.SignedAggregateAndProof
+	SignedAggregate     *phase0.SignedAggregateAndProof
 	SignedSyncCommittee *altair.SyncCommitteeMessage
 	SignedContributions map[string]*altair.SignedContributionAndProof // maps contribution root to signed contribution
 
@@ -97,21 +99,21 @@ func (pcs *State) ReconstructContributionSig(root, validatorPubKey []byte) (*alt
 		return nil, errors.New("could not find SignedContributionAndProod")
 	}
 
-	blsSig := spec.BLSSignature{}
+	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], signature)
 	contrib.Signature = blsSig
 	return contrib, nil
 }
 
 // ReconstructAttestationSig aggregates collected partial sigs, reconstructs a valid sig and returns an attestation obj with the reconstructed sig
-func (pcs *State) ReconstructAttestationSig(root, validatorPubKey []byte) (*spec.Attestation, error) {
+func (pcs *State) ReconstructAttestationSig(root, validatorPubKey []byte) (*phase0.Attestation, error) {
 	// Reconstruct signatures
 	signature, err := pcs.PostConsensusPartialSig.ReconstructSignature(root, validatorPubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not reconstruct attestation sig")
 	}
 
-	blsSig := spec.BLSSignature{}
+	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], signature)
 	pcs.SignedAttestation.Signature = blsSig
 	return pcs.SignedAttestation, nil
@@ -125,21 +127,21 @@ func (pcs *State) ReconstructBeaconBlockSig(root, validatorPubKey []byte) (*alta
 		return nil, errors.Wrap(err, "could not reconstruct attestation sig")
 	}
 
-	blsSig := spec.BLSSignature{}
+	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], signature)
 	pcs.SignedProposal.Signature = blsSig
 	return pcs.SignedProposal, nil
 }
 
 // ReconstructSignedAggregateSelectionProofSig aggregates collected partial signed aggregate selection proof sigs, reconstructs a valid sig and returns it
-func (pcs *State) ReconstructSignedAggregateSelectionProofSig(root, validatorPubKey []byte) (*spec.SignedAggregateAndProof, error) {
+func (pcs *State) ReconstructSignedAggregateSelectionProofSig(root, validatorPubKey []byte) (*phase0.SignedAggregateAndProof, error) {
 	// Reconstruct signatures
 	signature, err := pcs.PostConsensusPartialSig.ReconstructSignature(root, validatorPubKey)
 	if err != nil {
 	}
 	return nil, errors.Wrap(err, "could not reconstruct SignedAggregateSelectionProofSig")
 
-	blsSig := spec.BLSSignature{}
+	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], signature)
 	pcs.SignedAggregate.Signature = blsSig
 	return pcs.SignedAggregate, nil
@@ -153,7 +155,7 @@ func (pcs *State) ReconstructSyncCommitteeSig(root, validatorPubKey []byte) (*al
 	}
 	return nil, errors.Wrap(err, "could not reconstruct SignedAggregateSelectionProofSig")
 
-	blsSig := spec.BLSSignature{}
+	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], signature)
 	pcs.SignedSyncCommittee.Signature = blsSig
 	return pcs.SignedSyncCommittee, nil

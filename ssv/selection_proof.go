@@ -1,12 +1,13 @@
 package ssv
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
-func (dr *Runner) SignSlotWithSelectionProofPreConsensus(slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessage, error) {
+func (dr *Runner) SignSlotWithSelectionProofPreConsensus(slot phase0.Slot, signer types.KeyManager) (*PartialSignatureMessage, error) {
 	sig, r, err := signer.SignSlotWithSelectionProof(slot, dr.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign partial selection proof")

@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -51,16 +51,16 @@ func NewTestingKeyManager() *testingKeyManager {
 }
 
 // SignAttestation signs the given attestation
-func (km *testingKeyManager) SignAttestation(data *spec.AttestationData, duty *types.Duty, pk []byte) (*spec.Attestation, []byte, error) {
+func (km *testingKeyManager) SignAttestation(data *phase0.AttestationData, duty *types.Duty, pk []byte) (*phase0.Attestation, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		sig := k.SignByte(TestingAttestationRoot)
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
 		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
 
-		return &spec.Attestation{
+		return &phase0.Attestation{
 			AggregationBits: aggregationBitfield,
 			Data:            data,
 			Signature:       blsSig,
@@ -70,7 +70,7 @@ func (km *testingKeyManager) SignAttestation(data *spec.AttestationData, duty *t
 }
 
 // IsAttestationSlashable returns error if attestation is slashable
-func (km *testingKeyManager) IsAttestationSlashable(data *spec.AttestationData) error {
+func (km *testingKeyManager) IsAttestationSlashable(data *phase0.AttestationData) error {
 	return nil
 }
 
@@ -87,10 +87,10 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 }
 
 // SignRandaoReveal signs randao
-func (km *testingKeyManager) SignRandaoReveal(epoch spec.Epoch, pk []byte) (types.Signature, []byte, error) {
+func (km *testingKeyManager) SignRandaoReveal(epoch phase0.Epoch, pk []byte) (types.Signature, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		sig := k.SignByte(TestingRandaoRoot)
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		return sig.Serialize(), TestingRandaoRoot, nil
@@ -107,7 +107,7 @@ func (km *testingKeyManager) IsBeaconBlockSlashable(block *altair.BeaconBlock) e
 func (km *testingKeyManager) SignBeaconBlock(data *altair.BeaconBlock, duty *types.Duty, pk []byte) (*altair.SignedBeaconBlock, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		sig := k.SignByte(TestingBeaconBlockRoot)
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		return &altair.SignedBeaconBlock{
@@ -119,10 +119,10 @@ func (km *testingKeyManager) SignBeaconBlock(data *altair.BeaconBlock, duty *typ
 }
 
 // SignSlotWithSelectionProof signs slot for aggregator selection proof
-func (km *testingKeyManager) SignSlotWithSelectionProof(slot spec.Slot, pk []byte) (types.Signature, []byte, error) {
+func (km *testingKeyManager) SignSlotWithSelectionProof(slot phase0.Slot, pk []byte) (types.Signature, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		sig := k.SignByte(TestingSelectionProofRoot)
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		return sig.Serialize(), TestingSelectionProofRoot, nil
@@ -131,13 +131,13 @@ func (km *testingKeyManager) SignSlotWithSelectionProof(slot spec.Slot, pk []byt
 }
 
 // SignAggregateAndProof returns a signed aggregate and proof msg
-func (km *testingKeyManager) SignAggregateAndProof(msg *spec.AggregateAndProof, duty *types.Duty, pk []byte) (*spec.SignedAggregateAndProof, []byte, error) {
+func (km *testingKeyManager) SignAggregateAndProof(msg *phase0.AggregateAndProof, duty *types.Duty, pk []byte) (*phase0.SignedAggregateAndProof, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		sig := k.SignByte(TestingSignedAggregateAndProofRoot)
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
-		return &spec.SignedAggregateAndProof{
+		return &phase0.SignedAggregateAndProof{
 			Message:   msg,
 			Signature: blsSig,
 		}, TestingSignedAggregateAndProofRoot, nil
@@ -146,10 +146,10 @@ func (km *testingKeyManager) SignAggregateAndProof(msg *spec.AggregateAndProof, 
 }
 
 // SignSyncCommitteeBlockRoot returns a signed sync committee msg
-func (km *testingKeyManager) SignSyncCommitteeBlockRoot(slot spec.Slot, root spec.Root, validatorIndex spec.ValidatorIndex, pk []byte) (*altair.SyncCommitteeMessage, []byte, error) {
+func (km *testingKeyManager) SignSyncCommitteeBlockRoot(slot phase0.Slot, root phase0.Root, validatorIndex phase0.ValidatorIndex, pk []byte) (*altair.SyncCommitteeMessage, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		sig := k.SignByte(TestingSyncCommitteeBlockRoot[:])
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		return &altair.SyncCommitteeMessage{
@@ -161,10 +161,10 @@ func (km *testingKeyManager) SignSyncCommitteeBlockRoot(slot spec.Slot, root spe
 	return nil, nil, errors.New("pk not found")
 }
 
-func (km *testingKeyManager) SignContributionProof(slot spec.Slot, index uint64, pk []byte) (types.Signature, []byte, error) {
+func (km *testingKeyManager) SignContributionProof(slot phase0.Slot, index uint64, pk []byte) (types.Signature, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		sig := k.SignByte(TestingContributionProofRoots[index][:])
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		return sig.Serialize(), TestingContributionProofRoots[index][:], nil
@@ -175,7 +175,7 @@ func (km *testingKeyManager) SignContributionProof(slot spec.Slot, index uint64,
 func (km *testingKeyManager) SignContribution(contribution *altair.ContributionAndProof, pk []byte) (*altair.SignedContributionAndProof, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		sig := k.SignByte(TestingContributionRoots[contribution.Contribution.SubcommitteeIndex])
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		return &altair.SignedContributionAndProof{

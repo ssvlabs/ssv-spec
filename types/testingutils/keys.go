@@ -5,25 +5,27 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/hex"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/types"
+
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
-var TestingValidatorPubKey = func() spec.BLSPubKey {
+var TestingValidatorPubKey = func() phase0.BLSPubKey {
 	// sk - 3515c7d08e5affd729e9579f7588d30f2342ee6f6a9334acf006345262162c6f
 	pk, _ := hex.DecodeString("8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0")
-	blsPK := spec.BLSPubKey{}
+	blsPK := phase0.BLSPubKey{}
 	copy(blsPK[:], pk)
 	return blsPK
 }()
 
-var TestingWrongValidatorPubKey = func() spec.BLSPubKey {
+var TestingWrongValidatorPubKey = func() phase0.BLSPubKey {
 	// sk - 3515c7d08e5affd729e9579f7588d30f2342ee6f6a9334acf006345262162c6f
 	pk, _ := hex.DecodeString("948fb44582ce25336fdb17122eac64fe5a1afc39174ce92d6013becac116766dc5a778c880dd47de7dfff6a0f86ba42b")
-	blsPK := spec.BLSPubKey{}
+	blsPK := phase0.BLSPubKey{}
 	copy(blsPK[:], pk)
 	return blsPK
 }()
