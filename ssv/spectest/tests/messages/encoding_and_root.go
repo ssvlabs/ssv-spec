@@ -13,15 +13,15 @@ func EncodingAndRoot() *MsgSpecTest {
 			Type: ssv.PostConsensusPartialSig,
 			Messages: []*ssv.PartialSignatureMessage{
 				{
-					Slot:             12,
+					Slot:             11,
 					PartialSignature: make([]byte, 96),
-					Signer:           11,
+					Signer:           12,
 					SigningRoot:      make([]byte, 32),
 				},
 				{
-					Slot:             12,
+					Slot:             11,
 					PartialSignature: make([]byte, 96),
-					Signer:           11,
+					Signer:           12,
 					SigningRoot:      make([]byte, 32),
 					MetaData: &ssv.PartialSignatureMetaData{
 						ContributionSubCommitteeIndex: 1,

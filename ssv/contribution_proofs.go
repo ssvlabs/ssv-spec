@@ -15,6 +15,7 @@ func (dr *Runner) SignSyncSubCommitteeContributionProof(slot spec.Slot, indexes 
 			return nil, errors.Wrap(err, "could not sign partial selection proof")
 		}
 		r = ensureRoot(r)
+		// TODO what guarantees the order here? Is it important?
 		ret = append(ret, &PartialSignatureMessage{
 			Slot:             slot,
 			PartialSignature: sig,
@@ -46,6 +47,7 @@ func (dr *Runner) ProcessContributionProofsMessage(signedMsg *SignedPartialSigna
 		if err := dr.State.ContributionProofs.AddSignature(msg); err != nil {
 			return false, nil, errors.Wrap(err, "could not add partial contribution proof signature")
 		}
+		// TODO need to check roots are unique and not overriding.. we are getting multiple messages here
 		dr.State.ContributionSubCommitteeIndexes[hex.EncodeToString(msg.SigningRoot)] = msg.MetaData.ContributionSubCommitteeIndex
 
 		if prevQuorum {

@@ -2,7 +2,6 @@ package tests
 
 import (
 	"encoding/hex"
-	"fmt"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -46,19 +45,39 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	broadcastedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
 	if len(broadcastedMsgs) > 0 {
 		index := 0
-		for i, msg := range broadcastedMsgs {
+		for _, msg := range broadcastedMsgs {
 			if msg.MsgType != types.SSVPartialSignatureMsgType {
 				continue
 			}
 
 			msg1 := &ssv.SignedPartialSignatureMessage{}
 			require.NoError(t, msg1.Decode(msg.Data))
-			r1, _ := msg1.GetRoot()
-
 			msg2 := test.OutputMessages[index]
-			r2, _ := msg2.GetRoot()
+			require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))
 
-			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+			// messages are not guaranteed to be in order so we map them and then test all roots to be equal
+			roots := make(map[string]string)
+			for i, partialSigMsg2 := range msg2.Message.Messages {
+				r2, err := partialSigMsg2.GetRoot()
+				require.NoError(t, err)
+				if _, found := roots[hex.EncodeToString(r2)]; !found {
+					roots[hex.EncodeToString(r2)] = ""
+				} else {
+					roots[hex.EncodeToString(r2)] = hex.EncodeToString(r2)
+				}
+
+				partialSigMsg1 := msg1.Message.Messages[i]
+				r1, err := partialSigMsg1.GetRoot()
+				require.NoError(t, err)
+				if _, found := roots[hex.EncodeToString(r1)]; !found {
+					roots[hex.EncodeToString(r1)] = ""
+				} else {
+					roots[hex.EncodeToString(r1)] = hex.EncodeToString(r1)
+				}
+			}
+			for k, v := range roots {
+				require.EqualValues(t, k, v)
+			}
 
 			index++
 		}

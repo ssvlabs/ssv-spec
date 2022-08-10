@@ -2,6 +2,7 @@ package synccommitteecontribution
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -80,5 +81,9 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 		Messages:                msgs,
 		PostDutyRunnerStateRoot: "54e3294295d1bf1ef7d2419763acc3c0a4a73a94f602e02d4b63e535f664a10d",
+		OutputMessages: []*ssv.SignedPartialSignatureMessage{
+			testingutils.PreConsensusContributionProofMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+			testingutils.PostConsensusSyncCommitteeContributionMsg(testingutils.Testing4SharesSet().Shares[1], 1, testingutils.Testing4SharesSet()),
+		},
 	}
 }

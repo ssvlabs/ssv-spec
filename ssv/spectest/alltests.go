@@ -7,6 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/consensus/synccommittee"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/consensus/synccommitteecontribution"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg"
 	"testing"
 )
 
@@ -52,14 +53,14 @@ var AllTests = []SpecTest{
 	////attestations.DutyTypeWrong(),
 	////attestations.AttestationDataNil(),
 
-	//processmsg.UnknownRunner(),
-	//processmsg.NoRunningDuty(),
-	//processmsg.MsgNotBelonging(),
-	//processmsg.NoData(),
-	//processmsg.ValidConsensusMsg(),
-	//processmsg.ValidDecidedConsensusMsg(),
-	//processmsg.InvalidValcheckConsensusMsg(),
-	//processmsg.InvalidPostconsensusPartialSigMsg(),
+	processmsg.UnknownRunner(),
+	processmsg.NoRunningDuty(),
+	processmsg.MsgNotBelonging(),
+	processmsg.NoData(),
+	processmsg.ValidConsensusMsg(),
+	processmsg.ValidDecidedConsensusMsg(),
+	processmsg.InvalidValcheckConsensusMsg(),
+	processmsg.InvalidPostconsensusPartialSigMsg(),
 
 	proposer.HappyFlow(),
 	proposer.SevenOperators(),

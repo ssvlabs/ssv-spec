@@ -2,6 +2,7 @@ package aggregator
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -77,6 +78,10 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestAggregatorConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "12816c1083d40f46b0b93ff13c85c530540166c7df25f6c8b580bca73686d05f",
+		PostDutyRunnerStateRoot: "fe20010ed41e35f7ea8698235766f6e81b05a198ed213b3fcdecc9ebbb644717",
+		OutputMessages: []*ssv.SignedPartialSignatureMessage{
+			testingutils.PreConsensusSelectionProofMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+			testingutils.PostConsensusAggregatorMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+		},
 	}
 }

@@ -2,6 +2,7 @@ package synccommitteecontribution
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -112,5 +113,9 @@ func SevenOperators() *tests.MsgProcessingSpecTest {
 		Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 		Messages:                msgs,
 		PostDutyRunnerStateRoot: "12d6076faa90ff67726f22b905be649be9b3ec6efb92c8c2e2a29f120a469a81",
+		OutputMessages: []*ssv.SignedPartialSignatureMessage{
+			testingutils.PreConsensusContributionProofMsg(testingutils.Testing7SharesSet().Shares[1], 1),
+			testingutils.PostConsensusSyncCommitteeContributionMsg(testingutils.Testing7SharesSet().Shares[1], 1, testingutils.Testing7SharesSet()),
+		},
 	}
 }

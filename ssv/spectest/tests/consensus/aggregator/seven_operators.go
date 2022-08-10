@@ -2,6 +2,7 @@ package aggregator
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -111,6 +112,10 @@ func SevenOperators() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestAggregatorConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "74d8900ede93916f30f29c018003a1206eff7e5a70ceebd1a633c671d2be30ee",
+		PostDutyRunnerStateRoot: "940fa3c836253ea3fa3c43a2fe8e2db7e8afd57453ac4599036e41332be5e5b4",
+		OutputMessages: []*ssv.SignedPartialSignatureMessage{
+			testingutils.PreConsensusSelectionProofMsg(testingutils.Testing7SharesSet().Shares[1], 1),
+			testingutils.PostConsensusAggregatorMsg(testingutils.Testing7SharesSet().Shares[1], 1),
+		},
 	}
 }
