@@ -1,13 +1,13 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/consensus/aggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/consensus/attester"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/consensus/proposer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/consensus/synccommittee"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/consensus/synccommitteecontribution"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/aggregator"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/attester"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/proposer"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/synccommittee"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/synccommitteecontribution"
 	"testing"
 )
 
@@ -57,10 +57,8 @@ var AllTests = []SpecTest{
 	processmsg.NoRunningDuty(),
 	processmsg.MsgNotBelonging(),
 	processmsg.NoData(),
-	processmsg.ValidConsensusMsg(),
 	processmsg.ValidDecidedConsensusMsg(),
-	processmsg.InvalidValcheckConsensusMsg(),
-	processmsg.InvalidPostconsensusPartialSigMsg(),
+	processmsg.UnknownMsgType(),
 
 	proposer.HappyFlow(),
 	proposer.SevenOperators(),

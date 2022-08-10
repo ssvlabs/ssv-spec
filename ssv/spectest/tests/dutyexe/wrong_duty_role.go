@@ -1,4 +1,4 @@
-package consensus
+package dutyexe
 
 import "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 

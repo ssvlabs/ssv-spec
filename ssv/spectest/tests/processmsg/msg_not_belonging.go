@@ -1,6 +1,7 @@
 package processmsg
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -23,7 +24,9 @@ func MsgNotBelonging() *tests.MsgProcessingSpecTest {
 		Name:                    "ssv msg wrong pubkey in msg id",
 		Runner:                  dr,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "c4eb0bb42cc382e468b2362e9d9cc622f388eef6a266901535bb1dfcc51e8868",
-		ExpectedError:           "Messages invalid: msg ID doesn't match validator ID",
+		Duty:                    testingutils.TestingAttesterDuty,
+		PostDutyRunnerStateRoot: "0485e75de7b087b605e2121d505414d56f46a5368786b9429762ea271f593e2b",
+		ExpectedError:           "Message invalid: msg ID doesn't match validator ID",
+		OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 	}
 }

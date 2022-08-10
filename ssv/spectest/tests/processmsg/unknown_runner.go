@@ -1,19 +1,20 @@
 package processmsg
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// UnkonwnRunner tests an SSVMessage with msg ID not matching any runner
-func UnkonwnRunner() *tests.MsgProcessingSpecTest {
+// UnknownRunner tests an SSVMessage with msg ID not matching any runner
+func UnknownRunner() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 	msgs := []*types.SSVMessage{
 		{
 			MsgType: types.SSVConsensusMsgType,
-			MsgID:   types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleProposer),
+			MsgID:   types.NewMsgID(testingutils.TestingValidatorPubKey[:], 100),
 			Data:    []byte{1, 2, 3, 4},
 		},
 	}
@@ -23,7 +24,8 @@ func UnkonwnRunner() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Messages:                msgs,
 		Duty:                    testingutils.TestingAttesterDuty,
-		PostDutyRunnerStateRoot: "c4eb0bb42cc382e468b2362e9d9cc622f388eef6a266901535bb1dfcc51e8868",
-		ExpectedError:           "Messages invalid: no running duty",
+		PostDutyRunnerStateRoot: "0485e75de7b087b605e2121d505414d56f46a5368786b9429762ea271f593e2b",
+		ExpectedError:           "could not get duty runner for msg ID",
+		OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 	}
 }

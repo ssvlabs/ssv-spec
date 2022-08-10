@@ -13,16 +13,17 @@ func UnknownMsgType() *tests.MsgProcessingSpecTest {
 	dr := testingutils.AttesterRunner(ks)
 
 	msg := testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))
-	msg.MsgType = 3
+	msg.MsgType = 100
 	msgs := []*types.SSVMessage{
 		msg,
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "wrong SSVMessage type",
+		Name:                    "unknown msg type",
 		Runner:                  dr,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
-		ExpectedError:           "PartialSignatureMessage Height doesn't match duty runner's Height",
+		Duty:                    testingutils.TestingAttesterDuty,
+		PostDutyRunnerStateRoot: "0485e75de7b087b605e2121d505414d56f46a5368786b9429762ea271f593e2b",
+		ExpectedError:           "unknown msg",
 	}
 }
