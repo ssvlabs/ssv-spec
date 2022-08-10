@@ -136,7 +136,8 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 		}
 
 		r.OutputMsgs[msg.Signer] = output
-		if len(r.OutputMsgs) == int(r.InitMsg.Threshold) {
+		// GLNOTE: Actually we need every operator to sign instead only the quorum!
+		if len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs) {
 			return true, r.OutputMsgs, nil
 		}
 		return false, nil, nil
