@@ -29,8 +29,8 @@ func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signe
 // ProcessRandaoMessage process randao msg, returns true if it has quorum for partial signatures.
 // returns true only once (first time quorum achieved)
 func (dr *Runner) ProcessRandaoMessage(signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
-	if err := dr.canProcessRandaoMsg(signedMsg); err != nil {
-		return false, nil, errors.Wrap(err, "can't process randao message")
+	if err := dr.validateRandaoMsg(signedMsg); err != nil {
+		return false, nil, errors.Wrap(err, "invalid randao message")
 	}
 
 	roots := make([][]byte, 0)
@@ -56,7 +56,17 @@ func (dr *Runner) ProcessRandaoMessage(signedMsg *SignedPartialSignatureMessage)
 	return anyQuorum, roots, nil
 }
 
-// canProcessRandaoMsg returns true if it can process randao message, false if not
-func (dr *Runner) canProcessRandaoMsg(msg *SignedPartialSignatureMessage) error {
-	return dr.validatePartialSigMsg(msg, dr.CurrentDuty.Slot)
+// validateRandaoMsg returns nil if randao message is valid
+func (dr *Runner) validateRandaoMsg(msg *SignedPartialSignatureMessage) error {
+	if err := dr.validatePartialSigMsg(msg, dr.CurrentDuty.Slot); err != nil {
+		return err
+	}
+
+	if len(msg.Message.Messages) != 1 {
+		return errors.New("expecting 1 radano partial sig")
+	}
+
+	panic("verify beacon signing root is what we expect")
+
+	return nil
 }

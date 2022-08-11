@@ -212,29 +212,53 @@ var postConsensusBeaconBlockMsg = func(
 }
 
 var PreConsensusRandaoMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, false)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 1)
+}
+
+var PreConsensusRandaoWrongEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return randaoMsg(sk, id, true, TestingDutyEpoch+1, TestingDutySlot, 1)
+}
+
+var PreConsensusRandaoWrongSlotMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot+1, 1)
+}
+
+var PreConsensusRandaoMultiMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 2)
+}
+
+var PreConsensusRandaoNoMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 0)
 }
 
 var randaoMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
 	wrongRoot bool,
-	wrongBeaconSig bool,
+	epoch spec.Epoch,
+	slot spec.Slot,
+	msgCnt int,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
-	signed, root, _ := signer.SignRandaoReveal(TestingDutySlot, sk.GetPublicKey().Serialize())
+	signed, root, _ := signer.SignRandaoReveal(epoch, sk.GetPublicKey().Serialize())
 
 	msgs := ssv.PartialSignatureMessages{
-		Type: ssv.RandaoPartialSig,
-		Messages: []*ssv.PartialSignatureMessage{
-			{
-				Slot:             TestingDutySlot,
-				PartialSignature: signed[:],
-				SigningRoot:      root,
-				Signer:           id,
-			},
-		},
+		Type:     ssv.RandaoPartialSig,
+		Messages: []*ssv.PartialSignatureMessage{},
 	}
+	for i := 0; i < msgCnt; i++ {
+		msg := &ssv.PartialSignatureMessage{
+			Slot:             slot,
+			PartialSignature: signed[:],
+			SigningRoot:      root,
+			Signer:           id,
+		}
+		if wrongRoot {
+			msg.SigningRoot = make([]byte, 32)
+		}
+		msgs.Messages = append(msgs.Messages, msg)
+	}
+
 	sig, _ := signer.SignRoot(msgs, types.PartialSignatureType, sk.GetPublicKey().Serialize())
 	return &ssv.SignedPartialSignatureMessage{
 		Message:   msgs,

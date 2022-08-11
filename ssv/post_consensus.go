@@ -190,7 +190,7 @@ func (dr *Runner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) err
 			root = ensureRoot(root)
 			// verify
 			if !sig.VerifyByte(pk, root) {
-				return errors.Errorf("could not verify Signature from iBFT member %d", signer)
+				return errors.New("wrong signature")
 			}
 			return nil
 		}

@@ -56,7 +56,7 @@ func (dr *Runner) ProcessSelectionProofMessage(signedMsg *SignedPartialSignature
 	return anyQuorum, roots, nil
 }
 
-// canProcessRandaoMsg returns true if it can process selection proof message, false if not
+// validateRandaoMsg returns true if it can process selection proof message, false if not
 func (dr *Runner) canProcessSelectionProofMsg(msg *SignedPartialSignatureMessage) error {
 	return dr.validatePartialSigMsg(msg, dr.CurrentDuty.Slot)
 }

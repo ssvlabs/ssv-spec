@@ -7,18 +7,20 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// DuplicateMsgs tests a processing duplicate msgs
-func DuplicateMsgs() *tests.MsgProcessingSpecTest {
+// DifferentRootsNoQuorum tests a processing msgs with different roots which should not achieve quorum
+func DifferentRootsNoQuorum() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
 	msgs := []*types.SSVMessage{
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongEpochMsg(ks.Shares[1], 1)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongEpochMsg(ks.Shares[3], 3)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao duplicate msg",
+		Name:                    "randao different roots no quorum",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,

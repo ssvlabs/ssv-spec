@@ -7,17 +7,17 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongSig tests an invalid SignedPostConsensusMessage sig
-func WrongSig() *tests.MsgProcessingSpecTest {
+// MultiSigs tests a multiple randao sigs in 1 msg, should fail
+func MultiSigs() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
 	msgs := []*types.SSVMessage{
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 2)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMultiMsg(ks.Shares[1], 1)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao invalid sig",
+		Name:                    "randao multi msg",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
@@ -25,6 +25,6 @@ func WrongSig() *tests.MsgProcessingSpecTest {
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
-		ExpectedError: "failed processing randao message: invalid randao message: failed to verify PartialSignature: failed to verify signature",
+		ExpectedError: "failed processing randao message: invalid randao message: expecting 1 radano partial sig",
 	}
 }

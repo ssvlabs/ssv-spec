@@ -7,24 +7,24 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongSig tests an invalid SignedPostConsensusMessage sig
-func WrongSig() *tests.MsgProcessingSpecTest {
+// DuplicateMsgsDifferentRoots tests a processing duplicate msgs with different roots
+func DuplicateMsgsDifferentRoots() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
 	msgs := []*types.SSVMessage{
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 2)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongEpochMsg(ks.Shares[1], 1)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao invalid sig",
+		Name:                    "randao duplicate msg wrong epochs",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "4b5855e0dda37e51343c6265bd2d188af39e1ef74e4d3f57d5b75b736c200622",
+		PostDutyRunnerStateRoot: "dfa39d654efea3615b02233cfc9181ce60de5d3163dc0a95273d070675dccb63",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
-		ExpectedError: "failed processing randao message: invalid randao message: failed to verify PartialSignature: failed to verify signature",
 	}
 }

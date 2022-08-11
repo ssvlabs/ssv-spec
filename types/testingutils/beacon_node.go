@@ -70,6 +70,7 @@ var TestingSelectionProofRoot, _ = hex.DecodeString("81451c58b079c5af84ebe4b9290
 
 const (
 	TestingDutySlot       = 12
+	TestingDutyEpoch      = 12
 	TestingValidatorIndex = 1
 )
 
