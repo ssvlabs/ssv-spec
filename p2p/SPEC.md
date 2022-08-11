@@ -27,6 +27,7 @@ This document contains the networking specification for `SSV.Network`.
     - [Subnets](#subnets)
     - [Peers Connectivity](#peers-connectivity)
     - [Connection Gating](#connection-gating)
+    - [Peers Balancing](#peers-balancing)
     - [Security](#security)
     - [Configurations](#configurations)
     - [Forks](#forks)
@@ -611,23 +612,46 @@ For more information:
 See [Consensus specs > phase 0 > p2p interface](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#why-are-we-using-discv5-and-not-libp2p-kademlia-dht)
 for details on why discv5 was chosen over libp2p Kad DHT in Ethereum.
 
----
-
-
 ### Peers Connectivity
 
 In a fully-connected network, where each peer is connected to all other peers in the network,
 running nodes will consume many resources to process all network related tasks e.g. parsing, peers management etc.
 
-To lower resource consumption, the number of connected peers is limited, configurable via flag. \
-Once reached to peer limit, the node will stop looking for new nodes,
-and won't accept incoming connections from relevant peers.
+Limiting connected peers count should reduce the network throughput and resource consumption, 
+while the node still receives messages via gossiping.
 
+#### Peers Balancing
+
+Once reached to peer limit, the node will stop looking for new nodes,
+and won't accept incoming connections from relevant peers. \
+Instead, there is a peer balancing procedure that ensures (over time) that connections are being replaced, 
+and we'll try form a balanced set of peers across all the subnets of our interest.
+
+Tagging is done using `go-libp2p-core/connmgr.ConnManager` interface to protect / unprotect peers. \
+Once peers were tagged, we trim the peers that are unprotected
+
+Peers balancing includes the following steps:
+
+**NOTE:** in this process we rely on information that was sent by the peer,
+and on the internal state of connected peers (provided by libp2p's `Host` and `Pubsub`).
+
+1. continue if we reached peers limit in the node level, or stop otherwise.
+2. tag best `n` peers where `n = maxPeers - 1`
+  1. calculate scores for subnets:
+    1. subnet w/o peers - `2`
+    2. subnet w/ less than the minimum (<= 2) - `1`
+    3. subnet w/ overflow of peers (>= 5) - `-1`
+  2. calculate peers scores according to their subnets,
+     by a counting the subnets scores and giving bonus score for peers with multiple shared subnets.
+  3. **TBD** pubsub scoring will be taken into account (once added)
+3. trim untagged peers
 
 #### Connection Gating
 
 Connection Gating allows safeguarding against bad/pruned peers that tries to reconnect multiple times.
 Inbound and outbound connections are intercepted and being checked before other components process the connection.
+
+IP limiting is also a procedure that will be applied by the connection gater in future versions.
 
 See libp2p's [ConnectionGater](https://github.com/libp2p/go-libp2p-core/blob/master/connmgr/gater.go)
 interface for more info.
