@@ -26,8 +26,8 @@ This document contains the networking specification for `SSV.Network`.
     - [Discovery](#discovery)
     - [Subnets](#subnets)
     - [Peers Connectivity](#peers-connectivity)
-    - [Connection Gating](#connection-gating)
     - [Peers Balancing](#peers-balancing)
+    - [Connection Gating](#connection-gating)
     - [Security](#security)
     - [Configurations](#configurations)
     - [Forks](#forks)
@@ -633,7 +633,7 @@ Once peers were tagged, we trim the peers that are unprotected
 Peers balancing includes the following steps:
 
 **NOTE:** in this process we rely on information that was sent by the peer,
-and on the internal state of connected peers (provided by libp2p's `Host` and `Pubsub`).
+and on the internal state of connected peers (provided by libp2p's host and pubsub router).
 
 1. continue if we reached peers limit in the node level, or stop otherwise.
 2. tag best `n` peers where `n = maxPeers - 1`
