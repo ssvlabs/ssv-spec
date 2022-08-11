@@ -3,11 +3,11 @@ package spectest
 import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/aggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/attester"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/proposer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/synccommittee"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/synccommitteecontribution"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/consensus/aggregator"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/consensus/attester"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/consensus/proposer"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/consensus/synccommittee"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/consensus/synccommitteecontribution"
 	"testing"
 )
 
@@ -45,6 +45,10 @@ var AllTests = []SpecTest{
 	//
 	attester.HappyFlow(),
 	attester.SevenOperators(),
+	attester.TenOperators(),
+	attester.ThirteenOperators(),
+	attester.InvalidConsensusMsg(),
+	attester.ValidDecided(),
 	////attestations.FarFutureDuty(),
 	////attestations.DutySlotNotMatchingAttestationSlot(),
 	////attestations.DutyCommitteeIndexNotMatchingAttestations(),
