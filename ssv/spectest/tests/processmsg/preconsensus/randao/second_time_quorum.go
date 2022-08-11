@@ -24,7 +24,7 @@ func SecondTimeQuorum() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "f5926b6b62b2ab4e18a19a80c3eb6977010ff7cbbe2a5b6801d5e57be7b15ca0",
+		PostDutyRunnerStateRoot: "c139428853301081101b28c0102d0d4033a50c0c85e305c6f5c20382fb53b393",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},

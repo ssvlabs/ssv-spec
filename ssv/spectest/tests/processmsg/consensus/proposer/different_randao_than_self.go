@@ -15,8 +15,9 @@ func DifferentRandaoThanSelf() *tests.MsgProcessingSpecTest {
 
 	msgs := []*types.SSVMessage{
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[2], 2)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[3], 3)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[4], 4)),
 
 		testingutils.SSVMsgProposer(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
@@ -74,11 +75,11 @@ func DifferentRandaoThanSelf() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "proposer happy flow",
+		Name:                    "proposer different randao quorum than self",
 		Runner:                  dr,
 		Duty:                    testingutils.TestProposerConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "96e0047c031a694c22f8541917c75491719a6b63a6b5a0286c22b36d63dd489a",
+		PostDutyRunnerStateRoot: "034cc3405b07162561abdc483037d5424c533b62bc1e36d995ddeaed3c0c9356",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 			testingutils.PostConsensusProposerMsg(testingutils.Testing4SharesSet().Shares[1], 1),

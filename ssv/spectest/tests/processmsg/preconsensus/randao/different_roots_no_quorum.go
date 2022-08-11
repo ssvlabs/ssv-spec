@@ -14,9 +14,9 @@ func DifferentRootsNoQuorum() *tests.MsgProcessingSpecTest {
 
 	msgs := []*types.SSVMessage{
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongEpochMsg(ks.Shares[1], 1)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[1], 1)),
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongEpochMsg(ks.Shares[3], 3)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[3], 3)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -24,7 +24,7 @@ func DifferentRootsNoQuorum() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "dfa39d654efea3615b02233cfc9181ce60de5d3163dc0a95273d070675dccb63",
+		PostDutyRunnerStateRoot: "2ec6b6e8d991a3f229065de741b1f139ad2d38aa4fc55e1f3e3e0efab02611df",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},

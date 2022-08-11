@@ -7,14 +7,14 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// DuplicateMsgsDifferentRoots tests a processing duplicate msgs with different roots
+// DuplicateMsgsDifferentRoots tests processing 2 msgs for the same slot with different roots
 func DuplicateMsgsDifferentRoots() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
 	msgs := []*types.SSVMessage{
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongEpochMsg(ks.Shares[1], 1)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[1], 1)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -22,7 +22,7 @@ func DuplicateMsgsDifferentRoots() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "dfa39d654efea3615b02233cfc9181ce60de5d3163dc0a95273d070675dccb63",
+		PostDutyRunnerStateRoot: "85966227e9f1ef54c2d3a3a495dfa75fbdb57b2fd5d374e0f514b1d7ddfc7b45",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
