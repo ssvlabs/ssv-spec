@@ -51,9 +51,14 @@ func NewTestingKeyManager() *testingKeyManager {
 }
 
 // SignAttestation signs the given attestation
-func (km *testingKeyManager) SignAttestation(data *spec.AttestationData, duty *types.Duty, pk []byte) (*spec.Attestation, []byte, error) {
+func (km *testingKeyManager) SignAttestation(data *spec.AttestationData, domain spec.Domain, duty *types.Duty, pk []byte) (*spec.Attestation, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
-		sig := k.SignByte(TestingAttestationRoot)
+		r, err := types.ComputeETHSigningRoot(data, domain)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "could not compute signing root")
+		}
+
+		sig := k.SignByte(r[:])
 		blsSig := spec.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
@@ -64,7 +69,7 @@ func (km *testingKeyManager) SignAttestation(data *spec.AttestationData, duty *t
 			AggregationBits: aggregationBitfield,
 			Data:            data,
 			Signature:       blsSig,
-		}, TestingAttestationRoot, nil
+		}, r[:], nil
 	}
 	return nil, nil, errors.New("pk not found")
 }

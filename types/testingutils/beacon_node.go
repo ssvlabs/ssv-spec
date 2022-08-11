@@ -297,3 +297,7 @@ func (bn *testingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, subnet
 func (bn *testingBeaconNode) SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error {
 	return nil
 }
+
+func (bn *testingBeaconNode) DomainData(epoch spec.Epoch, domain spec.DomainType) (spec.Domain, error) {
+	return types.ComputeETHDomain(domain, types.GenesisForkVersion, types.GenesisValidatorsRoot)
+}

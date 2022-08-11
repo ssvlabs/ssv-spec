@@ -21,6 +21,7 @@ type Runner struct {
 	CurrentDuty    *types.Duty
 	QBFTController *qbft.Controller
 	storage        Storage
+	beacon         BeaconNode
 	valCheck       qbft.ProposedValueCheckF
 }
 
@@ -30,6 +31,7 @@ func NewDutyRunner(
 	share *types.Share,
 	qbftController *qbft.Controller,
 	storage Storage,
+	beacon BeaconNode,
 	valCheck qbft.ProposedValueCheckF,
 ) *Runner {
 	return &Runner{
@@ -38,6 +40,7 @@ func NewDutyRunner(
 		Share:          share,
 		QBFTController: qbftController,
 		storage:        storage,
+		beacon:         beacon,
 		valCheck:       valCheck,
 	}
 }

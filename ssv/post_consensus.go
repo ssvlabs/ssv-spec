@@ -46,7 +46,12 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 
 	switch dr.BeaconRoleType {
 	case types.BNRoleAttester:
-		signedAttestation, r, err := signer.SignAttestation(decidedValue.AttestationData, decidedValue.Duty, dr.Share.SharePubKey)
+		domain, err := dr.beacon.DomainData(decidedValue.AttestationData.Target.Epoch, types.DomainAttester)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get attester domain")
+		}
+
+		signedAttestation, r, err := signer.SignAttestation(decidedValue.AttestationData, domain, decidedValue.Duty, dr.Share.SharePubKey)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to sign attestation")
 		}

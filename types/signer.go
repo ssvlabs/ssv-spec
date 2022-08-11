@@ -30,7 +30,7 @@ var (
 
 type AttesterCalls interface {
 	// SignAttestation signs the given attestation
-	SignAttestation(data *spec.AttestationData, duty *Duty, pk []byte) (*spec.Attestation, []byte, error)
+	SignAttestation(data *spec.AttestationData, domain spec.Domain, duty *Duty, pk []byte) (*spec.Attestation, []byte, error)
 	// IsAttestationSlashable returns error if attestation is slashable
 	IsAttestationSlashable(data *spec.AttestationData) error
 }

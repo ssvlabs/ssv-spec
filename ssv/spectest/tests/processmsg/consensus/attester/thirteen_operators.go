@@ -166,7 +166,7 @@ func ThirteenOperators() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestAttesterConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "13aef6da84bd64d671f171381e1fd0f4de38ee007154b19bff6ebe63881919c1",
+		PostDutyRunnerStateRoot: "0fc4672e7a7ecb293eaa1fe425e472689ab5cdcb80f8b9bc77e92534fecf1dc9",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PostConsensusAttestationMsg(testingutils.Testing13SharesSet().Shares[1], 1, qbft.FirstHeight),
 		},

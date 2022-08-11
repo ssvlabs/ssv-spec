@@ -141,10 +141,12 @@ var postConsensusAttestationMsg = func(
 	wrongBeaconSig bool,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
-	signed, root, _ := signer.SignAttestation(TestingAttestationData, TestingAttesterDuty, sk.GetPublicKey().Serialize())
+	beacon := NewTestingBeaconNode()
+	r, _ := beacon.DomainData(TestingAttestationData.Target.Epoch, types.DomainAttester)
+	signed, root, _ := signer.SignAttestation(TestingAttestationData, r, TestingAttesterDuty, sk.GetPublicKey().Serialize())
 
 	if wrongBeaconSig {
-		signed, _, _ = signer.SignAttestation(TestingAttestationData, TestingAttesterDuty, TestingWrongValidatorPubKey[:])
+		signed, _, _ = signer.SignAttestation(TestingAttestationData, r, TestingAttesterDuty, TestingWrongValidatorPubKey[:])
 	}
 
 	if wrongRoot {
