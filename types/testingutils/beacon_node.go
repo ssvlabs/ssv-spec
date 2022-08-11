@@ -54,7 +54,6 @@ var TestingBeaconBlock = &altair.BeaconBlock{
 	},
 }
 var TestingBeaconBlockRoot, _ = hex.DecodeString("81451c58b079c5af84ebe4b92900d3e9c5a346678cb6dc3c4b7eea2c9cb3565e")
-var TestingRandaoRoot, _ = hex.DecodeString("81451c58b079c5af84ebe4b92900d3e9c5a346678cb6dc3c4b7eea2c9cb3565d")
 
 var TestingAggregateAndProof = &spec.AggregateAndProof{
 	AggregatorIndex: 1,
@@ -70,7 +69,7 @@ var TestingSelectionProofRoot, _ = hex.DecodeString("81451c58b079c5af84ebe4b9290
 
 const (
 	TestingDutySlot       = 12
-	TestingDutyEpoch      = 12
+	TestingDutyEpoch      = 0
 	TestingValidatorIndex = 1
 )
 

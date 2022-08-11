@@ -7,7 +7,12 @@ import (
 )
 
 func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessages, error) {
-	sig, r, err := signer.SignRandaoReveal(epoch, dr.Share.SharePubKey)
+	domain, err := dr.beacon.DomainData(epoch, types.DomainRandao)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get randao domain")
+	}
+
+	sig, r, err := signer.SignRandaoReveal(epoch, domain, dr.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign partial randao reveal")
 	}

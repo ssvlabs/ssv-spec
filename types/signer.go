@@ -37,7 +37,7 @@ type AttesterCalls interface {
 
 type ProposerCalls interface {
 	// SignRandaoReveal signs randao
-	SignRandaoReveal(epoch spec.Epoch, pk []byte) (Signature, []byte, error)
+	SignRandaoReveal(epoch spec.Epoch, domain spec.Domain, pk []byte) (Signature, []byte, error)
 	// IsBeaconBlockSlashable returns true if the given block is slashable
 	IsBeaconBlockSlashable(block *altair.BeaconBlock) error
 	// SignBeaconBlock signs the given beacon block

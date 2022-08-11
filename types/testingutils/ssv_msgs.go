@@ -217,8 +217,8 @@ var PreConsensusRandaoMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.Si
 	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 1)
 }
 
-var PreConsensusRandaoWrongEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, true, TestingDutyEpoch+1, TestingDutySlot, 1)
+var PreConsensusRandaoDifferentEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return randaoMsg(sk, id, false, TestingDutyEpoch+1, TestingDutySlot, 1)
 }
 
 var PreConsensusRandaoWrongSlotMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
@@ -242,7 +242,9 @@ var randaoMsg = func(
 	msgCnt int,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
-	signed, root, _ := signer.SignRandaoReveal(epoch, sk.GetPublicKey().Serialize())
+	beacon := NewTestingBeaconNode()
+	r, _ := beacon.DomainData(epoch, types.DomainRandao)
+	signed, root, _ := signer.SignRandaoReveal(epoch, r, sk.GetPublicKey().Serialize())
 
 	msgs := ssv.PartialSignatureMessages{
 		Type:     ssv.RandaoPartialSig,

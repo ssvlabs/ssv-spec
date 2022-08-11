@@ -177,29 +177,32 @@ func (v *Validator) processRandaoPartialSig(dutyRunner *Runner, signedMsg *Signe
 		return nil
 	}
 
-	for _, r := range roots {
-		// randao is relevant only for block proposals, no need to check type
-		fullSig, err := dutyRunner.State.ReconstructRandaoSig(r, v.Share.ValidatorPubKey)
-		if err != nil {
-			return errors.Wrap(err, "could not reconstruct randao sig")
-		}
+	if len(roots) != 1 {
+		return errors.New("too many randao roots")
+	}
 
-		duty := dutyRunner.CurrentDuty
+	r := roots[0]
+	// randao is relevant only for block proposals, no need to check type
+	fullSig, err := dutyRunner.State.ReconstructRandaoSig(r, v.Share.ValidatorPubKey)
+	if err != nil {
+		return errors.Wrap(err, "could not reconstruct randao sig")
+	}
 
-		// get block data
-		blk, err := v.Beacon.GetBeaconBlock(duty.Slot, duty.CommitteeIndex, v.Share.Graffiti, fullSig)
-		if err != nil {
-			return errors.Wrap(err, "failed to get Beacon block")
-		}
+	duty := dutyRunner.CurrentDuty
 
-		input := &types.ConsensusData{
-			Duty:      duty,
-			BlockData: blk,
-		}
+	// get block data
+	blk, err := v.Beacon.GetBeaconBlock(duty.Slot, duty.CommitteeIndex, v.Share.Graffiti, fullSig)
+	if err != nil {
+		return errors.Wrap(err, "failed to get Beacon block")
+	}
 
-		if err := dutyRunner.Decide(input); err != nil {
-			return errors.Wrap(err, "can't start new duty runner instance for duty")
-		}
+	input := &types.ConsensusData{
+		Duty:      duty,
+		BlockData: blk,
+	}
+
+	if err := dutyRunner.Decide(input); err != nil {
+		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 
 	return nil
