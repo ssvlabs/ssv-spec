@@ -519,7 +519,7 @@ It is invoked whenever the peer wants to subscribe to some topic,
 it helps in case other peers are suggesting topics that we don't want to join,
 e.g. if we are already subscribed to a large number of topics.
 
----
+<br />
 
 ### Subnets
 
@@ -612,6 +612,8 @@ For more information:
 See [Consensus specs > phase 0 > p2p interface](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#why-are-we-using-discv5-and-not-libp2p-kademlia-dht)
 for details on why discv5 was chosen over libp2p Kad DHT in Ethereum.
 
+<br />
+
 ### Peers Connectivity
 
 In a fully-connected network, where each peer is connected to all other peers in the network,
@@ -682,12 +684,16 @@ known and ignored all over the system.
 
 Configuration set used in `SSV.network` is described in [this document](./CONFIG.md).
 
+<br />
+
 ### Forks
 
 Future network forks will follow the general forks mechanism and design in SSV,
 where some procedures are called in the context of current fork version.
 
 See [network forks](./FORKS.md) for more information.
+
+<br />
 
 ### Relayers
 
