@@ -49,7 +49,7 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 }
 
 func (v *Validator) validateMessage(runner *Runner, msg *types.SSVMessage) error {
-	if runner.CurrentDuty == nil {
+	if !runner.HasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
@@ -188,7 +188,7 @@ func (v *Validator) processRandaoPartialSig(dutyRunner *Runner, signedMsg *Signe
 		return errors.Wrap(err, "could not reconstruct randao sig")
 	}
 
-	duty := dutyRunner.CurrentDuty
+	duty := dutyRunner.State.StartingDuty
 
 	// get block data
 	blk, err := v.Beacon.GetBeaconBlock(duty.Slot, duty.CommitteeIndex, v.Share.Graffiti, fullSig)
@@ -226,7 +226,7 @@ func (v *Validator) processSelectionProofPartialSig(dutyRunner *Runner, signedMs
 			return errors.Wrap(err, "could not reconstruct selection proof sig")
 		}
 
-		duty := dutyRunner.CurrentDuty
+		duty := dutyRunner.State.StartingDuty
 
 		// TODO waitToSlotTwoThirds
 
@@ -262,7 +262,7 @@ func (v *Validator) processContributionProofPartialSig(dutyRunner *Runner, signe
 
 	// TODO - what happens if we get quorum multiple times?
 
-	duty := dutyRunner.CurrentDuty
+	duty := dutyRunner.State.StartingDuty
 	input := &types.ConsensusData{
 		Duty:                      duty,
 		SyncCommitteeContribution: make(map[phase0.BLSSignature]*altair.SyncCommitteeContribution),
@@ -285,7 +285,7 @@ func (v *Validator) processContributionProofPartialSig(dutyRunner *Runner, signe
 
 		// fetch sync committee contribution
 		subnet, err := v.Beacon.SyncCommitteeSubnetID(index)
-		contribution, err := v.Beacon.GetSyncCommitteeContribution(duty.Slot, subnet, dutyRunner.CurrentDuty.PubKey)
+		contribution, err := v.Beacon.GetSyncCommitteeContribution(duty.Slot, subnet, dutyRunner.State.StartingDuty.PubKey)
 		if err != nil {
 			// can still continue, no need to fail
 			continue

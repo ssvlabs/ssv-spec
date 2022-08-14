@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// MultiSigningRootQuorum tests processing randao msg with the wrong signing root
-func MultiSigningRootQuorum() *tests.MsgProcessingSpecTest {
+// WrongRandaoRoot tests processing randao msg with the wrong signing root
+func WrongRandaoRoot() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
@@ -21,10 +21,10 @@ func MultiSigningRootQuorum() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "85966227e9f1ef54c2d3a3a495dfa75fbdb57b2fd5d374e0f514b1d7ddfc7b45",
+		PostDutyRunnerStateRoot: "9ffe08b74a87f4c5395b7a3978b7be6f45709cec0b924eac6fb5543bc621a1c4",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
-		ExpectedError: "dd",
+		ExpectedError: "failed processing randao message: invalid randao message: wrong randao signing root",
 	}
 }

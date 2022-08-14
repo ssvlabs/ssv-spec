@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongRandaoSig tests an invalid randao sig over root
-func WrongRandaoSig() *tests.MsgProcessingSpecTest {
+// WrongRandaoSigner tests an invalid randao sig over root
+func WrongRandaoSigner() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
@@ -19,11 +19,11 @@ func WrongRandaoSig() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao invalid randao sig",
+		Name:                    "randao wrong randao signer",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "4b5855e0dda37e51343c6265bd2d188af39e1ef74e4d3f57d5b75b736c200622",
+		PostDutyRunnerStateRoot: "9ffe08b74a87f4c5395b7a3978b7be6f45709cec0b924eac6fb5543bc621a1c4",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},

@@ -112,7 +112,7 @@ func SevenOperators() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "12d6076faa90ff67726f22b905be649be9b3ec6efb92c8c2e2a29f120a469a81",
+		PostDutyRunnerStateRoot: "6a42fc9384226a06835027bb71192675898b2e8aaf23ff5a73d7228b00900382",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusContributionProofMsg(testingutils.Testing7SharesSet().Shares[1], 1),
 			testingutils.PostConsensusSyncCommitteeContributionMsg(testingutils.Testing7SharesSet().Shares[1], 1, testingutils.Testing7SharesSet()),

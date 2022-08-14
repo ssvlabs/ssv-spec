@@ -29,7 +29,7 @@ func Valid13Quorum() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "d8690533dd879be2f359797a2fbfce0218b85bcc1fb35cc14c5acb1776999c3b",
+		PostDutyRunnerStateRoot: "3fd0020a7711c9d16a723766de18afa0064eccbce9b28f7516eb59d40ad248af",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},

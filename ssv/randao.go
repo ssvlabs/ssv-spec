@@ -64,11 +64,7 @@ func (dr *Runner) ProcessRandaoMessage(signedMsg *SignedPartialSignatureMessage)
 
 // validateRandaoMsg returns nil if randao message is valid
 func (dr *Runner) validateRandaoMsg(msg *SignedPartialSignatureMessage) error {
-	if dr.State.Finished {
-		return errors.New("runner finished")
-	}
-
-	if err := dr.validatePartialSigMsg(msg, dr.CurrentDuty.Slot); err != nil {
+	if err := dr.validatePartialSigMsg(msg, dr.State.StartingDuty.Slot); err != nil {
 		return err
 	}
 
@@ -77,7 +73,7 @@ func (dr *Runner) validateRandaoMsg(msg *SignedPartialSignatureMessage) error {
 	}
 
 	// verify radao signing root
-	epoch := dr.BeaconNetwork.EstimatedEpochAtSlot(dr.CurrentDuty.Slot)
+	epoch := dr.BeaconNetwork.EstimatedEpochAtSlot(dr.State.StartingDuty.Slot)
 	domain, err := dr.beacon.DomainData(epoch, types.DomainRandao)
 	if err != nil {
 		return errors.Wrap(err, "could not get randao domain")

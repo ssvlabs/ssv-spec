@@ -43,6 +43,7 @@ func (dr *Runner) ProcessPostConsensusMessage(signedMsg *SignedPartialSignatureM
 // SignDutyPostConsensus sets the Decided duty and partially signs the Decided data, returns a PartialSignatureMessage to be broadcasted or error
 func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signer types.KeyManager) (*PartialSignatureMessages, error) {
 	dr.State.DecidedValue = decidedValue
+	duty := decidedValue.Duty
 
 	switch dr.BeaconRoleType {
 	case types.BNRoleAttester:
@@ -97,7 +98,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 		ret := &PartialSignatureMessage{
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedAggregate.Signature[:],
-			Slot:             decidedValue.Duty.Slot,
+			Slot:             duty.Slot,
 			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
@@ -106,7 +107,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleSyncCommittee:
-		signed, r, err := signer.SignSyncCommitteeBlockRoot(decidedValue.Duty.Slot, decidedValue.SyncCommitteeBlockRoot, decidedValue.Duty.ValidatorIndex, dr.Share.SharePubKey)
+		signed, r, err := signer.SignSyncCommitteeBlockRoot(duty.Slot, decidedValue.SyncCommitteeBlockRoot, duty.ValidatorIndex, dr.Share.SharePubKey)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to sign aggregate and proof")
 		}
@@ -116,7 +117,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 		ret := &PartialSignatureMessage{
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedSyncCommittee.Signature[:],
-			Slot:             decidedValue.Duty.Slot,
+			Slot:             duty.Slot,
 			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
@@ -129,7 +130,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 		dr.State.SignedContributions = make(map[string]*altair.SignedContributionAndProof)
 		for proof, c := range decidedValue.SyncCommitteeContribution {
 			contribAndProof := &altair.ContributionAndProof{
-				AggregatorIndex: dr.CurrentDuty.ValidatorIndex,
+				AggregatorIndex: duty.ValidatorIndex,
 				Contribution:    c,
 				SelectionProof:  proof,
 			}
@@ -143,7 +144,7 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			m := &PartialSignatureMessage{
 				SigningRoot:      r,
 				PartialSignature: signed.Signature[:],
-				Slot:             decidedValue.Duty.Slot,
+				Slot:             duty.Slot,
 				Signer:           dr.Share.OperatorID,
 			}
 			dr.State.PostConsensusPartialSig.AddSignature(m)

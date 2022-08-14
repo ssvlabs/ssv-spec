@@ -48,6 +48,7 @@ func (dr *Runner) ProcessContributionProofsMessage(signedMsg *SignedPartialSigna
 			return false, nil, errors.Wrap(err, "could not add partial contribution proof signature")
 		}
 		// TODO need to check roots are unique and not overriding.. we are getting multiple messages here
+		// TODO how do we validate index is for the actual signing root?
 		dr.State.ContributionSubCommitteeIndexes[hex.EncodeToString(msg.SigningRoot)] = msg.MetaData.ContributionSubCommitteeIndex
 
 		if prevQuorum {
@@ -66,5 +67,5 @@ func (dr *Runner) ProcessContributionProofsMessage(signedMsg *SignedPartialSigna
 
 // validateRandaoMsg returns true if it can process selection proof message, false if not
 func (dr *Runner) canProcessContributionProofMsg(msg *SignedPartialSignatureMessage) error {
-	return dr.validatePartialSigMsg(msg, dr.CurrentDuty.Slot)
+	return dr.validatePartialSigMsg(msg, dr.State.StartingDuty.Slot)
 }

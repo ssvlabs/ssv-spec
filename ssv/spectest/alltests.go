@@ -18,14 +18,20 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	randao.WrongSigner(),
+	randao.UnknownRandaoSigner(),
+	randao.UnknownSigner(),
+	randao.WrongRandaoSigner(),
+	randao.WrongRandaoRoot(),
+	randao.MsgInvalid(),
+	randao.DutyFinished(),
+	randao.NoRunningDuty(),
+	randao.PostQuorumMsg(),
 	randao.ValidQuorum(),
 	randao.Valid7Quorum(),
 	randao.Valid10Quorum(),
 	randao.Valid13Quorum(),
-	randao.WrongSig(),
 	randao.WrongSlot(),
-	randao.WrongRandaoSig(),
-	randao.SecondTimeQuorum(),
 	randao.MultiSigs(),
 	randao.NoSigs(),
 	randao.DuplicateMsgs(),

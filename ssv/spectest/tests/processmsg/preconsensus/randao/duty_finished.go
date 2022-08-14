@@ -1,14 +1,15 @@
 package randao
 
 import (
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// NoRunningDuty tests processing a randao msg when no duty is running in the runner
-func NoRunningDuty() *tests.MsgProcessingSpecTest {
+// DutyFinished tests processing a randao msg when the duty is already completed
+func DutyFinished() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
@@ -16,17 +17,73 @@ func NoRunningDuty() *tests.MsgProcessingSpecTest {
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
+
+		testingutils.SSVMsgProposer(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
+			MsgType:    qbft.ProposalMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      qbft.FirstRound,
+			Identifier: testingutils.ProposerMsgID,
+			Data:       testingutils.ProposalDataBytes(testingutils.TestProposerConsensusDataByts, nil, nil),
+		}), nil),
+		testingutils.SSVMsgProposer(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
+			MsgType:    qbft.PrepareMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      qbft.FirstRound,
+			Identifier: testingutils.ProposerMsgID,
+			Data:       testingutils.PrepareDataBytes(testingutils.TestProposerConsensusDataByts),
+		}), nil),
+		testingutils.SSVMsgProposer(testingutils.SignQBFTMsg(ks.Shares[2], 2, &qbft.Message{
+			MsgType:    qbft.PrepareMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      qbft.FirstRound,
+			Identifier: testingutils.ProposerMsgID,
+			Data:       testingutils.PrepareDataBytes(testingutils.TestProposerConsensusDataByts),
+		}), nil),
+		testingutils.SSVMsgProposer(testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
+			MsgType:    qbft.PrepareMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      qbft.FirstRound,
+			Identifier: testingutils.ProposerMsgID,
+			Data:       testingutils.PrepareDataBytes(testingutils.TestProposerConsensusDataByts),
+		}), nil),
+		testingutils.SSVMsgProposer(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
+			MsgType:    qbft.CommitMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      qbft.FirstRound,
+			Identifier: testingutils.ProposerMsgID,
+			Data:       testingutils.CommitDataBytes(testingutils.TestProposerConsensusDataByts),
+		}), nil),
+		testingutils.SSVMsgProposer(testingutils.SignQBFTMsg(ks.Shares[2], 2, &qbft.Message{
+			MsgType:    qbft.CommitMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      qbft.FirstRound,
+			Identifier: testingutils.ProposerMsgID,
+			Data:       testingutils.CommitDataBytes(testingutils.TestProposerConsensusDataByts),
+		}), nil),
+		testingutils.SSVMsgProposer(testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
+			MsgType:    qbft.CommitMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      qbft.FirstRound,
+			Identifier: testingutils.ProposerMsgID,
+			Data:       testingutils.CommitDataBytes(testingutils.TestProposerConsensusDataByts),
+		}), nil),
+
+		testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+		testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
+		testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[4], 4)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao valid quorum",
+		Name:                    "randao duty finished",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "e247365aee734af95a0828c300ade0e544574beebb441f27c00f2be46900cfc8",
-		DontStartDuty:           true,
+		PostDutyRunnerStateRoot: "3df7b386c9813ad3351f7dd340cee0cd01a058c4cf71ac790abece70680eb2ab",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
-			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+			testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+			testingutils.PostConsensusProposerMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 		},
 		ExpectedError: "Message invalid: no running duty",
 	}

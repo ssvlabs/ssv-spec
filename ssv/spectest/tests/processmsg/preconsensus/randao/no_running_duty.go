@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ValidQuorum tests a valid quorum of partial randao sig msg
-func ValidQuorum() *tests.MsgProcessingSpecTest {
+// NoRunningDuty tests processing a randao msg when no duty is running in the runner
+func NoRunningDuty() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
@@ -19,13 +19,15 @@ func ValidQuorum() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao valid quorum",
+		Name:                    "randao no running duty",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "e247365aee734af95a0828c300ade0e544574beebb441f27c00f2be46900cfc8",
+		PostDutyRunnerStateRoot: "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+		DontStartDuty:           true,
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
+		ExpectedError: "Message invalid: no running duty",
 	}
 }

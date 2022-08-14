@@ -233,6 +233,31 @@ var PreConsensusRandaoNoMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.
 	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 0)
 }
 
+var PreConsensusRandaoDifferentSignerMsg = func(msgSigner, randaoSigner *bls.SecretKey, msgSignerID, randaoSignerID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	signer := NewTestingKeyManager()
+	beacon := NewTestingBeaconNode()
+	r, _ := beacon.DomainData(TestingDutyEpoch, types.DomainRandao)
+	signed, root, _ := signer.SignRandaoReveal(TestingDutyEpoch, r, randaoSigner.GetPublicKey().Serialize())
+
+	msg := ssv.PartialSignatureMessages{
+		Type: ssv.RandaoPartialSig,
+		Messages: []*ssv.PartialSignatureMessage{
+			{
+				Slot:             TestingDutySlot,
+				PartialSignature: signed[:],
+				SigningRoot:      root,
+				Signer:           randaoSignerID,
+			},
+		},
+	}
+	sig, _ := signer.SignRoot(msg, types.PartialSignatureType, msgSigner.GetPublicKey().Serialize())
+	return &ssv.SignedPartialSignatureMessage{
+		Message:   msg,
+		Signature: sig,
+		Signer:    msgSignerID,
+	}
+}
+
 var randaoMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,

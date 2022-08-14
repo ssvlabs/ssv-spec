@@ -25,7 +25,7 @@ func MsgNotBelonging() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Messages:                msgs,
 		Duty:                    testingutils.TestingAttesterDuty,
-		PostDutyRunnerStateRoot: "0485e75de7b087b605e2121d505414d56f46a5368786b9429762ea271f593e2b",
+		PostDutyRunnerStateRoot: "79338fd23b14bee97cb0356da5bf6c6c30ff517fe62fc4dd32fcb440d2725284",
 		ExpectedError:           "Message invalid: msg ID doesn't match validator ID",
 		OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 	}

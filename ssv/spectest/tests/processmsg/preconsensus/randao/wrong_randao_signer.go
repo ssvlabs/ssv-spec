@@ -7,17 +7,17 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongSigner tests wrong SignedPostConsensusMessage signer
-func WrongSigner() *tests.MsgProcessingSpecTest {
+// UnknownRandaoSigner tests unknown PostConsensusMessage root signer
+func UnknownRandaoSigner() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
 	msgs := []*types.SSVMessage{
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 2)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], testingutils.Testing7SharesSet().Shares[5], 1, 5)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao invalid sig",
+		Name:                    "randao unknown randao signer",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
@@ -25,6 +25,6 @@ func WrongSigner() *tests.MsgProcessingSpecTest {
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
-		ExpectedError: "failed processing randao message: invalid randao message: failed to verify PartialSignature: failed to verify signature",
+		ExpectedError: "failed processing randao message: invalid randao message: could not verify Beacon partial Signature: Beacon partial Signature Signer not found",
 	}
 }

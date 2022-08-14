@@ -23,6 +23,8 @@ type State struct {
 	// consensus
 	RunningInstance *qbft.Instance
 	DecidedValue    *types.ConsensusData
+	// CurrentDuty is the duty the node pulled locally from the beacon node, might be different from decided duty
+	StartingDuty *types.Duty
 
 	// post consensus signed objects
 	SignedAttestation   *spec.Attestation
@@ -35,13 +37,14 @@ type State struct {
 	Finished bool // Finished marked true when there is a full successful cycle (pre, consensus and post) with quorum
 }
 
-func NewDutyExecutionState(quorum uint64) *State {
+func NewDutyExecutionState(quorum uint64, duty *types.Duty) *State {
 	return &State{
 		SelectionProofPartialSig:        NewPartialSigContainer(quorum),
 		RandaoPartialSig:                NewPartialSigContainer(quorum),
 		PostConsensusPartialSig:         NewPartialSigContainer(quorum),
 		ContributionProofs:              NewPartialSigContainer(quorum),
 		ContributionSubCommitteeIndexes: make(map[string]uint64),
+		StartingDuty:                    duty,
 		Finished:                        false,
 	}
 }

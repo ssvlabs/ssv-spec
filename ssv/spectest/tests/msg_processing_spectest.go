@@ -16,6 +16,7 @@ type MsgProcessingSpecTest struct {
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
 	OutputMessages          []*ssv.SignedPartialSignatureMessage
+	DontStartDuty           bool // if set to true will not start a duty for the runner
 	ExpectedError           string
 }
 
@@ -27,7 +28,10 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	v := testingutils.BaseValidator(keySetForShare(test.Runner.Share))
 	v.DutyRunners[test.Runner.BeaconRoleType] = test.Runner
 
-	lastErr := v.StartDuty(test.Duty)
+	var lastErr error
+	if !test.DontStartDuty {
+		lastErr = v.StartDuty(test.Duty)
+	}
 	for _, msg := range test.Messages {
 		err := v.ProcessMessage(msg)
 		if err != nil {
