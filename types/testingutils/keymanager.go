@@ -93,7 +93,7 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 // SignRandaoReveal signs randao
 func (km *testingKeyManager) SignRandaoReveal(epoch spec.Epoch, domain spec.Domain, pk []byte) (types.Signature, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
-		r, err := types.ComputeETHSigningRoot(SSZUint64(epoch), domain)
+		r, err := types.ComputeETHSigningRoot(types.SSZUint64(epoch), domain)
 		if err != nil {
 			return nil, nil, errors.Wrap(err, "could not compute signing root")
 		}

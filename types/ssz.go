@@ -1,4 +1,4 @@
-package testingutils
+package types
 
 import (
 	"encoding/binary"

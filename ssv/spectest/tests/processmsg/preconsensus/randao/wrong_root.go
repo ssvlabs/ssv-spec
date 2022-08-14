@@ -7,26 +7,24 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// DifferentRootsNoQuorum tests a processing msgs with different roots which should not achieve quorum
-func DifferentRootsNoQuorum() *tests.MsgProcessingSpecTest {
+// MultiSigningRootQuorum tests processing randao msg with the wrong signing root
+func MultiSigningRootQuorum() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
 	msgs := []*types.SSVMessage{
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[1], 1)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[3], 3)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao different roots no quorum",
+		Name:                    "randao wrong root",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "2ec6b6e8d991a3f229065de741b1f139ad2d38aa4fc55e1f3e3e0efab02611df",
+		PostDutyRunnerStateRoot: "85966227e9f1ef54c2d3a3a495dfa75fbdb57b2fd5d374e0f514b1d7ddfc7b45",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
+		ExpectedError: "dd",
 	}
 }

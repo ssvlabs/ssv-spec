@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"bytes"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -63,6 +64,10 @@ func (dr *Runner) ProcessRandaoMessage(signedMsg *SignedPartialSignatureMessage)
 
 // validateRandaoMsg returns nil if randao message is valid
 func (dr *Runner) validateRandaoMsg(msg *SignedPartialSignatureMessage) error {
+	if dr.State.Finished {
+		return errors.New("runner finished")
+	}
+
 	if err := dr.validatePartialSigMsg(msg, dr.CurrentDuty.Slot); err != nil {
 		return err
 	}
@@ -71,7 +76,16 @@ func (dr *Runner) validateRandaoMsg(msg *SignedPartialSignatureMessage) error {
 		return errors.New("expecting 1 radano partial sig")
 	}
 
-	panic("verify beacon signing root is what we expect")
+	// verify radao signing root
+	epoch := dr.BeaconNetwork.EstimatedEpochAtSlot(dr.CurrentDuty.Slot)
+	domain, err := dr.beacon.DomainData(epoch, types.DomainRandao)
+	if err != nil {
+		return errors.Wrap(err, "could not get randao domain")
+	}
+	r, err := types.ComputeETHSigningRoot(types.SSZUint64(epoch), domain)
+	if !bytes.Equal(r[:], msg.Message.Messages[0].SigningRoot) {
+		return errors.New("wrong randao signing root")
+	}
 
 	return nil
 }

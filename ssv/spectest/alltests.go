@@ -29,9 +29,6 @@ var AllTests = []SpecTest{
 	randao.MultiSigs(),
 	randao.NoSigs(),
 	randao.DuplicateMsgs(),
-	randao.DuplicateMsgsDifferentRoots(),
-	randao.DifferentRootsNoQuorum(),
-	randao.DifferentRootsQuorum(),
 
 	//postconsensus.ValidMessage(),
 	//postconsensus.InvaliSignature(),
@@ -82,7 +79,6 @@ var AllTests = []SpecTest{
 
 	proposer.HappyFlow(),
 	proposer.SevenOperators(),
-	proposer.DifferentRandaoThanSelf(),
 
 	aggregator.HappyFlow(),
 	aggregator.SevenOperators(),
