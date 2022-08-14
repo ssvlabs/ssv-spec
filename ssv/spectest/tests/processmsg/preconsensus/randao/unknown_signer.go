@@ -7,26 +7,24 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// SecondTimeQuorum tests a 4th randao sig after quorum achieved
-func SecondTimeQuorum() *tests.MsgProcessingSpecTest {
+// WrongSigner tests wrong SignedPostConsensusMessage signer
+func WrongSigner() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.ProposerRunner(ks)
 
 	msgs := []*types.SSVMessage{
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
-		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[4], 4)),
+		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 2)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:                    "randao second quorum",
+		Name:                    "randao invalid sig",
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "c139428853301081101b28c0102d0d4033a50c0c85e305c6f5c20382fb53b393",
+		PostDutyRunnerStateRoot: "9ffe08b74a87f4c5395b7a3978b7be6f45709cec0b924eac6fb5543bc621a1c4",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
+		ExpectedError: "failed processing randao message: invalid randao message: failed to verify PartialSignature: failed to verify signature",
 	}
 }
