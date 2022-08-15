@@ -18,6 +18,7 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	randao.BaseTests(),
 	randao.WrongSigner(),
 	randao.UnknownRandaoSigner(),
 	randao.UnknownSigner(),
