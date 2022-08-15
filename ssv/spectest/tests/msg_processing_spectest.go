@@ -11,7 +11,7 @@ import (
 
 type MsgProcessingSpecTest struct {
 	Name                    string
-	Runner                  *ssv.Runner
+	Runner                  ssv.Runner
 	Duty                    *types.Duty
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
@@ -25,8 +25,9 @@ func (test *MsgProcessingSpecTest) TestName() string {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	v := testingutils.BaseValidator(keySetForShare(test.Runner.Share))
-	v.DutyRunners[test.Runner.BeaconRoleType] = test.Runner
+	v := testingutils.BaseValidator(keySetForShare(test.Runner.GetShare()))
+	v.DutyRunners[test.Runner.GetBeaconRole()] = test.Runner
+	v.Network = test.Runner.GetNetwork()
 
 	var lastErr error
 	if !test.DontStartDuty {
@@ -47,6 +48,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {
@@ -73,6 +75,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 				partialSigMsg1 := msg1.Message.Messages[i]
 				r1, err := partialSigMsg1.GetRoot()
 				require.NoError(t, err)
+
 				if _, found := roots[hex.EncodeToString(r1)]; !found {
 					roots[hex.EncodeToString(r1)] = ""
 				} else {
@@ -80,7 +83,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 				}
 			}
 			for k, v := range roots {
-				require.EqualValues(t, k, v)
+				require.EqualValues(t, k, v, "missing output msg")
 			}
 
 			index++
@@ -90,7 +93,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 
 	// post root
-	postRoot, err := test.Runner.State.GetRoot()
+	postRoot, err := test.Runner.GetState().GetRoot()
 	require.NoError(t, err)
 
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))

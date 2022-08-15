@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
@@ -44,7 +45,7 @@ func (cm *ContributionsMap) UnmarshalJSON(input []byte) error {
 type ConsensusData struct {
 	Duty                   *Duty
 	AttestationData        *phase0.AttestationData
-	BlockData              *altair.BeaconBlock
+	BlockData              *bellatrix.BeaconBlock
 	AggregateAndProof      *phase0.AggregateAndProof
 	SyncCommitteeBlockRoot phase0.Root
 	// SyncCommitteeContribution map holds as key the selection proof for the contribution

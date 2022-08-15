@@ -25,9 +25,7 @@ func NoRunningDuty() *tests.MsgProcessingSpecTest {
 		Messages:                msgs,
 		PostDutyRunnerStateRoot: "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
 		DontStartDuty:           true,
-		OutputMessages: []*ssv.SignedPartialSignatureMessage{
-			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-		},
-		ExpectedError: "Message invalid: no running duty",
+		OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+		ExpectedError:           "Message invalid: no running duty",
 	}
 }

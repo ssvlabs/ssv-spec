@@ -55,10 +55,6 @@ func (msgs PartialSignatureMessages) Validate() error {
 		if err := m.Validate(); err != nil {
 			return errors.Wrap(err, "message invalid")
 		}
-
-		if msgs.Type == ContributionProofs && m.MetaData == nil {
-			return errors.New("metadata nil for contribution proofs")
-		}
 	}
 	return nil
 }
@@ -73,7 +69,6 @@ type PartialSignatureMessage struct {
 	PartialSignature []byte    // The Beacon chain partial Signature for a duty
 	SigningRoot      []byte    // the root signed in PartialSignature
 	Signer           types.OperatorID
-	MetaData         *PartialSignatureMetaData
 }
 
 // Encode returns a msg encoded bytes or error
