@@ -59,6 +59,9 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 
 // ProcessMessage processes network Messages of all types
 func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
+	if msg.MsgType != types.DKGMsgType {
+		return errors.New("not a DKGMsgType")
+	}
 	signedMsg := &SignedMessage{}
 	if err := signedMsg.Decode(msg.GetData()); err != nil {
 		return errors.Wrap(err, "could not get dkg Message from network Messages")
@@ -71,14 +74,8 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 	switch signedMsg.Message.MsgType {
 	case InitMsgType:
 		return n.startNewDKGMsg(signedMsg)
-	case ProtocolMsgType:
-		return n.processDKGMsg(signedMsg)
-	case DepositDataMsgType:
-		return n.processDKGMsg(signedMsg)
-	case OutputMsgType:
-		return n.processDKGMsg(signedMsg)
 	default:
-		return errors.New("unknown msg type")
+		return n.processDKGMsg(signedMsg)
 	}
 }
 
