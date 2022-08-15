@@ -6,16 +6,14 @@ import (
 )
 
 type TestingNetwork struct {
-	BroadcastedMsgs    []*types.SSVMessage
-	BroadcastedDKGMsgs []*dkg.SignedMessage // GLNOTE: Should we use two fields or should make a new TestingNetwork instance?
-	Outputs            map[types.OperatorID]*dkg.SignedOutput
+	BroadcastedMsgs []*types.SSVMessage
+	DKGOutputs      map[types.OperatorID]*dkg.SignedOutput
 }
 
 func NewTestingNetwork() *TestingNetwork {
 	return &TestingNetwork{
-		BroadcastedMsgs:    make([]*types.SSVMessage, 0),
-		BroadcastedDKGMsgs: make([]*dkg.SignedMessage, 0),
-		Outputs:            make(map[types.OperatorID]*dkg.SignedOutput, 0),
+		BroadcastedMsgs: make([]*types.SSVMessage, 0),
+		DKGOutputs:      make(map[types.OperatorID]*dkg.SignedOutput, 0),
 	}
 }
 
@@ -31,7 +29,7 @@ func (net *TestingNetwork) BroadcastDecided(msg types.Encoder) error {
 // StreamDKGOutput will stream to any subscriber the result of the DKG
 func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.SignedOutput) error {
 	for id, signedOutput := range output {
-		net.Outputs[id] = signedOutput
+		net.DKGOutputs[id] = signedOutput
 	}
 
 	return nil
@@ -39,6 +37,14 @@ func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.Sign
 
 // BroadcastDKGMessage will broadcast a msg to the dkg network
 func (net *TestingNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {
-	net.BroadcastedDKGMsgs = append(net.BroadcastedDKGMsgs, msg)
+	data, err := msg.Encode()
+	if err != nil {
+		return err
+	}
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, &types.SSVMessage{
+		MsgType: types.DKGMsgType,
+		MsgID:   types.MessageID{}, // TODO: what should we use for the MsgID?
+		Data:    data,
+	})
 	return nil
 }

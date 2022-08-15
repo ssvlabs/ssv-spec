@@ -45,17 +45,21 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 
 	// test output message
-	broadcastedMsgs := node.GetConfig().Network.(*testingutils.TestingNetwork).BroadcastedDKGMsgs
+	broadcastedMsgs := node.GetConfig().Network.(*testingutils.TestingNetwork).BroadcastedMsgs
 	if len(test.OutputMessages) > 0 {
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 
 		for i, msg := range test.OutputMessages {
+			bMsg := broadcastedMsgs[i]
+			require.Equal(t, types.DKGMsgType, bMsg.MsgType)
+			sMsg := &dkg.SignedMessage{}
+			sMsg.Decode(bMsg.Data)
 			r1, _ := msg.GetRoot()
-			r2, _ := broadcastedMsgs[i].GetRoot()
+			r2, _ := sMsg.GetRoot()
 			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
 		}
 	}
-	streamed := node.GetConfig().Network.(*testingutils.TestingNetwork).Outputs
+	streamed := node.GetConfig().Network.(*testingutils.TestingNetwork).DKGOutputs
 	if len(test.Output) > 0 {
 		require.Len(t, streamed, len(test.Output))
 		for id, output := range test.Output {
