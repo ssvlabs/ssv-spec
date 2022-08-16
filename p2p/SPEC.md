@@ -457,20 +457,9 @@ In addition, the following are achieved as well:
 - subscriptions metadata helps to get liveliness information of nodes
 - pubsub scoring enables to prune bad/malicious peers based on network behavior and application-specific rules
 
-The following sections details on how pubsub is used in `SSV.network`:
+The following sections details on how pubsub is used in `SSV.network`.
+In addition, parameters configuration is described [here](./CONFIG.md#pubsub-parameters).
 
-
-#### Message ID
-
-`msg-id` is a function that calculates the IDs of messages.
-It reduces the overhead of duplicated messages as the pubsub router ignores messages with known ID. \
-The default `msg-id` function uses the `sender` + `msg_seq` which we don't track,
-and therefore creates multiple IDs for the same logical message, causing it to be processed more than once.
-
-See [pubsub spec > message identification](https://github.com/libp2p/specs/blob/master/pubsub/README.md#message-identification) for more details.
-
-The `msg-id` function that is used in `SSV.Network` creates the ID based on the message content. \
-See [Config > Msg ID](./CONFIG.md#msg-id):
 
 #### Pubsub Scoring
 
@@ -483,42 +472,108 @@ penalized or even ignored if the score drops too low. \
 See [this section](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#score-thresholds)
 for more details regards the different thresholds. \
 
-Thresholds values can be found in the [configuration doc](./CONFIG.md#gossipsub-scoring-thresholds)
+Thresholds values are detailed in the [configuration doc](./CONFIG.md#gossipsub-scoring-thresholds)
 
-**NOTE** scoring is turned off by default until we'll run a full validation pipeline in topic validation
 
-#### Topic Message Validation
+#### Pubsub Extended Validators
 
-Basic message validation is applied on the topic level,
-each incoming message will be validated to avoid relaying bad messages,
-and affecting peers scores.
+Message validation is applied on the topic level. 
+Each incoming message will be validated to avoid relaying bad messages,
+which could affect peer score.
 
 [Extended Validators](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#extended-validators)
 allows the application to aid in the gossipsub peer-scoring scheme.
-We utilize `ACCEPT`, `REJECT`, and `IGNORE` as the result of the validation,
-this will affect the scoring of the sending peers.
+We utilize `ACCEPT`, `REJECT`, and `IGNORE` as the result of the validation.
 
-The following validations will take place as part of message validation:
+<br />
 
-- subnet check will `REJECT` the given message if it doesn't belong to the topic
-- message structure check will:
-    - `REJECT` messages with corrupted or invalid structure
-    - `REJECT` empty messages
+### Validation and Scoring
 
-As invalid messages might pass this light validation, signing policy of pubsub is turned on 
-to ensure integrity of message senders.
+**TODO:** complete
 
-**NOTE** In the future the plan is to run full validation pipeline and avoid signing/verification in the pubsub router level.
-Overall that should ease up on the node's resource consumption.
+**NOTE** we try to follow the general approach used by
+[ETH topic validators](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#global-topics)
 
-#### Subscription Filter
+#### Base Validation
 
-[SubscriptionFilter](https://github.com/libp2p/go-libp2p-pubsub/blob/master/subscription_filter.go)
-is used to apply access control for topics. \
-It is invoked whenever the peer wants to subscribe to some topic,
-it helps in case other peers are suggesting topics that we don't want to join,
-e.g. if we are already subscribed to a large number of topics.
+This validation pipeline is the baseline and will be applied for all pubsub topics. It consists of the following rules:
 
+- `ACCEPT` message from my peer
+- `REJECT` empty message
+- `REJECT` message that was sent on the wrong topic
+- `REJECT` message with corrupted or invalid structure
+
+**NOTE** the decoded message reference will be saved (`pubsub.Message.ValidatorData`) for use by other components.
+
+**NOTE** As invalid messages might pass the base validation, signing policy of pubsub is turned on 
+to ensure authenticity of message senders. Once a more complete validation is taking place we can reduce
+the signing policy as it becomes redundant.
+
+#### Partial Signature Message Validation
+
+- `REJECT` message with wrong internal type (**TBD**)
+- `REJECT` validate structure and wrong value sizes (**TBD**)
+- `REJECT` message with invalid signature (BLS)
+
+#### Decided Message Validation
+
+- `REJECT` message with wrong internal type (must be `commit`)
+- `REJECT` older message by checking height (TBD `IGNORE`?)
+- `REJECT` validate quorum
+- `REJECT` message with invalid signature (BLS)
+- 
+#### Consensus Message Validation
+
+For all conesnsus message types, we perform the following:
+
+- `REJECT` message with wrong internal identifier
+- `REJECT` message with wrong internal type
+
+In addition, the following rules will be applied according to the message type:
+
+#### Pre-prepare Message
+
+- `REJECT` older message by checking height (TBD `IGNORE`?)
+- `REJECT` message with wrong round leader
+- `REJECT` message with invalid signature (BLS)
+
+**TBD** QBFT instance level:
+- check older round
+- justify pre-prepare
+
+#### Prepare Message
+
+- `REJECT` message with wrong identifier
+- `REJECT` older message by checking height (TBD `IGNORE`?)
+- `REJECT` message with invalid signature (BLS)
+
+Depends on **QBFT instance**:
+- check older round
+- check quorum
+
+#### Commit Message
+
+- `REJECT` message with wrong identifier
+- `REJECT` older message by checking current height, 
+diff must be greater than `1` to allow late commits propagation
+- `REJECT` message with invalid signature (BLS)
+
+Depends on **QBFT instance**:
+- check older round
+- check quorum
+
+#### Change Round Message
+
+- `REJECT` message with wrong identifier
+- `REJECT` older message by checking height (TBD `IGNORE`?)
+- `REJECT` message with invalid signature (BLS)
+
+Depends on **QBFT instance**:
+- check older round
+- check partial quorum
+- check quorum
+
+<br />
 <br />
 
 ### Subnets
@@ -699,4 +754,4 @@ See [network forks](./FORKS.md) for more information.
 
 Libp2p offers a [circuit relay](https://github.com/libp2p/specs/blob/master/relay/circuit-v2.md) 
 component to boost reachability in the network. \
-Currently used by ETH2 nodes, will be considered in the future for `SSV`.
+Currently used by ETH2 nodes, TBD in the future.

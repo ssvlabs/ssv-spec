@@ -112,7 +112,14 @@ Also depends on encoding changed to `SSZ` and compression as well (`snappy` or `
 
 ### Msg ID
 
-A function that calculates an identifier for messages, to be used across pubsub components.
+A function that calculates the IDs of messages.
+It reduces the overhead of duplicated messages as the pubsub router ignores messages with known ID. \
+The default `msg-id` function uses the `sender` + `msg_seq` which we don't track,
+and therefore creates multiple IDs for the same logical message, causing it to be processed more than once.
+
+See [pubsub spec > message identification](https://github.com/libp2p/specs/blob/master/pubsub/README.md#message-identification) for more details.
+
+The `msg-id` function that is used in `SSV.Network` creates the ID based on the message content.
 
 **Default Value (libp2p):** 
 ```go
