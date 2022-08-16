@@ -91,6 +91,13 @@ var DespositDataSigningRoot = func(keySet *TestKeySet, initMsg *dkg.Init) []byte
 	return root
 }
 
+func FakeEncryption(data []byte) []byte {
+	out := []byte("__fake_encrypted(")
+	out = append(out, data...)
+	out = append(out, []byte(")")...)
+	return out
+}
+
 func (ks *TestKeySet) KeyGenOutput(opId types.OperatorID) *dkg.KeyGenOutput {
 	opPks := make(map[types.OperatorID]*bls.PublicKey)
 	for id, share := range ks.Shares {
