@@ -268,10 +268,11 @@ Increased as we want messages to be sent in batches, to reduce the amount of req
 
 | Name | Description | Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
 |---   | ---  | ---                    | ---                 | ---                  |
-| `GossipThreshold` | below this threshold, gossip propagation is supressed | `-4000`  | `-4000`             | `-4000`              |
-| `PublishThreshold`| below this threshold, message publishing is supressed | `-8000`  | `-8000`             | `-8000`              |
-| `GraylistThreshold`| below this threshold, message processing is supressed altogether | `-16000`| `-16000`            | `-16000`             |
-| `AcceptPXThreshold`| below this threshold, Peer Exchange will be ignored | `100`    | `100`              | `100`                |
-| `OpportunisticGraftThreshold`| the median mesh score threshold before triggering opportunistic grafting | `5`  | `5`          | `5`                  |
+| `GossipThreshold` | below this threshold, gossip propagation is supressed | `-4000`   | `-4000` | `-4000` |
+| `PublishThreshold`| below this threshold, message publishing is supressed | `-8000`   | `-8000` | `-8000` |
+| `GraylistThreshold`| below this threshold, message processing is supressed altogether | `-16000`| `-16000` | `-16000` |
+| `AcceptPXThreshold`| below this threshold, Peer Exchange will be ignored | `100`      | `100` | `100` |
+| `OpportunisticGraftThreshold`| the median mesh score threshold before triggering opportunistic grafting | `5`  | `5` | `5` |
+
 
 **TODO: Add Scoring Params**
