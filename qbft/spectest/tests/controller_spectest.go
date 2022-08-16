@@ -92,18 +92,20 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 			require.Greater(t, len(broadcastedMsgs), 0)
 			found := false
 			for _, msg := range broadcastedMsgs {
-				if msg.MsgType == types.SSVDecidedMsgType && bytes.Equal(identifier[:], msg.MsgID[:]) {
-					msg2 := &qbft.DecidedMessage{}
-					require.NoError(t, msg2.Decode(msg.Data))
-					r1, err := msg2.SignedMessage.GetRoot()
-					require.NoError(t, err)
+				if !bytes.Equal(identifier[:], msg.MsgID[:]) {
+					continue
+				}
 
-					if bytes.Equal(r1, r2) &&
-						reflect.DeepEqual(runData.SavedDecided.Signers, msg2.SignedMessage.Signers) &&
-						reflect.DeepEqual(runData.SavedDecided.Signature, msg2.SignedMessage.Signature) {
-						require.False(t, found)
-						found = true
-					}
+				msg1 := &qbft.SignedMessage{}
+				require.NoError(t, msg1.Decode(msg.Data))
+				r1, err := msg1.GetRoot()
+				require.NoError(t, err)
+
+				if bytes.Equal(r1, r2) &&
+					reflect.DeepEqual(runData.SavedDecided.Signers, msg1.Signers) &&
+					reflect.DeepEqual(runData.SavedDecided.Signature, msg1.Signature) {
+					require.False(t, found)
+					found = true
 				}
 			}
 			require.True(t, found)

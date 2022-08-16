@@ -8,7 +8,7 @@ import (
 )
 
 // DutyTypeWrong tests that a duty type == RoleTypeAttester
-func DutyTypeWrong() *tests.SpecTest {
+func DutyTypeWrong() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -42,7 +42,7 @@ func DutyTypeWrong() *tests.SpecTest {
 		}), nil),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "duty type is RoleTypeAttester",
 		Runner:                  dr,
 		Messages:                msgs,

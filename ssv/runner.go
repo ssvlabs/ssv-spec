@@ -16,11 +16,10 @@ type Runner struct {
 	BeaconNetwork  types.BeaconNetwork
 	Share          *types.Share
 	// State holds all relevant params for a full duty execution (consensus & post consensus)
-	State *State
-	// CurrentDuty is the current executing duty, changes once StartNewDuty is called
-	CurrentDuty    *types.Duty
+	State          *State
 	QBFTController *qbft.Controller
 	storage        Storage
+	beacon         BeaconNode
 	valCheck       qbft.ProposedValueCheckF
 }
 
@@ -30,6 +29,7 @@ func NewDutyRunner(
 	share *types.Share,
 	qbftController *qbft.Controller,
 	storage Storage,
+	beacon BeaconNode,
 	valCheck qbft.ProposedValueCheckF,
 ) *Runner {
 	return &Runner{
@@ -38,6 +38,7 @@ func NewDutyRunner(
 		Share:          share,
 		QBFTController: qbftController,
 		storage:        storage,
+		beacon:         beacon,
 		valCheck:       valCheck,
 	}
 }
@@ -46,8 +47,7 @@ func (dr *Runner) StartNewDuty(duty *types.Duty) error {
 	if err := dr.CanStartNewDuty(duty); err != nil {
 		return err
 	}
-	dr.CurrentDuty = duty
-	dr.State = NewDutyExecutionState(dr.Share.Quorum)
+	dr.State = NewDutyExecutionState(dr.Share.Quorum, duty)
 	return nil
 }
 
@@ -65,6 +65,14 @@ func (dr *Runner) CanStartNewDuty(duty *types.Duty) error {
 		}
 	}
 	return nil
+}
+
+// HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
+func (dr *Runner) HasRunningDuty() bool {
+	if dr.State == nil {
+		return false
+	}
+	return dr.State.Finished != true
 }
 
 // GetRoot returns the root used for signing and verification
@@ -96,13 +104,13 @@ func (dr *Runner) validatePartialSigMsg(signedMsg *SignedPartialSignatureMessage
 		return errors.Wrap(err, "failed to verify PartialSignature")
 	}
 
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		if slot != msg.Slot {
 			return errors.New("wrong slot")
 		}
 
 		if err := dr.verifyBeaconPartialSignature(msg); err != nil {
-			return errors.Wrap(err, "could not verify beacon partial Signature")
+			return errors.Wrap(err, "could not verify Beacon partial Signature")
 		}
 	}
 

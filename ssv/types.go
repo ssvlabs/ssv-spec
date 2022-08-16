@@ -69,6 +69,10 @@ type SyncCommitteeContributionCalls interface {
 	SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error
 }
 
+type DomainCalls interface {
+	DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error)
+}
+
 type BeaconNode interface {
 	// GetBeaconNetwork returns the beacon network the node is on
 	GetBeaconNetwork() types.BeaconNetwork
@@ -77,4 +81,5 @@ type BeaconNode interface {
 	AggregatorCalls
 	SyncCommitteeCalls
 	SyncCommitteeContributionCalls
+	DomainCalls
 }

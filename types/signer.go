@@ -30,14 +30,14 @@ var (
 
 type AttesterCalls interface {
 	// SignAttestation signs the given attestation
-	SignAttestation(data *spec.AttestationData, duty *Duty, pk []byte) (*spec.Attestation, []byte, error)
+	SignAttestation(data *spec.AttestationData, domain spec.Domain, duty *Duty, pk []byte) (*spec.Attestation, []byte, error)
 	// IsAttestationSlashable returns error if attestation is slashable
 	IsAttestationSlashable(data *spec.AttestationData) error
 }
 
 type ProposerCalls interface {
 	// SignRandaoReveal signs randao
-	SignRandaoReveal(epoch spec.Epoch, pk []byte) (Signature, []byte, error)
+	SignRandaoReveal(epoch spec.Epoch, domain spec.Domain, pk []byte) (Signature, []byte, error)
 	// IsBeaconBlockSlashable returns true if the given block is slashable
 	IsBeaconBlockSlashable(block *altair.BeaconBlock) error
 	// SignBeaconBlock signs the given beacon block

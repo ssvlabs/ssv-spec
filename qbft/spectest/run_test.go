@@ -87,16 +87,6 @@ func TestJson(t *testing.T) {
 			t.Run(typedTest.TestName(), func(t *testing.T) {
 				typedTest.Run(t)
 			})
-		case reflect.TypeOf(&tests2.DecidedMsgSpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &tests2.DecidedMsgSpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			tests[testName] = typedTest
-			t.Run(typedTest.TestName(), func(t *testing.T) {
-				typedTest.Run(t)
-			})
 		case reflect.TypeOf(&tests2.RoundRobinSpecTest{}).String():
 			byts, err := json.Marshal(test)
 			require.NoError(t, err)

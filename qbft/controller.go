@@ -187,16 +187,13 @@ func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) er
 	}
 
 	// Broadcast Decided msg
-	decidedMsg := &DecidedMessage{
-		SignedMessage: aggregatedCommit,
-	}
-	byts, err := decidedMsg.Encode()
+	byts, err := aggregatedCommit.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode decided message")
 	}
 
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVDecidedMsgType,
+		MsgType: types.SSVConsensusMsgType,
 		MsgID:   ControllerIdToMessageID(c.Identifier),
 		Data:    byts,
 	}

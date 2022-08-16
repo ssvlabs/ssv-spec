@@ -44,6 +44,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		share,
 		NewTestingQBFTController(identifier[:], share, valCheck, proposerF),
 		NewTestingStorage(),
+		NewTestingBeaconNode(),
 		valCheck,
 	)
 }

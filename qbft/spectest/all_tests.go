@@ -41,7 +41,6 @@ var AllTests = []SpecTest{
 	messages.RoundChangePrePreparedJustifications(),
 	messages.RoundChangeNotPreparedJustifications(),
 	messages.CommitDataEncoding(),
-	messages.DecidedMsgEncoding(),
 	messages.MsgNilIdentifier(),
 	messages.MsgNonZeroIdentifier(),
 	messages.MsgTypeUnknown(),
@@ -64,6 +63,9 @@ var AllTests = []SpecTest{
 	messages.CreateRoundChange(),
 	messages.CreateRoundChangePreviouslyPrepared(),
 	messages.RoundChangeDataEncoding(),
+	messages.PrepareDataInvalid(),
+	messages.CommitDataInvalid(),
+	messages.ProposalDataInvalid(),
 
 	tests.HappyFlow(),
 	tests.SevenOperators(),

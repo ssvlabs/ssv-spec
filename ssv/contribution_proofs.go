@@ -7,25 +7,29 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (dr *Runner) SignSyncSubCommitteeContributionProof(slot spec.Slot, indexes []uint64, signer types.KeyManager) (PartialSignatureMessages, error) {
-	ret := make(PartialSignatureMessages, 0)
+func (dr *Runner) SignSyncSubCommitteeContributionProof(slot spec.Slot, indexes []uint64, signer types.KeyManager) (*PartialSignatureMessages, error) {
+	ret := make([]*PartialSignatureMessage, 0)
 	for _, index := range indexes {
 		sig, r, err := signer.SignContributionProof(slot, index, dr.Share.SharePubKey)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not sign partial selection proof")
 		}
 		r = ensureRoot(r)
+		// TODO what guarantees the order here? Is it important?
 		ret = append(ret, &PartialSignatureMessage{
 			Slot:             slot,
 			PartialSignature: sig,
 			SigningRoot:      r,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Signer:           dr.Share.OperatorID,
 			MetaData: &PartialSignatureMetaData{
 				ContributionSubCommitteeIndex: index,
 			},
 		})
 	}
-	return ret, nil
+	return &PartialSignatureMessages{
+		Type:     ContributionProofs,
+		Messages: ret,
+	}, nil
 }
 
 // ProcessContributionProofsMessage process contribution proofs msg (an array), returns true if it has quorum for partial signatures.
@@ -37,12 +41,14 @@ func (dr *Runner) ProcessContributionProofsMessage(signedMsg *SignedPartialSigna
 
 	roots := make([][]byte, 0)
 	anyQuorum := false
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		prevQuorum := dr.State.ContributionProofs.HasQuorum(msg.SigningRoot)
 
 		if err := dr.State.ContributionProofs.AddSignature(msg); err != nil {
 			return false, nil, errors.Wrap(err, "could not add partial contribution proof signature")
 		}
+		// TODO need to check roots are unique and not overriding.. we are getting multiple messages here
+		// TODO how do we validate index is for the actual signing root?
 		dr.State.ContributionSubCommitteeIndexes[hex.EncodeToString(msg.SigningRoot)] = msg.MetaData.ContributionSubCommitteeIndex
 
 		if prevQuorum {
@@ -59,7 +65,7 @@ func (dr *Runner) ProcessContributionProofsMessage(signedMsg *SignedPartialSigna
 	return anyQuorum, roots, nil
 }
 
-// canProcessRandaoMsg returns true if it can process selection proof message, false if not
+// validateRandaoMsg returns true if it can process selection proof message, false if not
 func (dr *Runner) canProcessContributionProofMsg(msg *SignedPartialSignatureMessage) error {
-	return dr.validatePartialSigMsg(msg, dr.CurrentDuty.Slot)
+	return dr.validatePartialSigMsg(msg, dr.State.StartingDuty.Slot)
 }

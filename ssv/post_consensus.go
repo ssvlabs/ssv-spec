@@ -18,7 +18,7 @@ func (dr *Runner) ProcessPostConsensusMessage(signedMsg *SignedPartialSignatureM
 
 	roots := make([][]byte, 0)
 	anyQuorum := false
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		prevQuorum := dr.State.PostConsensusPartialSig.HasQuorum(msg.SigningRoot)
 
 		if err := dr.State.PostConsensusPartialSig.AddSignature(msg); err != nil {
@@ -41,12 +41,18 @@ func (dr *Runner) ProcessPostConsensusMessage(signedMsg *SignedPartialSignatureM
 }
 
 // SignDutyPostConsensus sets the Decided duty and partially signs the Decided data, returns a PartialSignatureMessage to be broadcasted or error
-func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signer types.KeyManager) (PartialSignatureMessages, error) {
+func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signer types.KeyManager) (*PartialSignatureMessages, error) {
 	dr.State.DecidedValue = decidedValue
+	duty := decidedValue.Duty
 
 	switch dr.BeaconRoleType {
 	case types.BNRoleAttester:
-		signedAttestation, r, err := signer.SignAttestation(decidedValue.AttestationData, decidedValue.Duty, dr.Share.SharePubKey)
+		domain, err := dr.beacon.DomainData(decidedValue.AttestationData.Target.Epoch, types.DomainAttester)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get attester domain")
+		}
+
+		signedAttestation, r, err := signer.SignAttestation(decidedValue.AttestationData, domain, decidedValue.Duty, dr.Share.SharePubKey)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to sign attestation")
 		}
@@ -56,11 +62,12 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedAttestation.Signature[:],
 			Slot:             decidedValue.Duty.Slot,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
-		return PartialSignatureMessages{
-			ret,
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleProposer:
 		signedBlock, r, err := signer.SignBeaconBlock(decidedValue.BlockData, decidedValue.Duty, dr.Share.SharePubKey)
@@ -73,11 +80,12 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedProposal.Signature[:],
 			Slot:             decidedValue.Duty.Slot,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
-		return PartialSignatureMessages{
-			ret,
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleAggregator:
 		signed, r, err := signer.SignAggregateAndProof(decidedValue.AggregateAndProof, decidedValue.Duty, dr.Share.SharePubKey)
@@ -90,15 +98,16 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 		ret := &PartialSignatureMessage{
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedAggregate.Signature[:],
-			Slot:             decidedValue.Duty.Slot,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Slot:             duty.Slot,
+			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
-		return PartialSignatureMessages{
-			ret,
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleSyncCommittee:
-		signed, r, err := signer.SignSyncCommitteeBlockRoot(decidedValue.Duty.Slot, decidedValue.SyncCommitteeBlockRoot, decidedValue.Duty.ValidatorIndex, dr.Share.SharePubKey)
+		signed, r, err := signer.SignSyncCommitteeBlockRoot(duty.Slot, decidedValue.SyncCommitteeBlockRoot, duty.ValidatorIndex, dr.Share.SharePubKey)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to sign aggregate and proof")
 		}
@@ -108,19 +117,20 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 		ret := &PartialSignatureMessage{
 			SigningRoot:      r,
 			PartialSignature: dr.State.SignedSyncCommittee.Signature[:],
-			Slot:             decidedValue.Duty.Slot,
-			Signers:          []types.OperatorID{dr.Share.OperatorID},
+			Slot:             duty.Slot,
+			Signer:           dr.Share.OperatorID,
 		}
 		dr.State.PostConsensusPartialSig.AddSignature(ret)
-		return PartialSignatureMessages{
-			ret,
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: []*PartialSignatureMessage{ret},
 		}, nil
 	case types.BNRoleSyncCommitteeContribution:
-		ret := PartialSignatureMessages{}
+		ret := make([]*PartialSignatureMessage, 0)
 		dr.State.SignedContributions = make(map[string]*altair.SignedContributionAndProof)
 		for proof, c := range decidedValue.SyncCommitteeContribution {
 			contribAndProof := &altair.ContributionAndProof{
-				AggregatorIndex: dr.CurrentDuty.ValidatorIndex,
+				AggregatorIndex: duty.ValidatorIndex,
 				Contribution:    c,
 				SelectionProof:  proof,
 			}
@@ -134,13 +144,16 @@ func (dr *Runner) SignDutyPostConsensus(decidedValue *types.ConsensusData, signe
 			m := &PartialSignatureMessage{
 				SigningRoot:      r,
 				PartialSignature: signed.Signature[:],
-				Slot:             decidedValue.Duty.Slot,
-				Signers:          []types.OperatorID{dr.Share.OperatorID},
+				Slot:             duty.Slot,
+				Signer:           dr.Share.OperatorID,
 			}
 			dr.State.PostConsensusPartialSig.AddSignature(m)
 			ret = append(ret, m)
 		}
-		return ret, nil
+		return &PartialSignatureMessages{
+			Type:     PostConsensusPartialSig,
+			Messages: ret,
+		}, nil
 	default:
 		return nil, errors.Errorf("unknown duty %s", decidedValue.Duty.Type.String())
 	}
@@ -164,11 +177,7 @@ func (dr *Runner) canProcessPostConsensusMsg(msg *SignedPartialSignatureMessage)
 }
 
 func (dr *Runner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) error {
-	if len(msg.Signers) != 1 {
-		return errors.New("PartialSignatureMessage allows 1 signer")
-	}
-
-	signer := msg.Signers[0]
+	signer := msg.Signer
 	signature := msg.PartialSignature
 	root := msg.SigningRoot
 
@@ -187,12 +196,12 @@ func (dr *Runner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) err
 			root = ensureRoot(root)
 			// verify
 			if !sig.VerifyByte(pk, root) {
-				return errors.Errorf("could not verify Signature from iBFT member %d", signer)
+				return errors.New("wrong signature")
 			}
 			return nil
 		}
 	}
-	return errors.New("beacon partial Signature signer not found")
+	return errors.New("Beacon partial Signature Signer not found")
 }
 
 // ensureRoot ensures that SigningRoot will have sufficient allocated memory

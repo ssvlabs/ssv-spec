@@ -3,6 +3,6 @@ package newduty
 import "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 
 // SelectionProofTimeout tests start duty after selection proof sig collection timed out
-func SelectionProofTimeout() *tests.SpecTest {
+func SelectionProofTimeout() *tests.MsgProcessingSpecTest {
 	panic("implement")
 }

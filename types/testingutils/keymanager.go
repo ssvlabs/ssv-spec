@@ -4,7 +4,6 @@ import (
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
-
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
@@ -51,9 +50,14 @@ func NewTestingKeyManager() *testingKeyManager {
 }
 
 // SignAttestation signs the given attestation
-func (km *testingKeyManager) SignAttestation(data *spec.AttestationData, duty *types.Duty, pk []byte) (*spec.Attestation, []byte, error) {
+func (km *testingKeyManager) SignAttestation(data *spec.AttestationData, domain spec.Domain, duty *types.Duty, pk []byte) (*spec.Attestation, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
-		sig := k.SignByte(TestingAttestationRoot)
+		r, err := types.ComputeETHSigningRoot(data, domain)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "could not compute signing root")
+		}
+
+		sig := k.SignByte(r[:])
 		blsSig := spec.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
@@ -64,7 +68,7 @@ func (km *testingKeyManager) SignAttestation(data *spec.AttestationData, duty *t
 			AggregationBits: aggregationBitfield,
 			Data:            data,
 			Signature:       blsSig,
-		}, TestingAttestationRoot, nil
+		}, r[:], nil
 	}
 	return nil, nil, errors.New("pk not found")
 }
@@ -87,13 +91,18 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 }
 
 // SignRandaoReveal signs randao
-func (km *testingKeyManager) SignRandaoReveal(epoch spec.Epoch, pk []byte) (types.Signature, []byte, error) {
+func (km *testingKeyManager) SignRandaoReveal(epoch spec.Epoch, domain spec.Domain, pk []byte) (types.Signature, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
-		sig := k.SignByte(TestingRandaoRoot)
+		r, err := types.ComputeETHSigningRoot(types.SSZUint64(epoch), domain)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "could not compute signing root")
+		}
+
+		sig := k.SignByte(r[:])
 		blsSig := spec.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
-		return sig.Serialize(), TestingRandaoRoot, nil
+		return sig.Serialize(), r[:], nil
 	}
 	return nil, nil, errors.New("pk not found")
 }

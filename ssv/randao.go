@@ -1,13 +1,19 @@
 package ssv
 
 import (
+	"bytes"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
-func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessage, error) {
-	sig, r, err := signer.SignRandaoReveal(epoch, dr.Share.SharePubKey)
+func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessages, error) {
+	domain, err := dr.beacon.DomainData(epoch, types.DomainRandao)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get randao domain")
+	}
+
+	sig, r, err := signer.SignRandaoReveal(epoch, domain, dr.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign partial randao reveal")
 	}
@@ -17,22 +23,25 @@ func (dr *Runner) SignRandaoPreConsensus(epoch spec.Epoch, slot spec.Slot, signe
 		Slot:             slot,
 		PartialSignature: sig,
 		SigningRoot:      ensureRoot(r),
-		Signers:          []types.OperatorID{dr.Share.OperatorID},
+		Signer:           dr.Share.OperatorID,
 	}
 
-	return msg, nil
+	return &PartialSignatureMessages{
+		Type:     RandaoPartialSig,
+		Messages: []*PartialSignatureMessage{msg},
+	}, nil
 }
 
 // ProcessRandaoMessage process randao msg, returns true if it has quorum for partial signatures.
 // returns true only once (first time quorum achieved)
 func (dr *Runner) ProcessRandaoMessage(signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
-	if err := dr.canProcessRandaoMsg(signedMsg); err != nil {
-		return false, nil, errors.Wrap(err, "can't process randao message")
+	if err := dr.validateRandaoMsg(signedMsg); err != nil {
+		return false, nil, errors.Wrap(err, "invalid randao message")
 	}
 
 	roots := make([][]byte, 0)
 	anyQuorum := false
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		prevQuorum := dr.State.RandaoPartialSig.HasQuorum(msg.SigningRoot)
 
 		if err := dr.State.RandaoPartialSig.AddSignature(msg); err != nil {
@@ -53,7 +62,26 @@ func (dr *Runner) ProcessRandaoMessage(signedMsg *SignedPartialSignatureMessage)
 	return anyQuorum, roots, nil
 }
 
-// canProcessRandaoMsg returns true if it can process randao message, false if not
-func (dr *Runner) canProcessRandaoMsg(msg *SignedPartialSignatureMessage) error {
-	return dr.validatePartialSigMsg(msg, dr.CurrentDuty.Slot)
+// validateRandaoMsg returns nil if randao message is valid
+func (dr *Runner) validateRandaoMsg(msg *SignedPartialSignatureMessage) error {
+	if err := dr.validatePartialSigMsg(msg, dr.State.StartingDuty.Slot); err != nil {
+		return err
+	}
+
+	if len(msg.Message.Messages) != 1 {
+		return errors.New("expecting 1 radano partial sig")
+	}
+
+	// verify radao signing root
+	epoch := dr.BeaconNetwork.EstimatedEpochAtSlot(dr.State.StartingDuty.Slot)
+	domain, err := dr.beacon.DomainData(epoch, types.DomainRandao)
+	if err != nil {
+		return errors.Wrap(err, "could not get randao domain")
+	}
+	r, err := types.ComputeETHSigningRoot(types.SSZUint64(epoch), domain)
+	if !bytes.Equal(r[:], msg.Message.Messages[0].SigningRoot) {
+		return errors.New("wrong randao signing root")
+	}
+
+	return nil
 }

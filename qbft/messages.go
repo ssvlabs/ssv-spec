@@ -358,17 +358,3 @@ func (signedMsg *SignedMessage) Validate() error {
 
 	return signedMsg.Message.Validate()
 }
-
-type DecidedMessage struct {
-	SignedMessage *SignedMessage
-}
-
-// Encode returns a msg encoded bytes or error
-func (msg *DecidedMessage) Encode() ([]byte, error) {
-	return json.Marshal(msg)
-}
-
-// Decode returns error if decoding failed
-func (msg *DecidedMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &msg)
-}
