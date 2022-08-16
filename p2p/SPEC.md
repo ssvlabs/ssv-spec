@@ -521,7 +521,7 @@ the signing policy as it becomes redundant.
 - `REJECT` older message by checking height (TBD `IGNORE`?)
 - `REJECT` validate quorum
 - `REJECT` message with invalid signature (BLS)
-- 
+
 #### Consensus Message Validation
 
 For all conesnsus message types, we perform the following:
@@ -537,7 +537,7 @@ In addition, the following rules will be applied according to the message type:
 - `REJECT` message with wrong round leader
 - `REJECT` message with invalid signature (BLS)
 
-**TBD** QBFT instance level:
+depends on QBFT instance:
 - check older round
 - justify pre-prepare
 
@@ -547,7 +547,7 @@ In addition, the following rules will be applied according to the message type:
 - `REJECT` older message by checking height (TBD `IGNORE`?)
 - `REJECT` message with invalid signature (BLS)
 
-Depends on **QBFT instance**:
+depends on QBFT instance:
 - check older round
 - check quorum
 
@@ -558,7 +558,7 @@ Depends on **QBFT instance**:
 diff must be greater than `1` to allow late commits propagation
 - `REJECT` message with invalid signature (BLS)
 
-Depends on **QBFT instance**:
+depends on QBFT instance:
 - check older round
 - check quorum
 
@@ -568,7 +568,7 @@ Depends on **QBFT instance**:
 - `REJECT` older message by checking height (TBD `IGNORE`?)
 - `REJECT` message with invalid signature (BLS)
 
-Depends on **QBFT instance**:
+depends on QBFT instance:
 - check older round
 - check partial quorum
 - check quorum
