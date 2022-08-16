@@ -8,6 +8,7 @@ import (
 // UponCommit returns true if a quorum of commit messages was received.
 func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *MsgContainer) (bool, []byte, *SignedMessage, error) {
 	if err := validateCommit(
+		i.State,
 		i.config,
 		signedCommit,
 		i.State.Height,
@@ -126,6 +127,7 @@ func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, e
 }
 
 func validateCommit(
+	state *State,
 	config IConfig,
 	signedCommit *SignedMessage,
 	height Height,
@@ -149,5 +151,17 @@ func validateCommit(
 	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "commit msg signature invalid")
 	}
+
+	if isDecidedMsg(state, signedCommit) {
+		if err := config.GetValueCheckF()(msgCommitData.Data); err != nil {
+			return errors.Wrap(err, "invalid decided data")
+		}
+	}
+
 	return nil
+}
+
+// returns true if signed commit has all quorum sigs
+func isDecidedMsg(state *State, signedCommit *SignedMessage) bool {
+	return state.Share.HasQuorum(len(signedCommit.Signers))
 }

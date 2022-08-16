@@ -129,6 +129,7 @@ var AllTests = []SpecTest{
 	commit.MultiSignerWithOverlap(),
 	commit.MultiSignerNoOverlap(),
 	commit.DuplicateSigners(),
+	commit.InvalidDecidedData(),
 	commit.Decided(),
 	commit.FutureDecided(),
 	commit.PastDecided(),
