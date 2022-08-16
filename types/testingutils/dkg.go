@@ -7,9 +7,9 @@ import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
+	"strconv"
 )
 
 var TestingWithdrawalCredentials, _ = hex.DecodeString("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f")
@@ -28,7 +28,6 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 		Storage:             NewTestingStorage(),
 		SignatureDomainType: types.PrimusTestnet,
 		Signer:              km,
-		Verifier:            km,
 	}
 
 	return dkg.NewNode(&dkg.Operator{
@@ -92,25 +91,52 @@ var DespositDataSigningRoot = func(keySet *TestKeySet, initMsg *dkg.Init) []byte
 	return root
 }
 
-var SignedOutputObject = func(requestID dkg.RequestID, signer types.OperatorID, root []byte, address common.Address, share *bls.SecretKey, validatorSk *bls.SecretKey) *dkg.SignedOutput {
-	// TODO: Move FakeEncryption and FakeEcdsaSign to before calling this function?
+func (ks *TestKeySet) KeyGenOutput(opId types.OperatorID) *dkg.KeyGenOutput {
+	opPks := make(map[types.OperatorID]*bls.PublicKey)
+	for id, share := range ks.Shares {
+		opPks[id] = share.GetPublicKey()
+	}
+
+	return &dkg.KeyGenOutput{
+		Share:           ks.Shares[opId],
+		OperatorPubKeys: opPks,
+		ValidatorPK:     ks.ValidatorPK.Serialize(),
+		Threshold:       ks.Threshold,
+	}
+}
+
+var (
+	signedOutputCache = map[string]*dkg.SignedOutput{}
+)
+
+func (ks *TestKeySet) SignedOutputObject(requestID dkg.RequestID, opId types.OperatorID, root []byte) *dkg.SignedOutput {
+	id := hex.EncodeToString(requestID[:]) + strconv.FormatUint(uint64(opId), 10) + hex.EncodeToString(root)
+	if found := signedOutputCache[id]; found != nil {
+		return found
+	}
+	share := ks.Shares[opId]
 	o := &dkg.Output{
 		RequestID:            requestID,
 		EncryptedShare:       FakeEncryption(share.Serialize()),
 		SharePubKey:          share.GetPublicKey().Serialize(),
-		ValidatorPubKey:      validatorSk.GetPublicKey().Serialize(),
-		DepositDataSignature: validatorSk.SignByte(root).Serialize(),
+		ValidatorPubKey:      ks.ValidatorPK.Serialize(),
+		DepositDataSignature: ks.ValidatorSK.SignByte(root).Serialize(),
 	}
 	root1, _ := o.GetRoot()
-	return &dkg.SignedOutput{
+
+	sig, _ := crypto.Sign(root1, ks.DKGOperators[opId].SK)
+
+	ret := &dkg.SignedOutput{
 		Data:      o,
-		Signer:    signer,
-		Signature: FakeEcdsaSign(root1, address[:]),
+		Signer:    opId,
+		Signature: sig,
 	}
+	signedOutputCache[id] = ret
+	return ret
 }
 
-var SignedOutputBytes = func(requestID dkg.RequestID, signer types.OperatorID, root []byte, address common.Address, share *bls.SecretKey, validatorSk *bls.SecretKey) []byte {
-	d := SignedOutputObject(requestID, signer, root, address, share, validatorSk)
+func (ks *TestKeySet) SignedOutputBytes(requestID dkg.RequestID, opId types.OperatorID, root []byte) []byte {
+	d := ks.SignedOutputObject(requestID, opId, root)
 	ret, _ := d.Encode()
 	return ret
 }

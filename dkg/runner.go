@@ -3,6 +3,8 @@ package dkg
 import (
 	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
@@ -208,8 +210,17 @@ func (r *Runner) validateSignedOutput(msg *SignedOutput) error {
 	if err != nil {
 		return errors.Wrap(err, "unable to find signer")
 	}
-	valid := r.config.Verifier.VerifyDKGOutput(msg.Signature, msg.Data, operator.ETHAddress)
-	if !valid {
+
+	root, err := msg.Data.GetRoot()
+	if err != nil {
+		return errors.Wrap(err, "fail to get root")
+	}
+	pk, err := crypto.Ecrecover(root, msg.Signature)
+	if err != nil {
+		return errors.New("unable to recover public key")
+	}
+	addr := common.BytesToAddress(crypto.Keccak256(pk[1:])[12:])
+	if addr != operator.ETHAddress {
 		return errors.New("invalid signature")
 	}
 	return nil

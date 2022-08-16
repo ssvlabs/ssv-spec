@@ -50,17 +50,17 @@ func HappyFlow() *MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,
-				Data:       testingutils.SignedOutputBytes(identifier, 2, root, ks.DKGOperators[2].ETHAddress, ks.Shares[2], ks.ValidatorSK),
+				Data:       ks.SignedOutputBytes(identifier, 2, root),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,
-				Data:       testingutils.SignedOutputBytes(identifier, 3, root, ks.DKGOperators[3].ETHAddress, ks.Shares[3], ks.ValidatorSK),
+				Data:       ks.SignedOutputBytes(identifier, 3, root),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,
-				Data:       testingutils.SignedOutputBytes(identifier, 4, root, ks.DKGOperators[4].ETHAddress, ks.Shares[4], ks.ValidatorSK),
+				Data:       ks.SignedOutputBytes(identifier, 4, root),
 			}),
 		},
 		OutputMessages: []*dkg.SignedMessage{
@@ -72,16 +72,16 @@ func HappyFlow() *MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,
-				Data:       testingutils.SignedOutputBytes(identifier, 1, root, ks.DKGOperators[1].ETHAddress, ks.Shares[1], ks.ValidatorSK),
+				Data:       ks.SignedOutputBytes(identifier, 1, root),
 			}),
 		},
 		Output: map[types.OperatorID]*dkg.SignedOutput{
-			1: testingutils.SignedOutputObject(identifier, 1, root, ks.DKGOperators[1].ETHAddress, ks.Shares[1], ks.ValidatorSK),
-			2: testingutils.SignedOutputObject(identifier, 2, root, ks.DKGOperators[2].ETHAddress, ks.Shares[2], ks.ValidatorSK),
-			3: testingutils.SignedOutputObject(identifier, 3, root, ks.DKGOperators[3].ETHAddress, ks.Shares[3], ks.ValidatorSK),
-			4: testingutils.SignedOutputObject(identifier, 4, root, ks.DKGOperators[4].ETHAddress, ks.Shares[4], ks.ValidatorSK),
+			1: ks.SignedOutputObject(identifier, 1, root),
+			2: ks.SignedOutputObject(identifier, 2, root),
+			3: ks.SignedOutputObject(identifier, 3, root),
+			4: ks.SignedOutputObject(identifier, 4, root),
 		},
-		KeySet:        testingutils.Testing4SharesSet(),
+		KeySet:        ks,
 		ExpectedError: "",
 	}
 }

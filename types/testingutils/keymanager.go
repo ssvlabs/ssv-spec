@@ -1,14 +1,15 @@
 package testingutils
 
 import (
-	"bytes"
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
+	"fmt"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
@@ -23,8 +24,10 @@ type testingKeyManager struct {
 
 func NewTestingKeyManager() *testingKeyManager {
 	ret := &testingKeyManager{
-		keys:   map[string]*bls.SecretKey{},
-		domain: types.PrimusTestnet,
+		keys:           map[string]*bls.SecretKey{},
+		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
+		encryptionKeys: nil,
+		domain:         types.PrimusTestnet,
 	}
 
 	ret.AddShare(Testing4SharesSet().ValidatorSK)
@@ -45,6 +48,18 @@ func NewTestingKeyManager() *testingKeyManager {
 	ret.AddShare(Testing13SharesSet().ValidatorSK)
 	for _, s := range Testing13SharesSet().Shares {
 		ret.AddShare(s)
+	}
+	for _, o := range Testing4SharesSet().DKGOperators {
+		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+	}
+	for _, o := range Testing7SharesSet().DKGOperators {
+		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+	}
+	for _, o := range Testing10SharesSet().DKGOperators {
+		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+	}
+	for _, o := range Testing13SharesSet().DKGOperators {
+		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
 	}
 	return ret
 }
@@ -201,16 +216,15 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 	if err != nil {
 		return nil, err
 	}
-	sig := FakeEcdsaSign(root, address[:]) // GLNOTE: Use fake so that we have deterministic message
-	return sig, nil
-}
-
-func (km *testingKeyManager) VerifyDKGOutput(signature types.Signature, output types.Root, address common.Address) bool {
-	sig, err := km.SignDKGOutput(output, address)
-	if err != nil {
-		return false
+	sk := km.ecdsaKeys[address.String()]
+	if sk == nil {
+		return nil, errors.New(fmt.Sprintf("unable to find ecdsa key for address %v", address.String()))
 	}
-	return bytes.Equal(sig, signature)
+	sig, err := crypto.Sign(root, sk)
+	if err != nil {
+		return nil, err
+	}
+	return sig, nil
 }
 
 func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {
