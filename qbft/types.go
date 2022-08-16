@@ -22,4 +22,12 @@ type Network interface {
 type Storage interface {
 	// SaveHighestDecided saves (and potentially overrides) the highest Decided for a specific instance
 	SaveHighestDecided(signedMsg *SignedMessage) error
+	// GetHighestDecided returns highest decided if found, nil if didn't
+	GetHighestDecided(identifier []byte) (*SignedMessage, error)
+}
+
+func ControllerIdToMessageID(identifier []byte) types.MessageID {
+	ret := types.MessageID{}
+	copy(ret[:], identifier)
+	return ret
 }

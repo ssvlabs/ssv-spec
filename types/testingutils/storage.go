@@ -35,6 +35,11 @@ func (s *testingStorage) SaveHighestDecided(signedMsg *qbft.SignedMessage) error
 	return nil
 }
 
+// GetHighestDecided returns highest decided if found, nil if didn't
+func (s *testingStorage) GetHighestDecided(identifier []byte) (*qbft.SignedMessage, error) {
+	return s.storage[hex.EncodeToString(identifier)], nil
+}
+
 // GetDKGOperator returns true and operator object if found by operator ID
 func (s *testingStorage) GetDKGOperator(operatorID types.OperatorID) (bool, *dkg.Operator, error) {
 	if ret, found := s.operators[operatorID]; found {

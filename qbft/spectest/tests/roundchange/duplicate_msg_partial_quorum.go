@@ -41,21 +41,21 @@ func DuplicateMsgPartialQuorum() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      5,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      5,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 	}
 
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change duplicate msg partial quorum",
 		Pre:            pre,
-		PostRoot:       "849af79a8220c1a4406decc011183a02f8ceea9d29b167fa69d15c1ceaf0de5c",
+		PostRoot:       "847261013225e48d3e88b2f310ec1ec75017ef489b2cfade3f255f46f604ca42",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

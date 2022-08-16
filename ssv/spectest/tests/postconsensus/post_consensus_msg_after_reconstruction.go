@@ -8,7 +8,7 @@ import (
 )
 
 // MsgAfterReconstruction tests msg received after partial sig reconstructed and valcheck state set to finished
-func MsgAfterReconstruction() *tests.SpecTest {
+func MsgAfterReconstruction() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.DecidedRunner(ks)
 
@@ -19,7 +19,7 @@ func MsgAfterReconstruction() *tests.SpecTest {
 		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "4th msg after reconstruction",
 		Runner:                  dr,
 		Messages:                msgs,

@@ -1,7 +1,6 @@
 package qbft
 
 import (
-	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -25,7 +24,7 @@ func (i *Instance) uponRoundChange(
 		return nil // UponCommit was already called
 	}
 
-	highestJustifiedRoundChangeMsg, err := hasReceivedProposalJustificationForLeadingRound(
+	justifiedRoundChangeMsg, err := hasReceivedProposalJustificationForLeadingRound(
 		i.State,
 		i.config,
 		signedRoundChange,
@@ -34,16 +33,24 @@ func (i *Instance) uponRoundChange(
 	if err != nil {
 		return errors.Wrap(err, "could not get proposal justification for leading ronud")
 	}
-	if highestJustifiedRoundChangeMsg != nil {
-		highestRCData, err := highestJustifiedRoundChangeMsg.Message.GetRoundChangeData()
+	if justifiedRoundChangeMsg != nil {
+		highestRCData, err := justifiedRoundChangeMsg.Message.GetRoundChangeData()
 		if err != nil {
 			return errors.Wrap(err, "could not round change data from highestJustifiedRoundChangeMsg")
+		}
+
+		// Chose proposal value.
+		// If justifiedRoundChangeMsg has no prepare justification chose state value
+		// If justifiedRoundChangeMsg has prepare justification chose prepared value
+		valueToPropose := instanceStartValue
+		if highestRCData.Prepared() {
+			valueToPropose = highestRCData.PreparedValue
 		}
 
 		proposal, err := CreateProposal(
 			i.State,
 			i.config,
-			highestRCData.NextProposalData,
+			valueToPropose,
 			roundChangeMsgContainer.MessagesForRound(i.State.Round), // TODO - might be optimized to include only necessary quorum
 			highestRCData.RoundChangeJustification,
 		)
@@ -88,7 +95,10 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 	return HasPartialQuorum(state.Share, rc), rc
 }
 
-// hasReceivedProposalJustificationForLeadingRound returns the highest justified round change message (if this node is also a leader)
+// hasReceivedProposalJustificationForLeadingRound returns
+// if first round or not received round change msgs with prepare justification - returns first rc msg in container
+// if received round change msgs with prepare justification - returns the highest prepare justification round change msg
+// (all the above considering the operator is a leader for the round
 func hasReceivedProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
@@ -117,7 +127,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 			roundChanges,
 			rcData.RoundChangeJustification,
 			signedRoundChange.Message.Round,
-			rcData.NextProposalData,
+			rcData.PreparedValue,
 			valCheck,
 		) == nil &&
 			proposer(state, config, msg.Message.Round) == state.Share.OperatorID {
@@ -209,13 +219,9 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 			return errors.New("prepared round > round")
 		}
 
-		if !bytes.Equal(rcData.NextProposalData, rcData.PreparedValue) {
-			return errors.New("next proposal data != prepared value")
-		}
-
 		return nil
 	}
-	return errors.New("round change prepare round & value are wrong")
+	return nil
 }
 
 // highestPrepared returns a round change message with the highest prepared round, returns nil if none found
@@ -263,13 +269,11 @@ func getRoundChangeData(state *State, config IConfig, instanceStartValue []byte)
 		return &RoundChangeData{
 			PreparedRound:            state.LastPreparedRound,
 			PreparedValue:            state.LastPreparedValue,
-			NextProposalData:         state.LastPreparedValue,
 			RoundChangeJustification: justifications,
 		}, nil
 	}
 	return &RoundChangeData{
-		PreparedRound:    NoRound,
-		NextProposalData: instanceStartValue,
+		PreparedRound: NoRound,
 	}, nil
 }
 

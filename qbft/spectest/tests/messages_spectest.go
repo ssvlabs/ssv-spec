@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"bytes"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -19,26 +18,10 @@ type MsgSpecTest struct {
 func (test *MsgSpecTest) Run(t *testing.T) {
 	var lastErr error
 
-	for i, byts := range test.EncodedMessages {
-		m := &qbft.SignedMessage{}
-		if err := m.Decode(byts); err != nil {
-			lastErr = err
-		}
-
-		if len(test.ExpectedRoots) > 0 {
-			r, err := m.GetRoot()
-			if err != nil {
-				lastErr = err
-			}
-			if !bytes.Equal(test.ExpectedRoots[i], r) {
-				t.Fail()
-			}
-		}
-	}
-
 	for i, msg := range test.Messages {
 		if err := msg.Validate(); err != nil {
 			lastErr = err
+			continue
 		}
 
 		switch msg.Message.MsgType {
@@ -50,24 +33,46 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			if err := rc.Validate(); err != nil {
 				lastErr = err
 			}
+		case qbft.CommitMsgType:
+			rc := qbft.CommitData{}
+			if err := rc.Decode(msg.Message.Data); err != nil {
+				lastErr = err
+			}
+			if err := rc.Validate(); err != nil {
+				lastErr = err
+			}
+		case qbft.PrepareMsgType:
+			rc := qbft.PrepareData{}
+			if err := rc.Decode(msg.Message.Data); err != nil {
+				lastErr = err
+			}
+			if err := rc.Validate(); err != nil {
+				lastErr = err
+			}
+		case qbft.ProposalMsgType:
+			rc := qbft.ProposalData{}
+			if err := rc.Decode(msg.Message.Data); err != nil {
+				lastErr = err
+			}
+			if err := rc.Validate(); err != nil {
+				lastErr = err
+			}
 		}
 
-		if len(test.Messages) > 0 {
-			r1, err := msg.Encode()
-			if err != nil {
-				lastErr = err
-			}
+		if len(test.EncodedMessages) > 0 {
+			byts, err := msg.Encode()
+			require.NoError(t, err)
+			require.EqualValues(t, test.EncodedMessages[i], byts)
+		}
 
-			r2, err := test.Messages[i].Encode()
-			if err != nil {
-				lastErr = err
-			}
-			if !bytes.Equal(r2, r1) {
-				t.Fail()
-			}
+		if len(test.ExpectedRoots) > 0 {
+			r, err := msg.GetRoot()
+			require.NoError(t, err)
+			require.EqualValues(t, test.ExpectedRoots[i], r)
 		}
 	}
 
+	// check error
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
@@ -76,5 +81,5 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 }
 
 func (test *MsgSpecTest) TestName() string {
-	return test.Name
+	return "qbft message " + test.Name
 }

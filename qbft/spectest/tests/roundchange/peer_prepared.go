@@ -41,28 +41,28 @@ func PeerPrepared() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 	}
 
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change peer prepared",
 		Pre:           pre,
-		PostRoot:      "a1c9c21f2a8e7f1aa059ffb59106b66ea9085bfb0723a7c933951fac01423063",
+		PostRoot:      "9e9e6d3594d7d9b2eab58b6b1275117d3a3ebeca7cfe4909eb107e465389e6f7",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

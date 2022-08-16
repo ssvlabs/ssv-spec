@@ -96,13 +96,13 @@ func (dr *Runner) validatePartialSigMsg(signedMsg *SignedPartialSignatureMessage
 		return errors.Wrap(err, "failed to verify PartialSignature")
 	}
 
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		if slot != msg.Slot {
 			return errors.New("wrong slot")
 		}
 
 		if err := dr.verifyBeaconPartialSignature(msg); err != nil {
-			return errors.Wrap(err, "could not verify beacon partial Signature")
+			return errors.Wrap(err, "could not verify Beacon partial Signature")
 		}
 	}
 

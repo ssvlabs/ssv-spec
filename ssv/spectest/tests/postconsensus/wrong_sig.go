@@ -8,14 +8,14 @@ import (
 )
 
 // InvaliSignature tests an invalid SignedPostConsensusMessage sig
-func InvaliSignature() *tests.SpecTest {
+func InvaliSignature() *tests.MsgProcessingSpecTest {
 	dr := testingutils.DecidedRunner()
 
 	msgs := []*types.SSVMessage{
 		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 2, qbft.FirstHeight)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "Invalid SignedPostConsensusMessage signature",
 		Runner:                  dr,
 		Messages:                msgs,

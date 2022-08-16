@@ -113,7 +113,6 @@ func (d *CommitData) Validate() error {
 type RoundChangeData struct {
 	PreparedValue            []byte
 	PreparedRound            Round
-	NextProposalData         []byte
 	RoundChangeJustification []*SignedMessage
 }
 
@@ -145,10 +144,6 @@ func (d *RoundChangeData) Validate() error {
 			return errors.New("round change justification invalid")
 		}
 		// TODO - should next proposal data be equal to prepared value?
-	}
-
-	if len(d.NextProposalData) == 0 {
-		return errors.New("round change next value invalid")
 	}
 	return nil
 }
@@ -281,7 +276,7 @@ func (signedMsg *SignedMessage) CommonSigners(ids []types.OperatorID) bool {
 // Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
 func (signedMsg *SignedMessage) Aggregate(sig types.MessageSignature) error {
 	if signedMsg.CommonSigners(sig.GetSigners()) {
-		return errors.New("can't aggregate 2 signed messages with mutual signers")
+		return errors.New("duplicate signers")
 	}
 
 	r1, err := signedMsg.GetRoot()
@@ -351,19 +346,15 @@ func (signedMsg *SignedMessage) Validate() error {
 	if len(signedMsg.Signers) == 0 {
 		return errors.New("message signers is empty")
 	}
+
+	// check unique signers
+	signed := make(map[types.OperatorID]bool)
+	for _, signer := range signedMsg.Signers {
+		if signed[signer] {
+			return errors.New("non unique signer")
+		}
+		signed[signer] = true
+	}
+
 	return signedMsg.Message.Validate()
-}
-
-type DecidedMessage struct {
-	SignedMessage *SignedMessage
-}
-
-// Encode returns a msg encoded bytes or error
-func (msg *DecidedMessage) Encode() ([]byte, error) {
-	return json.Marshal(msg)
-}
-
-// Decode returns error if decoding failed
-func (msg *DecidedMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &msg)
 }

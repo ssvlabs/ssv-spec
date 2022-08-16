@@ -30,5 +30,5 @@ func (test *RoundRobinSpecTest) Run(t *testing.T) {
 }
 
 func (test *RoundRobinSpecTest) TestName() string {
-	return test.Name
+	return "qbft round robin " + test.Name
 }

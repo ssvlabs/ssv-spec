@@ -22,6 +22,8 @@ type IConfig interface {
 	GetProposerF() ProposerF
 	// GetNetwork returns a p2p Network instance
 	GetNetwork() Network
+	// GetStorage returns a storage instance
+	GetStorage() Storage
 	// GetTimer returns round timer
 	GetTimer() Timer
 }
@@ -52,12 +54,12 @@ func (c *Config) GetSignatureDomainType() types.DomainType {
 	return c.Domain
 }
 
-// GetValueCheck returns value check instance
+// GetValueCheckF returns value check instance
 func (c *Config) GetValueCheckF() ProposedValueCheckF {
 	return c.ValueCheckF
 }
 
-// GetProposerFunc returns func used to calculate proposer
+// GetProposerF returns func used to calculate proposer
 func (c *Config) GetProposerF() ProposerF {
 	return c.ProposerF
 }
@@ -65,6 +67,11 @@ func (c *Config) GetProposerF() ProposerF {
 // GetNetwork returns a p2p Network instance
 func (c *Config) GetNetwork() Network {
 	return c.Network
+}
+
+// GetStorage returns a storage instance
+func (c *Config) GetStorage() Storage {
+	return c.Storage
 }
 
 // GetTimer returns round timer

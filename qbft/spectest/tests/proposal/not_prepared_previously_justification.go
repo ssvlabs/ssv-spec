@@ -17,21 +17,21 @@ func NotPreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      5,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      5,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      5,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 	}
 
@@ -47,7 +47,7 @@ func NotPreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal justification (not prepared)",
 		Pre:           pre,
-		PostRoot:      "fc46eb31bb132395db0202b3d73cce14ef70a6df30282797bd9c67b61e144c85",
+		PostRoot:      "5cc5af958fce86d4934637dceb16efb2a590a31bdc714a09f244eab0202b99cd",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

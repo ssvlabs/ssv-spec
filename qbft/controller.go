@@ -46,6 +46,7 @@ type Controller struct {
 	valueCheck      ProposedValueCheckF
 	storage         Storage
 	network         Network
+	proposerF       ProposerF
 }
 
 func NewController(
@@ -56,6 +57,7 @@ func NewController(
 	valueCheck ProposedValueCheckF,
 	storage Storage,
 	network Network,
+	proposerF ProposerF,
 ) *Controller {
 	return &Controller{
 		Identifier:      identifier,
@@ -67,12 +69,13 @@ func NewController(
 		valueCheck:      valueCheck,
 		storage:         storage,
 		network:         network,
+		proposerF:       proposerF,
 	}
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
 func (c *Controller) StartNewInstance(value []byte) error {
-	if err := c.canStartInstance(value); err != nil {
+	if err := c.canStartInstance(c.Height+1, value); err != nil {
 		return errors.Wrap(err, "can't start new QBFT instance")
 	}
 
@@ -87,12 +90,12 @@ func (c *Controller) StartNewInstance(value []byte) error {
 // Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
 func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
-		return false, nil, errors.New(fmt.Sprintf("message doesn't belong to Identifier %x", c.Identifier))
+		return false, nil, errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
 	}
 
 	inst := c.InstanceForHeight(msg.Message.Height)
 	if inst == nil {
-		return false, nil, errors.New(fmt.Sprintf("instance for Height %d,  Identifier %x not found", msg.Message.Height, c.Identifier))
+		return false, nil, errors.New(fmt.Sprintf("instance not found"))
 	}
 
 	prevDecided, _ := inst.IsDecided()
@@ -111,19 +114,9 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 		return false, nil, nil
 	}
 
-	if err := c.storage.SaveHighestDecided(aggregatedCommit); err != nil {
-		// TODO - LOG
+	if err := c.saveAndBroadcastDecided(aggregatedCommit); err != nil {
+		// TODO - we do not return error, should log?
 	}
-
-	// Broadcast Decided msg
-	decidedMsg := &DecidedMessage{
-		SignedMessage: aggregatedCommit,
-	}
-	if err := c.network.BroadcastDecided(decidedMsg); err != nil {
-		// We do not return error here, just Log broadcasting error.
-		return decided, decidedValue, nil
-	}
-
 	return decided, decidedValue, nil
 }
 
@@ -142,15 +135,15 @@ func (c *Controller) GetIdentifier() []byte {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.generateConfig(), c.Share, c.Identifier, c.Height)
+	i := NewInstance(c.GenerateConfig(), c.Share, c.Identifier, c.Height)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
 
-func (c *Controller) canStartInstance(value []byte) error {
-	if c.Height > FirstHeight {
+func (c *Controller) canStartInstance(height Height, value []byte) error {
+	if height > FirstHeight {
 		// check prev instance if prev instance is not the first instance
-		inst := c.StoredInstances.FindInstance(c.Height)
+		inst := c.StoredInstances.FindInstance(height - 1)
 		if inst == nil {
 			return errors.New("could not find previous instance")
 		}
@@ -179,7 +172,7 @@ func (c *Controller) Decode(data []byte) error {
 		return errors.Wrap(err, "could not decode controller")
 	}
 
-	config := c.generateConfig()
+	config := c.GenerateConfig()
 	for _, i := range c.StoredInstances {
 		if i != nil {
 			i.config = config
@@ -188,7 +181,30 @@ func (c *Controller) Decode(data []byte) error {
 	return nil
 }
 
-func (c *Controller) generateConfig() IConfig {
+func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) error {
+	if err := c.storage.SaveHighestDecided(aggregatedCommit); err != nil {
+		return errors.Wrap(err, "could not save decided")
+	}
+
+	// Broadcast Decided msg
+	byts, err := aggregatedCommit.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not encode decided message")
+	}
+
+	msgToBroadcast := &types.SSVMessage{
+		MsgType: types.SSVConsensusMsgType,
+		MsgID:   ControllerIdToMessageID(c.Identifier),
+		Data:    byts,
+	}
+	if err := c.network.BroadcastDecided(msgToBroadcast); err != nil {
+		// We do not return error here, just Log broadcasting error.
+		return errors.Wrap(err, "could not broadcast decided")
+	}
+	return nil
+}
+
+func (c *Controller) GenerateConfig() IConfig {
 	return &Config{
 		Signer:      c.signer,
 		SigningPK:   c.Share.ValidatorPubKey,
@@ -196,5 +212,6 @@ func (c *Controller) generateConfig() IConfig {
 		ValueCheckF: c.valueCheck,
 		Storage:     c.storage,
 		Network:     c.network,
+		ProposerF:   c.proposerF,
 	}
 }

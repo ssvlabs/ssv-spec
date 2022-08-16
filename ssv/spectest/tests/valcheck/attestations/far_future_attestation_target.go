@@ -9,7 +9,7 @@ import (
 )
 
 // FarFutureAttestationTarget tests a far future attestation target epoch
-func FarFutureAttestationTarget() *tests.SpecTest {
+func FarFutureAttestationTarget() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -46,7 +46,7 @@ func FarFutureAttestationTarget() *tests.SpecTest {
 		}), nil),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "far future attestation target",
 		Runner:                  dr,
 		Messages:                msgs,

@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateMsg tests a duplicate msg received
-func DuplicateMsg() *tests.SpecTest {
+func DuplicateMsg() *tests.MsgProcessingSpecTest {
 	dr := testingutils.DecidedRunner()
 
 	msgs := []*types.SSVMessage{
@@ -17,7 +17,7 @@ func DuplicateMsg() *tests.SpecTest {
 		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "valid SignedPostConsensusMessage",
 		Runner:                  dr,
 		Messages:                msgs,

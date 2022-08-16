@@ -39,26 +39,25 @@ func (v *Validator) StartDuty(duty *types.Duty) error {
 // 3) Once consensus decides, sign partial contribution data (for each subcommittee) and broadcast
 // 4) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedContributionAndProof (for each subcommittee) sig to the BN
 func (v *Validator) executeSyncCommitteeContributionDuty(duty *types.Duty, dutyRunner *Runner) error {
-	indexes, err := v.beacon.GetSyncSubcommitteeIndex(duty.Slot, duty.PubKey)
+	indexes, err := v.Beacon.GetSyncSubcommitteeIndex(duty.Slot, duty.PubKey)
 	if err != nil {
 		return errors.Wrap(err, "failed fetching sync subcommittee indexes")
 	}
 
-	msgs, err := dutyRunner.SignSyncSubCommitteeContributionProof(duty.Slot, indexes, v.signer)
+	msg, err := dutyRunner.SignSyncSubCommitteeContributionProof(duty.Slot, indexes, v.Signer)
 	if err != nil {
 		return errors.Wrap(err, "could not sign contribution proofs for pre-consensus")
 	}
 
 	// package into signed partial sig
-	signature, err := v.signer.SignRoot(msgs, types.PartialSignatureType, v.share.SharePubKey)
+	signature, err := v.Signer.SignRoot(msg, types.PartialSignatureType, v.Share.SharePubKey)
 	if err != nil {
 		return errors.Wrap(err, "could not sign PartialSignatureMessage for contribution proofs")
 	}
 	signedPartialMsg := &SignedPartialSignatureMessage{
-		Type:      ContributionProofs,
-		Messages:  msgs,
+		Message:   *msg,
 		Signature: signature,
-		Signers:   []types.OperatorID{v.share.OperatorID},
+		Signer:    v.Share.OperatorID,
 	}
 
 	// broadcast
@@ -68,10 +67,10 @@ func (v *Validator) executeSyncCommitteeContributionDuty(duty *types.Duty, dutyR
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(v.share.ValidatorPubKey, dutyRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
 		Data:    data,
 	}
-	if err := v.network.Broadcast(msgToBroadcast); err != nil {
+	if err := v.Network.Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial contribution proof sig")
 	}
 	return nil
@@ -85,7 +84,7 @@ func (v *Validator) executeSyncCommitteeContributionDuty(duty *types.Duty, dutyR
 func (v *Validator) executeSyncCommitteeDuty(duty *types.Duty, dutyRunner *Runner) error {
 	// TODO - waitOneThirdOrValidBlock
 
-	root, err := v.beacon.GetSyncMessageBlockRoot()
+	root, err := v.Beacon.GetSyncMessageBlockRoot()
 	if err != nil {
 		return errors.Wrap(err, "failed to get sync committee block root")
 	}
@@ -108,20 +107,19 @@ func (v *Validator) executeSyncCommitteeDuty(duty *types.Duty, dutyRunner *Runne
 // 4) Once consensus decides, sign partial aggregation data and broadcast
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedAggregateSubmitRequest sig to the BN
 func (v *Validator) executeAggregatorDuty(duty *types.Duty, dutyRunner *Runner) error {
-	msg, err := dutyRunner.SignSlotWithSelectionProofPreConsensus(duty.Slot, v.signer)
+	msg, err := dutyRunner.SignSlotWithSelectionProofPreConsensus(duty.Slot, v.Signer)
 	if err != nil {
 		return errors.Wrap(err, "could not sign slot with selection proof for pre-consensus")
 	}
 
-	signature, err := v.signer.SignRoot(msg, types.PartialSignatureType, v.share.SharePubKey)
+	signature, err := v.Signer.SignRoot(msg, types.PartialSignatureType, v.Share.SharePubKey)
 	if err != nil {
 		return errors.Wrap(err, "could not sign PartialSignatureMessage for selection proof")
 	}
 	signedPartialMsg := &SignedPartialSignatureMessage{
-		Type:      SelectionProofPartialSig,
-		Messages:  PartialSignatureMessages{msg},
+		Message:   *msg,
 		Signature: signature,
-		Signers:   []types.OperatorID{v.share.OperatorID},
+		Signer:    v.Share.OperatorID,
 	}
 
 	// broadcast
@@ -131,10 +129,10 @@ func (v *Validator) executeAggregatorDuty(duty *types.Duty, dutyRunner *Runner) 
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(v.share.ValidatorPubKey, dutyRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
 		Data:    data,
 	}
-	if err := v.network.Broadcast(msgToBroadcast); err != nil {
+	if err := v.Network.Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial selection proof sig")
 	}
 	return nil
@@ -148,22 +146,21 @@ func (v *Validator) executeAggregatorDuty(duty *types.Duty, dutyRunner *Runner) 
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid block sig to the BN
 func (v *Validator) executeBlockProposalDuty(duty *types.Duty, dutyRunner *Runner) error {
 	// sign partial randao
-	epoch := v.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(duty.Slot)
+	epoch := v.Beacon.GetBeaconNetwork().EstimatedEpochAtSlot(duty.Slot)
 
-	msg, err := dutyRunner.SignRandaoPreConsensus(epoch, duty.Slot, v.signer)
+	msg, err := dutyRunner.SignRandaoPreConsensus(epoch, duty.Slot, v.Signer)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao for pre-consensus")
 	}
 
-	signature, err := v.signer.SignRoot(msg, types.PartialSignatureType, v.share.SharePubKey)
+	signature, err := v.Signer.SignRoot(msg, types.PartialSignatureType, v.Share.SharePubKey)
 	if err != nil {
 		return errors.Wrap(err, "could not sign PartialSignatureMessage for RandaoPartialSig")
 	}
 	signedPartialMsg := &SignedPartialSignatureMessage{
-		Type:      RandaoPartialSig,
-		Messages:  PartialSignatureMessages{msg},
+		Message:   *msg,
 		Signature: signature,
-		Signers:   []types.OperatorID{v.share.OperatorID},
+		Signer:    v.Share.OperatorID,
 	}
 
 	// broadcast
@@ -173,10 +170,10 @@ func (v *Validator) executeBlockProposalDuty(duty *types.Duty, dutyRunner *Runne
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(v.share.ValidatorPubKey, dutyRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
 		Data:    data,
 	}
-	if err := v.network.Broadcast(msgToBroadcast); err != nil {
+	if err := v.Network.Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial randao sig")
 	}
 	return nil
@@ -190,7 +187,7 @@ func (v *Validator) executeBlockProposalDuty(duty *types.Duty, dutyRunner *Runne
 func (v *Validator) executeAttestationDuty(duty *types.Duty, dutyRunner *Runner) error {
 	// TODO - waitOneThirdOrValidBlock
 
-	attData, err := v.beacon.GetAttestationData(duty.Slot, duty.CommitteeIndex)
+	attData, err := v.Beacon.GetAttestationData(duty.Slot, duty.CommitteeIndex)
 	if err != nil {
 		return errors.Wrap(err, "failed to get attestation data")
 	}

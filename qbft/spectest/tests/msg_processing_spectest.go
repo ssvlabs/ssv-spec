@@ -46,8 +46,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 			msg2 := &qbft.SignedMessage{}
 			require.NoError(t, msg2.Decode(broadcastedMsgs[i].Data))
-
 			r2, _ := msg2.GetRoot()
+
 			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
 		}
 	}
@@ -56,5 +56,5 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
-	return test.Name
+	return "qbft message processing " + test.Name
 }

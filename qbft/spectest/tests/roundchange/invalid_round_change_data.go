@@ -16,7 +16,7 @@ func InvalidRoundChangeData() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      qbft.FirstRound,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, nil),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.FirstRound),
 		}),
 	}
 
@@ -26,6 +26,6 @@ func InvalidRoundChangeData() *tests.MsgProcessingSpecTest {
 		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "round change msg invalid: roundChangeData invalid: round change next value invalid",
+		ExpectedError:  "round change msg invalid: roundChangeData invalid: round change prepared value invalid",
 	}
 }

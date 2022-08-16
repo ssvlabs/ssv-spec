@@ -41,28 +41,28 @@ func PreparedPreviouslyDuplicateRCQuorum() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 	}
 
@@ -78,7 +78,7 @@ func PreparedPreviouslyDuplicateRCQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:     "duplicate rc msg justification (prepared) quorum",
 		Pre:      pre,
-		PostRoot: "e6d00e90279e18a2e73153005de9746bb56dc260760677df00c640f60a197fdf",
+		PostRoot: "6a1c7c45f1a8c31198fc96e26fad86d9b6b95f0acf8def6cea78e0886e42d8a8",
 		InputMessages: append(msgs, testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,

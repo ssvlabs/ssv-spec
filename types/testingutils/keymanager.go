@@ -7,12 +7,13 @@ import (
 	"fmt"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 type testingKeyManager struct {
@@ -233,5 +234,10 @@ func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Addr
 
 func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {
 	km.keys[hex.EncodeToString(shareKey.GetPublicKey().Serialize())] = shareKey
+	return nil
+}
+
+func (km *testingKeyManager) RemoveShare(pubKey string) error {
+	delete(km.keys, pubKey)
 	return nil
 }

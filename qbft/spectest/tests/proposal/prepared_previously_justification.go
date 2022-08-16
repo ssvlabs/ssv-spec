@@ -40,21 +40,21 @@ func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 	}
 
@@ -81,7 +81,7 @@ func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "previously prepared proposal",
 		Pre:           pre,
-		PostRoot:      "2d4c3022ee5b2d716c8959a0f8aab5b6dcfa0114f7fb0d16179fc72495b7e48d",
+		PostRoot:      "b67f687963630a773f1dd31848b4b78938a51147fc5d7c3b7b0bb61d8008c5b7",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -103,7 +103,7 @@ func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 				Height:     qbft.FirstHeight,
 				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, []byte{1, 2, 3, 4}, prepareMsgs),
+				Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 			}),
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 				MsgType:    qbft.ProposalMsgType,

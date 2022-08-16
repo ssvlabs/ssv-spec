@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (dr *Runner) SignSlotWithSelectionProofPreConsensus(slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessage, error) {
+func (dr *Runner) SignSlotWithSelectionProofPreConsensus(slot spec.Slot, signer types.KeyManager) (*PartialSignatureMessages, error) {
 	sig, r, err := signer.SignSlotWithSelectionProof(slot, dr.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign partial selection proof")
@@ -17,10 +17,13 @@ func (dr *Runner) SignSlotWithSelectionProofPreConsensus(slot spec.Slot, signer 
 		Slot:             slot,
 		PartialSignature: sig,
 		SigningRoot:      ensureRoot(r),
-		Signers:          []types.OperatorID{dr.Share.OperatorID},
+		Signer:           dr.Share.OperatorID,
 	}
 
-	return msg, nil
+	return &PartialSignatureMessages{
+		Type:     SelectionProofPartialSig,
+		Messages: []*PartialSignatureMessage{msg},
+	}, nil
 }
 
 // ProcessSelectionProofMessage process selection proof msg, returns true if it has quorum for partial signatures.
@@ -32,7 +35,7 @@ func (dr *Runner) ProcessSelectionProofMessage(signedMsg *SignedPartialSignature
 
 	roots := make([][]byte, 0)
 	anyQuorum := false
-	for _, msg := range signedMsg.Messages {
+	for _, msg := range signedMsg.Message.Messages {
 		prevQuorum := dr.State.SelectionProofPartialSig.HasQuorum(msg.SigningRoot)
 
 		if err := dr.State.SelectionProofPartialSig.AddSignature(msg); err != nil {

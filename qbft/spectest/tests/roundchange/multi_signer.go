@@ -19,7 +19,7 @@ func MultiSigner() *tests.MsgProcessingSpecTest {
 			Height:     qbft.FirstHeight,
 			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound, []byte{1, 2, 3, 4}),
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 	}
 

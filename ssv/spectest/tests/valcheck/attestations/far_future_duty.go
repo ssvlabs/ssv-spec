@@ -8,7 +8,7 @@ import (
 )
 
 // FarFutureDuty tests a far future duty data
-func FarFutureDuty() *tests.SpecTest {
+func FarFutureDuty() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 
@@ -42,7 +42,7 @@ func FarFutureDuty() *tests.SpecTest {
 		}), nil),
 	}
 
-	return &tests.SpecTest{
+	return &tests.MsgProcessingSpecTest{
 		Name:                    "far future duty",
 		Runner:                  dr,
 		Messages:                msgs,

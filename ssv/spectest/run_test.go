@@ -1,7 +1,6 @@
 package spectest
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/qbft"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -16,8 +15,8 @@ import (
 
 func TestAll(t *testing.T) {
 	for _, test := range AllTests {
-		t.Run(test.Name, func(t *testing.T) {
-			runTest(t, test)
+		t.Run(test.TestName(), func(t *testing.T) {
+			test.Run(t)
 		})
 	}
 }
@@ -26,7 +25,7 @@ func TestJson(t *testing.T) {
 	basedir, _ := os.Getwd()
 	path := filepath.Join(basedir, "generate")
 	fileName := "tests.json"
-	tests := map[string]*tests2.SpecTest{}
+	tests := map[string]*tests2.MsgProcessingSpecTest{}
 	byteValue, err := ioutil.ReadFile(path + "/" + fileName)
 	require.NoError(t, err)
 
@@ -50,6 +49,9 @@ func TestJson(t *testing.T) {
 			testingutils.TestingConfig(ks).ValueCheckF,
 			testingutils.TestingConfig(ks).Storage,
 			testingutils.TestingConfig(ks).Network,
+			func(state *qbft.State, round qbft.Round) types.OperatorID {
+				return 1
+			},
 		)
 		require.NoError(t, newContr.Decode(byts))
 		test.Runner.QBFTController = newContr
@@ -68,33 +70,9 @@ func TestJson(t *testing.T) {
 			}
 		}
 		t.Run(test.Name, func(t *testing.T) {
-			runTest(t, test)
+			test.Run(t)
 		})
 	}
-}
-
-func runTest(t *testing.T, test *tests2.SpecTest) {
-	v := testingutils.BaseValidator(keySetForShare(test.Runner.Share))
-	v.DutyRunners[test.Runner.BeaconRoleType] = test.Runner
-
-	lastErr := v.StartDuty(test.Duty)
-	for _, msg := range test.Messages {
-		err := v.ProcessMessage(msg)
-		if err != nil {
-			lastErr = err
-		}
-	}
-
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
-
-	postRoot, err := test.Runner.State.GetRoot()
-	require.NoError(t, err)
-
-	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
 }
 
 func fixQBFTInstanceForRun(t *testing.T, i *qbft.Instance, ks *testingutils.TestKeySet) *qbft.Instance {
