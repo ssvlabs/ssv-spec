@@ -501,7 +501,7 @@ This validation pipeline is the baseline and will be applied for all pubsub topi
 - `ACCEPT` message from my peer
 - `REJECT` empty message
 - `REJECT` message that was sent on the wrong topic
-- `REJECT` message with corrupted or invalid structure
+- `REJECT` message with corrupted or invalid top-level structure
 
 **NOTE** the decoded message reference will be saved (`pubsub.Message.ValidatorData`) for use by other components.
 
