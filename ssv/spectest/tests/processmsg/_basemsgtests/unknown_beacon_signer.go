@@ -36,6 +36,6 @@ func UnknownBeaconSigner() *baseTest {
 				Slots:               []spec.Slot{testingutils.TestingDutySlot},
 			},
 		},
-		ExpectedBaseError: "could not verify Beacon partial Signature: Beacon partial Signature signer not found",
+		ExpectedBaseError: "could not verify Beacon partial Signature: Beacon partial Signature Signer not found",
 	}
 }
