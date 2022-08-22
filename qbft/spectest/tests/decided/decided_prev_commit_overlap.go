@@ -1,4 +1,4 @@
-package commit
+package decided
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -8,8 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// Decided tests a multi signer commit msg with a quorum which does overlap with previous valid commits
-func Decided() *tests.MsgProcessingSpecTest {
+// PrevCommitOverlap tests a multi signer commit msg with a quorum which does overlap with previous valid commits
+func PrevCommitOverlap() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -47,16 +47,19 @@ func Decided() *tests.MsgProcessingSpecTest {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
-		testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]}, []types.OperatorID{1, 2, 3}, &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.MultiSignQBFTMsg(
+			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+			[]types.OperatorID{1, 2, 3},
+			&qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+			}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "decided, with overlap",
+		Name:          "decided with prev commit overlap",
 		Pre:           pre,
 		PostRoot:      "215f7d37b8d6819e377359bdc6e751b48a3d5d6d5f8f9109d56a1acedcef317d",
 		InputMessages: msgs,

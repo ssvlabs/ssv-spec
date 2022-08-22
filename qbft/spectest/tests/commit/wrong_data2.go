@@ -50,7 +50,7 @@ func WrongData2() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit data != prepared data",
 		Pre:           pre,
-		PostRoot:      "136ec76adbdd8ecb7b793ad6f6a16de17f376d54aa5be6c4b2c748a138137b81",
+		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -68,5 +68,6 @@ func WrongData2() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
+		ExpectedError: "commit msg invalid: proposed data different than commit msg data",
 	}
 }

@@ -52,7 +52,7 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 		Pre:           pre,
 		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
 		InputMessages: msgs,
-		ExpectedError: "commit msg invalid: commit Height is wrong",
+		ExpectedError: "commit msg invalid: invalid commit msg: commit Height is wrong",
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 				MsgType:    qbft.PrepareMsgType,

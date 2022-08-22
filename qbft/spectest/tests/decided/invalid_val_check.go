@@ -1,4 +1,4 @@
-package commit
+package decided
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -8,8 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// InvalidDecidedData tests a decided message with invalid decided data
-func InvalidDecidedData() *tests.MsgProcessingSpecTest {
+// InvalidValCheckData tests a decided message with invalid decided data
+func InvalidValCheckData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.MultiSignQBFTMsg(
@@ -28,11 +28,11 @@ func InvalidDecidedData() *tests.MsgProcessingSpecTest {
 			}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "invalid decided data",
+		Name:           "decided invalid val check data",
 		Pre:            pre,
 		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "commit msg invalid: invalid decided data: invalid value",
+		ExpectedError:  "invalid decided msg: decided value invalid: invalid value",
 	}
 }

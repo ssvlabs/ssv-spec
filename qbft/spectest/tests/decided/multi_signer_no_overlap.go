@@ -1,4 +1,4 @@
-package commit
+package decided
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -8,8 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// MultiSignerWithOverlap tests a multi signer commit msg which does overlap previous valid commit signers
-func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
+// MultiSignerNoOverlap tests a multi signer commit msg which doesn't overlap previous valid commits
+func MultiSignerNoOverlap() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -47,14 +47,7 @@ func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 		}),
-		testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2}, &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]}, []types.OperatorID{2, 3}, &qbft.Message{
 			MsgType:    qbft.CommitMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      qbft.FirstRound,
@@ -63,9 +56,9 @@ func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "multi signer, with overlap",
+		Name:          "multi signer, no overlap",
 		Pre:           pre,
-		PostRoot:      "db71796fe5f74710243fa81e31d1291d61e8c886a6ca97ece71f47b7f1f9d904",
+		PostRoot:      "06d5ce6451794fb52e39a83d48aa559b9d23ce7241be9d70d33968f4bf8c3000",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -83,6 +76,5 @@ func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
-		ExpectedError: "commit msg invalid: commit msgs allow 1 signer",
 	}
 }

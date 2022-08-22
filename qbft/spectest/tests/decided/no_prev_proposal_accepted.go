@@ -1,4 +1,4 @@
-package commit
+package decided
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -23,8 +23,7 @@ func NoPrevAcceptedProposal() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "no previous accepted proposal",
 		Pre:           pre,
-		PostRoot:      "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
+		PostRoot:      "763f8d4e449334a14d6c2c3c1ba7458a210b963fa54ce95fed991da5e9847ebd",
 		InputMessages: msgs,
-		ExpectedError: "did not receive proposal for this round",
 	}
 }

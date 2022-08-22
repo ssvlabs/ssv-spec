@@ -4,6 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller"
+	decided "github.com/bloxapp/ssv-spec/qbft/spectest/tests/decided"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
@@ -18,6 +19,15 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	decided.InvalidValCheckData(),
+	decided.InvalidData(),
+	decided.ImparsableData(),
+	decided.FutureRound(),
+	decided.DuplicateSigners(),
+	decided.DuplicateMsg(),
+	decided.PrevCommitOverlap(),
+	decided.CurrentRound(),
+
 	controller.StartInstanceFirstHeight(),
 	controller.StartInstancePreviousDecided(),
 	controller.StartInstancePreviousNotDecided(),
@@ -105,6 +115,7 @@ var AllTests = []SpecTest{
 	proposal.WrongHeight(),
 	proposal.WrongProposer(),
 	proposal.WrongSignature(),
+	proposal.UnknownSigner(),
 
 	prepare.DuplicateMsg(),
 	prepare.HappyFlow(),
@@ -118,6 +129,7 @@ var AllTests = []SpecTest{
 	prepare.WrongData(),
 	prepare.WrongHeight(),
 	prepare.WrongSignature(),
+	prepare.UnknownSigner(),
 
 	commit.CurrentRound(),
 	commit.FutureRound(),
@@ -131,21 +143,19 @@ var AllTests = []SpecTest{
 	commit.MultiSignerWithOverlap(),
 	commit.MultiSignerNoOverlap(),
 	commit.DuplicateSigners(),
-	commit.InvalidDecidedData(),
-	commit.Decided(),
-	commit.FutureDecided(),
-	commit.PastDecided(),
-	commit.CurrentDecided(),
 	commit.NoPrevAcceptedProposal(),
 	commit.WrongHeight(),
 	commit.ImparsableCommitData(),
 	commit.WrongSignature(),
+	commit.UnknownSigner(),
+	commit.InvalidValCheck(),
 
 	roundchange.HappyFlow(),
 	roundchange.F1Speedup(),
 	roundchange.F1SpeedupPrepared(),
 	roundchange.WrongHeight(),
 	roundchange.WrongSig(),
+	roundchange.UnknownSigner(),
 	roundchange.MultiSigner(),
 	roundchange.NotPrepared(),
 	roundchange.Prepared(),

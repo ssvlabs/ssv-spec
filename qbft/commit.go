@@ -1,17 +1,23 @@
 package qbft
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
 // UponCommit returns true if a quorum of commit messages was received.
 func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *MsgContainer) (bool, []byte, *SignedMessage, error) {
+	if i.State.ProposalAcceptedForCurrentRound == nil {
+		return false, nil, nil, errors.New("did not receive proposal for this round")
+	}
+
 	if err := validateCommit(
-		i.State,
 		i.config,
 		signedCommit,
 		i.State.Height,
+		i.State.Round,
+		i.State.ProposalAcceptedForCurrentRound,
 		i.State.Share.Committee,
 	); err != nil {
 		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
@@ -126,8 +132,7 @@ func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, e
 	return signedMsg, nil
 }
 
-func validateCommit(
-	state *State,
+func baseCommitValidation(
 	config IConfig,
 	signedCommit *SignedMessage,
 	height Height,
@@ -151,17 +156,42 @@ func validateCommit(
 	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "commit msg signature invalid")
 	}
-
-	if isDecidedMsg(state, signedCommit) {
-		if err := config.GetValueCheckF()(msgCommitData.Data); err != nil {
-			return errors.Wrap(err, "invalid decided data")
-		}
-	}
-
 	return nil
 }
 
-// returns true if signed commit has all quorum sigs
-func isDecidedMsg(state *State, signedCommit *SignedMessage) bool {
-	return state.Share.HasQuorum(len(signedCommit.Signers))
+func validateCommit(
+	config IConfig,
+	signedCommit *SignedMessage,
+	height Height,
+	round Round,
+	proposedMsg *SignedMessage,
+	operators []*types.Operator,
+) error {
+	if err := baseCommitValidation(config, signedCommit, height, operators); err != nil {
+		return errors.Wrap(err, "invalid commit msg")
+	}
+
+	if len(signedCommit.Signers) != 1 {
+		return errors.New("commit msgs allow 1 signer")
+	}
+
+	if signedCommit.Message.Round != round {
+		return errors.New("commit round is wrong")
+	}
+
+	proposedCommitData, err := proposedMsg.Message.GetCommitData()
+	if err != nil {
+		return errors.Wrap(err, "could not get proposed commit data")
+	}
+
+	msgCommitData, err := signedCommit.Message.GetCommitData()
+	if err != nil {
+		return errors.Wrap(err, "could not get msg commit data")
+	}
+
+	if !bytes.Equal(proposedCommitData.Data, msgCommitData.Data) {
+		return errors.New("proposed data different than commit msg data")
+	}
+
+	return nil
 }

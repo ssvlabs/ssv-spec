@@ -1,4 +1,4 @@
-package commit
+package prepare
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongData1 tests commit msg with data != acceptedProposalData.Data
-func WrongData1() *tests.MsgProcessingSpecTest {
+// UnknownSigner tests a single prepare received with an unknown signer
+func UnknownSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		MsgType:    qbft.ProposalMsgType,
@@ -19,20 +19,19 @@ func WrongData1() *tests.MsgProcessingSpecTest {
 	})
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
+		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(5), &qbft.Message{
+			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      qbft.FirstRound,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 5}),
+			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 		}),
 	}
-
 	return &tests.MsgProcessingSpecTest{
-		Name:          "commit data != acceptedProposalData.Data",
+		Name:          "prepare unknown signer",
 		Pre:           pre,
 		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
 		InputMessages: msgs,
-		ExpectedError: "commit msg invalid: proposed data different than commit msg data",
+		ExpectedError: "invalid prepare msg: prepare msg signature invalid: signer not found in operators",
 	}
 }
