@@ -5,6 +5,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // NoPrevAcceptedProposal tests a commit msg received without a previous accepted proposal
@@ -12,18 +13,21 @@ func NoPrevAcceptedProposal() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.MultiSignQBFTMsg(
+			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+			[]types.OperatorID{1, 2, 3},
+			&qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+			}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "no previous accepted proposal",
+		Name:          "decided no previous accepted proposal",
 		Pre:           pre,
-		PostRoot:      "763f8d4e449334a14d6c2c3c1ba7458a210b963fa54ce95fed991da5e9847ebd",
+		PostRoot:      "ed99ab91cac917c5bf9ff90eee30f21fe47d2e272d1f35d005dbdffef426ac02",
 		InputMessages: msgs,
 	}
 }

@@ -5,34 +5,31 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// PastRound tests a commit msg with past round, should process but not decide
+// PastRound tests a decided msg for a past round
 func PastRound() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      5,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-	})
-	pre.State.Round = 5
+	pre.State.Round = 100
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.MultiSignQBFTMsg(
+			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+			[]types.OperatorID{1, 2, 3},
+			&qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      5,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+			}),
 	}
-
 	return &tests.MsgProcessingSpecTest{
-		Name:          "commit past round",
-		Pre:           pre,
-		PostRoot:      "626b1b2023759a8f03a32f4675cee2050eeef380ca85efb660b31f7f2b60d513",
-		InputMessages: msgs,
+		Name:           "decided past round",
+		Pre:            pre,
+		PostRoot:       "d2978f3827f69c42778e9ac8d9676b992e3839cc5ed6d527b28b0d36889c4de2",
+		InputMessages:  msgs,
+		OutputMessages: []*qbft.SignedMessage{},
 	}
 }

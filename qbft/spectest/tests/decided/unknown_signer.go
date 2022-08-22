@@ -8,13 +8,13 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// WrongHeight tests a commit msg received with the wrong height
-func WrongHeight() *tests.MsgProcessingSpecTest {
+// UnknownSigner tests a decided msg with an unknown signer
+func UnknownSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.MultiSignQBFTMsg(
 			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-			[]types.OperatorID{1, 2, 3},
+			[]types.OperatorID{1, 2, 5},
 			&qbft.Message{
 				MsgType:    qbft.CommitMsgType,
 				Height:     2,
@@ -24,7 +24,7 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 			}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "decided wrong height",
+		Name:           "decided unknown signer",
 		Pre:            pre,
 		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
 		InputMessages:  msgs,

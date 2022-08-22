@@ -4,7 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller"
-	decided "github.com/bloxapp/ssv-spec/qbft/spectest/tests/decided"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/decided"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
@@ -19,15 +19,6 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	decided.InvalidValCheckData(),
-	decided.InvalidData(),
-	decided.ImparsableData(),
-	decided.FutureRound(),
-	decided.DuplicateSigners(),
-	decided.DuplicateMsg(),
-	decided.PrevCommitOverlap(),
-	decided.CurrentRound(),
-
 	controller.StartInstanceFirstHeight(),
 	controller.StartInstancePreviousDecided(),
 	controller.StartInstancePreviousNotDecided(),
@@ -149,6 +140,22 @@ var AllTests = []SpecTest{
 	commit.WrongSignature(),
 	commit.UnknownSigner(),
 	commit.InvalidValCheck(),
+
+	decided.UnknownSigner(),
+	decided.WrongSignature(),
+	decided.WrongHeight(),
+	decided.PostDecided(),
+	decided.SecondMsg(),
+	decided.PastRound(),
+	decided.NoPrevAcceptedProposal(),
+	decided.InvalidValCheckData(),
+	decided.InvalidData(),
+	decided.ImparsableData(),
+	decided.FutureRound(),
+	decided.DuplicateSigners(),
+	decided.DuplicateMsg(),
+	decided.PrevCommitOverlap(),
+	decided.CurrentRound(),
 
 	roundchange.HappyFlow(),
 	roundchange.F1Speedup(),

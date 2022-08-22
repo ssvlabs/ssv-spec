@@ -8,8 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// WrongHeight tests a commit msg received with the wrong height
-func WrongHeight() *tests.MsgProcessingSpecTest {
+// SecondMsg tests processing a decided msg after already receiving a decided msg
+func SecondMsg() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.MultiSignQBFTMsg(
@@ -17,18 +17,28 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 			[]types.OperatorID{1, 2, 3},
 			&qbft.Message{
 				MsgType:    qbft.CommitMsgType,
-				Height:     2,
+				Height:     qbft.FirstHeight,
+				Round:      qbft.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+			}),
+		testingutils.MultiSignQBFTMsg(
+			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[4]},
+			[]types.OperatorID{1, 2, 4},
+			&qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     qbft.FirstHeight,
 				Round:      qbft.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 			}),
 	}
+
 	return &tests.MsgProcessingSpecTest{
-		Name:           "decided wrong height",
+		Name:           "decided second msg",
 		Pre:            pre,
-		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
+		PostRoot:       "ed99ab91cac917c5bf9ff90eee30f21fe47d2e272d1f35d005dbdffef426ac02",
 		InputMessages:  msgs,
-		ExpectedError:  "invalid decided msg: invalid decided msg: commit Height is wrong",
 		OutputMessages: []*qbft.SignedMessage{},
 	}
 }
