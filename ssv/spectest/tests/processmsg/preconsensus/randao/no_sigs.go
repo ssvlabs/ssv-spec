@@ -21,10 +21,10 @@ func NoSigs() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "9ffe08b74a87f4c5395b7a3978b7be6f45709cec0b924eac6fb5543bc621a1c4",
+		PostDutyRunnerStateRoot: "ca3d758a37f4448b654c844b2990ea8fe705920ee31b9732ed7bcb92ac7e5400",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
-		ExpectedError: "failed processing randao message: invalid randao message: SignedPartialSignatureMessage invalid: no PartialSignatureMessages messages",
+		ExpectedError: "failed processing randao message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: no PartialSignatureMessages messages",
 	}
 }

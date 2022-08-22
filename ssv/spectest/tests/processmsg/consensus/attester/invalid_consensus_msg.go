@@ -28,7 +28,7 @@ func InvalidConsensusMsg() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestAttesterConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "79338fd23b14bee97cb0356da5bf6c6c30ff517fe62fc4dd32fcb440d2725284",
+		PostDutyRunnerStateRoot: "7519e55c8bf6a7fac31f8b88f35dacc4094c737677925a6da50cce3ddfaca342",
 		OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 		ExpectedError:           "failed processing consensus message: failed to process consensus msg: instance not found",
 	}
