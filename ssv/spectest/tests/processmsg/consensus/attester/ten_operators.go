@@ -136,7 +136,7 @@ func TenOperators() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestAttesterConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "e404f9f8589be6ef733ae75c4f0723d63e552dbb7bdeb437f5420f7588f6f241",
+		PostDutyRunnerStateRoot: "65015bb33fe39256fb974082a54e19d3e82bd79a6b80b71071441570984c16f8",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PostConsensusAttestationMsg(testingutils.Testing10SharesSet().Shares[1], 1, qbft.FirstHeight),
 		},

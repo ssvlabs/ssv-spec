@@ -27,7 +27,7 @@ func Valid10Quorum() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "b263504a9150fe5cc2871df29832827ed3898fbd4a3b0c464b263f68fdb43175",
+		PostDutyRunnerStateRoot: "5a3273032daa9d384d0be77fa1e37de1ca55092d58fa7ca9391e840deb42b9a7",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},

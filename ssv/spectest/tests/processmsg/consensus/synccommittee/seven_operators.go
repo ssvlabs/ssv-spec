@@ -106,7 +106,7 @@ func SevenOperators() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingSyncCommitteeDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "6b493266a7c015ef9400595d311abc0f7b71a65e202aee8f44e60e79d62fe3c4",
+		PostDutyRunnerStateRoot: "b88d45876043c91250467e841d672de67a69ee0692e73ce49a984899562edc82",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PostConsensusSyncCommitteeMsg(testingutils.Testing7SharesSet().Shares[1], 1),
 		},

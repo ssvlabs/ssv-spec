@@ -3,6 +3,7 @@ package spectest
 import (
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -36,14 +37,14 @@ func TestJson(t *testing.T) {
 	for _, test := range tests {
 
 		// a little trick we do to instantiate all the internal controller params
-		byts, err := test.Runner.QBFTController.Encode()
+		byts, err := test.Runner.GetQBFTController().Encode()
 		require.NoError(t, err)
 
-		ks := keySetForShare(test.Runner.QBFTController.Share)
+		ks := keySetForShare(test.Runner.GetQBFTController().Share)
 
 		newContr := qbft.NewController(
 			[]byte{1, 2, 3, 4},
-			test.Runner.QBFTController.Share,
+			test.Runner.GetQBFTController().Share,
 			testingutils.TestingConfig(ks).Domain,
 			testingutils.TestingConfig(ks).Signer,
 			testingutils.TestingConfig(ks).ValueCheckF,
@@ -54,19 +55,19 @@ func TestJson(t *testing.T) {
 			},
 		)
 		require.NoError(t, newContr.Decode(byts))
-		test.Runner.QBFTController = newContr
+		setControllerInRunner(test.Runner, newContr)
 
-		for idx, i := range test.Runner.QBFTController.StoredInstances {
+		for idx, i := range test.Runner.GetQBFTController().StoredInstances {
 			if i == nil {
 				continue
 			}
 			fixedInst := fixQBFTInstanceForRun(t, i, ks)
-			test.Runner.QBFTController.StoredInstances[idx] = fixedInst
+			test.Runner.GetQBFTController().StoredInstances[idx] = fixedInst
 
-			if test.Runner.State != nil &&
-				test.Runner.State.RunningInstance != nil &&
-				test.Runner.State.RunningInstance.GetHeight() == fixedInst.GetHeight() {
-				test.Runner.State.RunningInstance = fixedInst
+			if test.Runner.GetState() != nil &&
+				test.Runner.GetState().RunningInstance != nil &&
+				test.Runner.GetState().RunningInstance.GetHeight() == fixedInst.GetHeight() {
+				test.Runner.GetState().RunningInstance = fixedInst
 			}
 		}
 		t.Run(test.Name, func(t *testing.T) {
@@ -97,4 +98,19 @@ func keySetForShare(share *types.Share) *testingutils.TestKeySet {
 		return testingutils.Testing13SharesSet()
 	}
 	return testingutils.Testing4SharesSet()
+}
+
+func setControllerInRunner(runner ssv.Runner, controller *qbft.Controller) {
+	switch runner.GetBeaconRole() {
+	case types.BNRoleAttester:
+		runner.(*ssv.AttesterRunner).QBFTController = controller
+	case types.BNRoleAggregator:
+		runner.(*ssv.AggregatorRunner).QBFTController = controller
+	case types.BNRoleProposer:
+		runner.(*ssv.ProposerRunner).QBFTController = controller
+	case types.BNRoleSyncCommittee:
+		runner.(*ssv.SyncCommitteeRunner).QBFTController = controller
+	case types.BNRoleSyncCommitteeContribution:
+		runner.(*ssv.SyncCommitteeAggregatorRunner).QBFTController = controller
+	}
 }

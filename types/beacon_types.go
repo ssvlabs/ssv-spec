@@ -19,7 +19,9 @@ var (
 	DomainAggregateAndProof           = [4]byte{0x06, 0x00, 0x00, 0x00}
 	DomainSyncCommittee               = [4]byte{0x07, 0x00, 0x00, 0x00}
 	DomainSyncCommitteeSelectionProof = [4]byte{0x08, 0x00, 0x00, 0x00}
-	DomainContributionAndProod        = [4]byte{0x09, 0x00, 0x00, 0x00}
+	DomainContributionAndProof        = [4]byte{0x09, 0x00, 0x00, 0x00}
+
+	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
 )
 
 // MaxEffectiveBalanceInGwei is the max effective balance

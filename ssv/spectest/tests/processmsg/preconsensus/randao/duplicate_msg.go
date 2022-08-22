@@ -22,7 +22,7 @@ func DuplicateMsgs() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestingProposerDuty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "bf0fc94c6f5e64c39cd7f83e62e28db3fc15a4c8fa3e85f775062a14679bde87",
+		PostDutyRunnerStateRoot: "3f55ac00cd2b200bf7ad8784a38f60bc9f1389d110724a35bfed64aa29cde9c6",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},

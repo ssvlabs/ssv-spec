@@ -76,7 +76,7 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Duty:                    testingutils.TestAttesterConsensusData.Duty,
 		Messages:                msgs,
-		PostDutyRunnerStateRoot: "2914c9009e525f2647cf3310315ed5330a09dc5b91fa1043a66fb0cada66b02b",
+		PostDutyRunnerStateRoot: "d2ab40dabc695b40c1d32e563ebf6ca315389a9920ac400cd7d5baa49c417dd7",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PostConsensusAttestationMsg(testingutils.Testing4SharesSet().Shares[1], 1, qbft.FirstHeight),
 		},

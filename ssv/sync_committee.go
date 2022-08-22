@@ -3,15 +3,15 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
-	"github.com/prysmaticlabs/go-bitfield"
 )
 
-type AttesterRunner struct {
+type SyncCommitteeRunner struct {
 	State          *State
 	Share          *types.Share
 	QBFTController *qbft.Controller
@@ -24,7 +24,7 @@ type AttesterRunner struct {
 	valCheck qbft.ProposedValueCheckF
 }
 
-func NewAttesterRunnner(
+func NewSyncCommitteeRunner(
 	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
 	qbftController *qbft.Controller,
@@ -33,8 +33,8 @@ func NewAttesterRunnner(
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
 ) Runner {
-	return &AttesterRunner{
-		BeaconRoleType: types.BNRoleAttester,
+	return &SyncCommitteeRunner{
+		BeaconRoleType: types.BNRoleSyncCommittee,
 		BeaconNetwork:  beaconNetwork,
 		Share:          share,
 		QBFTController: qbftController,
@@ -46,7 +46,7 @@ func NewAttesterRunnner(
 	}
 }
 
-func (r *AttesterRunner) StartNewDuty(duty *types.Duty) error {
+func (r *SyncCommitteeRunner) StartNewDuty(duty *types.Duty) error {
 	if err := canStartNewDuty(r, duty); err != nil {
 		return err
 	}
@@ -55,18 +55,18 @@ func (r *AttesterRunner) StartNewDuty(duty *types.Duty) error {
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
-func (r *AttesterRunner) HasRunningDuty() bool {
+func (r *SyncCommitteeRunner) HasRunningDuty() bool {
 	if r.GetState() == nil {
 		return false
 	}
 	return r.GetState().Finished != true
 }
 
-func (r *AttesterRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	return errors.New("no pre consensus sigs required for attester role")
+func (r *SyncCommitteeRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
+	return errors.New("no pre consensus sigs required for sync committee role")
 }
 
-func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	decided, decidedValue, err := baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
@@ -79,7 +79,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	r.GetState().DecidedValue = decidedValue
 
 	// specific duty sig
-	msg, err := signBeaconObject(r, decidedValue.AttestationData, decidedValue.Duty.Slot, types.DomainAttester)
+	msg, err := signBeaconObject(r, types.SSZBytes(decidedValue.SyncCommitteeBlockRoot[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -110,7 +110,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	return nil
 }
 
-func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *SyncCommitteeRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
 	quorum, roots, err := basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -128,45 +128,40 @@ func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		duty := r.GetState().DecidedValue.Duty
-
-		aggregationBitfield := bitfield.NewBitlist(r.GetState().DecidedValue.Duty.CommitteeLength)
-		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
-		signedAtt := &phase0.Attestation{
-			Data:            r.GetState().DecidedValue.AttestationData,
+		msg := &altair.SyncCommitteeMessage{
+			Slot:            r.GetState().DecidedValue.Duty.Slot,
+			BeaconBlockRoot: r.GetState().DecidedValue.SyncCommitteeBlockRoot,
+			ValidatorIndex:  r.GetState().DecidedValue.Duty.ValidatorIndex,
 			Signature:       specSig,
-			AggregationBits: aggregationBitfield,
 		}
-
-		// broadcast
-		if err := r.beacon.SubmitAttestation(signedAtt); err != nil {
-			return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
+		if err := r.GetBeaconNode().SubmitSyncMessage(msg); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
 		}
 	}
 	r.GetState().Finished = true
 	return nil
 }
 
-func (r *AttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{}, types.DomainError, errors.New("no expected pre consensus roots for attester")
+func (r *SyncCommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	return []ssz.HashRoot{}, types.DomainError, errors.New("no expected pre consensus roots for sync committee")
 }
 
 // executeDuty steps:
-// 1) get attestation data from BN
-// 2) start consensus on duty + attestation data
-// 3) Once consensus decides, sign partial attestation and broadcast
-// 4) collect 2f+1 partial sigs, reconstruct and broadcast valid attestation sig to the BN
-func (r *AttesterRunner) executeDuty(duty *types.Duty) error {
+// 1) get sync block root from BN
+// 2) start consensus on duty + block root data
+// 3) Once consensus decides, sign partial block root and broadcast
+// 4) collect 2f+1 partial sigs, reconstruct and broadcast valid sync committee sig to the BN
+func (r *SyncCommitteeRunner) executeDuty(duty *types.Duty) error {
 	// TODO - waitOneThirdOrValidBlock
 
-	attData, err := r.GetBeaconNode().GetAttestationData(duty.Slot, duty.CommitteeIndex)
+	root, err := r.GetBeaconNode().GetSyncMessageBlockRoot()
 	if err != nil {
-		return errors.Wrap(err, "failed to get attestation data")
+		return errors.Wrap(err, "failed to get sync committee block root")
 	}
 
 	input := &types.ConsensusData{
-		Duty:            duty,
-		AttestationData: attData,
+		Duty:                   duty,
+		SyncCommitteeBlockRoot: root,
 	}
 
 	if err := decide(r, input); err != nil {
@@ -175,54 +170,54 @@ func (r *AttesterRunner) executeDuty(duty *types.Duty) error {
 	return nil
 }
 
-func (r *AttesterRunner) GetNetwork() Network {
+func (r *SyncCommitteeRunner) GetNetwork() Network {
 	return r.network
 }
 
-func (r *AttesterRunner) GetBeaconNetwork() types.BeaconNetwork {
+func (r *SyncCommitteeRunner) GetBeaconNetwork() types.BeaconNetwork {
 	return r.BeaconNetwork
 }
 
-func (r *AttesterRunner) GetBeaconNode() BeaconNode {
+func (r *SyncCommitteeRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *AttesterRunner) GetBeaconRole() types.BeaconRole {
+func (r *SyncCommitteeRunner) GetBeaconRole() types.BeaconRole {
 	return r.BeaconRoleType
 }
 
-func (r *AttesterRunner) GetShare() *types.Share {
+func (r *SyncCommitteeRunner) GetShare() *types.Share {
 	return r.Share
 }
 
-func (r *AttesterRunner) GetState() *State {
+func (r *SyncCommitteeRunner) GetState() *State {
 	return r.State
 }
 
-func (r *AttesterRunner) GetValCheckF() qbft.ProposedValueCheckF {
+func (r *SyncCommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *AttesterRunner) GetQBFTController() *qbft.Controller {
+func (r *SyncCommitteeRunner) GetQBFTController() *qbft.Controller {
 	return r.QBFTController
 }
 
-func (r *AttesterRunner) GetSigner() types.KeyManager {
+func (r *SyncCommitteeRunner) GetSigner() types.KeyManager {
 	return r.signer
 }
 
 // Encode returns the encoded struct in bytes or error
-func (r *AttesterRunner) Encode() ([]byte, error) {
+func (r *SyncCommitteeRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)
 }
 
 // Decode returns error if decoding failed
-func (r *AttesterRunner) Decode(data []byte) error {
+func (r *SyncCommitteeRunner) Decode(data []byte) error {
 	return json.Unmarshal(data, &r)
 }
 
 // GetRoot returns the root used for signing and verification
-func (r *AttesterRunner) GetRoot() ([]byte, error) {
+func (r *SyncCommitteeRunner) GetRoot() ([]byte, error) {
 	marshaledRoot, err := r.Encode()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode DutyRunnerState")
