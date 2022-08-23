@@ -74,8 +74,6 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 		return nil
 	}
 
-	// TODO - what happens if we get quorum multiple times?
-
 	duty := r.GetState().StartingDuty
 	input := &types.ConsensusData{
 		Duty:                      duty,

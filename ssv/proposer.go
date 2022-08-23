@@ -74,7 +74,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMe
 	}
 
 	if len(roots) != 1 {
-		return errors.New("too many randao roots")
+		return errors.New("expecting 1 randao root quorum")
 	}
 
 	root := roots[0]
