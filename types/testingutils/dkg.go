@@ -20,7 +20,7 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	km := NewTestingKeyManager()
 	config := &dkg.Config{
 		Protocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.KeyGenProtocol {
-			return &MockKeygenProtocol{
+			return &TestingKeygenProtocol{
 				KeyGenOutput: keySet.KeyGenOutput(1),
 			}
 		},
