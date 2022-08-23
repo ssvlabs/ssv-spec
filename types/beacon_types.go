@@ -2,10 +2,27 @@ package types
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	ssz "github.com/ferranbt/fastssz"
 	"time"
 )
 
-var DomainDeposit = [4]byte{0x03, 0x00, 0x00, 0x00}
+var GenesisValidatorsRoot = spec.Root{}
+var GenesisForkVersion = spec.Version{0, 0, 0, 0}
+
+var (
+	DomainProposer                    = [4]byte{0x00, 0x00, 0x00, 0x00}
+	DomainAttester                    = [4]byte{0x01, 0x00, 0x00, 0x00}
+	DomainRandao                      = [4]byte{0x02, 0x00, 0x00, 0x00}
+	DomainDeposit                     = [4]byte{0x03, 0x00, 0x00, 0x00}
+	DomainVoluntaryExit               = [4]byte{0x04, 0x00, 0x00, 0x00}
+	DomainSelectionProof              = [4]byte{0x05, 0x00, 0x00, 0x00}
+	DomainAggregateAndProof           = [4]byte{0x06, 0x00, 0x00, 0x00}
+	DomainSyncCommittee               = [4]byte{0x07, 0x00, 0x00, 0x00}
+	DomainSyncCommitteeSelectionProof = [4]byte{0x08, 0x00, 0x00, 0x00}
+	DomainContributionAndProof        = [4]byte{0x09, 0x00, 0x00, 0x00}
+
+	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
+)
 
 // MaxEffectiveBalanceInGwei is the max effective balance
 const MaxEffectiveBalanceInGwei uint64 = 32000000000
@@ -153,4 +170,33 @@ func (n BeaconNetwork) EstimatedCurrentEpoch() spec.Epoch {
 // EstimatedEpochAtSlot estimates epoch at the given slot
 func (n BeaconNetwork) EstimatedEpochAtSlot(slot spec.Slot) spec.Epoch {
 	return spec.Epoch(slot / spec.Slot(n.SlotsPerEpoch()))
+}
+
+// ComputeETHDomain returns computed domain
+func ComputeETHDomain(domain spec.DomainType, fork spec.Version, genesisValidatorRoot spec.Root) (spec.Domain, error) {
+	ret := spec.Domain{}
+	copy(ret[0:4], domain[:])
+
+	forkData := spec.ForkData{
+		CurrentVersion:        fork,
+		GenesisValidatorsRoot: genesisValidatorRoot,
+	}
+	forkDataRoot, err := forkData.HashTreeRoot()
+	if err != nil {
+
+	}
+	copy(ret[4:32], forkDataRoot[0:28])
+	return ret, nil
+}
+
+func ComputeETHSigningRoot(obj ssz.HashRoot, domain spec.Domain) (spec.Root, error) {
+	root, err := obj.HashTreeRoot()
+	if err != nil {
+		return spec.Root{}, err
+	}
+	signingContainer := spec.SigningData{
+		ObjectRoot: root,
+		Domain:     domain,
+	}
+	return signingContainer.HashTreeRoot()
 }

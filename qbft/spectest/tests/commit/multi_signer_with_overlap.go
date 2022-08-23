@@ -65,7 +65,7 @@ func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "multi signer, with overlap",
 		Pre:           pre,
-		PostRoot:      "e88d50d70124c38a25c6ed2ff13bf204b728df7160161e57534a7b9cc610e8cb",
+		PostRoot:      "db71796fe5f74710243fa81e31d1291d61e8c886a6ca97ece71f47b7f1f9d904",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -83,5 +83,6 @@ func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
+		ExpectedError: "commit msg invalid: commit msgs allow 1 signer",
 	}
 }

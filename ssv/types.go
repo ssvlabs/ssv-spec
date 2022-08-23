@@ -2,15 +2,16 @@ package ssv
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
 // DutyRunners is a map of duty runners mapped by msg id hex.
-type DutyRunners map[types.BeaconRole]*Runner
+type DutyRunners map[types.BeaconRole]Runner
 
 // DutyRunnerForMsgID returns a Runner from the provided msg ID, or nil if not found
-func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) *Runner {
+func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) Runner {
 	role := msgID.GetRoleType()
 	return ci[role]
 }
@@ -34,9 +35,9 @@ type AttesterCalls interface {
 // ProposerCalls interface has all block proposer duty specific calls
 type ProposerCalls interface {
 	// GetBeaconBlock returns beacon block by the given slot and committee index
-	GetBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (*altair.BeaconBlock, error)
+	GetBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (*bellatrix.BeaconBlock, error)
 	// SubmitBeaconBlock submit the block to the node
-	SubmitBeaconBlock(block *altair.SignedBeaconBlock) error
+	SubmitBeaconBlock(block *bellatrix.SignedBeaconBlock) error
 }
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls
@@ -69,6 +70,10 @@ type SyncCommitteeContributionCalls interface {
 	SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error
 }
 
+type DomainCalls interface {
+	DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error)
+}
+
 type BeaconNode interface {
 	// GetBeaconNetwork returns the beacon network the node is on
 	GetBeaconNetwork() types.BeaconNetwork
@@ -77,4 +82,5 @@ type BeaconNode interface {
 	AggregatorCalls
 	SyncCommitteeCalls
 	SyncCommitteeContributionCalls
+	DomainCalls
 }

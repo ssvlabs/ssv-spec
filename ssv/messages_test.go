@@ -67,12 +67,12 @@ func TestSignedPostConsensusMessage_MatchedSigners(t *testing.T) {
 //		sig.Add(sk2.SignByte([]byte{1, 2, 3, 4}))
 //		msg1 := &PartialSignatureMessage{
 //			PartialSignature:   sk1.SignByte([]byte{1, 2, 3, 4}).Serialize(),
-//			Signer:         []types.NodeID{1},
+//			signer:         []types.NodeID{1},
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //		msg2 := &PartialSignatureMessage{
 //			PartialSignature:   sk2.SignByte([]byte{1, 2, 3, 4}).Serialize(),
-//			Signer:         []types.NodeID{2},
+//			signer:         []types.NodeID{2},
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //
@@ -80,19 +80,19 @@ func TestSignedPostConsensusMessage_MatchedSigners(t *testing.T) {
 //		msg1.MatchedSigners([]types.NodeID{1, 2})
 //	})
 //
-//	t.Run("partially matching Signer", func(t *testing.T) {
+//	t.Run("partially matching signer", func(t *testing.T) {
 //		sig := sk1.SignByte([]byte{1, 2, 3, 4})
 //		sig.Add(sk2.SignByte([]byte{1, 2, 3, 4}))
 //		msg1 := &PartialSignatureMessage{
-//			Signer:         []types.NodeID{1, 2},
+//			signer:         []types.NodeID{1, 2},
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //		msg2 := &PartialSignatureMessage{
-//			Signer:         []types.NodeID{2},
+//			signer:         []types.NodeID{2},
 //			SigningRoot: []byte{1, 2, 3, 4},
 //		}
 //
-//		require.EqualError(t, msg1.Aggregate(msg2), "Signer IDs partially/ fully match")
+//		require.EqualError(t, msg1.Aggregate(msg2), "signer IDs partially/ fully match")
 //	})
 //
 //	t.Run("different roots", func(t *testing.T) {

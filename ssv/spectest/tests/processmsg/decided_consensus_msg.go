@@ -54,7 +54,7 @@ func ValidDecidedConsensusMsg() *tests.MsgProcessingSpecTest {
 		Runner:                  dr,
 		Messages:                msgs,
 		Duty:                    testingutils.TestingAttesterDuty,
-		PostDutyRunnerStateRoot: "109ea13377c3bf2a38df4fbe7c15a98dc4033c754074f8973a23227b1883f3cc",
+		PostDutyRunnerStateRoot: "8cee4711a21f23d06ef833a2742248a4604144e5cedacf4a83635086054d99cd",
 		OutputMessages: []*ssv.SignedPartialSignatureMessage{
 			testingutils.PostConsensusAttestationMsg(testingutils.Testing4SharesSet().Shares[1], 1, qbft.FirstHeight),
 		},

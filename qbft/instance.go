@@ -94,7 +94,13 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 		case PrepareMsgType:
 			return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
 		case CommitMsgType:
-			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
+			if isDecidedMsg(i.State, msg) {
+				decided, decidedValue, err = i.UponDecided(msg, i.State.CommitContainer)
+				aggregatedCommit = msg
+			} else {
+				decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
+			}
+
 			i.State.Decided = decided
 			if decided {
 				i.State.DecidedValue = decidedValue
