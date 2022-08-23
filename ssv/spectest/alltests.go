@@ -1,6 +1,7 @@
 package spectest
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/consensus/attester"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/consensus/proposer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/consensus/synccommittee"
@@ -43,21 +44,20 @@ var AllTests = []SpecTest{
 	//////postconsensus.MsgAfterReconstruction(),
 	//////postconsensus.DuplicateMsg(),
 	////
-	////messages.EncodingAndRoot(),
-	////messages.NoMsgs(),
-	////messages.InvalidMsg(),
-	////messages.InvalidContributionProofMetaData(),
-	////messages.ValidContributionProofMetaData(),
-	////messages.SigValid(),
-	////messages.SigTooShort(),
-	////messages.SigTooLong(),
-	////messages.PartialSigValid(),
-	////messages.PartialSigTooShort(),
-	////messages.PartialSigTooLong(),
-	////messages.PartialRootValid(),
-	////messages.PartialRootTooShort(),
-	////messages.PartialRootTooLong(),
-	////
+	messages.EncodingAndRoot(),
+	messages.NoMsgs(),
+	messages.InvalidMsg(),
+	messages.ValidContributionProofMetaData(),
+	messages.SigValid(),
+	messages.SigTooShort(),
+	messages.SigTooLong(),
+	messages.PartialSigValid(),
+	messages.PartialSigTooShort(),
+	messages.PartialSigTooLong(),
+	messages.PartialRootValid(),
+	messages.PartialRootTooShort(),
+	messages.PartialRootTooLong(),
+
 	//////valcheck.WrongDutyPubKey(),
 	////
 	attester.HappyFlow(),
