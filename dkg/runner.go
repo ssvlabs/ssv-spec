@@ -80,7 +80,6 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			return false, nil, errors.Wrap(err, "could not decode PartialDepositData")
 		}
 
-		// TODO: Skip checking for root so that we can still receive message before we prepare own sig.
 		if err := r.validateDepositDataSig(depSig); err != nil {
 			return false, nil, errors.Wrap(err, "PartialDepositData invalid")
 		}
@@ -173,7 +172,7 @@ func (r *Runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {
 func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
 	sigBytes := map[types.OperatorID][]byte{}
 	for id, d := range r.DepositDataSignatures {
-		if err := r.validateDepositDataSig(d); err != nil {
+		if err := r.validateDepositDataRoot(d); err != nil {
 			return nil, errors.Wrap(err, "PartialDepositData invalid")
 		}
 		sigBytes[id] = d.Signature
@@ -220,10 +219,14 @@ func (r *Runner) validateSignedOutput(msg *SignedOutput) error {
 	return nil
 }
 
-func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
+func (r *Runner) validateDepositDataRoot(msg *PartialDepositData) error {
 	if !bytes.Equal(r.DepositDataRoot, msg.Root) {
 		return errors.New("deposit data roots not equal")
 	}
+	return nil
+}
+
+func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
 
 	// find operator and verify msg
 	sharePK, found := r.KeyGenOutput.OperatorPubKeys[msg.Signer]
