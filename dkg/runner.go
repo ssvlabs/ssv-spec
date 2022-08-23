@@ -61,12 +61,6 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 
 			// sign
 			sig := r.KeyGenOutput.Share.SignByte(root)
-			/* GLNOTE: we should use secret share to sign ===>
-			sig, err := r.config.Signer.SignETHDepositRoot(root, r.Operator.ETHAddress)
-			if err != nil {
-				return false, nil, errors.Wrap(err, "could not sign deposit data")
-			}
-			<=== */
 
 			// broadcast
 			pdd := &PartialDepositData{
