@@ -75,8 +75,12 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 	switch signedMsg.Message.MsgType {
 	case InitMsgType:
 		return n.startNewDKGMsg(signedMsg)
-	default:
+	case DepositDataMsgType:
 		return n.processDKGMsg(signedMsg)
+	case OutputMsgType:
+		return n.processDKGMsg(signedMsg)
+	default:
+		return errors.New("unknown msg type")
 	}
 }
 
