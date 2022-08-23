@@ -3,6 +3,8 @@ package dkg
 import (
 	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
@@ -33,6 +35,9 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 
 	switch msg.Message.MsgType {
 	case ProtocolMsgType:
+		if r.DepositDataSignatures[r.Operator.OperatorID] != nil {
+			return false, nil, errors.New("keygen has already completed")
+		}
 		finished, o, err := r.protocol.ProcessMsg(msg)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to process dkg msg")
@@ -51,22 +56,22 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			if err != nil {
 				return false, nil, errors.Wrap(err, "could not generate deposit data")
 			}
+
 			r.DepositDataRoot = root
 
 			// sign
-			sig, err := r.config.Signer.SignETHDepositRoot(root, r.Operator.ETHAddress)
-			if err != nil {
-				return false, nil, errors.Wrap(err, "could not sign deposit data")
-			}
+			sig := r.KeyGenOutput.Share.SignByte(root)
 
 			// broadcast
-			if err := r.signAndBroadcastMsg(&PartialDepositData{
+			pdd := &PartialDepositData{
 				Signer:    r.Operator.OperatorID,
 				Root:      r.DepositDataRoot,
-				Signature: sig,
-			}, DepositDataMsgType); err != nil {
+				Signature: sig.Serialize(),
+			}
+			if err := r.signAndBroadcastMsg(pdd, DepositDataMsgType); err != nil {
 				return false, nil, errors.Wrap(err, "could not broadcast partial deposit data")
 			}
+			r.DepositDataSignatures[r.Operator.OperatorID] = pdd
 		}
 		return false, nil, nil
 	case DepositDataMsgType:
@@ -79,7 +84,12 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			return false, nil, errors.Wrap(err, "PartialDepositData invalid")
 		}
 
-		r.DepositDataSignatures[msg.Signer] = depSig
+		if found := r.DepositDataSignatures[msg.Signer]; found == nil {
+			r.DepositDataSignatures[msg.Signer] = depSig
+		} else if bytes.Compare(found.Signature, msg.Signature) != 0 {
+			return false, nil, errors.New("inconsistent partial signature received")
+		}
+
 		if len(r.DepositDataSignatures) == int(r.InitMsg.Threshold) {
 			// reconstruct deposit data sig
 			depositSig, err := r.reconstructDepositDataSignature()
@@ -104,6 +114,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 				return false, nil, errors.Wrap(err, "could not generate dkg SignedOutput")
 			}
 
+			r.OutputMsgs[r.Operator.OperatorID] = ret
 			if err := r.signAndBroadcastMsg(ret, OutputMsgType); err != nil {
 				return false, nil, errors.Wrap(err, "could not broadcast SignedOutput")
 			}
@@ -120,7 +131,8 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 		}
 
 		r.OutputMsgs[msg.Signer] = output
-		if len(r.OutputMsgs) == int(r.InitMsg.Threshold) {
+		// GLNOTE: Actually we need every operator to sign instead only the quorum!
+		if len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs) {
 			return true, r.OutputMsgs, nil
 		}
 		return false, nil, nil
@@ -132,21 +144,89 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 }
 
 func (r *Runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {
-	panic("implement")
+	data, err := msg.Encode()
+	if err != nil {
+		return err
+	}
+	signedMessage := &SignedMessage{
+		Message: &Message{
+			MsgType:    msgType,
+			Identifier: r.Identifier,
+			Data:       data,
+		},
+		Signer:    r.Operator.OperatorID,
+		Signature: nil,
+	}
+	// GLNOTE: Should we use SignDKGOutput?
+	sig, err := r.config.Signer.SignDKGOutput(signedMessage, r.Operator.ETHAddress)
+	if err != nil {
+		return errors.Wrap(err, "failed to sign message")
+	}
+	signedMessage.Signature = sig
+	if err = r.config.Network.BroadcastDKGMessage(signedMessage); err != nil {
+		return errors.Wrap(err, "failed to broadcast message")
+	}
+	return nil
 }
 
 func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
-	panic("implement")
+	sigBytes := map[types.OperatorID][]byte{}
+	for id, d := range r.DepositDataSignatures {
+		if err := r.validateDepositDataRoot(d); err != nil {
+			return nil, errors.Wrap(err, "PartialDepositData invalid")
+		}
+		sigBytes[id] = d.Signature
+	}
+
+	sig, err := types.ReconstructSignatures(sigBytes)
+	if err != nil {
+		return nil, err
+	}
+	return sig.Serialize(), nil
 }
 
 func (r *Runner) validateSignedOutput(msg *SignedOutput) error {
-	panic("implement")
+	// TODO: Separate fields match and signature validation
+	output := r.ownOutput()
+	if output != nil {
+		if output.Data.RequestID != msg.Data.RequestID {
+			return errors.New("got mismatching RequestID")
+		}
+		if !bytes.Equal(output.Data.ValidatorPubKey, msg.Data.ValidatorPubKey) {
+			return errors.New("got mismatching ValidatorPubKey")
+		}
+	}
+	found, operator, err := r.config.Storage.GetDKGOperator(msg.Signer)
+	if !found {
+		return errors.New("unable to find signer")
+	}
+	if err != nil {
+		return errors.Wrap(err, "unable to find signer")
+	}
+
+	root, err := msg.Data.GetRoot()
+	if err != nil {
+		return errors.Wrap(err, "fail to get root")
+	}
+	pk, err := crypto.Ecrecover(root, msg.Signature)
+	if err != nil {
+		return errors.New("unable to recover public key")
+	}
+	addr := common.BytesToAddress(crypto.Keccak256(pk[1:])[12:])
+	if addr != operator.ETHAddress {
+		return errors.New("invalid signature")
+	}
+	return nil
 }
 
-func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
+func (r *Runner) validateDepositDataRoot(msg *PartialDepositData) error {
 	if !bytes.Equal(r.DepositDataRoot, msg.Root) {
 		return errors.New("deposit data roots not equal")
 	}
+	return nil
+}
+
+func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
 
 	// find operator and verify msg
 	sharePK, found := r.KeyGenOutput.OperatorPubKeys[msg.Signer]
@@ -175,4 +255,8 @@ func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
 		Signer:    r.Operator.OperatorID,
 		Signature: sig,
 	}, nil
+}
+
+func (r *Runner) ownOutput() *SignedOutput {
+	return r.OutputMsgs[r.Operator.OperatorID]
 }

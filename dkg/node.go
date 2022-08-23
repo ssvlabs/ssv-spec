@@ -41,10 +41,14 @@ func NewNode(operator *Operator, config *Config) *Node {
 func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 	runner := &Runner{
 		Operator:              n.operator,
-		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
-		config:                n.config,
-		protocol:              n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
 		InitMsg:               initMsg,
+		Identifier:            id,
+		KeyGenOutput:          nil,
+		DepositDataRoot:       nil,
+		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
+		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
+		protocol:              n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
+		config:                n.config,
 	}
 
 	if err := runner.protocol.Start(initMsg); err != nil {
@@ -56,6 +60,9 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 
 // ProcessMessage processes network Messages of all types
 func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
+	if msg.MsgType != types.DKGMsgType {
+		return errors.New("not a DKGMsgType")
+	}
 	signedMsg := &SignedMessage{}
 	if err := signedMsg.Decode(msg.GetData()); err != nil {
 		return errors.Wrap(err, "could not get dkg Message from network Messages")
@@ -69,6 +76,10 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 	case InitMsgType:
 		return n.startNewDKGMsg(signedMsg)
 	case ProtocolMsgType:
+		return n.processDKGMsg(signedMsg)
+	case DepositDataMsgType:
+		return n.processDKGMsg(signedMsg)
+	case OutputMsgType:
 		return n.processDKGMsg(signedMsg)
 	default:
 		return errors.New("unknown msg type")
@@ -163,4 +174,8 @@ func (n *Node) validateDKGMsg(message *SignedMessage) (*Runner, error) {
 	}
 
 	return runner, nil
+}
+
+func (n *Node) GetConfig() *Config {
+	return n.config
 }

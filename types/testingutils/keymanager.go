@@ -4,10 +4,12 @@ import (
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
+	"fmt"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -22,8 +24,10 @@ type testingKeyManager struct {
 
 func NewTestingKeyManager() *testingKeyManager {
 	ret := &testingKeyManager{
-		keys:   map[string]*bls.SecretKey{},
-		domain: types.PrimusTestnet,
+		keys:           map[string]*bls.SecretKey{},
+		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
+		encryptionKeys: nil,
+		domain:         types.PrimusTestnet,
 	}
 
 	ret.AddShare(Testing4SharesSet().ValidatorSK)
@@ -44,6 +48,18 @@ func NewTestingKeyManager() *testingKeyManager {
 	ret.AddShare(Testing13SharesSet().ValidatorSK)
 	for _, s := range Testing13SharesSet().Shares {
 		ret.AddShare(s)
+	}
+	for _, o := range Testing4SharesSet().DKGOperators {
+		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+	}
+	for _, o := range Testing7SharesSet().DKGOperators {
+		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+	}
+	for _, o := range Testing10SharesSet().DKGOperators {
+		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+	}
+	for _, o := range Testing13SharesSet().DKGOperators {
+		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
 	}
 	return ret
 }
@@ -93,12 +109,24 @@ func (km *testingKeyManager) Decrypt(pk *rsa.PublicKey, cipher []byte) ([]byte, 
 
 // Encrypt given a rsa pubkey and data returns an PKCS1v15 e
 func (km *testingKeyManager) Encrypt(pk *rsa.PublicKey, data []byte) ([]byte, error) {
-	panic("implement")
+	return TestingEncryption(pk, data), nil
 }
 
 // SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
 func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Address) (types.Signature, error) {
-	panic("implemet")
+	root, err := output.GetRoot()
+	if err != nil {
+		return nil, err
+	}
+	sk := km.ecdsaKeys[address.String()]
+	if sk == nil {
+		return nil, errors.New(fmt.Sprintf("unable to find ecdsa key for address %v", address.String()))
+	}
+	sig, err := crypto.Sign(root, sk)
+	if err != nil {
+		return nil, err
+	}
+	return sig, nil
 }
 
 func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {
