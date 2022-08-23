@@ -2,7 +2,9 @@ package testingutils
 
 import (
 	"crypto/ecdsa"
+	"crypto/rsa"
 	"encoding/hex"
+	"fmt"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
@@ -90,12 +92,18 @@ var DespositDataSigningRoot = func(keySet *TestKeySet, initMsg *dkg.Init) []byte
 	)
 	return root
 }
+var (
+	encryptedDataCache = map[string][]byte{}
+)
 
-func FakeEncryption(data []byte) []byte {
-	out := []byte("__fake_encrypted(")
-	out = append(out, data...)
-	out = append(out, []byte(")")...)
-	return out
+func TestingEncryption(pk *rsa.PublicKey, data []byte) []byte {
+	id := hex.EncodeToString(pk.N.Bytes()) + fmt.Sprintf("%x", pk.E) + hex.EncodeToString(data)
+	if found := encryptedDataCache[id]; found != nil {
+		return found
+	}
+	cipherText, _ := types.Encrypt(pk, data)
+	encryptedDataCache[id] = cipherText
+	return cipherText
 }
 
 func (ks *TestKeySet) KeyGenOutput(opId types.OperatorID) *dkg.KeyGenOutput {
@@ -124,7 +132,7 @@ func (ks *TestKeySet) SignedOutputObject(requestID dkg.RequestID, opId types.Ope
 	share := ks.Shares[opId]
 	o := &dkg.Output{
 		RequestID:            requestID,
-		EncryptedShare:       FakeEncryption(share.Serialize()),
+		EncryptedShare:       TestingEncryption(&ks.DKGOperators[opId].EncryptionKey.PublicKey, share.Serialize()),
 		SharePubKey:          share.GetPublicKey().Serialize(),
 		ValidatorPubKey:      ks.ValidatorPK.Serialize(),
 		DepositDataSignature: ks.ValidatorSK.SignByte(root).Serialize(),

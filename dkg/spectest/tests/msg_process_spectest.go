@@ -54,9 +54,31 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 			require.Equal(t, types.DKGMsgType, bMsg.MsgType)
 			sMsg := &dkg.SignedMessage{}
 			sMsg.Decode(bMsg.Data)
-			r1, _ := msg.GetRoot()
-			r2, _ := sMsg.GetRoot()
-			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+			if sMsg.Message.MsgType == dkg.OutputMsgType {
+				require.Equal(t, dkg.OutputMsgType, msg.Message.MsgType, "OutputMsgType expected")
+				o1 := &dkg.SignedOutput{}
+				o1.Decode(msg.Message.Data)
+
+				o2 := &dkg.SignedOutput{}
+				o2.Decode(sMsg.Message.Data)
+
+				es1 := o1.Data.EncryptedShare
+				o1.Data.EncryptedShare = nil
+				es2 := o2.Data.EncryptedShare
+				o2.Data.EncryptedShare = nil
+
+				s1, _ := types.Decrypt(test.KeySet.DKGOperators[msg.Signer].EncryptionKey, es1)
+				s2, _ := types.Decrypt(test.KeySet.DKGOperators[msg.Signer].EncryptionKey, es2)
+				require.Equal(t, s1, s2, "shares don't match")
+				r1, _ := o1.Data.GetRoot()
+				r2, _ := o2.Data.GetRoot()
+				require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+			} else {
+				r1, _ := msg.GetRoot()
+				r2, _ := sMsg.GetRoot()
+				require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+			}
+
 		}
 	}
 	streamed := node.GetConfig().Network.(*testingutils.TestingNetwork).DKGOutputs

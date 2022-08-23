@@ -208,7 +208,7 @@ func (km *testingKeyManager) Decrypt(pk *rsa.PublicKey, cipher []byte) ([]byte, 
 
 // Encrypt given a rsa pubkey and data returns an PKCS1v15 e
 func (km *testingKeyManager) Encrypt(pk *rsa.PublicKey, data []byte) ([]byte, error) {
-	return FakeEncryption(data), nil
+	return TestingEncryption(pk, data), nil
 }
 
 // SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
