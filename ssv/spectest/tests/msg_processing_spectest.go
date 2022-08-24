@@ -21,7 +21,7 @@ type MsgProcessingSpecTest struct {
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
-	return "msg processing " + test.Name
+	return test.Name
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {

@@ -240,7 +240,7 @@ func verifyBeaconPartialSignature(runner Runner, msg *PartialSignatureMessage) e
 			return nil
 		}
 	}
-	return errors.New("Beacon partial Signature Signer not found")
+	return errors.New("unknown signer")
 }
 
 func validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
