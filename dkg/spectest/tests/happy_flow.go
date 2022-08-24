@@ -2,7 +2,6 @@ package tests
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
@@ -11,81 +10,78 @@ import (
 func HappyFlow() *MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
+	init := &dkg.Init{
+		OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
+		Threshold:             3,
+		WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
+		Fork:                  testingutils.TestingForkVersion,
+	}
+	initBytes, _ := init.Encode()
+	root := testingutils.DespositDataSigningRoot(ks, init)
+
 	return &MsgProcessingSpecTest{
-		Name:   "happy flow",
-		KeySet: testingutils.Testing4SharesSet(),
-		Messages: []*dkg.SignedMessage{
+		Name: "happy flow",
+		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,
 				Identifier: identifier,
-				Data:       testingutils.InitMessageDataBytes([]types.OperatorID{1, 2, 3, 4}, 3, testingutils.TestingWithdrawalCredentials),
+				Data:       initBytes,
 			}),
-
-			// stage 1
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage1),
+				Data:       nil, // GLNOTE: Dummy message simulating the KeyGenProtocol to complete
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
+				MsgType:    dkg.DepositDataMsgType,
 				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage1),
+				Data:       testingutils.PartialDepositDataBytes(2, root, ks.Shares[2]),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
+				MsgType:    dkg.DepositDataMsgType,
 				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage1),
+				Data:       testingutils.PartialDepositDataBytes(3, root, ks.Shares[3]),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
+				MsgType:    dkg.DepositDataMsgType,
 				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage1),
-			}),
-
-			// stage 2
-			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
-				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage2),
+				Data:       testingutils.PartialDepositDataBytes(4, root, ks.Shares[4]),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
+				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage2),
+				Data:       ks.SignedOutputBytes(identifier, 2, root),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
+				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage2),
+				Data:       ks.SignedOutputBytes(identifier, 3, root),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
+				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage2),
-			}),
-
-			// stage 3
-			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
-				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage3),
-			}),
-			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
-				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage3),
-			}),
-			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
-				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage3),
-			}),
-			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
-				MsgType:    dkg.ProtocolMsgType,
-				Identifier: identifier,
-				Data:       testingutils.ProtocolMsgDataBytes(stubdkg.StubStage3),
+				Data:       ks.SignedOutputBytes(identifier, 4, root),
 			}),
 		},
+		OutputMessages: []*dkg.SignedMessage{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
+				MsgType:    dkg.DepositDataMsgType,
+				Identifier: identifier,
+				Data:       testingutils.PartialDepositDataBytes(1, root, ks.Shares[1]),
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
+				MsgType:    dkg.OutputMsgType,
+				Identifier: identifier,
+				Data:       ks.SignedOutputBytes(identifier, 1, root),
+			}),
+		},
+		Output: map[types.OperatorID]*dkg.SignedOutput{
+			1: ks.SignedOutputObject(identifier, 1, root),
+			2: ks.SignedOutputObject(identifier, 2, root),
+			3: ks.SignedOutputObject(identifier, 3, root),
+			4: ks.SignedOutputObject(identifier, 4, root),
+		},
+		KeySet:        ks,
+		ExpectedError: "",
 	}
 }
