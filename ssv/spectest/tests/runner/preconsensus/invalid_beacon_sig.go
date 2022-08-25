@@ -24,7 +24,7 @@ func InvalidBeaconSignature() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
+				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
 			},
 			{
 				Name:   "aggregator selection proof",
@@ -37,7 +37,7 @@ func InvalidBeaconSignature() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
+				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
 			},
 			{
 				Name:   "randao",

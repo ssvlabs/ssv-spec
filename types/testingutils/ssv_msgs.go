@@ -308,27 +308,35 @@ var randaoMsg = func(
 }
 
 var PreConsensusSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return selectionProofMsg(msgSK, msgID, beaconSK, beaconID, false, false)
+	return PreConsensusCustomSlotSelectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot)
+}
+
+var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot spec.Slot) *ssv.SignedPartialSignatureMessage {
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot)
+}
+
+var PreConsensusWrongMsgSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1)
 }
 
 var selectionProofMsg = func(
 	sk *bls.SecretKey,
-	id types.OperatorID,
 	beaconsk *bls.SecretKey,
+	id types.OperatorID,
 	beaconid types.OperatorID,
-	wrongRoot bool,
-	wrongBeaconSig bool,
+	slot spec.Slot,
+	msgSlot spec.Slot,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(1, types.DomainSelectionProof)
-	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(TestingDutySlot), d, beaconsk.GetPublicKey().Serialize())
+	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(slot), d, beaconsk.GetPublicKey().Serialize())
 
 	msgs := ssv.PartialSignatureMessages{
 		Type: ssv.SelectionProofPartialSig,
 		Messages: []*ssv.PartialSignatureMessage{
 			{
-				Slot:             TestingDutySlot,
+				Slot:             msgSlot,
 				PartialSignature: signed[:],
 				SigningRoot:      root,
 				Signer:           beaconid,
@@ -430,14 +438,32 @@ var postConsensusSyncCommitteeMsg = func(
 }
 
 var PreConsensusContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, false, false)
+	return PreConsensusCustomSlotContributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot)
+}
+
+var PreConsensusCustomSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot spec.Slot) *ssv.SignedPartialSignatureMessage {
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, false, false)
+}
+
+var PreConsensusWrongMsgSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, false, false)
+}
+
+var PreConsensusWrongOrderContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, true, false)
+}
+
+var PreConsensusWrongCountContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, false, true)
 }
 
 var contributionProofMsg = func(
 	sk, beaconsk *bls.SecretKey,
 	id, beaconid types.OperatorID,
-	wrongRoot bool,
-	wrongBeaconSig bool,
+	slot spec.Slot,
+	msgSlot spec.Slot,
+	wrongMsgOrder bool,
+	dropLastMsg bool,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -447,17 +473,27 @@ var contributionProofMsg = func(
 	for index := range TestingContributionProofRoots {
 		subnet, _ := beacon.SyncCommitteeSubnetID(uint64(index))
 		data := &altair.SyncAggregatorSelectionData{
-			Slot:              TestingDutySlot,
+			Slot:              slot,
 			SubcommitteeIndex: subnet,
 		}
 		sig, root, _ := signer.SignBeaconObject(data, d, beaconsk.GetPublicKey().Serialize())
 		msg := &ssv.PartialSignatureMessage{
-			Slot:             TestingDutySlot,
+			Slot:             msgSlot,
 			PartialSignature: sig[:],
 			SigningRoot:      ensureRoot(root),
 			Signer:           beaconid,
 		}
+
+		if dropLastMsg && index == len(TestingContributionProofRoots)-1 {
+			break
+		}
 		msgs = append(msgs, msg)
+	}
+
+	if wrongMsgOrder {
+		m := msgs[0]
+		msgs[0] = msgs[1]
+		msgs[1] = m
 	}
 
 	msg := &ssv.PartialSignatureMessages{

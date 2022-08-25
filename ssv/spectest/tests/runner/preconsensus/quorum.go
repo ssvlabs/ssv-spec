@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ValidMessage tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages
-func ValidMessage() *tests.MultiMsgProcessingSpecTest {
+// Quorum  tests a quorum of valid SignedPartialSignatureMessage
+func Quorum() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus quorum",

@@ -11,6 +11,12 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	preconsensus.WrongExpectedRootsCount(),
+	preconsensus.UnorderedExpectedRoots(),
+	preconsensus.MultiBeaconSigsWrongSlot(),
+	preconsensus.InvalidSignedMessage(),
+	preconsensus.InvalidExpectedRoot(),
+	preconsensus.DuplicateMsg(),
 	preconsensus.PostFinish(),
 	preconsensus.PostDecided(),
 	preconsensus.PostQuorum(),

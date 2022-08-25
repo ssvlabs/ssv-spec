@@ -66,7 +66,7 @@ func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
 func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
 	quorum, roots, err := basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
-		return errors.Wrap(err, "failed processing randao message")
+		return errors.Wrap(err, "failed processing sync committee selection proof message")
 	}
 
 	// quorum returns true only once (first time quorum achieved)

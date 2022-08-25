@@ -24,7 +24,7 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: failed to verify PartialSignature: failed to verify signature",
+				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: failed to verify PartialSignature: failed to verify signature",
 			},
 			{
 				Name:   "aggregator selection proof",
@@ -37,7 +37,7 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: failed to verify PartialSignature: failed to verify signature",
+				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: failed to verify PartialSignature: failed to verify signature",
 			},
 			{
 				Name:   "randao",
