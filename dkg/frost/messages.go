@@ -1,6 +1,6 @@
 package frost
 
-type PreparationRoundMessage struct {
+type PreparationMessage struct {
 	SessionPk []byte
 }
 
