@@ -87,19 +87,7 @@ const (
 
 var TestingSyncCommitteeBlockRoot = spec.Root{}
 
-var TestingContributionProofRoots = func() []spec.Root {
-	byts1, _ := hex.DecodeString("81451c58b079c5af84ebe4b92900d3e9c5a346678cb6dc3c4b7eea2c9cb3565f")
-	byts2, _ := hex.DecodeString("81451c58b079c5af84ebe4b92900d3e9c5a346678cb6dc3c4b7eea2c9cb35653")
-	byts3, _ := hex.DecodeString("81451c58b079c5af84ebe4b92900d3e9c5a346678cb6dc3c4b7eea2c9cb3565d")
-
-	ret := make([]spec.Root, 0)
-	for _, byts := range [][]byte{byts1, byts2, byts3} {
-		b := spec.Root{}
-		copy(b[:], byts)
-		ret = append(ret, b)
-	}
-	return ret
-}()
+var TestingContributionProofIndexes = []uint64{0, 1, 2}
 var TestingContributionProofsSigned = func() []spec.BLSSignature {
 	// signed with 3515c7d08e5affd729e9579f7588d30f2342ee6f6a9334acf006345262162c6f
 	byts1, _ := hex.DecodeString("b18833bb7549ec33e8ac414ba002fd45bb094ca300bd24596f04a434a89beea462401da7c6b92fb3991bd17163eb603604a40e8dd6781266c990023446776ff42a9313df26a0a34184a590e57fa4003d610c2fa214db4e7dec468592010298bc")
@@ -223,86 +211,98 @@ func blsSigFromHex(str string) spec.BLSSignature {
 	return ret
 }
 
-type testingBeaconNode struct {
+type TestingBeaconNode struct {
+	syncCommitteeAggregatorRoots map[string]bool
 }
 
-func NewTestingBeaconNode() *testingBeaconNode {
-	return &testingBeaconNode{}
+func NewTestingBeaconNode() *TestingBeaconNode {
+	return &TestingBeaconNode{}
+}
+
+// SetSyncCommitteeAggregatorRootHexes FOR TESTING ONLY!! sets which sync committee aggregator roots will return true for aggregator
+func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[string]bool) {
+	bn.syncCommitteeAggregatorRoots = roots
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
-func (bn *testingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
+func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 	return types.NowTestNetwork
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *testingBeaconNode) GetAttestationData(slot spec.Slot, committeeIndex spec.CommitteeIndex) (*spec.AttestationData, error) {
+func (bn *TestingBeaconNode) GetAttestationData(slot spec.Slot, committeeIndex spec.CommitteeIndex) (*spec.AttestationData, error) {
 	return TestingAttestationData, nil
 }
 
 // SubmitAttestation submit the attestation to the node
-func (bn *testingBeaconNode) SubmitAttestation(attestation *spec.Attestation) error {
+func (bn *TestingBeaconNode) SubmitAttestation(attestation *spec.Attestation) error {
 	return nil
 }
 
 // GetBeaconBlock returns beacon block by the given slot and committee index
-func (bn *testingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*bellatrix.BeaconBlock, error) {
+func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*bellatrix.BeaconBlock, error) {
 	return TestingBeaconBlock, nil
 }
 
 // SubmitBeaconBlock submit the block to the node
-func (bn *testingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBlock) error {
+func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBlock) error {
 	return nil
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
-func (bn *testingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, slotSig []byte) (*spec.AggregateAndProof, error) {
+func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, slotSig []byte) (*spec.AggregateAndProof, error) {
 	return TestingAggregateAndProof, nil
 }
 
 // SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
-func (bn *testingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.SignedAggregateAndProof) error {
+func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.SignedAggregateAndProof) error {
 	return nil
 }
 
 // GetSyncMessageBlockRoot returns beacon block root for sync committee
-func (bn *testingBeaconNode) GetSyncMessageBlockRoot() (spec.Root, error) {
+func (bn *TestingBeaconNode) GetSyncMessageBlockRoot() (spec.Root, error) {
 	return TestingSyncCommitteeBlockRoot, nil
 }
 
 // SubmitSyncMessage submits a signed sync committee msg
-func (bn *testingBeaconNode) SubmitSyncMessage(msg *altair.SyncCommitteeMessage) error {
+func (bn *TestingBeaconNode) SubmitSyncMessage(msg *altair.SyncCommitteeMessage) error {
 	return nil
 }
 
 // GetSyncSubcommitteeIndex returns sync committee indexes for aggregator
-func (bn *testingBeaconNode) GetSyncSubcommitteeIndex(slot spec.Slot, pubKey spec.BLSPubKey) ([]uint64, error) {
+func (bn *TestingBeaconNode) GetSyncSubcommitteeIndex(slot spec.Slot, pubKey spec.BLSPubKey) ([]uint64, error) {
 	// each subcommittee index correlates to TestingContributionProofRoots by index
-	return []uint64{0, 1, 2}, nil
+	return TestingContributionProofIndexes, nil
 }
 
 // IsSyncCommitteeAggregator returns tru if aggregator
-func (bn *testingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, error) {
+func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, error) {
+	if len(bn.syncCommitteeAggregatorRoots) != 0 {
+		if val, found := bn.syncCommitteeAggregatorRoots[hex.EncodeToString(proof)]; found {
+			return val, nil
+		}
+		return false, nil
+	}
 	return true, nil
 }
 
 // SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
-func (bn *testingBeaconNode) SyncCommitteeSubnetID(subCommitteeID uint64) (uint64, error) {
+func (bn *TestingBeaconNode) SyncCommitteeSubnetID(subCommitteeID uint64) (uint64, error) {
 	// each subcommittee index correlates to TestingContributionProofRoots by index
 	return subCommitteeID, nil
 }
 
 // GetSyncCommitteeContribution returns
-func (bn *testingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, subnetID uint64, pubKey spec.BLSPubKey) (*altair.SyncCommitteeContribution, error) {
+func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, subnetID uint64, pubKey spec.BLSPubKey) (*altair.SyncCommitteeContribution, error) {
 	return TestingSyncCommitteeContributions[subnetID], nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network
-func (bn *testingBeaconNode) SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error {
+func (bn *TestingBeaconNode) SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error {
 	return nil
 }
 
-func (bn *testingBeaconNode) DomainData(epoch spec.Epoch, domain spec.DomainType) (spec.Domain, error) {
+func (bn *TestingBeaconNode) DomainData(epoch spec.Epoch, domain spec.DomainType) (spec.Domain, error) {
 	// epoch is used to calculate fork version, here we hard code it
 	return types.ComputeETHDomain(domain, types.GenesisForkVersion, types.GenesisValidatorsRoot)
 }

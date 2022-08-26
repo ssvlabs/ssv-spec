@@ -95,7 +95,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	// post root
 	postRoot, err := test.Runner.GetState().GetRoot()
 	require.NoError(t, err)
-
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
 }
 

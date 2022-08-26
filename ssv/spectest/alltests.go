@@ -1,6 +1,7 @@
 package spectest
 
 import (
+	preconsensus2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"testing"
 )
@@ -11,6 +12,10 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	preconsensus2.SomeAggregatorQuorum(),
+	preconsensus2.NoneAggregatorQuorum(),
+	preconsensus2.AllAggregatorQuorum(),
+
 	preconsensus.WrongExpectedRootsCount(),
 	preconsensus.UnorderedExpectedRoots(),
 	preconsensus.MultiBeaconSigsWrongSlot(),

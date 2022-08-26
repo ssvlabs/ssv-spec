@@ -83,6 +83,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 	if err != nil {
 		return errors.Wrap(err, "failed fetching sync subcommittee indexes")
 	}
+	anyIsAggregator := false
 	for i, root := range roots {
 		// reconstruct selection proof sig
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
@@ -100,6 +101,8 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 			continue
 		}
 
+		anyIsAggregator = true
+
 		// fetch sync committee contribution
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(indexes[i])
 		if err != nil {
@@ -113,8 +116,12 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 		input.SyncCommitteeContribution[blsSigSelectionProof] = contribution
 	}
 
-	if err := decide(r, input); err != nil {
-		return errors.Wrap(err, "can't start new duty runner instance for duty")
+	if anyIsAggregator {
+		if err := decide(r, input); err != nil {
+			return errors.Wrap(err, "can't start new duty runner instance for duty")
+		}
+	} else {
+		r.State.Finished = true
 	}
 
 	return nil
