@@ -11,7 +11,7 @@ import (
 func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus invalid roots",
+		Name: "pre consensus invalid expected roots",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

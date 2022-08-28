@@ -1,4 +1,4 @@
-package preconsensus
+package synccommitteeaggregator
 
 import (
 	"encoding/hex"
