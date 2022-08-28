@@ -76,7 +76,6 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	if !decided {
 		return nil
 	}
-	r.GetState().DecidedValue = decidedValue
 
 	// specific duty sig
 	msg, err := signBeaconObject(r, decidedValue.AttestationData, decidedValue.Duty.Slot, types.DomainAttester)

@@ -1,7 +1,10 @@
 package spectest
 
 import (
-	preconsensus2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	//"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"testing"
 )
@@ -12,9 +15,11 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	preconsensus2.SomeAggregatorQuorum(),
-	preconsensus2.NoneAggregatorQuorum(),
-	preconsensus2.AllAggregatorQuorum(),
+	consensus.ValidDecided(),
+
+	synccommitteeaggregator.SomeAggregatorQuorum(),
+	synccommitteeaggregator.NoneAggregatorQuorum(),
+	synccommitteeaggregator.AllAggregatorQuorum(),
 
 	preconsensus.WrongExpectedRootsCount(),
 	preconsensus.UnorderedExpectedRoots(),
@@ -26,7 +31,13 @@ var AllTests = []SpecTest{
 	preconsensus.PostDecided(),
 	preconsensus.PostQuorum(),
 	preconsensus.Quorum(),
+	preconsensus.Quorum7Operators(),
+	preconsensus.Quorum10Operators(),
+	preconsensus.Quorum130Operators(),
 	preconsensus.ValidMessage(),
+	preconsensus.ValidMessage7Operators(),
+	preconsensus.ValidMessage10Operators(),
+	preconsensus.ValidMessage13Operators(),
 	preconsensus.UnknownBeaconSigner(),
 	preconsensus.UnknownSigner(),
 	preconsensus.InvalidBeaconSignature(),

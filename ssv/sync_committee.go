@@ -76,7 +76,6 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 	if !decided {
 		return nil
 	}
-	r.GetState().DecidedValue = decidedValue
 
 	// specific duty sig
 	msg, err := signBeaconObject(r, types.SSZBytes(decidedValue.SyncCommitteeBlockRoot[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)

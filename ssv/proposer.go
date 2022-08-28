@@ -111,7 +111,6 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	if !decided {
 		return nil
 	}
-	r.GetState().DecidedValue = decidedValue
 
 	// specific duty sig
 	msg, err := signBeaconObject(r, decidedValue.BlockData, decidedValue.Duty.Slot, types.DomainProposer)

@@ -1,31 +1,46 @@
 package ssv
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
-func dutyValueCheck(duty *types.Duty, network types.BeaconNetwork) error {
+func dutyValueCheck(
+	duty *types.Duty,
+	network types.BeaconNetwork,
+	expectedType types.BeaconRole,
+	validatorPK types.ValidatorPK,
+) error {
 	if network.EstimatedEpochAtSlot(duty.Slot) > network.EstimatedCurrentEpoch()+1 {
 		return errors.New("duty epoch is into far future")
 	}
+
+	if expectedType != duty.Type {
+		return errors.New("wrong beacon role type")
+	}
+
+	if !bytes.Equal(validatorPK, duty.PubKey[:]) {
+		return errors.New("wrong validator pk")
+	}
+
 	return nil
 }
 
-func BeaconAttestationValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
+func BeaconAttestationValueCheck(
+	signer types.BeaconSigner,
+	network types.BeaconNetwork,
+	validatorPK types.ValidatorPK,
+) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 
-		if err := dutyValueCheck(cd.Duty, network); err != nil {
+		if err := dutyValueCheck(cd.Duty, network, types.BNRoleAttester, validatorPK); err != nil {
 			return errors.Wrap(err, "duty invalid")
-		}
-
-		if cd.Duty.Type != types.BNRoleAttester {
-			return errors.New("duty type != RoleTypeAttester")
 		}
 
 		if cd.AttestationData == nil {
@@ -40,8 +55,6 @@ func BeaconAttestationValueCheck(signer types.BeaconSigner, network types.Beacon
 			return errors.New("attestation data CommitteeIndex != duty CommitteeIndex")
 		}
 
-		// no need to test far future attestation as we check duty slot not far future && duty slot == attestation slot
-
 		if cd.AttestationData.Target.Epoch > network.EstimatedCurrentEpoch()+1 {
 			return errors.New("attestation data target epoch is into far future")
 		}
@@ -54,32 +67,48 @@ func BeaconAttestationValueCheck(signer types.BeaconSigner, network types.Beacon
 	}
 }
 
-func BeaconBlockValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
+func BeaconBlockValueCheck(
+	signer types.BeaconSigner,
+	network types.BeaconNetwork,
+	validatorPK types.ValidatorPK,
+) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		return nil
 	}
 }
 
-func AggregatorValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
+func AggregatorValueCheck(
+	signer types.BeaconSigner,
+	network types.BeaconNetwork,
+	validatorPK types.ValidatorPK,
+) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		return nil
 	}
 }
 
-func SyncCommitteeValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
+func SyncCommitteeValueCheck(
+	signer types.BeaconSigner,
+	network types.BeaconNetwork,
+	validatorPK types.ValidatorPK,
+) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		return nil
 	}
 }
 
-func SyncCommitteeContributionValueCheck(signer types.BeaconSigner, network types.BeaconNetwork) qbft.ProposedValueCheckF {
+func SyncCommitteeContributionValueCheck(
+	signer types.BeaconSigner,
+	network types.BeaconNetwork,
+	validatorPK types.ValidatorPK,
+) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 
-		if err := dutyValueCheck(cd.Duty, network); err != nil {
+		if err := dutyValueCheck(cd.Duty, network, types.BNRoleSyncCommitteeContribution, validatorPK); err != nil {
 			return errors.Wrap(err, "duty invalid")
 		}
 

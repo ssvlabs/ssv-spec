@@ -97,6 +97,8 @@ func baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
 	}
 
+	runner.GetState().DecidedValue = decidedValue
+
 	return true, decidedValue, nil
 }
 
@@ -250,14 +252,6 @@ func validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error
 	}
 	if err := runner.GetValCheckF()(byts); err != nil {
 		return errors.Wrap(err, "decided value is invalid")
-	}
-
-	if runner.GetBeaconRole() != val.Duty.Type {
-		return errors.New("decided value's duty has wrong beacon role type")
-	}
-
-	if !bytes.Equal(runner.GetShare().ValidatorPubKey, val.Duty.PubKey[:]) {
-		return errors.New("decided value's validator pk is wrong")
 	}
 
 	return nil
