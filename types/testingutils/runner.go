@@ -148,24 +148,18 @@ var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.Beac
 	// pre consensus msgs
 	base := make([]*types.SSVMessage, 0)
 	if role == types.BNRoleProposer {
-		base = []*types.SSVMessage{
-			ssvMsgF(nil, PreConsensusRandaoMsg(ks.Shares[1], 1)),
-			ssvMsgF(nil, PreConsensusRandaoMsg(ks.Shares[2], 2)),
-			ssvMsgF(nil, PreConsensusRandaoMsg(ks.Shares[3], 3)),
+		for i := uint64(1); i <= ks.Threshold; i++ {
+			base = append(base, ssvMsgF(nil, PreConsensusRandaoMsg(ks.Shares[types.OperatorID(i)], types.OperatorID(i))))
 		}
 	}
 	if role == types.BNRoleAggregator {
-		base = []*types.SSVMessage{
-			ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-			ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-			ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+		for i := uint64(1); i <= ks.Threshold; i++ {
+			base = append(base, ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
 	if role == types.BNRoleSyncCommitteeContribution {
-		base = []*types.SSVMessage{
-			ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-			ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-			ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+		for i := uint64(1); i <= ks.Threshold; i++ {
+			base = append(base, ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
 
