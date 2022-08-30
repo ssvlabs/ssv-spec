@@ -89,8 +89,12 @@ func (c *Controller) StartNewInstance(value []byte) error {
 // ProcessMsg processes a new msg, returns true if Decided, non nil byte slice if Decided (Decided value) and error
 // Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
 func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
-	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
-		return false, nil, errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
+	if err := c.baseMsgValidation(msg); err != nil {
+		return false, nil, errors.Wrap(err, "invalid msg")
+	}
+
+	if msg.Message.Height > c.Height {
+		return false, nil, c.maybeSyncHighestDecided(msg)
 	}
 
 	inst := c.InstanceForHeight(msg.Message.Height)
@@ -118,6 +122,20 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 		// TODO - we do not return error, should log?
 	}
 	return decided, decidedValue, nil
+}
+
+func (c *Controller) baseMsgValidation(msg *SignedMessage) error {
+	// verify msg belongs to controller
+	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
+		return errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
+	}
+
+	// verify signature
+	if err := msg.Signature.VerifyByOperators(msg, c.Domain, types.QBFTSignatureType, c.Share.Committee); err != nil {
+		return errors.Wrap(err, "prepare msg signature invalid")
+	}
+
+	return nil
 }
 
 func (c *Controller) InstanceForHeight(height Height) *Instance {

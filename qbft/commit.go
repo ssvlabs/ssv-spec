@@ -152,10 +152,7 @@ func baseCommitValidation(
 	if err := msgCommitData.Validate(); err != nil {
 		return errors.Wrap(err, "msgCommitData invalid")
 	}
-
-	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "commit msg signature invalid")
-	}
+	
 	return nil
 }
 

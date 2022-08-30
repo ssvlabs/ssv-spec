@@ -13,8 +13,14 @@ const (
 	FirstHeight Height = 0
 )
 
+type Sync interface {
+	// SyncHighestDecided tries to fetch the highest decided from peers
+	SyncHighestDecided(identifier []byte) error
+}
+
 // Network is a collection of funcs for the QBFT Network
 type Network interface {
+	Sync
 	Broadcast(msg types.Encoder) error
 	BroadcastDecided(msg types.Encoder) error
 }
