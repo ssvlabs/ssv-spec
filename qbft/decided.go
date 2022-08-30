@@ -63,7 +63,7 @@ func validateDecided(
 		return errors.Wrap(err, "decided value invalid")
 	}
 
-	return baseCommitValidation(config, signedDecided, height, operators)
+	return nil
 }
 
 // returns true if signed commit has all quorum sigs
