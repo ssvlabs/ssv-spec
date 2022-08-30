@@ -93,8 +93,9 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 		return false, nil, errors.Wrap(err, "invalid msg")
 	}
 
+	// TODO - this might be abused by a malicious peer
 	if msg.Message.Height > c.Height {
-		return false, nil, c.maybeSyncHighestDecided(msg)
+		return false, nil, c.network.SyncHighestDecided(c.Identifier)
 	}
 
 	inst := c.InstanceForHeight(msg.Message.Height)
