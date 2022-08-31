@@ -7,6 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"testing"
 )
 
@@ -16,6 +17,18 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	valcheckattestations.WrongValidatorIndex(),
+	valcheckattestations.WrongValidatorPK(),
+	valcheckattestations.WrongDuty(),
+	valcheckattestations.FarFutureDutySlot(),
+	valcheckattestations.Slashable(),
+	valcheckattestations.SourceHigherThanTarget(),
+	valcheckattestations.FarFutureTarget(),
+	valcheckattestations.CommitteeIndexMismatch(),
+	valcheckattestations.SlotMismatch(),
+	valcheckattestations.AttestationDataNil(),
+	valcheckattestations.Valid(),
+
 	consensus.ValidDecided(),
 	consensus.ValidDecided7Operators(),
 	consensus.ValidDecided10Operators(),

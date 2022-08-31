@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"bytes"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -12,6 +13,7 @@ func dutyValueCheck(
 	network types.BeaconNetwork,
 	expectedType types.BeaconRole,
 	validatorPK types.ValidatorPK,
+	validatorIndex phase0.ValidatorIndex,
 ) error {
 	if network.EstimatedEpochAtSlot(duty.Slot) > network.EstimatedCurrentEpoch()+1 {
 		return errors.New("duty epoch is into far future")
@@ -25,6 +27,10 @@ func dutyValueCheck(
 		return errors.New("wrong validator pk")
 	}
 
+	if validatorIndex != duty.ValidatorIndex {
+		return errors.New("wrong validator index")
+	}
+
 	return nil
 }
 
@@ -32,6 +38,7 @@ func BeaconAttestationValueCheck(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
+	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
@@ -39,7 +46,7 @@ func BeaconAttestationValueCheck(
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 
-		if err := dutyValueCheck(cd.Duty, network, types.BNRoleAttester, validatorPK); err != nil {
+		if err := dutyValueCheck(cd.Duty, network, types.BNRoleAttester, validatorPK, validatorIndex); err != nil {
 			return errors.Wrap(err, "duty invalid")
 		}
 
@@ -60,7 +67,7 @@ func BeaconAttestationValueCheck(
 		}
 
 		if cd.AttestationData.Source.Epoch >= cd.AttestationData.Target.Epoch {
-			return errors.New("attestation data source and target epochs invalid")
+			return errors.New("attestation data source > target")
 		}
 
 		return signer.IsAttestationSlashable(cd.AttestationData)
@@ -101,6 +108,7 @@ func SyncCommitteeContributionValueCheck(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
+	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
@@ -108,7 +116,7 @@ func SyncCommitteeContributionValueCheck(
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 
-		if err := dutyValueCheck(cd.Duty, network, types.BNRoleSyncCommitteeContribution, validatorPK); err != nil {
+		if err := dutyValueCheck(cd.Duty, network, types.BNRoleSyncCommitteeContribution, validatorPK, validatorIndex); err != nil {
 			return errors.Wrap(err, "duty invalid")
 		}
 
