@@ -40,13 +40,15 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	Domain          types.DomainType
-	Share           *types.Share
-	signer          types.SSVSigner
-	valueCheck      ProposedValueCheckF
-	storage         Storage
-	network         Network
-	proposerF       ProposerF
+	// HigherReceivedMessages holds all msgs from a higher height
+	HigherReceivedMessages *MsgContainer
+	Domain                 types.DomainType
+	Share                  *types.Share
+	signer                 types.SSVSigner
+	valueCheck             ProposedValueCheckF
+	storage                Storage
+	network                Network
+	proposerF              ProposerF
 }
 
 func NewController(
@@ -93,9 +95,8 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 		return false, nil, errors.Wrap(err, "invalid msg")
 	}
 
-	// TODO - this might be abused by a malicious peer
 	if msg.Message.Height > c.Height {
-		return false, nil, c.network.SyncHighestDecided(c.Identifier)
+		return false, nil, c.processHigherHeightMsg(msg)
 	}
 
 	inst := c.InstanceForHeight(msg.Message.Height)
