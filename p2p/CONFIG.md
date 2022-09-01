@@ -71,14 +71,9 @@ The size of the queue that is used for outbound messages.
 
 | Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
 | ---                    | ---                 | ---                  |
-| `32`                   | `256`               | `600`                |
+| `32`                   | `512`               | `600`                |
 
 The value was increased to support higher load of messages.
-SSV uses a smaller number than ETH2.0 due to high memory usage, 
-which is caused by the size of raw JSON messages.
-
-**NOTE** This parameter should be increased once we do full validation in the topic level. 
-Also depends on encoding changed to `SSZ` and compression as well (`snappy` or `s2`). 
 
 ### Validation Queue Size
 
@@ -86,14 +81,9 @@ The size of the queue that is used for validation of incoming messages.
 
 | Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
 | ---                    | ---                 | ---                  |
-| `32`                   | `256`               | `600`                |
+| `32`                   | `512`               | `600`                |
 
 The value was increased to support higher load of messages.
-SSV uses a smaller number than ETH2.0 due to high memory usage,
-which is caused by the size of raw JSON messages.
-
-**NOTE** This parameter should be increased once we do full validation in the topic level.
-Also depends on encoding changed to `SSZ` and compression as well (`snappy` or `s2`).
 
 ### Validation Throttle
 
@@ -101,7 +91,7 @@ The upper bound on the number of active validation goroutines across all topics
 
 | Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
 | ---                    | ---                 | ---                  |
-| `8192`                 | `4096`              | `8192`               |
+| `8192`                 | `8192`              | `8192`               |
 
 The value was decreased to avoid high resource usage and reduce overloading on the node.
 SSV uses a smaller number than ETH2.0 due to high memory usage,
@@ -281,5 +271,9 @@ Increased as we want messages to be sent in batches, to reduce the amount of req
 | `AcceptPXThreshold`| below this threshold, Peer Exchange will be ignored | `100`      | `100` | `100` |
 | `OpportunisticGraftThreshold`| the median mesh score threshold before triggering opportunistic grafting | `5`  | `5` | `5` |
 
+### Gossipsub: Scoring
 
-**TODO: Add Scoring Params**
+Scoring params values are based on
+[ETH 2 config set](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c).
+
+**TBD**

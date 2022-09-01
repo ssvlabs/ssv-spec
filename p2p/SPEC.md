@@ -451,7 +451,8 @@ therefore they are used for signing and verification of `NodeInfo` messages in S
 
 ### Pubsub
 
-The main purpose is for broadcasting messages to a group (AKA subnet) of nodes. \
+The main purpose is for broadcasting messages to a group (AKA subnet) of nodes, 
+using a gossip approach to avoid the overhead of maintaining multiple direct connections. \
 In addition, the following are achieved as well:
 
 - subscriptions metadata helps to get liveliness information of nodes
@@ -459,7 +460,6 @@ In addition, the following are achieved as well:
 
 The following sections details on how pubsub is used in `SSV.network`.
 In addition, parameters configuration is described [here](./CONFIG.md#pubsub-parameters).
-
 
 #### Pubsub Scoring
 
@@ -470,14 +470,15 @@ The score is locally computed by each individual peer based on observed behaviou
 Score thresholds are used by libp2p to determine whether a peer should be removed from topic's mesh,
 penalized or even ignored if the score drops too low. \
 See [this section](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#score-thresholds)
-for more details regards the different thresholds. \
+for more details regards the different thresholds.
 
-Thresholds values are detailed in the [configuration doc](./CONFIG.md#gossipsub-scoring-thresholds)
+[Scoring params](./CONFIG.md#gossipsub-scoring) and [thresholds](./CONFIG.md#gossipsub-scoring-thresholds)
+values are detailed in the configuration document. 
 
 
-#### Pubsub Extended Validators
+### Pubsub Validation
 
-Message validation is applied on the topic level. 
+Message validation is applied on the topic level.
 Each incoming message will be validated to avoid relaying bad messages,
 which could affect peer score.
 
@@ -485,96 +486,22 @@ which could affect peer score.
 allows the application to aid in the gossipsub peer-scoring scheme.
 We utilize `ACCEPT`, `REJECT`, and `IGNORE` as the result of the validation.
 
-<br />
-
-### Validation and Scoring
-
-**TODO:** complete
-
-**NOTE** we try to follow the general approach used by
-[ETH topic validators](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/p2p-interface.md#global-topics)
-
-#### Base Validation
+#### Basic Validation
 
 This validation pipeline is the baseline and will be applied for all pubsub topics. It consists of the following rules:
 
 - `ACCEPT` message from my peer
 - `REJECT` empty message
-- `REJECT` message that was sent on the wrong topic
 - `REJECT` message with corrupted or invalid top-level structure
+- `REJECT` message that was sent on the wrong topic
 
-**NOTE** the decoded message reference will be saved (`pubsub.Message.ValidatorData`) for use by other components.
+**NOTE** any message will be decoded only once as part of the basic validation.
 
-**NOTE** As invalid messages might pass the base validation, signing policy of pubsub is turned on 
-to ensure authenticity of message senders. Once a more complete validation is taking place we can reduce
+**NOTE** As of the time of this spec, additional validation is performed by QBFT components async.
+As messages might pass the base validation but fail at a later point, signing policy of pubsub is turned on 
+to ensure authenticity of pubsub message senders. Once a more complete validation is added, we will reduce
 the signing policy as it becomes redundant.
 
-#### Partial Signature Message Validation
-
-- `REJECT` message with wrong internal type (**TBD**)
-- `REJECT` validate structure and wrong value sizes (**TBD**)
-- `REJECT` message with invalid signature (BLS)
-
-#### Decided Message Validation
-
-- `REJECT` message with wrong internal type (must be `commit`)
-- `REJECT` older message by checking height (TBD `IGNORE`?)
-- `REJECT` validate quorum
-- `REJECT` message with invalid signature (BLS)
-
-#### Consensus Message Validation
-
-For all conesnsus message types, we perform the following:
-
-- `REJECT` message with wrong internal identifier
-- `REJECT` message with wrong internal type
-
-In addition, the following rules will be applied according to the message type:
-
-#### Pre-prepare Message
-
-- `REJECT` older message by checking height (TBD `IGNORE`?)
-- `REJECT` message with wrong round leader
-- `REJECT` message with invalid signature (BLS)
-
-depends on QBFT instance:
-- check older round
-- justify pre-prepare
-
-#### Prepare Message
-
-- `REJECT` message with wrong identifier
-- `REJECT` older message by checking height (TBD `IGNORE`?)
-- `REJECT` message with invalid signature (BLS)
-
-depends on QBFT instance:
-- check older round
-- check quorum
-
-#### Commit Message
-
-- `REJECT` message with wrong identifier
-- `REJECT` older message by checking current height, 
-diff must be greater than `1` to allow late commits propagation
-- `REJECT` message with invalid signature (BLS)
-
-depends on QBFT instance:
-- check older round
-- check quorum
-
-#### Change Round Message
-
-- `REJECT` message with wrong identifier
-- `REJECT` older message by checking height (TBD `IGNORE`?)
-- `REJECT` message with invalid signature (BLS)
-
-depends on QBFT instance:
-- check older round
-- check partial quorum
-- check quorum
-
-<br />
-<br />
 
 ### Subnets
 
@@ -749,9 +676,3 @@ where some procedures are called in the context of current fork version.
 See [network forks](./FORKS.md) for more information.
 
 <br />
-
-### Relayers
-
-Libp2p offers a [circuit relay](https://github.com/libp2p/specs/blob/master/relay/circuit-v2.md) 
-component to boost reachability in the network. \
-Currently used by ETH2 nodes, TBD in the future.
