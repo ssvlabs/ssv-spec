@@ -30,6 +30,10 @@ var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheck(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
+var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
+}
+
 var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
 	share := TestingShare(keySet)
 	identifier := types.NewMsgID(TestingValidatorPubKey[:], role)
@@ -89,6 +93,18 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			NewTestingKeyManager(),
 			valCheck,
 		)
+	case UnknownDutyType:
+		ret := ssv.NewAttesterRunnner(
+			types.NowTestNetwork,
+			share,
+			NewTestingQBFTController(identifier[:], share, valCheck, proposerF),
+			NewTestingBeaconNode(),
+			NewTestingNetwork(),
+			NewTestingKeyManager(),
+			valCheck,
+		)
+		ret.(*ssv.AttesterRunner).BeaconRoleType = UnknownDutyType
+		return ret
 	default:
 		panic("unknown role type")
 	}

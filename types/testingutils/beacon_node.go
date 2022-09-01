@@ -81,8 +81,12 @@ var TestingAggregateAndProof = &spec.AggregateAndProof{
 
 const (
 	TestingDutySlot       = 12
+	TestingDutySlot2      = 50
 	TestingDutyEpoch      = 0
+	TestingDutyEpoch2     = 1
 	TestingValidatorIndex = 1
+
+	UnknownDutyType = 100
 )
 
 var TestingSyncCommitteeBlockRoot = spec.Root{}
@@ -141,7 +145,19 @@ var TestingAttesterDuty = &types.Duty{
 var TestingProposerDuty = &types.Duty{
 	Type:                    types.BNRoleProposer,
 	PubKey:                  TestingValidatorPubKey,
-	Slot:                    12,
+	Slot:                    TestingDutySlot,
+	ValidatorIndex:          TestingValidatorIndex,
+	CommitteeIndex:          3,
+	CommitteesAtSlot:        36,
+	CommitteeLength:         128,
+	ValidatorCommitteeIndex: 11,
+}
+
+// TestingProposerDutyNextEpoch testing for a second duty start
+var TestingProposerDutyNextEpoch = &types.Duty{
+	Type:                    types.BNRoleProposer,
+	PubKey:                  TestingValidatorPubKey,
+	Slot:                    TestingDutySlot2,
 	ValidatorIndex:          TestingValidatorIndex,
 	CommitteeIndex:          3,
 	CommitteesAtSlot:        36,
@@ -152,7 +168,19 @@ var TestingProposerDuty = &types.Duty{
 var TestingAggregatorDuty = &types.Duty{
 	Type:                    types.BNRoleAggregator,
 	PubKey:                  TestingValidatorPubKey,
-	Slot:                    12,
+	Slot:                    TestingDutySlot,
+	ValidatorIndex:          TestingValidatorIndex,
+	CommitteeIndex:          22,
+	CommitteesAtSlot:        36,
+	CommitteeLength:         128,
+	ValidatorCommitteeIndex: 11,
+}
+
+// TestingAggregatorDutyNextEpoch testing for a second duty start
+var TestingAggregatorDutyNextEpoch = &types.Duty{
+	Type:                    types.BNRoleAggregator,
+	PubKey:                  TestingValidatorPubKey,
+	Slot:                    TestingDutySlot2,
 	ValidatorIndex:          TestingValidatorIndex,
 	CommitteeIndex:          22,
 	CommitteesAtSlot:        36,
@@ -182,8 +210,20 @@ var TestingSyncCommitteeContributionDuty = &types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
+// TestingSyncCommitteeContributionNexEpochDuty testing for a second duty start
+var TestingSyncCommitteeContributionNexEpochDuty = &types.Duty{
+	Type:                    types.BNRoleSyncCommitteeContribution,
+	PubKey:                  TestingValidatorPubKey,
+	Slot:                    TestingDutySlot2,
+	ValidatorIndex:          TestingValidatorIndex,
+	CommitteeIndex:          3,
+	CommitteesAtSlot:        36,
+	CommitteeLength:         128,
+	ValidatorCommitteeIndex: 11,
+}
+
 var TestingUnknownDutyType = &types.Duty{
-	Type:                    100,
+	Type:                    UnknownDutyType,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    12,
 	ValidatorIndex:          TestingValidatorIndex,

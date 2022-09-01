@@ -47,19 +47,12 @@ func NewProposerRunner(
 }
 
 func (r *ProposerRunner) StartNewDuty(duty *types.Duty) error {
-	if err := canStartNewDuty(r, duty); err != nil {
-		return err
-	}
-	r.State = NewRunnerState(r.GetShare().Quorum, duty)
-	return r.executeDuty(duty)
+	return baseStartNewDuty(r, duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *ProposerRunner) HasRunningDuty() bool {
-	if r.GetState() == nil {
-		return false
-	}
-	return r.GetState().Finished != true
+	return baseHashRunningDuty(r)
 }
 
 func (r *ProposerRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {

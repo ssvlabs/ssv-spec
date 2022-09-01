@@ -34,6 +34,43 @@ type Runner interface {
 	ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error
 
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
+	executeDuty(duty *types.Duty) error
+}
+
+func baseStartNewDuty(runner Runner, duty *types.Duty) error {
+	if err := canStartNewDuty(runner, duty); err != nil {
+		return err
+	}
+	switch runner.GetBeaconRole() {
+	case types.BNRoleAttester:
+		runner.(*AttesterRunner).State = NewRunnerState(runner.GetShare().Quorum, duty)
+	case types.BNRoleAggregator:
+		runner.(*AggregatorRunner).State = NewRunnerState(runner.GetShare().Quorum, duty)
+	case types.BNRoleProposer:
+		runner.(*ProposerRunner).State = NewRunnerState(runner.GetShare().Quorum, duty)
+	case types.BNRoleSyncCommittee:
+		runner.(*SyncCommitteeRunner).State = NewRunnerState(runner.GetShare().Quorum, duty)
+	case types.BNRoleSyncCommitteeContribution:
+		runner.(*SyncCommitteeAggregatorRunner).State = NewRunnerState(runner.GetShare().Quorum, duty)
+	default:
+		return errors.New("runner beacon role unknown")
+	}
+	return runner.executeDuty(duty)
+}
+
+func canStartNewDuty(runner Runner, duty *types.Duty) error {
+	if runner.GetState() == nil {
+		return nil
+	}
+
+	// check if instance running first as we can't start new duty if it does
+	if runner.GetState().RunningInstance != nil {
+		// check consensus decided
+		if decided, _ := runner.GetState().RunningInstance.IsDecided(); !decided {
+			return errors.New("consensus on duty is running")
+		}
+	}
+	return nil
 }
 
 func basePreConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
@@ -64,20 +101,11 @@ func basePreConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignat
 	return anyQuorum, roots, nil
 }
 
-func validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
-	if err := validatePartialSigMsg(runner, signedMsg, runner.GetState().StartingDuty.Slot); err != nil {
-		return err
-	}
-
-	roots, domain, err := runner.expectedPreConsensusRootsAndDomain()
-	if err != nil {
-		return err
-	}
-
-	return verifyExpectedRoot(runner, signedMsg, roots, domain)
-}
-
 func baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
+	if err := validateConsensusMsg(runner, msg); err != nil {
+		return false, nil, errors.Wrap(err, "invalid consensus message")
+	}
+
 	decided, decidedValueByts, err := runner.GetQBFTController().ProcessMsg(msg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to process consensus msg")
@@ -103,8 +131,8 @@ func baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided
 }
 
 func basePostConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
-	if err := canProcessPostConsensusMsg(runner, signedMsg); err != nil {
-		return false, nil, errors.Wrap(err, "can't process post consensus message")
+	if err := validatePostConsensusMsg(runner, signedMsg); err != nil {
+		return false, nil, errors.Wrap(err, "invalid post-consensus message")
 	}
 
 	roots := make([][]byte, 0)
@@ -131,18 +159,39 @@ func basePostConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSigna
 	return anyQuorum, roots, nil
 }
 
-func canStartNewDuty(runner Runner, duty *types.Duty) error {
-	if runner.GetState() == nil {
-		return nil
+func validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
+	if !baseHashRunningDuty(runner) {
+		return errors.New("no running duty")
 	}
 
-	// check if instance running first as we can't start new duty if it does
-	if runner.GetState().RunningInstance != nil {
-		// check consensus decided
-		if decided, _ := runner.GetState().RunningInstance.IsDecided(); !decided {
-			return errors.New("consensus on duty is running")
-		}
+	if err := validatePartialSigMsg(runner, signedMsg, runner.GetState().StartingDuty.Slot); err != nil {
+		return err
 	}
+
+	roots, domain, err := runner.expectedPreConsensusRootsAndDomain()
+	if err != nil {
+		return err
+	}
+
+	return verifyExpectedRoot(runner, signedMsg, roots, domain)
+}
+
+func validateConsensusMsg(runner Runner, msg *qbft.SignedMessage) error {
+	if !baseHashRunningDuty(runner) {
+		return errors.New("no running duty")
+	}
+	return nil
+}
+
+func validatePostConsensusMsg(runner Runner, msg *SignedPartialSignatureMessage) error {
+	if !baseHashRunningDuty(runner) {
+		return errors.New("no running duty")
+	}
+
+	if err := validatePartialSigMsg(runner, msg, runner.GetState().DecidedValue.Duty.Slot); err != nil {
+		return errors.Wrap(err, "post consensus msg invalid")
+	}
+
 	return nil
 }
 
@@ -166,6 +215,13 @@ func decide(runner Runner, input *types.ConsensusData) error {
 
 	runner.GetState().RunningInstance = newInstance
 	return nil
+}
+
+func baseHashRunningDuty(runner Runner) bool {
+	if runner.GetState() == nil {
+		return false
+	}
+	return runner.GetState().Finished != true
 }
 
 func signBeaconObject(
@@ -252,18 +308,6 @@ func validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error
 	}
 	if err := runner.GetValCheckF()(byts); err != nil {
 		return errors.Wrap(err, "decided value is invalid")
-	}
-
-	return nil
-}
-
-func canProcessPostConsensusMsg(runner Runner, msg *SignedPartialSignatureMessage) error {
-	if runner.GetState().DecidedValue == nil {
-		return errors.New("consensus didn't decide")
-	}
-
-	if err := validatePartialSigMsg(runner, msg, runner.GetState().DecidedValue.Duty.Slot); err != nil {
-		return errors.Wrap(err, "post consensus msg invalid")
 	}
 
 	return nil

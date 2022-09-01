@@ -79,10 +79,6 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 }
 
 func (v *Validator) validateMessage(runner Runner, msg *types.SSVMessage) error {
-	if !runner.HasRunningDuty() {
-		return errors.New("no running duty")
-	}
-
 	if !v.Share.ValidatorPubKey.MessageIDBelongs(msg.GetID()) {
 		return errors.New("msg ID doesn't match validator ID")
 	}
