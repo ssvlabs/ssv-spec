@@ -7,16 +7,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// FutureRoundAcceptedProposal tests a proposal for state.ProposalAcceptedForCurrentRound != nil && signedProposal.Message.Round > state.Round
-func FutureRoundAcceptedProposal() *tests.MsgProcessingSpecTest {
+// FutureRoundAcceptedProposalNotPrevPrepared tests a proposal for future round, currently not prepared
+func FutureRoundAcceptedProposalNotPrevPrepared() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-	})
 	pre.State.Round = qbft.FirstRound
 
 	rcMsgs := []*qbft.SignedMessage{
@@ -53,7 +46,7 @@ func FutureRoundAcceptedProposal() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "proposal future round (prev prepared)",
+		Name:          "proposal future round (no prev prepared)",
 		Pre:           pre,
 		PostRoot:      "b261accce13a88f020c601d0314bd6eaecd6cb0cea3232198b258cdcc55c1263",
 		InputMessages: msgs,

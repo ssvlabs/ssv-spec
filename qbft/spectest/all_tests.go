@@ -81,8 +81,10 @@ var AllTests = []SpecTest{
 	proposal.JustificationsValueNotJustified(),
 	proposal.DuplicateMsg(),
 	proposal.FirstRoundJustification(),
-	proposal.FutureRoundNoAcceptedProposal(),
+	proposal.FutureRoundAcceptedProposalNotPrevPrepared(),
 	proposal.FutureRoundAcceptedProposal(),
+	proposal.PastRoundValidProposalPrevNotPrepared(),
+	proposal.PastRoundValidProposal(),
 	proposal.PastRound(),
 	proposal.ImparsableProposalData(),
 	proposal.InvalidRoundChangeJustificationPrepared(),
@@ -184,4 +186,6 @@ var AllTests = []SpecTest{
 	roundchange.DuplicateMsgPartialQuorum(),
 	roundchange.DuplicateMsgPrepared(),
 	roundchange.ImparsableRoundChangeData(),
+	roundchange.NotProposer(),
+	roundchange.ValidJustification(),
 }
