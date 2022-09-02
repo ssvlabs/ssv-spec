@@ -12,7 +12,7 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 		return errors.Wrap(err, "proposal invalid")
 	}
 
-	addedMsg, err := proposeMsgContainer.AddIfDoesntExist(signedProposal)
+	addedMsg, err := proposeMsgContainer.AddFirstMsgForSignerAndRound(signedProposal)
 	if err != nil {
 		return errors.Wrap(err, "could not add proposal msg to container")
 	}

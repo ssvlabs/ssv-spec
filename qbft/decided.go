@@ -22,7 +22,7 @@ func (i *Instance) UponDecided(signedDecided *SignedMessage, commitMsgContainer 
 		return false, nil, errors.Wrap(err, "invalid decided msg")
 	}
 
-	addMsg, err := commitMsgContainer.AddIfDoesntExist(signedDecided)
+	addMsg, err := commitMsgContainer.AddFirstMsgForSignerAndRound(signedDecided)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "could not add commit msg to container")
 	}

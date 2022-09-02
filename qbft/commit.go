@@ -23,7 +23,7 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
 	}
 
-	addMsg, err := commitMsgContainer.AddIfDoesntExist(signedCommit)
+	addMsg, err := commitMsgContainer.AddFirstMsgForSignerAndRound(signedCommit)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not add commit msg to container")
 	}

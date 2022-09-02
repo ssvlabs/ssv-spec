@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// DuplicateMsgPartialQuorum tests a duplicate rc msg that is added to container but shouldn't result in a  partial quorum
-func DuplicateMsgPartialQuorum() *tests.MsgProcessingSpecTest {
+// QuorumPrepared tests a round change msg for prepared state
+func QuorumPrepared() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 
@@ -39,24 +39,39 @@ func DuplicateMsgPartialQuorum() *tests.MsgProcessingSpecTest {
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      5,
+			Round:      2,
+			Identifier: []byte{1, 2, 3, 4},
+			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
+		}),
+		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+			MsgType:    qbft.RoundChangeMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      5,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
 		}),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:           "round change duplicate msg partial quorum",
-		Pre:            pre,
-		PostRoot:       "847261013225e48d3e88b2f310ec1ec75017ef489b2cfade3f255f46f604ca42",
-		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		Name:          "round change prepared",
+		Pre:           pre,
+		PostRoot:      "693f301963e027b305656d88af9eeb312f70216c49b16661a8ffce3fc6409e70",
+		InputMessages: msgs,
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:    qbft.ProposalMsgType,
+				Height:     qbft.FirstHeight,
+				Round:      2,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, msgs, prepareMsgs),
+			}),
+		},
 	}
 }

@@ -16,7 +16,7 @@ func (i *Instance) uponRoundChange(
 		return errors.Wrap(err, "round change msg invalid")
 	}
 
-	addedMsg, err := roundChangeMsgContainer.AddIfDoesntExist(signedRoundChange)
+	addedMsg, err := roundChangeMsgContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
 	if err != nil {
 		return errors.Wrap(err, "could not add round change msg to container")
 	}

@@ -30,7 +30,7 @@ func (i *Instance) uponPrepare(
 		return errors.Wrap(err, "invalid prepare msg")
 	}
 
-	addedMsg, err := prepareMsgContainer.AddIfDoesntExist(signedPrepare)
+	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
 	if err != nil {
 		return errors.Wrap(err, "could not add prepare msg to container")
 	}
