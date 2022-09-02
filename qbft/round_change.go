@@ -124,6 +124,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 			valCheck,
 			signedRoundChange.Message.Round,
 		) == nil {
+			// not returning error, no need to
 			return msg, nil
 		}
 	}
