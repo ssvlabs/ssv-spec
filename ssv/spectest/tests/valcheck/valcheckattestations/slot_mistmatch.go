@@ -2,12 +2,13 @@ package valcheckattestations
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // SlotMismatch tests Duty.Slot != AttestationData.Slot
-func SlotMismatch() *AttestationValCheckSpecTest {
+func SlotMismatch() *valcheck.SpecTest {
 	data := &types.ConsensusData{
 		Duty: &types.Duty{
 			Type:                    types.BNRoleAttester,
@@ -36,9 +37,10 @@ func SlotMismatch() *AttestationValCheckSpecTest {
 
 	input, _ := data.Encode()
 
-	return &AttestationValCheckSpecTest{
+	return &valcheck.SpecTest{
 		Name:          "attestation value check slot mismatch",
 		Network:       types.PraterNetwork,
+		BeaconRole:    types.BNRoleAttester,
 		Input:         input,
 		ExpectedError: "attestation data slot != duty slot",
 	}

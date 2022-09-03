@@ -9,6 +9,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
 	"testing"
 )
 
@@ -25,6 +26,7 @@ var AllTests = []SpecTest{
 	newduty.Finished(),
 	newduty.Valid(),
 
+	consensus.DecidedDutyWrongRole(),
 	consensus.NoRunningDuty(),
 	consensus.PostFinish(),
 	consensus.PostDecided(),
@@ -74,10 +76,10 @@ var AllTests = []SpecTest{
 	messages.PartialRootTooShort(),
 	messages.PartialRootTooLong(),
 
-	valcheckattestations.WrongValidatorIndex(),
-	valcheckattestations.WrongValidatorPK(),
-	valcheckattestations.WrongDuty(),
-	valcheckattestations.FarFutureDutySlot(),
+	valcheckduty.WrongValidatorIndex(),
+	valcheckduty.WrongValidatorPK(),
+	valcheckduty.WrongDutyType(),
+	valcheckduty.FarFutureDutySlot(),
 	valcheckattestations.Slashable(),
 	valcheckattestations.SourceHigherThanTarget(),
 	valcheckattestations.FarFutureTarget(),

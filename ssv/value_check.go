@@ -34,7 +34,7 @@ func dutyValueCheck(
 	return nil
 }
 
-func BeaconAttestationValueCheck(
+func AttesterValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
@@ -74,37 +74,64 @@ func BeaconAttestationValueCheck(
 	}
 }
 
-func BeaconBlockValueCheck(
+func ProposerValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
+	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
+		cd := &types.ConsensusData{}
+		if err := cd.Decode(data); err != nil {
+			return errors.Wrap(err, "failed decoding consensus data")
+		}
+
+		if err := dutyValueCheck(cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
+			return errors.Wrap(err, "duty invalid")
+		}
 		return nil
 	}
 }
 
-func AggregatorValueCheck(
+func AggregatorValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
+	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
+		cd := &types.ConsensusData{}
+		if err := cd.Decode(data); err != nil {
+			return errors.Wrap(err, "failed decoding consensus data")
+		}
+
+		if err := dutyValueCheck(cd.Duty, network, types.BNRoleAggregator, validatorPK, validatorIndex); err != nil {
+			return errors.Wrap(err, "duty invalid")
+		}
 		return nil
 	}
 }
 
-func SyncCommitteeValueCheck(
+func SyncCommitteeValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
+	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
+		cd := &types.ConsensusData{}
+		if err := cd.Decode(data); err != nil {
+			return errors.Wrap(err, "failed decoding consensus data")
+		}
+
+		if err := dutyValueCheck(cd.Duty, network, types.BNRoleSyncCommittee, validatorPK, validatorIndex); err != nil {
+			return errors.Wrap(err, "duty invalid")
+		}
 		return nil
 	}
 }
 
-func SyncCommitteeContributionValueCheck(
+func SyncCommitteeContributionValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,

@@ -2,12 +2,13 @@ package valcheckattestations
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // CommitteeIndexMismatch tests Duty.CommitteeIndex != AttestationData.Index
-func CommitteeIndexMismatch() *AttestationValCheckSpecTest {
+func CommitteeIndexMismatch() *valcheck.SpecTest {
 	data := &types.ConsensusData{
 		Duty: &types.Duty{
 			Type:                    types.BNRoleAttester,
@@ -36,9 +37,10 @@ func CommitteeIndexMismatch() *AttestationValCheckSpecTest {
 
 	input, _ := data.Encode()
 
-	return &AttestationValCheckSpecTest{
+	return &valcheck.SpecTest{
 		Name:          "attestation value check committee index mismatch",
 		Network:       types.PraterNetwork,
+		BeaconRole:    types.BNRoleAttester,
 		Input:         input,
 		ExpectedError: "attestation data CommitteeIndex != duty CommitteeIndex",
 	}

@@ -2,12 +2,13 @@ package valcheckattestations
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // SourceHigherThanTarget tests AttestationData.Source.Epoch higher than target
-func SourceHigherThanTarget() *AttestationValCheckSpecTest {
+func SourceHigherThanTarget() *valcheck.SpecTest {
 	data := &types.ConsensusData{
 		Duty: &types.Duty{
 			Type:                    types.BNRoleAttester,
@@ -36,9 +37,10 @@ func SourceHigherThanTarget() *AttestationValCheckSpecTest {
 
 	input, _ := data.Encode()
 
-	return &AttestationValCheckSpecTest{
+	return &valcheck.SpecTest{
 		Name:          "attestation value check source higher than target",
 		Network:       types.NowTestNetwork,
+		BeaconRole:    types.BNRoleAttester,
 		Input:         input,
 		ExpectedError: "attestation data source > target",
 	}

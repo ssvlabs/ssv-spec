@@ -2,7 +2,7 @@ package consensus
 
 import "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 
-// DecidedDutyWrongRole tests a decided value runner.GetBeaconRole() != val.Duty.Type
-func DecidedDutyWrongRole() tests.MultiMsgProcessingSpecTest {
+// DecidedDutyWrongPubKey tests a decided value pubkey not equal to runner's
+func DecidedDutyWrongPubKey() tests.MultiMsgProcessingSpecTest {
 	panic("implement")
 }
