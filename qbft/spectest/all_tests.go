@@ -80,6 +80,7 @@ var AllTests = []SpecTest{
 	proposal.JustificationsNotHeighest(),
 	proposal.JustificationsValueNotJustified(),
 	proposal.DuplicateMsg(),
+	proposal.DuplicateMsgDifferentValue(),
 	proposal.FirstRoundJustification(),
 	proposal.FutureRoundAcceptedProposalNotPrevPrepared(),
 	proposal.FutureRoundAcceptedProposal(),
