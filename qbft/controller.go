@@ -62,16 +62,17 @@ func NewController(
 	proposerF ProposerF,
 ) *Controller {
 	return &Controller{
-		Identifier:      identifier,
-		Height:          -1, // as we bump the height when starting the first instance
-		Domain:          domain,
-		Share:           share,
-		StoredInstances: InstanceContainer{},
-		signer:          signer,
-		valueCheck:      valueCheck,
-		storage:         storage,
-		network:         network,
-		proposerF:       proposerF,
+		Identifier:             identifier,
+		Height:                 -1, // as we bump the height when starting the first instance
+		Domain:                 domain,
+		Share:                  share,
+		StoredInstances:        InstanceContainer{},
+		HigherReceivedMessages: NewMsgContainer(),
+		signer:                 signer,
+		valueCheck:             valueCheck,
+		storage:                storage,
+		network:                network,
+		proposerF:              proposerF,
 	}
 }
 
