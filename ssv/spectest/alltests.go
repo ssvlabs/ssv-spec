@@ -26,7 +26,7 @@ var AllTests = []SpecTest{
 	newduty.Finished(),
 	newduty.Valid(),
 
-	consensus.DecidedDutyWrongRole(),
+	consensus.InvalidDecidedValue(),
 	consensus.NoRunningDuty(),
 	consensus.PostFinish(),
 	consensus.PostDecided(),

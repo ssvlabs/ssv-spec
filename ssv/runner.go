@@ -160,7 +160,7 @@ func basePostConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSigna
 }
 
 func validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
-	if !baseHashRunningDuty(runner) {
+	if !HashRunningDuty(runner) {
 		return errors.New("no running duty")
 	}
 
@@ -177,14 +177,14 @@ func validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMes
 }
 
 func validateConsensusMsg(runner Runner, msg *qbft.SignedMessage) error {
-	if !baseHashRunningDuty(runner) {
+	if !HashRunningDuty(runner) {
 		return errors.New("no running duty")
 	}
 	return nil
 }
 
 func validatePostConsensusMsg(runner Runner, msg *SignedPartialSignatureMessage) error {
-	if !baseHashRunningDuty(runner) {
+	if !HashRunningDuty(runner) {
 		return errors.New("no running duty")
 	}
 
@@ -217,7 +217,7 @@ func decide(runner Runner, input *types.ConsensusData) error {
 	return nil
 }
 
-func baseHashRunningDuty(runner Runner) bool {
+func HashRunningDuty(runner Runner) bool {
 	if runner.GetState() == nil {
 		return false
 	}

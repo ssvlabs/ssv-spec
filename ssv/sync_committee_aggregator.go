@@ -53,7 +53,7 @@ func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty *types.Duty) error {
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
-	return baseHashRunningDuty(r)
+	return HashRunningDuty(r)
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {

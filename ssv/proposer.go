@@ -52,7 +52,7 @@ func (r *ProposerRunner) StartNewDuty(duty *types.Duty) error {
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *ProposerRunner) HasRunningDuty() bool {
-	return baseHashRunningDuty(r)
+	return HashRunningDuty(r)
 }
 
 func (r *ProposerRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {

@@ -9,23 +9,26 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// DecidedDutyWrongRole tests a decided value runner.GetBeaconRole() != val.Duty.Type
-func DecidedDutyWrongRole() *tests.MultiMsgProcessingSpecTest {
+// InvalidDecidedValue tests an invalid decided value
+func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	cd := &types.ConsensusData{
-		Duty: &types.Duty{
-			Type:                    100,
-			PubKey:                  testingutils.TestingValidatorPubKey,
-			Slot:                    testingutils.TestingDutySlot,
-			ValidatorIndex:          testingutils.TestingValidatorIndex,
-			CommitteeIndex:          3,
-			CommitteesAtSlot:        36,
-			CommitteeLength:         128,
-			ValidatorCommitteeIndex: 11,
-		},
+	consensusDataByts := func(role types.BeaconRole) []byte {
+		cd := &types.ConsensusData{
+			Duty: &types.Duty{
+				Type:                    100,
+				PubKey:                  testingutils.TestingValidatorPubKey,
+				Slot:                    testingutils.TestingDutySlot,
+				ValidatorIndex:          testingutils.TestingValidatorIndex,
+				CommitteeIndex:          3,
+				CommitteesAtSlot:        36,
+				CommitteeLength:         128,
+				ValidatorCommitteeIndex: 11,
+			},
+		}
+		byts, _ := cd.Encode()
+		return byts
 	}
-	byts, _ := cd.Encode()
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "decided duty wrong role",
@@ -48,7 +51,7 @@ func DecidedDutyWrongRole() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.SyncCommitteeContributionMsgID,
-								Data:       testingutils.CommitDataBytes(byts),
+								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "f41289fab2fcfd8f4ddd5b87e7a49cef792003e74d2132558310677b9aebc6ae",
@@ -71,7 +74,7 @@ func DecidedDutyWrongRole() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.SyncCommitteeMsgID,
-								Data:       testingutils.CommitDataBytes(byts),
+								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommittee)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "5ff863a832e766731418768336ccb6580bb3dd33c2a0436d0196ea6525a0749a",
@@ -96,7 +99,7 @@ func DecidedDutyWrongRole() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.AggregatorMsgID,
-								Data:       testingutils.CommitDataBytes(byts),
+								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAggregator)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "c32aa3355d684d473f15474129903aa2968068f57e3b9ccc1e8352372e796c1d",
@@ -123,7 +126,7 @@ func DecidedDutyWrongRole() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.ProposerMsgID,
-								Data:       testingutils.CommitDataBytes(byts),
+								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "9b7ec2bce48fe2bb0582c04531d1fc797640515cd0d464c0a810a7390d9623dd",
@@ -146,7 +149,7 @@ func DecidedDutyWrongRole() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.AttesterMsgID,
-								Data:       testingutils.CommitDataBytes(byts),
+								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAttester)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "e80945f69c9142e391550f605d18a1e39f423d5f865ef865421f07ec25c8b803",
