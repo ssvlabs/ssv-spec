@@ -6,6 +6,13 @@ import (
 )
 
 func (c *Controller) processHigherHeightMsg(msg *SignedMessage) error {
+	if isDecidedMsg(c.Share, msg) {
+		if err := validateDecided(c.Share, c.GenerateConfig(), msg); err != nil {
+			return errors.Wrap(err, "invalid decided msg")
+		}
+	}
+
+	// add msg to container, wait for f+1 higher height msgs and sync
 	added, err := c.HigherReceivedMessages.AddFirstMsgForSignerAndRound(msg)
 	if err != nil {
 		return errors.Wrap(err, "could not add higher height msg")
@@ -14,6 +21,23 @@ func (c *Controller) processHigherHeightMsg(msg *SignedMessage) error {
 		// TODO should reset msg container? past msgs? all msgs?
 		return c.network.SyncHighestDecided(c.Identifier)
 	}
+	return nil
+}
+
+func (c *Controller) uponDecided(msg *SignedMessage) error {
+	inst := c.InstanceForHeight(c.Height)
+	if inst != nil {
+		inst.State.Decided = true
+	}
+
+	// bump height
+	c.Height = msg.Message.Height
+
+	// save
+	if err := c.storage.SaveHighestDecided(msg); err != nil {
+		return errors.Wrap(err, "could not save decided")
+	}
+
 	return nil
 }
 
