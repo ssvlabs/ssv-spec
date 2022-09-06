@@ -16,7 +16,7 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 	}
 
 	return &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty decided",
+		Name: "new duty consensus not started",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",

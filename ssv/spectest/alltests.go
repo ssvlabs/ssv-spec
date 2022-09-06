@@ -22,7 +22,7 @@ var AllTests = []SpecTest{
 	newduty.UnknownDuty(),
 	newduty.ConsensusNotStarted(),
 	newduty.NotDecided(),
-	newduty.Decided(),
+	newduty.PostDecided(),
 	newduty.Finished(),
 	newduty.Valid(),
 

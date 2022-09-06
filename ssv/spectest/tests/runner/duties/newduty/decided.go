@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// Decided tests a valid start duty before finished and after decided
-func Decided() *MultiStartNewRunnerDutySpecTest {
+// PostDecided tests a valid start duty before finished and after decided
+func PostDecided() *MultiStartNewRunnerDutySpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
@@ -20,7 +20,7 @@ func Decided() *MultiStartNewRunnerDutySpecTest {
 	}
 
 	return &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty decided",
+		Name: "new duty post decided",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
