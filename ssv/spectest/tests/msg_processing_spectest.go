@@ -25,7 +25,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	v := testingutils.BaseValidator(keySetForShare(test.Runner.GetShare()))
+	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetShare()))
 	v.DutyRunners[test.Runner.GetBeaconRole()] = test.Runner
 	v.Network = test.Runner.GetNetwork()
 
@@ -96,17 +96,4 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	postRoot, err := test.Runner.GetState().GetRoot()
 	require.NoError(t, err)
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
-}
-
-func keySetForShare(share *types.Share) *testingutils.TestKeySet {
-	if share.Quorum == 5 {
-		return testingutils.Testing7SharesSet()
-	}
-	if share.Quorum == 7 {
-		return testingutils.Testing10SharesSet()
-	}
-	if share.Quorum == 9 {
-		return testingutils.Testing13SharesSet()
-	}
-	return testingutils.Testing4SharesSet()
 }
