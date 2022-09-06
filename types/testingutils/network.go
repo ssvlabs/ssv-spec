@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
@@ -35,6 +36,18 @@ func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.Sign
 
 	return nil
 }
+
+func (net *TestingNetwork) SyncHighestDecided(identifier []byte) error {
+	return nil
+}
+
+func (net *TestingNetwork) SyncHighestRoundChange(identifier []byte, height qbft.Height) error {
+	return nil
+}
+
+//func (net *TestingNetwork) SyncHighestDecided() error {
+//	return nil
+//}
 
 // BroadcastDKGMessage will broadcast a msg to the dkg network
 func (net *TestingNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {

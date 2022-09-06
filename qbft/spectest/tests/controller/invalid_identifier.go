@@ -33,6 +33,6 @@ func InvalidIdentifier() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ExpectedError: "message doesn't belong to Identifier",
+		ExpectedError: "invalid msg: message doesn't belong to Identifier",
 	}
 }

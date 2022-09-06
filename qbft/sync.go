@@ -6,7 +6,7 @@ import (
 )
 
 func (c *Controller) processHigherHeightMsg(msg *SignedMessage) error {
-	added, err := c.HigherReceivedMessages.AddIfDoesntExist(msg)
+	added, err := c.HigherReceivedMessages.AddFirstMsgForSignerAndRound(msg)
 	if err != nil {
 		return errors.Wrap(err, "could not add higher height msg")
 	}

@@ -208,6 +208,10 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 		return errors.New("round change msg allows 1 signer")
 	}
 
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
+		return errors.Wrap(err, "round change msg signature invalid")
+	}
+
 	rcData, err := signedMsg.Message.GetRoundChangeData()
 	if err != nil {
 		return errors.Wrap(err, "could not get roundChange data ")

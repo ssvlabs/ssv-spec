@@ -35,6 +35,5 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ExpectedError: "instance not found",
 	}
 }

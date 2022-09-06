@@ -133,11 +133,6 @@ func (c *Controller) baseMsgValidation(msg *SignedMessage) error {
 		return errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
 	}
 
-	// verify signature
-	if err := msg.Signature.VerifyByOperators(msg, c.Domain, types.QBFTSignatureType, c.Share.Committee); err != nil {
-		return errors.Wrap(err, "prepare msg signature invalid")
-	}
-
 	return nil
 }
 
