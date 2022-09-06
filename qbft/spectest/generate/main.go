@@ -6,9 +6,10 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"reflect"
 )
+
+//go:generate go run main.go
 
 func main() {
 	all := map[string]spectest.SpecTest{}
@@ -35,9 +36,9 @@ func main() {
 
 func writeJson(data []byte) {
 	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "qbft", "spectest", "generate")
+	//path := filepath.Join(basedir, "qbft", "spectest", "generate")
 	fileName := "tests.json"
-	fullPath := path + "/" + fileName
+	fullPath := basedir + "/" + fileName
 
 	fmt.Printf("writing spec tests json to: %s\n", fullPath)
 	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {

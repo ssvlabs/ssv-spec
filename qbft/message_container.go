@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/pkg/errors"
 )
 
 type MsgContainer struct {
@@ -94,23 +93,14 @@ func (c *MsgContainer) LongestUniqueSignersForRoundAndValue(round Round, value [
 	return signersRet, msgsRet
 }
 
-// AddIfDoesntExist will add a msg only if there isn't an existing msg with the same root and signers
-func (c *MsgContainer) AddIfDoesntExist(msg *SignedMessage) (bool, error) {
+// AddFirstMsgForSignerAndRound will add the first msg for each signer for a specific round, consequent msgs will not be added
+func (c *MsgContainer) AddFirstMsgForSignerAndRound(msg *SignedMessage) (bool, error) {
 	if c.Msgs[msg.Message.Round] == nil {
 		c.Msgs[msg.Message.Round] = make([]*SignedMessage, 0)
 	}
 
-	r, err := msg.GetRoot()
-	if err != nil {
-		return false, errors.Wrap(err, "could not get signed msg root")
-	}
-
 	for _, existingMsg := range c.Msgs[msg.Message.Round] {
-		toMatchRoot, err := existingMsg.GetRoot()
-		if err != nil {
-			return false, errors.Wrap(err, "could not get existing signed msg root")
-		}
-		if bytes.Equal(r, toMatchRoot) && existingMsg.MatchedSigners(msg.Signers) {
+		if existingMsg.MatchedSigners(msg.Signers) {
 			return false, nil
 		}
 	}

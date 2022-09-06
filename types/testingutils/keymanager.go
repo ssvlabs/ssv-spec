@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
@@ -20,14 +21,22 @@ type testingKeyManager struct {
 	ecdsaKeys      map[string]*ecdsa.PrivateKey
 	encryptionKeys map[string]*rsa.PrivateKey
 	domain         types.DomainType
+
+	slashableDataRoots [][]byte
 }
 
 func NewTestingKeyManager() *testingKeyManager {
+	return NewTestingKeyManagerWithSlashableRoots([][]byte{})
+}
+
+func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testingKeyManager {
 	ret := &testingKeyManager{
 		keys:           map[string]*bls.SecretKey{},
 		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 		encryptionKeys: nil,
 		domain:         types.PrimusTestnet,
+
+		slashableDataRoots: slashableDataRoots,
 	}
 
 	ret.AddShare(Testing4SharesSet().ValidatorSK)
@@ -66,6 +75,12 @@ func NewTestingKeyManager() *testingKeyManager {
 
 // IsAttestationSlashable returns error if attestation is slashable
 func (km *testingKeyManager) IsAttestationSlashable(data *spec.AttestationData) error {
+	for _, r := range km.slashableDataRoots {
+		r2, _ := data.HashTreeRoot()
+		if bytes.Equal(r, r2[:]) {
+			return errors.New("slashable attestation")
+		}
+	}
 	return nil
 }
 

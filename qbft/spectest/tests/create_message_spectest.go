@@ -101,7 +101,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 		state.LastPreparedValue = test.Value
 
 		for _, msg := range test.PrepareJustifications {
-			state.PrepareContainer.AddIfDoesntExist(msg)
+			state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
 		}
 	}
 
