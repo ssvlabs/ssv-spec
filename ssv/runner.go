@@ -106,18 +106,27 @@ func baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided
 		return false, nil, errors.Wrap(err, "invalid consensus message")
 	}
 
-	decided, decidedValueByts, err := runner.GetQBFTController().ProcessMsg(msg)
+	prevDecided, _ := runner.GetState().RunningInstance.IsDecided()
+
+	decidedMsg, err := runner.GetQBFTController().ProcessMsg(msg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to process consensus msg")
 	}
+	decidedRunningInstance := decidedMsg != nil && decidedMsg.Message.Height == runner.GetState().RunningInstance.GetHeight()
 
-	// Decided returns true only once so if it is true it must be for the current running instance
-	if !decided {
+	// verify we decided running instance only, if not we do not proceed
+	if prevDecided || !decidedRunningInstance {
 		return false, nil, nil
 	}
 
+	// get decided value
+	decidedData, err := decidedMsg.Message.GetCommitData()
+	if err != nil {
+		return false, nil, errors.Wrap(err, "failed to get decided data")
+	}
+
 	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedValueByts); err != nil {
+	if err := decidedValue.Decode(decidedData.Data); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 

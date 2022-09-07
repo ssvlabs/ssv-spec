@@ -2,6 +2,7 @@ package tests
 
 import (
 	"bytes"
+	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -11,18 +12,21 @@ import (
 	"testing"
 )
 
+type RunInstanceData struct {
+	InputValue         []byte
+	InputMessages      []*qbft.SignedMessage
+	DecidedVal         []byte
+	DecidedCnt         uint
+	SavedDecided       *qbft.SignedMessage
+	BroadcastedDecided *qbft.SignedMessage
+	ControllerPostRoot string
+}
+
 type ControllerSpecTest struct {
 	Name            string
-	RunInstanceData []struct {
-		InputValue    []byte
-		InputMessages []*qbft.SignedMessage
-		Decided       bool
-		DecidedVal    []byte
-		DecidedCnt    uint
-		SavedDecided  *qbft.SignedMessage
-	}
-	OutputMessages []*qbft.SignedMessage
-	ExpectedError  string
+	RunInstanceData []*RunInstanceData
+	OutputMessages  []*qbft.SignedMessage
+	ExpectedError   string
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
@@ -57,20 +61,19 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 		decidedCnt := 0
 		for _, msg := range runData.InputMessages {
-			decided, _, err := contr.ProcessMsg(msg)
+			decided, err := contr.ProcessMsg(msg)
 			if err != nil {
 				lastErr = err
 			}
-			if decided {
+			if decided != nil {
 				decidedCnt++
+
+				data, _ := decided.Message.GetCommitData()
+				require.EqualValues(t, runData.DecidedVal, data.Data)
 			}
 		}
 
 		require.EqualValues(t, runData.DecidedCnt, decidedCnt)
-
-		isDecided, decidedVal := contr.InstanceForHeight(contr.Height).IsDecided()
-		require.EqualValues(t, runData.Decided, isDecided)
-		require.EqualValues(t, runData.DecidedVal, decidedVal)
 
 		if runData.SavedDecided != nil {
 			// test saved to storage
@@ -86,7 +89,8 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 			require.EqualValues(t, r2, r1)
 			require.EqualValues(t, runData.SavedDecided.Signers, decided.Signers)
 			require.EqualValues(t, runData.SavedDecided.Signature, decided.Signature)
-
+		}
+		if runData.BroadcastedDecided != nil {
 			// test broadcasted
 			broadcastedMsgs := contr.GenerateConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 			require.Greater(t, len(broadcastedMsgs), 0)
@@ -101,6 +105,9 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 				r1, err := msg1.GetRoot()
 				require.NoError(t, err)
 
+				r2, err := runData.BroadcastedDecided.GetRoot()
+				require.NoError(t, err)
+
 				if bytes.Equal(r1, r2) &&
 					reflect.DeepEqual(runData.SavedDecided.Signers, msg1.Signers) &&
 					reflect.DeepEqual(runData.SavedDecided.Signature, msg1.Signature) {
@@ -110,6 +117,10 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 			}
 			require.True(t, found)
 		}
+
+		r, err := contr.GetRoot()
+		require.NoError(t, err)
+		require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r))
 	}
 
 	if len(test.ExpectedError) != 0 {
@@ -120,5 +131,5 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 }
 
 func (test *ControllerSpecTest) TestName() string {
-	return "qbft controller " + test.Name
+	return "qbft controllerprocessmsg " + test.Name
 }

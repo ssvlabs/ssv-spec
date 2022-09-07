@@ -1,4 +1,4 @@
-package controller
+package controllerprocessmsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -10,14 +10,7 @@ import (
 func InvalidIdentifier() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "invalid identifier",
-		RunInstanceData: []struct {
-			InputValue    []byte
-			InputMessages []*qbft.SignedMessage
-			Decided       bool
-			DecidedVal    []byte
-			DecidedCnt    uint
-			SavedDecided  *qbft.SignedMessage
-		}{
+		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
@@ -29,8 +22,8 @@ func InvalidIdentifier() *tests.ControllerSpecTest {
 						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
 					}),
 				},
-				Decided:    false,
-				DecidedVal: nil,
+				DecidedVal:         nil,
+				ControllerPostRoot: "f28cfa54f7993a21ebe3a46fde514e387ad4ff9a3be197b656c4c6e8dbb124de",
 			},
 		},
 		ExpectedError: "invalid msg: message doesn't belong to Identifier",

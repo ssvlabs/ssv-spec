@@ -1,4 +1,4 @@
-package decided
+package startinstance
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -8,11 +8,11 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// PrevCommitOverlap tests a multi signer commit msg with a quorum which does overlap with previous valid commits
-func PrevCommitOverlap() *tests.ControllerSpecTest {
+// PostFutureDecided tests starting a new instance after deciding with future decided msg
+func PostFutureDecided() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
-		Name: "decide current instance",
+		Name: "start instance post future decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -22,7 +22,7 @@ func PrevCommitOverlap() *tests.ControllerSpecTest {
 						[]types.OperatorID{1, 2, 3},
 						&qbft.Message{
 							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
+							Height:     10,
 							Round:      qbft.FirstRound,
 							Identifier: identifier[:],
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
@@ -33,24 +33,19 @@ func PrevCommitOverlap() *tests.ControllerSpecTest {
 					[]types.OperatorID{1, 2, 3},
 					&qbft.Message{
 						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
-				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
+						Height:     10,
 						Round:      qbft.FirstRound,
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "19e63c3c0d763de50f31c3d41dcf80af0c68f8ab659ff02239eb81f1ed757fef",
+				ControllerPostRoot: "6c412959f7418d2e77a7ca095dfcddf1e73d392537f1ec0f7346085149c5a004",
+			},
+			{
+				InputValue:         []byte{1, 2, 3, 4},
+				DecidedCnt:         0,
+				ControllerPostRoot: "a785c2ec89be827f3740f8b302c86037937766ea052bb59bb6cecc4723ecdfb8",
 			},
 		},
 	}

@@ -1,4 +1,4 @@
-package controller
+package controllerprocessmsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -13,18 +13,10 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "save and broadcast decided",
-		RunInstanceData: []struct {
-			InputValue    []byte
-			InputMessages []*qbft.SignedMessage
-			Decided       bool
-			DecidedVal    []byte
-			DecidedCnt    uint
-			SavedDecided  *qbft.SignedMessage
-		}{
+		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet()),
-				Decided:       true,
 				DecidedVal:    []byte{1, 2, 3, 4},
 				DecidedCnt:    1,
 				SavedDecided: testingutils.MultiSignQBFTMsg(
@@ -37,6 +29,7 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
+				ControllerPostRoot: "4904e750939440bf885052e33dadc77369fe4a942cbe9940bf4ec6c52baac1b7",
 			},
 		},
 	}

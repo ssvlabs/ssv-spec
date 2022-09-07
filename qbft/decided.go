@@ -5,51 +5,55 @@ import (
 	"github.com/pkg/errors"
 )
 
-// UponDecided returns true if a decided messages was received.
-func (i *Instance) UponDecided(signedDecided *SignedMessage, commitMsgContainer *MsgContainer) (bool, []byte, error) {
-	if i.State.Decided {
-		return true, i.State.DecidedValue, nil
+// UponFutureDecided returns error if could not process decided
+func (c *Controller) UponFutureDecided(msg *SignedMessage) (*SignedMessage, error) {
+	if msg.Message.Height <= c.Height {
+		return nil, errors.New("invalid height")
 	}
 
 	if err := validateDecided(
-		i.State,
-		i.config,
-		signedDecided,
-		i.State.Height,
-		i.State.Share.Committee,
-		i.config.GetValueCheckF(),
+		msg.Message.Height,
+		c.GenerateConfig(),
+		msg,
+		c.Share.Committee,
 	); err != nil {
-		return false, nil, errors.Wrap(err, "invalid decided msg")
+		return nil, errors.Wrap(err, "invalid decided msg")
 	}
 
-	addMsg, err := commitMsgContainer.AddFirstMsgForSignerAndRound(signedDecided)
+	// stop any running instance
+	inst := c.InstanceForHeight(c.Height)
+	if inst != nil {
+		inst.State.Decided = true
+	}
+
+	// get decided value
+	data, err := msg.Message.GetCommitData()
 	if err != nil {
-		return false, nil, errors.Wrap(err, "could not add commit msg to container")
-	}
-	if !addMsg {
-		return false, nil, nil // UponCommit was already called
+		return nil, errors.Wrap(err, "could not get decided data")
 	}
 
-	msgDecidedData, err := signedDecided.Message.GetCommitData()
-	if err != nil {
-		return false, nil, errors.Wrap(err, "could not get msg decided data")
+	// add an instance for the decided msg
+	i := NewInstance(c.GenerateConfig(), c.Share, c.Identifier, msg.Message.Height)
+	i.State.Decided = true
+	i.State.DecidedValue = data.Data
+	c.StoredInstances.addNewInstance(i)
+
+	// bump height
+	c.Height = msg.Message.Height
+
+	if err := c.storage.SaveHighestDecided(msg); err != nil {
+		return nil, errors.Wrap(err, "could not save decided")
 	}
 
-	return true, msgDecidedData.Data, nil
+	return msg, nil
 }
 
 func validateDecided(
-	state *State,
+	height Height,
 	config IConfig,
 	signedDecided *SignedMessage,
-	height Height,
 	operators []*types.Operator,
-	valCheck ProposedValueCheckF,
 ) error {
-	if !isDecidedMsg(state, signedDecided) {
-		return errors.New("not a decided msg")
-	}
-
 	if err := baseCommitValidation(config, signedDecided, height, operators); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
@@ -58,7 +62,11 @@ func validateDecided(
 	if err != nil {
 		return errors.Wrap(err, "could not get msg decided data")
 	}
+	if err := msgDecidedData.Validate(); err != nil {
+		return errors.Wrap(err, "invalid decided data")
+	}
 
+	valCheck := config.GetValueCheckF()
 	if err := valCheck(msgDecidedData.Data); err != nil {
 		return errors.Wrap(err, "decided value invalid")
 	}
@@ -67,6 +75,6 @@ func validateDecided(
 }
 
 // returns true if signed commit has all quorum sigs
-func isDecidedMsg(state *State, signedDecided *SignedMessage) bool {
-	return state.Share.HasQuorum(len(signedDecided.Signers))
+func isDecidedMsg(share *types.Share, signedDecided *SignedMessage) bool {
+	return share.HasQuorum(len(signedDecided.Signers))
 }

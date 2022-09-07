@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 
@@ -9,8 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a controller can process messages for as messages are not
-// guaranteed to arrive in a timely fashion, we physically limit how far back the controller will process messages for
+// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a controllerprocessmsg can process messages for as messages are not
+// guaranteed to arrive in a timely fashion, we physically limit how far back the controllerprocessmsg will process messages for
 const HistoricalInstanceCapacity int = 5
 
 type InstanceContainer [HistoricalInstanceCapacity]*Instance
@@ -89,46 +90,80 @@ func (c *Controller) StartNewInstance(value []byte) error {
 	return nil
 }
 
-// ProcessMsg processes a new msg, returns true if Decided, non nil byte slice if Decided (Decided value) and error
-// Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
-func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
+// ProcessMsg processes a new msg, returns decided message or error
+func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	if err := c.baseMsgValidation(msg); err != nil {
-		return false, nil, errors.Wrap(err, "invalid msg")
+		return nil, errors.Wrap(err, "invalid msg")
 	}
 
 	if msg.Message.Height > c.Height {
-		return false, nil, c.processHigherHeightMsg(msg)
+		return c.processFutureMsg(msg)
+	} else {
+		return c.processMsgCurrentInstance(msg)
 	}
+}
 
+func (c *Controller) processMsgCurrentInstance(msg *SignedMessage) (*SignedMessage, error) {
 	inst := c.InstanceForHeight(msg.Message.Height)
 	if inst == nil {
-		return false, nil, errors.New(fmt.Sprintf("instance not found"))
+		return nil, errors.New(fmt.Sprintf("instance not found"))
 	}
 
 	prevDecided, _ := inst.IsDecided()
-	decided, decidedValue, aggregatedCommit, err := inst.ProcessMsg(msg)
-	if err != nil {
-		return false, nil, errors.Wrap(err, "could not process msg")
+
+	decided := false
+	var decidedMsg *SignedMessage
+	var err error
+	if isDecidedMsg(c.Share, msg) {
+		if err := validateDecided(
+			inst.State.Height,
+			c.GenerateConfig(),
+			msg,
+			c.Share.Committee,
+		); err != nil {
+			return nil, errors.Wrap(err, "invalid decided msg")
+		}
+
+		added, err := inst.State.CommitContainer.AddFirstMsgForSignerAndRound(msg)
+		if inst == nil || !added {
+			return nil, errors.New("could not add decided msg")
+		}
+
+		msgDecidedData, err := msg.Message.GetCommitData()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get msg decided data")
+		}
+
+		inst.State.Decided = true
+		inst.State.DecidedValue = msgDecidedData.Data
+
+		decided = true
+		decidedMsg = msg
+	} else {
+		decided, _, decidedMsg, err = inst.ProcessMsg(msg)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not process msg")
+		}
 	}
 
 	// if previously Decided we do not return Decided true again
 	if prevDecided {
-		return false, nil, err
+		return nil, err
 	}
 
 	// save the highest Decided
 	if !decided {
-		return false, nil, nil
+		return nil, nil
 	}
 
-	if err := c.saveAndBroadcastDecided(aggregatedCommit); err != nil {
+	if err := c.saveAndBroadcastDecided(decidedMsg); err != nil {
 		// TODO - we do not return error, should log?
 	}
-	return decided, decidedValue, nil
+	return msg, nil
 }
 
 func (c *Controller) baseMsgValidation(msg *SignedMessage) error {
-	// verify msg belongs to controller
+	// verify msg belongs to controllerprocessmsg
 	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
 		return errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
 	}
@@ -176,6 +211,42 @@ func (c *Controller) canStartInstance(height Height, value []byte) error {
 	return nil
 }
 
+// GetRoot returns the state's deterministic root
+func (c *Controller) GetRoot() ([]byte, error) {
+	rootStruct := struct {
+		Identifier             []byte
+		Height                 Height
+		InstanceRoots          [][]byte
+		HigherReceivedMessages *MsgContainer
+		Domain                 types.DomainType
+		Share                  *types.Share
+	}{
+		Identifier:             c.Identifier,
+		Height:                 c.Height,
+		InstanceRoots:          make([][]byte, len(c.StoredInstances)),
+		HigherReceivedMessages: c.HigherReceivedMessages,
+		Domain:                 c.Domain,
+		Share:                  c.Share,
+	}
+
+	for i, inst := range c.StoredInstances {
+		if inst != nil {
+			r, err := inst.GetRoot()
+			if err != nil {
+				return nil, errors.Wrap(err, "failed getting instance root")
+			}
+			rootStruct.InstanceRoots[i] = r
+		}
+	}
+
+	marshaledRoot, err := json.Marshal(rootStruct)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode state")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret[:], nil
+}
+
 // Encode implementation
 func (c *Controller) Encode() ([]byte, error) {
 	return json.Marshal(c)
@@ -185,7 +256,7 @@ func (c *Controller) Encode() ([]byte, error) {
 func (c *Controller) Decode(data []byte) error {
 	err := json.Unmarshal(data, &c)
 	if err != nil {
-		return errors.Wrap(err, "could not decode controller")
+		return errors.Wrap(err, "could not decode controllerprocessmsg")
 	}
 
 	config := c.GenerateConfig()

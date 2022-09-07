@@ -8,8 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// PrevCommitOverlap tests a multi signer commit msg with a quorum which does overlap with previous valid commits
-func PrevCommitOverlap() *tests.ControllerSpecTest {
+// CurrentInstanceFutureRound tests a decided msg received for current running instance and future round
+func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "decide current instance",
@@ -23,7 +23,7 @@ func PrevCommitOverlap() *tests.ControllerSpecTest {
 						&qbft.Message{
 							MsgType:    qbft.CommitMsgType,
 							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
+							Round:      100,
 							Identifier: identifier[:],
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
@@ -34,7 +34,7 @@ func PrevCommitOverlap() *tests.ControllerSpecTest {
 					&qbft.Message{
 						MsgType:    qbft.CommitMsgType,
 						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
+						Round:      100,
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
@@ -44,13 +44,13 @@ func PrevCommitOverlap() *tests.ControllerSpecTest {
 					&qbft.Message{
 						MsgType:    qbft.CommitMsgType,
 						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
+						Round:      100,
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "19e63c3c0d763de50f31c3d41dcf80af0c68f8ab659ff02239eb81f1ed757fef",
+				ControllerPostRoot: "3da593fd7c69fecd5bf621f9a70bc26cce4062a050b8038d82c22be8ce66f03e",
 			},
 		},
 	}

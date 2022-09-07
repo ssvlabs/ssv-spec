@@ -3,13 +3,14 @@ package spectest
 import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controllerprocessmsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/decided"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/startinstance"
 	"testing"
 )
 
@@ -19,17 +20,27 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	controller.StartInstanceFirstHeight(),
-	controller.StartInstancePreviousDecided(),
-	controller.StartInstancePreviousNotDecided(),
-	controller.StartInstanceInvalidValue(),
-	controller.FirstDecided(),
-	controller.InvalidIdentifier(),
-	controller.NoInstanceRunning(),
-	controller.NotFirstDecided(),
-	controller.NotDecided(),
-	controller.ProcessMsgError(),
-	controller.SavedAndBroadcastedDecided(),
+	decided.PrevCommitOverlap(),
+	decided.CurrentInstanceFutureRound(),
+	decided.MultiDecidedInstances(),
+	decided.PastInstance(),
+	decided.FutureInstance(),
+	decided.CurrentInstance(),
+
+	startinstance.PostFutureDecided(),
+	startinstance.FirstHeight(),
+	startinstance.PreviousDecided(),
+	startinstance.PreviousNotDecided(),
+	startinstance.InvalidValue(),
+
+	controllerprocessmsg.LateCommitPastInstance(),
+	controllerprocessmsg.FirstDecided(),
+	controllerprocessmsg.InvalidIdentifier(),
+	controllerprocessmsg.NoInstanceRunning(),
+	controllerprocessmsg.LateCommit(),
+	controllerprocessmsg.SingleConsensusMsg(),
+	controllerprocessmsg.ProcessMsgError(),
+	controllerprocessmsg.SavedAndBroadcastedDecided(),
 
 	proposer.FourOperators(),
 	proposer.SevenOperators(),
@@ -143,21 +154,21 @@ var AllTests = []SpecTest{
 	commit.UnknownSigner(),
 	commit.InvalidValCheck(),
 
-	decided.UnknownSigner(),
-	decided.WrongSignature(),
-	decided.WrongHeight(),
-	decided.PostDecided(),
-	decided.SecondMsg(),
-	decided.PastRound(),
-	decided.NoPrevAcceptedProposal(),
-	decided.InvalidValCheckData(),
-	decided.InvalidData(),
-	decided.ImparsableData(),
-	decided.FutureRound(),
-	decided.DuplicateSigners(),
-	decided.DuplicateMsg(),
-	decided.PrevCommitOverlap(),
-	decided.CurrentRound(),
+	//decided.UnknownSigner(),
+	//decided.WrongSignature(),
+	//decided.WrongHeight(),
+	//decided.PostDecided(),
+	//decided.SecondMsg(),
+	//decided.PastRound(),
+	//decided.NoPrevAcceptedProposal(),
+	//decided.InvalidValCheckData(),
+	//decided.InvalidData(),
+	//decided.ImparsableData(),
+	//decided.FutureRound(),
+	//decided.DuplicateSigners(),
+	//decided.DuplicateMsg(),
+	//decided.PrevCommitOverlap(),
+	//decided.CurrentRound(),
 
 	roundchange.HappyFlow(),
 	roundchange.WrongHeight(),

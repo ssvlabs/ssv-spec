@@ -1,4 +1,4 @@
-package controller
+package controllerprocessmsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,34 +7,26 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ProcessMsgError tests a process msg returning an error
-func ProcessMsgError() *tests.ControllerSpecTest {
+// NoInstanceRunning tests a process msg for height in which there is no running instance
+func NoInstanceRunning() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
-		Name: "process msg error ",
-		RunInstanceData: []struct {
-			InputValue    []byte
-			InputMessages []*qbft.SignedMessage
-			Decided       bool
-			DecidedVal    []byte
-			DecidedCnt    uint
-			SavedDecided  *qbft.SignedMessage
-		}{
+		Name: "no instance running",
+		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], 1, &qbft.Message{
 						MsgType:    qbft.ProposalMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      100,
+						Height:     2,
+						Round:      qbft.FirstRound,
 						Identifier: identifier[:],
 						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
 					}),
 				},
-				Decided:    false,
-				DecidedVal: nil,
+				DecidedVal:         nil,
+				ControllerPostRoot: "9d64d6dc78c27d930918f14a0f05a5a37ba18c317356b301ca76dcdfc18ab340",
 			},
 		},
-		ExpectedError: "could not process msg: proposal invalid: proposal not justified: change round has not quorum",
 	}
 }

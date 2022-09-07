@@ -5,16 +5,20 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (c *Controller) processHigherHeightMsg(msg *SignedMessage) error {
+func (c *Controller) processFutureMsg(msg *SignedMessage) (*SignedMessage, error) {
+	if isDecidedMsg(c.Share, msg) {
+		return c.UponFutureDecided(msg)
+	}
+
 	added, err := c.HigherReceivedMessages.AddFirstMsgForSignerAndRound(msg)
 	if err != nil {
-		return errors.Wrap(err, "could not add higher height msg")
+		return nil, errors.Wrap(err, "could not add higher height msg")
 	}
 	if added && c.f1SyncTrigger() {
 		// TODO should reset msg container? past msgs? all msgs?
-		return c.network.SyncHighestDecided(c.Identifier)
+		return nil, c.network.SyncHighestDecided(c.Identifier)
 	}
-	return nil
+	return nil, nil
 }
 
 // f1SyncTrigger returns true if received f+1 higher height messages from unique signers

@@ -8,8 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// PrevCommitOverlap tests a multi signer commit msg with a quorum which does overlap with previous valid commits
-func PrevCommitOverlap() *tests.ControllerSpecTest {
+// CurrentInstance tests a decided msg received for current running instance
+func CurrentInstance() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "decide current instance",
