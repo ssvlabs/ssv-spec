@@ -86,9 +86,9 @@ The following arguments can be provided as an input to peer score params procedu
 Topic score params enables to define some more specific values in the topic level, 
 ensuring that each topic has its own set of config according to the topic nature.
 
-As mentioned above, this solution is based on ETH2
-[procedure](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-generate-scoring-params-py-L174)
-for calculating topic score params.
+As mentioned above, our solution for calculating score params is based on ETH2
+[procedure](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-generate-scoring-params-py-L174),
+with some minor adaptations to ssv.
 
 Topic score params accepts multiple types of arguments:
 
@@ -103,7 +103,8 @@ Topic score params accepts multiple types of arguments:
 **Topic level arguments**
 
 * `TopicWeight` is the weight of the topic
-* `ExpectedMsgRate` is the expected rate for the topic (in 12sec)
+* `ExpectedMsgRate` is the expected rate for the topic (in 12sec): \
+`activeValidators / float64(slotsPerEpoch)`
 * `InvalidMsgDecayTime` defines the decay for invalid messages (P4),
 passing a zero value disables scoring of message validation.
 * `FirstMsgDecayTime` defines the decay time for first message deliveries (P2)
@@ -115,6 +116,18 @@ passing a zero value disables scoring of message validation.
 ### Decided Topic Params
 
 Decided topic is based on `aggregation topic` (ETH2) due to the high rate of messages.
+
+The following arguments are used for constructing decided topic score params:
+
+| Arg | Value | Comments |
+| --- | -------- | --- |
+|TotalTopicsWeight| `4.0 + 0.5 = 4.5` (subnets + decided) | |
+|TopicWeight| `0.5` | |
+|ExpectedMsgRate| `activeValidators / float64(slotsPerEpoch)` | |
+|FirstMsgDecayTime| `1` | |
+|MeshMsgDecayTime| `16` | |
+|MeshMsgCapFactor| `32.0` | |
+|MeshMsgActivationTime| One epoch duration | |
 
 Examples:
 
@@ -245,6 +258,18 @@ Topic score params:
 ### Subnet Topic Params
 
 Subnet topics are based on `attestation subnets` (ETH2) due to their similar nature/orientation.
+
+The following arguments are used for constructing subnet topic score params:
+
+| Arg | Value | Comments |
+| --- | -------- | --- |
+|TotalTopicsWeight| `4.0 + 0.5 = 4.5` (subnets + decided) | |
+|TopicWeight| `4.0 / subnetsCount` | |
+|ExpectedMsgRate| `(activeValidators / subnetsCount) * msgsPerEpoch / slotsPerEpoch` | |
+|FirstMsgDecayTime| `8` | |
+|MeshMsgDecayTime| `16` | |
+|MeshMsgCapFactor| `16.0` | |
+|MeshMsgActivationTime| One epoch duration | |
 
 Examples:
 
