@@ -14,8 +14,8 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 	startRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		r.StartNewDuty(duty)
 		r.GetBaseRunner().State.RunningInstance = &qbft.Instance{State: &qbft.State{Decided: false}}
-		r.GetQBFTController().StoredInstances[0] = &qbft.Instance{State: &qbft.State{Decided: false}}
-		r.GetQBFTController().Height = qbft.FirstHeight
+		r.GetBaseRunner().QBFTController.StoredInstances[0] = &qbft.Instance{State: &qbft.State{Decided: false}}
+		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		return r
 	}
 

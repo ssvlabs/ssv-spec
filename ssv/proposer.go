@@ -239,10 +239,6 @@ func (r *ProposerRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *ProposerRunner) GetQBFTController() *qbft.Controller {
-	return r.BaseRunner.QBFTController
-}
-
 func (r *ProposerRunner) GetSigner() types.KeyManager {
 	return r.signer
 }

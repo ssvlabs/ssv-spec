@@ -238,10 +238,6 @@ func (r *AggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *AggregatorRunner) GetQBFTController() *qbft.Controller {
-	return r.BaseRunner.QBFTController
-}
-
 func (r *AggregatorRunner) GetSigner() types.KeyManager {
 	return r.signer
 }

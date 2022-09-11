@@ -15,9 +15,10 @@ type MsgProcessingSpecTest struct {
 	Duty                    *types.Duty
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
-	OutputMessages          []*ssv.SignedPartialSignatureMessage
-	DontStartDuty           bool // if set to true will not start a duty for the runner
-	ExpectedError           string
+	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
+	OutputMessages []*ssv.SignedPartialSignatureMessage
+	DontStartDuty  bool // if set to true will not start a duty for the runner
+	ExpectedError  string
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -48,7 +49,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
-	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {

@@ -344,10 +344,6 @@ func (r *SyncCommitteeAggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF 
 	return r.valCheck
 }
 
-func (r *SyncCommitteeAggregatorRunner) GetQBFTController() *qbft.Controller {
-	return r.BaseRunner.QBFTController
-}
-
 func (r *SyncCommitteeAggregatorRunner) GetSigner() types.KeyManager {
 	return r.signer
 }

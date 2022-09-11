@@ -14,7 +14,6 @@ type Getters interface {
 	GetBaseRunner() *BaseRunner
 	GetBeaconNode() BeaconNode
 	GetValCheckF() qbft.ProposedValueCheckF
-	GetQBFTController() *qbft.Controller
 	GetSigner() types.KeyManager
 	GetNetwork() Network
 }
@@ -197,10 +196,10 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 		return errors.Wrap(err, "input data invalid")
 	}
 
-	if err := runner.GetQBFTController().StartNewInstance(byts); err != nil {
+	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(byts); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")
 	}
-	newInstance := runner.GetQBFTController().InstanceForHeight(runner.GetQBFTController().Height)
+	newInstance := runner.GetBaseRunner().QBFTController.InstanceForHeight(runner.GetBaseRunner().QBFTController.Height)
 	if newInstance == nil {
 		return errors.New("could not find newly created QBFT instance")
 	}

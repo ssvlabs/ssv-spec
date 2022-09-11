@@ -32,7 +32,6 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedMsgs := test.Runner.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {
