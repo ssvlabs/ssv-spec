@@ -77,7 +77,7 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 	}
 
 	// post root
-	postRoot, err := test.Runner.GetBaseRunner().State.GetRoot()
+	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
 }

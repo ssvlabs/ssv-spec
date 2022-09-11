@@ -19,7 +19,6 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	newduty.UnknownDuty(),
 	newduty.ConsensusNotStarted(),
 	newduty.NotDecided(),
 	newduty.PostDecided(),

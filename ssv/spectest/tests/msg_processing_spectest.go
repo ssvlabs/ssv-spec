@@ -25,8 +25,8 @@ func (test *MsgProcessingSpecTest) TestName() string {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetShare()))
-	v.DutyRunners[test.Runner.GetBeaconRole()] = test.Runner
+	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetBaseRunner().Share))
+	v.DutyRunners[test.Runner.GetBaseRunner().BeaconRoleType] = test.Runner
 	v.Network = test.Runner.GetNetwork()
 
 	var lastErr error
@@ -93,7 +93,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 
 	// post root
-	postRoot, err := test.Runner.GetState().GetRoot()
+	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
 }
