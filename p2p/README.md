@@ -2,7 +2,7 @@
 
 This folder contains networking specification and additional documentation for `SSV.Network`.
 
-## Overview
+## Documents
 
 - [Network Specification](./SPEC.md)
 - [Network Configuration](./CONFIG.md)

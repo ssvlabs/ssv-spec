@@ -118,7 +118,8 @@ passing a zero value disables scoring of message validation.
 
 ### Decided Topic Params
 
-Decided topic is based on `aggregation topic` (ETH2) due to the high rate of messages.
+Decided topic is used for broadcasting decided messages across the network.
+Params are based on `aggregation topic` (ETH2) due to the high rate of messages.
 
 The following arguments are used for constructing decided topic score params:
 
@@ -262,7 +263,8 @@ Topic score params:
 
 ### Subnet Topic Params
 
-Subnet topics are based on `attestation subnets` (ETH2) due to their similar nature/orientation.
+Subnet topics are used for exchanging consensus messages of multiple validator committees.
+Params are based on `attestation subnets` (ETH2) due to their similar nature/orientation.
 
 The following arguments are used for constructing subnet topic score params:
 
