@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
@@ -182,14 +181,14 @@ func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []types.OperatorI
 	}
 	return true
 }
-
-func blsSig(sig []byte) (*bls.Sign, error) {
-	ret := &bls.Sign{}
-	if err := ret.Deserialize(sig); err != nil {
-		return nil, errors.Wrap(err, "could not covert PartialSignature byts to bls.sign")
-	}
-	return ret, nil
-}
+//
+//func blsSig(sig []byte) (*bls.Sign, error) {
+//	ret := &bls.Sign{}
+//	if err := ret.Deserialize(sig); err != nil {
+//		return nil, errors.Wrap(err, "could not covert PartialSignature byts to bls.sign")
+//	}
+//	return ret, nil
+//}
 
 func (spcsm *SignedPartialSignatureMessage) Validate() error {
 	if len(spcsm.Signature) != 96 {

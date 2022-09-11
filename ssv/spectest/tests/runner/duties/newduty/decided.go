@@ -11,6 +11,8 @@ import (
 func PostDecided() *MultiStartNewRunnerDutySpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	// TODO: check error
+	// nolint
 	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		r.StartNewDuty(duty)
 		r.GetBaseRunner().State.RunningInstance = &qbft.Instance{State: &qbft.State{Decided: true}}

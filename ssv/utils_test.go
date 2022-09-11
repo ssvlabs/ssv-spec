@@ -13,5 +13,5 @@ var testConsensusData = &types.ConsensusData{
 var TestConsensusDataByts, _ = testConsensusData.Encode()
 
 func NewTestingDutyExecutionState() *ssv.State {
-	return ssv.NewRunnerState(3)
+	return ssv.NewRunnerState(3, testingutils.TestingAttesterDuty)
 }
