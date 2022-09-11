@@ -13,7 +13,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 
 	finishRunner := func(runner ssv.Runner, duty *types.Duty) ssv.Runner {
 		runner.StartNewDuty(duty)
-		runner.GetState().Finished = true
+		runner.GetBaseRunner().State.Finished = true
 		return runner
 	}
 

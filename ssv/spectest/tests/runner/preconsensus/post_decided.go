@@ -16,8 +16,8 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 		for _, msg := range preMsgs {
 			runner.ProcessPreConsensus(msg)
 		}
-		runner.GetState().DecidedValue = decidedValue
-		runner.GetState().RunningInstance.State.Decided = true
+		runner.GetBaseRunner().State.DecidedValue = decidedValue
+		runner.GetBaseRunner().State.RunningInstance.State.Decided = true
 		return runner
 	}
 

@@ -12,11 +12,7 @@ import (
 )
 
 type AttesterRunner struct {
-	State          *State
-	Share          *types.Share
-	QBFTController *qbft.Controller
-	BeaconNetwork  types.BeaconNetwork
-	BeaconRoleType types.BeaconRole
+	BaseRunner *BaseRunner
 
 	beacon   BeaconNode
 	network  Network
@@ -34,10 +30,12 @@ func NewAttesterRunnner(
 	valCheck qbft.ProposedValueCheckF,
 ) Runner {
 	return &AttesterRunner{
-		BeaconRoleType: types.BNRoleAttester,
-		BeaconNetwork:  beaconNetwork,
-		Share:          share,
-		QBFTController: qbftController,
+		BaseRunner: &BaseRunner{
+			BeaconRoleType: types.BNRoleAttester,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
+		},
 
 		beacon:   beacon,
 		network:  network,
@@ -47,12 +45,12 @@ func NewAttesterRunnner(
 }
 
 func (r *AttesterRunner) StartNewDuty(duty *types.Duty) error {
-	return baseStartNewDuty(r, duty)
+	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *AttesterRunner) HasRunningDuty() bool {
-	return HashRunningDuty(r)
+	return r.BaseRunner.HashRunningDuty()
 }
 
 func (r *AttesterRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
@@ -60,7 +58,7 @@ func (r *AttesterRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMe
 }
 
 func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := baseConsensusMsgProcessing(r, signedMsg)
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -71,7 +69,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 
 	// specific duty sig
-	msg, err := signBeaconObject(r, decidedValue.AttestationData, decidedValue.Duty.Slot, types.DomainAttester)
+	msg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AttestationData, decidedValue.Duty.Slot, types.DomainAttester)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -80,7 +78,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 		Messages: []*PartialSignatureMessage{msg},
 	}
 
-	postSignedMsg, err := signPostConsensusMsg(r, postConsensusMsg)
+	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not sign post consensus msg")
 	}
@@ -92,7 +90,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.GetBeaconRole()),
+		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -103,7 +101,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 }
 
 func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := basePostConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -161,34 +159,30 @@ func (r *AttesterRunner) executeDuty(duty *types.Duty) error {
 		AttestationData: attData,
 	}
 
-	if err := decide(r, input); err != nil {
+	if err := r.BaseRunner.decide(r, input); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
+}
+
+func (r *AttesterRunner) GetBaseRunner() *BaseRunner {
+	return r.BaseRunner
 }
 
 func (r *AttesterRunner) GetNetwork() Network {
 	return r.network
 }
 
-func (r *AttesterRunner) GetBeaconNetwork() types.BeaconNetwork {
-	return r.BeaconNetwork
-}
-
 func (r *AttesterRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *AttesterRunner) GetBeaconRole() types.BeaconRole {
-	return r.BeaconRoleType
-}
-
 func (r *AttesterRunner) GetShare() *types.Share {
-	return r.Share
+	return r.BaseRunner.Share
 }
 
 func (r *AttesterRunner) GetState() *State {
-	return r.State
+	return r.BaseRunner.State
 }
 
 func (r *AttesterRunner) GetValCheckF() qbft.ProposedValueCheckF {
@@ -196,7 +190,7 @@ func (r *AttesterRunner) GetValCheckF() qbft.ProposedValueCheckF {
 }
 
 func (r *AttesterRunner) GetQBFTController() *qbft.Controller {
-	return r.QBFTController
+	return r.BaseRunner.QBFTController
 }
 
 func (r *AttesterRunner) GetSigner() types.KeyManager {

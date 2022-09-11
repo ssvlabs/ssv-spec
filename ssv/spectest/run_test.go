@@ -219,10 +219,10 @@ func runMsgProcessingSpecTest(t *testing.T, test *tests2.MsgProcessingSpecTest) 
 		fixedInst := fixQBFTInstanceForRun(t, i, ks)
 		test.Runner.GetQBFTController().StoredInstances[idx] = fixedInst
 
-		if test.Runner.GetState() != nil &&
-			test.Runner.GetState().RunningInstance != nil &&
-			test.Runner.GetState().RunningInstance.GetHeight() == fixedInst.GetHeight() {
-			test.Runner.GetState().RunningInstance = fixedInst
+		if test.Runner.GetBaseRunner().State != nil &&
+			test.Runner.GetBaseRunner().State.RunningInstance != nil &&
+			test.Runner.GetBaseRunner().State.RunningInstance.GetHeight() == fixedInst.GetHeight() {
+			test.Runner.GetBaseRunner().State.RunningInstance = fixedInst
 		}
 	}
 	t.Run(test.Name, func(t *testing.T) {
@@ -242,16 +242,16 @@ func fixQBFTInstanceForRun(t *testing.T, i *qbft.Instance, ks *testingutils.Test
 }
 
 func setControllerInRunner(runner ssv.Runner, controller *qbft.Controller) {
-	switch runner.GetBeaconRole() {
+	switch runner.GetBaseRunner().BeaconRoleType {
 	case types.BNRoleAttester:
-		runner.(*ssv.AttesterRunner).QBFTController = controller
+		runner.(*ssv.AttesterRunner).BaseRunner.QBFTController = controller
 	case types.BNRoleAggregator:
-		runner.(*ssv.AggregatorRunner).QBFTController = controller
+		runner.(*ssv.AggregatorRunner).BaseRunner.QBFTController = controller
 	case types.BNRoleProposer:
-		runner.(*ssv.ProposerRunner).QBFTController = controller
+		runner.(*ssv.ProposerRunner).BaseRunner.QBFTController = controller
 	case types.BNRoleSyncCommittee:
-		runner.(*ssv.SyncCommitteeRunner).QBFTController = controller
+		runner.(*ssv.SyncCommitteeRunner).BaseRunner.QBFTController = controller
 	case types.BNRoleSyncCommitteeContribution:
-		runner.(*ssv.SyncCommitteeAggregatorRunner).QBFTController = controller
+		runner.(*ssv.SyncCommitteeAggregatorRunner).BaseRunner.QBFTController = controller
 	}
 }

@@ -13,7 +13,7 @@ func PostDecided() *MultiStartNewRunnerDutySpecTest {
 
 	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		r.StartNewDuty(duty)
-		r.GetState().RunningInstance = &qbft.Instance{State: &qbft.State{Decided: true}}
+		r.GetBaseRunner().State.RunningInstance = &qbft.Instance{State: &qbft.State{Decided: true}}
 		r.GetQBFTController().StoredInstances[0] = &qbft.Instance{State: &qbft.State{Decided: true}}
 		r.GetQBFTController().Height = qbft.FirstHeight
 		return r

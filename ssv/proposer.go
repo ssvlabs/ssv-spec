@@ -12,11 +12,7 @@ import (
 )
 
 type ProposerRunner struct {
-	State          *State
-	Share          *types.Share
-	QBFTController *qbft.Controller
-	BeaconNetwork  types.BeaconNetwork
-	BeaconRoleType types.BeaconRole
+	BaseRunner *BaseRunner
 
 	beacon   BeaconNode
 	network  Network
@@ -34,10 +30,12 @@ func NewProposerRunner(
 	valCheck qbft.ProposedValueCheckF,
 ) Runner {
 	return &ProposerRunner{
-		BeaconRoleType: types.BNRoleProposer,
-		BeaconNetwork:  beaconNetwork,
-		Share:          share,
-		QBFTController: qbftController,
+		BaseRunner: &BaseRunner{
+			BeaconRoleType: types.BNRoleProposer,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
+		},
 
 		beacon:   beacon,
 		network:  network,
@@ -47,16 +45,16 @@ func NewProposerRunner(
 }
 
 func (r *ProposerRunner) StartNewDuty(duty *types.Duty) error {
-	return baseStartNewDuty(r, duty)
+	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *ProposerRunner) HasRunningDuty() bool {
-	return HashRunningDuty(r)
+	return r.BaseRunner.HashRunningDuty()
 }
 
 func (r *ProposerRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := basePreConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing randao message")
 	}
@@ -87,7 +85,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMe
 		BlockData: blk,
 	}
 
-	if err := decide(r, input); err != nil {
+	if err := r.BaseRunner.decide(r, input); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 
@@ -95,7 +93,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMe
 }
 
 func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := baseConsensusMsgProcessing(r, signedMsg)
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -106,7 +104,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 
 	// specific duty sig
-	msg, err := signBeaconObject(r, decidedValue.BlockData, decidedValue.Duty.Slot, types.DomainProposer)
+	msg, err := r.BaseRunner.signBeaconObject(r, decidedValue.BlockData, decidedValue.Duty.Slot, types.DomainProposer)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -115,7 +113,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 		Messages: []*PartialSignatureMessage{msg},
 	}
 
-	postSignedMsg, err := signPostConsensusMsg(r, postConsensusMsg)
+	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not sign post consensus msg")
 	}
@@ -127,7 +125,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.GetBeaconRole()),
+		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -138,7 +136,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 }
 
 func (r *ProposerRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := basePostConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -168,7 +166,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 }
 
 func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	epoch := r.GetBeaconNetwork().EstimatedEpochAtSlot(r.GetState().StartingDuty.Slot)
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.Slot)
 	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
 }
 
@@ -181,7 +179,7 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 	// sign partial randao
 	epoch := r.GetBeaconNode().GetBeaconNetwork().EstimatedEpochAtSlot(duty.Slot)
-	msg, err := signBeaconObject(r, types.SSZUint64(epoch), duty.Slot, types.DomainRandao)
+	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZUint64(epoch), duty.Slot, types.DomainRandao)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")
 	}
@@ -208,7 +206,7 @@ func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.GetBeaconRole()),
+		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
@@ -217,28 +215,24 @@ func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 	return nil
 }
 
-func (r *ProposerRunner) GetNetwork() Network {
-	return r.network
+func (r *ProposerRunner) GetBaseRunner() *BaseRunner {
+	return r.BaseRunner
 }
 
-func (r *ProposerRunner) GetBeaconNetwork() types.BeaconNetwork {
-	return r.BeaconNetwork
+func (r *ProposerRunner) GetNetwork() Network {
+	return r.network
 }
 
 func (r *ProposerRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *ProposerRunner) GetBeaconRole() types.BeaconRole {
-	return r.BeaconRoleType
-}
-
 func (r *ProposerRunner) GetShare() *types.Share {
-	return r.Share
+	return r.BaseRunner.Share
 }
 
 func (r *ProposerRunner) GetState() *State {
-	return r.State
+	return r.BaseRunner.State
 }
 
 func (r *ProposerRunner) GetValCheckF() qbft.ProposedValueCheckF {
@@ -246,7 +240,7 @@ func (r *ProposerRunner) GetValCheckF() qbft.ProposedValueCheckF {
 }
 
 func (r *ProposerRunner) GetQBFTController() *qbft.Controller {
-	return r.QBFTController
+	return r.BaseRunner.QBFTController
 }
 
 func (r *ProposerRunner) GetSigner() types.KeyManager {

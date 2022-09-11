@@ -103,7 +103,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			NewTestingKeyManager(),
 			valCheck,
 		)
-		ret.(*ssv.AttesterRunner).BeaconRoleType = UnknownDutyType
+		ret.(*ssv.AttesterRunner).BaseRunner.BeaconRoleType = UnknownDutyType
 		return ret
 	default:
 		panic("unknown role type")
