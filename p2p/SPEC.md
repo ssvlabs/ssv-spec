@@ -23,6 +23,7 @@ This document contains the networking specification for `SSV.Network`.
 - [Network Layer ](#networking)
     - [PubSub](#pubsub)
     - [PubSub Scoring](#pubsub-scoring)
+    - [Message Validation](#pubsub-validation)
     - [Discovery](#discovery)
     - [Subnets](#subnets)
     - [Peers Connectivity](#peers-connectivity)
@@ -461,19 +462,15 @@ In addition, the following are achieved as well:
 The following sections details on how pubsub is used in `SSV.network`.
 In addition, parameters configuration is described [here](./CONFIG.md#pubsub-parameters).
 
-#### Pubsub Scoring
+
+### Pubsub Scoring
 
 `gossipsub v1.1` introduced pubsub [scoring](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#peer-scoring),
 the idea is that each individual peer maintains a score for other peers.
 The score is locally computed by each individual peer based on observed behaviour and is not shared.
 
-Score thresholds are used by libp2p to determine whether a peer should be removed from topic's mesh,
-penalized or even ignored if the score drops too low. \
-See [this section](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#score-thresholds)
-for more details regards the different thresholds.
-
-[Scoring params](./CONFIG.md#gossipsub-scoring) and [thresholds](./CONFIG.md#gossipsub-scoring-thresholds)
-values are detailed in the configuration document. 
+**NOTE** that [topic scores](./SCORING.md#topic-score-params), [peer scores](./SCORING.md#peer-score-params) 
+and [thresholds](./SCORING.md#peer-score-thresholds) are detailed in the sibling scoring spec document. 
 
 
 ### Pubsub Validation
@@ -493,15 +490,15 @@ This validation pipeline is the baseline and will be applied for all pubsub topi
 - `ACCEPT` message from my peer
 - `REJECT` empty message
 - `REJECT` message with corrupted or invalid top-level structure
-- `REJECT` message that was sent on the wrong topic
 
 **NOTE** any message will be decoded only once as part of the basic validation.
 
-**NOTE** As of the time of this spec, additional validation is performed by QBFT components async.
+**NOTE** As of the time this spec was written, additional validation is performed by QBFT components in an async way.
 As messages might pass the base validation but fail at a later point, signing policy of pubsub is turned on 
 to ensure authenticity of pubsub message senders. Once a more complete validation is added, we will reduce
 the signing policy as it becomes redundant.
 
+<br />
 
 ### Subnets
 

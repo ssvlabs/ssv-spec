@@ -6,6 +6,8 @@
 
 This document contains information on the networking configurations used for `SSV.Network`.
 
+**NOTE** that scoring configuration is detailed in a [separated document](./SCORING.md)
+
 ## Node Config
 
 ### General
@@ -260,20 +262,3 @@ Sets the maximum number of IHAVE messages to accept from a peer within a heartbe
 Increased as we want messages to be sent in batches, to reduce the amount of requests.
 
 **NOTE** Will be re-visited once encoding changes to `SSZ` and compression as well (`snappy` or `s2`)
-
-### Gossipsub: Scoring Thresholds
-
-| Name | Description | Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
-|---   | ---  | ---                    | ---                 | ---                  |
-| `GossipThreshold` | below this threshold, gossip propagation is supressed | `-4000`   | `-4000` | `-4000` |
-| `PublishThreshold`| below this threshold, message publishing is supressed | `-8000`   | `-8000` | `-8000` |
-| `GraylistThreshold`| below this threshold, message processing is supressed altogether | `-16000`| `-16000` | `-16000` |
-| `AcceptPXThreshold`| below this threshold, Peer Exchange will be ignored | `100`      | `100` | `100` |
-| `OpportunisticGraftThreshold`| the median mesh score threshold before triggering opportunistic grafting | `5`  | `5` | `5` |
-
-### Gossipsub: Scoring
-
-Scoring params values are based on
-[ETH 2 config set](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c).
-
-**TBD**
