@@ -12,7 +12,12 @@ This document contains information on the scoring strategies and configurations 
 
 `gossipsub v1.1` introduced pubsub [scoring](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#peer-scoring),
 the idea is that a node maintains a score for each connected peer. 
-The score helps to identify and ignore or prune malicious, badly connected and slow peers.
+The score helps to identify and ignore or prune malicious, badly connected or just slow peers 
+(e.g. small machines that don't keep up).
+
+Additional sources of information are available in libp2p documentation:
+* [Score function](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#the-score-function)
+* [Parameters overview](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#overview-of-new-parameters)
 
 Scoring parameters calculations are based on [ETH 2](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c),
 as it is a similar solution that has already shown robustness in scale.
@@ -49,17 +54,17 @@ for calculating peer score params.
 
 ```json
 {
-  "TopicScoreCap": 56.25, // maxPositiveScore / 4.0
+  "TopicScoreCap": 56.25, // = maxPositiveScore / 4.0
   "AppSpecificWeight": 1, // not used for now
-  "IPColocationFactorWeight": -56.25, // -topicScoreCap
+  "IPColocationFactorWeight": -56.25, // = -topicScoreCap
   "IPColocationFactorThreshold": 10,
   "IPColocationFactorWhitelist": [],
-  "BehaviourPenaltyWeight": -47.74333136903669, // gossipThreshold / decayConvergence(rate = 10.0) ^ 2
+  "BehaviourPenaltyWeight": -47.74333136903669, // = gossipThreshold / decayConvergence(rate = 10.0) ^ 2
   "BehaviourPenaltyThreshold": 10,
-  "BehaviourPenaltyDecay": 0.6309573444801931,  // decay oneEpoch*10
-  "DecayInterval": 384000000000, // oneEpoch
+  "BehaviourPenaltyDecay": 0.6309573444801931,  // = decay oneEpoch*10
+  "DecayInterval": 384000000000, // = oneEpoch
   "DecayToZero": 0.01,
-  "RetainScore": 3840000000000, // oneEpoch * 10
+  "RetainScore": 3840000000000, // = oneEpoch * 10
   "SeenMsgTTL": 385000000000
 }
 ```
@@ -93,17 +98,17 @@ Topic score params accepts multiple types of arguments:
 * `Subnets` is the number of subnets in the network
   * `Groups` is the amount of groups used in the network. **TBD** pending network topology 
 * `OneEpochDuration` is used as a time-frame length to control scoring in a dynamic way
-* `TotalTopicsWeight` is the weight of all the available topics in the network
+* `TotalTopicsWeight` is the weight of all the available topics in the network (decided + subnets)
 
 **Topic level arguments**
 
 * `TopicWeight` is the weight of the topic
-* `ExpectedMsgRate` is the expected rate for the topic
+* `ExpectedMsgRate` is the expected rate for the topic (in 12sec)
 * `InvalidMsgDecayTime` defines the decay for invalid messages (P4),
 passing a zero value disables scoring of message validation.
 * `FirstMsgDecayTime` defines the decay time for first message deliveries (P2)
 * `MeshMsgDecayTime` defines the decay time for mesh message deliveries (P3)
-  * `MeshMsgCapFactor` defines the factor to use to apply on the mesh message deliveries cap (P3)
+  * `MeshMsgCapFactor` defines the factor to use to apply on the mesh message deliveries cap
   * `MeshMsgActivationTime` defines time in the mesh before penalties are being applied
 * `D` is the gossip degree of the topic
 
@@ -111,6 +116,257 @@ passing a zero value disables scoring of message validation.
 
 Decided topic is based on `aggregation topic` (ETH2) due to the high rate of messages.
 
+Examples:
+
+<details>
+  <summary><b>1k validators</b></summary>
+
+Topic arguments:
+```json
+{
+  "TopicWeight": 0.5,
+  "ExpectedMsgRate": 31.25,
+  "InvalidMsgDecayTime": 0,
+  "FirstMsgDecayTime": 1,
+  "MeshMsgDecayTime": 16,
+  "MeshMsgCapFactor": 32,
+  "MeshMsgActivationTime": 384000000000,
+  "D": 8
+}
+```
+
+Topic score params:
+```json
+{
+  "TopicWeight": 0.5,
+  "TimeInMeshWeight": 0.03333333333333333,
+  "TimeInMeshQuantum": 12000000000,
+  "TimeInMeshCap": 300,
+  "FirstMessageDeliveriesWeight": 5.0687999999999995,
+  "FirstMessageDeliveriesDecay": 0.01,
+  "FirstMessageDeliveriesCap": 7.891414141414142,
+  "MeshMessageDeliveriesWeight": -0.12514111392630922,
+  "MeshMessageDeliveriesDecay": 0.7498942093324558,
+  "MeshMessageDeliveriesCap": 59.96616130565809,
+  "MeshMessageDeliveriesThreshold": 1.8739425408018153,
+  "MeshMessageDeliveriesWindow": 2000000000,
+  "MeshMessageDeliveriesActivation": 384000000000,
+  "MeshFailurePenaltyWeight": -0.12514111392630922,
+  "MeshFailurePenaltyDecay": 0.7498942093324558,
+  "InvalidMessageDeliveriesWeight": 0,
+  "InvalidMessageDeliveriesDecay": 0.1
+}
+```
+</details>
+
+<details>
+  <summary><b>10k validators</b></summary>
+
+Topic arguments:
+```json
+{
+  "TopicWeight": 0.5,
+  "ExpectedMsgRate": 312.5,
+  "InvalidMsgDecayTime": 0,
+  "FirstMsgDecayTime": 1,
+  "MeshMsgDecayTime": 16,
+  "MeshMsgCapFactor": 32,
+  "MeshMsgActivationTime": 384000000000,
+  "D": 8
+}
+```
+
+Topic score params:
+```json
+{
+  "TopicWeight": 0.5,
+  "TimeInMeshWeight": 0.03333333333333333,
+  "TimeInMeshQuantum": 12000000000,
+  "TimeInMeshCap": 300,
+  "FirstMessageDeliveriesWeight": 0.50688,
+  "FirstMessageDeliveriesDecay": 0.01,
+  "FirstMessageDeliveriesCap": 78.91414141414141,
+  "MeshMessageDeliveriesWeight": -0.01222081190686613,
+  "MeshMessageDeliveriesDecay": 0.7498942093324558,
+  "MeshMessageDeliveriesCap": 191.89171617810592,
+  "MeshMessageDeliveriesThreshold": 5.99661613056581,
+  "MeshMessageDeliveriesWindow": 2000000000,
+  "MeshMessageDeliveriesActivation": 384000000000,
+  "MeshFailurePenaltyWeight": -0.01222081190686613,
+  "MeshFailurePenaltyDecay": 0.7498942093324558,
+  "InvalidMessageDeliveriesWeight": 0,
+  "InvalidMessageDeliveriesDecay": 0.1
+}
+```
+</details>
+
+<details>
+  <summary><b>51k validators</b></summary>
+
+Topic arguments:
+```json
+{
+  "TopicWeight": 0.5,
+  "ExpectedMsgRate": 1593.75,
+  "InvalidMsgDecayTime": 0,
+  "FirstMsgDecayTime": 1,
+  "MeshMsgDecayTime": 16,
+  "MeshMsgCapFactor": 32,
+  "MeshMsgActivationTime": 384000000000,
+  "D": 8
+}
+```
+
+Topic score params:
+```json
+{
+  "TopicWeight": 0.5,
+  "TimeInMeshWeight": 0.03333333333333333,
+  "TimeInMeshQuantum": 12000000000,
+  "TimeInMeshCap": 300,
+  "FirstMessageDeliveriesWeight": 0.09938823529411765,
+  "FirstMessageDeliveriesDecay": 0.01,
+  "FirstMessageDeliveriesCap": 402.4621212121212,
+  "MeshMessageDeliveriesWeight": -0.01222081190686613,
+  "MeshMessageDeliveriesDecay": 0.7498942093324558,
+  "MeshMessageDeliveriesCap": 191.89171617810592,
+  "MeshMessageDeliveriesThreshold": 5.99661613056581,
+  "MeshMessageDeliveriesWindow": 2000000000,
+  "MeshMessageDeliveriesActivation": 384000000000,
+  "MeshFailurePenaltyWeight": -0.01222081190686613,
+  "MeshFailurePenaltyDecay": 0.7498942093324558,
+  "InvalidMessageDeliveriesWeight": 0,
+  "InvalidMessageDeliveriesDecay": 0.1
+}
+```
+</details>
+
+
 ### Subnet Topic Params
 
 Subnet topics are based on `attestation subnets` (ETH2) due to their similar nature/orientation.
+
+Examples:
+
+<details>
+  <summary><b>1k validators</b></summary>
+
+Topic arguments:
+```json
+{
+  "TopicWeight": 0.03125,
+  "ExpectedMsgRate": 2.197265625,
+  "InvalidMsgDecayTime": 0,
+  "FirstMsgDecayTime": 8,
+  "MeshMsgDecayTime": 16,
+  "MeshMsgCapFactor": 16,
+  "MeshMsgActivationTime": 384000000000,
+  "D": 8
+}
+```
+
+Topic score params:
+```json
+{
+  "TopicWeight": 0.03125,
+  "TimeInMeshWeight": 0.03333333333333333,
+  "TimeInMeshQuantum": 12000000000,
+  "TimeInMeshCap": 300,
+  "FirstMessageDeliveriesWeight": 31.869332124805872,
+  "FirstMessageDeliveriesDecay": 0.5623413251903491,
+  "FirstMessageDeliveriesCap": 1.255125141730395,
+  "MeshMessageDeliveriesWeight": -450,
+  "MeshMessageDeliveriesDecay": 0.7498942093324558,
+  "MeshMessageDeliveriesCap": 2.1081853584020425,
+  "MeshMessageDeliveriesThreshold": 0.13176158490012765,
+  "MeshMessageDeliveriesWindow": 2000000000,
+  "MeshMessageDeliveriesActivation": 384000000000,
+  "MeshFailurePenaltyWeight": -450,
+  "MeshFailurePenaltyDecay": 0.7498942093324558,
+  "InvalidMessageDeliveriesWeight": 0,
+  "InvalidMessageDeliveriesDecay": 0.1
+}
+```
+</details>
+
+<details>
+  <summary><b>10k validators</b></summary>
+
+Topic arguments:
+```json
+{
+  "TopicWeight": 0.03125,
+  "ExpectedMsgRate": 21.97265625,
+  "InvalidMsgDecayTime": 0,
+  "FirstMsgDecayTime": 8,
+  "MeshMsgDecayTime": 16,
+  "MeshMsgCapFactor": 16,
+  "MeshMsgActivationTime": 384000000000,
+  "D": 8
+}
+```
+
+Topic score params:
+```json
+{
+  "TopicWeight": 0.03125,
+  "TimeInMeshWeight": 0.03333333333333333,
+  "TimeInMeshQuantum": 12000000000,
+  "TimeInMeshCap": 300,
+  "FirstMessageDeliveriesWeight": 3.186933212480587,
+  "FirstMessageDeliveriesDecay": 0.5623413251903491,
+  "FirstMessageDeliveriesCap": 12.55125141730395,
+  "MeshMessageDeliveriesWeight": -16.199996132888096,
+  "MeshMessageDeliveriesDecay": 0.7498942093324558,
+  "MeshMessageDeliveriesCap": 21.081853584020426,
+  "MeshMessageDeliveriesThreshold": 1.3176158490012766,
+  "MeshMessageDeliveriesWindow": 2000000000,
+  "MeshMessageDeliveriesActivation": 384000000000,
+  "MeshFailurePenaltyWeight": -16.199996132888096,
+  "MeshFailurePenaltyDecay": 0.7498942093324558,
+  "InvalidMessageDeliveriesWeight": 0,
+  "InvalidMessageDeliveriesDecay": 0.1
+}
+```
+</details>
+
+<details>
+  <summary><b>51k validators</b></summary>
+
+Topic arguments:
+```json
+{
+  "TopicWeight": 0.03125,
+  "ExpectedMsgRate": 112.060546875,
+  "InvalidMsgDecayTime": 0,
+  "FirstMsgDecayTime": 8,
+  "MeshMsgDecayTime": 16,
+  "MeshMsgCapFactor": 16,
+  "MeshMsgActivationTime": 384000000000,
+  "D": 8
+}
+```
+
+Topic score params:
+```json
+{
+  "TopicWeight": 0.03125,
+  "TimeInMeshWeight": 0.03333333333333333,
+  "TimeInMeshQuantum": 12000000000,
+  "TimeInMeshCap": 300,
+  "FirstMessageDeliveriesWeight": 0.624888865192272,
+  "FirstMessageDeliveriesDecay": 0.5623413251903491,
+  "FirstMessageDeliveriesCap": 64.01138222825014,
+  "MeshMessageDeliveriesWeight": -0.7821319620394324,
+  "MeshMessageDeliveriesDecay": 0.7498942093324558,
+  "MeshMessageDeliveriesCap": 95.94585808905296,
+  "MeshMessageDeliveriesThreshold": 5.99661613056581,
+  "MeshMessageDeliveriesWindow": 2000000000,
+  "MeshMessageDeliveriesActivation": 384000000000,
+  "MeshFailurePenaltyWeight": -0.7821319620394324,
+  "MeshFailurePenaltyDecay": 0.7498942093324558,
+  "InvalidMessageDeliveriesWeight": 0,
+  "InvalidMessageDeliveriesDecay": 0.1
+}
+```
+</details>
