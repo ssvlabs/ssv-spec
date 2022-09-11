@@ -82,8 +82,30 @@ Topic score params enables to define some more specific values in the topic leve
 ensuring that each topic has its own set of config according to the topic nature.
 
 As mentioned above, this solution is based on ETH2
-(see [function](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-generate-scoring-params-py-L174))
+[procedure](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-generate-scoring-params-py-L174)
 for calculating topic score params.
+
+Topic score params accepts multiple types of arguments:
+
+**Network level arguments**
+
+* `ActiveValidators` is the amount of validators in the network
+* `Subnets` is the number of subnets in the network
+  * `Groups` is the amount of groups used in the network. **TBD** pending network topology 
+* `OneEpochDuration` is used as a time-frame length to control scoring in a dynamic way
+* `TotalTopicsWeight` is the weight of all the available topics in the network
+
+**Topic level arguments**
+
+* `TopicWeight` is the weight of the topic
+* `ExpectedMsgRate` is the expected rate for the topic
+* `InvalidMsgDecayTime` defines the decay for invalid messages (P4),
+passing a zero value disables scoring of message validation.
+* `FirstMsgDecayTime` defines the decay time for first message deliveries (P2)
+* `MeshMsgDecayTime` defines the decay time for mesh message deliveries (P3)
+  * `MeshMsgCapFactor` defines the factor to use to apply on the mesh message deliveries cap (P3)
+  * `MeshMsgActivationTime` defines time in the mesh before penalties are being applied
+* `D` is the gossip degree of the topic
 
 ### Decided Topic Params
 
