@@ -6,6 +6,9 @@
 
 This document contains information on the scoring strategies and configurations used in `SSV.Network`.
 
+**NOTE** that the work on scoring is in progress. 
+fine-tuning scoring params might introduce updates to this document.  
+
 <br />
 
 ## Overview
@@ -128,6 +131,8 @@ The following arguments are used for constructing decided topic score params:
 |MeshMsgDecayTime| `16` | |
 |MeshMsgCapFactor| `32.0` | |
 |MeshMsgActivationTime| One epoch duration | |
+
+**NOTE** might be updated once we finalize this topic, after fine-tuning. 
 
 Examples:
 
@@ -270,6 +275,8 @@ The following arguments are used for constructing subnet topic score params:
 |MeshMsgDecayTime| `16` | |
 |MeshMsgCapFactor| `16.0` | |
 |MeshMsgActivationTime| One epoch duration | |
+
+**NOTE** might be updated once we finalize this topic, after fine-tuning
 
 Examples:
 
