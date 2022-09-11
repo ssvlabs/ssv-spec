@@ -2,7 +2,7 @@
 
 | Contributors                               | Status | Last Revision |
 |:-------------------------------------------|:-------|:--------------|
-| [@amir-blox](https://github.com/amir-blox) | DRAFT  | JUL 22        |
+| [@amir-blox](https://github.com/amir-blox) | DRAFT  | SEP 22        |
 
 This document contains information on the networking configurations used for `SSV.Network`.
 
