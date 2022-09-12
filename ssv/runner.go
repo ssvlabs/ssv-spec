@@ -97,11 +97,13 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		return false, nil, errors.Wrap(err, "invalid consensus message")
 	}
 
-	decided, decidedValueByts, err := b.QBFTController.ProcessMsg(msg)
+	prevDecided, _ := b.State.RunningInstance.IsDecided()
+
+	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to process consensus msg")
 	}
-	decidedRunningInstance := decidedMsg != nil && decidedMsg.Message.Height == runner.GetState().RunningInstance.GetHeight()
+	decidedRunningInstance := decidedMsg != nil && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
 
 	// verify we decided running instance only, if not we do not proceed
 	if prevDecided || !decidedRunningInstance {
