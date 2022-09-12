@@ -131,5 +131,5 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 }
 
 func (test *ControllerSpecTest) TestName() string {
-	return "qbft controllerprocessmsg " + test.Name
+	return "qbft controller " + test.Name
 }

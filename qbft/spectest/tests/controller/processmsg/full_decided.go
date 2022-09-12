@@ -1,4 +1,4 @@
-package controllerprocessmsg
+package processmsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// FirstDecided tests process msg and first time deciding
-func FirstDecided() *tests.ControllerSpecTest {
+// FullDecided tests process msg and first time deciding
+func FullDecided() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "first decided",

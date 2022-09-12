@@ -1,4 +1,4 @@
-package controllerprocessmsg
+package latemsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// LateCommitPastInstance tests process msg after which not first time decided
+// LateCommit tests process late commit msg for an instance which just decided
 func LateCommit() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	msgs := testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet())

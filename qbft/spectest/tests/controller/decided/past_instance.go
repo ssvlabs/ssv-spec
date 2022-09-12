@@ -8,8 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// CurrentInstanceFutureRound tests a decided msg received for current running instance and future round
-func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
+// PastInstance tests a decided msg received for past instance
+func PastInstance() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "decide current instance",
@@ -22,8 +22,18 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 						[]types.OperatorID{1, 2, 3},
 						&qbft.Message{
 							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      100,
+							Height:     100,
+							Round:      qbft.FirstRound,
+							Identifier: identifier[:],
+							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						}),
+					testingutils.MultiSignQBFTMsg(
+						[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						&qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     99,
+							Round:      qbft.FirstRound,
 							Identifier: identifier[:],
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
@@ -34,7 +44,7 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 					&qbft.Message{
 						MsgType:    qbft.CommitMsgType,
 						Height:     qbft.FirstHeight,
-						Round:      100,
+						Round:      qbft.FirstRound,
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
@@ -44,13 +54,13 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 					&qbft.Message{
 						MsgType:    qbft.CommitMsgType,
 						Height:     qbft.FirstHeight,
-						Round:      100,
+						Round:      qbft.FirstRound,
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "3da593fd7c69fecd5bf621f9a70bc26cce4062a050b8038d82c22be8ce66f03e",
+				ControllerPostRoot: "19e63c3c0d763de50f31c3d41dcf80af0c68f8ab659ff02239eb81f1ed757fef",
 			},
 		},
 	}

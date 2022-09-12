@@ -1,4 +1,4 @@
-package controllerprocessmsg
+package processmsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,25 +7,25 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// NoInstanceRunning tests a process msg for height in which there is no running instance
-func NoInstanceRunning() *tests.ControllerSpecTest {
+// SingleConsensusMsg tests process msg of a single msg
+func SingleConsensusMsg() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
-		Name: "no instance running",
+		Name: "single consensus msg",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], 1, &qbft.Message{
 						MsgType:    qbft.ProposalMsgType,
-						Height:     2,
+						Height:     qbft.FirstHeight,
 						Round:      qbft.FirstRound,
 						Identifier: identifier[:],
 						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
 					}),
 				},
 				DecidedVal:         nil,
-				ControllerPostRoot: "9d64d6dc78c27d930918f14a0f05a5a37ba18c317356b301ca76dcdfc18ab340",
+				ControllerPostRoot: "9566935865a4d8852ad4fc860c2ea9d874cd66b4bc942c1adb647f3fd22d82b4",
 			},
 		},
 	}

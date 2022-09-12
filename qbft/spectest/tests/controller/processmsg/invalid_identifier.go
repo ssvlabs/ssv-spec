@@ -1,4 +1,4 @@
-package controllerprocessmsg
+package processmsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"

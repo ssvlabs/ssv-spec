@@ -10,8 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a controllerprocessmsg can process messages for as messages are not
-// guaranteed to arrive in a timely fashion, we physically limit how far back the controllerprocessmsg will process messages for
+// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a processmsg can process messages for as messages are not
+// guaranteed to arrive in a timely fashion, we physically limit how far back the processmsg will process messages for
 const HistoricalInstanceCapacity int = 5
 
 type InstanceContainer [HistoricalInstanceCapacity]*Instance
@@ -41,15 +41,15 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	// HigherReceivedMessages holds all msgs from a higher height
-	HigherReceivedMessages *MsgContainer
-	Domain                 types.DomainType
-	Share                  *types.Share
-	signer                 types.SSVSigner
-	valueCheck             ProposedValueCheckF
-	storage                Storage
-	network                Network
-	proposerF              ProposerF
+	// FutureMsgsContainer holds all msgs from a higher height
+	FutureMsgsContainer map[types.OperatorID]Height // maps msg signer to height of higher height received msgs
+	Domain              types.DomainType
+	Share               *types.Share
+	signer              types.SSVSigner
+	valueCheck          ProposedValueCheckF
+	storage             Storage
+	network             Network
+	proposerF           ProposerF
 }
 
 func NewController(
@@ -63,17 +63,17 @@ func NewController(
 	proposerF ProposerF,
 ) *Controller {
 	return &Controller{
-		Identifier:             identifier,
-		Height:                 -1, // as we bump the height when starting the first instance
-		Domain:                 domain,
-		Share:                  share,
-		StoredInstances:        InstanceContainer{},
-		HigherReceivedMessages: NewMsgContainer(),
-		signer:                 signer,
-		valueCheck:             valueCheck,
-		storage:                storage,
-		network:                network,
-		proposerF:              proposerF,
+		Identifier:          identifier,
+		Height:              -1, // as we bump the height when starting the first instance
+		Domain:              domain,
+		Share:               share,
+		StoredInstances:     InstanceContainer{},
+		FutureMsgsContainer: make(map[types.OperatorID]Height),
+		signer:              signer,
+		valueCheck:          valueCheck,
+		storage:             storage,
+		network:             network,
+		proposerF:           proposerF,
 	}
 }
 
@@ -96,14 +96,16 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
 
-	if msg.Message.Height > c.Height {
-		return c.processFutureMsg(msg)
+	if isDecidedMsg(c.Share, msg) {
+		return c.UponDecided(msg)
+	} else if msg.Message.Height > c.Height {
+		return c.UponFutureMsg(msg)
 	} else {
-		return c.processMsgCurrentInstance(msg)
+		return c.UponExistingInstanceMsg(msg)
 	}
 }
 
-func (c *Controller) processMsgCurrentInstance(msg *SignedMessage) (*SignedMessage, error) {
+func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage, error) {
 	inst := c.InstanceForHeight(msg.Message.Height)
 	if inst == nil {
 		return nil, errors.New(fmt.Sprintf("instance not found"))
@@ -111,39 +113,9 @@ func (c *Controller) processMsgCurrentInstance(msg *SignedMessage) (*SignedMessa
 
 	prevDecided, _ := inst.IsDecided()
 
-	decided := false
-	var decidedMsg *SignedMessage
-	var err error
-	if isDecidedMsg(c.Share, msg) {
-		if err := validateDecided(
-			inst.State.Height,
-			c.GenerateConfig(),
-			msg,
-			c.Share.Committee,
-		); err != nil {
-			return nil, errors.Wrap(err, "invalid decided msg")
-		}
-
-		added, err := inst.State.CommitContainer.AddFirstMsgForSignerAndRound(msg)
-		if inst == nil || !added {
-			return nil, errors.New("could not add decided msg")
-		}
-
-		msgDecidedData, err := msg.Message.GetCommitData()
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get msg decided data")
-		}
-
-		inst.State.Decided = true
-		inst.State.DecidedValue = msgDecidedData.Data
-
-		decided = true
-		decidedMsg = msg
-	} else {
-		decided, _, decidedMsg, err = inst.ProcessMsg(msg)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not process msg")
-		}
+	decided, _, decidedMsg, err := inst.ProcessMsg(msg)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not process msg")
 	}
 
 	// if previously Decided we do not return Decided true again
@@ -157,13 +129,13 @@ func (c *Controller) processMsgCurrentInstance(msg *SignedMessage) (*SignedMessa
 	}
 
 	if err := c.saveAndBroadcastDecided(decidedMsg); err != nil {
-		// TODO - we do not return error, should log?
+		fmt.Printf("%s\n", err.Error())
 	}
 	return msg, nil
 }
 
 func (c *Controller) baseMsgValidation(msg *SignedMessage) error {
-	// verify msg belongs to controllerprocessmsg
+	// verify msg belongs to controller
 	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
 		return errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
 	}
@@ -217,14 +189,14 @@ func (c *Controller) GetRoot() ([]byte, error) {
 		Identifier             []byte
 		Height                 Height
 		InstanceRoots          [][]byte
-		HigherReceivedMessages *MsgContainer
+		HigherReceivedMessages map[types.OperatorID]Height
 		Domain                 types.DomainType
 		Share                  *types.Share
 	}{
 		Identifier:             c.Identifier,
 		Height:                 c.Height,
 		InstanceRoots:          make([][]byte, len(c.StoredInstances)),
-		HigherReceivedMessages: c.HigherReceivedMessages,
+		HigherReceivedMessages: c.FutureMsgsContainer,
 		Domain:                 c.Domain,
 		Share:                  c.Share,
 	}
@@ -256,7 +228,7 @@ func (c *Controller) Encode() ([]byte, error) {
 func (c *Controller) Decode(data []byte) error {
 	err := json.Unmarshal(data, &c)
 	if err != nil {
-		return errors.Wrap(err, "could not decode controllerprocessmsg")
+		return errors.Wrap(err, "could not decode controller")
 	}
 
 	config := c.GenerateConfig()

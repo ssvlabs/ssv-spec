@@ -1,4 +1,4 @@
-package controllerprocessmsg
+package processmsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,11 +7,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// SingleConsensusMsg tests process msg of a single msg
-func SingleConsensusMsg() *tests.ControllerSpecTest {
+// MsgError tests a process msg returning an error
+func MsgError() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
-		Name: "single consensus msg",
+		Name: "process msg error",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -19,14 +19,15 @@ func SingleConsensusMsg() *tests.ControllerSpecTest {
 					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], 1, &qbft.Message{
 						MsgType:    qbft.ProposalMsgType,
 						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
+						Round:      100,
 						Identifier: identifier[:],
 						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
 					}),
 				},
 				DecidedVal:         nil,
-				ControllerPostRoot: "9566935865a4d8852ad4fc860c2ea9d874cd66b4bc942c1adb647f3fd22d82b4",
+				ControllerPostRoot: "f28cfa54f7993a21ebe3a46fde514e387ad4ff9a3be197b656c4c6e8dbb124de",
 			},
 		},
+		ExpectedError: "could not process msg: proposal invalid: proposal not justified: change round has not quorum",
 	}
 }
