@@ -24,14 +24,14 @@ jobs:
       - name: Generate JSONs
         run: make generate-jsons
 
-      - name: Test Types
-        run: TEST_PKG=./types/... make test
+      - name: Test DKG
+        run: TEST_PKG=./dkg/... make test
 
       - name: Test QBFT
         run: TEST_PKG=./qbft/... make test
 
+      - name: Test Types
+        run: TEST_PKG=./types/... make test
+
       - name: Test SSV
         run: TEST_PKG=./ssv/... make test
-
-      - name: Test DKG
-        run: TEST_PKG=./dkg/... make test
