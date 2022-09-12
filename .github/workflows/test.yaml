@@ -21,6 +21,9 @@ jobs:
       - name: Get Dependencies
         run: go get -v -t -d ./...
 
+      - name: Generate JSONs
+        run: make generate-jsons
+
       - name: Test Types
         run: TEST_PKG=./types/... make test
 

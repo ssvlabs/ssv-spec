@@ -16,3 +16,7 @@ fmt:
 .PHONY: test
 test:
 	@go test -v -race "${TEST_PKG}"
+
+.PHONY: generate-jsons
+generate-jsons:
+	@go generate ./...
