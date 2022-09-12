@@ -39,24 +39,24 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		slashableDataRoots: slashableDataRoots,
 	}
 
-	ret.AddShare(Testing4SharesSet().ValidatorSK)
+	_ = ret.AddShare(Testing4SharesSet().ValidatorSK)
 	for _, s := range Testing4SharesSet().Shares {
-		ret.AddShare(s)
+		_ = ret.AddShare(s)
 	}
 
-	ret.AddShare(Testing7SharesSet().ValidatorSK)
+	_ = ret.AddShare(Testing7SharesSet().ValidatorSK)
 	for _, s := range Testing7SharesSet().Shares {
-		ret.AddShare(s)
+		_ = ret.AddShare(s)
 	}
 
-	ret.AddShare(Testing10SharesSet().ValidatorSK)
+	_ = ret.AddShare(Testing10SharesSet().ValidatorSK)
 	for _, s := range Testing10SharesSet().Shares {
-		ret.AddShare(s)
+		_ = ret.AddShare(s)
 	}
 
-	ret.AddShare(Testing13SharesSet().ValidatorSK)
+	_ = ret.AddShare(Testing13SharesSet().ValidatorSK)
 	for _, s := range Testing13SharesSet().Shares {
-		ret.AddShare(s)
+		_ = ret.AddShare(s)
 	}
 	for _, o := range Testing4SharesSet().DKGOperators {
 		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK

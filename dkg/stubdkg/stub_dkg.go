@@ -83,14 +83,14 @@ func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, error
 	return false, nil, nil
 }
 
-func (s *DKG) signDKGMsg(data []byte) *dkg.SignedMessage {
-	return &dkg.SignedMessage{
-		Message: &dkg.Message{
-			MsgType:    dkg.ProtocolMsgType,
-			Identifier: s.identifier,
-			Data:       data,
-		},
-		Signer: s.operatorID,
-		// TODO - how do we sign?
-	}
-}
+//func (s *DKG) signDKGMsg(data []byte) *dkg.SignedMessage {
+//	return &dkg.SignedMessage{
+//		Message: &dkg.Message{
+//			MsgType:    dkg.ProtocolMsgType,
+//			Identifier: s.identifier,
+//			Data:       data,
+//		},
+//		Signer: s.operatorID,
+//		// TODO - how do we sign?
+//	}
+//}
