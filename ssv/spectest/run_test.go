@@ -202,9 +202,11 @@ func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testin
 
 	ret := baseRunnerForRole(base.BeaconRoleType, base, ks)
 	ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
-	ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
-	ret.GetBaseRunner().State.PostConsensusContainer = ssv.NewPartialSigContainer(base.Share.Quorum)
-	ret.GetBaseRunner().State.PreConsensusContainer = ssv.NewPartialSigContainer(base.Share.Quorum)
+	if ret.GetBaseRunner().State != nil {
+		if ret.GetBaseRunner().State.RunningInstance != nil {
+			ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
+		}
+	}
 	return ret
 }
 

@@ -13,7 +13,15 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
-		r.StartNewDuty(duty)
+		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
+		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
+			r.GetBaseRunner().QBFTController.GenerateConfig(),
+			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Identifier,
+			qbft.FirstHeight)
+		r.GetBaseRunner().State.RunningInstance.State.Decided = true
+		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance
+		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		r.GetBaseRunner().State.Finished = true
 		return r
 	}
@@ -35,7 +43,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.CommitDataBytes(testingutils.TestSyncCommitteeContributionConsensusDataByts),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "b382feda4832f983207137f7e59cf3b06b7bb97307ae040b5453e0d45cdffded",
+				PostDutyRunnerStateRoot: "8d63f41e234c32466ac964be7f844016726b6658d27ff911fe327fcdaa33953f",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -56,7 +64,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.CommitDataBytes(testingutils.TestSyncCommitteeConsensusDataByts),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "a4d1b48492e5a85e97438ace8917dd022f1e2671ff87ae5d433df8def3fa5084",
+				PostDutyRunnerStateRoot: "6256487c77b59d2ade0b43a46ad89de4e94514d5a10d5c9d0b5d9721207e3332",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
@@ -75,7 +83,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.CommitDataBytes(testingutils.TestAggregatorConsensusDataByts),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "81acfd7f161532f932087e8556c442aff18821f6b54761832f4338787cd51663",
+				PostDutyRunnerStateRoot: "ebf29b5d39134ddbd9ae8c1e4f21ed048d51caf73ff5bb5483c47f1686a6b17d",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -96,7 +104,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.CommitDataBytes(testingutils.TestProposerConsensusDataByts),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "5a9cfd11d765d4f6d27897d543d4cbe39d6a6bd6a60e6174911a16342ae358d9",
+				PostDutyRunnerStateRoot: "aec61000fa5edbfa6cfe6cfa5fd67572ded1fe933391cd59e80b6d486f60b86c",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
@@ -117,7 +125,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.CommitDataBytes(testingutils.TestAttesterConsensusDataByts),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "8b2ee28ad249dca1b810df38ad13191ed0b56a9b95e3a118eebcbbf599c9bd9b",
+				PostDutyRunnerStateRoot: "1b16717b90bdfe9590fa5511717e6d1c3cda64bb5ed921d096ec1aa2987010ea",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",

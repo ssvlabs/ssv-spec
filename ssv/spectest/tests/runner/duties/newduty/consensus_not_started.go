@@ -11,7 +11,7 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	startRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
-		r.StartNewDuty(duty)
+		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		return r
 	}
 
@@ -25,7 +25,6 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 				PostDutyRunnerStateRoot: "cb45390b7f7d56a825613fa9e6c3fbc98fc565d8bd9c25d31ef01937dfff72b8",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
@@ -34,7 +33,6 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
 				PostDutyRunnerStateRoot: "4ecc5fa28895cda24f3c9489c891c69431ad1c9aedf66d27f87528494b313e19",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "consensus on duty is running",
 			},
 			{
 				Name:                    "aggregator",
@@ -42,7 +40,6 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingAggregatorDuty,
 				PostDutyRunnerStateRoot: "d898d4dff1fc0e6fd56ff075adc9766247cc915530e4fabf70324922ad7454ec",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -53,7 +50,6 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 				PostDutyRunnerStateRoot: "d6be557a9c94566c60246966c15eca49d458117dce1ba381660d80360a607354",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 			{
@@ -62,7 +58,6 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "d00a1795c598a53727f7b683d54b2299289dd879c82198123556537e781fcede",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "consensus on duty is running",
 			},
 		},
 	}
