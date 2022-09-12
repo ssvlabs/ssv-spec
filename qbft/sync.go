@@ -21,6 +21,23 @@ func (c *Controller) processFutureMsg(msg *SignedMessage) (*SignedMessage, error
 	return nil, nil
 }
 
+func (c *Controller) uponDecided(msg *SignedMessage) error {
+	inst := c.InstanceForHeight(c.Height)
+	if inst != nil {
+		inst.State.Decided = true
+	}
+
+	// bump height
+	c.Height = msg.Message.Height
+
+	// save
+	if err := c.storage.SaveHighestDecided(msg); err != nil {
+		return errors.Wrap(err, "could not save decided")
+	}
+
+	return nil
+}
+
 // f1SyncTrigger returns true if received f+1 higher height messages from unique signers
 func (c *Controller) f1SyncTrigger() bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
