@@ -88,7 +88,7 @@ func (c *Controller) StartNewInstance(value []byte) error {
 // Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
 func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
-		return false, nil, errors.New("message doesn't belong to identifier")
+		return false, nil, errors.New("message doesn't belong to Identifier")
 	}
 
 	inst := c.InstanceForHeight(msg.Message.Height)
