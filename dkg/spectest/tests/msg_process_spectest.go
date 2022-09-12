@@ -53,14 +53,14 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 			bMsg := broadcastedMsgs[i]
 			require.Equal(t, types.DKGMsgType, bMsg.MsgType)
 			sMsg := &dkg.SignedMessage{}
-			sMsg.Decode(bMsg.Data)
+			require.NoError(t, sMsg.Decode(bMsg.Data))
 			if sMsg.Message.MsgType == dkg.OutputMsgType {
 				require.Equal(t, dkg.OutputMsgType, msg.Message.MsgType, "OutputMsgType expected")
 				o1 := &dkg.SignedOutput{}
-				o1.Decode(msg.Message.Data)
+				require.NoError(t, o1.Decode(msg.Message.Data))
 
 				o2 := &dkg.SignedOutput{}
-				o2.Decode(sMsg.Message.Data)
+				require.NoError(t, o2.Decode(sMsg.Message.Data))
 
 				es1 := o1.Data.EncryptedShare
 				o1.Data.EncryptedShare = nil

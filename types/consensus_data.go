@@ -25,7 +25,7 @@ func (cm *ContributionsMap) UnmarshalJSON(input []byte) error {
 	}
 
 	if *cm == nil {
-		*cm = *&ContributionsMap{}
+		*cm = ContributionsMap{}
 	}
 
 	for k, v := range m {

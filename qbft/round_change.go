@@ -221,9 +221,8 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 
 	// Addition to formal spec
 	// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
-	if !rcData.Prepared() {
-		return nil
-	} else { // validate prepare message justifications
+	if rcData.Prepared() {
+		// validate prepare message justifications
 		prepareMsgs := rcData.RoundChangeJustification
 		for _, pm := range prepareMsgs {
 			if err := validSignedPrepareForHeightRoundAndValue(

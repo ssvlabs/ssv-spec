@@ -20,9 +20,7 @@ func NewMsgContainer() *MsgContainer {
 func (c *MsgContainer) AllMessaged() []*SignedMessage {
 	ret := make([]*SignedMessage, 0)
 	for _, roundMsgs := range c.Msgs {
-		for _, msg := range roundMsgs {
-			ret = append(ret, msg)
-		}
+		ret = append(ret, roundMsgs...)
 	}
 	return ret
 }

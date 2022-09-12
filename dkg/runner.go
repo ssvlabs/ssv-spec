@@ -86,7 +86,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 
 		if found := r.DepositDataSignatures[msg.Signer]; found == nil {
 			r.DepositDataSignatures[msg.Signer] = depSig
-		} else if bytes.Compare(found.Signature, msg.Signature) != 0 {
+		} else if !bytes.Equal(found.Signature, msg.Signature) {
 			return false, nil, errors.New("inconsistent partial signature received")
 		}
 

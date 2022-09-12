@@ -11,6 +11,8 @@ import (
 func PostFinish() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	// TODO: check errors
+	// nolint
 	finishRunner := func(runner ssv.Runner, duty *types.Duty) ssv.Runner {
 		runner.StartNewDuty(duty)
 		runner.GetBaseRunner().State.Finished = true

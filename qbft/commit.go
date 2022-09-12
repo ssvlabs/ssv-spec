@@ -111,7 +111,9 @@ func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, e
 		Data: value,
 	}
 	dataByts, err := commitData.Encode()
-
+	if err != nil {
+		return nil, errors.Wrap(err, "failed encoding prepare data")
+	}
 	msg := &Message{
 		MsgType:    CommitMsgType,
 		Height:     state.Height,
