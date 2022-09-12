@@ -181,6 +181,7 @@ func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []types.OperatorI
 	}
 	return true
 }
+
 //
 //func blsSig(sig []byte) (*bls.Sign, error) {
 //	ret := &bls.Sign{}
