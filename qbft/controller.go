@@ -95,7 +95,7 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 
 	inst := c.InstanceForHeight(msg.Message.Height)
 	if inst == nil {
-		return false, nil, errors.Errorf("instance not found %d", msg.Message.Height)
+		return false, nil, errors.Errorf("instance not found for height %d", msg.Message.Height)
 	}
 
 	prevDecided, _ := inst.IsDecided()

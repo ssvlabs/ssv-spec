@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"encoding/hex"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -33,6 +35,6 @@ func InvalidIdentifier() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ExpectedError: "message doesn't belong to Identifier",
+		ExpectedError: fmt.Sprintf("message [%s] doesn't belong to identifier [%s]", hex.EncodeToString([]byte{1, 2, 3, 4}), testingutils.Testing4SharesSet().Shares[1].GetPublicKey().SerializeToHexStr()),
 	}
 }
