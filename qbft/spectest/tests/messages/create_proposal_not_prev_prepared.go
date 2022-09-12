@@ -15,27 +15,18 @@ func CreateProposalNotPreviouslyPrepared() *tests.CreateMsgSpecTest {
 		Value:      []byte{1, 2, 3, 4},
 		RoundChangeJustifications: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      2,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
+				Height: qbft.FirstHeight,
+				Round:  2,
 			}),
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      2,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
+				Height: qbft.FirstHeight,
+				Round:  2,
 			}),
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      2,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
+				Height: qbft.FirstHeight,
+				Round:  2,
 			}),
 		},
-		ExpectedRoot: "89f88f24f9aa3496d925cb869b9de51b3be1379f1957fff15a0ba0ae83e241de",
+		ExpectedRoot: "d83735f8a99fabde910e4dff198163811be43ffbb1ffc62a80c75c44618270c1",
 	}
 }

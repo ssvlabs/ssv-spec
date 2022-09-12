@@ -19,6 +19,17 @@ func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	return share.HasQuorum(len(uniqueSigners))
 }
 
+// HasQuorumHeaders returns true if a unique set of signers has quorum
+func HasQuorumHeaders(share *types.Share, msgs []*SignedMessageHeader) bool {
+	uniqueSigners := make(map[types.OperatorID]bool)
+	for _, msg := range msgs {
+		for _, signer := range msg.GetSigners() {
+			uniqueSigners[signer] = true
+		}
+	}
+	return share.HasQuorum(len(uniqueSigners))
+}
+
 // HasPartialQuorum returns true if a unique set of signers has partial quorum
 func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
@@ -148,47 +159,56 @@ func (d *RoundChangeData) Validate() error {
 	return nil
 }
 
+// Message includes the full consensus input to be decided on, used for decided, proposal and round-change messages
 type Message struct {
-	MsgType    MessageType
-	Height     Height // QBFT instance Height
-	Round      Round  // QBFT round for which the msg is for
-	Identifier []byte // instance Identifier this msg belongs to
-	Data       []byte
+	Height Height
+	Round  Round
+	Input  []byte `ssz-max:"2048"`
+	// PreparedRound an optional field used for round-change
+	PreparedRound Round
 }
+
+//type Message struct {
+//	MsgType    MessageType
+//	Height     Height // QBFT instance Height
+//	Round      Round  // QBFT round for which the msg is for
+//	Identifier []byte // instance Identifier this msg belongs to
+//	Data       []byte
+//}
 
 // GetProposalData returns proposal specific data
 func (msg *Message) GetProposalData() (*ProposalData, error) {
 	ret := &ProposalData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode proposal data from message")
-	}
+	//if err := ret.Decode(msg.Data); err != nil {
+	//	return nil, errors.Wrap(err, "could not decode proposal data from message")
+	//}
 	return ret, nil
 }
 
 // GetPrepareData returns prepare specific data
 func (msg *Message) GetPrepareData() (*PrepareData, error) {
 	ret := &PrepareData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode prepare data from message")
-	}
+	//if err := ret.Decode(msg.Data); err != nil {
+	//	return nil, errors.Wrap(err, "could not decode prepare data from message")
+	//}
 	return ret, nil
 }
 
 // GetCommitData returns commit specific data
 func (msg *Message) GetCommitData() (*CommitData, error) {
 	ret := &CommitData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode commit data from message")
-	}
+	//if err := ret.Decode(msg.Data); err != nil {
+	//	return nil, errors.Wrap(err, "could not decode commit data from message")
+	//}
 	return ret, nil
 }
 
 // GetRoundChangeData returns round change specific data
 func (msg *Message) GetRoundChangeData() (*RoundChangeData, error) {
 	ret := &RoundChangeData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode round change data from message")
-	}
+	//if err := ret.Decode(msg.Data); err != nil {
+	//	return nil, errors.Wrap(err, "could not decode round change data from message")
+	//}
 	return ret, nil
 }
 
@@ -214,23 +234,156 @@ func (msg *Message) GetRoot() ([]byte, error) {
 
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
-func (msg *Message) Validate() error {
-	if len(msg.Identifier) == 0 {
-		return errors.New("message identifier is invalid")
+func (msg *Message) Validate(msgType types.MsgType) error {
+	//if len(msg.Identifier) == 0 {
+	//	return errors.New("message identifier is invalid")
+	//}
+	if len(msg.Input) == 0 && msgType != types.ConsensusRoundChangeMsgType {
+		return errors.New("message input data is invalid")
 	}
-	if len(msg.Data) == 0 {
-		return errors.New("message data is invalid")
-	}
-	if msg.MsgType > 5 {
-		return errors.New("message type is invalid")
-	}
+	//if msg.MsgType > 5 {
+	//	return errors.New("message type is invalid")
+	//}
 	return nil
 }
 
+func (msg *Message) ToMessageHeader() (*MessageHeader, error) {
+	// TODO<olegshmuelov>: implement HashTreeRoot ssz
+	//r, err := msg.Input.HashTreeRoot()
+	//if err != nil {
+	//	return &MessageHeader{}, errors.Wrap(err, "failed to get input root")
+	//}
+	return &MessageHeader{
+		Height: msg.Height,
+		Round:  msg.Round,
+		// TODO<olegshmuelov>: implement HashTreeRoot ssz
+		InputRoot:     [32]byte{},
+		PreparedRound: msg.PreparedRound,
+	}, nil
+}
+
+// SignedMessage includes a signature over Message AND optional justification fields (not signed over)
 type SignedMessage struct {
-	Signature types.Signature
-	Signers   []types.OperatorID
-	Message   *Message // message for which this signature is for
+	Message   *Message
+	Signers   []types.OperatorID `ssz-max:"13"`
+	Signature types.Signature    `ssz-size:"96"`
+
+	RoundChangeJustifications []*SignedMessageHeader `ssz-max:"13"`
+	ProposalJustifications    []*SignedMessageHeader `ssz-max:"13"`
+}
+
+//type SignedMessage struct {
+//	Signature types.Signature
+//	Signers   []types.OperatorID
+//	Message   *Message // message for which this signature is for
+//}
+
+// MessageHeader includes just the root of the input to be decided on (to save space), used for prepare, commit and justification messages
+type MessageHeader struct {
+	Height        Height
+	Round         Round
+	InputRoot     [32]byte `ssz-size:"32"`
+	PreparedRound Round
+}
+
+// Encode returns a msg encoded bytes or error
+func (m *MessageHeader) Encode() ([]byte, error) {
+	return json.Marshal(m)
+}
+
+// Decode returns error if decoding failed
+func (m *MessageHeader) Decode(data []byte) error {
+	return json.Unmarshal(data, &m)
+}
+
+func (m *MessageHeader) GetRoot() ([]byte, error) {
+	marshaledRoot, err := m.Encode()
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode message")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret[:], nil
+}
+
+// SignedMessageHeader includes a signature over MessageHeader
+type SignedMessageHeader struct {
+	Message   *MessageHeader
+	Signers   []types.OperatorID `ssz-max:"13"`
+	Signature types.Signature    `ssz-size:"96"`
+}
+
+func (signedMsg *SignedMessageHeader) GetSignature() types.Signature {
+	return signedMsg.Signature
+}
+func (signedMsg *SignedMessageHeader) GetSigners() []types.OperatorID {
+	return signedMsg.Signers
+}
+
+// Encode returns a msg encoded bytes or error
+func (signedMsg *SignedMessageHeader) Encode() ([]byte, error) {
+	return json.Marshal(signedMsg)
+}
+
+// Decode returns error if decoding failed
+func (signedMsg *SignedMessageHeader) Decode(data []byte) error {
+	return json.Unmarshal(data, &signedMsg)
+}
+
+// GetRoot returns the root used for signing and verification
+func (signedMsg *SignedMessageHeader) GetRoot() ([]byte, error) {
+	//TODO<olegshmuelov> implement
+	//return signedMsg.Message.GetRoot()
+	return nil, nil
+}
+
+// MatchedSigners returns true if the provided signer ids are equal to GetSignerIds() without order significance
+func (signedMsg *SignedMessageHeader) MatchedSigners(ids []types.OperatorID) bool {
+	if len(signedMsg.Signers) != len(ids) {
+		return false
+	}
+
+	for _, id := range signedMsg.Signers {
+		found := false
+		for _, id2 := range ids {
+			if id == id2 {
+				found = true
+			}
+		}
+
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
+// Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
+func (signedMsg *SignedMessageHeader) Aggregate(sig types.MessageSignature) error {
+	// TODO<olegshmuelov> implement
+	//if signedMsg.CommonSigners(sig.GetSigners()) {
+	//	return errors.New("duplicate signers")
+	//}
+
+	r1, err := signedMsg.GetRoot()
+	if err != nil {
+		return errors.Wrap(err, "could not get signature root")
+	}
+	r2, err := sig.GetRoot()
+	if err != nil {
+		return errors.Wrap(err, "could not get signature root")
+	}
+	if !bytes.Equal(r1, r2) {
+		return errors.New("can't aggregate, roots not equal")
+	}
+
+	aggregated, err := signedMsg.Signature.Aggregate(sig.GetSignature())
+	if err != nil {
+		return errors.Wrap(err, "could not aggregate signatures")
+	}
+	signedMsg.Signature = aggregated
+	signedMsg.Signers = append(signedMsg.Signers, sig.GetSigners()...)
+
+	return nil
 }
 
 func (signedMsg *SignedMessage) GetSignature() types.Signature {
@@ -238,6 +391,19 @@ func (signedMsg *SignedMessage) GetSignature() types.Signature {
 }
 func (signedMsg *SignedMessage) GetSigners() []types.OperatorID {
 	return signedMsg.Signers
+}
+
+func (signedMsg *SignedMessage) ToSignedMessageHeader() (*SignedMessageHeader, error) {
+	header, err := signedMsg.Message.ToMessageHeader()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to convert to header")
+	}
+
+	return &SignedMessageHeader{
+		Message:   header,
+		Signers:   signedMsg.Signers,
+		Signature: signedMsg.Signature,
+	}, nil
 }
 
 // MatchedSigners returns true if the provided signer ids are equal to GetSignerIds() without order significance
@@ -319,27 +485,30 @@ func (signedMsg *SignedMessage) GetRoot() ([]byte, error) {
 // DeepCopy returns a new instance of SignedMessage, deep copied
 func (signedMsg *SignedMessage) DeepCopy() *SignedMessage {
 	ret := &SignedMessage{
-		Signers:   make([]types.OperatorID, len(signedMsg.Signers)),
-		Signature: make([]byte, len(signedMsg.Signature)),
+		Signers:                   make([]types.OperatorID, len(signedMsg.Signers)),
+		Signature:                 make([]byte, len(signedMsg.Signature)),
+		RoundChangeJustifications: make([]*SignedMessageHeader, len(signedMsg.RoundChangeJustifications)),
+		ProposalJustifications:    make([]*SignedMessageHeader, len(signedMsg.ProposalJustifications)),
 	}
 	copy(ret.Signers, signedMsg.Signers)
 	copy(ret.Signature, signedMsg.Signature)
+	copy(ret.RoundChangeJustifications, signedMsg.RoundChangeJustifications)
+	copy(ret.ProposalJustifications, signedMsg.ProposalJustifications)
 
 	ret.Message = &Message{
-		MsgType:    signedMsg.Message.MsgType,
-		Height:     signedMsg.Message.Height,
-		Round:      signedMsg.Message.Round,
-		Identifier: make([]byte, len(signedMsg.Message.Identifier)),
-		Data:       make([]byte, len(signedMsg.Message.Data)),
+		Height:        signedMsg.Message.Height,
+		Round:         signedMsg.Message.Round,
+		Input:         make([]byte, len(signedMsg.Message.Input)),
+		PreparedRound: signedMsg.Message.PreparedRound,
 	}
-	copy(ret.Message.Identifier, signedMsg.Message.Identifier)
-	copy(ret.Message.Data, signedMsg.Message.Data)
+
+	copy(ret.Message.Input, signedMsg.Message.Input)
 	return ret
 }
 
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
-func (signedMsg *SignedMessage) Validate() error {
+func (signedMsg *SignedMessage) Validate(msgType types.MsgType) error {
 	if len(signedMsg.Signature) != 96 {
 		return errors.New("message signature is invalid")
 	}
@@ -356,5 +525,5 @@ func (signedMsg *SignedMessage) Validate() error {
 		signed[signer] = true
 	}
 
-	return signedMsg.Message.Validate()
+	return signedMsg.Message.Validate(msgType)
 }

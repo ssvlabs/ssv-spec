@@ -11,28 +11,29 @@ import (
 func InvalidCommitData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
 	})
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       nil,
-		}),
+	signMsgInvalidEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  nil,
+	}).Encode()
+
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
+			Data: signMsgInvalidEncoded,
+		},
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "invalid commit data",
-		Pre:           pre,
-		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: message data is invalid",
+		Name:             "invalid commit data",
+		Pre:              pre,
+		PostRoot:         "0940da0c5926c8f8145e7e980ac09119e429a5208165e6dbe35d7a5c45c07555",
+		InputMessagesSIP: msgs,
+		ExpectedError:    "invalid signed message: message input data is invalid",
 	}
 }

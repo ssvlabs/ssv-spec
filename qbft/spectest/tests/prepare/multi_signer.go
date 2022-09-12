@@ -12,26 +12,29 @@ import (
 func MultiSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
 	})
-	msgs := []*qbft.SignedMessage{
-		testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2}, &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
+
+	signMsgInvalidEncoded, _ := testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2}, &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
+
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+			Data: signMsgInvalidEncoded,
+		},
 	}
+
 	return &tests.MsgProcessingSpecTest{
-		Name:          "prepare multi signer",
-		Pre:           pre,
-		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
-		InputMessages: msgs,
-		ExpectedError: "invalid prepare msg: prepare msg allows 1 signer",
+		Name:             "prepare multi signer",
+		Pre:              pre,
+		PostRoot:         "20a518595c0dbe81ccc7f340f142e77ecfba0e0a93fe0d10325fe607f2e0b1eb",
+		InputMessagesSIP: msgs,
+		ExpectedError:    "invalid prepare msg: prepare msg allows 1 signer",
 	}
 }

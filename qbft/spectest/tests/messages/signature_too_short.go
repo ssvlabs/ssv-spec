@@ -9,19 +9,23 @@ import (
 
 // SignedMsgSigTooShort tests SignedMessage len(signature) < 96
 func SignedMsgSigTooShort() *tests.MsgSpecTest {
+	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.CommitMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 	})
+
 	msg.Signature = make([]byte, 95)
+	b, _ := msg.Encode()
 
 	return &tests.MsgSpecTest{
 		Name: "signature too short",
-		Messages: []*qbft.SignedMessage{
-			msg,
+		Messages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(identifier, types.ConsensusCommitMsgType),
+				Data: b,
+			},
 		},
 		ExpectedError: "message signature is invalid",
 	}

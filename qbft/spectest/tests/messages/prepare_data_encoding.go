@@ -9,21 +9,23 @@ import (
 
 // PrepareDataEncoding tests encoding PrepareData
 func PrepareDataEncoding() *tests.MsgSpecTest {
+	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.PrepareMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 	})
 
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
 	return &tests.MsgSpecTest{
-		Name: "prepare data encoding",
-		Messages: []*qbft.SignedMessage{
-			msg,
+		Name: "commit data nil or len 0",
+		Messages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(identifier, types.ConsensusPrepareMsgType),
+				Data: b,
+			},
 		},
 		EncodedMessages: [][]byte{
 			b,

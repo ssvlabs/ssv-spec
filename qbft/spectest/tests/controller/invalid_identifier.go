@@ -3,16 +3,23 @@ package controller
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // InvalidIdentifier tests a process msg with the wrong identifier
 func InvalidIdentifier() *tests.ControllerSpecTest {
+	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
 	return &tests.ControllerSpecTest{
 		Name: "invalid identifier",
 		RunInstanceData: []struct {
 			InputValue    []byte
-			InputMessages []*qbft.SignedMessage
+			InputMessages []*types.Message
 			Decided       bool
 			DecidedVal    []byte
 			DecidedCnt    uint
@@ -20,15 +27,11 @@ func InvalidIdentifier() *tests.ControllerSpecTest {
 		}{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], 1, &qbft.Message{
-						MsgType:    qbft.ProposalMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: []byte{1, 2, 3, 4},
-						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-					}),
-				},
+				InputMessages: []*types.Message{
+					{
+						ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
+						Data: signMsgEncoded,
+					}},
 				Decided:    false,
 				DecidedVal: nil,
 			},

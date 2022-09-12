@@ -46,9 +46,9 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {
-			if msg.MsgType != types.SSVPartialSignatureMsgType {
-				continue
-			}
+			//if msg.MsgType != types.SSVPartialSignatureMsgType {
+			//	continue
+			//}
 
 			msg1 := &ssv.SignedPartialSignatureMessage{}
 			require.NoError(t, msg1.Decode(msg.Data))

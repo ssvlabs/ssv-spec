@@ -11,20 +11,24 @@ import (
 func NoPrevAcceptedProposal() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
+
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
+			Data: signMsgEncoded,
+		},
 	}
+
 	return &tests.MsgProcessingSpecTest{
-		Name:          "no previous accepted proposal",
-		Pre:           pre,
-		PostRoot:      "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
-		InputMessages: msgs,
-		ExpectedError: "did not receive proposal for this round",
+		Name:             "no previous accepted proposal",
+		Pre:              pre,
+		PostRoot:         "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
+		InputMessagesSIP: msgs,
+		ExpectedError:    "did not receive proposal for this round",
 	}
 }

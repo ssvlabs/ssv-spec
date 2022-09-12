@@ -7,9 +7,12 @@ import (
 )
 
 // UponCommit returns true if a quorum of commit messages was received.
-func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *MsgContainer) (bool, []byte, *SignedMessage, error) {
+func (i *Instance) UponCommit(
+	signedCommit *SignedMessage,
+	commitMsgContainer *MsgContainer,
+) (bool, *SignedMessage, error) {
 	if i.State.ProposalAcceptedForCurrentRound == nil {
-		return false, nil, nil, errors.New("did not receive proposal for this round")
+		return false, nil, errors.New("did not receive proposal for this round")
 	}
 
 	if err := validateCommit(
@@ -21,35 +24,30 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 		i.State.ProposalAcceptedForCurrentRound,
 		i.State.Share.Committee,
 	); err != nil {
-		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
+		return false, nil, errors.Wrap(err, "commit msg invalid")
 	}
 
 	addMsg, err := commitMsgContainer.AddIfDoesntExist(signedCommit)
 	if err != nil {
-		return false, nil, nil, errors.Wrap(err, "could not add commit msg to container")
+		return false, nil, errors.Wrap(err, "could not add commit msg to container")
 	}
 	if !addMsg {
-		return false, nil, nil, nil // UponCommit was already called
+		return false, nil, nil // UponCommit was already called
 	}
 
 	// calculate commit quorum and act upon it
-	quorum, commitMsgs, err := commitQuorumForCurrentRoundValue(i.State, commitMsgContainer, signedCommit.Message.Data)
+	quorum, commitMsgs, err := commitQuorumForCurrentRoundValue(i.State, commitMsgContainer, signedCommit.Message.Input)
 	if err != nil {
-		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
+		return false, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}
 	if quorum {
-		msgCommitData, err := signedCommit.Message.GetCommitData()
-		if err != nil {
-			return false, nil, nil, errors.Wrap(err, "could not get msg commit data")
-		}
-
 		agg, err := aggregateCommitMsgs(commitMsgs)
 		if err != nil {
-			return false, nil, nil, errors.Wrap(err, "could not aggregate commit msgs")
+			return false, nil, errors.Wrap(err, "could not aggregate commit msgs")
 		}
-		return true, msgCommitData.Data, agg, nil
+		return true, agg, nil
 	}
-	return false, nil, nil, nil
+	return false, nil, nil
 }
 
 // returns true if there is a quorum for the current round for this provided value
@@ -108,29 +106,45 @@ Commit(
                     );
 */
 func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, error) {
-	commitData := &CommitData{
-		Data: value,
-	}
-	dataByts, err := commitData.Encode()
-
 	msg := &Message{
-		MsgType:    CommitMsgType,
-		Height:     state.Height,
-		Round:      state.Round,
-		Identifier: state.ID,
-		Data:       dataByts,
+		Height: state.Height,
+		Round:  state.Round,
+		Input:  value,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing commit msg")
 	}
 
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
+	commitMsg := &SignedMessage{
 		Message:   msg,
+		Signers:   []types.OperatorID{state.Share.OperatorID},
+		Signature: sig,
 	}
-	return signedMsg, nil
+
+	//commitData := &CommitData{
+	//	Data: value,
+	//}
+	//dataByts, err := commitData.Encode()
+	//
+	//msg := &Message{
+	//	MsgType:    CommitMsgType,
+	//	Height:     state.Height,
+	//	Round:      state.Round,
+	//	Identifier: state.ID,
+	//	Data:       dataByts,
+	//}
+	//sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "failed signing commit msg")
+	//}
+	//
+	//signedMsg := &SignedMessage{
+	//	Signature: sig,
+	//	Signers:   []types.OperatorID{state.Share.OperatorID},
+	//	Message:   msg,
+	//}
+	return commitMsg, nil
 }
 
 func validateCommit(
@@ -142,9 +156,9 @@ func validateCommit(
 	proposedMsg *SignedMessage,
 	operators []*types.Operator,
 ) error {
-	if signedCommit.Message.MsgType != CommitMsgType {
-		return errors.New("commit msg type is wrong")
-	}
+	//if signedCommit.Message.MsgType != CommitMsgType {
+	//	return errors.New("commit msg type is wrong")
+	//}
 	if signedCommit.Message.Height != height {
 		return errors.New("commit Height is wrong")
 	}
@@ -152,20 +166,20 @@ func validateCommit(
 		return errors.New("commit round is wrong")
 	}
 
-	proposedCommitData, err := proposedMsg.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get proposed commit data")
-	}
+	//proposedCommitData, err := proposedMsg.Message.GetCommitData()
+	//if err != nil {
+	//	return errors.Wrap(err, "could not get proposed commit data")
+	//}
+	//
+	//msgCommitData, err := signedCommit.Message.GetCommitData()
+	//if err != nil {
+	//	return errors.Wrap(err, "could not get msg commit data")
+	//}
+	//if err := msgCommitData.Validate(); err != nil {
+	//	return errors.Wrap(err, "msgCommitData invalid")
+	//}
 
-	msgCommitData, err := signedCommit.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get msg commit data")
-	}
-	if err := msgCommitData.Validate(); err != nil {
-		return errors.Wrap(err, "msgCommitData invalid")
-	}
-
-	if !bytes.Equal(proposedCommitData.Data, msgCommitData.Data) {
+	if !bytes.Equal(proposedMsg.Message.Input, signedCommit.Message.Input) {
 		return errors.New("proposed data different than commit msg data")
 	}
 

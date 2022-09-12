@@ -4,24 +4,32 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 type MsgProcessingSpecTest struct {
-	Name           string
-	Pre            *qbft.Instance
-	PostRoot       string
-	InputMessages  []*qbft.SignedMessage
-	OutputMessages []*qbft.SignedMessage
-	ExpectedError  string
+	Name              string
+	Pre               *qbft.Instance
+	PostRoot          string
+	InputMessages     []*qbft.SignedMessage
+	OutputMessages    []*qbft.SignedMessage
+	InputMessagesSIP  []*types.Message
+	OutputMessagesSIP []*types.Message
+	ExpectedError     string
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	var lastErr error
-	for _, msg := range test.InputMessages {
-		_, _, _, err := test.Pre.ProcessMsg(msg)
+	for _, msg := range test.InputMessagesSIP {
+		signedMsg := &qbft.SignedMessage{}
+		if err := signedMsg.Decode(msg.GetData()); err != nil {
+			lastErr = err
+		}
+
+		_, _, _, err := test.Pre.ProcessMsg(msg.GetID(), signedMsg)
 		if err != nil {
 			lastErr = err
 		}
@@ -38,11 +46,13 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
-		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
+	if len(test.OutputMessagesSIP) > 0 || len(broadcastedMsgs) > 0 {
+		require.Len(t, broadcastedMsgs, len(test.OutputMessagesSIP))
 
-		for i, msg := range test.OutputMessages {
-			r1, _ := msg.GetRoot()
+		for i, msg := range test.OutputMessagesSIP {
+			msg1 := &qbft.SignedMessage{}
+			require.NoError(t, msg1.Decode(msg.Data))
+			r1, _ := msg1.GetRoot()
 
 			msg2 := &qbft.SignedMessage{}
 			require.NoError(t, msg2.Decode(broadcastedMsgs[i].Data))

@@ -3,7 +3,9 @@ package tests
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -57,9 +59,10 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 
 func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
+	msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		ID:    msgId,
 	}
 	config := testingutils.TestingConfig(ks)
 
@@ -68,9 +71,10 @@ func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 
 func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
+	msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		ID:    msgId,
 	}
 	config := testingutils.TestingConfig(ks)
 
@@ -79,20 +83,31 @@ func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
 
 func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
+	msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		ID:    msgId,
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, test.PrepareJustifications)
+	prepareJustifications := make([]*qbft.SignedMessageHeader, 0)
+	for _, rc := range test.PrepareJustifications {
+		prepareHeader, err := rc.ToSignedMessageHeader()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not convert signed msg to signed msg header")
+		}
+		prepareJustifications = append(prepareJustifications, prepareHeader)
+	}
+
+	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, prepareJustifications)
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
+	msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		ID:    msgId,
 	}
 	config := testingutils.TestingConfig(ks)
 

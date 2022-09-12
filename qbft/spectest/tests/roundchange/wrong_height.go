@@ -12,22 +12,26 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     2,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-		}),
+	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: 2,
+		Round:  2,
+		Input:  nil,
+	})
+	rcMsgEncoded, _ := rcMsg.Encode()
+
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+			Data: rcMsgEncoded,
+		},
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:           "round change invalid height",
-		Pre:            pre,
-		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
-		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "round change msg invalid: round change Height is wrong",
+		Name:             "round change invalid height",
+		Pre:              pre,
+		PostRoot:         "a8b80879ebf2ecee42fddc69b67dd5f6adfd6aa8b7114246aec80ce1bfef513a",
+		InputMessagesSIP: msgs,
+		OutputMessages:   []*qbft.SignedMessage{},
+		ExpectedError:    "round change msg invalid: round change Height is wrong",
 	}
 }

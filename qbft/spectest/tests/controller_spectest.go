@@ -15,7 +15,7 @@ type ControllerSpecTest struct {
 	Name            string
 	RunInstanceData []struct {
 		InputValue    []byte
-		InputMessages []*qbft.SignedMessage
+		InputMessages []*types.Message
 		Decided       bool
 		DecidedVal    []byte
 		DecidedCnt    uint
@@ -26,9 +26,9 @@ type ControllerSpecTest struct {
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	contr := testingutils.NewTestingQBFTController(
-		identifier[:],
+		identifier,
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),
 		func(data []byte) error {
 			if bytes.Equal([]byte{1, 2, 3, 4}, data) {
@@ -57,7 +57,11 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 		decidedCnt := 0
 		for _, msg := range runData.InputMessages {
-			decided, _, err := contr.ProcessMsg(msg)
+			signedMsg := &qbft.SignedMessage{}
+			if err := signedMsg.Decode(msg.GetData()); err != nil {
+				lastErr = err
+			}
+			decided, _, err := contr.ProcessMsg(msg.GetID(), signedMsg)
 			if err != nil {
 				lastErr = err
 			}
@@ -92,9 +96,11 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 			require.Greater(t, len(broadcastedMsgs), 0)
 			found := false
 			for _, msg := range broadcastedMsgs {
-				if !bytes.Equal(identifier[:], msg.MsgID[:]) {
+				if !msg.GetID().Compare(identifier) {
 					continue
 				}
+				//if !bytes.Equal(identifier[:], msg.ID[:]) {
+				//}
 
 				msg1 := &qbft.SignedMessage{}
 				require.NoError(t, msg1.Decode(msg.Data))

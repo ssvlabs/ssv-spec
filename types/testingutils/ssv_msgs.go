@@ -101,14 +101,14 @@ var SSVMsgSyncCommitteeContribution = func(qbftMsg *qbft.SignedMessage, partialS
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution))
 }
 
-var ssvMsg = func(qbftMsg *qbft.SignedMessage, postMsg *ssv.SignedPartialSignatureMessage, msgID types.MessageID) *types.SSVMessage {
+var ssvMsg = func(qbftMsg *qbft.SignedMessage, postMsg *ssv.SignedPartialSignatureMessage, msgID types.MessageIDOld) *types.SSVMessage {
 	var msgType types.MsgType
 	var data []byte
 	if qbftMsg != nil {
-		msgType = types.SSVConsensusMsgType
+		//msgType = types.SSVConsensusMsgType
 		data, _ = qbftMsg.Encode()
 	} else if postMsg != nil {
-		msgType = types.SSVPartialSignatureMsgType
+		//msgType = types.SSVPartialSignatureMsgType
 		data, _ = postMsg.Encode()
 	} else {
 		panic("msg type undefined")

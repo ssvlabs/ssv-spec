@@ -1,7 +1,6 @@
 package qbft
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 
@@ -36,7 +35,7 @@ func (i *InstanceContainer) addNewInstance(instance *Instance) {
 
 // Controller is a QBFT coordinator responsible for starting and following the entire life cycle of multiple QBFT InstanceContainer
 type Controller struct {
-	Identifier []byte
+	Identifier types.MessageID
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
@@ -50,7 +49,7 @@ type Controller struct {
 }
 
 func NewController(
-	identifier []byte,
+	identifier types.MessageID,
 	share *types.Share,
 	domain types.DomainType,
 	signer types.SSVSigner,
@@ -88,8 +87,8 @@ func (c *Controller) StartNewInstance(value []byte) error {
 
 // ProcessMsg processes a new msg, returns true if Decided, non nil byte slice if Decided (Decided value) and error
 // Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
-func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
-	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
+func (c *Controller) ProcessMsg(msgID types.MessageID, msg *SignedMessage) (bool, []byte, error) {
+	if !msgID.Compare(c.Identifier) {
 		return false, nil, errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
 	}
 
@@ -99,7 +98,7 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 	}
 
 	prevDecided, _ := inst.IsDecided()
-	decided, decidedValue, aggregatedCommit, err := inst.ProcessMsg(msg)
+	decided, decidedValue, aggregatedCommit, err := inst.ProcessMsg(msgID, msg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "could not process msg")
 	}
@@ -129,7 +128,7 @@ func (c *Controller) bumpHeight() {
 }
 
 // GetIdentifier returns QBFT Identifier, used to identify messages
-func (c *Controller) GetIdentifier() []byte {
+func (c *Controller) GetIdentifier() types.MessageID {
 	return c.Identifier
 }
 
@@ -182,22 +181,24 @@ func (c *Controller) Decode(data []byte) error {
 }
 
 func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) error {
-	if err := c.storage.SaveHighestDecided(aggregatedCommit); err != nil {
+	if err := c.storage.SaveHighestDecided(c.GetIdentifier(), aggregatedCommit); err != nil {
 		return errors.Wrap(err, "could not save decided")
 	}
 
 	// Broadcast Decided msg
-	byts, err := aggregatedCommit.Encode()
+	decidedEncoded, err := aggregatedCommit.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode decided message")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVConsensusMsgType,
-		MsgID:   ControllerIdToMessageID(c.Identifier),
-		Data:    byts,
+	msgID := types.PopulateMsgType(c.Identifier, types.DecidedMsgType)
+
+	broadcastMsg := &types.Message{
+		ID:   msgID,
+		Data: decidedEncoded,
 	}
-	if err := c.network.BroadcastDecided(msgToBroadcast); err != nil {
+
+	if err := c.network.BroadcastDecided(broadcastMsg); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}

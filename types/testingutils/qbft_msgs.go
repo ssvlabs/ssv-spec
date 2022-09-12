@@ -37,6 +37,19 @@ var SignQBFTMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *qbft.Message
 		Signature: sig.Serialize(),
 	}
 }
+var SignQBFTHeaderMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *qbft.MessageHeader) *qbft.SignedMessageHeader {
+	domain := types.PrimusTestnet
+	sigType := types.QBFTSignatureType
+
+	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
+	sig := sk.SignByte(r)
+
+	return &qbft.SignedMessageHeader{
+		Message:   msg,
+		Signers:   []types.OperatorID{id},
+		Signature: sig.Serialize(),
+	}
+}
 var ProposalDataBytes = func(data []byte, rcj, pj []*qbft.SignedMessage) []byte {
 	d := &qbft.ProposalData{
 		Data:                     data,

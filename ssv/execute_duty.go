@@ -66,9 +66,9 @@ func (v *Validator) executeSyncCommitteeContributionDuty(duty *types.Duty, dutyR
 		return errors.Wrap(err, "failed to encode contribution proofs pre-consensus signature msg")
 	}
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
-		Data:    data,
+		//MsgType: types.SSVPartialSignatureMsgType,
+		MsgID: types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
+		Data:  data,
 	}
 	if err := v.Network.Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial contribution proof sig")
@@ -128,9 +128,9 @@ func (v *Validator) executeAggregatorDuty(duty *types.Duty, dutyRunner *Runner) 
 		return errors.Wrap(err, "failed to encode selection proof pre-consensus signature msg")
 	}
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
-		Data:    data,
+		//MsgType: types.SSVPartialSignatureMsgType,
+		MsgID: types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
+		Data:  data,
 	}
 	if err := v.Network.Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial selection proof sig")
@@ -169,9 +169,9 @@ func (v *Validator) executeBlockProposalDuty(duty *types.Duty, dutyRunner *Runne
 		return errors.Wrap(err, "failed to encode randao pre-consensus signature msg")
 	}
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
-		Data:    data,
+		//MsgType: types.SSVPartialSignatureMsgType,
+		MsgID: types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
+		Data:  data,
 	}
 	if err := v.Network.Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial randao sig")

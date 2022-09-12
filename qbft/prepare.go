@@ -9,22 +9,24 @@ import (
 func (i *Instance) uponPrepare(
 	signedPrepare *SignedMessage,
 	prepareMsgContainer,
-	commitMsgContainer *MsgContainer) error {
+	commitMsgContainer *MsgContainer,
+) error {
 	// TODO - if we receive a prepare before a proposal and return an error we will never process the prepare msg, we still need to add it to the container
 	if i.State.ProposalAcceptedForCurrentRound == nil {
 		return errors.New("no proposal accepted for prepare")
 	}
 
-	acceptedProposalData, err := i.State.ProposalAcceptedForCurrentRound.Message.GetProposalData()
-	if err != nil {
-		return errors.Wrap(err, "could not get accepted proposal data")
-	}
+	//acceptedProposalData, err := i.State.ProposalAcceptedForCurrentRound.Message.Input
+	//if err != nil {
+	//	return errors.Wrap(err, "could not get accepted proposal data")
+	//}
 	if err := validSignedPrepareForHeightRoundAndValue(
 		i.config,
 		signedPrepare,
 		i.State.Height,
 		i.State.Round,
-		acceptedProposalData.Data,
+		i.State.ProposalAcceptedForCurrentRound.Message.Input,
+		//acceptedProposalData.Data,
 		i.State.Share.Committee,
 	); err != nil {
 		return errors.Wrap(err, "invalid prepare msg")
@@ -46,7 +48,7 @@ func (i *Instance) uponPrepare(
 		return nil // already moved to commit stage
 	}
 
-	proposedValue := acceptedProposalData.Data
+	proposedValue := i.State.ProposalAcceptedForCurrentRound.Message.Input
 
 	i.State.LastPreparedValue = proposedValue
 	i.State.LastPreparedRound = i.State.Round
@@ -56,23 +58,36 @@ func (i *Instance) uponPrepare(
 		return errors.Wrap(err, "could not create commit msg")
 	}
 
-	if err := i.Broadcast(commitMsg); err != nil {
+	commitEncoded, err := commitMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not encode prepare message")
+	}
+
+	msgID := types.PopulateMsgType(i.State.ID, types.ConsensusCommitMsgType)
+
+	broadcastMsg := &types.Message{
+		ID:   msgID,
+		Data: commitEncoded,
+	}
+
+	if err = i.Broadcast(broadcastMsg); err != nil {
 		return errors.Wrap(err, "failed to broadcast commit message")
 	}
 
 	return nil
 }
 
-func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) []*SignedMessage {
+func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) []*SignedMessageHeader {
 	if state.LastPreparedValue == nil {
 		return nil
 	}
 
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
-	ret := make([]*SignedMessage, 0)
+	ret := make([]*SignedMessageHeader, 0)
 	for _, msg := range prepareMsgs {
 		if err := validSignedPrepareForHeightRoundAndValue(config, msg, state.Height, state.LastPreparedRound, state.LastPreparedValue, state.Share.Committee); err == nil {
-			ret = append(ret, msg)
+			msgHeader, _ := msg.ToSignedMessageHeader()
+			ret = append(ret, msgHeader)
 		}
 	}
 	return ret
@@ -107,10 +122,11 @@ func validSignedPrepareForHeightRoundAndValue(
 	height Height,
 	round Round,
 	value []byte,
-	operators []*types.Operator) error {
-	if signedPrepare.Message.MsgType != PrepareMsgType {
-		return errors.New("prepare msg type is wrong")
-	}
+	operators []*types.Operator,
+) error {
+	//if signedPrepare.Message.MsgType != PrepareMsgType {
+	//	return errors.New("prepare msg type is wrong")
+	//}
 	if signedPrepare.Message.Height != height {
 		return errors.New("msg Height wrong")
 	}
@@ -118,15 +134,15 @@ func validSignedPrepareForHeightRoundAndValue(
 		return errors.New("msg round wrong")
 	}
 
-	prepareData, err := signedPrepare.Message.GetPrepareData()
-	if err != nil {
-		return errors.Wrap(err, "could not get prepare data")
-	}
-	if err := prepareData.Validate(); err != nil {
-		return errors.Wrap(err, "prepareData invalid")
-	}
+	//prepareData, err := signedPrepare.Message.GetPrepareData()
+	//if err != nil {
+	//	return errors.Wrap(err, "could not get prepare data")
+	//}
+	//if err := prepareData.Validate(); err != nil {
+	//	return errors.Wrap(err, "prepareData invalid")
+	//}
 
-	if bytes.Compare(prepareData.Data, value) != 0 {
+	if bytes.Compare(signedPrepare.Message.Input, value) != 0 {
 		return errors.New("prepare data != proposed data")
 	}
 
@@ -137,6 +153,45 @@ func validSignedPrepareForHeightRoundAndValue(
 	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "prepare msg signature invalid")
 	}
+	return nil
+}
+
+// validSignedPrepareHeaderForHeightRoundAndValue known in dafny spec as validSignedPrepareForHeightRoundAndDigest
+// https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
+func validSignedPrepareHeaderForHeightRoundAndValue(
+	config IConfig,
+	signedPrepare *SignedMessageHeader,
+	height Height,
+	round Round,
+	value []byte,
+	operators []*types.Operator,
+) error {
+	if signedPrepare.Message.Height != height {
+		return errors.New("msg Height wrong")
+	}
+	if signedPrepare.Message.Round != round {
+		return errors.New("msg round wrong")
+	}
+
+	//prepareData.Validate()
+	// TODO<olegshmuelov> inputroot validate
+	//if signedPrepare.Message.InputRoot == [32]byte{} {
+	//	return errors.New("prepareData invalid")
+	//}
+
+	// TODO<olegshmuelov>: encode value to input root and compare?
+	//if bytes.Compare(signedPrepare.Message.InputRoot, value) != 0 {
+	//	return errors.New("prepare data != proposed data")
+	//}
+
+	if len(signedPrepare.GetSigners()) != 1 {
+		return errors.New("prepare msg allows 1 signer")
+	}
+
+	// TODO<olegshmuelov>: do we need to do it for justifications?
+	//if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	//	return errors.Wrap(err, "prepare msg signature invalid")
+	//}
 	return nil
 }
 
@@ -153,27 +208,43 @@ Prepare(
                 );
 */
 func CreatePrepare(state *State, config IConfig, newRound Round, value []byte) (*SignedMessage, error) {
-	prepareData := &PrepareData{
-		Data: value,
-	}
-	dataByts, err := prepareData.Encode()
-
 	msg := &Message{
-		MsgType:    PrepareMsgType,
-		Height:     state.Height,
-		Round:      newRound,
-		Identifier: state.ID,
-		Data:       dataByts,
+		Height: state.Height,
+		Round:  newRound,
+		Input:  value,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}
 
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
+	prepareMsg := &SignedMessage{
 		Message:   msg,
+		Signers:   []types.OperatorID{state.Share.OperatorID},
+		Signature: sig,
 	}
-	return signedMsg, nil
+
+	//prepareData := &PrepareData{
+	//	Data: value,
+	//}
+	//dataByts, err := prepareData.Encode()
+	//
+	//msg := &Message{
+	//	MsgType:    PrepareMsgType,
+	//	Height:     state.Height,
+	//	Round:      newRound,
+	//	Identifier: state.ID,
+	//	Data:       dataByts,
+	//}
+	//sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "failed signing prepare msg")
+	//}
+	//
+	//signedMsg := &SignedMessage{
+	//	Signature: sig,
+	//	Signers:   []types.OperatorID{state.Share.OperatorID},
+	//	Message:   msg,
+	//}
+	return prepareMsg, nil
 }

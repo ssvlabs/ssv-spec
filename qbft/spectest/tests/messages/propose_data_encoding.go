@@ -9,41 +9,31 @@ import (
 
 // ProposeDataEncoding tests encoding ProposalData
 func ProposeDataEncoding() *tests.MsgSpecTest {
+	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data: testingutils.ProposalDataBytes(
-			[]byte{1, 2, 3, 4},
-			[]*qbft.SignedMessage{
-				testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-					MsgType:    qbft.PrepareMsgType,
-					Height:     qbft.FirstHeight,
-					Round:      qbft.FirstRound,
-					Identifier: []byte{1, 2, 3, 4},
-					Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-				}),
-			},
-			[]*qbft.SignedMessage{
-				testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-					MsgType:    qbft.RoundChangeMsgType,
-					Height:     qbft.FirstHeight,
-					Round:      qbft.FirstRound,
-					Identifier: []byte{1, 2, 3, 4},
-					Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-				}),
-			},
-		),
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
 	})
+
+	signMsgHeader, _ := msg.ToSignedMessageHeader()
+	msg.RoundChangeJustifications = []*qbft.SignedMessageHeader{
+		signMsgHeader,
+	}
+	msg.ProposalJustifications = []*qbft.SignedMessageHeader{
+		signMsgHeader,
+	}
 
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
 	return &tests.MsgSpecTest{
 		Name: "propose data encoding",
-		Messages: []*qbft.SignedMessage{
-			msg,
+		Messages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
+				Data: b,
+			},
 		},
 		EncodedMessages: [][]byte{
 			b,

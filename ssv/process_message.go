@@ -8,9 +8,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ProcessMessage processes Network Message of all types
-func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
-	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
+// ProcessMessageSIP processes Network Message of all types
+func (v *Validator) ProcessMessageSIP(msg *types.Message) error {
+	msgID := msg.GetID()
+	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msgID)
 	if dutyRunner == nil {
 		return errors.Errorf("could not get duty runner for msg ID")
 	}
@@ -19,14 +20,15 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 		return errors.Wrap(err, "Message invalid")
 	}
 
-	switch msg.GetType() {
-	case types.SSVConsensusMsgType:
+	switch msgID.GetMsgType() {
+	case types.ConsensusProposeMsgType:
 		signedMsg := &qbft.SignedMessage{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from Network Message")
 		}
-		return v.processConsensusMsg(dutyRunner, signedMsg)
-	case types.SSVPartialSignatureMsgType:
+		return v.processConsensusMsg(dutyRunner, msgID, signedMsg)
+	//case types.SSVPartialSignatureMsgType:
+	case types.PartialSignatureMsgType:
 		signedMsg := &SignedPartialSignatureMessage{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from Network Message")
@@ -48,7 +50,48 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 	}
 }
 
-func (v *Validator) validateMessage(runner *Runner, msg *types.SSVMessage) error {
+// ProcessMessage processes Network Message of all types
+func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
+	//dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
+	//if dutyRunner == nil {
+	//	return errors.Errorf("could not get duty runner for msg ID")
+	//}
+	//
+	//if err := v.validateMessage(dutyRunner, msg); err != nil {
+	//	return errors.Wrap(err, "Message invalid")
+	//}
+	//
+	//switch msg.GetType() {
+	//case types.SSVConsensusMsgType:
+	//	signedMsg := &qbft.SignedMessage{}
+	//	if err := signedMsg.Decode(msg.GetData()); err != nil {
+	//		return errors.Wrap(err, "could not get consensus Message from Network Message")
+	//	}
+	//	return v.processConsensusMsg(dutyRunner, signedMsg)
+	//case types.SSVPartialSignatureMsgType:
+	//	signedMsg := &SignedPartialSignatureMessage{}
+	//	if err := signedMsg.Decode(msg.GetData()); err != nil {
+	//		return errors.Wrap(err, "could not get post consensus Message from Network Message")
+	//	}
+	//
+	//	if signedMsg.Message.Type == RandaoPartialSig {
+	//		return v.processRandaoPartialSig(dutyRunner, signedMsg)
+	//	}
+	//	if signedMsg.Message.Type == SelectionProofPartialSig {
+	//		return v.processSelectionProofPartialSig(dutyRunner, signedMsg)
+	//	}
+	//	if signedMsg.Message.Type == ContributionProofs {
+	//		return v.processContributionProofPartialSig(dutyRunner, signedMsg)
+	//	}
+	//
+	//	return v.processPostConsensusSig(dutyRunner, signedMsg)
+	//default:
+	//	return errors.New("unknown msg")
+	//}
+	return nil
+}
+
+func (v *Validator) validateMessage(runner *Runner, msg *types.Message) error {
 	if runner.CurrentDuty == nil {
 		return errors.New("no running duty")
 	}
@@ -64,8 +107,8 @@ func (v *Validator) validateMessage(runner *Runner, msg *types.SSVMessage) error
 	return nil
 }
 
-func (v *Validator) processConsensusMsg(dutyRunner *Runner, msg *qbft.SignedMessage) error {
-	decided, decidedValue, err := dutyRunner.ProcessConsensusMessage(msg)
+func (v *Validator) processConsensusMsg(dutyRunner *Runner, msgID types.MessageID, msg *qbft.SignedMessage) error {
+	decided, decidedValue, err := dutyRunner.ProcessConsensusMessage(msgID, msg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -91,9 +134,9 @@ func (v *Validator) processConsensusMsg(dutyRunner *Runner, msg *qbft.SignedMess
 	}
 
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
-		Data:    data,
+		//MsgType: types.SSVPartialSignatureMsgType,
+		MsgID: types.NewMsgID(v.Share.ValidatorPubKey, dutyRunner.BeaconRoleType),
+		Data:  data,
 	}
 
 	if err := v.Network.Broadcast(msgToBroadcast); err != nil {

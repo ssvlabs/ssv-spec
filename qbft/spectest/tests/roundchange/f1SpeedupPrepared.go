@@ -11,165 +11,178 @@ import (
 func F1SpeedupPrepared() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      8,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      8,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      8,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
+	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  8,
+		Input:  []byte{1, 2, 3, 4},
+	})
+	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  8,
+		Input:  []byte{1, 2, 3, 4},
+	})
+	signQBFTMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  8,
+		Input:  []byte{1, 2, 3, 4},
+	})
+	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height:        qbft.FirstHeight,
+		Round:         10,
+		Input:         []byte{1, 2, 3, 4},
+		PreparedRound: 8,
+	})
+	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+		Height:        qbft.FirstHeight,
+		Round:         10,
+		Input:         []byte{1, 2, 3, 4},
+		PreparedRound: 8,
+	})
+	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		Height:        qbft.FirstHeight,
+		Round:         10,
+		Input:         []byte{1, 2, 3, 4},
+		PreparedRound: 8,
+	})
+	proposalMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
+	proposalMsg10Round := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  10,
+		Input:  []byte{1, 2, 3, 4},
+	})
+	signQBFTMsg10RoundEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  10,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
+	signQBFTMsg10RoundEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  10,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
+	signQBFTMsg10RoundEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  10,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
+	signQBFTMsgFirstRoundEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
+	outputRcMsg10RoundEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  10,
+		Input:  nil,
+	}).Encode()
+
+	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessageHeader()
+	prepareMsgHeader2, _ := signQBFTMsg2.ToSignedMessageHeader()
+	prepareMsgHeader3, _ := signQBFTMsg3.ToSignedMessageHeader()
+
+	prepareJustifications := []*qbft.SignedMessageHeader{
+		prepareMsgHeader,
+		prepareMsgHeader2,
+		prepareMsgHeader3,
 	}
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 8, prepareMsgs),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 8, prepareMsgs),
-		}),
+	rcMsg.RoundChangeJustifications = prepareJustifications
+	rcMsg2.RoundChangeJustifications = prepareJustifications
+	rcMsg3.RoundChangeJustifications = prepareJustifications
 
-		// this is the catchup round change sent by the node
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 8, prepareMsgs),
-		}),
+	rcMsgEncoded, _ := rcMsg.Encode()
+	rcMsgEncoded2, _ := rcMsg2.Encode()
+	rcMsgEncoded3, _ := rcMsg3.Encode()
+
+	rcMsgHeader, _ := rcMsg.ToSignedMessageHeader()
+	rcMsgHeader2, _ := rcMsg2.ToSignedMessageHeader()
+	rcMsgHeader3, _ := rcMsg3.ToSignedMessageHeader()
+
+	rcJustifications := []*qbft.SignedMessageHeader{
+		rcMsgHeader,
+		rcMsgHeader2,
+		rcMsgHeader3,
 	}
+	proposalMsg10Round.RoundChangeJustifications = rcJustifications
+	proposalMsg10Round.ProposalJustifications = prepareJustifications
+	proposalMsg10RoundEncoded, _ := proposalMsg10Round.Encode()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-		}),
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+			Data: proposalMsgEncoded,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+			Data: rcMsgEncoded2,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+			Data: rcMsgEncoded3,
+		},
+		{ // this is the catchup round change sent by the node
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+			Data: rcMsgEncoded,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+			Data: proposalMsg10RoundEncoded,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+			Data: signQBFTMsg10RoundEncoded,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+			Data: signQBFTMsg10RoundEncoded2,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+			Data: signQBFTMsg10RoundEncoded3,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
+			Data: signQBFTMsg10RoundEncoded,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
+			Data: signQBFTMsg10RoundEncoded2,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
+			Data: signQBFTMsg10RoundEncoded3,
+		},
 	}
-	msgs = append(msgs, rcMsgs...)
-	msgs = append(msgs, []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, rcMsgs, prepareMsgs),
-		}),
-
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		}),
-	}...)
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "f+1 speed up (future prepared)",
-		Pre:           pre,
-		PostRoot:      "1c46f3490a3e9d2594c9935a80167d42d3e7b2e5d38521a34725a358fb9aadc7",
-		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-			}),
-
-			// this is the catchup round change sent by the node
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      10,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-			}),
-
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.ProposalMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      10,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, rcMsgs, prepareMsgs),
-			}),
-
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      10,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-			}),
-
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      10,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-			}),
+		Name:             "f+1 speed up (future prepared)",
+		Pre:              pre,
+		PostRoot:         "9e18563ecf2c03cc5181569df80b391c46499ba4b95392434ddb426ce64da3f8",
+		InputMessagesSIP: msgs,
+		OutputMessagesSIP: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+				Data: signQBFTMsgFirstRoundEncoded,
+			},
+			{ // this is the catchup round change sent by the node
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+				Data: outputRcMsg10RoundEncoded,
+			},
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+				Data: proposalMsg10RoundEncoded,
+			},
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+				Data: signQBFTMsg10RoundEncoded,
+			},
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
+				Data: signQBFTMsg10RoundEncoded,
+			},
 		},
 	}
 }

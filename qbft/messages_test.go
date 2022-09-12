@@ -60,7 +60,7 @@ func TestMessage_Validate(t *testing.T) {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       []byte{1, 2, 3, 4},
 		}
-		require.NoError(t, m.Validate())
+		require.NoError(t, m.Validate(types.ConsensusProposeMsgType))
 	})
 	t.Run("valid prepare", func(t *testing.T) {
 		m := &qbft.Message{
@@ -68,7 +68,7 @@ func TestMessage_Validate(t *testing.T) {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       []byte{1, 2, 3, 4},
 		}
-		require.NoError(t, m.Validate())
+		require.NoError(t, m.Validate(types.ConsensusPrepareMsgType))
 	})
 	t.Run("valid commit", func(t *testing.T) {
 		m := &qbft.Message{
@@ -76,7 +76,7 @@ func TestMessage_Validate(t *testing.T) {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       []byte{1, 2, 3, 4},
 		}
-		require.NoError(t, m.Validate())
+		require.NoError(t, m.Validate(types.ConsensusCommitMsgType))
 	})
 	t.Run("valid round change", func(t *testing.T) {
 		m := &qbft.Message{
@@ -84,7 +84,7 @@ func TestMessage_Validate(t *testing.T) {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       []byte{1, 2, 3, 4},
 		}
-		require.NoError(t, m.Validate())
+		require.NoError(t, m.Validate(types.ConsensusRoundChangeMsgType))
 	})
 	t.Run("invalid msg type", func(t *testing.T) {
 		m := &qbft.Message{
@@ -92,7 +92,7 @@ func TestMessage_Validate(t *testing.T) {
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       []byte{1, 2, 3, 4},
 		}
-		require.EqualError(t, m.Validate(), "message type is invalid")
+		require.EqualError(t, m.Validate(types.UnknownMsgType), "message type is invalid")
 	})
 }
 
@@ -107,7 +107,7 @@ func TestSignedMessage_Validate(t *testing.T) {
 				Data:       []byte{1, 2, 3, 4},
 			},
 		}
-		require.NoError(t, m.Validate())
+		require.NoError(t, m.Validate(types.ConsensusProposeMsgType))
 	})
 	t.Run("invalid signature", func(t *testing.T) {
 		m := &qbft.SignedMessage{
@@ -119,7 +119,7 @@ func TestSignedMessage_Validate(t *testing.T) {
 				Data:       []byte{1, 2, 3, 4},
 			},
 		}
-		require.EqualError(t, m.Validate(), "message signature is invalid")
+		require.EqualError(t, m.Validate(types.ConsensusProposeMsgType), "message signature is invalid")
 	})
 	t.Run("invalid signers", func(t *testing.T) {
 		m := &qbft.SignedMessage{
@@ -131,7 +131,7 @@ func TestSignedMessage_Validate(t *testing.T) {
 				Data:       []byte{1, 2, 3, 4},
 			},
 		}
-		require.EqualError(t, m.Validate(), "message signers is empty")
+		require.EqualError(t, m.Validate(types.ConsensusProposeMsgType), "message signers is empty")
 	})
 	t.Run("invalid msg", func(t *testing.T) {
 		m := &qbft.SignedMessage{
@@ -143,7 +143,7 @@ func TestSignedMessage_Validate(t *testing.T) {
 				Data:       []byte{1, 2, 3, 4},
 			},
 		}
-		require.EqualError(t, m.Validate(), "message type is invalid")
+		require.EqualError(t, m.Validate(types.ConsensusProposeMsgType), "message type is invalid")
 	})
 }
 func TestProposalData_Validate(t *testing.T) {

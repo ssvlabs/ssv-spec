@@ -24,7 +24,7 @@ type Instance struct {
 func NewInstance(
 	config IConfig,
 	share *types.Share,
-	identifier []byte,
+	identifier types.MessageID,
 	height Height,
 ) *Instance {
 	return &Instance{
@@ -57,50 +57,50 @@ func (i *Instance) Start(value []byte, height Height) {
 			if err != nil {
 				// TODO log
 			}
-			if err := i.Broadcast(proposal); err != nil {
+
+			proposalEncoded, err := proposal.Encode()
+			if err != nil {
+				return
+			}
+
+			msgID := types.PopulateMsgType(i.State.ID, types.ConsensusProposeMsgType)
+
+			broadcastMsg := &types.Message{
+				ID:   msgID,
+				Data: proposalEncoded,
+			}
+
+			if err := i.Broadcast(broadcastMsg); err != nil {
 				// TODO - log
 			}
 		}
 	})
 }
 
-func (i *Instance) Broadcast(msg *SignedMessage) error {
-	byts, err := msg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode message")
-	}
-
-	msgID := types.MessageID{}
-	copy(msgID[:], msg.Message.Identifier)
-
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVConsensusMsgType,
-		MsgID:   msgID,
-		Data:    byts,
-	}
-	return i.config.GetNetwork().Broadcast(msgToBroadcast)
+func (i *Instance) Broadcast(msg *types.Message) error {
+	return i.config.GetNetwork().Broadcast(msg)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
-func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
-	if err := msg.Validate(); err != nil {
+func (i *Instance) ProcessMsg(msgID types.MessageID, msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
+	if err := msg.Validate(msgID.GetMsgType()); err != nil {
 		return false, nil, nil, errors.Wrap(err, "invalid signed message")
 	}
 
 	res := i.processMsgF.Run(func() interface{} {
-		switch msg.Message.MsgType {
-		case ProposalMsgType:
+		switch msgID.GetMsgType() {
+		case types.ConsensusProposeMsgType:
 			return i.uponProposal(msg, i.State.ProposeContainer)
-		case PrepareMsgType:
+		case types.ConsensusPrepareMsgType:
 			return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
-		case CommitMsgType:
-			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
+		case types.ConsensusCommitMsgType:
+			decided, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
 			i.State.Decided = decided
 			if decided {
-				i.State.DecidedValue = decidedValue
+				i.State.DecidedValue = msg.Message.Input
 			}
 			return err
-		case RoundChangeMsgType:
+		case types.ConsensusRoundChangeMsgType:
 			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
 		default:
 			return errors.New("signed message type not supported")

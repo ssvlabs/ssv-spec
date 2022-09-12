@@ -30,8 +30,8 @@ func (dr *Runner) Decide(input *types.ConsensusData) error {
 	return nil
 }
 
-func (dr *Runner) ProcessConsensusMessage(msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
-	decided, decidedValueByts, err := dr.QBFTController.ProcessMsg(msg)
+func (dr *Runner) ProcessConsensusMessage(msgID types.MessageID, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
+	decided, decidedValueByts, err := dr.QBFTController.ProcessMsg(msgID, msg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to process consensus msg")
 	}

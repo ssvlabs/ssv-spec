@@ -1,14 +1,8 @@
 package roundchange
 
-import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-)
-
+// TODO<olegshmuelov> check if needed (validate consensus data)
 // ImparsableRoundChangeData tests a round change msg data imparsable to round change data struct
-func ImparsableRoundChangeData() *tests.MsgProcessingSpecTest {
+/*func ImparsableRoundChangeData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 
@@ -30,4 +24,4 @@ func ImparsableRoundChangeData() *tests.MsgProcessingSpecTest {
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "round change msg invalid: could not get roundChange data : could not decode round change data from message: invalid character '\\x01' looking for beginning of value",
 	}
-}
+}*/

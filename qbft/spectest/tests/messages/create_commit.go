@@ -9,6 +9,6 @@ func CreateCommit() *tests.CreateMsgSpecTest {
 		Name:         "create commit",
 		Value:        []byte{1, 2, 3, 4},
 		Round:        10,
-		ExpectedRoot: "06c09ba2774b7581bad2774a3f57c2002954826b0133cf1e9b6e774a85bcc7cd",
+		ExpectedRoot: "d83735f8a99fabde910e4dff198163811be43ffbb1ffc62a80c75c44618270c1",
 	}
 }

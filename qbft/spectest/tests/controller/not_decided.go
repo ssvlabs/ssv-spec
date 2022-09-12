@@ -9,12 +9,17 @@ import (
 
 // NotDecided tests a process msg after which not decided
 func NotDecided() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
 	return &tests.ControllerSpecTest{
 		Name: "not decided",
 		RunInstanceData: []struct {
 			InputValue    []byte
-			InputMessages []*qbft.SignedMessage
+			InputMessages []*types.Message
 			Decided       bool
 			DecidedVal    []byte
 			DecidedCnt    uint
@@ -22,15 +27,11 @@ func NotDecided() *tests.ControllerSpecTest {
 		}{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], 1, &qbft.Message{
-						MsgType:    qbft.ProposalMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-					}),
-				},
+				InputMessages: []*types.Message{
+					{
+						ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
+						Data: signMsgEncoded,
+					}},
 				Decided:    false,
 				DecidedVal: nil,
 			},

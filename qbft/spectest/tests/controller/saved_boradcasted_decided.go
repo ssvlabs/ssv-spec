@@ -10,12 +10,12 @@ import (
 
 // SavedAndBroadcastedDecided tests saving and broadcasting decided to storage
 func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "save and broadcast decided",
 		RunInstanceData: []struct {
 			InputValue    []byte
-			InputMessages []*qbft.SignedMessage
+			InputMessages []*types.Message
 			Decided       bool
 			DecidedVal    []byte
 			DecidedCnt    uint
@@ -23,7 +23,7 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 		}{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
-				InputMessages: testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet()),
+				InputMessages: testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier, qbft.FirstHeight, testingutils.Testing4SharesSet()),
 				Decided:       true,
 				DecidedVal:    []byte{1, 2, 3, 4},
 				DecidedCnt:    1,
@@ -31,11 +31,12 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
 					[]types.OperatorID{1, 2, 3},
 					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						//MsgType:    qbft.CommitMsgType,
+						Height: qbft.FirstHeight,
+						Round:  qbft.FirstRound,
+						//Identifier: identifier[:],
+						//Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						Input: []byte{1, 2, 3, 4},
 					}),
 			},
 		},

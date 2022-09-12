@@ -43,7 +43,8 @@ func (c *MsgContainer) MessagesForRoundAndValue(round Round, value []byte) []*Si
 		for i := 0; i < len(c.Msgs[round]); i++ {
 			m := c.Msgs[round][i]
 
-			if !bytes.Equal(m.Message.Data, value) {
+			//if !bytes.Equal(m.Message.Data, value) {
+			if !bytes.Equal(m.Message.Input, value) {
 				continue
 			}
 			ret = append(ret, m)
@@ -64,7 +65,7 @@ func (c *MsgContainer) LongestUniqueSignersForRoundAndValue(round Round, value [
 	for i := 0; i < len(c.Msgs[round]); i++ {
 		m := c.Msgs[round][i]
 
-		if !bytes.Equal(m.Message.Data, value) {
+		if !bytes.Equal(m.Message.Input, value) {
 			continue
 		}
 
@@ -75,7 +76,7 @@ func (c *MsgContainer) LongestUniqueSignersForRoundAndValue(round Round, value [
 		for j := i + 1; j < len(c.Msgs[round]); j++ {
 			m2 := c.Msgs[round][j]
 
-			if !bytes.Equal(m2.Message.Data, value) {
+			if !bytes.Equal(m2.Message.Input, value) {
 				continue
 			}
 

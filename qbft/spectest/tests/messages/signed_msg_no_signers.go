@@ -9,19 +9,22 @@ import (
 
 // SignedMsgNoSigners tests SignedMessage len(signers) == 0
 func SignedMsgNoSigners() *tests.MsgSpecTest {
+	baseMsgID := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.CommitMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
 	})
 	msg.Signers = nil
+	msgEncoded, _ := msg.Encode()
 
 	return &tests.MsgSpecTest{
 		Name: "no signers",
-		Messages: []*qbft.SignedMessage{
-			msg,
+		Messages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(baseMsgID, types.ConsensusCommitMsgType),
+				Data: msgEncoded,
+			},
 		},
 		ExpectedError: "message signers is empty",
 	}

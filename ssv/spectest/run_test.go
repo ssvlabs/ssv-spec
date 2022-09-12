@@ -41,8 +41,10 @@ func TestJson(t *testing.T) {
 
 		ks := keySetForShare(test.Runner.QBFTController.Share)
 
+		msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, 0)
 		newContr := qbft.NewController(
-			[]byte{1, 2, 3, 4},
+			//[]byte{1, 2, 3, 4},
+			msgId,
 			test.Runner.QBFTController.Share,
 			testingutils.TestingConfig(ks).Domain,
 			testingutils.TestingConfig(ks).Signer,

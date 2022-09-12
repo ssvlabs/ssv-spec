@@ -10,7 +10,8 @@ import (
 
 // SignedMsgMultiSigners tests SignedMessage with multi signers
 func SignedMsgMultiSigners() *tests.MsgSpecTest {
-	msg := testingutils.MultiSignQBFTMsg(
+	baseMsgID := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
+	msgEncoded, _ := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{
 			testingutils.Testing4SharesSet().Shares[1],
 			testingutils.Testing4SharesSet().Shares[2],
@@ -18,17 +19,19 @@ func SignedMsgMultiSigners() *tests.MsgSpecTest {
 		},
 		[]types.OperatorID{1, 2, 3},
 		&qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		})
+			Height: qbft.FirstHeight,
+			Round:  qbft.FirstRound,
+			Input:  []byte{1, 2, 3, 4},
+		}).Encode()
 
 	return &tests.MsgSpecTest{
 		Name: "multi signers",
-		Messages: []*qbft.SignedMessage{
-			msg,
+
+		Messages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(baseMsgID, types.ConsensusCommitMsgType),
+				Data: msgEncoded,
+			},
 		},
 	}
 }

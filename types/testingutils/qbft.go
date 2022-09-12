@@ -57,13 +57,16 @@ var ThirteenOperatorsInstance = func() *qbft.Instance {
 	return baseInstance(TestingShare(Testing13SharesSet()), Testing13SharesSet(), []byte{1, 2, 3, 4})
 }
 
+// var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {
 var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {
-	ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
+	//ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
+	msgID := types.NewBaseMsgID(identifier, types.BNRoleAttester)
+	ret := qbft.NewInstance(TestingConfig(keySet), share, msgID, qbft.FirstHeight)
 	ret.StartValue = []byte{1, 2, 3, 4}
 	return ret
 }
 
-func NewTestingQBFTController(identifier []byte, share *types.Share, valCheck qbft.ProposedValueCheckF, proposerF qbft.ProposerF) *qbft.Controller {
+func NewTestingQBFTController(identifier types.MessageID, share *types.Share, valCheck qbft.ProposedValueCheckF, proposerF qbft.ProposerF) *qbft.Controller {
 	return qbft.NewController(
 		identifier,
 		share,

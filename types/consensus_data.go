@@ -58,3 +58,8 @@ func (cid *ConsensusData) Encode() ([]byte, error) {
 func (cid *ConsensusData) Decode(data []byte) error {
 	return json.Unmarshal(data, &cid)
 }
+
+type ConsensusInput struct {
+	Duty    *Duty
+	DataSSZ []byte `ssz-max:"2048"`
+}

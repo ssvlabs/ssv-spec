@@ -9,12 +9,12 @@ import (
 
 // StartInstancePreviousDecided tests starting an instance when the previous one decided
 func StartInstancePreviousDecided() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "start instance  prev decided",
 		RunInstanceData: []struct {
 			InputValue    []byte
-			InputMessages []*qbft.SignedMessage
+			InputMessages []*types.Message
 			Decided       bool
 			DecidedVal    []byte
 			DecidedCnt    uint
@@ -22,7 +22,7 @@ func StartInstancePreviousDecided() *tests.ControllerSpecTest {
 		}{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
-				InputMessages: testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet()),
+				InputMessages: testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier, qbft.FirstHeight, testingutils.Testing4SharesSet()),
 				Decided:       true,
 				DecidedVal:    []byte{1, 2, 3, 4},
 				DecidedCnt:    1,

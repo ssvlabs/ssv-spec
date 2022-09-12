@@ -9,43 +9,39 @@ import (
 
 // SignedMessageEncoding tests encoding SignedMessage
 func SignedMessageEncoding() *tests.MsgSpecTest {
-	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data: testingutils.ProposalDataBytes(
-			[]byte{1, 2, 3, 4},
-			[]*qbft.SignedMessage{
-				testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-					MsgType:    qbft.PrepareMsgType,
-					Height:     qbft.FirstHeight,
-					Round:      qbft.FirstRound,
-					Identifier: []byte{1, 2, 3, 4},
-					Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-				}),
-			},
-			[]*qbft.SignedMessage{
-				testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-					MsgType:    qbft.RoundChangeMsgType,
-					Height:     qbft.FirstHeight,
-					Round:      qbft.FirstRound,
-					Identifier: []byte{1, 2, 3, 4},
-					Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-				}),
-			},
-		),
+	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
+	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	})
+	proposalMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
 	})
 
-	b, _ := msg.Encode()
+	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessageHeader()
+	prepareJustifications := []*qbft.SignedMessageHeader{
+		prepareMsgHeader,
+	}
+	proposalMsg.RoundChangeJustifications = prepareJustifications
+	proposalMsg.ProposalJustifications = prepareJustifications
+
+	proposalMsgEncoded, _ := proposalMsg.Encode()
+
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
+			Data: proposalMsgEncoded,
+		},
+	}
 
 	return &tests.MsgSpecTest{
-		Name: "signed message encoding",
-		Messages: []*qbft.SignedMessage{
-			msg,
-		},
+		Name:     "signed message encoding",
+		Messages: msgs,
 		EncodedMessages: [][]byte{
-			b,
+			proposalMsgEncoded,
 		},
 	}
 }

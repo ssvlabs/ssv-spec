@@ -9,6 +9,6 @@ func CreatePrepare() *tests.CreateMsgSpecTest {
 		Name:         "create prepare",
 		Value:        []byte{1, 2, 3, 4},
 		Round:        10,
-		ExpectedRoot: "e0449c0106826cbea29cbd2e8269782fc362146d6386790d44dc155edde63301",
+		ExpectedRoot: "aca8a000083a7f5a5cf0f7d011e857700ece644f095c5dae875dcda6ade672d1",
 	}
 }

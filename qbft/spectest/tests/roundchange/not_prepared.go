@@ -12,21 +12,25 @@ func NotPrepared() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-		}),
+	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  2,
+		Input:  nil,
+	})
+	rcMsgEncoded, _ := rcMsg.Encode()
+
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+			Data: rcMsgEncoded,
+		},
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:           "round change not prepared",
-		Pre:            pre,
-		PostRoot:       "d505d40779a07ddd392d4da88a33a2bf67775777eb5227a53cdd3421d5efa28a",
-		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		Name:             "round change not prepared",
+		Pre:              pre,
+		PostRoot:         "55cf35ed339dc8b6ee2dbd4ae3af7509dc6305d64252d3d3167fe28a860a6f32",
+		InputMessagesSIP: msgs,
+		OutputMessages:   []*qbft.SignedMessage{},
 	}
 }

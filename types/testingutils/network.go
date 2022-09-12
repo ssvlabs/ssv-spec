@@ -6,22 +6,24 @@ import (
 )
 
 type TestingNetwork struct {
-	BroadcastedMsgs []*types.SSVMessage
+	//BroadcastedMsgs    []*types.SSVMessage
+	BroadcastedMsgs []*types.Message
 }
 
 func NewTestingNetwork() *TestingNetwork {
 	return &TestingNetwork{
-		BroadcastedMsgs: make([]*types.SSVMessage, 0),
+		BroadcastedMsgs: make([]*types.Message, 0),
 	}
 }
 
 func (net *TestingNetwork) Broadcast(message types.Encoder) error {
-	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.SSVMessage))
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
+	//net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.SSVMessage))
 	return nil
 }
 
 func (net *TestingNetwork) BroadcastDecided(message types.Encoder) error {
-	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.SSVMessage))
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
 	return nil
 }
 

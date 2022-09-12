@@ -9,12 +9,11 @@ import (
 
 // CommitDataEncoding tests encoding CommitData
 func CommitDataEncoding() *tests.MsgSpecTest {
+	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.CommitMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 	})
 
 	r, _ := msg.GetRoot()
@@ -22,8 +21,11 @@ func CommitDataEncoding() *tests.MsgSpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "commit data nil or len 0",
-		Messages: []*qbft.SignedMessage{
-			msg,
+		Messages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(identifier, types.ConsensusCommitMsgType),
+				Data: b,
+			},
 		},
 		EncodedMessages: [][]byte{
 			b,

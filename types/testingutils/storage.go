@@ -30,8 +30,8 @@ func NewTestingStorage() *testingStorage {
 }
 
 // SaveHighestDecided saves the Decided value as highest for a validator PK and role
-func (s *testingStorage) SaveHighestDecided(signedMsg *qbft.SignedMessage) error {
-	s.storage[hex.EncodeToString(signedMsg.Message.Identifier)] = signedMsg
+func (s *testingStorage) SaveHighestDecided(identifier types.MessageID, signedMsg *qbft.SignedMessage) error {
+	s.storage[hex.EncodeToString(identifier[:])] = signedMsg
 	return nil
 }
 
