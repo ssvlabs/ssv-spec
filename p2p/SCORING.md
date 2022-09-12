@@ -1,10 +1,10 @@
-# Scoring
+# Pubsub Scoring
 
 | Contributors                               | Status | Last Revision |
 |:-------------------------------------------|:-------|:--------------|
 | [@amir-blox](https://github.com/amir-blox) | DRAFT  | SEP 22        |
 
-This document contains information on the scoring strategies and configurations used in `SSV.Network`.
+This document contains information on the pubsub scoring strategies and configurations used in `SSV.Network`.
 
 **NOTE** that the work on scoring is in progress. 
 fine-tuning scoring params might introduce updates to this document.  

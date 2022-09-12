@@ -7,6 +7,6 @@ This folder contains networking specification and additional documentation for `
 - [Network Specification](./SPEC.md)
 - [Network Configuration](./CONFIG.md)
 - [Network Forks](./FORKS.md)
-- [Scoring](./SCORING.md)
+- [Pubsub Scoring](./SCORING.md)
 
 ---
