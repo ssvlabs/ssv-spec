@@ -42,68 +42,81 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		return 1
 	}
 
+	net := NewTestingNetwork()
+	km := NewTestingKeyManager()
+	contr := qbft.NewController(
+		identifier[:],
+		share,
+		types.PrimusTestnet,
+		km,
+		valCheck,
+		NewTestingStorage(),
+		net,
+		proposerF,
+	)
+
 	switch role {
 	case types.BNRoleAttester:
 		return ssv.NewAttesterRunnner(
 			types.NowTestNetwork,
 			share,
-			NewTestingQBFTController(identifier[:], share, valCheck, proposerF),
+			contr,
 			NewTestingBeaconNode(),
-			NewTestingNetwork(),
-			NewTestingKeyManager(),
+			net,
+			km,
 			valCheck,
 		)
 	case types.BNRoleAggregator:
 		return ssv.NewAggregatorRunner(
 			types.NowTestNetwork,
 			share,
-			NewTestingQBFTController(identifier[:], share, valCheck, proposerF),
+			contr,
 			NewTestingBeaconNode(),
-			NewTestingNetwork(),
-			NewTestingKeyManager(),
+			net,
+			km,
 			valCheck,
 		)
 	case types.BNRoleProposer:
 		return ssv.NewProposerRunner(
 			types.NowTestNetwork,
 			share,
-			NewTestingQBFTController(identifier[:], share, valCheck, proposerF),
+			contr,
 			NewTestingBeaconNode(),
-			NewTestingNetwork(),
-			NewTestingKeyManager(),
+			net,
+			km,
 			valCheck,
 		)
 	case types.BNRoleSyncCommittee:
 		return ssv.NewSyncCommitteeRunner(
 			types.NowTestNetwork,
 			share,
-			NewTestingQBFTController(identifier[:], share, valCheck, proposerF),
+			contr,
 			NewTestingBeaconNode(),
-			NewTestingNetwork(),
-			NewTestingKeyManager(),
+			net,
+			km,
 			valCheck,
 		)
 	case types.BNRoleSyncCommitteeContribution:
 		return ssv.NewSyncCommitteeAggregatorRunner(
 			types.NowTestNetwork,
 			share,
-			NewTestingQBFTController(identifier[:], share, valCheck, proposerF),
+			contr,
 			NewTestingBeaconNode(),
-			NewTestingNetwork(),
-			NewTestingKeyManager(),
+			net,
+			km,
 			valCheck,
 		)
 	case UnknownDutyType:
 		ret := ssv.NewAttesterRunnner(
 			types.NowTestNetwork,
 			share,
-			NewTestingQBFTController(identifier[:], share, valCheck, proposerF),
+			contr,
 			NewTestingBeaconNode(),
-			NewTestingNetwork(),
-			NewTestingKeyManager(),
+			net,
+			km,
 			valCheck,
 		)
-		ret.(*ssv.AttesterRunner).BeaconRoleType = UnknownDutyType
+		ret.(*ssv.AttesterRunner).BaseRunner.BeaconRoleType = UnknownDutyType
 		return ret
 	default:
 		panic("unknown role type")

@@ -1,6 +1,7 @@
 package preconsensus
 
 import (
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -11,14 +12,21 @@ import (
 func PostDecided() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	decideRunner := func(runner ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData, preMsgs []*ssv.SignedPartialSignatureMessage) ssv.Runner {
-		runner.StartNewDuty(duty)
+	decideRunner := func(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData, preMsgs []*ssv.SignedPartialSignatureMessage) ssv.Runner {
+		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		for _, msg := range preMsgs {
-			runner.ProcessPreConsensus(msg)
+			r.ProcessPreConsensus(msg)
 		}
-		runner.GetState().DecidedValue = decidedValue
-		runner.GetState().RunningInstance.State.Decided = true
-		return runner
+		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
+			r.GetBaseRunner().QBFTController.GenerateConfig(),
+			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Identifier,
+			qbft.FirstHeight)
+		r.GetBaseRunner().State.RunningInstance.State.Decided = true
+		r.GetBaseRunner().State.DecidedValue = decidedValue
+		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance
+		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
+		return r
 	}
 
 	return &tests.MultiMsgProcessingSpecTest{
@@ -40,11 +48,9 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "f73a6cd43881acf7b4e12d350245c31e6605a27389985ba00fc1af430a925eae",
+				PostDutyRunnerStateRoot: "366320a75151b43e701750fefe361405fb53e39269db1830314f881cac48126d",
 				DontStartDuty:           true,
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 			{
 				Name: "aggregator selection proof",
@@ -62,11 +68,9 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "1056e24f57a77872170fe37e7ae0128609ad6e8348eae45a3decacd630200980",
+				PostDutyRunnerStateRoot: "123efb0793124df79dcae660aa87918726a0dcde94031223394975e37ee0e098",
 				DontStartDuty:           true,
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 			{
 				Name: "randao",
@@ -84,11 +88,9 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "220eaec1aa656d85ca9952e1ae6b423c4093b5a4ef63bc882e2e78418df6fad3",
+				PostDutyRunnerStateRoot: "a347ece3f05f70d34db60b25fe499ed82bc1e2c9c8eeef0dc680c9c8cd168c23",
 				DontStartDuty:           true,
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 		},
 	}

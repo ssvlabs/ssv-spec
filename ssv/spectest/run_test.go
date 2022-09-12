@@ -2,11 +2,13 @@ package spectest
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -41,11 +43,16 @@ func TestJson(t *testing.T) {
 		panic(err.Error())
 	}
 
+	fmt.Printf("running %d tests\n", len(untypedTests))
+
 	for name, test := range untypedTests {
 		testType := strings.Split(name, "_")[0]
 		switch testType {
 		case reflect.TypeOf(&tests2.MsgProcessingSpecTest{}).String():
-			runMsgProcessingSpecTest(t, msgProcessingSpecTestFromMap(t, test.(map[string]interface{})))
+			typedTest := msgProcessingSpecTestFromMap(t, test.(map[string]interface{}))
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
 		case reflect.TypeOf(&tests2.MultiMsgProcessingSpecTest{}).String():
 			subtests := test.(map[string]interface{})["Tests"].([]interface{})
 			typedTests := make([]*tests2.MsgProcessingSpecTest, 0)
@@ -59,15 +66,22 @@ func TestJson(t *testing.T) {
 			}
 
 			t.Run(typedTest.TestName(), func(t *testing.T) {
-				for _, test := range typedTest.Tests {
-					runMsgProcessingSpecTest(t, test)
-				}
+				typedTest.Run(t)
 			})
 
 		case reflect.TypeOf(&messages.MsgSpecTest{}).String():
 			byts, err := json.Marshal(test)
 			require.NoError(t, err)
 			typedTest := &messages.MsgSpecTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
+		case reflect.TypeOf(&valcheck.SpecTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &valcheck.SpecTest{}
 			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 			t.Run(typedTest.TestName(), func(t *testing.T) {
@@ -82,11 +96,20 @@ func TestJson(t *testing.T) {
 			t.Run(typedTest.TestName(), func(t *testing.T) {
 				typedTest.Run(t)
 			})
+		case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
 		case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
 			subtests := test.(map[string]interface{})["Tests"].([]interface{})
 			typedTests := make([]*newduty.StartNewRunnerDutySpecTest, 0)
 			for _, subtest := range subtests {
-				typedTests = append(typedTests, startNewRunnerDutySpecTestFromMap(t, subtest.(map[string]interface{})))
+				typedTests = append(typedTests, newRunnerDutySpecTestFromMap(t, subtest.(map[string]interface{})))
 			}
 
 			typedTest := &newduty.MultiStartNewRunnerDutySpecTest{
@@ -103,8 +126,8 @@ func TestJson(t *testing.T) {
 	}
 }
 
-func startNewRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newduty.StartNewRunnerDutySpecTest {
-	runnerMap := m["Runner"].(map[string]interface{})
+func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newduty.StartNewRunnerDutySpecTest {
+	runnerMap := m["Runner"].(map[string]interface{})["BaseRunner"].(map[string]interface{})
 
 	duty := &types.Duty{}
 	byts, _ := json.Marshal(m["Duty"])
@@ -120,7 +143,7 @@ func startNewRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *
 
 	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(runnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
 
-	runner := runnerFromRole(types.BeaconRole(runnerMap["BeaconRoleType"].(float64)), ks)
+	runner := fixRunnerForRun(t, runnerMap, ks)
 
 	return &newduty.StartNewRunnerDutySpecTest{
 		Name:                    m["Name"].(string),
@@ -133,7 +156,7 @@ func startNewRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *
 }
 
 func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests2.MsgProcessingSpecTest {
-	runnerMap := m["Runner"].(map[string]interface{})
+	runnerMap := m["Runner"].(map[string]interface{})["BaseRunner"].(map[string]interface{})
 
 	duty := &types.Duty{}
 	byts, _ := json.Marshal(m["Duty"])
@@ -157,7 +180,8 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 
 	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(runnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
 
-	runner := runnerFromRole(types.BeaconRole(runnerMap["BeaconRoleType"].(float64)), ks)
+	// runner
+	runner := fixRunnerForRun(t, runnerMap, ks)
 
 	return &tests2.MsgProcessingSpecTest{
 		Name:                    m["Name"].(string),
@@ -171,87 +195,93 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	}
 }
 
-func runnerFromRole(role types.BeaconRole, ks *testingutils.TestKeySet) ssv.Runner {
-	switch role {
-	case types.BNRoleAttester:
-		return testingutils.AttesterRunner(ks)
-	case types.BNRoleAggregator:
-		return testingutils.AggregatorRunner(ks)
-	case types.BNRoleProposer:
-		return testingutils.ProposerRunner(ks)
-	case types.BNRoleSyncCommittee:
-		return testingutils.SyncCommitteeRunner(ks)
-	case types.BNRoleSyncCommitteeContribution:
-		return testingutils.SyncCommitteeContributionRunner(ks)
-	case testingutils.UnknownDutyType:
-		return testingutils.UnknownDutyTypeRunner(ks)
-	default:
-		panic("unknown beacon role")
+func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testingutils.TestKeySet) ssv.Runner {
+	base := &ssv.BaseRunner{}
+	byts, _ := json.Marshal(baseRunner)
+	require.NoError(t, json.Unmarshal(byts, &base))
+
+	ret := baseRunnerForRole(base.BeaconRoleType, base, ks)
+	ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
+	if ret.GetBaseRunner().State != nil {
+		if ret.GetBaseRunner().State.RunningInstance != nil {
+			ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
+		}
 	}
+	return ret
 }
 
-func runMsgProcessingSpecTest(t *testing.T, test *tests2.MsgProcessingSpecTest) {
-	// a little trick we do to instantiate all the internal controller params
-	byts, err := test.Runner.GetQBFTController().Encode()
-	require.NoError(t, err)
-
-	ks := testingutils.KeySetForShare(test.Runner.GetQBFTController().Share)
-
+func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller, ks *testingutils.TestKeySet) *qbft.Controller {
 	newContr := qbft.NewController(
-		[]byte{1, 2, 3, 4},
-		test.Runner.GetQBFTController().Share,
+		contr.Identifier,
+		contr.Share,
 		testingutils.TestingConfig(ks).Domain,
-		testingutils.TestingConfig(ks).Signer,
-		testingutils.TestingConfig(ks).ValueCheckF,
-		testingutils.TestingConfig(ks).Storage,
-		testingutils.TestingConfig(ks).Network,
+		runner.GetSigner(),
+		runner.GetValCheckF(),
+		testingutils.NewTestingStorage(),
+		runner.GetNetwork().(*testingutils.TestingNetwork),
 		func(state *qbft.State, round qbft.Round) types.OperatorID {
 			return 1
 		},
 	)
-	require.NoError(t, newContr.Decode(byts))
-	setControllerInRunner(test.Runner, newContr)
+	newContr.Height = contr.Height
+	newContr.Domain = contr.Domain
+	newContr.StoredInstances = contr.StoredInstances
 
-	for idx, i := range test.Runner.GetQBFTController().StoredInstances {
-		if i == nil {
+	for i, inst := range newContr.StoredInstances {
+		if inst == nil {
 			continue
 		}
-		fixedInst := fixQBFTInstanceForRun(t, i, ks)
-		test.Runner.GetQBFTController().StoredInstances[idx] = fixedInst
-
-		if test.Runner.GetState() != nil &&
-			test.Runner.GetState().RunningInstance != nil &&
-			test.Runner.GetState().RunningInstance.GetHeight() == fixedInst.GetHeight() {
-			test.Runner.GetState().RunningInstance = fixedInst
-		}
+		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, runner.GetBaseRunner().Share)
 	}
-	t.Run(test.Name, func(t *testing.T) {
-		test.Run(t)
-	})
+	return newContr
 }
 
-func fixQBFTInstanceForRun(t *testing.T, i *qbft.Instance, ks *testingutils.TestKeySet) *qbft.Instance {
-	// a little trick we do to instantiate all the internal instance params
-	if i == nil {
-		return nil
-	}
-	byts, _ := i.Encode()
-	newInst := qbft.NewInstance(testingutils.TestingConfig(ks), i.State.Share, i.State.ID, qbft.FirstHeight)
-	require.NoError(t, newInst.Decode(byts))
+func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Share) *qbft.Instance {
+	newInst := qbft.NewInstance(
+		contr.GenerateConfig(),
+		share,
+		contr.Identifier,
+		contr.Height)
+
+	newInst.State.DecidedValue = inst.State.DecidedValue
+	newInst.State.Decided = inst.State.Decided
+	newInst.State.Share = inst.State.Share
+	newInst.State.Round = inst.State.Round
+	newInst.State.Height = inst.State.Height
+	newInst.State.ProposalAcceptedForCurrentRound = inst.State.ProposalAcceptedForCurrentRound
+	newInst.State.ID = inst.State.ID
+	newInst.State.LastPreparedValue = inst.State.LastPreparedValue
+	newInst.State.LastPreparedRound = inst.State.LastPreparedRound
 	return newInst
 }
 
-func setControllerInRunner(runner ssv.Runner, controller *qbft.Controller) {
-	switch runner.GetBeaconRole() {
+func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
+	switch role {
 	case types.BNRoleAttester:
-		runner.(*ssv.AttesterRunner).QBFTController = controller
+		ret := testingutils.AttesterRunner(ks)
+		ret.(*ssv.AttesterRunner).BaseRunner = base
+		return ret
 	case types.BNRoleAggregator:
-		runner.(*ssv.AggregatorRunner).QBFTController = controller
+		ret := testingutils.AggregatorRunner(ks)
+		ret.(*ssv.AggregatorRunner).BaseRunner = base
+		return ret
 	case types.BNRoleProposer:
-		runner.(*ssv.ProposerRunner).QBFTController = controller
+		ret := testingutils.ProposerRunner(ks)
+		ret.(*ssv.ProposerRunner).BaseRunner = base
+		return ret
 	case types.BNRoleSyncCommittee:
-		runner.(*ssv.SyncCommitteeRunner).QBFTController = controller
+		ret := testingutils.SyncCommitteeRunner(ks)
+		ret.(*ssv.SyncCommitteeRunner).BaseRunner = base
+		return ret
 	case types.BNRoleSyncCommitteeContribution:
-		runner.(*ssv.SyncCommitteeAggregatorRunner).QBFTController = controller
+		ret := testingutils.SyncCommitteeContributionRunner(ks)
+		ret.(*ssv.SyncCommitteeAggregatorRunner).BaseRunner = base
+		return ret
+	case testingutils.UnknownDutyType:
+		ret := testingutils.UnknownDutyTypeRunner(ks)
+		ret.(*ssv.AttesterRunner).BaseRunner = base
+		return ret
+	default:
+		panic("unknown beacon role")
 	}
 }

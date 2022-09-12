@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 	"sync"
@@ -55,10 +56,10 @@ func (i *Instance) Start(value []byte, height Height) {
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			if err != nil {
-				// TODO log
+				fmt.Printf("%s\n", err.Error())
 			}
 			if err := i.Broadcast(proposal); err != nil {
-				// TODO - log
+				fmt.Printf("%s\n", err.Error())
 			}
 		}
 

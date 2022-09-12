@@ -31,14 +31,6 @@ type Message struct {
 }
 ```
 
-#### Decided Message
-Once a QBFT instance is decdied, this message is broadcasted with at least 2f+1 aggrageted commit messages in it 
-```go
-type DecidedMessage struct {
-    SignedMessage *SignedMessage
-}
-```
-
 #### Partial Signature Message
 Used for pre and post consensus sigantures for collecting partial BN signatures and then reconstructing them
 ```go
@@ -185,7 +177,13 @@ Share1 = f(NodeID1)\
 ...
 
 ### Spec tests
-The [spec tests](ssv/spectest) are a generated as a json file that can be run in any implementation. They test the various flows within the SSV package, treating the consensus protocol as as black box.
+The [spec tests](ssv/spectest) are a generated as a json file that can be run in any implementation. They test the various flows within the SSV package, treating the consensus protocol as as black box.  
+To generate all json spec tests, run:
+
+```console
+foo@bar:~$ go generate ./...
+```
+Then run all tests
 
 ## TODO
 - [//] Proposal duty execution + spec test + consensus validator

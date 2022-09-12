@@ -43,7 +43,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 	}
 
 	// post root
-	postRoot, err := r.GetState().GetRoot()
+	postRoot, err := r.GetBaseRunner().State.GetRoot()
 	require.NoError(t, err)
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
 }
