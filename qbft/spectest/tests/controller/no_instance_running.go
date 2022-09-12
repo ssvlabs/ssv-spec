@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -36,6 +35,6 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 				DecidedVal: nil,
 			},
 		},
-		ExpectedError: fmt.Sprintf("instance not found for height %d", qbft.Height(2)),
+		ExpectedError: "instance not found",
 	}
 }

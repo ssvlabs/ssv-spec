@@ -2,7 +2,6 @@ package qbft
 
 import (
 	"bytes"
-	"encoding/hex"
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -89,13 +88,12 @@ func (c *Controller) StartNewInstance(value []byte) error {
 // Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
 func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
-		return false, nil, errors.Errorf("message [%s] doesn't belong to identifier [%s]",
-			hex.EncodeToString(msg.Message.Identifier), hex.EncodeToString(c.Identifier))
+		return false, nil, errors.New("message doesn't belong to identifier")
 	}
 
 	inst := c.InstanceForHeight(msg.Message.Height)
 	if inst == nil {
-		return false, nil, errors.Errorf("instance not found for height %d", msg.Message.Height)
+		return false, nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
