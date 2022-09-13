@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -113,7 +114,7 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage, error) {
 	inst := c.InstanceForHeight(msg.Message.Height)
 	if inst == nil {
-		return nil, errors.New(fmt.Sprintf("instance not found"))
+		return nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
