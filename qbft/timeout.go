@@ -1,6 +1,7 @@
 package qbft
 
 import (
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
@@ -35,7 +36,19 @@ func (i *Instance) UponRoundTimeout() error {
 		return errors.Wrap(err, "could not generate round change msg")
 	}
 
-	if err := i.Broadcast(roundChange); err != nil {
+	roundChangeEncoded, err := roundChange.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not encode round change message")
+	}
+
+	msgID := types.PopulateMsgType(i.State.ID, types.ConsensusRoundChangeMsgType)
+
+	broadcastMsg := &types.Message{
+		ID:   msgID,
+		Data: roundChangeEncoded,
+	}
+
+	if err := i.Broadcast(broadcastMsg); err != nil {
 		return errors.Wrap(err, "failed to broadcast round change message")
 	}
 

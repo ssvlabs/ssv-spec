@@ -1,14 +1,7 @@
 package proposal
 
-import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-)
-
 // DuplicateMsgDifferentValue tests a duplicate proposal msg processing (second one with different value)
-func DuplicateMsgDifferentValue() *tests.MsgProcessingSpecTest {
+/*func DuplicateMsgDifferentValue() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
@@ -42,4 +35,4 @@ func DuplicateMsgDifferentValue() *tests.MsgProcessingSpecTest {
 		},
 		ExpectedError: "proposal invalid: proposal is not valid with current state",
 	}
-}
+}*/

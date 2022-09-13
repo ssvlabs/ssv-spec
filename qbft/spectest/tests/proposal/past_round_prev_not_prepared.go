@@ -1,15 +1,8 @@
 package proposal
 
-import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-)
-
 // TODO<olegshmuelov> change round related
 // PastRoundProposalPrevNotPrepared tests a valid proposal for past round (not prev prepared)
-func PastRoundProposalPrevNotPrepared() *tests.MsgProcessingSpecTest {
+/*func PastRoundProposalPrevNotPrepared() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 10
 
@@ -54,4 +47,4 @@ func PastRoundProposalPrevNotPrepared() *tests.MsgProcessingSpecTest {
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "proposal invalid: proposal is not valid with current state",
 	}
-}
+}*/

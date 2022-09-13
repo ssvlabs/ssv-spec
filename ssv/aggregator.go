@@ -125,7 +125,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 	}
 
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
+		MsgType: types.PartialSignatureMsgType,
 		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
@@ -204,7 +204,7 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 		return errors.Wrap(err, "failed to encode selection proof pre-consensus signature msg")
 	}
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
+		MsgType: types.PartialSignatureMsgType,
 		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}

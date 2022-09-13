@@ -1,14 +1,8 @@
 package proposal
 
-import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-)
-
 // TODO<olegshmuelov> change round related
 // DuplicateRCMsg tests a proposal for > 1 round, not prepared previously with quorum of round change but 2 are duplicates (shouldn't find quorum)
-func DuplicateRCMsg() *tests.MsgProcessingSpecTest {
+/*func DuplicateRCMsg() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 
 	rcMsgs := []*qbft.SignedMessage{
@@ -52,4 +46,4 @@ func DuplicateRCMsg() *tests.MsgProcessingSpecTest {
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "proposal invalid: proposal not justified: change round has not quorum",
 	}
-}
+}*/

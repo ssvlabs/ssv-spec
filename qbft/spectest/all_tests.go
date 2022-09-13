@@ -1,15 +1,7 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/decided"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
 	"testing"
 )
 
@@ -140,7 +132,7 @@ var AllTests = []SpecTest{
 	//commit.FutureRound(),
 	//commit.PastRound(),
 	//commit.DuplicateMsg(),
-	//commit.HappyFlow(),
+	commit.HappyFlow(),
 	//commit.InvalidCommitData(),
 	//commit.PostDecided(),
 	//commit.WrongData1(),

@@ -1,12 +1,5 @@
 package proposal
 
-import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-)
-
 // CurrentRoundPrevNotPrepared tests a > first round proposal prev not prepared
 // TODO<olegshmuelov> change round related
 /*func CurrentRoundPrevNotPrepared() *tests.MsgProcessingSpecTest {

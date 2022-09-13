@@ -124,7 +124,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
+		MsgType: types.PartialSignatureMsgType,
 		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
@@ -205,7 +205,7 @@ func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 		return errors.Wrap(err, "failed to encode randao pre-consensus signature msg")
 	}
 	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
+		MsgType: types.PartialSignatureMsgType,
 		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}

@@ -60,7 +60,7 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 
 // ProcessMessage processes network Messages of all types
 func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
-	if msg.MsgType != types.DKGMsgType {
+	if msg.MsgType != types.DKGInitMsgType {
 		return errors.New("not a DKGMsgType")
 	}
 	signedMsg := &SignedMessage{}
