@@ -59,7 +59,7 @@ func WrongSignature() *tests.MsgProcessingSpecTest {
 		Pre:              pre,
 		PostRoot:         "039df6c4ad6c09500194613f0aaf9a2756aa894e3d46c9cccbe1925910bba4d0",
 		InputMessagesSIP: msgs,
-		ExpectedError:    "commit msg invalid: commit msg signature invalid: failed to verify signature",
+		ExpectedError:    "commit msg invalid: invalid commit msg: commit msg signature invalid: failed to verify signature",
 		OutputMessagesSIP: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),

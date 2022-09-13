@@ -126,9 +126,17 @@ type Init struct {
 }
 
 func (msg *Init) Validate() error {
-	// TODO len(operators == 4,7,10,13
-	// threshold equal to 2/3 of 4,7,10,13
-	// len(WithdrawalCredentials) is valid
+	if len(msg.WithdrawalCredentials) != phase0.HashLength {
+		return errors.New("invalid WithdrawalCredentials")
+	}
+	if len(msg.OperatorIDs) < 4 || (len(msg.OperatorIDs)-1)%3 != 0 {
+		return errors.New("invalid number of operators which has to be 3f+1")
+	}
+
+	if int(msg.Threshold) != (len(msg.OperatorIDs)-1)*2/3+1 {
+		return errors.New("invalid threshold which has to be 2f+1")
+	}
+
 	return nil
 }
 
@@ -174,13 +182,15 @@ func (o *Output) GetRoot() ([]byte, error) {
 		},
 	}
 
-	bytes, _ := arguments.Pack(
-		o.EncryptedShare,
-		o.SharePubKey,
-		o.ValidatorPubKey,
-		o.DepositDataSignature,
+	bytes, err := arguments.Pack(
+		[]byte(o.EncryptedShare),
+		[]byte(o.SharePubKey),
+		[]byte(o.ValidatorPubKey),
+		[]byte(o.DepositDataSignature),
 	)
-
+	if err != nil {
+		return nil, err
+	}
 	return crypto.Keccak256(bytes), nil
 }
 

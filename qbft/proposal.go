@@ -12,7 +12,7 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 		return errors.Wrap(err, "proposal invalid")
 	}
 
-	addedMsg, err := proposeMsgContainer.AddIfDoesntExist(signedProposal)
+	addedMsg, err := proposeMsgContainer.AddFirstMsgForSignerAndRound(signedProposal)
 	if err != nil {
 		return errors.Wrap(err, "could not add proposal msg to container")
 	}
@@ -106,7 +106,7 @@ func isValidProposal(
 	}
 
 	if (state.ProposalAcceptedForCurrentRound == nil && signedProposal.Message.Round == state.Round) ||
-		(state.ProposalAcceptedForCurrentRound != nil && signedProposal.Message.Round > state.Round) {
+		signedProposal.Message.Round > state.Round {
 		return nil
 	}
 	return errors.New("proposal is not valid with current state")

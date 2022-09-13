@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 	"sync"
@@ -54,8 +55,9 @@ func (i *Instance) Start(value []byte, height Height) {
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
+			// nolint
 			if err != nil {
-				// TODO log
+				fmt.Printf("%s\n", err.Error())
 			}
 
 			proposalEncoded, err := proposal.Encode()
@@ -69,9 +71,9 @@ func (i *Instance) Start(value []byte, height Height) {
 				ID:   msgID,
 				Data: proposalEncoded,
 			}
-
+			// nolint
 			if err := i.Broadcast(broadcastMsg); err != nil {
-				// TODO - log
+				fmt.Printf("%s\n", err.Error())
 			}
 		}
 	})
@@ -94,7 +96,12 @@ func (i *Instance) ProcessMsg(msgID types.MessageID, msg *SignedMessage) (decide
 		case types.ConsensusPrepareMsgType:
 			return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
 		case types.ConsensusCommitMsgType:
-			decided, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
+			if isDecidedMsg(i.State, msg) {
+				decided, decidedValue, err = i.UponDecided(msg, i.State.CommitContainer)
+				aggregatedCommit = msg
+			} else {
+				decided, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
+			}
 			i.State.Decided = decided
 			if decided {
 				i.State.DecidedValue = msg.Message.Input

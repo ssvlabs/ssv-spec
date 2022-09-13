@@ -11,23 +11,29 @@ import (
 
 type MsgProcessingSpecTest struct {
 	Name                    string
-	Runner                  *ssv.Runner
+	Runner                  ssv.Runner
 	Duty                    *types.Duty
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
-	OutputMessages          []*ssv.SignedPartialSignatureMessage
-	ExpectedError           string
+	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
+	OutputMessages []*ssv.SignedPartialSignatureMessage
+	DontStartDuty  bool // if set to true will not start a duty for the runner
+	ExpectedError  string
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
-	return "msg processing " + test.Name
+	return test.Name
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	v := testingutils.BaseValidator(keySetForShare(test.Runner.Share))
-	v.DutyRunners[test.Runner.BeaconRoleType] = test.Runner
+	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetBaseRunner().Share))
+	v.DutyRunners[test.Runner.GetBaseRunner().BeaconRoleType] = test.Runner
+	v.Network = test.Runner.GetNetwork()
 
-	lastErr := v.StartDuty(test.Duty)
+	var lastErr error
+	if !test.DontStartDuty {
+		lastErr = v.StartDuty(test.Duty)
+	}
 	for _, msg := range test.Messages {
 		err := v.ProcessMessage(msg)
 		if err != nil {
@@ -69,6 +75,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 				partialSigMsg1 := msg1.Message.Messages[i]
 				r1, err := partialSigMsg1.GetRoot()
 				require.NoError(t, err)
+
 				if _, found := roots[hex.EncodeToString(r1)]; !found {
 					roots[hex.EncodeToString(r1)] = ""
 				} else {
@@ -76,7 +83,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 				}
 			}
 			for k, v := range roots {
-				require.EqualValues(t, k, v)
+				require.EqualValues(t, k, v, "missing output msg")
 			}
 
 			index++
@@ -86,21 +93,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 
 	// post root
-	postRoot, err := test.Runner.State.GetRoot()
+	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
-
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
-}
-
-func keySetForShare(share *types.Share) *testingutils.TestKeySet {
-	if share.Quorum == 5 {
-		return testingutils.Testing7SharesSet()
-	}
-	if share.Quorum == 7 {
-		return testingutils.Testing10SharesSet()
-	}
-	if share.Quorum == 9 {
-		return testingutils.Testing13SharesSet()
-	}
-	return testingutils.Testing4SharesSet()
 }

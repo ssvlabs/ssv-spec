@@ -16,7 +16,7 @@ func (i *Instance) uponRoundChange(
 		return errors.Wrap(err, "round change msg invalid")
 	}
 
-	addedMsg, err := roundChangeMsgContainer.AddIfDoesntExist(signedRoundChange)
+	addedMsg, err := roundChangeMsgContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
 	if err != nil {
 		return errors.Wrap(err, "could not add round change msg to container")
 	}
@@ -154,24 +154,59 @@ func hasReceivedProposalJustificationForLeadingRound(
 	// Important!
 	// We iterate on all round change msgs for liveliness in case the last round change msg is malicious.
 	for _, rc := range roundChanges {
-		//rcData, err := msg.Message.GetRoundChangeData()
-		//if err != nil {
-		//	return nil, errors.Wrap(err, "could not get round change data")
-		//}
-
-		if isReceivedProposalJustification(
+		if isReceivedProposalJustificationForLeadingRound(
 			state,
 			config,
+			rc,
 			rcHeaders,
-			rc.RoundChangeJustifications,
-			signedRoundChange.Message.Round,
-			rc.Message.Input,
 			valCheck,
-		) == nil && proposer(state, config, rc.Message.Round) == state.Share.OperatorID {
+			signedRoundChange.Message.Round,
+		) == nil {
+			// not returning error, no need to
 			return rc, nil
 		}
 	}
 	return nil, nil
+}
+
+// isReceivedProposalJustificationForLeadingRound - returns nil if we have a quorum of round change msgs and highest justified value for leading round
+func isReceivedProposalJustificationForLeadingRound(
+	state *State,
+	config IConfig,
+	roundChangeMsg *SignedMessage,
+	roundChanges []*SignedMessageHeader,
+	valCheck ProposedValueCheckF,
+	newRound Round,
+) error {
+	//rcData, err := roundChangeMsg.Message.GetRoundChangeData()
+	//if err != nil {
+	//	return errors.Wrap(err, "could not get round change data")
+	//}
+
+	if err := isReceivedProposalJustification(
+		state,
+		config,
+		roundChanges,
+		roundChangeMsg.RoundChangeJustifications,
+		roundChangeMsg.Message.Round,
+		roundChangeMsg.Message.Input,
+		valCheck,
+	); err != nil {
+		return err
+	}
+
+	if proposer(state, config, roundChangeMsg.Message.Round) != state.Share.OperatorID {
+		return errors.New("not proposer")
+	}
+
+	currentRoundProposal := state.ProposalAcceptedForCurrentRound == nil && state.Round == newRound
+	futureRoundProposal := newRound > state.Round
+
+	if !currentRoundProposal && !futureRoundProposal {
+		return errors.New("proposal round mismatch")
+	}
+
+	return nil
 }
 
 // isReceivedProposalJustification - returns nil if we have a quorum of round change msgs and highest justified value
@@ -194,14 +229,7 @@ func isReceivedProposalJustification(
 		value,
 		valCheck,
 	); err != nil {
-		return errors.Wrap(err, "round change ")
-	}
-
-	noPrevProposal := state.ProposalAcceptedForCurrentRound == nil && state.Round == newRound
-	prevProposal := state.ProposalAcceptedForCurrentRound != nil && newRound > state.Round
-
-	if !noPrevProposal && !prevProposal {
-		return errors.New("prev proposal and new round mismatch")
+		return errors.Wrap(err, "proposal not justified")
 	}
 	return nil
 }
@@ -262,7 +290,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 	return nil
 }
 
-// TODO<olegshmuelov> remove returning error if not needed
+// TODO<olegshmuelov>: remove returning error if not needed
 // highestPrepared returns a round change message with the highest prepared round, returns nil if none found
 func highestPrepared(roundChangesJustifications []*SignedMessageHeader) (*SignedMessageHeader, error) {
 	var ret *SignedMessageHeader

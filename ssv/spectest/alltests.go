@@ -1,13 +1,15 @@
 package spectest
 
 import (
+	//"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/aggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/attester"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/proposer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/synccommittee"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/processmsg/synccommitteecontribution"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
 	"testing"
 )
 
@@ -17,19 +19,51 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	////postconsensus.ValidMessage(),
-	////postconsensus.InvaliSignature(),
-	////postconsensus.WrongSigningRoot(),
-	////postconsensus.WrongBeaconChainSig(),
-	////postconsensus.FutureConsensusState(),
-	////postconsensus.PastConsensusState(),
-	////postconsensus.MsgAfterReconstruction(),
-	////postconsensus.DuplicateMsg(),
+	newduty.ConsensusNotStarted(),
+	newduty.NotDecided(),
+	newduty.PostDecided(),
+	newduty.Finished(),
+	newduty.Valid(),
+
+	consensus.InvalidDecidedValue(),
+	consensus.NoRunningDuty(),
+	consensus.PostFinish(),
+	consensus.PostDecided(),
+	consensus.ValidDecided(),
+	consensus.ValidDecided7Operators(),
+	consensus.ValidDecided10Operators(),
+	consensus.ValidDecided13Operators(),
+
+	synccommitteeaggregator.SomeAggregatorQuorum(),
+	synccommitteeaggregator.NoneAggregatorQuorum(),
+	synccommitteeaggregator.AllAggregatorQuorum(),
+
+	preconsensus.NoRunningDuty(),
+	preconsensus.WrongExpectedRootsCount(),
+	preconsensus.UnorderedExpectedRoots(),
+	preconsensus.MultiBeaconSigsWrongSlot(),
+	preconsensus.InvalidSignedMessage(),
+	preconsensus.InvalidExpectedRoot(),
+	preconsensus.DuplicateMsg(),
+	preconsensus.PostFinish(),
+	preconsensus.PostDecided(),
+	preconsensus.PostQuorum(),
+	preconsensus.Quorum(),
+	preconsensus.Quorum7Operators(),
+	preconsensus.Quorum10Operators(),
+	preconsensus.Quorum130Operators(),
+	preconsensus.ValidMessage(),
+	preconsensus.ValidMessage7Operators(),
+	preconsensus.ValidMessage10Operators(),
+	preconsensus.ValidMessage13Operators(),
+	preconsensus.UnknownBeaconSigner(),
+	preconsensus.UnknownSigner(),
+	preconsensus.InvalidBeaconSignature(),
+	preconsensus.InvalidMessageSignature(),
 
 	messages.EncodingAndRoot(),
 	messages.NoMsgs(),
 	messages.InvalidMsg(),
-	messages.InvalidContributionProofMetaData(),
 	messages.ValidContributionProofMetaData(),
 	messages.SigValid(),
 	messages.SigTooShort(),
@@ -40,35 +74,16 @@ var AllTests = []SpecTest{
 	messages.PartialRootValid(),
 	messages.PartialRootTooShort(),
 	messages.PartialRootTooLong(),
-	//
-	////valcheck.WrongDutyPubKey(),
-	//
-	attester.HappyFlow(),
-	attester.SevenOperators(),
-	////attestations.FarFutureDuty(),
-	////attestations.DutySlotNotMatchingAttestationSlot(),
-	////attestations.DutyCommitteeIndexNotMatchingAttestations(),
-	////attestations.FarFutureAttestationTarget(),
-	////attestations.AttestationSourceValid(),
-	////attestations.DutyTypeWrong(),
-	////attestations.AttestationDataNil(),
 
-	processmsg.UnknownRunner(),
-	processmsg.NoRunningDuty(),
-	processmsg.MsgNotBelonging(),
-	processmsg.NoData(),
-	processmsg.ValidDecidedConsensusMsg(),
-	processmsg.UnknownMsgType(),
-
-	proposer.HappyFlow(),
-	proposer.SevenOperators(),
-
-	aggregator.HappyFlow(),
-	aggregator.SevenOperators(),
-
-	synccommittee.HappyFlow(),
-	synccommittee.SevenOperators(),
-
-	synccommitteecontribution.HappyFlow(),
-	synccommitteecontribution.SevenOperators(),
+	valcheckduty.WrongValidatorIndex(),
+	valcheckduty.WrongValidatorPK(),
+	valcheckduty.WrongDutyType(),
+	valcheckduty.FarFutureDutySlot(),
+	valcheckattestations.Slashable(),
+	valcheckattestations.SourceHigherThanTarget(),
+	valcheckattestations.FarFutureTarget(),
+	valcheckattestations.CommitteeIndexMismatch(),
+	valcheckattestations.SlotMismatch(),
+	valcheckattestations.AttestationDataNil(),
+	valcheckattestations.Valid(),
 }

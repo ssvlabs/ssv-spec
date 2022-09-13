@@ -77,5 +77,6 @@ func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
 				Data: signMsgEncoded,
 			},
 		},
+		ExpectedError: "commit msg invalid: commit msgs allow 1 signer",
 	}
 }

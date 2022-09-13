@@ -32,7 +32,7 @@ func (i *Instance) uponPrepare(
 		return errors.Wrap(err, "invalid prepare msg")
 	}
 
-	addedMsg, err := prepareMsgContainer.AddIfDoesntExist(signedPrepare)
+	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
 	if err != nil {
 		return errors.Wrap(err, "could not add prepare msg to container")
 	}
@@ -94,25 +94,27 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 }
 
 // validPreparesForHeightRoundAndValue returns an aggregated prepare msg for a specific Height and round
-func validPreparesForHeightRoundAndValue(
-	config IConfig,
-	prepareMessages []*SignedMessage,
-	height Height,
-	round Round,
-	value []byte,
-	operators []*types.Operator) *SignedMessage {
-	var aggregatedPrepareMsg *SignedMessage
-	for _, signedMsg := range prepareMessages {
-		if err := validSignedPrepareForHeightRoundAndValue(config, signedMsg, height, round, value, operators); err == nil {
-			if aggregatedPrepareMsg == nil {
-				aggregatedPrepareMsg = signedMsg
-			} else {
-				aggregatedPrepareMsg.Aggregate(signedMsg)
-			}
-		}
-	}
-	return aggregatedPrepareMsg
-}
+//func validPreparesForHeightRoundAndValue(
+//	config IConfig,
+//	prepareMessages []*SignedMessage,
+//	height Height,
+//	round Round,
+//	value []byte,
+//	operators []*types.Operator) *SignedMessage {
+//	var aggregatedPrepareMsg *SignedMessage
+//	for _, signedMsg := range prepareMessages {
+//		if err := validSignedPrepareForHeightRoundAndValue(config, signedMsg, height, round, value, operators); err == nil {
+//			if aggregatedPrepareMsg == nil {
+//				aggregatedPrepareMsg = signedMsg
+//			} else {
+//				// TODO: check error
+//				// nolint
+//				aggregatedPrepareMsg.Aggregate(signedMsg)
+//			}
+//		}
+//	}
+//	return aggregatedPrepareMsg
+//}
 
 // validSignedPrepareForHeightRoundAndValue known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
@@ -142,7 +144,7 @@ func validSignedPrepareForHeightRoundAndValue(
 	//	return errors.Wrap(err, "prepareData invalid")
 	//}
 
-	if bytes.Compare(signedPrepare.Message.Input, value) != 0 {
+	if !bytes.Equal(signedPrepare.Message.Input, value) {
 		return errors.New("prepare data != proposed data")
 	}
 

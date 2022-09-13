@@ -49,8 +49,14 @@ func TestJson(t *testing.T) {
 
 			// a little trick we do to instantiate all the internal instance params
 			preByts, _ := typedTest.Pre.Encode()
-			pre := qbft.NewInstance(testingutils.TestingConfig(testingutils.Testing4SharesSet()), typedTest.Pre.State.Share, typedTest.Pre.State.ID, qbft.FirstHeight)
-			pre.Decode(preByts)
+			pre := qbft.NewInstance(
+				testingutils.TestingConfig(testingutils.KeySetForShare(typedTest.Pre.State.Share)),
+				typedTest.Pre.State.Share,
+				typedTest.Pre.State.ID,
+				typedTest.Pre.State.Height,
+			)
+			err = pre.Decode(preByts)
+			require.NoError(t, err)
 			typedTest.Pre = pre
 
 			tests[testName] = typedTest

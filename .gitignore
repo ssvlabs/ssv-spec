@@ -16,3 +16,6 @@
 
 ## IDE
 .idea
+
+# binaries
+.bin

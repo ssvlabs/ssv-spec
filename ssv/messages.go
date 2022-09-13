@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
@@ -55,10 +54,6 @@ func (msgs PartialSignatureMessages) Validate() error {
 		if err := m.Validate(); err != nil {
 			return errors.Wrap(err, "message invalid")
 		}
-
-		if msgs.Type == ContributionProofs && m.MetaData == nil {
-			return errors.New("metadata nil for contribution proofs")
-		}
 	}
 	return nil
 }
@@ -73,7 +68,6 @@ type PartialSignatureMessage struct {
 	PartialSignature []byte    // The Beacon chain partial Signature for a duty
 	SigningRoot      []byte    // the root signed in PartialSignature
 	Signer           types.OperatorID
-	MetaData         *PartialSignatureMetaData
 }
 
 // Encode returns a msg encoded bytes or error
@@ -188,13 +182,14 @@ func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []types.OperatorI
 	return true
 }
 
-func blsSig(sig []byte) (*bls.Sign, error) {
-	ret := &bls.Sign{}
-	if err := ret.Deserialize(sig); err != nil {
-		return nil, errors.Wrap(err, "could not covert PartialSignature byts to bls.sign")
-	}
-	return ret, nil
-}
+//
+//func blsSig(sig []byte) (*bls.Sign, error) {
+//	ret := &bls.Sign{}
+//	if err := ret.Deserialize(sig); err != nil {
+//		return nil, errors.Wrap(err, "could not covert PartialSignature byts to bls.sign")
+//	}
+//	return ret, nil
+//}
 
 func (spcsm *SignedPartialSignatureMessage) Validate() error {
 	if len(spcsm.Signature) != 96 {

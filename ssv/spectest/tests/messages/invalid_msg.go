@@ -14,7 +14,7 @@ func InvalidMsg() *MsgSpecTest {
 	msg.Message.Messages = append(msg.Message.Messages, &ssv.PartialSignatureMessage{})
 
 	return &MsgSpecTest{
-		Name:          "no messages",
+		Name:          "invalid message",
 		Messages:      []*ssv.SignedPartialSignatureMessage{msg},
 		ExpectedError: "message invalid: PartialSignatureMessage sig invalid",
 	}

@@ -12,9 +12,6 @@ func ValidContributionProofMetaData() *MsgSpecTest {
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
 	msg.Message.Type = ssv.ContributionProofs
-	msg.Message.Messages[0].MetaData = &ssv.PartialSignatureMetaData{
-		ContributionSubCommitteeIndex: 1,
-	}
 
 	return &MsgSpecTest{
 		Name:     "valid meta data when type ContributionProofs",

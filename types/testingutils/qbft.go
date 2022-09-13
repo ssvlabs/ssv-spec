@@ -66,7 +66,12 @@ var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byt
 	return ret
 }
 
-func NewTestingQBFTController(identifier types.MessageID, share *types.Share, valCheck qbft.ProposedValueCheckF, proposerF qbft.ProposerF) *qbft.Controller {
+func NewTestingQBFTController(
+	identifier types.MessageID,
+	share *types.Share,
+	valCheck qbft.ProposedValueCheckF,
+	proposerF qbft.ProposerF,
+) *qbft.Controller {
 	return qbft.NewController(
 		identifier,
 		share,

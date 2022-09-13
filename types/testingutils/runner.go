@@ -6,31 +6,35 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-var AttesterRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleAttester, ssv.BeaconAttestationValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
+var AttesterRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
-var AttesterRunner7Operators = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleAttester, ssv.BeaconAttestationValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
+var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
-var ProposerRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleProposer, ssv.BeaconBlockValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
+var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleProposer, ssv.ProposerValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
-var AggregatorRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleAggregator, ssv.AggregatorValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
+var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleAggregator, ssv.AggregatorValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
-var SyncCommitteeRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleSyncCommittee, ssv.SyncCommitteeValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
+var SyncCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleSyncCommittee, ssv.SyncCommitteeValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
-var SyncCommitteeContributionRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheck(NewTestingKeyManager(), types.NowTestNetwork), keySet)
+var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
-var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) *ssv.Runner {
+var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
+}
+
+var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
 	share := TestingShare(keySet)
 	identifier := types.NewBaseMsgID(TestingValidatorPubKey[:], role)
 
@@ -38,34 +42,106 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		return 1
 	}
 
-	return ssv.NewDutyRunner(
-		role,
-		types.NowTestNetwork,
+	net := NewTestingNetwork()
+	km := NewTestingKeyManager()
+	contr := qbft.NewController(
+		identifier,
 		share,
-		NewTestingQBFTController(identifier, share, valCheck, proposerF),
-		NewTestingStorage(),
+		types.PrimusTestnet,
+		km,
 		valCheck,
+		NewTestingStorage(),
+		net,
+		proposerF,
 	)
+
+	switch role {
+	case types.BNRoleAttester:
+		return ssv.NewAttesterRunnner(
+			types.NowTestNetwork,
+			share,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			valCheck,
+		)
+	case types.BNRoleAggregator:
+		return ssv.NewAggregatorRunner(
+			types.NowTestNetwork,
+			share,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			valCheck,
+		)
+	case types.BNRoleProposer:
+		return ssv.NewProposerRunner(
+			types.NowTestNetwork,
+			share,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			valCheck,
+		)
+	case types.BNRoleSyncCommittee:
+		return ssv.NewSyncCommitteeRunner(
+			types.NowTestNetwork,
+			share,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			valCheck,
+		)
+	case types.BNRoleSyncCommitteeContribution:
+		return ssv.NewSyncCommitteeAggregatorRunner(
+			types.NowTestNetwork,
+			share,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			valCheck,
+		)
+	case UnknownDutyType:
+		ret := ssv.NewAttesterRunnner(
+			types.NowTestNetwork,
+			share,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			valCheck,
+		)
+		ret.(*ssv.AttesterRunner).BaseRunner.BeaconRoleType = UnknownDutyType
+		return ret
+	default:
+		panic("unknown role type")
+	}
 }
 
-var DecidedRunner = func(keySet *TestKeySet) *ssv.Runner {
-	return decideRunner(TestAttesterConsensusDataByts, qbft.FirstHeight, keySet)
+var DecidedRunner = func(keySet *TestKeySet) ssv.Runner {
+	return decideRunner(TestAttesterConsensusData, qbft.FirstHeight, keySet)
 }
 
-var DecidedRunnerWithHeight = func(height qbft.Height, keySet *TestKeySet) *ssv.Runner {
-	return decideRunner(TestAttesterConsensusDataByts, height, keySet)
+var DecidedRunnerWithHeight = func(height qbft.Height, keySet *TestKeySet) ssv.Runner {
+	return decideRunner(TestAttesterConsensusData, height, keySet)
 }
 
-var DecidedRunnerUnknownDutyType = func(keySet *TestKeySet) *ssv.Runner {
-	return decideRunner(TestConsensusUnkownDutyTypeDataByts, qbft.FirstHeight, keySet)
+var DecidedRunnerUnknownDutyType = func(keySet *TestKeySet) ssv.Runner {
+	return decideRunner(TestConsensusUnkownDutyTypeData, qbft.FirstHeight, keySet)
 }
 
-var decideRunner = func(consensusData []byte, height qbft.Height, keySet *TestKeySet) *ssv.Runner {
+var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height, keySet *TestKeySet) ssv.Runner {
 	v := BaseValidator(keySet)
+	consensusDataByts, _ := consensusInput.Encode()
 	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
-	msgs := DecidingMsgsForHeight(consensusData, identifier, height, keySet)
+	msgs := DecidingMsgsForHeight(consensusDataByts, identifier, height, keySet)
 
-	if err := v.DutyRunners[types.BNRoleAttester].Decide(TestAttesterConsensusData); err != nil {
+	if err := v.DutyRunners[types.BNRoleAttester].StartNewDuty(consensusInput.Duty); err != nil {
 		panic(err.Error())
 	}
 	for _, msg := range msgs {
@@ -76,6 +152,52 @@ var decideRunner = func(consensusData []byte, height qbft.Height, keySet *TestKe
 	}
 
 	return v.DutyRunners[types.BNRoleAttester]
+}
+
+var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
+	id := types.NewMsgID(TestingValidatorPubKey[:], role)
+
+	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.SignedPartialSignatureMessage) *types.SSVMessage {
+		var byts []byte
+		var msgType types.MsgType
+		if partialSigMsg != nil {
+			msgType = types.SSVPartialSignatureMsgType
+			byts, _ = partialSigMsg.Encode()
+		} else {
+			msgType = types.SSVConsensusMsgType
+			byts, _ = qbftMsg.Encode()
+		}
+
+		return &types.SSVMessage{
+			MsgType: msgType,
+			MsgID:   id,
+			Data:    byts,
+		}
+	}
+
+	// pre consensus msgs
+	base := make([]*types.SSVMessage, 0)
+	if role == types.BNRoleProposer {
+		for i := uint64(1); i <= ks.Threshold; i++ {
+			base = append(base, ssvMsgF(nil, PreConsensusRandaoMsg(ks.Shares[types.OperatorID(i)], types.OperatorID(i))))
+		}
+	}
+	if role == types.BNRoleAggregator {
+		for i := uint64(1); i <= ks.Threshold; i++ {
+			base = append(base, ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
+		}
+	}
+	if role == types.BNRoleSyncCommitteeContribution {
+		for i := uint64(1); i <= ks.Threshold; i++ {
+			base = append(base, ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
+		}
+	}
+
+	qbftMsgs := DecidingMsgsForHeight(consensusData, id[:], qbft.FirstHeight, ks)
+	for _, msg := range qbftMsgs {
+		base = append(base, ssvMsgF(msg, nil))
+	}
+	return base
 }
 
 var DecidingMsgsForHeight = func(consensusData []byte, msgID types.MessageID, height qbft.Height, keySet *TestKeySet) []*types.Message {
