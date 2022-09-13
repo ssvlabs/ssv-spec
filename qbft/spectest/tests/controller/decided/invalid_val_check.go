@@ -8,7 +8,7 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// InvalidValCheckData tests a decided message with invalid decided data
+// InvalidValCheckData tests a decided message with invalid decided data (but should pass as it's decided)
 func InvalidValCheckData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{

@@ -1,11 +1,12 @@
 package qbft
 
 import (
+	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
-// UponDecided returns error if could not process decided
+// UponDecided returns decided msg if decided, nil otherwise
 func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	// decided msgs for past (already decided) instances will not decide again, just return
 	if msg.Message.Height < c.Height {
@@ -13,7 +14,6 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	}
 
 	if err := validateDecided(
-		msg.Message.Height,
 		c.GenerateConfig(),
 		msg,
 		c.Share,
@@ -27,10 +27,12 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.Wrap(err, "could not get decided data")
 	}
 
-	// if decided is for running instance (or higher), find and stop it
+	// Mark current instance decided
 	if inst := c.InstanceForHeight(c.Height); inst != nil && !inst.State.Decided {
-		inst.State.DecidedValue = data.Data
 		inst.State.Decided = true
+		if c.Height == msg.Message.Height {
+			inst.State.DecidedValue = data.Data
+		}
 	}
 
 	isFutureDecided := msg.Message.Height > c.Height
@@ -46,13 +48,13 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	}
 
 	if err := c.storage.SaveHighestDecided(msg); err != nil {
-		return nil, errors.Wrap(err, "could not save decided")
+		// no need to fail processing the decided msg if failed to save
+		fmt.Printf("%s\n", err.Error())
 	}
 	return msg, nil
 }
 
 func validateDecided(
-	height Height,
 	config IConfig,
 	signedDecided *SignedMessage,
 	share *types.Share,
@@ -65,7 +67,7 @@ func validateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if err := baseCommitValidation(config, signedDecided, height, share.Committee); err != nil {
+	if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
@@ -77,15 +79,10 @@ func validateDecided(
 		return errors.Wrap(err, "invalid decided data")
 	}
 
-	valCheck := config.GetValueCheckF()
-	if err := valCheck(msgDecidedData.Data); err != nil {
-		return errors.Wrap(err, "decided value invalid")
-	}
-
 	return nil
 }
 
 // returns true if signed commit has all quorum sigs
 func isDecidedMsg(share *types.Share, signedDecided *SignedMessage) bool {
-	return share.HasQuorum(len(signedDecided.Signers))
+	return share.HasQuorum(len(signedDecided.Signers)) && signedDecided.Message.MsgType == CommitMsgType
 }

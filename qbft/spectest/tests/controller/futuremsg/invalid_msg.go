@@ -1,4 +1,4 @@
-package decided
+package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"

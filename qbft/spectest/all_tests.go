@@ -4,9 +4,9 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
-	sync "github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/sync"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
@@ -22,6 +22,8 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	decided.HasQuorum(),
+	decided.NoQuorum(),
 	decided.DuplicateMsg(),
 	decided.DuplicateSigners(),
 	decided.ImparsableData(),
@@ -61,13 +63,13 @@ var AllTests = []SpecTest{
 	latemsg.LateRoundChangeNoInstance(),
 	latemsg.LateRoundChangePastInstance(),
 
-	sync.Cleanup(),
-	sync.DuplicateSigner(),
-	sync.F1FutureMsgs(),
-	sync.F1FutureMsgsAfterSync(),
-	sync.InvalidMsg(),
-	sync.UnknownSigner(),
-	sync.WrongSig(),
+	futuremsg.Cleanup(),
+	futuremsg.DuplicateSigner(),
+	futuremsg.F1FutureMsgs(),
+	futuremsg.F1FutureMsgsAfterSync(),
+	futuremsg.InvalidMsg(),
+	futuremsg.UnknownSigner(),
+	futuremsg.WrongSig(),
 
 	startinstance.PostFutureDecided(),
 	startinstance.FirstHeight(),
@@ -121,6 +123,7 @@ var AllTests = []SpecTest{
 	tests.TenOperators(),
 	tests.ThirteenOperators(),
 
+	proposal.PrevDecidedProposal(),
 	proposal.CurrentRoundPrevNotPrepared(),
 	proposal.CurrentRoundPrevPrepared(),
 	proposal.PastRoundProposalPrevPrepared(),
@@ -158,6 +161,7 @@ var AllTests = []SpecTest{
 	proposal.WrongSignature(),
 	proposal.UnknownSigner(),
 
+	prepare.PrevDecidedPrepare(),
 	prepare.DuplicateMsg(),
 	prepare.HappyFlow(),
 	prepare.ImparsableProposalData(),
@@ -172,6 +176,7 @@ var AllTests = []SpecTest{
 	prepare.WrongSignature(),
 	prepare.UnknownSigner(),
 
+	commit.PrevDecidedCommit(),
 	commit.CurrentRound(),
 	commit.FutureRound(),
 	commit.PastRound(),
@@ -191,6 +196,7 @@ var AllTests = []SpecTest{
 	commit.UnknownSigner(),
 	commit.InvalidValCheck(),
 
+	roundchange.PrevDecidedRoundChange(),
 	roundchange.HappyFlow(),
 	roundchange.WrongHeight(),
 	roundchange.WrongSig(),

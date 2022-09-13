@@ -96,6 +96,13 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
 
+	/**
+	Main controller processing flow
+	_______________________________
+	All decided msgs are processed the same, out of instance
+	All valid future msgs are saved in a container and can trigger highest decided futuremsg
+	All other msgs (not future or decided) are processed normally by an existing instance (if found)
+	*/
 	if isDecidedMsg(c.Share, msg) {
 		return c.UponDecided(msg)
 	} else if msg.Message.Height > c.Height {
@@ -129,6 +136,7 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 	}
 
 	if err := c.saveAndBroadcastDecided(decidedMsg); err != nil {
+		// no need to fail processing instance deciding if failed to save/ broadcast
 		fmt.Printf("%s\n", err.Error())
 	}
 	return msg, nil
