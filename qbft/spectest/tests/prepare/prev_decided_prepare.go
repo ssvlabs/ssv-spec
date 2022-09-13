@@ -11,7 +11,7 @@ import (
 func PrevDecidedPrepare() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
-		Name: "first decided",
+		Name: "prepare prev decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:         []byte{1, 2, 3, 4},

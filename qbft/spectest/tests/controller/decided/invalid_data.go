@@ -9,34 +9,29 @@ import (
 )
 
 // InvalidData tests decided data for which commitData.validate() != nil
-func InvalidData() *tests.MsgProcessingSpecTest {
-	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-	})
-
-	msgs := []*qbft.SignedMessage{
-		testingutils.MultiSignQBFTMsg(
-			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-			[]types.OperatorID{1, 2, 3},
-			&qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       nil,
-			}),
-	}
-
-	return &tests.MsgProcessingSpecTest{
-		Name:          "decided invalid data",
-		Pre:           pre,
-		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: message data is invalid",
+func InvalidData() *tests.ControllerSpecTest {
+	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	ks := testingutils.Testing4SharesSet()
+	return &tests.ControllerSpecTest{
+		Name: "decide invalid data",
+		RunInstanceData: []*tests.RunInstanceData{
+			{
+				InputValue: []byte{1, 2, 3, 4},
+				InputMessages: []*qbft.SignedMessage{
+					testingutils.MultiSignQBFTMsg(
+						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						&qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     10,
+							Round:      qbft.FirstRound,
+							Identifier: identifier[:],
+							Data:       testingutils.CommitDataBytes(nil),
+						}),
+				},
+				ControllerPostRoot: "5b6ebc3aa0bfcedd466fca3fca7e1dcc0245def7d61d65aee1462436d819c7d0",
+			},
+		},
+		ExpectedError: "invalid decided msg: invalid decided msg: msgCommitData invalid: CommitData data is invalid",
 	}
 }

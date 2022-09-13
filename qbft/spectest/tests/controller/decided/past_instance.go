@@ -12,7 +12,7 @@ import (
 func PastInstance() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
-		Name: "decide current instance",
+		Name: "decide past instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -43,24 +43,14 @@ func PastInstance() *tests.ControllerSpecTest {
 					[]types.OperatorID{1, 2, 3},
 					&qbft.Message{
 						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
-				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
+						Height:     100,
 						Round:      qbft.FirstRound,
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "19e63c3c0d763de50f31c3d41dcf80af0c68f8ab659ff02239eb81f1ed757fef",
+				ControllerPostRoot: "d9834788859abee970bdcd9d4195ae0292513ef9783ec0c9c6b54fd4856849ce",
 			},
 		},
 	}

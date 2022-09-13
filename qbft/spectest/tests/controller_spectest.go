@@ -109,8 +109,8 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 				require.NoError(t, err)
 
 				if bytes.Equal(r1, r2) &&
-					reflect.DeepEqual(runData.SavedDecided.Signers, msg1.Signers) &&
-					reflect.DeepEqual(runData.SavedDecided.Signature, msg1.Signature) {
+					reflect.DeepEqual(runData.BroadcastedDecided.Signers, msg1.Signers) &&
+					reflect.DeepEqual(runData.BroadcastedDecided.Signature, msg1.Signature) {
 					require.False(t, found)
 					found = true
 				}

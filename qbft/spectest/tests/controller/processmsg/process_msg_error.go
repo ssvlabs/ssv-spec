@@ -25,7 +25,7 @@ func MsgError() *tests.ControllerSpecTest {
 					}),
 				},
 				DecidedVal:         nil,
-				ControllerPostRoot: "f28cfa54f7993a21ebe3a46fde514e387ad4ff9a3be197b656c4c6e8dbb124de",
+				ControllerPostRoot: "5b6ebc3aa0bfcedd466fca3fca7e1dcc0245def7d61d65aee1462436d819c7d0",
 			},
 		},
 		ExpectedError: "could not process msg: proposal invalid: proposal not justified: change round has not quorum",

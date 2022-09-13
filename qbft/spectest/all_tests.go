@@ -4,8 +4,6 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
@@ -32,44 +30,44 @@ var AllTests = []SpecTest{
 	decided.InvalidValCheckData(),
 	decided.LateDecided(),
 	decided.LateDecidedBiggerQuorum(),
-	decided.LateDecidedNoInstance(),
 	decided.LateDecidedSmallerQuorum(),
 	decided.PastInstance(),
 	decided.UnknownSigner(),
 	decided.WrongMsgType(),
 	decided.WrongSignature(),
 	decided.MultiDecidedInstances(),
-	decided.LateDecidedNoInstance(),
 	decided.FutureInstance(),
 	decided.CurrentInstance(),
-
-	processmsg.MsgError(),
-	processmsg.SavedAndBroadcastedDecided(),
-	processmsg.SingleConsensusMsg(),
-	processmsg.FullDecided(),
-	processmsg.InvalidIdentifier(),
-	processmsg.NoInstanceRunning(),
-
-	latemsg.LateCommit(),
-	latemsg.LateCommitNoInstance(),
-	latemsg.LateCommitPastInstance(),
-	latemsg.LatePrepare(),
-	latemsg.LatePrepareNoInstance(),
-	latemsg.LatePreparePastInstance(),
-	latemsg.LateProposal(),
-	latemsg.LateProposalNoInstance(),
-	latemsg.LateProposalPastInstance(),
-	latemsg.LateRoundChange(),
-	latemsg.LateRoundChangeNoInstance(),
-	latemsg.LateRoundChangePastInstance(),
-
-	futuremsg.Cleanup(),
-	futuremsg.DuplicateSigner(),
-	futuremsg.F1FutureMsgs(),
-	futuremsg.F1FutureMsgsAfterSync(),
-	futuremsg.InvalidMsg(),
-	futuremsg.UnknownSigner(),
-	futuremsg.WrongSig(),
+	//
+	//processmsg.MsgError(),
+	//processmsg.SavedAndBroadcastedDecided(),
+	//processmsg.SingleConsensusMsg(),
+	//processmsg.FullDecided(),
+	//processmsg.InvalidIdentifier(),
+	//processmsg.NoInstanceRunning(),
+	//
+	//latemsg.LateCommit(),
+	//latemsg.LateCommitNoInstance(),
+	//latemsg.LateCommitPastInstance(),
+	//latemsg.LatePrepare(),
+	//latemsg.LatePrepareNoInstance(),
+	//latemsg.LatePreparePastInstance(),
+	//latemsg.LateProposal(),
+	//latemsg.LateProposalNoInstance(),
+	//latemsg.LateProposalPastInstance(),
+	//latemsg.LateRoundChange(),
+	//latemsg.LateRoundChangeNoInstance(),
+	//latemsg.LateRoundChangePastInstance(),
+	//
+	//futuremsg.NoSigners(),
+	//futuremsg.MultiSigners(),
+	//futuremsg.Cleanup(),
+	//futuremsg.DuplicateSigner(),
+	//futuremsg.F1FutureMsgs(),
+	//futuremsg.F1FutureMsgsAfterSync(),
+	//futuremsg.InvalidMsg(),
+	//futuremsg.UnknownSigner(),
+	//futuremsg.WrongSig(),
 
 	startinstance.PostFutureDecided(),
 	startinstance.FirstHeight(),
@@ -123,7 +121,7 @@ var AllTests = []SpecTest{
 	tests.TenOperators(),
 	tests.ThirteenOperators(),
 
-	proposal.PrevDecidedProposal(),
+	//proposal.PrevDecidedProposal(),
 	proposal.CurrentRoundPrevNotPrepared(),
 	proposal.CurrentRoundPrevPrepared(),
 	proposal.PastRoundProposalPrevPrepared(),
@@ -161,7 +159,7 @@ var AllTests = []SpecTest{
 	proposal.WrongSignature(),
 	proposal.UnknownSigner(),
 
-	prepare.PrevDecidedPrepare(),
+	//prepare.PrevDecidedPrepare(),
 	prepare.DuplicateMsg(),
 	prepare.HappyFlow(),
 	prepare.ImparsableProposalData(),
@@ -176,7 +174,7 @@ var AllTests = []SpecTest{
 	prepare.WrongSignature(),
 	prepare.UnknownSigner(),
 
-	commit.PrevDecidedCommit(),
+	//commit.PrevDecidedCommit(),
 	commit.CurrentRound(),
 	commit.FutureRound(),
 	commit.PastRound(),
@@ -196,7 +194,7 @@ var AllTests = []SpecTest{
 	commit.UnknownSigner(),
 	commit.InvalidValCheck(),
 
-	roundchange.PrevDecidedRoundChange(),
+	//roundchange.PrevDecidedRoundChange(),
 	roundchange.HappyFlow(),
 	roundchange.WrongHeight(),
 	roundchange.WrongSig(),

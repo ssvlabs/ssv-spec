@@ -11,18 +11,18 @@ import (
 func PreviousDecided() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
-		Name: "start instance  prev decided",
+		Name: "start instance prev decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:         []byte{1, 2, 3, 4},
 				InputMessages:      testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet()),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "4904e750939440bf885052e33dadc77369fe4a942cbe9940bf4ec6c52baac1b7",
+				ControllerPostRoot: "aa402d7487719b17dde352e2ac602ba2c7d895e615ab12cd93d816f6c4fa0967",
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "d657ba303aa6ad23ffcfafc6014bf0e9c61b27fe78c544813c4baebcf56c9756",
+				ControllerPostRoot: "ef4b84dc6704519af8f6c4a510a2d9d0a44ce52155f6508635dacbd34324b32e",
 			},
 		},
 	}

@@ -25,7 +25,7 @@ func SingleConsensusMsg() *tests.ControllerSpecTest {
 					}),
 				},
 				DecidedVal:         nil,
-				ControllerPostRoot: "9566935865a4d8852ad4fc860c2ea9d874cd66b4bc942c1adb647f3fd22d82b4",
+				ControllerPostRoot: "7e21f00c892268dc90ada02ac5326329ff44b8b93aec52a51c11ec9b12077f78",
 			},
 		},
 	}

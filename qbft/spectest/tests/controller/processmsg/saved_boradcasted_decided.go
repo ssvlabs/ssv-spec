@@ -29,7 +29,17 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
-				ControllerPostRoot: "4904e750939440bf885052e33dadc77369fe4a942cbe9940bf4ec6c52baac1b7",
+				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+					[]types.OperatorID{1, 2, 3},
+					&qbft.Message{
+						MsgType:    qbft.CommitMsgType,
+						Height:     qbft.FirstHeight,
+						Round:      qbft.FirstRound,
+						Identifier: identifier[:],
+						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+					}),
+				ControllerPostRoot: "aa402d7487719b17dde352e2ac602ba2c7d895e615ab12cd93d816f6c4fa0967",
 			},
 		},
 	}

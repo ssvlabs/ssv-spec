@@ -27,6 +27,10 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.Wrap(err, "could not get decided data")
 	}
 
+	// did previously decide?
+	inst := c.InstanceForHeight(msg.Message.Height)
+	prevDecided := inst != nil && inst.State.Decided
+
 	// Mark current instance decided
 	if inst := c.InstanceForHeight(c.Height); inst != nil && !inst.State.Decided {
 		inst.State.Decided = true
@@ -47,11 +51,14 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		c.Height = msg.Message.Height
 	}
 
-	if err := c.storage.SaveHighestDecided(msg); err != nil {
-		// no need to fail processing the decided msg if failed to save
-		fmt.Printf("%s\n", err.Error())
+	if !prevDecided {
+		if err := c.storage.SaveHighestDecided(msg); err != nil {
+			// no need to fail processing the decided msg if failed to save
+			fmt.Printf("%s\n", err.Error())
+		}
+		return msg, nil
 	}
-	return msg, nil
+	return nil, nil
 }
 
 func validateDecided(

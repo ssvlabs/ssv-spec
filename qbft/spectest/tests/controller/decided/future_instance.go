@@ -40,7 +40,7 @@ func FutureInstance() *tests.ControllerSpecTest {
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "6c412959f7418d2e77a7ca095dfcddf1e73d392537f1ec0f7346085149c5a004",
+				ControllerPostRoot: "c91970b0e33a3b6141567101956dffa63472e56ed041ffdd408ed822973f3caf",
 			},
 		},
 	}

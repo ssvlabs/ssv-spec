@@ -36,16 +36,6 @@ func MultiDecidedInstances() *tests.ControllerSpecTest {
 					Identifier: identifier[:],
 					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 				}),
-			BroadcastedDecided: testingutils.MultiSignQBFTMsg(
-				[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.CommitMsgType,
-					Height:     height,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-				}),
 			DecidedVal:         []byte{1, 2, 3, 4},
 			DecidedCnt:         1,
 			ControllerPostRoot: postRoot,
@@ -55,17 +45,15 @@ func MultiDecidedInstances() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "multi decide instances",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "19e63c3c0d763de50f31c3d41dcf80af0c68f8ab659ff02239eb81f1ed757fef"),
-			instanceData(1, "34c6fa58cd4bea9d0e0ce22b028cbf092ebc41b4961f83877a9a2bfa2ccc7dad"),
-			instanceData(2, "bae57bcbf52062426a23f050f970c4f4c328f07208aba8a6200e5da2e0e77014"),
-			instanceData(3, "733a85040e9a3820f9be77c06726bdaa28b0865023e32c44aac286e4cc0499cf"),
-			instanceData(4, "5aa8f71a466fcb7a7761e155c3c2dc835ef5389b6e7f7feca7d53e3975fcc4aa"),
-			instanceData(5, "7686425bc58541fc21b8309fb8ec64068bdda53cf41c8aea5dabec62d0544621"),
-			instanceData(6, "6fbd7892e4e5c38c33b3fb81852f6cc120821312e48ff16da0e9e835608e6d78"),
-			instanceData(7, "827822d44f5ee786b24dec5cf1d0ce155271cc0731e24b0c2d1c8e8609cd40f8"),
-			instanceData(8, "12e8be02534cdf8653813527b5a7f6b976ad779375d6c854562636844b8a8f53"),
-			instanceData(9, "aacc8eb183b778530a1b5d53f208ea79aaf46596265e0d4b2ea3f102c17095f3"),
-			instanceData(10, "db4d7f1e60e109e207b3bd35fe7caa94a92253c9538d39572954baf70cf77550"),
+			instanceData(qbft.FirstHeight, "8a5153ccfbefa992ac8b4af6aad2d050c553a95359d0bc49feaef5c11c7139a2"),
+			instanceData(1, "edffa599e2ff18bcb82a63116ab452649fe974b63432b05ab5919df16079fb68"),
+			instanceData(2, "42323740998181ec00bfcf28fb8095c8f5fd3e43266ca43f0448b3ef42ac2a60"),
+			instanceData(3, "cb17defa61f9e6175884f7ae8f372dabefe601360737e43162c6d52a2fa7f6e4"),
+			instanceData(4, "2266f4d33838f251c22dcf787551bb6dd7381b689353b8147853338917dddf37"),
+			instanceData(5, "57c0602606e7e5b186a570d9ff9dc80717ba6da075a769057374b9f2ebe81653"),
+			instanceData(8, "d8c0f5362ae874ded286627c1076a894d26ab61238c37a0a75bcc2e331822073"),
+			instanceData(9, "bb3fc017e5d8670dfa3abb88c325daad35d0b908f6b8c04786b828d94b38065e"),
+			instanceData(10, "69203928542ee0add38f855cd115c2fa3237b04e0bdec67204113e858f2bfb1d"),
 		},
 	}
 }

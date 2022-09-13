@@ -27,6 +27,10 @@ func validateFutureMsg(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
+	if len(msg.GetSigners()) != 1 {
+		return errors.New("allows 1 signer")
+	}
+
 	// verify signature
 	if err := msg.Signature.VerifyByOperators(msg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "commit msg signature invalid")

@@ -9,36 +9,50 @@ import (
 )
 
 // DuplicateMsg tests a duplicate decided msg processing
-func DuplicateMsg() *tests.MsgProcessingSpecTest {
-	pre := testingutils.BaseInstance()
-
-	msgs := []*qbft.SignedMessage{
-		testingutils.MultiSignQBFTMsg(
-			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-			[]types.OperatorID{1, 2, 3},
-			&qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-			}),
-		testingutils.MultiSignQBFTMsg(
-			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-			[]types.OperatorID{1, 2, 3},
-			&qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-			}),
-	}
-
-	return &tests.MsgProcessingSpecTest{
-		Name:          "decided duplicate message",
-		Pre:           pre,
-		PostRoot:      "c7a845fe75ab05b4119addaa3adb2ef2599cdd6cbe98dc4a22ca8909d7c785f6",
-		InputMessages: msgs,
+func DuplicateMsg() *tests.ControllerSpecTest {
+	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	ks := testingutils.Testing4SharesSet()
+	return &tests.ControllerSpecTest{
+		Name: "decide duplicate msg",
+		RunInstanceData: []*tests.RunInstanceData{
+			{
+				InputValue: []byte{1, 2, 3, 4},
+				InputMessages: []*qbft.SignedMessage{
+					testingutils.MultiSignQBFTMsg(
+						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						&qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     10,
+							Round:      qbft.FirstRound,
+							Identifier: identifier[:],
+							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						}),
+					testingutils.MultiSignQBFTMsg(
+						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						&qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     10,
+							Round:      qbft.FirstRound,
+							Identifier: identifier[:],
+							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						}),
+				},
+				SavedDecided: testingutils.MultiSignQBFTMsg(
+					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+					[]types.OperatorID{1, 2, 3},
+					&qbft.Message{
+						MsgType:    qbft.CommitMsgType,
+						Height:     10,
+						Round:      qbft.FirstRound,
+						Identifier: identifier[:],
+						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+					}),
+				DecidedVal:         []byte{1, 2, 3, 4},
+				DecidedCnt:         1,
+				ControllerPostRoot: "c91970b0e33a3b6141567101956dffa63472e56ed041ffdd408ed822973f3caf",
+			},
+		},
 	}
 }
