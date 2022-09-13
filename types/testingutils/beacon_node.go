@@ -244,12 +244,12 @@ var TestingWrongDutyPK = &types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-func blsSigFromHex(str string) spec.BLSSignature {
-	byts, _ := hex.DecodeString(str)
-	ret := spec.BLSSignature{}
-	copy(ret[:], byts)
-	return ret
-}
+//func blsSigFromHex(str string) spec.BLSSignature {
+//	byts, _ := hex.DecodeString(str)
+//	ret := spec.BLSSignature{}
+//	copy(ret[:], byts)
+//	return ret
+//}
 
 type TestingBeaconNode struct {
 	syncCommitteeAggregatorRoots map[string]bool

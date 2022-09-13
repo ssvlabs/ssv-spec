@@ -183,7 +183,7 @@ func ComputeETHDomain(domain spec.DomainType, fork spec.Version, genesisValidato
 	}
 	forkDataRoot, err := forkData.HashTreeRoot()
 	if err != nil {
-
+		return ret, err
 	}
 	copy(ret[4:32], forkDataRoot[0:28])
 	return ret, nil

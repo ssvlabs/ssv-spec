@@ -3,8 +3,6 @@ package qbft
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -90,12 +88,12 @@ func (c *Controller) StartNewInstance(value []byte) error {
 // Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
 func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
-		return false, nil, errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
+		return false, nil, errors.New("message doesn't belong to Identifier")
 	}
 
 	inst := c.InstanceForHeight(msg.Message.Height)
 	if inst == nil {
-		return false, nil, errors.New(fmt.Sprintf("instance not found"))
+		return false, nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
@@ -114,6 +112,7 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
 		return false, nil, nil
 	}
 
+	// nolint
 	if err := c.saveAndBroadcastDecided(aggregatedCommit); err != nil {
 		// TODO - we do not return error, should log?
 	}
