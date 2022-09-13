@@ -59,10 +59,11 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 }
 
 // ProcessMessage processes network Messages of all types
-func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
-	if msg.MsgType != types.DKGInitMsgType {
-		return errors.New("not a DKGMsgType")
-	}
+func (n *Node) ProcessMessage(msg *types.Message) error {
+	// TODO<olegshmuelov>: DKG check if need
+	//if msg.MsgType != types.DKGInitMsgType {
+	//	return errors.New("not a DKGMsgType")
+	//}
 	signedMsg := &SignedMessage{}
 	if err := signedMsg.Decode(msg.GetData()); err != nil {
 		return errors.Wrap(err, "could not get dkg Message from network Messages")

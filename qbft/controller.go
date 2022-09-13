@@ -87,18 +87,24 @@ func (c *Controller) StartNewInstance(value []byte) error {
 
 // ProcessMsg processes a new msg, returns true if Decided, non nil byte slice if Decided (Decided value) and error
 // Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
-func (c *Controller) ProcessMsg(msgID types.MessageID, msg *SignedMessage) (bool, []byte, error) {
+func (c *Controller) ProcessMsg(msg *types.Message) (bool, []byte, error) {
+	msgID := msg.GetID()
 	if !msgID.Compare(c.Identifier) {
 		return false, nil, errors.New("message doesn't belong to Identifier")
 	}
 
-	inst := c.InstanceForHeight(msg.Message.Height)
+	signedMsg := &SignedMessage{}
+	if err := signedMsg.Decode(msg.GetData()); err != nil {
+		return false, nil, errors.Wrap(err, "could not decode consensus Message from network Message")
+	}
+
+	inst := c.InstanceForHeight(signedMsg.Message.Height)
 	if inst == nil {
 		return false, nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
-	decided, decidedValue, aggregatedCommit, err := inst.ProcessMsg(msgID, msg)
+	decided, decidedValue, aggregatedCommit, err := inst.ProcessMsg(msgID, signedMsg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "could not process msg")
 	}

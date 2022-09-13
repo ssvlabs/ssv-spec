@@ -22,8 +22,14 @@ var (
 	// DecidedMsgType are all QBFT decided messages
 	DecidedMsgType = MsgType{0x2, 0x0, 0x0, 0x0}
 
-	// PartialSignatureMsgType are all partial signatures msgs over beacon chain specific signatures
-	PartialSignatureMsgType = MsgType{0x3, 0x0, 0x0, 0x0}
+	// PartialRandaoSignatureMsgType randao partial signature for proposer
+	PartialRandaoSignatureMsgType = MsgType{0x3, 0x0, 0x0, 0x0}
+	// PartialSelectionProofSignatureMsgType selection proof partial signature for aggregator
+	PartialSelectionProofSignatureMsgType = MsgType{0x3, 0x1, 0x0, 0x0}
+	// PartialContributionProofSignatureMsgType contribution proof for sync committee aggregator
+	PartialContributionProofSignatureMsgType = MsgType{0x3, 0x2, 0x0, 0x0}
+	// PartialPostConsensusSignatureMsgType post consensus partial signatures for all duties
+	PartialPostConsensusSignatureMsgType = MsgType{0x3, 0x3, 0x0, 0x0}
 
 	// DKGInitMsgType sent when DKG instance is started by requester
 	DKGInitMsgType = MsgType{0x4, 0x0, 0x0, 0x0}

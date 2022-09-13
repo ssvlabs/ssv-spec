@@ -26,7 +26,7 @@ type Runner interface {
 	StartNewDuty(duty *types.Duty) error
 	HasRunningDuty() bool
 	ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error
-	ProcessConsensus(msg *qbft.SignedMessage) error
+	ProcessConsensus(msg *types.Message) error
 	ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error
 
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
@@ -92,8 +92,8 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *Sig
 	return anyQuorum, roots, nil
 }
 
-func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
-	if err := b.validateConsensusMsg(msg); err != nil {
+func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Message) (decided bool, decidedValue *types.ConsensusData, err error) {
+	if err := b.validateConsensusMsg(); err != nil {
 		return false, nil, errors.Wrap(err, "invalid consensus message")
 	}
 
@@ -167,7 +167,7 @@ func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
-func (b *BaseRunner) validateConsensusMsg(msg *qbft.SignedMessage) error {
+func (b *BaseRunner) validateConsensusMsg() error {
 	if !b.HashRunningDuty() {
 		return errors.New("no running duty")
 	}

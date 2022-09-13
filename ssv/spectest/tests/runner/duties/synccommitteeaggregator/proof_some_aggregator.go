@@ -11,7 +11,7 @@ func SomeAggregatorQuorum() *SyncCommitteeAggregatorProofSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &SyncCommitteeAggregatorProofSpecTest{
 		Name: "sync committee aggregator some are aggregators",
-		Messages: []*types.SSVMessage{
+		Messages: []*types.Message{
 			testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 			testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 			testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),

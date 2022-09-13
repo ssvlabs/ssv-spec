@@ -17,7 +17,7 @@ func ValidMessage10Operators() *tests.MultiMsgProcessingSpecTest {
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
@@ -34,7 +34,7 @@ func ValidMessage10Operators() *tests.MultiMsgProcessingSpecTest {
 				Name:   "aggregator selection proof",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
@@ -51,7 +51,7 @@ func ValidMessage10Operators() *tests.MultiMsgProcessingSpecTest {
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),

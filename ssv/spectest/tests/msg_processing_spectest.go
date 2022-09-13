@@ -13,7 +13,7 @@ type MsgProcessingSpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
 	Duty                    *types.Duty
-	Messages                []*types.SSVMessage
+	Messages                []*types.Message
 	PostDutyRunnerStateRoot string
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
 	OutputMessages []*ssv.SignedPartialSignatureMessage

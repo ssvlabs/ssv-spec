@@ -57,8 +57,8 @@ func (r *AttesterRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMe
 	return errors.New("no pre consensus sigs required for attester role")
 }
 
-func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
+func (r *AttesterRunner) ProcessConsensus(msg *types.Message) error {
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, msg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -69,13 +69,13 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AttestationData, decidedValue.Duty.Slot, types.DomainAttester)
+	partialMsg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AttestationData, decidedValue.Duty.Slot, types.DomainAttester)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
 	postConsensusMsg := &PartialSignatureMessages{
 		Type:     PostConsensusPartialSig,
-		Messages: []*PartialSignatureMessage{msg},
+		Messages: []*PartialSignatureMessage{partialMsg},
 	}
 
 	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
@@ -88,10 +88,10 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.PartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
+	msgID := types.NewBaseMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
+	msgToBroadcast := &types.Message{
+		ID:   types.PopulateMsgType(msgID, types.PartialPostConsensusSignatureMsgType),
+		Data: data,
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {

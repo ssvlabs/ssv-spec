@@ -35,7 +35,13 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {
-			if msg.MsgType != types.SSVPartialSignatureMsgType {
+			// TODO<olegshmuelov>: PARTIAL handle
+			msgType := msg.GetID().GetMsgType()
+			if msgType != types.PartialSelectionProofSignatureMsgType &&
+				msgType != types.PartialRandaoSignatureMsgType &&
+				msgType != types.PartialContributionProofSignatureMsgType &&
+				msgType != types.PartialPostConsensusSignatureMsgType {
+				//if msg.MsgType != types.SSVPartialSignatureMsgType {
 				continue
 			}
 
@@ -44,7 +50,7 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 			msg2 := test.OutputMessages[index]
 			require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))
 
-			// messages are not guaranteed to be in order so we map them and then test all roots to be equal
+			// messages are not guaranteed to be in order, so we map them and then test all roots to be equal
 			roots := make(map[string]string)
 			for i, partialSigMsg2 := range msg2.Message.Messages {
 				r2, err := partialSigMsg2.GetRoot()

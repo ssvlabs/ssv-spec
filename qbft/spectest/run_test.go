@@ -6,7 +6,6 @@ import (
 	tests2 "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -27,7 +26,7 @@ func TestJson(t *testing.T) {
 	path := filepath.Join(basedir, "generate")
 	fileName := "tests.json"
 	untypedTests := map[string]interface{}{}
-	byteValue, err := ioutil.ReadFile(path + "/" + fileName)
+	byteValue, err := os.ReadFile(path + "/" + fileName)
 	if err != nil {
 		panic(err.Error())
 	}

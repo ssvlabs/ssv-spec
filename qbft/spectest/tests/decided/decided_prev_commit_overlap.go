@@ -49,14 +49,14 @@ func PrevCommitOverlap() *tests.MsgProcessingSpecTest {
 			Data: signMsgEncoded3,
 		},
 		{
-			ID:   types.PopulateMsgType(pre.State.ID,
-			types.ConsensusCommitMsgType),
-				Data: signMsgEncoded,
+			ID: types.PopulateMsgType(pre.State.ID,
+				types.ConsensusCommitMsgType),
+			Data: signMsgEncoded,
 		},
 		{
-				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
 			Data: multiSignMsgEncoded,
-			},
+		},
 	}
 
 	return &tests.MsgProcessingSpecTest{

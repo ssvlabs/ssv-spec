@@ -47,7 +47,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 					},
 				),
 				Duty: testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
 				PostDutyRunnerStateRoot: "366320a75151b43e701750fefe361405fb53e39269db1830314f881cac48126d",
@@ -67,7 +67,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 					},
 				),
 				Duty: testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
 				PostDutyRunnerStateRoot: "123efb0793124df79dcae660aa87918726a0dcde94031223394975e37ee0e098",
@@ -87,7 +87,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 					},
 				),
 				Duty: testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
 				PostDutyRunnerStateRoot: "a347ece3f05f70d34db60b25fe499ed82bc1e2c9c8eeef0dc680c9c8cd168c23",

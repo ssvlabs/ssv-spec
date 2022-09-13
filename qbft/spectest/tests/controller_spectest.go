@@ -57,11 +57,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 		decidedCnt := 0
 		for _, msg := range runData.InputMessages {
-			signedMsg := &qbft.SignedMessage{}
-			if err := signedMsg.Decode(msg.GetData()); err != nil {
-				lastErr = err
-			}
-			decided, _, err := contr.ProcessMsg(msg.GetID(), signedMsg)
+			decided, _, err := contr.ProcessMsg(msg)
 			if err != nil {
 				lastErr = err
 			}

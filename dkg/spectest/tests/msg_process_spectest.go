@@ -27,10 +27,11 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	var lastErr error
 	for _, msg := range test.InputMessages {
+		// TODO<olegshmuelov>: DKG convert to types.Message
 		byts, _ := msg.Encode()
-		err := node.ProcessMessage(&types.SSVMessage{
-			MsgType: types.DKGMsgType,
-			Data:    byts,
+		err := node.ProcessMessage(&types.Message{
+			//MsgType: types.DKGMsgType,
+			Data: byts,
 		})
 
 		if err != nil {
@@ -51,7 +52,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 		for i, msg := range test.OutputMessages {
 			bMsg := broadcastedMsgs[i]
-			require.Equal(t, types.DKGMsgType, bMsg.MsgType)
+			// TODO<olegshmuelov>: DKG
+			//require.Equal(t, types.DKGMsgType, bMsg.MsgType)
 			sMsg := &dkg.SignedMessage{}
 			require.NoError(t, sMsg.Decode(bMsg.Data))
 			if sMsg.Message.MsgType == dkg.OutputMsgType {

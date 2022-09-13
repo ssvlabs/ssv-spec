@@ -13,7 +13,6 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -34,7 +33,7 @@ func TestJson(t *testing.T) {
 	path := filepath.Join(basedir, "generate")
 	fileName := "tests.json"
 	untypedTests := map[string]interface{}{}
-	byteValue, err := ioutil.ReadFile(path + "/" + fileName)
+	byteValue, err := os.ReadFile(path + "/" + fileName)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -162,10 +161,10 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	byts, _ := json.Marshal(m["Duty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.Message, 0)
 	for _, msg := range m["Messages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
-		typedMsg := &types.SSVMessage{}
+		typedMsg := &types.Message{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		msgs = append(msgs, typedMsg)
 	}

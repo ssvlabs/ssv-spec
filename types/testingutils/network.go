@@ -19,7 +19,7 @@ func NewTestingNetwork() *TestingNetwork {
 
 func (net *TestingNetwork) Broadcast(message types.Encoder) error {
 	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
-	//net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.SSVMessage))
+	//net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
 	return nil
 }
 
@@ -43,10 +43,9 @@ func (net *TestingNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {
 	if err != nil {
 		return err
 	}
-	net.BroadcastedMsgs = append(net.BroadcastedMsgs, &types.SSVMessage{
-		MsgType: types.DKGMsgType,
-		MsgID:   types.MessageID{}, // TODO: what should we use for the MsgID?
-		Data:    data,
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, &types.Message{
+		ID:   types.PopulateMsgType(types.NewBaseMsgID(nil, -1), types.DKGInitMsgType),
+		Data: data,
 	})
 	return nil
 }

@@ -1,7 +1,6 @@
 package ssv
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -46,7 +45,52 @@ func (v *Validator) StartDuty(duty *types.Duty) error {
 }
 
 // ProcessMessage processes Network Message of all types
-func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
+func (v *Validator) ProcessMessage(msg *types.Message) error {
+	msgID := msg.GetID()
+	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msgID)
+	if dutyRunner == nil {
+		return errors.Errorf("could not get duty runner for msg ID")
+	}
+
+	if err := v.validateMessage(msg); err != nil {
+		return errors.Wrap(err, "Message invalid")
+	}
+
+	switch msgID.GetMsgType() {
+	// TODO<olegshmuelov>: all consensus msgs should be processed here?
+	case types.ConsensusProposeMsgType:
+	case types.ConsensusPrepareMsgType:
+	case types.ConsensusCommitMsgType:
+	case types.ConsensusRoundChangeMsgType:
+		//signedMsg := &qbft.SignedMessage{}
+		//if err := signedMsg.Decode(msg.GetData()); err != nil {
+		//	return errors.Wrap(err, "could not get consensus Message from network Message")
+		//}
+		return dutyRunner.ProcessConsensus(msg)
+	case types.PartialRandaoSignatureMsgType:
+	case types.PartialContributionProofSignatureMsgType:
+	case types.PartialSelectionProofSignatureMsgType:
+		// TODO<olegshmuelov>: use same message structs as consensus
+		signedMsg := &SignedPartialSignatureMessage{}
+		if err := signedMsg.Decode(msg.GetData()); err != nil {
+			return errors.Wrap(err, "could not get post consensus Message from network Message")
+		}
+		return dutyRunner.ProcessPreConsensus(signedMsg)
+	case types.PartialPostConsensusSignatureMsgType:
+		// TODO<olegshmuelov>: use same message structs as consensus
+		signedMsg := &SignedPartialSignatureMessage{}
+		if err := signedMsg.Decode(msg.GetData()); err != nil {
+			return errors.Wrap(err, "could not get post consensus Message from network Message")
+		}
+		return dutyRunner.ProcessPostConsensus(signedMsg)
+	default:
+		return errors.New("unknown msg")
+	}
+	return nil
+}
+
+// ProcessMessage processes Network Message of all types
+/*func (v *Validator) ProcessMessage(msg *types.Message) error {
 	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
 	if dutyRunner == nil {
 		return errors.Errorf("could not get duty runner for msg ID")
@@ -76,9 +120,9 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 	default:
 		return errors.New("unknown msg")
 	}
-}
+}*/
 
-func (v *Validator) validateMessage(runner Runner, msg *types.SSVMessage) error {
+func (v *Validator) validateMessage(msg *types.Message) error {
 	if !v.Share.ValidatorPubKey.MessageIDBelongs(msg.GetID()) {
 		return errors.New("msg ID doesn't match validator ID")
 	}

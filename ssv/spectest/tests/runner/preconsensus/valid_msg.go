@@ -17,7 +17,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
 				PostDutyRunnerStateRoot: "18c1f02c9a7df3e71e10f03891ed8fd8b87bed43bead72f6b8ec0367d2bfbacf",
@@ -29,7 +29,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name:   "aggregator selection proof",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
 				PostDutyRunnerStateRoot: "18022e0768377879d579cc9da57e6fe315afac97a219f0b06c015601668f5a74",
@@ -41,7 +41,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
 				PostDutyRunnerStateRoot: "ec6371ba342e7747a78dd5dd2ead41221fe303a7f859a0b4f22f6bbb31063404",
@@ -53,7 +53,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgAttester(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "d00a1795c598a53727f7b683d54b2299289dd879c82198123556537e781fcede",
@@ -64,7 +64,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name:   "sync committee",
 				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "4ecc5fa28895cda24f3c9489c891c69431ad1c9aedf66d27f87528494b313e19",

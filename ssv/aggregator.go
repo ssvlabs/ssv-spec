@@ -93,8 +93,8 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 	return nil
 }
 
-func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
+func (r *AggregatorRunner) ProcessConsensus(msg *types.Message) error {
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, msg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -105,13 +105,13 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 	}
 
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
+	partialMsg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
 	postConsensusMsg := &PartialSignatureMessages{
 		Type:     PostConsensusPartialSig,
-		Messages: []*PartialSignatureMessage{msg},
+		Messages: []*PartialSignatureMessage{partialMsg},
 	}
 
 	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
@@ -124,10 +124,11 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.PartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
+	msgID := types.NewBaseMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
+
+	msgToBroadcast := &types.Message{
+		ID:   types.PopulateMsgType(msgID, types.PartialPostConsensusSignatureMsgType),
+		Data: data,
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
@@ -203,11 +204,13 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to encode selection proof pre-consensus signature msg")
 	}
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.PartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
+
+	msgID := types.NewBaseMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
+	msgToBroadcast := &types.Message{
+		ID:   types.PopulateMsgType(msgID, types.PartialSelectionProofSignatureMsgType),
+		Data: data,
 	}
+
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial selection proof sig")
 	}

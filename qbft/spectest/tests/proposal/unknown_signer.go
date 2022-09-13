@@ -1,14 +1,8 @@
 package proposal
 
-import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-)
-
+// TODO<olegshmuelov>: PROPOSAL fix test
 // UnknownSigner tests a single proposal received with an unknown signer
-func UnknownSigner() *tests.MsgProcessingSpecTest {
+/*func UnknownSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(5), &qbft.Message{
@@ -26,4 +20,4 @@ func UnknownSigner() *tests.MsgProcessingSpecTest {
 		InputMessages: msgs,
 		ExpectedError: "proposal invalid: proposal msg signature invalid: unknown signer",
 	}
-}
+}*/

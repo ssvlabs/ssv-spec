@@ -118,8 +118,8 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
+func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(msg *types.Message) error {
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, msg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -159,10 +159,10 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
+	msgID := types.NewBaseMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
+	msgToBroadcast := &types.Message{
+		ID:   types.PopulateMsgType(msgID, types.PartialPostConsensusSignatureMsgType),
+		Data: data,
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
@@ -309,10 +309,11 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to encode contribution proofs pre-consensus signature msg")
 	}
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
+
+	msgID := types.NewBaseMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
+	msgToBroadcast := &types.Message{
+		ID:   types.PopulateMsgType(msgID, types.PartialContributionProofSignatureMsgType),
+		Data: data,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial contribution proof sig")

@@ -17,7 +17,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 5)),
 				},
 				PostDutyRunnerStateRoot: "cb45390b7f7d56a825613fa9e6c3fbc98fc565d8bd9c25d31ef01937dfff72b8",
@@ -30,7 +30,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Name:   "aggregator selection proof",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 5)),
 				},
 				PostDutyRunnerStateRoot: "d898d4dff1fc0e6fd56ff075adc9766247cc915530e4fabf70324922ad7454ec",
@@ -43,7 +43,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
+				Messages: []*types.Message{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 5)),
 				},
 				PostDutyRunnerStateRoot: "d6be557a9c94566c60246966c15eca49d458117dce1ba381660d80360a607354",

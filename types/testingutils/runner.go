@@ -145,8 +145,9 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 		panic(err.Error())
 	}
 	for _, msg := range msgs {
+		// TODO<olegshmuelov>: check if need to use SSVMsgAttester
 		//ssvMsg := SSVMsgAttester(msg, nil)
-		if err := v.ProcessMessageSIP(msg); err != nil {
+		if err := v.ProcessMessage(msg); err != nil {
 			panic(err.Error())
 		}
 	}
@@ -154,11 +155,12 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	return v.DutyRunners[types.BNRoleAttester]
 }
 
-var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
-	id := types.NewMsgID(TestingValidatorPubKey[:], role)
+var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.BeaconRole) []*types.Message {
+	id := types.NewBaseMsgID(TestingValidatorPubKey[:], role)
 
-	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.SignedPartialSignatureMessage) *types.SSVMessage {
-		var byts []byte
+	ssvMsgF := func(qbftMsg *types.Message, partialSigMsg *ssv.SignedPartialSignatureMessage) *types.Message {
+		//TODO<olegshmuelov>: rethink logic
+		/*var byts []byte
 		var msgType types.MsgType
 		if partialSigMsg != nil {
 			msgType = types.SSVPartialSignatureMsgType
@@ -168,15 +170,16 @@ var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.Beac
 			byts, _ = qbftMsg.Encode()
 		}
 
-		return &types.SSVMessage{
+		return &types.Message{
 			MsgType: msgType,
 			MsgID:   id,
 			Data:    byts,
-		}
+		}*/
+		return &types.Message{}
 	}
 
 	// pre consensus msgs
-	base := make([]*types.SSVMessage, 0)
+	base := make([]*types.Message, 0)
 	if role == types.BNRoleProposer {
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			base = append(base, ssvMsgF(nil, PreConsensusRandaoMsg(ks.Shares[types.OperatorID(i)], types.OperatorID(i))))
@@ -193,7 +196,7 @@ var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.Beac
 		}
 	}
 
-	qbftMsgs := DecidingMsgsForHeight(consensusData, id[:], qbft.FirstHeight, ks)
+	qbftMsgs := DecidingMsgsForHeight(consensusData, id, qbft.FirstHeight, ks)
 	for _, msg := range qbftMsgs {
 		base = append(base, ssvMsgF(msg, nil))
 	}

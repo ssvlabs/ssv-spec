@@ -10,7 +10,7 @@ import (
 
 type SyncCommitteeAggregatorProofSpecTest struct {
 	Name                    string
-	Messages                []*types.SSVMessage
+	Messages                []*types.Message
 	PostDutyRunnerStateRoot string
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator
 	ExpectedError           string
