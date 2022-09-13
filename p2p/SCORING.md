@@ -116,18 +116,22 @@ passing a zero value disables scoring of message validation.
   * `MeshMsgActivationTime` defines time in the mesh before penalties are being applied
 * `D` is the gossip degree of the topic
 
+Topic level arguments might change between different topics, currently there are two supported topics:
+* **decided topic** for broadcasting decided messages across the network
+* **subnet topic** for broadcasting consensus messages (of multiple validators)
+
 ### Decided Topic Params
 
 Decided topic is used for broadcasting decided messages across the network.
-Params are based on `aggregation topic` (ETH2) due to the high rate of messages.
+Params are based on `beacon aggregate and proof` topic (ETH2) due to the high rate of messages.
 
-The following arguments are used for constructing decided topic score params:
+The following topic level arguments are used for constructing decided topic score params:
 
 | Arg | Value | Comments |
 | --- | -------- | --- |
-|TotalTopicsWeight| `4.0 + 0.5 = 4.5` (subnets + decided) | |
-|TopicWeight| `0.5` | |
-|ExpectedMsgRate| `activeValidators / float64(slotsPerEpoch)` | |
+|TotalTopicsWeight| `4.0 + 0.5 = 4.5` | The total weight consists of all subnets weight (4.0) and decided topic weight |
+|TopicWeight| `0.5` | weights more than the subnet topics as its the most busiest topic |
+|ExpectedMsgRate| `activeValidators / float64(slotsPerEpoch)` | rate per 12s |
 |FirstMsgDecayTime| `1` | |
 |MeshMsgDecayTime| `16` | |
 |MeshMsgCapFactor| `32.0` | |
@@ -260,19 +264,20 @@ Topic score params:
 ```
 </details>
 
+[beacon aggregate and proof topic params for 51K validators](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-51000-toml-L63)
 
 ### Subnet Topic Params
 
 Subnet topics are used for exchanging consensus messages of multiple validator committees.
 Params are based on `attestation subnets` (ETH2) due to their similar nature/orientation.
 
-The following arguments are used for constructing subnet topic score params:
+The following topic level arguments are used for constructing subnet topic score params:
 
 | Arg | Value | Comments |
 | --- | -------- | --- |
-|TotalTopicsWeight| `4.0 + 0.5 = 4.5` (subnets + decided) | |
-|TopicWeight| `4.0 / subnetsCount` | |
-|ExpectedMsgRate| `(activeValidators / subnetsCount) * msgsPerEpoch / slotsPerEpoch` | |
+|TotalTopicsWeight| `4.0 + 0.5 = 4.5` (subnets + decided) | The total weight consists of all subnets weight (4.0) and decided topic weight |
+|TopicWeight| `4.0 / subnetsCount` | all the subnets currently share the same weight, **TBD** higher weight for busier subnets |
+|ExpectedMsgRate| `(activeValidators / subnetsCount) * msgsPerEpoch / slotsPerEpoch` | rate per 12s |
 |FirstMsgDecayTime| `8` | |
 |MeshMsgDecayTime| `16` | |
 |MeshMsgCapFactor| `16.0` | |
