@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
-	"fmt"
-
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )

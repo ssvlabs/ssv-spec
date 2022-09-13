@@ -20,6 +20,18 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+//timeout.FirstRound(),
+	//timeout.Round1(),
+	//timeout.Round2(),
+	//timeout.Round3(),
+	//timeout.Round4(),
+	//timeout.Round5(),
+	//timeout.Round10(),
+	//timeout.Round20(),
+	//timeout.RoundTimeout(),
+	//timeout.ErrorOnBroadcast(),
+	//timeout.ErrorOnCreateMsg(),
+
 	decided.HasQuorum(),
 	decided.NoQuorum(),
 	decided.DuplicateMsg(),

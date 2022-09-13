@@ -221,7 +221,7 @@ func (b *BaseRunner) HashRunningDuty() bool {
 	if b.State == nil {
 		return false
 	}
-	return b.State.Finished != true
+	return !b.State.Finished
 }
 
 func (b *BaseRunner) signBeaconObject(
@@ -324,6 +324,9 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialS
 		}
 
 		r, err := types.ComputeETHSigningRoot(expectedRootObjs[i], d)
+		if err != nil {
+			return errors.Wrap(err, "could not compute ETH signing root")
+		}
 		if !bytes.Equal(r[:], msg.SigningRoot) {
 			return errors.New("wrong pre consensus signing root")
 		}

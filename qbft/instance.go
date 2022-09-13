@@ -55,9 +55,11 @@ func (i *Instance) Start(value []byte, height Height) {
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
+			// nolint
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())
 			}
+			// nolint
 			if err := i.Broadcast(proposal); err != nil {
 				fmt.Printf("%s\n", err.Error())
 			}

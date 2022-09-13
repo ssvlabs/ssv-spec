@@ -216,7 +216,9 @@ func CreateProposal(state *State, config IConfig, value []byte, roundChanges, pr
 		PrepareJustification:     prepares,
 	}
 	dataByts, err := proposalData.Encode()
-
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode proposal data")
+	}
 	msg := &Message{
 		MsgType:    ProposalMsgType,
 		Height:     state.Height,

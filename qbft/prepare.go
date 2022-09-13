@@ -79,25 +79,27 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 }
 
 // validPreparesForHeightRoundAndValue returns an aggregated prepare msg for a specific Height and round
-func validPreparesForHeightRoundAndValue(
-	config IConfig,
-	prepareMessages []*SignedMessage,
-	height Height,
-	round Round,
-	value []byte,
-	operators []*types.Operator) *SignedMessage {
-	var aggregatedPrepareMsg *SignedMessage
-	for _, signedMsg := range prepareMessages {
-		if err := validSignedPrepareForHeightRoundAndValue(config, signedMsg, height, round, value, operators); err == nil {
-			if aggregatedPrepareMsg == nil {
-				aggregatedPrepareMsg = signedMsg
-			} else {
-				aggregatedPrepareMsg.Aggregate(signedMsg)
-			}
-		}
-	}
-	return aggregatedPrepareMsg
-}
+//func validPreparesForHeightRoundAndValue(
+//	config IConfig,
+//	prepareMessages []*SignedMessage,
+//	height Height,
+//	round Round,
+//	value []byte,
+//	operators []*types.Operator) *SignedMessage {
+//	var aggregatedPrepareMsg *SignedMessage
+//	for _, signedMsg := range prepareMessages {
+//		if err := validSignedPrepareForHeightRoundAndValue(config, signedMsg, height, round, value, operators); err == nil {
+//			if aggregatedPrepareMsg == nil {
+//				aggregatedPrepareMsg = signedMsg
+//			} else {
+//				// TODO: check error
+//				// nolint
+//				aggregatedPrepareMsg.Aggregate(signedMsg)
+//			}
+//		}
+//	}
+//	return aggregatedPrepareMsg
+//}
 
 // validSignedPrepareForHeightRoundAndValue known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
@@ -126,7 +128,7 @@ func validSignedPrepareForHeightRoundAndValue(
 		return errors.Wrap(err, "prepareData invalid")
 	}
 
-	if bytes.Compare(prepareData.Data, value) != 0 {
+	if !bytes.Equal(prepareData.Data, value) {
 		return errors.New("prepare data != proposed data")
 	}
 
@@ -158,7 +160,9 @@ func CreatePrepare(state *State, config IConfig, newRound Round, value []byte) (
 		Data: value,
 	}
 	dataByts, err := prepareData.Encode()
-
+	if err != nil {
+		return nil, errors.Wrap(err, "failed encoding prepare data")
+	}
 	msg := &Message{
 		MsgType:    PrepareMsgType,
 		Height:     state.Height,

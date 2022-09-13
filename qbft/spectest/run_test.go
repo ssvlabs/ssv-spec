@@ -55,7 +55,8 @@ func TestJson(t *testing.T) {
 				typedTest.Pre.State.ID,
 				typedTest.Pre.State.Height,
 			)
-			pre.Decode(preByts)
+			err = pre.Decode(preByts)
+			require.NoError(t, err)
 			typedTest.Pre = pre
 
 			tests[testName] = typedTest

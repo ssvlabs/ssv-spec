@@ -12,6 +12,8 @@ import (
 func PostDecided() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	// TODO: check errors
+	// nolint
 	decideRunner := func(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData, preMsgs []*ssv.SignedPartialSignatureMessage) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		for _, msg := range preMsgs {

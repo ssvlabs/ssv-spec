@@ -148,6 +148,7 @@ func SyncCommitteeContributionValueCheckF(
 		}
 
 		for _, c := range cd.SyncCommitteeContribution {
+			// nolint
 			if c.Slot == 0 {
 				// TODO - can remove
 			}

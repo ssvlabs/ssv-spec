@@ -10,6 +10,8 @@ import (
 func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	// TODO: check error
+	// nolint
 	startRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		return r
