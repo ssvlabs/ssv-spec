@@ -409,3 +409,5 @@ Topic score params:
 }
 ```
 </details>
+
+[beacon attestations subnet topic params for 51K validators](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-51000-toml-L87)
