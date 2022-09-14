@@ -4,6 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
@@ -20,7 +21,7 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-//timeout.FirstRound(),
+	//timeout.FirstRound(),
 	//timeout.Round1(),
 	//timeout.Round2(),
 	//timeout.Round3(),
@@ -50,27 +51,27 @@ var AllTests = []SpecTest{
 	decided.MultiDecidedInstances(),
 	decided.FutureInstance(),
 	decided.CurrentInstance(),
-	//
-	//processmsg.MsgError(),
-	//processmsg.SavedAndBroadcastedDecided(),
-	//processmsg.SingleConsensusMsg(),
-	//processmsg.FullDecided(),
-	//processmsg.InvalidIdentifier(),
-	//processmsg.NoInstanceRunning(),
-	//
-	//latemsg.LateCommit(),
-	//latemsg.LateCommitNoInstance(),
-	//latemsg.LateCommitPastInstance(),
-	//latemsg.LatePrepare(),
-	//latemsg.LatePrepareNoInstance(),
-	//latemsg.LatePreparePastInstance(),
-	//latemsg.LateProposal(),
-	//latemsg.LateProposalNoInstance(),
-	//latemsg.LateProposalPastInstance(),
-	//latemsg.LateRoundChange(),
-	//latemsg.LateRoundChangeNoInstance(),
-	//latemsg.LateRoundChangePastInstance(),
-	//
+
+	processmsg.MsgError(),
+	processmsg.SavedAndBroadcastedDecided(),
+	processmsg.SingleConsensusMsg(),
+	processmsg.FullDecided(),
+	processmsg.InvalidIdentifier(),
+	processmsg.NoInstanceRunning(),
+
+	latemsg.LateCommit(),
+	latemsg.LateCommitNoInstance(),
+	latemsg.LateCommitPastInstance(),
+	latemsg.LatePrepare(),
+	latemsg.LatePrepareNoInstance(),
+	latemsg.LatePreparePastInstance(),
+	latemsg.LateProposal(),
+	latemsg.LateProposalNoInstance(),
+	latemsg.LateProposalPastInstance(),
+	latemsg.LateRoundChange(),
+	latemsg.LateRoundChangeNoInstance(),
+	latemsg.LateRoundChangePastInstance(),
+
 	//futuremsg.NoSigners(),
 	//futuremsg.MultiSigners(),
 	//futuremsg.Cleanup(),
