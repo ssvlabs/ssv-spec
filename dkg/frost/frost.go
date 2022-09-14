@@ -2,12 +2,14 @@ package frost
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/coinbase/kryptology/pkg/core/curves"
 	"github.com/coinbase/kryptology/pkg/dkg/frost"
 	"github.com/coinbase/kryptology/pkg/sharing"
+	ecies "github.com/ecies/go/v2"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
@@ -23,8 +25,7 @@ type FROST struct {
 	operators  []uint32
 	threshold  uint32
 
-	sessionPK []byte
-	// validatorPK []byte
+	sessionSK *ecies.PrivateKey
 
 	operatorShares map[uint32]*bls.SecretKey
 	ownShare       []byte
@@ -77,9 +78,12 @@ func (fr *FROST) Start(init *dkg.Init) error {
 	fr.threshold = uint32(init.Threshold)
 	fr.round = Preparation
 
+	k, _ := ecies.GenerateKey()
+	fr.sessionSK = k
+
 	protocolMessage := &ProtocolMsg{
 		PreparationMessage: &PreparationMessage{
-			SessionPk: fr.sessionPK,
+			SessionPk: k.PublicKey.Bytes(true),
 		},
 	}
 
@@ -153,26 +157,18 @@ func (fr *FROST) canStartRound1() bool {
 	return canStart
 }
 
-func (fr *FROST) canStartRound2() bool {
-	canStart := true
-	for _, operatorID := range fr.operators {
-		_, ok := fr.msgs[Round1][operatorID]
-		if !ok {
-			canStart = false
-		}
+func (fr *FROST) encryptForP2PSend(id uint32, share []byte) ([]byte, error) {
+	msg, ok := fr.msgs[Preparation][id]
+	if !ok {
+		return nil, fmt.Errorf("no public key found for operator %d", id)
 	}
-	return canStart
-}
 
-func (fr *FROST) hasFinishedRound2() bool {
-	hasFinished := true
-	for _, operatorID := range fr.operators {
-		_, ok := fr.msgs[Round2][operatorID]
-		if !ok {
-			hasFinished = false
-		}
+	pk, err := ecies.NewPublicKeyFromBytes(msg.PreparationMessage.SessionPk)
+	if err != nil {
+		return nil, err
 	}
-	return hasFinished
+
+	return ecies.Encrypt(pk, share)
 }
 
 func (fr *FROST) processRound1() error {
@@ -196,20 +192,23 @@ func (fr *FROST) processRound1() error {
 		}
 		fr.operatorShares[operatorID] = &share
 
+		encryptedShare, err := fr.encryptForP2PSend(operatorID, share.Serialize())
+		if err != nil {
+			return err
+		}
+
 		if fr.operatorID != operatorID {
-			shares[operatorID] = share.Serialize()
+			shares[operatorID] = encryptedShare
 		}
 	}
 
-	r1Message := &Round1Message{
-		Commitment: commitments,
-		ProofS:     bCastMessage.Wi.Bytes(),
-		ProofR:     bCastMessage.Ci.Bytes(),
-		Shares:     shares,
-	}
-
 	protocolMessage := &ProtocolMsg{
-		Round1Message: r1Message,
+		Round1Message: &Round1Message{
+			Commitment: commitments,
+			ProofS:     bCastMessage.Wi.Bytes(),
+			ProofR:     bCastMessage.Ci.Bytes(),
+			Shares:     shares,
+		},
 	}
 
 	if fr.msgs[Round1] == nil {
@@ -233,6 +232,28 @@ func (fr *FROST) processRound1() error {
 	}
 
 	return fr.network.BroadcastDKGMessage(bcastRound1Message)
+}
+
+func (fr *FROST) canStartRound2() bool {
+	canStart := true
+	for _, operatorID := range fr.operators {
+		_, ok := fr.msgs[Round1][operatorID]
+		if !ok {
+			canStart = false
+		}
+	}
+	return canStart
+}
+
+func (fr *FROST) hasFinishedRound2() bool {
+	hasFinished := true
+	for _, operatorID := range fr.operators {
+		_, ok := fr.msgs[Round2][operatorID]
+		if !ok {
+			hasFinished = false
+		}
+	}
+	return hasFinished
 }
 
 func (fr *FROST) processRound2() error {
@@ -259,10 +280,21 @@ func (fr *FROST) processRound2() error {
 		}
 		bcast[operatorID] = bcastMessage
 
-		share := &sharing.ShamirShare{}
-		if err := json.Unmarshal(protocolMessage.Round1Message.Shares[fr.operatorID], share); err != nil {
+		encryptedShareBytes := make([]byte, 0)
+		if err := json.Unmarshal(protocolMessage.Round1Message.Shares[fr.operatorID], &encryptedShareBytes); err != nil {
 			return err
 		}
+
+		shareBytes, err := ecies.Decrypt(fr.sessionSK, encryptedShareBytes)
+		if err != nil {
+			return err
+		}
+
+		share := &sharing.ShamirShare{
+			Id:    operatorID,
+			Value: shareBytes,
+		}
+
 		p2psend[operatorID] = share
 	}
 
@@ -273,13 +305,11 @@ func (fr *FROST) processRound2() error {
 
 	fr.ownShare = fr.party.SkShare.Bytes()
 
-	r2Message := &Round2Message{
-		Vk:      bCastMessage.VerificationKey.ToAffineCompressed(),
-		VkShare: bCastMessage.VkShare.ToAffineCompressed(),
-	}
-
 	protocolMessage := &ProtocolMsg{
-		Round2Message: r2Message,
+		Round2Message: &Round2Message{
+			Vk:      bCastMessage.VerificationKey.ToAffineCompressed(),
+			VkShare: bCastMessage.VkShare.ToAffineCompressed(),
+		},
 	}
 
 	if fr.msgs[Round2] == nil {
@@ -321,6 +351,8 @@ func (fr *FROST) getKeygenOutput() (*dkg.KeyGenOutput, error) {
 
 		operatorPublicKeys[types.OperatorID(operatorID)] = pk
 	}
+
+	bls.G1LagrangeInterpolation()
 
 	// TODO: Use G1LagrangeInterpolation to check whether vkshares generate consistent vk
 	out := &dkg.KeyGenOutput{
