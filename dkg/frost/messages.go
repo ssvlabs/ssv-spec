@@ -3,9 +3,10 @@ package frost
 import "encoding/json"
 
 type ProtocolMsg struct {
-	Round DKGRound
-
-	Data interface{}
+	PreparationMessage *PreparationMessage
+	Round1Message      *Round1Message
+	Round2Message      *Round2Message
+	BlameMessage       *BlameMessage
 }
 
 type PreparationMessage struct {
