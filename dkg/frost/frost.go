@@ -352,9 +352,41 @@ func (fr *FROST) getKeygenOutput() (*dkg.KeyGenOutput, error) {
 		operatorPublicKeys[types.OperatorID(operatorID)] = pk
 	}
 
-	bls.G1LagrangeInterpolation()
+	outputs := make([]*bls.G1, 0)
+	for j := int(fr.threshold); j < len(fr.operators); j++ {
+		xVec := make([]bls.Fr, 0)
+		yVec := make([]bls.G1, 0)
+		for i := j - int(fr.threshold); i < j; i++ {
+			operatorID := fr.operators[i]
 
-	// TODO: Use G1LagrangeInterpolation to check whether vkshares generate consistent vk
+			x := bls.Fr{}
+			x.SetInt64(int64(operatorID))
+			xVec = append(xVec, x)
+
+			pk := &bls.PublicKey{}
+			if err := pk.Deserialize(fr.msgs[Round2][operatorID].Round2Message.VkShare); err != nil {
+				return nil, err
+			}
+
+			y := bls.CastFromPublicKey(pk)
+			yVec = append(yVec, *y)
+
+		}
+
+		out := &bls.G1{}
+		if err := bls.G1LagrangeInterpolation(out, xVec, yVec); err != nil {
+			return nil, err
+		}
+
+		outputs = append(outputs, out)
+	}
+
+	for i := 1; i < len(outputs); i++ {
+		if !outputs[i].IsEqual(outputs[i-1]) {
+			return nil, fmt.Errorf("failed to create consistent public keys from t shares")
+		}
+	}
+
 	out := &dkg.KeyGenOutput{
 		Share:           sk,
 		OperatorPubKeys: operatorPublicKeys,
