@@ -5,7 +5,7 @@ import (
 	"crypto/rsa"
 	"encoding/hex"
 	"fmt"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
@@ -53,7 +53,7 @@ var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *dkg.Messag
 	}
 }
 
-var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte, fork spec.Version) []byte {
+var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte, fork phase0.Version) []byte {
 	m := &dkg.Init{
 		OperatorIDs:           operators,
 		Threshold:             threshold,

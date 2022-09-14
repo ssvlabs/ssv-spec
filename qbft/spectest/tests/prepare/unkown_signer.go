@@ -18,7 +18,7 @@ package prepare
 			Height:     qbft.FirstHeight,
 			Round:      qbft.FirstRound,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+			Input: []byte{1, 2, 3, 4},
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{

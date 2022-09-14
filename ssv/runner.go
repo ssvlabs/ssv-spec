@@ -2,7 +2,7 @@ package ssv
 
 import (
 	"bytes"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
@@ -29,7 +29,7 @@ type Runner interface {
 	ProcessConsensus(msg *types.Message) error
 	ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error
 
-	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
+	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
 	executeDuty(duty *types.Duty) error
 }
 
@@ -187,7 +187,7 @@ func (b *BaseRunner) validatePostConsensusMsg(msg *SignedPartialSignatureMessage
 }
 
 func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
-	byts, err := input.Encode()
+	byts, err := input.MarshalSSZ()
 	if err != nil {
 		return errors.Wrap(err, "could not encode ConsensusData")
 	}
@@ -218,8 +218,8 @@ func (b *BaseRunner) HashRunningDuty() bool {
 func (b *BaseRunner) signBeaconObject(
 	runner Runner,
 	obj ssz.HashRoot,
-	slot spec.Slot,
-	domainType spec.DomainType,
+	slot phase0.Slot,
+	domainType phase0.DomainType,
 ) (*PartialSignatureMessage, error) {
 	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
 	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
@@ -242,7 +242,7 @@ func (b *BaseRunner) signBeaconObject(
 
 func (b *BaseRunner) validatePartialSigMsg(
 	signedMsg *SignedPartialSignatureMessage,
-	slot spec.Slot,
+	slot phase0.Slot,
 ) error {
 	if err := signedMsg.Validate(); err != nil {
 		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
@@ -303,7 +303,7 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.Cons
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain phase0.DomainType) error {
 	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
 		return errors.New("wrong expected roots count")
 	}

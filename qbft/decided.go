@@ -30,12 +30,12 @@ func (i *Instance) UponDecided(signedDecided *SignedMessage, commitMsgContainer 
 		return false, nil, nil // UponCommit was already called
 	}
 
-	msgDecidedData, err := signedDecided.Message.GetCommitData()
-	if err != nil {
-		return false, nil, errors.Wrap(err, "could not get msg decided data")
-	}
+	//msgDecidedData, err := signedDecided.Message.GetCommitData()
+	//if err != nil {
+	//	return false, nil, errors.Wrap(err, "could not get msg decided data")
+	//}
 
-	return true, msgDecidedData.Data, nil
+	return true, signedDecided.Message.Input, nil
 }
 
 func validateDecided(
@@ -54,12 +54,12 @@ func validateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	msgDecidedData, err := signedDecided.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get msg decided data")
-	}
+	//msgDecidedData, err := signedDecided.Message.GetCommitData()
+	//if err != nil {
+	//	return errors.Wrap(err, "could not get msg decided data")
+	//}
 
-	if err := valCheck(msgDecidedData.Data); err != nil {
+	if err := valCheck(signedDecided.Message.Input); err != nil {
 		return errors.Wrap(err, "decided value invalid")
 	}
 

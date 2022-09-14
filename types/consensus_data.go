@@ -10,6 +10,15 @@ import (
 
 type ContributionsMap map[phase0.BLSSignature]*altair.SyncCommitteeContribution
 
+type contributionEntries struct {
+	SyncCommitteeContribution []*ContributionEntry `ssz-max:"13"`
+}
+
+type ContributionEntry struct {
+	Sig   phase0.BLSSignature `ssz-size:"96"`
+	Contr *altair.SyncCommitteeContribution
+}
+
 func (cm *ContributionsMap) MarshalJSON() ([]byte, error) {
 	m := make(map[string]*altair.SyncCommitteeContribution)
 	for k, v := range *cm {
@@ -52,15 +61,18 @@ type ConsensusData struct {
 	SyncCommitteeContribution ContributionsMap
 }
 
-func (cid *ConsensusData) Encode() ([]byte, error) {
-	return json.Marshal(cid)
+func (cd *ConsensusData) Encode() ([]byte, error) {
+	return json.Marshal(cd)
 }
 
-func (cid *ConsensusData) Decode(data []byte) error {
-	return json.Unmarshal(data, &cid)
+func (cd *ConsensusData) Decode(data []byte) error {
+	return json.Unmarshal(data, &cd)
 }
 
 type ConsensusInput struct {
-	Duty    *Duty
-	DataSSZ []byte `ssz-max:"2048"`
+	Duty *Duty
+	// TODO: determine real ssz-max. the current ssz-max calculated for the altair.BeaconBlock and not bellatrix.
+	// bellatrix includes the transactions and th extra data inside the ExecutionPayload
+	// Transactions  []Transaction `ssz-max:"1073741824,1048576"`
+	Data []byte `ssz-max:"387068"`
 }

@@ -21,7 +21,7 @@ package decided
 				Height:     qbft.FirstHeight,
 				Round:      qbft.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+				Input: []byte{1, 2, 3, 4},
 			}),
 		testingutils.MultiSignQBFTMsg(
 			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
@@ -31,7 +31,7 @@ package decided
 				Height:     qbft.FirstHeight,
 				Round:      qbft.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+				Input: []byte{1, 2, 3, 4},
 			}),
 	}
 

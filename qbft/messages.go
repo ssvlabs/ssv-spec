@@ -41,112 +41,16 @@ func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	return share.HasPartialQuorum(len(uniqueSigners))
 }
 
-type MessageType int
-
-const (
-	ProposalMsgType MessageType = iota
-	PrepareMsgType
-	CommitMsgType
-	RoundChangeMsgType
-)
-
-type ProposalData struct {
-	Data                     []byte
-	RoundChangeJustification []*SignedMessage
-	PrepareJustification     []*SignedMessage
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *ProposalData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *ProposalData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *ProposalData) Validate() error {
-	if len(d.Data) == 0 {
-		return errors.New("ProposalData data is invalid")
-	}
-	return nil
-}
-
-type PrepareData struct {
-	Data []byte
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *PrepareData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *PrepareData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *PrepareData) Validate() error {
-	if len(d.Data) == 0 {
-		return errors.New("PrepareData data is invalid")
-	}
-	return nil
-}
-
-type CommitData struct {
-	Data []byte
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *CommitData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *CommitData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *CommitData) Validate() error {
-	if len(d.Data) == 0 {
-		return errors.New("CommitData data is invalid")
-	}
-	return nil
-}
-
-type RoundChangeData struct {
-	PreparedValue            []byte
-	PreparedRound            Round
-	RoundChangeJustification []*SignedMessage
-}
-
-func (d *RoundChangeData) Prepared() bool {
+/*func (d *RoundChangeData) Prepared() bool {
 	if d.PreparedRound != NoRound || len(d.PreparedValue) != 0 {
 		return true
 	}
 	return false
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *RoundChangeData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *RoundChangeData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
+}*/
 
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
-func (d *RoundChangeData) Validate() error {
+/*func (d *RoundChangeData) Validate() error {
 	if d.Prepared() {
 		if len(d.PreparedValue) == 0 {
 			return errors.New("round change prepared value invalid")
@@ -157,59 +61,15 @@ func (d *RoundChangeData) Validate() error {
 		// TODO - should next proposal data be equal to prepared value?
 	}
 	return nil
-}
+}*/
 
 // Message includes the full consensus input to be decided on, used for decided, proposal and round-change messages
 type Message struct {
 	Height Height
 	Round  Round
-	Input  []byte `ssz-max:"2048"`
+	Input  []byte `ssz-max:"387173"`
 	// PreparedRound an optional field used for round-change
 	PreparedRound Round
-}
-
-//type Message struct {
-//	MsgType    MessageType
-//	Height     Height // QBFT instance Height
-//	Round      Round  // QBFT round for which the msg is for
-//	Identifier []byte // instance Identifier this msg belongs to
-//	Data       []byte
-//}
-
-// GetProposalData returns proposal specific data
-func (msg *Message) GetProposalData() (*ProposalData, error) {
-	ret := &ProposalData{}
-	//if err := ret.Decode(msg.Data); err != nil {
-	//	return nil, errors.Wrap(err, "could not decode proposal data from message")
-	//}
-	return ret, nil
-}
-
-// GetPrepareData returns prepare specific data
-func (msg *Message) GetPrepareData() (*PrepareData, error) {
-	ret := &PrepareData{}
-	//if err := ret.Decode(msg.Data); err != nil {
-	//	return nil, errors.Wrap(err, "could not decode prepare data from message")
-	//}
-	return ret, nil
-}
-
-// GetCommitData returns commit specific data
-func (msg *Message) GetCommitData() (*CommitData, error) {
-	ret := &CommitData{}
-	//if err := ret.Decode(msg.Data); err != nil {
-	//	return nil, errors.Wrap(err, "could not decode commit data from message")
-	//}
-	return ret, nil
-}
-
-// GetRoundChangeData returns round change specific data
-func (msg *Message) GetRoundChangeData() (*RoundChangeData, error) {
-	ret := &RoundChangeData{}
-	//if err := ret.Decode(msg.Data); err != nil {
-	//	return nil, errors.Wrap(err, "could not decode round change data from message")
-	//}
-	return ret, nil
 }
 
 // Encode returns a msg encoded bytes or error
@@ -271,12 +131,6 @@ type SignedMessage struct {
 	RoundChangeJustifications []*SignedMessageHeader `ssz-max:"13"`
 	ProposalJustifications    []*SignedMessageHeader `ssz-max:"13"`
 }
-
-//type SignedMessage struct {
-//	Signature types.Signature
-//	Signers   []types.OperatorID
-//	Message   *Message // message for which this signature is for
-//}
 
 // MessageHeader includes just the root of the input to be decided on (to save space), used for prepare, commit and justification messages
 type MessageHeader struct {

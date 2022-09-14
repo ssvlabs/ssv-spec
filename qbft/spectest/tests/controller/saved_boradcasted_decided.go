@@ -35,7 +35,7 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 						Height: qbft.FirstHeight,
 						Round:  qbft.FirstRound,
 						//Identifier: identifier[:],
-						//Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						//Input: []byte{1, 2, 3, 4},
 						Input: []byte{1, 2, 3, 4},
 					}),
 			},

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/rsa"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -40,9 +40,9 @@ type EncryptionCalls interface {
 
 type BeaconSigner interface {
 	// SignBeaconObject returns signature and root.
-	SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte) (Signature, []byte, error)
+	SignBeaconObject(obj ssz.HashRoot, domain phase0.Domain, pk []byte) (Signature, []byte, error)
 	// IsAttestationSlashable returns error if attestation is slashable
-	IsAttestationSlashable(data *spec.AttestationData) error
+	IsAttestationSlashable(data *phase0.AttestationData) error
 	// IsBeaconBlockSlashable returns true if the given block is slashable
 	IsBeaconBlockSlashable(block *bellatrix.BeaconBlock) error
 }

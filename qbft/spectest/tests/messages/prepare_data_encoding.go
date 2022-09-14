@@ -13,7 +13,7 @@ func PrepareDataEncoding() *tests.MsgSpecTest {
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+		Input:  []byte{1, 2, 3, 4},
 	})
 
 	r, _ := msg.GetRoot()

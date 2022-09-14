@@ -7,7 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -74,7 +74,7 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 }
 
 // IsAttestationSlashable returns error if attestation is slashable
-func (km *testingKeyManager) IsAttestationSlashable(data *spec.AttestationData) error {
+func (km *testingKeyManager) IsAttestationSlashable(data *phase0.AttestationData) error {
 	for _, r := range km.slashableDataRoots {
 		r2, _ := data.HashTreeRoot()
 		if bytes.Equal(r, r2[:]) {
@@ -101,7 +101,7 @@ func (km *testingKeyManager) IsBeaconBlockSlashable(block *bellatrix.BeaconBlock
 	return nil
 }
 
-func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte) (types.Signature, []byte, error) {
+func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain phase0.Domain, pk []byte) (types.Signature, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		r, err := types.ComputeETHSigningRoot(obj, domain)
 		if err != nil {
@@ -109,7 +109,7 @@ func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Doma
 		}
 
 		sig := k.SignByte(r[:])
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		return sig.Serialize(), r[:], nil

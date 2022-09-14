@@ -49,7 +49,7 @@ package proposal
 //				Height:     qbft.FirstHeight,
 //				Round:      5,
 //				Identifier: []byte{1, 2, 3, 4},
-//				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+//				Input: []byte{1, 2, 3, 4},
 //			}),
 //		},
 //	}

@@ -3,7 +3,7 @@ package testingutils
 import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
@@ -58,7 +58,7 @@ var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encod
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty: TestingSyncCommitteeContributionDuty,
-	SyncCommitteeContribution: map[spec.BLSSignature]*altair.SyncCommitteeContribution{
+	SyncCommitteeContribution: map[phase0.BLSSignature]*altair.SyncCommitteeContribution{
 		TestingContributionProofsSigned[0]: TestingSyncCommitteeContributions[0],
 		TestingContributionProofsSigned[1]: TestingSyncCommitteeContributions[1],
 		TestingContributionProofsSigned[2]: TestingSyncCommitteeContributions[2],
@@ -189,7 +189,7 @@ var postConsensusBeaconBlockMsg = func(
 
 	d, _ := beacon.DomainData(1, types.DomainProposer) // epoch doesn't matter here, hard coded
 	sig, root, _ := signer.SignBeaconObject(TestingBeaconBlock, d, sk.GetPublicKey().Serialize())
-	blsSig := spec.BLSSignature{}
+	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], sig)
 
 	signed := bellatrix.SignedBeaconBlock{
@@ -304,8 +304,8 @@ var randaoMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
 	wrongRoot bool,
-	epoch spec.Epoch,
-	slot spec.Slot,
+	epoch phase0.Epoch,
+	slot phase0.Slot,
 	msgCnt int,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
@@ -350,7 +350,7 @@ var PreConsensusMultiSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, ms
 	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, 3)
 }
 
-var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot spec.Slot) *ssv.SignedPartialSignatureMessage {
+var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *ssv.SignedPartialSignatureMessage {
 	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, 1)
 }
 
@@ -363,8 +363,8 @@ var selectionProofMsg = func(
 	beaconsk *bls.SecretKey,
 	id types.OperatorID,
 	beaconid types.OperatorID,
-	slot spec.Slot,
-	msgSlot spec.Slot,
+	slot phase0.Slot,
+	msgSlot phase0.Slot,
 	msgCnt int,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
@@ -488,7 +488,7 @@ var PreConsensusContributionProofNextEpochMsg = func(msgSK, beaconSK *bls.Secret
 	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot2, TestingDutySlot2, false, false)
 }
 
-var PreConsensusCustomSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot spec.Slot) *ssv.SignedPartialSignatureMessage {
+var PreConsensusCustomSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *ssv.SignedPartialSignatureMessage {
 	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, false, false)
 }
 
@@ -507,8 +507,8 @@ var PreConsensusWrongCountContributionProofMsg = func(msgSK, beaconSK *bls.Secre
 var contributionProofMsg = func(
 	sk, beaconsk *bls.SecretKey,
 	id, beaconid types.OperatorID,
-	slot spec.Slot,
-	msgSlot spec.Slot,
+	slot phase0.Slot,
+	msgSlot phase0.Slot,
 	wrongMsgOrder bool,
 	dropLastMsg bool,
 ) *ssv.SignedPartialSignatureMessage {
@@ -563,7 +563,7 @@ var PostConsensusSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types
 var postConsensusSyncCommitteeContributionMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
-	validatorIndex spec.ValidatorIndex,
+	validatorIndex phase0.ValidatorIndex,
 	keySet *TestKeySet,
 	wrongRoot bool,
 	wrongBeaconSig bool,
@@ -583,7 +583,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 		dProof, _ := beacon.DomainData(1, types.DomainSyncCommitteeSelectionProof)
 
 		proofSig, _, _ := signer.SignBeaconObject(data, dProof, keySet.ValidatorPK.Serialize())
-		blsProofSig := spec.BLSSignature{}
+		blsProofSig := phase0.BLSSignature{}
 		copy(blsProofSig[:], proofSig)
 
 		// get contribution

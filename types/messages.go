@@ -193,8 +193,9 @@ func (msg *SSVMessage) Decode(data []byte) error {
 
 // Message is the main message passed within the SSV network, it can contain different types of messages (QBTF, Sync, etc.)
 type Message struct {
-	ID   MessageID `ssz-size:"60"`
-	Data []byte    `ssz-max:"2048"`
+	ID MessageID `ssz-size:"60"`
+	// SignedMessage ssz max size
+	Data []byte `ssz-max:"394281"`
 }
 
 // GetID returns a unique msg ID that is used to identify to which validator should the message be sent for processing

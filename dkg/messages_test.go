@@ -1,7 +1,7 @@
 package dkg
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/require"
@@ -14,7 +14,7 @@ func TestInit_Validate(t *testing.T) {
 			OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
 			Threshold:             3,
 			WithdrawalCredentials: common.Hex2Bytes("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f"),
-			Fork:                  spec.Version{},
+			Fork:                  phase0.Version{},
 		}
 		require.NoError(t, init.Validate())
 		init.OperatorIDs = []types.OperatorID{1, 2, 3, 4, 5, 6, 7}
@@ -32,7 +32,7 @@ func TestInit_Validate(t *testing.T) {
 			OperatorIDs:           []types.OperatorID{1, 2, 3},
 			Threshold:             3,
 			WithdrawalCredentials: common.Hex2Bytes("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f"),
-			Fork:                  spec.Version{},
+			Fork:                  phase0.Version{},
 		}
 		require.Error(t, init.Validate())
 		init.OperatorIDs = []types.OperatorID{1, 2, 3, 4, 5, 6}
@@ -50,7 +50,7 @@ func TestInit_Validate(t *testing.T) {
 			OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
 			Threshold:             2,
 			WithdrawalCredentials: common.Hex2Bytes("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f"),
-			Fork:                  spec.Version{},
+			Fork:                  phase0.Version{},
 		}
 		require.Error(t, init.Validate())
 		init.OperatorIDs = []types.OperatorID{1, 2, 3, 4, 5, 6, 7}
@@ -68,7 +68,7 @@ func TestInit_Validate(t *testing.T) {
 			OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
 			Threshold:             3,
 			WithdrawalCredentials: common.Hex2Bytes("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd6680"),
-			Fork:                  spec.Version{},
+			Fork:                  phase0.Version{},
 		}
 		require.Error(t, init.Validate())
 	})
@@ -77,7 +77,7 @@ func TestInit_Validate(t *testing.T) {
 			OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
 			Threshold:             3,
 			WithdrawalCredentials: common.Hex2Bytes("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808faa"),
-			Fork:                  spec.Version{},
+			Fork:                  phase0.Version{},
 		}
 		require.Error(t, init.Validate())
 	})

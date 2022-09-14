@@ -44,7 +44,7 @@ func (net *TestingNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {
 		return err
 	}
 	net.BroadcastedMsgs = append(net.BroadcastedMsgs, &types.Message{
-		ID:   types.PopulateMsgType(types.NewBaseMsgID(nil, -1), types.DKGInitMsgType),
+		ID:   types.PopulateMsgType(types.NewBaseMsgID(nil, 0), types.DKGInitMsgType),
 		Data: data,
 	})
 	return nil

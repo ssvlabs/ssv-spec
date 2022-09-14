@@ -66,7 +66,7 @@ package roundchange
 				Height:     qbft.FirstHeight,
 				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
+				Input: []byte{1, 2, 3, 4},
 			}),
 		},
 	}
