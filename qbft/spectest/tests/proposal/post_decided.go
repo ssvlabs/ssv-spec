@@ -62,11 +62,11 @@ func PostDecided() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "proposal post decided",
-		Pre:              pre,
-		PostRoot:         "7a305edc0784ac3a70285e9404d403aac1dd9c5cd4f7b70cac3824d026cc9804",
-		InputMessagesSIP: msgs,
-		OutputMessagesSIP: []*types.Message{
+		Name:          "proposal post decided",
+		Pre:           pre,
+		PostRoot:      "7a305edc0784ac3a70285e9404d403aac1dd9c5cd4f7b70cac3824d026cc9804",
+		InputMessages: msgs,
+		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: signMsgEncoded,

@@ -1,6 +1,6 @@
 package roundchange
 
-// TODO<olegshmuelov>: CHANGEROUND fix test
+// TODO<olegshmuelov>: CHANGEROUND adjust test with new msg structs
 // ValidJustification tests a valid rc quorum justification
 /*func ValidJustification() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()

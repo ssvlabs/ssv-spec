@@ -55,11 +55,11 @@ func JustificationInvalidSig() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "justification invalid sig",
-		Pre:              pre,
-		PostRoot:         "a8b80879ebf2ecee42fddc69b67dd5f6adfd6aa8b7114246aec80ce1bfef513a",
-		InputMessagesSIP: msgs,
-		OutputMessages:   []*qbft.SignedMessage{},
-		ExpectedError:    "round change msg invalid: round change justification invalid: prepare msg signature invalid: failed to verify signature",
+		Name:           "justification invalid sig",
+		Pre:            pre,
+		PostRoot:       "a8b80879ebf2ecee42fddc69b67dd5f6adfd6aa8b7114246aec80ce1bfef513a",
+		InputMessages:  msgs,
+		OutputMessages: []*types.Message{},
+		ExpectedError:  "round change msg invalid: round change justification invalid: prepare msg signature invalid: failed to verify signature",
 	}
 }

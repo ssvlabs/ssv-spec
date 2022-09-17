@@ -1,6 +1,6 @@
 package roundchange
 
-// TODO<olegshmuelov>: CHANGEROUND fix test
+// TODO<olegshmuelov>: CHANGEROUND adjust test with new msg structs
 // NotProposer tests a justified round change but node is not the proposer
 /*func NotProposer() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()

@@ -1,8 +1,16 @@
 package consensus
 
-// TODO<olegshmuelov>: CONSENSUS fix test
+import (
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/herumi/bls-eth-go-binary/bls"
+)
+
 // InvalidDecidedValue tests an invalid decided value
-/*func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
+func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	consensusDataByts := func(role types.BeaconRole) []byte {
@@ -18,7 +26,7 @@ package consensus
 				ValidatorCommitteeIndex: 11,
 			},
 		}
-		byts, _ := cd.Encode()
+		byts, _ := cd.MarshalSSZ()
 		return byts
 	}
 
@@ -30,24 +38,22 @@ package consensus
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.Message{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), types.PartialContributionProofSignatureMsgType),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2), types.PartialContributionProofSignatureMsgType),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3), types.PartialContributionProofSignatureMsgType),
 
 					testingutils.SSVMsgSyncCommitteeContribution(
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
 							&qbft.Message{
-								MsgType:    qbft.CommitMsgType,
-								Height:     qbft.FirstHeight,
-								Round:      qbft.FirstRound,
-								Identifier: testingutils.SyncCommitteeContributionMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
-							}), nil),
+								Height: qbft.FirstHeight,
+								Round:  qbft.FirstRound,
+								Input:  consensusDataByts(types.BNRoleSyncCommitteeContribution),
+							}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "c657220938d48e0573e9874b84b29cb92c7d581fca27c28d2a34cc3913c3ffbb",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
@@ -62,15 +68,13 @@ package consensus
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
 							&qbft.Message{
-								MsgType:    qbft.CommitMsgType,
-								Height:     qbft.FirstHeight,
-								Round:      qbft.FirstRound,
-								Identifier: testingutils.SyncCommitteeMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommittee)),
-							}), nil),
+								Height: qbft.FirstHeight,
+								Round:  qbft.FirstRound,
+								Input:  consensusDataByts(types.BNRoleSyncCommittee),
+							}), nil, types.ConsensusCommitMsgType),
 				},
-				PostDutyRunnerStateRoot: "4ecc5fa28895cda24f3c9489c891c69431ad1c9aedf66d27f87528494b313e19",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "ca7c1b5bb6a1b2b5d486da30bdef8a96db109cbe5691d1191a0671eaaafb5cf0",
+				OutputMessages:          []*ssv.SignedPartialSignature{},
 				ExpectedError:           "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
 			},
 			{
@@ -78,24 +82,22 @@ package consensus
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty,
 				Messages: []*types.Message{
-					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), types.PartialSelectionProofSignatureMsgType),
+					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2), types.PartialSelectionProofSignatureMsgType),
+					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3), types.PartialSelectionProofSignatureMsgType),
 
 					testingutils.SSVMsgAggregator(
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
 							&qbft.Message{
-								MsgType:    qbft.CommitMsgType,
-								Height:     qbft.FirstHeight,
-								Round:      qbft.FirstRound,
-								Identifier: testingutils.AggregatorMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAggregator)),
-							}), nil),
+								Height: qbft.FirstHeight,
+								Round:  qbft.FirstRound,
+								Input:  consensusDataByts(types.BNRoleAggregator),
+							}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "e5df3344d76b2e83fabbff92998d5999daff2747f276b1fbc222b6c960750b93",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
@@ -105,24 +107,22 @@ package consensus
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
 				Messages: []*types.Message{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1), types.PartialRandaoSignatureMsgType),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2), types.PartialRandaoSignatureMsgType),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3), types.PartialRandaoSignatureMsgType),
 
 					testingutils.SSVMsgProposer(
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
 							&qbft.Message{
-								MsgType:    qbft.CommitMsgType,
-								Height:     qbft.FirstHeight,
-								Round:      qbft.FirstRound,
-								Identifier: testingutils.ProposerMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
-							}), nil),
+								Height: qbft.FirstHeight,
+								Round:  qbft.FirstRound,
+								Input:  consensusDataByts(types.BNRoleProposer),
+							}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "f9023766285ee75a894437f41dbe7d40b6d23922df60353a6c0125d56c4f9f09",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
 				ExpectedError: "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
@@ -137,17 +137,15 @@ package consensus
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
 							&qbft.Message{
-								MsgType:    qbft.CommitMsgType,
-								Height:     qbft.FirstHeight,
-								Round:      qbft.FirstRound,
-								Identifier: testingutils.AttesterMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAttester)),
-							}), nil),
+								Height: qbft.FirstHeight,
+								Round:  qbft.FirstRound,
+								Input:  consensusDataByts(types.BNRoleAttester),
+							}), nil, types.ConsensusCommitMsgType),
 				},
-				PostDutyRunnerStateRoot: "d00a1795c598a53727f7b683d54b2299289dd879c82198123556537e781fcede",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "0a87eee70b6ee2583dd414d6f07f6f5c433975409896dafb51628f5e393a7458",
+				OutputMessages:          []*ssv.SignedPartialSignature{},
 				ExpectedError:           "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
 			},
 		},
 	}
-}*/
+}

@@ -62,9 +62,9 @@ func DuplicateMsg() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "round change duplicate msg",
-		Pre:              pre,
-		PostRoot:         "cadf3dd2db0b1c38c4a5574d33b0372ba49bbfbc618b44888dd277462f1cff45",
-		InputMessagesSIP: msgs,
+		Name:          "round change duplicate msg",
+		Pre:           pre,
+		PostRoot:      "cadf3dd2db0b1c38c4a5574d33b0372ba49bbfbc618b44888dd277462f1cff45",
+		InputMessages: msgs,
 	}
 }

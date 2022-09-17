@@ -24,10 +24,10 @@ func NoPreviousProposal() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "no previous proposal for prepare",
-		Pre:              pre,
-		PostRoot:         "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
-		InputMessagesSIP: msgs,
-		ExpectedError:    "no proposal accepted for prepare",
+		Name:          "no previous proposal for prepare",
+		Pre:           pre,
+		PostRoot:      "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
+		InputMessages: msgs,
+		ExpectedError: "no proposal accepted for prepare",
 	}
 }

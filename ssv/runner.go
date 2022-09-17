@@ -25,9 +25,9 @@ type Runner interface {
 
 	StartNewDuty(duty *types.Duty) error
 	HasRunningDuty() bool
-	ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error
+	ProcessPreConsensus(signedMsg *SignedPartialSignature) error
 	ProcessConsensus(msg *types.Message) error
-	ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error
+	ProcessPostConsensus(signedMsg *SignedPartialSignature) error
 
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
 	executeDuty(duty *types.Duty) error
@@ -64,7 +64,7 @@ func (b *BaseRunner) canStartNewDuty() error {
 	return nil
 }
 
-func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
+func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignature) (bool, [][]byte, error) {
 	if err := b.validatePreConsensusMsg(runner, signedMsg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid pre-consensus message")
 	}
@@ -108,7 +108,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Messag
 	}
 
 	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedValueByts); err != nil {
+	if err := decidedValue.UnmarshalSSZ(decidedValueByts); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
@@ -121,7 +121,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Messag
 	return true, decidedValue, nil
 }
 
-func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
+func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSignature) (bool, [][]byte, error) {
 	if err := b.validatePostConsensusMsg(signedMsg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid post-consensus message")
 	}
@@ -150,7 +150,7 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSign
 	return anyQuorum, roots, nil
 }
 
-func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignature) error {
 	if !b.HashRunningDuty() {
 		return errors.New("no running duty")
 	}
@@ -174,7 +174,7 @@ func (b *BaseRunner) validateConsensusMsg() error {
 	return nil
 }
 
-func (b *BaseRunner) validatePostConsensusMsg(msg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) validatePostConsensusMsg(msg *SignedPartialSignature) error {
 	if !b.HashRunningDuty() {
 		return errors.New("no running duty")
 	}
@@ -220,7 +220,7 @@ func (b *BaseRunner) signBeaconObject(
 	obj ssz.HashRoot,
 	slot phase0.Slot,
 	domainType phase0.DomainType,
-) (*PartialSignatureMessage, error) {
+) (*PartialSignature, error) {
 	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
 	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
 	if err != nil {
@@ -232,7 +232,7 @@ func (b *BaseRunner) signBeaconObject(
 		return nil, errors.Wrap(err, "could not sign beacon object")
 	}
 
-	return &PartialSignatureMessage{
+	return &PartialSignature{
 		Slot:             slot,
 		PartialSignature: sig,
 		SigningRoot:      r,
@@ -241,11 +241,11 @@ func (b *BaseRunner) signBeaconObject(
 }
 
 func (b *BaseRunner) validatePartialSigMsg(
-	signedMsg *SignedPartialSignatureMessage,
+	signedMsg *SignedPartialSignature,
 	slot phase0.Slot,
 ) error {
 	if err := signedMsg.Validate(); err != nil {
-		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
+		return errors.Wrap(err, "SignedPartialSignature invalid")
 	}
 
 	if err := signedMsg.GetSignature().VerifyByOperators(signedMsg, b.Share.DomainType, types.PartialSignatureType, b.Share.Committee); err != nil {
@@ -265,7 +265,7 @@ func (b *BaseRunner) validatePartialSigMsg(
 	return nil
 }
 
-func (b *BaseRunner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) error {
+func (b *BaseRunner) verifyBeaconPartialSignature(msg *PartialSignature) error {
 	signer := msg.Signer
 	signature := msg.PartialSignature
 	root := msg.SigningRoot
@@ -292,7 +292,7 @@ func (b *BaseRunner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) 
 }
 
 func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
-	byts, err := val.Encode()
+	byts, err := val.MarshalSSZ()
 	if err != nil {
 		return errors.Wrap(err, "could not encode decided value")
 	}
@@ -303,7 +303,7 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.Cons
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain phase0.DomainType) error {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialSignature, expectedRootObjs []ssz.HashRoot, domain phase0.DomainType) error {
 	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
 		return errors.New("wrong expected roots count")
 	}
@@ -325,13 +325,13 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialS
 	return nil
 }
 
-func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *PartialSignatureMessages) (*SignedPartialSignatureMessage, error) {
+func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *PartialSignatures) (*SignedPartialSignature, error) {
 	signature, err := runner.GetSigner().SignRoot(msg, types.PartialSignatureType, b.Share.SharePubKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not sign PartialSignatureMessage for PostConsensusContainer")
+		return nil, errors.Wrap(err, "could not sign PartialSignature for PostConsensusContainer")
 	}
 
-	return &SignedPartialSignatureMessage{
+	return &SignedPartialSignature{
 		Message:   *msg,
 		Signature: signature,
 		Signer:    b.Share.OperatorID,

@@ -9,7 +9,6 @@ import (
 
 // FirstDecided tests a process msg after which first time decided
 func FirstDecided() *tests.ControllerSpecTest {
-	//identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "first decided",

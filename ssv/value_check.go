@@ -42,7 +42,7 @@ func AttesterValueCheckF(
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
-		if err := cd.Decode(data); err != nil {
+		if err := cd.UnmarshalSSZ(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 
@@ -82,7 +82,7 @@ func ProposerValueCheckF(
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
-		if err := cd.Decode(data); err != nil {
+		if err := cd.UnmarshalSSZ(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 
@@ -101,7 +101,7 @@ func AggregatorValueCheckF(
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
-		if err := cd.Decode(data); err != nil {
+		if err := cd.UnmarshalSSZ(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 
@@ -120,7 +120,7 @@ func SyncCommitteeValueCheckF(
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
-		if err := cd.Decode(data); err != nil {
+		if err := cd.UnmarshalSSZ(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 
@@ -139,7 +139,7 @@ func SyncCommitteeContributionValueCheckF(
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
-		if err := cd.Decode(data); err != nil {
+		if err := cd.UnmarshalSSZ(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 

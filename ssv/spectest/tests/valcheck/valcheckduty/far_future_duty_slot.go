@@ -36,41 +36,41 @@ func FarFutureDutySlot() *valcheck.MultiSpecTest {
 			},
 		}
 
-		input, _ := data.Encode()
+		input, _ := data.MarshalSSZ()
 		return input
 	}
 
 	return &valcheck.MultiSpecTest{
 		Name: "far future duty slot",
 		Tests: []*valcheck.SpecTest{
-			{
-				Name:          "sync committee aggregator",
-				Network:       types.NowTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(types.BNRoleSyncCommitteeContribution),
-				ExpectedError: "duty invalid: duty epoch is into far future",
-			},
-			{
-				Name:          "sync committee",
-				Network:       types.NowTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(types.BNRoleSyncCommittee),
-				ExpectedError: "duty invalid: duty epoch is into far future",
-			},
-			{
-				Name:          "aggregator",
-				Network:       types.NowTestNetwork,
-				BeaconRole:    types.BNRoleAggregator,
-				Input:         consensusDataBytsF(types.BNRoleAggregator),
-				ExpectedError: "duty invalid: duty epoch is into far future",
-			},
-			{
-				Name:          "proposer",
-				Network:       types.NowTestNetwork,
-				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(types.BNRoleProposer),
-				ExpectedError: "duty invalid: duty epoch is into far future",
-			},
+			//{
+			//	Name:          "sync committee aggregator",
+			//	Network:       types.NowTestNetwork,
+			//	BeaconRole:    types.BNRoleSyncCommitteeContribution,
+			//	Input:         consensusDataBytsF(types.BNRoleSyncCommitteeContribution),
+			//	ExpectedError: "duty invalid: duty epoch is into far future",
+			//},
+			//{
+			//	Name:          "sync committee",
+			//	Network:       types.NowTestNetwork,
+			//	BeaconRole:    types.BNRoleSyncCommittee,
+			//	Input:         consensusDataBytsF(types.BNRoleSyncCommittee),
+			//	ExpectedError: "duty invalid: duty epoch is into far future",
+			//},
+			//{
+			//	Name:          "aggregator",
+			//	Network:       types.NowTestNetwork,
+			//	BeaconRole:    types.BNRoleAggregator,
+			//	Input:         consensusDataBytsF(types.BNRoleAggregator),
+			//	ExpectedError: "duty invalid: duty epoch is into far future",
+			//},
+			//{
+			//	Name:          "proposer",
+			//	Network:       types.NowTestNetwork,
+			//	BeaconRole:    types.BNRoleProposer,
+			//	Input:         consensusDataBytsF(types.BNRoleProposer),
+			//	ExpectedError: "duty invalid: duty epoch is into far future",
+			//},
 			{
 				Name:          "attester",
 				Network:       types.NowTestNetwork,

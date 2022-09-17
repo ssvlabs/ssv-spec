@@ -1,6 +1,6 @@
 package roundchange
 
-// TODO<olegshmuelov>: CHANGEROUND fix test
+// TODO<olegshmuelov>: CHANGEROUND adjust test with new msg structs
 // F1Speedup tests catching up to higher rounds via f+1 speedup, other peers are all at the same round
 /*func F1Speedup() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()

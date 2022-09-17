@@ -15,7 +15,7 @@ func PartialRootTooLong() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "partial root too long",
-		Messages: []*ssv.SignedPartialSignatureMessage{
+		Messages: []*ssv.SignedPartialSignature{
 			msg,
 		},
 		ExpectedError: "message invalid: SigningRoot invalid",

@@ -92,11 +92,11 @@ func PeerPrepared() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "round change peer prepared",
-		Pre:              pre,
-		PostRoot:         "9d307d2030b932b749988d323fbfcf52411a3801fce46e218d520635277245eb",
-		InputMessagesSIP: msgs,
-		OutputMessagesSIP: []*types.Message{
+		Name:          "round change peer prepared",
+		Pre:           pre,
+		PostRoot:      "9d307d2030b932b749988d323fbfcf52411a3801fce46e218d520635277245eb",
+		InputMessages: msgs,
+		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
 				Data: proposalMsgEncoded,

@@ -30,10 +30,10 @@ func WrongData1() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "commit data != acceptedProposalData.Data",
-		Pre:              pre,
-		PostRoot:         "20a518595c0dbe81ccc7f340f142e77ecfba0e0a93fe0d10325fe607f2e0b1eb",
-		InputMessagesSIP: msgs,
-		ExpectedError:    "commit msg invalid: proposed data different than commit msg data",
+		Name:          "commit data != acceptedProposalData.Data",
+		Pre:           pre,
+		PostRoot:      "20a518595c0dbe81ccc7f340f142e77ecfba0e0a93fe0d10325fe607f2e0b1eb",
+		InputMessages: msgs,
+		ExpectedError: "commit msg invalid: proposed data different than commit msg data",
 	}
 }

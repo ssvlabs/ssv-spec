@@ -1,6 +1,6 @@
 package qbft
 
-// TODO<olegshmuelov>: STATE fix test
+// TODO<olegshmuelov>: STATE adjust test with new msg structs
 /*func TestState_Decoding(t *testing.T) {
 	state := &State{
 		Share: &types.Share{

@@ -8,40 +8,40 @@ import (
 )
 
 // MarshalSSZ ssz marshals the Message object
-func (m *Message) MarshalSSZ() ([]byte, error) {
-	return ssz.MarshalSSZ(m)
+func (msg *Message) MarshalSSZ() ([]byte, error) {
+	return ssz.MarshalSSZ(msg)
 }
 
 // MarshalSSZTo ssz marshals the Message object to a target array
-func (m *Message) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+func (msg *Message) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(28)
 
 	// Field (0) 'Height'
-	dst = ssz.MarshalUint64(dst, uint64(m.Height))
+	dst = ssz.MarshalUint64(dst, uint64(msg.Height))
 
 	// Field (1) 'Round'
-	dst = ssz.MarshalUint64(dst, uint64(m.Round))
+	dst = ssz.MarshalUint64(dst, uint64(msg.Round))
 
 	// Offset (2) 'Input'
 	dst = ssz.WriteOffset(dst, offset)
-	offset += len(m.Input)
+	offset += len(msg.Input)
 
 	// Field (3) 'PreparedRound'
-	dst = ssz.MarshalUint64(dst, uint64(m.PreparedRound))
+	dst = ssz.MarshalUint64(dst, uint64(msg.PreparedRound))
 
 	// Field (2) 'Input'
-	if len(m.Input) > 387173 {
+	if len(msg.Input) > 387173 {
 		err = ssz.ErrBytesLength
 		return
 	}
-	dst = append(dst, m.Input...)
+	dst = append(dst, msg.Input...)
 
 	return
 }
 
 // UnmarshalSSZ ssz unmarshals the Message object
-func (m *Message) UnmarshalSSZ(buf []byte) error {
+func (msg *Message) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 28 {
@@ -52,10 +52,10 @@ func (m *Message) UnmarshalSSZ(buf []byte) error {
 	var o2 uint64
 
 	// Field (0) 'Height'
-	m.Height = Height(ssz.UnmarshallUint64(buf[0:8]))
+	msg.Height = Height(ssz.UnmarshallUint64(buf[0:8]))
 
 	// Field (1) 'Round'
-	m.Round = Round(ssz.UnmarshallUint64(buf[8:16]))
+	msg.Round = Round(ssz.UnmarshallUint64(buf[8:16]))
 
 	// Offset (2) 'Input'
 	if o2 = ssz.ReadOffset(buf[16:20]); o2 > size {
@@ -67,7 +67,7 @@ func (m *Message) UnmarshalSSZ(buf []byte) error {
 	}
 
 	// Field (3) 'PreparedRound'
-	m.PreparedRound = Round(ssz.UnmarshallUint64(buf[20:28]))
+	msg.PreparedRound = Round(ssz.UnmarshallUint64(buf[20:28]))
 
 	// Field (2) 'Input'
 	{
@@ -75,53 +75,53 @@ func (m *Message) UnmarshalSSZ(buf []byte) error {
 		if len(buf) > 387173 {
 			return ssz.ErrBytesLength
 		}
-		if cap(m.Input) == 0 {
-			m.Input = make([]byte, 0, len(buf))
+		if cap(msg.Input) == 0 {
+			msg.Input = make([]byte, 0, len(buf))
 		}
-		m.Input = append(m.Input, buf...)
+		msg.Input = append(msg.Input, buf...)
 	}
 	return err
 }
 
 // SizeSSZ returns the ssz encoded size in bytes for the Message object
-func (m *Message) SizeSSZ() (size int) {
+func (msg *Message) SizeSSZ() (size int) {
 	size = 28
 
 	// Field (2) 'Input'
-	size += len(m.Input)
+	size += len(msg.Input)
 
 	return
 }
 
 // HashTreeRoot ssz hashes the Message object
-func (m *Message) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(m)
+func (msg *Message) HashTreeRoot() ([32]byte, error) {
+	return ssz.HashWithDefaultHasher(msg)
 }
 
 // HashTreeRootWith ssz hashes the Message object with a hasher
-func (m *Message) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+func (msg *Message) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Height'
-	hh.PutUint64(uint64(m.Height))
+	hh.PutUint64(uint64(msg.Height))
 
 	// Field (1) 'Round'
-	hh.PutUint64(uint64(m.Round))
+	hh.PutUint64(uint64(msg.Round))
 
 	// Field (2) 'Input'
 	{
 		elemIndx := hh.Index()
-		byteLen := uint64(len(m.Input))
+		byteLen := uint64(len(msg.Input))
 		if byteLen > 387173 {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		hh.PutBytes(m.Input)
+		hh.PutBytes(msg.Input)
 		hh.MerkleizeWithMixin(elemIndx, byteLen, (387173+31)/32)
 	}
 
 	// Field (3) 'PreparedRound'
-	hh.PutUint64(uint64(m.PreparedRound))
+	hh.PutUint64(uint64(msg.PreparedRound))
 
 	hh.Merkleize(indx)
 	return

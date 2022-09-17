@@ -20,7 +20,7 @@ package roundchange
 //		Pre:            pre,
 //		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
 //		InputMessages:  msgs,
-//		OutputMessages: []*qbft.SignedMessage{},
+//		OutputMessages: []*types.Message{},
 //		ExpectedError:  "round change msg invalid: round change msg signature invalid: unknown signer",
 //	}
 //}
@@ -47,7 +47,7 @@ package roundchange
 //		Name:             "round change not prepared",
 //		Pre:              pre,
 //		PostRoot:         "55cf35ed339dc8b6ee2dbd4ae3af7509dc6305d64252d3d3167fe28a860a6f32",
-//		InputMessagesSIP: msgs,
+//		InputMessages: msgs,
 //		OutputMessages:   []*qbft.SignedMessage{},
 //	}
 //}

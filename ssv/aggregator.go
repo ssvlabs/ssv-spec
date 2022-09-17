@@ -52,7 +52,7 @@ func (r *AggregatorRunner) HasRunningDuty() bool {
 	return r.BaseRunner.HashRunningDuty()
 }
 
-func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing selection proof message")
@@ -109,9 +109,8 @@ func (r *AggregatorRunner) ProcessConsensus(msg *types.Message) error {
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
-	postConsensusMsg := &PartialSignatureMessages{
-		Type:     PostConsensusPartialSig,
-		Messages: []*PartialSignatureMessage{partialMsg},
+	postConsensusMsg := &PartialSignatures{
+		Messages: []*PartialSignature{partialMsg},
 	}
 
 	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
@@ -137,7 +136,7 @@ func (r *AggregatorRunner) ProcessConsensus(msg *types.Message) error {
 	return nil
 }
 
-func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignature) error {
 	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -183,17 +182,16 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")
 	}
-	msgs := PartialSignatureMessages{
-		Type:     SelectionProofPartialSig,
-		Messages: []*PartialSignatureMessage{msg},
+	msgs := PartialSignatures{
+		Messages: []*PartialSignature{msg},
 	}
 
 	// sign msg
 	signature, err := r.GetSigner().SignRoot(msg, types.PartialSignatureType, r.GetShare().SharePubKey)
 	if err != nil {
-		return errors.Wrap(err, "could not sign PartialSignatureMessage for selection proof")
+		return errors.Wrap(err, "could not sign PartialSignature for selection proof")
 	}
-	signedPartialMsg := &SignedPartialSignatureMessage{
+	signedPartialMsg := &SignedPartialSignature{
 		Message:   msgs,
 		Signature: signature,
 		Signer:    r.GetShare().OperatorID,

@@ -33,11 +33,11 @@ func SecondProposalForRound() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "second proposal for round",
-		Pre:              pre,
-		PostRoot:         "93f809fcad476369d03647b6a6661ba3313af3e7b3446d9f639513c2c25f53a9",
-		InputMessagesSIP: msgs,
-		OutputMessagesSIP: []*types.Message{
+		Name:          "second proposal for round",
+		Pre:           pre,
+		PostRoot:      "93f809fcad476369d03647b6a6661ba3313af3e7b3446d9f639513c2c25f53a9",
+		InputMessages: msgs,
+		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: signMsgEncoded,

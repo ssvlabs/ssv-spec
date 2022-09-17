@@ -55,12 +55,12 @@ func WrongData2() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "commit data != prepared data",
-		Pre:              pre,
-		PostRoot:         "039df6c4ad6c09500194613f0aaf9a2756aa894e3d46c9cccbe1925910bba4d0",
-		InputMessagesSIP: msgs,
-		ExpectedError:    "commit msg invalid: proposed data different than commit msg data",
-		OutputMessagesSIP: []*types.Message{
+		Name:          "commit data != prepared data",
+		Pre:           pre,
+		PostRoot:      "039df6c4ad6c09500194613f0aaf9a2756aa894e3d46c9cccbe1925910bba4d0",
+		InputMessages: msgs,
+		ExpectedError: "commit msg invalid: proposed data different than commit msg data",
+		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: signMsgEncoded,

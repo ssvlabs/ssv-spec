@@ -11,11 +11,11 @@ func NoMsgs() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Message.Messages = []*ssv.PartialSignatureMessage{}
+	msg.Message.Messages = []*ssv.PartialSignature{}
 
 	return &MsgSpecTest{
 		Name:          "no messages",
-		Messages:      []*ssv.SignedPartialSignatureMessage{msg},
-		ExpectedError: "no PartialSignatureMessages messages",
+		Messages:      []*ssv.SignedPartialSignature{msg},
+		ExpectedError: "no PartialSignatures messages",
 	}
 }

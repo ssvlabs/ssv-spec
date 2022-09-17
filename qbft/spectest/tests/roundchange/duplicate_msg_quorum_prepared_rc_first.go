@@ -205,8 +205,8 @@ package roundchange
 //		Name:             "round change duplicate prepared msg",
 //		Pre:              pre,
 //		PostRoot:         "9ec4fc8f40d1466da583eef26a5e51af98ee801c5eb6043da544db3d3d523ea0",
-//		InputMessagesSIP: msgs,
-//		OutputMessagesSIP: []*types.Message{
+//		InputMessages: msgs,
+//		OutputMessages: []*types.Message{
 //			{
 //				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
 //				Data: proposalMsgEncoded,

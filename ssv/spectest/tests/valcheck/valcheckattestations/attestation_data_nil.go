@@ -12,7 +12,7 @@ func AttestationDataNil() *valcheck.SpecTest {
 		Duty:            testingutils.TestingAttesterDuty,
 		AttestationData: nil,
 	}
-	input, _ := consensusData.Encode()
+	input, _ := consensusData.MarshalSSZ()
 
 	return &valcheck.SpecTest{
 		Name:          "attestation value check data nil",

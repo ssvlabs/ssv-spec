@@ -110,11 +110,11 @@ func DifferentJustifications() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "different proposal round change justification",
-		Pre:              pre,
-		PostRoot:         "bfce5f9bd15d7dfb986713af965ea5b090909f688d8a142f2f03cb0edcc7b853",
-		InputMessagesSIP: msgs,
-		OutputMessagesSIP: []*types.Message{
+		Name:          "different proposal round change justification",
+		Pre:           pre,
+		PostRoot:      "bfce5f9bd15d7dfb986713af965ea5b090909f688d8a142f2f03cb0edcc7b853",
+		InputMessages: msgs,
+		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: prepareMsgEncoded,

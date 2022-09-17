@@ -21,7 +21,7 @@ func Encoding() *tests.EncodingSpecTest {
 		},
 	}
 
-	byts, err := data.Encode()
+	byts, err := data.MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}

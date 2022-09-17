@@ -19,7 +19,7 @@ func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
 	}
 }
 
-func (ps *PartialSigContainer) AddSignature(sigMsg *PartialSignatureMessage) error {
+func (ps *PartialSigContainer) AddSignature(sigMsg *PartialSignature) error {
 	if ps.Signatures[rootHex(sigMsg.SigningRoot)] == nil {
 		ps.Signatures[rootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID][]byte)
 	}

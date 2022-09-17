@@ -36,41 +36,41 @@ func WrongValidatorPK() *valcheck.MultiSpecTest {
 			},
 		}
 
-		input, _ := data.Encode()
+		input, _ := data.MarshalSSZ()
 		return input
 	}
 
 	return &valcheck.MultiSpecTest{
 		Name: "wrong validator PK",
 		Tests: []*valcheck.SpecTest{
-			{
-				Name:          "sync committee aggregator",
-				Network:       types.NowTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(types.BNRoleSyncCommitteeContribution),
-				ExpectedError: "duty invalid: wrong validator pk",
-			},
-			{
-				Name:          "sync committee",
-				Network:       types.NowTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(types.BNRoleSyncCommittee),
-				ExpectedError: "duty invalid: wrong validator pk",
-			},
-			{
-				Name:          "aggregator",
-				Network:       types.NowTestNetwork,
-				BeaconRole:    types.BNRoleAggregator,
-				Input:         consensusDataBytsF(types.BNRoleAggregator),
-				ExpectedError: "duty invalid: wrong validator pk",
-			},
-			{
-				Name:          "proposer",
-				Network:       types.NowTestNetwork,
-				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(types.BNRoleProposer),
-				ExpectedError: "duty invalid: wrong validator pk",
-			},
+			//{
+			//	Name:          "sync committee aggregator",
+			//	Network:       types.NowTestNetwork,
+			//	BeaconRole:    types.BNRoleSyncCommitteeContribution,
+			//	Input:         consensusDataBytsF(types.BNRoleSyncCommitteeContribution),
+			//	ExpectedError: "duty invalid: wrong validator pk",
+			//},
+			//{
+			//	Name:          "sync committee",
+			//	Network:       types.NowTestNetwork,
+			//	BeaconRole:    types.BNRoleSyncCommittee,
+			//	Input:         consensusDataBytsF(types.BNRoleSyncCommittee),
+			//	ExpectedError: "duty invalid: wrong validator pk",
+			//},
+			//{
+			//	Name:          "aggregator",
+			//	Network:       types.NowTestNetwork,
+			//	BeaconRole:    types.BNRoleAggregator,
+			//	Input:         consensusDataBytsF(types.BNRoleAggregator),
+			//	ExpectedError: "duty invalid: wrong validator pk",
+			//},
+			//{
+			//	Name:          "proposer",
+			//	Network:       types.NowTestNetwork,
+			//	BeaconRole:    types.BNRoleProposer,
+			//	Input:         consensusDataBytsF(types.BNRoleProposer),
+			//	ExpectedError: "duty invalid: wrong validator pk",
+			//},
 			{
 				Name:          "attester",
 				Network:       types.NowTestNetwork,

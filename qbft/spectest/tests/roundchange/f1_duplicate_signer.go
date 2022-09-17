@@ -50,7 +50,7 @@ package roundchange
 //		Pre:            pre,
 //		PostRoot:       "cc38402bbf897a098b8c96c0391b2c0053bf2663b143d1529151d607b92b610e",
 //		InputMessages:  msgs,
-//		OutputMessages: []*qbft.SignedMessage{},
+//		OutputMessages: []*types.Message{},
 //	}
 //}
 
@@ -123,7 +123,7 @@ package roundchange
 //		Name:             "round change future round",
 //		Pre:              pre,
 //		PostRoot:         "8fb6539597b7fd80818b641fb831e9d3fe8258a44efe0095ec212817e447e1ff",
-//		InputMessagesSIP: msgs,
+//		InputMessages: msgs,
 //		OutputMessages:   []*qbft.SignedMessage{},
 //	}
 //}

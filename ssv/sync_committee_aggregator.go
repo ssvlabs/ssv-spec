@@ -54,7 +54,7 @@ func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
 	return r.BaseRunner.HashRunningDuty()
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing sync committee selection proof message")
@@ -130,7 +130,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(msg *types.Message) err
 	}
 
 	// specific duty sig
-	msgs := make([]*PartialSignatureMessage, 0)
+	msgs := make([]*PartialSignature, 0)
 	for proof, c := range decidedValue.SyncCommitteeContribution {
 		contribAndProof, _, err := r.generateContributionAndProof(c, proof)
 		if err != nil {
@@ -144,8 +144,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(msg *types.Message) err
 
 		msgs = append(msgs, signed)
 	}
-	postConsensusMsg := &PartialSignatureMessages{
-		Type:     PostConsensusPartialSig,
+	postConsensusMsg := &PartialSignatures{
 		Messages: msgs,
 	}
 
@@ -171,7 +170,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(msg *types.Message) err
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignature) error {
 	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -272,9 +271,8 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	}
 
 	// sign selection proofs
-	msgs := PartialSignatureMessages{
-		Type:     ContributionProofs,
-		Messages: []*PartialSignatureMessage{},
+	msgs := PartialSignatures{
+		Messages: []*PartialSignature{},
 	}
 	for _, index := range indexes {
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(index)
@@ -296,9 +294,9 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	// package into signed partial sig
 	signature, err := r.GetSigner().SignRoot(msgs, types.PartialSignatureType, r.GetShare().SharePubKey)
 	if err != nil {
-		return errors.Wrap(err, "could not sign PartialSignatureMessage for contribution proofs")
+		return errors.Wrap(err, "could not sign PartialSignature for contribution proofs")
 	}
-	signedPartialMsg := &SignedPartialSignatureMessage{
+	signedPartialMsg := &SignedPartialSignature{
 		Message:   msgs,
 		Signature: signature,
 		Signer:    r.GetShare().OperatorID,

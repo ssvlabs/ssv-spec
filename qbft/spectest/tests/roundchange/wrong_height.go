@@ -27,11 +27,11 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "round change invalid height",
-		Pre:              pre,
-		PostRoot:         "a8b80879ebf2ecee42fddc69b67dd5f6adfd6aa8b7114246aec80ce1bfef513a",
-		InputMessagesSIP: msgs,
-		OutputMessages:   []*qbft.SignedMessage{},
-		ExpectedError:    "round change msg invalid: round change Height is wrong",
+		Name:           "round change invalid height",
+		Pre:            pre,
+		PostRoot:       "a8b80879ebf2ecee42fddc69b67dd5f6adfd6aa8b7114246aec80ce1bfef513a",
+		InputMessages:  msgs,
+		OutputMessages: []*types.Message{},
+		ExpectedError:  "round change msg invalid: round change Height is wrong",
 	}
 }

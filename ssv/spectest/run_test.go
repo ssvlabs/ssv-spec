@@ -132,10 +132,10 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	byts, _ := json.Marshal(m["Duty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
-	outputMsgs := make([]*ssv.SignedPartialSignatureMessage, 0)
+	outputMsgs := make([]*ssv.SignedPartialSignature, 0)
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
-		typedMsg := &ssv.SignedPartialSignatureMessage{}
+		typedMsg := &ssv.SignedPartialSignature{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
@@ -169,10 +169,10 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		msgs = append(msgs, typedMsg)
 	}
 
-	outputMsgs := make([]*ssv.SignedPartialSignatureMessage, 0)
+	outputMsgs := make([]*ssv.SignedPartialSignature, 0)
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
-		typedMsg := &ssv.SignedPartialSignatureMessage{}
+		typedMsg := &ssv.SignedPartialSignature{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}

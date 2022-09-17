@@ -15,16 +15,25 @@ func (cd *ConsensusData) MarshalSSZ() ([]byte, error) {
 	var err error
 	switch cd.Duty.Type {
 	case BNRoleAttester:
+		if cd.AttestationData == nil {
+			return nil, errors.New("could not marshal consensus data, attestation data is nil")
+		}
 		marshalSSZ, err = cd.AttestationData.MarshalSSZ()
 		if err != nil {
 			return nil, err
 		}
 	case BNRoleAggregator:
+		if cd.AggregateAndProof == nil {
+			return nil, errors.New("could not marshal consensus data, aggregate and proof is nil")
+		}
 		marshalSSZ, err = cd.AggregateAndProof.MarshalSSZ()
 		if err != nil {
 			return nil, err
 		}
 	case BNRoleProposer:
+		if cd.BlockData == nil {
+			return nil, errors.New("could not marshal consensus data, block data is nil")
+		}
 		marshalSSZ, err = cd.BlockData.MarshalSSZ()
 		if err != nil {
 			return nil, err

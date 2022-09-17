@@ -8,7 +8,7 @@ import (
 
 type MsgSpecTest struct {
 	Name            string
-	Messages        []*ssv.SignedPartialSignatureMessage
+	Messages        []*ssv.SignedPartialSignature
 	EncodedMessages [][]byte
 	ExpectedRoots   [][]byte
 	ExpectedError   string

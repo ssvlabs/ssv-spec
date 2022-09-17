@@ -53,7 +53,7 @@ func (r *AttesterRunner) HasRunningDuty() bool {
 	return r.BaseRunner.HashRunningDuty()
 }
 
-func (r *AttesterRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *AttesterRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature) error {
 	return errors.New("no pre consensus sigs required for attester role")
 }
 
@@ -73,9 +73,8 @@ func (r *AttesterRunner) ProcessConsensus(msg *types.Message) error {
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
-	postConsensusMsg := &PartialSignatureMessages{
-		Type:     PostConsensusPartialSig,
-		Messages: []*PartialSignatureMessage{partialMsg},
+	postConsensusMsg := &PartialSignatures{
+		Messages: []*PartialSignature{partialMsg},
 	}
 
 	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
@@ -100,7 +99,7 @@ func (r *AttesterRunner) ProcessConsensus(msg *types.Message) error {
 	return nil
 }
 
-func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignature) error {
 	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")

@@ -46,11 +46,11 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "prepare happy flow",
-		Pre:              pre,
-		PostRoot:         "039df6c4ad6c09500194613f0aaf9a2756aa894e3d46c9cccbe1925910bba4d0",
-		InputMessagesSIP: msgs,
-		OutputMessagesSIP: []*types.Message{
+		Name:          "prepare happy flow",
+		Pre:           pre,
+		PostRoot:      "039df6c4ad6c09500194613f0aaf9a2756aa894e3d46c9cccbe1925910bba4d0",
+		InputMessages: msgs,
+		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: signMsgEncoded,

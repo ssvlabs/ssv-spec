@@ -11,11 +11,11 @@ func InvalidMsg() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Message.Messages = append(msg.Message.Messages, &ssv.PartialSignatureMessage{})
+	msg.Message.Messages = append(msg.Message.Messages, &ssv.PartialSignature{})
 
 	return &MsgSpecTest{
 		Name:          "invalid message",
-		Messages:      []*ssv.SignedPartialSignatureMessage{msg},
-		ExpectedError: "message invalid: PartialSignatureMessage sig invalid",
+		Messages:      []*ssv.SignedPartialSignature{msg},
+		ExpectedError: "message invalid: PartialSignature sig invalid",
 	}
 }

@@ -1,7 +1,6 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"testing"
 )
 
@@ -11,18 +10,18 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	//timeout.FirstRound(),
-	//timeout.Round1(),
-	//timeout.Round2(),
-	//timeout.Round3(),
-	//timeout.Round4(),
-	//timeout.Round5(),
-	//timeout.Round10(),
-	//timeout.Round20(),
-	//timeout.RoundTimeout(),
-	//timeout.ErrorOnBroadcast(),
-	//timeout.ErrorOnCreateMsg(),
-
+	//	//timeout.FirstRound(),
+	//	//timeout.Round1(),
+	//	//timeout.Round2(),
+	//	//timeout.Round3(),
+	//	//timeout.Round4(),
+	//	//timeout.Round5(),
+	//	//timeout.Round10(),
+	//	//timeout.Round20(),
+	//	//timeout.RoundTimeout(),
+	//	//timeout.ErrorOnBroadcast(),
+	//	//timeout.ErrorOnCreateMsg(),
+	//
 	//controller.StartInstanceFirstHeight(),
 	//controller.StartInstancePreviousDecided(),
 	//controller.StartInstancePreviousNotDecided(),
@@ -46,9 +45,11 @@ var AllTests = []SpecTest{
 	//messages.RoundChangePrePreparedJustifications(),
 	//messages.RoundChangeNotPreparedJustifications(),
 	//messages.CommitDataEncoding(),
-	//messages.MsgNilIdentifier(),
-	//messages.MsgNonZeroIdentifier(),
-	//messages.MsgTypeUnknown(),
+	//// TODO<olegshmuelov>: write new tests for identifier
+	////messages.MsgNilIdentifier(),
+	////messages.MsgNonZeroIdentifier(),
+	//// TODO<olegshmuelov>: write new test for msg type
+	////messages.MsgTypeUnknown(),
 	//messages.PrepareDataEncoding(),
 	//messages.ProposeDataEncoding(),
 	//messages.MsgDataNil(),
@@ -68,6 +69,7 @@ var AllTests = []SpecTest{
 	//messages.CreateRoundChange(),
 	//messages.CreateRoundChangePreviouslyPrepared(),
 	//messages.RoundChangeDataEncoding(),
+	//// TODO<olegshmuelov>: irrelevant tests, write tests for consensus data
 	//messages.PrepareDataInvalid(),
 	//messages.CommitDataInvalid(),
 	//messages.ProposalDataInvalid(),
@@ -116,7 +118,7 @@ var AllTests = []SpecTest{
 	//
 	//prepare.DuplicateMsg(),
 	//prepare.HappyFlow(),
-	//prepare.ImparsableProposalData(),
+	////prepare.ImparsableProposalData(),
 	//prepare.InvalidPrepareData(),
 	//prepare.MultiSigner(),
 	//prepare.NoPreviousProposal(),
@@ -132,7 +134,7 @@ var AllTests = []SpecTest{
 	//commit.FutureRound(),
 	//commit.PastRound(),
 	//commit.DuplicateMsg(),
-	commit.HappyFlow(),
+	//commit.HappyFlow(),
 	//commit.InvalidCommitData(),
 	//commit.PostDecided(),
 	//commit.WrongData1(),
@@ -142,7 +144,7 @@ var AllTests = []SpecTest{
 	//commit.DuplicateSigners(),
 	//commit.NoPrevAcceptedProposal(),
 	//commit.WrongHeight(),
-	//commit.ImparsableCommitData(),
+	////commit.ImparsableCommitData(),
 	//commit.WrongSignature(),
 	//commit.UnknownSigner(),
 	//commit.InvalidValCheck(),
@@ -156,7 +158,7 @@ var AllTests = []SpecTest{
 	//decided.NoPrevAcceptedProposal(),
 	//decided.InvalidValCheckData(),
 	//decided.InvalidData(),
-	//decided.ImparsableData(),
+	////decided.ImparsableData(),
 	//decided.FutureRound(),
 	//decided.DuplicateSigners(),
 	//decided.DuplicateMsg(),

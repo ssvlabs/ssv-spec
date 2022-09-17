@@ -37,7 +37,7 @@ func Slashable() *valcheck.SpecTest {
 
 	r, _ := data.AttestationData.HashTreeRoot()
 
-	input, _ := data.Encode()
+	input, _ := data.MarshalSSZ()
 
 	return &valcheck.SpecTest{
 		Name:       "attestation value check slashable",

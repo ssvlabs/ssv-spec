@@ -30,9 +30,9 @@ func DuplicateMsg() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "duplicate prepare message",
-		Pre:              pre,
-		PostRoot:         "4b53b89a508afcde57f051abc005047b5439f935be9f2c76d8c1c7d680b4c24e",
-		InputMessagesSIP: msgs,
+		Name:          "duplicate prepare message",
+		Pre:           pre,
+		PostRoot:      "4b53b89a508afcde57f051abc005047b5439f935be9f2c76d8c1c7d680b4c24e",
+		InputMessages: msgs,
 	}
 }

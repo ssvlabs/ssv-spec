@@ -26,8 +26,8 @@ type Storage interface {
 	GetHighestDecided(identifier []byte) (*SignedMessage, error)
 }
 
-func ControllerIdToMessageID(identifier []byte) types.MessageIDOld {
-	ret := types.MessageIDOld{}
+func ControllerIdToMessageID(identifier []byte) types.MessageID {
+	ret := types.MessageID{}
 	copy(ret[:], identifier)
 	return ret
 }

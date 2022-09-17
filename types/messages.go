@@ -3,7 +3,6 @@ package types
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
 	"encoding/json"
 )
 
@@ -70,30 +69,8 @@ func (vid ValidatorPK) MessageIDBelongs(msgID MessageID) bool {
 	return bytes.Equal(vid, toMatch)
 }
 
-// MessageIDOld is used to identify and route messages to the right validator and Runner
-type MessageIDOld [52]byte
-
+// MessageID is used to identify and route messages to the right validator and Runner
 type MessageID [60]byte
-
-func (msgIDOld MessageIDOld) GetPubKey() []byte {
-	return msgIDOld[pubKeyStartPos : pubKeyStartPos+pubKeySize]
-}
-
-func (msgIDOld MessageIDOld) GetRoleType() BeaconRole {
-	roleByts := msgIDOld[roleTypeStartPos : roleTypeStartPos+roleTypeSize]
-	return BeaconRole(binary.LittleEndian.Uint32(roleByts))
-}
-
-func NewMsgID(pk []byte, role BeaconRole) MessageIDOld {
-	roleByts := make([]byte, 4)
-	binary.LittleEndian.PutUint32(roleByts, uint32(role))
-
-	ret := MessageIDOld{}
-	copy(ret[pubKeyStartPos:pubKeyStartPos+pubKeySize], pk)
-	copy(ret[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
-
-	return ret
-}
 
 func (msgID MessageID) GetPubKey() []byte {
 	return msgID[pubKeyStartPos:roleTypeStartPos]
@@ -129,21 +106,6 @@ func PopulateMsgType(msgID MessageID, msgType MsgType) MessageID {
 	return msgID
 }
 
-func (msgIDOld MessageIDOld) String() string {
-	return hex.EncodeToString(msgIDOld[:])
-}
-
-//type MsgType uint64
-//
-//const (
-//	// SSVConsensusMsgType are all QBFT consensus related messages
-//	SSVConsensusMsgType MsgType = iota
-//	// SSVPartialSignatureMsgType are all partial signatures msgs over beacon chain specific signatures
-//	SSVPartialSignatureMsgType
-//	// DKGMsgType represent all DKG related messages
-//	DKGMsgType
-//)
-
 type Root interface {
 	// GetRoot returns the root used for signing and verification
 	GetRoot() ([]byte, error)
@@ -158,37 +120,6 @@ type MessageSignature interface {
 	MatchedSigners(ids []OperatorID) bool
 	// Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
 	Aggregate(signedMsg MessageSignature) error
-}
-
-// SSVMessage is the main message passed within the SSV network, it can contain different types of messages (QBTF, Sync, etc.)
-type SSVMessage struct {
-	MsgType MsgType
-	MsgID   MessageIDOld
-	Data    []byte
-}
-
-func (msg *SSVMessage) GetType() MsgType {
-	return msg.MsgType
-}
-
-// GetID returns a unique msg ID that is used to identify to which validator should the message be sent for processing
-func (msg *SSVMessage) GetID() MessageIDOld {
-	return msg.MsgID
-}
-
-// GetData returns message Data as byte slice
-func (msg *SSVMessage) GetData() []byte {
-	return msg.Data
-}
-
-// Encode returns a msg encoded bytes or error
-func (msg *SSVMessage) Encode() ([]byte, error) {
-	return json.Marshal(msg)
-}
-
-// Decode returns error if decoding failed
-func (msg *SSVMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &msg)
 }
 
 // Message is the main message passed within the SSV network, it can contain different types of messages (QBTF, Sync, etc.)

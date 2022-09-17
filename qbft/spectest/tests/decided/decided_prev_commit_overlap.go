@@ -60,11 +60,11 @@ func PrevCommitOverlap() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "decided with prev commit overlap",
-		Pre:              pre,
-		PostRoot:         "bb764d0bdfd476fab2629a0fd6beadc1cb0038ecb914f7a0c377f18833052039",
-		InputMessagesSIP: msgs,
-		OutputMessagesSIP: []*types.Message{
+		Name:          "decided with prev commit overlap",
+		Pre:           pre,
+		PostRoot:      "bb764d0bdfd476fab2629a0fd6beadc1cb0038ecb914f7a0c377f18833052039",
+		InputMessages: msgs,
+		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: signMsgEncoded,

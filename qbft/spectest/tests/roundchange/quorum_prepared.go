@@ -143,8 +143,8 @@ package roundchange
 //		Name:             "round change speedup different rounds",
 //		Pre:              pre,
 //		PostRoot:         "cca2c7f305b3c56956818a56fcca8a51fd7a96a7dda1efdc4214b9a5a29acae1",
-//		InputMessagesSIP: msgs,
-//		OutputMessagesSIP: []*types.Message{
+//		InputMessages: msgs,
+//		OutputMessages: []*types.Message{
 //			{
 //				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
 //				Data: rcMsgEncoded,

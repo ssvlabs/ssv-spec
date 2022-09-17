@@ -14,14 +14,12 @@ import (
 const ChangeProposerFuncInstanceHeight = 10
 
 type MsgProcessingSpecTest struct {
-	Name              string
-	Pre               *qbft.Instance
-	PostRoot          string
-	InputMessages     []*qbft.SignedMessage
-	OutputMessages    []*qbft.SignedMessage
-	InputMessagesSIP  []*types.Message
-	OutputMessagesSIP []*types.Message
-	ExpectedError     string
+	Name           string
+	Pre            *qbft.Instance
+	PostRoot       string
+	InputMessages  []*types.Message
+	OutputMessages []*types.Message
+	ExpectedError  string
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
@@ -33,7 +31,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 
 	var lastErr error
-	for _, msg := range test.InputMessagesSIP {
+	for _, msg := range test.InputMessages {
 		signedMsg := &qbft.SignedMessage{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			lastErr = err
@@ -56,10 +54,10 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-	if len(test.OutputMessagesSIP) > 0 || len(broadcastedMsgs) > 0 {
-		require.Len(t, broadcastedMsgs, len(test.OutputMessagesSIP))
+	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
+		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 
-		for i, msg := range test.OutputMessagesSIP {
+		for i, msg := range test.OutputMessages {
 			msg1 := &qbft.SignedMessage{}
 			require.NoError(t, msg1.Decode(msg.Data))
 			r1, _ := msg1.GetRoot()

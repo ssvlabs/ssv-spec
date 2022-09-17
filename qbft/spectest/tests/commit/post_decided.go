@@ -54,10 +54,10 @@ func PostDecided() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:              "post decided",
-		Pre:               pre,
-		PostRoot:          "51d962c219479a76c8d2020e93330d2aa1a1e0f1ee62c97b3cbae1fd082d4c6a",
-		InputMessagesSIP:  msgs,
-		OutputMessagesSIP: []*types.Message{},
+		Name:           "post decided",
+		Pre:            pre,
+		PostRoot:       "51d962c219479a76c8d2020e93330d2aa1a1e0f1ee62c97b3cbae1fd082d4c6a",
+		InputMessages:  msgs,
+		OutputMessages: []*types.Message{},
 	}
 }

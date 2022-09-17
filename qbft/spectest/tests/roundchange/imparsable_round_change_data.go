@@ -21,7 +21,7 @@ package roundchange
 		Pre:            pre,
 		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
 		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		OutputMessages: []*types.Message{},
 		ExpectedError:  "round change msg invalid: could not get roundChange data : could not decode round change data from message: invalid character '\\x01' looking for beginning of value",
 	}
 }*/

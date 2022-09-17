@@ -28,11 +28,11 @@ func MultiSigner() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "round change multi signers",
-		Pre:              pre,
-		PostRoot:         "a8b80879ebf2ecee42fddc69b67dd5f6adfd6aa8b7114246aec80ce1bfef513a",
-		InputMessagesSIP: msgs,
-		OutputMessages:   []*qbft.SignedMessage{},
-		ExpectedError:    "round change msg invalid: round change msg allows 1 signer",
+		Name:           "round change multi signers",
+		Pre:            pre,
+		PostRoot:       "a8b80879ebf2ecee42fddc69b67dd5f6adfd6aa8b7114246aec80ce1bfef513a",
+		InputMessages:  msgs,
+		OutputMessages: []*types.Message{},
+		ExpectedError:  "round change msg invalid: round change msg allows 1 signer",
 	}
 }

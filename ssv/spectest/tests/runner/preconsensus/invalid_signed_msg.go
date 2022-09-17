@@ -1,11 +1,17 @@
 package preconsensus
 
-// TODO<olegshmuelov>: PRECONSENSUS fix test
-// InvalidSignedMessage tests SignedPartialSignatureMessage.Validate() != nil
-/*func InvalidSignedMessage() *tests.MultiMsgProcessingSpecTest {
+import (
+	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+)
+
+// InvalidSignedMessage tests SignedPartialSignature.Validate() != nil
+func InvalidSignedMessage() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	invaldiateMsg := func(msg *ssv.SignedPartialSignatureMessage) *ssv.SignedPartialSignatureMessage {
+	invaldiateMsg := func(msg *ssv.SignedPartialSignature) *ssv.SignedPartialSignature {
 		msg.Signature = nil
 		return msg
 	}
@@ -18,40 +24,40 @@ package preconsensus
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.Message{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, invaldiateMsg(testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, invaldiateMsg(testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)), types.PartialContributionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "cb45390b7f7d56a825613fa9e6c3fbc98fc565d8bd9c25d31ef01937dfff72b8",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				PostDutyRunnerStateRoot: "7ec85b6d9e1f568c778ba3fdbb26df3d5e32c56628775d7facd8a1d0038dc59e",
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: SignedPartialSignatureMessage sig invalid",
+				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: SignedPartialSignature invalid: SignedPartialSignature sig invalid",
 			},
 			{
 				Name:   "aggregator selection proof",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty,
 				Messages: []*types.Message{
-					testingutils.SSVMsgAggregator(nil, invaldiateMsg(testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
+					testingutils.SSVMsgAggregator(nil, invaldiateMsg(testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)), types.PartialSelectionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "d898d4dff1fc0e6fd56ff075adc9766247cc915530e4fabf70324922ad7454ec",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				PostDutyRunnerStateRoot: "ac64bab0a5194cd5b5a426b369839dbaeab4ee98f1dc682a558137d4b0ce7063",
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: SignedPartialSignatureMessage sig invalid",
+				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: SignedPartialSignature invalid: SignedPartialSignature sig invalid",
 			},
 			{
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
 				Messages: []*types.Message{
-					testingutils.SSVMsgProposer(nil, invaldiateMsg(testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
+					testingutils.SSVMsgProposer(nil, invaldiateMsg(testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)), types.PartialRandaoSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "d6be557a9c94566c60246966c15eca49d458117dce1ba381660d80360a607354",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				PostDutyRunnerStateRoot: "4011c842c4b65f678c065595a288696dbf88869dbf74b3d6bd980dfcaba07843",
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: SignedPartialSignatureMessage sig invalid",
+				ExpectedError: "failed processing randao message: invalid pre-consensus message: SignedPartialSignature invalid: SignedPartialSignature sig invalid",
 			},
 		},
 	}
-}*/
+}

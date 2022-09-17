@@ -101,9 +101,6 @@ func (msg *Message) Validate(msgType types.MsgType) error {
 	if len(msg.Input) == 0 && msgType != types.ConsensusRoundChangeMsgType {
 		return errors.New("message input data is invalid")
 	}
-	//if msg.MsgType > 5 {
-	//	return errors.New("message type is invalid")
-	//}
 	return nil
 }
 

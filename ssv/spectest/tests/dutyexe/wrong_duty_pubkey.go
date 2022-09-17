@@ -1,6 +1,6 @@
 package dutyexe
 
-// TODO<olegshmuelov>: DUTYEXE fix test
+// TODO<olegshmuelov>: DUTYEXE adjust test with new msg structs
 // WrongDutyPubKey tests decided value with duty validator pubkey != the duty runner's pubkey
 /*func WrongDutyPubKey() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()

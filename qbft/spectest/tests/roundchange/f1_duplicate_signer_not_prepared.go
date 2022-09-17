@@ -1,6 +1,6 @@
 package roundchange
 
-// TODO<olegshmuelov>: CHANGEROUND fix test
+// TODO<olegshmuelov>: CHANGEROUND adjust test with new msg structs
 // F1DuplicateSignerNotPrepared tests not accepting f+1 speed for duplicate signer (not prev prepared)
 /*func F1DuplicateSignerNotPrepared() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
@@ -27,6 +27,6 @@ package roundchange
 		Pre:            pre,
 		PostRoot:       "bc5a316dbb31afa9717f22b7f09db244858b38ce024b00ab96c46f3a3a2f13e3",
 		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		OutputMessages: []*types.Message{},
 	}
 }*/

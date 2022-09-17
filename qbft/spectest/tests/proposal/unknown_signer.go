@@ -1,18 +1,28 @@
 package proposal
 
-// TODO<olegshmuelov>: PROPOSAL fix test
+import (
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+)
+
 // UnknownSigner tests a single proposal received with an unknown signer
-/*func UnknownSigner() *tests.MsgProcessingSpecTest {
+func UnknownSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(5), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-		}),
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(5), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	}).Encode()
+
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+			Data: proposeMsgEncoded,
+		},
 	}
+
 	return &tests.MsgProcessingSpecTest{
 		Name:          "unknown proposal signer",
 		Pre:           pre,
@@ -20,4 +30,4 @@ package proposal
 		InputMessages: msgs,
 		ExpectedError: "proposal invalid: proposal msg signature invalid: unknown signer",
 	}
-}*/
+}

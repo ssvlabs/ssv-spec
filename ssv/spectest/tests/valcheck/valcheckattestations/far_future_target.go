@@ -35,7 +35,7 @@ func FarFutureTarget() *valcheck.SpecTest {
 		},
 	}
 
-	input, _ := data.Encode()
+	input, _ := data.MarshalSSZ()
 
 	return &valcheck.SpecTest{
 		Name:          "attestation value check far future target",

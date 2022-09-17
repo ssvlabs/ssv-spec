@@ -112,7 +112,7 @@ package roundchange
 //		Name:             "round change prepared",
 //		Pre:              pre,
 //		PostRoot:         "3ff2f27d56d3f3f1503509276d2ac8c8cb90688d9dadbe8d16a66302394a46a8",
-//		InputMessagesSIP: msgs,
+//		InputMessages: msgs,
 //		OutputMessages:   []*qbft.SignedMessage{},
 //	}
 //}

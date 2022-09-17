@@ -17,7 +17,7 @@ func (test *EncodingSpecTest) TestName() string {
 
 func (test *EncodingSpecTest) Run(t *testing.T) {
 	a := types.ConsensusData{}
-	require.NoError(t, a.Decode(test.Data))
+	require.NoError(t, a.UnmarshalSSZ(test.Data))
 
 	byts, err := a.Encode()
 	require.NoError(t, err)

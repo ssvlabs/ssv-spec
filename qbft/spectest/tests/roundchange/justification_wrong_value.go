@@ -55,11 +55,11 @@ func JustificationWrongValue() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "round change justification wrong value",
-		Pre:              pre,
-		PostRoot:         "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
-		InputMessagesSIP: msgs,
-		OutputMessages:   []*qbft.SignedMessage{},
-		ExpectedError:    "round change msg invalid: round change justification invalid: prepare data != proposed data",
+		Name:           "round change justification wrong value",
+		Pre:            pre,
+		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
+		InputMessages:  msgs,
+		OutputMessages: []*types.Message{},
+		ExpectedError:  "round change msg invalid: round change justification invalid: prepare data != proposed data",
 	}
 }

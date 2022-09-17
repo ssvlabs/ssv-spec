@@ -26,11 +26,11 @@ func InvalidRoundChangeData() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "invalid round change data",
-		Pre:              pre,
-		PostRoot:         "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
-		InputMessagesSIP: msgs,
-		OutputMessages:   []*qbft.SignedMessage{},
-		ExpectedError:    "round change msg invalid: round change justification invalid",
+		Name:           "invalid round change data",
+		Pre:            pre,
+		PostRoot:       "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
+		InputMessages:  msgs,
+		OutputMessages: []*types.Message{},
+		ExpectedError:  "round change msg invalid: round change justification invalid",
 	}
 }

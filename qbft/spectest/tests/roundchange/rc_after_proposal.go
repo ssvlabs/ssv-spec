@@ -1,6 +1,6 @@
 package roundchange
 
-// TODO<olegshmuelov>: CHANGEROUND fix test
+// TODO<olegshmuelov>: CHANGEROUND adjust test with new msg structs
 // AfterProposal tests a round change msg after prev quorum + received proposal
 /*func AfterProposal() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()

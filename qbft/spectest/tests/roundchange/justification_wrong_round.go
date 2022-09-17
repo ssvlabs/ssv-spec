@@ -54,11 +54,11 @@ func JustificationWrongRound() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "round change justification wrong round",
-		Pre:              pre,
-		PostRoot:         "b980297077cdbef2505c75f4bf42434ae4f0cbbe6169d931e05c5b4901562d97",
-		InputMessagesSIP: msgs,
-		OutputMessages:   []*qbft.SignedMessage{},
-		ExpectedError:    "round change msg invalid: round change justification invalid: msg round wrong",
+		Name:           "round change justification wrong round",
+		Pre:            pre,
+		PostRoot:       "b980297077cdbef2505c75f4bf42434ae4f0cbbe6169d931e05c5b4901562d97",
+		InputMessages:  msgs,
+		OutputMessages: []*types.Message{},
+		ExpectedError:  "round change msg invalid: round change justification invalid: msg round wrong",
 	}
 }

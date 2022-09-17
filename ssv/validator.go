@@ -58,27 +58,29 @@ func (v *Validator) ProcessMessage(msg *types.Message) error {
 
 	switch msgID.GetMsgType() {
 	// TODO<olegshmuelov>: all consensus msgs should be processed here?
-	case types.ConsensusProposeMsgType:
-	case types.ConsensusPrepareMsgType:
-	case types.ConsensusCommitMsgType:
-	case types.ConsensusRoundChangeMsgType:
+	case
+		types.ConsensusProposeMsgType,
+		types.ConsensusPrepareMsgType,
+		types.ConsensusCommitMsgType,
+		types.ConsensusRoundChangeMsgType:
 		//signedMsg := &qbft.SignedMessage{}
 		//if err := signedMsg.Decode(msg.GetData()); err != nil {
 		//	return errors.Wrap(err, "could not get consensus Message from network Message")
 		//}
 		return dutyRunner.ProcessConsensus(msg)
-	case types.PartialRandaoSignatureMsgType:
-	case types.PartialContributionProofSignatureMsgType:
-	case types.PartialSelectionProofSignatureMsgType:
+	case
+		types.PartialRandaoSignatureMsgType,
+		types.PartialContributionProofSignatureMsgType,
+		types.PartialSelectionProofSignatureMsgType:
 		// TODO<olegshmuelov>: use same message structs as consensus
-		signedMsg := &SignedPartialSignatureMessage{}
+		signedMsg := &SignedPartialSignature{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 		return dutyRunner.ProcessPreConsensus(signedMsg)
 	case types.PartialPostConsensusSignatureMsgType:
 		// TODO<olegshmuelov>: use same message structs as consensus
-		signedMsg := &SignedPartialSignatureMessage{}
+		signedMsg := &SignedPartialSignature{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
@@ -86,7 +88,6 @@ func (v *Validator) ProcessMessage(msg *types.Message) error {
 	default:
 		return errors.New("unknown msg")
 	}
-	return nil
 }
 
 // ProcessMessage processes Network Message of all types
@@ -108,7 +109,7 @@ func (v *Validator) ProcessMessage(msg *types.Message) error {
 		}
 		return dutyRunner.ProcessConsensus(signedMsg)
 	case types.SSVPartialSignatureMsgType:
-		signedMsg := &SignedPartialSignatureMessage{}
+		signedMsg := &SignedPartialSignature{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}

@@ -118,11 +118,11 @@ func PeerPreparedDifferentHeights() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "round change peer prepared different heights",
-		Pre:              pre,
-		PostRoot:         "9d546b93c24a63acf7496e6de4588a85525654553d4e0992caf8072ff7318b61",
-		InputMessagesSIP: msgs,
-		OutputMessagesSIP: []*types.Message{
+		Name:          "round change peer prepared different heights",
+		Pre:           pre,
+		PostRoot:      "9d546b93c24a63acf7496e6de4588a85525654553d4e0992caf8072ff7318b61",
+		InputMessages: msgs,
+		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
 				Data: proposalMsgEncoded,

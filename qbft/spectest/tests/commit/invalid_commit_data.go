@@ -30,10 +30,10 @@ func InvalidCommitData() *tests.MsgProcessingSpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:             "invalid commit data",
-		Pre:              pre,
-		PostRoot:         "0940da0c5926c8f8145e7e980ac09119e429a5208165e6dbe35d7a5c45c07555",
-		InputMessagesSIP: msgs,
-		ExpectedError:    "invalid signed message: message input data is invalid",
+		Name:          "invalid commit data",
+		Pre:           pre,
+		PostRoot:      "0940da0c5926c8f8145e7e980ac09119e429a5208165e6dbe35d7a5c45c07555",
+		InputMessages: msgs,
+		ExpectedError: "invalid signed message: message input data is invalid",
 	}
 }

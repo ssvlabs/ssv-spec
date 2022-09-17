@@ -1,6 +1,6 @@
 package roundchange
 
-// TODO<olegshmuelov>: CHANGEROUND fix test
+// TODO<olegshmuelov>: CHANGEROUND adjust test with new msg structs
 // QuorumNotPrepared tests a round change quorum for non-prepared state
 /*func QuorumNotPrepared() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()

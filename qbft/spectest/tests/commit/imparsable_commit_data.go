@@ -1,6 +1,6 @@
 package commit
 
-// TODO<olegshmuelov> check if needed (validate consensus data)
+// TODO<olegshmuelov>: irrelevant test
 // ImparsableCommitData tests a commit msg received with the wrong commit data
 //func ImparsableCommitData() *tests.MsgProcessingSpecTest {
 //	pre := testingutils.BaseInstance()

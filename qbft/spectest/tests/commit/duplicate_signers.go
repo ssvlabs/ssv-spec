@@ -30,13 +30,13 @@ func DuplicateSigners() *tests.MsgProcessingSpecTest {
 		Name:     "duplicate signers",
 		Pre:      pre,
 		PostRoot: "20a518595c0dbe81ccc7f340f142e77ecfba0e0a93fe0d10325fe607f2e0b1eb",
-		InputMessagesSIP: []*types.Message{
+		InputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(baseMsgId, types.ConsensusCommitMsgType),
 				Data: commitEncoded,
 			},
 		},
-		OutputMessagesSIP: []*types.Message{},
-		ExpectedError:     "invalid signed message: non unique signer",
+		OutputMessages: []*types.Message{},
+		ExpectedError:  "invalid signed message: non unique signer",
 	}
 }
