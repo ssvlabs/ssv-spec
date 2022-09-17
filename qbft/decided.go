@@ -14,7 +14,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	}
 
 	if err := validateDecided(
-		c.GenerateConfig(),
+		c.config,
 		msg,
 		c.Share,
 	); err != nil {
@@ -34,6 +34,9 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	// Mark current instance decided
 	if inst := c.InstanceForHeight(c.Height); inst != nil && !inst.State.Decided {
 		inst.State.Decided = true
+		if msg.Message.Round > inst.State.Round {
+			inst.State.Round = msg.Message.Round
+		}
 		if c.Height == msg.Message.Height {
 			inst.State.DecidedValue = data.Data
 		}
@@ -42,7 +45,8 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	isFutureDecided := msg.Message.Height > c.Height
 	if isFutureDecided {
 		// add an instance for the decided msg
-		i := NewInstance(c.GenerateConfig(), c.Share, c.Identifier, msg.Message.Height)
+		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Message.Height)
+		i.State.Round = msg.Message.Round
 		i.State.Decided = true
 		i.State.DecidedValue = data.Data
 		c.StoredInstances.addNewInstance(i)
@@ -52,7 +56,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	}
 
 	if !prevDecided {
-		if err := c.storage.SaveHighestDecided(msg); err != nil {
+		if err := c.GetConfig().GetStorage().SaveHighestDecided(msg); err != nil {
 			// no need to fail processing the decided msg if failed to save
 			fmt.Printf("%s\n", err.Error())
 		}

@@ -44,22 +44,14 @@ type Controller struct {
 	FutureMsgsContainer map[types.OperatorID]Height // maps msg signer to height of higher height received msgs
 	Domain              types.DomainType
 	Share               *types.Share
-	signer              types.SSVSigner
-	valueCheck          ProposedValueCheckF
-	storage             Storage
-	network             Network
-	proposerF           ProposerF
+	config              IConfig
 }
 
 func NewController(
 	identifier []byte,
 	share *types.Share,
 	domain types.DomainType,
-	signer types.SSVSigner,
-	valueCheck ProposedValueCheckF,
-	storage Storage,
-	network Network,
-	proposerF ProposerF,
+	config IConfig,
 ) *Controller {
 	return &Controller{
 		Identifier:          identifier,
@@ -68,11 +60,7 @@ func NewController(
 		Share:               share,
 		StoredInstances:     InstanceContainer{},
 		FutureMsgsContainer: make(map[types.OperatorID]Height),
-		signer:              signer,
-		valueCheck:          valueCheck,
-		storage:             storage,
-		network:             network,
-		proposerF:           proposerF,
+		config:              config,
 	}
 }
 
@@ -165,7 +153,7 @@ func (c *Controller) GetIdentifier() []byte {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GenerateConfig(), c.Share, c.Identifier, c.Height)
+	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
@@ -183,7 +171,7 @@ func (c *Controller) canStartInstance(height Height, value []byte) error {
 	}
 
 	// check value
-	if err := c.valueCheck(value); err != nil {
+	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
 		return errors.Wrap(err, "value invalid")
 	}
 
@@ -238,7 +226,7 @@ func (c *Controller) Decode(data []byte) error {
 		return errors.Wrap(err, "could not decode controller")
 	}
 
-	config := c.GenerateConfig()
+	config := c.GetConfig()
 	for _, i := range c.StoredInstances {
 		if i != nil {
 			i.config = config
@@ -248,7 +236,7 @@ func (c *Controller) Decode(data []byte) error {
 }
 
 func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) error {
-	if err := c.storage.SaveHighestDecided(aggregatedCommit); err != nil {
+	if err := c.GetConfig().GetStorage().SaveHighestDecided(aggregatedCommit); err != nil {
 		return errors.Wrap(err, "could not save decided")
 	}
 
@@ -263,21 +251,13 @@ func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) er
 		MsgID:   ControllerIdToMessageID(c.Identifier),
 		Data:    byts,
 	}
-	if err := c.network.BroadcastDecided(msgToBroadcast); err != nil {
+	if err := c.GetConfig().GetNetwork().BroadcastDecided(msgToBroadcast); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}
 	return nil
 }
 
-func (c *Controller) GenerateConfig() IConfig {
-	return &Config{
-		Signer:      c.signer,
-		SigningPK:   c.Share.ValidatorPubKey,
-		Domain:      c.Domain,
-		ValueCheckF: c.valueCheck,
-		Storage:     c.storage,
-		Network:     c.network,
-		ProposerF:   c.proposerF,
-	}
+func (c *Controller) GetConfig() IConfig {
+	return c.config
 }

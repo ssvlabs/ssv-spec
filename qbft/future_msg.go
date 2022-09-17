@@ -6,14 +6,14 @@ import (
 )
 
 func (c *Controller) UponFutureMsg(msg *SignedMessage) (*SignedMessage, error) {
-	if err := validateFutureMsg(c.GenerateConfig(), msg, c.Share.Committee); err != nil {
+	if err := validateFutureMsg(c.GetConfig(), msg, c.Share.Committee); err != nil {
 		return nil, errors.Wrap(err, "invalid future msg")
 	}
 	if err := c.verifyAndAddHigherHeightMsg(msg); err != nil {
 		return nil, errors.Wrap(err, "failed adding higher height msg")
 	}
 	if c.f1SyncTrigger() {
-		return nil, c.network.SyncHighestDecided(c.Identifier)
+		return nil, c.GetConfig().GetNetwork().SyncHighestDecided(c.Identifier)
 	}
 	return nil, nil
 }

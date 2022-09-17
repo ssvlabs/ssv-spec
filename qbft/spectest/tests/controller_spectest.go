@@ -6,7 +6,6 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"reflect"
 	"testing"
@@ -31,32 +30,18 @@ type ControllerSpecTest struct {
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		func(data []byte) error {
-			if bytes.Equal([]byte{1, 2, 3, 4}, data) {
-				return nil
-			}
-			return errors.New("invalid value")
-		},
-		func(state *qbft.State, round qbft.Round) types.OperatorID {
-			return 1
-		},
+		config,
 	)
 
 	var lastErr error
 	for _, runData := range test.RunInstanceData {
-		startedInstance := false
 		err := contr.StartNewInstance(runData.InputValue)
 		if err != nil {
 			lastErr = err
-		} else {
-			startedInstance = true
-		}
-
-		if !startedInstance {
-			continue
 		}
 
 		decidedCnt := 0
@@ -77,7 +62,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 		if runData.SavedDecided != nil {
 			// test saved to storage
-			decided, err := contr.GenerateConfig().GetStorage().GetHighestDecided(identifier[:])
+			decided, err := config.GetStorage().GetHighestDecided(identifier[:])
 			require.NoError(t, err)
 			require.NotNil(t, decided)
 			r1, err := decided.GetRoot()
@@ -92,7 +77,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		}
 		if runData.BroadcastedDecided != nil {
 			// test broadcasted
-			broadcastedMsgs := contr.GenerateConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+			broadcastedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 			require.Greater(t, len(broadcastedMsgs), 0)
 			found := false
 			for _, msg := range broadcastedMsgs {

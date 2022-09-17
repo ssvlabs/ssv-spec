@@ -20,7 +20,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 			r.ProcessPreConsensus(msg)
 		}
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GenerateConfig(),
+			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
