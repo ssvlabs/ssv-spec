@@ -54,12 +54,12 @@ var AllTests = []SpecTest{
 	decided.CurrentInstancePastRound(),
 	decided.CurrentInstanceFutureRound(),
 
-	//processmsg.MsgError(),
-	//processmsg.SavedAndBroadcastedDecided(),
-	//processmsg.SingleConsensusMsg(),
-	//processmsg.FullDecided(),
-	//processmsg.InvalidIdentifier(),
-	//processmsg.NoInstanceRunning(),
+	processmsg.MsgError(),
+	processmsg.SavedAndBroadcastedDecided(),
+	processmsg.SingleConsensusMsg(),
+	processmsg.FullDecided(),
+	processmsg.InvalidIdentifier(),
+	processmsg.NoInstanceRunning(),
 
 	latemsg.LateCommit(),
 	latemsg.LateCommitPastRound(),
@@ -94,10 +94,6 @@ var AllTests = []SpecTest{
 	startinstance.PreviousDecided(),
 	startinstance.PreviousNotDecided(),
 	startinstance.InvalidValue(),
-
-	processmsg.SingleConsensusMsg(),
-	processmsg.MsgError(),
-	processmsg.SavedAndBroadcastedDecided(),
 
 	proposer.FourOperators(),
 	proposer.SevenOperators(),
