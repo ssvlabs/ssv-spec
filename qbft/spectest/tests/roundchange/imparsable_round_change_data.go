@@ -1,6 +1,6 @@
 package roundchange
 
-// TODO<olegshmuelov> check if needed (validate consensus data)
+// TODO<olegshmuelov>: irrelevant test
 // ImparsableRoundChangeData tests a round change msg data imparsable to round change data struct
 /*func ImparsableRoundChangeData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()

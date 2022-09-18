@@ -47,7 +47,7 @@ package commit
 //		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
 //		InputMessages: msgs,
 //		ExpectedError: "commit msg invalid: invalid commit msg: could not get msg commit data: could not decode commit data from message: invalid character '\\x01' looking for beginning of value",
-//		OutputMessages: []*qbft.SignedMessage{
+//		OutputMessages: []*types.Message{},
 //			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 //				MsgType:    qbft.PrepareMsgType,
 //				Height:     qbft.FirstHeight,

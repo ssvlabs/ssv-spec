@@ -1,57 +1,99 @@
 package roundchange
 
-// TODO<olegshmuelov>: CHANGEROUND adjust test with new msg structs
+import (
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+)
+
 // ValidJustification tests a valid rc quorum justification
-/*func ValidJustification() *tests.MsgProcessingSpecTest {
+func ValidJustification() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil // proposal resets on upon timeout
 	pre.State.Round = 2
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Input: []byte{1, 2, 3, 4},
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Input: []byte{1, 2, 3, 4},
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Input: []byte{1, 2, 3, 4},
-		}),
+	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	})
+	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	})
+	signQBFTMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  []byte{1, 2, 3, 4},
+	})
+	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height:        qbft.FirstHeight,
+		Round:         2,
+		Input:         []byte{1, 2, 3, 4},
+		PreparedRound: qbft.FirstRound,
+	})
+	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+		Height:        qbft.FirstHeight,
+		Round:         2,
+		Input:         []byte{1, 2, 3, 4},
+		PreparedRound: qbft.FirstRound,
+	})
+	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		Height:        qbft.FirstHeight,
+		Round:         2,
+		Input:         []byte{1, 2, 3, 4},
+		PreparedRound: qbft.FirstRound,
+	})
+	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  2,
+		Input:  []byte{1, 2, 3, 4},
+	})
+
+	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessageHeader()
+	prepareMsgHeader2, _ := signQBFTMsg2.ToSignedMessageHeader()
+	prepareMsgHeader3, _ := signQBFTMsg3.ToSignedMessageHeader()
+
+	prepareJustifications := []*qbft.SignedMessageHeader{
+		prepareMsgHeader,
+		prepareMsgHeader2,
+		prepareMsgHeader3,
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
-		}),
+	rcMsg.RoundChangeJustifications = prepareJustifications
+	rcMsg2.RoundChangeJustifications = prepareJustifications
+	rcMsg3.RoundChangeJustifications = prepareJustifications
+
+	rcMsgHeader, _ := rcMsg.ToSignedMessageHeader()
+	rcMsgHeader2, _ := rcMsg2.ToSignedMessageHeader()
+	rcMsgHeader3, _ := rcMsg3.ToSignedMessageHeader()
+
+	proposeMsg.ProposalJustifications = prepareJustifications
+	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessageHeader{
+		rcMsgHeader,
+		rcMsgHeader2,
+		rcMsgHeader3,
+	}
+	proposeMsgEncoded, _ := proposeMsg.Encode()
+
+	rcMsgEncoded, _ := rcMsg.Encode()
+	rcMsgEncoded2, _ := rcMsg2.Encode()
+	rcMsgEncoded3, _ := rcMsg2.Encode()
+
+	msgs := []*types.Message{
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+			Data: rcMsgEncoded,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+			Data: rcMsgEncoded2,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
+			Data: rcMsgEncoded3,
+		},
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -59,14 +101,11 @@ package roundchange
 		Pre:           pre,
 		PostRoot:      "d0ed6602d72af81d47d1e1ac5f98131fd4e349c15a8d2a328ed0f96ff275f224",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.ProposalMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      2,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, msgs, prepareMsgs),
-			}),
+		OutputMessages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+				Data: proposeMsgEncoded,
+			},
 		},
 	}
-}*/
+}
