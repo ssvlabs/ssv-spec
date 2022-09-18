@@ -137,7 +137,6 @@ var AllTests = []SpecTest{
 	tests.TenOperators(),
 	tests.ThirteenOperators(),
 
-	//proposal.PrevDecidedProposal(),
 	proposal.CurrentRoundPrevNotPrepared(),
 	proposal.CurrentRoundPrevPrepared(),
 	proposal.PastRoundProposalPrevPrepared(),
@@ -175,7 +174,6 @@ var AllTests = []SpecTest{
 	proposal.WrongSignature(),
 	proposal.UnknownSigner(),
 
-	//prepare.PrevDecidedPrepare(),
 	prepare.DuplicateMsg(),
 	prepare.HappyFlow(),
 	prepare.ImparsableProposalData(),
@@ -190,7 +188,6 @@ var AllTests = []SpecTest{
 	prepare.WrongSignature(),
 	prepare.UnknownSigner(),
 
-	//commit.PrevDecidedCommit(),
 	commit.CurrentRound(),
 	commit.FutureRound(),
 	commit.PastRound(),
@@ -210,7 +207,6 @@ var AllTests = []SpecTest{
 	commit.UnknownSigner(),
 	commit.InvalidValCheck(),
 
-	//roundchange.PrevDecidedRoundChange(),
 	roundchange.HappyFlow(),
 	roundchange.WrongHeight(),
 	roundchange.WrongSig(),
