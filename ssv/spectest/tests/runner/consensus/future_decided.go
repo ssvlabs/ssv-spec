@@ -18,6 +18,8 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 		return ret[:]
 	}
 
+	errStr := "failed processing consensus message: decided wrong instance"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus future decided",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -44,7 +46,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: decided not for running instance",
+				ExpectedError: errStr,
 			},
 			{
 				Name:   "sync committee",
@@ -64,7 +66,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "7b29e0cf0f1a5a90452855d6491db61ae7c90801ecf63180e9caeee4377afbbe",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: decided not for running instance",
+				ExpectedError:           errStr,
 			},
 			{
 				Name:   "aggregator",
@@ -89,7 +91,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: decided not for running instance",
+				ExpectedError: errStr,
 			},
 			{
 				Name:   "proposer",
@@ -114,7 +116,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
-				ExpectedError: "failed processing consensus message: decided not for running instance",
+				ExpectedError: errStr,
 			},
 			{
 				Name:   "attester",
@@ -134,7 +136,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "0618957acbfc81d5819c8082b962cc971248d91dc2777d1b73af2945b1ffe35a",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: decided not for running instance",
+				ExpectedError:           errStr,
 			},
 		},
 	}

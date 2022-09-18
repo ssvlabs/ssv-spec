@@ -3,6 +3,7 @@ package spectest
 import (
 	//"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"testing"
 )
@@ -18,16 +19,18 @@ var AllTests = []SpecTest{
 	newduty.PostDecided(),
 	newduty.Finished(),
 	newduty.Valid(),
+	newduty.PostWrongDecided(),
+	newduty.PostInvalidDecided(),
 
-	//consensus.FutureDecided(),
-	//consensus.InvalidDecidedValue(),
-	//consensus.NoRunningDuty(),
-	//consensus.PostFinish(),
-	//consensus.PostDecided(),
-	//consensus.ValidDecided(),
-	//consensus.ValidDecided7Operators(),
-	//consensus.ValidDecided10Operators(),
-	//consensus.ValidDecided13Operators(),
+	consensus.FutureDecided(),
+	consensus.InvalidDecidedValue(),
+	consensus.NoRunningDuty(),
+	consensus.PostFinish(),
+	consensus.PostDecided(),
+	consensus.ValidDecided(),
+	consensus.ValidDecided7Operators(),
+	consensus.ValidDecided10Operators(),
+	consensus.ValidDecided13Operators(),
 	//
 	//synccommitteeaggregator.SomeAggregatorQuorum(),
 	//synccommitteeaggregator.NoneAggregatorQuorum(),
