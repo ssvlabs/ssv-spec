@@ -103,10 +103,17 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to process consensus msg")
 	}
-	decidedRunningInstance := decidedMsg != nil && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
+	decided = decidedMsg != nil
+	decidedRunningInstance := decided && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
 
+	if !decided {
+		return false, nil, nil
+	}
+	if !decidedRunningInstance {
+		return false, nil, errors.New("decided not for running instance")
+	}
 	// verify we decided running instance only, if not we do not proceed
-	if prevDecided || !decidedRunningInstance {
+	if prevDecided {
 		return false, nil, nil
 	}
 
