@@ -4,6 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
@@ -79,15 +80,14 @@ var AllTests = []SpecTest{
 	latemsg.LateRoundChangePastRound(),
 	latemsg.FullFlowAfterDecided(),
 
-	//futuremsg.NoSigners(),
-	//futuremsg.MultiSigners(),
-	//futuremsg.Cleanup(),
-	//futuremsg.DuplicateSigner(),
-	//futuremsg.F1FutureMsgs(),
-	//futuremsg.F1FutureMsgsAfterSync(),
-	//futuremsg.InvalidMsg(),
-	//futuremsg.UnknownSigner(),
-	//futuremsg.WrongSig(),
+	futuremsg.NoSigners(),
+	futuremsg.MultiSigners(),
+	futuremsg.Cleanup(),
+	futuremsg.DuplicateSigner(),
+	futuremsg.F1FutureMsgs(),
+	futuremsg.InvalidMsg(),
+	futuremsg.UnknownSigner(),
+	futuremsg.WrongSig(),
 
 	startinstance.PostFutureDecided(),
 	startinstance.FirstHeight(),

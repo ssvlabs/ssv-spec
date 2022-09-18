@@ -9,8 +9,8 @@ func (c *Controller) UponFutureMsg(msg *SignedMessage) (*SignedMessage, error) {
 	if err := validateFutureMsg(c.GetConfig(), msg, c.Share.Committee); err != nil {
 		return nil, errors.Wrap(err, "invalid future msg")
 	}
-	if err := c.verifyAndAddHigherHeightMsg(msg); err != nil {
-		return nil, errors.Wrap(err, "failed adding higher height msg")
+	if !c.verifyAndAddHigherHeightMsg(msg) {
+		return nil, errors.New("discarded future msg")
 	}
 	if c.f1SyncTrigger() {
 		return nil, c.GetConfig().GetNetwork().SyncHighestDecided(c.Identifier)
@@ -40,14 +40,7 @@ func validateFutureMsg(
 }
 
 // verifyAndAddHigherHeightMsg verifies msg, cleanup queue and adds the message if unique signer
-func (c *Controller) verifyAndAddHigherHeightMsg(msg *SignedMessage) error {
-	if err := msg.Signature.VerifyByOperators(msg, c.Domain, types.QBFTSignatureType, c.Share.Committee); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
-	}
-	if len(msg.GetSigners()) != 1 {
-		return errors.New("msg allows 1 signer")
-	}
-
+func (c *Controller) verifyAndAddHigherHeightMsg(msg *SignedMessage) bool {
 	// cleanup lower height msgs
 	cleanedQueue := make(map[types.OperatorID]Height)
 	signerExists := false
@@ -66,7 +59,7 @@ func (c *Controller) verifyAndAddHigherHeightMsg(msg *SignedMessage) error {
 		cleanedQueue[msg.GetSigners()[0]] = msg.Message.Height
 	}
 	c.FutureMsgsContainer = cleanedQueue
-	return nil
+	return !signerExists
 }
 
 // f1SyncTrigger returns true if received f+1 higher height messages from unique signers

@@ -7,8 +7,9 @@ import (
 )
 
 type TestingNetwork struct {
-	BroadcastedMsgs []*types.SSVMessage
-	DKGOutputs      map[types.OperatorID]*dkg.SignedOutput
+	BroadcastedMsgs       []*types.SSVMessage
+	DKGOutputs            map[types.OperatorID]*dkg.SignedOutput
+	SyncHighestDecidedCnt int
 }
 
 func NewTestingNetwork() *TestingNetwork {
@@ -38,6 +39,7 @@ func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.Sign
 }
 
 func (net *TestingNetwork) SyncHighestDecided(identifier []byte) error {
+	net.SyncHighestDecidedCnt++
 	return nil
 }
 
