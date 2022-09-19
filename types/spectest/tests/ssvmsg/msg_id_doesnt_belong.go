@@ -5,6 +5,6 @@ import (
 )
 
 // MsgIDDoesntBelongs tests msg id doesn't belonging to validator id
-func MsgIDDoesntBelongs() *spectest.SpecTest {
+func MsgIDDoesntBelongs() spectest.SpecTest {
 	panic("implement")
 }

@@ -1,4 +1,4 @@
-package tests
+package encryption
 
 import (
 	"github.com/bloxapp/ssv-spec/types"

@@ -132,7 +132,7 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 func (c *Controller) baseMsgValidation(msg *SignedMessage) error {
 	// verify msg belongs to controller
 	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
-		return errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
+		return errors.New("message doesn't belong to Identifier")
 	}
 
 	return nil

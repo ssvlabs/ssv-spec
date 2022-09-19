@@ -19,3 +19,6 @@
 
 # binaries
 .bin
+
+# CI
+bin

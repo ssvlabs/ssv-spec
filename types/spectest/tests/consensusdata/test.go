@@ -1,4 +1,4 @@
-package tests
+package consensusdata
 
 import (
 	"github.com/bloxapp/ssv-spec/types"

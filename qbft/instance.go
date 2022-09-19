@@ -66,7 +66,7 @@ func (i *Instance) Start(value []byte, height Height) {
 		}
 
 		if err := i.config.GetNetwork().SyncHighestRoundChange(i.State.ID, i.State.Height); err != nil {
-			// TODO - log
+			fmt.Printf("%s\n", err.Error())
 		}
 	})
 }

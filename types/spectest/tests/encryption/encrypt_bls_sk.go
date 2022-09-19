@@ -3,12 +3,11 @@ package encryption
 import (
 	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // EncryptBLSSK tests encrypting a BLS private key
-func EncryptBLSSK() *tests.EncryptionSpecTest {
+func EncryptBLSSK() *EncryptionSpecTest {
 	types.InitBLS()
 	blsSK := &bls.SecretKey{}
 	blsSK.SetByCSPRNG()
@@ -18,7 +17,7 @@ func EncryptBLSSK() *tests.EncryptionSpecTest {
 	cipher, _ := types.Encrypt(pkObj, blsSK.Serialize())
 
 	fmt.Printf("cipher L: %d\n", len(cipher))
-	return &tests.EncryptionSpecTest{
+	return &EncryptionSpecTest{
 		Name:       "bls secret key encryption",
 		SKPem:      sk,
 		PKPem:      pk,
