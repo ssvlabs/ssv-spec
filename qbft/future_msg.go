@@ -9,7 +9,7 @@ func (c *Controller) UponFutureMsg(msg *SignedMessage) (*SignedMessage, error) {
 	if err := validateFutureMsg(c.GetConfig(), msg, c.Share.Committee); err != nil {
 		return nil, errors.Wrap(err, "invalid future msg")
 	}
-	if !c.verifyAndAddHigherHeightMsg(msg) {
+	if !c.addHigherHeightMsg(msg) {
 		return nil, errors.New("discarded future msg")
 	}
 	if c.f1SyncTrigger() {
@@ -39,8 +39,8 @@ func validateFutureMsg(
 	return nil
 }
 
-// verifyAndAddHigherHeightMsg verifies msg, cleanup queue and adds the message if unique signer
-func (c *Controller) verifyAndAddHigherHeightMsg(msg *SignedMessage) bool {
+// addHigherHeightMsg verifies msg, cleanup queue and adds the message if unique signer
+func (c *Controller) addHigherHeightMsg(msg *SignedMessage) bool {
 	// cleanup lower height msgs
 	cleanedQueue := make(map[types.OperatorID]Height)
 	signerExists := false

@@ -3,10 +3,13 @@ package spectest
 import (
 	//"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
 	"testing"
 )
 
@@ -61,30 +64,30 @@ var AllTests = []SpecTest{
 	preconsensus.UnknownSigner(),
 	preconsensus.InvalidBeaconSignature(),
 	preconsensus.InvalidMessageSignature(),
-	//
-	//messages.EncodingAndRoot(),
-	//messages.NoMsgs(),
-	//messages.InvalidMsg(),
-	//messages.ValidContributionProofMetaData(),
-	//messages.SigValid(),
-	//messages.SigTooShort(),
-	//messages.SigTooLong(),
-	//messages.PartialSigValid(),
-	//messages.PartialSigTooShort(),
-	//messages.PartialSigTooLong(),
-	//messages.PartialRootValid(),
-	//messages.PartialRootTooShort(),
-	//messages.PartialRootTooLong(),
-	//
-	//valcheckduty.WrongValidatorIndex(),
-	//valcheckduty.WrongValidatorPK(),
-	//valcheckduty.WrongDutyType(),
-	//valcheckduty.FarFutureDutySlot(),
-	//valcheckattestations.Slashable(),
-	//valcheckattestations.SourceHigherThanTarget(),
-	//valcheckattestations.FarFutureTarget(),
-	//valcheckattestations.CommitteeIndexMismatch(),
-	//valcheckattestations.SlotMismatch(),
-	//valcheckattestations.AttestationDataNil(),
-	//valcheckattestations.Valid(),
+
+	messages.EncodingAndRoot(),
+	messages.NoMsgs(),
+	messages.InvalidMsg(),
+	messages.ValidContributionProofMetaData(),
+	messages.SigValid(),
+	messages.SigTooShort(),
+	messages.SigTooLong(),
+	messages.PartialSigValid(),
+	messages.PartialSigTooShort(),
+	messages.PartialSigTooLong(),
+	messages.PartialRootValid(),
+	messages.PartialRootTooShort(),
+	messages.PartialRootTooLong(),
+
+	valcheckduty.WrongValidatorIndex(),
+	valcheckduty.WrongValidatorPK(),
+	valcheckduty.WrongDutyType(),
+	valcheckduty.FarFutureDutySlot(),
+	valcheckattestations.Slashable(),
+	valcheckattestations.SourceHigherThanTarget(),
+	valcheckattestations.FarFutureTarget(),
+	valcheckattestations.CommitteeIndexMismatch(),
+	valcheckattestations.SlotMismatch(),
+	valcheckattestations.AttestationDataNil(),
+	valcheckattestations.Valid(),
 }
