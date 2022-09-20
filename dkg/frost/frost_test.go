@@ -1,17 +1,19 @@
 package frost
 
 import (
-	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
 )
 
 type ProcessMsgFnType func(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, error)
 
 type TestNetwork struct {
+	m            *sync.Mutex
 	ProcessMsgFn map[uint32]ProcessMsgFnType
 	Outputs      map[uint32]*dkg.KeyGenOutput
 }
@@ -29,9 +31,14 @@ func (tn *TestNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {
 		g.Go(func() error {
 			finished, o, err := fn(msg)
 			if finished {
+				tn.m.Lock()
 				tn.Outputs[operatorID] = o
+				tn.m.Unlock()
 			}
-			return err
+			if err != nil {
+				return err
+			}
+			return nil
 		})
 	}
 	return g.Wait()
@@ -39,6 +46,7 @@ func (tn *TestNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {
 
 func TestFrost2_4(t *testing.T) {
 	testNetwork := TestNetwork{
+		m:            &sync.Mutex{},
 		ProcessMsgFn: make(map[uint32]ProcessMsgFnType),
 		Outputs:      make(map[uint32]*dkg.KeyGenOutput),
 	}
@@ -73,9 +81,8 @@ func TestFrost2_4(t *testing.T) {
 		}
 
 		g.Go(func() error {
-			err := kgps[uint32(operatorID)].Start(initMsg)
-			if err != nil {
-				return fmt.Errorf("id %d err %s", operatorID, err.Error())
+			if err := kgps[uint32(operatorID)].Start(initMsg); err != nil {
+				return errors.Wrapf(err, "failed to start operator %d", operatorID)
 			}
 			return nil
 		})

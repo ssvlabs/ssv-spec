@@ -88,7 +88,10 @@ func (fr *FROST) Start(init *dkg.Init) error {
 	fr.party = party
 	fr.threshold = uint32(init.Threshold)
 
-	k, _ := ecies.GenerateKey()
+	k, err := ecies.GenerateKey()
+	if err != nil {
+		return err
+	}
 	fr.sessionSK = k
 
 	fr.round = Preparation
@@ -170,6 +173,8 @@ func (fr *FROST) canStartRound1() bool {
 		return false
 	}
 
+	fr.msgLock.Lock()
+	defer fr.msgLock.Unlock()
 	for _, operatorID := range fr.operators {
 		msg, ok := fr.msgs[Preparation][operatorID]
 		if !ok || msg.PreparationMessage == nil {
@@ -180,6 +185,8 @@ func (fr *FROST) canStartRound1() bool {
 }
 
 func (fr *FROST) encryptForP2PSend(id uint32, share []byte) ([]byte, error) {
+	fr.msgLock.Lock()
+	defer fr.msgLock.Unlock()
 	msg, ok := fr.msgs[Preparation][id]
 	if !ok {
 		return nil, fmt.Errorf("no public key found for operator %d", id)
@@ -267,6 +274,8 @@ func (fr *FROST) canStartRound2() bool {
 		return false
 	}
 
+	fr.msgLock.Lock()
+	defer fr.msgLock.Unlock()
 	for _, operatorID := range fr.operators {
 		if fr.operatorID == operatorID {
 			continue
@@ -285,6 +294,8 @@ func (fr *FROST) hasFinishedRound2() bool {
 		return false
 	}
 
+	fr.msgLock.Lock()
+	defer fr.msgLock.Unlock()
 	for _, operatorID := range fr.operators {
 		msg, ok := fr.msgs[Round2][operatorID]
 		if !ok || msg.Round2Message == nil {
@@ -298,6 +309,7 @@ func (fr *FROST) processRound2() error {
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
+	fr.msgLock.Lock()
 	for operatorID, protocolMessage := range fr.msgs[Round1] {
 
 		verifiers := new(sharing.FeldmanVerifier)
@@ -335,6 +347,7 @@ func (fr *FROST) processRound2() error {
 
 		p2psend[operatorID] = share
 	}
+	fr.msgLock.Unlock()
 
 	bCastMessage, err := fr.party.Round2(bcast, p2psend)
 	if err != nil {
