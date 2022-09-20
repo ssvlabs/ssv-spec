@@ -3,10 +3,11 @@ package frost
 import "encoding/json"
 
 type ProtocolMsg struct {
-	PreparationMessage *PreparationMessage
-	Round1Message      *Round1Message
-	Round2Message      *Round2Message
-	BlameMessage       *BlameMessage
+	Round              DKGRound            `json:"round,omitempty"`
+	PreparationMessage *PreparationMessage `json:"preparation,omitempty"`
+	Round1Message      *Round1Message      `json:"round1,omitempty"`
+	Round2Message      *Round2Message      `json:"round2,omitempty"`
+	BlameMessage       *BlameMessage       `json:"blame,omitempty"`
 }
 
 type PreparationMessage struct {
