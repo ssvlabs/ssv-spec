@@ -12,7 +12,7 @@ import (
 // InvalidDecidedValue tests an invalid decided value
 func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
-
+	expectedError := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type"
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{
 			Duty: &types.Duty{
@@ -54,11 +54,11 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "c657220938d48e0573e9874b84b29cb92c7d581fca27c28d2a34cc3913c3ffbb",
+				PostDutyRunnerStateRoot: "95d33f7387e349b91f7c257028d71f634d1558b468945030f1ee78d0682f5ad5",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
+				ExpectedError: expectedError,
 			},
 			{
 				Name:   "sync committee",
@@ -77,9 +77,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommittee)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "4ecc5fa28895cda24f3c9489c891c69431ad1c9aedf66d27f87528494b313e19",
+				PostDutyRunnerStateRoot: "6f22c1792cc1a90ba96a3053588f2c6e13e13a510fc6e9c1ca99d6b140f521d1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
+				ExpectedError:           expectedError,
 			},
 			{
 				Name:   "aggregator",
@@ -102,11 +102,11 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAggregator)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "e5df3344d76b2e83fabbff92998d5999daff2747f276b1fbc222b6c960750b93",
+				PostDutyRunnerStateRoot: "311e08d705481d31207d79d81200529c6c553fb11ab8f7eff436e4c3cd0f871b",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
+				ExpectedError: expectedError,
 			},
 			{
 				Name:   "proposer",
@@ -129,11 +129,11 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "f9023766285ee75a894437f41dbe7d40b6d23922df60353a6c0125d56c4f9f09",
+				PostDutyRunnerStateRoot: "1bd4b88c1748ff0a54d2e86b0376fea7483e15b586211be13ca5f10ee5343ea9",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
-				ExpectedError: "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
+				ExpectedError: expectedError,
 			},
 			{
 				Name:   "attester",
@@ -152,9 +152,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAttester)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "d00a1795c598a53727f7b683d54b2299289dd879c82198123556537e781fcede",
+				PostDutyRunnerStateRoot: "c07a579655fba0e74e283289e91ade60157a54c23b31f1a18774ac29baa08af9",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: failed to process consensus msg: could not process msg: invalid decided msg: decided value invalid: duty invalid: wrong beacon role type",
+				ExpectedError:           expectedError,
 			},
 		},
 	}

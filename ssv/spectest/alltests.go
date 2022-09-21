@@ -24,7 +24,10 @@ var AllTests = []SpecTest{
 	newduty.PostDecided(),
 	newduty.Finished(),
 	newduty.Valid(),
+	newduty.PostWrongDecided(),
+	newduty.PostInvalidDecided(),
 
+	consensus.FutureDecided(),
 	consensus.InvalidDecidedValue(),
 	consensus.NoRunningDuty(),
 	consensus.PostFinish(),
@@ -45,6 +48,7 @@ var AllTests = []SpecTest{
 	preconsensus.InvalidSignedMessage(),
 	preconsensus.InvalidExpectedRoot(),
 	preconsensus.DuplicateMsg(),
+	preconsensus.DuplicateMsgDifferentRoots(),
 	preconsensus.PostFinish(),
 	preconsensus.PostDecided(),
 	preconsensus.PostQuorum(),

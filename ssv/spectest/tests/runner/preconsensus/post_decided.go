@@ -20,7 +20,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 			r.ProcessPreConsensus(msg)
 		}
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GenerateConfig(),
+			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
@@ -50,7 +50,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "366320a75151b43e701750fefe361405fb53e39269db1830314f881cac48126d",
+				PostDutyRunnerStateRoot: "d6702a61154964cb07d1ad1bab2aef6012a23e9eb220584a5cc68166c043866b",
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
@@ -70,7 +70,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "123efb0793124df79dcae660aa87918726a0dcde94031223394975e37ee0e098",
+				PostDutyRunnerStateRoot: "858034543f7328566e401cfd9bd8d66cb722c9d41d0a054999638fcfc8a129ad",
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
@@ -90,7 +90,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "a347ece3f05f70d34db60b25fe499ed82bc1e2c9c8eeef0dc680c9c8cd168c23",
+				PostDutyRunnerStateRoot: "8fa24d5c462001b5887aa6f32cc612d13dd4c406b720d2fb8ca23e4577fa96c9",
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},

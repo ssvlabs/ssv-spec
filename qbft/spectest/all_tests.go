@@ -3,13 +3,16 @@ package spectest
 import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/decided"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/startinstance"
 	"testing"
 )
 
@@ -31,17 +34,66 @@ var AllTests = []SpecTest{
 	//timeout.ErrorOnBroadcast(),
 	//timeout.ErrorOnCreateMsg(),
 
-	controller.StartInstanceFirstHeight(),
-	controller.StartInstancePreviousDecided(),
-	controller.StartInstancePreviousNotDecided(),
-	controller.StartInstanceInvalidValue(),
-	controller.FirstDecided(),
-	controller.InvalidIdentifier(),
-	controller.NoInstanceRunning(),
-	controller.NotFirstDecided(),
-	controller.NotDecided(),
-	controller.ProcessMsgError(),
-	controller.SavedAndBroadcastedDecided(),
+	decided.HasQuorum(),
+	decided.NoQuorum(),
+	decided.DuplicateMsg(),
+	decided.DuplicateSigners(),
+	decided.ImparsableData(),
+	decided.Invalid(),
+	decided.InvalidData(),
+	decided.InvalidValCheckData(),
+	decided.LateDecided(),
+	decided.LateDecidedBiggerQuorum(),
+	decided.LateDecidedSmallerQuorum(),
+	decided.PastInstance(),
+	decided.UnknownSigner(),
+	decided.WrongMsgType(),
+	decided.WrongSignature(),
+	decided.MultiDecidedInstances(),
+	decided.FutureInstance(),
+	decided.CurrentInstance(),
+	decided.CurrentInstancePastRound(),
+	decided.CurrentInstanceFutureRound(),
+
+	processmsg.MsgError(),
+	processmsg.SavedAndBroadcastedDecided(),
+	processmsg.SingleConsensusMsg(),
+	processmsg.FullDecided(),
+	processmsg.InvalidIdentifier(),
+	processmsg.NoInstanceRunning(),
+
+	latemsg.LateCommit(),
+	latemsg.LateCommitPastRound(),
+	latemsg.LateCommitNoInstance(),
+	latemsg.LateCommitPastInstance(),
+	latemsg.LatePrepare(),
+	latemsg.LatePrepareNoInstance(),
+	latemsg.LatePreparePastInstance(),
+	latemsg.LatePreparePastRound(),
+	latemsg.LateProposal(),
+	latemsg.LateProposalNoInstance(),
+	latemsg.LateProposalPastInstance(),
+	latemsg.LateProposalPastRound(),
+	latemsg.LateRoundChange(),
+	latemsg.LateRoundChangeNoInstance(),
+	latemsg.LateRoundChangePastInstance(),
+	latemsg.LateRoundChangePastRound(),
+	latemsg.FullFlowAfterDecided(),
+
+	futuremsg.NoSigners(),
+	futuremsg.MultiSigners(),
+	futuremsg.Cleanup(),
+	futuremsg.DuplicateSigner(),
+	futuremsg.F1FutureMsgs(),
+	futuremsg.InvalidMsg(),
+	futuremsg.UnknownSigner(),
+	futuremsg.WrongSig(),
+
+	startinstance.PostFutureDecided(),
+	startinstance.FirstHeight(),
+	startinstance.PreviousDecided(),
+	startinstance.PreviousNotDecided(),
+	startinstance.InvalidValue(),
 
 	proposer.FourOperators(),
 	proposer.SevenOperators(),
@@ -154,22 +206,6 @@ var AllTests = []SpecTest{
 	commit.WrongSignature(),
 	commit.UnknownSigner(),
 	commit.InvalidValCheck(),
-
-	decided.UnknownSigner(),
-	decided.WrongSignature(),
-	decided.WrongHeight(),
-	decided.PostDecided(),
-	decided.SecondMsg(),
-	decided.PastRound(),
-	decided.NoPrevAcceptedProposal(),
-	decided.InvalidValCheckData(),
-	decided.InvalidData(),
-	decided.ImparsableData(),
-	decided.FutureRound(),
-	decided.DuplicateSigners(),
-	decided.DuplicateMsg(),
-	decided.PrevCommitOverlap(),
-	decided.CurrentRound(),
 
 	roundchange.HappyFlow(),
 	roundchange.WrongHeight(),

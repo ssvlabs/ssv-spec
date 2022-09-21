@@ -11,7 +11,6 @@ func (i *Instance) uponRoundChange(
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
 ) error {
-	// TODO - Roberto comment: could happen we received a round change before we switched the round and this msg will be rejected (lost)
 	if err := validRoundChange(i.State, i.config, signedRoundChange, i.State.Height, signedRoundChange.Message.Round); err != nil {
 		return errors.Wrap(err, "round change msg invalid")
 	}
@@ -207,6 +206,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 	if len(signedMsg.GetSigners()) != 1 {
 		return errors.New("round change msg allows 1 signer")
 	}
+
 	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
 		return errors.Wrap(err, "round change msg signature invalid")
 	}

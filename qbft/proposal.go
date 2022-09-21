@@ -126,7 +126,7 @@ func isProposalJustification(
 
 		// check there is a quorum
 		if !HasQuorum(state.Share, roundChangeMsgs) {
-			return errors.New("change round has not quorum")
+			return errors.New("change round has no quorum")
 		}
 
 		// previouslyPreparedF returns true if any on the round change messages have a prepared round and value

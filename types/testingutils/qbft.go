@@ -66,17 +66,12 @@ var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byt
 func NewTestingQBFTController(
 	identifier []byte,
 	share *types.Share,
-	valCheck qbft.ProposedValueCheckF,
-	proposerF qbft.ProposerF,
+	config qbft.IConfig,
 ) *qbft.Controller {
 	return qbft.NewController(
 		identifier,
 		share,
 		types.PrimusTestnet,
-		NewTestingKeyManager(),
-		valCheck,
-		NewTestingStorage(),
-		NewTestingNetwork(),
-		proposerF,
+		config,
 	)
 }

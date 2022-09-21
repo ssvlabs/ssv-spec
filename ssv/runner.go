@@ -97,18 +97,25 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		return false, nil, errors.Wrap(err, "invalid consensus message")
 	}
 
-	decided, decidedValueByts, err := b.QBFTController.ProcessMsg(msg)
+	prevDecided, _ := b.State.RunningInstance.IsDecided()
+
+	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to process consensus msg")
 	}
 
-	// Decided returns true only once so if it is true it must be for the current running instance
-	if !decided {
-		return false, nil, nil
+	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
+		return false, nil, err
+	}
+
+	// get decided value
+	decidedData, err := decidedMsg.Message.GetCommitData()
+	if err != nil {
+		return false, nil, errors.Wrap(err, "failed to get decided data")
 	}
 
 	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedValueByts); err != nil {
+	if err := decidedValue.Decode(decidedData.Data); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
@@ -148,6 +155,24 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSign
 	}
 
 	return anyQuorum, roots, nil
+}
+
+func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.SignedMessage) (bool, error) {
+	decided := decidedMsg != nil
+	decidedRunningInstance := decided && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
+
+	if !decided {
+		return false, nil
+	}
+	if !decidedRunningInstance {
+		return false, errors.New("decided wrong instance")
+	}
+	// verify we decided running instance only, if not we do not proceed
+	if prevDecided {
+		return false, nil
+	}
+
+	return true, nil
 }
 
 func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
