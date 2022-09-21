@@ -45,7 +45,7 @@ const (
 	Preparation DKGRound = iota + 1
 	Round1
 	Round2
-	Blame
+	// Blame
 )
 
 func New(
@@ -143,22 +143,22 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 
 	switch protocolMessage.Round {
 	case Preparation:
-		if fr.canStartRound1() {
+		if fr.canProceedRound1() {
 			fr.round = Round1
 			if err := fr.processRound1(); err != nil {
 				return false, nil, err
 			}
 		}
 	case Round1:
-		if fr.canStartRound2() {
+		if fr.canProceedRound2() {
 			fr.round = Round2
 			if err := fr.processRound2(); err != nil {
 				return false, nil, err
 			}
 		}
 	case Round2:
-		if fr.hasFinishedRound2() {
-			out, err := fr.getKeygenOutput()
+		if fr.canProceedKeygenOutput() {
+			out, err := fr.processKeygenOutput()
 			if err != nil {
 				return false, out, err
 			}
@@ -166,38 +166,6 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 		}
 	}
 	return false, nil, nil
-}
-
-func (fr *FROST) canStartRound1() bool {
-	if fr.round != Preparation {
-		return false
-	}
-
-	fr.msgLock.Lock()
-	defer fr.msgLock.Unlock()
-	for _, operatorID := range fr.operators {
-		msg, ok := fr.msgs[Preparation][operatorID]
-		if !ok || msg.PreparationMessage == nil {
-			return false
-		}
-	}
-	return true
-}
-
-func (fr *FROST) encryptForP2PSend(id uint32, share []byte) ([]byte, error) {
-	fr.msgLock.Lock()
-	defer fr.msgLock.Unlock()
-	msg, ok := fr.msgs[Preparation][id]
-	if !ok {
-		return nil, fmt.Errorf("no public key found for operator %d", id)
-	}
-
-	pk, err := ecies.NewPublicKeyFromBytes(msg.PreparationMessage.SessionPk)
-	if err != nil {
-		return nil, err
-	}
-
-	return ecies.Encrypt(pk, share)
 }
 
 func (fr *FROST) processRound1() error {
@@ -267,42 +235,6 @@ func (fr *FROST) processRound1() error {
 	}
 
 	return fr.network.BroadcastDKGMessage(bcastRound1Message)
-}
-
-func (fr *FROST) canStartRound2() bool {
-	if fr.round != Round1 {
-		return false
-	}
-
-	fr.msgLock.Lock()
-	defer fr.msgLock.Unlock()
-	for _, operatorID := range fr.operators {
-		if fr.operatorID == operatorID {
-			continue
-		}
-
-		msg, ok := fr.msgs[Round1][operatorID]
-		if !ok || (ok && msg.Round1Message == nil) {
-			return false
-		}
-	}
-	return true
-}
-
-func (fr *FROST) hasFinishedRound2() bool {
-	if fr.round != Round2 {
-		return false
-	}
-
-	fr.msgLock.Lock()
-	defer fr.msgLock.Unlock()
-	for _, operatorID := range fr.operators {
-		msg, ok := fr.msgs[Round2][operatorID]
-		if !ok || msg.Round2Message == nil {
-			return false
-		}
-	}
-	return true
 }
 
 func (fr *FROST) processRound2() error {
@@ -387,7 +319,7 @@ func (fr *FROST) processRound2() error {
 	return fr.network.BroadcastDKGMessage(bcastRound2Message)
 }
 
-func (fr *FROST) getKeygenOutput() (*dkg.KeyGenOutput, error) {
+func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	if fr.round != Round2 {
 		return nil, dkg.ErrInvalidRound{}
 	}
@@ -451,4 +383,72 @@ func (fr *FROST) getKeygenOutput() (*dkg.KeyGenOutput, error) {
 		Threshold:       uint64(fr.threshold),
 	}
 	return out, nil
+}
+
+func (fr *FROST) canProceedRound1() bool {
+	if fr.round != Preparation {
+		return false
+	}
+
+	fr.msgLock.Lock()
+	defer fr.msgLock.Unlock()
+	for _, operatorID := range fr.operators {
+		msg, ok := fr.msgs[Preparation][operatorID]
+		if !ok || msg.PreparationMessage == nil {
+			return false
+		}
+	}
+	return true
+}
+
+func (fr *FROST) canProceedRound2() bool {
+	if fr.round != Round1 {
+		return false
+	}
+
+	fr.msgLock.Lock()
+	defer fr.msgLock.Unlock()
+	for _, operatorID := range fr.operators {
+		if fr.operatorID == operatorID {
+			continue
+		}
+
+		msg, ok := fr.msgs[Round1][operatorID]
+		if !ok || (ok && msg.Round1Message == nil) {
+			return false
+		}
+	}
+	return true
+}
+
+func (fr *FROST) canProceedKeygenOutput() bool {
+	if fr.round != Round2 {
+		return false
+	}
+
+	fr.msgLock.Lock()
+	defer fr.msgLock.Unlock()
+	for _, operatorID := range fr.operators {
+		msg, ok := fr.msgs[Round2][operatorID]
+		if !ok || msg.Round2Message == nil {
+			return false
+		}
+	}
+	return true
+}
+
+func (fr *FROST) encryptForP2PSend(id uint32, data []byte) ([]byte, error) {
+	fr.msgLock.Lock()
+	defer fr.msgLock.Unlock()
+	msg, ok := fr.msgs[Preparation][id]
+	if !ok {
+		return nil, fmt.Errorf("no public key found for operator %d", id)
+	}
+
+	pk, err := ecies.NewPublicKeyFromBytes(msg.PreparationMessage.SessionPk)
+	if err != nil {
+		return nil, err
+	}
+
+	return ecies.Encrypt(pk, data)
 }
