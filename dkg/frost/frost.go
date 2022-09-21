@@ -1,6 +1,7 @@
 package frost
 
 import (
+	"crypto/rand"
 	"fmt"
 
 	"github.com/bloxapp/ssv-spec/dkg"
@@ -21,19 +22,18 @@ func init() {
 }
 
 type FROST struct {
-	identifier dkg.RequestID
-	network    dkg.Network
-	threshold  uint32
-	round      DKGRound
+	identifier   dkg.RequestID
+	network      dkg.Network
+	threshold    uint32
+	currentRound DKGRound
 
 	operatorID uint32
 	operators  []uint32
 	party      *frost.DkgParticipant
 	sessionSK  *ecies.PrivateKey
 
+	msgs           map[DKGRound]map[uint32]*ProtocolMsg
 	operatorShares map[uint32]*bls.SecretKey
-
-	msgs map[DKGRound]map[uint32]*ProtocolMsg
 }
 
 type DKGRound int
@@ -51,12 +51,18 @@ func New(
 	operatorID uint32,
 ) dkg.KeyGenProtocol {
 
+	msgs := make(map[DKGRound]map[uint32]*ProtocolMsg)
+	msgs[Preparation] = make(map[uint32]*ProtocolMsg)
+	msgs[Round1] = make(map[uint32]*ProtocolMsg)
+	msgs[Round2] = make(map[uint32]*ProtocolMsg)
+	// msgs[Blame] = make(map[uint32]*ProtocolMsg)
+
 	return &FROST{
 		identifier: requestID,
 		network:    network,
 		operatorID: operatorID,
 
-		msgs:           make(map[DKGRound]map[uint32]*ProtocolMsg),
+		msgs:           msgs,
 		operatorShares: make(map[uint32]*bls.SecretKey),
 	}
 }
@@ -74,8 +80,13 @@ func (fr *FROST) Start(init *dkg.Init) error {
 	operators = append(operators, otherOperators...)
 	fr.operators = operators
 
-	ctx := "string to prevent replay attacks"
-	party, err := frost.NewDkgParticipant(fr.operatorID, uint32(len(operators)), ctx, thisCurve, otherOperators...)
+	pctx := make([]byte, 16)
+	_, err := rand.Read(pctx)
+	if err != nil {
+		return err
+	}
+
+	party, err := frost.NewDkgParticipant(fr.operatorID, uint32(len(operators)), string(pctx), thisCurve, otherOperators...)
 	if err != nil {
 		return err
 	}
@@ -89,23 +100,20 @@ func (fr *FROST) Start(init *dkg.Init) error {
 	}
 	fr.sessionSK = k
 
-	fr.round = Preparation
+	fr.currentRound = Preparation
+
 	protocolMessage := &ProtocolMsg{
 		Round: Preparation,
 		PreparationMessage: &PreparationMessage{
 			SessionPk: k.PublicKey.Bytes(true),
 		},
 	}
+	fr.msgs[Preparation][fr.operatorID] = protocolMessage
 
 	protocolMessageBytes, err := protocolMessage.Encode()
 	if err != nil {
 		return err
 	}
-
-	if fr.msgs[Preparation] == nil {
-		fr.msgs[Preparation] = make(map[uint32]*ProtocolMsg)
-	}
-	fr.msgs[Preparation][fr.operatorID] = protocolMessage
 
 	bcastPrepMessage := &dkg.SignedMessage{
 		Message: &dkg.Message{
@@ -129,33 +137,37 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 	if fr.msgs[protocolMessage.Round] == nil {
 		fr.msgs[protocolMessage.Round] = make(map[uint32]*ProtocolMsg)
 	}
-
 	fr.msgs[protocolMessage.Round][uint32(msg.Signer)] = protocolMessage
 
 	switch protocolMessage.Round {
 	case Preparation:
 		if fr.canProceedRound1() {
-			fr.round = Round1
+			fr.currentRound = Round1
 			if err := fr.processRound1(); err != nil {
 				return false, nil, err
 			}
 		}
 	case Round1:
 		if fr.canProceedRound2() {
-			fr.round = Round2
+			fr.currentRound = Round2
 			if err := fr.processRound2(); err != nil {
 				return false, nil, err
 			}
 		}
 	case Round2:
 		if fr.canProceedKeygenOutput() {
+			if _, err := fr.verifyShares(); err != nil {
+				return false, nil, errors.Wrapf(err, "failed to combine t+1 verification key share (vk)")
+			}
+
 			out, err := fr.processKeygenOutput()
 			if err != nil {
-				return false, out, err
+				return false, nil, err
 			}
 			return true, out, nil
 		}
 	}
+
 	return false, nil, nil
 }
 
@@ -200,10 +212,6 @@ func (fr *FROST) processRound1() error {
 			Shares:     shares,
 		},
 	}
-
-	if fr.msgs[Round1] == nil {
-		fr.msgs[Round1] = make(map[uint32]*ProtocolMsg)
-	}
 	fr.msgs[Round1][fr.operatorID] = protocolMessage
 
 	protocolMessageBytes, err := protocolMessage.Encode()
@@ -220,10 +228,8 @@ func (fr *FROST) processRound1() error {
 		Signer:    types.OperatorID(fr.operatorID),
 		Signature: nil,
 	}
-	if err := fr.network.BroadcastDKGMessage(bcastRound1Message); err != nil {
-		return err
-	}
-	return nil
+
+	return fr.network.BroadcastDKGMessage(bcastRound1Message)
 }
 
 func (fr *FROST) processRound2() error {
@@ -236,7 +242,7 @@ func (fr *FROST) processRound2() error {
 		for _, commitmentBytes := range protocolMessage.Round1Message.Commitment {
 			commitment, err := thisCurve.Point.FromAffineCompressed(commitmentBytes)
 			if err != nil {
-				return errors.Wrapf(err, "failed to parse commitment for operator %d", fr.operatorID)
+				return err
 			}
 			verifiers.Commitments = append(verifiers.Commitments, commitment)
 		}
@@ -280,10 +286,6 @@ func (fr *FROST) processRound2() error {
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),
 		},
 	}
-
-	if fr.msgs[Round2] == nil {
-		fr.msgs[Round2] = make(map[uint32]*ProtocolMsg)
-	}
 	fr.msgs[Round2][fr.operatorID] = protocolMessage
 
 	protocolMessageBytes, err := protocolMessage.Encode()
@@ -305,10 +307,6 @@ func (fr *FROST) processRound2() error {
 }
 
 func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
-	if fr.round != Round2 {
-		return nil, dkg.ErrInvalidRound{}
-	}
-
 	vk := fr.msgs[Round2][fr.operatorID].Round2Message.Vk
 
 	sk := &bls.SecretKey{}
@@ -316,21 +314,79 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 		return nil, err
 	}
 
-	operatorPublicKeys := make(map[types.OperatorID]*bls.PublicKey)
+	operatorPubKeys := make(map[types.OperatorID]*bls.PublicKey)
 	for _, operatorID := range fr.operators {
 		pk := &bls.PublicKey{}
 		if err := pk.Deserialize(fr.msgs[Round2][operatorID].Round2Message.VkShare); err != nil {
 			return nil, err
 		}
 
-		operatorPublicKeys[types.OperatorID(operatorID)] = pk
+		operatorPubKeys[types.OperatorID(operatorID)] = pk
 	}
 
+	out := &dkg.KeyGenOutput{
+		Share:           sk,
+		OperatorPubKeys: operatorPubKeys,
+		ValidatorPK:     vk,
+		Threshold:       uint64(fr.threshold),
+	}
+	return out, nil
+}
+
+func (fr *FROST) canProceedRound1() bool {
+	if fr.currentRound != Preparation {
+		return false
+	}
+
+	for _, operatorID := range fr.operators {
+		msg, ok := fr.msgs[Preparation][operatorID]
+		if !ok || msg.PreparationMessage == nil {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (fr *FROST) canProceedRound2() bool {
+	if fr.currentRound != Round1 {
+		return false
+	}
+
+	for _, operatorID := range fr.operators {
+		msg, ok := fr.msgs[Round1][operatorID]
+		if !ok || msg.Round1Message == nil {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (fr *FROST) canProceedKeygenOutput() bool {
+	if fr.currentRound != Round2 {
+		return false
+	}
+
+	for _, operatorID := range fr.operators {
+		msg, ok := fr.msgs[Round2][operatorID]
+		if !ok || msg.Round2Message == nil {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (fr *FROST) verifyShares() ([]*bls.G1, error) {
 	outputs := make([]*bls.G1, 0)
+
 	for j := int(fr.threshold + 1); j < len(fr.operators); j++ {
+
 		xVec := make([]bls.Fr, 0)
 		yVec := make([]bls.G1, 0)
-		for i := j - int(fr.threshold); i < j; i++ {
+
+		for i := j - int(fr.threshold+1); i < j; i++ {
 			operatorID := fr.operators[i]
 
 			x := bls.Fr{}
@@ -355,69 +411,16 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	}
 
 	for i := 1; i < len(outputs); i++ {
-
+		fmt.Printf("vk: %x\n", outputs[i].Serialize())
 		if !outputs[i].IsEqual(outputs[i-1]) {
-			return nil, fmt.Errorf("failed to create consistent public keys from t+1 shares")
+			return nil, fmt.Errorf("failed to create consistent public key from t+1 shares")
 		}
 	}
 
-	out := &dkg.KeyGenOutput{
-		Share:           sk,
-		OperatorPubKeys: operatorPublicKeys,
-		ValidatorPK:     vk,
-		Threshold:       uint64(fr.threshold),
-	}
-	return out, nil
-}
-
-func (fr *FROST) canProceedRound1() bool {
-	if fr.round != Preparation {
-		return false
-	}
-
-	for _, operatorID := range fr.operators {
-		msg, ok := fr.msgs[Preparation][operatorID]
-		if !ok || msg.PreparationMessage == nil {
-			return false
-		}
-	}
-	return true
-}
-
-func (fr *FROST) canProceedRound2() bool {
-	if fr.round != Round1 {
-		return false
-	}
-
-	for _, operatorID := range fr.operators {
-		if fr.operatorID == operatorID {
-			continue
-		}
-
-		msg, ok := fr.msgs[Round1][operatorID]
-		if !ok || (ok && msg.Round1Message == nil) {
-			return false
-		}
-	}
-	return true
-}
-
-func (fr *FROST) canProceedKeygenOutput() bool {
-	if fr.round != Round2 {
-		return false
-	}
-
-	for _, operatorID := range fr.operators {
-		msg, ok := fr.msgs[Round2][operatorID]
-		if !ok || msg.Round2Message == nil {
-			return false
-		}
-	}
-	return true
+	return outputs, nil
 }
 
 func (fr *FROST) encryptForP2PSend(id uint32, data []byte) ([]byte, error) {
-
 	msg, ok := fr.msgs[Preparation][id]
 	if !ok {
 		return nil, fmt.Errorf("no public key found for operator %d", id)
