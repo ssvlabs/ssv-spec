@@ -1,7 +1,6 @@
 package frost
 
 import (
-	"sync"
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/dkg"
@@ -10,47 +9,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type ProcessMsgFnType func(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, error)
-
-type TestNetwork struct {
-	m            *sync.Mutex
-	ProcessMsgFn map[uint32]ProcessMsgFnType
-	Outputs      map[uint32]*dkg.KeyGenOutput
-}
-
-func (tn *TestNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.SignedOutput) error {
-	return nil
-}
-
-func (tn *TestNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {
-	g := errgroup.Group{}
-	for operatorID, f := range tn.ProcessMsgFn {
-		fn := f
-		operatorID := operatorID
-
-		g.Go(func() error {
-			finished, o, err := fn(msg)
-			if finished {
-				tn.m.Lock()
-				tn.Outputs[operatorID] = o
-				tn.m.Unlock()
-			}
-			if err != nil {
-				return err
-			}
-			return nil
-		})
-	}
-	return g.Wait()
-}
-
 func TestFrost2_4(t *testing.T) {
-	testNetwork := TestNetwork{
-		m:            &sync.Mutex{},
-		ProcessMsgFn: make(map[uint32]ProcessMsgFnType),
-		Outputs:      make(map[uint32]*dkg.KeyGenOutput),
-	}
-
 	requestID := dkg.RequestID{}
 	for i, _ := range requestID {
 		requestID[i] = 1
@@ -60,13 +19,29 @@ func TestFrost2_4(t *testing.T) {
 		1, 2, 3, 4,
 	}
 
+	mockNetwork := MockNetwork{
+		nodes: make(map[types.OperatorID]*Node),
+	}
+
+	for _, operator := range operators {
+		operatorID := types.OperatorID(operator)
+
+		node := newNode(operatorID)
+		mockNetwork.nodes[operatorID] = node
+	}
+
 	kgps := make(map[uint32]dkg.KeyGenProtocol)
 
 	for _, operatorID := range operators {
-		p := New(requestID, &testNetwork, uint32(operatorID))
+		p := New(requestID, &mockNetwork, uint32(operatorID))
 		kgps[uint32(operatorID)] = p
 
-		testNetwork.ProcessMsgFn[uint32(operatorID)] = p.ProcessMsg
+		mockNetwork.nodes[operatorID].SetProcessMsgFn(p.ProcessMsg)
+	}
+
+	for _, node := range mockNetwork.nodes {
+		go node.Run()
+		defer node.cancel()
 	}
 
 	threshold := 2
@@ -92,8 +67,23 @@ func TestFrost2_4(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	for {
+		finished := true
+		for _, node := range mockNetwork.nodes {
+			node.mu.Lock()
+			if node.Output == nil {
+				finished = false
+			}
+			node.mu.Unlock()
+		}
+
+		if finished {
+			break
+		}
+	}
+
 	for _, operatorID := range operators {
-		output := testNetwork.Outputs[uint32(operatorID)]
+		output := mockNetwork.nodes[operatorID].Output
 		t.Logf("printing generated keys for id %d\n", operatorID)
 		t.Logf("sk %x", output.Share.Serialize())
 		t.Logf("vk %x", output.ValidatorPK)

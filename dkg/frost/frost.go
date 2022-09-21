@@ -2,7 +2,6 @@ package frost
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
@@ -32,11 +31,9 @@ type FROST struct {
 	party      *frost.DkgParticipant
 	sessionSK  *ecies.PrivateKey
 
-	opShareLock    *sync.Mutex
 	operatorShares map[uint32]*bls.SecretKey
 
-	msgLock *sync.Mutex
-	msgs    map[DKGRound]map[uint32]*ProtocolMsg
+	msgs map[DKGRound]map[uint32]*ProtocolMsg
 }
 
 type DKGRound int
@@ -59,9 +56,7 @@ func New(
 		network:    network,
 		operatorID: operatorID,
 
-		msgLock:        &sync.Mutex{},
 		msgs:           make(map[DKGRound]map[uint32]*ProtocolMsg),
-		opShareLock:    &sync.Mutex{},
 		operatorShares: make(map[uint32]*bls.SecretKey),
 	}
 }
@@ -107,12 +102,10 @@ func (fr *FROST) Start(init *dkg.Init) error {
 		return err
 	}
 
-	fr.msgLock.Lock()
 	if fr.msgs[Preparation] == nil {
 		fr.msgs[Preparation] = make(map[uint32]*ProtocolMsg)
 	}
 	fr.msgs[Preparation][fr.operatorID] = protocolMessage
-	fr.msgLock.Unlock()
 
 	bcastPrepMessage := &dkg.SignedMessage{
 		Message: &dkg.Message{
@@ -133,13 +126,11 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 		return false, nil, errors.Wrap(err, "could not decode protocol msg")
 	}
 
-	fr.msgLock.Lock()
 	if fr.msgs[protocolMessage.Round] == nil {
 		fr.msgs[protocolMessage.Round] = make(map[uint32]*ProtocolMsg)
 	}
 
 	fr.msgs[protocolMessage.Round][uint32(msg.Signer)] = protocolMessage
-	fr.msgLock.Unlock()
 
 	switch protocolMessage.Round {
 	case Preparation:
@@ -191,9 +182,7 @@ func (fr *FROST) processRound1() error {
 			return err
 		}
 
-		fr.opShareLock.Lock()
 		fr.operatorShares[operatorID] = share
-		fr.opShareLock.Unlock()
 
 		encryptedShare, err := fr.encryptForP2PSend(operatorID, shamirShare.Value)
 		if err != nil {
@@ -212,12 +201,10 @@ func (fr *FROST) processRound1() error {
 		},
 	}
 
-	fr.msgLock.Lock()
 	if fr.msgs[Round1] == nil {
 		fr.msgs[Round1] = make(map[uint32]*ProtocolMsg)
 	}
 	fr.msgs[Round1][fr.operatorID] = protocolMessage
-	fr.msgLock.Unlock()
 
 	protocolMessageBytes, err := protocolMessage.Encode()
 	if err != nil {
@@ -233,15 +220,16 @@ func (fr *FROST) processRound1() error {
 		Signer:    types.OperatorID(fr.operatorID),
 		Signature: nil,
 	}
-
-	return fr.network.BroadcastDKGMessage(bcastRound1Message)
+	if err := fr.network.BroadcastDKGMessage(bcastRound1Message); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (fr *FROST) processRound2() error {
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
-	fr.msgLock.Lock()
 	for operatorID, protocolMessage := range fr.msgs[Round1] {
 
 		verifiers := new(sharing.FeldmanVerifier)
@@ -279,7 +267,6 @@ func (fr *FROST) processRound2() error {
 
 		p2psend[operatorID] = share
 	}
-	fr.msgLock.Unlock()
 
 	bCastMessage, err := fr.party.Round2(bcast, p2psend)
 	if err != nil {
@@ -294,12 +281,10 @@ func (fr *FROST) processRound2() error {
 		},
 	}
 
-	fr.msgLock.Lock()
 	if fr.msgs[Round2] == nil {
 		fr.msgs[Round2] = make(map[uint32]*ProtocolMsg)
 	}
 	fr.msgs[Round2][fr.operatorID] = protocolMessage
-	fr.msgLock.Unlock()
 
 	protocolMessageBytes, err := protocolMessage.Encode()
 	if err != nil {
@@ -390,8 +375,6 @@ func (fr *FROST) canProceedRound1() bool {
 		return false
 	}
 
-	fr.msgLock.Lock()
-	defer fr.msgLock.Unlock()
 	for _, operatorID := range fr.operators {
 		msg, ok := fr.msgs[Preparation][operatorID]
 		if !ok || msg.PreparationMessage == nil {
@@ -406,8 +389,6 @@ func (fr *FROST) canProceedRound2() bool {
 		return false
 	}
 
-	fr.msgLock.Lock()
-	defer fr.msgLock.Unlock()
 	for _, operatorID := range fr.operators {
 		if fr.operatorID == operatorID {
 			continue
@@ -426,8 +407,6 @@ func (fr *FROST) canProceedKeygenOutput() bool {
 		return false
 	}
 
-	fr.msgLock.Lock()
-	defer fr.msgLock.Unlock()
 	for _, operatorID := range fr.operators {
 		msg, ok := fr.msgs[Round2][operatorID]
 		if !ok || msg.Round2Message == nil {
@@ -438,8 +417,7 @@ func (fr *FROST) canProceedKeygenOutput() bool {
 }
 
 func (fr *FROST) encryptForP2PSend(id uint32, data []byte) ([]byte, error) {
-	fr.msgLock.Lock()
-	defer fr.msgLock.Unlock()
+
 	msg, ok := fr.msgs[Preparation][id]
 	if !ok {
 		return nil, fmt.Errorf("no public key found for operator %d", id)
