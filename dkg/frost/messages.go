@@ -27,10 +27,20 @@ type Round2Message struct {
 }
 
 type BlameMessage struct {
+	Type             BlameType
 	TargetOperatorID uint64
 	BlameData        [][]byte // SignedMessages received from the bad participant
 	BlamerSessionSk  []byte
 }
+
+type BlameType int
+
+const (
+	// InconsistentMessage refers to an operator sending multiple messages for same round
+	InconsistentMessage BlameType = iota
+	// InvalidShare refers to an operator sending invalid share
+	InvalidShare
+)
 
 // Encode returns a msg encoded bytes or error
 func (msg *ProtocolMsg) Encode() ([]byte, error) {
