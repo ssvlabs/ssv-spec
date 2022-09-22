@@ -2,6 +2,7 @@ package frost
 
 import (
 	"crypto/rand"
+	"encoding/json"
 	"fmt"
 
 	"github.com/bloxapp/ssv-spec/dkg"
@@ -42,7 +43,7 @@ const (
 	Preparation DKGRound = iota + 1
 	Round1
 	Round2
-	// Blame
+	Blame
 )
 
 func New(
@@ -55,7 +56,7 @@ func New(
 	msgs[Preparation] = make(map[uint32]*dkg.SignedMessage)
 	msgs[Round1] = make(map[uint32]*dkg.SignedMessage)
 	msgs[Round2] = make(map[uint32]*dkg.SignedMessage)
-	// msgs[Blame] = make(map[uint32]*ProtocolMsg)
+	msgs[Blame] = make(map[uint32]*dkg.SignedMessage)
 
 	return &FROST{
 		identifier: requestID,
@@ -173,6 +174,8 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 			}
 			return true, out, nil
 		}
+	case Blame:
+		return fr.processBlame()
 	}
 
 	return false, nil, nil
@@ -285,6 +288,45 @@ func (fr *FROST) processRound2() error {
 		}
 
 		p2psend[operatorID] = share
+
+		if err := verifiers.Verify(share); err != nil {
+			round1Bytes, err := fr.msgs[Round1][operatorID].Encode()
+			if err != nil {
+				return err
+			}
+
+			blameData := make([][]byte, 0)
+			blameData = append(blameData, round1Bytes)
+
+			protocolMessage := &ProtocolMsg{
+				Round: Blame,
+				BlameMessage: &BlameMessage{
+					Type:             InvalidShare,
+					TargetOperatorID: operatorID,
+					BlameData:        blameData,
+					BlamerSessionSk:  fr.sessionSK.Bytes(),
+				},
+			}
+
+			protocolMessageBytes, err := protocolMessage.Encode()
+			if err != nil {
+				return err
+			}
+
+			bcastBlameMessage := &dkg.SignedMessage{
+				Message: &dkg.Message{
+					MsgType:    dkg.ProtocolMsgType,
+					Identifier: fr.identifier,
+					Data:       protocolMessageBytes,
+				},
+				Signer:    types.OperatorID(fr.operatorID),
+				Signature: nil,
+			}
+
+			fr.msgs[Blame][fr.operatorID] = bcastBlameMessage
+
+			return fr.network.BroadcastDKGMessage(bcastBlameMessage)
+		}
 	}
 
 	bCastMessage, err := fr.party.Round2(bcast, p2psend)
@@ -350,6 +392,59 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 		Threshold:       uint64(fr.threshold),
 	}
 	return out, nil
+}
+
+func (fr *FROST) processBlame() (bool, *dkg.KeyGenOutput, error) {
+	for operatorID, msg := range fr.msgs[Blame] {
+		protocolMessage := &ProtocolMsg{}
+		if err := protocolMessage.Decode(msg.Message.Data); err != nil {
+			return true, nil, fmt.Errorf("failed to decode blame data")
+		}
+
+		switch protocolMessage.BlameMessage.Type {
+		case InvalidShare:
+			valid, err := fr.processBlameTypeInvalidShare(operatorID, protocolMessage.BlameMessage)
+			if err != nil {
+				return false, nil, err
+			}
+			if valid {
+				return true, nil, nil
+			}
+		}
+	}
+	return false, nil, nil
+}
+
+func (fr *FROST) processBlameTypeInvalidShare(operatorID uint32, blameMessage *BlameMessage) (bool /*valid*/, error) {
+	round1Message := &Round1Message{}
+	if err := json.Unmarshal(blameMessage.BlameData[0], round1Message); err != nil {
+		return false, err
+	}
+
+	verifiers := new(sharing.FeldmanVerifier)
+	for _, commitmentBytes := range round1Message.Commitment {
+		commitment, err := thisCurve.Point.FromAffineCompressed(commitmentBytes)
+		if err != nil {
+			return false, err
+		}
+		verifiers.Commitments = append(verifiers.Commitments, commitment)
+	}
+
+	blamerSessionSK := ecies.NewPrivateKeyFromBytes(blameMessage.BlamerSessionSk)
+	shareBytes, err := ecies.Decrypt(blamerSessionSK, round1Message.Shares[operatorID])
+	if err != nil {
+		return false, err
+	}
+
+	share := &sharing.ShamirShare{
+		Id:    operatorID,
+		Value: shareBytes,
+	}
+
+	if err := verifiers.Verify(share); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (fr *FROST) canProceedRound1() bool {

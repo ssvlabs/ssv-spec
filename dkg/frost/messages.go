@@ -28,7 +28,7 @@ type Round2Message struct {
 
 type BlameMessage struct {
 	Type             BlameType
-	TargetOperatorID uint64
+	TargetOperatorID uint32
 	BlameData        [][]byte // SignedMessages received from the bad participant
 	BlamerSessionSk  []byte
 }
