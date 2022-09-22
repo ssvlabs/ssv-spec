@@ -32,7 +32,7 @@ type FROST struct {
 	party      *frost.DkgParticipant
 	sessionSK  *ecies.PrivateKey
 
-	msgs           map[DKGRound]map[uint32]*ProtocolMsg
+	msgs           map[DKGRound]map[uint32]*dkg.SignedMessage
 	operatorShares map[uint32]*bls.SecretKey
 }
 
@@ -51,10 +51,10 @@ func New(
 	operatorID uint32,
 ) dkg.KeyGenProtocol {
 
-	msgs := make(map[DKGRound]map[uint32]*ProtocolMsg)
-	msgs[Preparation] = make(map[uint32]*ProtocolMsg)
-	msgs[Round1] = make(map[uint32]*ProtocolMsg)
-	msgs[Round2] = make(map[uint32]*ProtocolMsg)
+	msgs := make(map[DKGRound]map[uint32]*dkg.SignedMessage)
+	msgs[Preparation] = make(map[uint32]*dkg.SignedMessage)
+	msgs[Round1] = make(map[uint32]*dkg.SignedMessage)
+	msgs[Round2] = make(map[uint32]*dkg.SignedMessage)
 	// msgs[Blame] = make(map[uint32]*ProtocolMsg)
 
 	return &FROST{
@@ -108,7 +108,6 @@ func (fr *FROST) Start(init *dkg.Init) error {
 			SessionPk: k.PublicKey.Bytes(true),
 		},
 	}
-	fr.msgs[Preparation][fr.operatorID] = protocolMessage
 
 	protocolMessageBytes, err := protocolMessage.Encode()
 	if err != nil {
@@ -125,6 +124,8 @@ func (fr *FROST) Start(init *dkg.Init) error {
 		Signature: nil,
 	}
 
+	fr.msgs[Preparation][fr.operatorID] = bcastPrepMessage
+
 	return fr.network.BroadcastDKGMessage(bcastPrepMessage)
 }
 
@@ -135,9 +136,15 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 	}
 
 	if fr.msgs[protocolMessage.Round] == nil {
-		fr.msgs[protocolMessage.Round] = make(map[uint32]*ProtocolMsg)
+		fr.msgs[protocolMessage.Round] = make(map[uint32]*dkg.SignedMessage)
 	}
-	fr.msgs[protocolMessage.Round][uint32(msg.Signer)] = protocolMessage
+	// TODO: Detect inconsistent message here and send blame data
+	// _, ok := fr.msgs[protocolMessage.Round][uint32(msg.Signer)]
+	// if ok {
+	//
+	// }
+
+	fr.msgs[protocolMessage.Round][uint32(msg.Signer)] = msg
 
 	switch protocolMessage.Round {
 	case Preparation:
@@ -212,7 +219,6 @@ func (fr *FROST) processRound1() error {
 			Shares:     shares,
 		},
 	}
-	fr.msgs[Round1][fr.operatorID] = protocolMessage
 
 	protocolMessageBytes, err := protocolMessage.Encode()
 	if err != nil {
@@ -229,6 +235,8 @@ func (fr *FROST) processRound1() error {
 		Signature: nil,
 	}
 
+	fr.msgs[Round1][fr.operatorID] = bcastRound1Message
+
 	return fr.network.BroadcastDKGMessage(bcastRound1Message)
 }
 
@@ -236,7 +244,12 @@ func (fr *FROST) processRound2() error {
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
-	for operatorID, protocolMessage := range fr.msgs[Round1] {
+	for operatorID, dkgMessage := range fr.msgs[Round1] {
+
+		protocolMessage := &ProtocolMsg{}
+		if err := protocolMessage.Decode(dkgMessage.Message.Data); err != nil {
+			return errors.Wrap(err, "could not decode protocol msg")
+		}
 
 		verifiers := new(sharing.FeldmanVerifier)
 		for _, commitmentBytes := range protocolMessage.Round1Message.Commitment {
@@ -286,7 +299,6 @@ func (fr *FROST) processRound2() error {
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),
 		},
 	}
-	fr.msgs[Round2][fr.operatorID] = protocolMessage
 
 	protocolMessageBytes, err := protocolMessage.Encode()
 	if err != nil {
@@ -303,11 +315,18 @@ func (fr *FROST) processRound2() error {
 		Signature: nil,
 	}
 
+	fr.msgs[Round2][fr.operatorID] = bcastRound2Message
+
 	return fr.network.BroadcastDKGMessage(bcastRound2Message)
 }
 
 func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
-	vk := fr.msgs[Round2][fr.operatorID].Round2Message.Vk
+	protocolMessage := &ProtocolMsg{}
+	if err := protocolMessage.Decode(fr.msgs[Round2][fr.operatorID].Message.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode protocol msg")
+	}
+
+	vk := protocolMessage.Round2Message.Vk
 
 	sk := &bls.SecretKey{}
 	if err := sk.Deserialize(fr.party.SkShare.Bytes()); err != nil {
@@ -317,7 +336,7 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	operatorPubKeys := make(map[types.OperatorID]*bls.PublicKey)
 	for _, operatorID := range fr.operators {
 		pk := &bls.PublicKey{}
-		if err := pk.Deserialize(fr.msgs[Round2][operatorID].Round2Message.VkShare); err != nil {
+		if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
 			return nil, err
 		}
 
@@ -339,8 +358,17 @@ func (fr *FROST) canProceedRound1() bool {
 	}
 
 	for _, operatorID := range fr.operators {
+		protocolMessage := &ProtocolMsg{}
+
 		msg, ok := fr.msgs[Preparation][operatorID]
-		if !ok || msg.PreparationMessage == nil {
+		if ok {
+			if err := protocolMessage.Decode(msg.Message.Data); err != nil {
+				return false
+			}
+			if protocolMessage.PreparationMessage == nil {
+				return false
+			}
+		} else {
 			return false
 		}
 	}
@@ -354,8 +382,17 @@ func (fr *FROST) canProceedRound2() bool {
 	}
 
 	for _, operatorID := range fr.operators {
+		protocolMessage := &ProtocolMsg{}
+
 		msg, ok := fr.msgs[Round1][operatorID]
-		if !ok || msg.Round1Message == nil {
+		if ok {
+			if err := protocolMessage.Decode(msg.Message.Data); err != nil {
+				return false
+			}
+			if protocolMessage.Round1Message == nil {
+				return false
+			}
+		} else {
 			return false
 		}
 	}
@@ -369,8 +406,17 @@ func (fr *FROST) canProceedKeygenOutput() bool {
 	}
 
 	for _, operatorID := range fr.operators {
+		protocolMessage := &ProtocolMsg{}
+
 		msg, ok := fr.msgs[Round2][operatorID]
-		if !ok || msg.Round2Message == nil {
+		if ok {
+			if err := protocolMessage.Decode(msg.Message.Data); err != nil {
+				return false
+			}
+			if protocolMessage.Round2Message == nil {
+				return false
+			}
+		} else {
 			return false
 		}
 	}
@@ -379,6 +425,7 @@ func (fr *FROST) canProceedKeygenOutput() bool {
 }
 
 func (fr *FROST) verifyShares() ([]*bls.G1, error) {
+
 	outputs := make([]*bls.G1, 0)
 
 	for j := int(fr.threshold + 1); j < len(fr.operators); j++ {
@@ -389,12 +436,17 @@ func (fr *FROST) verifyShares() ([]*bls.G1, error) {
 		for i := j - int(fr.threshold+1); i < j; i++ {
 			operatorID := fr.operators[i]
 
+			protocolMessage := &ProtocolMsg{}
+			if err := protocolMessage.Decode(fr.msgs[Round2][operatorID].Message.Data); err != nil {
+				return nil, errors.Wrap(err, "could not decode protocol msg")
+			}
+
 			x := bls.Fr{}
 			x.SetInt64(int64(operatorID))
 			xVec = append(xVec, x)
 
 			pk := &bls.PublicKey{}
-			if err := pk.Deserialize(fr.msgs[Round2][operatorID].Round2Message.VkShare); err != nil {
+			if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
 				return nil, err
 			}
 
@@ -426,7 +478,12 @@ func (fr *FROST) encryptForP2PSend(id uint32, data []byte) ([]byte, error) {
 		return nil, fmt.Errorf("no public key found for operator %d", id)
 	}
 
-	pk, err := ecies.NewPublicKeyFromBytes(msg.PreparationMessage.SessionPk)
+	protocolMessage := &ProtocolMsg{}
+	if err := protocolMessage.Decode(msg.Message.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode protocol msg")
+	}
+
+	pk, err := ecies.NewPublicKeyFromBytes(protocolMessage.PreparationMessage.SessionPk)
 	if err != nil {
 		return nil, err
 	}
