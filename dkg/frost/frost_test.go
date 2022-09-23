@@ -5,6 +5,7 @@ import (
 
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
 )
@@ -23,6 +24,9 @@ func TestFrost2_4(t *testing.T) {
 		nodes: make(map[types.OperatorID]*Node),
 	}
 
+	dkgsigner := testingutils.NewTestingKeyManager()
+	storage := testingutils.NewTestingStorage()
+
 	for _, operator := range operators {
 		operatorID := types.OperatorID(operator)
 
@@ -33,7 +37,7 @@ func TestFrost2_4(t *testing.T) {
 	kgps := make(map[uint32]dkg.KeyGenProtocol)
 
 	for _, operatorID := range operators {
-		p := New(&mockNetwork, operatorID, requestID)
+		p := New(&mockNetwork, operatorID, requestID, dkgsigner, storage)
 		kgps[uint32(operatorID)] = p
 
 		mockNetwork.nodes[operatorID].SetProcessMsgFn(p.ProcessMsg)

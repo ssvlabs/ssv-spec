@@ -25,6 +25,8 @@ func init() {
 type FROST struct {
 	identifier   dkg.RequestID
 	network      dkg.Network
+	signer       types.DKGSigner
+	storage      dkg.Storage
 	threshold    uint32
 	currentRound DKGRound
 
@@ -46,7 +48,13 @@ const (
 	Blame
 )
 
-func New(network dkg.Network, operatorID types.OperatorID, requestID dkg.RequestID) dkg.KeyGenProtocol {
+func New(
+	network dkg.Network,
+	operatorID types.OperatorID,
+	requestID dkg.RequestID,
+	signer types.DKGSigner,
+	storage dkg.Storage,
+) dkg.KeyGenProtocol {
 
 	msgs := make(map[DKGRound]map[uint32]*dkg.SignedMessage)
 	msgs[Preparation] = make(map[uint32]*dkg.SignedMessage)
@@ -57,6 +65,8 @@ func New(network dkg.Network, operatorID types.OperatorID, requestID dkg.Request
 	return &FROST{
 		identifier: requestID,
 		network:    network,
+		signer:     signer,
+		storage:    storage,
 		operatorID: operatorID,
 
 		msgs:           msgs,
@@ -121,12 +131,30 @@ func (fr *FROST) Start(init *dkg.Init) error {
 		Signature: nil,
 	}
 
+	exist, operator, err := fr.storage.GetDKGOperator(fr.operatorID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.Errorf("operator with id %d not found", fr.operatorID)
+	}
+
+	sig, err := fr.signer.SignDKGOutput(bcastPrepMessage, operator.ETHAddress)
+	if err != nil {
+		return err
+	}
+
+	bcastPrepMessage.Signature = sig
 	fr.msgs[Preparation][uint32(fr.operatorID)] = bcastPrepMessage
 
 	return fr.network.BroadcastDKGMessage(bcastPrepMessage)
 }
 
 func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, error) {
+	if err := msg.Validate(); err != nil {
+		return false, nil, errors.Wrap(err, "failed to validate message signature")
+	}
+
 	protocolMessage := &ProtocolMsg{}
 	if err := protocolMessage.Decode(msg.Message.Data); err != nil {
 		return false, nil, errors.Wrap(err, "could not decode protocol msg")
@@ -237,6 +265,20 @@ func (fr *FROST) processRound1() error {
 		Signature: nil,
 	}
 
+	exist, operator, err := fr.storage.GetDKGOperator(fr.operatorID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.Errorf("operator with id %d not found", fr.operatorID)
+	}
+
+	sig, err := fr.signer.SignDKGOutput(bcastRound1Message, operator.ETHAddress)
+	if err != nil {
+		return err
+	}
+
+	bcastRound1Message.Signature = sig
 	fr.msgs[Round1][uint32(fr.operatorID)] = bcastRound1Message
 
 	return fr.network.BroadcastDKGMessage(bcastRound1Message)
@@ -322,6 +364,20 @@ func (fr *FROST) processRound2() error {
 				Signature: nil,
 			}
 
+			exist, operator, err := fr.storage.GetDKGOperator(fr.operatorID)
+			if err != nil {
+				return err
+			}
+			if !exist {
+				return errors.Errorf("operator with id %d not found", fr.operatorID)
+			}
+
+			sig, err := fr.signer.SignDKGOutput(bcastBlameMessage, operator.ETHAddress)
+			if err != nil {
+				return err
+			}
+
+			bcastBlameMessage.Signature = sig
 			fr.msgs[Blame][uint32(fr.operatorID)] = bcastBlameMessage
 
 			return fr.network.BroadcastDKGMessage(bcastBlameMessage)
@@ -356,6 +412,20 @@ func (fr *FROST) processRound2() error {
 		Signature: nil,
 	}
 
+	exist, operator, err := fr.storage.GetDKGOperator(fr.operatorID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.Errorf("operator with id %d not found", fr.operatorID)
+	}
+
+	sig, err := fr.signer.SignDKGOutput(bcastRound2Message, operator.ETHAddress)
+	if err != nil {
+		return err
+	}
+
+	bcastRound2Message.Signature = sig
 	fr.msgs[Round2][uint32(fr.operatorID)] = bcastRound2Message
 
 	return fr.network.BroadcastDKGMessage(bcastRound2Message)
