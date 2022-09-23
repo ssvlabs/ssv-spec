@@ -33,7 +33,7 @@ func TestFrost2_4(t *testing.T) {
 	kgps := make(map[uint32]dkg.KeyGenProtocol)
 
 	for _, operatorID := range operators {
-		p := New(requestID, &mockNetwork, uint32(operatorID))
+		p := New(&mockNetwork, operatorID, requestID)
 		kgps[uint32(operatorID)] = p
 
 		mockNetwork.nodes[operatorID].SetProcessMsgFn(p.ProcessMsg)

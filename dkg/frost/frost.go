@@ -28,7 +28,7 @@ type FROST struct {
 	threshold    uint32
 	currentRound DKGRound
 
-	operatorID uint32
+	operatorID types.OperatorID
 	operators  []uint32
 	party      *frost.DkgParticipant
 	sessionSK  *ecies.PrivateKey
@@ -46,11 +46,7 @@ const (
 	Blame
 )
 
-func New(
-	requestID dkg.RequestID,
-	network dkg.Network,
-	operatorID uint32,
-) dkg.KeyGenProtocol {
+func New(network dkg.Network, operatorID types.OperatorID, requestID dkg.RequestID) dkg.KeyGenProtocol {
 
 	msgs := make(map[DKGRound]map[uint32]*dkg.SignedMessage)
 	msgs[Preparation] = make(map[uint32]*dkg.SignedMessage)
@@ -71,13 +67,13 @@ func New(
 func (fr *FROST) Start(init *dkg.Init) error {
 	otherOperators := make([]uint32, 0)
 	for _, operatorID := range init.OperatorIDs {
-		if fr.operatorID == uint32(operatorID) {
+		if fr.operatorID == operatorID {
 			continue
 		}
 		otherOperators = append(otherOperators, uint32(operatorID))
 	}
 
-	operators := []uint32{fr.operatorID}
+	operators := []uint32{uint32(fr.operatorID)}
 	operators = append(operators, otherOperators...)
 	fr.operators = operators
 
@@ -87,7 +83,7 @@ func (fr *FROST) Start(init *dkg.Init) error {
 		return err
 	}
 
-	party, err := frost.NewDkgParticipant(fr.operatorID, uint32(len(operators)), string(pctx), thisCurve, otherOperators...)
+	party, err := frost.NewDkgParticipant(uint32(fr.operatorID), uint32(len(operators)), string(pctx), thisCurve, otherOperators...)
 	if err != nil {
 		return err
 	}
@@ -125,7 +121,7 @@ func (fr *FROST) Start(init *dkg.Init) error {
 		Signature: nil,
 	}
 
-	fr.msgs[Preparation][fr.operatorID] = bcastPrepMessage
+	fr.msgs[Preparation][uint32(fr.operatorID)] = bcastPrepMessage
 
 	return fr.network.BroadcastDKGMessage(bcastPrepMessage)
 }
@@ -175,7 +171,10 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 			return true, out, nil
 		}
 	case Blame:
-		return fr.processBlame()
+		// finished, keygenout, blameoutput, err := fr.processBlame()
+		// if err != nil {
+		// 	return false,
+		// }
 	}
 
 	return false, nil, nil
@@ -194,7 +193,7 @@ func (fr *FROST) processRound1() error {
 
 	shares := make(map[uint32][]byte)
 	for _, operatorID := range fr.operators {
-		if fr.operatorID == operatorID {
+		if uint32(fr.operatorID) == operatorID {
 			continue
 		}
 
@@ -234,11 +233,11 @@ func (fr *FROST) processRound1() error {
 			Identifier: fr.identifier,
 			Data:       protocolMessageBytes,
 		},
-		Signer:    types.OperatorID(fr.operatorID),
+		Signer:    types.OperatorID(uint32(fr.operatorID)),
 		Signature: nil,
 	}
 
-	fr.msgs[Round1][fr.operatorID] = bcastRound1Message
+	fr.msgs[Round1][uint32(fr.operatorID)] = bcastRound1Message
 
 	return fr.network.BroadcastDKGMessage(bcastRound1Message)
 }
@@ -273,17 +272,17 @@ func (fr *FROST) processRound2() error {
 		}
 		bcast[operatorID] = bcastMessage
 
-		if fr.operatorID == operatorID {
+		if uint32(fr.operatorID) == operatorID {
 			continue
 		}
 
-		shareBytes, err := ecies.Decrypt(fr.sessionSK, protocolMessage.Round1Message.Shares[fr.operatorID])
+		shareBytes, err := ecies.Decrypt(fr.sessionSK, protocolMessage.Round1Message.Shares[uint32(fr.operatorID)])
 		if err != nil {
 			return err
 		}
 
 		share := &sharing.ShamirShare{
-			Id:    fr.operatorID,
+			Id:    uint32(fr.operatorID),
 			Value: shareBytes,
 		}
 
@@ -319,11 +318,11 @@ func (fr *FROST) processRound2() error {
 					Identifier: fr.identifier,
 					Data:       protocolMessageBytes,
 				},
-				Signer:    types.OperatorID(fr.operatorID),
+				Signer:    types.OperatorID(uint32(fr.operatorID)),
 				Signature: nil,
 			}
 
-			fr.msgs[Blame][fr.operatorID] = bcastBlameMessage
+			fr.msgs[Blame][uint32(fr.operatorID)] = bcastBlameMessage
 
 			return fr.network.BroadcastDKGMessage(bcastBlameMessage)
 		}
@@ -353,18 +352,18 @@ func (fr *FROST) processRound2() error {
 			Identifier: fr.identifier,
 			Data:       protocolMessageBytes,
 		},
-		Signer:    types.OperatorID(fr.operatorID),
+		Signer:    types.OperatorID(uint32(fr.operatorID)),
 		Signature: nil,
 	}
 
-	fr.msgs[Round2][fr.operatorID] = bcastRound2Message
+	fr.msgs[Round2][uint32(fr.operatorID)] = bcastRound2Message
 
 	return fr.network.BroadcastDKGMessage(bcastRound2Message)
 }
 
 func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	protocolMessage := &ProtocolMsg{}
-	if err := protocolMessage.Decode(fr.msgs[Round2][fr.operatorID].Message.Data); err != nil {
+	if err := protocolMessage.Decode(fr.msgs[Round2][uint32(fr.operatorID)].Message.Data); err != nil {
 		return nil, errors.Wrap(err, "could not decode protocol msg")
 	}
 
