@@ -120,12 +120,18 @@ func MsgID(msg) string {
 }
 ```
 **Default Value (SSV):**
+
+Content hash is used:
+
 ```go
 func MsgID(msg) string {
     return string(sha256(msg.GetData())[:20])
 }
 ```
 **Default Value (ETH2):**
+
+Message domain plus content hash:
+
 ```go
 func MsgID(msg) string {
     h := sha256(MESSAGE_DOMAIN_VALID_SNAPPY + snappy_decompress(message.data))
@@ -237,7 +243,7 @@ Controls how many cached message ids we will advertise in IHAVE gossip messages.
 | ---                    | ---                 | ---                  |
 | `3`                    | `4`                 | `3`                  |
 
-The value was increased to ensure message delivery.
+The value was increased so peers will gossip on a larger set of messages to ensure better delivery.
 
 ### Gossipsub: MaxIHaveLength
 
@@ -247,7 +253,7 @@ Sets the maximum number of messages to include in an IHAVE message.
 | ---                    | ---                 | ---                  |
 | `5000`                 | `1500`              | `5000`               |
 
-Decreased value to avoid ihave floods, as our network produces a large number of messages.
+Value was decreased to avoid ihave floods, as our network produces a large number of messages.
 
 **NOTE** Will be increased once encoding changes to `SSZ` and compression as well (`snappy` or `s2`)
 

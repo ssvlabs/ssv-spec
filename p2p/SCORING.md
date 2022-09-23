@@ -122,7 +122,7 @@ Topic level arguments might change between different topics, currently there are
 
 ### Decided Topic Params
 
-Decided topic is used for broadcasting decided messages across the network.
+Decided topic is subscribed by all peers, used for broadcasting decided messages across the network.
 Params are based on `beacon aggregate and proof` topic (ETH2) due to the high rate of messages.
 
 The following topic level arguments are used for constructing decided topic score params:
