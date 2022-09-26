@@ -487,7 +487,24 @@ func (fr *FROST) processBlameTypeInvalidShare(operatorID uint32, blameMessage *B
 }
 
 func (fr *FROST) processBlameTypeInconsistentMessage(operatorID uint32, blameMessage *BlameMessage) (bool /*valid*/, error) {
-	return true, nil
+	if len(blameMessage.BlameData) != 2 {
+		return false, errors.New("invalid blame data")
+	}
+
+	var originalMessage, newMessage *dkg.SignedMessage
+
+	if err := originalMessage.Decode(blameMessage.BlameData[0]); err != nil {
+		return false, err
+	}
+
+	if err := newMessage.Decode(blameMessage.BlameData[0]); err != nil {
+		return false, err
+	}
+
+	valid1 := originalMessage.Validate() == nil
+	valid2 := newMessage.Validate() == nil
+
+	return valid1 && valid2, nil
 }
 
 func (fr *FROST) canProceedRound1() bool {
