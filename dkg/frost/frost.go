@@ -491,13 +491,12 @@ func (fr *FROST) processBlameTypeInconsistentMessage(operatorID uint32, blameMes
 		return false, errors.New("invalid blame data")
 	}
 
-	var originalMessage, newMessage *dkg.SignedMessage
+	var originalMessage, newMessage dkg.SignedMessage
 
 	if err := originalMessage.Decode(blameMessage.BlameData[0]); err != nil {
 		return false, err
 	}
-
-	if err := newMessage.Decode(blameMessage.BlameData[0]); err != nil {
+	if err := newMessage.Decode(blameMessage.BlameData[1]); err != nil {
 		return false, err
 	}
 
