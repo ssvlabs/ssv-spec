@@ -58,6 +58,11 @@ func (n *Node) Run() error {
 	}
 }
 
+func (n *Node) Exit() {
+	n.cancel()
+	close(n.queue)
+}
+
 func (n *Node) processMsg(msg *dkg.SignedMessage) error {
 	finished, o, err := n.ProcessMsgFn(msg)
 	if finished {

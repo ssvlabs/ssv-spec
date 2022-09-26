@@ -45,7 +45,7 @@ func TestFrost2_4(t *testing.T) {
 
 	for _, node := range mockNetwork.nodes {
 		go node.Run()
-		defer node.cancel()
+		defer node.Exit()
 	}
 
 	threshold := 2
