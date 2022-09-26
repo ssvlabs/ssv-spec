@@ -33,6 +33,16 @@ type BlameMessage struct {
 	BlamerSessionSk  []byte
 }
 
+// Encode returns a msg encoded bytes or error
+func (msg *BlameMessage) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *BlameMessage) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
+}
+
 type BlameType int
 
 const (

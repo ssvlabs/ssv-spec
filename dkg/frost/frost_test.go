@@ -12,7 +12,7 @@ import (
 
 func TestFrost2_4(t *testing.T) {
 	requestID := dkg.RequestID{}
-	for i, _ := range requestID {
+	for i := range requestID {
 		requestID[i] = 1
 	}
 
