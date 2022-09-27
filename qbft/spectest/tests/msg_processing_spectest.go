@@ -4,10 +4,14 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
+
+// ChangeProposerFuncInstanceHeight tests with this height will return proposer operator ID 2
+const ChangeProposerFuncInstanceHeight = 10
 
 type MsgProcessingSpecTest struct {
 	Name           string
@@ -19,6 +23,13 @@ type MsgProcessingSpecTest struct {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
+	// a simple hack to change the proposer func
+	if test.Pre.State.Height == ChangeProposerFuncInstanceHeight {
+		test.Pre.GetConfig().(*qbft.Config).ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
+			return 2
+		}
+	}
+
 	var lastErr error
 	for _, msg := range test.InputMessages {
 		_, _, _, err := test.Pre.ProcessMsg(msg)

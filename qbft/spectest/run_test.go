@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/qbft"
 	tests2 "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
@@ -49,8 +50,14 @@ func TestJson(t *testing.T) {
 
 			// a little trick we do to instantiate all the internal instance params
 			preByts, _ := typedTest.Pre.Encode()
-			pre := qbft.NewInstance(testingutils.TestingConfig(testingutils.Testing4SharesSet()), typedTest.Pre.State.Share, typedTest.Pre.State.ID, qbft.FirstHeight)
-			pre.Decode(preByts)
+			pre := qbft.NewInstance(
+				testingutils.TestingConfig(testingutils.KeySetForShare(typedTest.Pre.State.Share)),
+				typedTest.Pre.State.Share,
+				typedTest.Pre.State.ID,
+				typedTest.Pre.State.Height,
+			)
+			err = pre.Decode(preByts)
+			require.NoError(t, err)
 			typedTest.Pre = pre
 
 			tests[testName] = typedTest
@@ -91,6 +98,16 @@ func TestJson(t *testing.T) {
 			byts, err := json.Marshal(test)
 			require.NoError(t, err)
 			typedTest := &tests2.RoundRobinSpecTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+			tests[testName] = typedTest
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
+		case reflect.TypeOf(&futuremsg.ControllerSyncSpecTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &futuremsg.ControllerSyncSpecTest{}
 			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 			tests[testName] = typedTest

@@ -48,10 +48,12 @@ func Encrypt(pk *rsa.PublicKey, plainText []byte) ([]byte, error) {
 // PemToPrivateKey return rsa private key from pem
 func PemToPrivateKey(skPem []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(skPem)
+	// nolint
 	enc := x509.IsEncryptedPEMBlock(block)
 	b := block.Bytes
 	if enc {
 		var err error
+		// nolint
 		b, err = x509.DecryptPEMBlock(block, nil)
 		if err != nil {
 			return nil, errors.Wrap(err, "Failed to decrypt private key")
@@ -67,10 +69,12 @@ func PemToPrivateKey(skPem []byte) (*rsa.PrivateKey, error) {
 // PemToPublicKey return rsa public key from pem
 func PemToPublicKey(pkPem []byte) (*rsa.PublicKey, error) {
 	block, _ := pem.Decode(pkPem)
+	// nolint
 	enc := x509.IsEncryptedPEMBlock(block)
 	b := block.Bytes
 	if enc {
 		var err error
+		// nolint
 		b, err = x509.DecryptPEMBlock(block, nil)
 		if err != nil {
 			return nil, errors.Wrap(err, "Failed to decrypt private key")

@@ -12,11 +12,7 @@ import (
 )
 
 type SyncCommitteeRunner struct {
-	State          *State
-	Share          *types.Share
-	QBFTController *qbft.Controller
-	BeaconNetwork  types.BeaconNetwork
-	BeaconRoleType types.BeaconRole
+	BaseRunner *BaseRunner
 
 	beacon   BeaconNode
 	network  Network
@@ -34,10 +30,12 @@ func NewSyncCommitteeRunner(
 	valCheck qbft.ProposedValueCheckF,
 ) Runner {
 	return &SyncCommitteeRunner{
-		BeaconRoleType: types.BNRoleSyncCommittee,
-		BeaconNetwork:  beaconNetwork,
-		Share:          share,
-		QBFTController: qbftController,
+		BaseRunner: &BaseRunner{
+			BeaconRoleType: types.BNRoleSyncCommittee,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
+		},
 
 		beacon:   beacon,
 		network:  network,
@@ -47,19 +45,12 @@ func NewSyncCommitteeRunner(
 }
 
 func (r *SyncCommitteeRunner) StartNewDuty(duty *types.Duty) error {
-	if err := canStartNewDuty(r, duty); err != nil {
-		return err
-	}
-	r.State = NewRunnerState(r.GetShare().Quorum, duty)
-	return r.executeDuty(duty)
+	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *SyncCommitteeRunner) HasRunningDuty() bool {
-	if r.GetState() == nil {
-		return false
-	}
-	return r.GetState().Finished != true
+	return r.BaseRunner.HashRunningDuty()
 }
 
 func (r *SyncCommitteeRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
@@ -67,7 +58,7 @@ func (r *SyncCommitteeRunner) ProcessPreConsensus(signedMsg *SignedPartialSignat
 }
 
 func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := baseConsensusMsgProcessing(r, signedMsg)
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -76,10 +67,9 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 	if !decided {
 		return nil
 	}
-	r.GetState().DecidedValue = decidedValue
 
 	// specific duty sig
-	msg, err := signBeaconObject(r, types.SSZBytes(decidedValue.SyncCommitteeBlockRoot[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)
+	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZBytes(decidedValue.SyncCommitteeBlockRoot[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -88,7 +78,7 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 		Messages: []*PartialSignatureMessage{msg},
 	}
 
-	postSignedMsg, err := signPostConsensusMsg(r, postConsensusMsg)
+	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not sign post consensus msg")
 	}
@@ -100,7 +90,7 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.GetBeaconRole()),
+		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -111,7 +101,7 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 }
 
 func (r *SyncCommitteeRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := basePostConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -164,42 +154,34 @@ func (r *SyncCommitteeRunner) executeDuty(duty *types.Duty) error {
 		SyncCommitteeBlockRoot: root,
 	}
 
-	if err := decide(r, input); err != nil {
+	if err := r.BaseRunner.decide(r, input); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
+}
+
+func (r *SyncCommitteeRunner) GetBaseRunner() *BaseRunner {
+	return r.BaseRunner
 }
 
 func (r *SyncCommitteeRunner) GetNetwork() Network {
 	return r.network
 }
 
-func (r *SyncCommitteeRunner) GetBeaconNetwork() types.BeaconNetwork {
-	return r.BeaconNetwork
-}
-
 func (r *SyncCommitteeRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *SyncCommitteeRunner) GetBeaconRole() types.BeaconRole {
-	return r.BeaconRoleType
-}
-
 func (r *SyncCommitteeRunner) GetShare() *types.Share {
-	return r.Share
+	return r.BaseRunner.Share
 }
 
 func (r *SyncCommitteeRunner) GetState() *State {
-	return r.State
+	return r.BaseRunner.State
 }
 
 func (r *SyncCommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
-}
-
-func (r *SyncCommitteeRunner) GetQBFTController() *qbft.Controller {
-	return r.QBFTController
 }
 
 func (r *SyncCommitteeRunner) GetSigner() types.KeyManager {

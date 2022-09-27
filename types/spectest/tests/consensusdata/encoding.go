@@ -2,12 +2,11 @@ package consensusdata
 
 import (
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // Encoding tests encoding of a ConsensusData struct
-func Encoding() *tests.EncodingSpecTest {
+func Encoding() *EncodingSpecTest {
 	data := &types.ConsensusData{
 		Duty:                   testingutils.TestingAttesterDuty,
 		AttestationData:        testingutils.TestingAttestationData,
@@ -26,7 +25,7 @@ func Encoding() *tests.EncodingSpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.EncodingSpecTest{
+	return &EncodingSpecTest{
 		Name: "encoding ConsensusData",
 		Data: byts,
 	}

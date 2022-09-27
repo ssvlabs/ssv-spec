@@ -13,11 +13,7 @@ import (
 )
 
 type SyncCommitteeAggregatorRunner struct {
-	State          *State
-	Share          *types.Share
-	QBFTController *qbft.Controller
-	BeaconNetwork  types.BeaconNetwork
-	BeaconRoleType types.BeaconRole
+	BaseRunner *BaseRunner
 
 	beacon   BeaconNode
 	network  Network
@@ -35,10 +31,12 @@ func NewSyncCommitteeAggregatorRunner(
 	valCheck qbft.ProposedValueCheckF,
 ) Runner {
 	return &SyncCommitteeAggregatorRunner{
-		BeaconRoleType: types.BNRoleSyncCommitteeContribution,
-		BeaconNetwork:  beaconNetwork,
-		Share:          share,
-		QBFTController: qbftController,
+		BaseRunner: &BaseRunner{
+			BeaconRoleType: types.BNRoleSyncCommitteeContribution,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
+		},
 
 		beacon:   beacon,
 		network:  network,
@@ -48,33 +46,24 @@ func NewSyncCommitteeAggregatorRunner(
 }
 
 func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty *types.Duty) error {
-	if err := canStartNewDuty(r, duty); err != nil {
-		return err
-	}
-	r.State = NewRunnerState(r.GetShare().Quorum, duty)
-	return r.executeDuty(duty)
+	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
-	if r.GetState() == nil {
-		return false
-	}
-	return r.GetState().Finished != true
+	return r.BaseRunner.HashRunningDuty()
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := basePreConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
-		return errors.Wrap(err, "failed processing randao message")
+		return errors.Wrap(err, "failed processing sync committee selection proof message")
 	}
 
 	// quorum returns true only once (first time quorum achieved)
 	if !quorum {
 		return nil
 	}
-
-	// TODO - what happens if we get quorum multiple times?
 
 	duty := r.GetState().StartingDuty
 	input := &types.ConsensusData{
@@ -85,6 +74,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 	if err != nil {
 		return errors.Wrap(err, "failed fetching sync subcommittee indexes")
 	}
+	anyIsAggregator := false
 	for i, root := range roots {
 		// reconstruct selection proof sig
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
@@ -102,6 +92,8 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 			continue
 		}
 
+		anyIsAggregator = true
+
 		// fetch sync committee contribution
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(indexes[i])
 		if err != nil {
@@ -115,15 +107,19 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 		input.SyncCommitteeContribution[blsSigSelectionProof] = contribution
 	}
 
-	if err := decide(r, input); err != nil {
-		return errors.Wrap(err, "can't start new duty runner instance for duty")
+	if anyIsAggregator {
+		if err := r.BaseRunner.decide(r, input); err != nil {
+			return errors.Wrap(err, "can't start new duty runner instance for duty")
+		}
+	} else {
+		r.BaseRunner.State.Finished = true
 	}
 
 	return nil
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := baseConsensusMsgProcessing(r, signedMsg)
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -132,7 +128,6 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 	if !decided {
 		return nil
 	}
-	r.GetState().DecidedValue = decidedValue
 
 	// specific duty sig
 	msgs := make([]*PartialSignatureMessage, 0)
@@ -142,7 +137,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 			return errors.Wrap(err, "could not generate contribution and proof")
 		}
 
-		signed, err := signBeaconObject(r, contribAndProof, decidedValue.Duty.Slot, types.DomainContributionAndProof)
+		signed, err := r.BaseRunner.signBeaconObject(r, contribAndProof, decidedValue.Duty.Slot, types.DomainContributionAndProof)
 		if err != nil {
 			return errors.Wrap(err, "failed to sign aggregate and proof")
 		}
@@ -154,7 +149,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 		Messages: msgs,
 	}
 
-	postSignedMsg, err := signPostConsensusMsg(r, postConsensusMsg)
+	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not sign post consensus msg")
 	}
@@ -166,7 +161,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.GetBeaconRole()),
+		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -177,7 +172,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := basePostConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -232,7 +227,7 @@ func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib *al
 		SelectionProof:  proof,
 	}
 
-	epoch := r.GetBeaconNetwork().EstimatedEpochAtSlot(r.GetState().DecidedValue.Duty.Slot)
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().DecidedValue.Duty.Slot)
 	dContribAndProof, err := r.GetBeaconNode().DomainData(epoch, types.DomainContributionAndProof)
 	if err != nil {
 		return nil, phase0.Root{}, errors.Wrap(err, "could not get domain data")
@@ -290,7 +285,7 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 			Slot:              duty.Slot,
 			SubcommitteeIndex: subnet,
 		}
-		msg, err := signBeaconObject(r, data, duty.Slot, types.DomainSyncCommitteeSelectionProof)
+		msg, err := r.BaseRunner.signBeaconObject(r, data, duty.Slot, types.DomainSyncCommitteeSelectionProof)
 		if err != nil {
 			return errors.Wrap(err, "could not sign sync committee selection proof")
 		}
@@ -316,7 +311,7 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.GetBeaconRole()),
+		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
@@ -325,36 +320,28 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) GetNetwork() Network {
-	return r.network
+func (r *SyncCommitteeAggregatorRunner) GetBaseRunner() *BaseRunner {
+	return r.BaseRunner
 }
 
-func (r *SyncCommitteeAggregatorRunner) GetBeaconNetwork() types.BeaconNetwork {
-	return r.BeaconNetwork
+func (r *SyncCommitteeAggregatorRunner) GetNetwork() Network {
+	return r.network
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *SyncCommitteeAggregatorRunner) GetBeaconRole() types.BeaconRole {
-	return r.BeaconRoleType
-}
-
 func (r *SyncCommitteeAggregatorRunner) GetShare() *types.Share {
-	return r.Share
+	return r.BaseRunner.Share
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetState() *State {
-	return r.State
+	return r.BaseRunner.State
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
-}
-
-func (r *SyncCommitteeAggregatorRunner) GetQBFTController() *qbft.Controller {
-	return r.QBFTController
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetSigner() types.KeyManager {

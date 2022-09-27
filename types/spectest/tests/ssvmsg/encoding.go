@@ -1,8 +1,10 @@
 package ssvmsg
 
-import "github.com/bloxapp/ssv-spec/types/spectest/tests"
+import (
+	"github.com/bloxapp/ssv-spec/types/spectest"
+)
 
 // Encoding tests encoding of a ssv message
-func Encoding() *tests.EncodingSpecTest {
+func Encoding() spectest.SpecTest {
 	panic("implement")
 }

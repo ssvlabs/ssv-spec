@@ -10,7 +10,7 @@ type MultiMsgProcessingSpecTest struct {
 }
 
 func (tests *MultiMsgProcessingSpecTest) TestName() string {
-	return "multi msg processing " + tests.Name
+	return tests.Name
 }
 
 func (tests *MultiMsgProcessingSpecTest) Run(t *testing.T) {

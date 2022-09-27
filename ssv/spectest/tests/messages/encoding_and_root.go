@@ -23,9 +23,6 @@ func EncodingAndRoot() *MsgSpecTest {
 					PartialSignature: make([]byte, 96),
 					Signer:           12,
 					SigningRoot:      make([]byte, 32),
-					MetaData: &ssv.PartialSignatureMetaData{
-						ContributionSubCommitteeIndex: 1,
-					},
 				},
 			},
 		},

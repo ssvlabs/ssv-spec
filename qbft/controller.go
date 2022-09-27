@@ -2,15 +2,15 @@ package qbft
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
-// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a controller can process messages for as messages are not
-// guaranteed to arrive in a timely fashion, we physically limit how far back the controller will process messages for
+// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a processmsg can process messages for as messages are not
+// guaranteed to arrive in a timely fashion, we physically limit how far back the processmsg will process messages for
 const HistoricalInstanceCapacity int = 5
 
 type InstanceContainer [HistoricalInstanceCapacity]*Instance
@@ -40,36 +40,27 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	Domain          types.DomainType
-	Share           *types.Share
-	signer          types.SSVSigner
-	valueCheck      ProposedValueCheckF
-	storage         Storage
-	network         Network
-	proposerF       ProposerF
+	// FutureMsgsContainer holds all msgs from a higher height
+	FutureMsgsContainer map[types.OperatorID]Height // maps msg signer to height of higher height received msgs
+	Domain              types.DomainType
+	Share               *types.Share
+	config              IConfig
 }
 
 func NewController(
 	identifier []byte,
 	share *types.Share,
 	domain types.DomainType,
-	signer types.SSVSigner,
-	valueCheck ProposedValueCheckF,
-	storage Storage,
-	network Network,
-	proposerF ProposerF,
+	config IConfig,
 ) *Controller {
 	return &Controller{
-		Identifier:      identifier,
-		Height:          -1, // as we bump the height when starting the first instance
-		Domain:          domain,
-		Share:           share,
-		StoredInstances: InstanceContainer{},
-		signer:          signer,
-		valueCheck:      valueCheck,
-		storage:         storage,
-		network:         network,
-		proposerF:       proposerF,
+		Identifier:          identifier,
+		Height:              -1, // as we bump the height when starting the first instance
+		Domain:              domain,
+		Share:               share,
+		StoredInstances:     InstanceContainer{},
+		FutureMsgsContainer: make(map[types.OperatorID]Height),
+		config:              config,
 	}
 }
 
@@ -86,38 +77,65 @@ func (c *Controller) StartNewInstance(value []byte) error {
 	return nil
 }
 
-// ProcessMsg processes a new msg, returns true if Decided, non nil byte slice if Decided (Decided value) and error
-// Decided returns just once per instance as true, following messages (for example additional commit msgs) will not return Decided true
-func (c *Controller) ProcessMsg(msg *SignedMessage) (bool, []byte, error) {
-	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
-		return false, nil, errors.New(fmt.Sprintf("message doesn't belong to Identifier"))
+// ProcessMsg processes a new msg, returns decided message or error
+func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
+	if err := c.baseMsgValidation(msg); err != nil {
+		return nil, errors.Wrap(err, "invalid msg")
 	}
 
+	/**
+	Main controller processing flow
+	_______________________________
+	All decided msgs are processed the same, out of instance
+	All valid future msgs are saved in a container and can trigger highest decided futuremsg
+	All other msgs (not future or decided) are processed normally by an existing instance (if found)
+	*/
+	if isDecidedMsg(c.Share, msg) {
+		return c.UponDecided(msg)
+	} else if msg.Message.Height > c.Height {
+		return c.UponFutureMsg(msg)
+	} else {
+		return c.UponExistingInstanceMsg(msg)
+	}
+}
+
+func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage, error) {
 	inst := c.InstanceForHeight(msg.Message.Height)
 	if inst == nil {
-		return false, nil, errors.New(fmt.Sprintf("instance not found"))
+		return nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
-	decided, decidedValue, aggregatedCommit, err := inst.ProcessMsg(msg)
+
+	decided, _, decidedMsg, err := inst.ProcessMsg(msg)
 	if err != nil {
-		return false, nil, errors.Wrap(err, "could not process msg")
+		return nil, errors.Wrap(err, "could not process msg")
 	}
 
 	// if previously Decided we do not return Decided true again
 	if prevDecided {
-		return false, nil, err
+		return nil, err
 	}
 
 	// save the highest Decided
 	if !decided {
-		return false, nil, nil
+		return nil, nil
 	}
 
-	if err := c.saveAndBroadcastDecided(aggregatedCommit); err != nil {
-		// TODO - we do not return error, should log?
+	if err := c.saveAndBroadcastDecided(decidedMsg); err != nil {
+		// no need to fail processing instance deciding if failed to save/ broadcast
+		fmt.Printf("%s\n", err.Error())
 	}
-	return decided, decidedValue, nil
+	return msg, nil
+}
+
+func (c *Controller) baseMsgValidation(msg *SignedMessage) error {
+	// verify msg belongs to controller
+	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
+		return errors.New("message doesn't belong to Identifier")
+	}
+
+	return nil
 }
 
 func (c *Controller) InstanceForHeight(height Height) *Instance {
@@ -135,7 +153,7 @@ func (c *Controller) GetIdentifier() []byte {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GenerateConfig(), c.Share, c.Identifier, c.Height)
+	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
@@ -153,11 +171,47 @@ func (c *Controller) canStartInstance(height Height, value []byte) error {
 	}
 
 	// check value
-	if err := c.valueCheck(value); err != nil {
+	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
 		return errors.Wrap(err, "value invalid")
 	}
 
 	return nil
+}
+
+// GetRoot returns the state's deterministic root
+func (c *Controller) GetRoot() ([]byte, error) {
+	rootStruct := struct {
+		Identifier             []byte
+		Height                 Height
+		InstanceRoots          [][]byte
+		HigherReceivedMessages map[types.OperatorID]Height
+		Domain                 types.DomainType
+		Share                  *types.Share
+	}{
+		Identifier:             c.Identifier,
+		Height:                 c.Height,
+		InstanceRoots:          make([][]byte, len(c.StoredInstances)),
+		HigherReceivedMessages: c.FutureMsgsContainer,
+		Domain:                 c.Domain,
+		Share:                  c.Share,
+	}
+
+	for i, inst := range c.StoredInstances {
+		if inst != nil {
+			r, err := inst.GetRoot()
+			if err != nil {
+				return nil, errors.Wrap(err, "failed getting instance root")
+			}
+			rootStruct.InstanceRoots[i] = r
+		}
+	}
+
+	marshaledRoot, err := json.Marshal(rootStruct)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode state")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret[:], nil
 }
 
 // Encode implementation
@@ -172,7 +226,7 @@ func (c *Controller) Decode(data []byte) error {
 		return errors.Wrap(err, "could not decode controller")
 	}
 
-	config := c.GenerateConfig()
+	config := c.GetConfig()
 	for _, i := range c.StoredInstances {
 		if i != nil {
 			i.config = config
@@ -182,7 +236,7 @@ func (c *Controller) Decode(data []byte) error {
 }
 
 func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) error {
-	if err := c.storage.SaveHighestDecided(aggregatedCommit); err != nil {
+	if err := c.GetConfig().GetStorage().SaveHighestDecided(aggregatedCommit); err != nil {
 		return errors.Wrap(err, "could not save decided")
 	}
 
@@ -197,21 +251,13 @@ func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) er
 		MsgID:   ControllerIdToMessageID(c.Identifier),
 		Data:    byts,
 	}
-	if err := c.network.BroadcastDecided(msgToBroadcast); err != nil {
+	if err := c.GetConfig().GetNetwork().BroadcastDecided(msgToBroadcast); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}
 	return nil
 }
 
-func (c *Controller) GenerateConfig() IConfig {
-	return &Config{
-		Signer:      c.signer,
-		SigningPK:   c.Share.ValidatorPubKey,
-		Domain:      c.Domain,
-		ValueCheckF: c.valueCheck,
-		Storage:     c.storage,
-		Network:     c.network,
-		ProposerF:   c.proposerF,
-	}
+func (c *Controller) GetConfig() IConfig {
+	return c.config
 }

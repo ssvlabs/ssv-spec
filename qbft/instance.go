@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 	"sync"
@@ -54,12 +55,18 @@ func (i *Instance) Start(value []byte, height Height) {
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
+			// nolint
 			if err != nil {
-				// TODO log
+				fmt.Printf("%s\n", err.Error())
 			}
+			// nolint
 			if err := i.Broadcast(proposal); err != nil {
-				// TODO - log
+				fmt.Printf("%s\n", err.Error())
 			}
+		}
+
+		if err := i.config.GetNetwork().SyncHighestRoundChange(i.State.ID, i.State.Height); err != nil {
+			fmt.Printf("%s\n", err.Error())
 		}
 	})
 }
@@ -94,15 +101,9 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 		case PrepareMsgType:
 			return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
 		case CommitMsgType:
-			if isDecidedMsg(i.State, msg) {
-				decided, decidedValue, err = i.UponDecided(msg, i.State.CommitContainer)
-				aggregatedCommit = msg
-			} else {
-				decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
-			}
-
-			i.State.Decided = decided
+			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
 			if decided {
+				i.State.Decided = decided
 				i.State.DecidedValue = decidedValue
 			}
 			return err
@@ -131,6 +132,11 @@ func (i *Instance) GetConfig() IConfig {
 // GetHeight interface implementation
 func (i *Instance) GetHeight() Height {
 	return i.State.Height
+}
+
+// GetRoot returns the state's deterministic root
+func (i *Instance) GetRoot() ([]byte, error) {
+	return i.State.GetRoot()
 }
 
 // Encode implementation

@@ -23,7 +23,7 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
 	}
 
-	addMsg, err := commitMsgContainer.AddIfDoesntExist(signedCommit)
+	addMsg, err := commitMsgContainer.AddFirstMsgForSignerAndRound(signedCommit)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not add commit msg to container")
 	}
@@ -111,7 +111,9 @@ func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, e
 		Data: value,
 	}
 	dataByts, err := commitData.Encode()
-
+	if err != nil {
+		return nil, errors.Wrap(err, "failed encoding prepare data")
+	}
 	msg := &Message{
 		MsgType:    CommitMsgType,
 		Height:     state.Height,
@@ -153,9 +155,11 @@ func baseCommitValidation(
 		return errors.Wrap(err, "msgCommitData invalid")
 	}
 
+	// verify signature
 	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "commit msg signature invalid")
 	}
+
 	return nil
 }
 

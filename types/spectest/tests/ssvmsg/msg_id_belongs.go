@@ -5,6 +5,6 @@ import (
 )
 
 // MsgIDBelongs tests msg id belonging to validator id
-func MsgIDBelongs() *spectest.SpecTest {
+func MsgIDBelongs() spectest.SpecTest {
 	panic("implement")
 }

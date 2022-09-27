@@ -9,7 +9,7 @@ import (
 
 // TenOperators tests round-robin proposer selection for 10 member committee
 func TenOperators() *tests.RoundRobinSpecTest {
-	p := types.OperatorID(1)
+	var p types.OperatorID
 	heights := make([]qbft.Height, 0)
 	rounds := make([]qbft.Round, 0)
 	proposers := make([]types.OperatorID, 0)

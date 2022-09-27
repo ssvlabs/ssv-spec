@@ -79,7 +79,7 @@ func TestSimpleDKG(t *testing.T) {
 		pkVec = append(pkVec, *pk)
 	}
 	require.NoError(t, validatorPK.Recover(pkVec, idVec))
-	fmt.Printf("validator pk: %DKG\n", hex.EncodeToString(validatorPK.Serialize()))
+	fmt.Printf("validator pk: %s\n", hex.EncodeToString(validatorPK.Serialize()))
 
 	// reconstruct sig
 	reconstructedSig := bls.Sign{}
@@ -98,7 +98,7 @@ func TestSimpleDKG(t *testing.T) {
 		}
 	}
 	require.NoError(t, reconstructedSig.Recover(sigVec, idVec))
-	fmt.Printf("reconstructed sig: %DKG\n", hex.EncodeToString(reconstructedSig.Serialize()))
+	fmt.Printf("reconstructed sig: %s\n", hex.EncodeToString(reconstructedSig.Serialize()))
 
 	// verify
 	require.True(t, reconstructedSig.Verify(&validatorPK, payloadToSign))

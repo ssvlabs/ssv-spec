@@ -11,11 +11,7 @@ import (
 )
 
 type AggregatorRunner struct {
-	State          *State
-	Share          *types.Share
-	QBFTController *qbft.Controller
-	BeaconNetwork  types.BeaconNetwork
-	BeaconRoleType types.BeaconRole
+	BaseRunner *BaseRunner
 
 	beacon   BeaconNode
 	network  Network
@@ -33,10 +29,12 @@ func NewAggregatorRunner(
 	valCheck qbft.ProposedValueCheckF,
 ) Runner {
 	return &AggregatorRunner{
-		BeaconRoleType: types.BNRoleAggregator,
-		BeaconNetwork:  beaconNetwork,
-		Share:          share,
-		QBFTController: qbftController,
+		BaseRunner: &BaseRunner{
+			BeaconRoleType: types.BNRoleAggregator,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
+		},
 
 		beacon:   beacon,
 		network:  network,
@@ -46,25 +44,18 @@ func NewAggregatorRunner(
 }
 
 func (r *AggregatorRunner) StartNewDuty(duty *types.Duty) error {
-	if err := canStartNewDuty(r, duty); err != nil {
-		return err
-	}
-	r.State = NewRunnerState(r.GetShare().Quorum, duty)
-	return r.executeDuty(duty)
+	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *AggregatorRunner) HasRunningDuty() bool {
-	if r.GetState() == nil {
-		return false
-	}
-	return r.GetState().Finished != true
+	return r.BaseRunner.HashRunningDuty()
 }
 
 func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := basePreConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
-		return errors.Wrap(err, "failed processing randao message")
+		return errors.Wrap(err, "failed processing selection proof message")
 	}
 
 	// quorum returns true only once (first time quorum achieved)
@@ -72,10 +63,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 		return nil
 	}
 
-	if len(roots) != 1 {
-		return errors.New("too many randao roots")
-	}
-
+	// only 1 root, verified by basePreConsensusMsgProcessing
 	root := roots[0]
 	// reconstruct selection proof sig
 	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
@@ -98,7 +86,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 		AggregateAndProof: res,
 	}
 
-	if err := decide(r, input); err != nil {
+	if err := r.BaseRunner.decide(r, input); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 
@@ -106,7 +94,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 }
 
 func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := baseConsensusMsgProcessing(r, signedMsg)
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -115,10 +103,9 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 	if !decided {
 		return nil
 	}
-	r.GetState().DecidedValue = decidedValue
 
 	// specific duty sig
-	msg, err := signBeaconObject(r, decidedValue.AggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
+	msg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -127,7 +114,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 		Messages: []*PartialSignatureMessage{msg},
 	}
 
-	postSignedMsg, err := signPostConsensusMsg(r, postConsensusMsg)
+	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not sign post consensus msg")
 	}
@@ -139,7 +126,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.GetBeaconRole()),
+		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -150,7 +137,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 }
 
 func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := basePostConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -191,7 +178,7 @@ func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot,
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedAggregateSubmitRequest sig to the BN
 func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	// sign selection proof
-	msg, err := signBeaconObject(r, types.SSZUint64(duty.Slot), duty.Slot, types.DomainSelectionProof)
+	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZUint64(duty.Slot), duty.Slot, types.DomainSelectionProof)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")
 	}
@@ -218,7 +205,7 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.GetBeaconRole()),
+		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
@@ -227,36 +214,28 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	return nil
 }
 
-func (r *AggregatorRunner) GetNetwork() Network {
-	return r.network
+func (r *AggregatorRunner) GetBaseRunner() *BaseRunner {
+	return r.BaseRunner
 }
 
-func (r *AggregatorRunner) GetBeaconNetwork() types.BeaconNetwork {
-	return r.BeaconNetwork
+func (r *AggregatorRunner) GetNetwork() Network {
+	return r.network
 }
 
 func (r *AggregatorRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *AggregatorRunner) GetBeaconRole() types.BeaconRole {
-	return r.BeaconRoleType
-}
-
 func (r *AggregatorRunner) GetShare() *types.Share {
-	return r.Share
+	return r.BaseRunner.Share
 }
 
 func (r *AggregatorRunner) GetState() *State {
-	return r.State
+	return r.BaseRunner.State
 }
 
 func (r *AggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
-}
-
-func (r *AggregatorRunner) GetQBFTController() *qbft.Controller {
-	return r.QBFTController
 }
 
 func (r *AggregatorRunner) GetSigner() types.KeyManager {
