@@ -2,6 +2,7 @@ package dkg
 
 import (
 	"crypto/rsa"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -36,4 +37,10 @@ type Config struct {
 	Storage             Storage
 	SignatureDomainType types.DomainType
 	Signer              types.DKGSigner
+}
+
+type ErrInvalidRound struct{}
+
+func (e ErrInvalidRound) Error() string {
+	return "invalid dkg round"
 }
