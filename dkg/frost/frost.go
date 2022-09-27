@@ -18,8 +18,8 @@ import (
 var thisCurve = curves.BLS12381G1()
 
 func init() {
-	bls.Init(bls.BLS12_381)
-	bls.SetETHmode(bls.EthModeDraft07)
+	_ = bls.Init(bls.BLS12_381)
+	_ = bls.SetETHmode(bls.EthModeDraft07)
 }
 
 type FROST struct {
