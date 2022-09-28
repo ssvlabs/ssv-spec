@@ -481,6 +481,9 @@ func (fr *FROST) processBlameTypeInvalidShare(operatorID uint32, blameMessage *B
 	}
 
 	if err := verifiers.Verify(share); err != nil {
+		if err.Error() == "not equal" {
+			return false, nil
+		}
 		return false, err
 	}
 	return true, nil

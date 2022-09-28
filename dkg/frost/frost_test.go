@@ -1,13 +1,18 @@
 package frost
 
 import (
+	crand "crypto/rand"
+	"encoding/json"
 	"math/rand"
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/coinbase/kryptology/pkg/sharing"
+	ecies "github.com/ecies/go/v2"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -177,4 +182,66 @@ func TestProcessBlameTypeInconsistentMessage(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestProcessBlameTypeInvalidShare(t *testing.T) {
+	// Test with valid share
+	fldmn, _ := sharing.NewFeldman(2, 4, thisCurve)
+	verifiers, shares, _ := fldmn.Split(thisCurve.Scalar.Random(crand.Reader), crand.Reader)
+
+	commitments := make([][]byte, 0)
+	for _, commitment := range verifiers.Commitments {
+		commitments = append(commitments, commitment.ToAffineCompressed())
+	}
+
+	sessionSK, _ := ecies.GenerateKey()
+	operatorShare := shares[0] // share for operatorID 1
+	eShare, _ := ecies.Encrypt(sessionSK.PublicKey, operatorShare.Value)
+
+	round1Message := &Round1Message{
+		Commitment: commitments,
+		Shares: map[uint32][]byte{
+			1: eShare,
+		},
+	}
+	round1Bytes, _ := json.Marshal(round1Message)
+
+	blameData := make([][]byte, 0)
+	blameData = append(blameData, round1Bytes)
+
+	blameMessage := &BlameMessage{
+		Type:             InvalidShare,
+		TargetOperatorID: 1,
+		BlameData:        blameData,
+		BlamerSessionSk:  sessionSK.Bytes(),
+	}
+
+	network := testingutils.NewTestingNetwork()
+	dkgsigner := testingutils.NewTestingKeyManager()
+	storage := testingutils.NewTestingStorage()
+
+	kgp := New(network, 2, getRandRequestID(), dkgsigner, storage)
+	fr := kgp.(*FROST)
+
+	valid, err := fr.processBlameTypeInvalidShare(1, blameMessage)
+	if err != nil {
+		t.Fatal(err)
+	}
+	require.Equal(t, valid, true)
+
+	// Test with invalid share
+	invalidShare := shares[2].Value
+	eInvalidShare, _ := ecies.Encrypt(sessionSK.PublicKey, invalidShare)
+	round1Message.Shares[1] = eInvalidShare
+
+	round1Bytes, _ = json.Marshal(round1Message)
+	blameData[0] = round1Bytes
+	blameMessage.BlameData = blameData
+
+	valid, err = fr.processBlameTypeInvalidShare(1, blameMessage)
+	if err != nil {
+		t.Fatal(err)
+	}
+	require.Equal(t, valid, false)
+
 }
