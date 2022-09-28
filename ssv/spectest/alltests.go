@@ -78,6 +78,8 @@ var AllTests = []SpecTest{
 	messages.PartialRootValid(),
 	messages.PartialRootTooShort(),
 	messages.PartialRootTooLong(),
+	messages.MessageSigner0(),
+	messages.SignedMsgSigner0(),
 
 	valcheckduty.WrongValidatorIndex(),
 	valcheckduty.WrongValidatorPK(),
