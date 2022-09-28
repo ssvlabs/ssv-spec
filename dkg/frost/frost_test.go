@@ -21,9 +21,7 @@ func TestFrost2_4(t *testing.T) {
 		1, 2, 3, 4,
 	}
 
-	mockNetwork := MockNetwork{
-		nodes: make(map[types.OperatorID]*Node),
-	}
+	nodes := make(map[types.OperatorID]*testingutils.DKGNetworkNode)
 
 	dkgsigner := testingutils.NewTestingKeyManager()
 	storage := testingutils.NewTestingStorage()
@@ -31,20 +29,23 @@ func TestFrost2_4(t *testing.T) {
 	for _, operator := range operators {
 		operatorID := types.OperatorID(operator)
 
-		node := newNode(operatorID)
-		mockNetwork.nodes[operatorID] = node
+		node := testingutils.NewDKGNetworkNode(operatorID)
+		nodes[operatorID] = node
 	}
+
+	network := testingutils.NewDKGNetwork(nodes)
+	dkgNetwork := network.(*testingutils.DKGNetwork)
 
 	kgps := make(map[uint32]dkg.KeyGenProtocol)
 
 	for _, operatorID := range operators {
-		p := New(&mockNetwork, operatorID, requestID, dkgsigner, storage)
+		p := New(network, operatorID, requestID, dkgsigner, storage)
 		kgps[uint32(operatorID)] = p
 
-		mockNetwork.nodes[operatorID].SetProcessMsgFn(p.ProcessMsg)
+		dkgNetwork.GetNetworkNode(operatorID).SetProcessMsgFn(p.ProcessMsg)
 	}
 
-	for _, node := range mockNetwork.nodes {
+	for _, node := range dkgNetwork.Nodes {
 		go node.Run()
 		defer node.Exit()
 	}
@@ -74,12 +75,12 @@ func TestFrost2_4(t *testing.T) {
 
 	for {
 		finished := true
-		for _, node := range mockNetwork.nodes {
-			node.mu.Lock()
+		for _, node := range dkgNetwork.Nodes {
+			node.Mu.Lock()
 			if node.Output == nil {
 				finished = false
 			}
-			node.mu.Unlock()
+			node.Mu.Unlock()
 		}
 
 		if finished {
@@ -88,7 +89,7 @@ func TestFrost2_4(t *testing.T) {
 	}
 
 	for _, operatorID := range operators {
-		output := mockNetwork.nodes[operatorID].Output
+		output := dkgNetwork.Nodes[operatorID].Output
 		t.Logf("printing generated keys for id %d\n", operatorID)
 		t.Logf("sk %x", output.Share.Serialize())
 		t.Logf("vk %x", output.ValidatorPK)
