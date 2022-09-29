@@ -208,7 +208,7 @@ func (fr *FROST) processRound1() error {
 
 		fr.operatorShares[operatorID] = share
 
-		encryptedShare, err := fr.encryptForP2PSend(operatorID, shamirShare.Value)
+		encryptedShare, err := fr.encryptByOperatorID(operatorID, shamirShare.Value)
 		if err != nil {
 			return err
 		}
@@ -608,10 +608,10 @@ func (fr *FROST) verifyShares() ([]*bls.G1, error) {
 	return outputs, nil
 }
 
-func (fr *FROST) encryptForP2PSend(id uint32, data []byte) ([]byte, error) {
-	msg, ok := fr.msgs[Preparation][id]
+func (fr *FROST) encryptByOperatorID(operatorID uint32, data []byte) ([]byte, error) {
+	msg, ok := fr.msgs[Preparation][operatorID]
 	if !ok {
-		return nil, fmt.Errorf("no public key found for operator %d", id)
+		return nil, fmt.Errorf("no session pk found for operator %d", operatorID)
 	}
 
 	protocolMessage := &ProtocolMsg{}
@@ -619,12 +619,12 @@ func (fr *FROST) encryptForP2PSend(id uint32, data []byte) ([]byte, error) {
 		return nil, errors.Wrap(err, "could not decode protocol msg")
 	}
 
-	pk, err := ecies.NewPublicKeyFromBytes(protocolMessage.PreparationMessage.SessionPk)
+	sessionPK, err := ecies.NewPublicKeyFromBytes(protocolMessage.PreparationMessage.SessionPk)
 	if err != nil {
 		return nil, err
 	}
 
-	return ecies.Encrypt(pk, data)
+	return ecies.Encrypt(sessionPK, data)
 }
 
 func (fr *FROST) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
