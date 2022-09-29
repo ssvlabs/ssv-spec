@@ -21,6 +21,16 @@ type Round1Message struct {
 	Shares     map[uint32][]byte
 }
 
+// Encode returns a msg encoded bytes or error
+func (msg *Round1Message) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *Round1Message) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
+}
+
 type Round2Message struct {
 	Vk      []byte
 	VkShare []byte
