@@ -96,6 +96,9 @@ func (pcsm *PartialSignatureMessage) Validate() error {
 	if len(pcsm.SigningRoot) != 32 {
 		return errors.New("SigningRoot invalid")
 	}
+	if pcsm.Signer == 0 {
+		return errors.New("signer ID 0 not allowed")
+	}
 	return nil
 }
 
@@ -194,6 +197,9 @@ func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []types.OperatorI
 func (spcsm *SignedPartialSignatureMessage) Validate() error {
 	if len(spcsm.Signature) != 96 {
 		return errors.New("SignedPartialSignatureMessage sig invalid")
+	}
+	if spcsm.Signer == 0 {
+		return errors.New("signer ID 0 not allowed")
 	}
 	return spcsm.Message.Validate()
 }

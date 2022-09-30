@@ -131,6 +131,7 @@ var AllTests = []SpecTest{
 	messages.PrepareDataInvalid(),
 	messages.CommitDataInvalid(),
 	messages.ProposalDataInvalid(),
+	messages.SignedMessageSigner0(),
 
 	tests.HappyFlow(),
 	tests.SevenOperators(),
@@ -206,6 +207,7 @@ var AllTests = []SpecTest{
 	commit.WrongSignature(),
 	commit.UnknownSigner(),
 	commit.InvalidValCheck(),
+	commit.NoPrepareQuorum(),
 
 	roundchange.HappyFlow(),
 	roundchange.WrongHeight(),
@@ -239,4 +241,7 @@ var AllTests = []SpecTest{
 	roundchange.F1Speedup(),
 	roundchange.F1SpeedupPrevPrepared(),
 	roundchange.AfterProposal(),
+	roundchange.QuorumOrder2(),
+	roundchange.QuorumOrder1(),
+	roundchange.QuorumMsgNotPrepared(),
 }
