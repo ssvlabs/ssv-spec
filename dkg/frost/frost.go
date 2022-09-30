@@ -167,6 +167,8 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 			return false, nil, err
 		}
 		return true, &dkg.KeyGenOutput{BlameOutout: out}, err
+	default:
+		return true, nil, dkg.ErrInvalidRound{}
 	}
 
 	return false, nil, nil
