@@ -10,6 +10,23 @@ type ProtocolMsg struct {
 	BlameMessage       *BlameMessage       `json:"blame,omitempty"`
 }
 
+func (msg *ProtocolMsg) validate() bool {
+	var messageExists bool
+	switch msg.Round {
+	case Preparation:
+		messageExists = msg.PreparationMessage != nil
+	case Round1:
+		messageExists = msg.Round1Message != nil
+	case Round2:
+		messageExists = msg.Round2Message != nil
+	case Blame:
+		messageExists = msg.BlameMessage != nil
+	default:
+		return false
+	}
+	return messageExists
+}
+
 type PreparationMessage struct {
 	SessionPk []byte
 }

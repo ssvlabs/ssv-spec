@@ -125,6 +125,10 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 		return false, nil, errors.Wrap(err, "failed to decode protocol msg")
 	}
 
+	if valid := protocolMessage.validate(); !valid {
+		return false, nil, errors.New("failed to validate protocol message")
+	}
+
 	if fr.msgs[protocolMessage.Round] == nil {
 		fr.msgs[protocolMessage.Round] = make(map[uint32]*dkg.SignedMessage)
 	}
@@ -138,19 +142,19 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 
 	switch protocolMessage.Round {
 	case Preparation:
-		if fr.canProceedRound1() {
+		if fr.canProceedThisRound(Round1) {
 			if err := fr.processRound1(); err != nil {
 				return false, nil, err
 			}
 		}
 	case Round1:
-		if fr.canProceedRound2() {
+		if fr.canProceedThisRound(Round2) {
 			if err := fr.processRound2(); err != nil {
 				return false, nil, err
 			}
 		}
 	case Round2:
-		if fr.canProceedKeygenOutput() {
+		if fr.canProceedThisRound(-1) { // -1 checks if protocol has finished with round 2
 			if _, err := fr.verifyShares(); err != nil {
 				return false, nil, errors.Wrap(err, "failed to verify shares")
 			}
@@ -423,84 +427,6 @@ func (fr *FROST) processBlameTypeInconsistentMessage(operatorID uint32, blameMes
 	return valid, nil
 }
 
-func (fr *FROST) canProceedRound1() bool {
-
-	if fr.currentRound != Preparation {
-		return false
-	}
-
-	for _, operatorID := range fr.operators {
-
-		protocolMessage := &ProtocolMsg{}
-
-		msg, ok := fr.msgs[Preparation][operatorID]
-		if ok {
-			if err := protocolMessage.Decode(msg.Message.Data); err != nil {
-				return false
-			}
-			if protocolMessage.PreparationMessage == nil {
-				return false
-			}
-		} else {
-			return false
-		}
-	}
-
-	return true
-}
-
-func (fr *FROST) canProceedRound2() bool {
-
-	if fr.currentRound != Round1 {
-		return false
-	}
-
-	for _, operatorID := range fr.operators {
-
-		protocolMessage := &ProtocolMsg{}
-
-		msg, ok := fr.msgs[Round1][operatorID]
-		if ok {
-			if err := protocolMessage.Decode(msg.Message.Data); err != nil {
-				return false
-			}
-			if protocolMessage.Round1Message == nil {
-				return false
-			}
-		} else {
-			return false
-		}
-	}
-
-	return true
-}
-
-func (fr *FROST) canProceedKeygenOutput() bool {
-
-	if fr.currentRound != Round2 {
-		return false
-	}
-
-	for _, operatorID := range fr.operators {
-
-		protocolMessage := &ProtocolMsg{}
-
-		msg, ok := fr.msgs[Round2][operatorID]
-		if ok {
-			if err := protocolMessage.Decode(msg.Message.Data); err != nil {
-				return false
-			}
-			if protocolMessage.Round2Message == nil {
-				return false
-			}
-		} else {
-			return false
-		}
-	}
-
-	return true
-}
-
 func (fr *FROST) createBlameTypeInconsistentMessageRequest(originalMessage, newMessage *dkg.SignedMessage) error {
 
 	originalMessageBytes, err := originalMessage.Encode()
@@ -658,4 +584,29 @@ func (fr *FROST) broadcastDKGMessage(msg *ProtocolMsg) error {
 
 	fr.msgs[fr.currentRound][uint32(fr.operatorID)] = bcastMessage
 	return fr.network.BroadcastDKGMessage(bcastMessage)
+}
+
+func (fr *FROST) canProceedThisRound(thisRound DKGRound) bool {
+
+	if thisRound == Preparation {
+		return true
+	}
+
+	prevRound := thisRound - 1
+	if thisRound < Preparation {
+		prevRound = Round2
+	}
+
+	if fr.currentRound != prevRound {
+		return false
+	}
+
+	// received msgs from all operators for last round
+	for _, operatorID := range fr.operators {
+		if _, ok := fr.msgs[prevRound][operatorID]; !ok {
+			return false
+		}
+	}
+
+	return true
 }
