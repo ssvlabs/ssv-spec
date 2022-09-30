@@ -16,8 +16,7 @@ import (
 var thisCurve = curves.BLS12381G1()
 
 func init() {
-	bls.Init(bls.BLS12_381)
-	bls.SetETHmode(bls.EthModeDraft07)
+	types.InitBLS()
 }
 
 type FROST struct {
