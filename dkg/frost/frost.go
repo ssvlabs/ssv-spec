@@ -27,10 +27,10 @@ type FROST struct {
 	threshold    uint32
 	currentRound DKGRound
 
-	operatorID types.OperatorID
-	operators  []uint32
-	party      *frost.DkgParticipant
-	sessionSK  *ecies.PrivateKey
+	operatorID  types.OperatorID
+	operators   []uint32
+	participant *frost.DkgParticipant
+	sessionSK   *ecies.PrivateKey
 
 	msgs           map[DKGRound]map[uint32]*dkg.SignedMessage
 	operatorShares map[uint32]*bls.SecretKey
@@ -90,12 +90,12 @@ func (fr *FROST) Start(init *dkg.Init) error {
 		return err
 	}
 
-	party, err := frost.NewDkgParticipant(uint32(fr.operatorID), uint32(len(operators)), string(ctx), thisCurve, otherOperators...)
+	participant, err := frost.NewDkgParticipant(uint32(fr.operatorID), uint32(len(operators)), string(ctx), thisCurve, otherOperators...)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize a dkg participant")
 	}
 
-	fr.party = party
+	fr.participant = participant
 	fr.threshold = uint32(init.Threshold)
 
 	k, err := ecies.GenerateKey()
@@ -183,7 +183,7 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 
 func (fr *FROST) processRound1() error {
 
-	bCastMessage, p2pMessages, err := fr.party.Round1(nil)
+	bCastMessage, p2pMessages, err := fr.participant.Round1(nil)
 	if err != nil {
 		return err
 	}
@@ -285,7 +285,7 @@ func (fr *FROST) processRound2() error {
 		}
 	}
 
-	bCastMessage, err := fr.party.Round2(bcast, p2psend)
+	bCastMessage, err := fr.participant.Round2(bcast, p2psend)
 	if err != nil {
 		return err
 	}
@@ -317,7 +317,7 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	vk := protocolMessage.Round2Message.Vk
 
 	sk := &bls.SecretKey{}
-	if err := sk.Deserialize(fr.party.SkShare.Bytes()); err != nil {
+	if err := sk.Deserialize(fr.participant.SkShare.Bytes()); err != nil {
 		return nil, err
 	}
 
