@@ -15,6 +15,7 @@ type DomainType []byte
 
 var (
 	PrimusTestnet = DomainType("primus_testnet")
+	ShifuTestnet  = DomainType("shifu_testnet")
 )
 
 type SignatureType [4]byte

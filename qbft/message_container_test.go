@@ -12,11 +12,11 @@ func TestMsgContainer_AddIfDoesntExist(t *testing.T) {
 			Msgs: map[Round][]*SignedMessage{},
 		}
 
-		added, err := c.AddIfDoesntExist(testingSignedMsg)
+		added, err := c.AddFirstMsgForSignerAndRound(testingSignedMsg)
 		require.NoError(t, err)
 		require.True(t, added)
 
-		added, err = c.AddIfDoesntExist(testingSignedMsg)
+		added, err = c.AddFirstMsgForSignerAndRound(testingSignedMsg)
 		require.NoError(t, err)
 		require.False(t, added)
 	})
@@ -26,11 +26,11 @@ func TestMsgContainer_AddIfDoesntExist(t *testing.T) {
 			Msgs: map[Round][]*SignedMessage{},
 		}
 
-		added, err := c.AddIfDoesntExist(testingSignedMsg)
+		added, err := c.AddFirstMsgForSignerAndRound(testingSignedMsg)
 		require.NoError(t, err)
 		require.True(t, added)
 
-		added, err = c.AddIfDoesntExist(SignMsg(TestingSK, 2, TestingMessage))
+		added, err = c.AddFirstMsgForSignerAndRound(SignMsg(TestingSK, 2, TestingMessage))
 		require.NoError(t, err)
 		require.True(t, added)
 	})
@@ -42,13 +42,13 @@ func TestMsgContainer_AddIfDoesntExist(t *testing.T) {
 
 		m := testingSignedMsg.DeepCopy()
 		m.Signers = []types.OperatorID{1, 2, 3, 4}
-		added, err := c.AddIfDoesntExist(m)
+		added, err := c.AddFirstMsgForSignerAndRound(m)
 		require.NoError(t, err)
 		require.True(t, added)
 
 		m = testingSignedMsg.DeepCopy()
 		m.Signers = []types.OperatorID{1, 5, 6, 7}
-		added, err = c.AddIfDoesntExist(m)
+		added, err = c.AddFirstMsgForSignerAndRound(m)
 		require.NoError(t, err)
 		require.True(t, added)
 	})

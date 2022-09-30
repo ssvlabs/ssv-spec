@@ -12,7 +12,7 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 		return errors.Wrap(err, "proposal invalid")
 	}
 
-	addedMsg, err := proposeMsgContainer.AddIfDoesntExist(signedProposal)
+	addedMsg, err := proposeMsgContainer.AddFirstMsgForSignerAndRound(signedProposal)
 	if err != nil {
 		return errors.Wrap(err, "could not add proposal msg to container")
 	}
@@ -91,7 +91,7 @@ func isValidProposal(
 	}
 
 	if (state.ProposalAcceptedForCurrentRound == nil && signedProposal.Message.Round == state.Round) ||
-		(state.ProposalAcceptedForCurrentRound != nil && signedProposal.Message.Round > state.Round) {
+		signedProposal.Message.Round > state.Round {
 		return nil
 	}
 	return errors.New("proposal is not valid with current state")
@@ -126,7 +126,7 @@ func isProposalJustification(
 
 		// check there is a quorum
 		if !HasQuorum(state.Share, roundChangeMsgs) {
-			return errors.New("change round has not quorum")
+			return errors.New("change round has no quorum")
 		}
 
 		// previouslyPreparedF returns true if any on the round change messages have a prepared round and value
@@ -216,7 +216,9 @@ func CreateProposal(state *State, config IConfig, value []byte, roundChanges, pr
 		PrepareJustification:     prepares,
 	}
 	dataByts, err := proposalData.Encode()
-
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode proposal data")
+	}
 	msg := &Message{
 		MsgType:    ProposalMsgType,
 		Height:     state.Height,

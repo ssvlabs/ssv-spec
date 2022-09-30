@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
@@ -97,6 +96,9 @@ func (pcsm *PartialSignatureMessage) Validate() error {
 	if len(pcsm.SigningRoot) != 32 {
 		return errors.New("SigningRoot invalid")
 	}
+	if pcsm.Signer == 0 {
+		return errors.New("signer ID 0 not allowed")
+	}
 	return nil
 }
 
@@ -183,17 +185,21 @@ func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []types.OperatorI
 	return true
 }
 
-func blsSig(sig []byte) (*bls.Sign, error) {
-	ret := &bls.Sign{}
-	if err := ret.Deserialize(sig); err != nil {
-		return nil, errors.Wrap(err, "could not covert PartialSignature byts to bls.sign")
-	}
-	return ret, nil
-}
+//
+//func blsSig(sig []byte) (*bls.Sign, error) {
+//	ret := &bls.Sign{}
+//	if err := ret.Deserialize(sig); err != nil {
+//		return nil, errors.Wrap(err, "could not covert PartialSignature byts to bls.sign")
+//	}
+//	return ret, nil
+//}
 
 func (spcsm *SignedPartialSignatureMessage) Validate() error {
 	if len(spcsm.Signature) != 96 {
 		return errors.New("SignedPartialSignatureMessage sig invalid")
+	}
+	if spcsm.Signer == 0 {
+		return errors.New("signer ID 0 not allowed")
 	}
 	return spcsm.Message.Validate()
 }

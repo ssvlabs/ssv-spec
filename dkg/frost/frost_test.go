@@ -51,7 +51,9 @@ func TestFrost2_4(t *testing.T) {
 	}
 
 	for _, node := range dkgNetwork.Nodes {
-		go node.Run()
+		go func() {
+			_ = node.Run()
+		}()
 		defer node.Exit()
 	}
 

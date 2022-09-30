@@ -38,7 +38,7 @@ func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, s
 			}
 		}
 		if !found {
-			return errors.New("signer not found in operators")
+			return errors.New("unknown signer")
 		}
 	}
 

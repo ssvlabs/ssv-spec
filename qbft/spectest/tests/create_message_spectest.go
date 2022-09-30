@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -101,7 +102,10 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 		state.LastPreparedValue = test.Value
 
 		for _, msg := range test.PrepareJustifications {
-			state.PrepareContainer.AddIfDoesntExist(msg)
+			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
+			if err != nil {
+				return nil, errors.Wrap(err, "could not add first message for signer")
+			}
 		}
 	}
 

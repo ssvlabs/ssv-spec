@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
@@ -20,34 +21,42 @@ type testingKeyManager struct {
 	ecdsaKeys      map[string]*ecdsa.PrivateKey
 	encryptionKeys map[string]*rsa.PrivateKey
 	domain         types.DomainType
+
+	slashableDataRoots [][]byte
 }
 
 func NewTestingKeyManager() *testingKeyManager {
+	return NewTestingKeyManagerWithSlashableRoots([][]byte{})
+}
+
+func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testingKeyManager {
 	ret := &testingKeyManager{
 		keys:           map[string]*bls.SecretKey{},
 		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 		encryptionKeys: nil,
 		domain:         types.PrimusTestnet,
+
+		slashableDataRoots: slashableDataRoots,
 	}
 
-	ret.AddShare(Testing4SharesSet().ValidatorSK)
+	_ = ret.AddShare(Testing4SharesSet().ValidatorSK)
 	for _, s := range Testing4SharesSet().Shares {
-		ret.AddShare(s)
+		_ = ret.AddShare(s)
 	}
 
-	ret.AddShare(Testing7SharesSet().ValidatorSK)
+	_ = ret.AddShare(Testing7SharesSet().ValidatorSK)
 	for _, s := range Testing7SharesSet().Shares {
-		ret.AddShare(s)
+		_ = ret.AddShare(s)
 	}
 
-	ret.AddShare(Testing10SharesSet().ValidatorSK)
+	_ = ret.AddShare(Testing10SharesSet().ValidatorSK)
 	for _, s := range Testing10SharesSet().Shares {
-		ret.AddShare(s)
+		_ = ret.AddShare(s)
 	}
 
-	ret.AddShare(Testing13SharesSet().ValidatorSK)
+	_ = ret.AddShare(Testing13SharesSet().ValidatorSK)
 	for _, s := range Testing13SharesSet().Shares {
-		ret.AddShare(s)
+		_ = ret.AddShare(s)
 	}
 	for _, o := range Testing4SharesSet().DKGOperators {
 		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
@@ -66,6 +75,12 @@ func NewTestingKeyManager() *testingKeyManager {
 
 // IsAttestationSlashable returns error if attestation is slashable
 func (km *testingKeyManager) IsAttestationSlashable(data *spec.AttestationData) error {
+	for _, r := range km.slashableDataRoots {
+		r2, _ := data.HashTreeRoot()
+		if bytes.Equal(r, r2[:]) {
+			return errors.New("slashable attestation")
+		}
+	}
 	return nil
 }
 
