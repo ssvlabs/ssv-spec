@@ -105,20 +105,13 @@ func (fr *FROST) Start(init *dkg.Init) error {
 	fr.sessionSK = k
 
 	fr.currentRound = Preparation
-	protocolMessage := &ProtocolMsg{
+	msg := &ProtocolMsg{
 		Round: Preparation,
 		PreparationMessage: &PreparationMessage{
 			SessionPk: k.PublicKey.Bytes(true),
 		},
 	}
-
-	bcastMessage, err := fr.toSignedMessage(protocolMessage)
-	if err != nil {
-		return err
-	}
-
-	fr.msgs[Preparation][uint32(fr.operatorID)] = bcastMessage
-	return fr.network.BroadcastDKGMessage(bcastMessage)
+	return fr.broadcastDKGMessage(msg)
 }
 
 func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, error) {
@@ -146,14 +139,12 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutput, er
 	switch protocolMessage.Round {
 	case Preparation:
 		if fr.canProceedRound1() {
-			fr.currentRound = Round1
 			if err := fr.processRound1(); err != nil {
 				return false, nil, err
 			}
 		}
 	case Round1:
 		if fr.canProceedRound2() {
-			fr.currentRound = Round2
 			if err := fr.processRound2(); err != nil {
 				return false, nil, err
 			}
@@ -214,7 +205,8 @@ func (fr *FROST) processRound1() error {
 		shares[operatorID] = encryptedShare
 	}
 
-	protocolMessage := &ProtocolMsg{
+	fr.currentRound = Round1
+	msg := &ProtocolMsg{
 		Round: Round1,
 		Round1Message: &Round1Message{
 			Commitment: commitments,
@@ -223,14 +215,7 @@ func (fr *FROST) processRound1() error {
 			Shares:     shares,
 		},
 	}
-
-	bcastMessage, err := fr.toSignedMessage(protocolMessage)
-	if err != nil {
-		return err
-	}
-
-	fr.msgs[Round1][uint32(fr.operatorID)] = bcastMessage
-	return fr.network.BroadcastDKGMessage(bcastMessage)
+	return fr.broadcastDKGMessage(msg)
 }
 
 func (fr *FROST) processRound2() error {
@@ -290,21 +275,15 @@ func (fr *FROST) processRound2() error {
 		return err
 	}
 
-	protocolMessage := &ProtocolMsg{
+	fr.currentRound = Round2
+	msg := &ProtocolMsg{
 		Round: Round2,
 		Round2Message: &Round2Message{
 			Vk:      bCastMessage.VerificationKey.ToAffineCompressed(),
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),
 		},
 	}
-
-	bcastMessage, err := fr.toSignedMessage(protocolMessage)
-	if err != nil {
-		return err
-	}
-
-	fr.msgs[Round2][uint32(fr.operatorID)] = bcastMessage
-	return fr.network.BroadcastDKGMessage(bcastMessage)
+	return fr.broadcastDKGMessage(msg)
 }
 
 func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
@@ -535,7 +514,8 @@ func (fr *FROST) createBlameTypeInconsistentMessageRequest(originalMessage, newM
 	blameData := make([][]byte, 0)
 	blameData = append(blameData, originalMessageBytes, newMessageBytes)
 
-	protocolMessage := &ProtocolMsg{
+	fr.currentRound = Blame
+	msg := &ProtocolMsg{
 		Round: Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InconsistentMessage,
@@ -544,14 +524,7 @@ func (fr *FROST) createBlameTypeInconsistentMessageRequest(originalMessage, newM
 			BlamerSessionSk:  fr.sessionSK.Bytes(),
 		},
 	}
-
-	bcastMessage, err := fr.toSignedMessage(protocolMessage)
-	if err != nil {
-		return err
-	}
-
-	fr.msgs[Blame][uint32(fr.operatorID)] = bcastMessage
-	return fr.network.BroadcastDKGMessage(bcastMessage)
+	return fr.broadcastDKGMessage(msg)
 }
 
 func (fr *FROST) createBlameTypeInvalidShareRequest(operatorID uint32) error {
@@ -562,7 +535,8 @@ func (fr *FROST) createBlameTypeInvalidShareRequest(operatorID uint32) error {
 	}
 	blameData := [][]byte{round1Bytes}
 
-	protocolMessage := &ProtocolMsg{
+	fr.currentRound = Blame
+	msg := &ProtocolMsg{
 		Round: Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InvalidShare,
@@ -571,14 +545,7 @@ func (fr *FROST) createBlameTypeInvalidShareRequest(operatorID uint32) error {
 			BlamerSessionSk:  fr.sessionSK.Bytes(),
 		},
 	}
-
-	bcastMessage, err := fr.toSignedMessage(protocolMessage)
-	if err != nil {
-		return err
-	}
-
-	fr.msgs[Blame][uint32(fr.operatorID)] = bcastMessage
-	return fr.network.BroadcastDKGMessage(bcastMessage)
+	return fr.broadcastDKGMessage(msg)
 }
 
 func (fr *FROST) verifyShares() ([]*bls.G1, error) {
@@ -679,4 +646,14 @@ func (fr *FROST) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
 	bcastMessage.Signature = sig
 
 	return bcastMessage, nil
+}
+
+func (fr *FROST) broadcastDKGMessage(msg *ProtocolMsg) error {
+	bcastMessage, err := fr.toSignedMessage(msg)
+	if err != nil {
+		return err
+	}
+
+	fr.msgs[fr.currentRound][uint32(fr.operatorID)] = bcastMessage
+	return fr.network.BroadcastDKGMessage(bcastMessage)
 }
