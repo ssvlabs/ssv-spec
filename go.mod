@@ -13,7 +13,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prysmaticlabs/go-bitfield v0.0.0-20210809151128-385d8c5e3fb7
 	github.com/stretchr/testify v1.7.1
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 )
 
 require (
