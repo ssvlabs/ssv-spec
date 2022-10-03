@@ -13,7 +13,6 @@ import (
 	ecies "github.com/ecies/go/v2"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/sync/errgroup"
 )
 
 func TestFrostDKG(t *testing.T) {
@@ -82,96 +81,6 @@ func TestFrostDKG(t *testing.T) {
 
 	for _, operatorID := range operators {
 		output := outputs[uint32(operatorID)]
-		t.Logf("printing generated keys for id %d\n", operatorID)
-		t.Logf("sk %x", output.Share.Serialize())
-		t.Logf("vk %x", output.ValidatorPK)
-		for opID, publicKey := range output.OperatorPubKeys {
-			t.Logf("id %d pk %x", opID, publicKey.Serialize())
-		}
-	}
-}
-
-func TestFrost2_4(t *testing.T) {
-	requestID := dkg.RequestID{}
-	for i := range requestID {
-		requestID[i] = 1
-	}
-
-	operators := []types.OperatorID{
-		1, 2, 3, 4,
-	}
-
-	nodes := make(map[types.OperatorID]*testingutils.DKGNetworkNode)
-
-	dkgsigner := testingutils.NewTestingKeyManager()
-	storage := testingutils.NewTestingStorage()
-
-	for _, operator := range operators {
-		operatorID := types.OperatorID(operator)
-
-		node := testingutils.NewDKGNetworkNode(operatorID)
-		nodes[operatorID] = node
-	}
-
-	network := testingutils.NewDKGNetwork(nodes)
-	dkgNetwork := network.(*testingutils.DKGNetwork)
-
-	kgps := make(map[uint32]dkg.KeyGenProtocol)
-
-	for _, operatorID := range operators {
-		p := New(network, operatorID, requestID, dkgsigner, storage)
-		kgps[uint32(operatorID)] = p
-
-		dkgNetwork.GetNetworkNode(operatorID).SetProcessMsgFn(p.ProcessMsg)
-	}
-
-	for _, node := range dkgNetwork.Nodes {
-		go func() {
-			_ = node.Run()
-		}()
-		defer node.Exit()
-	}
-
-	threshold := 2
-
-	g := errgroup.Group{}
-	for _, operatorID := range operators {
-		operatorID := operatorID
-
-		initMsg := &dkg.Init{
-			OperatorIDs: operators,
-			Threshold:   uint16(threshold),
-		}
-
-		g.Go(func() error {
-			if err := kgps[uint32(operatorID)].Start(initMsg); err != nil {
-				return errors.Wrapf(err, "failed to start operator %d", operatorID)
-			}
-			return nil
-		})
-	}
-
-	if err := g.Wait(); err != nil {
-		t.Fatal(err)
-	}
-
-	for {
-		finished := true
-		for _, node := range dkgNetwork.Nodes {
-			node.Mu.Lock()
-			if node.Output == nil {
-				finished = false
-			}
-			node.Mu.Unlock()
-		}
-
-		if finished {
-			break
-		}
-	}
-
-	for _, operatorID := range operators {
-		output := dkgNetwork.Nodes[operatorID].Output
 		t.Logf("printing generated keys for id %d\n", operatorID)
 		t.Logf("sk %x", output.Share.Serialize())
 		t.Logf("vk %x", output.ValidatorPK)
