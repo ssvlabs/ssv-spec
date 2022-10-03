@@ -16,6 +16,81 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+func TestFrostDKG(t *testing.T) {
+	requestID := getRandRequestID()
+
+	operators := []types.OperatorID{
+		1, 2, 3, 4,
+	}
+
+	dkgsigner := testingutils.NewTestingKeyManager()
+	storage := testingutils.NewTestingStorage()
+	network := testingutils.NewTestingNetwork()
+
+	kgps := make(map[types.OperatorID]dkg.KeyGenProtocol)
+	for _, operatorID := range operators {
+		p := New(network, operatorID, requestID, dkgsigner, storage)
+		kgps[operatorID] = p
+	}
+
+	threshold := 2
+	outputs := make(map[uint32]*dkg.KeyGenOutput)
+
+	// preparation round
+	initMsg := &dkg.Init{
+		OperatorIDs: operators,
+		Threshold:   uint16(threshold),
+	}
+
+	for _, operatorID := range operators {
+		if err := kgps[operatorID].Start(initMsg); err != nil {
+			t.Error(errors.Wrapf(err, "failed to start dkg protocol for operator %d", operatorID))
+		}
+	}
+
+	rounds := []string{"round 1", "round 2", "keygen output"}
+
+	for _, round := range rounds {
+		t.Logf("proceeding with %s", round)
+
+		messages := network.BroadcastedMsgs
+		network.BroadcastedMsgs = make([]*types.SSVMessage, 0)
+
+		for _, msg := range messages {
+			dkgMsg := &dkg.SignedMessage{}
+			if err := dkgMsg.Decode(msg.Data); err != nil {
+				t.Error(err)
+			}
+
+			for _, operatorID := range operators {
+				if operatorID == dkgMsg.Signer {
+					continue
+				}
+
+				finished, output, err := kgps[operatorID].ProcessMsg(dkgMsg)
+				if err != nil {
+					t.Error(err)
+				}
+
+				if finished {
+					outputs[uint32(operatorID)] = output
+				}
+			}
+		}
+
+	}
+
+	for _, operatorID := range operators {
+		output := outputs[uint32(operatorID)]
+		t.Logf("printing generated keys for id %d\n", operatorID)
+		t.Logf("sk %x", output.Share.Serialize())
+		t.Logf("vk %x", output.ValidatorPK)
+		for opID, publicKey := range output.OperatorPubKeys {
+			t.Logf("id %d pk %x", opID, publicKey.Serialize())
+		}
+	}
+}
+
 func TestFrost2_4(t *testing.T) {
 	requestID := dkg.RequestID{}
 	for i := range requestID {
