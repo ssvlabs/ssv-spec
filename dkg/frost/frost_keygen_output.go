@@ -12,20 +12,27 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 		return nil, errors.Wrap(err, "failed to verify shares")
 	}
 
-	protocolMessage := &ProtocolMsg{}
-	if err := protocolMessage.Decode(fr.msgs[Round2][uint32(fr.operatorID)].Message.Data); err != nil {
-		return nil, errors.Wrap(err, "failed to decode protocol msg")
-	}
-
-	vk := protocolMessage.Round2Message.Vk
-
-	sk := &bls.SecretKey{}
-	if err := sk.Deserialize(fr.participant.SkShare.Bytes()); err != nil {
-		return nil, err
+	out := &dkg.KeyGenOutput{
+		Threshold: uint64(fr.threshold),
 	}
 
 	operatorPubKeys := make(map[types.OperatorID]*bls.PublicKey)
 	for _, operatorID := range fr.operators {
+		protocolMessage := &ProtocolMsg{}
+		if err := protocolMessage.Decode(fr.msgs[Round2][operatorID].Message.Data); err != nil {
+			return nil, errors.Wrap(err, "failed to decode protocol msg")
+		}
+
+		if operatorID == uint32(fr.operatorID) {
+			sk := &bls.SecretKey{}
+			if err := sk.Deserialize(fr.participant.SkShare.Bytes()); err != nil {
+				return nil, err
+			}
+
+			out.Share = sk
+			out.ValidatorPK = protocolMessage.Round2Message.Vk
+		}
+
 		pk := &bls.PublicKey{}
 		if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
 			return nil, err
@@ -34,12 +41,7 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 		operatorPubKeys[types.OperatorID(operatorID)] = pk
 	}
 
-	out := &dkg.KeyGenOutput{
-		Share:           sk,
-		OperatorPubKeys: operatorPubKeys,
-		ValidatorPK:     vk,
-		Threshold:       uint64(fr.threshold),
-	}
+	out.OperatorPubKeys = operatorPubKeys
 	return out, nil
 }
 
