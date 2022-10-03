@@ -3,7 +3,8 @@ package frost
 import (
 	crand "crypto/rand"
 	"encoding/json"
-	"math/rand"
+	"math/big"
+	mrand "math/rand"
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/dkg"
@@ -15,7 +16,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func resetRandSeed() {
+	src := mrand.NewSource(1)
+	src.Seed(12345)
+	crand.Reader = mrand.New(src)
+}
+
 func TestFrostDKG(t *testing.T) {
+	resetRandSeed()
 	requestID := getRandRequestID()
 
 	operators := []types.OperatorID{
@@ -93,7 +101,8 @@ func TestFrostDKG(t *testing.T) {
 func getRandRequestID() dkg.RequestID {
 	requestID := dkg.RequestID{}
 	for i := range requestID {
-		requestID[i] = byte(rand.Intn(256))
+		rndInt, _ := crand.Int(crand.Reader, big.NewInt(255))
+		requestID[i] = rndInt.Bytes()[0]
 	}
 	return requestID
 }
