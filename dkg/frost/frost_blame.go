@@ -9,7 +9,7 @@ import (
 
 func (fr *FROST) processBlame() (*dkg.BlameOutput, error) {
 
-	for operatorID, msg := range fr.msgs[Blame] {
+	for operatorID, msg := range fr.state.msgs[Blame] {
 
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(msg.Message.Data); err != nil {
@@ -124,14 +124,14 @@ func (fr *FROST) createBlameTypeInconsistentMessageRequest(originalMessage, newM
 	blameData := make([][]byte, 0)
 	blameData = append(blameData, originalMessageBytes, newMessageBytes)
 
-	fr.currentRound = Blame
+	fr.state.currentRound = Blame
 	msg := &ProtocolMsg{
 		Round: Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InconsistentMessage,
 			TargetOperatorID: uint32(newMessage.Signer),
 			BlameData:        blameData,
-			BlamerSessionSk:  fr.sessionSK.Bytes(),
+			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
 		},
 	}
 	return fr.broadcastDKGMessage(msg)
@@ -139,20 +139,20 @@ func (fr *FROST) createBlameTypeInconsistentMessageRequest(originalMessage, newM
 
 func (fr *FROST) createBlameTypeInvalidShareRequest(operatorID uint32) error {
 
-	round1Bytes, err := fr.msgs[Round1][operatorID].Encode()
+	round1Bytes, err := fr.state.msgs[Round1][operatorID].Encode()
 	if err != nil {
 		return err
 	}
 	blameData := [][]byte{round1Bytes}
 
-	fr.currentRound = Blame
+	fr.state.currentRound = Blame
 	msg := &ProtocolMsg{
 		Round: Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InvalidShare,
 			TargetOperatorID: operatorID,
 			BlameData:        blameData,
-			BlamerSessionSk:  fr.sessionSK.Bytes(),
+			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
 		},
 	}
 	return fr.broadcastDKGMessage(msg)

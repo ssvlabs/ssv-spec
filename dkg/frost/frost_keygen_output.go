@@ -13,19 +13,19 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	}
 
 	out := &dkg.KeyGenOutput{
-		Threshold: uint64(fr.threshold),
+		Threshold: uint64(fr.state.threshold),
 	}
 
 	operatorPubKeys := make(map[types.OperatorID]*bls.PublicKey)
-	for _, operatorID := range fr.operators {
+	for _, operatorID := range fr.state.operators {
 		protocolMessage := &ProtocolMsg{}
-		if err := protocolMessage.Decode(fr.msgs[Round2][operatorID].Message.Data); err != nil {
+		if err := protocolMessage.Decode(fr.state.msgs[Round2][operatorID].Message.Data); err != nil {
 			return nil, errors.Wrap(err, "failed to decode protocol msg")
 		}
 
-		if operatorID == uint32(fr.operatorID) {
+		if operatorID == uint32(fr.state.operatorID) {
 			sk := &bls.SecretKey{}
-			if err := sk.Deserialize(fr.participant.SkShare.Bytes()); err != nil {
+			if err := sk.Deserialize(fr.state.participant.SkShare.Bytes()); err != nil {
 				return nil, err
 			}
 
@@ -49,16 +49,16 @@ func (fr *FROST) verifyShares() ([]*bls.G1, error) {
 
 	outputs := make([]*bls.G1, 0)
 
-	for j := int(fr.threshold + 1); j < len(fr.operators); j++ {
+	for j := int(fr.state.threshold + 1); j < len(fr.state.operators); j++ {
 
 		xVec := make([]bls.Fr, 0)
 		yVec := make([]bls.G1, 0)
 
-		for i := j - int(fr.threshold+1); i < j; i++ {
-			operatorID := fr.operators[i]
+		for i := j - int(fr.state.threshold+1); i < j; i++ {
+			operatorID := fr.state.operators[i]
 
 			protocolMessage := &ProtocolMsg{}
-			if err := protocolMessage.Decode(fr.msgs[Round2][operatorID].Message.Data); err != nil {
+			if err := protocolMessage.Decode(fr.state.msgs[Round2][operatorID].Message.Data); err != nil {
 				return nil, errors.Wrap(err, "failed to decode protocol msg")
 			}
 

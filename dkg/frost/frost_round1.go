@@ -4,7 +4,7 @@ import "github.com/herumi/bls-eth-go-binary/bls"
 
 func (fr *FROST) processRound1() error {
 
-	bCastMessage, p2pMessages, err := fr.participant.Round1(nil)
+	bCastMessage, p2pMessages, err := fr.state.participant.Round1(nil)
 	if err != nil {
 		return err
 	}
@@ -15,8 +15,8 @@ func (fr *FROST) processRound1() error {
 	}
 
 	shares := make(map[uint32][]byte)
-	for _, operatorID := range fr.operators {
-		if uint32(fr.operatorID) == operatorID {
+	for _, operatorID := range fr.state.operators {
+		if uint32(fr.state.operatorID) == operatorID {
 			continue
 		}
 
@@ -26,7 +26,7 @@ func (fr *FROST) processRound1() error {
 			return err
 		}
 
-		fr.operatorShares[operatorID] = share
+		fr.state.operatorShares[operatorID] = share
 
 		encryptedShare, err := fr.encryptByOperatorID(operatorID, shamirShare.Value)
 		if err != nil {
@@ -35,7 +35,7 @@ func (fr *FROST) processRound1() error {
 		shares[operatorID] = encryptedShare
 	}
 
-	fr.currentRound = Round1
+	fr.state.currentRound = Round1
 	msg := &ProtocolMsg{
 		Round: Round1,
 		Round1Message: &Round1Message{

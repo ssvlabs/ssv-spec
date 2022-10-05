@@ -12,7 +12,7 @@ func (fr *FROST) processRound2() error {
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
-	for operatorID, dkgMessage := range fr.msgs[Round1] {
+	for operatorID, dkgMessage := range fr.state.msgs[Round1] {
 
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(dkgMessage.Message.Data); err != nil {
@@ -38,17 +38,17 @@ func (fr *FROST) processRound2() error {
 		}
 		bcast[operatorID] = bcastMessage
 
-		if uint32(fr.operatorID) == operatorID {
+		if uint32(fr.state.operatorID) == operatorID {
 			continue
 		}
 
-		shareBytes, err := ecies.Decrypt(fr.sessionSK, protocolMessage.Round1Message.Shares[uint32(fr.operatorID)])
+		shareBytes, err := ecies.Decrypt(fr.state.sessionSK, protocolMessage.Round1Message.Shares[uint32(fr.state.operatorID)])
 		if err != nil {
 			return err
 		}
 
 		share := &sharing.ShamirShare{
-			Id:    uint32(fr.operatorID),
+			Id:    uint32(fr.state.operatorID),
 			Value: shareBytes,
 		}
 
@@ -59,12 +59,12 @@ func (fr *FROST) processRound2() error {
 		}
 	}
 
-	bCastMessage, err := fr.participant.Round2(bcast, p2psend)
+	bCastMessage, err := fr.state.participant.Round2(bcast, p2psend)
 	if err != nil {
 		return err
 	}
 
-	fr.currentRound = Round2
+	fr.state.currentRound = Round2
 	msg := &ProtocolMsg{
 		Round: Round2,
 		Round2Message: &Round2Message{
