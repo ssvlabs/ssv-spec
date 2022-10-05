@@ -5,6 +5,11 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
+type KeyGenOutcome struct {
+	KeyGenOutput *KeyGenOutput
+	BlameOutput  *BlameOutput
+}
+
 // KeyGenOutput is the bare minimum output from the protocol
 type KeyGenOutput struct {
 	Share           *bls.SecretKey
@@ -13,9 +18,15 @@ type KeyGenOutput struct {
 	Threshold       uint64
 }
 
+// BlameOutput is the output of blame round
+type BlameOutput struct {
+	Valid        bool
+	BlameMessage []byte
+}
+
 // KeyGenProtocol is an interface for all DKG protocol to support a variety of protocols for future upgrades
 type KeyGenProtocol interface {
 	Start(init *Init) error
 	// ProcessMsg returns true and a bls share if finished
-	ProcessMsg(msg *SignedMessage) (bool, *KeyGenOutput, error)
+	ProcessMsg(msg *SignedMessage) (bool, *KeyGenOutcome, error)
 }

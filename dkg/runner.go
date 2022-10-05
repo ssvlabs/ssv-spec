@@ -16,8 +16,8 @@ type Runner struct {
 	InitMsg *Init
 	// Identifier unique for DKG session
 	Identifier RequestID
-	// KeyGenOutput holds the protocol output once it finishes
-	KeyGenOutput *KeyGenOutput
+	// KeygenOutcome holds the protocol outcome once it finishes
+	KeygenOutcome *KeyGenOutcome
 	// DepositDataRoot is the signing root for the deposit data
 	DepositDataRoot []byte
 	// DepositDataSignatures holds partial sigs on deposit data
@@ -44,11 +44,11 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 		}
 
 		if finished {
-			r.KeyGenOutput = o
+			r.KeygenOutcome = o
 
 			// generate deposit data
 			root, _, err := types.GenerateETHDepositData(
-				r.KeyGenOutput.ValidatorPK,
+				r.KeygenOutcome.KeyGenOutput.ValidatorPK,
 				r.InitMsg.WithdrawalCredentials,
 				r.InitMsg.Fork,
 				types.DomainDeposit,
@@ -60,7 +60,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			r.DepositDataRoot = root
 
 			// sign
-			sig := r.KeyGenOutput.Share.SignByte(root)
+			sig := r.KeygenOutcome.KeyGenOutput.Share.SignByte(root)
 
 			// broadcast
 			pdd := &PartialDepositData{
@@ -98,7 +98,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			}
 
 			// encrypt Operator's share
-			encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeyGenOutput.Share.Serialize())
+			encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeygenOutcome.KeyGenOutput.Share.Serialize())
 			if err != nil {
 				return false, nil, errors.Wrap(err, "could not encrypt share")
 			}
@@ -106,8 +106,8 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 			ret, err := r.generateSignedOutput(&Output{
 				RequestID:            r.Identifier,
 				EncryptedShare:       encryptedShare,
-				SharePubKey:          r.KeyGenOutput.Share.GetPublicKey().Serialize(),
-				ValidatorPubKey:      r.KeyGenOutput.ValidatorPK,
+				SharePubKey:          r.KeygenOutcome.KeyGenOutput.Share.GetPublicKey().Serialize(),
+				ValidatorPubKey:      r.KeygenOutcome.KeyGenOutput.ValidatorPK,
 				DepositDataSignature: depositSig,
 			})
 			if err != nil {
@@ -229,7 +229,7 @@ func (r *Runner) validateDepositDataRoot(msg *PartialDepositData) error {
 func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
 
 	// find operator and verify msg
-	sharePK, found := r.KeyGenOutput.OperatorPubKeys[msg.Signer]
+	sharePK, found := r.KeygenOutcome.KeyGenOutput.OperatorPubKeys[msg.Signer]
 	if !found {
 		return errors.New("signer not part of committee")
 	}

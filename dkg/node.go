@@ -43,7 +43,7 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 		Operator:              n.operator,
 		InitMsg:               initMsg,
 		Identifier:            id,
-		KeyGenOutput:          nil,
+		KeygenOutcome:         nil,
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
