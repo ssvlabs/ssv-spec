@@ -30,24 +30,24 @@ type Runner struct {
 }
 
 // ProcessMsg processes a DKG signed message and returns true and signed output if finished
-func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*SignedOutput, error) {
+func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 	// TODO - validate message
 
 	switch msg.Message.MsgType {
 	case ProtocolMsgType:
 		if r.DepositDataSignatures[r.Operator.OperatorID] != nil {
-			return false, nil, errors.New("keygen has already completed")
+			return false, errors.New("keygen has already completed")
 		}
 		finished, o, err := r.protocol.ProcessMsg(msg)
 		if err != nil {
-			return false, nil, errors.Wrap(err, "failed to process dkg msg")
+			return false, errors.Wrap(err, "failed to process dkg msg")
 		}
 
 		if finished {
 			r.KeygenOutcome = o
 			if r.KeygenOutcome.BlameOutput != nil {
 				r.config.Network.StreamDKGBlame(r.KeygenOutcome.BlameOutput)
-				return true, nil, nil
+				return true, nil
 			}
 
 			// generate deposit data
@@ -58,7 +58,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 				types.DomainDeposit,
 			)
 			if err != nil {
-				return false, nil, errors.Wrap(err, "could not generate deposit data")
+				return false, errors.Wrap(err, "could not generate deposit data")
 			}
 
 			r.DepositDataRoot = root
@@ -73,38 +73,38 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 				Signature: sig.Serialize(),
 			}
 			if err := r.signAndBroadcastMsg(pdd, DepositDataMsgType); err != nil {
-				return false, nil, errors.Wrap(err, "could not broadcast partial deposit data")
+				return false, errors.Wrap(err, "could not broadcast partial deposit data")
 			}
 			r.DepositDataSignatures[r.Operator.OperatorID] = pdd
 		}
-		return false, nil, nil
+		return false, nil
 	case DepositDataMsgType:
 		depSig := &PartialDepositData{}
 		if err := depSig.Decode(msg.Message.Data); err != nil {
-			return false, nil, errors.Wrap(err, "could not decode PartialDepositData")
+			return false, errors.Wrap(err, "could not decode PartialDepositData")
 		}
 
 		if err := r.validateDepositDataSig(depSig); err != nil {
-			return false, nil, errors.Wrap(err, "PartialDepositData invalid")
+			return false, errors.Wrap(err, "PartialDepositData invalid")
 		}
 
 		if found := r.DepositDataSignatures[msg.Signer]; found == nil {
 			r.DepositDataSignatures[msg.Signer] = depSig
 		} else if !bytes.Equal(found.Signature, msg.Signature) {
-			return false, nil, errors.New("inconsistent partial signature received")
+			return false, errors.New("inconsistent partial signature received")
 		}
 
 		if len(r.DepositDataSignatures) == int(r.InitMsg.Threshold) {
 			// reconstruct deposit data sig
 			depositSig, err := r.reconstructDepositDataSignature()
 			if err != nil {
-				return false, nil, errors.Wrap(err, "could not reconstruct deposit data sig")
+				return false, errors.Wrap(err, "could not reconstruct deposit data sig")
 			}
 
 			// encrypt Operator's share
 			encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeygenOutcome.KeyGenOutput.Share.Serialize())
 			if err != nil {
-				return false, nil, errors.Wrap(err, "could not encrypt share")
+				return false, errors.Wrap(err, "could not encrypt share")
 			}
 
 			ret, err := r.generateSignedOutput(&Output{
@@ -115,37 +115,37 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 				DepositDataSignature: depositSig,
 			})
 			if err != nil {
-				return false, nil, errors.Wrap(err, "could not generate dkg SignedOutput")
+				return false, errors.Wrap(err, "could not generate dkg SignedOutput")
 			}
 
 			r.OutputMsgs[r.Operator.OperatorID] = ret
 			if err := r.signAndBroadcastMsg(ret, OutputMsgType); err != nil {
-				return false, nil, errors.Wrap(err, "could not broadcast SignedOutput")
+				return false, errors.Wrap(err, "could not broadcast SignedOutput")
 			}
-			return false, nil, nil
+			return false, nil
 		}
 	case OutputMsgType:
 		output := &SignedOutput{}
 		if err := output.Decode(msg.Message.Data); err != nil {
-			return false, nil, errors.Wrap(err, "could not decode SignedOutput")
+			return false, errors.Wrap(err, "could not decode SignedOutput")
 		}
 
 		if err := r.validateSignedOutput(output); err != nil {
-			return false, nil, errors.Wrap(err, "signed output invali")
+			return false, errors.Wrap(err, "signed output invali")
 		}
 
 		r.OutputMsgs[msg.Signer] = output
 		// GLNOTE: Actually we need every operator to sign instead only the quorum!
 		if len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs) {
 			err := r.config.Network.StreamDKGOutput(r.OutputMsgs)
-			return true, r.OutputMsgs, errors.Wrap(err, "failed to stream dkg output")
+			return true, errors.Wrap(err, "failed to stream dkg output")
 		}
-		return false, nil, nil
+		return false, nil
 	default:
-		return false, nil, errors.New("msg type invalid")
+		return false, errors.New("msg type invalid")
 	}
 
-	return false, nil, nil
+	return false, nil
 }
 
 func (r *Runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {

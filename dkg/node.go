@@ -140,7 +140,7 @@ func (n *Node) processDKGMsg(message *SignedMessage) error {
 		return errors.Wrap(err, "dkg msg not valid")
 	}
 
-	finished, _, err := runner.ProcessMsg(message)
+	finished, err := runner.ProcessMsg(message)
 	if err != nil {
 		return errors.Wrap(err, "could not process dkg message")
 	}
