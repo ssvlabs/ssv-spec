@@ -8,6 +8,8 @@ import (
 
 // Network is a collection of funcs for DKG
 type Network interface {
+	// StreamDKGBlame will stream to any subscriber the blame result of the DKG
+	StreamDKGBlame(blame *BlameOutput)
 	// StreamDKGOutput will stream to any subscriber the result of the DKG
 	StreamDKGOutput(output map[types.OperatorID]*SignedOutput) error
 	// BroadcastDKGMessage will broadcast a msg to the dkg network

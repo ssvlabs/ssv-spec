@@ -45,6 +45,10 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 
 		if finished {
 			r.KeygenOutcome = o
+			if r.KeygenOutcome.BlameOutput != nil {
+				r.config.Network.StreamDKGBlame(r.KeygenOutcome.BlameOutput)
+				return true, nil, nil
+			}
 
 			// generate deposit data
 			root, _, err := types.GenerateETHDepositData(
