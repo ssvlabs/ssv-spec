@@ -72,7 +72,7 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (*Runner, e
 	}
 
 	if err := runner.protocol.Start(InitOrReshare{Reshare: reshareMsg}); err != nil {
-		return nil, errors.Wrap(err, "could not start dkg protocol")
+		return nil, errors.Wrap(err, "could not start resharing protocol")
 	}
 
 	return runner, nil
@@ -95,6 +95,8 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 	switch signedMsg.Message.MsgType {
 	case InitMsgType:
 		return n.startNewDKGMsg(signedMsg)
+	case ReshareMsgType:
+		return n.startResharing(signedMsg)
 	case ProtocolMsgType:
 		return n.processDKGMsg(signedMsg)
 	case DepositDataMsgType:
@@ -131,6 +133,23 @@ func (n *Node) startNewDKGMsg(message *SignedMessage) error {
 	return nil
 }
 
+func (n *Node) startResharing(message *SignedMessage) error {
+	reshareMsg, err := n.validateReshareMsg(message)
+	if err != nil {
+		return errors.Wrap(err, "could not start resharing")
+	}
+
+	runner, err := n.newResharingRunner(message.Message.Identifier, reshareMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not start resharing")
+	}
+
+	// add runner to runners
+	n.runners.AddRunner(message.Message.Identifier, runner)
+
+	return nil
+}
+
 func (n *Node) validateInitMsg(message *SignedMessage) (*Init, error) {
 	// validate identifier.GetEthAddress is the signer for message
 	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, message.Message.Identifier.GetETHAddress()); err != nil {
@@ -152,6 +171,29 @@ func (n *Node) validateInitMsg(message *SignedMessage) (*Init, error) {
 	}
 
 	return initMsg, nil
+}
+
+func (n *Node) validateReshareMsg(message *SignedMessage) (*Reshare, error) {
+	// validate identifier.GetEthAddress is the signer for message
+	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, message.Message.Identifier.GetETHAddress()); err != nil {
+		return nil, errors.Wrap(err, "signed message invalid")
+	}
+
+	reshareMsg := &Reshare{}
+	if err := reshareMsg.Decode(message.Message.Data); err != nil {
+		return nil, errors.Wrap(err, "could not get reshare Message from signed Messages")
+	}
+
+	if err := reshareMsg.Validate(); err != nil {
+		return nil, errors.Wrap(err, "reshare message invalid")
+	}
+
+	// check instance not running already
+	if n.runners.RunnerForID(message.Message.Identifier) != nil {
+		return nil, errors.New("dkg started already")
+	}
+
+	return reshareMsg, nil
 }
 
 func (n *Node) processDKGMsg(message *SignedMessage) error {
