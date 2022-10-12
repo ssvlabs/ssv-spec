@@ -6,7 +6,7 @@ type TestingKeygenProtocol struct {
 	KeyGenOutput *dkg.KeyGenOutput
 }
 
-func (m TestingKeygenProtocol) Start(init *dkg.Init) error {
+func (m TestingKeygenProtocol) Start(initOrReshare dkg.InitOrReshare) error {
 	return nil
 }
 

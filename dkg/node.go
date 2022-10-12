@@ -51,7 +51,27 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 		config:                n.config,
 	}
 
-	if err := runner.protocol.Start(initMsg); err != nil {
+	if err := runner.protocol.Start(InitOrReshare{Init: initMsg}); err != nil {
+		return nil, errors.Wrap(err, "could not start dkg protocol")
+	}
+
+	return runner, nil
+}
+
+func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (*Runner, error) {
+	runner := &Runner{
+		Operator:              n.operator,
+		ReshareMsg:            reshareMsg,
+		Identifier:            id,
+		KeyGenOutput:          nil,
+		DepositDataRoot:       nil,
+		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
+		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
+		protocol:              n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
+		config:                n.config,
+	}
+
+	if err := runner.protocol.Start(InitOrReshare{Reshare: reshareMsg}); err != nil {
 		return nil, errors.Wrap(err, "could not start dkg protocol")
 	}
 

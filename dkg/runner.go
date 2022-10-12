@@ -14,6 +14,8 @@ type Runner struct {
 	Operator *Operator
 	// InitMsg holds the init method which started this runner
 	InitMsg *Init
+	// ReshareMsg holds the reshare method which started this runner
+	ReshareMsg *Reshare
 	// Identifier unique for DKG session
 	Identifier RequestID
 	// KeyGenOutput holds the protocol output once it finishes
@@ -45,33 +47,16 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 
 		if finished {
 			r.KeyGenOutput = o
-
-			// generate deposit data
-			root, _, err := types.GenerateETHDepositData(
-				r.KeyGenOutput.ValidatorPK,
-				r.InitMsg.WithdrawalCredentials,
-				r.InitMsg.Fork,
-				types.DomainDeposit,
-			)
-			if err != nil {
-				return false, nil, errors.Wrap(err, "could not generate deposit data")
+			if r.isResharing() {
+				if err := r.prepareAndBroadcastOutput(); err != nil {
+					return false, nil, err
+				}
+			} else {
+				if err := r.prepareAndBroadcastDepositData(); err != nil {
+					return false, nil, err
+				}
 			}
 
-			r.DepositDataRoot = root
-
-			// sign
-			sig := r.KeyGenOutput.Share.SignByte(root)
-
-			// broadcast
-			pdd := &PartialDepositData{
-				Signer:    r.Operator.OperatorID,
-				Root:      r.DepositDataRoot,
-				Signature: sig.Serialize(),
-			}
-			if err := r.signAndBroadcastMsg(pdd, DepositDataMsgType); err != nil {
-				return false, nil, errors.Wrap(err, "could not broadcast partial deposit data")
-			}
-			r.DepositDataSignatures[r.Operator.OperatorID] = pdd
 		}
 		return false, nil, nil
 	case DepositDataMsgType:
@@ -91,32 +76,8 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 		}
 
 		if len(r.DepositDataSignatures) == int(r.InitMsg.Threshold) {
-			// reconstruct deposit data sig
-			depositSig, err := r.reconstructDepositDataSignature()
-			if err != nil {
-				return false, nil, errors.Wrap(err, "could not reconstruct deposit data sig")
-			}
-
-			// encrypt Operator's share
-			encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeyGenOutput.Share.Serialize())
-			if err != nil {
-				return false, nil, errors.Wrap(err, "could not encrypt share")
-			}
-
-			ret, err := r.generateSignedOutput(&Output{
-				RequestID:            r.Identifier,
-				EncryptedShare:       encryptedShare,
-				SharePubKey:          r.KeyGenOutput.Share.GetPublicKey().Serialize(),
-				ValidatorPubKey:      r.KeyGenOutput.ValidatorPK,
-				DepositDataSignature: depositSig,
-			})
-			if err != nil {
-				return false, nil, errors.Wrap(err, "could not generate dkg SignedOutput")
-			}
-
-			r.OutputMsgs[r.Operator.OperatorID] = ret
-			if err := r.signAndBroadcastMsg(ret, OutputMsgType); err != nil {
-				return false, nil, errors.Wrap(err, "could not broadcast SignedOutput")
+			if err := r.prepareAndBroadcastOutput(); err != nil {
+				return false, nil, err
 			}
 			return false, nil, nil
 		}
@@ -141,6 +102,75 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 	}
 
 	return false, nil, nil
+}
+
+func (r *Runner) prepareAndBroadcastDepositData() error {
+	// generate deposit data
+	root, _, err := types.GenerateETHDepositData(
+		r.KeyGenOutput.ValidatorPK,
+		r.InitMsg.WithdrawalCredentials,
+		r.InitMsg.Fork,
+		types.DomainDeposit,
+	)
+	if err != nil {
+		return errors.Wrap(err, "could not generate deposit data")
+	}
+
+	r.DepositDataRoot = root
+
+	// sign
+	sig := r.KeyGenOutput.Share.SignByte(root)
+
+	// broadcast
+	pdd := &PartialDepositData{
+		Signer:    r.Operator.OperatorID,
+		Root:      r.DepositDataRoot,
+		Signature: sig.Serialize(),
+	}
+	if err := r.signAndBroadcastMsg(pdd, DepositDataMsgType); err != nil {
+		return errors.Wrap(err, "could not broadcast partial deposit data")
+	}
+	r.DepositDataSignatures[r.Operator.OperatorID] = pdd
+	return nil
+}
+
+func (r *Runner) prepareAndBroadcastOutput() error {
+	var (
+		depositSig types.Signature
+		err        error
+	)
+	if r.isResharing() {
+		depositSig = nil
+	} else {
+		// reconstruct deposit data sig
+		depositSig, err = r.reconstructDepositDataSignature()
+		if err != nil {
+			return errors.Wrap(err, "could not reconstruct deposit data sig")
+		}
+	}
+
+	// encrypt Operator's share
+	encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeyGenOutput.Share.Serialize())
+	if err != nil {
+		return errors.Wrap(err, "could not encrypt share")
+	}
+
+	ret, err := r.generateSignedOutput(&Output{
+		RequestID:            r.Identifier,
+		EncryptedShare:       encryptedShare,
+		SharePubKey:          r.KeyGenOutput.Share.GetPublicKey().Serialize(),
+		ValidatorPubKey:      r.KeyGenOutput.ValidatorPK,
+		DepositDataSignature: depositSig,
+	})
+	if err != nil {
+		return errors.Wrap(err, "could not generate dkg SignedOutput")
+	}
+
+	r.OutputMsgs[r.Operator.OperatorID] = ret
+	if err := r.signAndBroadcastMsg(ret, OutputMsgType); err != nil {
+		return errors.Wrap(err, "could not broadcast SignedOutput")
+	}
+	return nil
 }
 
 func (r *Runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {
@@ -259,4 +289,8 @@ func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
 
 func (r *Runner) ownOutput() *SignedOutput {
 	return r.OutputMsgs[r.Operator.OperatorID]
+}
+
+func (r *Runner) isResharing() bool {
+	return r.ReshareMsg != nil
 }
