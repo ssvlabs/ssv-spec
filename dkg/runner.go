@@ -46,8 +46,8 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 		if finished {
 			r.KeygenOutcome = o
 			if r.KeygenOutcome.BlameOutput != nil {
-				r.config.Network.StreamDKGBlame(r.KeygenOutcome.BlameOutput)
-				return true, nil
+				err := r.config.Network.StreamDKGBlame(r.KeygenOutcome.BlameOutput)
+				return true, errors.Wrap(err, "failed to stream blame output")
 			}
 
 			// generate deposit data

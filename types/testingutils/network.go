@@ -38,7 +38,7 @@ func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.Sign
 	return nil
 }
 
-func (net *TestingNetwork) StreamDKGBlame(blame *dkg.BlameOutput) {
+func (net *TestingNetwork) StreamDKGBlame(blame *dkg.BlameOutput) error {
 	//TODO implement me
 	panic("implement me")
 }
