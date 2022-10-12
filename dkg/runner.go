@@ -137,7 +137,8 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*Sig
 		r.OutputMsgs[msg.Signer] = output
 		// GLNOTE: Actually we need every operator to sign instead only the quorum!
 		if len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs) {
-			return true, r.OutputMsgs, nil
+			err := r.config.Network.StreamDKGOutput(r.OutputMsgs)
+			return true, r.OutputMsgs, errors.Wrap(err, "failed to stream dkg output")
 		}
 		return false, nil, nil
 	default:

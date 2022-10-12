@@ -140,15 +140,12 @@ func (n *Node) processDKGMsg(message *SignedMessage) error {
 		return errors.Wrap(err, "dkg msg not valid")
 	}
 
-	finished, output, err := runner.ProcessMsg(message)
+	finished, _, err := runner.ProcessMsg(message)
 	if err != nil {
 		return errors.Wrap(err, "could not process dkg message")
 	}
 
 	if finished {
-		if err := n.config.Network.StreamDKGOutput(output); err != nil {
-			return errors.Wrap(err, "failed to stream dkg output")
-		}
 		n.runners.DeleteRunner(message.Message.Identifier)
 	}
 
