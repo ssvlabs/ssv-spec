@@ -49,6 +49,9 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 				err := r.config.Network.StreamDKGBlame(r.KeygenOutcome.BlameOutput)
 				return true, errors.Wrap(err, "failed to stream blame output")
 			}
+			if r.KeygenOutcome.KeyGenOutput == nil {
+				return true, errors.Wrap(err, "protocol finished without blame or keygen result")
+			}
 
 			// generate deposit data
 			root, _, err := types.GenerateETHDepositData(
