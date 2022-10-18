@@ -29,7 +29,7 @@ type Runner struct {
 	config   *Config
 }
 
-// ProcessMsg processes a DKG signed message and returns true and signed output if finished
+// ProcessMsg processes a DKG signed message and returns true and stream keygen output or blame if finished
 func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 	// TODO - validate message
 
