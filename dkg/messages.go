@@ -16,6 +16,7 @@ import (
 type RequestID [24]byte
 
 const (
+	blsPubkeySize      = 48
 	ethAddressSize     = 20
 	ethAddressStartPos = 0
 	indexSize          = 4
@@ -159,6 +160,8 @@ func (msg *Init) Decode(data []byte) error {
 
 // Reshare triggers the resharing protocol
 type Reshare struct {
+	// ValidatorPK is the the public key to be reshared
+	ValidatorPK types.ValidatorPK
 	// EncryptedShares contains the encrypted shares of the old set
 	EncryptedShares map[types.OperatorID][]byte
 	// ThresholdOld is the threshold of the old set
@@ -170,6 +173,11 @@ type Reshare struct {
 }
 
 func (msg *Reshare) Validate() error {
+
+	if len(msg.ValidatorPK) != blsPubkeySize {
+		return errors.New("invalid validator pubkey size")
+	}
+
 	if len(msg.OperatorIDs) < 4 || (len(msg.OperatorIDs)-1)%3 != 0 {
 		return errors.New("invalid number of operators which has to be 3f+1")
 	}
