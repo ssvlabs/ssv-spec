@@ -45,7 +45,11 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 
 		if finished {
 			r.KeygenOutcome = o
-			if r.KeygenOutcome.BlameOutput != nil {
+			isBlame, err := r.KeygenOutcome.IsFailedWithBlame()
+			if err != nil {
+				return true, errors.Wrap(err, "invalid KeygenOutcome")
+			}
+			if isBlame {
 				err := r.config.Network.StreamDKGBlame(r.KeygenOutcome.BlameOutput)
 				return true, errors.Wrap(err, "failed to stream blame output")
 			}
