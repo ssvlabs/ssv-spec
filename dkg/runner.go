@@ -122,10 +122,8 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 			}
 
 			r.OutputMsgs[r.Operator.OperatorID] = ret
-			if err := r.signAndBroadcastMsg(ret, OutputMsgType); err != nil {
-				return false, errors.Wrap(err, "could not broadcast SignedOutput")
-			}
-			return false, nil
+			err = r.signAndBroadcastMsg(ret, OutputMsgType)
+			return false, errors.Wrap(err, "could not broadcast SignedOutput")
 		}
 	case OutputMsgType:
 		output := &SignedOutput{}
