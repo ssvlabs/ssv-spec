@@ -12,4 +12,5 @@ type SpecTest interface {
 
 var AllTests = []SpecTest{
 	tests.HappyFlow(),
+	tests.ResharingHappyFlow(),
 }
