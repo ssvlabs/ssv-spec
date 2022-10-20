@@ -11,12 +11,8 @@ import (
 func ResharingHappyFlow() *MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
-	validatorPK := make([]byte, 48)
-	for i, _ := range validatorPK {
-		validatorPK[i] = 1
-	}
 	reshare := &dkg.Reshare{
-		ValidatorPK: validatorPK,
+		ValidatorPK: make([]byte, 48),
 		EncryptedShares: map[types.OperatorID][]byte{
 			types.OperatorID(101): nil,
 			types.OperatorID(102): nil,
