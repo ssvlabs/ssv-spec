@@ -43,7 +43,7 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (*Runner, error) {
 		Operator:              n.operator,
 		InitMsg:               initMsg,
 		Identifier:            id,
-		KeyGenOutput:          nil,
+		KeygenOutcome:         nil,
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
@@ -63,7 +63,7 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (*Runner, e
 		Operator:              n.operator,
 		ReshareMsg:            reshareMsg,
 		Identifier:            id,
-		KeyGenOutput:          nil,
+		KeygenOutcome:         nil,
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
@@ -202,15 +202,12 @@ func (n *Node) processDKGMsg(message *SignedMessage) error {
 		return errors.Wrap(err, "dkg msg not valid")
 	}
 
-	finished, output, err := runner.ProcessMsg(message)
+	finished, err := runner.ProcessMsg(message)
 	if err != nil {
 		return errors.Wrap(err, "could not process dkg message")
 	}
 
 	if finished {
-		if err := n.config.Network.StreamDKGOutput(output); err != nil {
-			return errors.Wrap(err, "failed to stream dkg output")
-		}
 		n.runners.DeleteRunner(message.Message.Identifier)
 	}
 

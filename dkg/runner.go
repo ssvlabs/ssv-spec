@@ -2,6 +2,7 @@ package dkg
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -18,8 +19,8 @@ type Runner struct {
 	ReshareMsg *Reshare
 	// Identifier unique for DKG session
 	Identifier RequestID
-	// KeyGenOutput holds the protocol output once it finishes
-	KeyGenOutput *KeyGenOutput
+	// KeygenOutcome holds the protocol outcome once it finishes
+	KeygenOutcome *KeyGenOutcome
 	// DepositDataRoot is the signing root for the deposit data
 	DepositDataRoot []byte
 	// DepositDataSignatures holds partial sigs on deposit data
@@ -31,90 +32,103 @@ type Runner struct {
 	config   *Config
 }
 
-// ProcessMsg processes a DKG signed message and returns true and signed output if finished
-func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, map[types.OperatorID]*SignedOutput, error) {
+// ProcessMsg processes a DKG signed message and returns true and stream keygen output or blame if finished
+func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 	// TODO - validate message
 
 	switch msg.Message.MsgType {
 	case ProtocolMsgType:
 		if r.DepositDataSignatures[r.Operator.OperatorID] != nil {
-			return false, nil, errors.New("keygen has already completed")
+			return false, errors.New("keygen has already completed")
 		}
 		finished, o, err := r.protocol.ProcessMsg(msg)
 		if err != nil {
-			return false, nil, errors.Wrap(err, "failed to process dkg msg")
+			return false, errors.Wrap(err, "failed to process dkg msg")
 		}
 
 		if finished {
-			r.KeyGenOutput = o
+			r.KeygenOutcome = o
+			isBlame, err := r.KeygenOutcome.IsFailedWithBlame()
+			if err != nil {
+				return true, errors.Wrap(err, "invalid KeygenOutcome")
+			}
+			if isBlame {
+				err := r.config.Network.StreamDKGBlame(r.KeygenOutcome.BlameOutput)
+				return true, errors.Wrap(err, "failed to stream blame output")
+			}
+			if r.KeygenOutcome.KeyGenOutput == nil {
+				return true, errors.Wrap(err, "protocol finished without blame or keygen result")
+			}
+
 			if r.isResharing() {
 				if err := r.prepareAndBroadcastOutput(); err != nil {
-					return false, nil, err
+					return false, err
 				}
 			} else {
 				if err := r.prepareAndBroadcastDepositData(); err != nil {
-					return false, nil, err
+					return false, err
 				}
 			}
 
 		}
-		return false, nil, nil
+		return false, nil
 	case DepositDataMsgType:
 		depSig := &PartialDepositData{}
 		if err := depSig.Decode(msg.Message.Data); err != nil {
-			return false, nil, errors.Wrap(err, "could not decode PartialDepositData")
+			return false, errors.Wrap(err, "could not decode PartialDepositData")
 		}
 
 		if err := r.validateDepositDataSig(depSig); err != nil {
-			return false, nil, errors.Wrap(err, "PartialDepositData invalid")
+			return false, errors.Wrap(err, "PartialDepositData invalid")
 		}
 
 		if found := r.DepositDataSignatures[msg.Signer]; found == nil {
 			r.DepositDataSignatures[msg.Signer] = depSig
 		} else if !bytes.Equal(found.Signature, msg.Signature) {
-			return false, nil, errors.New("inconsistent partial signature received")
+			return false, errors.New("inconsistent partial signature received")
 		}
 
 		if len(r.DepositDataSignatures) == int(r.InitMsg.Threshold) {
 			if err := r.prepareAndBroadcastOutput(); err != nil {
-				return false, nil, err
+				return false, err
 			}
-			return false, nil, nil
+			return false, nil
 		}
 	case OutputMsgType:
 		output := &SignedOutput{}
 		if err := output.Decode(msg.Message.Data); err != nil {
-			return false, nil, errors.Wrap(err, "could not decode SignedOutput")
+			return false, errors.Wrap(err, "could not decode SignedOutput")
 		}
 
 		if err := r.validateSignedOutput(output); err != nil {
-			return false, nil, errors.Wrap(err, "signed output invali")
+			return false, errors.Wrap(err, "signed output invali")
 		}
 
 		r.OutputMsgs[msg.Signer] = output
 		// GLNOTE: Actually we need every operator to sign instead only the quorum!
+		finished := false
 		if !r.isResharing() {
-			if len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs) {
-				return true, r.OutputMsgs, nil
-			}
+			finished = len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs)
 		} else {
-			if len(r.OutputMsgs) == len(r.ReshareMsg.OperatorIDs) {
-				return true, r.OutputMsgs, nil
-			}
+			finished = len(r.OutputMsgs) == len(r.ReshareMsg.OperatorIDs)
+		}
+		if finished {
+			err := r.config.Network.StreamDKGOutput(r.OutputMsgs)
+			return true, errors.Wrap(err, "failed to stream dkg output")
 		}
 
-		return false, nil, nil
+		return false, nil
 	default:
-		return false, nil, errors.New("msg type invalid")
+		return false, errors.New("msg type invalid")
 	}
 
-	return false, nil, nil
+	return false, nil
 }
 
 func (r *Runner) prepareAndBroadcastDepositData() error {
 	// generate deposit data
 	root, _, err := types.GenerateETHDepositData(
-		r.KeyGenOutput.ValidatorPK,
+		r.KeygenOutcome.KeyGenOutput.ValidatorPK,
 		r.InitMsg.WithdrawalCredentials,
 		r.InitMsg.Fork,
 		types.DomainDeposit,
@@ -126,7 +140,7 @@ func (r *Runner) prepareAndBroadcastDepositData() error {
 	r.DepositDataRoot = root
 
 	// sign
-	sig := r.KeyGenOutput.Share.SignByte(root)
+	sig := r.KeygenOutcome.KeyGenOutput.Share.SignByte(root)
 
 	// broadcast
 	pdd := &PartialDepositData{
@@ -157,7 +171,7 @@ func (r *Runner) prepareAndBroadcastOutput() error {
 	}
 
 	// encrypt Operator's share
-	encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeyGenOutput.Share.Serialize())
+	encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeygenOutcome.KeyGenOutput.Share.Serialize())
 	if err != nil {
 		return errors.Wrap(err, "could not encrypt share")
 	}
@@ -165,8 +179,8 @@ func (r *Runner) prepareAndBroadcastOutput() error {
 	ret, err := r.generateSignedOutput(&Output{
 		RequestID:            r.Identifier,
 		EncryptedShare:       encryptedShare,
-		SharePubKey:          r.KeyGenOutput.Share.GetPublicKey().Serialize(),
-		ValidatorPubKey:      r.KeyGenOutput.ValidatorPK,
+		SharePubKey:          r.KeygenOutcome.KeyGenOutput.Share.GetPublicKey().Serialize(),
+		ValidatorPubKey:      r.KeygenOutcome.KeyGenOutput.ValidatorPK,
 		DepositDataSignature: depositSig,
 	})
 	if err != nil {
@@ -266,7 +280,7 @@ func (r *Runner) validateDepositDataRoot(msg *PartialDepositData) error {
 func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
 
 	// find operator and verify msg
-	sharePK, found := r.KeyGenOutput.OperatorPubKeys[msg.Signer]
+	sharePK, found := r.KeygenOutcome.KeyGenOutput.OperatorPubKeys[msg.Signer]
 	if !found {
 		return errors.New("signer not part of committee")
 	}
