@@ -10,8 +10,12 @@ import (
 	"github.com/pkg/errors"
 )
 
+type Runner interface {
+	ProcessMsg(msg *SignedMessage) (bool, error)
+}
+
 // Runner manages the execution of a DKG, start to finish.
-type Runner struct {
+type runner struct {
 	Operator *Operator
 	// InitMsg holds the init method which started this runner
 	InitMsg *Init
@@ -33,7 +37,7 @@ type Runner struct {
 }
 
 // ProcessMsg processes a DKG signed message and returns true and stream keygen output or blame if finished
-func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
+func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 	// TODO - validate message
 
 	switch msg.Message.MsgType {
@@ -125,7 +129,7 @@ func (r *Runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 	return false, nil
 }
 
-func (r *Runner) prepareAndBroadcastDepositData() error {
+func (r *runner) prepareAndBroadcastDepositData() error {
 	// generate deposit data
 	root, _, err := types.GenerateETHDepositData(
 		r.KeygenOutcome.KeyGenOutput.ValidatorPK,
@@ -155,7 +159,7 @@ func (r *Runner) prepareAndBroadcastDepositData() error {
 	return nil
 }
 
-func (r *Runner) prepareAndBroadcastOutput() error {
+func (r *runner) prepareAndBroadcastOutput() error {
 	var (
 		depositSig types.Signature
 		err        error
@@ -194,7 +198,7 @@ func (r *Runner) prepareAndBroadcastOutput() error {
 	return nil
 }
 
-func (r *Runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {
+func (r *runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {
 	data, err := msg.Encode()
 	if err != nil {
 		return err
@@ -220,7 +224,7 @@ func (r *Runner) signAndBroadcastMsg(msg types.Encoder, msgType MsgType) error {
 	return nil
 }
 
-func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
+func (r *runner) reconstructDepositDataSignature() (types.Signature, error) {
 	sigBytes := map[types.OperatorID][]byte{}
 	for id, d := range r.DepositDataSignatures {
 		if err := r.validateDepositDataRoot(d); err != nil {
@@ -236,7 +240,7 @@ func (r *Runner) reconstructDepositDataSignature() (types.Signature, error) {
 	return sig.Serialize(), nil
 }
 
-func (r *Runner) validateSignedOutput(msg *SignedOutput) error {
+func (r *runner) validateSignedOutput(msg *SignedOutput) error {
 	// TODO: Separate fields match and signature validation
 	output := r.ownOutput()
 	if output != nil {
@@ -270,14 +274,14 @@ func (r *Runner) validateSignedOutput(msg *SignedOutput) error {
 	return nil
 }
 
-func (r *Runner) validateDepositDataRoot(msg *PartialDepositData) error {
+func (r *runner) validateDepositDataRoot(msg *PartialDepositData) error {
 	if !bytes.Equal(r.DepositDataRoot, msg.Root) {
 		return errors.New("deposit data roots not equal")
 	}
 	return nil
 }
 
-func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
+func (r *runner) validateDepositDataSig(msg *PartialDepositData) error {
 
 	// find operator and verify msg
 	sharePK, found := r.KeygenOutcome.KeyGenOutput.OperatorPubKeys[msg.Signer]
@@ -295,7 +299,7 @@ func (r *Runner) validateDepositDataSig(msg *PartialDepositData) error {
 	return nil
 }
 
-func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
+func (r *runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
 	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign output")
@@ -308,10 +312,10 @@ func (r *Runner) generateSignedOutput(o *Output) (*SignedOutput, error) {
 	}, nil
 }
 
-func (r *Runner) ownOutput() *SignedOutput {
+func (r *runner) ownOutput() *SignedOutput {
 	return r.OutputMsgs[r.Operator.OperatorID]
 }
 
-func (r *Runner) isResharing() bool {
+func (r *runner) isResharing() bool {
 	return r.ReshareMsg != nil
 }
