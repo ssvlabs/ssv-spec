@@ -252,11 +252,14 @@ var TestingWrongDutyPK = &types.Duty{
 //}
 
 type TestingBeaconNode struct {
+	BroadcastedRoots             []spec.Root
 	syncCommitteeAggregatorRoots map[string]bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
-	return &TestingBeaconNode{}
+	return &TestingBeaconNode{
+		BroadcastedRoots: []spec.Root{},
+	}
 }
 
 // SetSyncCommitteeAggregatorRootHexes FOR TESTING ONLY!! sets which sync committee aggregator roots will return true for aggregator
@@ -276,6 +279,8 @@ func (bn *TestingBeaconNode) GetAttestationData(slot spec.Slot, committeeIndex s
 
 // SubmitAttestation submit the attestation to the node
 func (bn *TestingBeaconNode) SubmitAttestation(attestation *spec.Attestation) error {
+	r, _ := attestation.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -286,6 +291,8 @@ func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.
 
 // SubmitBeaconBlock submit the block to the node
 func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBlock) error {
+	r, _ := block.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -296,6 +303,8 @@ func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, commi
 
 // SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
 func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.SignedAggregateAndProof) error {
+	r, _ := msg.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -306,6 +315,8 @@ func (bn *TestingBeaconNode) GetSyncMessageBlockRoot() (spec.Root, error) {
 
 // SubmitSyncMessage submits a signed sync committee msg
 func (bn *TestingBeaconNode) SubmitSyncMessage(msg *altair.SyncCommitteeMessage) error {
+	r, _ := msg.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -339,6 +350,8 @@ func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, subnet
 
 // SubmitSignedContributionAndProof broadcasts to the network
 func (bn *TestingBeaconNode) SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error {
+	r, _ := contribution.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 

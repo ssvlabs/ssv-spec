@@ -46,11 +46,8 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "3eabb4114c7d83045dfb678b9be3e00411d3b56bf71c8e4a496a2df5324f2394",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-				},
-				DontStartDuty: true,
-				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
+				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
 			},
 			{
 				Name:   "sync committee",
@@ -86,11 +83,8 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "44a9f79f826b06d5bb7f6eb8ee54206164d012f4d590d42f2175ff411c7b1734",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-				},
-				DontStartDuty: true,
-				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
+				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
 			},
 			{
 				Name:   "proposer",
@@ -107,11 +101,8 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "8d24fce7b09b83a5e6e055d623cb7695e3d68c5072d2920d0d9cc438c591b8a8",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
-				},
-				DontStartDuty: true,
-				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
+				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
 			},
 			{
 				Name:   "attester",
