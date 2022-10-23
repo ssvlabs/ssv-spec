@@ -1,12 +1,10 @@
 package ssv
 
 import (
-	"bytes"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
@@ -23,13 +21,20 @@ type Runner interface {
 	types.Root
 	Getters
 
+	// StartNewDuty starts a new duty for the runner, returns error if can't
 	StartNewDuty(duty *types.Duty) error
+	// HasRunningDuty returns true if it has a running duty
 	HasRunningDuty() bool
+	// ProcessPreConsensus processes all pre-consensus msgs, returns error if can't process
 	ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error
+	// ProcessConsensus processes all consensus msgs, returns error if can't process
 	ProcessConsensus(msg *qbft.SignedMessage) error
+	// ProcessPostConsensus processes all post-consensus msgs, returns error if can't process
 	ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error
 
+	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
+	// executeDuty an INTERNAL function, executes a duty.
 	executeDuty(duty *types.Duty) error
 }
 
@@ -41,6 +46,7 @@ type BaseRunner struct {
 	BeaconRoleType types.BeaconRole
 }
 
+// baseStartNewDuty is a base func that all runner implementation can call to start a duty
 func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 	if err := b.canStartNewDuty(); err != nil {
 		return err
@@ -49,6 +55,7 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 	return runner.executeDuty(duty)
 }
 
+// canStartNewDuty is a base func that all runner implementation can call to decide if a new duty can start
 func (b *BaseRunner) canStartNewDuty() error {
 	if b.State == nil {
 		return nil
@@ -64,34 +71,17 @@ func (b *BaseRunner) canStartNewDuty() error {
 	return nil
 }
 
+// basePreConsensusMsgProcessing is a base func that all runner implementation can call for processing a pre-consensus msg
 func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
 	if err := b.validatePreConsensusMsg(runner, signedMsg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid pre-consensus message")
 	}
 
-	roots := make([][]byte, 0)
-	anyQuorum := false
-	for _, msg := range signedMsg.Message.Messages {
-		prevQuorum := b.State.PreConsensusContainer.HasQuorum(msg.SigningRoot)
-
-		if err := b.State.PreConsensusContainer.AddSignature(msg); err != nil {
-			return false, nil, errors.Wrap(err, "could not add partial randao signature")
-		}
-
-		if prevQuorum {
-			continue
-		}
-
-		quorum := b.State.PreConsensusContainer.HasQuorum(msg.SigningRoot)
-		if quorum {
-			roots = append(roots, msg.SigningRoot)
-			anyQuorum = true
-		}
-	}
-
-	return anyQuorum, roots, nil
+	hasQuorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PreConsensusContainer)
+	return hasQuorum, roots, errors.Wrap(err, "could not process pre-consensus partial signature msg")
 }
 
+// baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
 func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
 	prevDecided := false
 	if b.HasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
@@ -132,26 +122,35 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	return true, decidedValue, nil
 }
 
+// basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg
 func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
 	if err := b.validatePostConsensusMsg(signedMsg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid post-consensus message")
 	}
 
+	hasQuorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PostConsensusContainer)
+	return hasQuorum, roots, errors.Wrap(err, "could not process post-consensus partial signature msg")
+}
+
+// basePartialSigMsgProcessing adds an already validated partial msg to the container, checks for quorum and returns true (and roots) if quorum exists
+func (b *BaseRunner) basePartialSigMsgProcessing(
+	signedMsg *SignedPartialSignatureMessage,
+	container *PartialSigContainer,
+) (bool, [][]byte, error) {
 	roots := make([][]byte, 0)
 	anyQuorum := false
 	for _, msg := range signedMsg.Message.Messages {
-		prevQuorum := b.State.PostConsensusContainer.HasQuorum(msg.SigningRoot)
+		prevQuorum := container.HasQuorum(msg.SigningRoot)
 
-		if err := b.State.PostConsensusContainer.AddSignature(msg); err != nil {
-			return false, nil, errors.Wrap(err, "could not add partial post consensus signature")
+		if err := container.AddSignature(msg); err != nil {
+			return false, nil, errors.Wrap(err, "could not add partial signature")
 		}
 
 		if prevQuorum {
 			continue
 		}
 
-		quorum := b.State.PostConsensusContainer.HasQuorum(msg.SigningRoot)
-
+		quorum := container.HasQuorum(msg.SigningRoot)
 		if quorum {
 			roots = append(roots, msg.SigningRoot)
 			anyQuorum = true
@@ -161,6 +160,7 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSign
 	return anyQuorum, roots, nil
 }
 
+// didDecideCorrectly returns true if the expected consensus instance decided correctly
 func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.SignedMessage) (bool, error) {
 	decided := decidedMsg != nil
 	decidedRunningInstance := decided && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
@@ -235,127 +235,4 @@ func (b *BaseRunner) HasRunningDuty() bool {
 		return false
 	}
 	return !b.State.Finished
-}
-
-func (b *BaseRunner) signBeaconObject(
-	runner Runner,
-	obj ssz.HashRoot,
-	slot spec.Slot,
-	domainType spec.DomainType,
-) (*PartialSignatureMessage, error) {
-	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
-	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get beacon domain")
-	}
-
-	sig, r, err := runner.GetSigner().SignBeaconObject(obj, domain, runner.GetBaseRunner().Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign beacon object")
-	}
-
-	return &PartialSignatureMessage{
-		Slot:             slot,
-		PartialSignature: sig,
-		SigningRoot:      r,
-		Signer:           runner.GetBaseRunner().Share.OperatorID,
-	}, nil
-}
-
-func (b *BaseRunner) validatePartialSigMsg(
-	signedMsg *SignedPartialSignatureMessage,
-	slot spec.Slot,
-) error {
-	if err := signedMsg.Validate(); err != nil {
-		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
-	}
-
-	if err := signedMsg.GetSignature().VerifyByOperators(signedMsg, b.Share.DomainType, types.PartialSignatureType, b.Share.Committee); err != nil {
-		return errors.Wrap(err, "failed to verify PartialSignature")
-	}
-
-	for _, msg := range signedMsg.Message.Messages {
-		if slot != msg.Slot {
-			return errors.New("wrong slot")
-		}
-
-		if err := b.verifyBeaconPartialSignature(msg); err != nil {
-			return errors.Wrap(err, "could not verify Beacon partial Signature")
-		}
-	}
-
-	return nil
-}
-
-func (b *BaseRunner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) error {
-	signer := msg.Signer
-	signature := msg.PartialSignature
-	root := msg.SigningRoot
-
-	for _, n := range b.Share.Committee {
-		if n.GetID() == signer {
-			pk := &bls.PublicKey{}
-			if err := pk.Deserialize(n.GetPublicKey()); err != nil {
-				return errors.Wrap(err, "could not deserialized pk")
-			}
-			sig := &bls.Sign{}
-			if err := sig.Deserialize(signature); err != nil {
-				return errors.Wrap(err, "could not deserialized Signature")
-			}
-
-			// verify
-			if !sig.VerifyByte(pk, root) {
-				return errors.New("wrong signature")
-			}
-			return nil
-		}
-	}
-	return errors.New("unknown signer")
-}
-
-func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
-	byts, err := val.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode decided value")
-	}
-	if err := runner.GetValCheckF()(byts); err != nil {
-		return errors.Wrap(err, "decided value is invalid")
-	}
-
-	return nil
-}
-
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
-	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
-		return errors.New("wrong expected roots count")
-	}
-	for i, msg := range signedMsg.Message.Messages {
-		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.Slot)
-		d, err := runner.GetBeaconNode().DomainData(epoch, domain)
-		if err != nil {
-			return errors.Wrap(err, "could not get pre consensus root domain")
-		}
-
-		r, err := types.ComputeETHSigningRoot(expectedRootObjs[i], d)
-		if err != nil {
-			return errors.Wrap(err, "could not compute ETH signing root")
-		}
-		if !bytes.Equal(r[:], msg.SigningRoot) {
-			return errors.New("wrong pre consensus signing root")
-		}
-	}
-	return nil
-}
-
-func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *PartialSignatureMessages) (*SignedPartialSignatureMessage, error) {
-	signature, err := runner.GetSigner().SignRoot(msg, types.PartialSignatureType, b.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign PartialSignatureMessage for PostConsensusContainer")
-	}
-
-	return &SignedPartialSignatureMessage{
-		Message:   *msg,
-		Signature: signature,
-		Signer:    b.Share.OperatorID,
-	}, nil
 }
