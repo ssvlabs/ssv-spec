@@ -6,7 +6,7 @@ import (
 )
 
 // UponDecided returns true if a decided messages was received.
-func (i *Instance) UponDecided(signedDecided *SignedMessage, commitMsgContainer *MsgContainer) (bool, []byte, error) {
+func (i *Instance) UponDecided(signedDecided *SignedMessageHeader, commitMsgContainer *MsgHContainer) (bool, []byte, error) {
 	if i.State.Decided {
 		return true, i.State.DecidedValue, nil
 	}
@@ -30,23 +30,18 @@ func (i *Instance) UponDecided(signedDecided *SignedMessage, commitMsgContainer 
 		return false, nil, nil // UponCommit was already called
 	}
 
-	//msgDecidedData, err := signedDecided.Message.GetCommitData()
-	//if err != nil {
-	//	return false, nil, errors.Wrap(err, "could not get msg decided data")
-	//}
-
-	return true, signedDecided.Message.Input, nil
+	return true, signedDecided.Message.InputRoot, nil
 }
 
 func validateDecided(
 	state *State,
 	config IConfig,
-	signedDecided *SignedMessage,
+	signedDecided *SignedMessageHeader,
 	height Height,
 	operators []*types.Operator,
 	valCheck ProposedValueCheckF,
 ) error {
-	if !isDecidedMsg(state, signedDecided) {
+	if !isDecidedMsgH(state, signedDecided) {
 		return errors.New("not a decided msg")
 	}
 
@@ -54,12 +49,7 @@ func validateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	//msgDecidedData, err := signedDecided.Message.GetCommitData()
-	//if err != nil {
-	//	return errors.Wrap(err, "could not get msg decided data")
-	//}
-
-	if err := valCheck(signedDecided.Message.Input); err != nil {
+	if err := valCheck(signedDecided.Message.InputRoot); err != nil {
 		return errors.Wrap(err, "decided value invalid")
 	}
 
@@ -68,5 +58,10 @@ func validateDecided(
 
 // returns true if signed commit has all quorum sigs
 func isDecidedMsg(state *State, signedDecided *SignedMessage) bool {
+	return state.Share.HasQuorum(len(signedDecided.Signers))
+}
+
+// returns true if signed commit has all quorum sigs
+func isDecidedMsgH(state *State, signedDecided *SignedMessageHeader) bool {
 	return state.Share.HasQuorum(len(signedDecided.Signers))
 }

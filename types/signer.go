@@ -51,6 +51,7 @@ type BeaconSigner interface {
 type SSVSigner interface {
 	EncryptionCalls
 	SignRoot(data Root, sigType SignatureType, pk []byte) (Signature, error)
+	SignRootHeader(inputRoot []byte, pk []byte) (Signature, error)
 }
 
 type DKGSigner interface {

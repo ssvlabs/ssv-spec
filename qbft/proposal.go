@@ -29,29 +29,17 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	}
 	i.State.Round = newRound
 
-	//proposalData, err := signedProposal.Message.GetProposalData()
-	//if err != nil {
-	//	return errors.Wrap(err, "could not get proposal data")
-	//}
-
-	prepare, err := CreatePrepare(i.State, i.config, newRound, signedProposal.Message.Input)
+	prepareMsg, err := CreatePrepare(i.State, i.config, newRound, signedProposal.Message.Input)
 	if err != nil {
 		return errors.Wrap(err, "could not create prepare msg")
 	}
 
-	prepareEncoded, err := prepare.Encode()
+	prepareEncoded, err := prepareMsg.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode prepare message")
 	}
 
-	msgID := types.PopulateMsgType(i.State.ID, types.ConsensusPrepareMsgType)
-
-	broadcastMsg := &types.Message{
-		ID:   msgID,
-		Data: prepareEncoded,
-	}
-
-	if err = i.Broadcast(broadcastMsg); err != nil {
+	if err = i.Broadcast(prepareEncoded, types.ConsensusPrepareMsgType); err != nil {
 		return errors.Wrap(err, "failed to broadcast prepare message")
 	}
 
@@ -261,7 +249,7 @@ func CreateProposal(
 		return nil, errors.Wrap(err, "failed signing proposal msg")
 	}
 
-	proposalMsg := &SignedMessage{
+	proposeMsg := &SignedMessage{
 		Message:                msg,
 		Signers:                []types.OperatorID{state.Share.OperatorID},
 		Signature:              sig,
@@ -277,33 +265,8 @@ func CreateProposal(
 			}
 			rcHeaders = append(rcHeaders, rcHeader)
 		}
-		proposalMsg.RoundChangeJustifications = rcHeaders
+		proposeMsg.RoundChangeJustifications = rcHeaders
 	}
 
-	//proposalData := &ProposalData{
-	//	Data:                     value,
-	//	RoundChangeJustification: roundChanges,
-	//	PrepareJustification:     prepares,
-	//}
-	//dataByts, err := proposalData.Encode()
-
-	//msg := &Message{
-	//	MsgType:    ProposalMsgType,
-	//	Height:     state.Height,
-	//	Round:      state.Round,
-	//	Identifier: state.ID,
-	//	Data:       dataByts,
-	//}
-	//sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	//if err != nil {
-	//	return nil, errors.Wrap(err, "failed signing prepare msg")
-	//}
-	//
-	//signedMsg := &SignedMessage{
-	//	Signature: sig,
-	//	Signers:   []types.OperatorID{state.Share.OperatorID},
-	//	Message:   msg,
-	//}
-	//return signedMsg, nil
-	return proposalMsg, nil
+	return proposeMsg, nil
 }

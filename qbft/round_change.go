@@ -51,7 +51,7 @@ func (i *Instance) uponRoundChange(
 			valueToPropose = justifiedRoundChangeMsg.Message.Input
 		}
 
-		proposal, err := CreateProposal(
+		proposeMsg, err := CreateProposal(
 			i.State,
 			i.config,
 			valueToPropose,
@@ -62,19 +62,12 @@ func (i *Instance) uponRoundChange(
 			return errors.Wrap(err, "failed to create proposal")
 		}
 
-		proposalEncoded, err := proposal.Encode()
+		proposalEncoded, err := proposeMsg.Encode()
 		if err != nil {
-			return errors.Wrap(err, "could not encode proposal message")
+			return errors.Wrap(err, "could not encode round change message")
 		}
 
-		msgID := types.PopulateMsgType(i.State.ID, types.ConsensusProposeMsgType)
-
-		broadcastMsg := &types.Message{
-			ID:   msgID,
-			Data: proposalEncoded,
-		}
-
-		if err = i.Broadcast(broadcastMsg); err != nil {
+		if err = i.Broadcast(proposalEncoded, types.ConsensusProposeMsgType); err != nil {
 			return errors.Wrap(err, "failed to broadcast proposal message")
 		}
 	} else if partialQuorum, rcs := hasReceivedPartialQuorum(i.State, roundChangeMsgContainer); partialQuorum {
@@ -87,24 +80,17 @@ func (i *Instance) uponRoundChange(
 		// TODO - should we reset timeout here for the new round?
 		i.State.ProposalAcceptedForCurrentRound = nil
 
-		roundChange, err := CreateRoundChange(i.State, i.config, newRound, instanceStartValue)
+		rcMsg, err := CreateRoundChange(i.State, i.config, newRound)
 		if err != nil {
 			return errors.Wrap(err, "failed to create round change message")
 		}
 
-		roundChangeEncoded, err := roundChange.Encode()
+		rcEncoded, err := rcMsg.Encode()
 		if err != nil {
 			return errors.Wrap(err, "could not encode round change message")
 		}
 
-		msgID := types.PopulateMsgType(i.State.ID, types.ConsensusRoundChangeMsgType)
-
-		broadcastMsg := &types.Message{
-			ID:   msgID,
-			Data: roundChangeEncoded,
-		}
-
-		if err = i.Broadcast(broadcastMsg); err != nil {
+		if err = i.Broadcast(rcEncoded, types.ConsensusRoundChangeMsgType); err != nil {
 			return errors.Wrap(err, "failed to broadcast round change message")
 		}
 	}
@@ -361,16 +347,8 @@ RoundChange(
            getRoundChangeJustification(current)
        )
 */
-func CreateRoundChange(state *State, config IConfig, newRound Round, instanceStartValue []byte) (*SignedMessage, error) {
+func CreateRoundChange(state *State, config IConfig, newRound Round) (*SignedMessage, error) {
 	justifications, round, preparedValue := getRoundChangeData(state, config)
-	//rcData, err := getRoundChangeData(state, config, instanceStartValue)
-	//if err != nil {
-	//	return nil, errors.Wrap(err, "could not generate round change data")
-	//}
-	//dataByts, err := rcData.Encode()
-	//if err != nil {
-	//	return nil, errors.Wrap(err, "could not encode round change data")
-	//}
 
 	msg := &Message{
 		Height:        state.Height,
@@ -383,12 +361,10 @@ func CreateRoundChange(state *State, config IConfig, newRound Round, instanceSta
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}
 
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   msg,
-
+	return &SignedMessage{
+		Signature:                 sig,
+		Signers:                   []types.OperatorID{state.Share.OperatorID},
+		Message:                   msg,
 		RoundChangeJustifications: justifications,
-	}
-	return signedMsg, nil
+	}, nil
 }

@@ -93,18 +93,38 @@ func (c *Controller) ProcessMsg(msg *types.Message) (bool, []byte, error) {
 		return false, nil, errors.New("message doesn't belong to Identifier")
 	}
 
+	var height Height
 	signedMsg := &SignedMessage{}
-	if err := signedMsg.Decode(msg.GetData()); err != nil {
-		return false, nil, errors.Wrap(err, "could not decode consensus Message from network Message")
+	signedMsgH := &SignedMessageHeader{}
+
+	switch msgID.GetMsgType() {
+	case types.ConsensusProposeMsgType, types.ConsensusRoundChangeMsgType:
+		if err := signedMsg.Decode(msg.GetData()); err != nil {
+			return false, nil, errors.Wrap(err, "could not decode consensus msg from network msg")
+		}
+		height = signedMsg.Message.Height
+
+	case types.ConsensusPrepareMsgType, types.ConsensusCommitMsgType:
+		if err := signedMsgH.Decode(msg.GetData()); err != nil {
+			return false, nil, errors.Wrap(err, "could not decode consensus msg header from network msg")
+		}
+		height = signedMsgH.Message.Height
+	default:
+		return false, nil, errors.New("message type not supported")
 	}
 
-	inst := c.InstanceForHeight(signedMsg.Message.Height)
+	//signedMsg := &SignedMessage{}
+	//if err := signedMsg.Decode(msg.GetData()); err != nil {
+	//	return false, nil, errors.Wrap(err, "could not decode consensus Message from network Message")
+	//}
+
+	inst := c.InstanceForHeight(height)
 	if inst == nil {
 		return false, nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
-	decided, decidedValue, aggregatedCommit, err := inst.ProcessMsg(msgID, signedMsg)
+	decided, decidedValue, aggregatedCommit, err := inst.ProcessMsg(msgID, signedMsg, signedMsgH)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "could not process msg")
 	}

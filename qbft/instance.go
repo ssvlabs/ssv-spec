@@ -36,8 +36,8 @@ func NewInstance(
 			Height:               height,
 			LastPreparedRound:    NoRound,
 			ProposeContainer:     NewMsgContainer(),
-			PrepareContainer:     NewMsgContainer(),
-			CommitContainer:      NewMsgContainer(),
+			PrepareContainer:     NewMsgHContainer(),
+			CommitContainer:      NewMsgHContainer(),
 			RoundChangeContainer: NewMsgContainer(),
 		},
 		config:      config,
@@ -54,60 +54,71 @@ func (i *Instance) Start(value []byte, height Height) {
 
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
-			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
+			proposeMsg, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			// nolint
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())
 			}
 
-			proposalEncoded, err := proposal.Encode()
+			proposalEncoded, err := proposeMsg.Encode()
 			if err != nil {
+				fmt.Printf("%s\n", err.Error())
 				return
 			}
 
-			msgID := types.PopulateMsgType(i.State.ID, types.ConsensusProposeMsgType)
-
-			broadcastMsg := &types.Message{
-				ID:   msgID,
-				Data: proposalEncoded,
-			}
 			// nolint
-			if err := i.Broadcast(broadcastMsg); err != nil {
+			if err := i.Broadcast(proposalEncoded, types.ConsensusProposeMsgType); err != nil {
 				fmt.Printf("%s\n", err.Error())
 			}
 		}
 	})
 }
 
-func (i *Instance) Broadcast(msg *types.Message) error {
-	return i.config.GetNetwork().Broadcast(msg)
+func (i *Instance) Broadcast(data []byte, msgType types.MsgType) error {
+	broadcastMsg := &types.Message{
+		ID:   types.PopulateMsgType(i.State.ID, msgType),
+		Data: data,
+	}
+
+	return i.config.GetNetwork().Broadcast(broadcastMsg)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
-func (i *Instance) ProcessMsg(msgID types.MessageID, msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
-	if err := msg.Validate(msgID.GetMsgType()); err != nil {
-		return false, nil, nil, errors.Wrap(err, "invalid signed message")
-	}
+func (i *Instance) ProcessMsg(
+	msgID types.MessageID,
+	msg *SignedMessage,
+	msgH *SignedMessageHeader,
+) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
+	//if err := msg.Validate(msgID.GetMsgType()); err != nil {
+	//	return false, nil, nil, errors.Wrap(err, "invalid signed message")
+	//}
 
 	res := i.processMsgF.Run(func() interface{} {
 		switch msgID.GetMsgType() {
 		case types.ConsensusProposeMsgType:
+			if err := msg.Validate(msgID.GetMsgType()); err != nil {
+				return errors.Wrap(err, "invalid signed message")
+			}
 			return i.uponProposal(msg, i.State.ProposeContainer)
 		case types.ConsensusPrepareMsgType:
-			return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
-		case types.ConsensusCommitMsgType:
-			if isDecidedMsg(i.State, msg) {
-				decided, decidedValue, err = i.UponDecided(msg, i.State.CommitContainer)
-				aggregatedCommit = msg
-			} else {
-				decided, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
+			if err := msgH.Validate(); err != nil {
+				return errors.Wrap(err, "invalid signed message header")
 			}
-			i.State.Decided = decided
+			return i.uponPrepare(msgH, i.State.PrepareContainer, i.State.CommitContainer)
+		case types.ConsensusCommitMsgType:
+			if err := msgH.Validate(); err != nil {
+				return errors.Wrap(err, "invalid signed message header")
+			}
+			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msgH, i.State.CommitContainer)
 			if decided {
-				i.State.DecidedValue = msg.Message.Input
+				i.State.Decided = decided
+				i.State.DecidedValue = decidedValue
 			}
 			return err
 		case types.ConsensusRoundChangeMsgType:
+			if err := msg.Validate(msgID.GetMsgType()); err != nil {
+				return errors.Wrap(err, "invalid signed message")
+			}
 			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
 		default:
 			return errors.New("signed message type not supported")

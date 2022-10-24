@@ -29,23 +29,24 @@ type CreateMsgSpecTest struct {
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	var msg *qbft.SignedMessage
+	var msgH *qbft.SignedMessageHeader
+	var r []byte
 	var lastErr error
 	switch test.CreateType {
 	case CreateProposal:
-		msg, lastErr = test.createProposal()
+		msg, _ = test.createProposal()
+		r, lastErr = msg.GetRoot()
 	case CreatePrepare:
-		msg, lastErr = test.createPrepare()
+		msgH, _ = test.createPrepare()
+		r, lastErr = msgH.GetRoot()
 	case CreateCommit:
-		msg, lastErr = test.createCommit()
+		msgH, _ = test.createCommit()
+		r, lastErr = msgH.GetRoot()
 	case CreateRoundChange:
-		msg, lastErr = test.createRoundChange()
+		msg, _ = test.createRoundChange()
+		r, lastErr = msg.GetRoot()
 	default:
 		t.Fail()
-	}
-
-	r, err := msg.GetRoot()
-	if err != nil {
-		lastErr = err
 	}
 
 	if len(test.ExpectedError) != 0 {
@@ -57,7 +58,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r))
 }
 
-func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessageHeader, error) {
 	ks := testingutils.Testing4SharesSet()
 	msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	state := &qbft.State{
@@ -69,7 +70,7 @@ func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	return qbft.CreateCommit(state, config, test.Value)
 }
 
-func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessageHeader, error) {
 	ks := testingutils.Testing4SharesSet()
 	msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	state := &qbft.State{
@@ -123,7 +124,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 		}
 	}
 
-	return qbft.CreateRoundChange(state, config, 1, test.Value)
+	return qbft.CreateRoundChange(state, config, 1)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

@@ -91,8 +91,8 @@ type State struct {
 	DecidedValue                    []byte
 
 	ProposeContainer     *MsgContainer
-	PrepareContainer     *MsgContainer
-	CommitContainer      *MsgContainer
+	PrepareContainer     *MsgHContainer
+	CommitContainer      *MsgHContainer
 	RoundChangeContainer *MsgContainer
 }
 

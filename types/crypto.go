@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-	"crypto/sha256"
 	"fmt"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ethereum/go-ethereum/common"
@@ -139,13 +138,14 @@ func (s Signature) Aggregate(other Signature) (Signature, error) {
 }
 
 func ComputeSigningRoot(data Root, domain SignatureDomain) ([]byte, error) {
-	dataRoot, err := data.GetRoot()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get root from Root")
-	}
-
-	ret := sha256.Sum256(append(dataRoot, domain...))
-	return ret[:], nil
+	return data.GetRoot()
+	//dataRoot, err := data.GetRoot()
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "could not get root from Root")
+	//}
+	//
+	//ret := sha256.Sum256(append(dataRoot, domain...))
+	//return ret[:], nil
 }
 
 func ComputeSignatureDomain(domain DomainType, sigType SignatureType) SignatureDomain {

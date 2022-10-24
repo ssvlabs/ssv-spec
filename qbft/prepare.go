@@ -7,26 +7,25 @@ import (
 )
 
 func (i *Instance) uponPrepare(
-	signedPrepare *SignedMessage,
-	prepareMsgContainer,
-	commitMsgContainer *MsgContainer,
+	signedPrepare *SignedMessageHeader,
+	prepareMsgContainer *MsgHContainer,
+	commitMsgContainer *MsgHContainer,
 ) error {
 	// TODO - if we receive a prepare before a proposal and return an error we will never process the prepare msg, we still need to add it to the container
 	if i.State.ProposalAcceptedForCurrentRound == nil {
 		return errors.New("no proposal accepted for prepare")
 	}
 
-	//acceptedProposalData, err := i.State.ProposalAcceptedForCurrentRound.Message.Input
-	//if err != nil {
-	//	return errors.Wrap(err, "could not get accepted proposal data")
-	//}
-	if err := validSignedPrepareForHeightRoundAndValue(
+	acceptedProposalInputRoot, err := i.State.ProposalAcceptedForCurrentRound.Message.GetHeaderInputRoot()
+	if err != nil {
+		return errors.Wrap(err, "could not get accepted proposal data")
+	}
+	if err := validSignedPrepareHeaderForHeightRoundAndValue(
 		i.config,
 		signedPrepare,
 		i.State.Height,
 		i.State.Round,
-		i.State.ProposalAcceptedForCurrentRound.Message.Input,
-		//acceptedProposalData.Data,
+		acceptedProposalInputRoot,
 		i.State.Share.Committee,
 	); err != nil {
 		return errors.Wrap(err, "invalid prepare msg")
@@ -40,7 +39,7 @@ func (i *Instance) uponPrepare(
 		return nil // uponPrepare was already called
 	}
 
-	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
+	if !HasQuorumHeaders(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
 		return nil // no quorum yet
 	}
 
@@ -60,17 +59,10 @@ func (i *Instance) uponPrepare(
 
 	commitEncoded, err := commitMsg.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not encode prepare message")
+		return errors.Wrap(err, "could not encode commit message")
 	}
 
-	msgID := types.PopulateMsgType(i.State.ID, types.ConsensusCommitMsgType)
-
-	broadcastMsg := &types.Message{
-		ID:   msgID,
-		Data: commitEncoded,
-	}
-
-	if err = i.Broadcast(broadcastMsg); err != nil {
+	if err = i.Broadcast(commitEncoded, types.ConsensusCommitMsgType); err != nil {
 		return errors.Wrap(err, "failed to broadcast commit message")
 	}
 
@@ -126,9 +118,6 @@ func validSignedPrepareForHeightRoundAndValue(
 	value []byte,
 	operators []*types.Operator,
 ) error {
-	//if signedPrepare.Message.MsgType != PrepareMsgType {
-	//	return errors.New("prepare msg type is wrong")
-	//}
 	if signedPrepare.Message.Height != height {
 		return errors.New("msg Height wrong")
 	}
@@ -165,7 +154,7 @@ func validSignedPrepareHeaderForHeightRoundAndValue(
 	signedPrepare *SignedMessageHeader,
 	height Height,
 	round Round,
-	value []byte,
+	inputRoot [32]byte,
 	operators []*types.Operator,
 ) error {
 	if signedPrepare.Message.Height != height {
@@ -175,25 +164,17 @@ func validSignedPrepareHeaderForHeightRoundAndValue(
 		return errors.New("msg round wrong")
 	}
 
-	//prepareData.Validate()
-	// TODO<olegshmuelov> inputroot validate
-	//if signedPrepare.Message.InputRoot == [32]byte{} {
-	//	return errors.New("prepareData invalid")
-	//}
-
-	// TODO<olegshmuelov>: encode value to input root and compare?
-	//if bytes.Compare(signedPrepare.Message.InputRoot, value) != 0 {
-	//	return errors.New("prepare data != proposed data")
-	//}
+	if bytes.Compare(signedPrepare.Message.InputRoot[:], inputRoot[:]) != 0 {
+		return errors.New("prepare data != proposed data")
+	}
 
 	if len(signedPrepare.GetSigners()) != 1 {
 		return errors.New("prepare msg allows 1 signer")
 	}
 
-	// TODO<olegshmuelov>: do we need to do it for justifications?
-	//if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-	//	return errors.Wrap(err, "prepare msg signature invalid")
-	//}
+	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "prepare msg signature invalid")
+	}
 	return nil
 }
 
@@ -209,44 +190,31 @@ Prepare(
                         )
                 );
 */
-func CreatePrepare(state *State, config IConfig, newRound Round, value []byte) (*SignedMessage, error) {
-	msg := &Message{
-		Height: state.Height,
-		Round:  newRound,
-		Input:  value,
+func CreatePrepare(state *State, config IConfig, newRound Round, value []byte) (*SignedMessageHeader, error) {
+	cd := &types.ConsensusInput{}
+	if err := cd.UnmarshalSSZ(value); err != nil {
+		return nil, errors.Wrap(err, "could not unmarshal consensus input ssz")
 	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+
+	root, err := cd.HashTreeRoot()
+	if err != nil {
+		return nil, errors.Wrap(err, "could not hash tree consensus input root")
+	}
+
+	msgH := &MessageHeader{
+		Height:    state.Height,
+		Round:     newRound,
+		InputRoot: root,
+	}
+
+	sig, err := config.GetSigner().SignRootHeader(msgH.InputRoot[:], state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}
 
-	prepareMsg := &SignedMessage{
-		Message:   msg,
+	return &SignedMessageHeader{
+		Message:   msgH,
 		Signers:   []types.OperatorID{state.Share.OperatorID},
 		Signature: sig,
-	}
-
-	//prepareData := &PrepareData{
-	//	Data: value,
-	//}
-	//dataByts, err := prepareData.Encode()
-	//
-	//msg := &Message{
-	//	MsgType:    PrepareMsgType,
-	//	Height:     state.Height,
-	//	Round:      newRound,
-	//	Identifier: state.ID,
-	//	Data:       dataByts,
-	//}
-	//sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	//if err != nil {
-	//	return nil, errors.Wrap(err, "failed signing prepare msg")
-	//}
-	//
-	//signedMsg := &SignedMessage{
-	//	Signature: sig,
-	//	Signers:   []types.OperatorID{state.Share.OperatorID},
-	//	Message:   msg,
-	//}
-	return prepareMsg, nil
+	}, nil
 }

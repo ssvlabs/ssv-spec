@@ -128,93 +128,93 @@ func (msg *Message) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 }
 
 // MarshalSSZ ssz marshals the SignedMessage object
-func (s *SignedMessage) MarshalSSZ() ([]byte, error) {
-	return ssz.MarshalSSZ(s)
+func (sm *SignedMessage) MarshalSSZ() ([]byte, error) {
+	return ssz.MarshalSSZ(sm)
 }
 
 // MarshalSSZTo ssz marshals the SignedMessage object to a target array
-func (s *SignedMessage) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+func (sm *SignedMessage) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(112)
 
 	// Offset (0) 'Message'
 	dst = ssz.WriteOffset(dst, offset)
-	if s.Message == nil {
-		s.Message = new(Message)
+	if sm.Message == nil {
+		sm.Message = new(Message)
 	}
-	offset += s.Message.SizeSSZ()
+	offset += sm.Message.SizeSSZ()
 
 	// Offset (1) 'Signers'
 	dst = ssz.WriteOffset(dst, offset)
-	offset += len(s.Signers) * 8
+	offset += len(sm.Signers) * 8
 
 	// Field (2) 'Signature'
-	if len(s.Signature) != 96 {
+	if len(sm.Signature) != 96 {
 		err = ssz.ErrBytesLength
 		return
 	}
-	dst = append(dst, s.Signature...)
+	dst = append(dst, sm.Signature...)
 
 	// Offset (3) 'RoundChangeJustifications'
 	dst = ssz.WriteOffset(dst, offset)
-	for ii := 0; ii < len(s.RoundChangeJustifications); ii++ {
+	for ii := 0; ii < len(sm.RoundChangeJustifications); ii++ {
 		offset += 4
-		offset += s.RoundChangeJustifications[ii].SizeSSZ()
+		offset += sm.RoundChangeJustifications[ii].SizeSSZ()
 	}
 
 	// Offset (4) 'ProposalJustifications'
 	dst = ssz.WriteOffset(dst, offset)
-	for ii := 0; ii < len(s.ProposalJustifications); ii++ {
+	for ii := 0; ii < len(sm.ProposalJustifications); ii++ {
 		offset += 4
-		offset += s.ProposalJustifications[ii].SizeSSZ()
+		offset += sm.ProposalJustifications[ii].SizeSSZ()
 	}
 
 	// Field (0) 'Message'
-	if dst, err = s.Message.MarshalSSZTo(dst); err != nil {
+	if dst, err = sm.Message.MarshalSSZTo(dst); err != nil {
 		return
 	}
 
 	// Field (1) 'Signers'
-	if len(s.Signers) > 13 {
+	if len(sm.Signers) > 13 {
 		err = ssz.ErrListTooBig
 		return
 	}
-	for ii := 0; ii < len(s.Signers); ii++ {
-		dst = ssz.MarshalUint64(dst, uint64(s.Signers[ii]))
+	for ii := 0; ii < len(sm.Signers); ii++ {
+		dst = ssz.MarshalUint64(dst, uint64(sm.Signers[ii]))
 	}
 
 	// Field (3) 'RoundChangeJustifications'
-	if len(s.RoundChangeJustifications) > 13 {
+	if len(sm.RoundChangeJustifications) > 13 {
 		err = ssz.ErrListTooBig
 		return
 	}
 	{
-		offset = 4 * len(s.RoundChangeJustifications)
-		for ii := 0; ii < len(s.RoundChangeJustifications); ii++ {
+		offset = 4 * len(sm.RoundChangeJustifications)
+		for ii := 0; ii < len(sm.RoundChangeJustifications); ii++ {
 			dst = ssz.WriteOffset(dst, offset)
-			offset += s.RoundChangeJustifications[ii].SizeSSZ()
+			offset += sm.RoundChangeJustifications[ii].SizeSSZ()
 		}
 	}
-	for ii := 0; ii < len(s.RoundChangeJustifications); ii++ {
-		if dst, err = s.RoundChangeJustifications[ii].MarshalSSZTo(dst); err != nil {
+	for ii := 0; ii < len(sm.RoundChangeJustifications); ii++ {
+		if dst, err = sm.RoundChangeJustifications[ii].MarshalSSZTo(dst); err != nil {
 			return
 		}
 	}
 
 	// Field (4) 'ProposalJustifications'
-	if len(s.ProposalJustifications) > 13 {
+	if len(sm.ProposalJustifications) > 13 {
 		err = ssz.ErrListTooBig
 		return
 	}
 	{
-		offset = 4 * len(s.ProposalJustifications)
-		for ii := 0; ii < len(s.ProposalJustifications); ii++ {
+		offset = 4 * len(sm.ProposalJustifications)
+		for ii := 0; ii < len(sm.ProposalJustifications); ii++ {
 			dst = ssz.WriteOffset(dst, offset)
-			offset += s.ProposalJustifications[ii].SizeSSZ()
+			offset += sm.ProposalJustifications[ii].SizeSSZ()
 		}
 	}
-	for ii := 0; ii < len(s.ProposalJustifications); ii++ {
-		if dst, err = s.ProposalJustifications[ii].MarshalSSZTo(dst); err != nil {
+	for ii := 0; ii < len(sm.ProposalJustifications); ii++ {
+		if dst, err = sm.ProposalJustifications[ii].MarshalSSZTo(dst); err != nil {
 			return
 		}
 	}
@@ -223,7 +223,7 @@ func (s *SignedMessage) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 }
 
 // UnmarshalSSZ ssz unmarshals the SignedMessage object
-func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
+func (sm *SignedMessage) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 112 {
@@ -248,10 +248,10 @@ func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
 	}
 
 	// Field (2) 'Signature'
-	if cap(s.Signature) == 0 {
-		s.Signature = make([]byte, 0, len(buf[8:104]))
+	if cap(sm.Signature) == 0 {
+		sm.Signature = make([]byte, 0, len(buf[8:104]))
 	}
-	s.Signature = append(s.Signature, buf[8:104]...)
+	sm.Signature = append(sm.Signature, buf[8:104]...)
 
 	// Offset (3) 'RoundChangeJustifications'
 	if o3 = ssz.ReadOffset(buf[104:108]); o3 > size || o1 > o3 {
@@ -266,10 +266,10 @@ func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
 	// Field (0) 'Message'
 	{
 		buf = tail[o0:o1]
-		if s.Message == nil {
-			s.Message = new(Message)
+		if sm.Message == nil {
+			sm.Message = new(Message)
 		}
-		if err = s.Message.UnmarshalSSZ(buf); err != nil {
+		if err = sm.Message.UnmarshalSSZ(buf); err != nil {
 			return err
 		}
 	}
@@ -282,14 +282,14 @@ func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
 			return err
 		}
 
-		signers := make([]uint64, 0, len(s.Signers))
-		for _, signer := range s.Signers {
+		signers := make([]uint64, 0, len(sm.Signers))
+		for _, signer := range sm.Signers {
 			signers = append(signers, uint64(signer))
 		}
 
-		s.Signers = extendOperatorID(s.Signers, num)
+		sm.Signers = extendOperatorID(sm.Signers, num)
 		for ii := 0; ii < num; ii++ {
-			s.Signers[ii] = types.OperatorID(ssz.UnmarshallUint64(buf[ii*8 : (ii+1)*8]))
+			sm.Signers[ii] = types.OperatorID(ssz.UnmarshallUint64(buf[ii*8 : (ii+1)*8]))
 		}
 	}
 
@@ -300,12 +300,12 @@ func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
 		if err != nil {
 			return err
 		}
-		s.RoundChangeJustifications = make([]*SignedMessageHeader, num)
+		sm.RoundChangeJustifications = make([]*SignedMessageHeader, num)
 		err = ssz.UnmarshalDynamic(buf, num, func(indx int, buf []byte) (err error) {
-			if s.RoundChangeJustifications[indx] == nil {
-				s.RoundChangeJustifications[indx] = new(SignedMessageHeader)
+			if sm.RoundChangeJustifications[indx] == nil {
+				sm.RoundChangeJustifications[indx] = new(SignedMessageHeader)
 			}
-			if err = s.RoundChangeJustifications[indx].UnmarshalSSZ(buf); err != nil {
+			if err = sm.RoundChangeJustifications[indx].UnmarshalSSZ(buf); err != nil {
 				return err
 			}
 			return nil
@@ -322,12 +322,12 @@ func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
 		if err != nil {
 			return err
 		}
-		s.ProposalJustifications = make([]*SignedMessageHeader, num)
+		sm.ProposalJustifications = make([]*SignedMessageHeader, num)
 		err = ssz.UnmarshalDynamic(buf, num, func(indx int, buf []byte) (err error) {
-			if s.ProposalJustifications[indx] == nil {
-				s.ProposalJustifications[indx] = new(SignedMessageHeader)
+			if sm.ProposalJustifications[indx] == nil {
+				sm.ProposalJustifications[indx] = new(SignedMessageHeader)
 			}
-			if err = s.ProposalJustifications[indx].UnmarshalSSZ(buf); err != nil {
+			if err = sm.ProposalJustifications[indx].UnmarshalSSZ(buf); err != nil {
 				return err
 			}
 			return nil
@@ -340,78 +340,78 @@ func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
 }
 
 // SizeSSZ returns the ssz encoded size in bytes for the SignedMessage object
-func (s *SignedMessage) SizeSSZ() (size int) {
+func (sm *SignedMessage) SizeSSZ() (size int) {
 	size = 112
 
 	// Field (0) 'Message'
-	if s.Message == nil {
-		s.Message = new(Message)
+	if sm.Message == nil {
+		sm.Message = new(Message)
 	}
-	size += s.Message.SizeSSZ()
+	size += sm.Message.SizeSSZ()
 
 	// Field (1) 'Signers'
-	size += len(s.Signers) * 8
+	size += len(sm.Signers) * 8
 
 	// Field (3) 'RoundChangeJustifications'
-	for ii := 0; ii < len(s.RoundChangeJustifications); ii++ {
+	for ii := 0; ii < len(sm.RoundChangeJustifications); ii++ {
 		size += 4
-		size += s.RoundChangeJustifications[ii].SizeSSZ()
+		size += sm.RoundChangeJustifications[ii].SizeSSZ()
 	}
 
 	// Field (4) 'ProposalJustifications'
-	for ii := 0; ii < len(s.ProposalJustifications); ii++ {
+	for ii := 0; ii < len(sm.ProposalJustifications); ii++ {
 		size += 4
-		size += s.ProposalJustifications[ii].SizeSSZ()
+		size += sm.ProposalJustifications[ii].SizeSSZ()
 	}
 
 	return
 }
 
 // HashTreeRoot ssz hashes the SignedMessage object
-func (s *SignedMessage) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(s)
+func (sm *SignedMessage) HashTreeRoot() ([32]byte, error) {
+	return ssz.HashWithDefaultHasher(sm)
 }
 
 // HashTreeRootWith ssz hashes the SignedMessage object with a hasher
-func (s *SignedMessage) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+func (sm *SignedMessage) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Message'
-	if err = s.Message.HashTreeRootWith(hh); err != nil {
+	if err = sm.Message.HashTreeRootWith(hh); err != nil {
 		return
 	}
 
 	// Field (1) 'Signers'
 	{
-		if len(s.Signers) > 13 {
+		if len(sm.Signers) > 13 {
 			err = ssz.ErrListTooBig
 			return
 		}
 		subIndx := hh.Index()
-		for _, i := range s.Signers {
+		for _, i := range sm.Signers {
 			hh.AppendUint64(uint64(i))
 		}
 		hh.FillUpTo32()
-		numItems := uint64(len(s.Signers))
+		numItems := uint64(len(sm.Signers))
 		hh.MerkleizeWithMixin(subIndx, numItems, ssz.CalculateLimit(13, numItems, 8))
 	}
 
 	// Field (2) 'Signature'
-	if len(s.Signature) != 96 {
+	if len(sm.Signature) != 96 {
 		err = ssz.ErrBytesLength
 		return
 	}
-	hh.PutBytes(s.Signature)
+	hh.PutBytes(sm.Signature)
 
 	// Field (3) 'RoundChangeJustifications'
 	{
 		subIndx := hh.Index()
-		num := uint64(len(s.RoundChangeJustifications))
+		num := uint64(len(sm.RoundChangeJustifications))
 		if num > 13 {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		for _, elem := range s.RoundChangeJustifications {
+		for _, elem := range sm.RoundChangeJustifications {
 			if err = elem.HashTreeRootWith(hh); err != nil {
 				return
 			}
@@ -422,12 +422,12 @@ func (s *SignedMessage) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	// Field (4) 'ProposalJustifications'
 	{
 		subIndx := hh.Index()
-		num := uint64(len(s.ProposalJustifications))
+		num := uint64(len(sm.ProposalJustifications))
 		if num > 13 {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		for _, elem := range s.ProposalJustifications {
+		for _, elem := range sm.ProposalJustifications {
 			if err = elem.HashTreeRootWith(hh); err != nil {
 				return
 			}
@@ -518,48 +518,48 @@ func (m *MessageHeader) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 }
 
 // MarshalSSZ ssz marshals the SignedMessageHeader object
-func (s *SignedMessageHeader) MarshalSSZ() ([]byte, error) {
-	return ssz.MarshalSSZ(s)
+func (smh *SignedMessageHeader) MarshalSSZ() ([]byte, error) {
+	return ssz.MarshalSSZ(smh)
 }
 
 // MarshalSSZTo ssz marshals the SignedMessageHeader object to a target array
-func (s *SignedMessageHeader) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+func (smh *SignedMessageHeader) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(156)
 
 	// Field (0) 'Message'
-	if s.Message == nil {
-		s.Message = new(MessageHeader)
+	if smh.Message == nil {
+		smh.Message = new(MessageHeader)
 	}
-	if dst, err = s.Message.MarshalSSZTo(dst); err != nil {
+	if dst, err = smh.Message.MarshalSSZTo(dst); err != nil {
 		return
 	}
 
 	// Offset (1) 'Signers'
 	dst = ssz.WriteOffset(dst, offset)
-	offset += len(s.Signers) * 8
+	offset += len(smh.Signers) * 8
 
 	// Field (2) 'Signature'
-	if len(s.Signature) != 96 {
+	if len(smh.Signature) != 96 {
 		err = ssz.ErrBytesLength
 		return
 	}
-	dst = append(dst, s.Signature...)
+	dst = append(dst, smh.Signature...)
 
 	// Field (1) 'Signers'
-	if len(s.Signers) > 13 {
+	if len(smh.Signers) > 13 {
 		err = ssz.ErrListTooBig
 		return
 	}
-	for ii := 0; ii < len(s.Signers); ii++ {
-		dst = ssz.MarshalUint64(dst, uint64(s.Signers[ii]))
+	for ii := 0; ii < len(smh.Signers); ii++ {
+		dst = ssz.MarshalUint64(dst, uint64(smh.Signers[ii]))
 	}
 
 	return
 }
 
 // UnmarshalSSZ ssz unmarshals the SignedMessageHeader object
-func (s *SignedMessageHeader) UnmarshalSSZ(buf []byte) error {
+func (smh *SignedMessageHeader) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 156 {
@@ -570,10 +570,10 @@ func (s *SignedMessageHeader) UnmarshalSSZ(buf []byte) error {
 	var o1 uint64
 
 	// Field (0) 'Message'
-	if s.Message == nil {
-		s.Message = new(MessageHeader)
+	if smh.Message == nil {
+		smh.Message = new(MessageHeader)
 	}
-	if err = s.Message.UnmarshalSSZ(buf[0:56]); err != nil {
+	if err = smh.Message.UnmarshalSSZ(buf[0:56]); err != nil {
 		return err
 	}
 
@@ -587,10 +587,10 @@ func (s *SignedMessageHeader) UnmarshalSSZ(buf []byte) error {
 	}
 
 	// Field (2) 'Signature'
-	if cap(s.Signature) == 0 {
-		s.Signature = make([]byte, 0, len(buf[60:156]))
+	if cap(smh.Signature) == 0 {
+		smh.Signature = make([]byte, 0, len(buf[60:156]))
 	}
-	s.Signature = append(s.Signature, buf[60:156]...)
+	smh.Signature = append(smh.Signature, buf[60:156]...)
 
 	// Field (1) 'Signers'
 	{
@@ -599,59 +599,59 @@ func (s *SignedMessageHeader) UnmarshalSSZ(buf []byte) error {
 		if err != nil {
 			return err
 		}
-		s.Signers = extendOperatorID(s.Signers, num)
+		smh.Signers = extendOperatorID(smh.Signers, num)
 		for ii := 0; ii < num; ii++ {
-			s.Signers[ii] = types.OperatorID(ssz.UnmarshallUint64(buf[ii*8 : (ii+1)*8]))
+			smh.Signers[ii] = types.OperatorID(ssz.UnmarshallUint64(buf[ii*8 : (ii+1)*8]))
 		}
 	}
 	return err
 }
 
 // SizeSSZ returns the ssz encoded size in bytes for the SignedMessageHeader object
-func (s *SignedMessageHeader) SizeSSZ() (size int) {
+func (smh *SignedMessageHeader) SizeSSZ() (size int) {
 	size = 156
 
 	// Field (1) 'Signers'
-	size += len(s.Signers) * 8
+	size += len(smh.Signers) * 8
 
 	return
 }
 
 // HashTreeRoot ssz hashes the SignedMessageHeader object
-func (s *SignedMessageHeader) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(s)
+func (smh *SignedMessageHeader) HashTreeRoot() ([32]byte, error) {
+	return ssz.HashWithDefaultHasher(smh)
 }
 
 // HashTreeRootWith ssz hashes the SignedMessageHeader object with a hasher
-func (s *SignedMessageHeader) HashTreeRootWith(hh *ssz.Hasher) (err error) {
+func (smh *SignedMessageHeader) HashTreeRootWith(hh *ssz.Hasher) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Message'
-	if err = s.Message.HashTreeRootWith(hh); err != nil {
+	if err = smh.Message.HashTreeRootWith(hh); err != nil {
 		return
 	}
 
 	// Field (1) 'Signers'
 	{
-		if len(s.Signers) > 13 {
+		if len(smh.Signers) > 13 {
 			err = ssz.ErrListTooBig
 			return
 		}
 		subIndx := hh.Index()
-		for _, i := range s.Signers {
+		for _, i := range smh.Signers {
 			hh.AppendUint64(uint64(i))
 		}
 		hh.FillUpTo32()
-		numItems := uint64(len(s.Signers))
+		numItems := uint64(len(smh.Signers))
 		hh.MerkleizeWithMixin(subIndx, numItems, ssz.CalculateLimit(13, numItems, 8))
 	}
 
 	// Field (2) 'Signature'
-	if len(s.Signature) != 96 {
+	if len(smh.Signature) != 96 {
 		err = ssz.ErrBytesLength
 		return
 	}
-	hh.PutBytes(s.Signature)
+	hh.PutBytes(smh.Signature)
 
 	hh.Merkleize(indx)
 	return

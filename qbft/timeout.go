@@ -31,24 +31,17 @@ func (i *Instance) UponRoundTimeout() error {
 		i.config.GetTimer().TimeoutForRound(i.State.Round)
 	}()
 
-	roundChange, err := CreateRoundChange(i.State, i.config, newRound, i.StartValue)
+	rcMsg, err := CreateRoundChange(i.State, i.config, newRound)
 	if err != nil {
 		return errors.Wrap(err, "could not generate round change msg")
 	}
 
-	roundChangeEncoded, err := roundChange.Encode()
+	rcEncoded, err := rcMsg.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode round change message")
 	}
 
-	msgID := types.PopulateMsgType(i.State.ID, types.ConsensusRoundChangeMsgType)
-
-	broadcastMsg := &types.Message{
-		ID:   msgID,
-		Data: roundChangeEncoded,
-	}
-
-	if err := i.Broadcast(broadcastMsg); err != nil {
+	if err := i.Broadcast(rcEncoded, types.ConsensusRoundChangeMsgType); err != nil {
 		return errors.Wrap(err, "failed to broadcast round change message")
 	}
 
