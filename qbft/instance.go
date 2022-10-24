@@ -71,6 +71,10 @@ func (i *Instance) Start(value []byte, height Height) {
 				fmt.Printf("%s\n", err.Error())
 			}
 		}
+
+		if err := i.config.GetNetwork().SyncHighestRoundChange(i.State.ID, i.State.Height); err != nil {
+			fmt.Printf("%s\n", err.Error())
+		}
 	})
 }
 
@@ -143,6 +147,11 @@ func (i *Instance) GetConfig() IConfig {
 // GetHeight interface implementation
 func (i *Instance) GetHeight() Height {
 	return i.State.Height
+}
+
+// GetRoot returns the state's deterministic root
+func (i *Instance) GetRoot() ([]byte, error) {
+	return i.State.GetRoot()
 }
 
 // Encode implementation

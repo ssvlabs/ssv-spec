@@ -13,8 +13,16 @@ const (
 	FirstHeight Height = 0
 )
 
+type Sync interface {
+	// SyncHighestDecided tries to fetch the highest decided from peers (not blocking)
+	SyncHighestDecided(identifier []byte) error
+	// SyncHighestRoundChange tries to fetch for each committee member the highest round change broadcasted for the specific height from peers (not blocking)
+	SyncHighestRoundChange(identifier []byte, height Height) error
+}
+
 // Network is a collection of funcs for the QBFT Network
 type Network interface {
+	Sync
 	Broadcast(msg types.Encoder) error
 	BroadcastDecided(msg types.Encoder) error
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// NoRunningDuty tests a valid proposal msg before duty starts
+// NoRunningDuty tests a valid QBFT proposal msg before duty starts
 func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{

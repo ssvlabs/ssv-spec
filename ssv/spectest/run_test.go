@@ -210,17 +210,12 @@ func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testin
 }
 
 func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller, ks *testingutils.TestKeySet) *qbft.Controller {
+	config := testingutils.TestingConfig(ks)
 	newContr := qbft.NewController(
 		contr.Identifier,
 		contr.Share,
 		testingutils.TestingConfig(ks).Domain,
-		runner.GetSigner(),
-		runner.GetValCheckF(),
-		testingutils.NewTestingStorage(),
-		runner.GetNetwork().(*testingutils.TestingNetwork),
-		func(state *qbft.State, round qbft.Round) types.OperatorID {
-			return 1
-		},
+		config,
 	)
 	newContr.Height = contr.Height
 	newContr.Domain = contr.Domain
@@ -237,7 +232,7 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 
 func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Share) *qbft.Instance {
 	newInst := qbft.NewInstance(
-		contr.GenerateConfig(),
+		contr.GetConfig(),
 		share,
 		contr.Identifier,
 		contr.Height)

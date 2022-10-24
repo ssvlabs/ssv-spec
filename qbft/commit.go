@@ -147,10 +147,10 @@ func baseCommitValidation(
 		return errors.New("commit Height is wrong")
 	}
 
-	// TODO<olegshmuelov>: do we need to do it for justifications?
 	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "commit msg signature invalid")
 	}
+
 	return nil
 }
 

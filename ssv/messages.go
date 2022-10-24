@@ -82,6 +82,9 @@ func (ps *PartialSignature) Validate() error {
 	if len(ps.SigningRoot) != 32 {
 		return errors.New("SigningRoot invalid")
 	}
+	if ps.Signer == 0 {
+		return errors.New("signer ID 0 not allowed")
+	}
 	return nil
 }
 
@@ -180,6 +183,9 @@ func (sps *SignedPartialSignature) MatchedSigners(ids []types.OperatorID) bool {
 func (sps *SignedPartialSignature) Validate() error {
 	if len(sps.Signature) != 96 {
 		return errors.New("SignedPartialSignature sig invalid")
+	}
+	if sps.Signer == 0 {
+		return errors.New("signer ID 0 not allowed")
 	}
 	return sps.Message.Validate()
 }

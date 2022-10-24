@@ -2,12 +2,14 @@ package testingutils
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
 type TestingNetwork struct {
-	BroadcastedMsgs []*types.Message
-	DKGOutputs      map[types.OperatorID]*dkg.SignedOutput
+	BroadcastedMsgs       []*types.Message
+	DKGOutputs            map[types.OperatorID]*dkg.SignedOutput
+	SyncHighestDecidedCnt int
 }
 
 func NewTestingNetwork() *TestingNetwork {
@@ -19,7 +21,6 @@ func NewTestingNetwork() *TestingNetwork {
 
 func (net *TestingNetwork) Broadcast(message types.Encoder) error {
 	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
-	//net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
 	return nil
 }
 
@@ -36,6 +37,24 @@ func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.Sign
 
 	return nil
 }
+
+func (net *TestingNetwork) StreamDKGBlame(blame *dkg.BlameOutput) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (net *TestingNetwork) SyncHighestDecided(identifier []byte) error {
+	net.SyncHighestDecidedCnt++
+	return nil
+}
+
+func (net *TestingNetwork) SyncHighestRoundChange(identifier []byte, height qbft.Height) error {
+	return nil
+}
+
+//func (net *TestingNetwork) SyncHighestDecided() error {
+//	return nil
+//}
 
 // BroadcastDKGMessage will broadcast a msg to the dkg network
 func (net *TestingNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {

@@ -458,6 +458,9 @@ func (sm *SignedMessage) Validate(msgType types.MsgType) error {
 		if signed[signer] {
 			return errors.New("non unique signer")
 		}
+		if signer == 0 {
+			return errors.New("signer ID 0 not allowed")
+		}
 		signed[signer] = true
 	}
 
