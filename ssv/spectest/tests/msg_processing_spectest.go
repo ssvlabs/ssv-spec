@@ -64,6 +64,9 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
 	broadcastedRoots := test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).BroadcastedRoots
 	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots))
+	for i, r := range broadcastedRoots {
+		require.EqualValues(t, test.BeaconBroadcastedRoots[i], r)
+	}
 }
 
 func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Validator) {

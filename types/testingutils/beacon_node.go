@@ -6,8 +6,24 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
+	ssz "github.com/ferranbt/fastssz"
 	"github.com/prysmaticlabs/go-bitfield"
 )
+
+var signBeaconObject = func(
+	obj ssz.HashRoot,
+	domainType spec.DomainType,
+	ks *TestKeySet,
+) spec.BLSSignature {
+	epoch := types.PraterNetwork.EstimatedEpochAtSlot(TestingDutySlot)
+	domain, _ := NewTestingBeaconNode().DomainData(epoch, domainType)
+	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize())
+
+	blsSig := spec.BLSSignature{}
+	copy(blsSig[:], ret)
+
+	return blsSig
+}
 
 var TestingAttestationData = &spec.AttestationData{
 	Slot:            12,
@@ -21,6 +37,15 @@ var TestingAttestationData = &spec.AttestationData{
 		Epoch: 1,
 		Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	},
+}
+var TestingSignedAttestation = func(ks *TestKeySet) *spec.Attestation {
+	aggregationBitfield := bitfield.NewBitlist(TestingAttesterDuty.CommitteeLength)
+	aggregationBitfield.SetBitAt(TestingAttesterDuty.ValidatorCommitteeIndex, true)
+	return &spec.Attestation{
+		Data:            TestingAttestationData,
+		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+		AggregationBits: aggregationBitfield,
+	}
 }
 
 var TestingBeaconBlock = &bellatrix.BeaconBlock{
@@ -69,6 +94,13 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 	},
 }
 
+var TestingSignedBeaconBlock = func(ks *TestKeySet) *bellatrix.SignedBeaconBlock {
+	return &bellatrix.SignedBeaconBlock{
+		Message:   TestingBeaconBlock,
+		Signature: signBeaconObject(TestingBeaconBlock, types.DomainProposer, ks),
+	}
+}
+
 var TestingAggregateAndProof = &spec.AggregateAndProof{
 	AggregatorIndex: 1,
 	SelectionProof:  spec.BLSSignature{},
@@ -77,6 +109,13 @@ var TestingAggregateAndProof = &spec.AggregateAndProof{
 		Signature:       spec.BLSSignature{},
 		Data:            TestingAttestationData,
 	},
+}
+
+var TestingSignedAggregateAndProof = func(ks *TestKeySet) *spec.SignedAggregateAndProof {
+	return &spec.SignedAggregateAndProof{
+		Message:   TestingAggregateAndProof,
+		Signature: signBeaconObject(TestingAggregateAndProof, types.DomainAggregateAndProof, ks),
+	}
 }
 
 const (
@@ -90,6 +129,14 @@ const (
 )
 
 var TestingSyncCommitteeBlockRoot = spec.Root{}
+var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommitteeMessage {
+	return &altair.SyncCommitteeMessage{
+		Slot:            TestingDutySlot,
+		BeaconBlockRoot: TestingSyncCommitteeBlockRoot,
+		ValidatorIndex:  TestingValidatorIndex,
+		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
+	}
+}
 
 var TestingContributionProofIndexes = []uint64{0, 1, 2}
 var TestingContributionProofsSigned = func() []spec.BLSSignature {
@@ -129,6 +176,21 @@ var TestingSyncCommitteeContributions = []*altair.SyncCommitteeContribution{
 		AggregationBits:   bitfield.NewBitvector128(),
 		Signature:         spec.BLSSignature{},
 	},
+}
+
+var TestingSignedSyncCommitteeContributions = func(
+	contrib *altair.SyncCommitteeContribution,
+	proof spec.BLSSignature,
+	ks *TestKeySet) *altair.SignedContributionAndProof {
+	msg := &altair.ContributionAndProof{
+		AggregatorIndex: TestingValidatorIndex,
+		Contribution:    contrib,
+		SelectionProof:  proof,
+	}
+	return &altair.SignedContributionAndProof{
+		Message:   msg,
+		Signature: signBeaconObject(msg, types.DomainContributionAndProof, ks),
+	}
 }
 
 var TestingAttesterDuty = &types.Duty{
