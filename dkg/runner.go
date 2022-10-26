@@ -24,7 +24,7 @@ type runner struct {
 	// Identifier unique for DKG session
 	Identifier RequestID
 	// KeygenOutcome holds the protocol outcome once it finishes
-	KeygenOutcome *KeyGenOutcome
+	KeygenOutcome *ProtocolOutcome
 	// DepositDataRoot is the signing root for the deposit data
 	DepositDataRoot []byte
 	// DepositDataSignatures holds partial sigs on deposit data
@@ -32,7 +32,7 @@ type runner struct {
 	// OutputMsgs holds all output messages received
 	OutputMsgs map[types.OperatorID]*SignedOutput
 
-	protocol KeyGenProtocol
+	protocol Protocol
 	config   *Config
 }
 
@@ -60,7 +60,7 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 				err := r.config.Network.StreamDKGBlame(r.KeygenOutcome.BlameOutput)
 				return true, errors.Wrap(err, "failed to stream blame output")
 			}
-			if r.KeygenOutcome.KeyGenOutput == nil {
+			if r.KeygenOutcome.ProtocolOutput == nil {
 				return true, errors.Wrap(err, "protocol finished without blame or keygen result")
 			}
 
@@ -132,7 +132,7 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 func (r *runner) prepareAndBroadcastDepositData() error {
 	// generate deposit data
 	root, _, err := types.GenerateETHDepositData(
-		r.KeygenOutcome.KeyGenOutput.ValidatorPK,
+		r.KeygenOutcome.ProtocolOutput.ValidatorPK,
 		r.InitMsg.WithdrawalCredentials,
 		r.InitMsg.Fork,
 		types.DomainDeposit,
@@ -144,7 +144,7 @@ func (r *runner) prepareAndBroadcastDepositData() error {
 	r.DepositDataRoot = root
 
 	// sign
-	sig := r.KeygenOutcome.KeyGenOutput.Share.SignByte(root)
+	sig := r.KeygenOutcome.ProtocolOutput.Share.SignByte(root)
 
 	// broadcast
 	pdd := &PartialDepositData{
@@ -175,7 +175,7 @@ func (r *runner) prepareAndBroadcastOutput() error {
 	}
 
 	// encrypt Operator's share
-	encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeygenOutcome.KeyGenOutput.Share.Serialize())
+	encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeygenOutcome.ProtocolOutput.Share.Serialize())
 	if err != nil {
 		return errors.Wrap(err, "could not encrypt share")
 	}
@@ -183,8 +183,8 @@ func (r *runner) prepareAndBroadcastOutput() error {
 	ret, err := r.generateSignedOutput(&Output{
 		RequestID:            r.Identifier,
 		EncryptedShare:       encryptedShare,
-		SharePubKey:          r.KeygenOutcome.KeyGenOutput.Share.GetPublicKey().Serialize(),
-		ValidatorPubKey:      r.KeygenOutcome.KeyGenOutput.ValidatorPK,
+		SharePubKey:          r.KeygenOutcome.ProtocolOutput.Share.GetPublicKey().Serialize(),
+		ValidatorPubKey:      r.KeygenOutcome.ProtocolOutput.ValidatorPK,
 		DepositDataSignature: depositSig,
 	})
 	if err != nil {
@@ -284,7 +284,7 @@ func (r *runner) validateDepositDataRoot(msg *PartialDepositData) error {
 func (r *runner) validateDepositDataSig(msg *PartialDepositData) error {
 
 	// find operator and verify msg
-	sharePK, found := r.KeygenOutcome.KeyGenOutput.OperatorPubKeys[msg.Signer]
+	sharePK, found := r.KeygenOutcome.ProtocolOutput.OperatorPubKeys[msg.Signer]
 	if !found {
 		return errors.New("signer not part of committee")
 	}

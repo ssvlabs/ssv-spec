@@ -30,7 +30,7 @@ func HappyFlow() *MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       nil, // GLNOTE: Dummy message simulating the KeyGenProtocol to complete
+				Data:       nil, // GLNOTE: Dummy message simulating the Protocol to complete
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.DepositDataMsgType,
