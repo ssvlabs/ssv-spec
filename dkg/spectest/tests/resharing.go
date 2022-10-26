@@ -13,15 +13,8 @@ func ResharingHappyFlow() *MsgProcessingSpecTest {
 	identifier := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
 	reshare := &dkg.Reshare{
 		ValidatorPK: make([]byte, 48),
-		EncryptedShares: map[types.OperatorID][]byte{
-			types.OperatorID(101): nil,
-			types.OperatorID(102): nil,
-			types.OperatorID(103): nil,
-			types.OperatorID(104): nil,
-		},
-		ThresholdOld: 3,
-		OperatorIDs:  []types.OperatorID{1, 2, 3, 4},
-		Threshold:    3,
+		OperatorIDs: []types.OperatorID{1, 2, 3, 4},
+		Threshold:   3,
 	}
 	reshareBytes, _ := reshare.Encode()
 	var root []byte

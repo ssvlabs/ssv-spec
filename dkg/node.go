@@ -59,6 +59,10 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 }
 
 func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, error) {
+	kgOutput, err := n.config.Storage.GetKeyGenOutput(reshareMsg.ValidatorPK)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not find the ")
+	}
 	r := &runner{
 		Operator:              n.operator,
 		ReshareMsg:            reshareMsg,
@@ -67,7 +71,7 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.ReshareProtocol(n.config.Network, n.operator.OperatorID, id, reshareMsg),
+		protocol:              n.config.ReshareProtocol(n.config.Network, n.operator.OperatorID, id, reshareMsg, kgOutput),
 		config:                n.config,
 	}
 

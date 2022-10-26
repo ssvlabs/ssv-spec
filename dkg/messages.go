@@ -157,10 +157,6 @@ func (msg *Init) Decode(data []byte) error {
 type Reshare struct {
 	// ValidatorPK is the the public key to be reshared
 	ValidatorPK types.ValidatorPK
-	// EncryptedShares contains the encrypted shares of the old set
-	EncryptedShares map[types.OperatorID][]byte
-	// ThresholdOld is the threshold of the old set
-	ThresholdOld uint16
 	// OperatorIDs are the operators in the new set
 	OperatorIDs []types.OperatorID
 	// Threshold is the threshold of the new set
@@ -179,14 +175,6 @@ func (msg *Reshare) Validate() error {
 
 	if int(msg.Threshold) != (len(msg.OperatorIDs)-1)*2/3+1 {
 		return errors.New("invalid threshold which has to be 2f+1")
-	}
-
-	if len(msg.EncryptedShares) < 4 || (len(msg.EncryptedShares)-1)%3 != 0 {
-		return errors.New("invalid number of old operators which has to be 3f+1")
-	}
-
-	if int(msg.ThresholdOld) != (len(msg.EncryptedShares)-1)*2/3+1 {
-		return errors.New("invalid thresholdOld which has to be 2f+1")
 	}
 
 	return nil
