@@ -116,11 +116,6 @@ func (signedMsg *SignedMessage) GetRoot() ([]byte, error) {
 	return signedMsg.Message.GetRoot()
 }
 
-type InitOrReshare struct {
-	Init    *Init
-	Reshare *Reshare
-}
-
 // Init is the first message in a DKG which initiates a DKG
 type Init struct {
 	// OperatorIDs are the operators selected for the DKG

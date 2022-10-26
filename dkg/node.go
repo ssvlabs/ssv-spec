@@ -47,11 +47,11 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
+		protocol:              n.config.KeygenProtocol(n.config.Network, n.operator.OperatorID, id, initMsg),
 		config:                n.config,
 	}
 
-	if err := r.protocol.Start(InitOrReshare{Init: initMsg}); err != nil {
+	if err := r.protocol.Start(); err != nil {
 		return nil, errors.Wrap(err, "could not start dkg protocol")
 	}
 
@@ -67,11 +67,11 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.Protocol(n.config.Network, n.operator.OperatorID, id),
+		protocol:              n.config.ReshareProtocol(n.config.Network, n.operator.OperatorID, id, reshareMsg),
 		config:                n.config,
 	}
 
-	if err := r.protocol.Start(InitOrReshare{Reshare: reshareMsg}); err != nil {
+	if err := r.protocol.Start(); err != nil {
 		return nil, errors.Wrap(err, "could not start resharing protocol")
 	}
 

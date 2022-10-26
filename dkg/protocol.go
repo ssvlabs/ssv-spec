@@ -37,7 +37,7 @@ type BlameOutput struct {
 
 // KeyGenProtocol is an interface for all DKG protocol to support a variety of protocols for future upgrades
 type KeyGenProtocol interface {
-	Start(initOrReshare InitOrReshare) error
+	Start() error
 	// ProcessMsg returns true and a bls share if finished
 	ProcessMsg(msg *SignedMessage) (bool, *KeyGenOutcome, error)
 }

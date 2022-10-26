@@ -35,8 +35,8 @@ func (s *DKG) SetOperators(validatorPK []byte, operatorShares map[types.Operator
 	s.operatorShares = operatorShares
 }
 
-func (s *DKG) Start(initOrReshare dkg.InitOrReshare) error {
-	s.operators = initOrReshare.Init.OperatorIDs
+func (s *DKG) Start() error {
+	//s.operators = initOrReshare.Init.OperatorIDs
 	// TODO send Stage 1 msg
 	return nil
 }

@@ -33,7 +33,8 @@ type Operator struct {
 
 type Config struct {
 	// Protocol the DKG protocol implementation
-	Protocol            func(network Network, operatorID types.OperatorID, identifier RequestID) KeyGenProtocol
+	KeygenProtocol      func(network Network, operatorID types.OperatorID, identifier RequestID, init *Init) KeyGenProtocol
+	ReshareProtocol     func(network Network, operatorID types.OperatorID, identifier RequestID, reshare *Reshare) KeyGenProtocol
 	Network             Network
 	Storage             Storage
 	SignatureDomainType types.DomainType
