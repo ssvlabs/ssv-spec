@@ -10,7 +10,7 @@ import (
 
 // LatePrepareNoInstance tests process prepare msg for a previously decided instance (which is no longer part of stored instances)
 func LatePrepareNoInstance() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
 		return &tests.RunInstanceData{
 			InputValue: []byte{1, 2, 3, 4},

@@ -10,7 +10,7 @@ import (
 
 // FullFlowAfterDecided tests a decided msg for round 1 followed by a full proposal, prepare, commit for round 2
 func FullFlowAfterDecided() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
 	rcMsgs := []*qbft.SignedMessage{

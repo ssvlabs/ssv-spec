@@ -1,14 +1,8 @@
 package futuremsg
 
-import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-)
-
 // UnknownSigner tests future msg signed by unknown signer
-func UnknownSigner() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+/*func UnknownSigner() *ControllerSyncSpecTest {
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
@@ -29,4 +23,4 @@ func UnknownSigner() *ControllerSyncSpecTest {
 		ControllerPostRoot:   "5b6ebc3aa0bfcedd466fca3fca7e1dcc0245def7d61d65aee1462436d819c7d0",
 		ExpectedError:        "invalid future msg: commit msg signature invalid: unknown signer",
 	}
-}
+}*/

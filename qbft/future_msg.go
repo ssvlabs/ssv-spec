@@ -5,26 +5,27 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (c *Controller) UponFutureMsg(msg *SignedMessage) (*SignedMessage, error) {
-	if err := validateFutureMsg(c.GetConfig(), msg, c.Share.Committee); err != nil {
+func (c *Controller) UponFutureMsg(msgType types.MsgType, msg *SignedMessage) (*SignedMessage, error) {
+	if err := validateFutureMsg(c.GetConfig(), msgType, msg, c.Share.Committee); err != nil {
 		return nil, errors.Wrap(err, "invalid future msg")
 	}
 	if !c.addHigherHeightMsg(msg) {
 		return nil, errors.New("discarded future msg")
 	}
 	if c.f1SyncTrigger() {
-		return nil, c.GetConfig().GetNetwork().SyncHighestDecided(c.Identifier)
+		return nil, c.GetConfig().GetNetwork().SyncHighestDecided(c.Identifier[:])
 	}
 	return nil, nil
 }
 
 func validateFutureMsg(
 	config IConfig,
+	msgType types.MsgType,
 	msg *SignedMessage,
 	operators []*types.Operator,
 ) error {
-	if err := msg.Validate(); err != nil {
-		return errors.Wrap(err, "invalid decided msg")
+	if err := msg.Validate(msgType); err != nil {
+		return errors.Wrap(err, "invalid future msg")
 	}
 
 	if len(msg.GetSigners()) != 1 {

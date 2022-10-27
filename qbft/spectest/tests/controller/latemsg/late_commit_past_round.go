@@ -10,7 +10,7 @@ import (
 
 // LateCommitPastRound tests process late commit msg for an instance which just decided for a round < decided round
 func LateCommitPastRound() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
 	rcMsgs := []*qbft.SignedMessage{

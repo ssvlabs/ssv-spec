@@ -49,7 +49,10 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusDataByts(types.BNRoleSyncCommitteeContribution),
+								Input: &qbft.Data{
+									Root:   [32]byte{},
+									Source: consensusDataByts(types.BNRoleSyncCommitteeContribution),
+								},
 							}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "c657220938d48e0573e9874b84b29cb92c7d581fca27c28d2a34cc3913c3ffbb",
@@ -70,7 +73,10 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusDataByts(types.BNRoleSyncCommittee),
+								Input: &qbft.Data{
+									Root:   [32]byte{},
+									Source: consensusDataByts(types.BNRoleSyncCommittee),
+								},
 							}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "ca7c1b5bb6a1b2b5d486da30bdef8a96db109cbe5691d1191a0671eaaafb5cf0",
@@ -93,7 +99,10 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusDataByts(types.BNRoleAggregator),
+								Input: &qbft.Data{
+									Root:   [32]byte{},
+									Source: consensusDataByts(types.BNRoleAggregator),
+								},
 							}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "e5df3344d76b2e83fabbff92998d5999daff2747f276b1fbc222b6c960750b93",
@@ -118,7 +127,10 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusDataByts(types.BNRoleProposer),
+								Input: &qbft.Data{
+									Root:   [32]byte{},
+									Source: consensusDataByts(types.BNRoleProposer),
+								},
 							}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "f9023766285ee75a894437f41dbe7d40b6d23922df60353a6c0125d56c4f9f09",
@@ -139,7 +151,10 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusDataByts(types.BNRoleAttester),
+								Input: &qbft.Data{
+									Root:   [32]byte{},
+									Source: consensusDataByts(types.BNRoleAttester),
+								},
 							}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "0a87eee70b6ee2583dd414d6f07f6f5c433975409896dafb51628f5e393a7458",

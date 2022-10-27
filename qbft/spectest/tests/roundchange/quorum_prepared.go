@@ -15,22 +15,22 @@ func QuorumPrepared() *tests.MsgProcessingSpecTest {
 	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	signQBFTMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         []byte{1, 2, 3, 4},
+		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
@@ -40,20 +40,20 @@ func QuorumPrepared() *tests.MsgProcessingSpecTest {
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         []byte{1, 2, 3, 4},
+		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 		PreparedRound: qbft.FirstRound,
 	})
 	proposalMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 
-	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessageHeader()
-	prepareMsgHeader2, _ := signQBFTMsg2.ToSignedMessageHeader()
-	prepareMsgHeader3, _ := signQBFTMsg3.ToSignedMessageHeader()
+	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessage()
+	prepareMsgHeader2, _ := signQBFTMsg2.ToSignedMessage()
+	prepareMsgHeader3, _ := signQBFTMsg3.ToSignedMessage()
 
-	prepareJustifications := []*qbft.SignedMessageHeader{
+	prepareJustifications := []*qbft.SignedMessage{
 		prepareMsgHeader,
 		prepareMsgHeader2,
 		prepareMsgHeader3,
@@ -61,11 +61,11 @@ func QuorumPrepared() *tests.MsgProcessingSpecTest {
 	rcMsg.RoundChangeJustifications = prepareJustifications
 	rcMsg3.RoundChangeJustifications = prepareJustifications
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessageHeader()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessageHeader()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessageHeader()
+	rcMsgHeader, _ := rcMsg.ToSignedMessage()
+	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
+	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
 
-	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessageHeader{
+	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		rcMsgHeader,
 		rcMsgHeader2,
 		rcMsgHeader3,

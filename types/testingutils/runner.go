@@ -139,7 +139,11 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	v := BaseValidator(keySet)
 	consensusDataByts, _ := consensusInput.MarshalSSZ()
 	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
-	msgs := DecidingMsgsForHeight(consensusDataByts, identifier, height, keySet)
+	// TODO<olegshmuelov>: pass InputData
+	msgs := DecidingMsgsForHeight(&qbft.Data{
+		Root:   [32]byte{},
+		Source: consensusDataByts,
+	}, identifier, height, keySet)
 
 	if err := v.DutyRunners[types.BNRoleAttester].StartNewDuty(consensusInput.Duty); err != nil {
 		panic(err.Error())
@@ -182,12 +186,16 @@ var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.Beac
 		}
 	}
 
-	qbftMsgs := DecidingMsgsForHeight(consensusData, id, qbft.FirstHeight, ks)
+	// TODO<olegshmuelov>: pass InputData
+	qbftMsgs := DecidingMsgsForHeight(&qbft.Data{
+		Root:   [32]byte{},
+		Source: consensusData,
+	}, id, qbft.FirstHeight, ks)
 	base = append(base, qbftMsgs...)
 	return base
 }
 
-var DecidingMsgsForHeight = func(consensusData []byte, msgID types.MessageID, height qbft.Height, keySet *TestKeySet) []*types.Message {
+var DecidingMsgsForHeight = func(consensusData *qbft.Data, msgID types.MessageID, height qbft.Height, keySet *TestKeySet) []*types.Message {
 	msgs := make([]*types.Message, 0)
 	for h := qbft.FirstHeight; h <= height; h++ {
 		signMsgEncoded, _ := SignQBFTMsg(keySet.Shares[1], types.OperatorID(1), &qbft.Message{
@@ -196,19 +204,18 @@ var DecidingMsgsForHeight = func(consensusData []byte, msgID types.MessageID, he
 			Input:  consensusData,
 		}).Encode()
 
-		msgID = types.PopulateMsgType(msgID, types.ConsensusProposeMsgType)
 		msgs = append(msgs, &types.Message{
-			ID:   msgID,
+			ID:   types.PopulateMsgType(msgID, types.ConsensusProposeMsgType),
 			Data: signMsgEncoded,
 		})
 
-		msgID = types.PopulateMsgType(msgID, types.ConsensusPrepareMsgType)
 		// prepare
+		msgID = types.PopulateMsgType(msgID, types.ConsensusPrepareMsgType)
 		for i := uint64(1); i <= keySet.Threshold; i++ {
 			signMsgEncoded, _ := SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				Height: h,
 				Round:  qbft.FirstRound,
-				Input:  consensusData,
+				Input:  &qbft.Data{Root: consensusData.Root, Source: nil},
 			}).Encode()
 			msgs = append(msgs, &types.Message{
 				ID:   msgID,
@@ -216,13 +223,13 @@ var DecidingMsgsForHeight = func(consensusData []byte, msgID types.MessageID, he
 			})
 		}
 
-		msgID = types.PopulateMsgType(msgID, types.ConsensusCommitMsgType)
 		// commit
+		msgID = types.PopulateMsgType(msgID, types.ConsensusCommitMsgType)
 		for i := uint64(1); i <= keySet.Threshold; i++ {
 			signMsgEncoded, _ := SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				Height: h,
 				Round:  qbft.FirstRound,
-				Input:  consensusData,
+				Input:  &qbft.Data{Root: consensusData.Root, Source: nil},
 			}).Encode()
 			msgs = append(msgs, &types.Message{
 				ID:   msgID,

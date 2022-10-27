@@ -14,7 +14,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.BeaconRole) []byte {
-		ret := types.NewMsgID(testingutils.TestingValidatorPubKey[:], role)
+		ret := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], role)
 		return ret[:]
 	}
 
@@ -43,7 +43,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "b9ef672646f669ce6b4089d43cdf6ed0ef9901b2f1e8cd71ad5ed13a1ebbb736",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: errStr,
@@ -65,7 +65,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "7b29e0cf0f1a5a90452855d6491db61ae7c90801ecf63180e9caeee4377afbbe",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*ssv.SignedPartialSignature{},
 				ExpectedError:           errStr,
 			},
 			{
@@ -88,7 +88,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "67f566fbae15e210c3471025140432022fdf86eba802111e98833d834d1bf0e7",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: errStr,
@@ -113,7 +113,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "3045b54b45aaaf799c61b0a54ef7685651a953d3c8f6a0329762b62e76ee8c21",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
 				ExpectedError: errStr,
@@ -135,7 +135,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "0618957acbfc81d5819c8082b962cc971248d91dc2777d1b73af2945b1ffe35a",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*ssv.SignedPartialSignature{},
 				ExpectedError:           errStr,
 			},
 		},

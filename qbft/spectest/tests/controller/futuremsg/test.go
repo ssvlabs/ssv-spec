@@ -2,7 +2,6 @@ package futuremsg
 
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
@@ -11,7 +10,7 @@ import (
 
 type ControllerSyncSpecTest struct {
 	Name                 string
-	InputMessages        []*qbft.SignedMessage
+	InputMessages        []*types.Message
 	SyncDecidedCalledCnt int
 	ControllerPostRoot   string
 	ExpectedError        string
@@ -22,10 +21,10 @@ func (test *ControllerSyncSpecTest) TestName() string {
 }
 
 func (test *ControllerSyncSpecTest) Run(t *testing.T) {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
-		identifier[:],
+		identifier,
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),
 		config,
 	)

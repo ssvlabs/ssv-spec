@@ -13,15 +13,15 @@ func ProposeDataEncoding() *tests.MsgSpecTest {
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}},
 	})
 
-	signMsgHeader, _ := msg.ToSignedMessageHeader()
-	msg.RoundChangeJustifications = []*qbft.SignedMessageHeader{
-		signMsgHeader,
+	j := msg.ToJustification()
+	msg.RoundChangeJustifications = []*qbft.SignedMessage{
+		j,
 	}
-	msg.ProposalJustifications = []*qbft.SignedMessageHeader{
-		signMsgHeader,
+	msg.ProposalJustifications = []*qbft.SignedMessage{
+		j,
 	}
 
 	r, _ := msg.GetRoot()

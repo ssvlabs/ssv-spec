@@ -13,47 +13,47 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	signMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	signMsgEncoded5, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[5], types.OperatorID(5), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	signMsgEncoded6, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[6], types.OperatorID(6), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	signMsgEncoded7, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[7], types.OperatorID(7), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	signMsgEncoded8, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[8], types.OperatorID(8), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	signMsgEncoded9, _ := testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[9], types.OperatorID(9), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	msgs := []*types.Message{
 		{

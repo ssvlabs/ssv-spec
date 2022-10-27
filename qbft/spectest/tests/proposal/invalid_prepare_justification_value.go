@@ -13,47 +13,47 @@ func InvalidPrepareJustificationValue() *tests.MsgProcessingSpecTest {
 	prepareMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	prepareMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	prepareMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 3},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 3}},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         []byte{1, 2, 3, 4},
+		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         []byte{1, 2, 3, 4},
+		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         []byte{1, 2, 3, 4},
+		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 		PreparedRound: qbft.FirstRound,
 	})
 	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 
-	prepareMsgHeader, _ := prepareMsg.ToSignedMessageHeader()
-	prepareMsgHeader2, _ := prepareMsg2.ToSignedMessageHeader()
-	prepareMsgHeader3, _ := prepareMsg3.ToSignedMessageHeader()
+	prepareMsgHeader, _ := prepareMsg.ToSignedMessage()
+	prepareMsgHeader2, _ := prepareMsg2.ToSignedMessage()
+	prepareMsgHeader3, _ := prepareMsg3.ToSignedMessage()
 
-	justifications := []*qbft.SignedMessageHeader{
+	justifications := []*qbft.SignedMessage{
 		prepareMsgHeader,
 		prepareMsgHeader2,
 		prepareMsgHeader3,
@@ -63,12 +63,12 @@ func InvalidPrepareJustificationValue() *tests.MsgProcessingSpecTest {
 	rcMsg2.RoundChangeJustifications = justifications
 	rcMsg3.RoundChangeJustifications = justifications
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessageHeader()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessageHeader()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessageHeader()
+	rcMsgHeader, _ := rcMsg.ToSignedMessage()
+	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
+	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
 
 	proposeMsg.ProposalJustifications = justifications
-	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessageHeader{
+	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		rcMsgHeader,
 		rcMsgHeader2,
 		rcMsgHeader3,

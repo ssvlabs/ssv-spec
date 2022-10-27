@@ -130,21 +130,21 @@ type Message struct {
 }
 
 // GetID returns a unique msg ID that is used to identify to which validator should the message be sent for processing
-func (msg *Message) GetID() MessageID {
-	return msg.ID
+func (m *Message) GetID() MessageID {
+	return m.ID
 }
 
 // GetData returns message Data as byte slice
-func (msg *Message) GetData() []byte {
-	return msg.Data
+func (m *Message) GetData() []byte {
+	return m.Data
 }
 
 // Encode returns a msg encoded bytes or error
-func (msg *Message) Encode() ([]byte, error) {
-	return json.Marshal(msg)
+func (m *Message) Encode() ([]byte, error) {
+	return json.Marshal(m)
 }
 
 // Decode returns error if decoding failed
-func (msg *Message) Decode(data []byte) error {
-	return json.Unmarshal(data, &msg)
+func (m *Message) Decode(data []byte) error {
+	return json.Unmarshal(data, &m)
 }

@@ -14,7 +14,7 @@ func MsgDataNonZero() *tests.MsgSpecTest {
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: nil},
 	})
 
 	e, _ := msg.Encode()

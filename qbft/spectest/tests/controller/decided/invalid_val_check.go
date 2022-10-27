@@ -10,7 +10,7 @@ import (
 
 // InvalidValCheckData tests a decided message with invalid decided data (but should pass as it's decided)
 func InvalidValCheckData() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid value (should pass)",

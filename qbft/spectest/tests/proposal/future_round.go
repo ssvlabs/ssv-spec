@@ -13,24 +13,24 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	pre.State.Round = qbft.FirstRound
 
 	prepareMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  8,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	prepareMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  8,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	prepareMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  8,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
@@ -47,29 +47,29 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 	prepareMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	}).Encode()
 	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 
-	prepareMsgHeader, _ := prepareMsg.ToSignedMessageHeader()
-	prepareMsgHeader2, _ := prepareMsg2.ToSignedMessageHeader()
-	prepareMsgHeader3, _ := prepareMsg3.ToSignedMessageHeader()
+	prepareMsgHeader, _ := prepareMsg.ToSignedMessage()
+	prepareMsgHeader2, _ := prepareMsg2.ToSignedMessage()
+	prepareMsgHeader3, _ := prepareMsg3.ToSignedMessage()
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessageHeader()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessageHeader()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessageHeader()
+	rcMsgHeader, _ := rcMsg.ToSignedMessage()
+	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
+	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
 
-	proposeMsg.ProposalJustifications = []*qbft.SignedMessageHeader{
+	proposeMsg.ProposalJustifications = []*qbft.SignedMessage{
 		prepareMsgHeader,
 		prepareMsgHeader2,
 		prepareMsgHeader3,
 	}
 
-	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessageHeader{
+	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		rcMsgHeader,
 		rcMsgHeader2,
 		rcMsgHeader3,

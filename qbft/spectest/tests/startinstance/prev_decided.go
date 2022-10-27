@@ -10,7 +10,7 @@ import (
 
 // PostFutureDecided tests starting a new instance after deciding with future decided msg
 func PostFutureDecided() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "start instance post future decided",
 		RunInstanceData: []*tests.RunInstanceData{

@@ -17,7 +17,7 @@ import (
 var TestingMessage = &Message{
 	Height: FirstHeight,
 	Round:  FirstRound,
-	Input:  []byte{1, 2, 3, 4},
+	Input:  &Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 }
 var testingSignedMsg = func() *SignedMessage {
 	return SignMsg(TestingSK, 1, TestingMessage)
@@ -64,7 +64,7 @@ var testingInstanceStruct = &Instance{
 		Round:                           1,
 		Height:                          1,
 		LastPreparedRound:               1,
-		LastPreparedValue:               []byte{1, 2, 3, 4},
+		LastPreparedValue:               &Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 		ProposalAcceptedForCurrentRound: testingSignedMsg,
 		Decided:                         false,
 		DecidedValue:                    []byte{1, 2, 3, 4},

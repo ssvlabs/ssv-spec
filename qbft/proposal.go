@@ -1,6 +1,7 @@
 package qbft
 
 import (
+	"bytes"
 	"github.com/pkg/errors"
 
 	"github.com/bloxapp/ssv-spec/types"
@@ -29,7 +30,7 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	}
 	i.State.Round = newRound
 
-	prepareMsg, err := CreatePrepare(i.State, i.config, newRound, signedProposal.Message.Input)
+	prepareMsg, err := CreatePrepare(i.State, i.config, newRound, signedProposal.Message.Input.Root)
 	if err != nil {
 		return errors.Wrap(err, "could not create prepare msg")
 	}
@@ -53,9 +54,6 @@ func isValidProposal(
 	valCheck ProposedValueCheckF,
 	operators []*types.Operator,
 ) error {
-	//if signedProposal.Message.MsgType != ProposalMsgType {
-	//	return errors.New("msg type is not proposal")
-	//}
 	if signedProposal.Message.Height != state.Height {
 		return errors.New("proposal Height is wrong")
 	}
@@ -69,25 +67,14 @@ func isValidProposal(
 		return errors.New("proposal leader invalid")
 	}
 
-	//proposalData, err := signedProposal.Message.GetProposalData()
-	//if err != nil {
-	//	return errors.Wrap(err, "could not get proposal data")
-	//}
-	//if err := proposalData.Validate(); err != nil {
-	//	return errors.Wrap(err, "proposalData invalid")
-	//}
-
 	if err := isProposalJustification(
 		state,
 		config,
 		signedProposal.RoundChangeJustifications,
 		signedProposal.ProposalJustifications,
-		//proposalData.RoundChangeJustification,
-		//proposalData.PrepareJustification,
 		state.Height,
 		signedProposal.Message.Round,
 		signedProposal.Message.Input,
-		//proposalData.Data,
 		valCheck,
 	); err != nil {
 		return errors.Wrap(err, "proposal not justified")
@@ -104,14 +91,14 @@ func isValidProposal(
 func isProposalJustification(
 	state *State,
 	config IConfig,
-	roundChangeJustifications []*SignedMessageHeader,
-	prepareJustifications []*SignedMessageHeader,
+	roundChangeJustifications []*SignedMessage,
+	prepareJustifications []*SignedMessage,
 	height Height,
 	round Round,
-	value []byte,
+	inputData *Data,
 	valCheck ProposedValueCheckF,
 ) error {
-	if err := valCheck(value); err != nil {
+	if err := valCheck(inputData.Source); err != nil {
 		return errors.Wrap(err, "proposal value invalid")
 	}
 
@@ -122,41 +109,20 @@ func isProposalJustification(
 		// no quorum, duplicate signers, invalid still has quorum, invalid no quorum
 		// prepared
 		for _, rcj := range roundChangeJustifications {
-			//if err := validRoundChange(state, config, rcj, height, round); err != nil {
-			//	return errors.Wrap(err, "change round msg not valid")
-			//}
-			if err := validSignedPrepareHeaderForHeightRoundAndValue(
-				config,
-				rcj,
-				state.Height,
-				// TODO<olegshmuelov>: check for validity of the passes round and the value
-				round,
-				value,
-				state.Share.Committee,
-			); err != nil {
-				return errors.Wrap(err, "round change justification invalid")
+			if err := validRoundChange(state, config, rcj, height, round); err != nil {
+				return errors.Wrap(err, "change round msg not valid")
 			}
 		}
 
 		// check there is a quorum
-		if !HasQuorumHeaders(state.Share, roundChangeJustifications) {
+		if !HasQuorum(state.Share, roundChangeJustifications) {
 			return errors.New("change round has no quorum")
 		}
 
 		// previouslyPreparedF returns true if any on the round change messages have a prepared round and value
-		previouslyPrepared, err := func(rcJustifications []*SignedMessageHeader) (bool, error) {
-			for _, rcj := range rcJustifications {
-				//rcData, err := rcj.Message.GetRoundChangeData()
-				//if err != nil {
-				//	return false, errors.Wrap(err, "could not get round change data")
-				//}
-				//if rcData.Prepared() {
-				//	return true, nil
-				//}
-
-				// TODO<olegshmuelov> check for input root
-				//if rcj.Message.PreparedRound != NoRound || len(d.PreparedValue) != 0 {
-				if rcj.Message.PreparedRound != NoRound {
+		previouslyPrepared, err := func(rcJustifications []*SignedMessage) (bool, error) {
+			for _, rc := range rcJustifications {
+				if rc.Message.Prepared() {
 					return true, nil
 				}
 			}
@@ -171,39 +137,32 @@ func isProposalJustification(
 		} else {
 
 			// check prepare quorum
-			if !HasQuorumHeaders(state.Share, prepareJustifications) {
+			if !HasQuorum(state.Share, prepareJustifications) {
 				return errors.New("prepares has no quorum")
 			}
 
 			// get a round change data for which there is a justification for the highest previously prepared round
-			rcm, err := highestPrepared(roundChangeJustifications)
+			rch, err := highestPrepared(roundChangeJustifications)
 			if err != nil {
 				return errors.Wrap(err, "could not get highest prepared")
 			}
-			if rcm == nil {
+			if rch == nil {
 				return errors.New("no highest prepared")
 			}
-			//rcmData, err := rcm.Message.GetRoundChangeData()
-			//if err != nil {
-			//	return errors.Wrap(err, "could not get round change data")
-			//}
 
-			// TODO<olegshmuelov>: encode value to input root and compare?
 			// proposed value must equal highest prepared value
-			//if !bytes.Equal(value, rcm.Message.InputRoot) {
-			//	return errors.New("proposed data doesn't match highest prepared")
-			//}
+			if !bytes.Equal(inputData.Root[:], rch.Message.Input.Root[:]) {
+				return errors.New("proposed data doesn't match highest prepared")
+			}
 
 			// validate each prepare message against the highest previously prepared value and round
-			for _, pm := range prepareJustifications {
-				if err := validSignedPrepareHeaderForHeightRoundAndValue(
+			for _, pj := range prepareJustifications {
+				if err := validSignedPrepareForHeightRoundAndValue(
 					config,
-					pm,
+					pj,
 					height,
-					rcm.Message.PreparedRound,
-					// TODO<olegshmuelov>: finalize the comparison between input root in msgHeaders with inputValue
-					// added [:] meanwhile
-					rcm.Message.InputRoot[:],
+					rch.Message.PreparedRound,
+					rch.Message.Input.Source,
 					state.Share.Committee,
 				); err != nil {
 					return errors.New("signed prepare not valid")
@@ -236,13 +195,22 @@ func CreateProposal(
 	state *State,
 	config IConfig,
 	value []byte,
-	roundChanges []*SignedMessage,
-	prepares []*SignedMessageHeader,
+	roundChanges,
+	prepares []*SignedMessage,
 ) (*SignedMessage, error) {
+	cd := &types.ConsensusInput{}
+	if err := cd.UnmarshalSSZ(value); err != nil {
+		return nil, errors.Wrap(err, "could not unmarshal consensus input ssz")
+	}
+
+	root, err := cd.HashTreeRoot()
 	msg := &Message{
 		Height: state.Height,
 		Round:  state.Round,
-		Input:  value,
+		Input: &Data{
+			Root:   root,
+			Source: value,
+		},
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
@@ -250,22 +218,11 @@ func CreateProposal(
 	}
 
 	proposeMsg := &SignedMessage{
-		Message:                msg,
-		Signers:                []types.OperatorID{state.Share.OperatorID},
-		Signature:              sig,
-		ProposalJustifications: prepares,
-	}
-
-	if len(roundChanges) > 0 {
-		rcHeaders := make([]*SignedMessageHeader, 0)
-		for _, rc := range roundChanges {
-			rcHeader, err := rc.ToSignedMessageHeader()
-			if err != nil {
-				return nil, errors.Wrap(err, "could not convert signed msg to signed msg header")
-			}
-			rcHeaders = append(rcHeaders, rcHeader)
-		}
-		proposeMsg.RoundChangeJustifications = rcHeaders
+		Message:                   msg,
+		Signers:                   []types.OperatorID{state.Share.OperatorID},
+		Signature:                 sig,
+		RoundChangeJustifications: roundChanges,
+		ProposalJustifications:    prepares,
 	}
 
 	return proposeMsg, nil

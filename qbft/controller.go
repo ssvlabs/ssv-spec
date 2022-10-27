@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common/math"
 
 	"github.com/pkg/errors"
 
@@ -55,8 +56,15 @@ func NewController(
 	config IConfig,
 ) *Controller {
 	return &Controller{
-		Identifier:          identifier,
-		Height:              -1, // as we bump the height when starting the first instance
+		Identifier: identifier,
+		// TODO<olegshmuelov>: fastssz does not support int but only uint.
+		// this why the Height type was changed from int64 to uint64
+		// The initial value of the height was changed from -1 to math.MaxUint64
+		// when we bump the height at the first instance we get 0 (math.MaxUint64 + 1 = 0)
+		// if we want to keep the Height to be int64 there are 2 possible options:
+		// 1. create a messageSSZ with uint64 instead of Height and transform to message with int64
+		// 2. open a pr for fastssz with the implementation that supports int
+		Height:              math.MaxUint64, // as we bump the height when starting the first instance
 		Domain:              domain,
 		Share:               share,
 		StoredInstances:     InstanceContainer{},
@@ -81,28 +89,14 @@ func (c *Controller) StartNewInstance(value []byte) error {
 // ProcessMsg processes a new msg, returns decided message or error
 func (c *Controller) ProcessMsg(msg *types.Message) (*SignedMessage, error) {
 	msgID := msg.GetID()
+	msgType := msgID.GetMsgType()
 	if err := c.baseMsgValidation(msgID); err != nil {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
 
-	var height Height
 	signedMsg := &SignedMessage{}
-	signedMsgH := &SignedMessageHeader{}
-
-	switch msgID.GetMsgType() {
-	case types.ConsensusProposeMsgType, types.ConsensusRoundChangeMsgType:
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
-			return nil, errors.Wrap(err, "could not decode consensus msg from network msg")
-		}
-		height = signedMsg.Message.Height
-
-	case types.ConsensusPrepareMsgType, types.ConsensusCommitMsgType:
-		if err := signedMsgH.Decode(msg.GetData()); err != nil {
-			return nil, errors.Wrap(err, "could not decode consensus msg header from network msg")
-		}
-		height = signedMsgH.Message.Height
-	default:
-		return nil, errors.New("message type not supported")
+	if err := signedMsg.Decode(msg.GetData()); err != nil {
+		return nil, errors.Wrap(err, "could not decode consensus msg from network msg")
 	}
 
 	/**
@@ -112,24 +106,27 @@ func (c *Controller) ProcessMsg(msg *types.Message) (*SignedMessage, error) {
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	if isDecidedMsg(c.Share, msg) {
-		return c.UponDecided(msg)
-	} else if height > c.Height {
-		return c.UponFutureMsg(signedMsg, signedMsgH, height)
+	if isDecidedMsg(c.Share, signedMsg, msgType) {
+		return c.UponDecided(signedMsg)
+	} else if signedMsg.Message.Height > c.Height {
+		return c.UponFutureMsg(msgType, signedMsg)
 	} else {
-		return c.UponExistingInstanceMsg(msgID, signedMsg, signedMsgH, height)
+		return c.UponExistingInstanceMsg(msgType, signedMsg)
 	}
 }
 
-func (c *Controller) UponExistingInstanceMsg(msgID types.MessageID, signedMsg *SignedMessage, signedMsgH *SignedMessageHeader, height Height) (*SignedMessage, error) {
-	inst := c.InstanceForHeight(height)
+func (c *Controller) UponExistingInstanceMsg(
+	msgType types.MsgType,
+	signedMsg *SignedMessage,
+) (*SignedMessage, error) {
+	inst := c.InstanceForHeight(signedMsg.Message.Height)
 	if inst == nil {
 		return nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
 
-	decided, _, decidedMsg, err := inst.ProcessMsg(msgID, signedMsg, signedMsgH)
+	decided, _, decidedMsg, err := inst.ProcessMsg(msgType, signedMsg)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not process msg")
 	}
@@ -148,7 +145,7 @@ func (c *Controller) UponExistingInstanceMsg(msgID types.MessageID, signedMsg *S
 		// no need to fail processing instance deciding if failed to save/ broadcast
 		fmt.Printf("%s\n", err.Error())
 	}
-	return msg, nil
+	return decidedMsg, nil
 }
 
 func (c *Controller) baseMsgValidation(msgID types.MessageID) error {

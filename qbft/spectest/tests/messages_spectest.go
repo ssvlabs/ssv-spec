@@ -40,52 +40,12 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 		case types.ConsensusCommitMsgType:
 
 		case types.ConsensusRoundChangeMsgType:
-			// TODO<olegshmuelov>: move validation to signmessage validation per type
-			if signedMsg.Message.PreparedRound != qbft.NoRound || len(signedMsg.Message.Input) != 0 {
-				if len(signedMsg.Message.Input) == 0 {
-					lastErr = errors.New("round change prepared value invalid")
-					break
-				}
+			if signedMsg.Message.Prepared() {
 				if len(signedMsg.RoundChangeJustifications) == 0 {
 					lastErr = errors.New("round change justification invalid")
 				}
 			}
 		}
-
-		//switch msg.Message.MsgType {
-		//case qbft.RoundChangeMsgType:
-		//	rc := qbft.RoundChangeData{}
-		//	if err := rc.Decode(msg.Message.Data); err != nil {
-		//		lastErr = err
-		//	}
-		//	if err := rc.Validate(); err != nil {
-		//		lastErr = err
-		//	}
-		//case qbft.CommitMsgType:
-		//	rc := qbft.CommitData{}
-		//	if err := rc.Decode(msg.Message.Data); err != nil {
-		//		lastErr = err
-		//	}
-		//	if err := rc.Validate(); err != nil {
-		//		lastErr = err
-		//	}
-		//case qbft.PrepareMsgType:
-		//	rc := qbft.PrepareData{}
-		//	if err := rc.Decode(msg.Message.Data); err != nil {
-		//		lastErr = err
-		//	}
-		//	if err := rc.Validate(); err != nil {
-		//		lastErr = err
-		//	}
-		//case qbft.ProposalMsgType:
-		//	rc := qbft.ProposalData{}
-		//	if err := rc.Decode(msg.Message.Data); err != nil {
-		//		lastErr = err
-		//	}
-		//	if err := rc.Validate(); err != nil {
-		//		lastErr = err
-		//	}
-		//}
 
 		if len(test.EncodedMessages) > 0 {
 			byts, err := signedMsg.Encode()

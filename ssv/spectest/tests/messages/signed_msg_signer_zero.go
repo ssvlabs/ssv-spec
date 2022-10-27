@@ -6,7 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// SignedMsgSigner0 tests SignedPartialSignatureMessage signer == 0
+// SignedMsgSigner0 tests SignedPartialSignature signer == 0
 func SignedMsgSigner0() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -17,7 +17,7 @@ func SignedMsgSigner0() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "signed message signer 0",
-		Messages: []*ssv.SignedPartialSignatureMessage{
+		Messages: []*ssv.SignedPartialSignature{
 			msgPre,
 			msgPost,
 		},

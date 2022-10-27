@@ -36,8 +36,8 @@ func NewInstance(
 			Height:               height,
 			LastPreparedRound:    NoRound,
 			ProposeContainer:     NewMsgContainer(),
-			PrepareContainer:     NewMsgHContainer(),
-			CommitContainer:      NewMsgHContainer(),
+			PrepareContainer:     NewMsgContainer(),
+			CommitContainer:      NewMsgContainer(),
 			RoundChangeContainer: NewMsgContainer(),
 		},
 		config:      config,
@@ -72,7 +72,7 @@ func (i *Instance) Start(value []byte, height Height) {
 			}
 		}
 
-		if err := i.config.GetNetwork().SyncHighestRoundChange(i.State.ID, i.State.Height); err != nil {
+		if err := i.config.GetNetwork().SyncHighestRoundChange(i.State.ID[:], i.State.Height); err != nil {
 			fmt.Printf("%s\n", err.Error())
 		}
 	})
@@ -89,40 +89,27 @@ func (i *Instance) Broadcast(data []byte, msgType types.MsgType) error {
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
 func (i *Instance) ProcessMsg(
-	msgID types.MessageID,
+	msgType types.MsgType,
 	msg *SignedMessage,
-	msgH *SignedMessageHeader,
 ) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
-	//if err := msg.Validate(msgID.GetMsgType()); err != nil {
-	//	return false, nil, nil, errors.Wrap(err, "invalid signed message")
-	//}
+	if err := msg.Validate(msgType); err != nil {
+		return false, nil, nil, errors.Wrap(err, "invalid signed message")
+	}
 
 	res := i.processMsgF.Run(func() interface{} {
-		switch msgID.GetMsgType() {
+		switch msgType {
 		case types.ConsensusProposeMsgType:
-			if err := msg.Validate(msgID.GetMsgType()); err != nil {
-				return errors.Wrap(err, "invalid signed message")
-			}
 			return i.uponProposal(msg, i.State.ProposeContainer)
 		case types.ConsensusPrepareMsgType:
-			if err := msgH.Validate(); err != nil {
-				return errors.Wrap(err, "invalid signed message header")
-			}
-			return i.uponPrepare(msgH, i.State.PrepareContainer, i.State.CommitContainer)
+			return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
 		case types.ConsensusCommitMsgType:
-			if err := msgH.Validate(); err != nil {
-				return errors.Wrap(err, "invalid signed message header")
-			}
-			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msgH, i.State.CommitContainer)
+			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
 			if decided {
 				i.State.Decided = decided
 				i.State.DecidedValue = decidedValue
 			}
 			return err
 		case types.ConsensusRoundChangeMsgType:
-			if err := msg.Validate(msgID.GetMsgType()); err != nil {
-				return errors.Wrap(err, "invalid signed message")
-			}
 			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
 		default:
 			return errors.New("signed message type not supported")

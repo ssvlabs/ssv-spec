@@ -21,12 +21,6 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.Wrap(err, "invalid decided msg")
 	}
 
-	// get decided value
-	data, err := msg.Message.GetCommitData()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get decided data")
-	}
-
 	// did previously decide?
 	inst := c.InstanceForHeight(msg.Message.Height)
 	prevDecided := inst != nil && inst.State.Decided
@@ -38,7 +32,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 			inst.State.Round = msg.Message.Round
 		}
 		if c.Height == msg.Message.Height {
-			inst.State.DecidedValue = data.Data
+			inst.State.DecidedValue = msg.Message.Input.Source
 		}
 	}
 
@@ -48,7 +42,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Message.Height)
 		i.State.Round = msg.Message.Round
 		i.State.Decided = true
-		i.State.DecidedValue = data.Data
+		i.State.DecidedValue = msg.Message.Input.Source
 		c.StoredInstances.addNewInstance(i)
 
 		// bump height
@@ -56,7 +50,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	}
 
 	if !prevDecided {
-		if err := c.GetConfig().GetStorage().SaveHighestDecided(msg); err != nil {
+		if err := c.GetConfig().GetStorage().SaveHighestDecided(c.Identifier, msg); err != nil {
 			// no need to fail processing the decided msg if failed to save
 			fmt.Printf("%s\n", err.Error())
 		}
@@ -70,30 +64,23 @@ func validateDecided(
 	signedDecided *SignedMessage,
 	share *types.Share,
 ) error {
-	if !isDecidedMsg(share, signedDecided) {
-		return errors.New("not a decided msg")
-	}
-
-	if err := signedDecided.Validate(); err != nil {
+	if err := signedDecided.Validate(types.DecidedMsgType); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
-		return errors.Wrap(err, "invalid decided msg")
-	}
+	// TODO<olegshmuelov>: the passed height will be always equal to signedMsg.Message.Height
+	//if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
+	//	return errors.Wrap(err, "invalid decided msg")
+	//}
 
-	msgDecidedData, err := signedDecided.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get msg decided data")
-	}
-	if err := msgDecidedData.Validate(); err != nil {
-		return errors.Wrap(err, "invalid decided data")
+	if err := signedDecided.Signature.VerifyByOperators(signedDecided, config.GetSignatureDomainType(), types.QBFTSignatureType, share.Committee); err != nil {
+		return errors.Wrap(err, "decided msg signature invalid")
 	}
 
 	return nil
 }
 
 // returns true if signed commit has all quorum sigs
-func isDecidedMsg(share *types.Share, signedDecided *SignedMessage) bool {
-	return share.HasQuorum(len(signedDecided.Signers)) && signedDecided.Message.MsgType == CommitMsgType
+func isDecidedMsg(share *types.Share, signedDecided *SignedMessage, msgType types.MsgType) bool {
+	return msgType == types.DecidedMsgType && share.HasQuorum(len(signedDecided.Signers))
 }

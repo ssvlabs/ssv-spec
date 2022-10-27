@@ -9,7 +9,7 @@ import (
 
 // PreviousDecided tests starting an instance when the previous one decided
 func PreviousDecided() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "start instance prev decided",
 		RunInstanceData: []*tests.RunInstanceData{

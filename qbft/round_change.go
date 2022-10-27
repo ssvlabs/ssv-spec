@@ -33,21 +33,13 @@ func (i *Instance) uponRoundChange(
 		return errors.Wrap(err, "could not get proposal justification for leading round")
 	}
 	if justifiedRoundChangeMsg != nil {
-		//highestRCData, err := justifiedRoundChangeMsg.Message.GetRoundChangeData()
-		//if err != nil {
-		//	return errors.Wrap(err, "could not round change data from highestJustifiedRoundChangeMsg")
-		//}
-
 		// Chose proposal value.
 		// If justifiedRoundChangeMsg has no prepare justification chose state value
 		// If justifiedRoundChangeMsg has prepare justification chose prepared value
 		valueToPropose := instanceStartValue
-
-		//if highestRCData.Prepared() {
-		//	valueToPropose = highestRCData.PreparedValue
-		//}
-		if justifiedRoundChangeMsg.Message.PreparedRound != NoRound || len(justifiedRoundChangeMsg.Message.Input) != 0 {
-			valueToPropose = justifiedRoundChangeMsg.Message.Input
+		if justifiedRoundChangeMsg.Message.Prepared() {
+			// TODO<olegshmuelov> validate that justified round change msg holds the complete input data
+			valueToPropose = justifiedRoundChangeMsg.Message.Input.Source
 		}
 
 		proposeMsg, err := CreateProposal(
@@ -127,15 +119,6 @@ func hasReceivedProposalJustificationForLeadingRound(
 		return nil, nil
 	}
 
-	rcHeaders := make([]*SignedMessageHeader, 0)
-	for _, rc := range roundChanges {
-		rcHeader, err := rc.ToSignedMessageHeader()
-		if err != nil {
-			return nil, errors.Wrap(err, "could not convert signed msg to signed msg header")
-		}
-		rcHeaders = append(rcHeaders, rcHeader)
-	}
-
 	// Important!
 	// We iterate on all round change msgs for liveliness in case the last round change msg is malicious.
 	for _, rc := range roundChanges {
@@ -143,7 +126,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 			state,
 			config,
 			rc,
-			rcHeaders,
+			roundChanges,
 			valCheck,
 			signedRoundChange.Message.Round,
 		) == nil {
@@ -159,15 +142,10 @@ func isReceivedProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
 	roundChangeMsg *SignedMessage,
-	roundChanges []*SignedMessageHeader,
+	roundChanges []*SignedMessage,
 	valCheck ProposedValueCheckF,
 	newRound Round,
 ) error {
-	//rcData, err := roundChangeMsg.Message.GetRoundChangeData()
-	//if err != nil {
-	//	return errors.Wrap(err, "could not get round change data")
-	//}
-
 	if err := isReceivedProposalJustification(
 		state,
 		config,
@@ -198,10 +176,10 @@ func isReceivedProposalJustificationForLeadingRound(
 func isReceivedProposalJustification(
 	state *State,
 	config IConfig,
-	roundChangeJustifications []*SignedMessageHeader,
-	prepareJustifications []*SignedMessageHeader,
+	roundChangeJustifications,
+	prepareJustifications []*SignedMessage,
 	newRound Round,
-	value []byte,
+	inputData *Data,
 	valCheck ProposedValueCheckF,
 ) error {
 	if err := isProposalJustification(
@@ -211,7 +189,7 @@ func isReceivedProposalJustification(
 		prepareJustifications,
 		state.Height,
 		newRound,
-		value,
+		inputData,
 		valCheck,
 	); err != nil {
 		return errors.Wrap(err, "proposal not justified")
@@ -220,12 +198,10 @@ func isReceivedProposalJustification(
 }
 
 func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, height Height, round Round) error {
-	//if signedMsg.Message.MsgType != RoundChangeMsgType {
-	//	return errors.New("round change msg type is wrong")
-	//}
 	if signedMsg.Message.Height != height {
 		return errors.New("round change Height is wrong")
 	}
+	// TODO<olegshmuelov>: the passed round will be always equal to signedMsg.Message.Round
 	if signedMsg.Message.Round != round {
 		return errors.New("msg round wrong")
 	}
@@ -237,35 +213,27 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 		return errors.Wrap(err, "round change msg signature invalid")
 	}
 
-	// TODO<olegshmuelov>: len(signedMsg.Message.Input) is always != 0 (this check already done in message validation),
-	// so is it always prepared?
-	// check if prepared
-	if signedMsg.Message.PreparedRound != NoRound || len(signedMsg.Message.Input) != 0 {
-		// this check already done in message validation
-		//	if len(d.PreparedValue) == 0 {
-		//		return errors.New("round change prepared value invalid")
-		//	}
+	if signedMsg.Message.Prepared() {
 		if len(signedMsg.RoundChangeJustifications) == 0 {
 			return errors.New("round change justification invalid")
 		}
-		// TODO - should next proposal data be equal to prepared value?
 
 		// Addition to formal spec
 		// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
 		for _, rcj := range signedMsg.RoundChangeJustifications {
-			if err := validSignedPrepareHeaderForHeightRoundAndValue(
+			if err := validSignedPrepareForHeightRoundAndValue(
 				config,
 				rcj,
 				state.Height,
 				signedMsg.Message.PreparedRound,
-				signedMsg.Message.Input,
+				signedMsg.Message.Input.Root[:],
 				state.Share.Committee,
 			); err != nil {
 				return errors.Wrap(err, "round change justification invalid")
 			}
 		}
 
-		if !HasQuorumHeaders(state.Share, signedMsg.RoundChangeJustifications) {
+		if !HasQuorum(state.Share, signedMsg.RoundChangeJustifications) {
 			return errors.New("no justifications quorum")
 		}
 
@@ -278,34 +246,16 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 
 // TODO<olegshmuelov>: remove returning error if not needed
 // highestPrepared returns a round change message with the highest prepared round, returns nil if none found
-func highestPrepared(roundChangesJustifications []*SignedMessageHeader) (*SignedMessageHeader, error) {
-	var ret *SignedMessageHeader
-	for _, rcj := range roundChangesJustifications {
-		//rcData, err := rc.Message.GetRoundChangeData()
-		//if err != nil {
-		//	return nil, errors.Wrap(err, "could not get round change data")
-		//}
-		//
-		//if !rcData.Prepared() {
-		//	continue
-		//}
-
-		// TODO<olegshmuelov> check for input root
-		//if rcj.Message.PreparedRound == NoRound && len(d.PreparedValue) == 0 {
-		if rcj.Message.PreparedRound == NoRound {
+func highestPrepared(roundChangeJustifications []*SignedMessage) (*SignedMessage, error) {
+	var ret *SignedMessage
+	for _, rcj := range roundChangeJustifications {
+		if !rcj.Message.Prepared() {
 			continue
 		}
 
 		if ret == nil {
 			ret = rcj
 		} else {
-			//retRCData, err := ret.Message.GetRoundChangeData()
-			//if err != nil {
-			//	return nil, errors.Wrap(err, "could not get round change data")
-			//}
-			//if retRCData.PreparedRound < rcData.PreparedRound {
-			//	ret = rc
-			//}
 			if ret.Message.PreparedRound < rcj.Message.PreparedRound {
 				ret = rcj
 			}
@@ -325,7 +275,7 @@ func minRound(roundChangeMsgs []*SignedMessage) Round {
 	return ret
 }
 
-func getRoundChangeData(state *State, config IConfig) ([]*SignedMessageHeader, Round, []byte) {
+func getRoundChangeData(state *State, config IConfig) ([]*SignedMessage, Round, *Data) {
 	if state.LastPreparedRound != NoRound && state.LastPreparedValue != nil {
 		justifications := getRoundChangeJustification(state, config, state.PrepareContainer)
 		return justifications, state.LastPreparedRound, state.LastPreparedValue
@@ -351,14 +301,17 @@ func CreateRoundChange(state *State, config IConfig, newRound Round) (*SignedMes
 	justifications, round, preparedValue := getRoundChangeData(state, config)
 
 	msg := &Message{
-		Height:        state.Height,
-		Round:         newRound,
-		Input:         preparedValue,
+		Height: state.Height,
+		Round:  newRound,
+		Input: &Data{
+			Root:   preparedValue.Root,
+			Source: preparedValue.Source,
+		},
 		PreparedRound: round,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed signing prepare msg")
+		return nil, errors.Wrap(err, "failed signing round change msg")
 	}
 
 	return &SignedMessage{

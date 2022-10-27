@@ -96,13 +96,6 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 	return nil, errors.New("pk not found")
 }
 
-func (km *testingKeyManager) SignRootHeader(inputRoot []byte, pk []byte) (types.Signature, error) {
-	if k, found := km.keys[hex.EncodeToString(pk)]; found {
-		return k.SignByte(inputRoot).Serialize(), nil
-	}
-	return nil, errors.New("pk not found")
-}
-
 // IsBeaconBlockSlashable returns true if the given block is slashable
 func (km *testingKeyManager) IsBeaconBlockSlashable(block *bellatrix.BeaconBlock) error {
 	return nil

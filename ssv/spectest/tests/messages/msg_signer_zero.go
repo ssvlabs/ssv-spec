@@ -17,7 +17,7 @@ func MessageSigner0() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "message signer 0",
-		Messages: []*ssv.SignedPartialSignatureMessage{
+		Messages: []*ssv.SignedPartialSignature{
 			msgPre,
 			msgPost,
 		},

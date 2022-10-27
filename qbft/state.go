@@ -85,14 +85,14 @@ type State struct {
 	Round                           Round
 	Height                          Height
 	LastPreparedRound               Round
-	LastPreparedValue               []byte
+	LastPreparedValue               *Data
 	ProposalAcceptedForCurrentRound *SignedMessage
 	Decided                         bool
 	DecidedValue                    []byte
 
 	ProposeContainer     *MsgContainer
-	PrepareContainer     *MsgHContainer
-	CommitContainer      *MsgHContainer
+	PrepareContainer     *MsgContainer
+	CommitContainer      *MsgContainer
 	RoundChangeContainer *MsgContainer
 }
 

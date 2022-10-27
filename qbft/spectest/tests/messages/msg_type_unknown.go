@@ -8,7 +8,7 @@ package messages
 //		Height:     qbft.FirstHeight,
 //		Round:      qbft.FirstRound,
 //		Identifier: []byte{1, 2, 3, 4},
-//		Input: []byte{1, 2, 3, 4},
+//		Input: &Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 //	})
 //
 //	return &tests.MsgSpecTest{

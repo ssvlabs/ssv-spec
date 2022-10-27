@@ -8,23 +8,19 @@ import (
 
 // UponCommit returns true if a quorum of commit messages was received.
 func (i *Instance) UponCommit(
-	signedCommit *SignedMessageHeader,
-	commitMsgContainer *MsgHContainer,
+	signedCommit *SignedMessage,
+	commitMsgContainer *MsgContainer,
 ) (bool, []byte, *SignedMessage, error) {
 	if i.State.ProposalAcceptedForCurrentRound == nil {
 		return false, nil, nil, errors.New("did not receive proposal for this round")
 	}
 
-	acceptedProposalInputRoot, err := i.State.ProposalAcceptedForCurrentRound.Message.GetHeaderInputRoot()
-	if err != nil {
-		return false, nil, nil, errors.Wrap(err, "could not get accepted proposal data")
-	}
 	if err := validateCommit(
 		i.config,
 		signedCommit,
 		i.State.Height,
 		i.State.Round,
-		acceptedProposalInputRoot,
+		i.State.ProposalAcceptedForCurrentRound.Message.Input.Root,
 		i.State.Share.Committee,
 	); err != nil {
 		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
@@ -39,7 +35,7 @@ func (i *Instance) UponCommit(
 	}
 
 	// calculate commit quorum and act upon it
-	quorum, commitMsgs, err := commitQuorumForRoundValue(i.State, commitMsgContainer, signedCommit.Message.InputRoot, signedCommit.Message.Round)
+	quorum, commitMsgs, err := commitQuorumForRoundValue(i.State, commitMsgContainer, signedCommit.Message.Input.Root[:], signedCommit.Message.Round)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}
@@ -48,18 +44,18 @@ func (i *Instance) UponCommit(
 		if err != nil {
 			return false, nil, nil, errors.Wrap(err, "could not aggregate commit msgs")
 		}
-		return true, i.State.ProposalAcceptedForCurrentRound.Message.Input, agg, nil
+		return true, i.State.ProposalAcceptedForCurrentRound.Message.Input.Source, agg, nil
 	}
 	return false, nil, nil, nil
 }
 
 // returns true if there is a quorum for the current round for this provided value
-func commitQuorumForRoundValue(state *State, commitMsgContainer *MsgHContainer, value [32]byte, round Round) (bool, []*SignedMessageHeader, error) {
-	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndValue(round, value[:])
+func commitQuorumForRoundValue(state *State, commitMsgContainer *MsgContainer, value []byte, round Round) (bool, []*SignedMessage, error) {
+	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndValue(round, value)
 	return state.Share.HasQuorum(len(signers)), msgs, nil
 }
 
-func aggregateCommitMsgs(msgs []*SignedMessageHeader, acceptedProposalInput []byte) (*SignedMessage, error) {
+func aggregateCommitMsgs(msgs []*SignedMessage, acceptedProposalData *Data) (*SignedMessage, error) {
 	if len(msgs) == 0 {
 		return nil, errors.New("can't aggregate zero commit msgs")
 	}
@@ -67,7 +63,7 @@ func aggregateCommitMsgs(msgs []*SignedMessageHeader, acceptedProposalInput []by
 	var ret *SignedMessage
 	for _, m := range msgs {
 		if ret == nil {
-			ret = m.DeepCopy(acceptedProposalInput)
+			ret = m.DeepCopy(acceptedProposalData)
 		} else {
 			if err := ret.Aggregate(m); err != nil {
 				return nil, errors.Wrap(err, "could not aggregate commit msg")
@@ -86,7 +82,7 @@ func aggregateCommitMsgs(msgs []*SignedMessageHeader, acceptedProposalInput []by
                             && uPayload.round == current.round
                             && recoverSignedCommitAuthor(m.commitPayload) == current.id
 */
-func didSendCommitForHeightAndRound(state *State, commitMsgContainer *MsgHContainer) bool {
+func didSendCommitForHeightAndRound(state *State, commitMsgContainer *MsgContainer) bool {
 	for _, msg := range commitMsgContainer.MessagesForRound(state.Round) {
 		if msg.MatchedSigners([]types.OperatorID{state.Share.OperatorID}) {
 			return true
@@ -108,30 +104,23 @@ Commit(
                         )
                     );
 */
-func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessageHeader, error) {
-	cd := &types.ConsensusInput{}
-	if err := cd.UnmarshalSSZ(value); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal consensus input ssz")
+func CreateCommit(state *State, config IConfig, value [32]byte) (*SignedMessage, error) {
+	msg := &Message{
+		Height: state.Height,
+		Round:  state.Round,
+		Input: &Data{
+			Root:   value,
+			Source: nil,
+		},
 	}
 
-	root, err := cd.HashTreeRoot()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not hash tree consensus input root")
-	}
-
-	msgH := &MessageHeader{
-		Height:    state.Height,
-		Round:     state.Round,
-		InputRoot: root,
-	}
-
-	sig, err := config.GetSigner().SignRootHeader(msgH.InputRoot[:], state.Share.SharePubKey)
+	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing commit msg")
 	}
 
-	return &SignedMessageHeader{
-		Message:   msgH,
+	return &SignedMessage{
+		Message:   msg,
 		Signers:   []types.OperatorID{state.Share.OperatorID},
 		Signature: sig,
 	}, nil
@@ -139,7 +128,7 @@ func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessageHea
 
 func baseCommitValidation(
 	config IConfig,
-	signedCommit *SignedMessageHeader,
+	signedCommit *SignedMessage,
 	height Height,
 	operators []*types.Operator,
 ) error {
@@ -156,7 +145,7 @@ func baseCommitValidation(
 
 func validateCommit(
 	config IConfig,
-	signedCommit *SignedMessageHeader,
+	signedCommit *SignedMessage,
 	height Height,
 	round Round,
 	inputRoot [32]byte,
@@ -174,7 +163,7 @@ func validateCommit(
 		return errors.New("commit round is wrong")
 	}
 
-	if !bytes.Equal(signedCommit.Message.InputRoot[:], inputRoot[:]) {
+	if !bytes.Equal(signedCommit.Message.Input.Root[:], inputRoot[:]) {
 		return errors.New("proposed data different than commit msg data")
 	}
 

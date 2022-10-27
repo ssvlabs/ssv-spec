@@ -109,7 +109,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Messag
 	}
 
 	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.UnmarshalSSZ(decidedMsg.Message.Input); err != nil {
+	if err := decidedValue.UnmarshalSSZ(decidedMsg.Message.Input.Source); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
@@ -210,6 +210,10 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 	if err != nil {
 		return errors.Wrap(err, "could not encode ConsensusData")
 	}
+	//inputData := qbft.Data{
+	//	Root:     [32]byte{},
+	//	Source: nil,
+	//}
 
 	if err := runner.GetValCheckF()(byts); err != nil {
 		return errors.Wrap(err, "input data invalid")

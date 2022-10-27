@@ -10,7 +10,7 @@ import (
 
 // FutureInstance tests decided msg received for future (not yet started) instance
 func FutureInstance() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "decide future instance",
 		RunInstanceData: []*tests.RunInstanceData{

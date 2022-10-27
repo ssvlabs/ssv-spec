@@ -10,7 +10,7 @@ import (
 
 // DuplicateSigners tests a decided msg with duplicate signers
 func DuplicateSigners() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.MultiSignQBFTMsg(

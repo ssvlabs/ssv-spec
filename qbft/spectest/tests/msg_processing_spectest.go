@@ -37,7 +37,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 			lastErr = err
 		}
 
-		_, _, _, err := test.Pre.ProcessMsg(msg.GetID(), signedMsg)
+		_, _, _, err := test.Pre.ProcessMsg(msg.GetID().GetMsgType(), signedMsg)
 		if err != nil {
 			lastErr = err
 		}

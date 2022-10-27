@@ -1,14 +1,8 @@
 package futuremsg
 
-import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-)
-
 // F1FutureMsgs tests a f+1 future msgs that trigger decdied futuremsg
-func F1FutureMsgs() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+/*func F1FutureMsgs() *ControllerSyncSpecTest {
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
 	return &ControllerSyncSpecTest{
@@ -32,4 +26,4 @@ func F1FutureMsgs() *ControllerSyncSpecTest {
 		SyncDecidedCalledCnt: 1,
 		ControllerPostRoot:   "4143f41114629c9d7e012ac3ef2b29dafbde78992b8604d50e7c43bb96b027ae",
 	}
-}
+}*/

@@ -10,7 +10,7 @@ import (
 
 // PastInstance tests a decided msg received for past instance
 func PastInstance() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	return &tests.ControllerSpecTest{
 		Name: "decide past instance",
 		RunInstanceData: []*tests.RunInstanceData{

@@ -20,6 +20,7 @@ const (
 type CreateMsgSpecTest struct {
 	Name                                             string
 	Value                                            []byte
+	ValueRoot                                        [32]byte
 	Round                                            qbft.Round
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
@@ -29,24 +30,24 @@ type CreateMsgSpecTest struct {
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	var msg *qbft.SignedMessage
-	var msgH *qbft.SignedMessageHeader
 	var r []byte
 	var lastErr error
 	switch test.CreateType {
 	case CreateProposal:
 		msg, _ = test.createProposal()
-		r, lastErr = msg.GetRoot()
 	case CreatePrepare:
-		msgH, _ = test.createPrepare()
-		r, lastErr = msgH.GetRoot()
+		msg, _ = test.createPrepare()
 	case CreateCommit:
-		msgH, _ = test.createCommit()
-		r, lastErr = msgH.GetRoot()
+		msg, _ = test.createCommit()
 	case CreateRoundChange:
 		msg, _ = test.createRoundChange()
-		r, lastErr = msg.GetRoot()
 	default:
 		t.Fail()
+	}
+
+	r, err := msg.GetRoot()
+	if err != nil {
+		lastErr = err
 	}
 
 	if len(test.ExpectedError) != 0 {
@@ -58,7 +59,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r))
 }
 
-func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessageHeader, error) {
+func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	state := &qbft.State{
@@ -67,10 +68,10 @@ func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessageHeader, error)
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateCommit(state, config, test.Value)
+	return qbft.CreateCommit(state, config, test.ValueRoot)
 }
 
-func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessageHeader, error) {
+func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	msgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	state := &qbft.State{
@@ -79,7 +80,7 @@ func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessageHeader, error
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreatePrepare(state, config, test.Round, test.Value)
+	return qbft.CreatePrepare(state, config, test.Round, test.ValueRoot)
 }
 
 func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
@@ -91,16 +92,7 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	prepareJustifications := make([]*qbft.SignedMessageHeader, 0)
-	for _, rc := range test.PrepareJustifications {
-		prepareHeader, err := rc.ToSignedMessageHeader()
-		if err != nil {
-			return nil, errors.Wrap(err, "could not convert signed msg to signed msg header")
-		}
-		prepareJustifications = append(prepareJustifications, prepareHeader)
-	}
-
-	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, prepareJustifications)
+	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, test.PrepareJustifications)
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
@@ -114,7 +106,10 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 
 	if len(test.PrepareJustifications) > 0 {
 		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
-		state.LastPreparedValue = test.Value
+		state.LastPreparedValue = &qbft.Data{
+			Root:   test.ValueRoot,
+			Source: test.Value,
+		}
 
 		for _, msg := range test.PrepareJustifications {
 			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)

@@ -13,16 +13,16 @@ func SignedMessageEncoding() *tests.MsgSpecTest {
 	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 	proposalMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  []byte{1, 2, 3, 4},
+		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
 	})
 
-	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessageHeader()
-	prepareJustifications := []*qbft.SignedMessageHeader{
+	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessage()
+	prepareJustifications := []*qbft.SignedMessage{
 		prepareMsgHeader,
 	}
 	proposalMsg.RoundChangeJustifications = prepareJustifications
