@@ -28,11 +28,27 @@ Receive msg and add to stack. queue provide interface with ADD, POP, DELETE func
 
 ### Priority
 
+#### V1
+
 1. Higher height (all above the current height)
-2. Post Consensus (by the current slot)
-3. All Decided
-4. Commit by current height
-5. Consensus by state (explained below)
+2. If No Instance Running
+   1. Post Consensus (by the current slot)
+   2. All Decided
+   3. Commit by current height
+3. If Running Instance
+   1. Consensus by state (explained below)
+   2. All Decided
+4. Lower Height (all below current height)
+
+#### V2 (WIP)
+
+2. If No Instance Running
+   1. Post Consensus (by the current slot)
+   2. Commit by current height
+3. If Running Instance
+   1. Consensus by state (explained below)
+4. All Decided
+5. Higher height (all above the current height)
 6. Lower Height (all below current height)
 
 
@@ -63,3 +79,12 @@ look for post consensus. if queue knows what is the expected height, once no mor
 **Lower height**
 > We need to pop msg's lower than the current height up to X below. 
 
+**Higher height + Cache**
+> With this type instead of pop we're using peek in order to not lose the msg.
+> example - 
+> let's assume current height is 10
+> we got the following msg's
+> 1. change round (height 11)
+> 2. change round (height 11)
+> 3. change round (height 11)
+> so firstly we peek and preform f+1, then we pop them 
