@@ -13,8 +13,10 @@ func LateRoundChangePastInstance() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	allMsgs := testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], 5, ks)
-	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
+	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	allMsgs := testingutils.DecidingMsgsForHeight(inputData, identifier, 5, ks)
+
+	msgPerHeight := make(map[qbft.Height][]*types.Message)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
 	msgPerHeight[2] = allMsgs[14:21]
@@ -23,37 +25,32 @@ func LateRoundChangePastInstance() *tests.ControllerSpecTest {
 	msgPerHeight[5] = allMsgs[35:42]
 
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
+		multiSignMsg := testingutils.MultiSignQBFTMsg(
+			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+			[]types.OperatorID{1, 2, 3},
+			&qbft.Message{
+				Height: height,
+				Round:  qbft.FirstRound,
+				Input:  inputData,
+			})
 		return &tests.RunInstanceData{
-			InputValue:    inputData,
-			InputMessages: msgPerHeight[height],
-			SavedDecided: testingutils.MultiSignQBFTMsg(
-				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.CommitMsgType,
-					Height:     height,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-				}),
-			BroadcastedDecided: testingutils.MultiSignQBFTMsg(
-				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.CommitMsgType,
-					Height:     height,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-				}),
+			InputValue:         inputData,
+			InputMessages:      msgPerHeight[height],
+			SavedDecided:       multiSignMsg,
+			BroadcastedDecided: multiSignMsg,
 			DecidedVal:         inputData.Source,
 			DecidedCnt:         1,
 			ControllerPostRoot: postRoot,
 		}
 	}
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
+		Height: 4,
+		Round:  qbft.FirstRound,
+		Input:  inputData,
+	}).Encode()
 
 	return &tests.ControllerSpecTest{
-		Name: "late round change past instance",
+		Name: "late proposal past instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight, "d5d4696d29f1359a0f55292ba42dfd922993408529aa86926243df2221554c11"),
 			instanceData(1, "457bc465febc4d1d626ad19d0f83621fbca5f0c2c6f9f3665292c602e615896a"),
@@ -64,16 +61,10 @@ func LateRoundChangePastInstance() *tests.ControllerSpecTest {
 			{
 				InputValue: inputData,
 				InputMessages: []*types.Message{
-					testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[4]},
-						[]types.OperatorID{4},
-						&qbft.Message{
-							MsgType:    qbft.RoundChangeMsgType,
-							Height:     4,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+					{
+						ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
+						Data: signMsgEncoded,
+					},
 				},
 				ControllerPostRoot: "8368611d5315a0f2cfff2b8f02148f5badd52cda75f7cdb3878a0385faf99281",
 			},

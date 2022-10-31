@@ -215,7 +215,7 @@ var DecidingMsgsForHeight = func(consensusData *qbft.Data, msgID types.MessageID
 			signMsgEncoded, _ := SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				Height: h,
 				Round:  qbft.FirstRound,
-				Input:  &qbft.Data{Root: consensusData.Root, Source: nil},
+				Input:  &qbft.Data{Root: consensusData.Root},
 			}).Encode()
 			msgs = append(msgs, &types.Message{
 				ID:   msgID,
@@ -229,7 +229,7 @@ var DecidingMsgsForHeight = func(consensusData *qbft.Data, msgID types.MessageID
 			signMsgEncoded, _ := SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				Height: h,
 				Round:  qbft.FirstRound,
-				Input:  &qbft.Data{Root: consensusData.Root, Source: nil},
+				Input:  &qbft.Data{Root: consensusData.Root},
 			}).Encode()
 			msgs = append(msgs, &types.Message{
 				ID:   msgID,

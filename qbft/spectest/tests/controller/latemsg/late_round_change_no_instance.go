@@ -11,36 +11,37 @@ import (
 // LateRoundChangeNoInstance tests process round change msg for a previously decided instance (which is no longer part of stored instances)
 func LateRoundChangeNoInstance() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+
+	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
+		multiSignMsg := testingutils.MultiSignQBFTMsg(
+			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+			[]types.OperatorID{1, 2, 3},
+			&qbft.Message{
+				Height: height,
+				Round:  qbft.FirstRound,
+				Input:  inputData,
+			})
+		multiSignMsgEncoded, _ := multiSignMsg.Encode()
 		return &tests.RunInstanceData{
 			InputValue: inputData,
 			InputMessages: []*types.Message{
-				testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     height,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
+				{
+					ID:   types.PopulateMsgType(identifier, types.DecidedMsgType),
+					Data: multiSignMsgEncoded,
+				},
 			},
-			SavedDecided: testingutils.MultiSignQBFTMsg(
-				[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.CommitMsgType,
-					Height:     height,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-				}),
+			SavedDecided:       multiSignMsg,
 			DecidedVal:         inputData.Source,
 			DecidedCnt:         1,
 			ControllerPostRoot: postRoot,
 		}
 	}
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], 4, &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  inputData,
+	}).Encode()
 
 	return &tests.ControllerSpecTest{
 		Name: "late round change no instance",
@@ -55,18 +56,12 @@ func LateRoundChangeNoInstance() *tests.ControllerSpecTest {
 			{
 				InputValue: inputData,
 				InputMessages: []*types.Message{
-					testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[4]},
-						[]types.OperatorID{4},
-						&qbft.Message{
-							MsgType:    qbft.RoundChangeMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+					{
+						ID:   types.PopulateMsgType(identifier, types.ConsensusRoundChangeMsgType),
+						Data: signMsgEncoded,
+					},
 				},
-				ControllerPostRoot: "69b8be89bbd2b48e81644c689709d6ce0f43f898a2f7ef3b888d84a0cb264db7",
+				ControllerPostRoot: "4a184ea5a625621f73640e4f66209d38016e34030608c3afb0f6c2a33a38f886",
 			},
 		},
 		ExpectedError: "instance not found",

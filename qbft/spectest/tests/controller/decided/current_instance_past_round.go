@@ -13,52 +13,52 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
-	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
 		Input:  inputData,
 	}).Encode()
-	proposeMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	proposeMsg2 := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
 		Input:  inputData,
 	})
-	signedMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	signedMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
 		Input:  &qbft.Data{Root: inputData.Root},
 	}).Encode()
-	signedMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+	signedMsgEncoded2, _ := testingutils.SignQBFTMsg(ks.Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
 		Input:  &qbft.Data{Root: inputData.Root},
 	}).Encode()
-	signedMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	signedMsgEncoded4, _ := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
 		Input:  &qbft.Data{Root: inputData.Root},
 	}).Encode()
-	signedMsgEncoded5, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+	signedMsgEncoded5, _ := testingutils.SignQBFTMsg(ks.Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
 		Input:  &qbft.Data{Root: inputData.Root},
 	}).Encode()
-	signedMsgEncoded6, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+	signedMsgEncoded6, _ := testingutils.SignQBFTMsg(ks.Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
 		Input:  &qbft.Data{Root: inputData.Root},
 	}).Encode()
-	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	rcMsg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
 		Input:  &qbft.Data{},
 	})
-	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+	rcMsg2 := testingutils.SignQBFTMsg(ks.Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
 		Input:  &qbft.Data{},
 	})
-	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+	rcMsg3 := testingutils.SignQBFTMsg(ks.Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
 		Input:  &qbft.Data{},
