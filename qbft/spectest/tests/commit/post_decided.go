@@ -10,29 +10,32 @@ import (
 // PostDecided tests processing a commit msg after instance decided
 func PostDecided() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	signMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
-	signMsgEncoded, _ := signMsg.Encode()
+
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
-
-	pre.State.ProposalAcceptedForCurrentRound = signMsg
 
 	msgs := []*types.Message{
 		{
@@ -56,7 +59,7 @@ func PostDecided() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "post decided",
 		Pre:            pre,
-		PostRoot:       "51d962c219479a76c8d2020e93330d2aa1a1e0f1ee62c97b3cbae1fd082d4c6a",
+		PostRoot:       "d95f1ce4f8e15aeccf901fd131114c7ecfc9aebbc1ad7b2821ad463e12fdb9a5",
 		InputMessages:  msgs,
 		OutputMessages: []*types.Message{},
 	}

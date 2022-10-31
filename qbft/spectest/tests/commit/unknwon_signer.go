@@ -10,31 +10,36 @@ import (
 // UnknownSigner tests a single commit received with an unknown signer
 func UnknownSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  pre.StartValue,
+	}).Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	commitMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(5), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 
 	msgs := []*types.Message{
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-			Data: signMsgEncoded,
+			Data: proposeMsgEncoded,
 		},
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
@@ -57,7 +62,7 @@ func UnknownSigner() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "unknown commit signer",
 		Pre:           pre,
-		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
+		PostRoot:      "3cc4269ff493d8ce9b2c9a43690843a4758b9ff77c2d6c1b659b3cc1f6fa6748",
 		InputMessages: msgs,
 		ExpectedError: "commit msg invalid: invalid commit msg: commit msg signature invalid: unknown signer",
 		OutputMessages: []*types.Message{

@@ -11,17 +11,15 @@ import (
 // DuplicateSigners tests a multi signer commit msg with duplicate signers
 func DuplicateSigners() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	// TODO<olegshmuelov> use instance identifier
-	baseMsgId := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
 	commit := testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2}, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	commit.Signers = []types.OperatorID{1, 1}
 	commitEncoded, _ := commit.Encode()
@@ -29,10 +27,10 @@ func DuplicateSigners() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:     "duplicate signers",
 		Pre:      pre,
-		PostRoot: "20a518595c0dbe81ccc7f340f142e77ecfba0e0a93fe0d10325fe607f2e0b1eb",
+		PostRoot: "b19c1eb98711766bb8b1e2857cafc8b83e9584c7fd8b9a3a81fb6947df1497f6",
 		InputMessages: []*types.Message{
 			{
-				ID:   types.PopulateMsgType(baseMsgId, types.ConsensusCommitMsgType),
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
 				Data: commitEncoded,
 			},
 		},

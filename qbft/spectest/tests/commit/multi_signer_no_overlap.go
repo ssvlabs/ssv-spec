@@ -11,30 +11,35 @@ import (
 // MultiSignerNoOverlap tests a multi signer commit msg which doesn't overlap previous valid commits
 func MultiSignerNoOverlap() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  pre.StartValue,
+	}).Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	multiSignMsgEncoded, _ := testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]}, []types.OperatorID{2, 3}, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	msgs := []*types.Message{
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-			Data: signMsgEncoded,
+			Data: proposeMsgEncoded,
 		},
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
@@ -61,7 +66,7 @@ func MultiSignerNoOverlap() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "multi signer, no overlap",
 		Pre:           pre,
-		PostRoot:      "f74ecf509f74cdd3ed1df422724a786b00cb4930fc884e0a0a0d06ac460a8cad",
+		PostRoot:      "8eb71953430f9a18a895e33dd7a31a4fa707d490429092525b482c0386cfb0b2",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

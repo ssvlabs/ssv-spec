@@ -44,7 +44,7 @@ package commit
 //	return &tests.MsgProcessingSpecTest{
 //		Name:          "imparsable commit data",
 //		Pre:           pre,
-//		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
+//		PostRoot:      "3cc4269ff493d8ce9b2c9a43690843a4758b9ff77c2d6c1b659b3cc1f6fa6748",
 //		InputMessages: msgs,
 //		ExpectedError: "commit msg invalid: invalid commit msg: could not get msg commit data: could not decode commit data from message: invalid character '\\x01' looking for beginning of value",
 //		OutputMessages: []*types.Message{},

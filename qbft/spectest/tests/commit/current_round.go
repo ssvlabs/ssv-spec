@@ -10,13 +10,17 @@ import (
 // CurrentRound tests a commit msg with current round, should process
 func CurrentRound() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	signMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	proposalMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
-	pre.State.ProposalAcceptedForCurrentRound = signMsg
-	signMsgEncoded, _ := signMsg.Encode()
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
+	pre.State.ProposalAcceptedForCurrentRound = proposalMsg
 
 	msgs := []*types.Message{
 		{
@@ -28,7 +32,7 @@ func CurrentRound() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit current round",
 		Pre:           pre,
-		PostRoot:      "952dc40814611c59abfa2cbc0445c30cc54646da48ccdac01d8b48943770c569",
+		PostRoot:      "69c4adf5cc342dbbb5d974e6f864ae37e763d525f350b0bb3e779cb53f6ffc81",
 		InputMessages: msgs,
 	}
 }

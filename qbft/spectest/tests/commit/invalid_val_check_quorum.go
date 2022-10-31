@@ -13,7 +13,7 @@ func InvalidValCheck() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "commit invalid val check",
 		Pre:            pre,
-		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
+		PostRoot:       "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
 		InputMessages:  []*types.Message{},
 		OutputMessages: []*types.Message{},
 	}

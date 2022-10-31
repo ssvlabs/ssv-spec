@@ -10,30 +10,34 @@ import (
 // NoPrepareQuorum tests a commit msg received without a previous prepare quorum
 func NoPrepareQuorum() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  pre.StartValue,
+	}).Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
-	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: nil},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
-	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: nil},
-	}).Encode()
-	signMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-		Height: qbft.FirstHeight,
-		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: nil},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 
 	msgs := []*types.Message{
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+			Data: proposeMsgEncoded,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 			Data: signMsgEncoded,
 		},
 		{
@@ -42,8 +46,8 @@ func NoPrepareQuorum() *tests.MsgProcessingSpecTest {
 		},
 		// only 2 out of 4 prepare msgs
 		{
-			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-			Data: signMsgEncoded3,
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
+			Data: signMsgEncoded,
 		},
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
@@ -53,21 +57,17 @@ func NoPrepareQuorum() *tests.MsgProcessingSpecTest {
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
 			Data: signMsgEncoded3,
 		},
-		{
-			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
-			Data: signMsgEncoded4,
-		},
 	}
 
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit no prepare quorum",
 		Pre:           pre,
-		PostRoot:      "921f65d00452d96eff7160514b97e9786d9b8d145ddc36b8ea8d23046e76b728",
+		PostRoot:      "8a127ccd30df7b5d7ee51cc8fd94182c939bdb0ba0243091f2f3f62c59148726",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-				Data: signMsgEncoded2,
+				Data: signMsgEncoded,
 			},
 		},
 	}

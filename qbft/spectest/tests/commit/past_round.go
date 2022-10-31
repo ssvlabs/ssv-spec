@@ -13,14 +13,14 @@ func PastRound() *tests.MsgProcessingSpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  5,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
 	pre.State.Round = 5
 
 	commitMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 
 	msgs := []*types.Message{
@@ -33,7 +33,7 @@ func PastRound() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit past round",
 		Pre:           pre,
-		PostRoot:      "02c53d76bdfa84c573386a7dff3e443f120d441b3086f7d5e3834a5c7e1261ab",
+		PostRoot:      "89abdb02400e7e6fd6cdd9f68696756f89741e52b8720e568034344677fdddf9",
 		InputMessages: msgs,
 		ExpectedError: "commit msg invalid: commit round is wrong",
 	}
