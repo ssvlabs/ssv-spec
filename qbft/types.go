@@ -24,7 +24,6 @@ type Sync interface {
 type Network interface {
 	Sync
 	Broadcast(msg types.Encoder) error
-	BroadcastDecided(msg types.Encoder) error
 }
 
 type Storage interface {

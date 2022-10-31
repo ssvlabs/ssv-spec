@@ -24,11 +24,6 @@ func (net *TestingNetwork) Broadcast(message types.Encoder) error {
 	return nil
 }
 
-func (net *TestingNetwork) BroadcastDecided(message types.Encoder) error {
-	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.SSVMessage))
-	return nil
-}
-
 // StreamDKGOutput will stream to any subscriber the result of the DKG
 func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.SignedOutput) error {
 	for id, signedOutput := range output {
