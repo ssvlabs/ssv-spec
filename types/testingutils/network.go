@@ -39,12 +39,12 @@ func (net *TestingNetwork) StreamDKGBlame(blame *dkg.BlameOutput) error {
 	panic("implement me")
 }
 
-func (net *TestingNetwork) SyncHighestDecided(identifier []byte) error {
+func (net *TestingNetwork) SyncHighestDecided(identifier types.MessageID) error {
 	net.SyncHighestDecidedCnt++
 	return nil
 }
 
-func (net *TestingNetwork) SyncHighestRoundChange(identifier []byte, height qbft.Height) error {
+func (net *TestingNetwork) SyncHighestRoundChange(identifier types.MessageID, height qbft.Height) error {
 	net.SyncHighestChangeRoundCnt++
 	return nil
 }
