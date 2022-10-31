@@ -15,8 +15,8 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 		Name: "start instance post future decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
+				InputValue: inputData,
+				InputMessages: []*types.Message{
 					testingutils.MultiSignQBFTMsg(
 						[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
 						[]types.OperatorID{1, 2, 3},
@@ -38,9 +38,9 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
-				DecidedVal:         []byte{1, 2, 3, 4},
+				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "c91970b0e33a3b6141567101956dffa63472e56ed041ffdd408ed822973f3caf",
+				ControllerPostRoot: "cf79aafb1c5b30c9c737026d3263934ee31da72db9b68bedc21c5e0f7def69b0",
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},

@@ -11,46 +11,44 @@ import (
 // PastInstance tests a decided msg received for past instance
 func PastInstance() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	multiSignMsg := testingutils.MultiSignQBFTMsg(
+		[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+		[]types.OperatorID{1, 2, 3},
+		&qbft.Message{
+			Height: 100,
+			Round:  qbft.FirstRound,
+			Input:  inputData,
+		})
+	multiSignMsgEncoded, _ := multiSignMsg.Encode()
+	multiSignMsg2 := testingutils.MultiSignQBFTMsg(
+		[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+		[]types.OperatorID{1, 2, 3},
+		&qbft.Message{
+			Height: 99,
+			Round:  qbft.FirstRound,
+			Input:  inputData,
+		})
+	multiSignMsgEncoded2, _ := multiSignMsg2.Encode()
 	return &tests.ControllerSpecTest{
 		Name: "decide past instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
-					testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     100,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
-					testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     99,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+				InputValue: inputData,
+				InputMessages: []*types.Message{
+					{
+						ID:   types.PopulateMsgType(identifier, types.DecidedMsgType),
+						Data: multiSignMsgEncoded,
+					},
+					{
+						ID:   types.PopulateMsgType(identifier, types.DecidedMsgType),
+						Data: multiSignMsgEncoded2,
+					},
 				},
-				SavedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     100,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
-				DecidedVal:         []byte{1, 2, 3, 4},
+				SavedDecided:       multiSignMsg,
+				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "d9834788859abee970bdcd9d4195ae0292513ef9783ec0c9c6b54fd4856849ce",
+				ControllerPostRoot: "b1446134a653f433b66c37bd20017153e4993c6ab014d2d87c50ed2c0a77e884",
 			},
 		},
 	}

@@ -10,23 +10,24 @@ import (
 // InvalidIdentifier tests a process msg with the wrong identifier
 func InvalidIdentifier() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
+	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  inputData,
 	}).Encode()
 	return &tests.ControllerSpecTest{
 		Name: "invalid identifier",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: inputData,
 				InputMessages: []*types.Message{
 					{
 						ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
 						Data: signMsgEncoded,
 					}},
 				DecidedVal:         nil,
-				ControllerPostRoot: "5b6ebc3aa0bfcedd466fca3fca7e1dcc0245def7d61d65aee1462436d819c7d0",
+				ControllerPostRoot: "5a1536414abb7928a962cc82e7307b48e3d6c17da15c3f09948c20bd89d41301",
 			},
 		},
 		ExpectedError: "invalid msg: message doesn't belong to Identifier",

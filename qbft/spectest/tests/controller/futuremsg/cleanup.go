@@ -8,7 +8,7 @@ func Cleanup() *ControllerSyncSpecTest {
 
 	return &ControllerSyncSpecTest{
 		Name: "future msgs cleanup",
-		InputMessages: []*qbft.SignedMessage{
+		InputMessages: []*types.Message{
 			testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 				MsgType:    qbft.CommitMsgType,
 				Height:     5,

@@ -26,7 +26,7 @@ func LateRoundChange() *tests.ControllerSpecTest {
 		Name: "late round change",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    inputData,
 				InputMessages: msgs,
 				DecidedVal:    []byte{1, 2, 3, 4},
 				DecidedCnt:    1,

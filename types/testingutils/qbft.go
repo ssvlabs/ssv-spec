@@ -62,7 +62,10 @@ var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byt
 	//ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
 	msgID := types.NewBaseMsgID(identifier, types.BNRoleAttester)
 	ret := qbft.NewInstance(TestingConfig(keySet), share, msgID, qbft.FirstHeight)
-	ret.StartValue = []byte{1, 2, 3, 4}
+	ret.StartValue = &qbft.Data{
+		Root:   [32]byte{1, 2, 3, 4},
+		Source: []byte{1, 2, 3, 4},
+	}
 	return ret
 }
 

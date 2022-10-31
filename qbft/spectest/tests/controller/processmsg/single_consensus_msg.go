@@ -10,22 +10,23 @@ import (
 // SingleConsensusMsg tests process msg of a single msg
 func SingleConsensusMsg() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  inputData,
 	}).Encode()
 	return &tests.ControllerSpecTest{
 		Name: "single consensus msg",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: inputData,
 				InputMessages: []*types.Message{
 					{
 						ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
 						Data: signMsgEncoded,
 					}},
-				ControllerPostRoot: "7e21f00c892268dc90ada02ac5326329ff44b8b93aec52a51c11ec9b12077f78",
+				ControllerPostRoot: "11463d40cb14659051bd0d4d9ed5aafd74ca37eff460ae74b6012362923a6ae9",
 			},
 		},
 	}

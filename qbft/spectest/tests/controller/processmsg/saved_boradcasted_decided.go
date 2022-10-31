@@ -12,39 +12,27 @@ import (
 func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
+	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	multiSignMsg := testingutils.MultiSignQBFTMsg(
+		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+		[]types.OperatorID{1, 2, 3},
+		&qbft.Message{
+			Height: qbft.FirstHeight,
+			Round:  qbft.FirstRound,
+			Input:  inputData,
+		})
+
 	return &tests.ControllerSpecTest{
 		Name: "save and broadcast decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: testingutils.DecidingMsgsForHeight(&qbft.Data{
-					Root:   [32]byte{1, 2, 3, 4},
-					Source: []byte{1, 2, 3, 4},
-				}, identifier, qbft.FirstHeight, ks),
-				DecidedVal: []byte{1, 2, 3, 4},
-				DecidedCnt: 1,
-				SavedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						//MsgType:    qbft.CommitMsgType,
-						Height: qbft.FirstHeight,
-						Round:  qbft.FirstRound,
-						//Identifier: identifier[:],
-						//Input: []byte{1, 2, 3, 4},
-						Input: &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
-					}),
-				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						//MsgType:    qbft.CommitMsgType,
-						Height: qbft.FirstHeight,
-						Round:  qbft.FirstRound,
-						//Identifier: identifier[:],
-						Input: &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
-					}),
-				ControllerPostRoot: "aa402d7487719b17dde352e2ac602ba2c7d895e615ab12cd93d816f6c4fa0967",
+				InputValue:         inputData,
+				InputMessages:      testingutils.DecidingMsgsForHeight(inputData, identifier, qbft.FirstHeight, ks),
+				DecidedVal:         inputData.Source,
+				DecidedCnt:         1,
+				SavedDecided:       multiSignMsg,
+				BroadcastedDecided: multiSignMsg,
+				ControllerPostRoot: "d5d4696d29f1359a0f55292ba42dfd922993408529aa86926243df2221554c11",
 			},
 		},
 	}

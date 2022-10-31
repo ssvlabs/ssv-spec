@@ -194,23 +194,20 @@ func proposer(state *State, config IConfig, round Round) types.OperatorID {
 func CreateProposal(
 	state *State,
 	config IConfig,
-	value []byte,
+	value *Data,
 	roundChanges,
 	prepares []*SignedMessage,
 ) (*SignedMessage, error) {
-	cd := &types.ConsensusInput{}
-	if err := cd.UnmarshalSSZ(value); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal consensus input ssz")
-	}
-
-	root, err := cd.HashTreeRoot()
+	//cd := &types.ConsensusInput{}
+	//if err := cd.UnmarshalSSZ(value); err != nil {
+	//	return nil, errors.Wrap(err, "could not unmarshal consensus input ssz")
+	//}
+	//
+	//root, err := cd.HashTreeRoot()
 	msg := &Message{
 		Height: state.Height,
 		Round:  state.Round,
-		Input: &Data{
-			Root:   root,
-			Source: value,
-		},
+		Input:  value,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {

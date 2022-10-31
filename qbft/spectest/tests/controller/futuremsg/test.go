@@ -2,6 +2,7 @@ package futuremsg
 
 import (
 	"encoding/hex"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
@@ -29,7 +30,10 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 		config,
 	)
 
-	err := contr.StartNewInstance([]byte{1, 2, 3, 4})
+	err := contr.StartNewInstance(&qbft.Data{
+		Root:   [32]byte{1, 2, 3, 4},
+		Source: []byte{1, 2, 3, 4},
+	})
 	if err != nil {
 		t.Fatalf(err.Error())
 	}

@@ -19,7 +19,7 @@ type Instance struct {
 
 	processMsgF *types.ThreadSafeF
 	startOnce   sync.Once
-	StartValue  []byte
+	StartValue  *Data
 }
 
 func NewInstance(
@@ -46,7 +46,7 @@ func NewInstance(
 }
 
 // Start is an interface implementation
-func (i *Instance) Start(value []byte, height Height) {
+func (i *Instance) Start(value *Data, height Height) {
 	i.startOnce.Do(func() {
 		i.StartValue = value
 		i.State.Round = FirstRound

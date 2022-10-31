@@ -13,8 +13,8 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
 		return &tests.RunInstanceData{
-			InputValue: []byte{1, 2, 3, 4},
-			InputMessages: []*qbft.SignedMessage{
+			InputValue: inputData,
+			InputMessages: []*types.Message{
 				testingutils.MultiSignQBFTMsg(
 					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
 					[]types.OperatorID{1, 2, 3},
@@ -36,7 +36,7 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 					Identifier: identifier[:],
 					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 				}),
-			DecidedVal:         []byte{1, 2, 3, 4},
+			DecidedVal:         inputData.Source,
 			DecidedCnt:         1,
 			ControllerPostRoot: postRoot,
 		}
@@ -45,16 +45,16 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "late prepare no instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "8a5153ccfbefa992ac8b4af6aad2d050c553a95359d0bc49feaef5c11c7139a2"),
-			instanceData(1, "edffa599e2ff18bcb82a63116ab452649fe974b63432b05ab5919df16079fb68"),
-			instanceData(2, "42323740998181ec00bfcf28fb8095c8f5fd3e43266ca43f0448b3ef42ac2a60"),
-			instanceData(3, "cb17defa61f9e6175884f7ae8f372dabefe601360737e43162c6d52a2fa7f6e4"),
-			instanceData(4, "2266f4d33838f251c22dcf787551bb6dd7381b689353b8147853338917dddf37"),
-			instanceData(5, "57c0602606e7e5b186a570d9ff9dc80717ba6da075a769057374b9f2ebe81653"),
-			instanceData(8, "d8c0f5362ae874ded286627c1076a894d26ab61238c37a0a75bcc2e331822073"),
+			instanceData(qbft.FirstHeight, "e719fcf29fb1acbd0dbf0843f61c2d037463e6fe7c4e21e78ad28825c4c56e41"),
+			instanceData(1, "8472719bee2bb179963cc3aee61f054042de5f40f45cce557dbb8030ea5f32ca"),
+			instanceData(2, "03fbaa2914cec6145e0799ea822489048ec14cc3c9492b41f13f152440cd7fc5"),
+			instanceData(3, "e14a8e324b78dda8469df11a8d3551f6fac6163d6458d51fee7853c0f17d5835"),
+			instanceData(4, "bd54d2ab1e0b949dd45a3e2b16f211d006371ae99a96f7a8d74fa98128447bf9"),
+			instanceData(5, "3102e5048ac659bd0bbc8efc4eab07154f357a1225c8b1ef0681e054310f3bb3"),
+			instanceData(8, "c880aac62523021de564af42efb73d9da75bafa087714a03291bd5e6a6ba3acd"),
 			{
-				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
+				InputValue: inputData,
+				InputMessages: []*types.Message{
 					testingutils.MultiSignQBFTMsg(
 						[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[4]},
 						[]types.OperatorID{4},

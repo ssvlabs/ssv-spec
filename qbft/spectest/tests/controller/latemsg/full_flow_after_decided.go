@@ -106,7 +106,7 @@ func FullFlowAfterDecided() *tests.ControllerSpecTest {
 		Name: "full flow after decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    inputData,
 				InputMessages: msgs,
 				SavedDecided: testingutils.MultiSignQBFTMsg(
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
@@ -118,7 +118,7 @@ func FullFlowAfterDecided() *tests.ControllerSpecTest {
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
-				DecidedVal:         []byte{1, 2, 3, 4},
+				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
 				ControllerPostRoot: "19df4389b482e1dfb89ab0be4ce8a401f2cf2223416ecc2afda92481755dbc00",
 			},

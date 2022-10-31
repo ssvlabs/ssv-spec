@@ -2,7 +2,6 @@ package qbft
 
 import (
 	"bytes"
-	"crypto/sha256"
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
@@ -66,13 +65,13 @@ func (m *Message) Prepared() bool {
 
 // GetRoot returns the root used for signing and verification
 func (m *Message) GetRoot() ([]byte, error) {
-	//return m.Input.Root[:], nil
-	marshaledRoot, err := m.Encode()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not encode message")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+	return m.Input.Root[:], nil
+	//marshaledRoot, err := m.Encode()
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "could not encode message")
+	//}
+	//ret := sha256.Sum256(marshaledRoot)
+	//return ret[:], nil
 }
 
 // Validate returns error if msg validation doesn't pass.

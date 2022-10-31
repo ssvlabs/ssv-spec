@@ -1,7 +1,7 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
 	"testing"
 )
 
@@ -23,31 +23,31 @@ var AllTests = []SpecTest{
 	//timeout.ErrorOnBroadcast(),
 	//timeout.ErrorOnCreateMsg(),
 
-	//decided.HasQuorum(),
-	//decided.NoQuorum(),
-	//decided.DuplicateMsg(),
-	//decided.DuplicateSigners(),
+	decided.HasQuorum(),
+	decided.NoQuorum(),
+	decided.DuplicateMsg(),
+	decided.DuplicateSigners(),
 	//decided.ImparsableData(),
-	//decided.Invalid(),
-	//decided.InvalidData(),
+	decided.Invalid(),
+	decided.InvalidData(),
 	//decided.InvalidValCheckData(),
-	//decided.LateDecided(),
-	//decided.LateDecidedBiggerQuorum(),
-	//decided.LateDecidedSmallerQuorum(),
-	//decided.PastInstance(),
-	//decided.UnknownSigner(),
-	//decided.WrongMsgType(),
-	//decided.WrongSignature(),
-	//decided.MultiDecidedInstances(),
-	//decided.FutureInstance(),
-	//decided.CurrentInstance(),
-	//decided.CurrentInstancePastRound(),
-	//decided.CurrentInstanceFutureRound(),
+	decided.LateDecided(),
+	decided.LateDecidedBiggerQuorum(),
+	decided.LateDecidedSmallerQuorum(),
+	decided.PastInstance(),
+	decided.UnknownSigner(),
+	decided.WrongMsgType(),
+	decided.WrongSignature(),
+	decided.MultiDecidedInstances(),
+	decided.FutureInstance(),
+	decided.CurrentInstance(),
+	decided.CurrentInstancePastRound(),
+	decided.CurrentInstanceFutureRound(),
 	//
 	//processmsg.MsgError(),
 	//processmsg.SavedAndBroadcastedDecided(),
 	//processmsg.SingleConsensusMsg(),
-	processmsg.FullDecided(),
+	//processmsg.FullDecided(),
 	//processmsg.InvalidIdentifier(),
 	//processmsg.NoInstanceRunning(),
 	//

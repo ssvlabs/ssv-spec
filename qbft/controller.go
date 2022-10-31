@@ -74,14 +74,14 @@ func NewController(
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
-func (c *Controller) StartNewInstance(value []byte) error {
-	if err := c.canStartInstance(c.Height+1, value); err != nil {
+func (c *Controller) StartNewInstance(inputData *Data) error {
+	if err := c.canStartInstance(c.Height+1, inputData.Source); err != nil {
 		return errors.Wrap(err, "can't start new QBFT instance")
 	}
 
 	c.bumpHeight()
 	newInstance := c.addAndStoreNewInstance()
-	newInstance.Start(value, c.Height)
+	newInstance.Start(inputData, c.Height)
 
 	return nil
 }

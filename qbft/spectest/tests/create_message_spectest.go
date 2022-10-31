@@ -92,7 +92,11 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, test.PrepareJustifications)
+	return qbft.CreateProposal(state, config, &qbft.Data{
+		// TODO<olegshmuelov>: pass root
+		Root:   [32]byte{},
+		Source: test.Value,
+	}, test.RoundChangeJustifications, test.PrepareJustifications)
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {

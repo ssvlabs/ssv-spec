@@ -206,20 +206,24 @@ func (b *BaseRunner) validatePostConsensusMsg(msg *SignedPartialSignature) error
 }
 
 func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
-	byts, err := input.MarshalSSZ()
+	source, err := input.MarshalSSZ()
 	if err != nil {
 		return errors.Wrap(err, "could not encode ConsensusData")
 	}
-	//inputData := qbft.Data{
-	//	Root:     [32]byte{},
-	//	Source: nil,
-	//}
+	root, err := input.HashTreeRoot()
+	if err != nil {
+		return nil
+	}
+	inputData := &qbft.Data{
+		Root:   root,
+		Source: source,
+	}
 
-	if err := runner.GetValCheckF()(byts); err != nil {
+	if err := runner.GetValCheckF()(source); err != nil {
 		return errors.Wrap(err, "input data invalid")
 	}
 
-	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(byts); err != nil {
+	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(inputData); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")
 	}
 	newInstance := runner.GetBaseRunner().QBFTController.InstanceForHeight(runner.GetBaseRunner().QBFTController.Height)

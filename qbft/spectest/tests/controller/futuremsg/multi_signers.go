@@ -7,7 +7,7 @@ package futuremsg
 
 	return &ControllerSyncSpecTest{
 		Name: "future msgs multiple signers",
-		InputMessages: []*qbft.SignedMessage{
+		InputMessages: []*types.Message{
 			testingutils.MultiSignQBFTMsg(
 				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 				[]types.OperatorID{1, 2, 3},
@@ -20,7 +20,7 @@ package futuremsg
 				}),
 		},
 		SyncDecidedCalledCnt: 0,
-		ControllerPostRoot:   "5b6ebc3aa0bfcedd466fca3fca7e1dcc0245def7d61d65aee1462436d819c7d0",
+		ControllerPostRoot:   "5a1536414abb7928a962cc82e7307b48e3d6c17da15c3f09948c20bd89d41301",
 		ExpectedError:        "invalid future msg: allows 1 signer",
 	}
 }*/

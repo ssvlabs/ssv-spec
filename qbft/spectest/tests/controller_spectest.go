@@ -12,7 +12,7 @@ import (
 )
 
 type RunInstanceData struct {
-	InputValue         []byte
+	InputValue         *qbft.Data
 	InputMessages      []*types.Message
 	DecidedVal         []byte
 	DecidedCnt         uint
@@ -53,7 +53,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 			if decided != nil {
 				decidedCnt++
 
-				require.EqualValues(t, runData.DecidedVal, decided.Message.Input)
+				require.EqualValues(t, runData.DecidedVal, decided.Message.Input.Source)
 			}
 		}
 

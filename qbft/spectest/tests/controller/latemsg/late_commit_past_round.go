@@ -128,7 +128,7 @@ func LateCommitPastRound() *tests.ControllerSpecTest {
 		Name: "late commit past round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    inputData,
 				InputMessages: msgs,
 				DecidedVal:    []byte{1, 2, 3, 4},
 				DecidedCnt:    1,

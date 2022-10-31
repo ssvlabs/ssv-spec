@@ -11,59 +11,12 @@ import (
 )
 
 func (cd *ConsensusData) MarshalSSZ() ([]byte, error) {
-	var marshalSSZ []byte
-	var err error
-	switch cd.Duty.Type {
-	case BNRoleAttester:
-		if cd.AttestationData == nil {
-			return nil, errors.New("could not marshal consensus data, attestation data is nil")
-		}
-		marshalSSZ, err = cd.AttestationData.MarshalSSZ()
-		if err != nil {
-			return nil, err
-		}
-	case BNRoleAggregator:
-		if cd.AggregateAndProof == nil {
-			return nil, errors.New("could not marshal consensus data, aggregate and proof is nil")
-		}
-		marshalSSZ, err = cd.AggregateAndProof.MarshalSSZ()
-		if err != nil {
-			return nil, err
-		}
-	case BNRoleProposer:
-		if cd.BlockData == nil {
-			return nil, errors.New("could not marshal consensus data, block data is nil")
-		}
-		marshalSSZ, err = cd.BlockData.MarshalSSZ()
-		if err != nil {
-			return nil, err
-		}
-	case BNRoleSyncCommittee:
-		marshalSSZ = append(marshalSSZ, cd.SyncCommitteeBlockRoot[:]...)
-	case BNRoleSyncCommitteeContribution:
-		var ce contributionEntries
-		if len(cd.SyncCommitteeContribution) > 0 {
-			ce.SyncCommitteeContribution = make([]*ContributionEntry, 0, len(cd.SyncCommitteeContribution))
-
-			for k, v := range cd.SyncCommitteeContribution {
-				ce.SyncCommitteeContribution = append(ce.SyncCommitteeContribution, &ContributionEntry{
-					Sig:   k,
-					Contr: v,
-				})
-			}
-		}
-		marshalSSZ, err = ce.MarshalSSZ()
-		if err != nil {
-			return nil, err
-		}
-	default:
-		return nil, errors.New("unknown role")
+	ci, err := cd.toConsensusInput()
+	if err != nil {
+		return nil, err
 	}
 
-	return ssz.MarshalSSZ(&ConsensusInput{
-		Duty: cd.Duty,
-		Data: marshalSSZ,
-	})
+	return ssz.MarshalSSZ(ci)
 }
 
 // MarshalSSZTo ssz marshals the ConsensusData object to a target array
@@ -152,6 +105,16 @@ func (cd *ConsensusData) SizeSSZ() (size int) {
 	}
 
 	return
+}
+
+// HashTreeRoot ssz hashes the ConsensusData object
+func (cd *ConsensusData) HashTreeRoot() ([32]byte, error) {
+	ci, err := cd.toConsensusInput()
+	if err != nil {
+		return [32]byte{}, err
+	}
+
+	return ssz.HashWithDefaultHasher(ci)
 }
 
 // MarshalSSZ ssz marshals the ConsensusInput object

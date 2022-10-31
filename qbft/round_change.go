@@ -6,7 +6,7 @@ import (
 )
 
 func (i *Instance) uponRoundChange(
-	instanceStartValue []byte,
+	instanceStartValue *Data,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
@@ -39,7 +39,7 @@ func (i *Instance) uponRoundChange(
 		valueToPropose := instanceStartValue
 		if justifiedRoundChangeMsg.Message.Prepared() {
 			// TODO<olegshmuelov> validate that justified round change msg holds the complete input data
-			valueToPropose = justifiedRoundChangeMsg.Message.Input.Source
+			valueToPropose = justifiedRoundChangeMsg.Message.Input
 		}
 
 		proposeMsg, err := CreateProposal(
@@ -280,7 +280,7 @@ func getRoundChangeData(state *State, config IConfig) ([]*SignedMessage, Round, 
 		justifications := getRoundChangeJustification(state, config, state.PrepareContainer)
 		return justifications, state.LastPreparedRound, state.LastPreparedValue
 	}
-	return nil, NoRound, nil
+	return nil, NoRound, &Data{}
 }
 
 // CreateRoundChange
@@ -301,12 +301,9 @@ func CreateRoundChange(state *State, config IConfig, newRound Round) (*SignedMes
 	justifications, round, preparedValue := getRoundChangeData(state, config)
 
 	msg := &Message{
-		Height: state.Height,
-		Round:  newRound,
-		Input: &Data{
-			Root:   preparedValue.Root,
-			Source: preparedValue.Source,
-		},
+		Height:        state.Height,
+		Round:         newRound,
+		Input:         preparedValue,
 		PreparedRound: round,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
