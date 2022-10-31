@@ -82,11 +82,11 @@ func (m *Message) GetRoot() ([]byte, error) {
 func (m *Message) Validate(msgType types.MsgType) error {
 	switch msgType {
 	case types.ConsensusProposeMsgType, types.DecidedMsgType:
-		if len(m.Input.Source) == 0 || m.Input.Root == [32]byte{} {
+		if m.Input == nil || len(m.Input.Source) == 0 || m.Input.Root == [32]byte{} {
 			return errors.New("message input data is invalid")
 		}
 	case types.ConsensusPrepareMsgType, types.ConsensusCommitMsgType:
-		if m.Input.Root == [32]byte{} {
+		if m.Input == nil || m.Input.Root == [32]byte{} {
 			return errors.New("message input data is invalid")
 		}
 	case types.ConsensusRoundChangeMsgType:

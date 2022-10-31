@@ -10,12 +10,17 @@ import (
 // DuplicateMsg tests a duplicate prepare msg processing
 func DuplicateMsg() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  pre.StartValue,
+	})
 	signMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
-	pre.State.ProposalAcceptedForCurrentRound = signMsg
+	pre.State.ProposalAcceptedForCurrentRound = proposeMsg
 	signMsgEncoded, _ := signMsg.Encode()
 
 	msgs := []*types.Message{
@@ -32,7 +37,7 @@ func DuplicateMsg() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate prepare message",
 		Pre:           pre,
-		PostRoot:      "4b53b89a508afcde57f051abc005047b5439f935be9f2c76d8c1c7d680b4c24e",
+		PostRoot:      "40abca724b7ed1bd24cc3c4e526685341569cdef2013364682cca2da69401523",
 		InputMessages: msgs,
 	}
 }

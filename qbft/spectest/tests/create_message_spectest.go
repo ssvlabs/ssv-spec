@@ -19,8 +19,7 @@ const (
 
 type CreateMsgSpecTest struct {
 	Name                                             string
-	Value                                            []byte
-	ValueRoot                                        [32]byte
+	Value                                            *qbft.Data
 	Round                                            qbft.Round
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
@@ -68,7 +67,7 @@ func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateCommit(state, config, test.ValueRoot)
+	return qbft.CreateCommit(state, config, test.Value.Root)
 }
 
 func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
@@ -80,7 +79,7 @@ func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreatePrepare(state, config, test.Round, test.ValueRoot)
+	return qbft.CreatePrepare(state, config, test.Round, test.Value.Root)
 }
 
 func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
@@ -92,11 +91,7 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, &qbft.Data{
-		// TODO<olegshmuelov>: pass root
-		Root:   [32]byte{},
-		Source: test.Value,
-	}, test.RoundChangeJustifications, test.PrepareJustifications)
+	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, test.PrepareJustifications)
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
@@ -110,10 +105,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 
 	if len(test.PrepareJustifications) > 0 {
 		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
-		state.LastPreparedValue = &qbft.Data{
-			Root:   test.ValueRoot,
-			Source: test.Value,
-		}
+		state.LastPreparedValue = test.Value
 
 		for _, msg := range test.PrepareJustifications {
 			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
