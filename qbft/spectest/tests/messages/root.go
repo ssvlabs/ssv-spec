@@ -10,24 +10,20 @@ import (
 // GetRoot tests GetRoot on SignedMessage
 func GetRoot() *tests.MsgSpecTest {
 	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
-	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		Height: qbft.FirstHeight,
-		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
-	})
+	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
 	proposalMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  inputData,
 	})
 
-	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessage()
-	prepareJustifications := []*qbft.SignedMessage{
-		prepareMsgHeader,
+	j := proposalMsg.ToJustification()
+	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessage{
+		j,
 	}
-	proposalMsg.RoundChangeJustifications = prepareJustifications
-	proposalMsg.ProposalJustifications = prepareJustifications
-
+	proposalMsg.ProposalJustifications = []*qbft.SignedMessage{
+		j,
+	}
 	proposalMsgEncoded, _ := proposalMsg.Encode()
 
 	r, _ := proposalMsg.GetRoot()

@@ -13,7 +13,7 @@ func RoundChangeNotPreparedJustifications() *tests.MsgSpecTest {
 	rcMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  nil,
+		Input:  &qbft.Data{},
 	}).Encode()
 
 	msgs := []*types.Message{

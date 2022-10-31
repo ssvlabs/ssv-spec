@@ -13,7 +13,7 @@ func SignedMsgNoSigners() *tests.MsgSpecTest {
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}},
 	})
 	msg.Signers = nil
 	msgEncoded, _ := msg.Encode()
@@ -22,7 +22,7 @@ func SignedMsgNoSigners() *tests.MsgSpecTest {
 		Name: "no signers",
 		Messages: []*types.Message{
 			{
-				ID:   types.PopulateMsgType(baseMsgID, types.ConsensusCommitMsgType),
+				ID:   types.PopulateMsgType(baseMsgID, types.DecidedMsgType),
 				Data: msgEncoded,
 			},
 		},

@@ -65,6 +65,9 @@ func (m *Message) Prepared() bool {
 
 // GetRoot returns the root used for signing and verification
 func (m *Message) GetRoot() ([]byte, error) {
+	if m.Input == nil {
+		return nil, errors.New("message input invalid")
+	}
 	return m.Input.Root[:], nil
 	//marshaledRoot, err := m.Encode()
 	//if err != nil {

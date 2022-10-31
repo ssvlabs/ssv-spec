@@ -10,26 +10,24 @@ import (
 
 // SignedMessageSigner0 tests SignedMessage signer == 0
 func SignedMessageSigner0() *tests.MsgSpecTest {
+	baseMsgID := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.MultiSignQBFTMsg(
-		[]*bls.SecretKey{
-			ks.Shares[1],
-			ks.Shares[2],
-			ks.Shares[3],
-		},
+	msgEncoded, _ := testingutils.MultiSignQBFTMsg(
+		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 		[]types.OperatorID{1, 2, 0},
 		&qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-		})
+			Height: qbft.FirstHeight,
+			Round:  qbft.FirstRound,
+			Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}},
+		}).Encode()
 
 	return &tests.MsgSpecTest{
 		Name: "signer 0",
-		Messages: []*qbft.SignedMessage{
-			msg,
+		Messages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(baseMsgID, types.DecidedMsgType),
+				Data: msgEncoded,
+			},
 		},
 		ExpectedError: "signer ID 0 not allowed",
 	}

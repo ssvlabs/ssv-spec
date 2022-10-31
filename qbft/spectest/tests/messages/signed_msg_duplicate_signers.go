@@ -21,7 +21,7 @@ func SignedMsgDuplicateSigners() *tests.MsgSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+			Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}},
 		})
 	msg.Signers = []types.OperatorID{1, 1, 2}
 	b, _ := msg.Encode()
@@ -30,7 +30,7 @@ func SignedMsgDuplicateSigners() *tests.MsgSpecTest {
 		Name: "duplicate signers",
 		Messages: []*types.Message{
 			{
-				ID:   types.PopulateMsgType(identifier, types.ConsensusCommitMsgType),
+				ID:   types.PopulateMsgType(identifier, types.DecidedMsgType),
 				Data: b,
 			},
 		},

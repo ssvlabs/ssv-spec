@@ -7,14 +7,13 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// MsgDataNonZero TODO<olegshmuelov> compare with MsgDataNil and check if needed
 // MsgDataNonZero tests len(data) == 0
 func MsgDataNonZero() *tests.MsgSpecTest {
 	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
 	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: nil},
+		Input:  &qbft.Data{},
 	})
 
 	e, _ := msg.Encode()
