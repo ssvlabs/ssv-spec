@@ -13,7 +13,7 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: 2,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	}).Encode()
 
 	msgs := []*types.Message{
@@ -26,7 +26,7 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong proposal height",
 		Pre:           pre,
-		PostRoot:      "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
+		PostRoot:      "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
 		InputMessages: msgs,
 		ExpectedError: "proposal invalid: proposal Height is wrong",
 	}

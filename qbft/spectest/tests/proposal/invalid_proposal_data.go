@@ -14,7 +14,7 @@ func InvalidProposalData() *tests.MsgProcessingSpecTest {
 	signMsgInvalidEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  nil,
+		Input:  &qbft.Data{},
 	}).Encode()
 
 	msgs := []*types.Message{
@@ -27,9 +27,9 @@ func InvalidProposalData() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "invalid proposal data",
 		Pre:            pre,
-		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
+		PostRoot:       "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
 		InputMessages:  msgs,
 		OutputMessages: []*types.Message{},
-		ExpectedError:  "proposal invalid: could not get proposal data: could not decode proposal data from message: invalid character '\\x01' looking for beginning of value",
+		ExpectedError:  "invalid signed message: message input data is invalid",
 	}
 }

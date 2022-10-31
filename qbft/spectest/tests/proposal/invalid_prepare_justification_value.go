@@ -13,80 +13,70 @@ func InvalidPrepareJustificationValue() *tests.MsgProcessingSpecTest {
 	prepareMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	prepareMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	prepareMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 3}},
+		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 3}, Source: []byte{1, 2, 3, 3}},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
 	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
 
-	prepareMsgHeader, _ := prepareMsg.ToSignedMessage()
-	prepareMsgHeader2, _ := prepareMsg2.ToSignedMessage()
-	prepareMsgHeader3, _ := prepareMsg3.ToSignedMessage()
-
 	justifications := []*qbft.SignedMessage{
-		prepareMsgHeader,
-		prepareMsgHeader2,
-		prepareMsgHeader3,
+		prepareMsg,
+		prepareMsg2,
+		prepareMsg3,
 	}
 
 	rcMsg.RoundChangeJustifications = justifications
 	rcMsg2.RoundChangeJustifications = justifications
 	rcMsg3.RoundChangeJustifications = justifications
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessage()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
-
 	proposeMsg.ProposalJustifications = justifications
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsgHeader,
-		rcMsgHeader2,
-		rcMsgHeader3,
+		rcMsg,
+		rcMsg2,
+		rcMsg3,
 	}
 	proposeMsgEncoded, _ := proposeMsg.Encode()
 
-	msgs := []*types.Message{
-		{
-			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-			Data: proposeMsgEncoded,
-		},
-	}
-
 	return &tests.MsgProcessingSpecTest{
-		Name:           "invalid prepare justification value",
-		Pre:            pre,
-		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
-		InputMessages:  msgs,
+		Name:     "invalid prepare justification value",
+		Pre:      pre,
+		PostRoot: "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
+		InputMessages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+				Data: proposeMsgEncoded,
+			},
+		},
 		OutputMessages: []*types.Message{},
 		ExpectedError:  "proposal invalid: proposal not justified: change round msg not valid: round change justification invalid: prepare data != proposed data",
 	}

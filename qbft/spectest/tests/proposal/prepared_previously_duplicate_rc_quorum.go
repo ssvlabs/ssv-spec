@@ -15,67 +15,63 @@ func PreparedPreviouslyDuplicateRCQuorum() *tests.MsgProcessingSpecTest {
 	prepareMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	prepareMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	prepareMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  2,
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
 	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
-	prepareMsgEncoded, _ := proposeMsg.Encode()
-
-	prepareMsgHeader, _ := prepareMsg.ToSignedMessage()
-	prepareMsgHeader2, _ := prepareMsg2.ToSignedMessage()
-	prepareMsgHeader3, _ := prepareMsg3.ToSignedMessage()
 
 	justifications := []*qbft.SignedMessage{
-		prepareMsgHeader,
-		prepareMsgHeader2,
-		prepareMsgHeader3,
+		prepareMsg,
+		prepareMsg2,
+		prepareMsg3,
 	}
 
 	rcMsg.RoundChangeJustifications = justifications
 	rcMsg2.RoundChangeJustifications = justifications
 	rcMsg3.RoundChangeJustifications = justifications
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessage()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
-
 	proposeMsg.ProposalJustifications = justifications
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsgHeader,
-		rcMsgHeader2,
-		rcMsgHeader2,
-		rcMsgHeader3,
+		rcMsg,
+		rcMsg2,
+		rcMsg2,
+		rcMsg3,
 	}
 	proposeMsgEncoded, _ := proposeMsg.Encode()
 
@@ -86,19 +82,19 @@ func PreparedPreviouslyDuplicateRCQuorum() *tests.MsgProcessingSpecTest {
 		},
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-			Data: prepareMsgEncoded,
+			Data: signMsgEncoded,
 		},
 	}
 
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate rc msg justification (prepared) quorum",
 		Pre:           pre,
-		PostRoot:      "6a1c7c45f1a8c31198fc96e26fad86d9b6b95f0acf8def6cea78e0886e42d8a8",
+		PostRoot:      "935f34f72b0362e7e7b73b02061d6d3a9c591e3542cf4e2a75af09003646edaa",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-				Data: prepareMsgEncoded,
+				Data: signMsgEncoded,
 			},
 		},
 	}

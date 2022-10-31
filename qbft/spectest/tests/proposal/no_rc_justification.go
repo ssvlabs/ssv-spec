@@ -14,25 +14,24 @@ func NoRCJustification() *tests.MsgProcessingSpecTest {
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
+		Input:  &qbft.Data{},
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
+		Input:  &qbft.Data{},
 	})
-	signMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessage()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
-
-	signMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsgHeader,
-		rcMsgHeader2,
+	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
+		rcMsg,
+		rcMsg2,
 	}
-	proposeMsgEncoded, _ := signMsg.Encode()
+	proposeMsgEncoded, _ := proposeMsg.Encode()
 
 	msgs := []*types.Message{
 		{
@@ -44,7 +43,7 @@ func NoRCJustification() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "no rc quorum",
 		Pre:            pre,
-		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
+		PostRoot:       "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
 		InputMessages:  msgs,
 		OutputMessages: []*types.Message{},
 		ExpectedError:  "proposal invalid: proposal not justified: change round has no quorum",

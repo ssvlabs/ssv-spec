@@ -15,7 +15,7 @@ func MultiSigner() *tests.MsgProcessingSpecTest {
 	signMsgInvalidEncoded, _ := testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2}, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	}).Encode()
 
 	msgs := []*types.Message{
@@ -28,7 +28,7 @@ func MultiSigner() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal multi signer",
 		Pre:            pre,
-		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
+		PostRoot:       "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
 		InputMessages:  msgs,
 		OutputMessages: []*types.Message{},
 		ExpectedError:  "proposal invalid: proposal msg allows 1 signer",

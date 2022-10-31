@@ -15,100 +15,92 @@ func JustificationsValueNotJustified() *tests.MsgProcessingSpecTest {
 	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg4 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg5 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg6 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         3,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         3,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: 2,
 	})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  3,
+		Input:  &qbft.Data{},
 	})
 	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  3,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input: &qbft.Data{
+			Root:   [32]byte{1, 2, 3, 3},
+			Source: []byte{1, 2, 3, 3},
+		},
 	})
 
-	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessage()
-	prepareMsgHeader2, _ := signQBFTMsg2.ToSignedMessage()
-	prepareMsgHeader3, _ := signQBFTMsg3.ToSignedMessage()
-
-	prepareMsgHeader4, _ := signQBFTMsg4.ToSignedMessage()
-	prepareMsgHeader5, _ := signQBFTMsg5.ToSignedMessage()
-	prepareMsgHeader6, _ := signQBFTMsg6.ToSignedMessage()
-
-	prepareJustifications := []*qbft.SignedMessage{
-		prepareMsgHeader,
-		prepareMsgHeader2,
-		prepareMsgHeader3,
+	rcMsg.RoundChangeJustifications = []*qbft.SignedMessage{
+		signQBFTMsg,
+		signQBFTMsg2,
+		signQBFTMsg3,
 	}
-	prepareJustifications2 := []*qbft.SignedMessage{
-		prepareMsgHeader4,
-		prepareMsgHeader5,
-		prepareMsgHeader6,
+	rcMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
+		signQBFTMsg4,
+		signQBFTMsg5,
+		signQBFTMsg6,
 	}
-	rcMsg.RoundChangeJustifications = prepareJustifications
-	rcMsg2.RoundChangeJustifications = prepareJustifications2
-
-	rcMsgHeader, _ := rcMsg.ToSignedMessage()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
 
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsgHeader,
-		rcMsgHeader2,
-		rcMsgHeader3,
+		rcMsg,
+		rcMsg2,
+		rcMsg3,
 	}
-	proposeMsg.ProposalJustifications = prepareJustifications2
+	proposeMsg.ProposalJustifications = []*qbft.SignedMessage{
+		signQBFTMsg,
+		signQBFTMsg2,
+		signQBFTMsg3,
+	}
 	proposeMsgEncoded, _ := proposeMsg.Encode()
 
-	msgs := []*types.Message{
-		{
-			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-			Data: proposeMsgEncoded,
-		},
-	}
-
 	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal value not justified",
-		Pre:            pre,
-		PostRoot:       "5a71daf1a4ee817826596858f76e56a1a85aedd85b9c4e65e73fc4c4667e65b0",
-		InputMessages:  msgs,
+		Name:     "proposal value not justified",
+		Pre:      pre,
+		PostRoot: "e9da16ca03e556777e7c02b59c7a490bb3d54e5bd8f3135ed1d1ef7116f85fb4",
+		InputMessages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+				Data: proposeMsgEncoded,
+			},
+		},
 		OutputMessages: []*types.Message{},
 		ExpectedError:  "proposal invalid: proposal not justified: proposed data doesn't match highest prepared",
 	}

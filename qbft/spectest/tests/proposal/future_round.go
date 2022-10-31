@@ -13,80 +13,73 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
 	pre.State.Round = qbft.FirstRound
 
 	prepareMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  8,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	prepareMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  8,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	prepareMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  8,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
 	prepareMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
 
-	prepareMsgHeader, _ := prepareMsg.ToSignedMessage()
-	prepareMsgHeader2, _ := prepareMsg2.ToSignedMessage()
-	prepareMsgHeader3, _ := prepareMsg3.ToSignedMessage()
-
-	rcMsgHeader, _ := rcMsg.ToSignedMessage()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
-
 	proposeMsg.ProposalJustifications = []*qbft.SignedMessage{
-		prepareMsgHeader,
-		prepareMsgHeader2,
-		prepareMsgHeader3,
+		prepareMsg,
+		prepareMsg2,
+		prepareMsg3,
 	}
 
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsgHeader,
-		rcMsgHeader2,
-		rcMsgHeader3,
+		rcMsg,
+		rcMsg2,
+		rcMsg3,
 	}
 	proposeMsgEncoded, _ := proposeMsg.Encode()
-
-	msgs := []*types.Message{
-		{
-			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-			Data: proposeMsgEncoded,
-		},
-	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "proposal future round prev prepared",
-		Pre:           pre,
-		PostRoot:      "9c725be6a189887dbe4f4917878ff579ea1d6842b02266015c7ef5b4e0703005",
-		InputMessages: msgs,
+		Name:     "proposal future round prev prepared",
+		Pre:      pre,
+		PostRoot: "e96829bc1c0a91f5220fb7c4df8e054690c6922ca52ecb813c3e033ef7a55ed8",
+		InputMessages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+				Data: proposeMsgEncoded,
+			},
+		},
 		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),

@@ -13,21 +13,22 @@ func InvalidValueCheck() *tests.MsgProcessingSpecTest {
 	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  testingutils.TestingInvalidValueCheck,
+		Input: &qbft.Data{
+			Root:   [32]byte{1, 1, 1, 1},
+			Source: testingutils.TestingInvalidValueCheck,
+		},
 	}).Encode()
 
-	msgs := []*types.Message{
-		{
-			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-			Data: proposeMsgEncoded,
-		},
-	}
-
 	return &tests.MsgProcessingSpecTest{
-		Name:           "invalid proposal value check",
-		Pre:            pre,
-		PostRoot:       "3e721f04a2a64737ec96192d59e90dfdc93f166ec9a21b88cc33ee0c43f2b26a",
-		InputMessages:  msgs,
+		Name:     "invalid proposal value check",
+		Pre:      pre,
+		PostRoot: "56cee2fd474513bc56851dfbb027366f6fc3f90fe8fec4081e993b69f84e2228",
+		InputMessages: []*types.Message{
+			{
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+				Data: proposeMsgEncoded,
+			},
+		},
 		OutputMessages: []*types.Message{},
 		ExpectedError:  "proposal invalid: proposal not justified: proposal value invalid: invalid value",
 	}

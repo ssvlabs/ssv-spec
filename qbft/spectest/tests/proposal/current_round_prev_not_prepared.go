@@ -15,32 +15,35 @@ func CurrentRoundPrevNotPrepared() *tests.MsgProcessingSpecTest {
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
-	signMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	})
-	prepareMsgEncoded, _ := signMsg.Encode()
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  10,
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessage()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
-
-	signMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsgHeader,
-		rcMsgHeader2,
-		rcMsgHeader3,
+	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
+		rcMsg,
+		rcMsg2,
+		rcMsg3,
 	}
-	proposeMsgEncoded, _ := signMsg.Encode()
+	proposeMsgEncoded, _ := proposeMsg.Encode()
 
 	msgs := []*types.Message{
 		{
@@ -52,12 +55,12 @@ func CurrentRoundPrevNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal happy flow round > 1 (prev not prepared)",
 		Pre:           pre,
-		PostRoot:      "b261accce13a88f020c601d0314bd6eaecd6cb0cea3232198b258cdcc55c1263",
+		PostRoot:      "55c74c403074a75e4e4d7542d48ba9eeccd1b161d37fb04f664f2bb8316012d6",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-				Data: prepareMsgEncoded,
+				Data: signMsgEncoded,
 			},
 		},
 	}

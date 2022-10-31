@@ -162,7 +162,7 @@ func isProposalJustification(
 					pj,
 					height,
 					rch.Message.PreparedRound,
-					rch.Message.Input.Source,
+					rch.Message.Input.Root[:],
 					state.Share.Committee,
 				); err != nil {
 					return errors.New("signed prepare not valid")
