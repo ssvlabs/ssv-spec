@@ -7,9 +7,10 @@ import (
 )
 
 type TestingNetwork struct {
-	BroadcastedMsgs       []*types.SSVMessage
-	DKGOutputs            map[types.OperatorID]*dkg.SignedOutput
-	SyncHighestDecidedCnt int
+	BroadcastedMsgs           []*types.SSVMessage
+	DKGOutputs                map[types.OperatorID]*dkg.SignedOutput
+	SyncHighestDecidedCnt     int
+	SyncHighestChangeRoundCnt int
 }
 
 func NewTestingNetwork() *TestingNetwork {
@@ -44,6 +45,7 @@ func (net *TestingNetwork) SyncHighestDecided(identifier []byte) error {
 }
 
 func (net *TestingNetwork) SyncHighestRoundChange(identifier []byte, height qbft.Height) error {
+	net.SyncHighestChangeRoundCnt++
 	return nil
 }
 
