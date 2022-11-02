@@ -45,15 +45,25 @@ func NewMsgID(pk []byte, role BeaconRole) MessageID {
 	roleByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 
-	ret := MessageID{}
-	copy(ret[pubKeyStartPos:pubKeyStartPos+pubKeySize], pk)
-	copy(ret[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
-
-	return ret
+	return newMessageID(pk, roleByts)
 }
 
 func (msgID MessageID) String() string {
 	return hex.EncodeToString(msgID[:])
+}
+
+func MessageIDFromBytes(mid []byte) MessageID {
+	if len(mid) < pubKeySize+roleTypeSize {
+		return MessageID{}
+	}
+	return newMessageID(mid[pubKeyStartPos:pubKeyStartPos+pubKeySize], mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize])
+}
+
+func newMessageID(pk, roleByts []byte) MessageID {
+	mid := MessageID{}
+	copy(mid[pubKeyStartPos:pubKeyStartPos+pubKeySize], pk)
+	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
+	return mid
 }
 
 type MsgType uint64
