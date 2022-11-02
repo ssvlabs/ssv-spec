@@ -15,62 +15,52 @@ func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
 	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
+		Input:  &qbft.Data{},
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
+		Input:  &qbft.Data{},
 	})
 	rcMsg4 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  nil,
+		Input:  &qbft.Data{},
 	})
 	proposalMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 
-	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessage()
-	prepareMsgHeader2, _ := signQBFTMsg2.ToSignedMessage()
-	prepareMsgHeader3, _ := signQBFTMsg3.ToSignedMessage()
-
 	prepareJustifications := []*qbft.SignedMessage{
-		prepareMsgHeader,
-		prepareMsgHeader2,
-		prepareMsgHeader3,
+		signQBFTMsg, signQBFTMsg2, signQBFTMsg3,
 	}
 	rcMsg2.RoundChangeJustifications = prepareJustifications
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessage()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
-	rcMsgHeader4, _ := rcMsg4.ToSignedMessage()
-
 	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsgHeader,
-		rcMsgHeader3,
-		rcMsgHeader4,
+		rcMsg, rcMsg3, rcMsg4,
 	}
 
 	rcMsgEncoded, _ := rcMsg.Encode()
@@ -101,7 +91,7 @@ func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change duplicate msg quorum",
 		Pre:           pre,
-		PostRoot:      "1c4727292dfab7272506b272505b982ebf0cf6cdca26e70a381ffc3619ebf5f2",
+		PostRoot:      "0dce9a0c98edc896696d2e3fa2f10ad5c06a45b7e43e3a98caf712abf981ab50",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

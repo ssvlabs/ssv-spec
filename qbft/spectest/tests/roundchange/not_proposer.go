@@ -12,22 +12,21 @@ func NotProposer() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Height = tests.ChangeProposerFuncInstanceHeight // will change proposer default for tests
 
-	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		Height: qbft.FirstHeight,
+	rcMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: tests.ChangeProposerFuncInstanceHeight,
 		Round:  2,
-	})
-	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-		Height: qbft.FirstHeight,
+		Input:  &qbft.Data{},
+	}).Encode()
+	rcMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+		Height: tests.ChangeProposerFuncInstanceHeight,
 		Round:  2,
-	})
-	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-		Height: qbft.FirstHeight,
+		Input:  &qbft.Data{},
+	}).Encode()
+	rcMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		Height: tests.ChangeProposerFuncInstanceHeight,
 		Round:  2,
-	})
-
-	rcMsgEncoded, _ := rcMsg.Encode()
-	rcMsgEncoded2, _ := rcMsg2.Encode()
-	rcMsgEncoded3, _ := rcMsg3.Encode()
+		Input:  &qbft.Data{},
+	}).Encode()
 
 	msgs := []*types.Message{
 		{
@@ -47,7 +46,7 @@ func NotProposer() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change justification not proposer",
 		Pre:           pre,
-		PostRoot:      "5f11ad62af6755dc66b2850d99dd92ac8f3549dbd9154f795d0efa772943d0a7",
+		PostRoot:      "25675f6c1ffdb51a4539bce513ce71f25093d929971e1a5f5da6a455b8592537",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

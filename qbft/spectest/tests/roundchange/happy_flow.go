@@ -10,58 +10,59 @@ import (
 // HappyFlow tests a simple full happy flow until decided
 func HappyFlow() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	signMsgEncodedFirstRound, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  pre.StartValue,
 	}).Encode()
+	proposeMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  2,
+		Input:  pre.StartValue,
+	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  nil,
+		Input:  &qbft.Data{},
 	})
-	rcMsgEncoded, _ := rcMsg.Encode()
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  nil,
+		Input:  &qbft.Data{},
 	})
-	rcMsgEncoded2, _ := rcMsg2.Encode()
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  nil,
+		Input:  &qbft.Data{},
 	})
-	rcMsgEncoded3, _ := rcMsg3.Encode()
 
-	rcMsgHeader, _ := rcMsg.ToSignedMessage()
-	rcMsgHeader2, _ := rcMsg2.ToSignedMessage()
-	rcMsgHeader3, _ := rcMsg3.ToSignedMessage()
-
-	signMsg2Round := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
-	})
-	signMsg2Round2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
+	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
-	})
-	signMsg2Round3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
+	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
-	})
-	signMsg2RoundEncoded, _ := signMsg2Round.Encode()
-	signMsg2RoundEncoded2, _ := signMsg2Round2.Encode()
-	signMsg2RoundEncoded3, _ := signMsg2Round3.Encode()
-	signMsg2Round.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsgHeader,
-		rcMsgHeader2,
-		rcMsgHeader3,
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
+	signMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
+	proposeMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
+		rcMsg, rcMsg2, rcMsg3,
 	}
-	signMsg2RoundEncodedWithJust, _ := signMsg2Round.Encode()
+	proposeMsgEncoded2, _ := proposeMsg2.Encode()
+	rcMsgEncoded, _ := rcMsg.Encode()
+	rcMsgEncoded2, _ := rcMsg2.Encode()
+	rcMsgEncoded3, _ := rcMsg3.Encode()
 
 	rcMsgs := []*types.Message{
 		{
@@ -81,50 +82,50 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 	msgs := []*types.Message{
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-			Data: signMsgEncodedFirstRound,
+			Data: proposeMsgEncoded,
 		},
 	}
 	msgs = append(msgs, rcMsgs...)
 	msgs = append(msgs,
 		&types.Message{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-			Data: signMsg2RoundEncodedWithJust,
+			Data: proposeMsgEncoded2,
 		},
 		&types.Message{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-			Data: signMsg2RoundEncoded,
+			Data: signMsgEncoded,
 		},
 		&types.Message{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-			Data: signMsg2RoundEncoded2,
+			Data: signMsgEncoded2,
 		},
 		&types.Message{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-			Data: signMsg2RoundEncoded3,
+			Data: signMsgEncoded3,
 		},
 		&types.Message{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
-			Data: signMsg2RoundEncoded,
+			Data: signMsgEncoded,
 		},
 		&types.Message{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
-			Data: signMsg2RoundEncoded2,
+			Data: signMsgEncoded2,
 		},
 		&types.Message{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
-			Data: signMsg2RoundEncoded3,
+			Data: signMsgEncoded3,
 		},
 	)
 
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change happy flow",
 		Pre:           pre,
-		PostRoot:      "04ef76c9b07f2f02f8cad332bd2ed331985d214be3a461e8f996d6e771901a8f",
+		PostRoot:      "ea7943b99324f66e94e82a287aaa449f72850671b1fef51cb480bb81a62ec1d8",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-				Data: signMsgEncodedFirstRound,
+				Data: signMsgEncoded4,
 			},
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusRoundChangeMsgType),
@@ -132,15 +133,15 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			},
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
-				Data: signMsg2RoundEncodedWithJust,
+				Data: proposeMsgEncoded2,
 			},
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
-				Data: signMsg2RoundEncoded,
+				Data: signMsgEncoded,
 			},
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
-				Data: signMsg2RoundEncoded,
+				Data: signMsgEncoded,
 			},
 		},
 	}

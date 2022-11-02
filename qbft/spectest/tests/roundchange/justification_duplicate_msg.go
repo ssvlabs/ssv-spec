@@ -15,31 +15,26 @@ func JustificationDuplicateMsg() *tests.MsgProcessingSpecTest {
 	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         2,
-		Input:         &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
 	})
 
-	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessage()
-	prepareMsgHeader2, _ := signQBFTMsg2.ToSignedMessage()
-
-	prepareJustifications := []*qbft.SignedMessage{
-		prepareMsgHeader,
-		prepareMsgHeader2,
-		prepareMsgHeader2,
+	rcMsg.RoundChangeJustifications = []*qbft.SignedMessage{
+		signQBFTMsg,
+		signQBFTMsg2,
+		signQBFTMsg2,
 	}
-	rcMsg.RoundChangeJustifications = prepareJustifications
-
 	rcMsgEncoded, _ := rcMsg.Encode()
 
 	msgs := []*types.Message{

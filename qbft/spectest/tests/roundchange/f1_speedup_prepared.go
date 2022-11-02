@@ -13,41 +13,38 @@ func F1SpeedupPrevPrepared() *tests.MsgProcessingSpecTest {
 	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	signQBFTMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-		Height: qbft.FirstHeight,
-		Round:  10,
+		Height:        qbft.FirstHeight,
+		Round:         10,
+		Input:         pre.StartValue,
+		PreparedRound: qbft.FirstRound,
 	})
 
-	prepareMsgHeader, _ := signQBFTMsg.ToSignedMessage()
-	prepareMsgHeader2, _ := signQBFTMsg2.ToSignedMessage()
-	prepareMsgHeader3, _ := signQBFTMsg3.ToSignedMessage()
-
-	prepareJustifications := []*qbft.SignedMessage{
-		prepareMsgHeader,
-		prepareMsgHeader2,
-		prepareMsgHeader3,
+	rcMsg3.RoundChangeJustifications = []*qbft.SignedMessage{
+		signQBFTMsg, signQBFTMsg2, signQBFTMsg3,
 	}
-	rcMsg3.RoundChangeJustifications = prepareJustifications
 
 	rcMsgEncoded, _ := rcMsg.Encode()
 	rcMsgEncoded2, _ := rcMsg2.Encode()
@@ -67,7 +64,7 @@ func F1SpeedupPrevPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up prev prepared",
 		Pre:           pre,
-		PostRoot:      "726c342cfa3f31400e6c2818854d4b92102d913347971ef4fe1591db42f70185",
+		PostRoot:      "70b59be392775a58b170aef44b6a7c19f937ae5a9c94c2d21b8ec3ef0b17d338",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

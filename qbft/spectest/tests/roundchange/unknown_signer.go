@@ -15,6 +15,7 @@ func UnknownSigner() *tests.MsgProcessingSpecTest {
 	rcMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(5), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
+		Input:  &qbft.Data{},
 	}).Encode()
 
 	msgs := []*types.Message{
@@ -27,7 +28,7 @@ func UnknownSigner() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change unknown signer",
 		Pre:            pre,
-		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
+		PostRoot:       "a8b80879ebf2ecee42fddc69b67dd5f6adfd6aa8b7114246aec80ce1bfef513a",
 		InputMessages:  msgs,
 		OutputMessages: []*types.Message{},
 		ExpectedError:  "round change msg invalid: round change msg signature invalid: unknown signer",

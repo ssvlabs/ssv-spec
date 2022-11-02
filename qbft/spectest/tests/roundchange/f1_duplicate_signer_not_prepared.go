@@ -13,10 +13,12 @@ func F1DuplicateSignerNotPrepared() *tests.MsgProcessingSpecTest {
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
+		Input:  &qbft.Data{},
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  5,
+		Input:  &qbft.Data{},
 	})
 
 	rcMsgEncoded, _ := rcMsg.Encode()
@@ -36,7 +38,7 @@ func F1DuplicateSignerNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change f+1 not duplicate prepared",
 		Pre:            pre,
-		PostRoot:       "bc5a316dbb31afa9717f22b7f09db244858b38ce024b00ab96c46f3a3a2f13e3",
+		PostRoot:       "9fb495c49a72114eaa4c54f6f1ceab6e0ed872fda5ee7abbdbb67fb555764877",
 		InputMessages:  msgs,
 		OutputMessages: []*types.Message{},
 	}

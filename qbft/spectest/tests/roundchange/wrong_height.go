@@ -15,7 +15,7 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: 2,
 		Round:  2,
-		Input:  nil,
+		Input:  &qbft.Data{},
 	})
 	rcMsgEncoded, _ := rcMsg.Encode()
 

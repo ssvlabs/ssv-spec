@@ -13,12 +13,11 @@ func MultiSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 
-	rcMsg := testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{types.OperatorID(1), types.OperatorID(2)}, &qbft.Message{
+	rcMsgEncoded, _ := testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{types.OperatorID(1), types.OperatorID(2)}, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
-	})
-	rcMsgEncoded, _ := rcMsg.Encode()
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
+	}).Encode()
 
 	msgs := []*types.Message{
 		{

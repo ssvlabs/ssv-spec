@@ -13,10 +13,12 @@ func F1DifferentFutureRoundsNotPrepared() *tests.MsgProcessingSpecTest {
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  5,
+		Input:  &qbft.Data{},
 	})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
+		Input:  &qbft.Data{},
 	})
 
 	rcMsgEncoded, _ := rcMsg.Encode()
@@ -36,7 +38,7 @@ func F1DifferentFutureRoundsNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change f+1 not prepared",
 		Pre:           pre,
-		PostRoot:      "a5e0b34626a0e85cf4494c1ca3b89b7ad5469dff321b05f476955ca2ab173770",
+		PostRoot:      "75ba647b7b3e65ef20443b0a866441fe47b92d6f4ada7bb30acee79367f947db",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{
