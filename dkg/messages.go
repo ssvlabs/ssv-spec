@@ -16,6 +16,7 @@ import (
 type RequestID [24]byte
 
 const (
+	blsPubkeySize      = 48
 	ethAddressSize     = 20
 	ethAddressStartPos = 0
 	indexSize          = 4
@@ -54,6 +55,8 @@ const (
 	DepositDataMsgType
 	// OutputMsgType final output msg used by requester to make deposits and register validator with SSV
 	OutputMsgType
+	// ReshareMsgType sent when Resharing is requested
+	ReshareMsgType
 )
 
 type Message struct {
@@ -147,6 +150,43 @@ func (msg *Init) Encode() ([]byte, error) {
 
 // Decode returns error if decoding failed
 func (msg *Init) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
+}
+
+// Reshare triggers the resharing protocol
+type Reshare struct {
+	// ValidatorPK is the the public key to be reshared
+	ValidatorPK types.ValidatorPK
+	// OperatorIDs are the operators in the new set
+	OperatorIDs []types.OperatorID
+	// Threshold is the threshold of the new set
+	Threshold uint16
+}
+
+func (msg *Reshare) Validate() error {
+
+	if len(msg.ValidatorPK) != blsPubkeySize {
+		return errors.New("invalid validator pubkey size")
+	}
+
+	if len(msg.OperatorIDs) < 4 || (len(msg.OperatorIDs)-1)%3 != 0 {
+		return errors.New("invalid number of operators which has to be 3f+1")
+	}
+
+	if int(msg.Threshold) != (len(msg.OperatorIDs)-1)*2/3+1 {
+		return errors.New("invalid threshold which has to be 2f+1")
+	}
+
+	return nil
+}
+
+// Encode returns a msg encoded bytes or error
+func (msg *Reshare) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *Reshare) Decode(data []byte) error {
 	return json.Unmarshal(data, msg)
 }
 

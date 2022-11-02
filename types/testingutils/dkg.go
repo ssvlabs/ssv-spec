@@ -21,7 +21,12 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
 	km := NewTestingKeyManager()
 	config := &dkg.Config{
-		Protocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.KeyGenProtocol {
+		KeygenProtocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID, init *dkg.Init) dkg.Protocol {
+			return &TestingKeygenProtocol{
+				KeyGenOutput: keySet.KeyGenOutput(1),
+			}
+		},
+		ReshareProtocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID, reshare *dkg.Reshare, output *dkg.KeyGenOutput) dkg.Protocol {
 			return &TestingKeygenProtocol{
 				KeyGenOutput: keySet.KeyGenOutput(1),
 			}
@@ -131,11 +136,13 @@ func (ks *TestKeySet) SignedOutputObject(requestID dkg.RequestID, opId types.Ope
 	}
 	share := ks.Shares[opId]
 	o := &dkg.Output{
-		RequestID:            requestID,
-		EncryptedShare:       TestingEncryption(&ks.DKGOperators[opId].EncryptionKey.PublicKey, share.Serialize()),
-		SharePubKey:          share.GetPublicKey().Serialize(),
-		ValidatorPubKey:      ks.ValidatorPK.Serialize(),
-		DepositDataSignature: ks.ValidatorSK.SignByte(root).Serialize(),
+		RequestID:       requestID,
+		EncryptedShare:  TestingEncryption(&ks.DKGOperators[opId].EncryptionKey.PublicKey, share.Serialize()),
+		SharePubKey:     share.GetPublicKey().Serialize(),
+		ValidatorPubKey: ks.ValidatorPK.Serialize(),
+	}
+	if root != nil {
+		o.DepositDataSignature = ks.ValidatorSK.SignByte(root).Serialize()
 	}
 	root1, _ := o.GetRoot()
 

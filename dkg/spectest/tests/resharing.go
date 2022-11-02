@@ -6,46 +6,31 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// HappyFlow tests a simple full happy flow until decided
-func HappyFlow() *MsgProcessingSpecTest {
+// ResharingHappyFlow tests a simple (dummy) resharing flow, the difference between this and keygen happy flow is
+// resharing doesn't sign deposit data
+func ResharingHappyFlow() *MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
-	init := &dkg.Init{
-		OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
-		Threshold:             3,
-		WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
-		Fork:                  testingutils.TestingForkVersion,
+	reshare := &dkg.Reshare{
+		ValidatorPK: make([]byte, 48),
+		OperatorIDs: []types.OperatorID{1, 2, 3, 4},
+		Threshold:   3,
 	}
-	initBytes, _ := init.Encode()
-	root := testingutils.DespositDataSigningRoot(ks, init)
+	reshareBytes, _ := reshare.Encode()
+	var root []byte
 
 	return &MsgProcessingSpecTest{
-		Name: "happy flow",
+		Name: "resharing happy flow",
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
-				MsgType:    dkg.InitMsgType,
+				MsgType:    dkg.ReshareMsgType,
 				Identifier: identifier,
-				Data:       initBytes,
+				Data:       reshareBytes,
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       nil, // GLNOTE: Dummy message simulating the Protocol to complete
-			}),
-			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
-				MsgType:    dkg.DepositDataMsgType,
-				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(2, root, ks.Shares[2]),
-			}),
-			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
-				MsgType:    dkg.DepositDataMsgType,
-				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(3, root, ks.Shares[3]),
-			}),
-			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
-				MsgType:    dkg.DepositDataMsgType,
-				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(4, root, ks.Shares[4]),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
@@ -64,11 +49,6 @@ func HappyFlow() *MsgProcessingSpecTest {
 			}),
 		},
 		OutputMessages: []*dkg.SignedMessage{
-			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
-				MsgType:    dkg.DepositDataMsgType,
-				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(1, root, ks.Shares[1]),
-			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,

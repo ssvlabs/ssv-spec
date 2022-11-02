@@ -21,7 +21,7 @@ type DKG struct {
 	msgs map[Stage][]*ProtocolMsg
 }
 
-func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.KeyGenProtocol {
+func New(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID) dkg.Protocol {
 	return &DKG{
 		identifier: identifier,
 		network:    network,
@@ -35,13 +35,13 @@ func (s *DKG) SetOperators(validatorPK []byte, operatorShares map[types.Operator
 	s.operatorShares = operatorShares
 }
 
-func (s *DKG) Start(init *dkg.Init) error {
-	s.operators = init.OperatorIDs
+func (s *DKG) Start() error {
+	//s.operators = initOrReshare.Init.OperatorIDs
 	// TODO send Stage 1 msg
 	return nil
 }
 
-func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutcome, error) {
+func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
 	// TODO validate msg
 
 	dataMsg := &ProtocolMsg{}
@@ -77,7 +77,7 @@ func (s *DKG) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutcome, erro
 					4: s.operatorShares[4].GetPublicKey(),
 				},
 			}
-			return true, &dkg.KeyGenOutcome{KeyGenOutput: ret}, nil
+			return true, &dkg.ProtocolOutcome{ProtocolOutput: ret}, nil
 		}
 	}
 	return false, nil, nil

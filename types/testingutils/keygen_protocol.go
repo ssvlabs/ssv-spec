@@ -6,10 +6,10 @@ type TestingKeygenProtocol struct {
 	KeyGenOutput *dkg.KeyGenOutput
 }
 
-func (m TestingKeygenProtocol) Start(init *dkg.Init) error {
+func (m TestingKeygenProtocol) Start() error {
 	return nil
 }
 
-func (m TestingKeygenProtocol) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.KeyGenOutcome, error) {
-	return true, &dkg.KeyGenOutcome{KeyGenOutput: m.KeyGenOutput}, nil
+func (m TestingKeygenProtocol) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
+	return true, &dkg.ProtocolOutcome{ProtocolOutput: m.KeyGenOutput}, nil
 }
