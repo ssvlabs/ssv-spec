@@ -4,7 +4,7 @@ import "github.com/bloxapp/ssv-spec/types"
 
 // Broadcaster is the interface used to abstract message broadcasting
 type Broadcaster interface {
-	Broadcast(message types.Encoder) error
+	Broadcast(message *types.SSVMessage) error
 }
 
 // Subscriber is used to abstract topic management
