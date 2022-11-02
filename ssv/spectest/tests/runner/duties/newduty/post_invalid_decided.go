@@ -12,7 +12,7 @@ import (
 func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	consensusDataByts := func(role types.BeaconRole) []byte {
+	consensusData := func(role types.BeaconRole) *qbft.Data {
 		cd := &types.ConsensusData{
 			Duty: &types.Duty{
 				Type:                    100,
@@ -25,8 +25,13 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				ValidatorCommitteeIndex: 11,
 			},
 		}
-		byts, _ := cd.Encode()
-		return byts
+		// TODO<olegshmuelov>: we cant marshal consensus data with unknown role
+		byts, _ := cd.MarshalSSZ()
+		r, _ := cd.HashTreeRoot()
+		return &qbft.Data{
+			Root:   r,
+			Source: byts,
+		}
 	}
 
 	decideWrong := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
@@ -39,16 +44,21 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 
-		err := r.ProcessConsensus(testingutils.MultiSignQBFTMsg(
+		multiMsgEncoded, _ := testingutils.MultiSignQBFTMsg(
 			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 			[]types.OperatorID{1, 2, 3},
 			&qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
-				Identifier: r.GetBaseRunner().QBFTController.Identifier,
-				Data:       testingutils.CommitDataBytes(consensusDataByts(r.GetBaseRunner().BeaconRoleType)),
-			}))
+				Height: qbft.FirstHeight,
+				Round:  qbft.FirstRound,
+				//Identifier: r.GetBaseRunner().QBFTController.Identifier,
+				Input: consensusData(r.GetBaseRunner().BeaconRoleType),
+				//Data:  testingutils.CommitDataBytes(consensusData(r.GetBaseRunner().BeaconRoleType)),
+			}).Encode()
+
+		err := r.ProcessConsensus(&types.Message{
+			ID:   types.PopulateMsgType(r.GetBaseRunner().QBFTController.Identifier, types.DecidedMsgType),
+			Data: multiMsgEncoded,
+		})
 		expectedError := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type"
 		if err.Error() != expectedError {
 			panic(err.Error())

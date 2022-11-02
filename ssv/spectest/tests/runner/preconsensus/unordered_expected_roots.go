@@ -20,7 +20,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.Message{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusWrongOrderContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), types.PartialSelectionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "7ec85b6d9e1f568c778ba3fdbb26df3d5e32c56628775d7facd8a1d0038dc59e",
+				PostDutyRunnerStateRoot: "f7d21e5fafab57daf6fe0a0fb9efc50fea94e40c87394aa58ab5b9c3569e4042",
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -31,7 +31,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    testingutils.TestingAggregatorDuty,
 				Messages:                []*types.Message{},
-				PostDutyRunnerStateRoot: "ac64bab0a5194cd5b5a426b369839dbaeab4ee98f1dc682a558137d4b0ce7063",
+				PostDutyRunnerStateRoot: "da498b2ca86a535b3b879ddcef5d9de924162c478694129a6a21857641e6031a",
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -41,7 +41,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    testingutils.TestingProposerDuty,
 				Messages:                []*types.Message{},
-				PostDutyRunnerStateRoot: "4011c842c4b65f678c065595a288696dbf88869dbf74b3d6bd980dfcaba07843",
+				PostDutyRunnerStateRoot: "583f8c730925b043befceb4e871a9cf6c28b3f0e5c1b173ca0d869e958e8445f",
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

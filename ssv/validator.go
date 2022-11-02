@@ -62,11 +62,8 @@ func (v *Validator) ProcessMessage(msg *types.Message) error {
 		types.ConsensusProposeMsgType,
 		types.ConsensusPrepareMsgType,
 		types.ConsensusCommitMsgType,
-		types.ConsensusRoundChangeMsgType:
-		//signedMsg := &qbft.SignedMessage{}
-		//if err := signedMsg.Decode(msg.GetData()); err != nil {
-		//	return errors.Wrap(err, "could not get consensus Message from network Message")
-		//}
+		types.ConsensusRoundChangeMsgType,
+		types.DecidedMsgType:
 		return dutyRunner.ProcessConsensus(msg)
 	case
 		types.PartialRandaoSignatureMsgType,

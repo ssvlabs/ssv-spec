@@ -8,7 +8,6 @@ import (
 )
 
 // JustificationInvalidSig tests a single prepare justification msg with wrong signature
-// TODO<olegshmuelov>: inputroot related, verify signature for justification
 func JustificationInvalidSig() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2

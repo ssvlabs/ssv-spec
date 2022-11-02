@@ -28,7 +28,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[8], ks.Shares[8], 8, 8), types.PartialContributionProofSignatureMsgType),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[9], ks.Shares[9], 9, 9), types.PartialContributionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "1cab71b073e3543b45b527f78b8ad33275b858fb32577cd19d0d73e53b367509",
+				PostDutyRunnerStateRoot: "e11dddf094e8cac87ca1631869e430faf49c9b83ef95218f6afc3d52c4154a83",
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -48,7 +48,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[8], ks.Shares[8], 8, 8), types.PartialSelectionProofSignatureMsgType),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[9], ks.Shares[9], 9, 9), types.PartialSelectionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "5f09448a45bee35b668dcbb48db30e9f9abc1979087a520211e61d69cbe6a448",
+				PostDutyRunnerStateRoot: "e0afc8b6893a553dc2f0e9a0de8ef4f5535e61284477939ea91cd19ae7d2a584",
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -68,7 +68,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[8], ks.Shares[8], 8, 8), types.PartialRandaoSignatureMsgType),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[9], ks.Shares[9], 9, 9), types.PartialRandaoSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "135464e9eb841d06679c4bfa689086a3c4fac0331d0e4584364a80ec24b11fb9",
+				PostDutyRunnerStateRoot: "b31cb66cc01fad747705de8eed8e6ec9af4d0e6c575c4de0d35bd9d8a1261a5c",
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

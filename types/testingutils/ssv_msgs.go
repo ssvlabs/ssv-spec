@@ -37,24 +37,28 @@ var TestAttesterConsensusData = &types.ConsensusData{
 	AttestationData: TestingAttestationData,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.MarshalSSZ()
+var TestAttesterConsensusDataRoot, _ = TestAttesterConsensusData.HashTreeRoot()
 
 var TestAggregatorConsensusData = &types.ConsensusData{
 	Duty:              TestingAggregatorDuty,
 	AggregateAndProof: TestingAggregateAndProof,
 }
 var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.MarshalSSZ()
+var TestAggregatorConsensusDataRoot, _ = TestAggregatorConsensusData.HashTreeRoot()
 
 var TestProposerConsensusData = &types.ConsensusData{
 	Duty:      TestingProposerDuty,
 	BlockData: TestingBeaconBlock,
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.MarshalSSZ()
+var TestProposerConsensusDataRoot, _ = TestProposerConsensusData.HashTreeRoot()
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	Duty:                   TestingSyncCommitteeDuty,
 	SyncCommitteeBlockRoot: TestingSyncCommitteeBlockRoot,
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.MarshalSSZ()
+var TestSyncCommitteeConsensusDataRoot, _ = TestSyncCommitteeConsensusData.HashTreeRoot()
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty: TestingSyncCommitteeContributionDuty,
@@ -65,6 +69,7 @@ var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	},
 }
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.MarshalSSZ()
+var TestSyncCommitteeContributionConsensusDataRoot, _ = TestSyncCommitteeContributionConsensusData.HashTreeRoot()
 
 var TestConsensusUnkownDutyTypeData = &types.ConsensusData{
 	Duty:            TestingUnknownDutyType,
@@ -77,6 +82,7 @@ var TestConsensusWrongDutyPKData = &types.ConsensusData{
 	AttestationData: TestingAttestationData,
 }
 var TestConsensusWrongDutyPKDataByts, _ = TestConsensusWrongDutyPKData.MarshalSSZ()
+var TestConsensusWrongDutyPKDataRoot, _ = TestConsensusWrongDutyPKData.HashTreeRoot()
 
 var SSVMsgAttester = func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.SignedPartialSignature, msgType types.MsgType) *types.Message {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewBaseMsgID(TestingValidatorPubKey[:], types.BNRoleAttester), msgType)

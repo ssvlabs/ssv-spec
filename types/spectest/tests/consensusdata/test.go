@@ -19,7 +19,7 @@ func (test *EncodingSpecTest) Run(t *testing.T) {
 	a := types.ConsensusData{}
 	require.NoError(t, a.UnmarshalSSZ(test.Data))
 
-	byts, err := a.Encode()
+	byts, err := a.MarshalSSZ()
 	require.NoError(t, err)
 	require.EqualValues(t, test.Data, byts)
 }

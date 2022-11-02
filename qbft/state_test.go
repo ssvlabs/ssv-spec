@@ -1,7 +1,16 @@
 package qbft
 
-// TODO<olegshmuelov>: STATE adjust test with new msg structs
-/*func TestState_Decoding(t *testing.T) {
+import (
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/stretchr/testify/require"
+	"testing"
+)
+
+func TestState_Decoding(t *testing.T) {
+	inputData := &Data{
+		Root:   [32]byte{1, 2, 3, 4},
+		Source: []byte{1, 2, 3, 4},
+	}
 	state := &State{
 		Share: &types.Share{
 			OperatorID:      1,
@@ -14,18 +23,17 @@ package qbft
 			},
 			DomainType: types.PrimusTestnet,
 		},
-		ID:                []byte{1, 2, 3, 4},
+		//ID:                []byte{1, 2, 3, 4},
+		ID:                types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester),
 		Round:             1,
 		Height:            2,
 		LastPreparedRound: 3,
-		LastPreparedValue: []byte{1, 2, 3, 4},
+		LastPreparedValue: inputData,
 		ProposalAcceptedForCurrentRound: &SignedMessage{
 			Message: &Message{
-				MsgType:    CommitMsgType,
-				Height:     1,
-				Round:      2,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       []byte{1, 2, 3, 4},
+				Height: 1,
+				Round:  2,
+				Input:  inputData,
 			},
 			Signature: []byte{1, 2, 3, 4},
 			Signers:   []types.OperatorID{1},
@@ -45,16 +53,16 @@ package qbft
 	require.EqualValues(t, types.PrimusTestnet, decodedState.Share.DomainType)
 
 	require.EqualValues(t, 3, decodedState.LastPreparedRound)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.LastPreparedValue)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ID)
+	require.EqualValues(t, [32]byte{1, 2, 3, 4}, decodedState.LastPreparedValue.Root)
+	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.LastPreparedValue.Source)
+	require.True(t, decodedState.ID.Compare(types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)))
 	require.EqualValues(t, 2, decodedState.Height)
 	require.EqualValues(t, 1, decodedState.Round)
 
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Signature)
 	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.Signers)
-	require.EqualValues(t, CommitMsgType, decodedState.ProposalAcceptedForCurrentRound.Message.MsgType)
 	require.EqualValues(t, 1, decodedState.ProposalAcceptedForCurrentRound.Message.Height)
 	require.EqualValues(t, 2, decodedState.ProposalAcceptedForCurrentRound.Message.Round)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Identifier)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Data)
-}*/
+	require.EqualValues(t, [32]byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Input.Root)
+	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Input.Source)
+}

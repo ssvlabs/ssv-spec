@@ -10,35 +10,40 @@ import (
 func SevenOperators() *MsgProcessingSpecTest {
 	pre := testingutils.SevenOperatorsInstance()
 	baseMsgId := types.NewBaseMsgID(testingutils.Testing7SharesSet().ValidatorPK.Serialize(), types.BNRoleAttester)
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  pre.StartValue,
+	}).Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded5, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[5], types.OperatorID(5), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	msgs := []*types.Message{
 		{
 			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusProposeMsgType),
-			Data: signMsgEncoded,
+			Data: proposeMsgEncoded,
 		},
 		{
 			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusPrepareMsgType),

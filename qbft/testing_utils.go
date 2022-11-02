@@ -61,7 +61,7 @@ var testingInstanceStruct = &Instance{
 	State: &State{
 		Share: testingShare,
 		//ID:                              []byte{1, 2, 3, 4},
-		ID:                              types.NewBaseMsgID(testingValidatorPK[:], 0), //TODO<olegshmuelov> dynamic role
+		ID:                              types.NewBaseMsgID(testingValidatorPK[:], 0),
 		Round:                           1,
 		Height:                          1,
 		LastPreparedRound:               1,
@@ -101,7 +101,7 @@ var testingInstanceStruct = &Instance{
 	},
 }
 var testingControllerStruct = &Controller{
-	Identifier: types.NewBaseMsgID(testingValidatorPK[:], 0), //TODO<olegshmuelov> dynamic role,
+	Identifier: types.NewBaseMsgID(testingValidatorPK[:], 0),
 	Height:     Height(1),
 	Share:      testingShare,
 	StoredInstances: [HistoricalInstanceCapacity]*Instance{

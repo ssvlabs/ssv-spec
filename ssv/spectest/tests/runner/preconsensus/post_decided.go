@@ -50,7 +50,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.Message{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4), types.PartialContributionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "d6702a61154964cb07d1ad1bab2aef6012a23e9eb220584a5cc68166c043866b",
+				PostDutyRunnerStateRoot: "dc06fe49582c438ece971da8aa8107e4ed90ca1000403d43aa64564e4be1e9d2",
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignature{},
 			},
@@ -70,7 +70,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.Message{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4), types.PartialSelectionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "858034543f7328566e401cfd9bd8d66cb722c9d41d0a054999638fcfc8a129ad",
+				PostDutyRunnerStateRoot: "bb1378ee14f4e8bb55880fe42d41eb849276aa71533b05c777f4783b115f0d3a",
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignature{},
 			},
@@ -90,7 +90,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.Message{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4), types.PartialRandaoSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "8fa24d5c462001b5887aa6f32cc612d13dd4c406b720d2fb8ca23e4577fa96c9",
+				PostDutyRunnerStateRoot: "4b7c69ae85975112b30a3cb233319e3102bdef7cd3962d498d90d74b6a50a016",
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignature{},
 			},

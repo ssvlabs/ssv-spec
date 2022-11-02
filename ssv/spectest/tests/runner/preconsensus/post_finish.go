@@ -32,7 +32,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.Message{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4), types.PartialContributionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "17df1aa1916e095fffddee0a1ddd333f9fb5c4d33daf93429f71edc31cd9de8b",
+				PostDutyRunnerStateRoot: "e45a00a3660f518214b7adcefbd192c75c375989f71cc01d0b528e1eb6f15e6a",
 				DontStartDuty:           true,
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
@@ -49,7 +49,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.Message{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4), types.PartialSelectionProofSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "469f0bb37caff9afd9f50c35d900a60efb95c11452a6ea9ae2192b989d7c6369",
+				PostDutyRunnerStateRoot: "f53213c361ed36784fecfe0b1960c8d467d94edb65434c072a6745ea361f1e6f",
 				DontStartDuty:           true,
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
@@ -66,7 +66,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.Message{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4), types.PartialRandaoSignatureMsgType),
 				},
-				PostDutyRunnerStateRoot: "6c0e93901acdaf1e16a1b39d9ee4600e99844420f3b316bd3b196c9e71c0889e",
+				PostDutyRunnerStateRoot: "9439ebca97f07e53fca1bd1753621187bbc78a71bb33ecb530ff803ab1590201",
 				DontStartDuty:           true,
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty

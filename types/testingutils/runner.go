@@ -138,10 +138,10 @@ var DecidedRunnerUnknownDutyType = func(keySet *TestKeySet) ssv.Runner {
 var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height, keySet *TestKeySet) ssv.Runner {
 	v := BaseValidator(keySet)
 	consensusDataByts, _ := consensusInput.MarshalSSZ()
+	consensusDataRoot, _ := consensusInput.HashTreeRoot()
 	identifier := types.NewBaseMsgID([]byte{1, 2, 3, 4}, types.BNRoleAttester)
-	// TODO<olegshmuelov>: pass InputData
 	msgs := DecidingMsgsForHeight(&qbft.Data{
-		Root:   [32]byte{},
+		Root:   consensusDataRoot,
 		Source: consensusDataByts,
 	}, identifier, height, keySet)
 
@@ -157,7 +157,7 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	return v.DutyRunners[types.BNRoleAttester]
 }
 
-var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.BeaconRole) []*types.Message {
+var SSVDecidingMsgs = func(consensusData *qbft.Data, ks *TestKeySet, role types.BeaconRole) []*types.Message {
 	id := types.NewBaseMsgID(TestingValidatorPubKey[:], role)
 
 	ssvMsgF := func(msgType types.MsgType, partialSigMsg *ssv.SignedPartialSignature) *types.Message {
@@ -186,11 +186,7 @@ var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.Beac
 		}
 	}
 
-	// TODO<olegshmuelov>: pass InputData
-	qbftMsgs := DecidingMsgsForHeight(&qbft.Data{
-		Root:   [32]byte{},
-		Source: consensusData,
-	}, id, qbft.FirstHeight, ks)
+	qbftMsgs := DecidingMsgsForHeight(consensusData, id, qbft.FirstHeight, ks)
 	base = append(base, qbftMsgs...)
 	return base
 }

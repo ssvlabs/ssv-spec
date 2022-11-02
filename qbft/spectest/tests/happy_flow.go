@@ -9,64 +9,68 @@ import (
 // HappyFlow tests a simple full happy flow until decided
 func HappyFlow() *MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
-	baseMsgId := types.NewBaseMsgID(testingutils.Testing4SharesSet().ValidatorPK.Serialize(), types.BNRoleAttester)
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		Height: qbft.FirstHeight,
+		Round:  qbft.FirstRound,
+		Input:  pre.StartValue,
+	}).Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+		Input:  &qbft.Data{Root: pre.StartValue.Root},
 	}).Encode()
 	msgs := []*types.Message{
 		{
-			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusProposeMsgType),
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
+			Data: proposeMsgEncoded,
+		},
+		{
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 			Data: signMsgEncoded,
 		},
 		{
-			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusPrepareMsgType),
-			Data: signMsgEncoded,
-		},
-		{
-			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusPrepareMsgType),
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 			Data: signMsgEncoded2,
 		},
 		{
-			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusPrepareMsgType),
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 			Data: signMsgEncoded3,
 		},
 		{
-			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusCommitMsgType),
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
 			Data: signMsgEncoded,
 		},
 		{
-			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusCommitMsgType),
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
 			Data: signMsgEncoded2,
 		},
 		{
-			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusCommitMsgType),
+			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
 			Data: signMsgEncoded3,
 		},
 	}
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow",
 		Pre:           pre,
-		PostRoot:      "2d11238c88223c7a2dcf161ab1ed04818d4aaa861bfadf890dcc5e1fc6aaef45",
+		PostRoot:      "388136ceb23b210e0e0e0004d1e7030734e4581ab1a29358bab6031ba7ecffa4",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{
-				ID:   types.PopulateMsgType(baseMsgId, types.ConsensusPrepareMsgType),
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: signMsgEncoded,
 			},
 			{
-				ID:   types.PopulateMsgType(baseMsgId, types.ConsensusCommitMsgType),
+				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusCommitMsgType),
 				Data: signMsgEncoded,
 			},
 		},
