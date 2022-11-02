@@ -47,10 +47,10 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 				},
-				PostDutyRunnerStateRoot: "f767a2f972577b612588f142a40e3b714a46dfb9344e704e4233575a0b36907a",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
+				PostDutyRunnerStateRoot: "fc2ce4bab95761ac0416c0fe8443defa829d9e033c905e37a539138abb700628",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots:  []spec.Root{},
+				DontStartDuty:           true,
 			},
 			{
 				Name: "sync committee",

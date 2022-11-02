@@ -137,7 +137,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 }
 
 func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -168,6 +168,11 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatur
 
 func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return []ssz.HashRoot{types.SSZUint64(r.GetState().StartingDuty.Slot)}, types.DomainSelectionProof, nil
+}
+
+// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	return []ssz.HashRoot{r.BaseRunner.State.DecidedValue.AggregateAndProof}, types.DomainAggregateAndProof, nil
 }
 
 // executeDuty steps:

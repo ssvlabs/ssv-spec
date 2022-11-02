@@ -33,12 +33,21 @@ func (b *BaseRunner) validateConsensusMsg(msg *qbft.SignedMessage) error {
 	return nil
 }
 
-func (b *BaseRunner) validatePostConsensusMsg(signedMsg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) validatePostConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
 	if !b.hashRunningDuty() {
 		return errors.New("no running duty")
 	}
 
-	return b.validatePartialSigMsg(signedMsg, b.State.StartingDuty.Slot)
+	if err := b.validatePartialSigMsg(signedMsg, b.State.StartingDuty.Slot); err != nil {
+		return err
+	}
+
+	roots, domain, err := runner.expectedPostConsensusRootsAndDomain()
+	if err != nil {
+		return err
+	}
+
+	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
 func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
@@ -69,7 +78,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialS
 			return errors.Wrap(err, "could not compute ETH signing root")
 		}
 		if !bytes.Equal(r[:], msg.SigningRoot) {
-			return errors.New("wrong pre consensus signing root")
+			return errors.New("wrong signing root")
 		}
 	}
 	return nil

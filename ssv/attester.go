@@ -101,7 +101,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 }
 
 func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -139,6 +139,11 @@ func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 
 func (r *AttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return []ssz.HashRoot{}, types.DomainError, errors.New("no expected pre consensus roots for attester")
+}
+
+// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *AttesterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	return []ssz.HashRoot{r.BaseRunner.State.DecidedValue.AttestationData}, types.DomainAttester, nil
 }
 
 // executeDuty steps:

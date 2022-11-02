@@ -24,7 +24,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: wrong pre consensus signing root",
+				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: wrong signing root",
 			},
 			{
 				Name:                    "aggregator selection proof",
