@@ -10,7 +10,7 @@ import (
 )
 
 func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
-	if !b.hashRunningDuty() {
+	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
@@ -27,15 +27,25 @@ func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 }
 
 func (b *BaseRunner) validateConsensusMsg(msg *qbft.SignedMessage) error {
-	if !b.hashRunningDuty() {
+	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
+	}
+	if b.State.RunningInstance == nil {
+		return errors.New("no running consensus instance")
 	}
 	return nil
 }
 
 func (b *BaseRunner) validatePostConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
-	if !b.hashRunningDuty() {
+	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
+	}
+
+	if b.State.RunningInstance == nil {
+		return errors.New("no running consensus instance")
+	}
+	if decided, _ := b.State.RunningInstance.IsDecided(); !decided {
+		return errors.New("consensus instance not decided")
 	}
 
 	if err := b.validatePartialSigMsg(signedMsg, b.State.StartingDuty.Slot); err != nil {

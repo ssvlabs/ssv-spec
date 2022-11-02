@@ -230,7 +230,8 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 	return nil
 }
 
-func (b *BaseRunner) HasRunningDuty() bool {
+// hasRunningDuty returns true if a new duty didn't start or an existing duty marked as finished
+func (b *BaseRunner) hasRunningDuty() bool {
 	if b.State == nil {
 		return false
 	}
