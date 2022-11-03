@@ -63,7 +63,7 @@ func (i *inMemContainer) AddNewInstance(instance *Instance) {
 
 // AddNewInstanceAtPosition adding instance at specific position in store
 func (i *inMemContainer) AddNewInstanceAtPosition(position int, instance *Instance) {
-	if position >= i.capacity {
+	if position < 0 || position >= i.capacity {
 		return
 	}
 	i.container[position] = instance
