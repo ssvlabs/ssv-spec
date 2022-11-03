@@ -20,7 +20,7 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
-		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance
+		r.GetBaseRunner().QBFTController.StoredInstances.AddNewInstanceAtPosition(0, r.GetBaseRunner().State.RunningInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		return r
 	}

@@ -13,27 +13,6 @@ import (
 // guaranteed to arrive in a timely fashion, we physically limit how far back the processmsg will process messages for
 const HistoricalInstanceCapacity int = 5
 
-type InstanceContainer [HistoricalInstanceCapacity]*Instance
-
-func (i InstanceContainer) FindInstance(height Height) *Instance {
-	for _, inst := range i {
-		if inst != nil {
-			if inst.GetHeight() == height {
-				return inst
-			}
-		}
-	}
-	return nil
-}
-
-// addNewInstance will add the new instance at index 0, pushing all other stored InstanceContainer one index up (ejecting last one if existing)
-func (i *InstanceContainer) addNewInstance(instance *Instance) {
-	for idx := HistoricalInstanceCapacity - 1; idx > 0; idx-- {
-		i[idx] = i[idx-1]
-	}
-	i[0] = instance
-}
-
 // Controller is a QBFT coordinator responsible for starting and following the entire life cycle of multiple QBFT InstanceContainer
 type Controller struct {
 	Identifier []byte
@@ -58,7 +37,7 @@ func NewController(
 		Height:              -1, // as we bump the height when starting the first instance
 		Domain:              domain,
 		Share:               share,
-		StoredInstances:     InstanceContainer{},
+		StoredInstances:     NewInMemContainer(HistoricalInstanceCapacity),
 		FutureMsgsContainer: make(map[types.OperatorID]Height),
 		config:              config,
 	}
@@ -154,7 +133,7 @@ func (c *Controller) GetIdentifier() []byte {
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
 	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
-	c.StoredInstances.addNewInstance(i)
+	c.StoredInstances.AddNewInstance(i)
 	return i
 }
 
@@ -190,13 +169,13 @@ func (c *Controller) GetRoot() ([]byte, error) {
 	}{
 		Identifier:             c.Identifier,
 		Height:                 c.Height,
-		InstanceRoots:          make([][]byte, len(c.StoredInstances)),
+		InstanceRoots:          make([][]byte, len(c.StoredInstances.All())),
 		HigherReceivedMessages: c.FutureMsgsContainer,
 		Domain:                 c.Domain,
 		Share:                  c.Share,
 	}
 
-	for i, inst := range c.StoredInstances {
+	for i, inst := range c.StoredInstances.All() {
 		if inst != nil {
 			r, err := inst.GetRoot()
 			if err != nil {
@@ -227,11 +206,47 @@ func (c *Controller) Decode(data []byte) error {
 	}
 
 	config := c.GetConfig()
-	for _, i := range c.StoredInstances {
+	for _, i := range c.StoredInstances.All() {
 		if i != nil {
 			i.config = config
 		}
 	}
+	return nil
+}
+
+// UnmarshalJSON add a custom marshaling for Controller
+func (c *Controller) UnmarshalJSON(data []byte) error {
+	var objmap map[string]*json.RawMessage
+	if err := json.Unmarshal(data, &objmap); err != nil {
+		return err
+	}
+	fmt.Println(objmap)
+
+	var imc inMemContainer
+	if err := json.Unmarshal(*objmap["StoredInstances"], &imc); err != nil {
+		return err
+	}
+	c.StoredInstances = &imc // set as InstanceContainer
+
+	if err := json.Unmarshal(*objmap["Height"], &c.Height); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(*objmap["Identifier"], &c.Identifier); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(*objmap["Share"], &c.Share); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(*objmap["FutureMsgsContainer"], &c.FutureMsgsContainer); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(*objmap["Domain"], &c.Domain); err != nil {
+		return err
+	}
+	// config is not exported
+	//if err := json.Unmarshal(*objmap["config"], &c.config); err != nil {
+	//	return err
+	//}
 	return nil
 }
 

@@ -26,7 +26,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 			qbft.FirstHeight)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
 		r.GetBaseRunner().State.DecidedValue = decidedValue
-		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance
+		r.GetBaseRunner().QBFTController.StoredInstances.AddNewInstanceAtPosition(0, r.GetBaseRunner().State.RunningInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		return r
 	}

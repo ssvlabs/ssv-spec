@@ -92,11 +92,18 @@ var testingInstanceStruct = &Instance{
 		},
 	},
 }
-var testingControllerStruct = &Controller{
-	Identifier: []byte{1, 2, 3, 4},
-	Height:     Height(1),
-	Share:      testingShare,
-	StoredInstances: [HistoricalInstanceCapacity]*Instance{
-		testingInstanceStruct,
-	},
+var testingControllerStruct = func() *Controller {
+	instanceStore := NewInMemContainer(HistoricalInstanceCapacity)
+	instanceStore.AddNewInstance(testingInstanceStruct)
+	return &Controller{
+		Identifier:          []byte{1, 2, 3, 4},
+		Height:              Height(1),
+		Share:               testingShare,
+		StoredInstances:     instanceStore,
+		FutureMsgsContainer: map[types.OperatorID]Height{},
+		Domain:              types.ShifuTestnet,
+		config: &Config{
+			Domain: types.ShifuTestnet,
+		},
+	}
 }

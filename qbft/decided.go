@@ -49,7 +49,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		i.State.Round = msg.Message.Round
 		i.State.Decided = true
 		i.State.DecidedValue = data.Data
-		c.StoredInstances.addNewInstance(i)
+		c.StoredInstances.AddNewInstance(i)
 
 		// bump height
 		c.Height = msg.Message.Height

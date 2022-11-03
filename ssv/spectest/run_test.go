@@ -222,11 +222,11 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 	newContr.Domain = contr.Domain
 	newContr.StoredInstances = contr.StoredInstances
 
-	for i, inst := range newContr.StoredInstances {
+	for i, inst := range newContr.StoredInstances.All() {
 		if inst == nil {
 			continue
 		}
-		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, runner.GetBaseRunner().Share)
+		newContr.StoredInstances.AddNewInstanceAtPosition(i, fixInstanceForRun(t, inst, newContr, runner.GetBaseRunner().Share))
 	}
 	return newContr
 }
