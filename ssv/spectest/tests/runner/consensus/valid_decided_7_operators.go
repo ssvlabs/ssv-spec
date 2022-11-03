@@ -19,7 +19,7 @@ func ValidDecided7Operators() *tests.MultiMsgProcessingSpecTest {
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Messages:                testingutils.SSVDecidingMsgs(&qbft.Data{Root: testingutils.TestSyncCommitteeContributionConsensusDataRoot, Source: testingutils.TestSyncCommitteeContributionConsensusDataByts}, ks, types.BNRoleSyncCommitteeContribution),
-				PostDutyRunnerStateRoot: "63f4152722fbbba015ad258b15f1e1428b0488c096c7cac4c3c16813cefa7be9",
+				PostDutyRunnerStateRoot: "bd8f45e4225e944488796ce8312293240fc7eec18651601129a2757f6c4010a0",
 				OutputMessages: []*ssv.SignedPartialSignature{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),

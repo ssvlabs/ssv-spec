@@ -1,12 +1,14 @@
 package types
 
 import (
+	"bytes"
 	"encoding/hex"
 	"encoding/json"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
+	"sort"
 )
 
 type ContributionsMap map[phase0.BLSSignature]*altair.SyncCommitteeContribution
@@ -59,6 +61,7 @@ type ConsensusData struct {
 	AggregateAndProof      *phase0.AggregateAndProof
 	SyncCommitteeBlockRoot phase0.Root
 	// SyncCommitteeContribution map holds as key the selection proof for the contribution
+	// TODO<olegshmuelov> consider to use array instead of the map for ssz
 	SyncCommitteeContribution ContributionsMap
 }
 
@@ -97,7 +100,23 @@ func (cd *ConsensusData) toConsensusInput() (*ConsensusInput, error) {
 		if len(cd.SyncCommitteeContribution) > 0 {
 			ce.SyncCommitteeContribution = make([]*ContributionEntry, 0, len(cd.SyncCommitteeContribution))
 
-			for k, v := range cd.SyncCommitteeContribution {
+			keys := make([]phase0.BLSSignature, 0, len(cd.SyncCommitteeContribution))
+			for k := range cd.SyncCommitteeContribution {
+				keys = append(keys, k)
+			}
+			sort.Slice(keys, func(i, j int) bool {
+				switch bytes.Compare(keys[i][:], keys[j][:]) {
+				case -1:
+					return true
+				case 0, 1:
+					return false
+				default:
+					return false
+				}
+			})
+
+			for _, k := range keys {
+				v := (cd.SyncCommitteeContribution)[k]
 				ce.SyncCommitteeContribution = append(ce.SyncCommitteeContribution, &ContributionEntry{
 					Sig:   k,
 					Contr: v,
