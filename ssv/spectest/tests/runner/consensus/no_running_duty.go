@@ -109,6 +109,25 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
 			},
+			{
+				Name:   "attester_random_height",
+				Runner: testingutils.AttesterRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgAttester(
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
+							MsgType:    qbft.ProposalMsgType,
+							Height:     qbft.Height(4),
+							Round:      qbft.FirstRound,
+							Identifier: testingutils.AttesterMsgID,
+							Data:       testingutils.ProposalDataBytes(testingutils.TestAttesterConsensusDataByts, nil, nil),
+						}), nil),
+				},
+				PostDutyRunnerStateRoot: "5537cbc56887c4b5b824a6b6c123162d3d070210a5b0a215b4a05668ccad89d3",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
+			},
 		},
 	}
 }
