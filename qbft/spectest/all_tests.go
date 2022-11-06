@@ -54,6 +54,9 @@ var AllTests = []SpecTest{
 	decided.CurrentInstance(),
 	decided.CurrentInstancePastRound(),
 	decided.CurrentInstanceFutureRound(),
+	decided.InstanceFromStorage(),
+	decided.InstanceFromStorage(),
+	decided.NotDecidedInstanceFromStorage(),
 
 	processmsg.MsgError(),
 	processmsg.SavedAndBroadcastedDecided(),

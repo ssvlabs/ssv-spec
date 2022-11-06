@@ -22,15 +22,21 @@ type RunInstanceData struct {
 }
 
 type ControllerSpecTest struct {
-	Name            string
-	RunInstanceData []*RunInstanceData
-	OutputMessages  []*qbft.SignedMessage
-	ExpectedError   string
+	Name                   string
+	HighestStorageInstance *qbft.Instance
+	RunInstanceData        []*RunInstanceData
+	OutputMessages         []*qbft.SignedMessage
+	ExpectedError          string
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+
+	if test.HighestStorageInstance != nil {
+		require.NoError(t, config.GetStorage().SaveHighestInstance(test.HighestStorageInstance))
+	}
+
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),

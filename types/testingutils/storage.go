@@ -9,6 +9,7 @@ import (
 
 type testingStorage struct {
 	storage     map[string]*qbft.SignedMessage
+	instances   map[string]*qbft.Instance
 	operators   map[types.OperatorID]*dkg.Operator
 	keygenoupts map[string]*dkg.KeyGenOutput
 }
@@ -16,6 +17,7 @@ type testingStorage struct {
 func NewTestingStorage() *testingStorage {
 	ret := &testingStorage{
 		storage:     make(map[string]*qbft.SignedMessage),
+		instances:   make(map[string]*qbft.Instance),
 		operators:   make(map[types.OperatorID]*dkg.Operator),
 		keygenoupts: make(map[string]*dkg.KeyGenOutput),
 	}
@@ -40,6 +42,22 @@ func (s *testingStorage) SaveHighestDecided(signedMsg *qbft.SignedMessage) error
 // GetHighestDecided returns highest decided if found, nil if didn't
 func (s *testingStorage) GetHighestDecided(identifier []byte) (*qbft.SignedMessage, error) {
 	return s.storage[hex.EncodeToString(identifier)], nil
+}
+
+// SaveHighestInstance check if new instance is first or higher than last known the highest instance. if so, save to storage
+func (s *testingStorage) SaveHighestInstance(instance *qbft.Instance) error {
+	highestInstance, err := s.GetHighestInstance(instance.State.ID)
+	if err != nil {
+		return err
+	}
+	if highestInstance == nil || instance.GetHeight() > highestInstance.GetHeight() {
+		s.instances[hex.EncodeToString(instance.State.ID)] = instance
+	}
+	return nil
+}
+
+func (s *testingStorage) GetHighestInstance(identifier []byte) (*qbft.Instance, error) {
+	return s.instances[hex.EncodeToString(identifier)], nil
 }
 
 // GetDKGOperator returns true and operator object if found by operator ID

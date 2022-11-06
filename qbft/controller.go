@@ -13,27 +13,6 @@ import (
 // guaranteed to arrive in a timely fashion, we physically limit how far back the processmsg will process messages for
 const HistoricalInstanceCapacity int = 5
 
-type InstanceContainer [HistoricalInstanceCapacity]*Instance
-
-func (i InstanceContainer) FindInstance(height Height) *Instance {
-	for _, inst := range i {
-		if inst != nil {
-			if inst.GetHeight() == height {
-				return inst
-			}
-		}
-	}
-	return nil
-}
-
-// addNewInstance will add the new instance at index 0, pushing all other stored InstanceContainer one index up (ejecting last one if existing)
-func (i *InstanceContainer) addNewInstance(instance *Instance) {
-	for idx := HistoricalInstanceCapacity - 1; idx > 0; idx-- {
-		i[idx] = i[idx-1]
-	}
-	i[0] = instance
-}
-
 // Controller is a QBFT coordinator responsible for starting and following the entire life cycle of multiple QBFT InstanceContainer
 type Controller struct {
 	Identifier []byte
@@ -53,7 +32,7 @@ func NewController(
 	domain types.DomainType,
 	config IConfig,
 ) *Controller {
-	return &Controller{
+	c := &Controller{
 		Identifier:          identifier,
 		Height:              -1, // as we bump the height when starting the first instance
 		Domain:              domain,
@@ -62,10 +41,19 @@ func NewController(
 		FutureMsgsContainer: make(map[types.OperatorID]Height),
 		config:              config,
 	}
+
+	return c
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
 func (c *Controller) StartNewInstance(value []byte) error {
+	// only if first height check for highest decided instance
+	if c.Height == FirstHeight-1 {
+		if err := c.loadHighestInstance(); err != nil {
+			return err
+		}
+	}
+
 	if err := c.canStartInstance(c.Height+1, value); err != nil {
 		return errors.Wrap(err, "can't start new QBFT instance")
 	}
@@ -120,6 +108,11 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 	// save the highest Decided
 	if !decided {
 		return nil, nil
+	}
+
+	// update the highest decided instance
+	if err := c.GetConfig().GetStorage().SaveHighestInstance(inst); err != nil {
+		return nil, errors.Wrap(err, "failed to save highest instance")
 	}
 
 	if err := c.saveAndBroadcastDecided(decidedMsg); err != nil {
@@ -210,6 +203,9 @@ func (c *Controller) GetRoot() ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode state")
 	}
+
+	fmt.Printf("ctrl root - %s \n", string(marshaledRoot))
+
 	ret := sha256.Sum256(marshaledRoot)
 	return ret[:], nil
 }
@@ -260,4 +256,15 @@ func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) er
 
 func (c *Controller) GetConfig() IConfig {
 	return c.config
+}
+
+// loadHighestInstance get the highest instance from storage. if existed, bump height and add to instance container
+func (c *Controller) loadHighestInstance() error {
+	if instance, err := c.config.GetStorage().GetHighestInstance(c.Identifier); err != nil {
+		return errors.Wrap(err, "failed to get highest instance from storage")
+	} else if instance != nil {
+		c.StoredInstances.addNewInstance(instance)
+		c.Height = instance.GetHeight()
+	}
+	return nil
 }

@@ -30,8 +30,12 @@ type Network interface {
 type Storage interface {
 	// SaveHighestDecided saves (and potentially overrides) the highest Decided for a specific instance
 	SaveHighestDecided(signedMsg *SignedMessage) error
-	// GetHighestDecided returns highest decided if found, nil if didn't
+	// GetHighestDecided returns the highest decided if found, nil if didn't
 	GetHighestDecided(identifier []byte) (*SignedMessage, error)
+	// SaveHighestInstance saves the highest instance (by height)
+	SaveHighestInstance(instance *Instance) error
+	// GetHighestInstance return the highest instance if found, nil if didn't
+	GetHighestInstance(identifier []byte) (*Instance, error)
 }
 
 func ControllerIdToMessageID(identifier []byte) types.MessageID {
