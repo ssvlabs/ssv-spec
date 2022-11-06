@@ -32,7 +32,7 @@ func NewController(
 	domain types.DomainType,
 	config IConfig,
 ) *Controller {
-	c := &Controller{
+	return &Controller{
 		Identifier:          identifier,
 		Height:              -1, // as we bump the height when starting the first instance
 		Domain:              domain,
@@ -41,8 +41,6 @@ func NewController(
 		FutureMsgsContainer: make(map[types.OperatorID]Height),
 		config:              config,
 	}
-
-	return c
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
@@ -203,9 +201,6 @@ func (c *Controller) GetRoot() ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode state")
 	}
-
-	fmt.Printf("ctrl root - %s \n", string(marshaledRoot))
-
 	ret := sha256.Sum256(marshaledRoot)
 	return ret[:], nil
 }

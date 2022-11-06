@@ -6,8 +6,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InstanceFromStorage tests a case where decided instance is stored in storage
-func InstanceFromStorage() *tests.ControllerSpecTest {
+// DecidedInstanceFromStorage tests a case where decided instance is stored in storage
+func DecidedInstanceFromStorage() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	highestStorageInstance := testingutils.BaseInstance()
 	highestStorageInstance.State.ID = identifier[:]
