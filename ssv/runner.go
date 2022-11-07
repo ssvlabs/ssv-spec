@@ -178,13 +178,6 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, height qbft.Height, de
 	return true, nil
 }
 
-func (b *BaseRunner) runningInstance() *qbft.Instance {
-	if b.State == nil {
-		return nil
-	}
-	return b.State.RunningInstance
-}
-
 func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
 	if !b.HashRunningDuty() {
 		return errors.New("no running duty")
@@ -200,20 +193,6 @@ func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 	}
 
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
-}
-
-func (b *BaseRunner) validateConsensusMsg(msg *qbft.SignedMessage) error {
-	if !b.HashRunningDuty() {
-		// we always accept commit/change-round messages, even when there is no running duty.
-		// this should enable sync messages to propagate to the controller
-		switch msg.Message.MsgType {
-		case qbft.CommitMsgType, qbft.RoundChangeMsgType:
-			return nil
-		default:
-		}
-		return errors.New("no running duty")
-	}
-	return nil
 }
 
 func (b *BaseRunner) validatePostConsensusMsg(msg *SignedPartialSignatureMessage) error {
