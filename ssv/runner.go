@@ -97,14 +97,22 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		return false, nil, errors.Wrap(err, "invalid consensus message")
 	}
 
-	prevDecided, _ := b.State.RunningInstance.IsDecided()
+	var prevDecided bool
+	runningInstance := b.runningInstance()
+	if runningInstance != nil {
+		prevDecided, _ = runningInstance.IsDecided()
+	}
 
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to process consensus msg")
 	}
+	if runningInstance == nil {
+		// no instance is running
+		return false, nil, nil
+	}
 
-	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
+	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, runningInstance.GetHeight(), decidedMsg); !decideCorrectly {
 		return false, nil, err
 	}
 
@@ -157,14 +165,13 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSign
 	return anyQuorum, roots, nil
 }
 
-func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.SignedMessage) (bool, error) {
-	decided := decidedMsg != nil
-	decidedRunningInstance := decided && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
-
-	if !decided {
+func (b *BaseRunner) didDecideCorrectly(prevDecided bool, height qbft.Height, decidedMsg *qbft.SignedMessage) (bool, error) {
+	if decidedMsg == nil {
+		// not decided
 		return false, nil
 	}
-	if !decidedRunningInstance {
+	// verify we decided the right instance
+	if decidedMsg.Message.Height != height {
 		return false, errors.New("decided wrong instance")
 	}
 	// verify we decided running instance only, if not we do not proceed
@@ -173,6 +180,13 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.Signe
 	}
 
 	return true, nil
+}
+
+func (b *BaseRunner) runningInstance() *qbft.Instance {
+	if b.State == nil {
+		return nil
+	}
+	return b.State.RunningInstance
 }
 
 func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
@@ -194,6 +208,13 @@ func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 
 func (b *BaseRunner) validateConsensusMsg(msg *qbft.SignedMessage) error {
 	if !b.HashRunningDuty() {
+		// we always accept commit/change-round messages, even when there is no running duty.
+		// this should enable sync messages to propagate to the controller
+		switch msg.Message.MsgType {
+		case qbft.CommitMsgType, qbft.RoundChangeMsgType:
+			return nil
+		default:
+		}
 		return errors.New("no running duty")
 	}
 	return nil
