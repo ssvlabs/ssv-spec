@@ -57,7 +57,6 @@ func (v *Validator) ProcessMessage(msg *types.Message) error {
 	}
 
 	switch msgID.GetMsgType() {
-	// TODO<olegshmuelov>: all consensus msgs should be processed here?
 	case
 		types.ConsensusProposeMsgType,
 		types.ConsensusPrepareMsgType,
@@ -69,14 +68,12 @@ func (v *Validator) ProcessMessage(msg *types.Message) error {
 		types.PartialRandaoSignatureMsgType,
 		types.PartialContributionProofSignatureMsgType,
 		types.PartialSelectionProofSignatureMsgType:
-		// TODO<olegshmuelov>: use same message structs as consensus
 		signedMsg := &SignedPartialSignature{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 		return dutyRunner.ProcessPreConsensus(signedMsg)
 	case types.PartialPostConsensusSignatureMsgType:
-		// TODO<olegshmuelov>: use same message structs as consensus
 		signedMsg := &SignedPartialSignature{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")

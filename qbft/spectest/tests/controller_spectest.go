@@ -53,7 +53,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 			if decided != nil {
 				decidedCnt++
 
-				require.EqualValues(t, runData.DecidedVal, decided.Message.Input.Source)
+				require.EqualValues(t, runData.DecidedVal, decided.InputSource)
 			}
 		}
 

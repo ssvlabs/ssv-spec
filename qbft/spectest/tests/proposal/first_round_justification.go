@@ -13,13 +13,11 @@ func FirstRoundJustification() *tests.MsgProcessingSpecTest {
 	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  pre.StartValue,
-	}).Encode()
+	}, pre.StartValue).Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 
 	return &tests.MsgProcessingSpecTest{
 		Name:     "proposal first round justification",

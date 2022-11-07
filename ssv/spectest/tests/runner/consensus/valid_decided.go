@@ -15,7 +15,6 @@ func ValidDecided() *tests.MultiMsgProcessingSpecTest {
 		Name: "consensus valid decided",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
-				// TODO<olegshmuelov>: always return different post duty runner state root!
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,

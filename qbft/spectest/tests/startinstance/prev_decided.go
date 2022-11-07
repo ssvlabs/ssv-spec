@@ -18,8 +18,7 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 10,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	return &tests.ControllerSpecTest{
 		Name: "start instance post future decided",

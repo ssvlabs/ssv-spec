@@ -14,8 +14,7 @@ func WrongSig() *ControllerSyncSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[3], 2, &qbft.Message{
 		Height: 10,
 		Round:  3,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 
 	return &ControllerSyncSpecTest{
 		Name: "future msg wrong sig",

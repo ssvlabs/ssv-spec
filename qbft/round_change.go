@@ -38,8 +38,11 @@ func (i *Instance) uponRoundChange(
 		// If justifiedRoundChangeMsg has prepare justification chose prepared value
 		valueToPropose := instanceStartValue
 		if justifiedRoundChangeMsg.Message.Prepared() {
-			// TODO<olegshmuelov> validate that justified round change msg holds the complete input data
-			valueToPropose = justifiedRoundChangeMsg.Message.Input
+			// TODO<olegshmuelov>: validate that justified round change msg holds the complete input data
+			valueToPropose = &Data{
+				Root:   justifiedRoundChangeMsg.Message.InputRoot,
+				Source: justifiedRoundChangeMsg.InputSource,
+			}
 		}
 
 		proposeMsg, err := CreateProposal(
@@ -146,13 +149,17 @@ func isReceivedProposalJustificationForLeadingRound(
 	valCheck ProposedValueCheckF,
 	newRound Round,
 ) error {
+	inputData := &Data{
+		Root:   roundChangeMsg.Message.InputRoot,
+		Source: roundChangeMsg.InputSource,
+	}
 	if err := isReceivedProposalJustification(
 		state,
 		config,
 		roundChanges,
 		roundChangeMsg.RoundChangeJustifications,
 		roundChangeMsg.Message.Round,
-		roundChangeMsg.Message.Input,
+		inputData,
 		valCheck,
 	); err != nil {
 		return err
@@ -201,7 +208,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 	if signedMsg.Message.Height != height {
 		return errors.New("round change Height is wrong")
 	}
-	// TODO<olegshmuelov>: the passed round will be always equal to signedMsg.Message.Round
+
 	if signedMsg.Message.Round != round {
 		return errors.New("msg round wrong")
 	}
@@ -226,7 +233,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 				rcj,
 				state.Height,
 				signedMsg.Message.PreparedRound,
-				signedMsg.Message.Input.Root[:],
+				signedMsg.Message.InputRoot[:],
 				state.Share.Committee,
 			); err != nil {
 				return errors.Wrap(err, "round change justification invalid")
@@ -303,7 +310,7 @@ func CreateRoundChange(state *State, config IConfig, newRound Round) (*SignedMes
 	msg := &Message{
 		Height:        state.Height,
 		Round:         newRound,
-		Input:         preparedValue,
+		InputRoot:     preparedValue.Root,
 		PreparedRound: round,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
@@ -312,9 +319,10 @@ func CreateRoundChange(state *State, config IConfig, newRound Round) (*SignedMes
 	}
 
 	return &SignedMessage{
+		Message:                   msg,
 		Signature:                 sig,
 		Signers:                   []types.OperatorID{state.Share.OperatorID},
-		Message:                   msg,
+		InputSource:               preparedValue.Source,
 		RoundChangeJustifications: justifications,
 	}, nil
 }

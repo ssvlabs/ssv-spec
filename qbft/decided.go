@@ -32,7 +32,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 			inst.State.Round = msg.Message.Round
 		}
 		if c.Height == msg.Message.Height {
-			inst.State.DecidedValue = msg.Message.Input.Source
+			inst.State.DecidedValue = msg.InputSource
 		}
 	}
 
@@ -42,7 +42,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Message.Height)
 		i.State.Round = msg.Message.Round
 		i.State.Decided = true
-		i.State.DecidedValue = msg.Message.Input.Source
+		i.State.DecidedValue = msg.InputSource
 		c.StoredInstances.addNewInstance(i)
 
 		// bump height
@@ -68,13 +68,8 @@ func validateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	// TODO<olegshmuelov>: the passed height will be always equal to signedMsg.Message.Height
-	//if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
-	//	return errors.Wrap(err, "invalid decided msg")
-	//}
-
-	if err := signedDecided.Signature.VerifyByOperators(signedDecided, config.GetSignatureDomainType(), types.QBFTSignatureType, share.Committee); err != nil {
-		return errors.Wrap(err, "decided msg signature invalid")
+	if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
+		return errors.Wrap(err, "invalid decided msg")
 	}
 
 	return nil

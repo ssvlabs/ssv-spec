@@ -25,7 +25,6 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				ValidatorCommitteeIndex: 11,
 			},
 		}
-		// TODO<olegshmuelov>: we cant marshal consensus data with unknown role
 		byts, _ := cd.MarshalSSZ()
 		r, _ := cd.HashTreeRoot()
 		return &qbft.Data{
@@ -50,10 +49,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 			&qbft.Message{
 				Height: qbft.FirstHeight,
 				Round:  qbft.FirstRound,
-				//Identifier: r.GetBaseRunner().QBFTController.Identifier,
-				Input: consensusData(r.GetBaseRunner().BeaconRoleType),
-				//Data:  testingutils.CommitDataBytes(consensusData(r.GetBaseRunner().BeaconRoleType)),
-			}).Encode()
+			}, consensusData(r.GetBaseRunner().BeaconRoleType)).Encode()
 
 		err := r.ProcessConsensus(&types.Message{
 			ID:   types.PopulateMsgType(r.GetBaseRunner().QBFTController.Identifier, types.DecidedMsgType),

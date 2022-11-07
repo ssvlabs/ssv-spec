@@ -15,18 +15,15 @@ func Cleanup() *ControllerSyncSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: 5,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
 		Height: 10,
 		Round:  3,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(ks.Shares[2], 2, &qbft.Message{
 		Height: 11,
 		Round:  3,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 
 	multiSignMsgEncoded, _ := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
@@ -34,8 +31,7 @@ func Cleanup() *ControllerSyncSpecTest {
 		&qbft.Message{
 			Height: 10,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		}).Encode()
+		}, inputData).Encode()
 
 	return &ControllerSyncSpecTest{
 		Name: "future msgs cleanup",

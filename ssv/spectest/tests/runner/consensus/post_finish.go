@@ -40,10 +40,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 							Height: qbft.FirstHeight,
 							Round:  qbft.FirstRound,
-							Input: &qbft.Data{
-								Root:   testingutils.TestSyncCommitteeContributionConsensusDataRoot,
-								Source: testingutils.TestSyncCommitteeContributionConsensusDataByts,
-							},
+						}, &qbft.Data{
+							Root:   testingutils.TestSyncCommitteeContributionConsensusDataRoot,
+							Source: testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "a7749c274f3b3add80d9e6444c3c5cd720f458e9ce41ef36789dd4ca1c79eac5",
@@ -62,10 +61,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 							Height: qbft.FirstHeight,
 							Round:  qbft.FirstRound,
-							Input: &qbft.Data{
-								Root:   testingutils.TestSyncCommitteeConsensusDataRoot,
-								Source: testingutils.TestSyncCommitteeConsensusDataByts,
-							},
+						}, &qbft.Data{
+							Root:   testingutils.TestSyncCommitteeConsensusDataRoot,
+							Source: testingutils.TestSyncCommitteeConsensusDataByts,
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "90a493699ebbd1558cd6ba8ea5e8045a7ab980c7e4720889310956792539ee50",
@@ -82,10 +80,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 							Height: qbft.FirstHeight,
 							Round:  qbft.FirstRound,
-							Input: &qbft.Data{
-								Root:   testingutils.TestAggregatorConsensusDataRoot,
-								Source: testingutils.TestAggregatorConsensusDataByts,
-							},
+						}, &qbft.Data{
+							Root:   testingutils.TestAggregatorConsensusDataRoot,
+							Source: testingutils.TestAggregatorConsensusDataByts,
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "69400f37b9724938c62791cfff2411cfc5722df878630a803827491b6ec74b25",
@@ -104,10 +101,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 							Height: qbft.FirstHeight,
 							Round:  qbft.FirstRound,
-							Input: &qbft.Data{
-								Root:   testingutils.TestProposerConsensusDataRoot,
-								Source: testingutils.TestProposerConsensusDataByts,
-							},
+						}, &qbft.Data{
+							Root:   testingutils.TestProposerConsensusDataRoot,
+							Source: testingutils.TestProposerConsensusDataByts,
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "265d356d8f3fc6c53ca975b99d6137047ba9b04a672b8ca67f5878edc84c466e",
@@ -126,10 +122,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 							Height: qbft.FirstHeight,
 							Round:  qbft.FirstRound,
-							Input: &qbft.Data{
-								Root:   testingutils.TestAttesterConsensusDataRoot,
-								Source: testingutils.TestAttesterConsensusDataByts,
-							},
+						}, &qbft.Data{
+							Root:   testingutils.TestAttesterConsensusDataRoot,
+							Source: testingutils.TestAttesterConsensusDataByts,
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "2cab1cbf84b00697333c01973c5ee7cce950ec34762d0811af6cad3f6b87512b",

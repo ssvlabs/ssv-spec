@@ -19,8 +19,7 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 
 	return &tests.ControllerSpecTest{
 		Name: "save and broadcast decided",
@@ -32,7 +31,7 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 				DecidedCnt:         1,
 				SavedDecided:       multiSignMsg,
 				BroadcastedDecided: multiSignMsg,
-				ControllerPostRoot: "d5d4696d29f1359a0f55292ba42dfd922993408529aa86926243df2221554c11",
+				ControllerPostRoot: "df9b2787df60e1e15b0c840410592d27803d44cd5fb086cfa8fc23181cea6293",
 			},
 		},
 	}

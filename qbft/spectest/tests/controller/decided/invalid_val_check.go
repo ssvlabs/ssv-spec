@@ -22,10 +22,9 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 10,
 			Round:  qbft.FirstRound,
-			Input: &qbft.Data{
-				Root:   [32]byte{1, 1, 1, 1},
-				Source: testingutils.TestingInvalidValueCheck,
-			},
+		}, &qbft.Data{
+			Root:   [32]byte{1, 1, 1, 1},
+			Source: testingutils.TestingInvalidValueCheck,
 		})
 	multiMsgEncoded, _ := multiMsg.Encode()
 	return &tests.ControllerSpecTest{

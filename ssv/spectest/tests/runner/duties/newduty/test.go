@@ -35,13 +35,11 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {
-			// TODO<olegshmuelov>: PARTIAL handle
 			msgType := msg.GetID().GetMsgType()
 			if msgType != types.PartialSelectionProofSignatureMsgType &&
 				msgType != types.PartialRandaoSignatureMsgType &&
 				msgType != types.PartialContributionProofSignatureMsgType &&
 				msgType != types.PartialPostConsensusSignatureMsgType {
-				//if msg.MsgType != types.SSVPartialSignatureMsgType {
 				continue
 			}
 

@@ -61,7 +61,7 @@ type ConsensusData struct {
 	AggregateAndProof      *phase0.AggregateAndProof
 	SyncCommitteeBlockRoot phase0.Root
 	// SyncCommitteeContribution map holds as key the selection proof for the contribution
-	// TODO<olegshmuelov> consider to use array instead of the map for ssz
+	// TODO<olegshmuelov>: consider to use array instead of the map for ssz
 	SyncCommitteeContribution ContributionsMap
 }
 
@@ -138,16 +138,16 @@ func (cd *ConsensusData) toConsensusInput() (*ConsensusInput, error) {
 }
 
 func (cd *ConsensusData) Encode() ([]byte, error) {
-	return json.Marshal(cd)
+	return cd.MarshalSSZ()
 }
 
 func (cd *ConsensusData) Decode(data []byte) error {
-	return json.Unmarshal(data, &cd)
+	return cd.UnmarshalSSZ(data)
 }
 
 type ConsensusInput struct {
 	Duty *Duty
-	// TODO: determine real ssz-max. the current ssz-max calculated for the altair.BeaconBlock and not bellatrix.
+	// TODO<olegshmuelov>: determine real ssz-max. the current ssz-max calculated for the altair.BeaconBlock and not bellatrix.
 	// bellatrix includes the transactions and th extra data inside the ExecutionPayload
 	// Transactions  []Transaction `ssz-max:"1073741824,1048576"`
 	Data []byte `ssz-max:"387068"`

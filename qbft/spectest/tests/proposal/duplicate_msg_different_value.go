@@ -13,13 +13,11 @@ func DuplicateMsgDifferentValue() *tests.MsgProcessingSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  pre.StartValue,
-	}).Encode()
+	}, pre.StartValue).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 5}, Source: []byte{1, 2, 3, 5}},
-	}).Encode()
+	}, &qbft.Data{Root: [32]byte{1, 2, 3, 5}, Source: []byte{1, 2, 3, 5}}).Encode()
 	msgs := []*types.Message{
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),

@@ -21,8 +21,7 @@ func SignedMsgMultiSigners() *tests.MsgSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}},
-		}).Encode()
+		}, &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}).Encode()
 
 	return &tests.MsgSpecTest{
 		Name: "multi signers",

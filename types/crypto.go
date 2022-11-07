@@ -139,7 +139,6 @@ func (s Signature) Aggregate(other Signature) (Signature, error) {
 }
 
 func ComputeSigningRoot(data Root, domain SignatureDomain) ([]byte, error) {
-	//return data.GetRoot()
 	dataRoot, err := data.GetRoot()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get root from Root")

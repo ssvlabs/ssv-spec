@@ -20,7 +20,7 @@ func (i *Instance) uponPrepare(
 		signedPrepare,
 		i.State.Height,
 		i.State.Round,
-		i.State.ProposalAcceptedForCurrentRound.Message.Input.Root[:],
+		i.State.ProposalAcceptedForCurrentRound.Message.InputRoot[:],
 		i.State.Share.Committee,
 	); err != nil {
 		return errors.Wrap(err, "invalid prepare msg")
@@ -42,12 +42,15 @@ func (i *Instance) uponPrepare(
 		return nil // already moved to commit stage
 	}
 
-	proposedValue := i.State.ProposalAcceptedForCurrentRound.Message.Input
+	proposedValue := &Data{
+		Root:   i.State.ProposalAcceptedForCurrentRound.Message.InputRoot,
+		Source: i.State.ProposalAcceptedForCurrentRound.InputSource,
+	}
 
 	i.State.LastPreparedValue = proposedValue
 	i.State.LastPreparedRound = i.State.Round
 
-	commitMsg, err := CreateCommit(i.State, i.config, i.State.ProposalAcceptedForCurrentRound.Message.Input.Root)
+	commitMsg, err := CreateCommit(i.State, i.config, i.State.ProposalAcceptedForCurrentRound.Message.InputRoot)
 	if err != nil {
 		return errors.Wrap(err, "could not create commit msg")
 	}
@@ -126,7 +129,7 @@ func validSignedPrepareForHeightRoundAndValue(
 		return errors.New("msg round wrong")
 	}
 
-	if !bytes.Equal(signedPrepare.Message.Input.Root[:], value) {
+	if !bytes.Equal(signedPrepare.Message.InputRoot[:], value) {
 		return errors.New("prepare data != proposed data")
 	}
 
@@ -154,12 +157,9 @@ Prepare(
 */
 func CreatePrepare(state *State, config IConfig, newRound Round, value [32]byte) (*SignedMessage, error) {
 	msg := &Message{
-		Height: state.Height,
-		Round:  newRound,
-		Input: &Data{
-			Root:   value,
-			Source: nil,
-		},
+		Height:    state.Height,
+		Round:     newRound,
+		InputRoot: value,
 	}
 
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)

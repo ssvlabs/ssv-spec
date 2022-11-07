@@ -20,8 +20,7 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 			&qbft.Message{
 				Height: height,
 				Round:  qbft.FirstRound,
-				Input:  inputData,
-			})
+			}, inputData)
 		multiSignMsgEncoded, _ := multiSignMsg.Encode()
 		return &tests.RunInstanceData{
 			InputValue: inputData,
@@ -40,8 +39,7 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], 4, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 
 	return &tests.ControllerSpecTest{
 		Name: "late prepare no instance",

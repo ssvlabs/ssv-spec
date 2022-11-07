@@ -19,8 +19,7 @@ func Invalid() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 10,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsg.Signers = []types.OperatorID{}
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	return &tests.ControllerSpecTest{

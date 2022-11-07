@@ -19,8 +19,7 @@ func LateRoundChange() *tests.ControllerSpecTest {
 	signedMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{},
-	}).Encode()
+	}, &qbft.Data{}).Encode()
 	lateMsg := &types.Message{
 		ID:   types.PopulateMsgType(identifier, types.ConsensusRoundChangeMsgType),
 		Data: signedMsgEncoded,
@@ -31,8 +30,7 @@ func LateRoundChange() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 
 	msgs = append(msgs, lateMsg)
 

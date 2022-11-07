@@ -15,29 +15,24 @@ func DuplicateMsg() *tests.MsgProcessingSpecTest {
 	prepareMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	prepareMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	prepareMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	changeRoundMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  5,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	changeRoundMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         5,
-		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
-	})
+	}, pre.StartValue)
 
 	changeRoundMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
 		prepareMsg,

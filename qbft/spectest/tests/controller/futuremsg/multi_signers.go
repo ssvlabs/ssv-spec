@@ -18,8 +18,7 @@ func MultiSigners() *ControllerSyncSpecTest {
 		&qbft.Message{
 			Height: 2,
 			Round:  qbft.FirstRound,
-			Input:  &qbft.Data{Root: inputData.Root},
-		}).Encode()
+		}, &qbft.Data{Root: inputData.Root}).Encode()
 
 	return &ControllerSyncSpecTest{
 		Name: "future msgs multiple signers",

@@ -13,10 +13,9 @@ func InvalidValueCheck() *tests.MsgProcessingSpecTest {
 	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input: &qbft.Data{
-			Root:   [32]byte{1, 1, 1, 1},
-			Source: testingutils.TestingInvalidValueCheck,
-		},
+	}, &qbft.Data{
+		Root:   [32]byte{1, 1, 1, 1},
+		Source: testingutils.TestingInvalidValueCheck,
 	}).Encode()
 
 	return &tests.MsgProcessingSpecTest{

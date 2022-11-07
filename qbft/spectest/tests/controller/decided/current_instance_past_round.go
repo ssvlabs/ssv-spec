@@ -16,53 +16,43 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  inputData,
-	}).Encode()
+	}, inputData).Encode()
 	proposeMsg2 := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  inputData,
-	})
+	}, inputData)
 	signedMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signedMsgEncoded2, _ := testingutils.SignQBFTMsg(ks.Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signedMsgEncoded4, _ := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signedMsgEncoded5, _ := testingutils.SignQBFTMsg(ks.Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signedMsgEncoded6, _ := testingutils.SignQBFTMsg(ks.Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	rcMsg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	rcMsg2 := testingutils.SignQBFTMsg(ks.Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	rcMsg3 := testingutils.SignQBFTMsg(ks.Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	proposeMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
 		rcMsg, rcMsg2, rcMsg3,
 	}
@@ -76,8 +66,7 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 
 	msgs := []*types.Message{

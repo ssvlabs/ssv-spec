@@ -53,8 +53,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusData(types.BNRoleSyncCommitteeContribution),
-							}), nil, types.ConsensusCommitMsgType),
+							}, consensusData(types.BNRoleSyncCommitteeContribution)), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "1c72d49edf628f3d69bb0fcc2f4e2e0f96a593ebe20916d79bc885c2854fc6fc",
 				OutputMessages: []*ssv.SignedPartialSignature{
@@ -74,8 +73,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusData(types.BNRoleSyncCommittee),
-							}), nil, types.ConsensusCommitMsgType),
+							}, consensusData(types.BNRoleSyncCommittee)), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "971bbb10725791ebfd0a06f9817797feac2b81b17babb538b3c3f34421341cda",
 				OutputMessages:          []*ssv.SignedPartialSignature{},
@@ -97,8 +95,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusData(types.BNRoleAggregator),
-							}), nil, types.ConsensusCommitMsgType),
+							}, consensusData(types.BNRoleAggregator)), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "4ce7b608727db28f7af80765a8d98d1eced06f5bcc61cd5846b4ac15b1452cca",
 				OutputMessages: []*ssv.SignedPartialSignature{
@@ -122,8 +119,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusData(types.BNRoleProposer),
-							}), nil, types.ConsensusCommitMsgType),
+							}, consensusData(types.BNRoleProposer)), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "374c4bd669d107076ef709c60c3e084fe3b27024a2cf1e3dbf59fc33c8dd6fb8",
 				OutputMessages: []*ssv.SignedPartialSignature{
@@ -143,8 +139,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							&qbft.Message{
 								Height: qbft.FirstHeight,
 								Round:  qbft.FirstRound,
-								Input:  consensusData(types.BNRoleAttester),
-							}), nil, types.ConsensusCommitMsgType),
+							}, consensusData(types.BNRoleAttester)), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "d2ff2fad2e2b99af0f3e1f0378384ea9e89815d4dc4ca93f8754583a4a019b07",
 				OutputMessages:          []*ssv.SignedPartialSignature{},

@@ -14,24 +14,20 @@ func RoundChangePrePreparedJustifications() *tests.MsgSpecTest {
 	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	})
+	}, &qbft.Data{Root: inputData.Root})
 	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	})
+	}, &qbft.Data{Root: inputData.Root})
 	signQBFTMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	})
+	}, &qbft.Data{Root: inputData.Root})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         10,
-		Input:         inputData,
 		PreparedRound: qbft.FirstRound,
-	})
+	}, inputData)
 	rcMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		signQBFTMsg,
 		signQBFTMsg2,

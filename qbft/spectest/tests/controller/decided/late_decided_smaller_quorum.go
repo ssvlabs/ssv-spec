@@ -19,16 +19,14 @@ func LateDecidedSmallerQuorum() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsg2 := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 		[]types.OperatorID{1, 2, 3},
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	multiSignMsgEncoded2, _ := multiSignMsg2.Encode()
 	return &tests.ControllerSpecTest{

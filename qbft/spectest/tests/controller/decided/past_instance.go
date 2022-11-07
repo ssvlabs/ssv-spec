@@ -18,8 +18,7 @@ func PastInstance() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 100,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	multiSignMsg2 := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
@@ -27,8 +26,7 @@ func PastInstance() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 99,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded2, _ := multiSignMsg2.Encode()
 	return &tests.ControllerSpecTest{
 		Name: "decide past instance",

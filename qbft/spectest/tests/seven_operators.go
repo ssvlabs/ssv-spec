@@ -10,36 +10,30 @@ import (
 func SevenOperators() *MsgProcessingSpecTest {
 	pre := testingutils.SevenOperatorsInstance()
 	baseMsgId := types.NewBaseMsgID(testingutils.Testing7SharesSet().ValidatorPK.Serialize(), types.BNRoleAttester)
-	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  pre.StartValue,
-	}).Encode()
+	}, pre.StartValue).Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded5, _ := testingutils.SignQBFTMsg(testingutils.Testing7SharesSet().Shares[5], types.OperatorID(5), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	msgs := []*types.Message{
 		{
 			ID:   types.PopulateMsgType(baseMsgId, types.ConsensusProposeMsgType),
@@ -90,7 +84,7 @@ func SevenOperators() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow seven operators",
 		Pre:           pre,
-		PostRoot:      "e2e1e11bda5f17f3e6fea1dccc8a9de97c96dbfa2f99bc95cfec915c68941db9",
+		PostRoot:      "31b31a60481c849f72af416d194341e0a1e3c0c810f260fad54aefffac2bc24d",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

@@ -13,24 +13,20 @@ func RoundChangeDataEncoding() *tests.MsgSpecTest {
 	signMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}},
-	})
+	}, &qbft.Data{Root: [32]byte{1, 2, 3, 4}})
 	signMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}},
-	})
+	}, &qbft.Data{Root: [32]byte{1, 2, 3, 4}})
 	signMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: [32]byte{1, 2, 3, 4}},
-	})
+	}, &qbft.Data{Root: [32]byte{1, 2, 3, 4}})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         qbft.FirstRound,
-		Input:         &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}},
 		PreparedRound: 2,
-	})
+	}, &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}})
 
 	rcMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		signMsg,

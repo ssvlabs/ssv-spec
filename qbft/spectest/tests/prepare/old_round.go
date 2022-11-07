@@ -15,28 +15,23 @@ func OldRound() *tests.MsgProcessingSpecTest {
 	proposalMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  pre.StartValue,
-	})
+	}, pre.StartValue)
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  10,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	prepareMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  9,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		rcMsg,
 		rcMsg2,

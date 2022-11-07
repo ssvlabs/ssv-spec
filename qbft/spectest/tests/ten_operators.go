@@ -9,46 +9,38 @@ import (
 // TenOperators tests a simple full happy flow until decided
 func TenOperators() *MsgProcessingSpecTest {
 	pre := testingutils.TenOperatorsInstance()
-	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  pre.StartValue,
-	}).Encode()
+	}, pre.StartValue).Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded5, _ := testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[5], types.OperatorID(5), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded6, _ := testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[6], types.OperatorID(6), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded7, _ := testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[7], types.OperatorID(7), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	msgs := []*types.Message{
 		{
 			ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),
@@ -115,7 +107,7 @@ func TenOperators() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow ten operators",
 		Pre:           pre,
-		PostRoot:      "6a61afbda62663ca50e75e1d183a92f6e227da8736abbef7c325e7daad828456",
+		PostRoot:      "ee70c64e736d6a2f6da73010683b3be424209e490b6cabec33d9450e4f8ad2cf",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

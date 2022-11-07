@@ -31,12 +31,13 @@ func TestState_Decoding(t *testing.T) {
 		LastPreparedValue: inputData,
 		ProposalAcceptedForCurrentRound: &SignedMessage{
 			Message: &Message{
-				Height: 1,
-				Round:  2,
-				Input:  inputData,
+				Height:    1,
+				Round:     2,
+				InputRoot: inputData.Root,
 			},
-			Signature: []byte{1, 2, 3, 4},
-			Signers:   []types.OperatorID{1},
+			Signature:   []byte{1, 2, 3, 4},
+			Signers:     []types.OperatorID{1},
+			InputSource: inputData.Source,
 		},
 	}
 
@@ -63,6 +64,6 @@ func TestState_Decoding(t *testing.T) {
 	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.Signers)
 	require.EqualValues(t, 1, decodedState.ProposalAcceptedForCurrentRound.Message.Height)
 	require.EqualValues(t, 2, decodedState.ProposalAcceptedForCurrentRound.Message.Round)
-	require.EqualValues(t, [32]byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Input.Root)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Input.Source)
+	require.EqualValues(t, [32]byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.InputRoot)
+	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.InputSource)
 }

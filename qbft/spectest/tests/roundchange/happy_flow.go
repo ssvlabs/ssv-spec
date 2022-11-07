@@ -13,49 +13,40 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  pre.StartValue,
-	}).Encode()
+	}, pre.StartValue).Encode()
 	proposeMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  pre.StartValue,
-	})
+	}, pre.StartValue)
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	signMsgEncoded4, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	proposeMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
 		rcMsg, rcMsg2, rcMsg3,
 	}

@@ -197,8 +197,7 @@ var DecidingMsgsForHeight = func(consensusData *qbft.Data, msgID types.MessageID
 		signMsgEncoded, _ := SignQBFTMsg(keySet.Shares[1], types.OperatorID(1), &qbft.Message{
 			Height: h,
 			Round:  qbft.FirstRound,
-			Input:  consensusData,
-		}).Encode()
+		}, consensusData).Encode()
 
 		msgs = append(msgs, &types.Message{
 			ID:   types.PopulateMsgType(msgID, types.ConsensusProposeMsgType),
@@ -211,8 +210,7 @@ var DecidingMsgsForHeight = func(consensusData *qbft.Data, msgID types.MessageID
 			signMsgEncoded, _ := SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				Height: h,
 				Round:  qbft.FirstRound,
-				Input:  &qbft.Data{Root: consensusData.Root},
-			}).Encode()
+			}, &qbft.Data{Root: consensusData.Root}).Encode()
 			msgs = append(msgs, &types.Message{
 				ID:   msgID,
 				Data: signMsgEncoded,
@@ -225,8 +223,7 @@ var DecidingMsgsForHeight = func(consensusData *qbft.Data, msgID types.MessageID
 			signMsgEncoded, _ := SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				Height: h,
 				Round:  qbft.FirstRound,
-				Input:  &qbft.Data{Root: consensusData.Root},
-			}).Encode()
+			}, &qbft.Data{Root: consensusData.Root}).Encode()
 			msgs = append(msgs, &types.Message{
 				ID:   msgID,
 				Data: signMsgEncoded,

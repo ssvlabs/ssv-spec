@@ -15,9 +15,9 @@ import (
 //}
 
 var TestingMessage = &Message{
-	Height: FirstHeight,
-	Round:  FirstRound,
-	Input:  &Data{Root: [32]byte{}, Source: []byte{1, 2, 3, 4}},
+	Height:    FirstHeight,
+	Round:     FirstRound,
+	InputRoot: [32]byte{},
 }
 var testingSignedMsg = func() *SignedMessage {
 	return nil

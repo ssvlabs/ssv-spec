@@ -14,8 +14,7 @@ func InvalidMsg() *ControllerSyncSpecTest {
 	msg := testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
 		Height: 10,
 		Round:  3,
-		Input:  &qbft.Data{Root: inputData.Root},
-	})
+	}, &qbft.Data{Root: inputData.Root})
 	msg.Signature = nil
 	msgEncoded, _ := msg.Encode()
 

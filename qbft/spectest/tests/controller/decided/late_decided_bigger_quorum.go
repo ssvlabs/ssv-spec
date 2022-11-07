@@ -20,16 +20,14 @@ func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsg2 := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 		[]types.OperatorID{1, 2, 3},
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	msgs = append(msgs, &types.Message{
 		ID:   types.PopulateMsgType(identifier, types.DecidedMsgType),
@@ -45,7 +43,7 @@ func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
 				BroadcastedDecided: multiSignMsg2,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "d5d4696d29f1359a0f55292ba42dfd922993408529aa86926243df2221554c11",
+				ControllerPostRoot: "df9b2787df60e1e15b0c840410592d27803d44cd5fb086cfa8fc23181cea6293",
 			},
 		},
 	}

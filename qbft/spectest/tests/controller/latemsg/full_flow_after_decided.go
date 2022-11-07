@@ -16,43 +16,35 @@ func FullFlowAfterDecided() *tests.ControllerSpecTest {
 	proposeMsg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  inputData,
-	})
+	}, inputData)
 	signedMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signedMsgEncoded2, _ := testingutils.SignQBFTMsg(ks.Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signedMsgEncoded3, _ := testingutils.SignQBFTMsg(ks.Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signedMsgEncoded4, _ := testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	rcMsg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	rcMsg2 := testingutils.SignQBFTMsg(ks.Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	rcMsg3 := testingutils.SignQBFTMsg(ks.Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		rcMsg, rcMsg2, rcMsg3,
 	}
@@ -63,8 +55,7 @@ func FullFlowAfterDecided() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	msgs := []*types.Message{
 		{

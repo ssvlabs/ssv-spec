@@ -19,8 +19,7 @@ func HasQuorum() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 10,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	return &tests.ControllerSpecTest{
 		Name: "decide has quorum",

@@ -20,7 +20,7 @@ func (i *Instance) UponCommit(
 		signedCommit,
 		i.State.Height,
 		i.State.Round,
-		i.State.ProposalAcceptedForCurrentRound.Message.Input.Root,
+		i.State.ProposalAcceptedForCurrentRound.Message.InputRoot,
 		i.State.Share.Committee,
 	); err != nil {
 		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
@@ -35,16 +35,20 @@ func (i *Instance) UponCommit(
 	}
 
 	// calculate commit quorum and act upon it
-	quorum, commitMsgs, err := commitQuorumForRoundValue(i.State, commitMsgContainer, signedCommit.Message.Input.Root[:], signedCommit.Message.Round)
+	quorum, commitMsgs, err := commitQuorumForRoundValue(i.State, commitMsgContainer, signedCommit.Message.InputRoot[:], signedCommit.Message.Round)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}
 	if quorum {
-		agg, err := aggregateCommitMsgs(commitMsgs, i.State.ProposalAcceptedForCurrentRound.Message.Input)
+		agg, err := aggregateCommitMsgs(
+			commitMsgs,
+			i.State.ProposalAcceptedForCurrentRound.Message.InputRoot,
+			i.State.ProposalAcceptedForCurrentRound.InputSource,
+		)
 		if err != nil {
 			return false, nil, nil, errors.Wrap(err, "could not aggregate commit msgs")
 		}
-		return true, i.State.ProposalAcceptedForCurrentRound.Message.Input.Source, agg, nil
+		return true, i.State.ProposalAcceptedForCurrentRound.InputSource, agg, nil
 	}
 	return false, nil, nil, nil
 }
@@ -55,7 +59,7 @@ func commitQuorumForRoundValue(state *State, commitMsgContainer *MsgContainer, v
 	return state.Share.HasQuorum(len(signers)), msgs, nil
 }
 
-func aggregateCommitMsgs(msgs []*SignedMessage, acceptedProposalData *Data) (*SignedMessage, error) {
+func aggregateCommitMsgs(msgs []*SignedMessage, inputRoot [32]byte, inputSource []byte) (*SignedMessage, error) {
 	if len(msgs) == 0 {
 		return nil, errors.New("can't aggregate zero commit msgs")
 	}
@@ -63,13 +67,16 @@ func aggregateCommitMsgs(msgs []*SignedMessage, acceptedProposalData *Data) (*Si
 	var ret *SignedMessage
 	for _, m := range msgs {
 		if ret == nil {
-			ret = m.DeepCopy(acceptedProposalData)
+			ret = m.DeepCopy()
 		} else {
 			if err := ret.Aggregate(m); err != nil {
 				return nil, errors.Wrap(err, "could not aggregate commit msg")
 			}
 		}
 	}
+	ret.Message.InputRoot = inputRoot
+	ret.InputSource = make([]byte, len(inputSource))
+	copy(ret.InputSource, inputSource)
 	return ret, nil
 }
 
@@ -106,12 +113,9 @@ Commit(
 */
 func CreateCommit(state *State, config IConfig, value [32]byte) (*SignedMessage, error) {
 	msg := &Message{
-		Height: state.Height,
-		Round:  state.Round,
-		Input: &Data{
-			Root:   value,
-			Source: nil,
-		},
+		Height:    state.Height,
+		Round:     state.Round,
+		InputRoot: value,
 	}
 
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
@@ -163,7 +167,7 @@ func validateCommit(
 		return errors.New("commit round is wrong")
 	}
 
-	if !bytes.Equal(signedCommit.Message.Input.Root[:], inputRoot[:]) {
+	if !bytes.Equal(signedCommit.Message.InputRoot[:], inputRoot[:]) {
 		return errors.New("proposed data different than commit msg data")
 	}
 

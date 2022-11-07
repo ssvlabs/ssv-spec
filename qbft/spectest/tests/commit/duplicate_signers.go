@@ -14,13 +14,11 @@ func DuplicateSigners() *tests.MsgProcessingSpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  pre.StartValue,
-	})
+	}, pre.StartValue)
 	commit := testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2}, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	commit.Signers = []types.OperatorID{1, 1}
 	commitEncoded, _ := commit.Encode()
 

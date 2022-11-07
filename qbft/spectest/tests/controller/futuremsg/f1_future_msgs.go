@@ -14,13 +14,11 @@ func F1FutureMsgs() *ControllerSyncSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: 5,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
 		Height: 10,
 		Round:  3,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 
 	return &ControllerSyncSpecTest{
 		Name: "f+1 future msgs",

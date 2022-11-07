@@ -19,8 +19,7 @@ func MultiDecidedInstances() *tests.ControllerSpecTest {
 			&qbft.Message{
 				Height: height,
 				Round:  qbft.FirstRound,
-				Input:  inputData,
-			})
+			}, inputData)
 		multiSignMsgEncoded, _ := multiSignMsg.Encode()
 		return &tests.RunInstanceData{
 			InputValue: inputData,

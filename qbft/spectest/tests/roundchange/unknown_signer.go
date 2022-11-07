@@ -15,8 +15,7 @@ func UnknownSigner() *tests.MsgProcessingSpecTest {
 	rcMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(5), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	}).Encode()
+	}, &qbft.Data{}).Encode()
 
 	msgs := []*types.Message{
 		{

@@ -65,22 +65,18 @@ var AllTests = []SpecTest{
 	latemsg.LateCommit(),
 	latemsg.LateCommitPastRound(),
 	latemsg.LateCommitNoInstance(),
-	// TODO<olegshmuelov>: messages with different height have the same root
-	//latemsg.LateCommitPastInstance(),
+	latemsg.LateCommitPastInstance(),
 	latemsg.LatePrepare(),
 	latemsg.LatePrepareNoInstance(),
-	// TODO<olegshmuelov>: messages with different height have the same root
-	//latemsg.LatePreparePastInstance(),
+	latemsg.LatePreparePastInstance(),
 	latemsg.LatePreparePastRound(),
 	latemsg.LateProposal(),
 	latemsg.LateProposalNoInstance(),
-	// TODO<olegshmuelov>: messages with different height have the same root
-	//latemsg.LateProposalPastInstance(),
+	latemsg.LateProposalPastInstance(),
 	latemsg.LateProposalPastRound(),
 	latemsg.LateRoundChange(),
 	latemsg.LateRoundChangeNoInstance(),
-	// TODO<olegshmuelov>: messages with different height have the same root
-	//latemsg.LateRoundChangePastInstance(),
+	latemsg.LateRoundChangePastInstance(),
 	latemsg.LateRoundChangePastRound(),
 	latemsg.FullFlowAfterDecided(),
 
@@ -137,10 +133,9 @@ var AllTests = []SpecTest{
 	messages.SignedMessageSigner0(),
 
 	tests.HappyFlow(),
-	// TODO<olegshmuelov>: fix tests
-	//tests.SevenOperators(),
-	//tests.TenOperators(),
-	//tests.ThirteenOperators(),
+	tests.SevenOperators(),
+	tests.TenOperators(),
+	tests.ThirteenOperators(),
 
 	proposal.CurrentRoundPrevNotPrepared(),
 	proposal.CurrentRoundPrevPrepared(),
@@ -205,7 +200,6 @@ var AllTests = []SpecTest{
 	commit.DuplicateSigners(),
 	commit.NoPrevAcceptedProposal(),
 	commit.WrongHeight(),
-	//commit.ImparsableCommitData(),
 	commit.WrongSignature(),
 	commit.UnknownSigner(),
 	commit.InvalidValCheck(),

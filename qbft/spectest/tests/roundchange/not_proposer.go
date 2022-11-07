@@ -15,18 +15,15 @@ func NotProposer() *tests.MsgProcessingSpecTest {
 	rcMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: tests.ChangeProposerFuncInstanceHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	}).Encode()
+	}, &qbft.Data{}).Encode()
 	rcMsgEncoded2, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: tests.ChangeProposerFuncInstanceHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	}).Encode()
+	}, &qbft.Data{}).Encode()
 	rcMsgEncoded3, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: tests.ChangeProposerFuncInstanceHeight,
 		Round:  2,
-		Input:  &qbft.Data{},
-	}).Encode()
+	}, &qbft.Data{}).Encode()
 
 	msgs := []*types.Message{
 		{

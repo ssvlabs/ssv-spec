@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
@@ -37,56 +38,48 @@ type Data struct {
 
 // Message includes the full consensus input to be decided on, used for decided, proposal and round-change messages
 type Message struct {
-	Height Height
-	Round  Round
-	Input  *Data
+	Height    Height
+	Round     Round
+	InputRoot [32]byte `ssz-size:"32"`
 	// PreparedRound an optional field used for round-change
 	PreparedRound Round
 }
 
 // Encode returns a msg encoded bytes or error
 func (m *Message) Encode() ([]byte, error) {
-	return json.Marshal(m)
+	return m.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (m *Message) Decode(data []byte) error {
-	return json.Unmarshal(data, &m)
+	return m.UnmarshalSSZ(data)
 }
 
 // Prepared returns error if decoding failed
 func (m *Message) Prepared() bool {
-	// TODO<olegshmuelov>: len(Message.Input) is always != 0 (this check already done in message validation),
-	if m.PreparedRound != NoRound || len(m.Input.Source) != 0 {
-		return true
-	}
-	return false
+	return m.PreparedRound != NoRound
 }
 
 // GetRoot returns the root used for signing and verification
 func (m *Message) GetRoot() ([]byte, error) {
-	if m.Input == nil {
-		return nil, errors.New("message input invalid")
+	marshaledRoot, err := m.Encode()
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode message")
 	}
-	return m.Input.Root[:], nil
-	//marshaledRoot, err := m.Encode()
-	//if err != nil {
-	//	return nil, errors.Wrap(err, "could not encode message")
-	//}
-	//ret := sha256.Sum256(marshaledRoot)
-	//return ret[:], nil
+	ret := sha256.Sum256(marshaledRoot)
+	return ret[:], nil
 }
 
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
-func (m *Message) Validate(msgType types.MsgType) error {
+func (m *Message) Validate(msgType types.MsgType, inputSource []byte) error {
 	switch msgType {
 	case types.ConsensusProposeMsgType, types.DecidedMsgType:
-		if m.Input == nil || len(m.Input.Source) == 0 || m.Input.Root == [32]byte{} {
+		if len(inputSource) == 0 || m.InputRoot == [32]byte{} {
 			return errors.New("message input data is invalid")
 		}
 	case types.ConsensusPrepareMsgType, types.ConsensusCommitMsgType:
-		if m.Input == nil || m.Input.Root == [32]byte{} {
+		if m.InputRoot == [32]byte{} {
 			return errors.New("message input data is invalid")
 		}
 	case types.ConsensusRoundChangeMsgType:
@@ -102,6 +95,7 @@ type SignedMessage struct {
 	Signers   []types.OperatorID `ssz-max:"13"`
 	Signature types.Signature    `ssz-size:"96"`
 
+	InputSource               []byte           `ssz-max:"387173"`
 	RoundChangeJustifications []*SignedMessage `ssz-max:"13"`
 	ProposalJustifications    []*SignedMessage `ssz-max:"13"`
 }
@@ -191,31 +185,27 @@ func (s *SignedMessage) GetRoot() ([]byte, error) {
 }
 
 // DeepCopy returns a new instance of SignedMessage, deep copied
-func (s *SignedMessage) DeepCopy(acceptedProposalData *Data) *SignedMessage {
+func (s *SignedMessage) DeepCopy() *SignedMessage {
 	ret := &SignedMessage{
-		Signers:   make([]types.OperatorID, len(s.Signers)),
-		Signature: make([]byte, len(s.Signature)),
-		// TODO<olegshmuelov>: handle justifications
-		//RoundChangeJustifications: make([]*SignedMessage, len(sm.RoundChangeJustifications)),
-		//ProposalJustifications:    make([]*SignedMessage, len(sm.ProposalJustifications)),
+		Signers:                   make([]types.OperatorID, len(s.Signers)),
+		Signature:                 make([]byte, len(s.Signature)),
+		InputSource:               make([]byte, len(s.InputSource)),
+		RoundChangeJustifications: make([]*SignedMessage, len(s.RoundChangeJustifications)),
+		ProposalJustifications:    make([]*SignedMessage, len(s.ProposalJustifications)),
 	}
 	copy(ret.Signers, s.Signers)
 	copy(ret.Signature, s.Signature)
-	// TODO<olegshmuelov>: handle justifications
-	//copy(ret.RoundChangeJustifications, sm.RoundChangeJustifications)
-	//copy(ret.ProposalJustifications, sm.ProposalJustifications)
+	copy(ret.InputSource, s.InputSource)
+	copy(ret.RoundChangeJustifications, s.RoundChangeJustifications)
+	copy(ret.ProposalJustifications, s.ProposalJustifications)
 
 	ret.Message = &Message{
-		Height: s.Message.Height,
-		Round:  s.Message.Round,
-		Input: &Data{
-			Root:   acceptedProposalData.Root,
-			Source: make([]byte, len(acceptedProposalData.Source)),
-		},
+		Height:        s.Message.Height,
+		Round:         s.Message.Round,
+		InputRoot:     s.Message.InputRoot,
 		PreparedRound: s.Message.PreparedRound,
 	}
 
-	copy(ret.Message.Input.Source, acceptedProposalData.Source)
 	return ret
 }
 
@@ -241,18 +231,15 @@ func (s *SignedMessage) Validate(msgType types.MsgType) error {
 		signed[signer] = true
 	}
 
-	return s.Message.Validate(msgType)
+	return s.Message.Validate(msgType, s.InputSource)
 }
 
 func (s *SignedMessage) ToJustification() *SignedMessage {
 	return &SignedMessage{
 		Message: &Message{
-			Height: s.Message.Height,
-			Round:  s.Message.Round,
-			Input: &Data{
-				Root:   s.Message.Input.Root,
-				Source: nil,
-			},
+			Height:        s.Message.Height,
+			Round:         s.Message.Round,
+			InputRoot:     s.Message.InputRoot,
 			PreparedRound: s.Message.PreparedRound,
 		},
 		Signers:   s.Signers,
@@ -265,13 +252,13 @@ type signedMessageSSZ struct {
 	Signers   []uint64 `ssz-max:"13"`
 	Signature []byte   `ssz-size:"96"`
 
-	// TODO<olegshmuelov> calculate the real signedMessage size
+	// TODO<olegshmuelov>: calculate the real signedMessage size
 	RoundChangeJustifications [][]byte `ssz-max:"13,400000"`
 	ProposalJustifications    [][]byte `ssz-max:"13,400000"`
 }
 
 // SizeSSZ returns the ssz encoded size in bytes for the SignedMessage object
-// TODO<olegshmuelov> the calculation of the signed msg size should be improved performance wise
+// TODO<olegshmuelov>: the calculation of the signed msg size should be improved performance wise
 func (s *SignedMessage) SizeSSZ() int {
 	smSSZ, err := s.toSignedMessageSSZ()
 	if err != nil {

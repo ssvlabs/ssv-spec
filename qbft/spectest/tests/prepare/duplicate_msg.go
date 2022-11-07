@@ -13,13 +13,11 @@ func DuplicateMsg() *tests.MsgProcessingSpecTest {
 	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  pre.StartValue,
-	})
+	}, pre.StartValue)
 	signMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	pre.State.ProposalAcceptedForCurrentRound = proposeMsg
 	signMsgEncoded, _ := signMsg.Encode()
 

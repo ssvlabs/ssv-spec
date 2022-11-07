@@ -19,8 +19,7 @@ func LateProposal() *tests.ControllerSpecTest {
 	signedMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  inputData,
-	}).Encode()
+	}, inputData).Encode()
 	lateMsg := &types.Message{
 		ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
 		Data: signedMsgEncoded,
@@ -31,8 +30,7 @@ func LateProposal() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 
 	msgs = append(msgs, lateMsg)
 
@@ -46,7 +44,7 @@ func LateProposal() *tests.ControllerSpecTest {
 				DecidedCnt:         1,
 				SavedDecided:       multiSignMsg,
 				BroadcastedDecided: multiSignMsg,
-				ControllerPostRoot: "d5d4696d29f1359a0f55292ba42dfd922993408529aa86926243df2221554c11",
+				ControllerPostRoot: "df9b2787df60e1e15b0c840410592d27803d44cd5fb086cfa8fc23181cea6293",
 			},
 		},
 		ExpectedError: "could not process msg: proposal invalid: proposal is not valid with current state",

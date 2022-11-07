@@ -30,7 +30,7 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	}
 	i.State.Round = newRound
 
-	prepareMsg, err := CreatePrepare(i.State, i.config, newRound, signedProposal.Message.Input.Root)
+	prepareMsg, err := CreatePrepare(i.State, i.config, newRound, signedProposal.Message.InputRoot)
 	if err != nil {
 		return errors.Wrap(err, "could not create prepare msg")
 	}
@@ -67,6 +67,10 @@ func isValidProposal(
 		return errors.New("proposal leader invalid")
 	}
 
+	inputData := &Data{
+		Root:   signedProposal.Message.InputRoot,
+		Source: signedProposal.InputSource,
+	}
 	if err := isProposalJustification(
 		state,
 		config,
@@ -74,7 +78,7 @@ func isValidProposal(
 		signedProposal.ProposalJustifications,
 		state.Height,
 		signedProposal.Message.Round,
-		signedProposal.Message.Input,
+		inputData,
 		valCheck,
 	); err != nil {
 		return errors.Wrap(err, "proposal not justified")
@@ -151,7 +155,7 @@ func isProposalJustification(
 			}
 
 			// proposed value must equal highest prepared value
-			if !bytes.Equal(inputData.Root[:], rch.Message.Input.Root[:]) {
+			if !bytes.Equal(inputData.Root[:], rch.Message.InputRoot[:]) {
 				return errors.New("proposed data doesn't match highest prepared")
 			}
 
@@ -162,7 +166,7 @@ func isProposalJustification(
 					pj,
 					height,
 					rch.Message.PreparedRound,
-					rch.Message.Input.Root[:],
+					rch.Message.InputRoot[:],
 					state.Share.Committee,
 				); err != nil {
 					return errors.New("signed prepare not valid")
@@ -198,16 +202,10 @@ func CreateProposal(
 	roundChanges,
 	prepares []*SignedMessage,
 ) (*SignedMessage, error) {
-	//cd := &types.ConsensusInput{}
-	//if err := cd.UnmarshalSSZ(value); err != nil {
-	//	return nil, errors.Wrap(err, "could not unmarshal consensus input ssz")
-	//}
-	//
-	//root, err := cd.HashTreeRoot()
 	msg := &Message{
-		Height: state.Height,
-		Round:  state.Round,
-		Input:  value,
+		Height:    state.Height,
+		Round:     state.Round,
+		InputRoot: value.Root,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
@@ -218,6 +216,7 @@ func CreateProposal(
 		Message:                   msg,
 		Signers:                   []types.OperatorID{state.Share.OperatorID},
 		Signature:                 sig,
+		InputSource:               value.Source,
 		RoundChangeJustifications: roundChanges,
 		ProposalJustifications:    prepares,
 	}

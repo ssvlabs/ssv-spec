@@ -14,29 +14,24 @@ func DuplicateSigner() *ControllerSyncSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: 5,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signMsgEncoded2, _ := testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
 		Height: 10,
 		Round:  3,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 
 	signMsgEncoded3, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: 6,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	signMsgEncoded4, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: 2,
 		Round:  qbft.FirstRound,
-		Input:  inputData,
-	}).Encode()
+	}, inputData).Encode()
 	signMsgEncoded5, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: 50,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 
 	return &ControllerSyncSpecTest{
 		Name: "future msg duplicate signer",

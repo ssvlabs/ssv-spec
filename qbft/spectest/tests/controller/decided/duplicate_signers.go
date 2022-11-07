@@ -19,8 +19,7 @@ func DuplicateSigners() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 10,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	msg.Signers = []types.OperatorID{1, 2, 2}
 	msgEncoded, _ := msg.Encode()
 

@@ -109,7 +109,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Messag
 	}
 
 	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.UnmarshalSSZ(decidedMsg.Message.Input.Source); err != nil {
+	if err := decidedValue.UnmarshalSSZ(decidedMsg.InputSource); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 

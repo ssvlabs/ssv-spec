@@ -23,7 +23,7 @@ func (pss *PartialSignatures) Decode(data []byte) error {
 }
 
 // GetRoot returns the root used for signing and verification
-func (pss PartialSignatures) GetRoot() ([]byte, error) {
+func (pss *PartialSignatures) GetRoot() ([]byte, error) {
 	marshaledRoot, err := pss.Encode()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode PartialSignatures")
@@ -32,7 +32,7 @@ func (pss PartialSignatures) GetRoot() ([]byte, error) {
 	return ret[:], nil
 }
 
-func (pss PartialSignatures) Validate() error {
+func (pss *PartialSignatures) Validate() error {
 	if len(pss.Messages) == 0 {
 		return errors.New("no PartialSignatures messages")
 	}
@@ -88,6 +88,7 @@ func (ps *PartialSignature) Validate() error {
 	return nil
 }
 
+// SignedPartialSignature TODO<olegshmuelov>: generate ssz
 // SignedPartialSignature is an operator's signature over PartialSignature
 type SignedPartialSignature struct {
 	Message   PartialSignatures

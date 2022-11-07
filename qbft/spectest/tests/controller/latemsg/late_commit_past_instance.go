@@ -31,8 +31,7 @@ func LateCommitPastInstance() *tests.ControllerSpecTest {
 			&qbft.Message{
 				Height: height,
 				Round:  qbft.FirstRound,
-				Input:  inputData,
-			})
+			}, inputData)
 		return &tests.RunInstanceData{
 			InputValue:         inputData,
 			InputMessages:      msgPerHeight[height],
@@ -46,18 +45,17 @@ func LateCommitPastInstance() *tests.ControllerSpecTest {
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: 4,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 
 	return &tests.ControllerSpecTest{
 		Name: "late commit past instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "d5d4696d29f1359a0f55292ba42dfd922993408529aa86926243df2221554c11"),
-			instanceData(1, "457bc465febc4d1d626ad19d0f83621fbca5f0c2c6f9f3665292c602e615896a"),
-			instanceData(2, "060c2a36313e8de4cfa530d7839945439e54344c3368eab749c61c5a76eb602c"),
-			instanceData(3, "80f4ea4b56c6062724bc789eb3455c33650191e2c7f775f59b40b9fecc35f93b"),
-			instanceData(4, "3003436a999f2fbd9d4c130591361243190fd3ab1da6d92463cbc832f8165abf"),
-			instanceData(5, "e7a2324d9cbd69497455b50bde88cb47524b79b14653d024caf06ac7a2b28ba7"),
+			instanceData(qbft.FirstHeight, "df9b2787df60e1e15b0c840410592d27803d44cd5fb086cfa8fc23181cea6293"),
+			instanceData(1, "34d48526093a91455d5897e7787a80ffa46eec1f0d6bf54792a6163abf08eb0d"),
+			instanceData(2, "c048c170bef823691ddfd12bbaea54339b26a12c0e9b92d25434f10a564c9467"),
+			instanceData(3, "aa247f887c91f4442d83d545d383559c9c026e67e24509cab02fe60ec56470f9"),
+			instanceData(4, "f1cdaff9b73dab929b270fcc592f71bb5f9f12c770ca89d95883f905a1388dd1"),
+			instanceData(5, "481a19848af8107171f1b02b22c6363c54962c2b311d1e89c882a002b7296a02"),
 			{
 				InputValue: inputData,
 				InputMessages: []*types.Message{
@@ -66,7 +64,7 @@ func LateCommitPastInstance() *tests.ControllerSpecTest {
 						Data: signMsgEncoded,
 					},
 				},
-				ControllerPostRoot: "4a6ce4445ce9f059ffe3214e7efa3a5e4067edaa5dde8334213f98119d3a0781",
+				ControllerPostRoot: "14a9cc3e71d170916563cdec9b7e3f1ebe41e4419406fd9996db800a2c7e93e7",
 			},
 		},
 	}

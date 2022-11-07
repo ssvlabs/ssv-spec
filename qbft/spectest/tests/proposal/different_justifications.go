@@ -15,44 +15,36 @@ func DifferentJustifications() *tests.MsgProcessingSpecTest {
 	proposeMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  3,
-		Input:  pre.StartValue,
-	})
+	}, pre.StartValue)
 	signQBFTMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	signQBFTMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	signQBFTMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	signQBFTMsg4 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	signQBFTMsg5 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	signQBFTMsg6 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  2,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	})
+	}, &qbft.Data{Root: pre.StartValue.Root})
 	rcMsg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         3,
-		Input:         pre.StartValue,
 		PreparedRound: qbft.FirstRound,
-	})
+	}, pre.StartValue)
 	rcMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		signQBFTMsg,
 		signQBFTMsg2,
@@ -61,9 +53,8 @@ func DifferentJustifications() *tests.MsgProcessingSpecTest {
 	rcMsg2 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 		Height:        qbft.FirstHeight,
 		Round:         3,
-		Input:         pre.StartValue,
 		PreparedRound: 2,
-	})
+	}, pre.StartValue)
 	rcMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
 		signQBFTMsg4,
 		signQBFTMsg5,
@@ -72,13 +63,11 @@ func DifferentJustifications() *tests.MsgProcessingSpecTest {
 	rcMsg3 := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  3,
-		Input:  &qbft.Data{},
-	})
+	}, &qbft.Data{})
 	prepareMsgEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  3,
-		Input:  &qbft.Data{Root: pre.StartValue.Root},
-	}).Encode()
+	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
 		rcMsg,

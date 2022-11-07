@@ -19,11 +19,7 @@ func InvalidData() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 10,
 			Round:  qbft.FirstRound,
-			Input: &qbft.Data{
-				Root:   [32]byte{},
-				Source: nil,
-			},
-		})
+		}, &qbft.Data{})
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid data",

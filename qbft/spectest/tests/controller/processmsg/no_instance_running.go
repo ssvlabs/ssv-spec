@@ -20,14 +20,12 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: 50,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 	multiSignMsgEncoded, _ := multiSignMsg.Encode()
 	signMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
 		Height: 2,
 		Round:  qbft.FirstRound,
-		Input:  inputData,
-	}).Encode()
+	}, inputData).Encode()
 
 	return &tests.ControllerSpecTest{
 		Name: "no instance running",

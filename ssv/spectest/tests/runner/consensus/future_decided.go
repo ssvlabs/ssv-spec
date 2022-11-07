@@ -33,8 +33,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						&qbft.Message{
 							Height: 2,
 							Round:  qbft.FirstRound,
-							Input:  inputData,
-						}), nil, types.DecidedMsgType),
+						}, inputData), nil, types.DecidedMsgType),
 				},
 				PostDutyRunnerStateRoot: "a1fa44975a956f54fbbc54e28cb01f46baa109c097e3b52dc4a829b3e1d29bce",
 				OutputMessages: []*ssv.SignedPartialSignature{
@@ -53,8 +52,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						&qbft.Message{
 							Height: 2,
 							Round:  qbft.FirstRound,
-							Input:  inputData,
-						}), nil, types.DecidedMsgType),
+						}, inputData), nil, types.DecidedMsgType),
 				},
 				PostDutyRunnerStateRoot: "1707e40e55d6766a0cce82ebfd8dbfa181fb0f6d36ce7932c6c9784aa5e77a74",
 				OutputMessages:          []*ssv.SignedPartialSignature{},
@@ -74,8 +72,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						&qbft.Message{
 							Height: 2,
 							Round:  qbft.FirstRound,
-							Input:  inputData,
-						}), nil, types.DecidedMsgType),
+						}, inputData), nil, types.DecidedMsgType),
 				},
 				PostDutyRunnerStateRoot: "dd8201dba550e92bdf453f9a81b4f87cea5f1f47c730e07ac5e9898f540d4470",
 				OutputMessages: []*ssv.SignedPartialSignature{
@@ -97,8 +94,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						&qbft.Message{
 							Height: 2,
 							Round:  qbft.FirstRound,
-							Input:  inputData,
-						}), nil, types.DecidedMsgType),
+						}, inputData), nil, types.DecidedMsgType),
 				},
 				PostDutyRunnerStateRoot: "c36ad289f519a0cac669ff9a561de71fc085dc404a9e1850661a07acb24d09c0",
 				OutputMessages: []*ssv.SignedPartialSignature{
@@ -117,8 +113,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						&qbft.Message{
 							Height: 2,
 							Round:  qbft.FirstRound,
-							Input:  inputData,
-						}), nil, types.DecidedMsgType),
+						}, inputData), nil, types.DecidedMsgType),
 				},
 				PostDutyRunnerStateRoot: "03989fb377a2ce009db7b382e80dfc8e6ec7053d8aef7ae0ac0a7fce9af566a1",
 				OutputMessages:          []*ssv.SignedPartialSignature{},

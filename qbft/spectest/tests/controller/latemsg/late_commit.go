@@ -18,8 +18,7 @@ func LateCommit() *tests.ControllerSpecTest {
 	signedMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-		Input:  &qbft.Data{Root: inputData.Root},
-	}).Encode()
+	}, &qbft.Data{Root: inputData.Root}).Encode()
 	lateMsg := &types.Message{
 		ID:   types.PopulateMsgType(identifier, types.ConsensusCommitMsgType),
 		Data: signedMsgEncoded,
@@ -30,8 +29,7 @@ func LateCommit() *tests.ControllerSpecTest {
 		&qbft.Message{
 			Height: qbft.FirstHeight,
 			Round:  qbft.FirstRound,
-			Input:  inputData,
-		})
+		}, inputData)
 
 	msgs = append(msgs, lateMsg)
 
