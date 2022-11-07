@@ -93,26 +93,22 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *Sig
 }
 
 func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
-	if err := b.validateConsensusMsg(msg); err != nil {
-		return false, nil, errors.Wrap(err, "invalid consensus message")
-	}
-
-	var prevDecided bool
-	runningInstance := b.runningInstance()
-	if runningInstance != nil {
-		prevDecided, _ = runningInstance.IsDecided()
+	prevDecided := false
+	if b.HashRunningDuty() {
+		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to process consensus msg")
 	}
-	if runningInstance == nil {
-		// no instance is running
-		return false, nil, nil
+
+	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
+	if !b.HashRunningDuty() {
+		return false, nil, err
 	}
 
-	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, runningInstance.GetHeight(), decidedMsg); !decideCorrectly {
+	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, b.State.RunningInstance.GetHeight(), decidedMsg); !decideCorrectly {
 		return false, nil, err
 	}
 

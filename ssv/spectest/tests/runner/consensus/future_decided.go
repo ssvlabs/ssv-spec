@@ -138,26 +138,6 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				ExpectedError:           errStr,
 			},
-			{
-				Name:          "attester_no_running_duty",
-				Runner:        testingutils.AttesterRunner(ks),
-				Duty:          testingutils.TestingAttesterDuty,
-				DontStartDuty: true,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     4,
-							Round:      qbft.FirstRound,
-							Identifier: getID(types.BNRoleAttester),
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}), nil),
-				},
-				PostDutyRunnerStateRoot: "d400ee9a9f566478e8933b130f0694e74b472183b19281c87487151e0b871f51",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-			},
 		},
 	}
 }
