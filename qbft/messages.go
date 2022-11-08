@@ -3,7 +3,6 @@ package qbft
 import (
 	"bytes"
 	"crypto/sha256"
-	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -190,12 +189,12 @@ func (s *SignedMessage) Aggregate(sig types.MessageSignature) error {
 
 // Encode returns a msg encoded bytes or error
 func (s *SignedMessage) Encode() ([]byte, error) {
-	return json.Marshal(s)
+	return s.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (s *SignedMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &s)
+	return s.UnmarshalSSZ(data)
 }
 
 // GetRoot returns the root used for signing and verification
@@ -271,6 +270,7 @@ type signedMessageSSZ struct {
 	Signers   []uint64 `ssz-max:"13"`
 	Signature []byte   `ssz-size:"96"`
 
+	InputSource []byte `ssz-max:"387173"`
 	// TODO<olegshmuelov>: calculate the real signedMessage size
 	RoundChangeJustifications [][]byte `ssz-max:"13,400000"`
 	ProposalJustifications    [][]byte `ssz-max:"13,400000"`
@@ -310,6 +310,7 @@ func (s *SignedMessage) toSignedMessageSSZ() (*signedMessageSSZ, error) {
 		Message:                   s.Message,
 		Signers:                   signers,
 		Signature:                 s.Signature,
+		InputSource:               s.InputSource,
 		RoundChangeJustifications: make([][]byte, len(s.RoundChangeJustifications)),
 		ProposalJustifications:    make([][]byte, len(s.ProposalJustifications)),
 	}
@@ -344,7 +345,7 @@ func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
 		s.Signers[i] = types.OperatorID(signer)
 	}
 	s.Signature = ss.Signature
-
+	s.InputSource = ss.InputSource
 	s.RoundChangeJustifications = make([]*SignedMessage, len(ss.RoundChangeJustifications))
 	for i, justification := range ss.RoundChangeJustifications {
 		j := &SignedMessage{}

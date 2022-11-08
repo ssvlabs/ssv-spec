@@ -13,7 +13,10 @@ import (
 func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	errStr := "failed processing consensus message: decided wrong instance"
 
 	return &tests.MultiMsgProcessingSpecTest{

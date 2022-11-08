@@ -13,7 +13,10 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	allMsgs := testingutils.DecidingMsgsForHeight(inputData, identifier, 5, ks)
 
 	msgPerHeight := make(map[qbft.Height][]*types.Message)

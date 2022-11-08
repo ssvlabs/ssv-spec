@@ -3,11 +3,15 @@ package startinstance
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // PreviousNotDecided tests starting an instance when the previous one not decided
 func PreviousNotDecided() *tests.ControllerSpecTest {
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	return &tests.ControllerSpecTest{
 		Name: "start instance prev not decided",
 		RunInstanceData: []*tests.RunInstanceData{

@@ -10,7 +10,10 @@ import (
 func InvalidMsg() *ControllerSyncSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	msg := testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
 		Height: 10,
 		Round:  3,
@@ -28,6 +31,6 @@ func InvalidMsg() *ControllerSyncSpecTest {
 		},
 		SyncDecidedCalledCnt: 0,
 		ControllerPostRoot:   "5a1536414abb7928a962cc82e7307b48e3d6c17da15c3f09948c20bd89d41301",
-		ExpectedError:        "invalid future msg: invalid future msg: message signature is invalid",
+		ExpectedError:        "could not decode consensus msg from network msg: incorrect size",
 	}
 }

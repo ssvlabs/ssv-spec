@@ -11,7 +11,10 @@ import (
 // LateCommitNoInstance tests process commit msg for a previously decided instance (which is no longer part of stored instances)
 func LateCommitNoInstance() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
 		multiSignMsg := testingutils.MultiSignQBFTMsg(
 			[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},

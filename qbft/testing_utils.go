@@ -20,8 +20,7 @@ var TestingMessage = &Message{
 	InputRoot: [32]byte{},
 }
 var testingSignedMsg = func() *SignedMessage {
-	return nil
-	//return SignMsg(TestingSK, 1, TestingMessage)
+	return SignMsg(TestingSK, 1, TestingMessage)
 }()
 var SignMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *Message) *SignedMessage {
 	domain := types.PrimusTestnet

@@ -35,7 +35,7 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage) (bool, []byte, *Signe
 	quorum, commitMsgs, err := commitQuorumForRoundValue(
 		i.State,
 		i.State.CommitContainer,
-		signedCommit.Message.InputRoot[:],
+		signedCommit.Message.InputRoot,
 		signedCommit.Message.Round,
 	)
 	if err != nil {
@@ -56,7 +56,7 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage) (bool, []byte, *Signe
 }
 
 // returns true if there is a quorum for the current round for this provided value
-func commitQuorumForRoundValue(state *State, commitMsgContainer *MsgContainer, value []byte, round Round) (bool, []*SignedMessage, error) {
+func commitQuorumForRoundValue(state *State, commitMsgContainer *MsgContainer, value [32]byte, round Round) (bool, []*SignedMessage, error) {
 	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndValue(round, value)
 	return state.Share.HasQuorum(len(signers)), msgs, nil
 }
