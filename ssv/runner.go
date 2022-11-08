@@ -100,7 +100,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
-		return false, nil, errors.Wrap(err, "failed to process consensus msg")
+		return false, nil, err
 	}
 
 	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
