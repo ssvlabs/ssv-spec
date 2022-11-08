@@ -52,9 +52,19 @@ func (fr *FROST) processRound2() error {
 			continue
 		}
 
-		shareBytes, err := ecies.Decrypt(fr.state.sessionSK, protocolMessage.Round1Message.Shares[uint32(fr.state.operatorID)])
+		encryptedShare := protocolMessage.Round1Message.Shares[uint32(fr.state.operatorID)]
+		shareBytes, err := ecies.Decrypt(fr.state.sessionSK, encryptedShare)
 		if err != nil {
-			return err
+			fr.state.currentRound = Blame
+			if err2 := fr.createAndBroadcastBlameOfFailedEcies(operatorID, encryptedShare, []byte(err.Error())); err2 != nil {
+				return err2
+			}
+
+			if blame, err2 := fr.processBlame(); err2 != nil {
+				return err2
+			} else {
+				return ErrBlame{BlameOutput: blame}
+			}
 		}
 
 		share := &sharing.ShamirShare{
@@ -66,17 +76,16 @@ func (fr *FROST) processRound2() error {
 
 		err = verifiers.Verify(share)
 		if err != nil {
-			err2 := fr.createAndBroadcastBlameOfInvalidShare(operatorID)
-			if err2 != nil {
+			fr.state.currentRound = Blame
+			if err2 := fr.createAndBroadcastBlameOfInvalidShare(operatorID); err2 != nil {
 				return err2
 			}
 
-			blameOutput, err2 := fr.processBlame()
-			if err2 != nil {
+			if blame, err2 := fr.processBlame(); err2 != nil {
 				return err2
+			} else {
+				return ErrBlame{BlameOutput: blame}
 			}
-
-			return ErrInvalidShare{BlameOutput: blameOutput}
 		}
 	}
 

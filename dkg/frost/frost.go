@@ -183,6 +183,7 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome,
 	existingMessage, ok := fr.state.msgs[protocolMessage.Round][uint32(msg.Signer)]
 
 	if isBlameTypeInconsisstent := ok && !fr.haveSameRoot(existingMessage, msg); isBlameTypeInconsisstent {
+		fr.state.currentRound = Blame
 		if err := fr.createAndBroadcastBlameOfInconsistentMessage(existingMessage, msg); err != nil {
 			return false, nil, err
 		}
@@ -207,8 +208,8 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome,
 		if fr.canProceedThisRound() {
 			fr.state.currentRound = Round2
 			if err := fr.processRound2(); err != nil {
-				if err.Error() == "invalid share" {
-					return true, &dkg.ProtocolOutcome{BlameOutput: err.(ErrInvalidShare).BlameOutput}, nil
+				if _, ok := err.(ErrBlame); ok {
+					return true, &dkg.ProtocolOutcome{BlameOutput: err.(ErrBlame).BlameOutput}, nil
 				}
 				return false, nil, err
 			}

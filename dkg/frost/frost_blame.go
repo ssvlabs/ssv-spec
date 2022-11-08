@@ -29,6 +29,8 @@ func (fr *FROST) processBlame() (*dkg.BlameOutput, error) {
 
 		case InconsistentMessage:
 			valid, _ = fr.processBlameTypeInconsistentMessage(operatorID, protocolMessage.BlameMessage)
+		case FailedEcies:
+			valid, _ = fr.processBlameTypeFailedEcies(operatorID, protocolMessage.BlameMessage)
 		}
 
 		serializedSigneMessage, err := msg.Encode()
@@ -153,8 +155,31 @@ func (fr *FROST) processBlameTypeInconsistentMessage(operatorID uint32, blameMes
 	return true, nil
 }
 
+func (fr *FROST) processBlameTypeFailedEcies(operatorID uint32, blameMessage *BlameMessage) (bool /*valid*/, error) {
+
+	if len(blameMessage.BlameData) != 2 {
+		return false, errors.New("invalid blame data")
+	}
+
+	preparationMessage := &ProtocolMsg{}
+	if err := preparationMessage.Decode(fr.state.msgs[Preparation][operatorID].Message.Data); err != nil {
+		return false, errors.Wrap(err, "failed to decode preparation message")
+	}
+	if ok := VerifyEciesKeyPair(preparationMessage.PreparationMessage.SessionPk, blameMessage.BlamerSessionSk); !ok {
+		return false, errors.New("blamer's secret key is not consistent with the public key stored in message store ")
+	}
+
+	blamerSK := ecies.NewPrivateKeyFromBytes(blameMessage.BlamerSessionSk)
+	_, err := ecies.Decrypt(blamerSK, blameMessage.BlameData[0] /* encryptedShare */)
+	if err == nil {
+		return false, errors.New("share can be decrypted successfully")
+	} else if err.Error() != string(blameMessage.BlameData[1] /* err string */) {
+		return false, errors.New("ecies failed but err string mismatch")
+	}
+	return true, nil
+}
+
 func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) error {
-	fr.state.currentRound = Blame
 	existingMessageBytes, err := existingMessage.Encode()
 	if err != nil {
 		return err
@@ -176,7 +201,6 @@ func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, n
 }
 
 func (fr *FROST) createAndBroadcastBlameOfInvalidShare(operatorID uint32) error {
-	fr.state.currentRound = Blame
 	round1Bytes, err := fr.state.msgs[Round1][operatorID].Encode()
 	if err != nil {
 		return err
@@ -187,6 +211,19 @@ func (fr *FROST) createAndBroadcastBlameOfInvalidShare(operatorID uint32) error 
 			Type:             InvalidShare,
 			TargetOperatorID: operatorID,
 			BlameData:        [][]byte{round1Bytes},
+			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
+		},
+	}
+	return fr.broadcastDKGMessage(msg)
+}
+
+func (fr *FROST) createAndBroadcastBlameOfFailedEcies(operatorID uint32, encryptedShare []byte, err []byte) error {
+	msg := &ProtocolMsg{
+		Round: Blame,
+		BlameMessage: &BlameMessage{
+			Type:             FailedEcies,
+			TargetOperatorID: operatorID,
+			BlameData:        [][]byte{encryptedShare, err},
 			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
 		},
 	}
@@ -205,10 +242,10 @@ func (fr *FROST) haveSameRoot(existingMessage, newMessage *dkg.SignedMessage) bo
 	return bytes.Equal(r1, r2)
 }
 
-type ErrInvalidShare struct {
+type ErrBlame struct {
 	BlameOutput *dkg.BlameOutput
 }
 
-func (e ErrInvalidShare) Error() string {
-	return "invalid share"
+func (e ErrBlame) Error() string {
+	return "detected and processed blame"
 }
