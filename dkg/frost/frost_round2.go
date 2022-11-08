@@ -1,6 +1,7 @@
 package frost
 
 import (
+	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/coinbase/kryptology/pkg/dkg/frost"
 	"github.com/coinbase/kryptology/pkg/sharing"
 	ecies "github.com/ecies/go/v2"
@@ -8,6 +9,10 @@ import (
 )
 
 func (fr *FROST) processRound2() error {
+
+	if fr.state.currentRound != Round2 {
+		return dkg.ErrInvalidRound{}
+	}
 
 	if !fr.needToRunCurrentRound() {
 		return nil
@@ -86,7 +91,7 @@ func (fr *FROST) processRound2() error {
 	}
 
 	msg := &ProtocolMsg{
-		Round: fr.state.currentRound,
+		Round: Round2,
 		Round2Message: &Round2Message{
 			Vk:      bCastMessage.VerificationKey.ToAffineCompressed(),
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),

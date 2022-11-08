@@ -47,6 +47,7 @@ func (test *FrostSpecTest) Run(t *testing.T) {
 
 	if len(test.ExpectedError) > 0 {
 		require.EqualError(t, err, test.ExpectedError)
+		return
 	} else {
 		require.NoError(t, err)
 	}
