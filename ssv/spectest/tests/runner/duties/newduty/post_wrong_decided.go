@@ -19,7 +19,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		r.GetBaseRunner().QBFTController.StoredInstances[1] = r.GetBaseRunner().State.RunningInstance
+		r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(r.GetBaseRunner().State.RunningInstance.State)
 
 		higherDecided := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
@@ -28,7 +28,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 			10)
 		higherDecided.State.Decided = true
 		higherDecided.State.DecidedValue = []byte{1, 2, 3, 4}
-		r.GetBaseRunner().QBFTController.StoredInstances[0] = higherDecided
+		r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(higherDecided.State)
 
 		r.GetBaseRunner().QBFTController.Height = 10
 		return r

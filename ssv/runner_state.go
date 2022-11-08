@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -46,6 +47,7 @@ func (pcs *State) GetRoot() ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode State")
 	}
+	fmt.Printf("runenr state root - %s \n", string(marshaledRoot))
 	ret := sha256.Sum256(marshaledRoot)
 	return ret[:], nil
 }

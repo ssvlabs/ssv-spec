@@ -2,22 +2,26 @@ package testingutils
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
+	"strings"
 )
 
 type testingStorage struct {
-	storage     map[string]*qbft.SignedMessage
-	operators   map[types.OperatorID]*dkg.Operator
-	keygenoupts map[string]*dkg.KeyGenOutput
+	storage        map[string]*qbft.SignedMessage
+	instancesState map[string]*qbft.State
+	operators      map[types.OperatorID]*dkg.Operator
+	keygenoupts    map[string]*dkg.KeyGenOutput
 }
 
 func NewTestingStorage() *testingStorage {
 	ret := &testingStorage{
-		storage:     make(map[string]*qbft.SignedMessage),
-		operators:   make(map[types.OperatorID]*dkg.Operator),
-		keygenoupts: make(map[string]*dkg.KeyGenOutput),
+		storage:        make(map[string]*qbft.SignedMessage),
+		instancesState: make(map[string]*qbft.State),
+		operators:      make(map[types.OperatorID]*dkg.Operator),
+		keygenoupts:    make(map[string]*dkg.KeyGenOutput),
 	}
 
 	for i, s := range Testing13SharesSet().DKGOperators {
@@ -40,6 +44,27 @@ func (s *testingStorage) SaveHighestDecided(signedMsg *qbft.SignedMessage) error
 // GetHighestDecided returns highest decided if found, nil if didn't
 func (s *testingStorage) GetHighestDecided(identifier []byte) (*qbft.SignedMessage, error) {
 	return s.storage[hex.EncodeToString(identifier)], nil
+}
+
+func (s *testingStorage) SaveInstanceState(state *qbft.State) error {
+	key := fmt.Sprintf("%s_%d", hex.EncodeToString(state.ID), state.Height)
+	s.instancesState[key] = state
+	return nil
+}
+
+func (s *testingStorage) GetInstanceState(identifier []byte, height qbft.Height) (*qbft.State, error) {
+	key := fmt.Sprintf("%s_%d", hex.EncodeToString(identifier), height)
+	return s.instancesState[key], nil
+}
+
+func (s *testingStorage) GetAlInstancesState(identifier []byte) ([]*qbft.State, error) {
+	var res []*qbft.State
+	for k, state := range s.instancesState {
+		if strings.HasPrefix(k, hex.EncodeToString(identifier)) {
+			res = append(res, state)
+		}
+	}
+	return res, nil
 }
 
 // GetDKGOperator returns true and operator object if found by operator ID

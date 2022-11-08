@@ -7,39 +7,13 @@ import (
 	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"sort"
 )
-
-// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a processmsg can process messages for as messages are not
-// guaranteed to arrive in a timely fashion, we physically limit how far back the processmsg will process messages for
-const HistoricalInstanceCapacity int = 5
-
-type InstanceContainer [HistoricalInstanceCapacity]*Instance
-
-func (i InstanceContainer) FindInstance(height Height) *Instance {
-	for _, inst := range i {
-		if inst != nil {
-			if inst.GetHeight() == height {
-				return inst
-			}
-		}
-	}
-	return nil
-}
-
-// addNewInstance will add the new instance at index 0, pushing all other stored InstanceContainer one index up (ejecting last one if existing)
-func (i *InstanceContainer) addNewInstance(instance *Instance) {
-	for idx := HistoricalInstanceCapacity - 1; idx > 0; idx-- {
-		i[idx] = i[idx-1]
-	}
-	i[0] = instance
-}
 
 // Controller is a QBFT coordinator responsible for starting and following the entire life cycle of multiple QBFT InstanceContainer
 type Controller struct {
 	Identifier []byte
 	Height     Height // incremental Height for InstanceContainer
-	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
-	StoredInstances InstanceContainer
 	// FutureMsgsContainer holds all msgs from a higher height
 	FutureMsgsContainer map[types.OperatorID]Height // maps msg signer to height of higher height received msgs
 	Domain              types.DomainType
@@ -58,7 +32,6 @@ func NewController(
 		Height:              -1, // as we bump the height when starting the first instance
 		Domain:              domain,
 		Share:               share,
-		StoredInstances:     InstanceContainer{},
 		FutureMsgsContainer: make(map[types.OperatorID]Height),
 		config:              config,
 	}
@@ -139,7 +112,9 @@ func (c *Controller) baseMsgValidation(msg *SignedMessage) error {
 }
 
 func (c *Controller) InstanceForHeight(height Height) *Instance {
-	return c.StoredInstances.FindInstance(height)
+	state, _ := c.GetConfig().GetStorage().GetInstanceState(c.Identifier, height)
+	// TODO need to handle err?
+	return NewInstanceFromState(c.config, state)
 }
 
 func (c *Controller) bumpHeight() {
@@ -154,14 +129,21 @@ func (c *Controller) GetIdentifier() []byte {
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
 	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
-	c.StoredInstances.addNewInstance(i)
+	err := c.GetConfig().GetStorage().SaveInstanceState(i.State)
+	if err != nil {
+		return nil // need to handle err?
+	}
 	return i
 }
 
 func (c *Controller) canStartInstance(height Height, value []byte) error {
 	if height > FirstHeight {
 		// check prev instance if prev instance is not the first instance
-		inst := c.StoredInstances.FindInstance(height - 1)
+		state, err := c.GetConfig().GetStorage().GetInstanceState(c.Identifier, height-1)
+		if err != nil {
+			return errors.Wrap(err, "failed to get instance state")
+		}
+		inst := NewInstanceFromState(c.GetConfig(), state)
 		if inst == nil {
 			return errors.New("could not find previous instance")
 		}
@@ -188,28 +170,40 @@ func (c *Controller) GetRoot() ([]byte, error) {
 		Domain                 types.DomainType
 		Share                  *types.Share
 	}{
-		Identifier:             c.Identifier,
-		Height:                 c.Height,
-		InstanceRoots:          make([][]byte, len(c.StoredInstances)),
+		Identifier: c.Identifier,
+		Height:     c.Height,
+		//InstanceRoots:          make([][]byte, 5), // hard coded 5 for backwards compatibility reasons. can be changed but need to align all tests
 		HigherReceivedMessages: c.FutureMsgsContainer,
 		Domain:                 c.Domain,
 		Share:                  c.Share,
 	}
 
-	for i, inst := range c.StoredInstances {
-		if inst != nil {
-			r, err := inst.GetRoot()
-			if err != nil {
-				return nil, errors.Wrap(err, "failed getting instance root")
-			}
-			rootStruct.InstanceRoots[i] = r
-		}
+	states, err := c.GetConfig().GetStorage().GetAlInstancesState(c.Identifier)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get all instances state")
 	}
+
+	// sort in order maintain the same root
+	sort.Slice(states, func(i, j int) bool {
+		return states[i].Height > states[j].Height
+	})
+
+	var roots [][]byte
+	for _, state := range states {
+		r, err := NewInstanceFromState(c.GetConfig(), state).GetRoot()
+		if err != nil {
+			return nil, errors.Wrap(err, "failed getting instance root")
+		}
+		roots = append(roots, r)
+	}
+
+	rootStruct.InstanceRoots = roots
 
 	marshaledRoot, err := json.Marshal(rootStruct)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode state")
 	}
+	fmt.Printf("ctrl root - %s \n", string(marshaledRoot))
 	ret := sha256.Sum256(marshaledRoot)
 	return ret[:], nil
 }
@@ -221,18 +215,7 @@ func (c *Controller) Encode() ([]byte, error) {
 
 // Decode implementation
 func (c *Controller) Decode(data []byte) error {
-	err := json.Unmarshal(data, &c)
-	if err != nil {
-		return errors.Wrap(err, "could not decode controller")
-	}
-
-	config := c.GetConfig()
-	for _, i := range c.StoredInstances {
-		if i != nil {
-			i.config = config
-		}
-	}
-	return nil
+	return json.Unmarshal(data, &c)
 }
 
 func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) error {

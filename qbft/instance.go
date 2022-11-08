@@ -28,18 +28,29 @@ func NewInstance(
 	identifier []byte,
 	height Height,
 ) *Instance {
+	return NewInstanceFromState(config, &State{
+		Share:                share,
+		ID:                   identifier,
+		Round:                FirstRound,
+		Height:               height,
+		LastPreparedRound:    NoRound,
+		ProposeContainer:     NewMsgContainer(),
+		PrepareContainer:     NewMsgContainer(),
+		CommitContainer:      NewMsgContainer(),
+		RoundChangeContainer: NewMsgContainer(),
+	})
+}
+
+// NewInstanceFromState return instance by state that provided
+func NewInstanceFromState(
+	config IConfig,
+	state *State,
+) *Instance {
+	if state == nil {
+		return nil
+	}
 	return &Instance{
-		State: &State{
-			Share:                share,
-			ID:                   identifier,
-			Round:                FirstRound,
-			Height:               height,
-			LastPreparedRound:    NoRound,
-			ProposeContainer:     NewMsgContainer(),
-			PrepareContainer:     NewMsgContainer(),
-			CommitContainer:      NewMsgContainer(),
-			RoundChangeContainer: NewMsgContainer(),
-		},
+		State:       state,
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
 	}

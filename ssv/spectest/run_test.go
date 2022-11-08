@@ -220,14 +220,6 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 	)
 	newContr.Height = contr.Height
 	newContr.Domain = contr.Domain
-	newContr.StoredInstances = contr.StoredInstances
-
-	for i, inst := range newContr.StoredInstances {
-		if inst == nil {
-			continue
-		}
-		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, runner.GetBaseRunner().Share)
-	}
 	return newContr
 }
 

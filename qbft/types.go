@@ -32,6 +32,12 @@ type Storage interface {
 	SaveHighestDecided(signedMsg *SignedMessage) error
 	// GetHighestDecided returns highest decided if found, nil if didn't
 	GetHighestDecided(identifier []byte) (*SignedMessage, error)
+	// SaveInstanceState saves instance state by identifier and height
+	SaveInstanceState(state *State) error
+	// GetInstanceState returns instance state
+	GetInstanceState(identifier []byte, height Height) (*State, error)
+	// GetAlInstancesState returns all instances state for identifier
+	GetAlInstancesState(identifier []byte) ([]*State, error)
 }
 
 func ControllerIdToMessageID(identifier []byte) types.MessageID {

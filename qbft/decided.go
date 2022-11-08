@@ -47,8 +47,9 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		i.State.Round = msg.Message.Round
 		i.State.Decided = true
 		i.State.DecidedValue = data.Data
-		c.StoredInstances.addNewInstance(i)
-
+		if err := c.GetConfig().GetStorage().SaveInstanceState(i.State); err != nil {
+			return nil, errors.Wrap(err, "failed to save instance state")
+		}
 		// bump height
 		c.Height = msg.Message.Height
 	}
