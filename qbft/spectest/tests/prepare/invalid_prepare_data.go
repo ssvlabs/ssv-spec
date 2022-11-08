@@ -18,7 +18,7 @@ func InvalidPrepareData() *tests.MsgProcessingSpecTest {
 	signMsgInvalidEncoded, _ := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
-	}, nil).Encode()
+	}, &qbft.Data{}).Encode()
 
 	msgs := []*types.Message{
 		{

@@ -5,17 +5,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (i *Instance) uponRoundChange(
-	instanceStartValue *Data,
-	signedRoundChange *SignedMessage,
-	roundChangeMsgContainer *MsgContainer,
-	valCheck ProposedValueCheckF,
-) error {
+func (i *Instance) uponRoundChange(signedRoundChange *SignedMessage) error {
 	if err := validRoundChange(i.State, i.config, signedRoundChange, i.State.Height, signedRoundChange.Message.Round); err != nil {
 		return errors.Wrap(err, "round change msg invalid")
 	}
 
-	addedMsg, err := roundChangeMsgContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
+	addedMsg, err := i.State.RoundChangeContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
 	if err != nil {
 		return errors.Wrap(err, "could not add round change msg to container")
 	}
@@ -27,8 +22,8 @@ func (i *Instance) uponRoundChange(
 		i.State,
 		i.config,
 		signedRoundChange,
-		roundChangeMsgContainer,
-		valCheck)
+		i.State.RoundChangeContainer,
+		i.config.GetValueCheckF())
 	if err != nil {
 		return errors.Wrap(err, "could not get proposal justification for leading round")
 	}
@@ -36,7 +31,7 @@ func (i *Instance) uponRoundChange(
 		// Chose proposal value.
 		// If justifiedRoundChangeMsg has no prepare justification chose state value
 		// If justifiedRoundChangeMsg has prepare justification chose prepared value
-		valueToPropose := instanceStartValue
+		valueToPropose := i.StartValue
 		if justifiedRoundChangeMsg.Message.Prepared() {
 			// TODO<olegshmuelov>: validate that justified round change msg holds the complete input data
 			valueToPropose = &Data{
@@ -49,7 +44,7 @@ func (i *Instance) uponRoundChange(
 			i.State,
 			i.config,
 			valueToPropose,
-			roundChangeMsgContainer.MessagesForRound(i.State.Round), // TODO - might be optimized to include only necessary quorum
+			i.State.RoundChangeContainer.MessagesForRound(i.State.Round), // TODO - might be optimized to include only necessary quorum
 			justifiedRoundChangeMsg.RoundChangeJustifications,
 		)
 		if err != nil {
@@ -64,7 +59,7 @@ func (i *Instance) uponRoundChange(
 		if err = i.Broadcast(proposalEncoded, types.ConsensusProposeMsgType); err != nil {
 			return errors.Wrap(err, "failed to broadcast proposal message")
 		}
-	} else if partialQuorum, rcs := hasReceivedPartialQuorum(i.State, roundChangeMsgContainer); partialQuorum {
+	} else if partialQuorum, rcs := hasReceivedPartialQuorum(i.State, i.State.RoundChangeContainer); partialQuorum {
 		newRound := minRound(rcs)
 		if newRound <= i.State.Round {
 			return nil // no need to advance round
@@ -251,9 +246,8 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 	return nil
 }
 
-// TODO<olegshmuelov>: remove returning error if not needed
 // highestPrepared returns a round change message with the highest prepared round, returns nil if none found
-func highestPrepared(roundChangeJustifications []*SignedMessage) (*SignedMessage, error) {
+func highestPrepared(roundChangeJustifications []*SignedMessage) *SignedMessage {
 	var ret *SignedMessage
 	for _, rcj := range roundChangeJustifications {
 		if !rcj.Message.Prepared() {
@@ -268,7 +262,7 @@ func highestPrepared(roundChangeJustifications []*SignedMessage) (*SignedMessage
 			}
 		}
 	}
-	return ret, nil
+	return ret
 }
 
 // returns the min round number out of the signed round change messages and the current round

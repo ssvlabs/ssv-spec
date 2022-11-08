@@ -2,6 +2,7 @@ package valcheckattestations
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -9,7 +10,7 @@ import (
 
 // FarFutureTarget tests AttestationData.Target.Epoch higher than expected
 func FarFutureTarget() *valcheck.SpecTest {
-	data := &types.ConsensusData{
+	cd := &types.ConsensusData{
 		Duty: &types.Duty{
 			Type:                    types.BNRoleAttester,
 			PubKey:                  testingutils.TestingValidatorPubKey,
@@ -35,7 +36,12 @@ func FarFutureTarget() *valcheck.SpecTest {
 		},
 	}
 
-	input, _ := data.MarshalSSZ()
+	source, _ := cd.MarshalSSZ()
+	root, _ := cd.HashTreeRoot()
+	input := &qbft.Data{
+		Root:   root,
+		Source: source,
+	}
 
 	return &valcheck.SpecTest{
 		Name:          "attestation value check far future target",

@@ -75,7 +75,7 @@ func NewController(
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
 func (c *Controller) StartNewInstance(inputData *Data) error {
-	if err := c.canStartInstance(c.Height+1, inputData.Source); err != nil {
+	if err := c.canStartInstance(c.Height+1, inputData); err != nil {
 		return errors.Wrap(err, "can't start new QBFT instance")
 	}
 
@@ -115,10 +115,7 @@ func (c *Controller) ProcessMsg(msg *types.Message) (*SignedMessage, error) {
 	}
 }
 
-func (c *Controller) UponExistingInstanceMsg(
-	msgType types.MsgType,
-	signedMsg *SignedMessage,
-) (*SignedMessage, error) {
+func (c *Controller) UponExistingInstanceMsg(msgType types.MsgType, signedMsg *SignedMessage) (*SignedMessage, error) {
 	inst := c.InstanceForHeight(signedMsg.Message.Height)
 	if inst == nil {
 		return nil, errors.New("instance not found")
@@ -177,7 +174,7 @@ func (c *Controller) addAndStoreNewInstance() *Instance {
 	return i
 }
 
-func (c *Controller) canStartInstance(height Height, value []byte) error {
+func (c *Controller) canStartInstance(height Height, value *Data) error {
 	if height > FirstHeight {
 		// check prev instance if prev instance is not the first instance
 		inst := c.StoredInstances.FindInstance(height - 1)

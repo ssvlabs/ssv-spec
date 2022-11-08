@@ -219,7 +219,7 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 		Source: source,
 	}
 
-	if err := runner.GetValCheckF()(source); err != nil {
+	if err := runner.GetValCheckF()(inputData); err != nil {
 		return errors.Wrap(err, "input data invalid")
 	}
 
@@ -319,11 +319,18 @@ func (b *BaseRunner) verifyBeaconPartialSignature(msg *PartialSignature) error {
 }
 
 func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
-	byts, err := val.MarshalSSZ()
+	source, err := val.MarshalSSZ()
 	if err != nil {
 		return errors.Wrap(err, "could not encode decided value")
 	}
-	if err := runner.GetValCheckF()(byts); err != nil {
+	root, err := val.HashTreeRoot()
+	if err != nil {
+		return errors.Wrap(err, "could not get decided root")
+	}
+	if err := runner.GetValCheckF()(&qbft.Data{
+		Root:   root,
+		Source: source,
+	}); err != nil {
 		return errors.Wrap(err, "decided value is invalid")
 	}
 

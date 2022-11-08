@@ -12,8 +12,8 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 		Signer:    NewTestingKeyManager(),
 		SigningPK: keySet.Shares[1].GetPublicKey().Serialize(),
 		Domain:    types.PrimusTestnet,
-		ValueCheckF: func(data []byte) error {
-			if bytes.Equal(data, TestingInvalidValueCheck) {
+		ValueCheckF: func(data *qbft.Data) error {
+			if bytes.Equal(data.Source, TestingInvalidValueCheck) {
 				return errors.New("invalid value")
 			}
 			return nil

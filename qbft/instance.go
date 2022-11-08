@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-type ProposedValueCheckF func(data []byte) error
+type ProposedValueCheckF func(data *Data) error
 type ProposerF func(state *State, round Round) types.OperatorID
 
 // Instance is a single QBFT instance that starts with a Start call (including a value).
@@ -99,18 +99,18 @@ func (i *Instance) ProcessMsg(
 	res := i.processMsgF.Run(func() interface{} {
 		switch msgType {
 		case types.ConsensusProposeMsgType:
-			return i.uponProposal(msg, i.State.ProposeContainer)
+			return i.uponProposal(msg)
 		case types.ConsensusPrepareMsgType:
-			return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
+			return i.uponPrepare(msg)
 		case types.ConsensusCommitMsgType:
-			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
+			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg)
 			if decided {
 				i.State.Decided = decided
 				i.State.DecidedValue = decidedValue
 			}
 			return err
 		case types.ConsensusRoundChangeMsgType:
-			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
+			return i.uponRoundChange(msg)
 		default:
 			return errors.New("signed message type not supported")
 		}

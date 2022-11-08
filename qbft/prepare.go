@@ -6,11 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (i *Instance) uponPrepare(
-	signedPrepare *SignedMessage,
-	prepareMsgContainer,
-	commitMsgContainer *MsgContainer,
-) error {
+func (i *Instance) uponPrepare(signedPrepare *SignedMessage) error {
 	if i.State.ProposalAcceptedForCurrentRound == nil {
 		return errors.New("no proposal accepted for prepare")
 	}
@@ -26,7 +22,7 @@ func (i *Instance) uponPrepare(
 		return errors.Wrap(err, "invalid prepare msg")
 	}
 
-	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
+	addedMsg, err := i.State.PrepareContainer.AddFirstMsgForSignerAndRound(signedPrepare)
 	if err != nil {
 		return errors.Wrap(err, "could not add prepare msg to container")
 	}
@@ -34,11 +30,11 @@ func (i *Instance) uponPrepare(
 		return nil // uponPrepare was already called
 	}
 
-	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
+	if !HasQuorum(i.State.Share, i.State.PrepareContainer.MessagesForRound(i.State.Round)) {
 		return nil // no quorum yet
 	}
 
-	if didSendCommitForHeightAndRound(i.State, commitMsgContainer) {
+	if didSendCommitForHeightAndRound(i.State, i.State.CommitContainer) {
 		return nil // already moved to commit stage
 	}
 

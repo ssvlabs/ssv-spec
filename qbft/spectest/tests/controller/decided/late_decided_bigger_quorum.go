@@ -12,7 +12,10 @@ import (
 func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	msgs := testingutils.DecidingMsgsForHeight(inputData, identifier, qbft.FirstHeight, ks)
 	multiSignMsg := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3], ks.Shares[4]},
@@ -43,7 +46,7 @@ func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
 				BroadcastedDecided: multiSignMsg2,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "df9b2787df60e1e15b0c840410592d27803d44cd5fb086cfa8fc23181cea6293",
+				ControllerPostRoot: "f8a7bf2ad195b8945ba74a38739a8d37fe0d88c1d96cda2a30f4a7ade2913391",
 			},
 		},
 	}

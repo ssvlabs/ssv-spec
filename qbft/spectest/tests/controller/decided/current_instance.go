@@ -12,7 +12,10 @@ import (
 func CurrentInstance() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	proposeMsgEncoded, _ := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		Height: qbft.FirstHeight,
 		Round:  qbft.FirstRound,
@@ -75,7 +78,7 @@ func CurrentInstance() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "4131252b7ba0fdfe16c77ccec2bff8afb67d4213d6b86891561709e78d1cf24a",
+				ControllerPostRoot: "1b3f4e8a9fe1c371104c824011ae528efda71c6489d19dbdd8ffa6928e3d43e1",
 			},
 		},
 	}

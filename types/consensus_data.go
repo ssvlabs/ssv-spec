@@ -68,6 +68,9 @@ type ConsensusData struct {
 func (cd *ConsensusData) toConsensusInput() (*ConsensusInput, error) {
 	var marshalSSZ []byte
 	var err error
+	if cd.Duty == nil {
+		return nil, errors.New("could not marshal consensus data, duty is nil")
+	}
 	switch cd.Duty.Type {
 	case BNRoleAttester:
 		if cd.AttestationData == nil {

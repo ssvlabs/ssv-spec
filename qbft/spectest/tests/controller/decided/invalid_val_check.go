@@ -13,8 +13,8 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 	inputData := &qbft.Data{
-		Root:   [32]byte{1, 2, 3, 4},
-		Source: []byte{1, 2, 3, 4},
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
 	}
 	multiMsg := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
@@ -24,7 +24,7 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 			Round:  qbft.FirstRound,
 		}, &qbft.Data{
 			Root:   [32]byte{1, 1, 1, 1},
-			Source: testingutils.TestingInvalidValueCheck,
+			Source: inputData.Source,
 		})
 	multiMsgEncoded, _ := multiMsg.Encode()
 	return &tests.ControllerSpecTest{
@@ -38,11 +38,12 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 						Data: multiMsgEncoded,
 					},
 				},
-				SavedDecided:       multiMsg,
+				SavedDecided:       nil,
 				DecidedVal:         testingutils.TestingInvalidValueCheck,
-				DecidedCnt:         1,
-				ControllerPostRoot: "09c3550c6fcbefb63ad2a66013c693fe0f4e602d5f05214532ab1acad8213e65",
+				DecidedCnt:         0,
+				ControllerPostRoot: "5a1536414abb7928a962cc82e7307b48e3d6c17da15c3f09948c20bd89d41301",
 			},
 		},
+		ExpectedError: "invalid decided msg: invalid input data: msg root data != calculated root data",
 	}
 }

@@ -68,6 +68,15 @@ func validateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
+	input := &Data{
+		Root:   signedDecided.Message.InputRoot,
+		Source: signedDecided.InputSource,
+	}
+	err := input.Validate(nil)
+	if err != nil {
+		return errors.Wrap(err, "invalid input data")
+	}
+
 	if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}

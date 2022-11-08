@@ -7,13 +7,13 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
+func (i *Instance) uponProposal(signedProposal *SignedMessage) error {
 	valCheck := i.config.GetValueCheckF()
 	if err := isValidProposal(i.State, i.config, signedProposal, valCheck, i.State.Share.Committee); err != nil {
 		return errors.Wrap(err, "proposal invalid")
 	}
 
-	addedMsg, err := proposeMsgContainer.AddFirstMsgForSignerAndRound(signedProposal)
+	addedMsg, err := i.State.ProposeContainer.AddFirstMsgForSignerAndRound(signedProposal)
 	if err != nil {
 		return errors.Wrap(err, "could not add proposal msg to container")
 	}
@@ -102,7 +102,7 @@ func isProposalJustification(
 	inputData *Data,
 	valCheck ProposedValueCheckF,
 ) error {
-	if err := valCheck(inputData.Source); err != nil {
+	if err := valCheck(inputData); err != nil {
 		return errors.Wrap(err, "proposal value invalid")
 	}
 
@@ -146,10 +146,7 @@ func isProposalJustification(
 			}
 
 			// get a round change data for which there is a justification for the highest previously prepared round
-			rch, err := highestPrepared(roundChangeJustifications)
-			if err != nil {
-				return errors.Wrap(err, "could not get highest prepared")
-			}
+			rch := highestPrepared(roundChangeJustifications)
 			if rch == nil {
 				return errors.New("no highest prepared")
 			}

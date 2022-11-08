@@ -11,7 +11,10 @@ import (
 // PastInstance tests a decided msg received for past instance
 func PastInstance() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	multiSignMsg := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
 		[]types.OperatorID{1, 2, 3},
@@ -46,7 +49,7 @@ func PastInstance() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "b1446134a653f433b66c37bd20017153e4993c6ab014d2d87c50ed2c0a77e884",
+				ControllerPostRoot: "2c419c1d064c8b3ae23948b10c85825cea8c2e6e004d734981c3e7770e26f2e8",
 			},
 		},
 	}

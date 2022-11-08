@@ -13,7 +13,7 @@ type SpecTest struct {
 	Name               string
 	Network            types.BeaconNetwork
 	BeaconRole         types.BeaconRole
-	Input              []byte
+	Input              *qbft.Data
 	SlashableDataRoots [][]byte
 	ExpectedError      string
 	AnyError           bool

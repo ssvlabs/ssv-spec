@@ -12,7 +12,10 @@ import (
 func HasQuorum() *tests.ControllerSpecTest {
 	identifier := types.NewBaseMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
-	inputData := &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}}
+	inputData := &qbft.Data{
+		Root:   testingutils.TestAttesterConsensusDataRoot,
+		Source: testingutils.TestAttesterConsensusDataByts,
+	}
 	multiSignMsg := testingutils.MultiSignQBFTMsg(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 		[]types.OperatorID{1, 2, 3},
@@ -35,7 +38,7 @@ func HasQuorum() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "cf79aafb1c5b30c9c737026d3263934ee31da72db9b68bedc21c5e0f7def69b0",
+				ControllerPostRoot: "0c2d7c8f87808116e21dd29fefea6180ebb5897724a5eb3a91f69d5abb1d88c2",
 			},
 		},
 	}

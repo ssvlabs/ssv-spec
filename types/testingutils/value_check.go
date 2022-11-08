@@ -5,7 +5,7 @@ import (
 )
 
 func UnknownDutyValueCheck() qbft.ProposedValueCheckF {
-	return func(data []byte) error {
+	return func(data *qbft.Data) error {
 		return nil
 	}
 }

@@ -7,10 +7,7 @@ import (
 )
 
 // UponCommit returns true if a quorum of commit messages was received.
-func (i *Instance) UponCommit(
-	signedCommit *SignedMessage,
-	commitMsgContainer *MsgContainer,
-) (bool, []byte, *SignedMessage, error) {
+func (i *Instance) UponCommit(signedCommit *SignedMessage) (bool, []byte, *SignedMessage, error) {
 	if i.State.ProposalAcceptedForCurrentRound == nil {
 		return false, nil, nil, errors.New("did not receive proposal for this round")
 	}
@@ -26,7 +23,7 @@ func (i *Instance) UponCommit(
 		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
 	}
 
-	addMsg, err := commitMsgContainer.AddFirstMsgForSignerAndRound(signedCommit)
+	addMsg, err := i.State.CommitContainer.AddFirstMsgForSignerAndRound(signedCommit)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not add commit msg to container")
 	}
@@ -35,7 +32,12 @@ func (i *Instance) UponCommit(
 	}
 
 	// calculate commit quorum and act upon it
-	quorum, commitMsgs, err := commitQuorumForRoundValue(i.State, commitMsgContainer, signedCommit.Message.InputRoot[:], signedCommit.Message.Round)
+	quorum, commitMsgs, err := commitQuorumForRoundValue(
+		i.State,
+		i.State.CommitContainer,
+		signedCommit.Message.InputRoot[:],
+		signedCommit.Message.Round,
+	)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}

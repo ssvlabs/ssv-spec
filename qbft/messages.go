@@ -36,6 +36,25 @@ type Data struct {
 	Source []byte   `ssz-max:"387173"`
 }
 
+func (d *Data) Validate(cd *types.ConsensusData) error {
+	if cd == nil {
+		cd = &types.ConsensusData{}
+		if err := cd.UnmarshalSSZ(d.Source); err != nil {
+			return errors.Wrap(err, "failed decoding consensus data")
+		}
+	}
+
+	cdRoot, err := cd.HashTreeRoot()
+	if err != nil {
+		return errors.Wrap(err, "could not get consensus data root")
+	}
+
+	if !bytes.Equal(d.Root[:], cdRoot[:]) {
+		return errors.New("msg root data != calculated root data")
+	}
+	return nil
+}
+
 // Message includes the full consensus input to be decided on, used for decided, proposal and round-change messages
 type Message struct {
 	Height    Height

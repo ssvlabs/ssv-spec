@@ -7,15 +7,16 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// Valid tests valid data
-func Valid() *valcheck.SpecTest {
+// InputRootMismatch tests ConsensusData.Root != computed root
+func InputRootMismatch() *valcheck.SpecTest {
 	return &valcheck.SpecTest{
-		Name:       "attestation value check valid",
+		Name:       "attestation value check root mismatch",
 		Network:    types.PraterNetwork,
 		BeaconRole: types.BNRoleAttester,
 		Input: &qbft.Data{
-			Root:   testingutils.TestAttesterConsensusDataRoot,
+			Root:   [32]byte{1, 2, 3, 4},
 			Source: testingutils.TestAttesterConsensusDataByts,
 		},
+		ExpectedError: "invalid input data: msg root data != calculated root data",
 	}
 }

@@ -40,10 +40,15 @@ func AttesterValueCheckF(
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
+	return func(data *qbft.Data) error {
 		cd := &types.ConsensusData{}
-		if err := cd.UnmarshalSSZ(data); err != nil {
+		if err := cd.UnmarshalSSZ(data.Source); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
+		}
+
+		err := data.Validate(cd)
+		if err != nil {
+			return errors.Wrap(err, "invalid input data")
 		}
 
 		if err := dutyValueCheck(cd.Duty, network, types.BNRoleAttester, validatorPK, validatorIndex); err != nil {
@@ -80,10 +85,15 @@ func ProposerValueCheckF(
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
+	return func(data *qbft.Data) error {
 		cd := &types.ConsensusData{}
-		if err := cd.UnmarshalSSZ(data); err != nil {
+		if err := cd.UnmarshalSSZ(data.Source); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
+		}
+
+		err := data.Validate(cd)
+		if err != nil {
+			return errors.Wrap(err, "invalid input data")
 		}
 
 		if err := dutyValueCheck(cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
@@ -99,10 +109,15 @@ func AggregatorValueCheckF(
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
+	return func(data *qbft.Data) error {
 		cd := &types.ConsensusData{}
-		if err := cd.UnmarshalSSZ(data); err != nil {
+		if err := cd.UnmarshalSSZ(data.Source); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
+		}
+
+		err := data.Validate(cd)
+		if err != nil {
+			return errors.Wrap(err, "invalid input data")
 		}
 
 		if err := dutyValueCheck(cd.Duty, network, types.BNRoleAggregator, validatorPK, validatorIndex); err != nil {
@@ -118,10 +133,15 @@ func SyncCommitteeValueCheckF(
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
+	return func(data *qbft.Data) error {
 		cd := &types.ConsensusData{}
-		if err := cd.UnmarshalSSZ(data); err != nil {
+		if err := cd.UnmarshalSSZ(data.Source); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
+		}
+
+		err := data.Validate(cd)
+		if err != nil {
+			return errors.Wrap(err, "invalid input data")
 		}
 
 		if err := dutyValueCheck(cd.Duty, network, types.BNRoleSyncCommittee, validatorPK, validatorIndex); err != nil {
@@ -137,10 +157,15 @@ func SyncCommitteeContributionValueCheckF(
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
+	return func(data *qbft.Data) error {
 		cd := &types.ConsensusData{}
-		if err := cd.UnmarshalSSZ(data); err != nil {
+		if err := cd.UnmarshalSSZ(data.Source); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
+		}
+
+		err := data.Validate(cd)
+		if err != nil {
+			return errors.Wrap(err, "invalid input data")
 		}
 
 		if err := dutyValueCheck(cd.Duty, network, types.BNRoleSyncCommitteeContribution, validatorPK, validatorIndex); err != nil {
