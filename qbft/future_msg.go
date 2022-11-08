@@ -13,7 +13,7 @@ func (c *Controller) UponFutureMsg(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.New("discarded future msg")
 	}
 	if c.f1SyncTrigger() {
-		return nil, c.GetConfig().GetNetwork().SyncHighestDecided(c.Identifier)
+		return nil, c.GetConfig().GetNetwork().SyncHighestDecided(types.MessageIDFromBytes(c.Identifier))
 	}
 	return nil, nil
 }
