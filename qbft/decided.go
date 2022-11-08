@@ -34,10 +34,10 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	// Mark current instance decided
 	if inst := c.InstanceForHeight(c.Height); inst != nil && !inst.State.Decided {
 		inst.State.Decided = true
-		if msg.Message.Round > inst.State.Round {
-			inst.State.Round = msg.Message.Round
-		}
 		if c.Height == msg.Message.Height {
+			if msg.Message.Round > inst.State.Round {
+				inst.State.Round = msg.Message.Round
+			}
 			inst.State.DecidedValue = data.Data
 		}
 	}
