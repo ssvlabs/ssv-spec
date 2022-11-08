@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"encoding/hex"
 	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
@@ -117,9 +118,9 @@ func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Doma
 	return nil, nil, errors.New("pk not found")
 }
 
-// Decrypt given a rsa pubkey and a PKCS1v15 cipher text byte array, returns the decrypted data
-func (km *testingKeyManager) Decrypt(pk *rsa.PublicKey, cipher []byte) ([]byte, error) {
-	panic("implement")
+// Decrypt given a rsa privkey and a PKCS1v15 cipher text byte array, returns the decrypted data
+func (km *testingKeyManager) Decrypt(sk *rsa.PrivateKey, cipher []byte) ([]byte, error) {
+	return TestingDecryption(sk, cipher), nil
 }
 
 // Encrypt given a rsa pubkey and data returns an PKCS1v15 e

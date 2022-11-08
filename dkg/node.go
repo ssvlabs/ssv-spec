@@ -2,32 +2,60 @@ package dkg
 
 import (
 	"encoding/hex"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
 // Runners is a map of dkg runners mapped by dkg ID.
-type Runners map[string]Runner
+type Runners map[string]struct {
+	Runner    Runner
+	isDeleted bool
+}
 
 func (runners Runners) AddRunner(id RequestID, runner Runner) {
-	runners[hex.EncodeToString(id[:])] = runner
+	runners[hex.EncodeToString(id[:])] = struct {
+		Runner    Runner
+		isDeleted bool
+	}{
+		Runner:    runner,
+		isDeleted: false,
+	}
 }
 
 // RunnerForID returns a Runner from the provided msg ID, or nil if not found
 func (runners Runners) RunnerForID(id RequestID) Runner {
-	return runners[hex.EncodeToString(id[:])]
+	r := runners[hex.EncodeToString(id[:])]
+	if r.Runner == nil || r.isDeleted {
+		return nil
+	}
+	return r.Runner
+}
+
+func (runners Runners) Exists(id RequestID) bool {
+	r := runners[hex.EncodeToString(id[:])]
+	return r.Runner != nil
+}
+
+func (runners Runners) IsDeleted(id RequestID) bool {
+	r := runners[hex.EncodeToString(id[:])]
+	return r.Runner != nil && r.isDeleted
 }
 
 func (runners Runners) DeleteRunner(id RequestID) {
-	delete(runners, hex.EncodeToString(id[:]))
+	r := runners[hex.EncodeToString(id[:])]
+	r.isDeleted = true
+	runners[hex.EncodeToString(id[:])] = r
+	// delete(runners, hex.EncodeToString(id[:]))
 }
 
 // Node is responsible for receiving and managing DKG session and messages
 type Node struct {
 	operator *Operator
 	// runners holds all active running DKG runners
-	runners Runners
-	config  *Config
+	operatorsOld []types.OperatorID
+	runners      Runners
+	config       *Config
 }
 
 func NewNode(operator *Operator, config *Config) *Node {
@@ -35,6 +63,15 @@ func NewNode(operator *Operator, config *Config) *Node {
 		operator: operator,
 		config:   config,
 		runners:  make(Runners, 0),
+	}
+}
+
+func NewResharingNode(operator *Operator, operatorsOld []types.OperatorID, config *Config) *Node {
+	return &Node{
+		operator:     operator,
+		operatorsOld: operatorsOld,
+		config:       config,
+		runners:      make(Runners, 0),
 	}
 }
 
@@ -47,7 +84,7 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.KeygenProtocol(n.config.Network, n.operator.OperatorID, id, initMsg),
+		protocol:              n.config.KeygenProtocol(n.config.Network, n.operator.OperatorID, id, n.config.Signer, n.config.Storage, initMsg),
 		config:                n.config,
 	}
 
@@ -61,7 +98,7 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, error) {
 	kgOutput, err := n.config.Storage.GetKeyGenOutput(reshareMsg.ValidatorPK)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not find the ")
+		return nil, errors.Wrap(err, "could not find the keygen output from storage")
 	}
 	r := &runner{
 		Operator:              n.operator,
@@ -71,7 +108,7 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.ReshareProtocol(n.config.Network, n.operator.OperatorID, id, reshareMsg, kgOutput),
+		protocol:              n.config.ReshareProtocol(n.config.Network, n.operator.OperatorID, id, n.config.Signer, n.config.Storage, n.operatorsOld, reshareMsg, kgOutput),
 		config:                n.config,
 	}
 
@@ -201,8 +238,15 @@ func (n *Node) validateReshareMsg(message *SignedMessage) (*Reshare, error) {
 }
 
 func (n *Node) processDKGMsg(message *SignedMessage) error {
-	r, err := n.validateDKGMsg(message)
-	if err != nil {
+	if n.runners.IsDeleted(message.Message.Identifier) {
+		return nil
+	}
+	if !n.runners.Exists(message.Message.Identifier) {
+		return errors.New("could not find dkg runner")
+	}
+	r := n.runners.RunnerForID(message.Message.Identifier)
+
+	if err := n.validateDKGMsg(message); err != nil {
 		return errors.Wrap(err, "dkg msg not valid")
 	}
 
@@ -218,25 +262,21 @@ func (n *Node) processDKGMsg(message *SignedMessage) error {
 	return nil
 }
 
-func (n *Node) validateDKGMsg(message *SignedMessage) (Runner, error) {
-	r := n.runners.RunnerForID(message.Message.Identifier)
-	if r == nil {
-		return nil, errors.New("could not find dkg runner")
-	}
+func (n *Node) validateDKGMsg(message *SignedMessage) error {
 
 	// find signing operator and verify sig
 	found, signingOperator, err := n.config.Storage.GetDKGOperator(message.Signer)
 	if err != nil {
-		return nil, errors.Wrap(err, "can't fetch operator")
+		return errors.Wrap(err, "can't fetch operator")
 	}
 	if !found {
-		return nil, errors.New("can't find operator")
+		return errors.New("can't find operator")
 	}
 	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, signingOperator.ETHAddress); err != nil {
-		return nil, errors.Wrap(err, "signed message invalid")
+		return errors.Wrap(err, "signed message invalid")
 	}
 
-	return r, nil
+	return nil
 }
 
 func (n *Node) GetConfig() *Config {

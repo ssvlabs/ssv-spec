@@ -45,6 +45,7 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 		if r.DepositDataSignatures[r.Operator.OperatorID] != nil {
 			return false, errors.New("keygen has already completed")
 		}
+
 		finished, o, err := r.protocol.ProcessMsg(msg)
 		if err != nil {
 			return false, errors.Wrap(err, "failed to process dkg msg")
@@ -96,8 +97,8 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 			if err := r.prepareAndBroadcastOutput(); err != nil {
 				return false, err
 			}
-			return false, nil
 		}
+		return false, nil
 	case OutputMsgType:
 		output := &SignedOutput{}
 		if err := output.Decode(msg.Message.Data); err != nil {
@@ -125,8 +126,6 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 	default:
 		return false, errors.New("msg type invalid")
 	}
-
-	return false, nil
 }
 
 func (r *runner) prepareAndBroadcastDepositData() error {
@@ -244,13 +243,20 @@ func (r *runner) validateSignedOutput(msg *SignedOutput) error {
 	// TODO: Separate fields match and signature validation
 	output := r.ownOutput()
 	if output != nil {
-		if output.Data.RequestID != msg.Data.RequestID {
-			return errors.New("got mismatching RequestID")
-		}
-		if !bytes.Equal(output.Data.ValidatorPubKey, msg.Data.ValidatorPubKey) {
-			return errors.New("got mismatching ValidatorPubKey")
+		if output.BlameData == nil {
+			if output.Data.RequestID != msg.Data.RequestID {
+				return errors.New("got mismatching RequestID")
+			}
+			if !bytes.Equal(output.Data.ValidatorPubKey, msg.Data.ValidatorPubKey) {
+				return errors.New("got mismatching ValidatorPubKey")
+			}
+		} else {
+			if output.BlameData.RequestID != msg.BlameData.RequestID {
+				return errors.New("got mismatching RequestID")
+			}
 		}
 	}
+
 	found, operator, err := r.config.Storage.GetDKGOperator(msg.Signer)
 	if !found {
 		return errors.New("unable to find signer")
@@ -259,10 +265,19 @@ func (r *runner) validateSignedOutput(msg *SignedOutput) error {
 		return errors.Wrap(err, "unable to find signer")
 	}
 
-	root, err := msg.Data.GetRoot()
+	var (
+		root []byte
+	)
+
+	if msg.BlameData == nil {
+		root, err = msg.Data.GetRoot()
+	} else {
+		root, err = msg.BlameData.GetRoot()
+	}
 	if err != nil {
 		return errors.Wrap(err, "fail to get root")
 	}
+
 	pk, err := crypto.Ecrecover(root, msg.Signature)
 	if err != nil {
 		return errors.New("unable to recover public key")

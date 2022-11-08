@@ -5,13 +5,14 @@ import (
 	"crypto/rsa"
 	"encoding/hex"
 	"fmt"
+	"strconv"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/stubdkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
-	"strconv"
 )
 
 var TestingWithdrawalCredentials, _ = hex.DecodeString("010000000000000000000000535953b5a6040074948cf185eaa7d2abbd66808f")
@@ -21,12 +22,12 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
 	km := NewTestingKeyManager()
 	config := &dkg.Config{
-		KeygenProtocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID, init *dkg.Init) dkg.Protocol {
+		KeygenProtocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID, signer types.DKGSigner, storage dkg.Storage, init *dkg.Init) dkg.Protocol {
 			return &TestingKeygenProtocol{
 				KeyGenOutput: keySet.KeyGenOutput(1),
 			}
 		},
-		ReshareProtocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID, reshare *dkg.Reshare, output *dkg.KeyGenOutput) dkg.Protocol {
+		ReshareProtocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID, signer types.DKGSigner, storage dkg.Storage, oldOperators []types.OperatorID, reshare *dkg.Reshare, output *dkg.KeyGenOutput) dkg.Protocol {
 			return &TestingKeygenProtocol{
 				KeyGenOutput: keySet.KeyGenOutput(1),
 			}
@@ -59,14 +60,30 @@ var SignDKGMsg = func(sk *ecdsa.PrivateKey, id types.OperatorID, msg *dkg.Messag
 }
 
 var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte, fork spec.Version) []byte {
-	m := &dkg.Init{
+	byts, _ := InitMessageData(operators, threshold, withdrawalCred, fork).Encode()
+	return byts
+}
+
+var InitMessageData = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte, fork spec.Version) *dkg.Init {
+	return &dkg.Init{
 		OperatorIDs:           operators,
 		Threshold:             threshold,
 		WithdrawalCredentials: withdrawalCred,
 		Fork:                  fork,
 	}
-	byts, _ := m.Encode()
+}
+
+var ReshareMessageDataBytes = func(operators []types.OperatorID, threshold uint16, validatorPK types.ValidatorPK) []byte {
+	byts, _ := ReshareMessageData(operators, threshold, validatorPK).Encode()
 	return byts
+}
+
+var ReshareMessageData = func(operators []types.OperatorID, threshold uint16, validatorPK types.ValidatorPK) *dkg.Reshare {
+	return &dkg.Reshare{
+		ValidatorPK: validatorPK,
+		OperatorIDs: operators,
+		Threshold:   threshold,
+	}
 }
 
 var ProtocolMsgDataBytes = func(stage stubdkg.Stage) []byte {
@@ -99,6 +116,7 @@ var DespositDataSigningRoot = func(keySet *TestKeySet, initMsg *dkg.Init) []byte
 }
 var (
 	encryptedDataCache = map[string][]byte{}
+	decryptedDataCache = map[string][]byte{}
 )
 
 func TestingEncryption(pk *rsa.PublicKey, data []byte) []byte {
@@ -109,6 +127,16 @@ func TestingEncryption(pk *rsa.PublicKey, data []byte) []byte {
 	cipherText, _ := types.Encrypt(pk, data)
 	encryptedDataCache[id] = cipherText
 	return cipherText
+}
+
+func TestingDecryption(sk *rsa.PrivateKey, data []byte) []byte {
+	id := hex.EncodeToString(sk.N.Bytes()) + fmt.Sprintf("%x", sk.E) + hex.EncodeToString(data)
+	if found := decryptedDataCache[id]; found != nil {
+		return found
+	}
+	plaintext, _ := types.Decrypt(sk, data)
+	decryptedDataCache[id] = plaintext
+	return plaintext
 }
 
 func (ks *TestKeySet) KeyGenOutput(opId types.OperatorID) *dkg.KeyGenOutput {

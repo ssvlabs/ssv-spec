@@ -9,6 +9,7 @@ import (
 type TestingNetwork struct {
 	BroadcastedMsgs           []*types.SSVMessage
 	DKGOutputs                map[types.OperatorID]*dkg.SignedOutput
+	BlameOutput               *dkg.BlameOutput
 	SyncHighestDecidedCnt     int
 	SyncHighestChangeRoundCnt int
 }
@@ -36,7 +37,8 @@ func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.Sign
 
 func (net *TestingNetwork) StreamDKGBlame(blame *dkg.BlameOutput) error {
 	//TODO implement me
-	panic("implement me")
+	net.BlameOutput = blame
+	return nil
 }
 
 func (net *TestingNetwork) SyncHighestDecided(identifier types.MessageID) error {

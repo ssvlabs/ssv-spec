@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -132,11 +133,24 @@ func (msg *Init) Validate() error {
 	if len(msg.WithdrawalCredentials) != phase0.HashLength {
 		return errors.New("invalid WithdrawalCredentials")
 	}
-	if len(msg.OperatorIDs) < 4 || (len(msg.OperatorIDs)-1)%3 != 0 {
+	contains := func(container []int, elem int) bool {
+		for _, n := range container {
+			if elem == n {
+				return true
+			}
+		}
+		return false
+	}
+	validSizes := []int{4, 7, 10, 13}
+	validN := contains(validSizes, len(msg.OperatorIDs))
+
+	if !validN {
 		return errors.New("invalid number of operators which has to be 3f+1")
 	}
 
-	if int(msg.Threshold) != (len(msg.OperatorIDs)-1)*2/3+1 {
+	f := len(msg.OperatorIDs) / 3
+
+	if int(msg.Threshold) != (2*f + 1) {
 		return errors.New("invalid threshold which has to be 2f+1")
 	}
 
@@ -235,6 +249,8 @@ func (o *Output) GetRoot() ([]byte, error) {
 }
 
 type SignedOutput struct {
+	// Blame Data
+	BlameData *BlameData
 	// Data signed
 	Data *Output
 	// Signer Operator ID which signed
@@ -251,6 +267,45 @@ func (msg *SignedOutput) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *SignedOutput) Decode(data []byte) error {
 	return json.Unmarshal(data, msg)
+}
+
+type BlameData struct {
+	RequestID    RequestID
+	Valid        bool
+	BlameMessage []byte
+}
+
+// Encode returns a msg encoded bytes or error
+func (msg *BlameData) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *BlameData) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
+}
+
+func (msg *BlameData) GetRoot() ([]byte, error) {
+	bytesSolidity, _ := abi.NewType("bytes", "", nil)
+	boolSolidity, _ := abi.NewType("bool", "", nil)
+
+	arguments := abi.Arguments{
+		{
+			Type: boolSolidity,
+		},
+		{
+			Type: bytesSolidity,
+		},
+	}
+
+	bytes, err := arguments.Pack(
+		msg.Valid,
+		[]byte(msg.BlameMessage),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return crypto.Keccak256(bytes), nil
 }
 
 func SignOutput(output *Output, privKey *ecdsa.PrivateKey) (types.Signature, error) {

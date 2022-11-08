@@ -2,6 +2,7 @@ package stubdkg
 
 import (
 	"fmt"
+
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
