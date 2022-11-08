@@ -9,6 +9,10 @@ import (
 
 func (fr *FROST) processRound2() error {
 
+	if !fr.needToRunCurrentRound() {
+		return nil
+	}
+
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
@@ -28,8 +32,14 @@ func (fr *FROST) processRound2() error {
 			verifiers.Commitments = append(verifiers.Commitments, commitment)
 		}
 
-		Wi, _ := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofS)
-		Ci, _ := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofR)
+		Wi, err := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofS)
+		if err != nil {
+			return err
+		}
+		Ci, err := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofR)
+		if err != nil {
+			return err
+		}
 
 		bcastMessage := &frost.Round1Bcast{
 			Verifiers: verifiers,
@@ -54,8 +64,19 @@ func (fr *FROST) processRound2() error {
 
 		p2psend[operatorID] = share
 
-		if err := verifiers.Verify(share); err != nil {
-			return fr.createBlameTypeInvalidShareRequest(operatorID)
+		err = verifiers.Verify(share)
+		if err != nil {
+			err2 := fr.createAndBroadcastBlameOfInvalidShare(operatorID)
+			if err2 != nil {
+				return err2
+			}
+
+			blameOutput, err2 := fr.processBlame()
+			if err2 != nil {
+				return err2
+			}
+
+			return ErrInvalidShare{BlameOutput: blameOutput}
 		}
 	}
 
@@ -64,9 +85,8 @@ func (fr *FROST) processRound2() error {
 		return err
 	}
 
-	fr.state.currentRound = Round2
 	msg := &ProtocolMsg{
-		Round: Round2,
+		Round: fr.state.currentRound,
 		Round2Message: &Round2Message{
 			Vk:      bCastMessage.VerificationKey.ToAffineCompressed(),
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),

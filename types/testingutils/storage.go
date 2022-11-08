@@ -8,14 +8,16 @@ import (
 )
 
 type testingStorage struct {
-	storage   map[string]*qbft.SignedMessage
-	operators map[types.OperatorID]*dkg.Operator
+	storage     map[string]*qbft.SignedMessage
+	operators   map[types.OperatorID]*dkg.Operator
+	keygenoupts map[string]*dkg.KeyGenOutput
 }
 
 func NewTestingStorage() *testingStorage {
 	ret := &testingStorage{
-		storage:   make(map[string]*qbft.SignedMessage),
-		operators: map[types.OperatorID]*dkg.Operator{},
+		storage:     make(map[string]*qbft.SignedMessage),
+		operators:   make(map[types.OperatorID]*dkg.Operator),
+		keygenoupts: make(map[string]*dkg.KeyGenOutput),
 	}
 
 	for i, s := range Testing13SharesSet().DKGOperators {
@@ -46,4 +48,13 @@ func (s *testingStorage) GetDKGOperator(operatorID types.OperatorID) (bool, *dkg
 		return true, ret, nil
 	}
 	return false, nil, nil
+}
+
+func (s *testingStorage) SaveKeyGenOutput(output *dkg.KeyGenOutput) error {
+	s.keygenoupts[hex.EncodeToString(output.ValidatorPK)] = output
+	return nil
+}
+
+func (s *testingStorage) GetKeyGenOutput(pk types.ValidatorPK) (*dkg.KeyGenOutput, error) {
+	return s.keygenoupts[hex.EncodeToString(pk)], nil
 }

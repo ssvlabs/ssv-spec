@@ -3,6 +3,7 @@ package types
 import (
 	"bytes"
 	"crypto/rsa"
+
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
@@ -33,7 +34,7 @@ var (
 // EncryptionCalls captures all RSA share encryption calls
 type EncryptionCalls interface {
 	// Decrypt given a rsa pubkey and a PKCS1v15 cipher text byte array, returns the decrypted data
-	Decrypt(pk *rsa.PublicKey, cipher []byte) ([]byte, error)
+	Decrypt(pk *rsa.PrivateKey, cipher []byte) ([]byte, error)
 	// Encrypt given a rsa pubkey and data returns an PKCS1v15 encrypted cipher
 	Encrypt(pk *rsa.PublicKey, data []byte) ([]byte, error)
 }

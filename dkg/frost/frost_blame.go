@@ -1,6 +1,8 @@
 package frost
 
 import (
+	"bytes"
+
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/coinbase/kryptology/pkg/sharing"
 	ecies "github.com/ecies/go/v2"
@@ -23,24 +25,19 @@ func (fr *FROST) processBlame() (*dkg.BlameOutput, error) {
 
 		switch protocolMessage.BlameMessage.Type {
 		case InvalidShare:
-			valid, err = fr.processBlameTypeInvalidShare(operatorID, protocolMessage.BlameMessage)
+			valid, _ = fr.processBlameTypeInvalidShare(operatorID, protocolMessage.BlameMessage)
 
 		case InconsistentMessage:
-			valid, err = fr.processBlameTypeInconsistentMessage(operatorID, protocolMessage.BlameMessage)
+			valid, _ = fr.processBlameTypeInconsistentMessage(operatorID, protocolMessage.BlameMessage)
 		}
 
+		serializedSigneMessage, err := msg.Encode()
 		if err != nil {
 			return nil, err
 		}
-
-		blameMessageBytes, err := protocolMessage.BlameMessage.Encode()
-		if err != nil {
-			return nil, err
-		}
-
 		blameOutput := &dkg.BlameOutput{
 			Valid:        valid,
-			BlameMessage: blameMessageBytes,
+			BlameMessage: serializedSigneMessage,
 		}
 		return blameOutput, nil
 	}
@@ -53,10 +50,34 @@ func (fr *FROST) processBlameTypeInvalidShare(operatorID uint32, blameMessage *B
 	if len(blameMessage.BlameData) != 1 {
 		return false, errors.New("invalid blame data")
 	}
+	signedMessage := &dkg.SignedMessage{}
+	if err := signedMessage.Decode(blameMessage.BlameData[0]); err != nil {
+		return false, errors.Wrap(err, "unable to decode BlameData")
+	}
+	if err := fr.validateSignedMessage(signedMessage); err != nil {
+		return false, errors.Wrap(err, "failed to validate signature for blame data")
+	}
+	if signedMessage.Message.Identifier != fr.state.identifier {
+		return false, errors.New("the message doesn't belong to this session")
+	}
 
-	round1Message := &Round1Message{}
-	if err := round1Message.Decode(blameMessage.BlameData[0]); err != nil {
-		return false, err
+	protocolMessage := ProtocolMsg{}
+	if err := protocolMessage.Decode(signedMessage.Message.Data); err != nil {
+		return false, errors.Wrap(err, "unable to decode protocolMessage")
+	}
+	round1Message := protocolMessage.Round1Message
+
+	blamesPrepMessage := fr.state.msgs[Preparation][operatorID]
+	prepProtocolMessage := &ProtocolMsg{}
+	err := prepProtocolMessage.Decode(blamesPrepMessage.Message.Data)
+	if err != nil || prepProtocolMessage.PreparationMessage == nil {
+		return false, errors.New("unable to decode blamer's PreparationMessage")
+	}
+
+	blamerSessionSK := ecies.NewPrivateKeyFromBytes(blameMessage.BlamerSessionSk)
+	blamerSessionPK := blamerSessionSK.PublicKey.Bytes(true)
+	if !bytes.Equal(blamerSessionPK, prepProtocolMessage.PreparationMessage.SessionPk) {
+		return false, errors.New("blame's session pubkey is invalid")
 	}
 
 	verifiers := new(sharing.FeldmanVerifier)
@@ -68,7 +89,6 @@ func (fr *FROST) processBlameTypeInvalidShare(operatorID uint32, blameMessage *B
 		verifiers.Commitments = append(verifiers.Commitments, commitment)
 	}
 
-	blamerSessionSK := ecies.NewPrivateKeyFromBytes(blameMessage.BlamerSessionSk)
 	shareBytes, err := ecies.Decrypt(blamerSessionSK, round1Message.Shares[operatorID])
 	if err != nil {
 		return false, err
@@ -79,14 +99,10 @@ func (fr *FROST) processBlameTypeInvalidShare(operatorID uint32, blameMessage *B
 		Value: shareBytes,
 	}
 
-	if err := verifiers.Verify(share); err != nil {
-		if err.Error() == "not equal" {
-			return false, nil
-		}
-		return false, err
+	if err = verifiers.Verify(share); err == nil {
+		return false, nil
 	}
-
-	return true, nil
+	return true, err
 }
 
 func (fr *FROST) processBlameTypeInconsistentMessage(operatorID uint32, blameMessage *BlameMessage) (bool /*valid*/, error) {
@@ -96,64 +112,103 @@ func (fr *FROST) processBlameTypeInconsistentMessage(operatorID uint32, blameMes
 	}
 
 	var originalMessage, newMessage dkg.SignedMessage
-
 	if err := originalMessage.Decode(blameMessage.BlameData[0]); err != nil {
 		return false, err
 	}
-
 	if err := newMessage.Decode(blameMessage.BlameData[1]); err != nil {
 		return false, err
 	}
 
-	valid := (originalMessage.Validate() == nil) && (newMessage.Validate() == nil)
-	return valid, nil
+	if err := fr.validateSignedMessage(&originalMessage); err != nil {
+		return false, errors.Wrap(err, "failed to validate signature for blame data")
+	}
+
+	if err := fr.validateSignedMessage(&newMessage); err != nil {
+		return false, errors.Wrap(err, "failed to validate signature for blame data")
+	}
+
+	if originalMessage.Message.Identifier != fr.state.identifier {
+		return false, errors.New("the message doesn't belong to this session")
+	}
+
+	if originalMessage.Message.Identifier != newMessage.Message.Identifier {
+		return false, errors.New("the two messages don't belong to same session")
+	}
+
+	if fr.haveSameRoot(&originalMessage, &newMessage) {
+		return false, errors.New("the two messages are consistent")
+	}
+
+	protocolMessage1, protocolMessage2 := &ProtocolMsg{}, &ProtocolMsg{}
+	if err := protocolMessage1.Decode(originalMessage.Message.Data); err != nil {
+		return false, errors.Wrap(err, "failed to decode protocol msg")
+	}
+	if err := protocolMessage2.Decode(newMessage.Message.Data); err != nil {
+		return false, errors.Wrap(err, "failed to decode protocol msg")
+	}
+	if protocolMessage1.Round != protocolMessage2.Round {
+		return false, errors.New("the two messages don't belong the the same round")
+	}
+
+	return true, nil
 }
 
-func (fr *FROST) createBlameTypeInconsistentMessageRequest(originalMessage, newMessage *dkg.SignedMessage) error {
-
-	originalMessageBytes, err := originalMessage.Encode()
+func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) error {
+	fr.state.currentRound = Blame
+	existingMessageBytes, err := existingMessage.Encode()
 	if err != nil {
 		return err
 	}
-
 	newMessageBytes, err := newMessage.Encode()
 	if err != nil {
 		return err
 	}
-
-	blameData := make([][]byte, 0)
-	blameData = append(blameData, originalMessageBytes, newMessageBytes)
-
-	fr.state.currentRound = Blame
 	msg := &ProtocolMsg{
 		Round: Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InconsistentMessage,
 			TargetOperatorID: uint32(newMessage.Signer),
-			BlameData:        blameData,
+			BlameData:        [][]byte{existingMessageBytes, newMessageBytes},
 			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
 		},
 	}
 	return fr.broadcastDKGMessage(msg)
 }
 
-func (fr *FROST) createBlameTypeInvalidShareRequest(operatorID uint32) error {
-
+func (fr *FROST) createAndBroadcastBlameOfInvalidShare(operatorID uint32) error {
+	fr.state.currentRound = Blame
 	round1Bytes, err := fr.state.msgs[Round1][operatorID].Encode()
 	if err != nil {
 		return err
 	}
-	blameData := [][]byte{round1Bytes}
-
-	fr.state.currentRound = Blame
 	msg := &ProtocolMsg{
 		Round: Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InvalidShare,
 			TargetOperatorID: operatorID,
-			BlameData:        blameData,
+			BlameData:        [][]byte{round1Bytes},
 			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
 		},
 	}
 	return fr.broadcastDKGMessage(msg)
+}
+
+func (fr *FROST) haveSameRoot(existingMessage, newMessage *dkg.SignedMessage) bool {
+	r1, err := existingMessage.GetRoot()
+	if err != nil {
+		return false
+	}
+	r2, err := newMessage.GetRoot()
+	if err != nil {
+		return false
+	}
+	return bytes.Equal(r1, r2)
+}
+
+type ErrInvalidShare struct {
+	BlameOutput *dkg.BlameOutput
+}
+
+func (e ErrInvalidShare) Error() string {
+	return "invalid share"
 }
