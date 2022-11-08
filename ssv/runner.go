@@ -94,7 +94,7 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *Sig
 
 func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
 	prevDecided := false
-	if b.HashRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
+	if b.HasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 
@@ -104,7 +104,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	}
 
 	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
-	if !b.HashRunningDuty() {
+	if !b.HasRunningDuty() {
 		return false, nil, err
 	}
 
@@ -180,7 +180,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.Signe
 }
 
 func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
-	if !b.HashRunningDuty() {
+	if !b.HasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
@@ -197,7 +197,7 @@ func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 }
 
 func (b *BaseRunner) validatePostConsensusMsg(msg *SignedPartialSignatureMessage) error {
-	if !b.HashRunningDuty() {
+	if !b.HasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
@@ -230,7 +230,7 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 	return nil
 }
 
-func (b *BaseRunner) HashRunningDuty() bool {
+func (b *BaseRunner) HasRunningDuty() bool {
 	if b.State == nil {
 		return false
 	}
