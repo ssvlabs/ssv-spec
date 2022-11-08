@@ -108,7 +108,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		return false, nil, err
 	}
 
-	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, b.State.RunningInstance.GetHeight(), decidedMsg); !decideCorrectly {
+	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
 		return false, nil, err
 	}
 
@@ -161,13 +161,14 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSign
 	return anyQuorum, roots, nil
 }
 
-func (b *BaseRunner) didDecideCorrectly(prevDecided bool, height qbft.Height, decidedMsg *qbft.SignedMessage) (bool, error) {
-	if decidedMsg == nil {
-		// not decided
+func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.SignedMessage) (bool, error) {
+	decided := decidedMsg != nil
+	decidedRunningInstance := decided && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
+
+	if !decided {
 		return false, nil
 	}
-	// verify we decided the right instance
-	if decidedMsg.Message.Height != height {
+	if !decidedRunningInstance {
 		return false, errors.New("decided wrong instance")
 	}
 	// verify we decided running instance only, if not we do not proceed
