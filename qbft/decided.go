@@ -42,15 +42,17 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		}
 	}
 
-	isFutureDecided := msg.Message.Height > c.Height
-	if isFutureDecided {
-		// add an instance for the decided msg
+	// add an instance for the decided msg if not exist
+	if inst == nil {
 		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Message.Height)
 		i.State.Round = msg.Message.Round
 		i.State.Decided = true
 		i.State.DecidedValue = data.Data
 		c.StoredInstances.addNewInstance(i)
+	}
 
+	isFutureDecided := msg.Message.Height > c.Height
+	if isFutureDecided {
 		// bump height
 		c.Height = msg.Message.Height
 	}
