@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// Quorum  tests a quorum of valid SignedPartialSignature
+// Quorum  tests a quorum of valid SignedPartialSignatures
 func Quorum() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
@@ -23,7 +23,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3), types.PartialContributionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "4b2924b4ebf04ab893cd19739cdca064fbb0b224670fdb7ce6eef4f75e35ebf5",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -37,7 +37,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3), types.PartialSelectionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "4ce7b608727db28f7af80765a8d98d1eced06f5bcc61cd5846b4ac15b1452cca",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -51,7 +51,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3), types.PartialRandaoSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "374c4bd669d107076ef709c60c3e084fe3b27024a2cf1e3dbf59fc33c8dd6fb8",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},

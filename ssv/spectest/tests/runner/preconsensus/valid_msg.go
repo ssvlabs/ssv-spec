@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ValidMessage tests a valid SignedPartialSignature with multi PartialSignatures
+// ValidMessage tests a valid SignedPartialSignatures with multi PartialSignatures
 func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
@@ -21,7 +21,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 			//		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), types.PartialContributionProofSignatureMsgType),
 			//	},
 			//	PostDutyRunnerStateRoot: "3ab9ba2158fe8b2706b63ec95edf26eb556ad44ec509e1040000ab37fd89da72",
-			//	OutputMessages: []*ssv.SignedPartialSignature{
+			//	OutputMessages: []*ssv.SignedPartialSignatures{
 			//		testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 			//	},
 			//},
@@ -33,7 +33,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 			//		testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), types.PartialSelectionProofSignatureMsgType),
 			//	},
 			//	PostDutyRunnerStateRoot: "212c6c21628e2d13a407183badbee87e06c423b981c37a22263ce94d7100f370",
-			//	OutputMessages: []*ssv.SignedPartialSignature{
+			//	OutputMessages: []*ssv.SignedPartialSignatures{
 			//		testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 			//	},
 			//},
@@ -45,7 +45,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 			//		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1), types.PartialRandaoSignatureMsgType),
 			//	},
 			//	PostDutyRunnerStateRoot: "955508489a4ca9abad520e72aa4a1f27c2f8631979b2f5b3a926572543995bb5",
-			//	OutputMessages: []*ssv.SignedPartialSignature{
+			//	OutputMessages: []*ssv.SignedPartialSignatures{
 			//		testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 			//	},
 			//},
@@ -57,7 +57,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAttester(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1), types.PartialContributionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "d2ff2fad2e2b99af0f3e1f0378384ea9e89815d4dc4ca93f8754583a4a019b07",
-				OutputMessages:          []*ssv.SignedPartialSignature{},
+				OutputMessages:          []*ssv.SignedPartialSignatures{},
 				ExpectedError:           "no pre consensus sigs required for attester role",
 			},
 			//{
@@ -68,7 +68,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 			//		testingutils.SSVMsgSyncCommittee(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1), types.PartialContributionProofSignatureMsgType),
 			//	},
 			//	PostDutyRunnerStateRoot: "971bbb10725791ebfd0a06f9817797feac2b81b17babb538b3c3f34421341cda",
-			//	OutputMessages:          []*ssv.SignedPartialSignature{},
+			//	OutputMessages:          []*ssv.SignedPartialSignatures{},
 			//	ExpectedError:           "no pre consensus sigs required for sync committee role",
 			//},
 		},

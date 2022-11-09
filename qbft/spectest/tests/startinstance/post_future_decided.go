@@ -22,11 +22,11 @@ func PreviousDecided() *tests.ControllerSpecTest {
 				InputMessages:      testingutils.DecidingMsgsForHeight(inputData, identifier, qbft.FirstHeight, testingutils.Testing4SharesSet()),
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "df9b2787df60e1e15b0c840410592d27803d44cd5fb086cfa8fc23181cea6293",
+				ControllerPostRoot: "e7823a17225ee7f1163e71b0fc0b67df888cfe287f5ec7a6454ab105a402a998",
 			},
 			{
 				InputValue:         inputData,
-				ControllerPostRoot: "4fe3611d5d04b8b34ab9dd470e352dd9693c9bd3b340a8b42d0bc608fb4d59bc",
+				ControllerPostRoot: "c484a6a6539781a02ff749fbf5d50a06000d069e151bcd56d6d81359f7217e2c",
 			},
 		},
 	}

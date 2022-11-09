@@ -72,7 +72,7 @@ func AfterProposal() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change after proposal accepted",
 		Pre:           pre,
-		PostRoot:      "9858d5725c6954a9ea2eeb5a206f290f4446f06f32711b6a1cbbd126bf0ee407",
+		PostRoot:      "58845e6d2d47f65cd6c5da7909999f3651e1e98e3eb4ec8b6956f8367c88baac",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

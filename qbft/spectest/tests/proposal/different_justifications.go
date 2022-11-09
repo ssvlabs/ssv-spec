@@ -91,7 +91,7 @@ func DifferentJustifications() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "different proposal round change justification",
 		Pre:           pre,
-		PostRoot:      "45fe62d790a538a01cb3b471013e3fd2adf0261e28fdb36577444b940a278903",
+		PostRoot:      "e6b2da752208c83d34a1b7813c2c66d990ee0e36e2dc33be1d5fdb58b04258b8",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

@@ -78,7 +78,7 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "ab22d38a208351b42d9c090437bae5ff164a0d70fbde5ae5bdf58cef1d34951e",
+				ControllerPostRoot: "f1e11de2125020fcdf4b2881272978525e6a6ff296e6827abcb2cc6354dbf034",
 			},
 		},
 	}

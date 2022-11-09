@@ -14,7 +14,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 
 	// TODO: check errors
 	// nolint
-	decideRunner := func(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData, preMsgs []*ssv.SignedPartialSignature) ssv.Runner {
+	decideRunner := func(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData, preMsgs []*ssv.SignedPartialSignatures) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		for _, msg := range preMsgs {
 			r.ProcessPreConsensus(msg)
@@ -40,7 +40,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SyncCommitteeContributionRunner(ks),
 					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
-					[]*ssv.SignedPartialSignature{
+					[]*ssv.SignedPartialSignatures{
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
@@ -52,7 +52,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "dc06fe49582c438ece971da8aa8107e4ed90ca1000403d43aa64564e4be1e9d2",
 				DontStartDuty:           true,
-				OutputMessages:          []*ssv.SignedPartialSignature{},
+				OutputMessages:          []*ssv.SignedPartialSignatures{},
 			},
 			{
 				Name: "aggregator selection proof",
@@ -60,7 +60,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 					testingutils.AggregatorRunner(ks),
 					testingutils.TestingAggregatorDuty,
 					testingutils.TestAggregatorConsensusData,
-					[]*ssv.SignedPartialSignature{
+					[]*ssv.SignedPartialSignatures{
 						testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 						testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
 						testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
@@ -72,7 +72,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "bb1378ee14f4e8bb55880fe42d41eb849276aa71533b05c777f4783b115f0d3a",
 				DontStartDuty:           true,
-				OutputMessages:          []*ssv.SignedPartialSignature{},
+				OutputMessages:          []*ssv.SignedPartialSignatures{},
 			},
 			{
 				Name: "randao",
@@ -80,7 +80,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 					testingutils.ProposerRunner(ks),
 					testingutils.TestingProposerDuty,
 					testingutils.TestProposerConsensusData,
-					[]*ssv.SignedPartialSignature{
+					[]*ssv.SignedPartialSignatures{
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2),
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3),
@@ -92,7 +92,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "4b7c69ae85975112b30a3cb233319e3102bdef7cd3962d498d90d74b6a50a016",
 				DontStartDuty:           true,
-				OutputMessages:          []*ssv.SignedPartialSignature{},
+				OutputMessages:          []*ssv.SignedPartialSignatures{},
 			},
 		},
 	}

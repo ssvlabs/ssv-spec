@@ -4,25 +4,21 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv"
 )
 
-// EncodingAndRoot tests SignedPartialSignature encoding + root
+// EncodingAndRoot tests SignedPartialSignatures encoding + root
 func EncodingAndRoot() *MsgSpecTest {
-	msg := &ssv.SignedPartialSignature{
+	msg := &ssv.SignedPartialSignatures{
 		Signature: make([]byte, 96),
 		Signer:    11,
-		Message: ssv.PartialSignatures{
-			Messages: []*ssv.PartialSignature{
-				{
-					Slot:             11,
-					PartialSignature: make([]byte, 96),
-					Signer:           12,
-					SigningRoot:      make([]byte, 32),
-				},
-				{
-					Slot:             11,
-					PartialSignature: make([]byte, 96),
-					Signer:           12,
-					SigningRoot:      make([]byte, 32),
-				},
+		PartialSignatures: ssv.PartialSignatures{
+			{
+				Slot:        11,
+				Signature:   make([]byte, 96),
+				SigningRoot: make([]byte, 32),
+			},
+			{
+				Slot:        11,
+				Signature:   make([]byte, 96),
+				SigningRoot: make([]byte, 32),
 			},
 		},
 	}
@@ -32,7 +28,7 @@ func EncodingAndRoot() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "encoding",
-		Messages: []*ssv.SignedPartialSignature{
+		Messages: []*ssv.SignedPartialSignatures{
 			msg,
 		},
 		EncodedMessages: [][]byte{

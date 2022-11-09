@@ -79,7 +79,7 @@ func ValidJustification() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "valid justification",
 		Pre:           pre,
-		PostRoot:      "af6d26caa567237f3e19eb287fb79f191a3bec62b23716e8f7c061931b36df94",
+		PostRoot:      "f6597801c94c505aa206be0887cdbb15020013aa6ff96be4795c6d3fb79b7ecb",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

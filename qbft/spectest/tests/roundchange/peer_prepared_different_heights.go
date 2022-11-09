@@ -91,7 +91,7 @@ func PeerPreparedDifferentHeights() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change peer prepared different heights",
 		Pre:           pre,
-		PostRoot:      "d65a5a25a3c1488d34b8f3f99d1f4c8ddb7ffb1b17405dbdc187dfc5b174856d",
+		PostRoot:      "2e1cd4046b625b663849abe26b3499eff9b84402c92730367d3853b0d69adad7",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

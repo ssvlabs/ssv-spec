@@ -145,7 +145,7 @@ func LateRoundChangePastRound() *tests.ControllerSpecTest {
 				DecidedCnt:         1,
 				SavedDecided:       multiSignMsg,
 				BroadcastedDecided: multiSignMsg,
-				ControllerPostRoot: "fbb6658bc8105e344107ee2a24675781a40324be52a235291cb6fb98073a5908",
+				ControllerPostRoot: "a30db45fd63d3943f4ba01d3e6ba9823048274200681b5fce35d095e35ca795a",
 			},
 		},
 		//ExpectedError: "could not process msg: proposal invalid: proposal is not valid with current state",

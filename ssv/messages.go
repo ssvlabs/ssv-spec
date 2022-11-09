@@ -8,9 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-type PartialSignatures struct {
-	Messages []*PartialSignature `ssz-max:"13"`
-}
+type PartialSignatures []*PartialSignature
 
 // Encode returns a msg encoded bytes or error
 func (pss *PartialSignatures) Encode() ([]byte, error) {
@@ -33,10 +31,10 @@ func (pss PartialSignatures) GetRoot() ([]byte, error) {
 }
 
 func (pss PartialSignatures) Validate() error {
-	if len(pss.Messages) == 0 {
+	if len(pss) == 0 {
 		return errors.New("no PartialSignatures messages")
 	}
-	for _, m := range pss.Messages {
+	for _, m := range pss {
 		if err := m.Validate(); err != nil {
 			return errors.Wrap(err, "message invalid")
 		}
@@ -50,24 +48,23 @@ type PartialSignatureMetaData struct {
 
 // PartialSignature is a msg for partial Beacon chain related signatures (like partial attestation, block, randao sigs)
 type PartialSignature struct {
-	Slot             phase0.Slot     // Slot represents the slot for which the partial BN signature is for
-	PartialSignature types.Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty
-	SigningRoot      []byte          `ssz-size:"32"` // the root signed in PartialSignature
-	Signer           types.OperatorID
+	Slot        phase0.Slot     // Slot represents the slot for which the partial BN signature is for
+	Signature   types.Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty
+	SigningRoot []byte          `ssz-size:"32"` // the root signed in PartialSignature
 }
 
 // Encode returns a msg encoded bytes or error
-func (ps *PartialSignature) Encode() ([]byte, error) {
-	return json.Marshal(ps)
+func (p *PartialSignature) Encode() ([]byte, error) {
+	return json.Marshal(p)
 }
 
 // Decode returns error if decoding failed
-func (ps *PartialSignature) Decode(data []byte) error {
-	return json.Unmarshal(data, ps)
+func (p *PartialSignature) Decode(data []byte) error {
+	return json.Unmarshal(data, p)
 }
 
-func (ps *PartialSignature) GetRoot() ([]byte, error) {
-	marshaledRoot, err := ps.Encode()
+func (p *PartialSignature) GetRoot() ([]byte, error) {
+	marshaledRoot, err := p.Encode()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode PartialSignature")
 	}
@@ -75,56 +72,52 @@ func (ps *PartialSignature) GetRoot() ([]byte, error) {
 	return ret[:], nil
 }
 
-func (ps *PartialSignature) Validate() error {
-	if len(ps.PartialSignature) != 96 {
+func (p *PartialSignature) Validate() error {
+	if len(p.Signature) != 96 {
 		return errors.New("PartialSignature sig invalid")
 	}
-	if len(ps.SigningRoot) != 32 {
+	if len(p.SigningRoot) != 32 {
 		return errors.New("SigningRoot invalid")
-	}
-	if ps.Signer == 0 {
-		return errors.New("signer ID 0 not allowed")
 	}
 	return nil
 }
 
-// SignedPartialSignature TODO<olegshmuelov>: generate ssz
-// SignedPartialSignature is an operator's signature over PartialSignature
-type SignedPartialSignature struct {
-	Message   PartialSignatures
-	Signature types.Signature `ssz-size:"96"`
-	Signer    types.OperatorID
+// SignedPartialSignatures is an operator's signature over PartialSignature
+type SignedPartialSignatures struct {
+	PartialSignatures PartialSignatures `ssz-max:"13"`
+	Signature         types.Signature   `ssz-size:"96"`
+	Signer            types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
-func (sps *SignedPartialSignature) Encode() ([]byte, error) {
-	return json.Marshal(sps)
+func (s *SignedPartialSignatures) Encode() ([]byte, error) {
+	return s.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
-func (sps *SignedPartialSignature) Decode(data []byte) error {
-	return json.Unmarshal(data, &sps)
+func (s *SignedPartialSignatures) Decode(data []byte) error {
+	return s.UnmarshalSSZ(data)
 }
 
-func (sps *SignedPartialSignature) GetSignature() types.Signature {
-	return sps.Signature
+func (s *SignedPartialSignatures) GetSignature() types.Signature {
+	return s.Signature
 }
 
-func (sps *SignedPartialSignature) GetSigners() []types.OperatorID {
-	return []types.OperatorID{sps.Signer}
+func (s *SignedPartialSignatures) GetSigners() []types.OperatorID {
+	return []types.OperatorID{s.Signer}
 }
 
-func (sps *SignedPartialSignature) GetRoot() ([]byte, error) {
-	return sps.Message.GetRoot()
+func (s *SignedPartialSignatures) GetRoot() ([]byte, error) {
+	return s.PartialSignatures.GetRoot()
 }
 
-func (sps *SignedPartialSignature) Aggregate(signedMsg types.MessageSignature) error {
-	//if !bytes.Equal(sps.GetRoot(), signedMsg.GetRoot()) {
+func (s *SignedPartialSignatures) Aggregate(signedMsg types.MessageSignature) error {
+	//if !bytes.Equal(s.GetRoot(), signedMsg.GetRoot()) {
 	//	return errors.New("can't aggregate msgs with different roots")
 	//}
 	//
 	//// verify no matching Signer
-	//for _, signerID := range sps.Signer {
+	//for _, signerID := range s.Signer {
 	//	for _, toMatchID := range signedMsg.GetSigners() {
 	//		if signerID == toMatchID {
 	//			return errors.New("Signer IDs partially/ fully match")
@@ -132,10 +125,10 @@ func (sps *SignedPartialSignature) Aggregate(signedMsg types.MessageSignature) e
 	//	}
 	//}
 	//
-	//allSigners := append(sps.Signer, signedMsg.GetSigners()...)
+	//allSigners := append(s.Signer, signedMsg.GetSigners()...)
 	//
 	//// verify and aggregate
-	//sig1, err := blsSig(sps.Signature)
+	//sig1, err := blsSig(s.Signature)
 	//if err != nil {
 	//	return errors.Wrap(err, "could not parse PartialSignature")
 	//}
@@ -146,21 +139,21 @@ func (sps *SignedPartialSignature) Aggregate(signedMsg types.MessageSignature) e
 	//}
 	//
 	//sig1.Add(sig2)
-	//sps.Signature = sig1.Serialize()
-	//sps.Signer = allSigners
+	//s.Signature = sig1.Serialize()
+	//s.Signer = allSigners
 	//return nil
 	panic("implement")
 }
 
 // MatchedSigners returns true if the provided Signer ids are equal to GetSignerIds() without order significance
-func (sps *SignedPartialSignature) MatchedSigners(ids []types.OperatorID) bool {
+func (s *SignedPartialSignatures) MatchedSigners(ids []types.OperatorID) bool {
 	toMatchCnt := make(map[types.OperatorID]int)
 	for _, id := range ids {
 		toMatchCnt[id]++
 	}
 
 	foundCnt := make(map[types.OperatorID]int)
-	for _, id := range sps.GetSigners() {
+	for _, id := range s.GetSigners() {
 		foundCnt[id]++
 	}
 
@@ -181,12 +174,12 @@ func (sps *SignedPartialSignature) MatchedSigners(ids []types.OperatorID) bool {
 //	return ret, nil
 //}
 
-func (sps *SignedPartialSignature) Validate() error {
-	if len(sps.Signature) != 96 {
-		return errors.New("SignedPartialSignature sig invalid")
+func (s *SignedPartialSignatures) Validate() error {
+	if len(s.Signature) != 96 {
+		return errors.New("SignedPartialSignatures sig invalid")
 	}
-	if sps.Signer == 0 {
+	if s.Signer == 0 {
 		return errors.New("signer ID 0 not allowed")
 	}
-	return sps.Message.Validate()
+	return s.PartialSignatures.Validate()
 }

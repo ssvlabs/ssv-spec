@@ -84,7 +84,7 @@ func SevenOperators() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow seven operators",
 		Pre:           pre,
-		PostRoot:      "31b31a60481c849f72af416d194341e0a1e3c0c810f260fad54aefffac2bc24d",
+		PostRoot:      "8a8971406a4814b26713fcaff28d26128371715490d23cb6569cd48c81f514d9",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

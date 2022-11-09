@@ -11,11 +11,11 @@ func PartialSigTooShort() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Message.Messages[0].PartialSignature = make([]byte, 95)
+	msg.PartialSignatures[0].Signature = make([]byte, 95)
 
 	return &MsgSpecTest{
 		Name: "partial sig too short",
-		Messages: []*ssv.SignedPartialSignature{
+		Messages: []*ssv.SignedPartialSignatures{
 			msg,
 		},
 		ExpectedError: "message invalid: PartialSignature sig invalid",

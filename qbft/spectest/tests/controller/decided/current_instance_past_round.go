@@ -136,7 +136,7 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "34d9dc1e4044a4cb5430954843240b978d3730519825733909202434af72fcd8",
+				ControllerPostRoot: "bdca27c3201a2eabef1248105f1949dd2874c06d540b9371faf96a60617e0f09",
 			},
 		},
 	}

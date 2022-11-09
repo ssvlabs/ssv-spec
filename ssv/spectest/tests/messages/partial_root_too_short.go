@@ -11,11 +11,11 @@ func PartialRootTooShort() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Message.Messages[0].SigningRoot = make([]byte, 31)
+	msg.PartialSignatures[0].SigningRoot = make([]byte, 31)
 
 	return &MsgSpecTest{
 		Name: "partial root too short",
-		Messages: []*ssv.SignedPartialSignature{
+		Messages: []*ssv.SignedPartialSignatures{
 			msg,
 		},
 		ExpectedError: "message invalid: SigningRoot invalid",

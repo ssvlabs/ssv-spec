@@ -46,7 +46,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "a7749c274f3b3add80d9e6444c3c5cd720f458e9ce41ef36789dd4ca1c79eac5",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				DontStartDuty: true,
@@ -67,7 +67,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "90a493699ebbd1558cd6ba8ea5e8045a7ab980c7e4720889310956792539ee50",
-				OutputMessages:          []*ssv.SignedPartialSignature{},
+				OutputMessages:          []*ssv.SignedPartialSignatures{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
 			},
@@ -86,7 +86,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "69400f37b9724938c62791cfff2411cfc5722df878630a803827491b6ec74b25",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				DontStartDuty: true,
@@ -107,7 +107,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "265d356d8f3fc6c53ca975b99d6137047ba9b04a672b8ca67f5878edc84c466e",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
 				DontStartDuty: true,
@@ -128,7 +128,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 						}), nil, types.ConsensusCommitMsgType),
 				},
 				PostDutyRunnerStateRoot: "2cab1cbf84b00697333c01973c5ee7cce950ec34762d0811af6cad3f6b87512b",
-				OutputMessages:          []*ssv.SignedPartialSignature{},
+				OutputMessages:          []*ssv.SignedPartialSignatures{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
 			},

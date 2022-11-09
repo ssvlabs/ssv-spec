@@ -53,12 +53,12 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "late proposal past instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "df9b2787df60e1e15b0c840410592d27803d44cd5fb086cfa8fc23181cea6293"),
-			instanceData(1, "34d48526093a91455d5897e7787a80ffa46eec1f0d6bf54792a6163abf08eb0d"),
-			instanceData(2, "c048c170bef823691ddfd12bbaea54339b26a12c0e9b92d25434f10a564c9467"),
-			instanceData(3, "aa247f887c91f4442d83d545d383559c9c026e67e24509cab02fe60ec56470f9"),
-			instanceData(4, "f1cdaff9b73dab929b270fcc592f71bb5f9f12c770ca89d95883f905a1388dd1"),
-			instanceData(5, "481a19848af8107171f1b02b22c6363c54962c2b311d1e89c882a002b7296a02"),
+			instanceData(qbft.FirstHeight, "e7823a17225ee7f1163e71b0fc0b67df888cfe287f5ec7a6454ab105a402a998"),
+			instanceData(1, "d3d2790b0746a32868d7ff7df0d115f84a0a33a81dde8be94efb482d0aa3c8a5"),
+			instanceData(2, "dabcf05fba021ec68a0cb9f53b01b7a359c61bb24e78527eafe229e5c675b5b0"),
+			instanceData(3, "542377f4dfe2349420d28ec87c653793a8844c5f63647b9388de34028f0c9248"),
+			instanceData(4, "ea6870244b29a8d47a03cf859983582cf6b2855bfddc01b6801cfe104d576610"),
+			instanceData(5, "d97b5ceafe67f4ebc2d708f0ba14ccc4220be4ae4802a75bd3d99e8821c3609f"),
 			{
 				InputValue: inputData,
 				InputMessages: []*types.Message{
@@ -67,7 +67,7 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 						Data: signMsgEncoded,
 					},
 				},
-				ControllerPostRoot: "7b127ead4b8c7150bf0742f3fea74c100821395cd333717fbe73800ebe76fecd",
+				ControllerPostRoot: "ab68a3c9362c5890a058253b0146febae605cb48670705e7c3d2cd8f2ffd2341",
 			},
 		},
 		ExpectedError: "could not process msg: proposal invalid: proposal is not valid with current state",

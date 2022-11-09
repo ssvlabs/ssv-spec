@@ -21,7 +21,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 5), types.PartialSelectionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "f7d21e5fafab57daf6fe0a0fb9efc50fea94e40c87394aa58ab5b9c3569e4042",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: could not verify Beacon partial Signature: unknown signer",
@@ -34,7 +34,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 5), types.PartialSelectionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "da498b2ca86a535b3b879ddcef5d9de924162c478694129a6a21857641e6031a",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: could not verify Beacon partial Signature: unknown signer",
@@ -47,7 +47,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 5), types.PartialRandaoSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "583f8c730925b043befceb4e871a9cf6c28b3f0e5c1b173ca0d869e958e8445f",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: could not verify Beacon partial Signature: unknown signer",

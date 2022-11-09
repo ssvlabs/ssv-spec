@@ -78,7 +78,7 @@ func CurrentInstance() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "1b3f4e8a9fe1c371104c824011ae528efda71c6489d19dbdd8ffa6928e3d43e1",
+				ControllerPostRoot: "2bb189a761723e1abaa9142b9933f2a35f49991f5110a54fad20f97b3a0bb9be",
 			},
 		},
 	}

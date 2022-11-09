@@ -47,7 +47,7 @@ func LateDecided() *tests.ControllerSpecTest {
 				BroadcastedDecided: multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "f8a7bf2ad195b8945ba74a38739a8d37fe0d88c1d96cda2a30f4a7ade2913391",
+				ControllerPostRoot: "e7823a17225ee7f1163e71b0fc0b67df888cfe287f5ec7a6454ab105a402a998",
 			},
 		},
 	}

@@ -37,12 +37,12 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "cf79aafb1c5b30c9c737026d3263934ee31da72db9b68bedc21c5e0f7def69b0",
+				ControllerPostRoot: "0c2d7c8f87808116e21dd29fefea6180ebb5897724a5eb3a91f69d5abb1d88c2",
 			},
 			{
 				InputValue:         inputData,
 				DecidedCnt:         0,
-				ControllerPostRoot: "46db3bc4e007bc7e59b0cb4b3d21c0efa972e0bea50c581e66a4ec37ef85aeeb",
+				ControllerPostRoot: "d35ea91a1b3a2d151a585bd371fcb8d09483bddf0aeab5c8e59334aed31dc653",
 			},
 		},
 	}

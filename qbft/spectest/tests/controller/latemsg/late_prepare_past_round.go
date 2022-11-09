@@ -141,7 +141,7 @@ func LatePreparePastRound() *tests.ControllerSpecTest {
 				DecidedCnt:         1,
 				SavedDecided:       multiSignMsg,
 				BroadcastedDecided: multiSignMsg,
-				ControllerPostRoot: "b8d86eb07d76f6e786b330b0b79724ef04389443fc85448f484b0bd150fc3e46",
+				ControllerPostRoot: "5dd2737b7c3ac714cee95bdfec7a6071b5699ba702adf09d0ec30853f0ba8113",
 			},
 		},
 		ExpectedError: "could not process msg: invalid prepare msg: msg round wrong",

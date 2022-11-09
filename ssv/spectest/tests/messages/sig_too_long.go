@@ -15,9 +15,9 @@ func SigTooLong() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "sig too long",
-		Messages: []*ssv.SignedPartialSignature{
+		Messages: []*ssv.SignedPartialSignatures{
 			msg,
 		},
-		ExpectedError: "SignedPartialSignature sig invalid",
+		ExpectedError: "SignedPartialSignatures sig invalid",
 	}
 }

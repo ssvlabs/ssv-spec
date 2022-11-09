@@ -12,6 +12,6 @@ func CreateCommit() *tests.CreateMsgSpecTest {
 		Name:         "create commit",
 		Value:        &qbft.Data{Root: [32]byte{1, 2, 3, 4}, Source: []byte{1, 2, 3, 4}},
 		Round:        10,
-		ExpectedRoot: "0102030400000000000000000000000000000000000000000000000000000000",
+		ExpectedRoot: "4a58b7937892cfb0821c34e9fac161c982f3358c0dd4ff6b0d11cb9a455913cd",
 	}
 }

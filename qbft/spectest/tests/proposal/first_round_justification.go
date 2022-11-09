@@ -22,7 +22,7 @@ func FirstRoundJustification() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:     "proposal first round justification",
 		Pre:      pre,
-		PostRoot: "e57ae5a5c12ad1d40400651f961fd6b42551fe51e2827b895c2fdb157e8e3674",
+		PostRoot: "db4cf43d2ec3dd26f888c814631054622fef462adfc414c1e342d3d4770ba777",
 		InputMessages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusProposeMsgType),

@@ -52,7 +52,7 @@ func (r *AggregatorRunner) HasRunningDuty() bool {
 	return r.BaseRunner.HashRunningDuty()
 }
 
-func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature) error {
+func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatures) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing selection proof message")
@@ -109,8 +109,8 @@ func (r *AggregatorRunner) ProcessConsensus(msg *types.Message) error {
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
-	postConsensusMsg := &PartialSignatures{
-		Messages: []*PartialSignature{partialMsg},
+	postConsensusMsg := PartialSignatures{
+		partialMsg,
 	}
 
 	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
@@ -136,7 +136,7 @@ func (r *AggregatorRunner) ProcessConsensus(msg *types.Message) error {
 	return nil
 }
 
-func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignature) error {
+func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatures) error {
 	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -183,7 +183,7 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 		return errors.Wrap(err, "could not sign randao")
 	}
 	msgs := PartialSignatures{
-		Messages: []*PartialSignature{msg},
+		msg,
 	}
 
 	// sign msg
@@ -191,10 +191,10 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "could not sign PartialSignature for selection proof")
 	}
-	signedPartialMsg := &SignedPartialSignature{
-		Message:   msgs,
-		Signature: signature,
-		Signer:    r.GetShare().OperatorID,
+	signedPartialMsg := &SignedPartialSignatures{
+		PartialSignatures: msgs,
+		Signature:         signature,
+		Signer:            r.GetShare().OperatorID,
 	}
 
 	// broadcast

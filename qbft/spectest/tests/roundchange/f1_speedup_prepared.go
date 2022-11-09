@@ -58,7 +58,7 @@ func F1SpeedupPrevPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up prev prepared",
 		Pre:           pre,
-		PostRoot:      "70b59be392775a58b170aef44b6a7c19f937ae5a9c94c2d21b8ec3ef0b17d338",
+		PostRoot:      "ac37f18206f626b409788b8f0a597b888bb760d9ce3b025bf574cc5eca0483ee",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

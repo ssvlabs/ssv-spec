@@ -74,7 +74,7 @@ func QuorumOrder1() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum order 1",
 		Pre:           pre,
-		PostRoot:      "3c795c1a6908982a3e1ec32ebdaa25433bd1571592deaa65b8dd48e7786771ab",
+		PostRoot:      "a51cf1d0cb4cd7e8c4ec378c66b396fc393aae9b89ce6533cec187108130a28b",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// DuplicateMsgDifferentRoots tests duplicate SignedPartialSignature (from same signer) but with different roots
+// DuplicateMsgDifferentRoots tests duplicate SignedPartialSignatures (from same signer) but with different roots
 func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
@@ -22,7 +22,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusCustomSlotContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, testingutils.TestingDutySlot+1), types.PartialContributionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "3ab9ba2158fe8b2706b63ec95edf26eb556ad44ec509e1040000ab37fd89da72",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: wrong pre consensus signing root",
@@ -36,7 +36,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusCustomSlotSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, testingutils.TestingDutySlot+1), types.PartialSelectionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "212c6c21628e2d13a407183badbee87e06c423b981c37a22263ce94d7100f370",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: wrong pre consensus signing root",
@@ -50,7 +50,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongSlotMsg(ks.Shares[1], 1), types.PartialRandaoSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "955508489a4ca9abad520e72aa4a1f27c2f8631979b2f5b3a926572543995bb5",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: wrong slot",

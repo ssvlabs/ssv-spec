@@ -43,6 +43,10 @@ var AllTests = []SpecTest{
 	synccommitteeaggregator.NoneAggregatorQuorum(),
 	synccommitteeaggregator.AllAggregatorQuorum(),
 
+	// TODO<olegshmuelov>: PartialSignature Signer related
+	//preconsensus.UnknownBeaconSigner(),
+	//preconsensus.InvalidBeaconSignature(),
+
 	preconsensus.NoRunningDuty(),
 	preconsensus.WrongExpectedRootsCount(),
 	preconsensus.UnorderedExpectedRoots(),
@@ -62,9 +66,7 @@ var AllTests = []SpecTest{
 	preconsensus.ValidMessage7Operators(),
 	preconsensus.ValidMessage10Operators(),
 	preconsensus.ValidMessage13Operators(),
-	preconsensus.UnknownBeaconSigner(),
 	preconsensus.UnknownSigner(),
-	preconsensus.InvalidBeaconSignature(),
 	preconsensus.InvalidMessageSignature(),
 
 	messages.EncodingAndRoot(),

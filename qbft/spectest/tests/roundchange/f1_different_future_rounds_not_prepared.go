@@ -36,7 +36,7 @@ func F1DifferentFutureRoundsNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change f+1 not prepared",
 		Pre:           pre,
-		PostRoot:      "75ba647b7b3e65ef20443b0a866441fe47b92d6f4ada7bb30acee79367f947db",
+		PostRoot:      "52eb824cd1d22735c6aa4c22e942450664c2befde5d2150d79eab890dba96b22",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

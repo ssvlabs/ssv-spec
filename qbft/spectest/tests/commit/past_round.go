@@ -31,7 +31,7 @@ func PastRound() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit past round",
 		Pre:           pre,
-		PostRoot:      "89abdb02400e7e6fd6cdd9f68696756f89741e52b8720e568034344677fdddf9",
+		PostRoot:      "224c681028b6e2896d0141ea18bba6aaf2c6a6679f26e675e7083d27b95b426a",
 		InputMessages: msgs,
 		ExpectedError: "commit msg invalid: commit round is wrong",
 	}

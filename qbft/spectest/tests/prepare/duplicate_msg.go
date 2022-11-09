@@ -35,7 +35,7 @@ func DuplicateMsg() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate prepare message",
 		Pre:           pre,
-		PostRoot:      "40abca724b7ed1bd24cc3c4e526685341569cdef2013364682cca2da69401523",
+		PostRoot:      "ce8fa9c77e6b9eef95202819d9cc70eeb07e73b667add8b0631bbacc8922c7c5",
 		InputMessages: msgs,
 	}
 }

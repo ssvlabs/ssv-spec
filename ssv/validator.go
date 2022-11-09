@@ -68,13 +68,13 @@ func (v *Validator) ProcessMessage(msg *types.Message) error {
 		types.PartialRandaoSignatureMsgType,
 		types.PartialContributionProofSignatureMsgType,
 		types.PartialSelectionProofSignatureMsgType:
-		signedMsg := &SignedPartialSignature{}
+		signedMsg := &SignedPartialSignatures{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 		return dutyRunner.ProcessPreConsensus(signedMsg)
 	case types.PartialPostConsensusSignatureMsgType:
-		signedMsg := &SignedPartialSignature{}
+		signedMsg := &SignedPartialSignatures{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
@@ -103,7 +103,7 @@ func (v *Validator) ProcessMessage(msg *types.Message) error {
 		}
 		return dutyRunner.ProcessConsensus(signedMsg)
 	case types.SSVPartialSignatureMsgType:
-		signedMsg := &SignedPartialSignature{}
+		signedMsg := &SignedPartialSignatures{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}

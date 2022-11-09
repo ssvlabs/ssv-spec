@@ -16,7 +16,7 @@ type MsgProcessingSpecTest struct {
 	Messages                []*types.Message
 	PostDutyRunnerStateRoot string
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
-	OutputMessages []*ssv.SignedPartialSignature
+	OutputMessages []*ssv.SignedPartialSignatures
 	DontStartDuty  bool // if set to true will not start a duty for the runner
 	ExpectedError  string
 }
@@ -60,14 +60,14 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 				continue
 			}
 
-			msg1 := &ssv.SignedPartialSignature{}
+			msg1 := &ssv.SignedPartialSignatures{}
 			require.NoError(t, msg1.Decode(msg.Data))
 			msg2 := test.OutputMessages[index]
-			require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))
+			require.Len(t, msg1.PartialSignatures, len(msg2.PartialSignatures))
 
 			// messages are not guaranteed to be in order so we map them and then test all roots to be equal
 			roots := make(map[string]string)
-			for i, partialSigMsg2 := range msg2.Message.Messages {
+			for i, partialSigMsg2 := range msg2.PartialSignatures {
 				r2, err := partialSigMsg2.GetRoot()
 				require.NoError(t, err)
 				if _, found := roots[hex.EncodeToString(r2)]; !found {
@@ -76,7 +76,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 					roots[hex.EncodeToString(r2)] = hex.EncodeToString(r2)
 				}
 
-				partialSigMsg1 := msg1.Message.Messages[i]
+				partialSigMsg1 := msg1.PartialSignatures[i]
 				r1, err := partialSigMsg1.GetRoot()
 				require.NoError(t, err)
 

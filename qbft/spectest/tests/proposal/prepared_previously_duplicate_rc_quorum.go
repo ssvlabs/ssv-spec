@@ -81,7 +81,7 @@ func PreparedPreviouslyDuplicateRCQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate rc msg justification (prepared) quorum",
 		Pre:           pre,
-		PostRoot:      "935f34f72b0362e7e7b73b02061d6d3a9c591e3542cf4e2a75af09003646edaa",
+		PostRoot:      "7aa8d34ba5770a5824ed9d14629862eadadbe6e229a413967b6527eaaf23fe54",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

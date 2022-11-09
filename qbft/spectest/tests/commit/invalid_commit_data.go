@@ -30,7 +30,7 @@ func InvalidCommitData() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "invalid commit data",
 		Pre:           pre,
-		PostRoot:      "b19c1eb98711766bb8b1e2857cafc8b83e9584c7fd8b9a3a81fb6947df1497f6",
+		PostRoot:      "22289175055af7c79922212f7d3a0345f28c300dcd45297639f207d0d09f7840",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: message input data is invalid",
 	}

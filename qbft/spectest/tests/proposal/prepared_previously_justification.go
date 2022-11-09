@@ -115,7 +115,7 @@ func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "previously prepared proposal",
 		Pre:           pre,
-		PostRoot:      "29d2ee7f47b0555e7f58262d4b51d2fddca42caa248968ed604d6004319b08ff",
+		PostRoot:      "2949f309dc07bc54627ec1cec2dd4a0fbf870729af9f6ce7cf10831b24888355",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

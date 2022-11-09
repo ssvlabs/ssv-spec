@@ -28,7 +28,7 @@ func SingleConsensusMsg() *tests.ControllerSpecTest {
 						ID:   types.PopulateMsgType(identifier, types.ConsensusProposeMsgType),
 						Data: signMsgEncoded,
 					}},
-				ControllerPostRoot: "11463d40cb14659051bd0d4d9ed5aafd74ca37eff460ae74b6012362923a6ae9",
+				ControllerPostRoot: "1fbf6ee9e42d13835bd62772e1fb55438ccec20d206ff62522a026090f7f195e",
 			},
 		},
 	}

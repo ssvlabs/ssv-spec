@@ -47,7 +47,7 @@ func LateRoundChange() *tests.ControllerSpecTest {
 				DecidedCnt:         1,
 				SavedDecided:       multiSignMsg,
 				BroadcastedDecided: multiSignMsg,
-				ControllerPostRoot: "7561467bb370f89c64c8cb62107d569f0bfb9c25238920e2f4cab7e7b9728c62",
+				ControllerPostRoot: "e43394b69755648f5e78633446cde6adfb92f9bbe01b0115dbd1c7b515ec5010",
 			},
 		},
 	}

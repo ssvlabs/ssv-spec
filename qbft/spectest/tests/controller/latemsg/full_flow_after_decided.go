@@ -104,7 +104,7 @@ func FullFlowAfterDecided() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "15fc26f1ddb1ee3e56b2ea9f27c5d3740ace5c58b1e90340d1d38aafb46b1f58",
+				ControllerPostRoot: "c88ff9423fa1cfec3777daa3770e1e14baec4aa1ca0f6b40b4b00eb8277e5cf9",
 			},
 		},
 	}

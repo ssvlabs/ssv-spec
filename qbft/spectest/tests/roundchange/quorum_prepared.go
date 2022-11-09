@@ -76,7 +76,7 @@ func QuorumPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change prepared",
 		Pre:           pre,
-		PostRoot:      "fc31834e2b6b5ffe23ab33d723a7b060d4bca4f4fd2b946fd40e108b44682b67",
+		PostRoot:      "b7692ea90304594ee0300dbc2a49420ba1246dd26596a00b469888588eae28e8",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

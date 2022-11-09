@@ -111,7 +111,7 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change happy flow",
 		Pre:           pre,
-		PostRoot:      "ea7943b99324f66e94e82a287aaa449f72850671b1fef51cb480bb81a62ec1d8",
+		PostRoot:      "8aac60fc38ac252fbf1769f53fd15a45b8a2accdfea757a1c72b5a694180c44f",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

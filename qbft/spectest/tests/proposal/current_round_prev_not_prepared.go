@@ -50,7 +50,7 @@ func CurrentRoundPrevNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal happy flow round > 1 (prev not prepared)",
 		Pre:           pre,
-		PostRoot:      "55c74c403074a75e4e4d7542d48ba9eeccd1b161d37fb04f664f2bb8316012d6",
+		PostRoot:      "41afd498ca82c22563a7a9726a22548ea7d991b25c69bbfbcedaec92022169c5",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

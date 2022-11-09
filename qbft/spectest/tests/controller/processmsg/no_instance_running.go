@@ -48,7 +48,7 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 				SavedDecided:       multiSignMsg,
 				DecidedVal:         inputData.Source,
 				DecidedCnt:         1,
-				ControllerPostRoot: "939a006c920f40b76e294f78144be0355525078f8f16651469c6d6881267b839",
+				ControllerPostRoot: "ff34146ccaa2f53db141ef759d3aed2953045c2d38e159057c22446e4c11dbe4",
 			},
 		},
 		ExpectedError: "instance not found",

@@ -19,15 +19,15 @@ func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
 	}
 }
 
-func (ps *PartialSigContainer) AddSignature(sigMsg *PartialSignature) error {
+func (ps *PartialSigContainer) AddSignature(sigMsg *PartialSignature, signer types.OperatorID) error {
 	if ps.Signatures[rootHex(sigMsg.SigningRoot)] == nil {
 		ps.Signatures[rootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID][]byte)
 	}
 	m := ps.Signatures[rootHex(sigMsg.SigningRoot)]
 
-	if m[sigMsg.Signer] == nil {
-		m[sigMsg.Signer] = make([]byte, 96)
-		copy(m[sigMsg.Signer], sigMsg.PartialSignature)
+	if m[signer] == nil {
+		m[signer] = make([]byte, 96)
+		copy(m[signer], sigMsg.Signature)
 	}
 	return nil
 }

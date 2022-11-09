@@ -27,6 +27,6 @@ func CreateProposalNotPreviouslyPrepared() *tests.CreateMsgSpecTest {
 				Round:  2,
 			}, &qbft.Data{}),
 		},
-		ExpectedRoot: "0102030400000000000000000000000000000000000000000000000000000000",
+		ExpectedRoot: "4a58b7937892cfb0821c34e9fac161c982f3358c0dd4ff6b0d11cb9a455913cd",
 	}
 }

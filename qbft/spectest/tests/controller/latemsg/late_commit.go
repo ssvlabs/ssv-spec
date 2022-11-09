@@ -46,7 +46,7 @@ func LateCommit() *tests.ControllerSpecTest {
 				DecidedCnt:         1,
 				SavedDecided:       multiSignMsg,
 				BroadcastedDecided: multiSignMsg,
-				ControllerPostRoot: "027191db307fbe8ce5471e934c89a85c896d2d1b6556e70a8d93b0fbe4a37cbd",
+				ControllerPostRoot: "a401de3cbb2ca0f932daa6d109d8856a642787fd5d594283a79dc8c43e78fe3d",
 			},
 		},
 	}

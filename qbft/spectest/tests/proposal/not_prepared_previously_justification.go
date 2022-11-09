@@ -50,7 +50,7 @@ func NotPreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal justification (not prepared)",
 		Pre:           pre,
-		PostRoot:      "36da1dbc06caceaaef99d529a8faecdfd96a26695b29111898ca724fda7817e9",
+		PostRoot:      "ae69550a5df9730045ac8d58d7cf588f2f70a45401b23826e94918401f203bc4",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

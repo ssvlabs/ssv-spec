@@ -43,7 +43,7 @@ func NotProposer() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change justification not proposer",
 		Pre:           pre,
-		PostRoot:      "25675f6c1ffdb51a4539bce513ce71f25093d929971e1a5f5da6a455b8592537",
+		PostRoot:      "dae13454cc39a08065329190044f0aee0cd43bb6e8b98f02ee6bfe57a5e87df2",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

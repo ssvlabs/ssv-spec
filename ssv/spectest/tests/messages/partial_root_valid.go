@@ -14,7 +14,7 @@ func PartialRootValid() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "partial root valid",
-		Messages: []*ssv.SignedPartialSignature{
+		Messages: []*ssv.SignedPartialSignatures{
 			msg,
 		},
 	}

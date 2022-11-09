@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ValidMessage13Operators tests a valid SignedPartialSignature with multi PartialSignatures (13 operators)
+// ValidMessage13Operators tests a valid SignedPartialSignatures with multi PartialSignatures (13 operators)
 func ValidMessage13Operators() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing13SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
@@ -28,7 +28,7 @@ func ValidMessage13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[8], ks.Shares[8], 8, 8), types.PartialContributionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "3a0e022ab21d09bbb974c1ecdf611e10f8cc212419bf41f0ec8dd657984e73c8",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -47,7 +47,7 @@ func ValidMessage13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[8], ks.Shares[8], 8, 8), types.PartialSelectionProofSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "1819ff94736b6b8c95ea26bb02b620cadb5aadee128b6bb4dc1448dc1e487468",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -66,7 +66,7 @@ func ValidMessage13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[8], ks.Shares[8], 8, 8), types.PartialRandaoSignatureMsgType),
 				},
 				PostDutyRunnerStateRoot: "c96a447e2708217ad8b69619f6f40b7e4b3191ad6a1de5a3abebfdb6dd57916f",
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},

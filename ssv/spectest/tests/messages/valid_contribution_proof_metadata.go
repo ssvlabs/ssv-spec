@@ -14,6 +14,6 @@ func ValidContributionProofMetaData() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name:     "valid meta data when type ContributionProofs",
-		Messages: []*ssv.SignedPartialSignature{msg},
+		Messages: []*ssv.SignedPartialSignatures{msg},
 	}
 }

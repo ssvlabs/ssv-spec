@@ -53,7 +53,7 @@ func PostPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal post prepare",
 		Pre:           pre,
-		PostRoot:      "3cc4269ff493d8ce9b2c9a43690843a4758b9ff77c2d6c1b659b3cc1f6fa6748",
+		PostRoot:      "e2c7a9894b23785cb206dc6ec21afedf2161638ac94cd475594d6bbd209fcb7d",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

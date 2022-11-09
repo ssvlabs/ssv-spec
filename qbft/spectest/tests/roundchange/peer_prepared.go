@@ -74,7 +74,7 @@ func PeerPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change peer prepared",
 		Pre:           pre,
-		PostRoot:      "30a40b8d49bc5284ff16eb3c8b984d5ccc1126febbd667c1829dbff93dc98d1f",
+		PostRoot:      "fb38a5674a3e12bce60e40b84916d8d8067ba1074fcf8d1bfaeb01ac1610129a",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

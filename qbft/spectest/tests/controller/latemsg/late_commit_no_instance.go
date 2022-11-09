@@ -46,13 +46,13 @@ func LateCommitNoInstance() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "late commit no instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "e719fcf29fb1acbd0dbf0843f61c2d037463e6fe7c4e21e78ad28825c4c56e41"),
-			instanceData(1, "8472719bee2bb179963cc3aee61f054042de5f40f45cce557dbb8030ea5f32ca"),
-			instanceData(2, "03fbaa2914cec6145e0799ea822489048ec14cc3c9492b41f13f152440cd7fc5"),
-			instanceData(3, "e14a8e324b78dda8469df11a8d3551f6fac6163d6458d51fee7853c0f17d5835"),
-			instanceData(4, "bd54d2ab1e0b949dd45a3e2b16f211d006371ae99a96f7a8d74fa98128447bf9"),
-			instanceData(5, "3102e5048ac659bd0bbc8efc4eab07154f357a1225c8b1ef0681e054310f3bb3"),
-			instanceData(8, "c880aac62523021de564af42efb73d9da75bafa087714a03291bd5e6a6ba3acd"),
+			instanceData(qbft.FirstHeight, "70c5218e3832249ba51590e5e8850d60863e3a2281e090669448075e68795a25"),
+			instanceData(1, "7311ad2d2b9d480bb17e49a281192a4f298f21cfc03d05cae776f1e8cefc3fea"),
+			instanceData(2, "78a6e414620e88f63ad81f6a3834087620345a7236d052352fb11a11bb00f29e"),
+			instanceData(3, "4bb484d62ad78d5c310b4473583bcb1ef450198a19e0efa3e61e6d692bd1ec8e"),
+			instanceData(4, "85fb859090ab4b932754654cf9ad17ad281aa2d62833bba31cd1120e2ee9a98e"),
+			instanceData(5, "3d42cfabe35b3d229e114b5eb3e250cfb9214e97afe3034f7041f67230a57a00"),
+			instanceData(8, "505dcff70f958af26c14c289c58dbe8678db8af6eb9c8fb59a2e19a63190c531"),
 			{
 				InputValue: inputData,
 				InputMessages: []*types.Message{
@@ -61,7 +61,7 @@ func LateCommitNoInstance() *tests.ControllerSpecTest {
 						Data: signMsgEncoded,
 					},
 				},
-				ControllerPostRoot: "4a184ea5a625621f73640e4f66209d38016e34030608c3afb0f6c2a33a38f886",
+				ControllerPostRoot: "1c9b8e45f9a0b1bb3784e7fa1d03e6ce099c935f5e70dea33dbccbdc20503609",
 			},
 		},
 		ExpectedError: "instance not found",

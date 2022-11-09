@@ -131,7 +131,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow thirteen operators",
 		Pre:           pre,
-		PostRoot:      "3fe5292a9453e7c02568473f55796e5b6dbb62ce9f743e35309fab62323b29a0",
+		PostRoot:      "e96bceed320bfe270541be526a33f65a3b27e2e266d455fb4dae0291faa2bdfa",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

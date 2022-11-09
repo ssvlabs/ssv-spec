@@ -74,7 +74,7 @@ func QuorumMsgNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum msg not prepared",
 		Pre:           pre,
-		PostRoot:      "6cae126d16d422505088c0affe82d726fb1a512c6693c0d5b5305a52136878a5",
+		PostRoot:      "edb5c503cc6d825da264c6ebffa23f4a8ed491ce70eafdcb699713030c46eb62",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

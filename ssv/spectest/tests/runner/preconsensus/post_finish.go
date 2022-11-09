@@ -34,7 +34,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "e45a00a3660f518214b7adcefbd192c75c375989f71cc01d0b528e1eb6f15e6a",
 				DontStartDuty:           true,
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
@@ -51,7 +51,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "f53213c361ed36784fecfe0b1960c8d467d94edb65434c072a6745ea361f1e6f",
 				DontStartDuty:           true,
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: no running duty",
@@ -68,7 +68,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "9439ebca97f07e53fca1bd1753621187bbc78a71bb33ecb530ff803ab1590201",
 				DontStartDuty:           true,
-				OutputMessages: []*ssv.SignedPartialSignature{
+				OutputMessages: []*ssv.SignedPartialSignatures{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: no running duty",

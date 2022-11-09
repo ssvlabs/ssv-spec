@@ -41,7 +41,7 @@ func F1Speedup() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up",
 		Pre:           pre,
-		PostRoot:      "2cb3bf5fc31be61b3dace1274a5d52a32762d95c8a476226ffea9475f479896f",
+		PostRoot:      "f390054a84b0625d80471c2d82a04c4037aef90cd1c78ac6a5b107266e88f8b3",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{

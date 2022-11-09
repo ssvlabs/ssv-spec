@@ -47,7 +47,7 @@ func LatePrepare() *tests.ControllerSpecTest {
 				DecidedCnt:         1,
 				SavedDecided:       multiSignMsg,
 				BroadcastedDecided: multiSignMsg,
-				ControllerPostRoot: "5b678d1d8273acda5f51f4f4c3c722ef803c66d1ec228cc6ca082fac3a820bb9",
+				ControllerPostRoot: "b726f46f9a6d0a093744a2eee75f7568bfe84552eac8f6fed25e9876dbab8007",
 			},
 		},
 	}

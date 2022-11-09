@@ -83,7 +83,7 @@ func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change duplicate msg quorum",
 		Pre:           pre,
-		PostRoot:      "0dce9a0c98edc896696d2e3fa2f10ad5c06a45b7e43e3a98caf712abf981ab50",
+		PostRoot:      "441ba1808cec02c17677f45d1b6f4d98060390f082aa1d4f8f912d23c41881c8",
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{
