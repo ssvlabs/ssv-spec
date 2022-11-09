@@ -35,9 +35,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	if inst := c.InstanceForHeight(c.Height); inst != nil && !inst.State.Decided {
 		inst.State.Decided = true
 		if c.Height == msg.Message.Height {
-			if msg.Message.Round > inst.State.Round {
-				inst.State.Round = msg.Message.Round
-			}
+			inst.State.Round = msg.Message.Round
 			inst.State.DecidedValue = data.Data
 		}
 	}
