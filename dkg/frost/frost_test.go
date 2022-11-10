@@ -208,7 +208,7 @@ func TestingFrost(
 	for i := 0; i < 3; i++ {
 
 		messages := network.BroadcastedMsgs
-		network.BroadcastedMsgs = make([]*types.SSVMessage, 0)
+		network.BroadcastedMsgs = make([]*types.Message, 0)
 
 		for _, msg := range messages {
 

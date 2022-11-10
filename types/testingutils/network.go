@@ -21,13 +21,8 @@ func NewTestingNetwork() *TestingNetwork {
 	}
 }
 
-//func (net *TestingNetwork) Broadcast(message *types.Message) error {
-//	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message)
-//	return nil
-//}
-
-func (net *TestingNetwork) Broadcast(message types.Encoder) error {
-	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
+func (net *TestingNetwork) Broadcast(message *types.Message) error {
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message)
 	return nil
 }
 

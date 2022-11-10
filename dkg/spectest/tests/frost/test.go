@@ -102,11 +102,12 @@ func (test *FrostSpecTest) TestingFrost() (map[uint32]*dkg.ProtocolOutcome, *dkg
 
 	for operatorID, messages := range initMessages {
 		for _, message := range messages {
-
 			messageBytes, _ := message.Encode()
-			startMessage := &types.SSVMessage{
-				MsgType: types.DKGMsgType,
-				Data:    messageBytes,
+			// TODO: DKG msg id
+			identifier := types.NewBaseMsgID(message.Message.Identifier[:], 0)
+			startMessage := &types.Message{
+				ID:   types.PopulateMsgType(identifier, types.DKGInitMsgType),
+				Data: messageBytes,
 			}
 			if err := nodes[types.OperatorID(operatorID)].ProcessMessage(startMessage); err != nil {
 				return nil, nil, errors.Wrapf(err, "failed to start dkg protocol for operator %d", operatorID)
@@ -117,7 +118,7 @@ func (test *FrostSpecTest) TestingFrost() (map[uint32]*dkg.ProtocolOutcome, *dkg
 	for round := 1; round <= 5; round++ {
 
 		messages := network.BroadcastedMsgs
-		network.BroadcastedMsgs = make([]*types.SSVMessage, 0)
+		network.BroadcastedMsgs = make([]*types.Message, 0)
 		for _, msg := range messages {
 
 			dkgMsg := &dkg.SignedMessage{}
@@ -125,13 +126,15 @@ func (test *FrostSpecTest) TestingFrost() (map[uint32]*dkg.ProtocolOutcome, *dkg
 				return nil, nil, err
 			}
 
-			msgsToBroadcast := []*types.SSVMessage{}
+			msgsToBroadcast := []*types.Message{}
 			if testMessages, ok := test.InputMessages[round][uint32(dkgMsg.Signer)]; ok {
 				for _, testMessage := range testMessages {
 					testMessageBytes, _ := testMessage.Encode()
-					msgsToBroadcast = append(msgsToBroadcast, &types.SSVMessage{
-						MsgType: msg.MsgType,
-						Data:    testMessageBytes,
+					// TODO: DKG msg id
+					identifier := types.NewBaseMsgID(testMessage.Message.Identifier[:], 0)
+					msgsToBroadcast = append(msgsToBroadcast, &types.Message{
+						ID:   types.PopulateMsgType(identifier, types.DKGInitMsgType),
+						Data: testMessageBytes,
 					})
 				}
 			} else {

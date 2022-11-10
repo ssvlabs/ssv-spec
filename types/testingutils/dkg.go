@@ -64,7 +64,7 @@ var InitMessageDataBytes = func(operators []types.OperatorID, threshold uint16, 
 	return byts
 }
 
-var InitMessageData = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte, fork spec.Version) *dkg.Init {
+var InitMessageData = func(operators []types.OperatorID, threshold uint16, withdrawalCred []byte, fork phase0.Version) *dkg.Init {
 	return &dkg.Init{
 		OperatorIDs:           operators,
 		Threshold:             threshold,
