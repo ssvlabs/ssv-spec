@@ -19,7 +19,7 @@ func PrepareDataEncoding() *tests.MsgSpecTest {
 	b, _ := msg.Encode()
 
 	return &tests.MsgSpecTest{
-		Name: "commit data nil or len 0",
+		Name: "prepare data nil or len 0",
 		Messages: []*types.Message{
 			{
 				ID:   types.PopulateMsgType(identifier, types.ConsensusPrepareMsgType),
