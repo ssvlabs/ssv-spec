@@ -8,6 +8,7 @@ require (
 	github.com/attestantio/go-eth2-client v0.11.3
 	github.com/coinbase/kryptology v1.8.0
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1
+	github.com/drand/kyber v1.1.15
 	github.com/ecies/go/v2 v2.0.4
 	github.com/ethereum/go-ethereum v1.10.18
 	github.com/ferranbt/fastssz v0.0.0-20220103083642-bc5fefefa28b
@@ -24,11 +25,8 @@ require (
 	github.com/bwesterb/go-ristretto v1.2.0 // indirect
 	github.com/consensys/gnark-crypto v0.5.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/drand/kyber v1.1.15 // indirect
-	github.com/drand/kyber-bls12381 v0.2.3 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/goccy/go-yaml v1.9.5 // indirect
-	github.com/kilic/bls12-381 v0.1.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.11 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
