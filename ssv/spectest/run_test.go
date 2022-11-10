@@ -205,6 +205,7 @@ func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testin
 	if ret.GetBaseRunner().State != nil {
 		if ret.GetBaseRunner().State.RunningInstance != nil {
 			ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
+			require.NoError(t, ret.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(ret.GetBaseRunner().State.RunningInstance.State))
 		}
 	}
 	return ret

@@ -36,10 +36,13 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
-		r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(r.GetBaseRunner().State.RunningInstance.State)
+		err := r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(r.GetBaseRunner().State.RunningInstance.State)
+		if err != nil {
+			panic(err.Error())
+		}
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 
-		err := r.ProcessConsensus(testingutils.MultiSignQBFTMsg(
+		err = r.ProcessConsensus(testingutils.MultiSignQBFTMsg(
 			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 			[]types.OperatorID{1, 2, 3},
 			&qbft.Message{
