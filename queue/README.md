@@ -51,6 +51,26 @@ Receive msg and add to stack. queue provide interface with ADD, POP, DELETE func
 5. Higher height (all above the current height)
 6. Lower Height (all below current height)
 
+Priority tree:
+```yaml
+- is_current_height_or_slot
+   # if state.has_running_instance:
+      - is_consensus
+      - is_pre_consensus
+      - is_post_consensus
+   # else:
+      - is_pre_consensus
+      - is_post_consensus
+      - is_consensus
+- is_higher_height_or_slot
+   - is_decided
+   - is_pre_consensus
+   - is_consensus
+   _ is_post_consensus
+- is_lower_height_or_slot
+   - is_decided
+   - is_commit
+```
 
 **Why Need Current Height?**
 > Assuming queue added the following msg's by this order
