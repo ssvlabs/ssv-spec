@@ -2,12 +2,16 @@ package tests
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -109,7 +113,8 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 			require.True(t, found)
 		}
 
-		r, err := contr.GetRoot()
+		//r, err := contr.GetRoot()
+		r, err := ControllerHistoricalRoot(contr)
 		require.NoError(t, err)
 		require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r))
 	}
@@ -123,4 +128,63 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 func (test *ControllerSpecTest) TestName() string {
 	return "qbft controller " + test.Name
+}
+
+// ControllerHistoricalStruct returns ctrl historical root struct. TODO need to align all root in tests and remove this patch
+func ControllerHistoricalStruct(ctrl *qbft.Controller) (interface{}, error) {
+	rootStruct := struct {
+		Identifier             []byte
+		Height                 qbft.Height
+		InstanceRoots          [][]byte
+		HigherReceivedMessages map[types.OperatorID]qbft.Height
+		Domain                 types.DomainType
+		Share                  *types.Share
+	}{
+		Identifier:             ctrl.Identifier,
+		Height:                 ctrl.Height,
+		HigherReceivedMessages: ctrl.FutureMsgsContainer,
+		Domain:                 ctrl.Domain,
+		Share:                  ctrl.Share,
+	}
+
+	if ctrl.GetConfig() == nil {
+		return rootStruct, nil
+	}
+
+	testingStorage := ctrl.GetConfig().GetStorage().(*testingutils.TestingStorage)
+	states, err := testingStorage.GetAllInstancesState(ctrl.Identifier)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get all instances state")
+	}
+
+	// sort in order maintain the same root
+	sort.Slice(states, func(i, j int) bool {
+		return states[i].Height > states[j].Height
+	})
+
+	var roots [][]byte
+	for i := 0; i < len(states); i++ {
+		r, err := qbft.NewInstanceFromState(ctrl.GetConfig(), states[i]).GetRoot()
+		if err != nil {
+			return nil, errors.Wrap(err, "failed getting instance root")
+		}
+		roots = append(roots, r)
+	}
+
+	rootStruct.InstanceRoots = roots
+	return rootStruct, nil
+}
+
+// ControllerHistoricalRoot supports historical root. TODO need to align all root in tests and remove this patch
+func ControllerHistoricalRoot(ctrl *qbft.Controller) ([]byte, error) {
+	rootStruct, err := ControllerHistoricalStruct(ctrl)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get ctrl root struct")
+	}
+	r, err := json.Marshal(rootStruct)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode state")
+	}
+	ret := sha256.Sum256(r)
+	return ret[:], nil
 }

@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
@@ -93,7 +94,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 
 	// post root
-	postRoot, err := test.Runner.GetRoot()
+	//postRoot, err := test.Runner.GetRoot()
+	postRoot, err := newduty.RunnerHistoricalRoot(test.Runner)
 	require.NoError(t, err)
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
 }

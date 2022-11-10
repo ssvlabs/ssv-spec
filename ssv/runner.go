@@ -221,7 +221,10 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(byts); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")
 	}
-	newInstance := runner.GetBaseRunner().QBFTController.InstanceForHeight(runner.GetBaseRunner().QBFTController.Height)
+	newInstance, err := runner.GetBaseRunner().QBFTController.InstanceForHeight(runner.GetBaseRunner().QBFTController.Height)
+	if err != nil {
+		return errors.Wrap(err, "failed to get instance")
+	}
 	if newInstance == nil {
 		return errors.New("could not find newly created QBFT instance")
 	}

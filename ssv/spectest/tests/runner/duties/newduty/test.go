@@ -1,10 +1,14 @@
 package newduty
 
 import (
+	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	errors "github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -76,9 +80,47 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 	}
 
 	// post root
-	postRoot, err := test.Runner.GetRoot()
+	//postRoot, err := test.Runner.GetRoot()
+	postRoot, err := RunnerHistoricalRoot(test.Runner)
 	require.NoError(t, err)
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
+}
+
+// RunnerHistoricalRoot supports historical root. TODO need to align all root in tests and remove this patch
+func RunnerHistoricalRoot(runner ssv.Runner) ([]byte, error) {
+	type baseRunnerRootStruct struct {
+		State          *ssv.State
+		Share          *types.Share
+		QBFTController interface{}
+		BeaconNetwork  types.BeaconNetwork
+		BeaconRoleType types.BeaconRole
+	}
+
+	ctrlRootStruct, err := tests.ControllerHistoricalStruct(runner.GetBaseRunner().QBFTController)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get ctrl root struct")
+	}
+
+	baseRunnerRoot := baseRunnerRootStruct{
+		State:          runner.GetBaseRunner().State,
+		Share:          runner.GetBaseRunner().Share,
+		QBFTController: ctrlRootStruct,
+		BeaconNetwork:  runner.GetBaseRunner().BeaconNetwork,
+		BeaconRoleType: runner.GetBaseRunner().BeaconRoleType,
+	}
+
+	rootStruct := struct {
+		BaseRunner interface{}
+	}{
+		BaseRunner: baseRunnerRoot,
+	}
+
+	r, err := json.Marshal(rootStruct)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode state")
+	}
+	ret := sha256.Sum256(r)
+	return ret[:], nil
 }
 
 type MultiStartNewRunnerDutySpecTest struct {

@@ -9,15 +9,15 @@ import (
 	"strings"
 )
 
-type testingStorage struct {
+type TestingStorage struct {
 	storage        map[string]*qbft.SignedMessage
 	instancesState map[string]*qbft.State
 	operators      map[types.OperatorID]*dkg.Operator
 	keygenoupts    map[string]*dkg.KeyGenOutput
 }
 
-func NewTestingStorage() *testingStorage {
-	ret := &testingStorage{
+func NewTestingStorage() *TestingStorage {
+	ret := &TestingStorage{
 		storage:        make(map[string]*qbft.SignedMessage),
 		instancesState: make(map[string]*qbft.State),
 		operators:      make(map[types.OperatorID]*dkg.Operator),
@@ -36,28 +36,28 @@ func NewTestingStorage() *testingStorage {
 }
 
 // SaveHighestDecided saves the Decided value as highest for a validator PK and role
-func (s *testingStorage) SaveHighestDecided(signedMsg *qbft.SignedMessage) error {
+func (s *TestingStorage) SaveHighestDecided(signedMsg *qbft.SignedMessage) error {
 	s.storage[hex.EncodeToString(signedMsg.Message.Identifier)] = signedMsg
 	return nil
 }
 
 // GetHighestDecided returns highest decided if found, nil if didn't
-func (s *testingStorage) GetHighestDecided(identifier []byte) (*qbft.SignedMessage, error) {
+func (s *TestingStorage) GetHighestDecided(identifier []byte) (*qbft.SignedMessage, error) {
 	return s.storage[hex.EncodeToString(identifier)], nil
 }
 
-func (s *testingStorage) SaveInstanceState(state *qbft.State) error {
+func (s *TestingStorage) SaveInstanceState(state *qbft.State) error {
 	key := fmt.Sprintf("%s_%d", hex.EncodeToString(state.ID), state.Height)
 	s.instancesState[key] = state
 	return nil
 }
 
-func (s *testingStorage) GetInstanceState(identifier []byte, height qbft.Height) (*qbft.State, error) {
+func (s *TestingStorage) GetInstanceState(identifier []byte, height qbft.Height) (*qbft.State, error) {
 	key := fmt.Sprintf("%s_%d", hex.EncodeToString(identifier), height)
 	return s.instancesState[key], nil
 }
 
-func (s *testingStorage) GetAlInstancesState(identifier []byte) ([]*qbft.State, error) {
+func (s *TestingStorage) GetAllInstancesState(identifier []byte) ([]*qbft.State, error) {
 	var res []*qbft.State
 	for k, state := range s.instancesState {
 		if strings.HasPrefix(k, hex.EncodeToString(identifier)) {
@@ -68,18 +68,18 @@ func (s *testingStorage) GetAlInstancesState(identifier []byte) ([]*qbft.State, 
 }
 
 // GetDKGOperator returns true and operator object if found by operator ID
-func (s *testingStorage) GetDKGOperator(operatorID types.OperatorID) (bool, *dkg.Operator, error) {
+func (s *TestingStorage) GetDKGOperator(operatorID types.OperatorID) (bool, *dkg.Operator, error) {
 	if ret, found := s.operators[operatorID]; found {
 		return true, ret, nil
 	}
 	return false, nil, nil
 }
 
-func (s *testingStorage) SaveKeyGenOutput(output *dkg.KeyGenOutput) error {
+func (s *TestingStorage) SaveKeyGenOutput(output *dkg.KeyGenOutput) error {
 	s.keygenoupts[hex.EncodeToString(output.ValidatorPK)] = output
 	return nil
 }
 
-func (s *testingStorage) GetKeyGenOutput(pk types.ValidatorPK) (*dkg.KeyGenOutput, error) {
+func (s *TestingStorage) GetKeyGenOutput(pk types.ValidatorPK) (*dkg.KeyGenOutput, error) {
 	return s.keygenoupts[hex.EncodeToString(pk)], nil
 }

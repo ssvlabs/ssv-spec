@@ -28,16 +28,18 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	}
 
 	// did previously decide?
-	inst := c.InstanceForHeight(msg.Message.Height)
-	prevDecided := inst != nil && inst.State.Decided
+	inst, err := c.InstanceForHeight(msg.Message.Height)
+	prevDecided := err == nil && inst != nil && inst.State.Decided
 
 	// Mark current instance decided
-	if inst := c.InstanceForHeight(c.Height); inst != nil && !inst.State.Decided {
+	if inst, err := c.InstanceForHeight(c.Height); inst != nil && !inst.State.Decided {
 		inst.State.Decided = true
 		if c.Height == msg.Message.Height {
 			inst.State.Round = msg.Message.Round
 			inst.State.DecidedValue = data.Data
 		}
+	} else if err != nil {
+		fmt.Printf("failed to get instance - %e", err)
 	}
 
 	isFutureDecided := msg.Message.Height > c.Height

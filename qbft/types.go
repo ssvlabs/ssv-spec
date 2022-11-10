@@ -36,8 +36,6 @@ type Storage interface {
 	SaveInstanceState(state *State) error
 	// GetInstanceState returns instance state
 	GetInstanceState(identifier []byte, height Height) (*State, error)
-	// GetAlInstancesState returns all instances state for identifier
-	GetAlInstancesState(identifier []byte) ([]*State, error)
 }
 
 func ControllerIdToMessageID(identifier []byte) types.MessageID {

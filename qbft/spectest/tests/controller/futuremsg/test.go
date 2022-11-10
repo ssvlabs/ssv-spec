@@ -3,6 +3,7 @@ package futuremsg
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
@@ -46,7 +47,8 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 	syncedDecidedCnt := config.GetNetwork().(*testingutils.TestingNetwork).SyncHighestDecidedCnt
 	require.EqualValues(t, test.SyncDecidedCalledCnt, syncedDecidedCnt)
 
-	r, err := contr.GetRoot()
+	//r, err := contr.GetRoot()
+	r, err := tests.ControllerHistoricalRoot(contr)
 	require.NoError(t, err)
 	require.EqualValues(t, test.ControllerPostRoot, hex.EncodeToString(r))
 

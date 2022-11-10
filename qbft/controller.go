@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
-	"sort"
 )
 
 // Controller is a QBFT coordinator responsible for starting and following the entire life cycle of multiple QBFT InstanceContainer
@@ -44,7 +43,10 @@ func (c *Controller) StartNewInstance(value []byte) error {
 	}
 
 	c.bumpHeight()
-	newInstance := c.addAndStoreNewInstance()
+	newInstance, err := c.addAndStoreNewInstance()
+	if err != nil {
+		return errors.Wrap(err, "failed to add instance")
+	}
 	newInstance.Start(value, c.Height)
 
 	return nil
@@ -73,7 +75,10 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 }
 
 func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage, error) {
-	inst := c.InstanceForHeight(msg.Message.Height)
+	inst, err := c.InstanceForHeight(msg.Message.Height)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get instance")
+	}
 	if inst == nil {
 		return nil, errors.New("instance not found")
 	}
@@ -111,10 +116,12 @@ func (c *Controller) baseMsgValidation(msg *SignedMessage) error {
 	return nil
 }
 
-func (c *Controller) InstanceForHeight(height Height) *Instance {
-	state, _ := c.GetConfig().GetStorage().GetInstanceState(c.Identifier, height)
-	// TODO need to handle err?
-	return NewInstanceFromState(c.config, state)
+func (c *Controller) InstanceForHeight(height Height) (*Instance, error) {
+	state, err := c.GetConfig().GetStorage().GetInstanceState(c.Identifier, height)
+	if err != nil {
+		return nil, err
+	}
+	return NewInstanceFromState(c.config, state), nil
 }
 
 func (c *Controller) bumpHeight() {
@@ -127,13 +134,13 @@ func (c *Controller) GetIdentifier() []byte {
 }
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
-func (c *Controller) addAndStoreNewInstance() *Instance {
+func (c *Controller) addAndStoreNewInstance() (*Instance, error) {
 	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
 	err := c.GetConfig().GetStorage().SaveInstanceState(i.State)
 	if err != nil {
-		return nil // need to handle err?
+		return nil, err
 	}
-	return i
+	return i, nil
 }
 
 func (c *Controller) canStartInstance(height Height, value []byte) error {
@@ -162,48 +169,10 @@ func (c *Controller) canStartInstance(height Height, value []byte) error {
 
 // GetRoot returns the state's deterministic root
 func (c *Controller) GetRoot() ([]byte, error) {
-	rootStruct := struct {
-		Identifier             []byte
-		Height                 Height
-		InstanceRoots          [][]byte
-		HigherReceivedMessages map[types.OperatorID]Height
-		Domain                 types.DomainType
-		Share                  *types.Share
-	}{
-		Identifier: c.Identifier,
-		Height:     c.Height,
-		//InstanceRoots:          make([][]byte, 5), // hard coded 5 for backwards compatibility reasons. can be changed but need to align all tests
-		HigherReceivedMessages: c.FutureMsgsContainer,
-		Domain:                 c.Domain,
-		Share:                  c.Share,
-	}
-
-	states, err := c.GetConfig().GetStorage().GetAlInstancesState(c.Identifier)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get all instances state")
-	}
-
-	// sort in order maintain the same root
-	sort.Slice(states, func(i, j int) bool {
-		return states[i].Height > states[j].Height
-	})
-
-	var roots [][]byte
-	for _, state := range states {
-		r, err := NewInstanceFromState(c.GetConfig(), state).GetRoot()
-		if err != nil {
-			return nil, errors.Wrap(err, "failed getting instance root")
-		}
-		roots = append(roots, r)
-	}
-
-	rootStruct.InstanceRoots = roots
-
-	marshaledRoot, err := json.Marshal(rootStruct)
+	marshaledRoot, err := c.Encode()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode state")
 	}
-	fmt.Printf("ctrl root - %s \n", string(marshaledRoot))
 	ret := sha256.Sum256(marshaledRoot)
 	return ret[:], nil
 }
