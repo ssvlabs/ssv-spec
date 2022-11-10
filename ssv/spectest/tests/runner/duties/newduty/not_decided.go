@@ -36,7 +36,8 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "consensus on duty is running",
+				PreStoredInstances: []*qbft.Instance{},
+				ExpectedError:      "consensus on duty is running",
 			},
 			{
 				Name:                    "sync committee",
@@ -44,6 +45,7 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
 				PostDutyRunnerStateRoot: "8ec014f2cdf420c2e232afcd5b6005465815db03722f50e714bd9a1c2cd75143",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PreStoredInstances:      []*qbft.Instance{},
 				ExpectedError:           "consensus on duty is running",
 			},
 			{
@@ -54,7 +56,8 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "consensus on duty is running",
+				PreStoredInstances: []*qbft.Instance{},
+				ExpectedError:      "consensus on duty is running",
 			},
 			{
 				Name:                    "proposer",
@@ -64,7 +67,8 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "consensus on duty is running",
+				PreStoredInstances: []*qbft.Instance{},
+				ExpectedError:      "consensus on duty is running",
 			},
 			{
 				Name:                    "attester",
@@ -72,6 +76,7 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "fe3fbb6e375a0c4cb1b97b8fd28cdbbf0c23fa10b40f0c2a8dbc99a8a6d02aab",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PreStoredInstances:      []*qbft.Instance{},
 				ExpectedError:           "consensus on duty is running",
 			},
 		},

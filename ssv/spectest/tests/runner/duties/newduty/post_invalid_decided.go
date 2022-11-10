@@ -71,6 +71,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "sync committee",
@@ -78,6 +79,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
 				PostDutyRunnerStateRoot: "67603dddb4403bc23c9a436eb16f6074dc269ce9135a1e6a8a60329c240b720b",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PreStoredInstances:      []*qbft.Instance{},
 			},
 			{
 				Name:                    "aggregator",
@@ -87,6 +89,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "proposer",
@@ -96,6 +99,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
+				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "attester",
@@ -103,6 +107,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "ee132e67ae8eaaebc8721d9f7b4dac1704ade7a9d89db8a9126bc6aad5f3ff6b",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PreStoredInstances:      []*qbft.Instance{},
 			},
 		},
 	}

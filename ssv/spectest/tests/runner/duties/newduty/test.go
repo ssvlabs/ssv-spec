@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
@@ -19,6 +20,7 @@ type StartNewRunnerDutySpecTest struct {
 	Duty                    *types.Duty
 	PostDutyRunnerStateRoot string
 	OutputMessages          []*ssv.SignedPartialSignatureMessage
+	PreStoredInstances      []*qbft.Instance
 	ExpectedError           string
 }
 

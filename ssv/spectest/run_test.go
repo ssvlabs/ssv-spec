@@ -143,7 +143,17 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 
 	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(runnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
 
-	runner := fixRunnerForRun(t, runnerMap, ks)
+	preInstances := make([]*qbft.Instance, 0)
+	if in, ok := m["PreStoredInstances"]; ok && in != nil {
+		for _, preInstance := range in.([]interface{}) {
+			byts, _ = json.Marshal(preInstance)
+			instance := &qbft.Instance{}
+			require.NoError(t, json.Unmarshal(byts, instance))
+			preInstances = append(preInstances, instance)
+		}
+	}
+
+	runner := fixRunnerForRun(t, runnerMap, ks, preInstances)
 
 	return &newduty.StartNewRunnerDutySpecTest{
 		Name:                    m["Name"].(string),
@@ -181,7 +191,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(runnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
 
 	// runner
-	runner := fixRunnerForRun(t, runnerMap, ks)
+	runner := fixRunnerForRun(t, runnerMap, ks, nil)
 
 	return &tests2.MsgProcessingSpecTest{
 		Name:                    m["Name"].(string),
@@ -195,7 +205,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	}
 }
 
-func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testingutils.TestKeySet) ssv.Runner {
+func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testingutils.TestKeySet, preInstances []*qbft.Instance) ssv.Runner {
 	base := &ssv.BaseRunner{}
 	byts, _ := json.Marshal(baseRunner)
 	require.NoError(t, json.Unmarshal(byts, &base))
@@ -207,6 +217,9 @@ func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testin
 			ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
 			require.NoError(t, ret.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(ret.GetBaseRunner().State.RunningInstance.State))
 		}
+	}
+	for _, preInstance := range preInstances {
+		require.NoError(t, ret.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(preInstance.State))
 	}
 	return ret
 }

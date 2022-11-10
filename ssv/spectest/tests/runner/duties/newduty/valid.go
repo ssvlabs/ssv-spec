@@ -1,6 +1,7 @@
 package newduty
 
 import (
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
@@ -19,6 +20,7 @@ func Valid() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "sync committee",
@@ -26,6 +28,7 @@ func Valid() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
 				PostDutyRunnerStateRoot: "9d06c3b83aee2bf5723ac0a19fdb9d011eeb87694575e27cc3775a8772eedbfa",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PreStoredInstances:      []*qbft.Instance{},
 			},
 			{
 				Name:                    "aggregator",
@@ -35,6 +38,7 @@ func Valid() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "proposer",
@@ -44,6 +48,7 @@ func Valid() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
+				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "attester",
@@ -51,6 +56,7 @@ func Valid() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "12f67926a80be1c26cd12b502f923b51e5b957cbec4c0264ba602309d924d191",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PreStoredInstances:      []*qbft.Instance{},
 			},
 		},
 	}
