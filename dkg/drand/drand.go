@@ -8,12 +8,19 @@ import (
 
 type DRand struct {
 	board    *Board
-	protocol dranddkg.Protocol
+	config   *dranddkg.Config
+	protocol *dranddkg.Protocol
+	result   *dranddkg.OptionResult
+
+	operators []uint32
+	threshold uint64
 }
 
 func (d *DRand) Start() error {
 	d.protocol.Start()
-	go func() {}()
+	go func() {
+		d.protocol.WaitEnd()
+	}()
 	return nil
 }
 
@@ -33,18 +40,26 @@ func (d *DRand) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, 
 
 	switch protocolMsg.MsgType {
 	case DealBundleMsg:
-		if err := d.processDealBundle(*protocolMsg.DealBundle); err != nil {
-			return false, nil, errors.Wrap(err, "failed processing deal bundle")
-		}
+		d.board.DealsC <- *protocolMsg.DealBundle
 	case ResponseBundleMsg:
+		d.board.ResponseC <- *protocolMsg.ResponseBundle
 	case JustificationBundleMsg:
+		d.board.JustificationC <- *protocolMsg.JustificationBundle
 	default:
 		return false, nil, errors.New("unknown protocol message type")
 	}
 
-	how to wait and return for result?
+	if result := d.getResult(); result != nil {
+		if err := d.validateResult(result); err != nil {
+			return true, nil, errors.Wrap(err, "invalid result")
+		}
+		outcome, err := d.getProtocolOutcome(result)
+		return true, outcome, err
+	}
+	return false, nil, nil
 }
 
 func (d *DRand) validateSignedMessage(msg *dkg.SignedMessage) error {
-
+	// TODO
+	return nil
 }

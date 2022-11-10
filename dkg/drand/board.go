@@ -5,10 +5,14 @@ import (
 	ssvdkg "github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/drand/kyber/share/dkg"
+	"github.com/pkg/errors"
 )
 
 type Board struct {
-	DealsC     chan dkg.DealBundle
+	DealsC         chan dkg.DealBundle
+	ResponseC      chan dkg.ResponseBundle
+	JustificationC chan dkg.JustificationBundle
+
 	operatorID types.OperatorID
 	identifier ssvdkg.RequestID
 	network    ssvdkg.Network
@@ -17,10 +21,52 @@ type Board struct {
 }
 
 func (b *Board) PushDeals(bundle *dkg.DealBundle) {
-	msgBytes, _ := json.Marshal(bundle)
-	//if err != nil {
-	//	return nil, err
-	//}
+	b.signAndBroadcast(&Message{
+		MsgType:    DealBundleMsg,
+		DealBundle: bundle,
+	})
+}
+
+func (b *Board) IncomingDeal() <-chan dkg.DealBundle {
+	if b.DealsC == nil {
+		b.DealsC = make(chan dkg.DealBundle)
+	}
+	return b.DealsC
+}
+
+func (b *Board) PushResponses(bundle *dkg.ResponseBundle) {
+	b.signAndBroadcast(&Message{
+		MsgType:        ResponseBundleMsg,
+		ResponseBundle: bundle,
+	})
+}
+
+func (b *Board) IncomingResponse() <-chan dkg.ResponseBundle {
+	if b.ResponseC == nil {
+		b.ResponseC = make(chan dkg.ResponseBundle)
+	}
+	return b.ResponseC
+}
+
+func (b *Board) PushJustifications(bundle *dkg.JustificationBundle) {
+	b.signAndBroadcast(&Message{
+		MsgType:             JustificationBundleMsg,
+		JustificationBundle: bundle,
+	})
+}
+
+func (b *Board) IncomingJustification() <-chan dkg.JustificationBundle {
+	if b.JustificationC == nil {
+		b.JustificationC = make(chan dkg.JustificationBundle)
+	}
+	return b.JustificationC
+}
+
+func (b *Board) signAndBroadcast(message *Message) error {
+	msgBytes, err := json.Marshal(message)
+	if err != nil {
+		return errors.Wrap(err, "could not marshal message")
+	}
 
 	bcastMessage := &ssvdkg.SignedMessage{
 		Message: &ssvdkg.Message{
@@ -31,43 +77,19 @@ func (b *Board) PushDeals(bundle *dkg.DealBundle) {
 		Signer: b.operatorID,
 	}
 
-	exist, operator, _ := b.storage.GetDKGOperator(b.operatorID)
-	//if err != nil {
-	//	return nil, err
-	//}
+	exist, operator, err := b.storage.GetDKGOperator(b.operatorID)
+	if err != nil {
+		return errors.Wrap(err, "could not get operator")
+	}
 	if !exist {
-		return
-		//return nil, errors.Errorf("operator with id %d not found", fr.state.operatorID)
+		return errors.Errorf("operator not found")
 	}
 
-	sig, _ := b.signer.SignDKGOutput(bcastMessage, operator.ETHAddress)
-	//if err != nil {
-	//	return nil, err
-	//}
+	sig, err := b.signer.SignDKGOutput(bcastMessage, operator.ETHAddress)
+	if err != nil {
+		return errors.Wrap(err, "could not sign message")
+	}
 	bcastMessage.Signature = sig
 
-	b.network.BroadcastDKGMessage(bcastMessage)
-}
-
-func (b *Board) IncomingDeal() <-chan dkg.DealBundle {
-	if b.DealsC == nil {
-		b.DealsC = make(chan dkg.DealBundle)
-	}
-	return b.DealsC
-}
-
-func (b *Board) PushResponses(*dkg.ResponseBundle) {
-
-}
-
-func (b *Board) IncomingResponse() <-chan dkg.ResponseBundle {
-
-}
-
-func (b *Board) PushJustifications(*dkg.JustificationBundle) {
-
-}
-
-func (b *Board) IncomingJustification() <-chan dkg.JustificationBundle {
-
+	return b.network.BroadcastDKGMessage(bcastMessage)
 }
