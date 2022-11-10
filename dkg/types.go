@@ -2,6 +2,7 @@ package dkg
 
 import (
 	"crypto/rsa"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -19,6 +20,8 @@ type Network interface {
 type Storage interface {
 	// GetDKGOperator returns true and operator object if found by operator ID
 	GetDKGOperator(operatorID types.OperatorID) (bool, *Operator, error)
+	SaveKeyGenOutput(output *KeyGenOutput) error
+	GetKeyGenOutput(pk types.ValidatorPK) (*KeyGenOutput, error)
 }
 
 // Operator holds all info regarding a DKG Operator on the network
@@ -33,9 +36,22 @@ type Operator struct {
 
 type Config struct {
 	// Protocol the DKG protocol implementation
-	Protocol            func(network Network, operatorID types.OperatorID, identifier RequestID) KeyGenProtocol
+	KeygenProtocol      func(network Network, operatorID types.OperatorID, identifier RequestID, signer types.DKGSigner, storage Storage, init *Init) Protocol
+	ReshareProtocol     func(network Network, operatorID types.OperatorID, identifier RequestID, signer types.DKGSigner, storage Storage, oldOperators []types.OperatorID, reshare *Reshare, output *KeyGenOutput) Protocol
 	Network             Network
 	Storage             Storage
 	SignatureDomainType types.DomainType
 	Signer              types.DKGSigner
+}
+
+type ErrInvalidRound struct{}
+
+func (e ErrInvalidRound) Error() string {
+	return "invalid dkg round"
+}
+
+type ErrMismatchRound struct{}
+
+func (e ErrMismatchRound) Error() string {
+	return "mismatch dkg round"
 }

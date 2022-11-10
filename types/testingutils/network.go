@@ -7,9 +7,11 @@ import (
 )
 
 type TestingNetwork struct {
-	BroadcastedMsgs       []*types.Message
-	DKGOutputs            map[types.OperatorID]*dkg.SignedOutput
-	SyncHighestDecidedCnt int
+	BroadcastedMsgs           []*types.Message
+	DKGOutputs                map[types.OperatorID]*dkg.SignedOutput
+	BlameOutput               *dkg.BlameOutput
+	SyncHighestDecidedCnt     int
+	SyncHighestChangeRoundCnt int
 }
 
 func NewTestingNetwork() *TestingNetwork {
@@ -19,12 +21,12 @@ func NewTestingNetwork() *TestingNetwork {
 	}
 }
 
-func (net *TestingNetwork) Broadcast(message types.Encoder) error {
-	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
-	return nil
-}
+//func (net *TestingNetwork) Broadcast(message *types.Message) error {
+//	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message)
+//	return nil
+//}
 
-func (net *TestingNetwork) BroadcastDecided(message types.Encoder) error {
+func (net *TestingNetwork) Broadcast(message types.Encoder) error {
 	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message.(*types.Message))
 	return nil
 }
@@ -40,15 +42,17 @@ func (net *TestingNetwork) StreamDKGOutput(output map[types.OperatorID]*dkg.Sign
 
 func (net *TestingNetwork) StreamDKGBlame(blame *dkg.BlameOutput) error {
 	//TODO implement me
-	panic("implement me")
+	net.BlameOutput = blame
+	return nil
 }
 
-func (net *TestingNetwork) SyncHighestDecided(identifier []byte) error {
+func (net *TestingNetwork) SyncHighestDecided(identifier types.MessageID) error {
 	net.SyncHighestDecidedCnt++
 	return nil
 }
 
-func (net *TestingNetwork) SyncHighestRoundChange(identifier []byte, height qbft.Height) error {
+func (net *TestingNetwork) SyncHighestRoundChange(identifier types.MessageID, height qbft.Height) error {
+	net.SyncHighestChangeRoundCnt++
 	return nil
 }
 

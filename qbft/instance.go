@@ -72,7 +72,7 @@ func (i *Instance) Start(value *Data, height Height) {
 			}
 		}
 
-		if err := i.config.GetNetwork().SyncHighestRoundChange(i.State.ID[:], i.State.Height); err != nil {
+		if err := i.config.GetNetwork().SyncHighestRoundChange(i.State.ID, i.State.Height); err != nil {
 			fmt.Printf("%s\n", err.Error())
 		}
 	})

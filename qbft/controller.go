@@ -269,7 +269,7 @@ func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) er
 		Data: decidedEncoded,
 	}
 
-	if err := c.GetConfig().GetNetwork().BroadcastDecided(broadcastMsg); err != nil {
+	if err := c.GetConfig().GetNetwork().Broadcast(broadcastMsg); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}

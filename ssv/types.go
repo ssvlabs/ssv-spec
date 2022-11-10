@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/p2p"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
@@ -16,8 +17,9 @@ func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) Runner {
 	return ci[role]
 }
 
+// Network is the network interface for SSV
 type Network interface {
-	Broadcast(message types.Encoder) error
+	p2p.Broadcaster
 }
 
 // Storage is a persistent storage for the SSV
