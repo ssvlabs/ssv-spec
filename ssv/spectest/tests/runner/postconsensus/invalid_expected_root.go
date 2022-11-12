@@ -1,4 +1,4 @@
-package preconsensus
+package postconsensus
 
 import (
 	"github.com/bloxapp/ssv-spec/ssv"
