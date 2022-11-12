@@ -38,6 +38,14 @@ var TestingAttestationData = &spec.AttestationData{
 		Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	},
 }
+var TestingWrongAttestationData = func() *spec.AttestationData {
+	byts, _ := TestingAttestationData.MarshalSSZ()
+	ret := &spec.AttestationData{}
+	ret.UnmarshalSSZ(byts)
+	ret.Slot = 100
+	return ret
+}()
+
 var TestingSignedAttestation = func(ks *TestKeySet) *spec.Attestation {
 	aggregationBitfield := bitfield.NewBitlist(TestingAttesterDuty.CommitteeLength)
 	aggregationBitfield.SetBitAt(TestingAttesterDuty.ValidatorCommitteeIndex, true)
@@ -93,6 +101,13 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 		},
 	},
 }
+var TestingWrongBeaconBlock = func() *bellatrix.BeaconBlock {
+	byts, _ := TestingBeaconBlock.MarshalSSZ()
+	ret := &bellatrix.BeaconBlock{}
+	ret.UnmarshalSSZ(byts)
+	ret.Slot = 100
+	return ret
+}()
 
 var TestingSignedBeaconBlock = func(ks *TestKeySet) *bellatrix.SignedBeaconBlock {
 	return &bellatrix.SignedBeaconBlock{
@@ -110,6 +125,13 @@ var TestingAggregateAndProof = &spec.AggregateAndProof{
 		Data:            TestingAttestationData,
 	},
 }
+var TestingWrongAggregateAndProof = func() *spec.AggregateAndProof {
+	byts, _ := TestingAggregateAndProof.MarshalSSZ()
+	ret := &spec.AggregateAndProof{}
+	ret.UnmarshalSSZ(byts)
+	ret.AggregatorIndex = 100
+	return ret
+}()
 
 var TestingSignedAggregateAndProof = func(ks *TestKeySet) *spec.SignedAggregateAndProof {
 	return &spec.SignedAggregateAndProof{
@@ -129,6 +151,7 @@ const (
 )
 
 var TestingSyncCommitteeBlockRoot = spec.Root{}
+var TestingSyncCommitteeWrongBlockRoot = spec.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommitteeMessage {
 	return &altair.SyncCommitteeMessage{
 		Slot:            TestingDutySlot,

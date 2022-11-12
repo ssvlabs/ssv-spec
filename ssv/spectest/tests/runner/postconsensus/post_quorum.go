@@ -11,7 +11,7 @@ import (
 func PostQuorum() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus post quorum",
+		Name: "post consensus post quorum",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

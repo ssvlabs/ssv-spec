@@ -122,12 +122,12 @@ var ssvMsg = func(qbftMsg *qbft.SignedMessage, postMsg *ssv.SignedPartialSignatu
 	}
 }
 
-var PostConsensusAttestationMsgWithWrongSig = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *ssv.SignedPartialSignatureMessage {
+var PostConsensusWrongAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *ssv.SignedPartialSignatureMessage {
 	return postConsensusAttestationMsg(sk, id, height, true, false)
 }
 
-var PostConsensusAttestationMsgWithWrongRoot = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *ssv.SignedPartialSignatureMessage {
-	return postConsensusAttestationMsg(sk, id, height, true, false)
+var PostConsensusWrongSigAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *ssv.SignedPartialSignatureMessage {
+	return postConsensusAttestationMsg(sk, id, height, false, true)
 }
 
 var PostConsensusAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *ssv.SignedPartialSignatureMessage {
@@ -144,14 +144,16 @@ var postConsensusAttestationMsg = func(
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(TestingAttestationData.Target.Epoch, types.DomainAttester)
-	signed, root, _ := signer.SignBeaconObject(TestingAttestationData, d, sk.GetPublicKey().Serialize())
 
-	if wrongBeaconSig {
-		signed, _, _ = signer.SignBeaconObject(TestingAttestationData, d, TestingWrongValidatorPubKey[:])
+	attData := TestingAttestationData
+	if wrongRoot {
+		attData = TestingWrongAttestationData
 	}
 
-	if wrongRoot {
-		root = []byte{1, 2, 3, 4}
+	signed, root, _ := signer.SignBeaconObject(attData, d, sk.GetPublicKey().Serialize())
+
+	if wrongBeaconSig {
+		signed, _, _ = signer.SignBeaconObject(attData, d, Testing7SharesSet().ValidatorPK.Serialize())
 	}
 
 	msgs := ssv.PartialSignatureMessages{
@@ -177,6 +179,14 @@ var PostConsensusProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv
 	return postConsensusBeaconBlockMsg(sk, id, false, false)
 }
 
+var PostConsensusWrongProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return postConsensusBeaconBlockMsg(sk, id, true, false)
+}
+
+var PostConsensusWrongSigProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return postConsensusBeaconBlockMsg(sk, id, false, true)
+}
+
 var postConsensusBeaconBlockMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -186,23 +196,22 @@ var postConsensusBeaconBlockMsg = func(
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 
+	block := TestingBeaconBlock
+	if wrongRoot {
+		block = TestingWrongBeaconBlock
+	}
+
 	d, _ := beacon.DomainData(1, types.DomainProposer) // epoch doesn't matter here, hard coded
-	sig, root, _ := signer.SignBeaconObject(TestingBeaconBlock, d, sk.GetPublicKey().Serialize())
+	sig, root, _ := signer.SignBeaconObject(block, d, sk.GetPublicKey().Serialize())
+	if wrongBeaconSig {
+		sig, root, _ = signer.SignBeaconObject(block, d, Testing7SharesSet().ValidatorPK.Serialize())
+	}
 	blsSig := spec.BLSSignature{}
 	copy(blsSig[:], sig)
 
 	signed := bellatrix.SignedBeaconBlock{
 		Message:   TestingBeaconBlock,
 		Signature: blsSig,
-	}
-
-	if wrongBeaconSig {
-		//signed, _, _ = signer.SignAttestation(TestingAttestationData, TestingAttesterDuty, TestingWrongSK.GetPublicKey().Serialize())
-		panic("implement")
-	}
-
-	if wrongRoot {
-		root = []byte{1, 2, 3, 4}
 	}
 
 	msgs := ssv.PartialSignatureMessages{
@@ -397,6 +406,14 @@ var PostConsensusAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID) *s
 	return postConsensusAggregatorMsg(sk, id, false, false)
 }
 
+var PostConsensusWrongAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return postConsensusAggregatorMsg(sk, id, true, false)
+}
+
+var PostConsensusWrongSigAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return postConsensusAggregatorMsg(sk, id, false, true)
+}
+
 var postConsensusAggregatorMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -406,15 +423,15 @@ var postConsensusAggregatorMsg = func(
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(1, types.DomainAggregateAndProof)
-	signed, root, _ := signer.SignBeaconObject(TestingAggregateAndProof, d, sk.GetPublicKey().Serialize())
 
-	if wrongBeaconSig {
-		//signed, _, _ = signer.SignAttestation(TestingAttestationData, TestingAttesterDuty, TestingWrongSK.GetPublicKey().Serialize())
-		panic("implement")
+	aggData := TestingAggregateAndProof
+	if wrongRoot {
+		aggData = TestingWrongAggregateAndProof
 	}
 
-	if wrongRoot {
-		root = []byte{1, 2, 3, 4}
+	signed, root, _ := signer.SignBeaconObject(aggData, d, sk.GetPublicKey().Serialize())
+	if wrongBeaconSig {
+		signed, root, _ = signer.SignBeaconObject(aggData, d, Testing7SharesSet().ValidatorPK.Serialize())
 	}
 
 	msgs := ssv.PartialSignatureMessages{
@@ -440,6 +457,14 @@ var PostConsensusSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID)
 	return postConsensusSyncCommitteeMsg(sk, id, false, false)
 }
 
+var PostConsensusWrongSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return postConsensusSyncCommitteeMsg(sk, id, true, false)
+}
+
+var PostConsensusWrongSigSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return postConsensusSyncCommitteeMsg(sk, id, false, true)
+}
+
 var postConsensusSyncCommitteeMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -449,15 +474,13 @@ var postConsensusSyncCommitteeMsg = func(
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(1, types.DomainSyncCommittee)
-	signed, root, _ := signer.SignBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), d, sk.GetPublicKey().Serialize())
-
-	if wrongBeaconSig {
-		//signedAtt, _, _ = signer.SignAttestation(TestingAttestationData, TestingAttesterDuty, TestingWrongSK.GetPublicKey().Serialize())
-		panic("implement")
-	}
-
+	blockRoot := TestingSyncCommitteeBlockRoot
 	if wrongRoot {
-		root = []byte{1, 2, 3, 4}
+		blockRoot = TestingSyncCommitteeWrongBlockRoot
+	}
+	signed, root, _ := signer.SignBeaconObject(types.SSZBytes(blockRoot[:]), d, sk.GetPublicKey().Serialize())
+	if wrongBeaconSig {
+		signed, root, _ = signer.SignBeaconObject(types.SSZBytes(blockRoot[:]), d, Testing7SharesSet().ValidatorPK.Serialize())
 	}
 
 	msgs := ssv.PartialSignatureMessages{
@@ -559,6 +582,14 @@ var PostConsensusSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types
 	return postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, false, false)
 }
 
+var PostConsensusWrongSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types.OperatorID, keySet *TestKeySet) *ssv.SignedPartialSignatureMessage {
+	return postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, true, false)
+}
+
+var PostConsensusWrongSigSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types.OperatorID, keySet *TestKeySet) *ssv.SignedPartialSignatureMessage {
+	return postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, false, true)
+}
+
 var postConsensusSyncCommitteeContributionMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -575,6 +606,9 @@ var postConsensusSyncCommitteeContributionMsg = func(
 	for index := range TestingSyncCommitteeContributions {
 		// sign proof
 		subnet, _ := beacon.SyncCommitteeSubnetID(uint64(index))
+		if wrongRoot {
+			subnet = 1
+		}
 		data := &altair.SyncAggregatorSelectionData{
 			Slot:              TestingDutySlot,
 			SubcommitteeIndex: subnet,
@@ -595,9 +629,8 @@ var postConsensusSyncCommitteeContributionMsg = func(
 			SelectionProof:  blsProofSig,
 		}
 		signed, root, _ := signer.SignBeaconObject(contribAndProof, dContribAndProof, sk.GetPublicKey().Serialize())
-
-		if wrongRoot {
-			root = []byte{1, 2, 3, 4}
+		if wrongBeaconSig {
+			signed, root, _ = signer.SignBeaconObject(contribAndProof, dContribAndProof, Testing7SharesSet().ValidatorPK.Serialize())
 		}
 
 		msg := &ssv.PartialSignatureMessage{
@@ -605,11 +638,6 @@ var postConsensusSyncCommitteeContributionMsg = func(
 			PartialSignature: signed,
 			SigningRoot:      root,
 			Signer:           id,
-		}
-
-		if wrongBeaconSig {
-			//signedAtt, _, _ = signer.SignAttestation(TestingAttestationData, TestingAttesterDuty, TestingWrongSK.GetPublicKey().Serialize())
-			panic("implement")
 		}
 
 		msgs = append(msgs, msg)
