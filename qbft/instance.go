@@ -52,6 +52,8 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.State.Round = FirstRound
 		i.State.Height = height
 
+		i.config.GetTimer().TimeoutForRound(FirstRound)
+
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
@@ -64,8 +66,6 @@ func (i *Instance) Start(value []byte, height Height) {
 				fmt.Printf("%s\n", err.Error())
 			}
 		}
-
-		i.config.GetTimer().TimeoutForRound(FirstRound)
 
 		if err := i.config.GetNetwork().SyncHighestRoundChange(types.MessageIDFromBytes(i.State.ID), i.State.Height); err != nil {
 			fmt.Printf("%s\n", err.Error())
