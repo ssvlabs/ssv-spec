@@ -82,24 +82,24 @@ func TestMessagePrioritizerSlice(t *testing.T) {
 				require.NoError(t, err)
 			}
 
-			var scrambles []messageSlice
+			var shuffles []messageSlice
 			for {
-				scrambledMessages := messages.scramble()
-				if scrambledMessages.equal(messages) {
+				shuffledMessages := messages.shuffle()
+				if shuffledMessages.equal(messages) {
 					continue
 				}
-				scrambles = append(scrambles, scrambledMessages)
-				if len(scrambles) == 10 {
+				shuffles = append(shuffles, shuffledMessages)
+				if len(shuffles) == 10 {
 					break
 				}
 			}
 
 			prioritizer := NewSSVMessagePrioritizer(test.state)
-			for _, scramble := range scrambles {
-				scramble.sort(prioritizer)
-				correctOrder := messages.equal(scramble)
+			for _, shuffle := range shuffles {
+				shuffle.sort(prioritizer)
+				correctOrder := messages.equal(shuffle)
 				if !correctOrder {
-					require.Fail(t, "incorrect order:\n"+scramble.dump(test.state))
+					require.Fail(t, "incorrect order:\n"+shuffle.dump(test.state))
 				}
 			}
 		})
@@ -169,12 +169,12 @@ func (m mockNonConsensusMessage) ssvMessage(state *State) *types.SSVMessage {
 
 type messageSlice []*DecodedSSVMessage
 
-func (m messageSlice) scramble() messageSlice {
-	scrambled := make([]*DecodedSSVMessage, len(m))
+func (m messageSlice) shuffle() messageSlice {
+	shuffled := make([]*DecodedSSVMessage, len(m))
 	for i, j := range rand.Perm(len(m)) {
-		scrambled[i] = m[j]
+		shuffled[i] = m[j]
 	}
-	return scrambled
+	return shuffled
 }
 
 func (m messageSlice) sort(prioritizer *SSVMessagePrioritizer) {
