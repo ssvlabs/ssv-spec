@@ -64,9 +64,14 @@ func (p *SSVMessagePrioritizer) Prior(a, b *DecodedSSVMessage) bool {
 		return score[relativeHeightA] > score[relativeHeightB]
 	}
 
-	typeScoreA, typeScoreB := consensusTypeScore(p.state, a, relativeHeightA), consensusTypeScore(p.state, b, relativeHeightB)
-	if typeScoreA != typeScoreB {
-		return typeScoreA > typeScoreB
+	scoreA, scoreB := messageTypeScore(p.state, a, relativeHeightA), messageTypeScore(p.state, b, relativeHeightB)
+	if scoreA != scoreB {
+		return scoreA > scoreB
+	}
+
+	scoreA, scoreB = consensusTypeScore(p.state, a), consensusTypeScore(p.state, b)
+	if scoreA != scoreB {
+		return scoreA > scoreB
 	}
 
 	return true
@@ -93,7 +98,7 @@ func compareHeightOrSlot(state *State, m *DecodedSSVMessage) int {
 	return -1
 }
 
-func consensusTypeScore(state *State, m *DecodedSSVMessage, relativeHeight int) int {
+func messageTypeScore(state *State, m *DecodedSSVMessage, relativeHeight int) int {
 	// Current.
 	if relativeHeight == 0 {
 		if state.HasRunningInstance {
@@ -114,6 +119,14 @@ func consensusTypeScore(state *State, m *DecodedSSVMessage, relativeHeight int) 
 	return scoreByPrecedence(state, m,
 		isDecidedMesssage, isMessageOfType(qbft.CommitMsgType),
 	)
+}
+
+func consensusTypeScore(state *State, m *DecodedSSVMessage) int {
+	if isConsensusMessage(state, m) {
+		return scoreByPrecedence(state, m,
+			isMessageOfType(qbft.PrepareMsgType), isMessageOfType(qbft.ProposalMsgType), isMessageOfType(qbft.CommitMsgType))
+	}
+	return 0
 }
 
 // messageCondition returns whether the given message complies to a condition within the given state.

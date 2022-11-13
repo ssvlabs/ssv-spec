@@ -39,7 +39,14 @@ func TestMessagePrioritizerSlice(t *testing.T) {
 			messages: []mockMessage{
 				// 1. Current height/slot:
 				// 1.1. Consensus
-				mockConsensusMessage{Height: 100},
+				// 1.1.1. Consensus/Prepare
+				mockConsensusMessage{Height: 100, Type: qbft.PrepareMsgType},
+				// 1.1.2. Consensus/Proposal
+				mockConsensusMessage{Height: 100, Type: qbft.ProposalMsgType},
+				// 1.1.3. Consensus/Commit
+				mockConsensusMessage{Height: 100, Type: qbft.CommitMsgType},
+				// 1.1.4. Consensus/<Other>
+				mockConsensusMessage{Height: 100, Type: qbft.RoundChangeMsgType},
 				// 1.2. Pre-consensus
 				mockNonConsensusMessage{Slot: 64, Type: ssv.SelectionProofPartialSig},
 				// 1.3. Post-consensus
