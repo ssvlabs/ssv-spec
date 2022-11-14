@@ -138,7 +138,7 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "83422e42b2dd5e830750f4c143ef0ce09e5aac5628ba57a93d245af439902035",
+				ControllerPostRoot: "e7e94573bd69d0fac4ee33b931efbc3a995142e8937497b5ad536f5b2b0864f4",
 			},
 		},
 	}
