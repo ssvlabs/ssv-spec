@@ -95,7 +95,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMe
 func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed processing consensus message")
 	}
 
 	// Decided returns true only once so if it is true it must be for the current running instance
