@@ -68,6 +68,7 @@ func compareHeightOrSlot(state *State, m *DecodedSSVMessage) int {
 	return -1
 }
 
+// messageTypeScore returns an integer score for the message's type.
 func messageTypeScore(state *State, m *DecodedSSVMessage, relativeHeight int) int {
 	// Current.
 	if relativeHeight == 0 {
@@ -91,6 +92,8 @@ func messageTypeScore(state *State, m *DecodedSSVMessage, relativeHeight int) in
 	)
 }
 
+// consensusTypeScore returns an integer score for the type of a consensus message.
+// When given a non-consensus message, consensusTypeScore returns 0.
 func consensusTypeScore(state *State, m *DecodedSSVMessage) int {
 	if isConsensusMessage(state, m) {
 		return scoreByPrecedence(state, m,
@@ -152,4 +155,35 @@ func isMessageOfType(t qbft.MessageType) messageCondition {
 		}
 		return false
 	}
+}
+
+// DecodedSSVMessage is a bundle of SSVMessage and it's decoding.
+type DecodedSSVMessage struct {
+	*types.SSVMessage
+
+	// Body is the decoded Data.
+	Body interface{} // *SignedMessage | *SignedPartialSignatureMessage
+}
+
+// DecodeSSVMessage decodes an SSVMessage and returns a DecodedSSVMessage.
+func DecodeSSVMessage(m *types.SSVMessage) (*DecodedSSVMessage, error) {
+	var body interface{}
+	switch m.MsgType {
+	case types.SSVConsensusMsgType: // TODO: Or message.SSVDecidedMsgType?
+		sm := &qbft.SignedMessage{}
+		if err := sm.Decode(m.Data); err != nil {
+			return nil, errors.Wrap(err, "failed to decode SignedMessage")
+		}
+		body = sm
+	case types.SSVPartialSignatureMsgType:
+		sm := &ssv.SignedPartialSignatureMessage{}
+		if err := sm.Decode(m.Data); err != nil {
+			return nil, errors.Wrap(err, "failed to decode SignedPartialSignatureMessage")
+		}
+		body = sm
+	}
+	return &DecodedSSVMessage{
+		SSVMessage: m,
+		Body:       body,
+	}, nil
 }
