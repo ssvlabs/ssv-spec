@@ -80,25 +80,6 @@ type Duty struct {
 	ValidatorCommitteeIndex uint64
 }
 
-type DutySSZ struct {
-	// Type is the duty type (attest, propose)
-	Type uint8
-	// PubKey is the public key of the validator that should attest.
-	PubKey phase0.BLSPubKey `ssz-size:"48"`
-	// Slot is the slot in which the validator should attest.
-	Slot phase0.Slot
-	// ValidatorIndex is the index of the validator that should attest.
-	ValidatorIndex phase0.ValidatorIndex
-	// CommitteeIndex is the index of the committee in which the attesting validator has been placed.
-	CommitteeIndex phase0.CommitteeIndex
-	// CommitteeLength is the length of the committee in which the attesting validator has been placed.
-	CommitteeLength uint64
-	// CommitteesAtSlot is the number of committees in the slot.
-	CommitteesAtSlot uint64
-	// ValidatorCommitteeIndex is the index of the validator in the list of validators in the committee.
-	ValidatorCommitteeIndex uint64
-}
-
 // Available networks.
 const (
 	// PraterNetwork represents the Prater test network.
