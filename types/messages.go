@@ -5,6 +5,10 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
+
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/pkg/errors"
 )
 
 // ValidatorPK is an eth2 validator public key
@@ -122,4 +126,35 @@ func (msg *SSVMessage) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *SSVMessage) Decode(data []byte) error {
 	return json.Unmarshal(data, &msg)
+}
+
+// DecodedSSVMessage is a bundle of SSVMessage and it's decoding.
+type DecodedSSVMessage struct {
+	*SSVMessage
+
+	// Body is the decoded Data.
+	Body interface{} // *SignedMessage | *SignedPartialSignatureMessage
+}
+
+// DecodeSSVMessage decodes an SSVMessage and returns a DecodedSSVMessage.
+func DecodeSSVMessage(m *SSVMessage) (*DecodedSSVMessage, error) {
+	var body interface{}
+	switch m.MsgType {
+	case SSVConsensusMsgType: // TODO: Or message.SSVDecidedMsgType?
+		sm := &qbft.SignedMessage{}
+		if err := sm.Decode(m.Data); err != nil {
+			return nil, errors.Wrap(err, "failed to decode qbft.SignedMessage")
+		}
+		body = sm
+	case SSVPartialSignatureMsgType:
+		sm := &ssv.SignedPartialSignatureMessage{}
+		if err := sm.Decode(m.Data); err != nil {
+			return nil, errors.Wrap(err, "failed to decode ssv.SignedPartialSignatureMessage")
+		}
+		body = sm
+	}
+	return &DecodedSSVMessage{
+		SSVMessage: m,
+		Body:       body,
+	}, nil
 }

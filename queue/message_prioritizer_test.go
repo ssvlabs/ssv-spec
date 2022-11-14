@@ -167,10 +167,10 @@ func (m mockNonConsensusMessage) ssvMessage(state *State) *types.SSVMessage {
 	})
 }
 
-type messageSlice []*DecodedSSVMessage
+type messageSlice []*types.DecodedSSVMessage
 
 func (m messageSlice) shuffle() messageSlice {
-	shuffled := make([]*DecodedSSVMessage, len(m))
+	shuffled := make([]*types.DecodedSSVMessage, len(m))
 	for i, j := range rand.Perm(len(m)) {
 		shuffled[i] = m[j]
 	}

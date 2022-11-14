@@ -15,36 +15,6 @@ type State struct {
 	Quorum             uint64
 }
 
-// DecodedSSVMessage is a types.SSVMessage accompanied by it's decoding.
-type DecodedSSVMessage struct {
-	*types.SSVMessage
-
-	// Body is the decoded Data.
-	Body interface{} // *SignedMessage | *SignedPartialSignatureMessage
-}
-
-func DecodeSSVMessage(m *types.SSVMessage) (*DecodedSSVMessage, error) {
-	var body interface{}
-	switch m.MsgType {
-	case types.SSVConsensusMsgType: // Or message.SSVDecidedMsgType?
-		sm := &qbft.SignedMessage{}
-		if err := sm.Decode(m.Data); err != nil {
-			return nil, errors.Wrap(err, "failed to decode qbft.SignedMessage")
-		}
-		body = sm
-	case types.SSVPartialSignatureMsgType:
-		sm := &ssv.SignedPartialSignatureMessage{}
-		if err := sm.Decode(m.Data); err != nil {
-			return nil, errors.Wrap(err, "failed to decode ssv.SignedPartialSignatureMessage")
-		}
-		body = sm
-	}
-	return &DecodedSSVMessage{
-		SSVMessage: m,
-		Body:       body,
-	}, nil
-}
-
 type SSVMessagePrioritizer struct {
 	state *State
 }
