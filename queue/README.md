@@ -72,6 +72,13 @@ Priority tree:
    - is_commit
 ```
 
+**Missing Cases**
+Because of the use of sorting we do not hold any message if needed. that mean processing **ALL** messages even if not have to.
+Here is a list of the cases we need to "hold" message in queue - 
+1. current height, running instance and messages are not consensus (pre/post consensus)
+2. current height, no running instance and messages are consensus
+
+
 **Why Need Current Height?**
 > Assuming queue added the following msg's by this order
 > 1. propose (height 10)
