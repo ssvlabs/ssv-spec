@@ -1,44 +1,44 @@
 package frost
 
 import (
+	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/coinbase/kryptology/pkg/dkg/frost"
 	"github.com/coinbase/kryptology/pkg/sharing"
 	ecies "github.com/ecies/go/v2"
 	"github.com/pkg/errors"
 )
 
-func (fr *FROST) processRound2() error {
+func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 
 	if !fr.needToRunCurrentRound() {
-		return nil
+		return nil, nil
 	}
 
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
-	for operatorID, dkgMessage := range fr.state.msgs[Round1] {
+	for peerOID, dkgMessage := range fr.state.msgs[Round1] {
 
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(dkgMessage.Message.Data); err != nil {
-			return errors.Wrap(err, "failed to decode protocol msg")
+			return nil, errors.Wrap(err, "failed to decode protocol msg")
 		}
-
 		verifiers := new(sharing.FeldmanVerifier)
 		for _, commitmentBytes := range protocolMessage.Round1Message.Commitment {
 			commitment, err := thisCurve.Point.FromAffineCompressed(commitmentBytes)
 			if err != nil {
-				return err
+				return nil, errors.Wrap(err, "failed to decode commitment point")
 			}
 			verifiers.Commitments = append(verifiers.Commitments, commitment)
 		}
 
 		Wi, err := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofS)
 		if err != nil {
-			return err
+			return nil, errors.Wrap(err, "failed to decode scalar")
 		}
 		Ci, err := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofR)
 		if err != nil {
-			return err
+			return nil, errors.Wrap(err, "failed to decode scalar")
 		}
 
 		bcastMessage := &frost.Round1Bcast{
@@ -46,15 +46,17 @@ func (fr *FROST) processRound2() error {
 			Wi:        Wi,
 			Ci:        Ci,
 		}
-		bcast[operatorID] = bcastMessage
+		bcast[peerOID] = bcastMessage
 
-		if uint32(fr.state.operatorID) == operatorID {
+		if uint32(fr.state.operatorID) == peerOID {
 			continue
 		}
 
-		shareBytes, err := ecies.Decrypt(fr.state.sessionSK, protocolMessage.Round1Message.Shares[uint32(fr.state.operatorID)])
+		encryptedShare := protocolMessage.Round1Message.Shares[uint32(fr.state.operatorID)]
+		shareBytes, err := ecies.Decrypt(fr.state.sessionSK, encryptedShare)
 		if err != nil {
-			return err
+			fr.state.currentRound = Blame
+			return fr.createAndBroadcastBlameOfInvalidShare(peerOID)
 		}
 
 		share := &sharing.ShamirShare{
@@ -62,27 +64,18 @@ func (fr *FROST) processRound2() error {
 			Value: shareBytes,
 		}
 
-		p2psend[operatorID] = share
+		p2psend[peerOID] = share
 
 		err = verifiers.Verify(share)
 		if err != nil {
-			err2 := fr.createAndBroadcastBlameOfInvalidShare(operatorID)
-			if err2 != nil {
-				return err2
-			}
-
-			blameOutput, err2 := fr.processBlame()
-			if err2 != nil {
-				return err2
-			}
-
-			return ErrInvalidShare{BlameOutput: blameOutput}
+			fr.state.currentRound = Blame
+			return fr.createAndBroadcastBlameOfInvalidShare(peerOID)
 		}
 	}
 
 	bCastMessage, err := fr.state.participant.Round2(bcast, p2psend)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	msg := &ProtocolMsg{
@@ -92,5 +85,6 @@ func (fr *FROST) processRound2() error {
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),
 		},
 	}
-	return fr.broadcastDKGMessage(msg)
+	_, err = fr.broadcastDKGMessage(msg)
+	return nil, err
 }

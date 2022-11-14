@@ -66,7 +66,8 @@ func (fr *FROST) processRound1() error {
 			Shares:     shares,
 		},
 	}
-	return fr.broadcastDKGMessage(msg)
+	_, err = fr.broadcastDKGMessage(msg)
+	return err
 }
 
 func (fr *FROST) partialInterpolate() ([]byte, error) {

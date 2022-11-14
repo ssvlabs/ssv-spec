@@ -173,10 +173,12 @@ func (test *FrostSpecTest) TestingFrost() (map[uint32]*dkg.ProtocolOutcome, *dkg
 
 	for operatorID, output := range outputs {
 		if output.BlameData != nil {
+			signedMsg := &dkg.SignedMessage{}
+			_ = signedMsg.Decode(output.BlameData.BlameMessage)
 			ret[uint32(operatorID)] = &dkg.ProtocolOutcome{
 				BlameOutput: &dkg.BlameOutput{
 					Valid:        output.BlameData.Valid,
-					BlameMessage: output.BlameData.BlameMessage,
+					BlameMessage: signedMsg,
 				},
 			}
 			continue

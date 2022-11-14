@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bloxapp/ssv-spec/ssv/spectest"
-	"io/ioutil"
 	"os"
 	"reflect"
+
+	"github.com/bloxapp/ssv-spec/ssv/spectest"
 )
 
 //go:generate go run main.go
@@ -41,7 +41,7 @@ func writeJson(data []byte) {
 	fullPath := basedir + "/" + fileName
 
 	fmt.Printf("writing spec tests json to: %s\n", fullPath)
-	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {
+	if err := os.WriteFile(fullPath, data, 0644); err != nil {
 		panic(err.Error())
 	}
 }
