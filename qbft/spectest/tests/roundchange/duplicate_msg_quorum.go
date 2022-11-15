@@ -52,7 +52,9 @@ func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
 	rcMsg2.RoundChangeJustifications = prepareJustifications
 
 	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg, rcMsg3, rcMsg4,
+		rcMsg.ToJustification(),
+		rcMsg3.ToJustification(),
+		rcMsg4.ToJustification(),
 	}
 
 	rcMsgEncoded, _ := rcMsg.Encode()

@@ -48,7 +48,9 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		Round:  qbft.FirstRound,
 	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	proposeMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg, rcMsg2, rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	proposeMsgEncoded2, _ := proposeMsg2.Encode()
 	rcMsgEncoded, _ := rcMsg.Encode()

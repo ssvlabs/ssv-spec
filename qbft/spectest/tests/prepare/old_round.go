@@ -33,9 +33,9 @@ func OldRound() *tests.MsgProcessingSpecTest {
 		Round:  9,
 	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg,
-		rcMsg2,
-		rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	pre.State.ProposalAcceptedForCurrentRound = proposalMsg
 

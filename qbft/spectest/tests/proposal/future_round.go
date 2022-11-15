@@ -56,9 +56,9 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 	}
 
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg,
-		rcMsg2,
-		rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	proposeMsgEncoded, _ := proposeMsg.Encode()
 	return &tests.MsgProcessingSpecTest{
@@ -73,7 +73,7 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 		},
 		OutputMessages: []*types.Message{
 			{
-				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+				ID: types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: prepareMsgEncoded,
 			},
 		},

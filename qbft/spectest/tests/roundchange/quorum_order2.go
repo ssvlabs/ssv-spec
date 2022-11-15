@@ -48,7 +48,9 @@ func QuorumOrder2() *tests.MsgProcessingSpecTest {
 	rcMsg.RoundChangeJustifications = prepareJustifications
 	proposalMsg.ProposalJustifications = prepareJustifications
 	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg, rcMsg3, rcMsg2,
+		rcMsg.ToJustification(),
+		rcMsg3.ToJustification(),
+		rcMsg2.ToJustification(),
 	}
 
 	rcMsgEncoded, _ := rcMsg.Encode()

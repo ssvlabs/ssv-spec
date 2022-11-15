@@ -57,7 +57,9 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 		Round:  2,
 	}, &qbft.Data{})
 	proposeMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg, rcMsg2, rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	rcMsgEncoded, _ := rcMsg.Encode()
 	rcMsgEncoded2, _ := rcMsg2.Encode()

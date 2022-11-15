@@ -70,9 +70,9 @@ func JustificationsValueNotJustified() *tests.MsgProcessingSpecTest {
 	}
 
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg,
-		rcMsg2,
-		rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	proposeMsg.ProposalJustifications = []*qbft.SignedMessage{
 		signQBFTMsg,

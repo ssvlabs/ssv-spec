@@ -71,9 +71,9 @@ func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 
 	proposeMsg2.ProposalJustifications = justifications
 	proposeMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg,
-		rcMsg2,
-		rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	proposeMsgEncoded2, _ := proposeMsg2.Encode()
 
@@ -135,7 +135,7 @@ func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 				Data: proposeMsgEncoded2,
 			},
 			{
-				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+				ID: types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: prepareRound2MsgEncoded,
 			},
 		},

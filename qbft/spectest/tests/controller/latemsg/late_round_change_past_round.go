@@ -62,7 +62,9 @@ func LateRoundChangePastRound() *tests.ControllerSpecTest {
 		Round:  qbft.FirstRound,
 	}, &qbft.Data{}).Encode()
 	proposeMsg2.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg, rcMsg2, rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	rcMsgEncoded, _ := rcMsg.Encode()
 	rcMsgEncoded2, _ := rcMsg2.Encode()

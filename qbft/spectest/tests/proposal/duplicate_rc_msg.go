@@ -25,9 +25,9 @@ func DuplicateRCMsg() *tests.MsgProcessingSpecTest {
 	}, pre.StartValue)
 
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg,
-		rcMsg2,
-		rcMsg2,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg2.ToJustification(),
 	}
 	proposeMsgEncoded, _ := proposeMsg.Encode()
 

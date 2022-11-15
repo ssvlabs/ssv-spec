@@ -50,9 +50,9 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() *tests.MsgProcessingSpecTe
 
 	proposeMsg.ProposalJustifications = justifications
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg,
-		rcMsg2,
-		rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	proposeMsgEncoded, _ := proposeMsg.Encode()
 

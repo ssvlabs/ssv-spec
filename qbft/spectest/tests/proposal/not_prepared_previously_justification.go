@@ -34,9 +34,9 @@ func NotPreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 
 	proposeMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg,
-		rcMsg2,
-		rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	proposeMsgEncoded, _ := proposeMsg.Encode()
 
@@ -54,7 +54,7 @@ func NotPreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 		InputMessages: msgs,
 		OutputMessages: []*types.Message{
 			{
-				ID:   types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
+				ID: types.PopulateMsgType(pre.State.ID, types.ConsensusPrepareMsgType),
 				Data: signMsgEncoded,
 			},
 		},

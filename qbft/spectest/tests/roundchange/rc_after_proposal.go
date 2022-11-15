@@ -38,7 +38,9 @@ func AfterProposal() *tests.MsgProcessingSpecTest {
 	}, &qbft.Data{Root: pre.StartValue.Root}).Encode()
 
 	proposalMsg.RoundChangeJustifications = []*qbft.SignedMessage{
-		rcMsg, rcMsg2, rcMsg3,
+		rcMsg.ToJustification(),
+		rcMsg2.ToJustification(),
+		rcMsg3.ToJustification(),
 	}
 	proposalMsgEncoded, _ := proposalMsg.Encode()
 	rcMsgEncoded, _ := rcMsg.Encode()
