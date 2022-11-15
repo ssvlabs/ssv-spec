@@ -94,7 +94,7 @@ func TestMessagePrioritizerSlice(t *testing.T) {
 				}
 			}
 
-			prioritizer := NewSSVMessagePrioritizer(test.state)
+			prioritizer := NewMessagePrioritizer(test.state)
 			for _, shuffle := range shuffles {
 				shuffle.sort(prioritizer)
 				correctOrder := messages.equal(shuffle)
@@ -177,7 +177,7 @@ func (m messageSlice) shuffle() messageSlice {
 	return shuffled
 }
 
-func (m messageSlice) sort(prioritizer *SSVMessagePrioritizer) {
+func (m messageSlice) sort(prioritizer MessagePrioritizer) {
 	sort.Slice(m, func(i, j int) bool {
 		return prioritizer.Prior(m[i], m[j])
 	})

@@ -15,15 +15,19 @@ type State struct {
 	Quorum             uint64
 }
 
-type SSVMessagePrioritizer struct {
+type MessagePrioritizer interface {
+	Prior(a, b *DecodedSSVMessage) bool
+}
+
+type standardPrioritizer struct {
 	state *State
 }
 
-func NewSSVMessagePrioritizer(state *State) *SSVMessagePrioritizer {
-	return &SSVMessagePrioritizer{state: state}
+func NewMessagePrioritizer(state *State) MessagePrioritizer {
+	return &standardPrioritizer{state: state}
 }
 
-func (p *SSVMessagePrioritizer) Prior(a, b *DecodedSSVMessage) bool {
+func (p *standardPrioritizer) Prior(a, b *DecodedSSVMessage) bool {
 	relativeHeightA, relativeHeightB := compareHeightOrSlot(p.state, a), compareHeightOrSlot(p.state, b)
 	if relativeHeightA != relativeHeightB {
 		score := map[int]int{
