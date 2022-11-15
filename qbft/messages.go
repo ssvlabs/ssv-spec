@@ -110,12 +110,12 @@ func (m *Message) Validate(msgType types.MsgType, inputSource []byte) error {
 // SignedMessage includes a signature over Message AND optional justification fields (not signed over)
 type SignedMessage struct {
 	Message   *Message
-	Signers   []types.OperatorID `ssz-max:"13"`
-	Signature types.Signature    `ssz-size:"96"`
+	Signers   []types.OperatorID
+	Signature types.Signature
 
-	InputSource               []byte           `ssz-max:"387173"`
-	RoundChangeJustifications []*SignedMessage `ssz-max:"13"`
-	ProposalJustifications    []*SignedMessage `ssz-max:"13"`
+	InputSource               []byte
+	RoundChangeJustifications []*SignedMessage
+	ProposalJustifications    []*SignedMessage
 }
 
 func (s *SignedMessage) GetSignature() types.Signature {
@@ -253,16 +253,23 @@ func (s *SignedMessage) Validate(msgType types.MsgType) error {
 }
 
 func (s *SignedMessage) ToJustification() *SignedMessage {
-	return &SignedMessage{
-		Message: &Message{
-			Height:        s.Message.Height,
-			Round:         s.Message.Round,
-			InputRoot:     s.Message.InputRoot,
-			PreparedRound: s.Message.PreparedRound,
-		},
-		Signers:   s.Signers,
-		Signature: s.Signature,
+	ret := &SignedMessage{
+		Signers:                   make([]types.OperatorID, len(s.Signers)),
+		Signature:                 make([]byte, len(s.Signature)),
+		RoundChangeJustifications: make([]*SignedMessage, len(s.RoundChangeJustifications)),
 	}
+	copy(ret.Signers, s.Signers)
+	copy(ret.Signature, s.Signature)
+	copy(ret.RoundChangeJustifications, s.RoundChangeJustifications)
+
+	ret.Message = &Message{
+		Height:        s.Message.Height,
+		Round:         s.Message.Round,
+		InputRoot:     s.Message.InputRoot,
+		PreparedRound: s.Message.PreparedRound,
+	}
+
+	return ret
 }
 
 type signedMessageSSZ struct {
@@ -270,10 +277,9 @@ type signedMessageSSZ struct {
 	Signers   []uint64 `ssz-max:"13"`
 	Signature []byte   `ssz-size:"96"`
 
-	InputSource []byte `ssz-max:"387173"`
-	// TODO<olegshmuelov>: calculate the real signedMessage size
-	RoundChangeJustifications [][]byte `ssz-max:"13,400000"`
-	ProposalJustifications    [][]byte `ssz-max:"13,400000"`
+	InputSource               []byte   `ssz-max:"1125899907230335"`
+	RoundChangeJustifications [][]byte `ssz-max:"13,2516"`
+	ProposalJustifications    [][]byte `ssz-max:"13,176"`
 }
 
 // SizeSSZ returns the ssz encoded size in bytes for the SignedMessage object
@@ -281,7 +287,8 @@ type signedMessageSSZ struct {
 func (s *SignedMessage) SizeSSZ() int {
 	smSSZ, err := s.toSignedMessageSSZ()
 	if err != nil {
-		panic(err)
+		return 0
+		//panic(err)
 	}
 	return smSSZ.SizeSSZ()
 }
