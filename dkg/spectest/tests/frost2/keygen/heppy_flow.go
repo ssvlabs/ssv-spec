@@ -2,6 +2,7 @@ package keygen
 
 import (
 	"crypto/ecdsa"
+	"crypto/rsa"
 	"encoding/hex"
 
 	"github.com/bloxapp/ssv-spec/dkg"
@@ -10,27 +11,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/ethereum/go-ethereum/crypto"
-)
-
-var (
-	SessionPKs map[types.OperatorID]string = map[types.OperatorID]string{
-		1: "036ff75a45bb43f1190f89838326ed4f2e090293184e56ff4a01a1a6db548fbae6",
-		2: "038680ce08d663c436ddb98265dd26a0c775bf4728ab5ae385671eeb5b87ab08e7",
-		3: "0204470b016f243d34ff27d8c869c3b8012612232390d8d3259bc40bf4dc3c4551",
-		4: "0328893f709ce7ad1ee70f393cf5ba152fc11043043f0a0acb1591923ebea52dbd",
-	}
-
-	PreparationMessageBytes = func(id types.OperatorID) []byte {
-		pk, _ := hex.DecodeString(SessionPKs[id])
-		msg := &frost.ProtocolMsg{
-			Round: frost.Preparation,
-			PreparationMessage: &frost.PreparationMessage{
-				SessionPk: pk,
-			},
-		}
-		byts, _ := msg.Encode()
-		return byts
-	}
+	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 func HappyFlow() *frost2.MsgProcessingSpecTest {
@@ -47,7 +28,17 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 		Fork:                  testingutils.TestingForkVersion,
 	}
 	initBytes, _ := init.Encode()
-	root := testingutils.DespositDataSigningRoot(ks, init)
+
+	vk, _ := hex.DecodeString(testingutils.Round2[1].Vk)
+	root := func(validatorPK []byte, initMsg *dkg.Init) []byte {
+		root, _, _ := types.GenerateETHDepositData(
+			validatorPK,
+			initMsg.WithdrawalCredentials,
+			initMsg.Fork,
+			types.DomainDeposit,
+		)
+		return root
+	}(vk, init)
 
 	return &frost2.MsgProcessingSpecTest{
 		Name: "happy flow",
@@ -64,66 +55,216 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 			Storage:         storage,
 		},
 		InputMessages: []*dkg.SignedMessage{
-			SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,
 				Identifier: identifier,
 				Data:       initBytes,
 			}),
-			SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
+			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       PreparationMessageBytes(2),
 			}),
-			SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
+			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       PreparationMessageBytes(3),
 			}),
-			SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
+			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       PreparationMessageBytes(4),
 			}),
+			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       Round1MessageBytes(2),
+			}),
+			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       Round1MessageBytes(3),
+			}),
+			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       Round1MessageBytes(4),
+			}),
+			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       Round2MessageBytes(2),
+			}),
+			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       Round2MessageBytes(3),
+			}),
+			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       Round2MessageBytes(4),
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
+				MsgType:    dkg.DepositDataMsgType,
+				Identifier: identifier,
+				Data:       testingutils.PartialDepositDataBytes(2, root, skFromHex(testingutils.Round2[2].SkShare)),
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
+				MsgType:    dkg.DepositDataMsgType,
+				Identifier: identifier,
+				Data:       testingutils.PartialDepositDataBytes(3, root, skFromHex(testingutils.Round2[3].SkShare)),
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
+				MsgType:    dkg.DepositDataMsgType,
+				Identifier: identifier,
+				Data:       testingutils.PartialDepositDataBytes(4, root, skFromHex(testingutils.Round2[4].SkShare)),
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
+				MsgType:    dkg.OutputMsgType,
+				Identifier: identifier,
+				Data:       SignedOutputBytes(identifier, 2, ks.DKGOperators[2].SK, &ks.DKGOperators[2].EncryptionKey.PublicKey, root),
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
+				MsgType:    dkg.OutputMsgType,
+				Identifier: identifier,
+				Data:       SignedOutputBytes(identifier, 3, ks.DKGOperators[3].SK, &ks.DKGOperators[3].EncryptionKey.PublicKey, root),
+			}),
+			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
+				MsgType:    dkg.OutputMsgType,
+				Identifier: identifier,
+				Data:       SignedOutputBytes(identifier, 4, ks.DKGOperators[4].SK, &ks.DKGOperators[4].EncryptionKey.PublicKey, root),
+			}),
 		},
 		OutputMessages: []*dkg.SignedMessage{
+			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       PreparationMessageBytes(1),
+			}),
+			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       Round1MessageBytes(1),
+			}),
+			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+				MsgType:    dkg.ProtocolMsgType,
+				Identifier: identifier,
+				Data:       Round2MessageBytes(1),
+			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.DepositDataMsgType,
 				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(1, root, ks.Shares[1]),
+				Data:       testingutils.PartialDepositDataBytes(1, root, skFromHex(testingutils.Round2[1].SkShare)),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
 				Identifier: identifier,
-				Data:       ks.SignedOutputBytes(identifier, 1, root),
+				Data:       SignedOutputBytes(identifier, 1, ks.DKGOperators[1].SK, &ks.DKGOperators[1].EncryptionKey.PublicKey, root),
 			}),
 		},
 		Output: map[types.OperatorID]*dkg.SignedOutput{
-			1: ks.SignedOutputObject(identifier, 1, root),
-			2: ks.SignedOutputObject(identifier, 2, root),
-			3: ks.SignedOutputObject(identifier, 3, root),
-			4: ks.SignedOutputObject(identifier, 4, root),
+			1: SignedOutputObject(identifier, 1, ks.DKGOperators[1].SK, &ks.DKGOperators[1].EncryptionKey.PublicKey, root),
+			2: SignedOutputObject(identifier, 2, ks.DKGOperators[2].SK, &ks.DKGOperators[2].EncryptionKey.PublicKey, root),
+			3: SignedOutputObject(identifier, 3, ks.DKGOperators[3].SK, &ks.DKGOperators[3].EncryptionKey.PublicKey, root),
+			4: SignedOutputObject(identifier, 4, ks.DKGOperators[4].SK, &ks.DKGOperators[4].EncryptionKey.PublicKey, root),
 		},
 		KeySet:        ks,
 		ExpectedError: "",
 	}
 }
 
-func SignDKGMsg(sk *ecdsa.PrivateKey, opID types.OperatorID, msg *dkg.Message) *dkg.SignedMessage {
-	signedMessage := &dkg.SignedMessage{
-		Message: msg,
-		Signer:  opID,
+func Round1MessageBytes(id types.OperatorID) []byte {
+	commitments := [][]byte{}
+	for _, commitment := range testingutils.Round1[id].Commitments {
+		cbytes, _ := hex.DecodeString(commitment)
+		commitments = append(commitments, cbytes)
+	}
+	proofS, _ := hex.DecodeString(testingutils.Round1[id].ProofS)
+	proofR, _ := hex.DecodeString(testingutils.Round1[id].ProofR)
+	shares := map[uint32][]byte{}
+	for peerID, share := range testingutils.Round1[id].Shares {
+		shareBytes, _ := hex.DecodeString(share)
+		shares[peerID] = shareBytes
 	}
 
-	root, err := signedMessage.GetRoot()
-	if err != nil {
-		panic(err)
+	msg := frost.ProtocolMsg{
+		Round: frost.Round1,
+		Round1Message: &frost.Round1Message{
+			Commitment: commitments,
+			ProofS:     proofS,
+			ProofR:     proofR,
+			Shares:     shares,
+		},
+	}
+	byts, _ := msg.Encode()
+	return byts
+}
+
+func PreparationMessageBytes(id types.OperatorID) []byte {
+	pk, _ := hex.DecodeString(testingutils.SessionPKs[id])
+	msg := &frost.ProtocolMsg{
+		Round: frost.Preparation,
+		PreparationMessage: &frost.PreparationMessage{
+			SessionPk: pk,
+		},
+	}
+	byts, _ := msg.Encode()
+	return byts
+}
+
+func Round2MessageBytes(id types.OperatorID) []byte {
+	vk, _ := hex.DecodeString(testingutils.Round2[id].Vk)
+	vkshare, _ := hex.DecodeString(testingutils.Round2[id].VkShare)
+	msg := frost.ProtocolMsg{
+		Round: frost.Round2,
+		Round2Message: &frost.Round2Message{
+			Vk:      vk,
+			VkShare: vkshare,
+		},
+	}
+	byts, _ := msg.Encode()
+	return byts
+}
+
+var skFromHex = func(str string) *bls.SecretKey {
+	types.InitBLS()
+	ret := &bls.SecretKey{}
+	if err := ret.DeserializeHexStr(str); err != nil {
+		panic(err.Error())
+	}
+	return ret
+}
+
+func SignedOutputBytes(requestID dkg.RequestID, opId types.OperatorID, sk *ecdsa.PrivateKey, pk *rsa.PublicKey, root []byte) []byte {
+	d := SignedOutputObject(requestID, opId, sk, pk, root)
+	ret, _ := d.Encode()
+	return ret
+}
+
+func SignedOutputObject(requestID dkg.RequestID, opId types.OperatorID, opSK *ecdsa.PrivateKey, opPK *rsa.PublicKey, root []byte) *dkg.SignedOutput {
+	share := skFromHex(testingutils.Round2[opId].SkShare)
+	validatorPublicKey, _ := hex.DecodeString(testingutils.Round2[1].Vk)
+
+	sk := &bls.SecretKey{}
+	_ = sk.DeserializeHexStr(testingutils.Round2[opId].Sk)
+
+	o := &dkg.Output{
+		RequestID:            requestID,
+		EncryptedShare:       testingutils.TestingEncryption(opPK, share.Serialize()),
+		SharePubKey:          share.GetPublicKey().Serialize(),
+		ValidatorPubKey:      validatorPublicKey,
+		DepositDataSignature: sk.SignByte(root).Serialize(),
 	}
 
-	sig, err := crypto.Sign(root, sk)
-	if err != nil {
-		panic(err)
-	}
+	root1, _ := o.GetRoot()
 
-	signedMessage.Signature = sig
-	return signedMessage
+	sig, _ := crypto.Sign(root1, opSK)
+
+	ret := &dkg.SignedOutput{
+		Data:      o,
+		Signer:    opId,
+		Signature: sig,
+	}
+	return ret
 }

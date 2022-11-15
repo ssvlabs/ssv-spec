@@ -41,6 +41,9 @@ type State struct {
 	operatorsOld   []uint32
 	operatorShares map[uint32]*bls.SecretKey
 
+	// frost output
+	VkShare, SkShare, Vk []byte
+
 	msgs            ProtocolMessageStore
 	oldKeyGenOutput *dkg.KeyGenOutput
 }
