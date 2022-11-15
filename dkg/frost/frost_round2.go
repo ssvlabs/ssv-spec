@@ -11,7 +11,7 @@ import (
 func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 
 	if fr.state.currentRound != Round2 {
-		return dkg.ErrInvalidRound{}
+		return nil, dkg.ErrInvalidRound{}
 	}
 
 	if !fr.needToRunCurrentRound() {

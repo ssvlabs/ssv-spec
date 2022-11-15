@@ -61,7 +61,7 @@ func GetBlameSpecTest(testName string, data []byte) *FrostSpecTest {
 				Valid: true,
 			},
 		},
-		ExpectedError: "",
+		ExpectedError: "could not find dkg runner",
 
 		InputMessages: map[int]MessagesForNodes{
 			0: initMessages,
