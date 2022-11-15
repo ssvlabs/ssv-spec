@@ -8,8 +8,8 @@ import (
 
 func Keygen() *FrostSpecTest {
 
-	requestID := testingutils.GetRandRequestID()
 	ks := testingutils.Testing4SharesSet()
+	requestID := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
 
 	threshold := 3
 	operators := []types.OperatorID{1, 2, 3, 4}

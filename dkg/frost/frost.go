@@ -163,6 +163,7 @@ func (fr *FROST) Start() error {
 			SessionPk: k.PublicKey.Bytes(true),
 		},
 	}
+
 	_, err = fr.broadcastDKGMessage(msg)
 	return err
 }
