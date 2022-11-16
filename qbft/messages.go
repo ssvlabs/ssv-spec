@@ -31,8 +31,8 @@ func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
 }
 
 type Data struct {
-	Root   [32]byte `ssz-size:"32"`
-	Source []byte   `ssz-max:"387173"`
+	Root   [32]byte
+	Source []byte
 }
 
 func (d *Data) Validate(cd *types.ConsensusData) error {
@@ -101,7 +101,6 @@ func (m *Message) Validate(msgType types.MsgType, inputSource []byte) error {
 			return errors.New("message input data is invalid")
 		}
 	case types.ConsensusRoundChangeMsgType:
-		// TODO<olegshmuelov>: the input data for round change can be nil?
 	}
 
 	return nil
@@ -283,7 +282,6 @@ type signedMessageSSZ struct {
 }
 
 // SizeSSZ returns the ssz encoded size in bytes for the SignedMessage object
-// TODO<olegshmuelov>: the calculation of the signed msg size should be improved performance wise
 func (s *SignedMessage) SizeSSZ() int {
 	smSSZ, err := s.toSignedMessageSSZ()
 	if err != nil {

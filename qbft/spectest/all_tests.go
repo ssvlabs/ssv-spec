@@ -60,6 +60,7 @@ var AllTests = []SpecTest{
 	processmsg.SingleConsensusMsg(),
 	processmsg.FullDecided(),
 	processmsg.InvalidIdentifier(),
+	processmsg.MsgTypeUnknown(),
 	processmsg.NoInstanceRunning(),
 
 	latemsg.LateCommit(),
@@ -101,14 +102,12 @@ var AllTests = []SpecTest{
 	proposer.ThirteenOperators(),
 
 	messages.RoundChangeDataInvalidJustifications(),
-	// TODO<olegshmuelov>: rc not prepared with data
 	//messages.RoundChangeDataInvalidPreparedRound(),
 	messages.RoundChangePrePreparedJustifications(),
 	messages.RoundChangeNotPreparedJustifications(),
 	messages.CommitDataEncoding(),
 	//messages.MsgNilIdentifier(),
 	//messages.MsgNonZeroIdentifier(),
-	//messages.MsgTypeUnknown(),
 	messages.PrepareDataEncoding(),
 	messages.ProposeDataEncoding(),
 	messages.MsgDataNil(),

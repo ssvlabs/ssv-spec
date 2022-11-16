@@ -121,7 +121,6 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 
 // ProcessMessage processes network Messages of all types
 func (n *Node) ProcessMessage(msg *types.Message) error {
-	// TODO<olegshmuelov>: DKG check if need
 	//if msg.MsgType != types.DKGInitMsgType {
 	//	return errors.New("not a DKGMsgType")
 	//}

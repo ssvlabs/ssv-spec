@@ -7,7 +7,6 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// MsgNilIdentifier TODO<olegshmuelov> find a way to validate the identifier
 // MsgNilIdentifier tests Message with Identifier == nil
 func MsgNilIdentifier() *tests.MsgSpecTest {
 	identifier := types.NewBaseMsgID(nil, types.BNRoleAttester)

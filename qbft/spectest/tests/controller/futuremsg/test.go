@@ -51,11 +51,12 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
-	require.EqualValues(t, test.ControllerPostRoot, hex.EncodeToString(r))
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
 		require.NoError(t, lastErr)
 	}
+
+	require.EqualValues(t, test.ControllerPostRoot, hex.EncodeToString(r))
 }

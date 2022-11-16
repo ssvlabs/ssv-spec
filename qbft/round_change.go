@@ -33,7 +33,6 @@ func (i *Instance) uponRoundChange(signedRoundChange *SignedMessage) error {
 		// If justifiedRoundChangeMsg has prepare justification chose prepared value
 		valueToPropose := i.StartValue
 		if justifiedRoundChangeMsg.Message.Prepared() {
-			// TODO<olegshmuelov>: validate that justified round change msg holds the complete input data
 			valueToPropose = &Data{
 				Root:   justifiedRoundChangeMsg.Message.InputRoot,
 				Source: justifiedRoundChangeMsg.InputSource,

@@ -62,7 +62,6 @@ type ConsensusData struct {
 	AggregateAndProof      *phase0.AggregateAndProof
 	SyncCommitteeBlockRoot phase0.Root
 	// SyncCommitteeContribution map holds as key the selection proof for the contribution
-	// TODO<olegshmuelov>: consider to use array instead of the map for ssz
 	SyncCommitteeContribution ContributionsMap
 }
 

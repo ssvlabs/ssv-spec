@@ -56,14 +56,7 @@ func NewController(
 	config IConfig,
 ) *Controller {
 	return &Controller{
-		Identifier: identifier,
-		// TODO<olegshmuelov>: fastssz does not support int but only uint.
-		// this why the Height type was changed from int64 to uint64
-		// The initial value of the height was changed from -1 to math.MaxUint64
-		// when we bump the height at the first instance we get 0 (math.MaxUint64 + 1 = 0)
-		// if we want to keep the Height to be int64 there are 2 possible options:
-		// 1. create a messageSSZ with uint64 instead of Height and transform to message with int64
-		// 2. open a pr for fastssz with the implementation that supports int
+		Identifier:          identifier,
 		Height:              math.MaxUint64, // as we bump the height when starting the first instance
 		Domain:              domain,
 		Share:               share,
@@ -149,6 +142,16 @@ func (c *Controller) baseMsgValidation(msgID types.MessageID) error {
 	// verify msg belongs to controller
 	if !msgID.Compare(c.Identifier) {
 		return errors.New("message doesn't belong to Identifier")
+	}
+	switch msgID.GetMsgType() {
+	case
+		types.ConsensusProposeMsgType,
+		types.ConsensusPrepareMsgType,
+		types.ConsensusCommitMsgType,
+		types.ConsensusRoundChangeMsgType,
+		types.DecidedMsgType:
+	default:
+		return errors.New("message type not supported")
 	}
 
 	return nil

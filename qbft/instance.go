@@ -112,7 +112,7 @@ func (i *Instance) ProcessMsg(
 		case types.ConsensusRoundChangeMsgType:
 			return i.uponRoundChange(msg)
 		default:
-			return errors.New("signed message type not supported")
+			return errors.New("message type not supported")
 		}
 	})
 	if res != nil {

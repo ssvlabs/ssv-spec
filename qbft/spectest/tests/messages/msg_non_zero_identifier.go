@@ -7,7 +7,6 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// MsgNonZeroIdentifier TODO<olegshmuelov> find a way to validate the identifier
 // MsgNonZeroIdentifier tests Message with len(Identifier) == 0
 func MsgNonZeroIdentifier() *tests.MsgSpecTest {
 	identifier := types.NewBaseMsgID([]byte{}, types.BNRoleAttester)

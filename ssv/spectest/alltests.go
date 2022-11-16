@@ -25,11 +25,9 @@ var AllTests = []SpecTest{
 	newduty.Finished(),
 	newduty.Valid(),
 	newduty.PostWrongDecided(),
-	// TODO<olegshmuelov>: we cant marshal consensus data with unknown role
 	//newduty.PostInvalidDecided(),
 
 	consensus.FutureDecided(),
-	// TODO<olegshmuelov>: we cant marshal consensus data with unknown role
 	//consensus.InvalidDecidedValue(),
 	consensus.NoRunningDuty(),
 	consensus.PostFinish(),
@@ -43,7 +41,6 @@ var AllTests = []SpecTest{
 	synccommitteeaggregator.NoneAggregatorQuorum(),
 	synccommitteeaggregator.AllAggregatorQuorum(),
 
-	// TODO<olegshmuelov>: PartialSignature Signer related
 	//preconsensus.UnknownBeaconSigner(),
 	//preconsensus.InvalidBeaconSignature(),
 
