@@ -84,6 +84,7 @@ type State struct {
 	ID                              []byte // instance Identifier
 	Round                           Round
 	Height                          Height
+	StartValue                      []byte
 	LastPreparedRound               Round
 	LastPreparedValue               []byte
 	ProposalAcceptedForCurrentRound *SignedMessage

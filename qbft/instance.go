@@ -19,7 +19,6 @@ type Instance struct {
 
 	processMsgF *types.ThreadSafeF
 	startOnce   sync.Once
-	StartValue  []byte
 }
 
 func NewInstance(
@@ -59,7 +58,7 @@ func NewInstanceFromState(
 // Start is an interface implementation
 func (i *Instance) Start(value []byte, height Height) {
 	i.startOnce.Do(func() {
-		i.StartValue = value
+		i.State.StartValue = value
 		i.State.Round = FirstRound
 		i.State.Height = height
 
@@ -67,7 +66,7 @@ func (i *Instance) Start(value []byte, height Height) {
 
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
-			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
+			proposal, err := CreateProposal(i.State, i.config, i.State.StartValue, nil, nil)
 			// nolint
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())
@@ -121,7 +120,7 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 			}
 			return err
 		case RoundChangeMsgType:
-			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
+			return i.uponRoundChange(i.State.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
 		default:
 			return errors.New("signed message type not supported")
 		}

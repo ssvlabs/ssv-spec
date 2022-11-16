@@ -38,8 +38,11 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 			inst.State.Round = msg.Message.Round
 			inst.State.DecidedValue = data.Data
 		}
+		if err := c.SaveInstance(inst); err != nil { // update
+			fmt.Printf("failed to save instance state. error:%e \n", err)
+		}
 	} else if err != nil {
-		fmt.Printf("failed to get instance - %e", err)
+		fmt.Printf("failed to get instance. error:%e \n", err)
 	}
 
 	isFutureDecided := msg.Message.Height > c.Height

@@ -100,6 +100,11 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 		return nil, nil
 	}
 
+	// update instance state
+	if err := c.SaveInstance(inst); err != nil {
+		fmt.Printf("%s\n", err.Error())
+	}
+
 	if err := c.saveAndBroadcastDecided(decidedMsg); err != nil {
 		// no need to fail processing instance deciding if failed to save/ broadcast
 		fmt.Printf("%s\n", err.Error())
@@ -122,6 +127,11 @@ func (c *Controller) InstanceForHeight(height Height) (*Instance, error) {
 		return nil, err
 	}
 	return NewInstanceFromState(c.config, state), nil
+}
+
+// SaveInstance save/updates instance state
+func (c *Controller) SaveInstance(instance *Instance) error {
+	return c.GetConfig().GetStorage().SaveInstanceState(instance.State)
 }
 
 func (c *Controller) bumpHeight() {
