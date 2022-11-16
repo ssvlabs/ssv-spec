@@ -42,6 +42,13 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		err := contr.StartNewInstance(runData.InputValue)
 		if err != nil {
 			lastErr = err
+		} else {
+			// checks that round timer started
+			timer, ok := config.GetTimer().(*testingutils.TestQBFTTimer)
+			if ok && timer != nil {
+				require.Greater(t, timer.Timeouts, 0)
+				require.GreaterOrEqual(t, timer.Round, qbft.Round(1))
+			}
 		}
 
 		decidedCnt := 0
