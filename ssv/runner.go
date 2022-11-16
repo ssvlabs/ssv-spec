@@ -93,15 +93,19 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *Sig
 }
 
 func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
-	if err := b.validateConsensusMsg(msg); err != nil {
-		return false, nil, errors.Wrap(err, "invalid consensus message")
+	prevDecided := false
+	if b.HasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
+		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
-
-	prevDecided, _ := b.State.RunningInstance.IsDecided()
 
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
-		return false, nil, errors.Wrap(err, "failed to process consensus msg")
+		return false, nil, err
+	}
+
+	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
+	if !b.HasRunningDuty() {
+		return false, nil, err
 	}
 
 	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
@@ -176,7 +180,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.Signe
 }
 
 func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
-	if !b.HashRunningDuty() {
+	if !b.HasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
@@ -192,15 +196,8 @@ func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
-func (b *BaseRunner) validateConsensusMsg(msg *qbft.SignedMessage) error {
-	if !b.HashRunningDuty() {
-		return errors.New("no running duty")
-	}
-	return nil
-}
-
 func (b *BaseRunner) validatePostConsensusMsg(msg *SignedPartialSignatureMessage) error {
-	if !b.HashRunningDuty() {
+	if !b.HasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
@@ -233,7 +230,7 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 	return nil
 }
 
-func (b *BaseRunner) HashRunningDuty() bool {
+func (b *BaseRunner) HasRunningDuty() bool {
 	if b.State == nil {
 		return false
 	}
