@@ -123,7 +123,10 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 
 // IsDecided interface implementation
 func (i *Instance) IsDecided() (bool, []byte) {
-	return i.State.Decided, i.State.DecidedValue
+	if state := i.State; state != nil {
+		return state.Decided, state.DecidedValue
+	}
+	return false, nil
 }
 
 // GetConfig returns the instance config
