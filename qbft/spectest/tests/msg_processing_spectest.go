@@ -14,12 +14,13 @@ import (
 const ChangeProposerFuncInstanceHeight = 10
 
 type MsgProcessingSpecTest struct {
-	Name           string
-	Pre            *qbft.Instance
-	PostRoot       string
-	InputMessages  []*qbft.SignedMessage
-	OutputMessages []*qbft.SignedMessage
-	ExpectedError  string
+	Name               string
+	Pre                *qbft.Instance
+	PostRoot           string
+	InputMessages      []*qbft.SignedMessage
+	OutputMessages     []*qbft.SignedMessage
+	ExpectedError      string
+	ExpectedTimerState *testingutils.TimerState
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
@@ -42,6 +43,15 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {
 		require.NoError(t, lastErr)
+	}
+
+	if test.ExpectedTimerState != nil {
+		// checks round timer state
+		timer, ok := test.Pre.GetConfig().GetTimer().(*testingutils.TestQBFTTimer)
+		if ok && timer != nil {
+			require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts)
+			require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round)
+		}
 	}
 
 	postRoot, err := test.Pre.State.GetRoot()

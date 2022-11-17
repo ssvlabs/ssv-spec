@@ -21,17 +21,12 @@ type RunInstanceData struct {
 	ControllerPostRoot string
 }
 
-type TimerState struct {
-	Timeouts int
-	Round    qbft.Round
-}
-
 type ControllerSpecTest struct {
-	Name            string
-	RunInstanceData []*RunInstanceData
-	OutputMessages  []*qbft.SignedMessage
-	ExpectedError   string
-	TimerState      *TimerState
+	Name               string
+	RunInstanceData    []*RunInstanceData
+	OutputMessages     []*qbft.SignedMessage
+	ExpectedError      string
+	ExpectedTimerState *testingutils.TimerState
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
@@ -48,14 +43,6 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		err := contr.StartNewInstance(runData.InputValue)
 		if err != nil {
 			lastErr = err
-		}
-		if test.TimerState != nil {
-			// checks round timer
-			timer, ok := config.GetTimer().(*testingutils.TestQBFTTimer)
-			if ok && timer != nil {
-				require.Equal(t, test.TimerState.Timeouts, timer.Timeouts)
-				require.Equal(t, test.TimerState.Round, timer.Round)
-			}
 		}
 
 		decidedCnt := 0
@@ -120,6 +107,15 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		r, err := contr.GetRoot()
 		require.NoError(t, err)
 		require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r))
+
+		if test.ExpectedTimerState != nil {
+			// checks round timer state
+			timer, ok := config.GetTimer().(*testingutils.TestQBFTTimer)
+			if ok && timer != nil {
+				require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts)
+				require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round)
+			}
+		}
 	}
 
 	if len(test.ExpectedError) != 0 {
