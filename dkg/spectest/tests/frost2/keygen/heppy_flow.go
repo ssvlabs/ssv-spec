@@ -47,13 +47,9 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 			ETHAddress:       ks.DKGOperators[1].ETHAddress,
 			EncryptionPubKey: &ks.DKGOperators[1].EncryptionKey.PublicKey,
 		},
-		NodeConfig: &dkg.Config{
-			KeygenProtocol:  frost.New,
-			ReshareProtocol: frost.NewResharing,
-			Network:         network,
-			Signer:          keyManager,
-			Storage:         storage,
-		},
+		Network: network,
+		Signer:  keyManager,
+		Storage: storage,
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,

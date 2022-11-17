@@ -5,19 +5,26 @@ import (
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
 
 type MsgProcessingSpecTest struct {
-	Name           string
+	Name string
+
+	// Setup Node
+	Operator            *dkg.Operator
+	Network             dkg.Network
+	Storage             dkg.Storage
+	Signer              types.DKGSigner
+	SignatureDomainType types.DomainType
+
 	InputMessages  []*dkg.SignedMessage
 	OutputMessages []*dkg.SignedMessage
 	Output         map[types.OperatorID]*dkg.SignedOutput
 	KeySet         *testingutils.TestKeySet
-	Operator       *dkg.Operator
-	NodeConfig     *dkg.Config
 	ExpectedError  string
 }
 
@@ -27,7 +34,15 @@ func (test *MsgProcessingSpecTest) TestName() string {
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	testingutils.ResetRandSeed()
-	node := dkg.NewNode(test.Operator, test.NodeConfig)
+
+	node := dkg.NewNode(test.Operator, &dkg.Config{
+		KeygenProtocol:      frost.New,
+		ReshareProtocol:     frost.NewResharing,
+		Network:             test.Network,
+		Storage:             test.Storage,
+		SignatureDomainType: test.SignatureDomainType,
+		Signer:              test.Signer,
+	})
 
 	var lastErr error
 	for _, msg := range test.InputMessages {
