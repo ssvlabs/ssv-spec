@@ -66,17 +66,24 @@ func (i *Instance) uponRoundChange(
 			return nil // no need to advance round
 		}
 
-		i.State.Round = newRound
-		// TODO - should we reset timeout here for the new round?
-		i.State.ProposalAcceptedForCurrentRound = nil
-
-		roundChange, err := CreateRoundChange(i.State, i.config, newRound, instanceStartValue)
+		err := i.uponChangeRoundPartialQuorum(newRound, instanceStartValue)
 		if err != nil {
-			return errors.Wrap(err, "failed to create round change message")
+			return err
 		}
-		if err := i.Broadcast(roundChange); err != nil {
-			return errors.Wrap(err, "failed to broadcast round change message")
-		}
+	}
+	return nil
+}
+
+func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartValue []byte) error {
+	i.State.Round = newRound
+	i.State.ProposalAcceptedForCurrentRound = nil
+	i.config.GetTimer().TimeoutForRound(i.State.Round)
+	roundChange, err := CreateRoundChange(i.State, i.config, newRound, instanceStartValue)
+	if err != nil {
+		return errors.Wrap(err, "failed to create round change message")
+	}
+	if err := i.Broadcast(roundChange); err != nil {
+		return errors.Wrap(err, "failed to broadcast round change message")
 	}
 	return nil
 }
