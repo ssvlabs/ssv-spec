@@ -8,7 +8,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// NoRunningConsensusInstance tests a valid proposal msg before consensus instance starts starts
+// NoRunningConsensusInstance tests a valid proposal msg before consensus instance starts
 func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{

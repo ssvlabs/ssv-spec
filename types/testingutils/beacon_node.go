@@ -15,8 +15,7 @@ var signBeaconObject = func(
 	domainType spec.DomainType,
 	ks *TestKeySet,
 ) spec.BLSSignature {
-	epoch := types.PraterNetwork.EstimatedEpochAtSlot(TestingDutySlot)
-	domain, _ := NewTestingBeaconNode().DomainData(epoch, domainType)
+	domain, _ := NewTestingBeaconNode().DomainData(1, domainType)
 	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize())
 
 	blsSig := spec.BLSSignature{}

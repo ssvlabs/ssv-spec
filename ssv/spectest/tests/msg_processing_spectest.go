@@ -2,7 +2,6 @@ package tests
 
 import (
 	"encoding/hex"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -18,7 +17,7 @@ type MsgProcessingSpecTest struct {
 	PostDutyRunnerStateRoot string
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
 	OutputMessages         []*ssv.SignedPartialSignatureMessage
-	BeaconBroadcastedRoots []phase0.Root
+	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
 }
@@ -64,8 +63,15 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
 	broadcastedRoots := test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).BroadcastedRoots
 	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots))
-	for i, r := range broadcastedRoots {
-		require.EqualValues(t, test.BeaconBroadcastedRoots[i], r)
+	for _, r1 := range test.BeaconBroadcastedRoots {
+		found := false
+		for _, r2 := range broadcastedRoots {
+			if r1 == hex.EncodeToString(r2[:]) {
+				found = true
+				break
+			}
+		}
+		require.Truef(t, found, "broadcasted beacon root not found")
 	}
 }
 

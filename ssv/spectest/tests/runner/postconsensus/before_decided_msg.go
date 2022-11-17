@@ -1,7 +1,6 @@
 package postconsensus
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -32,7 +31,7 @@ func BeforeDecidedMsg() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				BeaconBroadcastedRoots: []spec.Root{},
+				BeaconBroadcastedRoots: []string{},
 				ExpectedError:          err,
 			},
 			{
@@ -44,7 +43,7 @@ func BeforeDecidedMsg() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "9d06c3b83aee2bf5723ac0a19fdb9d011eeb87694575e27cc3775a8772eedbfa",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				ExpectedError:           err,
 			},
 			{
@@ -62,7 +61,7 @@ func BeforeDecidedMsg() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
-				BeaconBroadcastedRoots: []spec.Root{},
+				BeaconBroadcastedRoots: []string{},
 				ExpectedError:          err,
 			},
 			{
@@ -80,7 +79,7 @@ func BeforeDecidedMsg() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				BeaconBroadcastedRoots: []spec.Root{},
+				BeaconBroadcastedRoots: []string{},
 				ExpectedError:          err,
 			},
 			{
@@ -92,7 +91,7 @@ func BeforeDecidedMsg() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "12f67926a80be1c26cd12b502f923b51e5b957cbec4c0264ba602309d924d191",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				ExpectedError:           err,
 			},
 		},

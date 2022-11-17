@@ -7,6 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+	"sort"
 )
 
 func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
@@ -76,18 +77,48 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialS
 	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
 		return errors.New("wrong expected roots count")
 	}
-	for i, msg := range signedMsg.Message.Messages {
+
+	// convert expected roots to map and mark unique roots when verified
+	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][]byte, error) {
 		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.Slot)
 		d, err := runner.GetBeaconNode().DomainData(epoch, domain)
 		if err != nil {
-			return errors.Wrap(err, "could not get pre consensus root domain")
+			return nil, errors.Wrap(err, "could not get pre consensus root domain")
 		}
 
-		r, err := types.ComputeETHSigningRoot(expectedRootObjs[i], d)
-		if err != nil {
-			return errors.Wrap(err, "could not compute ETH signing root")
+		ret := make([][]byte, 0)
+		for _, rootI := range expectedRootObjs {
+			r, err := types.ComputeETHSigningRoot(rootI, d)
+			if err != nil {
+				return nil, errors.Wrap(err, "could not compute ETH signing root")
+			}
+			ret = append(ret, r[:])
 		}
-		if !bytes.Equal(r[:], msg.SigningRoot) {
+
+		sort.Slice(ret, func(i, j int) bool {
+			return string(ret[i]) < string(ret[j])
+		})
+		return ret, nil
+	}(expectedRootObjs)
+	if err != nil {
+		return err
+	}
+
+	sortedRoots := func(msgs PartialSignatureMessages) [][]byte {
+		ret := make([][]byte, 0)
+		for _, msg := range msgs.Messages {
+			ret = append(ret, msg.SigningRoot)
+		}
+
+		sort.Slice(ret, func(i, j int) bool {
+			return string(ret[i]) < string(ret[j])
+		})
+		return ret
+	}(signedMsg.Message)
+
+	// verify roots
+	for i, r := range sortedRoots {
+		if !bytes.Equal(sortedExpectedRoots[i], r) {
 			return errors.New("wrong signing root")
 		}
 	}

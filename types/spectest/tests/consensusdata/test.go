@@ -8,7 +8,7 @@ import (
 
 type EncodingSpecTest struct {
 	Name string
-	Data []byte
+	Obj  *types.ConsensusData
 }
 
 func (test *EncodingSpecTest) TestName() string {
@@ -16,10 +16,13 @@ func (test *EncodingSpecTest) TestName() string {
 }
 
 func (test *EncodingSpecTest) Run(t *testing.T) {
-	a := types.ConsensusData{}
-	require.NoError(t, a.Decode(test.Data))
-
-	byts, err := a.Encode()
+	byts, err := test.Obj.Encode()
 	require.NoError(t, err)
-	require.EqualValues(t, test.Data, byts)
+
+	a := types.ConsensusData{}
+	require.NoError(t, a.Decode(byts))
+	bytsDecoded, err := a.Encode()
+	require.NoError(t, err)
+
+	require.EqualValues(t, bytsDecoded, byts)
 }

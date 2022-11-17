@@ -1,7 +1,6 @@
 package postconsensus
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -30,7 +29,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "0524d74f48065577cf84b693ba8a41a0e791698ee55a8f7546ec45bdd77199d1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []spec.Root{
+				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
 					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
@@ -52,7 +51,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "4d70abb262fcb2a1aea28c444f530edb7d6d61ab6e52cb0b922509de5b344f66",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []spec.Root{
+				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 				DontStartDuty: true,
@@ -72,7 +71,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "1eb330d36763239189da05f444227f19d50d93a7a5459ec9da96e012392100e9",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []spec.Root{
+				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
 				},
 				DontStartDuty: true,
@@ -92,7 +91,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "f05ffe23768fb604877deb12a60ab3874e261af4cba1f86e28a2339bf31fcc63",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []spec.Root{
+				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
 				DontStartDuty: true,
@@ -112,7 +111,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "5aee738c819a0b6f2783188c25177306876d85b24f2c5ffc5bd5b5f2ca706d7c",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []spec.Root{
+				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
 				DontStartDuty: true,

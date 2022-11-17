@@ -1,7 +1,6 @@
 package postconsensus
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -14,7 +13,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus msg different roots",
+		Name: "post consensus suplicate msg different roots",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -30,7 +29,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "fc2ce4bab95761ac0416c0fe8443defa829d9e033c905e37a539138abb700628",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -48,7 +47,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "b10fe3e270c3ed59a89d1b1a5017a93b3c44665957898a1556cc1679e0921687",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -66,7 +65,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "90d9f1b97b673119b32c7f0665f4ff8e8e02fd3ae34fdc902bef563e9e96519d",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -84,7 +83,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "f331cb67db71d735e60d8e0c5b23b2e54bef5054679ac84634a66d62bc0edca1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -102,7 +101,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "d18cac07942b00be832092a6d548aaf0468d581450bc5eb443ff213f10168957",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},

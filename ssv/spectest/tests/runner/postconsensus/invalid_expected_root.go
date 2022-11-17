@@ -1,7 +1,6 @@
 package postconsensus
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -29,7 +28,7 @@ func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "77deed5f4370b8edee28892c6226e69070aef4f2fed9ad48ea9e1a20a487b240",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -46,7 +45,7 @@ func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "26f10eb7501cf6e62b7fab784ac261865a6d28a8163e4beb53d89618e665d992",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -63,7 +62,7 @@ func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "2541bd375b3a9faef535a255aa285cb83bcef1f6b422c804a21318a10426bc7f",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -80,7 +79,7 @@ func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "d3540c94cbee7cbe6b0ba0c9688ec9199923fe9bc14c4eb7a2ec2a1ca45cf80d",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -97,7 +96,7 @@ func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "65152758493189b41d7b294f178973ff7d93c739e19ad52598d74f73e018f24a",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},

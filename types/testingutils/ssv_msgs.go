@@ -628,6 +628,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 			Contribution:    contribution,
 			SelectionProof:  blsProofSig,
 		}
+
 		signed, root, _ := signer.SignBeaconObject(contribAndProof, dContribAndProof, sk.GetPublicKey().Serialize())
 		if wrongBeaconSig {
 			signed, root, _ = signer.SignBeaconObject(contribAndProof, dContribAndProof, Testing7SharesSet().ValidatorPK.Serialize())

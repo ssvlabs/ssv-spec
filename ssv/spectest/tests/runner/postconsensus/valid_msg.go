@@ -1,7 +1,7 @@
 package postconsensus
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -10,9 +10,9 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 )
 
-func getSSZRootNoError(obj ssz.HashRoot) spec.Root {
+func getSSZRootNoError(obj ssz.HashRoot) string {
 	r, _ := obj.HashTreeRoot()
-	return r
+	return hex.EncodeToString(r[:])
 }
 
 func decideRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
@@ -49,7 +49,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "fc2ce4bab95761ac0416c0fe8443defa829d9e033c905e37a539138abb700628",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
 			{
@@ -65,7 +65,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "b10fe3e270c3ed59a89d1b1a5017a93b3c44665957898a1556cc1679e0921687",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
 			{
@@ -81,7 +81,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "90d9f1b97b673119b32c7f0665f4ff8e8e02fd3ae34fdc902bef563e9e96519d",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
 			{
@@ -97,7 +97,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "f331cb67db71d735e60d8e0c5b23b2e54bef5054679ac84634a66d62bc0edca1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
 			{
@@ -113,7 +113,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "d18cac07942b00be832092a6d548aaf0468d581450bc5eb443ff213f10168957",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []spec.Root{},
+				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
 		},
