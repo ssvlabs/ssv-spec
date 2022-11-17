@@ -66,5 +66,9 @@ func F1DifferentFutureRounds() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 			}),
 		},
+		ExpectedTimerState: &testingutils.TimerState{
+			Timeouts: 1,
+			Round:    qbft.Round(5),
+		},
 	}
 }
