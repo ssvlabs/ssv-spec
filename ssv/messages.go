@@ -3,12 +3,16 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
 type PartialSigMsgType uint64
+
+var _ qbft.SignedMessage
 
 const (
 	// PostConsensusPartialSig is a partial signature over a decided duty (attestation data, block, etc)

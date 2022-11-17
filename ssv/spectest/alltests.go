@@ -3,14 +3,16 @@ package spectest
 import (
 	//"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 
+	"testing"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/queue"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
-	"testing"
 )
 
 type SpecTest interface {
@@ -92,4 +94,6 @@ var AllTests = []SpecTest{
 	valcheckattestations.SlotMismatch(),
 	valcheckattestations.AttestationDataNil(),
 	valcheckattestations.Valid(),
+
+	queue.AllInOne(),
 }
