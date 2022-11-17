@@ -4,7 +4,7 @@ import "github.com/bloxapp/ssv-spec/qbft"
 
 type TestQBFTTimer struct {
 	Timeouts int
-	Round qbft.Round
+	Round    qbft.Round
 }
 
 func NewTestingTimer() qbft.Timer {
