@@ -11,6 +11,10 @@ import (
 
 func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 
+	if fr.state.currentRound != KeygenOutput {
+		return nil, dkg.ErrInvalidRound{}
+	}
+
 	if !fr.needToRunCurrentRound() {
 		return nil, nil
 	}

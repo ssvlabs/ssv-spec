@@ -61,7 +61,7 @@ func GetBlameSpecTest(testName string, data []byte) *FrostSpecTest {
 				Valid: true,
 			},
 		},
-		ExpectedError: "",
+		ExpectedError: "could not find dkg runner",
 
 		InputMessages: map[int]MessagesForNodes{
 			0: initMessages,
@@ -147,7 +147,7 @@ func BlameTypeInvalidShare_FailedValidationAgainstCommitment() *FrostSpecTest {
 				Valid: true,
 			},
 		},
-		ExpectedError: "",
+		ExpectedError: "could not find dkg runner",
 
 		InputMessages: map[int]MessagesForNodes{
 			0: initMessages,
@@ -222,7 +222,7 @@ func BlameTypeInconsistentMessage() *FrostSpecTest {
 				Valid: true,
 			},
 		},
-		ExpectedError: "",
+		ExpectedError: "could not find dkg runner",
 
 		InputMessages: map[int]MessagesForNodes{
 			0: initMessages,

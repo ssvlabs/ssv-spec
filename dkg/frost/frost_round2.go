@@ -10,6 +10,10 @@ import (
 
 func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 
+	if fr.state.currentRound != Round2 {
+		return nil, dkg.ErrInvalidRound{}
+	}
+
 	if !fr.needToRunCurrentRound() {
 		return nil, nil
 	}
@@ -79,7 +83,7 @@ func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 	}
 
 	msg := &ProtocolMsg{
-		Round: fr.state.currentRound,
+		Round: Round2,
 		Round2Message: &Round2Message{
 			Vk:      bCastMessage.VerificationKey.ToAffineCompressed(),
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),
