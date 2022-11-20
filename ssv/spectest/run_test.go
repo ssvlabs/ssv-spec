@@ -44,7 +44,6 @@ func TestJson(t *testing.T) {
 	}
 
 	fmt.Printf("running %d tests\n", len(untypedTests))
-
 	for name, test := range untypedTests {
 		testName := test.(map[string]interface{})["Name"].(string)
 		t.Run(testName, func(t *testing.T) {

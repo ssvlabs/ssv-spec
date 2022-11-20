@@ -28,6 +28,8 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 		return r
 	}
 
+	err := "failed processing consensus message: could not process msg: did not receive proposal for this round"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid post finish",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -48,7 +50,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "3eabb4114c7d83045dfb678b9be3e00411d3b56bf71c8e4a496a2df5324f2394",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
+				ExpectedError:           err,
 			},
 			{
 				Name:   "sync committee",
@@ -67,7 +69,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "b6c1a644234ac0dd90129cf982ee98977b68353a3500f8ff84575bf881051e79",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing consensus message: could not process msg: did not receive proposal for this round",
+				ExpectedError:           err,
 			},
 			{
 				Name:   "aggregator",
@@ -86,7 +88,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "44a9f79f826b06d5bb7f6eb8ee54206164d012f4d590d42f2175ff411c7b1734",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
+				ExpectedError:           err,
 			},
 			{
 				Name:   "proposer",
@@ -105,7 +107,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "8d24fce7b09b83a5e6e055d623cb7695e3d68c5072d2920d0d9cc438c591b8a8",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
+				ExpectedError:           err,
 			},
 			{
 				Name:   "attester",
@@ -124,7 +126,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "7132ad74ae93d549e7980440f5e0390ac3b3aefa9a6c3edb64080d94ee2e641a",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing consensus message: could not process msg: did not receive proposal for this round",
+				ExpectedError:           err,
 			},
 		},
 	}

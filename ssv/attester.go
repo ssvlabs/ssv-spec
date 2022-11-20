@@ -50,7 +50,7 @@ func (r *AttesterRunner) StartNewDuty(duty *types.Duty) error {
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *AttesterRunner) HasRunningDuty() bool {
-	return r.BaseRunner.HasRunningDuty()
+	return r.BaseRunner.hasRunningDuty()
 }
 
 func (r *AttesterRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {

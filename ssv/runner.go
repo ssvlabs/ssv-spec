@@ -86,7 +86,7 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *Sig
 // baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
 func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
 	prevDecided := false
-	if b.HasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
+	if b.hasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 
@@ -96,7 +96,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	}
 
 	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
-	if !b.HasRunningDuty() {
+	if !b.hasRunningDuty() {
 		return false, nil, err
 	}
 
@@ -177,35 +177,6 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.Signe
 	}
 
 	return true, nil
-}
-
-func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
-	if !b.HasRunningDuty() {
-		return errors.New("no running duty")
-	}
-
-	if err := b.validatePartialSigMsg(signedMsg, b.State.StartingDuty.Slot); err != nil {
-		return err
-	}
-
-	roots, domain, err := runner.expectedPreConsensusRootsAndDomain()
-	if err != nil {
-		return err
-	}
-
-	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
-}
-
-func (b *BaseRunner) validatePostConsensusMsg(msg *SignedPartialSignatureMessage) error {
-	if !b.HasRunningDuty() {
-		return errors.New("no running duty")
-	}
-
-	if err := b.validatePartialSigMsg(msg, b.State.DecidedValue.Duty.Slot); err != nil {
-		return errors.Wrap(err, "post consensus msg invalid")
-	}
-
-	return nil
 }
 
 func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
