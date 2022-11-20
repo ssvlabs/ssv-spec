@@ -90,6 +90,11 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 		return nil, errors.Wrap(err, "could not process msg")
 	}
 
+	// update instance state
+	if err := c.SaveInstance(inst); err != nil {
+		fmt.Printf("%s\n", err.Error())
+	}
+
 	// if previously Decided we do not return Decided true again
 	if prevDecided {
 		return nil, err
@@ -98,11 +103,6 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 	// save the highest Decided
 	if !decided {
 		return nil, nil
-	}
-
-	// update instance state
-	if err := c.SaveInstance(inst); err != nil {
-		fmt.Printf("%s\n", err.Error())
 	}
 
 	if err := c.saveAndBroadcastDecided(decidedMsg); err != nil {

@@ -57,7 +57,14 @@ func (s *TestingStorage) SaveInstanceState(state *qbft.State) error {
 
 func (s *TestingStorage) GetInstanceState(identifier []byte, height qbft.Height) (*qbft.State, error) {
 	key := fmt.Sprintf("%s_%d", hex.EncodeToString(identifier), height)
-	return s.instancesState[key], nil
+	state := s.instancesState[key]
+	if state == nil {
+		return state, nil
+	}
+	// in order to mock storage without same pointer
+	copiedState := &qbft.State{}
+	*copiedState = *state
+	return copiedState, nil
 }
 
 func (s *TestingStorage) GetAllInstancesState(identifier []byte) ([]*qbft.State, error) {
