@@ -3,7 +3,6 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"fmt"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -210,7 +209,6 @@ func (r *AttesterRunner) GetRoot() ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode DutyRunnerState")
 	}
-	fmt.Printf("attester root - %s \n", string(marshaledRoot))
 	ret := sha256.Sum256(marshaledRoot)
 	return ret[:], nil
 }
