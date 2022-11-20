@@ -50,16 +50,22 @@ func (test *MessagePriorityTest) Run(t *testing.T) {
 	prioritizer := queue.NewMessagePrioritizer(test.State)
 
 	for _, shuffle := range shuffles {
+		require.False(t, messages.equal(shuffle), "shuffle shouldn't be in correct order!")
 		shuffle.sort(prioritizer)
-		correctOrder := messages.equal(shuffle)
-		if !correctOrder {
-			require.Fail(t, "incorrect order:\n"+shuffle.dump(test.State))
-		}
+		require.True(t, messages.equal(shuffle), "incorrect order:\n"+shuffle.dump(test.State))
 	}
 }
 
-type mockMessage interface {
-	toSSVMessage(*queue.State) *types.SSVMessage
+type mockMessage struct {
+	Consensus    *mockConsensusMessage
+	NonConsensus *mockNonConsensusMessage
+}
+
+func (m mockMessage) toSSVMessage(state *queue.State) *types.SSVMessage {
+	if m.Consensus != nil {
+		return m.Consensus.toSSVMessage(state)
+	}
+	return m.NonConsensus.toSSVMessage(state)
 }
 
 type mockConsensusMessage struct {

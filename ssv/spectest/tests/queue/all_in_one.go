@@ -24,35 +24,35 @@ func AllInOne() *MessagePriorityTest {
 			// 1. Current height/slot:
 			// 1.1. Consensus
 			// 1.1.1. Consensus/Prepare
-			mockConsensusMessage{Height: 100, Type: qbft.PrepareMsgType},
+			{Consensus: &mockConsensusMessage{Height: 100, Type: qbft.PrepareMsgType}},
 			// 1.1.2. Consensus/Proposal
-			mockConsensusMessage{Height: 100, Type: qbft.ProposalMsgType},
+			{Consensus: &mockConsensusMessage{Height: 100, Type: qbft.ProposalMsgType}},
 			// 1.1.3. Consensus/Commit
-			mockConsensusMessage{Height: 100, Type: qbft.CommitMsgType},
+			{Consensus: &mockConsensusMessage{Height: 100, Type: qbft.CommitMsgType}},
 			// 1.1.4. Consensus/<Other>
-			mockConsensusMessage{Height: 100, Type: qbft.RoundChangeMsgType},
+			{Consensus: &mockConsensusMessage{Height: 100, Type: qbft.RoundChangeMsgType}},
 			// 1.2. Pre-consensus
-			mockNonConsensusMessage{Slot: 64, Type: ssv.SelectionProofPartialSig},
+			{NonConsensus: &mockNonConsensusMessage{Slot: 64, Type: ssv.SelectionProofPartialSig}},
 			// 1.3. Post-consensus
-			mockNonConsensusMessage{Slot: 64, Type: ssv.PostConsensusPartialSig},
+			{NonConsensus: &mockNonConsensusMessage{Slot: 64, Type: ssv.PostConsensusPartialSig}},
 
 			// 2. Higher height/slot:
 			// 2.1 Decided
-			mockConsensusMessage{Height: 101, Decided: true},
+			{Consensus: &mockConsensusMessage{Height: 101, Decided: true}},
 			// 2.2. Pre-consensus
-			mockNonConsensusMessage{Slot: 65, Type: ssv.SelectionProofPartialSig},
+			{NonConsensus: &mockNonConsensusMessage{Slot: 65, Type: ssv.SelectionProofPartialSig}},
 			// 2.3. Consensus
-			mockConsensusMessage{Height: 101},
+			{Consensus: &mockConsensusMessage{Height: 101}},
 			// 2.4. Post-consensus
-			mockNonConsensusMessage{Slot: 65, Type: ssv.PostConsensusPartialSig},
+			{NonConsensus: &mockNonConsensusMessage{Slot: 65, Type: ssv.PostConsensusPartialSig}},
 
 			// 3. Lower height/slot:
 			// 3.1 Decided
-			mockConsensusMessage{Height: 99, Decided: true},
+			{Consensus: &mockConsensusMessage{Height: 99, Decided: true}},
 			// 3.2. Commit
-			mockConsensusMessage{Height: 99, Type: qbft.CommitMsgType},
+			{Consensus: &mockConsensusMessage{Height: 99, Type: qbft.CommitMsgType}},
 			// 3.3. Pre-consensus
-			mockNonConsensusMessage{Slot: 63, Type: ssv.SelectionProofPartialSig},
+			{NonConsensus: &mockNonConsensusMessage{Slot: 63, Type: ssv.SelectionProofPartialSig}},
 		},
 	}
 }

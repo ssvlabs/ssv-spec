@@ -13,8 +13,11 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/queue"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
@@ -47,85 +50,85 @@ func TestJson(t *testing.T) {
 	for name, test := range untypedTests {
 		testType := strings.Split(name, "_")[0]
 		switch testType {
-		// case reflect.TypeOf(&tests2.MsgProcessingSpecTest{}).String():
-		// 	typedTest := msgProcessingSpecTestFromMap(t, test.(map[string]interface{}))
-		// 	t.Run(typedTest.TestName(), func(t *testing.T) {
-		// 		typedTest.Run(t)
-		// 	})
-		// case reflect.TypeOf(&tests2.MultiMsgProcessingSpecTest{}).String():
-		// 	subtests := test.(map[string]interface{})["Tests"].([]interface{})
-		// 	typedTests := make([]*tests2.MsgProcessingSpecTest, 0)
-		// 	for _, subtest := range subtests {
-		// 		typedTests = append(typedTests, msgProcessingSpecTestFromMap(t, subtest.(map[string]interface{})))
-		// 	}
+		case reflect.TypeOf(&tests2.MsgProcessingSpecTest{}).String():
+			typedTest := msgProcessingSpecTestFromMap(t, test.(map[string]interface{}))
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
+		case reflect.TypeOf(&tests2.MultiMsgProcessingSpecTest{}).String():
+			subtests := test.(map[string]interface{})["Tests"].([]interface{})
+			typedTests := make([]*tests2.MsgProcessingSpecTest, 0)
+			for _, subtest := range subtests {
+				typedTests = append(typedTests, msgProcessingSpecTestFromMap(t, subtest.(map[string]interface{})))
+			}
 
-		// 	typedTest := &tests2.MultiMsgProcessingSpecTest{
-		// 		Name:  test.(map[string]interface{})["Name"].(string),
-		// 		Tests: typedTests,
-		// 	}
+			typedTest := &tests2.MultiMsgProcessingSpecTest{
+				Name:  test.(map[string]interface{})["Name"].(string),
+				Tests: typedTests,
+			}
 
-		// 	t.Run(typedTest.TestName(), func(t *testing.T) {
-		// 		typedTest.Run(t)
-		// 	})
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
 
-		// case reflect.TypeOf(&messages.MsgSpecTest{}).String():
-		// 	byts, err := json.Marshal(test)
-		// 	require.NoError(t, err)
-		// 	typedTest := &messages.MsgSpecTest{}
-		// 	require.NoError(t, json.Unmarshal(byts, &typedTest))
+		case reflect.TypeOf(&messages.MsgSpecTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &messages.MsgSpecTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
-		// 	t.Run(typedTest.TestName(), func(t *testing.T) {
-		// 		typedTest.Run(t)
-		// 	})
-		// case reflect.TypeOf(&valcheck.SpecTest{}).String():
-		// 	byts, err := json.Marshal(test)
-		// 	require.NoError(t, err)
-		// 	typedTest := &valcheck.SpecTest{}
-		// 	require.NoError(t, json.Unmarshal(byts, &typedTest))
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
+		case reflect.TypeOf(&valcheck.SpecTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &valcheck.SpecTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
-		// 	t.Run(typedTest.TestName(), func(t *testing.T) {
-		// 		typedTest.Run(t)
-		// 	})
-		// case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
-		// 	byts, err := json.Marshal(test)
-		// 	require.NoError(t, err)
-		// 	typedTest := &valcheck.MultiSpecTest{}
-		// 	require.NoError(t, json.Unmarshal(byts, &typedTest))
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
+		case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &valcheck.MultiSpecTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
-		// 	t.Run(typedTest.TestName(), func(t *testing.T) {
-		// 		typedTest.Run(t)
-		// 	})
-		// case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
-		// 	byts, err := json.Marshal(test)
-		// 	require.NoError(t, err)
-		// 	typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
-		// 	require.NoError(t, json.Unmarshal(byts, &typedTest))
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
+		case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
-		// 	t.Run(typedTest.TestName(), func(t *testing.T) {
-		// 		typedTest.Run(t)
-		// 	})
-		// case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
-		// 	subtests := test.(map[string]interface{})["Tests"].([]interface{})
-		// 	typedTests := make([]*newduty.StartNewRunnerDutySpecTest, 0)
-		// 	for _, subtest := range subtests {
-		// 		typedTests = append(typedTests, newRunnerDutySpecTestFromMap(t, subtest.(map[string]interface{})))
-		// 	}
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
+		case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
+			subtests := test.(map[string]interface{})["Tests"].([]interface{})
+			typedTests := make([]*newduty.StartNewRunnerDutySpecTest, 0)
+			for _, subtest := range subtests {
+				typedTests = append(typedTests, newRunnerDutySpecTestFromMap(t, subtest.(map[string]interface{})))
+			}
 
-		// 	typedTest := &newduty.MultiStartNewRunnerDutySpecTest{
-		// 		Name:  test.(map[string]interface{})["Name"].(string),
-		// 		Tests: typedTests,
-		// 	}
+			typedTest := &newduty.MultiStartNewRunnerDutySpecTest{
+				Name:  test.(map[string]interface{})["Name"].(string),
+				Tests: typedTests,
+			}
 
-		// 	t.Run(typedTest.TestName(), func(t *testing.T) {
-		// 		typedTest.Run(t)
-		// 	})
+			t.Run(typedTest.TestName(), func(t *testing.T) {
+				typedTest.Run(t)
+			})
 		case reflect.TypeOf(&queue.MessagePriorityTest{}).String():
 			typedTest := messagePriorityTestFromMap(t, test.(map[string]interface{}))
 			t.Run(typedTest.TestName(), func(t *testing.T) {
 				typedTest.Run(t)
 			})
-			// default:
-			// 	panic("unsupported test type " + testType)
+		default:
+			panic("unsupported test type " + testType)
 		}
 	}
 }
@@ -288,7 +291,6 @@ func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingu
 func messagePriorityTestFromMap(t *testing.T, m map[string]interface{}) *queue.MessagePriorityTest {
 	b, err := json.Marshal(m)
 	require.NoError(t, err)
-	t.Logf("%#v", m)
 	var test queue.MessagePriorityTest
 	err = json.Unmarshal(b, &test)
 	require.NoError(t, err)
