@@ -120,7 +120,7 @@ func FullFlowAfterDecided() *tests.ControllerSpecTest {
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "19df4389b482e1dfb89ab0be4ce8a401f2cf2223416ecc2afda92481755dbc00",
+				ControllerPostRoot: "96816bf349bfabc43a7c0a90ab3949bfbc0c764552bb58de09746e0eaf258592",
 			},
 		},
 	}

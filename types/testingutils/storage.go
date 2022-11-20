@@ -48,7 +48,10 @@ func (s *TestingStorage) GetHighestDecided(identifier []byte) (*qbft.SignedMessa
 
 func (s *TestingStorage) SaveInstanceState(state *qbft.State) error {
 	key := fmt.Sprintf("%s_%d", hex.EncodeToString(state.ID), state.Height)
-	s.instancesState[key] = state
+
+	copiedState := &qbft.State{}
+	*copiedState = *state
+	s.instancesState[key] = copiedState
 	return nil
 }
 

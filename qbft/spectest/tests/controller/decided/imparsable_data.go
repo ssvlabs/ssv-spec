@@ -29,7 +29,7 @@ func ImparsableData() *tests.ControllerSpecTest {
 							Data:       []byte{1, 2, 3, 4},
 						}),
 				},
-				ControllerPostRoot: "5b6ebc3aa0bfcedd466fca3fca7e1dcc0245def7d61d65aee1462436d819c7d0",
+				ControllerPostRoot: "3cf8cd7d050943781b25a611cc7b51bc051608f316556a843936b62c276984cb",
 			},
 		},
 		ExpectedError: "invalid decided msg: invalid decided msg: could not get msg commit data: could not decode commit data from message: invalid character '\\x01' looking for beginning of value",

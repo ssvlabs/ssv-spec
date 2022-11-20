@@ -48,7 +48,7 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "34ca71ca0801c140cf333aa9c94d1b41f2d78b969ed547771798025c0df8e67e",
+				ControllerPostRoot: "e4f105e8a59b12f32454481d3253f28cdaf41cf2894ea0f5fe252e8e26ce8d22",
 			},
 		},
 		ExpectedError: "instance not found",

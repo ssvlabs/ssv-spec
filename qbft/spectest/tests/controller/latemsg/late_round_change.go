@@ -50,7 +50,7 @@ func LateRoundChange() *tests.ControllerSpecTest {
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
-				ControllerPostRoot: "f615214ee6ab01f595c291e5818ea0a72d89e957b60a6f4492f817420da38132",
+				ControllerPostRoot: "2ae5e1ec3743217b975e2b9284b7e78a42c99b86e10e05da40acb42d70f9019b",
 			},
 		},
 	}

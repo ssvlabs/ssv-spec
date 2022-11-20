@@ -41,7 +41,7 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 					}),
 				DecidedVal:         testingutils.TestingInvalidValueCheck,
 				DecidedCnt:         1,
-				ControllerPostRoot: "8be69818570269c47665bcfb8d4a3834387f4ee5d41eaaf03702af5334dd17de",
+				ControllerPostRoot: "09e1de76a2fa30b5d2056c09871cf91b0212ff764b03d6cf300a3e3b1e79231e",
 			},
 		},
 	}

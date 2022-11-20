@@ -152,7 +152,7 @@ func LateCommitPastRound() *tests.ControllerSpecTest {
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
-				ControllerPostRoot: "cf71efe12b0ef2b9c8615ade56d5f969e7fa8a6a1fa0d95c179292825a46fe98",
+				ControllerPostRoot: "8e0475102938447e344c00b315848c29d78ea63686e404577e53b52ac016929d",
 			},
 		},
 		ExpectedError: "could not process msg: commit msg invalid: commit round is wrong",

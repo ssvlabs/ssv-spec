@@ -40,12 +40,12 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "c91970b0e33a3b6141567101956dffa63472e56ed041ffdd408ed822973f3caf",
+				ControllerPostRoot: "3127e6f1fd8e589f7fb2339b90b5427de94cbe7bced4ff1ad071654e09d68617",
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},
 				DecidedCnt:         0,
-				ControllerPostRoot: "e7091248ed58bffb5751b0006a1f9c2e79760268e6f4d2c4efe6c30c792dc461",
+				ControllerPostRoot: "d5a0bfe4d6cde0ef2486a81e10a6b89511446c2459c7d197a661400692bbbb34",
 			},
 		},
 	}

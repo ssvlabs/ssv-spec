@@ -40,7 +40,7 @@ func SavedAndBroadcastedDecided() *tests.ControllerSpecTest {
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
-				ControllerPostRoot: "aa402d7487719b17dde352e2ac602ba2c7d895e615ab12cd93d816f6c4fa0967",
+				ControllerPostRoot: "f91546f051287e118a5b22ef4750062dc5d41fca0f5106cddbcd76447161ba88",
 			},
 		},
 	}

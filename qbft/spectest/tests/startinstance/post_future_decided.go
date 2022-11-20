@@ -18,11 +18,11 @@ func PreviousDecided() *tests.ControllerSpecTest {
 				InputMessages:      testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet()),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "aa402d7487719b17dde352e2ac602ba2c7d895e615ab12cd93d816f6c4fa0967",
+				ControllerPostRoot: "f91546f051287e118a5b22ef4750062dc5d41fca0f5106cddbcd76447161ba88",
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "ef4b84dc6704519af8f6c4a510a2d9d0a44ce52155f6508635dacbd34324b32e",
+				ControllerPostRoot: "02e6ef9761580b6d3fb847286a781a671485daf13412ef782d9bb9704b2f321a",
 			},
 		},
 	}

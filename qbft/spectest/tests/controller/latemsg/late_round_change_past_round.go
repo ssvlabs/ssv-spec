@@ -152,7 +152,7 @@ func LateRoundChangePastRound() *tests.ControllerSpecTest {
 						Identifier: identifier[:],
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
-				ControllerPostRoot: "f28b31c33267ff5bbecce465db8a66f8090dc1a1c8ae8416d4f00c616474c0b1",
+				ControllerPostRoot: "636e9f5eb293c549705a28f210d6c0dd0d69c5cd6593a9b03778dd8af9da84cf",
 			},
 		},
 		//ExpectedError: "could not process msg: proposal invalid: proposal is not valid with current state",

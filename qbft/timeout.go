@@ -30,7 +30,7 @@ func (i *Instance) UponRoundTimeout() error {
 		i.config.GetTimer().TimeoutForRound(i.State.Round)
 	}()
 
-	roundChange, err := CreateRoundChange(i.State, i.config, newRound, i.State.StartValue)
+	roundChange, err := CreateRoundChange(i.State, i.config, newRound, i.StartValue)
 	if err != nil {
 		return errors.Wrap(err, "could not generate round change msg")
 	}

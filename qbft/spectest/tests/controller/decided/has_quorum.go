@@ -41,7 +41,7 @@ func HasQuorum() *tests.ControllerSpecTest {
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "c91970b0e33a3b6141567101956dffa63472e56ed041ffdd408ed822973f3caf",
+				ControllerPostRoot: "3127e6f1fd8e589f7fb2339b90b5427de94cbe7bced4ff1ad071654e09d68617",
 			},
 		},
 	}

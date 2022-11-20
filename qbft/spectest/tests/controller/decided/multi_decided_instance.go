@@ -45,15 +45,15 @@ func MultiDecidedInstances() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "multi decide instances",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "8a5153ccfbefa992ac8b4af6aad2d050c553a95359d0bc49feaef5c11c7139a2"),
-			instanceData(1, "edffa599e2ff18bcb82a63116ab452649fe974b63432b05ab5919df16079fb68"),
-			instanceData(2, "42323740998181ec00bfcf28fb8095c8f5fd3e43266ca43f0448b3ef42ac2a60"),
-			instanceData(3, "cb17defa61f9e6175884f7ae8f372dabefe601360737e43162c6d52a2fa7f6e4"),
+			instanceData(qbft.FirstHeight, "2db1b6b59f13cd9b30f1afe09bcd62539c7061485435d8f134b86317d820e71d"),
+			instanceData(1, "d2f56d69e871011f360c5e2733666f9389e02a7c30e81acacf258afab9d992cb"),
+			instanceData(2, "3fb39692b356a635ed0be8a59c54ec64ab4dad4a45ace96f6c1cb8d3365f2d6b"),
+			instanceData(3, "10a75c884203e4ba860bd9db6e55ba5989fdcfd45ce52a92d6b3e9a6adffb1dc"),
 			instanceData(4, "2266f4d33838f251c22dcf787551bb6dd7381b689353b8147853338917dddf37"),
-			instanceData(5, "57c0602606e7e5b186a570d9ff9dc80717ba6da075a769057374b9f2ebe81653"),
-			instanceData(8, "d8c0f5362ae874ded286627c1076a894d26ab61238c37a0a75bcc2e331822073"),
-			instanceData(9, "bb3fc017e5d8670dfa3abb88c325daad35d0b908f6b8c04786b828d94b38065e"),
-			instanceData(10, "69203928542ee0add38f855cd115c2fa3237b04e0bdec67204113e858f2bfb1d"),
+			instanceData(5, "b4842a41180885b9175a2e6b039e47b013864fe19113b6412991f41d917c3099"),
+			instanceData(8, "c653ee5763862980dca63b99042191ad86e4aa1efe951f83513a9f5c1e8bb55b"),
+			instanceData(9, "259a6315456362a70df4891e9ffd928dcec7fd30134effd2556aa1662121c4a7"),
+			instanceData(10, "595ef559f1d141b2ac15fc2661c543c0db0cfe39fb18d38f9a35dca0e5d07055"),
 		},
 	}
 }

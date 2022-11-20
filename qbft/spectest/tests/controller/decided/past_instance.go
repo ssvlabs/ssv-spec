@@ -50,7 +50,7 @@ func PastInstance() *tests.ControllerSpecTest {
 					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
-				ControllerPostRoot: "d9834788859abee970bdcd9d4195ae0292513ef9783ec0c9c6b54fd4856849ce",
+				ControllerPostRoot: "5620ac8ad8d246fd3508753aa9b7e209c4af505c0a33891b38e19c133bf96115",
 			},
 		},
 	}
