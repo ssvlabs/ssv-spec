@@ -241,6 +241,7 @@ var AllTests = []SpecTest{
 	roundchange.F1Speedup(),
 	roundchange.F1SpeedupPrevPrepared(),
 	roundchange.AfterProposal(),
+	roundchange.RoundChangePartialQuorum(),
 	roundchange.QuorumOrder2(),
 	roundchange.QuorumOrder1(),
 	roundchange.QuorumMsgNotPrepared(),
