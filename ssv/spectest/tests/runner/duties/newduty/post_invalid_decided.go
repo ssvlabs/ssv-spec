@@ -52,9 +52,19 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Identifier: r.GetBaseRunner().QBFTController.Identifier,
 				Data:       testingutils.CommitDataBytes(consensusDataByts(r.GetBaseRunner().BeaconRoleType)),
 			}))
+
 		expectedError := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type"
 		if err.Error() != expectedError {
 			panic(err.Error())
+		}
+
+		// make sure running instance is updated after process msg
+		state, err := r.GetBaseRunner().QBFTController.GetConfig().GetStorage().GetInstanceState(r.GetBaseRunner().QBFTController.Identifier, r.GetBaseRunner().QBFTController.Height)
+		if err != nil {
+			panic(err.Error())
+		}
+		if state != nil {
+			r.GetBaseRunner().State.RunningInstance = qbft.NewInstanceFromState(r.GetBaseRunner().QBFTController.GetConfig(), state)
 		}
 
 		return r
@@ -67,7 +77,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  decideWrong(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
-				PostDutyRunnerStateRoot: "5c02ecd39ec4520eca8c309f358c9c0ebc881a589a3d2f2970735b9b514b7cd1",
+				PostDutyRunnerStateRoot: "2d3ee0dd2174000c00ba4f42b2df800e379533642e2c337a4f7cdb3f4f5893c8",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -77,7 +87,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee",
 				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "67603dddb4403bc23c9a436eb16f6074dc269ce9135a1e6a8a60329c240b720b",
+				PostDutyRunnerStateRoot: "c9170c67f7541e9b4b6209608638724cb5122a1d94cb1327e3dfabfcc1b26fd0",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				PreStoredInstances:      []*qbft.Instance{},
 			},
@@ -85,7 +95,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty),
 				Duty:                    testingutils.TestingAggregatorDuty,
-				PostDutyRunnerStateRoot: "e66933500edb53af6262169523a8d9cdfcbbc781109f7d204564e5083f131c3b",
+				PostDutyRunnerStateRoot: "dd57fb513dc1914ed961ae708f5625e85c4283ac1244e37fac67cc911083dfd7",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -95,7 +105,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "proposer",
 				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDuty),
 				Duty:                    testingutils.TestingProposerDuty,
-				PostDutyRunnerStateRoot: "d5f3a523afedb9f005fd466ea975e2e252ecc88784ba0e251d272e3e667a15ba",
+				PostDutyRunnerStateRoot: "18f07ee6a1aadcc6e627278e3335db6a90f947c9960a6dadba8ba446d87cf4d4",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -105,7 +115,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "attester",
 				Runner:                  decideWrong(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "ee132e67ae8eaaebc8721d9f7b4dac1704ade7a9d89db8a9126bc6aad5f3ff6b",
+				PostDutyRunnerStateRoot: "524d235900dba12349af3e1fc103544f1eb066bb452c046869dc8985977f4e52",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				PreStoredInstances:      []*qbft.Instance{},
 			},
