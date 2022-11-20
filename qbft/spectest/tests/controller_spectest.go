@@ -22,11 +22,10 @@ type RunInstanceData struct {
 }
 
 type ControllerSpecTest struct {
-	Name               string
-	RunInstanceData    []*RunInstanceData
-	OutputMessages     []*qbft.SignedMessage
-	ExpectedError      string
-	ExpectedTimerState *testingutils.TimerState
+	Name            string
+	RunInstanceData []*RunInstanceData
+	OutputMessages  []*qbft.SignedMessage
+	ExpectedError   string
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
@@ -107,15 +106,6 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		r, err := contr.GetRoot()
 		require.NoError(t, err)
 		require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r))
-
-		if test.ExpectedTimerState != nil {
-			// checks round timer state
-			timer, ok := config.GetTimer().(*testingutils.TestQBFTTimer)
-			if ok && timer != nil {
-				require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts)
-				require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round)
-			}
-		}
 	}
 
 	if len(test.ExpectedError) != 0 {
