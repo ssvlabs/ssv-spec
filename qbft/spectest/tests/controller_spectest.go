@@ -19,6 +19,7 @@ type RunInstanceData struct {
 	SavedDecided       *qbft.SignedMessage
 	BroadcastedDecided *qbft.SignedMessage
 	ControllerPostRoot string
+	ExpectedTimerState *testingutils.TimerState
 }
 
 type ControllerSpecTest struct {
@@ -42,6 +43,11 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		err := contr.StartNewInstance(runData.InputValue)
 		if err != nil {
 			lastErr = err
+		} else if runData.ExpectedTimerState != nil {
+			if timer, ok := config.GetTimer().(*testingutils.TestQBFTTimer); ok {
+				require.Equal(t, runData.ExpectedTimerState.Timeouts, timer.State.Timeouts)
+				require.Equal(t, runData.ExpectedTimerState.Round, timer.State.Round)
+			}
 		}
 
 		decidedCnt := 0
