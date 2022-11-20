@@ -16,9 +16,13 @@
 
 ## IDE
 .idea
+.vscode
 
 # binaries
 .bin
 
 # CI
 bin
+
+# Mac
+.DS_Store
