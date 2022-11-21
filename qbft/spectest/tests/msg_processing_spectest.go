@@ -49,8 +49,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		// checks round timer state
 		timer, ok := test.Pre.GetConfig().GetTimer().(*testingutils.TestQBFTTimer)
 		if ok && timer != nil {
-			require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts)
-			require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round)
+			require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts, "timer should have expected timeouts count")
+			require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round, "timer should have expected round")
 		}
 	}
 
