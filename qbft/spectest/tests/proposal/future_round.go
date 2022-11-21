@@ -90,5 +90,9 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
+		ExpectedTimerState: &testingutils.TimerState{
+			Timeouts: 1,
+			Round:    qbft.Round(10),
+		},
 	}
 }

@@ -7,44 +7,51 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// F1Speedup tests catching up to higher rounds via f+1 speedup, other peers are all at the same round
-func F1Speedup() *tests.MsgProcessingSpecTest {
+// RoundChangePartialQuorum tests a round change msgs with partial quorum
+func RoundChangePartialQuorum() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 
 	msgs := []*qbft.SignedMessage{
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      10,
+			Round:      2,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
 			Height:     qbft.FirstHeight,
-			Round:      10,
+			Round:      2,
+			Identifier: []byte{1, 2, 3, 4},
+			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
+		}),
+		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
+			MsgType:    qbft.RoundChangeMsgType,
+			Height:     qbft.FirstHeight,
+			Round:      3,
 			Identifier: []byte{1, 2, 3, 4},
 			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 		}),
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "f+1 speed up",
+		Name:          "round change partial quorum",
 		Pre:           pre,
-		PostRoot:      "b9a16d716579a42a070437ee1401f6c1fda8c2678e8a6bdd74000b8da0a7e2d2",
+		PostRoot:      "d8dfc36d134845f4519f211ccf0e4a3da8b16206b3127380242306001633f27a",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 				MsgType:    qbft.RoundChangeMsgType,
 				Height:     qbft.FirstHeight,
-				Round:      10,
+				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 			}),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 1,
-			Round:    qbft.Round(10),
+			Round:    qbft.Round(2),
 		},
 	}
 }

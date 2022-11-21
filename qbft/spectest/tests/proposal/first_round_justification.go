@@ -33,5 +33,9 @@ func FirstRoundJustification() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
+		ExpectedTimerState: &testingutils.TimerState{
+			Timeouts: 0,
+			Round:    qbft.NoRound,
+		},
 	}
 }
