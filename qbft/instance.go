@@ -3,6 +3,7 @@ package qbft
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/bloxapp/ssv-spec/p2p"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 	"sync"
@@ -67,10 +68,16 @@ func (i *Instance) Start(value []byte, height Height) {
 			}
 		}
 
+		i.syncHighestRoundChange()
+	})
+}
+
+func (i *Instance) syncHighestRoundChange() {
+	go func() {
 		if err := i.config.GetNetwork().SyncHighestRoundChange(types.MessageIDFromBytes(i.State.ID), i.State.Height); err != nil {
 			fmt.Printf("%s\n", err.Error())
 		}
-	})
+	}()
 }
 
 func (i *Instance) Broadcast(msg *SignedMessage) error {
@@ -87,7 +94,14 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 		MsgID:   msgID,
 		Data:    byts,
 	}
-	return i.config.GetNetwork().Broadcast(msgToBroadcast)
+	go func(b p2p.Broadcaster) {
+		err := b.Broadcast(msgToBroadcast)
+		if err != nil {
+			fmt.Printf("%s\n", err.Error())
+		}
+	}(i.config.GetNetwork())
+
+	return nil
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
