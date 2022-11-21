@@ -8,8 +8,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// BeforeDecidedMsg tests a valid SignedPartialSignatureMessage sent before decided reached, should error
-func BeforeDecidedMsg() *tests.MultiMsgProcessingSpecTest {
+// PreDecided tests a valid SignedPartialSignatureMessage sent before decided reached, should error
+func PreDecided() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	err := "failed processing post consensus message: invalid post-consensus message: consensus instance not decided"

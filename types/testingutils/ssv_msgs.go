@@ -130,6 +130,12 @@ var PostConsensusWrongSigAttestationMsg = func(sk *bls.SecretKey, id types.Opera
 	return postConsensusAttestationMsg(sk, id, height, false, true)
 }
 
+var PostConsensusSigAttestationWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID, height qbft.Height) *ssv.SignedPartialSignatureMessage {
+	ret := postConsensusAttestationMsg(sk, beaconSigner, height, false, true)
+	ret.Signer = id
+	return ret
+}
+
 var PostConsensusAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *ssv.SignedPartialSignatureMessage {
 	return postConsensusAttestationMsg(sk, id, height, false, false)
 }
@@ -185,6 +191,12 @@ var PostConsensusWrongProposerMsg = func(sk *bls.SecretKey, id types.OperatorID)
 
 var PostConsensusWrongSigProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
 	return postConsensusBeaconBlockMsg(sk, id, false, true)
+}
+
+var PostConsensusSigProposerWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	ret := postConsensusBeaconBlockMsg(sk, beaconSigner, false, true)
+	ret.Signer = id
+	return ret
 }
 
 var postConsensusBeaconBlockMsg = func(
@@ -414,6 +426,12 @@ var PostConsensusWrongSigAggregatorMsg = func(sk *bls.SecretKey, id types.Operat
 	return postConsensusAggregatorMsg(sk, id, false, true)
 }
 
+var PostConsensusSigAggregatorWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	ret := postConsensusAggregatorMsg(sk, beaconSigner, false, true)
+	ret.Signer = id
+	return ret
+}
+
 var postConsensusAggregatorMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -463,6 +481,12 @@ var PostConsensusWrongSyncCommitteeMsg = func(sk *bls.SecretKey, id types.Operat
 
 var PostConsensusWrongSigSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
 	return postConsensusSyncCommitteeMsg(sk, id, false, true)
+}
+
+var PostConsensusSigSyncCommitteeWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	ret := postConsensusSyncCommitteeMsg(sk, beaconSigner, false, true)
+	ret.Signer = id
+	return ret
 }
 
 var postConsensusSyncCommitteeMsg = func(
@@ -588,6 +612,12 @@ var PostConsensusWrongSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id 
 
 var PostConsensusWrongSigSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types.OperatorID, keySet *TestKeySet) *ssv.SignedPartialSignatureMessage {
 	return postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, false, true)
+}
+
+var PostConsensusSigSyncCommitteeContributionWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID, keySet *TestKeySet) *ssv.SignedPartialSignatureMessage {
+	ret := postConsensusSyncCommitteeContributionMsg(sk, beaconSigner, TestingValidatorIndex, keySet, false, true)
+	ret.Signer = id
+	return ret
 }
 
 var postConsensusSyncCommitteeContributionMsg = func(

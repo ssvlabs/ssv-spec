@@ -18,6 +18,8 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	postconsensus.UnknownSigner(),
+	postconsensus.UnknownBeaconSigner(),
 	postconsensus.PostFinish(),
 	postconsensus.NoRunningDuty(),
 	postconsensus.InvalidMessageSignature(),
@@ -25,7 +27,7 @@ var AllTests = []SpecTest{
 	postconsensus.DuplicateMsgDifferentRoots(),
 	postconsensus.DuplicateMsg(),
 	postconsensus.InvalidExpectedRoot(),
-	postconsensus.BeforeDecidedMsg(),
+	postconsensus.PreDecided(),
 	postconsensus.PostQuorum(),
 	postconsensus.ValidMessage(),
 	postconsensus.Quorum(),
