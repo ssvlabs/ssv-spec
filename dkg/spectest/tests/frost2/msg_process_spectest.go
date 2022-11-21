@@ -16,6 +16,8 @@ type MsgProcessingSpecTest struct {
 
 	// Setup Node
 	Operator            *dkg.Operator
+	IsResharing         bool
+	OperatorsOld        []types.OperatorID
 	Network             dkg.Network
 	Storage             dkg.Storage
 	Signer              types.DKGSigner
@@ -43,6 +45,17 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		SignatureDomainType: test.SignatureDomainType,
 		Signer:              test.Signer,
 	})
+
+	if test.IsResharing {
+		node = dkg.NewResharingNode(test.Operator, test.OperatorsOld, &dkg.Config{
+			KeygenProtocol:      frost.New,
+			ReshareProtocol:     frost.NewResharing,
+			Network:             test.Network,
+			Storage:             test.Storage,
+			SignatureDomainType: test.SignatureDomainType,
+			Signer:              test.Signer,
+		})
+	}
 
 	var lastErr error
 	for _, msg := range test.InputMessages {

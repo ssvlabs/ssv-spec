@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2/keygen"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2/resharing"
 )
 
 type SpecTest interface {
@@ -26,4 +27,5 @@ var AllTests = []SpecTest{
 	tests.ResharingHappyFlow(),
 
 	keygen.HappyFlow(),
+	resharing.HappyFlow(),
 }
