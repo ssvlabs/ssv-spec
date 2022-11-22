@@ -50,7 +50,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				DontStartDuty: true,
-				ExpectedError: "failed processing consensus message: invalid consensus message: no running duty",
+				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 			{
 				Name:   "sync committee",
@@ -69,7 +69,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "b6c1a644234ac0dd90129cf982ee98977b68353a3500f8ff84575bf881051e79",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
+				ExpectedError:           "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 			{
 				Name:   "aggregator",
@@ -90,7 +90,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				DontStartDuty: true,
-				ExpectedError: "failed processing consensus message: invalid consensus message: no running duty",
+				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 			{
 				Name:   "proposer",
@@ -111,7 +111,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
 				DontStartDuty: true,
-				ExpectedError: "failed processing consensus message: invalid consensus message: no running duty",
+				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 			{
 				Name:   "attester",
@@ -130,7 +130,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "7132ad74ae93d549e7980440f5e0390ac3b3aefa9a6c3edb64080d94ee2e641a",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing consensus message: invalid consensus message: no running duty",
+				ExpectedError:           "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 		},
 	}
