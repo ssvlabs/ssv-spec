@@ -28,15 +28,6 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 	}
 	reshareBytes, _ := reshare.Encode()
 
-	// vk := ks.ValidatorPK.Serialize()
-	// root := func(validatorPK []byte, initMsg *dkg.Reshare) []byte {
-	// 	root, _, _ := types.GenerateETHDepositData(
-	// 		validatorPK,
-	// 		types.DomainDeposit,
-	// 	)
-	// 	return root
-	// }(vk, init)
-
 	return &frost2.MsgProcessingSpecTest{
 		Name: "happy flow",
 		Operator: &dkg.Operator{

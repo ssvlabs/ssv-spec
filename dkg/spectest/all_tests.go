@@ -5,6 +5,7 @@ import (
 
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2/blame"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2/keygen"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2/resharing"
 )
@@ -15,7 +16,7 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	// tests.HappyFlow(),
+	tests.HappyFlow(),
 
 	frost.Keygen(),
 	frost.Resharing(),
@@ -28,4 +29,5 @@ var AllTests = []SpecTest{
 
 	keygen.HappyFlow(),
 	resharing.HappyFlow(),
+	blame.BlameTypeInvalidScaler_HappyFlow(),
 }

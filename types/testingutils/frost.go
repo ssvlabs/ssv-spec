@@ -134,6 +134,13 @@ var (
 		8: "0328893f709ce7ad1ee70f393cf5ba152fc11043043f0a0acb1591923ebea52dbd",
 	}
 
+	Resharing_SessionSKs map[types.OperatorID]string = map[types.OperatorID]string{
+		5: "1aab69564b34a33ecd1af05fe6923d6de71870997d38ef60155c325957214c42",
+		6: "59954b863e2fba93aeceb05d2fdcde0c9688d21d95aa7bedefc7f31b35731a3d",
+		7: "293411a6b583a5c30587d4e530c948f013e96d5a4e653f0791899d6270c6f3c0",
+		8: "4f87fda0de889c645b07fce5df52984808d3c3e2f1ea1b5217e499d56e963fc9",
+	}
+
 	Resharing_Round1 = map[types.OperatorID]struct {
 		Commitments []string
 		Shares      map[uint32]string
