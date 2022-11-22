@@ -24,7 +24,7 @@ func BlameTypeInconsistentMessage_HappyFlow() *frost2.MsgProcessingSpecTest {
 	initBytes, _ := init.Encode()
 
 	return &frost2.MsgProcessingSpecTest{
-		Name: "happy flow",
+		Name: "blame/inconsistent message/happy flow",
 		Operator: &dkg.Operator{
 			OperatorID:       1,
 			ETHAddress:       ks.DKGOperators[1].ETHAddress,

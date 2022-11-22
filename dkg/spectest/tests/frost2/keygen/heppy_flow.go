@@ -36,7 +36,7 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 	}(vk, init)
 
 	return &frost2.MsgProcessingSpecTest{
-		Name: "happy flow",
+		Name: "keygen/happy flow",
 		Operator: &dkg.Operator{
 			OperatorID:       1,
 			ETHAddress:       ks.DKGOperators[1].ETHAddress,

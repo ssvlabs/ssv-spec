@@ -22,7 +22,7 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 	reshareBytes, _ := reshare.Encode()
 
 	return &frost2.MsgProcessingSpecTest{
-		Name: "happy flow",
+		Name: "resharing/happy flow",
 		Operator: &dkg.Operator{
 			OperatorID:       5,
 			ETHAddress:       ks.DKGOperators[5].ETHAddress,
