@@ -89,6 +89,8 @@ var AllTests = []SpecTest{
 	futuremsg.UnknownSigner(),
 	futuremsg.WrongSig(),
 
+	startinstance.EmptyValue(),
+	startinstance.NilValue(),
 	startinstance.PostFutureDecided(),
 	startinstance.FirstHeight(),
 	startinstance.PreviousDecided(),
