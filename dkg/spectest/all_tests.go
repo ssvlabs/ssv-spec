@@ -32,4 +32,6 @@ var AllTests = []SpecTest{
 	blame.BlameTypeInvalidCommitment_HappyFlow(),
 	blame.BlameTypeInvalidScaler_HappyFlow(),
 	blame.BlameTypeInconsistentMessage_HappyFlow(),
+	blame.BlameTypeInvalidShare_HappyFlow(),
+	blame.BlameTypeInvalidShare_FailedDecrypt_HappyFlow(),
 }
