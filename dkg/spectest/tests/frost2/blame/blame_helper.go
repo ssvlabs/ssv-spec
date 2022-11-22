@@ -9,6 +9,7 @@ import (
 	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/coinbase/kryptology/pkg/core/curves"
 	ecies "github.com/ecies/go/v2"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -113,16 +114,22 @@ func SignedOutputObject(requestID dkg.RequestID, opId types.OperatorID, opSK *ec
 	return ret
 }
 
-func BlameMessageBytes(id types.OperatorID, blameMessage *dkg.SignedMessage) []byte {
-	blameMessageBytes, _ := blameMessage.Encode()
+func BlameMessageBytes(id types.OperatorID, blameType frost.BlameType, blameMessages []*dkg.SignedMessage) []byte {
+	blameData := make([][]byte, 0)
+	for _, blameMessage := range blameMessages {
+		byts, _ := blameMessage.Encode()
+		blameData = append(blameData, byts)
+	}
+
 	skBytes, _ := hex.DecodeString(testingutils.Resharing_SessionSKs[5])
 	sk := ecies.NewPrivateKeyFromBytes(skBytes)
+
 	ret, _ := (&frost.ProtocolMsg{
 		Round: frost.Blame,
 		BlameMessage: &frost.BlameMessage{
-			Type:             frost.InvalidMessage,
+			Type:             blameType,
 			TargetOperatorID: uint32(id),
-			BlameData:        [][]byte{blameMessageBytes},
+			BlameData:        blameData,
 			BlamerSessionSk:  sk.Bytes(),
 		},
 	}).Encode()
@@ -134,6 +141,28 @@ func makeInvalidForInvalidScalar(data []byte) []byte {
 	_ = protocolMessage.Decode(data)
 
 	protocolMessage.Round1Message.ProofR = []byte("rubbish-value")
+	d, _ := protocolMessage.Encode()
+	return d
+}
+
+func makeInvalidForInvalidCommitment(data []byte) []byte {
+	protocolMessage := &frost.ProtocolMsg{}
+	_ = protocolMessage.Decode(data)
+
+	protocolMessage.Round1Message.Commitment[len(protocolMessage.Round1Message.Commitment)-1] = []byte("rubbish-value")
+	d, _ := protocolMessage.Encode()
+	return d
+}
+
+func makeInvalidForInconsistentMessage(data []byte) []byte {
+	protocolMessage := &frost.ProtocolMsg{}
+	_ = protocolMessage.Decode(data)
+
+	thisCurve := curves.BLS12381G1()
+	lastCommitment, _ := thisCurve.NewIdentityPoint().FromAffineCompressed(protocolMessage.Round1Message.Commitment[len(protocolMessage.Round1Message.Commitment)-1])
+	lastCommitment = lastCommitment.Double()
+	protocolMessage.Round1Message.Commitment[len(protocolMessage.Round1Message.Commitment)-1] = lastCommitment.ToAffineCompressed()
+
 	d, _ := protocolMessage.Encode()
 	return d
 }

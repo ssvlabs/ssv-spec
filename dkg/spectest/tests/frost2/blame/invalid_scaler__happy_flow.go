@@ -2,6 +2,7 @@ package blame
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -73,11 +74,13 @@ func BlameTypeInvalidScaler_HappyFlow() *frost2.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data: BlameMessageBytes(2, testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
-					MsgType:    dkg.ProtocolMsgType,
-					Identifier: identifier,
-					Data:       makeInvalidForInvalidScalar(Round1MessageBytes(2)),
-				})),
+				Data: BlameMessageBytes(2, frost.InvalidMessage, []*dkg.SignedMessage{
+					testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+						MsgType:    dkg.ProtocolMsgType,
+						Identifier: identifier,
+						Data:       makeInvalidForInvalidScalar(Round1MessageBytes(2)),
+					}),
+				}),
 			}),
 		},
 		Output:        map[types.OperatorID]*dkg.SignedOutput{},
