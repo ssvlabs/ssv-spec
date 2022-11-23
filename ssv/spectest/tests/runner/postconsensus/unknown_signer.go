@@ -13,7 +13,7 @@ func UnknownSigner() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: failed to verify PartialSignature: unknown signer"
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus unknown beacon signer",
+		Name: "post consensus unknown signer",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
