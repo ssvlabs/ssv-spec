@@ -47,7 +47,7 @@ func (s *TestingStorage) GetHighestDecided(identifier []byte) (*qbft.SignedMessa
 }
 
 func (s *TestingStorage) SaveInstanceState(state *qbft.State) error {
-	key := fmt.Sprintf("%s_%d", hex.EncodeToString(state.ID), state.Height)
+	key := fmt.Sprintf("%s_%d", hex.EncodeToString(state.ID[:]), state.Height)
 
 	copiedState := &qbft.State{}
 	*copiedState = *state
@@ -59,7 +59,7 @@ func (s *TestingStorage) GetInstanceState(identifier []byte, height qbft.Height)
 	key := fmt.Sprintf("%s_%d", hex.EncodeToString(identifier), height)
 	state := s.instancesState[key]
 	if state == nil {
-		return state, nil
+		return nil, nil
 	}
 	// in order to mock storage without same pointer
 	copiedState := &qbft.State{}

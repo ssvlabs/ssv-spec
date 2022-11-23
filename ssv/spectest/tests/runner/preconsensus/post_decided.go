@@ -12,6 +12,16 @@ import (
 func PostDecided() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	preInstances := func(r ssv.Runner) []*qbft.Instance {
+		runningInstance := qbft.NewInstance(
+			r.GetBaseRunner().QBFTController.GetConfig(),
+			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Identifier,
+			qbft.FirstHeight)
+		runningInstance.State.Decided = true
+		return []*qbft.Instance{runningInstance}
+	}
+
 	// TODO: check errors
 	// nolint
 	decideRunner := func(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData, preMsgs []*ssv.SignedPartialSignatureMessage) ssv.Runner {
@@ -19,15 +29,16 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 		for _, msg := range preMsgs {
 			r.ProcessPreConsensus(msg)
 		}
-		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
-			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
-		r.GetBaseRunner().State.RunningInstance.State.Decided = true
+		r.GetBaseRunner().State.RunningHeight = qbft.FirstHeight
 		r.GetBaseRunner().State.DecidedValue = decidedValue
-		r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(r.GetBaseRunner().State.RunningInstance.State)
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
+
+		// support running tests without json
+		for _, instance := range preInstances(r) {
+			if err := r.GetBaseRunner().QBFTController.SaveInstance(instance); err != nil {
+				panic(err)
+			}
+		}
 		return r
 	}
 
@@ -46,7 +57,8 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
+				PreStoredInstances: preInstances(testingutils.SyncCommitteeContributionRunner(ks)),
+				Duty:               testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -66,7 +78,8 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 						testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: testingutils.TestingAggregatorDuty,
+				PreStoredInstances: preInstances(testingutils.AggregatorRunner(ks)),
+				Duty:               testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -86,7 +99,8 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: testingutils.TestingProposerDuty,
+				PreStoredInstances: preInstances(testingutils.ProposerRunner(ks)),
+				Duty:               testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},

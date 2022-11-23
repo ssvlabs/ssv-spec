@@ -188,10 +188,20 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
+	preInstances := make([]*qbft.Instance, 0)
+	if in, ok := m["PreStoredInstances"]; ok && in != nil {
+		for _, preInstance := range in.([]interface{}) {
+			byts, _ = json.Marshal(preInstance)
+			instance := &qbft.Instance{}
+			require.NoError(t, json.Unmarshal(byts, instance))
+			preInstances = append(preInstances, instance)
+		}
+	}
+
 	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(runnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
 
 	// runner
-	runner := fixRunnerForRun(t, runnerMap, ks, nil)
+	runner := fixRunnerForRun(t, runnerMap, ks, preInstances)
 
 	return &tests2.MsgProcessingSpecTest{
 		Name:                    m["Name"].(string),
@@ -212,12 +222,7 @@ func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testin
 
 	ret := baseRunnerForRole(base.BeaconRoleType, base, ks)
 	ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
-	if ret.GetBaseRunner().State != nil {
-		if ret.GetBaseRunner().State.RunningInstance != nil {
-			ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
-			require.NoError(t, ret.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(ret.GetBaseRunner().State.RunningInstance.State))
-		}
-	}
+
 	for _, preInstance := range preInstances {
 		require.NoError(t, ret.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(preInstance.State))
 	}

@@ -12,7 +12,7 @@ import (
 type State struct {
 	PreConsensusContainer  *PartialSigContainer
 	PostConsensusContainer *PartialSigContainer
-	RunningInstance        *qbft.Instance
+	RunningHeight          qbft.Height
 	DecidedValue           *types.ConsensusData
 	// CurrentDuty is the duty the node pulled locally from the beacon node, might be different from decided duty
 	StartingDuty *types.Duty
@@ -24,9 +24,9 @@ func NewRunnerState(quorum uint64, duty *types.Duty) *State {
 	return &State{
 		PreConsensusContainer:  NewPartialSigContainer(quorum),
 		PostConsensusContainer: NewPartialSigContainer(quorum),
-
-		StartingDuty: duty,
-		Finished:     false,
+		RunningHeight:          qbft.FirstHeight - 1, // represent no running height
+		StartingDuty:           duty,
+		Finished:               false,
 	}
 }
 
@@ -40,6 +40,15 @@ func (pcs *State) ReconstructBeaconSig(container *PartialSigContainer, root, val
 	return signature, nil
 }
 
+type DeprecatedStruct struct {
+	PreConsensusContainer  *PartialSigContainer
+	PostConsensusContainer *PartialSigContainer
+	RunningInstance        *qbft.Instance
+	DecidedValue           *types.ConsensusData
+	StartingDuty           *types.Duty
+	Finished               bool
+}
+
 // GetRoot returns the root used for signing and verification
 func (pcs *State) GetRoot() ([]byte, error) {
 	marshaledRoot, err := pcs.Encode()
@@ -48,6 +57,19 @@ func (pcs *State) GetRoot() ([]byte, error) {
 	}
 	ret := sha256.Sum256(marshaledRoot)
 	return ret[:], nil
+}
+
+func (pcs *State) GetHistoricalRoot() *DeprecatedStruct {
+	if pcs == nil {
+		return nil
+	}
+	return &DeprecatedStruct{
+		PreConsensusContainer:  pcs.PreConsensusContainer,
+		PostConsensusContainer: pcs.PostConsensusContainer,
+		DecidedValue:           pcs.DecidedValue,
+		StartingDuty:           pcs.StartingDuty,
+		Finished:               pcs.Finished,
+	}
 }
 
 // Encode returns the encoded struct in bytes or error

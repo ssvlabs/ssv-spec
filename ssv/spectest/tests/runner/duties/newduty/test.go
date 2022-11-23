@@ -17,10 +17,10 @@ import (
 type StartNewRunnerDutySpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
+	PreStoredInstances      []*qbft.Instance
 	Duty                    *types.Duty
 	PostDutyRunnerStateRoot string
 	OutputMessages          []*ssv.SignedPartialSignatureMessage
-	PreStoredInstances      []*qbft.Instance
 	ExpectedError           string
 }
 
@@ -91,11 +91,23 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 // RunnerHistoricalRoot supports historical root. TODO need to align all root in tests and remove this patch
 func RunnerHistoricalRoot(runner ssv.Runner) ([]byte, error) {
 	type baseRunnerRootStruct struct {
-		State          *ssv.State
+		State          *ssv.DeprecatedStruct
 		Share          *types.Share
 		QBFTController interface{}
 		BeaconNetwork  types.BeaconNetwork
 		BeaconRoleType types.BeaconRole
+	}
+
+	var statsRoot *ssv.DeprecatedStruct
+	if runner.GetBaseRunner().State != nil {
+		statsRoot = runner.GetBaseRunner().State.GetHistoricalRoot()
+		runningInstance, err := runner.GetBaseRunner().QBFTController.InstanceForHeight(runner.GetBaseRunner().State.RunningHeight)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get running instance")
+		}
+		if runningInstance != nil {
+			statsRoot.RunningInstance = runningInstance
+		}
 	}
 
 	ctrlRootStruct, err := tests.ControllerHistoricalStruct(runner.GetBaseRunner().QBFTController)
@@ -104,7 +116,7 @@ func RunnerHistoricalRoot(runner ssv.Runner) ([]byte, error) {
 	}
 
 	baseRunnerRoot := baseRunnerRootStruct{
-		State:          runner.GetBaseRunner().State,
+		State:          statsRoot,
 		Share:          runner.GetBaseRunner().Share,
 		QBFTController: ctrlRootStruct,
 		BeaconNetwork:  runner.GetBaseRunner().BeaconNetwork,

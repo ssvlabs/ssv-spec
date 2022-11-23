@@ -55,9 +55,16 @@ func (b *BaseRunner) canStartNewDuty() error {
 	}
 
 	// check if instance running first as we can't start new duty if it does
-	if b.State.RunningInstance != nil {
+	if b.State.RunningHeight >= qbft.FirstHeight {
+		runningInstance, err := b.QBFTController.InstanceForHeight(b.State.RunningHeight)
+		if err != nil {
+			return err
+		}
+		if runningInstance == nil {
+			return errors.New("running instance not found")
+		}
 		// check consensus decided
-		if decided, _ := b.State.RunningInstance.IsDecided(); !decided {
+		if decided, _ := runningInstance.IsDecided(); !decided {
 			return errors.New("consensus on duty is running")
 		}
 	}
@@ -94,8 +101,15 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *Sig
 
 func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
 	prevDecided := false
-	if b.HasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
-		prevDecided, _ = b.State.RunningInstance.IsDecided()
+	if b.HasRunningDuty() && b.State != nil && b.State.RunningHeight >= qbft.FirstHeight {
+		runningInstance, err := b.QBFTController.InstanceForHeight(b.State.RunningHeight)
+		if err != nil {
+			return false, nil, err
+		}
+		if runningInstance == nil {
+			return false, nil, errors.New("running instance not found")
+		}
+		prevDecided, _ = runningInstance.IsDecided()
 	}
 
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
@@ -163,7 +177,7 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(signedMsg *SignedPartialSign
 
 func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.SignedMessage) (bool, error) {
 	decided := decidedMsg != nil
-	decidedRunningInstance := decided && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
+	decidedRunningInstance := decided && decidedMsg.Message.Height == b.State.RunningHeight
 
 	if !decided {
 		return false, nil
@@ -229,7 +243,7 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 		return errors.New("could not find newly created QBFT instance")
 	}
 
-	runner.GetBaseRunner().State.RunningInstance = newInstance
+	runner.GetBaseRunner().State.RunningHeight = newInstance.GetHeight()
 	return nil
 }
 

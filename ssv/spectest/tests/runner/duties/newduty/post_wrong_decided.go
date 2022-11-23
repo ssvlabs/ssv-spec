@@ -11,35 +11,7 @@ import (
 func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	decideWrong := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
-		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
-		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
-			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
-		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		err := r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(r.GetBaseRunner().State.RunningInstance.State)
-		if err != nil {
-			panic(err.Error())
-		}
-		higherDecided := qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
-			r.GetBaseRunner().QBFTController.Identifier,
-			10)
-		higherDecided.State.Decided = true
-		higherDecided.State.DecidedValue = []byte{1, 2, 3, 4}
-		err = r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(higherDecided.State)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		r.GetBaseRunner().QBFTController.Height = 10
-		return r
-	}
-
-	decideWrongInstances := func(r ssv.Runner) []*qbft.Instance {
+	preInstances := func(r ssv.Runner) []*qbft.Instance {
 		current := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
@@ -60,6 +32,21 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 		}
 	}
 
+	decideWrong := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
+		r.GetBaseRunner().State.RunningHeight = qbft.FirstHeight
+		r.GetBaseRunner().QBFTController.Height = 10
+
+		// support running tests without json
+		for _, instance := range preInstances(r) {
+			if err := r.GetBaseRunner().QBFTController.SaveInstance(instance); err != nil {
+				panic(err)
+			}
+		}
+
+		return r
+	}
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty post wrong decided",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -71,7 +58,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				PreStoredInstances: decideWrongInstances(testingutils.SyncCommitteeContributionRunner(ks)),
+				PreStoredInstances: preInstances(testingutils.SyncCommitteeContributionRunner(ks)),
 			},
 			{
 				Name:                    "sync committee",
@@ -79,7 +66,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
 				PostDutyRunnerStateRoot: "7c059a02f4bf14d99dc0a92986f6780accb429d32027ddb5c14866f140abeb2b",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				PreStoredInstances:      decideWrongInstances(testingutils.SyncCommitteeRunner(ks)),
+				PreStoredInstances:      preInstances(testingutils.SyncCommitteeRunner(ks)),
 			},
 			{
 				Name:                    "aggregator",
@@ -89,7 +76,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				PreStoredInstances: decideWrongInstances(testingutils.AggregatorRunner(ks)),
+				PreStoredInstances: preInstances(testingutils.AggregatorRunner(ks)),
 			},
 			{
 				Name:                    "proposer",
@@ -99,7 +86,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				PreStoredInstances: decideWrongInstances(testingutils.ProposerRunner(ks)),
+				PreStoredInstances: preInstances(testingutils.ProposerRunner(ks)),
 			},
 			{
 				Name:                    "attester",
@@ -107,7 +94,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "2f91e238dfdfe9be1f5cdc3f79e7423219efb7fb8ebd5bbca9610d4d58bca609",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				PreStoredInstances:      decideWrongInstances(testingutils.AttesterRunner(ks)),
+				PreStoredInstances:      preInstances(testingutils.AttesterRunner(ks)),
 			},
 		},
 	}

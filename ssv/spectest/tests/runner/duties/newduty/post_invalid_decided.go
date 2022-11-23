@@ -31,16 +31,16 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 
 	decideWrong := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
-		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
+		r.GetBaseRunner().State.RunningHeight = qbft.FirstHeight
+		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
+		err := r.GetBaseRunner().QBFTController.SaveInstance(qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
-		err := r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(r.GetBaseRunner().State.RunningInstance.State)
+			qbft.FirstHeight))
 		if err != nil {
-			panic(err.Error())
+			panic(err)
 		}
-		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 
 		err = r.ProcessConsensus(testingutils.MultiSignQBFTMsg(
 			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
@@ -57,17 +57,18 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 		if err.Error() != expectedError {
 			panic(err.Error())
 		}
+		return r
+	}
 
-		// make sure running instance is updated after process msg
-		state, err := r.GetBaseRunner().QBFTController.GetConfig().GetStorage().GetInstanceState(r.GetBaseRunner().QBFTController.Identifier, r.GetBaseRunner().QBFTController.Height)
+	preInstances := func(r ssv.Runner, duty *types.Duty) []*qbft.Instance {
+		runner := decideWrong(r, duty) // mock the process consensus in order to get the final version of the instance
+		inst, err := runner.GetBaseRunner().QBFTController.InstanceForHeight(qbft.FirstHeight)
 		if err != nil {
 			panic(err.Error())
 		}
-		if state != nil {
-			r.GetBaseRunner().State.RunningInstance = qbft.NewInstanceFromState(r.GetBaseRunner().QBFTController.GetConfig(), state)
+		return []*qbft.Instance{
+			inst,
 		}
-
-		return r
 	}
 
 	return &MultiStartNewRunnerDutySpecTest{
@@ -76,48 +77,48 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  decideWrong(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
+				PreStoredInstances:      preInstances(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				PostDutyRunnerStateRoot: "2d3ee0dd2174000c00ba4f42b2df800e379533642e2c337a4f7cdb3f4f5893c8",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "sync committee",
 				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				PreStoredInstances:      preInstances(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
 				PostDutyRunnerStateRoot: "c9170c67f7541e9b4b6209608638724cb5122a1d94cb1327e3dfabfcc1b26fd0",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				PreStoredInstances:      []*qbft.Instance{},
 			},
 			{
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty),
+				PreStoredInstances:      preInstances(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty),
 				Duty:                    testingutils.TestingAggregatorDuty,
 				PostDutyRunnerStateRoot: "dd57fb513dc1914ed961ae708f5625e85c4283ac1244e37fac67cc911083dfd7",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "proposer",
 				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDuty),
+				PreStoredInstances:      preInstances(testingutils.ProposerRunner(ks), testingutils.TestingProposerDuty),
 				Duty:                    testingutils.TestingProposerDuty,
 				PostDutyRunnerStateRoot: "18f07ee6a1aadcc6e627278e3335db6a90f947c9960a6dadba8ba446d87cf4d4",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				PreStoredInstances: []*qbft.Instance{},
 			},
 			{
 				Name:                    "attester",
 				Runner:                  decideWrong(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
+				PreStoredInstances:      preInstances(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "524d235900dba12349af3e1fc103544f1eb066bb452c046869dc8985977f4e52",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				PreStoredInstances:      []*qbft.Instance{},
 			},
 		},
 	}

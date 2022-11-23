@@ -12,19 +12,31 @@ import (
 func PostFinish() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// TODO: check error
-	// nolint
-	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
-		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
-		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
+	preInstances := func(r ssv.Runner) []*qbft.Instance {
+		runningInstance := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
-		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		r.GetBaseRunner().QBFTController.GetConfig().GetStorage().SaveInstanceState(r.GetBaseRunner().State.RunningInstance.State)
+		runningInstance.State.Decided = true
+		return []*qbft.Instance{runningInstance}
+	}
+
+	// TODO: check error
+	// nolint
+	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
+		r.GetBaseRunner().State.RunningHeight = qbft.FirstHeight
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		r.GetBaseRunner().State.Finished = true
+
+		// support running tests without json
+		for _, instance := range preInstances(r) {
+			if err := r.GetBaseRunner().QBFTController.SaveInstance(instance); err != nil {
+				panic(err)
+			}
+		}
+
 		return r
 	}
 
@@ -32,9 +44,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 		Name: "consensus valid post finish",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
-				Name:   "sync committee contribution",
-				Runner: finishRunner(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+				Name:               "sync committee contribution",
+				Runner:             finishRunner(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
+				PreStoredInstances: preInstances(testingutils.SyncCommitteeContributionRunner(ks)),
+				Duty:               testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
@@ -53,9 +66,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 			{
-				Name:   "sync committee",
-				Runner: finishRunner(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Name:               "sync committee",
+				Runner:             finishRunner(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				PreStoredInstances: preInstances(testingutils.SyncCommitteeRunner(ks)),
+				Duty:               testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
@@ -72,9 +86,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError:           "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 			{
-				Name:   "aggregator",
-				Runner: finishRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty),
-				Duty:   testingutils.TestingAggregatorDuty,
+				Name:               "aggregator",
+				Runner:             finishRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty),
+				PreStoredInstances: preInstances(testingutils.AggregatorRunner(ks)),
+				Duty:               testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
@@ -93,9 +108,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 			{
-				Name:   "proposer",
-				Runner: finishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDuty),
-				Duty:   testingutils.TestingProposerDuty,
+				Name:               "proposer",
+				Runner:             finishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDuty),
+				PreStoredInstances: preInstances(testingutils.ProposerRunner(ks)),
+				Duty:               testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
@@ -114,9 +130,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError: "failed processing consensus message: could not process msg: did not receive proposal for this round",
 			},
 			{
-				Name:   "attester",
-				Runner: finishRunner(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
-				Duty:   testingutils.TestingAttesterDuty,
+				Name:               "attester",
+				Runner:             finishRunner(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
+				PreStoredInstances: preInstances(testingutils.AttesterRunner(ks)),
+				Duty:               testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(
 						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
