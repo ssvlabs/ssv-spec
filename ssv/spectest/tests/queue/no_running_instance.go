@@ -2,8 +2,8 @@ package queue
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/queue"
 	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/ssv/queue"
 )
 
 func NoRunningInstance() *MessagePrioritySliceTest {
