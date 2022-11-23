@@ -97,4 +97,5 @@ var AllTests = []SpecTest{
 
 	queue.RunningInstance(),
 	queue.NoRunningInstance(),
+	queue.CurrentHeightFirst(),
 }
