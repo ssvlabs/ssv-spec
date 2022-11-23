@@ -1,0 +1,298 @@
+package frostutils
+
+import (
+	"encoding/hex"
+
+	"github.com/bloxapp/ssv-spec/dkg/frost"
+	"github.com/bloxapp/ssv-spec/types"
+)
+
+type FrostMsgStore struct {
+	SessionPKs map[types.OperatorID]string
+	SessionSKs map[types.OperatorID]string
+	Round1     map[types.OperatorID]struct {
+		Commitments []string
+		Shares      map[uint32]string
+		ProofS      string
+		ProofR      string
+	}
+	Round2 map[types.OperatorID]struct {
+		Vk      string
+		Sk      string
+		VkShare string
+		SkShare string
+	}
+}
+
+func (frMsgStore FrostMsgStore) PreparationMessageBytes(id types.OperatorID) []byte {
+	pk, _ := hex.DecodeString(frMsgStore.SessionPKs[id])
+	msg := &frost.ProtocolMsg{
+		Round: frost.Preparation,
+		PreparationMessage: &frost.PreparationMessage{
+			SessionPk: pk,
+		},
+	}
+	byts, _ := msg.Encode()
+	return byts
+}
+
+func (frMsgStore FrostMsgStore) Round1MessageBytes(id types.OperatorID) []byte {
+	commitments := make([][]byte, 0)
+	for _, commitment := range frMsgStore.Round1[id].Commitments {
+		cbytes, _ := hex.DecodeString(commitment)
+		commitments = append(commitments, cbytes)
+	}
+	proofS, _ := hex.DecodeString(frMsgStore.Round1[id].ProofS)
+	proofR, _ := hex.DecodeString(frMsgStore.Round1[id].ProofR)
+	shares := map[uint32][]byte{}
+	for peerID, share := range frMsgStore.Round1[id].Shares {
+		shareBytes, _ := hex.DecodeString(share)
+		shares[peerID] = shareBytes
+	}
+	msg := frost.ProtocolMsg{
+		Round: frost.Round1,
+		Round1Message: &frost.Round1Message{
+			Commitment: commitments,
+			ProofS:     proofS,
+			ProofR:     proofR,
+			Shares:     shares,
+		},
+	}
+	byts, _ := msg.Encode()
+	return byts
+}
+
+func (frMsgStore FrostMsgStore) Round2MessageBytes(id types.OperatorID) []byte {
+	vk, _ := hex.DecodeString(frMsgStore.Round2[id].Vk)
+	vkshare, _ := hex.DecodeString(frMsgStore.Round2[id].VkShare)
+	msg := frost.ProtocolMsg{
+		Round: frost.Round2,
+		Round2Message: &frost.Round2Message{
+			Vk:      vk,
+			VkShare: vkshare,
+		},
+	}
+	byts, _ := msg.Encode()
+	return byts
+}
+
+// Keygen
+var (
+	KeygenMsgStore = FrostMsgStore{
+		SessionPKs: map[types.OperatorID]string{
+			1: "036ff75a45bb43f1190f89838326ed4f2e090293184e56ff4a01a1a6db548fbae6",
+			2: "038680ce08d663c436ddb98265dd26a0c775bf4728ab5ae385671eeb5b87ab08e7",
+			3: "0204470b016f243d34ff27d8c869c3b8012612232390d8d3259bc40bf4dc3c4551",
+			4: "0328893f709ce7ad1ee70f393cf5ba152fc11043043f0a0acb1591923ebea52dbd",
+		},
+		SessionSKs: map[types.OperatorID]string{
+			1: "1aab69564b34a33ecd1af05fe6923d6de71870997d38ef60155c325957214c42",
+			2: "59954b863e2fba93aeceb05d2fdcde0c9688d21d95aa7bedefc7f31b35731a3d",
+			3: "293411a6b583a5c30587d4e530c948f013e96d5a4e653f0791899d6270c6f3c0",
+			4: "4f87fda0de889c645b07fce5df52984808d3c3e2f1ea1b5217e499d56e963fc9",
+		},
+		Round1: map[types.OperatorID]struct {
+			Commitments []string
+			Shares      map[uint32]string
+			ProofS      string
+			ProofR      string
+		}{
+			1: {
+				Commitments: []string{
+					"b1fc06dbfe90a494bbda98ce51663eeec74134b3faf1f667f872ffff9b7a7747e31fab29b8d2d7e30e5b8dfe26f4d552",
+					"821696e875f72e1b85be294972c02787f839626077298791c4e7c553c6762433c2b7cfeba151752316ca926fa9ba236c",
+					"8f66b1662e494ad37239040812743d7d68e256f57a59beb310c93e2df17b41e51d534168a0abc93ebb56785524f0586a",
+				},
+				ProofS: "65e597c5000b9b6cc2953b7c44b93e5ca5511f7c2cd81c7680bede9bbb9828b6",
+				ProofR: "4429058e0da3ca520b3d311dd9eae36c132151f99c804278f59eb3ddc128407e",
+				Shares: map[uint32]string{
+					2: "042a60c3ef5efbcc802221c346ac73e997c449a66ecb9dbe4f63108c67678e62af7e151cc8b8289d1abb43ce49361490ed889778d44d6cb623ae169c300881d6124cb9ce563eaa36f0b96eac28a033e582f35a7eca9d0b73d585428a647f6614e42b54946930066fcfb71d4c767b85b1b146e6cedc5ad5f743b1c8080f776460e6",
+					3: "04ce72a9cb7c24930acc3ee568e9999254d425e99e71d72e0500dd81d1818ea303ae8b7b0c075420403a9a7c3f5ebe8b2df2e702601aa49932b5b771b14b2bb3a0730dc4c7f9c1422f14b7198361b631e1e04c89301dca6796bc4b417c5888e1820b2906d96571550425655c101a16357be1bc2c162ca7ba0062fe4890fddae895",
+					4: "0446fe513897e4ba460aeefc76c5e8ac2f60f7fd0e93797c406c93dbca02fd7f55e79e9b322b9641b1a77d11adf4f38feb132270b3d28463c5e3be517c1d80ae4a5d262ab28924fd6187cde8490979e7a0e3ff7896ea7fb9a17bd6095e4afe913967655f9a00999f9fbd7c16e262a3686802b2817e5ca216aa2029c420042e5fd1",
+				},
+			},
+			2: {
+				Commitments: []string{
+					"af8a4e775d7d80b5f3b74eb1c2f997b9d218ac414797b6724fbc970cccf75adfc298af8a90f45e9ba9eae28bf949fdea",
+					"81087c05df25266a244fdcf31542bf8dabd6a7ccfc54e229e51fe40b25f10a862aa480b23b09a0d1755864c2f0223fd0",
+					"ab31eb44022999aee599b6e6dfb49accd0985fa584dbf458405fa541dafeb3e48eff70249cba0c1f4a1cb80163c7e15a",
+				},
+				ProofS: "458e8c8e76a908fb6de9c47d61759d6dd77731ef014890ab9532695fdcb96cbf",
+				ProofR: "34044356f2931faa528e262d33052a899498bf594a35593a75e0c1f4571d7640",
+				Shares: map[uint32]string{
+					1: "04e483c6b63c6e6c0ef9677062cfd38030bebe25c2610aa574da04992bad387ae58c1a081a64bd28a9b16c0604a5d4ed93e6a1cb23a71b49479f7593acdf4f24479813a42970682b4645163aafd14b01d05f9d11d348949829d71f907759551dc934c03b392f7a77d6aeae96fae550e15bb4d24e7dd16f7109b06fb4633851727e",
+					3: "04e94fa027890da52caf76d15463e5534259d4e80f9bc4ad6c0f770d8c8468be5ee58ecf3731320a7ac33d656856a9cd6cf93a1a29161e819dfec389081e25edf062c9dd07d07e98a70cf8e0c16112ef2a8015b1146786ef7d0764abf8fba9a3d38f137e48f597eb531dda88f0edc68f3c160f9d543a5d5a215ebcb30b2542a78b",
+					4: "04765affeae2264ce133b3c5908173865524a97d8adcfd624193b5c094539b2bcfbaaa989c07342ac6e44a70d2abb193c300392fe8ed95edd8e0d9715451f996af51627b703670f2465883c33c62b3cc6544342dae70057c8c92c3eac325aedc9715944dabcc8c77846b00d662ff4c20a6cf21dd00c2b9573116fba72703328016",
+				},
+			},
+			3: {
+				Commitments: []string{
+					"a2e4badfdc21372375a741669676f51bfea8a9e21dbd16286217d5931f690c8aa9c06bf0138c648d61b1acee7bb68198",
+					"8deb67f209dc09235c4627f750b2a95ace958f97baafcd95560517f39e4a0d3bec31cddb1fc52f9769c3df44d15e8a63",
+					"87addd83d2a222ca610102e401da2a2070d18c32ca1b089cdc683f45c3149fbeea3312451d2c658ff41ea5330e98319e",
+				},
+				ProofS: "455bfc61aff5b8f90eb32a2444ed72fac45cf69533ac2d343b9beac2ac8eb08e",
+				ProofR: "018330f5d32492fbc2a3e65dd80c33f63122d743affff9133cbf448b66f3d5a1",
+				Shares: map[uint32]string{
+					1: "04a93822a49b25a5f0c2694596cb0f307ed0eefb35ada9f749b827df128a2155bbdfd027e225513acab4a8acfbcd329c41cf6c00def8c37b10ca0d7be25a92fcc19b872a79069f1a6515e66a893fe6e0c59b1cea6fd93dba3bf900d22290defd68c6a4c9794ab054147ad48fa3edb0ee63cfe649164d1eec46e110436b86fa6f4a",
+					2: "045234ca3f8e31bf2cc0f0350c68db67ea16a3cf9f1ac439dbefa486ea5c003592d8b057b8370237bd7560ac84b02c9c0d6bf90352c2fd482aa68282a16b88f05aad6900642af14353a88b7464410803468dbebe83e611c84a74f22226355ab39ed86f90a5ba76620fdffaae9b00b64b14293a7f09a323b5b2fcc127832b599662",
+					4: "04757e324022b39f7b27ef4d32dc38d09978623bbfc4ed121529e67e3f3a684ae5f8b3cdcbb983767fdd3d26b6f714cb349d81ff8d8b3b5fbb659b4d03234c94d878501438f98e3ed493250693624397a3ca7ef827c9285b4a4af1b56f321f52cd59f825dcd5db095875b23c420f25cea6928d2cdfdfb53f25b96219ebd63726d7",
+				},
+			},
+			4: {
+				Commitments: []string{
+					"a764e878ade532a2ec3fa8f8813fddd2f33a3318ec2652354d41d90e198f3c17b4b8735d4d5984c5f5df650d082d78c9",
+					"95146fe1402bce6dd575e313294d7b02ef5d79eeaeb26ce3da3e02eb93d93a46a7b4fe1db0c842b3e2de8503c0c47e28",
+					"967597e453bb617e77dd2341c3ace40a1beb4795962c720c67fec55bfba4ae628b2171b33ab3ea2148c6c287a97e0b34",
+				},
+				ProofS: "259cf2af7c9662ad2415889901c368ec25aa4abf177b8c01d82635c85ef7cc41",
+				ProofR: "498842cfe23f756abb34b50cf866126ebf68aac5af49b28860eca15ea9768be7",
+				Shares: map[uint32]string{
+					1: "0446fe513897e4ba460aeefc76c5e8ac2f60f7fd0e93797c406c93dbca02fd7f55e79e9b322b9641b1a77d11adf4f38feb132270b3d28463c5e3be517c1d80ae4a5d262ab28924fd6187cde8490979e7a0fee327110c77430f348c8aaaa8dda7dfccc0bf452f7998aca584f2a5e2ca43b2996603124a3f50e12ca6c128199e1543",
+					2: "041270eb0c929301038afac519236be54fa97f0a428c2d73b46cefc89e198eb8b0058ae7b1ab2a5a778d873b88d07eb44aa944ccf9397672b9078c83f4c7c0bf2ab5d2f8c17070fc16e3d796ccc5cc29becc2e9b260461383ec4a789a6273ed37ac61247539c72fb11f4ea954e9080b98d34e5b9e60d4b208af59d1239dafb81dc",
+					3: "04ca7e6fb4b57c8d847cc30f943045f970bb2b0ecfd926ac7d4275dfccb53c62a3eedd9ab9091699992f4073d9daea3dccde2b239e7be5a2f9e42a8601ac21ad1b9be9b36d34d09c5c22eee19a2957436c52b960f37e77a8d8bf184296ab6d7b637776914aaf9e67f02f26bfbb674aaac2ea7419582fe6df68bf7e6ec4a1e163e4",
+				},
+			},
+		},
+		Round2: map[types.OperatorID]struct {
+			Vk      string
+			Sk      string
+			VkShare string
+			SkShare string
+		}{
+			1: {
+
+				Vk:      "871ac12101b6a8dc6edac502d776a10c01fceedf727b10acb40c6f9de0c977c63879ccb895db7d92ad3d4e77144b64ac",
+				Sk:      "65f80c8ae56d2385612e206d53a3db6083b86ffb7ea093ddcf40cb003a60014f",
+				VkShare: "a20f5933a6a97e7cd2a0ea65e8e55493bccc60031065429dc1184d72bbbb916491da73cc649760b3d739647077944236",
+				SkShare: "6c190c998b847e71713336f884badd4b10ba7cfb488e8bb6c2c95e92c6406a0a",
+			},
+			2: {
+
+				Vk:      "871ac12101b6a8dc6edac502d776a10c01fceedf727b10acb40c6f9de0c977c63879ccb895db7d92ad3d4e77144b64ac",
+				Sk:      "65f80c8ae56d2385612e206d53a3db6083b86ffb7ea093ddcf40cb003a60014f",
+				VkShare: "8412c202a39d5b68f3e56c34d6ec721d69f9ef9fc12560c76bc53b1a07118f79ce70850c3f0773b45cdf996270c8b52d",
+				SkShare: "64425aa3e6d73fae40f81c2a761503a86ccfc3faaef47e3dc3b00f1513fb1ffd",
+			},
+			3: {
+
+				Vk:      "871ac12101b6a8dc6edac502d776a10c01fceedf727b10acb40c6f9de0c977c63879ccb895db7d92ad3d4e77144b64ac",
+				Sk:      "65f80c8ae56d2385612e206d53a3db6083b86ffb7ea093ddcf40cb003a60014f",
+				VkShare: "8a819950175eb638494ac7a037362469f8716d13800a58cb2109b8a7b128ff6f3fbf5fe2b507377d41dee71bf2d906f3",
+				SkShare: "4e73f6a9f765673bd07cd00327b24e7897f844f9b1d26b72d1f4dc8723902328",
+			},
+			4: {
+
+				Vk:      "871ac12101b6a8dc6edac502d776a10c01fceedf727b10acb40c6f9de0c977c63879ccb895db7d92ad3d4e77144b64ac",
+				Sk:      "65f80c8ae56d2385612e206d53a3db6083b86ffb7ea093ddcf40cb003a60014f",
+				VkShare: "925aeda7183eecdc8e9d27ebc32a32bfad15683a36cb2bfa3ca5f450ad92917d46a35a2d4b66dd976defd0ba6306e78e",
+				SkShare: "2aade0abbd2ef51a1fc152829992bdbb9233fff851285355ed97c6e8f4ff738b",
+			},
+		},
+	}
+)
+
+// Resharing
+var (
+	ResharingMsgStore = FrostMsgStore{
+		SessionPKs: map[types.OperatorID]string{
+			5: "036ff75a45bb43f1190f89838326ed4f2e090293184e56ff4a01a1a6db548fbae6",
+			6: "038680ce08d663c436ddb98265dd26a0c775bf4728ab5ae385671eeb5b87ab08e7",
+			7: "0204470b016f243d34ff27d8c869c3b8012612232390d8d3259bc40bf4dc3c4551",
+			8: "0328893f709ce7ad1ee70f393cf5ba152fc11043043f0a0acb1591923ebea52dbd",
+		},
+		SessionSKs: map[types.OperatorID]string{
+			5: "1aab69564b34a33ecd1af05fe6923d6de71870997d38ef60155c325957214c42",
+			6: "59954b863e2fba93aeceb05d2fdcde0c9688d21d95aa7bedefc7f31b35731a3d",
+			7: "293411a6b583a5c30587d4e530c948f013e96d5a4e653f0791899d6270c6f3c0",
+			8: "4f87fda0de889c645b07fce5df52984808d3c3e2f1ea1b5217e499d56e963fc9",
+		},
+		Round1: map[types.OperatorID]struct {
+			Commitments []string
+			Shares      map[uint32]string
+			ProofS      string
+			ProofR      string
+		}{
+			1: {
+				Commitments: []string{
+					"ad6c84632250ec9a0d69d17883eb99ea7819662026816a4d71b72ac2be0a94d2e5ac81fb82f1e6e5571db54616cb2678",
+					"a764e878ade532a2ec3fa8f8813fddd2f33a3318ec2652354d41d90e198f3c17b4b8735d4d5984c5f5df650d082d78c9",
+					"95146fe1402bce6dd575e313294d7b02ef5d79eeaeb26ce3da3e02eb93d93a46a7b4fe1db0c842b3e2de8503c0c47e28",
+				},
+				ProofS: "2095e190b188e494e34aa72b66ac4cfe3387d620aaa638cec1d7a14e71408d8d",
+				ProofR: "6803dae1e4f06ddd55a2a4858970602ea86f36ad3d3a1743fc799f93fa7f2ce4",
+				Shares: map[uint32]string{
+					5: "04d43ea927cacffe0aec6094a9d093530390d5d240121faad3be931c673b368d9727a6bbb07870a0705669a890b28d0d4ba97b597f3d9ddb37006a1e06af23708d7847a42ee6d7af1316c229404853a3d6aad8e8996f5fd1804b549778883e91d919ad65b30979a5dc0e09cbc4ebd0f4549f737360c56a020fbe50db9543569115",
+					6: "044ed564bffa09d8f4d4623eb7716259037086a65dfd9a24eed099fd291872bdf3deba2c8df42876c9aa99e4a353d33c257a864d936f8f7230f130679d928c1d53903721f578b7b4986da0a0aa6cbed4806ba987474d3b8fbd6dc813bb83748f710aca9f4583243f9733592e9746c0d13eb5bad92272a2c013e9c915a830acc866",
+					7: "04a3616797f292c658ef6dd57d3775ab9417102d2d66ef541d185788d7da351e34e0390c26e62f14ff2063b964216854a8cd671291d494b84583236d40ab24396b10a79af3b20d42d44a4d45148e3a9691e89f1886c1ed6f87bccff4b2bf3e1cd44d3bcf22885e6fa5e584fb52266a77bda31052c61d0dcb45153bb1686be9e274",
+					8: "047fb4f7a3bff36c1afcb73f553f449182f0bea4186066c446d2b76a49e192a9408eda1dfabe5102f0df3e9cae90d65d81253ca9ac33f532456b0e43fefe33ff20e575e2b3595459206962df497e4aa2c2b1f106d8dc778ef24f0bec6d1a459ec60590672d9408832dd562e2d008c7dbc872e69e8b768bafeda64c896bc49f2123",
+				},
+			},
+			2: {
+				Commitments: []string{
+					"93580f78cea8d29c17418ea11bc0a9f8bf22f05a0166b3b35847a04eb882340dc8cb8e4c251a2b9811344044bb6e9248",
+					"b0799c7e34937bc5be65a80756d67326dd19e39c896f26e16a1324726a279c92e6a59c32bca417ec6e2c6a110ce4544c",
+					"9782cfffcc88e758fa4784027f63fefeb6f8a38e15792358158ade28d4993da519470fa80b7478570e519a5e5ef5eb88",
+				},
+				ProofS: "17d076cc2ad7fd1d82deeb539bb45bc8fd053da506313a2984b9f766c10bdecb",
+				ProofR: "3e5c77676ec03d4ccc814f5d1771d06c74b13b26ffcaac97bc83dcf63689d5f5",
+				Shares: map[uint32]string{
+					5: "04b4317d8d0da8ed1880c9e75a8e5d00912d905c47e26c1550dac93ae587dc97ec89cb01aa12e67982550bbeb531939e23a07cc8efdf7dda75887769d27d79a35ae1837f400e06183c8601fbd74c1240d2f3112e5ee04159a9b1ca115876e123ede66bee95dfc6eef126bb68a80141485ed2e0dd1d42c2ba0838bb4482bdf65ea8",
+					6: "04385be66d74ded68c0007df6f372af21dbc210b6026a2f2f60065b89d0877e7361566b2d25c3df4fc4a7e28097ce28e4fbb50b0165b4a785a81d9653a788518246be65deb2d25245e97e514036d8bc5973d54118655a10849db4839bddfefd43c1677d33cd77307e9b353720a14630c6763126f9322926bb9b18d8235801e712c",
+					7: "04cb029518729f4554b2f0465edff505f4140505ec12b09c2a507794284d415162ecc14ad2d0de84287b2eef0f1bc5a3db9866c79992e6ad56294312c330fae557e27a059102059e9f83d40624c333f85b4a5197e62350fafec4e7f42e775fd20a350b4c0f2adfbc6f656c77173a8025dd2a3eef9455fd6422e13426a8436f3c36",
+					8: "042667c901f799f294ce200f0787e43385544de0d4058d0d8b63bad5005708248e6e0ea2175e24bcb9553a93f9ca4ab0377dcfc224a10529527deb0080600cc0821f900469bacc0b261406bf773d73812f02b5ab2caa59e1efc2e02f28874388a43e32afee3a6869b534732df09fc41be2b68cf795890de819e50ad921fa45dcf9",
+				},
+			},
+			3: {
+				Commitments: []string{
+					"8a819950175eb638494ac7a037362469f8716d13800a58cb2109b8a7b128ff6f3fbf5fe2b507377d41dee71bf2d906f3",
+					"8bd6a423f76651c8ad06f5a63e9e6a76e0971a10a12f95077bfd916335857cbd03ac5a384668b175861247cff8bf114f",
+					"80561e460504885ffaa2a83e3e492583243790475ab10a6fa49a5e225bec5936ebe56d122e3f96b5b8d730737e52440a",
+				},
+				ProofS: "68ffeb968eb85d9b4ba0a7d00185130eac466c73a13d6ed38cf0e48e0cc2eb2c",
+				ProofR: "1b7eff48275dec08527b5636dc5fd713c36e0cc943cd25e77899c74516dc7d82",
+				Shares: map[uint32]string{
+					5: "043cb36d672046a0bb2932dceb5b3189358005d50387eea3b40d8cbf2b051153e9817221cf898b06e7b193d8418abe6b6c6f34ae8f5640442563a0641e3ce8a901b2a4e6e935d42add6d2ab3c0fb1aa9e22062eb493f1ac95ec0bfc30cc8831358fa4f11938515bfeffe59d0d4861b68a825b666afa7205a2c5a1f8afd70a9b7d5",
+					6: "04a5e11e9611e90cf06b94632322875c1cf14fb52cc8d22bc1c0e8242afa81d7a9a35cfbae04e82f2f2cfeb35d7cd7d583293b17e4ac61f11dd418728a36390486ab613292477efdad3d8043b562a9f762677a1866ae9d506d7410277999b5a2733ce18fa0075a37b658c89c9552a6bc1564d9cd2c9aac06bc89cf27634fc48ed8",
+					7: "04e483c6b63c6e6c0ef9677062cfd38030bebe25c2610aa574da04992bad387ae58c1a081a64bd28a9b16c0604a5d4ed93e6a1cb23a71b49479f7593acdf4f24479813a42970682b4645163aafd14b01d0172e22a3b228312b114f042c68f8eefaf5087230ace0cf48b5ccaf852bf6a60e09ab4bea21d96cddf84c4d73186c8a45",
+					8: "04e94fa027890da52caf76d15463e5534259d4e80f9bc4ad6c0f770d8c8468be5ee58ecf3731320a7ac33d656856a9cd6cf93a1a29161e819dfec389081e25edf062c9dd07d07e98a70cf8e0c16112ef2a72ba2a93b97a617da4ec37e22db87adaac9b0ac8a0cb24650e399f0e4d45eded1e1c8e10209bd485849705572d8d6675",
+				},
+			},
+		},
+		Round2: map[types.OperatorID]struct {
+			Vk      string
+			Sk      string
+			VkShare string
+			SkShare string
+		}{
+			5: {
+
+				Vk:      "871ac12101b6a8dc6edac502d776a10c01fceedf727b10acb40c6f9de0c977c63879ccb895db7d92ad3d4e77144b64ac",
+				Sk:      "",
+				VkShare: "933e2a65ce75eeb769781d080d7f7698a202d342548e4bac6a2fa7355622dba4c06d22a7b84013e517f37e31f88e5e11",
+				SkShare: "73484ee28ff0de485ae0256347d526ebc6518a32d6bfb21f905e96d97228fd76",
+			},
+			6: {
+
+				Vk:      "871ac12101b6a8dc6edac502d776a10c01fceedf727b10acb40c6f9de0c977c63879ccb895db7d92ad3d4e77144b64ac",
+				Sk:      "",
+				VkShare: "8b1f46d53862cb0a5722c67878a02a4bc6602befdd02a875512dfe27562b39a9c195d2d0e390a4ad13f9568ac619e07a",
+				SkShare: "30616227ac07478aa645c63da8c462a296eb88651ba5dbd0872926107dfa2e10",
+			},
+			7: {
+
+				Vk:      "871ac12101b6a8dc6edac502d776a10c01fceedf727b10acb40c6f9de0c977c63879ccb895db7d92ad3d4e77144b64ac",
+				Sk:      "",
+				VkShare: "b2a7448a4cc5bd127fccb8155d6704bf7a7d12a711692c55e353e0c87f7430c60ba0b5748641dee6127a6b5e163e1a41",
+				SkShare: "427d68edb9c06f90e5b321be55ec76d64c1b61962d5dab83f68a932856d08031",
+			},
+			8: {
+
+				Vk:      "871ac12101b6a8dc6edac502d776a10c01fceedf727b10acb40c6f9de0c977c63879ccb895db7d92ad3d4e77144b64ac",
+				Sk:      "",
+				VkShare: "909357080a87d6a3cd749b5d3e4824d3a62b009039197081e4ff07bd60763140e0a212c4b05451ff2b46d98ee185937c",
+				SkShare: "35aebbe18f7ed912e5ee5fdd45ab8b81922371c30be8c53ade82de21fcabf3d8",
+			},
+		},
+	}
+)
