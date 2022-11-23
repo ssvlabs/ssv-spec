@@ -95,5 +95,6 @@ var AllTests = []SpecTest{
 	valcheckattestations.AttestationDataNil(),
 	valcheckattestations.Valid(),
 
-	queue.AllInOne(),
+	queue.RunningInstance(),
+	queue.NoRunningInstance(),
 }

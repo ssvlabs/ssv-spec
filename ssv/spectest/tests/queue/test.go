@@ -18,7 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type MessagePriorityTest struct {
+type MessagePrioritySliceTest struct {
 	Name  string
 	State *queue.State
 
@@ -30,11 +30,11 @@ type MessagePriorityTest struct {
 	Permutations [][]int
 }
 
-func (test *MessagePriorityTest) TestName() string {
+func (test *MessagePrioritySliceTest) TestName() string {
 	return test.Name
 }
 
-func (test *MessagePriorityTest) Run(t *testing.T) {
+func (test *MessagePrioritySliceTest) Run(t *testing.T) {
 	messages := make(messageSlice, len(test.Messages))
 	for i, m := range test.Messages {
 		var err error

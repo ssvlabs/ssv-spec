@@ -122,7 +122,7 @@ func TestJson(t *testing.T) {
 			t.Run(typedTest.TestName(), func(t *testing.T) {
 				typedTest.Run(t)
 			})
-		case reflect.TypeOf(&queue.MessagePriorityTest{}).String():
+		case reflect.TypeOf(&queue.MessagePrioritySliceTest{}).String():
 			typedTest := messagePriorityTestFromMap(t, test.(map[string]interface{}))
 			t.Run(typedTest.TestName(), func(t *testing.T) {
 				typedTest.Run(t)
@@ -288,10 +288,10 @@ func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingu
 	}
 }
 
-func messagePriorityTestFromMap(t *testing.T, m map[string]interface{}) *queue.MessagePriorityTest {
+func messagePriorityTestFromMap(t *testing.T, m map[string]interface{}) *queue.MessagePrioritySliceTest {
 	b, err := json.Marshal(m)
 	require.NoError(t, err)
-	var test queue.MessagePriorityTest
+	var test queue.MessagePrioritySliceTest
 	err = json.Unmarshal(b, &test)
 	require.NoError(t, err)
 	return &test
