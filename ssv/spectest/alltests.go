@@ -33,7 +33,13 @@ var AllTests = []SpecTest{
 	postconsensus.PreDecided(),
 	postconsensus.PostQuorum(),
 	postconsensus.ValidMessage(),
+	postconsensus.ValidMessage7Operators(),
+	postconsensus.ValidMessage10Operators(),
+	postconsensus.ValidMessage13Operators(),
 	postconsensus.Quorum(),
+	postconsensus.Quorum7Operators(),
+	postconsensus.Quorum10Operators(),
+	postconsensus.Quorum13Operators(),
 
 	newduty.ConsensusNotStarted(),
 	newduty.NotDecided(),
