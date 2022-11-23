@@ -32,7 +32,7 @@ type KeyGenOutput struct {
 // BlameOutput is the output of blame round
 type BlameOutput struct {
 	Valid        bool
-	BlameMessage []byte
+	BlameMessage *SignedMessage
 }
 
 // Protocol is an interface for all DKG protocol to support a variety of protocols for future upgrades

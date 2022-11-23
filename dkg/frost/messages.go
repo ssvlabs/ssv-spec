@@ -1,6 +1,11 @@
 package frost
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/bloxapp/ssv-spec/dkg"
+	ecies "github.com/ecies/go/v2"
+	"github.com/pkg/errors"
+)
 
 type ProtocolMsg struct {
 	Round              ProtocolRound       `json:"round,omitempty"`
@@ -10,21 +15,54 @@ type ProtocolMsg struct {
 	BlameMessage       *BlameMessage       `json:"blame,omitempty"`
 }
 
-func (msg *ProtocolMsg) validate() bool {
-	var messageExists bool
+func (msg *ProtocolMsg) hasOnlyOneMsg() bool {
+	var count = 0
+	if msg.PreparationMessage != nil {
+		count++
+	}
+	if msg.Round1Message != nil {
+		count++
+	}
+	if msg.Round2Message != nil {
+		count++
+	}
+	if msg.BlameMessage != nil {
+		count++
+	}
+	return count == 1
+}
+
+func (msg *ProtocolMsg) msgMatchesRound() bool {
 	switch msg.Round {
 	case Preparation:
-		messageExists = msg.PreparationMessage != nil
+		return msg.PreparationMessage != nil
 	case Round1:
-		messageExists = msg.Round1Message != nil
+		return msg.Round1Message != nil
 	case Round2:
-		messageExists = msg.Round2Message != nil
+		return msg.Round2Message != nil
 	case Blame:
-		messageExists = msg.BlameMessage != nil
+		return msg.BlameMessage != nil
 	default:
 		return false
 	}
-	return messageExists
+}
+
+func (msg *ProtocolMsg) Validate() error {
+	if !msg.hasOnlyOneMsg() {
+		return errors.New("need to contain one and only one message round")
+	}
+	if !msg.msgMatchesRound() {
+		return errors.New("")
+	}
+	switch msg.Round {
+	case Preparation:
+		return msg.PreparationMessage.Validate()
+	case Round1:
+		return msg.Round1Message.Validate()
+	case Round2:
+		return msg.Round2Message.Validate()
+	}
+	return nil
 }
 
 // Encode returns a msg encoded bytes or error
@@ -39,6 +77,11 @@ func (msg *ProtocolMsg) Decode(data []byte) error {
 
 type PreparationMessage struct {
 	SessionPk []byte
+}
+
+func (msg *PreparationMessage) Validate() error {
+	_, err := ecies.NewPublicKeyFromBytes(msg.SessionPk)
+	return err
 }
 
 // Encode returns a msg encoded bytes or error
@@ -62,6 +105,27 @@ type Round1Message struct {
 	Shares map[uint32][]byte
 }
 
+func (msg *Round1Message) Validate() error {
+	var err error
+	for _, bytes := range msg.Commitment {
+		_, err = thisCurve.Point.FromAffineCompressed(bytes)
+		if err != nil {
+			return errors.Wrap(err, "invalid commitment")
+		}
+	}
+
+	_, err = thisCurve.Scalar.SetBytes(msg.ProofS)
+	if err != nil {
+		return errors.Wrap(err, "invalid ProofS")
+	}
+	_, err = thisCurve.Scalar.SetBytes(msg.ProofR)
+	if err != nil {
+		return errors.Wrap(err, "invalid ProofR")
+	}
+
+	return nil
+}
+
 // Encode returns a msg encoded bytes or error
 func (msg *Round1Message) Encode() ([]byte, error) {
 	return json.Marshal(msg)
@@ -77,11 +141,38 @@ type Round2Message struct {
 	VkShare []byte
 }
 
+func (msg *Round2Message) Validate() error {
+	var err error
+	_, err = thisCurve.Point.FromAffineCompressed(msg.Vk)
+	if err != nil {
+		return errors.Wrap(err, "invalid vk")
+	}
+	_, err = thisCurve.Point.FromAffineCompressed(msg.VkShare)
+	if err != nil {
+		return errors.Wrap(err, "invalid vk share")
+	}
+	return nil
+}
+
 type BlameMessage struct {
 	Type             BlameType
 	TargetOperatorID uint32
 	BlameData        [][]byte // SignedMessages received from the bad participant
 	BlamerSessionSk  []byte
+}
+
+func (msg *BlameMessage) Validate() error {
+	if len(msg.BlameData) < 1 {
+		return errors.New("no blame data")
+	}
+	for _, datum := range msg.BlameData {
+		signedMsg := &dkg.SignedMessage{}
+		err := signedMsg.Decode(datum)
+		if err != nil {
+			return errors.Wrap(err, "contained data is not SignedMessage")
+		}
+	}
+	return nil
 }
 
 // Encode returns a msg encoded bytes or error
@@ -101,4 +192,16 @@ const (
 	InconsistentMessage BlameType = iota
 	// InvalidShare refers to an operator sending invalid share
 	InvalidShare
+	//// InvalidMessage refers to messages containing invalid values
+	InvalidMessage
 )
+
+func (t BlameType) ToString() string {
+	m := map[BlameType]string{
+		InconsistentMessage: "Inconsistent Message",
+		InvalidShare:        "Invalid Share",
+		//FailedEcies:         "Failed Ecies",
+		InvalidMessage: "Invalid Message",
+	}
+	return m[t]
+}

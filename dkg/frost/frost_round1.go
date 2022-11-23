@@ -1,11 +1,16 @@
 package frost
 
 import (
+	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 func (fr *FROST) processRound1() error {
+
+	if fr.state.currentRound != Round1 {
+		return dkg.ErrInvalidRound{}
+	}
 
 	if !fr.needToRunCurrentRound() {
 		return fr.state.participant.SkipRound1()
@@ -58,7 +63,7 @@ func (fr *FROST) processRound1() error {
 	}
 
 	msg := &ProtocolMsg{
-		Round: fr.state.currentRound,
+		Round: Round1,
 		Round1Message: &Round1Message{
 			Commitment: commitments,
 			ProofS:     bCastMessage.Wi.Bytes(),
@@ -66,7 +71,8 @@ func (fr *FROST) processRound1() error {
 			Shares:     shares,
 		},
 	}
-	return fr.broadcastDKGMessage(msg)
+	_, err = fr.broadcastDKGMessage(msg)
+	return err
 }
 
 func (fr *FROST) partialInterpolate() ([]byte, error) {

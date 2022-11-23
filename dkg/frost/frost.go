@@ -163,39 +163,55 @@ func (fr *FROST) Start() error {
 			SessionPk: k.PublicKey.Bytes(true),
 		},
 	}
-	return fr.broadcastDKGMessage(msg)
+	_, err = fr.broadcastDKGMessage(msg)
+	return err
 }
 
 func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
 
 	if err := fr.validateSignedMessage(msg); err != nil {
-		return false, nil, errors.Wrap(err, "failed to validate signed message")
+		return false, nil, errors.Wrap(err, "failed to Validate signed message")
 	}
 
 	protocolMessage := &ProtocolMsg{}
 	if err := protocolMessage.Decode(msg.Message.Data); err != nil {
 		return false, nil, errors.Wrap(err, "failed to decode protocol msg")
 	}
-	if valid := protocolMessage.validate(); !valid {
-		return false, nil, errors.New("failed to validate protocol message")
+	if err := protocolMessage.Validate(); err != nil {
+		fr.state.currentRound = Blame
+		outcome, err := fr.createAndBroadcastBlameOfInvalidMessage(uint32(msg.Signer), msg)
+		return true, outcome, err
 	}
 
 	existingMessage, ok := fr.state.msgs[protocolMessage.Round][uint32(msg.Signer)]
 
 	if isBlameTypeInconsisstent := ok && !fr.haveSameRoot(existingMessage, msg); isBlameTypeInconsisstent {
-		if err := fr.createAndBroadcastBlameOfInconsistentMessage(existingMessage, msg); err != nil {
+		fr.state.currentRound = Blame
+		outcome, err := fr.createAndBroadcastBlameOfInconsistentMessage(existingMessage, msg)
+		if err != nil {
 			return false, nil, err
 		}
-		if blame, err := fr.processBlame(); err != nil {
+		return true, outcome, nil
+
+	}
+
+	if protocolMessage.Round == Blame {
+		fr.state.currentRound = Blame
+		valid, err := fr.checkBlame(uint32(msg.Signer), protocolMessage)
+		if err != nil {
 			return false, nil, err
-		} else {
-			return true, &dkg.ProtocolOutcome{BlameOutput: blame}, nil
 		}
+		return valid, &dkg.ProtocolOutcome{
+			BlameOutput: &dkg.BlameOutput{
+				Valid:        valid,
+				BlameMessage: msg,
+			},
+		}, nil
 	}
 
 	fr.state.msgs[protocolMessage.Round][uint32(msg.Signer)] = msg
 
-	switch protocolMessage.Round {
+	switch fr.state.currentRound {
 	case Preparation:
 		if fr.canProceedThisRound() {
 			fr.state.currentRound = Round1
@@ -206,12 +222,8 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome,
 	case Round1:
 		if fr.canProceedThisRound() {
 			fr.state.currentRound = Round2
-			if err := fr.processRound2(); err != nil {
-				if err.Error() == "invalid share" {
-					return true, &dkg.ProtocolOutcome{BlameOutput: err.(ErrInvalidShare).BlameOutput}, nil
-				}
-				return false, nil, err
-			}
+			outcome, err := fr.processRound2()
+			return outcome != nil, outcome, err
 		}
 	case Round2:
 		if fr.canProceedThisRound() {
@@ -222,13 +234,6 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome,
 			}
 			return true, &dkg.ProtocolOutcome{ProtocolOutput: out}, nil
 		}
-	case Blame:
-		fr.state.currentRound = Blame
-		blame, err := fr.processBlame()
-		if err != nil {
-			return false, nil, err
-		}
-		return true, &dkg.ProtocolOutcome{BlameOutput: blame}, nil
 	default:
 		return true, nil, dkg.ErrInvalidRound{}
 	}
@@ -369,11 +374,12 @@ func (fr *FROST) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
 	return bcastMessage, nil
 }
 
-func (fr *FROST) broadcastDKGMessage(msg *ProtocolMsg) error {
+func (fr *FROST) broadcastDKGMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
 	bcastMessage, err := fr.toSignedMessage(msg)
 	if err != nil {
-		return err
+		return bcastMessage, err
 	}
 	fr.state.msgs[fr.state.currentRound][uint32(fr.state.operatorID)] = bcastMessage
-	return fr.network.BroadcastDKGMessage(bcastMessage)
+	err = fr.network.BroadcastDKGMessage(bcastMessage)
+	return bcastMessage, err
 }

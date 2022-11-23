@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"reflect"
 
@@ -41,7 +40,7 @@ func writeJson(data []byte) {
 	fullPath := basedir + "/" + fileName
 
 	fmt.Printf("writing spec tests json to: %s\n", fullPath)
-	if err := ioutil.WriteFile(fullPath, data, 0644); err != nil {
+	if err := os.WriteFile(fullPath, data, 0644); err != nil {
 		panic(err.Error())
 	}
 }

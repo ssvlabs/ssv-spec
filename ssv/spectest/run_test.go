@@ -3,6 +3,12 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"testing"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -13,12 +19,6 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-	"reflect"
-	"strings"
-	"testing"
 )
 
 func TestAll(t *testing.T) {
@@ -34,7 +34,7 @@ func TestJson(t *testing.T) {
 	path := filepath.Join(basedir, "generate")
 	fileName := "tests.json"
 	untypedTests := map[string]interface{}{}
-	byteValue, err := ioutil.ReadFile(path + "/" + fileName)
+	byteValue, err := os.ReadFile(path + "/" + fileName)
 	if err != nil {
 		panic(err.Error())
 	}

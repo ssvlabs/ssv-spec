@@ -8,45 +8,24 @@ import (
 )
 
 // Runners is a map of dkg runners mapped by dkg ID.
-type Runners map[string]struct {
-	Runner    Runner
-	isDeleted bool
-}
+type Runners map[string]Runner
 
 func (runners Runners) AddRunner(id RequestID, runner Runner) {
-	runners[hex.EncodeToString(id[:])] = struct {
-		Runner    Runner
-		isDeleted bool
-	}{
-		Runner:    runner,
-		isDeleted: false,
-	}
+	runners[hex.EncodeToString(id[:])] = runner
 }
 
 // RunnerForID returns a Runner from the provided msg ID, or nil if not found
 func (runners Runners) RunnerForID(id RequestID) Runner {
-	r := runners[hex.EncodeToString(id[:])]
-	if r.Runner == nil || r.isDeleted {
-		return nil
-	}
-	return r.Runner
+	return runners[hex.EncodeToString(id[:])]
 }
 
 func (runners Runners) Exists(id RequestID) bool {
-	r := runners[hex.EncodeToString(id[:])]
-	return r.Runner != nil
-}
-
-func (runners Runners) IsDeleted(id RequestID) bool {
-	r := runners[hex.EncodeToString(id[:])]
-	return r.Runner != nil && r.isDeleted
+	_, ok := runners[hex.EncodeToString(id[:])]
+	return ok
 }
 
 func (runners Runners) DeleteRunner(id RequestID) {
-	r := runners[hex.EncodeToString(id[:])]
-	r.isDeleted = true
-	runners[hex.EncodeToString(id[:])] = r
-	// delete(runners, hex.EncodeToString(id[:]))
+	delete(runners, hex.EncodeToString(id[:]))
 }
 
 // Node is responsible for receiving and managing DKG session and messages
@@ -238,23 +217,19 @@ func (n *Node) validateReshareMsg(message *SignedMessage) (*Reshare, error) {
 }
 
 func (n *Node) processDKGMsg(message *SignedMessage) error {
-	if n.runners.IsDeleted(message.Message.Identifier) {
-		return nil
-	}
 	if !n.runners.Exists(message.Message.Identifier) {
 		return errors.New("could not find dkg runner")
 	}
-	r := n.runners.RunnerForID(message.Message.Identifier)
 
 	if err := n.validateDKGMsg(message); err != nil {
 		return errors.Wrap(err, "dkg msg not valid")
 	}
 
+	r := n.runners.RunnerForID(message.Message.Identifier)
 	finished, err := r.ProcessMsg(message)
 	if err != nil {
 		return errors.Wrap(err, "could not process dkg message")
 	}
-
 	if finished {
 		n.runners.DeleteRunner(message.Message.Identifier)
 	}
