@@ -242,25 +242,6 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 	return newContr
 }
 
-func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Share) *qbft.Instance {
-	newInst := qbft.NewInstance(
-		contr.GetConfig(),
-		share,
-		contr.Identifier,
-		contr.Height)
-
-	newInst.State.DecidedValue = inst.State.DecidedValue
-	newInst.State.Decided = inst.State.Decided
-	newInst.State.Share = inst.State.Share
-	newInst.State.Round = inst.State.Round
-	newInst.State.Height = inst.State.Height
-	newInst.State.ProposalAcceptedForCurrentRound = inst.State.ProposalAcceptedForCurrentRound
-	newInst.State.ID = inst.State.ID
-	newInst.State.LastPreparedValue = inst.State.LastPreparedValue
-	newInst.State.LastPreparedRound = inst.State.LastPreparedRound
-	return newInst
-}
-
 func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
 	switch role {
 	case types.BNRoleAttester:
