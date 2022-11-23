@@ -7,18 +7,18 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongExpectedRootsCount tests len(expectedRootObjs) != len(signedMsg.Message.Messages)
-func WrongExpectedRootsCount() *tests.MultiMsgProcessingSpecTest {
+// TooManyRoots tests too many expected roots
+func TooManyRoots() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus wrong expected roots count",
+		Name: "pre consensus too many roots",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusWrongCountContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofTooManyRootsMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
 				PostDutyRunnerStateRoot: "32ba0040df4f6bba6fc2def48a970a6d316392805a6c689a3b99cf2cd4669a0a",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
@@ -31,7 +31,7 @@ func WrongExpectedRootsCount() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusMultiSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofTooManyRootsMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
 				PostDutyRunnerStateRoot: "18b65a1db9185c32e02552caa0b8682de6f781584c3915423db41d7a68920b79",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
@@ -44,7 +44,7 @@ func WrongExpectedRootsCount() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMultiMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoTooManyRootsMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "ca2e90845363d974efe8ae708c08cdaa9d9e8685da06564ce5eae0fa37599d08",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{

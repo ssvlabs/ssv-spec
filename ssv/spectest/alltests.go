@@ -18,6 +18,9 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	postconsensus.TooManyRoots(),
+	postconsensus.TooFewRoots(),
+	postconsensus.UnorderedExpectedRoots(),
 	postconsensus.UnknownSigner(),
 	postconsensus.UnknownBeaconSigner(),
 	postconsensus.PostFinish(),
@@ -55,7 +58,8 @@ var AllTests = []SpecTest{
 	synccommitteeaggregator.AllAggregatorQuorum(),
 
 	preconsensus.NoRunningDuty(),
-	preconsensus.WrongExpectedRootsCount(),
+	preconsensus.TooFewRoots(),
+	preconsensus.TooManyRoots(),
 	preconsensus.UnorderedExpectedRoots(),
 	preconsensus.MultiBeaconSigsWrongSlot(),
 	preconsensus.InvalidSignedMessage(),
