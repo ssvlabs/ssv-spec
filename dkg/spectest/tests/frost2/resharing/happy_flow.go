@@ -2,12 +2,13 @@ package resharing
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2"
+	"github.com/bloxapp/ssv-spec/dkg/frost"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func HappyFlow() *frost2.MsgProcessingSpecTest {
+func HappyFlow() *tests.MsgProcessingSpecTest {
 	ks := testingutils.TestingResharingKeySet()
 	network := testingutils.NewTestingNetwork()
 	storage := testingutils.NewTestingStorage()
@@ -16,23 +17,31 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 	identifier := dkg.NewRequestID(ks.DKGOperators[5].ETHAddress, 5)
 	reshare := &dkg.Reshare{
 		ValidatorPK: types.ValidatorPK(ks.ValidatorPK.Serialize()),
-		OperatorIDs: []types.OperatorID{5, 6, 7, 8},
-		Threshold:   3,
+		OperatorIDs: []types.OperatorID{5, 6, 7, 8}, // new committee
+		Threshold:   uint16(ks.Threshold),
 	}
 	reshareBytes, _ := reshare.Encode()
 
-	return &frost2.MsgProcessingSpecTest{
-		Name: "resharing/happy flow",
-		Operator: &dkg.Operator{
+	testingNode := dkg.NewResharingNode(
+		&dkg.Operator{
 			OperatorID:       5,
 			ETHAddress:       ks.DKGOperators[5].ETHAddress,
 			EncryptionPubKey: &ks.DKGOperators[5].EncryptionKey.PublicKey,
 		},
-		IsResharing:  true,
-		OperatorsOld: []types.OperatorID{1, 2, 3},
-		Network:      network,
-		Signer:       keyManager,
-		Storage:      storage,
+		[]types.OperatorID{1, 2, 3}, // old committee
+		&dkg.Config{
+			KeygenProtocol:  frost.New,
+			ReshareProtocol: frost.NewResharing,
+			Network:         network,
+			Storage:         storage,
+			Signer:          keyManager,
+			// SignatureDomainType: sigDomainType,
+		},
+	)
+
+	return &tests.MsgProcessingSpecTest{
+		Name:        "resharing/happy flow",
+		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg2(ks.DKGOperators[5].SK, 5, &dkg.Message{
 				MsgType:    dkg.ReshareMsgType,

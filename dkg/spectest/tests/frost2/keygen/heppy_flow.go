@@ -4,13 +4,14 @@ import (
 	"encoding/hex"
 
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/dkg/frost/frostutils"
-	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func HappyFlow() *frost2.MsgProcessingSpecTest {
+func HappyFlow() *tests.MsgProcessingSpecTest {
 	ks := testingutils.TestingKeygenKeySet()
 	network := testingutils.NewTestingNetwork()
 	storage := testingutils.NewTestingStorage()
@@ -19,7 +20,7 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 	identifier := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
 	init := &dkg.Init{
 		OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
-		Threshold:             3,
+		Threshold:             uint16(ks.Threshold),
 		WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
 		Fork:                  testingutils.TestingForkVersion,
 	}
@@ -36,16 +37,25 @@ func HappyFlow() *frost2.MsgProcessingSpecTest {
 		return root
 	}(vk, init)
 
-	return &frost2.MsgProcessingSpecTest{
-		Name: "keygen/happy flow",
-		Operator: &dkg.Operator{
+	testingNode := dkg.NewNode(
+		&dkg.Operator{
 			OperatorID:       1,
 			ETHAddress:       ks.DKGOperators[1].ETHAddress,
 			EncryptionPubKey: &ks.DKGOperators[1].EncryptionKey.PublicKey,
 		},
-		Network: network,
-		Signer:  keyManager,
-		Storage: storage,
+		&dkg.Config{
+			KeygenProtocol:  frost.New,
+			ReshareProtocol: frost.NewResharing,
+			Network:         network,
+			Storage:         storage,
+			// SignatureDomainType: sigDomainType,
+			Signer: keyManager,
+		},
+	)
+
+	return &tests.MsgProcessingSpecTest{
+		Name:        "keygen/happy flow",
+		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,

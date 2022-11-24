@@ -3,12 +3,12 @@ package blame
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/frost"
-	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func BlameTypeInvalidShare_HappyFlow() *frost2.MsgProcessingSpecTest {
+func BlameTypeInvalidShare_HappyFlow() *tests.MsgProcessingSpecTest {
 	ks := testingutils.TestingKeygenKeySet()
 	network := testingutils.NewTestingNetwork()
 	storage := testingutils.NewTestingStorage()
@@ -23,16 +23,25 @@ func BlameTypeInvalidShare_HappyFlow() *frost2.MsgProcessingSpecTest {
 	}
 	initBytes, _ := init.Encode()
 
-	return &frost2.MsgProcessingSpecTest{
-		Name: "blame/invalid share/happy flow",
-		Operator: &dkg.Operator{
+	testingNode := dkg.NewNode(
+		&dkg.Operator{
 			OperatorID:       1,
 			ETHAddress:       ks.DKGOperators[1].ETHAddress,
 			EncryptionPubKey: &ks.DKGOperators[1].EncryptionKey.PublicKey,
 		},
-		Network: network,
-		Signer:  keyManager,
-		Storage: storage,
+		&dkg.Config{
+			KeygenProtocol:  frost.New,
+			ReshareProtocol: frost.NewResharing,
+			Network:         network,
+			Storage:         storage,
+			// SignatureDomainType: sigDomainType,
+			Signer: keyManager,
+		},
+	)
+
+	return &tests.MsgProcessingSpecTest{
+		Name:        "blame/invalid share/happy flow",
+		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,

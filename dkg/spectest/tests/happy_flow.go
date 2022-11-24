@@ -19,8 +19,11 @@ func HappyFlow() *MsgProcessingSpecTest {
 	initBytes, _ := init.Encode()
 	root := testingutils.DespositDataSigningRoot(ks, init)
 
+	testingNode := testingutils.TestingDKGNode(ks)
+
 	return &MsgProcessingSpecTest{
-		Name: "happy flow",
+		Name:        "happy flow",
+		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,
