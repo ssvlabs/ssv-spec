@@ -3,7 +3,6 @@ package keygen
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/frost"
-	"github.com/bloxapp/ssv-spec/dkg/frost/frostutils"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -98,17 +97,17 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.DepositDataMsgType,
 				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(2, root, frostutils.SkFromHex(testingutils.KeygenMsgStore.Round2[2].SkShare)),
+				Data:       testingutils.PartialDepositDataBytes(2, root, ks.Shares[2]),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.DepositDataMsgType,
 				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(3, root, frostutils.SkFromHex(testingutils.KeygenMsgStore.Round2[3].SkShare)),
+				Data:       testingutils.PartialDepositDataBytes(3, root, ks.Shares[3]),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.DepositDataMsgType,
 				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(4, root, frostutils.SkFromHex(testingutils.KeygenMsgStore.Round2[4].SkShare)),
+				Data:       testingutils.PartialDepositDataBytes(4, root, ks.Shares[4]),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
@@ -145,7 +144,7 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.DepositDataMsgType,
 				Identifier: identifier,
-				Data:       testingutils.PartialDepositDataBytes(1, root, frostutils.SkFromHex(testingutils.KeygenMsgStore.Round2[1].SkShare)),
+				Data:       testingutils.PartialDepositDataBytes(1, root, ks.Shares[1]),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.OutputMsgType,
