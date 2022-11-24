@@ -32,6 +32,7 @@ var AllTests = []SpecTest{
 	postconsensus.InvalidExpectedRoot(),
 	postconsensus.PreDecided(),
 	postconsensus.PostQuorum(),
+	postconsensus.InvalidMessage(),
 	postconsensus.ValidMessage(),
 	postconsensus.ValidMessage7Operators(),
 	postconsensus.ValidMessage10Operators(),
