@@ -1,12 +1,11 @@
 package spectest
 
 import (
-	//"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
-
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
@@ -19,6 +18,30 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	postconsensus.TooManyRoots(),
+	postconsensus.TooFewRoots(),
+	postconsensus.UnorderedExpectedRoots(),
+	postconsensus.UnknownSigner(),
+	postconsensus.UnknownBeaconSigner(),
+	postconsensus.PostFinish(),
+	postconsensus.NoRunningDuty(),
+	postconsensus.InvalidMessageSignature(),
+	postconsensus.InvalidBeaconSignature(),
+	postconsensus.DuplicateMsgDifferentRoots(),
+	postconsensus.DuplicateMsg(),
+	postconsensus.InvalidExpectedRoot(),
+	postconsensus.PreDecided(),
+	postconsensus.PostQuorum(),
+	postconsensus.InvalidMessage(),
+	postconsensus.ValidMessage(),
+	postconsensus.ValidMessage7Operators(),
+	postconsensus.ValidMessage10Operators(),
+	postconsensus.ValidMessage13Operators(),
+	postconsensus.Quorum(),
+	postconsensus.Quorum7Operators(),
+	postconsensus.Quorum10Operators(),
+	postconsensus.Quorum13Operators(),
+
 	newduty.ConsensusNotStarted(),
 	newduty.NotDecided(),
 	newduty.PostDecided(),
@@ -42,9 +65,9 @@ var AllTests = []SpecTest{
 	synccommitteeaggregator.AllAggregatorQuorum(),
 
 	preconsensus.NoRunningDuty(),
-	preconsensus.WrongExpectedRootsCount(),
+	preconsensus.TooFewRoots(),
+	preconsensus.TooManyRoots(),
 	preconsensus.UnorderedExpectedRoots(),
-	preconsensus.MultiBeaconSigsWrongSlot(),
 	preconsensus.InvalidSignedMessage(),
 	preconsensus.InvalidExpectedRoot(),
 	preconsensus.DuplicateMsg(),

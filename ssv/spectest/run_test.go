@@ -44,85 +44,72 @@ func TestJson(t *testing.T) {
 	}
 
 	fmt.Printf("running %d tests\n", len(untypedTests))
-
 	for name, test := range untypedTests {
-		testType := strings.Split(name, "_")[0]
-		switch testType {
-		case reflect.TypeOf(&tests2.MsgProcessingSpecTest{}).String():
-			typedTest := msgProcessingSpecTestFromMap(t, test.(map[string]interface{}))
-			t.Run(typedTest.TestName(), func(t *testing.T) {
+		testName := test.(map[string]interface{})["Name"].(string)
+		t.Run(testName, func(t *testing.T) {
+			testType := strings.Split(name, "_")[0]
+			switch testType {
+			case reflect.TypeOf(&tests2.MsgProcessingSpecTest{}).String():
+				typedTest := msgProcessingSpecTestFromMap(t, test.(map[string]interface{}))
 				typedTest.Run(t)
-			})
-		case reflect.TypeOf(&tests2.MultiMsgProcessingSpecTest{}).String():
-			subtests := test.(map[string]interface{})["Tests"].([]interface{})
-			typedTests := make([]*tests2.MsgProcessingSpecTest, 0)
-			for _, subtest := range subtests {
-				typedTests = append(typedTests, msgProcessingSpecTestFromMap(t, subtest.(map[string]interface{})))
+			case reflect.TypeOf(&tests2.MultiMsgProcessingSpecTest{}).String():
+				subtests := test.(map[string]interface{})["Tests"].([]interface{})
+				typedTests := make([]*tests2.MsgProcessingSpecTest, 0)
+				for _, subtest := range subtests {
+					typedTests = append(typedTests, msgProcessingSpecTestFromMap(t, subtest.(map[string]interface{})))
+				}
+
+				typedTest := &tests2.MultiMsgProcessingSpecTest{
+					Name:  test.(map[string]interface{})["Name"].(string),
+					Tests: typedTests,
+				}
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&messages.MsgSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &messages.MsgSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&valcheck.SpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &valcheck.SpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &valcheck.MultiSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
+				subtests := test.(map[string]interface{})["Tests"].([]interface{})
+				typedTests := make([]*newduty.StartNewRunnerDutySpecTest, 0)
+				for _, subtest := range subtests {
+					typedTests = append(typedTests, newRunnerDutySpecTestFromMap(t, subtest.(map[string]interface{})))
+				}
+
+				typedTest := &newduty.MultiStartNewRunnerDutySpecTest{
+					Name:  test.(map[string]interface{})["Name"].(string),
+					Tests: typedTests,
+				}
+
+				typedTest.Run(t)
+			default:
+				panic("unsupported test type " + testType)
 			}
-
-			typedTest := &tests2.MultiMsgProcessingSpecTest{
-				Name:  test.(map[string]interface{})["Name"].(string),
-				Tests: typedTests,
-			}
-
-			t.Run(typedTest.TestName(), func(t *testing.T) {
-				typedTest.Run(t)
-			})
-
-		case reflect.TypeOf(&messages.MsgSpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &messages.MsgSpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			t.Run(typedTest.TestName(), func(t *testing.T) {
-				typedTest.Run(t)
-			})
-		case reflect.TypeOf(&valcheck.SpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &valcheck.SpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			t.Run(typedTest.TestName(), func(t *testing.T) {
-				typedTest.Run(t)
-			})
-		case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &valcheck.MultiSpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			t.Run(typedTest.TestName(), func(t *testing.T) {
-				typedTest.Run(t)
-			})
-		case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			t.Run(typedTest.TestName(), func(t *testing.T) {
-				typedTest.Run(t)
-			})
-		case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
-			subtests := test.(map[string]interface{})["Tests"].([]interface{})
-			typedTests := make([]*newduty.StartNewRunnerDutySpecTest, 0)
-			for _, subtest := range subtests {
-				typedTests = append(typedTests, newRunnerDutySpecTestFromMap(t, subtest.(map[string]interface{})))
-			}
-
-			typedTest := &newduty.MultiStartNewRunnerDutySpecTest{
-				Name:  test.(map[string]interface{})["Name"].(string),
-				Tests: typedTests,
-			}
-
-			t.Run(typedTest.TestName(), func(t *testing.T) {
-				typedTest.Run(t)
-			})
-		default:
-			panic("unsupported test type " + testType)
-		}
+		})
 	}
 }
 
@@ -171,11 +158,19 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	}
 
 	outputMsgs := make([]*ssv.SignedPartialSignatureMessage, 0)
+	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
 		typedMsg := &ssv.SignedPartialSignatureMessage{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
+	}
+
+	beaconBroadcastedRoots := make([]string, 0)
+	if m["BeaconBroadcastedRoots"] != nil {
+		for _, r := range m["BeaconBroadcastedRoots"].([]interface{}) {
+			beaconBroadcastedRoots = append(beaconBroadcastedRoots, r.(string))
+		}
 	}
 
 	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(runnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
@@ -192,6 +187,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		DontStartDuty:           m["DontStartDuty"].(bool),
 		ExpectedError:           m["ExpectedError"].(string),
 		OutputMessages:          outputMsgs,
+		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
 	}
 }
 

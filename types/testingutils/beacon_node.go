@@ -6,8 +6,23 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
+	ssz "github.com/ferranbt/fastssz"
 	"github.com/prysmaticlabs/go-bitfield"
 )
+
+var signBeaconObject = func(
+	obj ssz.HashRoot,
+	domainType spec.DomainType,
+	ks *TestKeySet,
+) spec.BLSSignature {
+	domain, _ := NewTestingBeaconNode().DomainData(1, domainType)
+	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize())
+
+	blsSig := spec.BLSSignature{}
+	copy(blsSig[:], ret)
+
+	return blsSig
+}
 
 var TestingAttestationData = &spec.AttestationData{
 	Slot:            12,
@@ -21,6 +36,25 @@ var TestingAttestationData = &spec.AttestationData{
 		Epoch: 1,
 		Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	},
+}
+var TestingWrongAttestationData = func() *spec.AttestationData {
+	byts, _ := TestingAttestationData.MarshalSSZ()
+	ret := &spec.AttestationData{}
+	if err := ret.UnmarshalSSZ(byts); err != nil {
+		panic(err.Error())
+	}
+	ret.Slot = 100
+	return ret
+}()
+
+var TestingSignedAttestation = func(ks *TestKeySet) *spec.Attestation {
+	aggregationBitfield := bitfield.NewBitlist(TestingAttesterDuty.CommitteeLength)
+	aggregationBitfield.SetBitAt(TestingAttesterDuty.ValidatorCommitteeIndex, true)
+	return &spec.Attestation{
+		Data:            TestingAttestationData,
+		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+		AggregationBits: aggregationBitfield,
+	}
 }
 
 var TestingBeaconBlock = &bellatrix.BeaconBlock{
@@ -68,6 +102,25 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 		},
 	},
 }
+var TestingWrongBeaconBlock = func() *bellatrix.BeaconBlock {
+	byts, err := TestingBeaconBlock.MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
+	ret := &bellatrix.BeaconBlock{}
+	if err := ret.UnmarshalSSZ(byts); err != nil {
+		panic(err.Error())
+	}
+	ret.Slot = 100
+	return ret
+}()
+
+var TestingSignedBeaconBlock = func(ks *TestKeySet) *bellatrix.SignedBeaconBlock {
+	return &bellatrix.SignedBeaconBlock{
+		Message:   TestingBeaconBlock,
+		Signature: signBeaconObject(TestingBeaconBlock, types.DomainProposer, ks),
+	}
+}
 
 var TestingAggregateAndProof = &spec.AggregateAndProof{
 	AggregatorIndex: 1,
@@ -77,6 +130,25 @@ var TestingAggregateAndProof = &spec.AggregateAndProof{
 		Signature:       spec.BLSSignature{},
 		Data:            TestingAttestationData,
 	},
+}
+var TestingWrongAggregateAndProof = func() *spec.AggregateAndProof {
+	byts, err := TestingAggregateAndProof.MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
+	ret := &spec.AggregateAndProof{}
+	if err := ret.UnmarshalSSZ(byts); err != nil {
+		panic(err.Error())
+	}
+	ret.AggregatorIndex = 100
+	return ret
+}()
+
+var TestingSignedAggregateAndProof = func(ks *TestKeySet) *spec.SignedAggregateAndProof {
+	return &spec.SignedAggregateAndProof{
+		Message:   TestingAggregateAndProof,
+		Signature: signBeaconObject(TestingAggregateAndProof, types.DomainAggregateAndProof, ks),
+	}
 }
 
 const (
@@ -90,6 +162,15 @@ const (
 )
 
 var TestingSyncCommitteeBlockRoot = spec.Root{}
+var TestingSyncCommitteeWrongBlockRoot = spec.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommitteeMessage {
+	return &altair.SyncCommitteeMessage{
+		Slot:            TestingDutySlot,
+		BeaconBlockRoot: TestingSyncCommitteeBlockRoot,
+		ValidatorIndex:  TestingValidatorIndex,
+		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
+	}
+}
 
 var TestingContributionProofIndexes = []uint64{0, 1, 2}
 var TestingContributionProofsSigned = func() []spec.BLSSignature {
@@ -129,6 +210,21 @@ var TestingSyncCommitteeContributions = []*altair.SyncCommitteeContribution{
 		AggregationBits:   bitfield.NewBitvector128(),
 		Signature:         spec.BLSSignature{},
 	},
+}
+
+var TestingSignedSyncCommitteeContributions = func(
+	contrib *altair.SyncCommitteeContribution,
+	proof spec.BLSSignature,
+	ks *TestKeySet) *altair.SignedContributionAndProof {
+	msg := &altair.ContributionAndProof{
+		AggregatorIndex: TestingValidatorIndex,
+		Contribution:    contrib,
+		SelectionProof:  proof,
+	}
+	return &altair.SignedContributionAndProof{
+		Message:   msg,
+		Signature: signBeaconObject(msg, types.DomainContributionAndProof, ks),
+	}
 }
 
 var TestingAttesterDuty = &types.Duty{
@@ -252,11 +348,14 @@ var TestingWrongDutyPK = &types.Duty{
 //}
 
 type TestingBeaconNode struct {
+	BroadcastedRoots             []spec.Root
 	syncCommitteeAggregatorRoots map[string]bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
-	return &TestingBeaconNode{}
+	return &TestingBeaconNode{
+		BroadcastedRoots: []spec.Root{},
+	}
 }
 
 // SetSyncCommitteeAggregatorRootHexes FOR TESTING ONLY!! sets which sync committee aggregator roots will return true for aggregator
@@ -276,6 +375,8 @@ func (bn *TestingBeaconNode) GetAttestationData(slot spec.Slot, committeeIndex s
 
 // SubmitAttestation submit the attestation to the node
 func (bn *TestingBeaconNode) SubmitAttestation(attestation *spec.Attestation) error {
+	r, _ := attestation.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -286,6 +387,8 @@ func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.
 
 // SubmitBeaconBlock submit the block to the node
 func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBlock) error {
+	r, _ := block.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -296,6 +399,8 @@ func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, commi
 
 // SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
 func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.SignedAggregateAndProof) error {
+	r, _ := msg.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -306,6 +411,8 @@ func (bn *TestingBeaconNode) GetSyncMessageBlockRoot() (spec.Root, error) {
 
 // SubmitSyncMessage submits a signed sync committee msg
 func (bn *TestingBeaconNode) SubmitSyncMessage(msg *altair.SyncCommitteeMessage) error {
+	r, _ := msg.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -339,6 +446,8 @@ func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, subnet
 
 // SubmitSignedContributionAndProof broadcasts to the network
 func (bn *TestingBeaconNode) SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error {
+	r, _ := contribution.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
