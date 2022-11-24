@@ -1,8 +1,6 @@
 package keygen
 
 import (
-	"encoding/hex"
-
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/dkg/frost/frostutils"
@@ -18,24 +16,14 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 	keyManager := testingutils.NewTestingKeyManager()
 
 	identifier := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
-	init := &dkg.Init{
-		OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
-		Threshold:             uint16(ks.Threshold),
-		WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
-		Fork:                  testingutils.TestingForkVersion,
-	}
+	init := testingutils.InitMessageData(
+		[]types.OperatorID{1, 2, 3, 4},
+		uint16(ks.Threshold),
+		testingutils.TestingWithdrawalCredentials,
+		testingutils.TestingForkVersion,
+	)
 	initBytes, _ := init.Encode()
-
-	vk, _ := hex.DecodeString(testingutils.KeygenMsgStore.Round2[1].Vk)
-	root := func(validatorPK []byte, initMsg *dkg.Init) []byte {
-		root, _, _ := types.GenerateETHDepositData(
-			validatorPK,
-			initMsg.WithdrawalCredentials,
-			initMsg.Fork,
-			types.DomainDeposit,
-		)
-		return root
-	}(vk, init)
+	root := testingutils.DespositDataSigningRoot(ks, init)
 
 	testingNode := dkg.NewNode(
 		&dkg.Operator{
@@ -57,52 +45,52 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		Name:        "keygen/happy flow",
 		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,
 				Identifier: identifier,
 				Data:       initBytes,
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(2),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(3),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(4),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(2),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(3),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(4),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round2MessageBytes(2),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round2MessageBytes(3),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round2MessageBytes(4),
@@ -139,17 +127,17 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			}),
 		},
 		OutputMessages: []*dkg.SignedMessage{
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(1),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(1),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round2MessageBytes(1),

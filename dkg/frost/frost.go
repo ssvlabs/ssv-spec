@@ -14,7 +14,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-var thisCurve = curves.BLS12381G1()
+var (
+	thisCurve  = curves.BLS12381G1()
+	domainType = types.PrimusTestnet
+	sigType    = types.DKGSignatureType
+)
 
 func init() {
 	types.InitBLS()
@@ -311,7 +315,7 @@ func (fr *FROST) validateSignedMessage(msg *dkg.SignedMessage) error {
 		return errors.Wrap(err, "unable to find signer")
 	}
 
-	root, err := msg.Message.GetRoot()
+	root, err := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domainType, sigType))
 	if err != nil {
 		return errors.Wrap(err, "failed to get root")
 	}

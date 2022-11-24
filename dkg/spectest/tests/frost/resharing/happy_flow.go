@@ -15,12 +15,11 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 	keyManager := testingutils.NewTestingKeyManager()
 
 	identifier := dkg.NewRequestID(ks.DKGOperators[5].ETHAddress, 5)
-	reshare := &dkg.Reshare{
-		ValidatorPK: types.ValidatorPK(ks.ValidatorPK.Serialize()),
-		OperatorIDs: []types.OperatorID{5, 6, 7, 8}, // new committee
-		Threshold:   uint16(ks.Threshold),
-	}
-	reshareBytes, _ := reshare.Encode()
+	reshareBytes := testingutils.ReshareMessageDataBytes(
+		[]types.OperatorID{5, 6, 7, 8}, // new committee
+		uint16(ks.Threshold),
+		types.ValidatorPK(ks.ValidatorPK.Serialize()),
+	)
 
 	testingNode := dkg.NewResharingNode(
 		&dkg.Operator{
@@ -43,52 +42,52 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		Name:        "resharing/happy flow",
 		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
-			testingutils.SignDKGMsg2(ks.DKGOperators[5].SK, 5, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[5].SK, 5, &dkg.Message{
 				MsgType:    dkg.ReshareMsgType,
 				Identifier: identifier,
 				Data:       reshareBytes,
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[6].SK, 6, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[6].SK, 6, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.PreparationMessageBytes(6),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[7].SK, 7, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[7].SK, 7, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.PreparationMessageBytes(7),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[8].SK, 8, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[8].SK, 8, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.PreparationMessageBytes(8),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.Round1MessageBytes(1),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.Round1MessageBytes(2),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.Round1MessageBytes(3),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[6].SK, 6, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[6].SK, 6, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.Round2MessageBytes(6),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[7].SK, 7, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[7].SK, 7, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.Round2MessageBytes(7),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[8].SK, 8, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[8].SK, 8, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.Round2MessageBytes(8),
@@ -110,12 +109,12 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			}),
 		},
 		OutputMessages: []*dkg.SignedMessage{
-			testingutils.SignDKGMsg2(ks.DKGOperators[5].SK, 5, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[5].SK, 5, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.PreparationMessageBytes(5),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[5].SK, 5, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[5].SK, 5, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.ResharingMsgStore.Round2MessageBytes(5),

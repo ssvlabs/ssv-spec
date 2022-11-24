@@ -15,13 +15,12 @@ func BlameTypeInvalidShare_HappyFlow() *tests.MsgProcessingSpecTest {
 	keyManager := testingutils.NewTestingKeyManager()
 
 	identifier := dkg.NewRequestID(ks.DKGOperators[1].ETHAddress, 1)
-	init := &dkg.Init{
-		OperatorIDs:           []types.OperatorID{1, 2, 3, 4},
-		Threshold:             3,
-		WithdrawalCredentials: testingutils.TestingWithdrawalCredentials,
-		Fork:                  testingutils.TestingForkVersion,
-	}
-	initBytes, _ := init.Encode()
+	initBytes := testingutils.InitMessageDataBytes(
+		[]types.OperatorID{1, 2, 3, 4},
+		uint16(ks.Threshold),
+		testingutils.TestingWithdrawalCredentials,
+		testingutils.TestingForkVersion,
+	)
 
 	testingNode := dkg.NewNode(
 		&dkg.Operator{
@@ -43,58 +42,58 @@ func BlameTypeInvalidShare_HappyFlow() *tests.MsgProcessingSpecTest {
 		Name:        "blame/invalid share/happy flow",
 		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.InitMsgType,
 				Identifier: identifier,
 				Data:       initBytes,
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(2),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(3),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(4),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       makeInvalidForInvalidShare(testingutils.KeygenMsgStore.Round1MessageBytes(2)),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(3),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(4),
 			}),
 		},
 		OutputMessages: []*dkg.SignedMessage{
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(1),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(1),
 			}),
-			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
+			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
 				Data: BlameMessageBytes(2, frost.InvalidShare, []*dkg.SignedMessage{
-					testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
+					testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 						MsgType:    dkg.ProtocolMsgType,
 						Identifier: identifier,
 						Data:       makeInvalidForInvalidShare(testingutils.KeygenMsgStore.Round1MessageBytes(2)),
