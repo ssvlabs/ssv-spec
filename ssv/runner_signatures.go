@@ -26,7 +26,6 @@ func (b *BaseRunner) signBeaconObject(
 	}
 
 	return &PartialSignatureMessage{
-		Slot:             slot,
 		PartialSignature: sig,
 		SigningRoot:      r,
 		Signer:           runner.GetBaseRunner().Share.OperatorID,
@@ -59,10 +58,6 @@ func (b *BaseRunner) validatePartialSigMsg(
 	}
 
 	for _, msg := range signedMsg.Message.Messages {
-		if slot != msg.Slot {
-			return errors.New("wrong slot")
-		}
-
 		if err := b.verifyBeaconPartialSignature(msg); err != nil {
 			return errors.Wrap(err, "could not verify Beacon partial Signature")
 		}

@@ -67,7 +67,6 @@ var AllTests = []SpecTest{
 	preconsensus.TooFewRoots(),
 	preconsensus.TooManyRoots(),
 	preconsensus.UnorderedExpectedRoots(),
-	preconsensus.MultiBeaconSigsWrongSlot(),
 	preconsensus.InvalidSignedMessage(),
 	preconsensus.InvalidExpectedRoot(),
 	preconsensus.DuplicateMsg(),

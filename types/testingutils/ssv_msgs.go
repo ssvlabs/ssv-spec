@@ -197,7 +197,6 @@ var postConsensusAttestationMsg = func(
 		Type: ssv.PostConsensusPartialSig,
 		Messages: []*ssv.PartialSignatureMessage{
 			{
-				Slot:             TestingDutySlot,
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
@@ -292,7 +291,6 @@ var postConsensusBeaconBlockMsg = func(
 		Type: ssv.PostConsensusPartialSig,
 		Messages: []*ssv.PartialSignatureMessage{
 			{
-				Slot:             TestingDutySlot,
 				PartialSignature: signed.Signature[:],
 				SigningRoot:      root,
 				Signer:           id,
@@ -317,7 +315,6 @@ var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.Ope
 		Type: ssv.RandaoPartialSig,
 		Messages: []*ssv.PartialSignatureMessage{
 			{
-				Slot:             TestingDutySlot,
 				PartialSignature: signed[:],
 				SigningRoot:      root,
 				Signer:           msgSignerID,
@@ -333,32 +330,28 @@ var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.Ope
 }
 
 var PreConsensusRandaoMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 1)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 1)
 }
 
 // PreConsensusRandaoNextEpochMsg testing for a second duty start
 var PreConsensusRandaoNextEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch2, TestingDutySlot2, 1)
+	return randaoMsg(sk, id, false, TestingDutyEpoch2, 1)
 }
 
 var PreConsensusRandaoDifferentEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch+1, TestingDutySlot, 1)
-}
-
-var PreConsensusRandaoWrongSlotMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot+1, 1)
+	return randaoMsg(sk, id, false, TestingDutyEpoch+1, 1)
 }
 
 var PreConsensusRandaoTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 2)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 2)
 }
 
 var PreConsensusRandaoTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 0)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 0)
 }
 
 var PreConsensusRandaoNoMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, TestingDutySlot, 0)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 0)
 }
 
 var PreConsensusRandaoDifferentSignerMsg = func(msgSigner, randaoSigner *bls.SecretKey, msgSignerID, randaoSignerID types.OperatorID) *ssv.SignedPartialSignatureMessage {
@@ -371,7 +364,6 @@ var PreConsensusRandaoDifferentSignerMsg = func(msgSigner, randaoSigner *bls.Sec
 		Type: ssv.RandaoPartialSig,
 		Messages: []*ssv.PartialSignatureMessage{
 			{
-				Slot:             TestingDutySlot,
 				PartialSignature: signed[:],
 				SigningRoot:      root,
 				Signer:           randaoSignerID,
@@ -391,7 +383,6 @@ var randaoMsg = func(
 	id types.OperatorID,
 	wrongRoot bool,
 	epoch spec.Epoch,
-	slot spec.Slot,
 	msgCnt int,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
@@ -405,7 +396,6 @@ var randaoMsg = func(
 	}
 	for i := 0; i < msgCnt; i++ {
 		msg := &ssv.PartialSignatureMessage{
-			Slot:             slot,
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           id,
@@ -465,7 +455,6 @@ var selectionProofMsg = func(
 	_msgs := make([]*ssv.PartialSignatureMessage, 0)
 	for i := 0; i < msgCnt; i++ {
 		_msgs = append(_msgs, &ssv.PartialSignatureMessage{
-			Slot:             msgSlot,
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           beaconid,
@@ -557,7 +546,6 @@ var postConsensusAggregatorMsg = func(
 		Type: ssv.PostConsensusPartialSig,
 		Messages: []*ssv.PartialSignatureMessage{
 			{
-				Slot:             TestingDutySlot,
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
@@ -643,7 +631,6 @@ var postConsensusSyncCommitteeMsg = func(
 		Type: ssv.PostConsensusPartialSig,
 		Messages: []*ssv.PartialSignatureMessage{
 			{
-				Slot:             TestingDutySlot,
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
@@ -728,7 +715,6 @@ var contributionProofMsg = func(
 		}
 		sig, root, _ := signer.SignBeaconObject(data, d, beaconsk.GetPublicKey().Serialize())
 		msg := &ssv.PartialSignatureMessage{
-			Slot:             msgSlot,
 			PartialSignature: sig[:],
 			SigningRoot:      ensureRoot(root),
 			Signer:           beaconid,
@@ -856,7 +842,6 @@ var postConsensusSyncCommitteeContributionMsg = func(
 		}
 
 		msg := &ssv.PartialSignatureMessage{
-			Slot:             TestingDutySlot,
 			PartialSignature: signed,
 			SigningRoot:      root,
 			Signer:           id,
