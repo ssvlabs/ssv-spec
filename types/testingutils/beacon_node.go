@@ -40,7 +40,9 @@ var TestingAttestationData = &spec.AttestationData{
 var TestingWrongAttestationData = func() *spec.AttestationData {
 	byts, _ := TestingAttestationData.MarshalSSZ()
 	ret := &spec.AttestationData{}
-	ret.UnmarshalSSZ(byts)
+	if err := ret.UnmarshalSSZ(byts); err != nil {
+		panic(err.Error())
+	}
 	ret.Slot = 100
 	return ret
 }()
@@ -101,9 +103,14 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 	},
 }
 var TestingWrongBeaconBlock = func() *bellatrix.BeaconBlock {
-	byts, _ := TestingBeaconBlock.MarshalSSZ()
+	byts, err := TestingBeaconBlock.MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
 	ret := &bellatrix.BeaconBlock{}
-	ret.UnmarshalSSZ(byts)
+	if err := ret.UnmarshalSSZ(byts); err != nil {
+		panic(err.Error())
+	}
 	ret.Slot = 100
 	return ret
 }()
@@ -125,9 +132,14 @@ var TestingAggregateAndProof = &spec.AggregateAndProof{
 	},
 }
 var TestingWrongAggregateAndProof = func() *spec.AggregateAndProof {
-	byts, _ := TestingAggregateAndProof.MarshalSSZ()
+	byts, err := TestingAggregateAndProof.MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
 	ret := &spec.AggregateAndProof{}
-	ret.UnmarshalSSZ(byts)
+	if err := ret.UnmarshalSSZ(byts); err != nil {
+		panic(err.Error())
+	}
 	ret.AggregatorIndex = 100
 	return ret
 }()

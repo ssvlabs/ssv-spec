@@ -3,7 +3,6 @@ package ssv
 import (
 	"bytes"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -25,16 +24,6 @@ func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 	}
 
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
-}
-
-func (b *BaseRunner) validateConsensusMsg(msg *qbft.SignedMessage) error {
-	if !b.hasRunningDuty() {
-		return errors.New("no running duty")
-	}
-	if b.State.RunningInstance == nil {
-		return errors.New("no running consensus instance")
-	}
-	return nil
 }
 
 func (b *BaseRunner) validatePostConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
