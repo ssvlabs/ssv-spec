@@ -22,10 +22,6 @@ type Network interface {
 	p2p.Broadcaster
 }
 
-// Storage is a persistent storage for the SSV
-type Storage interface {
-}
-
 // AttesterCalls interface has all attester duty specific calls
 type AttesterCalls interface {
 	// GetAttestationData returns attestation data by the given slot and committee index

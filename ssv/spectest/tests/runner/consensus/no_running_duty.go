@@ -10,17 +10,28 @@ import (
 
 // NoRunningDuty tests a valid proposal msg before duty starts
 func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
+
+	startInstance := func(r ssv.Runner, value []byte) ssv.Runner {
+		if err := r.GetBaseRunner().QBFTController.StartNewInstance(value); err != nil {
+			panic(err.Error())
+		}
+		return r
+	}
+
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus no running duty",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
-				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+				Name: "sync committee contribution",
+				Runner: startInstance(
+					testingutils.SyncCommitteeContributionRunner(ks),
+					testingutils.TestSyncCommitteeContributionConsensusDataByts,
+				),
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 							MsgType:    qbft.ProposalMsgType,
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
@@ -28,17 +39,20 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestSyncCommitteeContributionConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "630807fb3f6c1e8d3c3b3d0688b86c4b7160d3bb400f27d109639901657280d9",
+				PostDutyRunnerStateRoot: "2357948c78fb602da32ba81f12aba09fa798ac5ee19701c03ad0b2b73af6254f",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Name: "sync committee",
+				Runner: startInstance(
+					testingutils.SyncCommitteeRunner(ks),
+					testingutils.TestSyncCommitteeConsensusDataByts,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 							MsgType:    qbft.ProposalMsgType,
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
@@ -46,17 +60,20 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestSyncCommitteeConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "c9ea604a51ced33c62a54f945d4f069a683b24aee97d5115f8edbb5a2828f153",
+				PostDutyRunnerStateRoot: "169afe8e7115d7003acb49177558abb440ce57651eecaf37b05dd5693c4cecda",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
-				Name:   "aggregator",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   testingutils.TestingAggregatorDuty,
+				Name: "aggregator",
+				Runner: startInstance(
+					testingutils.AggregatorRunner(ks),
+					testingutils.TestAggregatorConsensusDataByts,
+				),
+				Duty: testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 							MsgType:    qbft.ProposalMsgType,
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
@@ -64,17 +81,20 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestAggregatorConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "cb5094b007035b943e89542ace02f4ee106259f107007bf0c1b7a3ae97170993",
+				PostDutyRunnerStateRoot: "56b533bf403e9cb4d19abc39e7805bd0fa8579321baacd583d1a187d86df36d2",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
-				Name:   "proposer",
-				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Name: "proposer",
+				Runner: startInstance(
+					testingutils.ProposerRunner(ks),
+					testingutils.TestProposerConsensusDataByts,
+				),
+				Duty: testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 							MsgType:    qbft.ProposalMsgType,
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
@@ -82,17 +102,20 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "45b5ffc97fe614b718f6a21555dc7f0b460b4c36d52c58c2f9c86de52d460232",
+				PostDutyRunnerStateRoot: "840a04743b2bbadfef80a512e6727c7adeaa1a193a0e743810d0061cde35ad3e",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
+				Name: "attester",
+				Runner: startInstance(
+					testingutils.AttesterRunner(ks),
+					testingutils.TestAttesterConsensusDataByts,
+				),
+				Duty: testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 							MsgType:    qbft.ProposalMsgType,
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
@@ -100,7 +123,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestAttesterConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "38918436146a7c660508cf12bdd94c79b915a8d453e95de354f8a109a0a8bf7c",
+				PostDutyRunnerStateRoot: "c9eb871dc586f9e23f645667eb8f5b21ecc7308af7557c1a25d880f9bb6dedaf",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},

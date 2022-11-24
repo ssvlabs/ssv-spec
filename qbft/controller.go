@@ -55,7 +55,7 @@ func NewController(
 ) *Controller {
 	return &Controller{
 		Identifier:          identifier,
-		Height:              -1, // as we bump the height when starting the first instance
+		Height:              FirstHeight,
 		Domain:              domain,
 		Share:               share,
 		StoredInstances:     InstanceContainer{},
@@ -66,11 +66,15 @@ func NewController(
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
 func (c *Controller) StartNewInstance(value []byte) error {
-	if err := c.canStartInstance(c.Height+1, value); err != nil {
+	if err := c.canStartInstance(value); err != nil {
 		return errors.Wrap(err, "can't start new QBFT instance")
 	}
 
-	c.bumpHeight()
+	// only if current height's instance exists (and decided since passed can start instance) bump
+	if c.StoredInstances.FindInstance(c.Height) != nil {
+		c.bumpHeight()
+	}
+
 	newInstance := c.addAndStoreNewInstance()
 	newInstance.Start(value, c.Height)
 
@@ -122,7 +126,7 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 		return nil, nil
 	}
 
-	if err := c.saveAndBroadcastDecided(decidedMsg); err != nil {
+	if err := c.broadcastDecided(decidedMsg); err != nil {
 		// no need to fail processing instance deciding if failed to save/ broadcast
 		fmt.Printf("%s\n", err.Error())
 	}
@@ -158,21 +162,19 @@ func (c *Controller) addAndStoreNewInstance() *Instance {
 	return i
 }
 
-func (c *Controller) canStartInstance(height Height, value []byte) error {
-	if height > FirstHeight {
-		// check prev instance if prev instance is not the first instance
-		inst := c.StoredInstances.FindInstance(height - 1)
-		if inst == nil {
-			return errors.New("could not find previous instance")
-		}
-		if decided, _ := inst.IsDecided(); !decided {
-			return errors.New("previous instance hasn't Decided")
-		}
-	}
-
+func (c *Controller) canStartInstance(value []byte) error {
 	// check value
 	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
 		return errors.Wrap(err, "value invalid")
+	}
+
+	// check prev instance if prev instance is not the first instance
+	inst := c.StoredInstances.FindInstance(c.Height)
+	if inst == nil {
+		return nil
+	}
+	if decided, _ := inst.IsDecided(); !decided {
+		return errors.New("previous instance hasn't Decided")
 	}
 
 	return nil
@@ -235,11 +237,7 @@ func (c *Controller) Decode(data []byte) error {
 	return nil
 }
 
-func (c *Controller) saveAndBroadcastDecided(aggregatedCommit *SignedMessage) error {
-	if err := c.GetConfig().GetStorage().SaveHighestDecided(aggregatedCommit); err != nil {
-		return errors.Wrap(err, "could not save decided")
-	}
-
+func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
 	// Broadcast Decided msg
 	byts, err := aggregatedCommit.Encode()
 	if err != nil {

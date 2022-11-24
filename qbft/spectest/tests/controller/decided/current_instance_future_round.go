@@ -74,16 +74,6 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				SavedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      50,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
 				ControllerPostRoot: "2dcd43628bc2f2d87ee30171e864d65ed0fbe79c89da3629b267385d250dc112",

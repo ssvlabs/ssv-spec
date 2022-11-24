@@ -6,7 +6,7 @@ import (
 )
 
 type Round uint64
-type Height int64
+type Height uint64
 
 const (
 	NoRound     Round  = 0 // NoRound represents a nil/ zero round
@@ -25,13 +25,6 @@ type Syncer interface {
 type Network interface {
 	Syncer
 	p2p.Broadcaster
-}
-
-type Storage interface {
-	// SaveHighestDecided saves (and potentially overrides) the highest Decided for a specific instance
-	SaveHighestDecided(signedMsg *SignedMessage) error
-	// GetHighestDecided returns highest decided if found, nil if didn't
-	GetHighestDecided(identifier []byte) (*SignedMessage, error)
 }
 
 func ControllerIdToMessageID(identifier []byte) types.MessageID {

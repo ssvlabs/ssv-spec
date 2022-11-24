@@ -124,18 +124,8 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 		Name: "decide current instance past round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
-				InputMessages: msgs,
-				SavedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
+				InputValue:         []byte{1, 2, 3, 4},
+				InputMessages:      msgs,
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
 				ControllerPostRoot: "e7e94573bd69d0fac4ee33b931efbc3a995142e8937497b5ad536f5b2b0864f4",

@@ -1,14 +1,13 @@
 package preconsensus
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// NoRunningDuty tests a valid QBFT proposal msg before duty starts
+// NoRunningDuty tests a valid partial pre consensus msg before duty starts
 func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
@@ -19,90 +18,36 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.SyncCommitteeContributionMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestSyncCommitteeContributionConsensusDataByts, nil, nil),
-						}), nil),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "630807fb3f6c1e8d3c3b3d0688b86c4b7160d3bb400f27d109639901657280d9",
+				PostDutyRunnerStateRoot: "7877850bfa14563397de29454a67e9d29758d7d9f79ffeeab6a6c4737d9130e2",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.SyncCommitteeMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestSyncCommitteeConsensusDataByts, nil, nil),
-						}), nil),
-				},
-				PostDutyRunnerStateRoot: "c9ea604a51ced33c62a54f945d4f069a683b24aee97d5115f8edbb5a2828f153",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
+				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
 			},
 			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.AggregatorMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestAggregatorConsensusDataByts, nil, nil),
-						}), nil),
+					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "cb5094b007035b943e89542ace02f4ee106259f107007bf0c1b7a3ae97170993",
+				PostDutyRunnerStateRoot: "62c4650ef510eb72461779fd14d126f16860e503095c79fe843163e8c51d9775",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing selection proof message: invalid pre-consensus message: no running duty",
 			},
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ProposerMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerConsensusDataByts, nil, nil),
-						}), nil),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "45b5ffc97fe614b718f6a21555dc7f0b460b4c36d52c58c2f9c86de52d460232",
+				PostDutyRunnerStateRoot: "0b23fa8aeb36f80f3a892c971eb588b4a5eac1a2c1ec6f5c01f698d66ce59085",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-			},
-			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.AttesterMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestAttesterConsensusDataByts, nil, nil),
-						}), nil),
-				},
-				PostDutyRunnerStateRoot: "38918436146a7c660508cf12bdd94c79b915a8d453e95de354f8a109a0a8bf7c",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
+				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
 			},
 		},
 	}

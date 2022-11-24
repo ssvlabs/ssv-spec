@@ -22,8 +22,6 @@ type IConfig interface {
 	GetProposerF() ProposerF
 	// GetNetwork returns a p2p Network instance
 	GetNetwork() Network
-	// GetStorage returns a storage instance
-	GetStorage() Storage
 	// GetTimer returns round timer
 	GetTimer() Timer
 }
@@ -34,7 +32,6 @@ type Config struct {
 	Domain      types.DomainType
 	ValueCheckF ProposedValueCheckF
 	ProposerF   ProposerF
-	Storage     Storage
 	Network     Network
 	Timer       Timer
 }
@@ -67,11 +64,6 @@ func (c *Config) GetProposerF() ProposerF {
 // GetNetwork returns a p2p Network instance
 func (c *Config) GetNetwork() Network {
 	return c.Network
-}
-
-// GetStorage returns a storage instance
-func (c *Config) GetStorage() Storage {
-	return c.Storage
 }
 
 // GetTimer returns round timer

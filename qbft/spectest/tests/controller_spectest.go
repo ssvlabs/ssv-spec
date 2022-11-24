@@ -16,7 +16,6 @@ type RunInstanceData struct {
 	InputMessages      []*qbft.SignedMessage
 	DecidedVal         []byte
 	DecidedCnt         uint
-	SavedDecided       *qbft.SignedMessage
 	BroadcastedDecided *qbft.SignedMessage
 	ControllerPostRoot string
 	ExpectedTimerState *testingutils.TimerState
@@ -65,22 +64,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		}
 
 		require.EqualValues(t, runData.DecidedCnt, decidedCnt)
-
-		if runData.SavedDecided != nil {
-			// test saved to storage
-			decided, err := config.GetStorage().GetHighestDecided(identifier[:])
-			require.NoError(t, err)
-			require.NotNil(t, decided)
-			r1, err := decided.GetRoot()
-			require.NoError(t, err)
-
-			r2, err := runData.SavedDecided.GetRoot()
-			require.NoError(t, err)
-
-			require.EqualValues(t, r2, r1)
-			require.EqualValues(t, runData.SavedDecided.Signers, decided.Signers)
-			require.EqualValues(t, runData.SavedDecided.Signature, decided.Signature)
-		}
+		
 		if runData.BroadcastedDecided != nil {
 			// test broadcasted
 			broadcastedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
