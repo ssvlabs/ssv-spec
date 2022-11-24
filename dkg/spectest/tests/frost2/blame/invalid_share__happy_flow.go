@@ -3,14 +3,13 @@ package blame
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/frost"
-	"github.com/bloxapp/ssv-spec/dkg/frost/frostutils"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost2"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 func BlameTypeInvalidShare_HappyFlow() *frost2.MsgProcessingSpecTest {
-	ks := testingutils.Testing4SharesSet()
+	ks := testingutils.TestingKeygenKeySet()
 	network := testingutils.NewTestingNetwork()
 	storage := testingutils.NewTestingStorage()
 	keyManager := testingutils.NewTestingKeyManager()
@@ -43,44 +42,44 @@ func BlameTypeInvalidShare_HappyFlow() *frost2.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frostutils.KeygenMsgStore.PreparationMessageBytes(2),
+				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(2),
 			}),
 			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frostutils.KeygenMsgStore.PreparationMessageBytes(3),
+				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(3),
 			}),
 			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frostutils.KeygenMsgStore.PreparationMessageBytes(4),
+				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(4),
 			}),
 			testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       makeInvalidForInvalidShare(frostutils.KeygenMsgStore.Round1MessageBytes(2)),
+				Data:       makeInvalidForInvalidShare(testingutils.KeygenMsgStore.Round1MessageBytes(2)),
 			}),
 			testingutils.SignDKGMsg2(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frostutils.KeygenMsgStore.Round1MessageBytes(3),
+				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(3),
 			}),
 			testingutils.SignDKGMsg2(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frostutils.KeygenMsgStore.Round1MessageBytes(4),
+				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(4),
 			}),
 		},
 		OutputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frostutils.KeygenMsgStore.PreparationMessageBytes(1),
+				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(1),
 			}),
 			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frostutils.KeygenMsgStore.Round1MessageBytes(1),
+				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(1),
 			}),
 			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
@@ -89,7 +88,7 @@ func BlameTypeInvalidShare_HappyFlow() *frost2.MsgProcessingSpecTest {
 					testingutils.SignDKGMsg2(ks.DKGOperators[2].SK, 2, &dkg.Message{
 						MsgType:    dkg.ProtocolMsgType,
 						Identifier: identifier,
-						Data:       makeInvalidForInvalidShare(frostutils.KeygenMsgStore.Round1MessageBytes(2)),
+						Data:       makeInvalidForInvalidShare(testingutils.KeygenMsgStore.Round1MessageBytes(2)),
 					}),
 				}),
 			}),
