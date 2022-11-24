@@ -40,7 +40,7 @@ func BlameTypeInvalidShare_FailedDecrypt_HappyFlow() *tests.MsgProcessingSpecTes
 	)
 
 	return &tests.MsgProcessingSpecTest{
-		Name:        "blame/invalid share/happy flow",
+		Name:        "blame/invalid share/failed decrypt/happy flow",
 		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg2(ks.DKGOperators[1].SK, 1, &dkg.Message{
