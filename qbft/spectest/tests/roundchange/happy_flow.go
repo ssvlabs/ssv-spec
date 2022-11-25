@@ -140,5 +140,9 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
+		ExpectedTimerState: &testingutils.TimerState{
+			Timeouts: 1,
+			Round:    qbft.Round(2),
+		},
 	}
 }

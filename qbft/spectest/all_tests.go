@@ -89,6 +89,8 @@ var AllTests = []SpecTest{
 	futuremsg.UnknownSigner(),
 	futuremsg.WrongSig(),
 
+	startinstance.EmptyValue(),
+	startinstance.NilValue(),
 	startinstance.PostFutureDecided(),
 	startinstance.FirstHeight(),
 	startinstance.PreviousDecided(),
@@ -241,6 +243,7 @@ var AllTests = []SpecTest{
 	roundchange.F1Speedup(),
 	roundchange.F1SpeedupPrevPrepared(),
 	roundchange.AfterProposal(),
+	roundchange.RoundChangePartialQuorum(),
 	roundchange.QuorumOrder2(),
 	roundchange.QuorumOrder1(),
 	roundchange.QuorumMsgNotPrepared(),

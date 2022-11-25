@@ -52,6 +52,8 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.State.Round = FirstRound
 		i.State.Height = height
 
+		i.config.GetTimer().TimeoutForRound(FirstRound)
+
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
@@ -121,7 +123,10 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 
 // IsDecided interface implementation
 func (i *Instance) IsDecided() (bool, []byte) {
-	return i.State.Decided, i.State.DecidedValue
+	if state := i.State; state != nil {
+		return state.Decided, state.DecidedValue
+	}
+	return false, nil
 }
 
 // GetConfig returns the instance config

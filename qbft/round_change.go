@@ -23,9 +23,10 @@ func (i *Instance) uponRoundChange(
 		return nil // UponCommit was already called
 	}
 
-	justifiedRoundChangeMsg, err := hasReceivedProposalJustificationForLeadingRound(
+	justifiedRoundChangeMsg, valueToPropose, err := hasReceivedProposalJustificationForLeadingRound(
 		i.State,
 		i.config,
+		instanceStartValue,
 		signedRoundChange,
 		roundChangeMsgContainer,
 		valCheck)
@@ -36,14 +37,6 @@ func (i *Instance) uponRoundChange(
 		highestRCData, err := justifiedRoundChangeMsg.Message.GetRoundChangeData()
 		if err != nil {
 			return errors.Wrap(err, "could not round change data from highestJustifiedRoundChangeMsg")
-		}
-
-		// Chose proposal value.
-		// If justifiedRoundChangeMsg has no prepare justification chose state value
-		// If justifiedRoundChangeMsg has prepare justification chose prepared value
-		valueToPropose := instanceStartValue
-		if highestRCData.Prepared() {
-			valueToPropose = highestRCData.PreparedValue
 		}
 
 		proposal, err := CreateProposal(
@@ -66,17 +59,24 @@ func (i *Instance) uponRoundChange(
 			return nil // no need to advance round
 		}
 
-		i.State.Round = newRound
-		// TODO - should we reset timeout here for the new round?
-		i.State.ProposalAcceptedForCurrentRound = nil
-
-		roundChange, err := CreateRoundChange(i.State, i.config, newRound, instanceStartValue)
+		err := i.uponChangeRoundPartialQuorum(newRound, instanceStartValue)
 		if err != nil {
-			return errors.Wrap(err, "failed to create round change message")
+			return err
 		}
-		if err := i.Broadcast(roundChange); err != nil {
-			return errors.Wrap(err, "failed to broadcast round change message")
-		}
+	}
+	return nil
+}
+
+func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartValue []byte) error {
+	i.State.Round = newRound
+	i.State.ProposalAcceptedForCurrentRound = nil
+	i.config.GetTimer().TimeoutForRound(i.State.Round)
+	roundChange, err := CreateRoundChange(i.State, i.config, newRound, instanceStartValue)
+	if err != nil {
+		return errors.Wrap(err, "failed to create round change message")
+	}
+	if err := i.Broadcast(roundChange); err != nil {
+		return errors.Wrap(err, "failed to broadcast round change message")
 	}
 	return nil
 }
@@ -95,62 +95,75 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 }
 
 // hasReceivedProposalJustificationForLeadingRound returns
-// if first round or not received round change msgs with prepare justification - returns first rc msg in container
-// if received round change msgs with prepare justification - returns the highest prepare justification round change msg
+// if first round or not received round change msgs with prepare justification - returns first rc msg in container and value to propose
+// if received round change msgs with prepare justification - returns the highest prepare justification round change msg and value to propose
 // (all the above considering the operator is a leader for the round
 func hasReceivedProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
+	instanceStartValue []byte,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
-) (*SignedMessage, error) {
+) (*SignedMessage, []byte, error) {
 	roundChanges := roundChangeMsgContainer.MessagesForRound(state.Round)
 
 	// optimization, if no round change quorum can return false
 	if !HasQuorum(state.Share, roundChanges) {
-		return nil, nil
+		return nil, nil, nil
 	}
 
 	// Important!
 	// We iterate on all round chance msgs for liveliness in case the last round change msg is malicious.
 	for _, msg := range roundChanges {
-		if isReceivedProposalJustificationForLeadingRound(
+		rcData, err := msg.Message.GetRoundChangeData()
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "could not get round change data")
+		}
+
+		// Chose proposal value.
+		// If justifiedRoundChangeMsg has no prepare justification chose state value
+		// If justifiedRoundChangeMsg has prepare justification chose prepared value
+		valueToPropose := instanceStartValue
+		if rcData.Prepared() {
+			valueToPropose = rcData.PreparedValue
+		}
+
+		if isProposalJustificationForLeadingRound(
 			state,
 			config,
 			msg,
 			roundChanges,
+			rcData.RoundChangeJustification,
+			valueToPropose,
 			valCheck,
 			signedRoundChange.Message.Round,
 		) == nil {
 			// not returning error, no need to
-			return msg, nil
+			return msg, valueToPropose, nil
 		}
 	}
-	return nil, nil
+	return nil, nil, nil
 }
 
-// isReceivedProposalJustificationForLeadingRound - returns nil if we have a quorum of round change msgs and highest justified value for leading round
-func isReceivedProposalJustificationForLeadingRound(
+// isProposalJustificationForLeadingRound - returns nil if we have a quorum of round change msgs and highest justified value for leading round
+func isProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
 	roundChangeMsg *SignedMessage,
 	roundChanges []*SignedMessage,
+	roundChangeJustifications []*SignedMessage,
+	value []byte,
 	valCheck ProposedValueCheckF,
 	newRound Round,
 ) error {
-	rcData, err := roundChangeMsg.Message.GetRoundChangeData()
-	if err != nil {
-		return errors.Wrap(err, "could not get round change data")
-	}
-
 	if err := isReceivedProposalJustification(
 		state,
 		config,
 		roundChanges,
-		rcData.RoundChangeJustification,
+		roundChangeJustifications,
 		roundChangeMsg.Message.Round,
-		rcData.PreparedValue,
+		value,
 		valCheck); err != nil {
 		return err
 	}
