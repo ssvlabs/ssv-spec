@@ -13,7 +13,6 @@ type Validator struct {
 	DutyRunners DutyRunners
 	Network     Network
 	Beacon      BeaconNode
-	Storage     Storage
 	Share       *types.Share
 	Signer      types.KeyManager
 }
@@ -21,7 +20,6 @@ type Validator struct {
 func NewValidator(
 	network Network,
 	beacon BeaconNode,
-	storage Storage,
 	share *types.Share,
 	signer types.KeyManager,
 	runners map[types.BeaconRole]Runner,
@@ -30,7 +28,6 @@ func NewValidator(
 		DutyRunners: runners,
 		Network:     network,
 		Beacon:      beacon,
-		Storage:     storage,
 		Share:       share,
 		Signer:      signer,
 	}

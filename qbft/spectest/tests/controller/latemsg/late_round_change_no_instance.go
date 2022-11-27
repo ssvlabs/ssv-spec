@@ -26,16 +26,6 @@ func LateRoundChangeNoInstance() *tests.ControllerSpecTest {
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
 			},
-			SavedDecided: testingutils.MultiSignQBFTMsg(
-				[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.CommitMsgType,
-					Height:     height,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-				}),
 			DecidedVal:         []byte{1, 2, 3, 4},
 			DecidedCnt:         1,
 			ControllerPostRoot: postRoot,

@@ -74,16 +74,6 @@ func CurrentInstance() *tests.ControllerSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				SavedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
 				ControllerPostRoot: "a3945ad86891579e53430688e8fde340bfdb0457916c6d9627f3f6ba59d24e27",
