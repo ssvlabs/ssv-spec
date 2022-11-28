@@ -10,11 +10,12 @@ import (
 )
 
 type SpecTest struct {
-	Name           string
-	Pre            *qbft.Instance
-	PostRoot       string
-	OutputMessages []*qbft.SignedMessage
-	ExpectedError  string
+	Name               string
+	Pre                *qbft.Instance
+	PostRoot           string
+	OutputMessages     []*qbft.SignedMessage
+	ExpectedTimerState *testingutils.TimerState
+	ExpectedError      string
 }
 
 func (test *SpecTest) TestName() string {
@@ -29,6 +30,12 @@ func (test *SpecTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, err)
 	}
+
+	// test calling timeout
+	timer, ok := test.Pre.GetConfig().GetTimer().(*testingutils.TestQBFTTimer)
+	require.True(t, ok)
+	require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts)
+	require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round)
 
 	// test output message
 	broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs

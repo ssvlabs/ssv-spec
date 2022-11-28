@@ -32,5 +32,9 @@ func Round20() *SpecTest {
 				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
 			}),
 		},
+		ExpectedTimerState: &testingutils.TimerState{
+			Timeouts: 1,
+			Round:    21,
+		},
 	}
 }
