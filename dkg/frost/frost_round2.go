@@ -82,15 +82,11 @@ func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 		return nil, err
 	}
 
-	fr.state.SkShare = fr.state.participant.SkShare.Bytes()
-	fr.state.VkShare = bCastMessage.VkShare.ToAffineCompressed()
-	fr.state.Vk = bCastMessage.VerificationKey.ToAffineCompressed()
-
 	msg := &ProtocolMsg{
 		Round: Round2,
 		Round2Message: &Round2Message{
-			Vk:      fr.state.Vk,
-			VkShare: fr.state.VkShare,
+			Vk:      bCastMessage.VerificationKey.ToAffineCompressed(),
+			VkShare: bCastMessage.VkShare.ToAffineCompressed(),
 		},
 	}
 	_, err = fr.broadcastDKGMessage(msg)
