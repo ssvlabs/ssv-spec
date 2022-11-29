@@ -1,9 +1,12 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
-	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost"
 	"testing"
+
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/blame"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/keygen"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/resharing"
 )
 
 type SpecTest interface {
@@ -13,13 +16,13 @@ type SpecTest interface {
 
 var AllTests = []SpecTest{
 	tests.HappyFlow(),
+	// tests.ResharingHappyFlow(),
 
-	frost.Keygen(),
-	frost.Resharing(),
-	frost.BlameTypeInvalidCommitment(),
-	frost.BlameTypeInvalidScalar(),
-	frost.BlameTypeInvalidShare_FailedShareDecryption(),
-	frost.BlameTypeInvalidShare_FailedValidationAgainstCommitment(),
-	frost.BlameTypeInconsistentMessage(),
-	tests.ResharingHappyFlow(),
+	keygen.HappyFlow(),
+	resharing.HappyFlow(),
+	blame.BlameTypeInvalidCommitment_HappyFlow(),
+	blame.BlameTypeInvalidScalar_HappyFlow(),
+	blame.BlameTypeInconsistentMessage_HappyFlow(),
+	blame.BlameTypeInvalidShare_HappyFlow(),
+	blame.BlameTypeInvalidShare_FailedDecrypt_HappyFlow(),
 }
