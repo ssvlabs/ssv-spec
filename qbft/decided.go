@@ -1,7 +1,6 @@
 package qbft
 
 import (
-	"fmt"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -54,10 +53,6 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	}
 
 	if !prevDecided {
-		if err := c.GetConfig().GetStorage().SaveHighestDecided(msg); err != nil {
-			// no need to fail processing the decided msg if failed to save
-			fmt.Printf("%s\n", err.Error())
-		}
 		return msg, nil
 	}
 	return nil, nil

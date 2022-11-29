@@ -39,16 +39,6 @@ func DuplicateMsg() *tests.ControllerSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				SavedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     10,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
 				DecidedVal:         []byte{1, 2, 3, 4},
 				DecidedCnt:         1,
 				ControllerPostRoot: "c91970b0e33a3b6141567101956dffa63472e56ed041ffdd408ed822973f3caf",

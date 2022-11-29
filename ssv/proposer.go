@@ -50,7 +50,7 @@ func (r *ProposerRunner) StartNewDuty(duty *types.Duty) error {
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *ProposerRunner) HasRunningDuty() bool {
-	return r.BaseRunner.HasRunningDuty()
+	return r.BaseRunner.hasRunningDuty()
 }
 
 func (r *ProposerRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
@@ -136,7 +136,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 }
 
 func (r *ProposerRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -168,6 +168,11 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.Slot)
 	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
+}
+
+// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	return []ssz.HashRoot{r.BaseRunner.State.DecidedValue.BlockData}, types.DomainProposer, nil
 }
 
 // executeDuty steps:

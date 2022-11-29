@@ -51,7 +51,7 @@ func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty *types.Duty) error {
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
 func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
-	return r.BaseRunner.HasRunningDuty()
+	return r.BaseRunner.hasRunningDuty()
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
@@ -172,7 +172,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(signedMsg)
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -258,6 +258,19 @@ func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]
 		sszIndexes = append(sszIndexes, data)
 	}
 	return sszIndexes, types.DomainSyncCommitteeSelectionProof, nil
+}
+
+// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	ret := make([]ssz.HashRoot, 0)
+	for proof, contrib := range r.BaseRunner.State.DecidedValue.SyncCommitteeContribution {
+		contribAndProof, _, err := r.generateContributionAndProof(contrib, proof)
+		if err != nil {
+			return nil, types.DomainError, errors.Wrap(err, "could not generate contribution and proof")
+		}
+		ret = append(ret, contribAndProof)
+	}
+	return ret, types.DomainContributionAndProof, nil
 }
 
 // executeDuty steps:

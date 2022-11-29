@@ -20,13 +20,8 @@ func Encoding() *EncodingSpecTest {
 		},
 	}
 
-	byts, err := data.Encode()
-	if err != nil {
-		panic(err.Error())
-	}
-
 	return &EncodingSpecTest{
 		Name: "encoding ConsensusData",
-		Data: byts,
+		Obj:  data,
 	}
 }

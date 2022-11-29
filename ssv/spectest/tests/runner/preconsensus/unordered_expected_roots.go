@@ -20,18 +20,17 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusWrongOrderContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "32ba0040df4f6bba6fc2def48a970a6d316392805a6c689a3b99cf2cd4669a0a",
+				PostDutyRunnerStateRoot: "6d34d36dc60e44e7019eb29fe63a478d5e467477826ec9e49e47397484448c00",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: wrong pre consensus signing root",
 			},
 			{
 				Name:                    "aggregator selection proof",
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    testingutils.TestingAggregatorDuty,
 				Messages:                []*types.SSVMessage{},
-				PostDutyRunnerStateRoot: "18b65a1db9185c32e02552caa0b8682de6f781584c3915423db41d7a68920b79",
+				PostDutyRunnerStateRoot: "f3f02f11ae873c4b4cb1be3b58105df1f5deb93885da19eaee243e5a1916c338",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -41,7 +40,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    testingutils.TestingProposerDuty,
 				Messages:                []*types.SSVMessage{},
-				PostDutyRunnerStateRoot: "ca2e90845363d974efe8ae708c08cdaa9d9e8685da06564ce5eae0fa37599d08",
+				PostDutyRunnerStateRoot: "f696f54f07f704941b08b1acd16abdc820f07be0485a3dc47d942cd0e0de8fb2",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
