@@ -13,6 +13,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/startinstance"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
 	"testing"
 )
 
@@ -22,17 +23,11 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	//timeout.FirstRound(),
-	//timeout.Round1(),
-	//timeout.Round2(),
-	//timeout.Round3(),
-	//timeout.Round4(),
-	//timeout.Round5(),
-	//timeout.Round10(),
-	//timeout.Round20(),
-	//timeout.RoundTimeout(),
-	//timeout.ErrorOnBroadcast(),
-	//timeout.ErrorOnCreateMsg(),
+	timeout.Round1(),
+	timeout.Round2(),
+	timeout.Round3(),
+	timeout.Round5(),
+	timeout.Round20(),
 
 	decided.HasQuorum(),
 	decided.NoQuorum(),
@@ -80,6 +75,7 @@ var AllTests = []SpecTest{
 	latemsg.LateRoundChangePastRound(),
 	latemsg.FullFlowAfterDecided(),
 
+	startinstance.Valid(),
 	futuremsg.NoSigners(),
 	futuremsg.MultiSigners(),
 	futuremsg.Cleanup(),
