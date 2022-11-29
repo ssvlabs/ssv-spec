@@ -9,7 +9,7 @@ import (
 // Valid tests a valid start instance
 func Valid() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
-		Name: "start instance nil value",
+		Name: "start instance valid",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:         []byte{1, 2, 3, 4},
