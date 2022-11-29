@@ -8,7 +8,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func BlameTypeInvalidScaler_HappyFlow() *tests.MsgProcessingSpecTest {
+func BlameTypeInvalidScalar_HappyFlow() *tests.MsgProcessingSpecTest {
 	ks := testingutils.TestingKeygenKeySet()
 	network := testingutils.NewTestingNetwork()
 	storage := testingutils.NewTestingStorage()
@@ -39,7 +39,7 @@ func BlameTypeInvalidScaler_HappyFlow() *tests.MsgProcessingSpecTest {
 	)
 
 	return &tests.MsgProcessingSpecTest{
-		Name:        "blame/invalid scaler/happy flow",
+		Name:        "blame/invalid scalar/happy flow",
 		TestingNode: testingNode,
 		InputMessages: []*dkg.SignedMessage{
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{

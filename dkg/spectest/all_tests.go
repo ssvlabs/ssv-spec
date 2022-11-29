@@ -21,7 +21,7 @@ var AllTests = []SpecTest{
 	keygen.HappyFlow(),
 	resharing.HappyFlow(),
 	blame.BlameTypeInvalidCommitment_HappyFlow(),
-	blame.BlameTypeInvalidScaler_HappyFlow(),
+	blame.BlameTypeInvalidScalar_HappyFlow(),
 	blame.BlameTypeInconsistentMessage_HappyFlow(),
 	blame.BlameTypeInvalidShare_HappyFlow(),
 	blame.BlameTypeInvalidShare_FailedDecrypt_HappyFlow(),
