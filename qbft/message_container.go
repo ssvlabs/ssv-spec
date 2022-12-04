@@ -108,6 +108,15 @@ func (c *MsgContainer) AddFirstMsgForSignerAndRound(msg *SignedMessage) (bool, e
 	return true, nil
 }
 
+// AddMsg will add any message regardless of signers
+func (c *MsgContainer) AddMsg(msg *SignedMessage) {
+	if c.Msgs[msg.Message.Round] == nil {
+		c.Msgs[msg.Message.Round] = make([]*SignedMessage, 0)
+	}
+	// add msg
+	c.Msgs[msg.Message.Round] = append(c.Msgs[msg.Message.Round], msg)
+}
+
 // Encode returns the encoded struct in bytes or error
 func (c *MsgContainer) Encode() ([]byte, error) {
 	return json.Marshal(c)

@@ -36,3 +36,28 @@ func ControllerIdToMessageID(identifier []byte) types.MessageID {
 	copy(ret[:], identifier)
 	return ret
 }
+
+// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a processmsg can process messages for as messages are not
+// guaranteed to arrive in a timely fashion, we physically limit how far back the processmsg will process messages for
+const HistoricalInstanceCapacity int = 5
+
+type InstanceContainer [HistoricalInstanceCapacity]*Instance
+
+func (i InstanceContainer) FindInstance(height Height) *Instance {
+	for _, inst := range i {
+		if inst != nil {
+			if inst.GetHeight() == height {
+				return inst
+			}
+		}
+	}
+	return nil
+}
+
+// addNewInstance will add the new instance at index 0, pushing all other stored InstanceContainer one index up (ejecting last one if existing)
+func (i *InstanceContainer) addNewInstance(instance *Instance) {
+	for idx := HistoricalInstanceCapacity - 1; idx > 0; idx-- {
+		i[idx] = i[idx-1]
+	}
+	i[0] = instance
+}
