@@ -37,11 +37,7 @@ func ControllerIdToMessageID(identifier []byte) types.MessageID {
 	return ret
 }
 
-// HistoricalInstanceCapacity represents the upper bound of InstanceContainer a processmsg can process messages for as messages are not
-// guaranteed to arrive in a timely fashion, we physically limit how far back the processmsg will process messages for
-const HistoricalInstanceCapacity int = 5
-
-type InstanceContainer [HistoricalInstanceCapacity]*Instance
+type InstanceContainer []*Instance
 
 func (i InstanceContainer) FindInstance(height Height) *Instance {
 	for _, inst := range i {
@@ -56,8 +52,21 @@ func (i InstanceContainer) FindInstance(height Height) *Instance {
 
 // addNewInstance will add the new instance at index 0, pushing all other stored InstanceContainer one index up (ejecting last one if existing)
 func (i *InstanceContainer) addNewInstance(instance *Instance) {
-	for idx := HistoricalInstanceCapacity - 1; idx > 0; idx-- {
-		i[idx] = i[idx-1]
+	indexToInsert := len(*i)
+	for index, existingInstance := range *i {
+		if existingInstance.GetHeight() < instance.GetHeight() {
+			indexToInsert = index
+			break
+		}
 	}
-	i[0] = instance
+	*i = insertAtIndex(*i, indexToInsert, instance)
+}
+
+func insertAtIndex(arr []*Instance, index int, value *Instance) InstanceContainer {
+	if len(arr) == index { // nil or empty slice or after last element
+		return append(arr, value)
+	}
+	arr = append(arr[:index+1], arr[index:]...) // index < len(a)
+	arr[index] = value
+	return arr
 }
