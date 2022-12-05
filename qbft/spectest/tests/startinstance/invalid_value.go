@@ -12,7 +12,7 @@ func InvalidValue() *tests.ControllerSpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:         testingutils.TestingInvalidValueCheck,
-				ControllerPostRoot: "2e8a664c6fa643b691d0b8d56d9819f3c634f6fdb5990d869b4f08c3a1917a47",
+				ControllerPostRoot: "475fd29d6449d161b9d2925b73023dce8c28f0fb2faedaeb2f8b8214de08ac69",
 			},
 		},
 		ExpectedError: "can't start new QBFT instance: value invalid: invalid value",
