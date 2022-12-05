@@ -2,7 +2,6 @@ package testingutils
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
@@ -43,11 +42,6 @@ func (net *TestingNetwork) StreamDKGBlame(blame *dkg.BlameOutput) error {
 
 func (net *TestingNetwork) SyncHighestDecided(identifier types.MessageID) error {
 	net.SyncHighestDecidedCnt++
-	return nil
-}
-
-func (net *TestingNetwork) SyncHighestRoundChange(identifier types.MessageID, height qbft.Height) error {
-	net.SyncHighestChangeRoundCnt++
 	return nil
 }
 

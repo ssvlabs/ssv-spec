@@ -23,8 +23,6 @@ type Timer interface {
 type Syncer interface {
 	// SyncHighestDecided tries to fetch the highest decided from peers (not blocking)
 	SyncHighestDecided(identifier types.MessageID) error
-	// SyncHighestRoundChange tries to fetch for each committee member the highest round change broadcasted for the specific height from peers (not blocking)
-	SyncHighestRoundChange(identifier types.MessageID, height Height) error
 }
 
 // Network is the interface for networking across QBFT components
