@@ -28,10 +28,13 @@ func FutureInstance() *tests.ControllerSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-
-				DecidedVal:         []byte{1, 2, 3, 4},
-				DecidedCnt:         1,
-				ControllerPostRoot: "c91970b0e33a3b6141567101956dffa63472e56ed041ffdd408ed822973f3caf",
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedCnt:               1,
+					DecidedVal:               []byte{1, 2, 3, 4},
+					CalledSyncDecidedByRange: true,
+					DecidedByRangeValues:     [2]qbft.Height{0, 10},
+				},
+				ControllerPostRoot: "fe0a1f75a599b436548dbc0179179506eb060e2ea8d048afa145b1a2229c64c8",
 			},
 		},
 	}

@@ -26,8 +26,10 @@ func MultiDecidedInstances() *tests.ControllerSpecTest {
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
 			},
-			DecidedVal:         []byte{1, 2, 3, 4},
-			DecidedCnt:         1,
+			ExpectedDecidedState: tests.DecidedState{
+				DecidedCnt: 1,
+				DecidedVal: []byte{1, 2, 3, 4},
+			},
 			ControllerPostRoot: postRoot,
 		}
 	}
@@ -35,15 +37,17 @@ func MultiDecidedInstances() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "multi decide instances",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "8a5153ccfbefa992ac8b4af6aad2d050c553a95359d0bc49feaef5c11c7139a2"),
-			instanceData(1, "edffa599e2ff18bcb82a63116ab452649fe974b63432b05ab5919df16079fb68"),
-			instanceData(2, "42323740998181ec00bfcf28fb8095c8f5fd3e43266ca43f0448b3ef42ac2a60"),
-			instanceData(3, "cb17defa61f9e6175884f7ae8f372dabefe601360737e43162c6d52a2fa7f6e4"),
-			instanceData(4, "2266f4d33838f251c22dcf787551bb6dd7381b689353b8147853338917dddf37"),
-			instanceData(5, "57c0602606e7e5b186a570d9ff9dc80717ba6da075a769057374b9f2ebe81653"),
-			instanceData(8, "d8c0f5362ae874ded286627c1076a894d26ab61238c37a0a75bcc2e331822073"),
-			instanceData(9, "bb3fc017e5d8670dfa3abb88c325daad35d0b908f6b8c04786b828d94b38065e"),
-			instanceData(10, "69203928542ee0add38f855cd115c2fa3237b04e0bdec67204113e858f2bfb1d"),
+			instanceData(qbft.FirstHeight, "73ba8a44f10c67c1885385c76076fea5b57c2561c0d506f6d15ec62414f38591"),
+			instanceData(1, "d233358de3510f6236f9441d8cf14a97b5e3b7ce5bdf410090ef660d74a7583a"),
+			instanceData(2, "0ca69a226ad6acd5f2867172b00e5f69b1935c7986e2f3981137b255ce44e8dd"),
+			instanceData(3, "9da8c7102a4b7d66df477d8dbd22b2665eb2891fafc1482c67d491dfe7406120"),
+			instanceData(4, "c75b8981c604389e191c4b36a6db6537b1becba91a65df1e4af1a237475fb7f3"),
+			instanceData(5, "ca0d84be5214cb15e871edd3885ba03153b3420ffabc13babf9a61b6af0989aa"),
+			instanceData(6, "f8dac0bc1ce17dd65faed261553fb8a30ab78e630807dfc2696ec85088b8df0a"),
+			instanceData(7, "60d538a3b3b03cf2b9e1a69bd8a9ea0fa4f05f04cbb97973ab2e2b9936d8425d"),
+			instanceData(8, "af2aaccb6fcdb47197c1c8d1ce202ae44fa6787bae12f55d677e7722152ac193"),
+			instanceData(9, "ab9ce6f1aa909f6c1efaa3859604b13aea6b699674226363fd99767d39518bed"),
+			instanceData(10, "7cd71f9ecb9e2d63f1128a16a2c4a65d9c4979717b63cd4021a0fbde6476e810"),
 		},
 	}
 }

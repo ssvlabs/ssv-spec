@@ -36,9 +36,14 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
 					}),
 				},
-				DecidedVal:         []byte{1, 2, 3, 4},
-				DecidedCnt:         1,
-				ControllerPostRoot: "34ca71ca0801c140cf333aa9c94d1b41f2d78b969ed547771798025c0df8e67e",
+
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedVal:               []byte{1, 2, 3, 4},
+					DecidedCnt:               1,
+					CalledSyncDecidedByRange: true,
+					DecidedByRangeValues:     [2]qbft.Height{0, 50},
+				},
+				ControllerPostRoot: "e80301d8150da48514ea573693b0f5aaf07e4e26727c66068ddfa208ad58722d",
 			},
 		},
 		ExpectedError: "instance not found",

@@ -157,33 +157,7 @@ func (c *Controller) canStartInstance(value []byte) error {
 
 // GetRoot returns the state's deterministic root
 func (c *Controller) GetRoot() ([]byte, error) {
-	rootStruct := struct {
-		Identifier             []byte
-		Height                 Height
-		InstanceRoots          [][]byte
-		HigherReceivedMessages map[types.OperatorID]Height
-		Domain                 types.DomainType
-		Share                  *types.Share
-	}{
-		Identifier:             c.Identifier,
-		Height:                 c.Height,
-		InstanceRoots:          make([][]byte, len(c.StoredInstances)),
-		HigherReceivedMessages: c.FutureMsgsContainer,
-		Domain:                 c.Domain,
-		Share:                  c.Share,
-	}
-
-	for i, inst := range c.StoredInstances {
-		if inst != nil {
-			r, err := inst.GetRoot()
-			if err != nil {
-				return nil, errors.Wrap(err, "failed getting instance root")
-			}
-			rootStruct.InstanceRoots[i] = r
-		}
-	}
-
-	marshaledRoot, err := json.Marshal(rootStruct)
+	marshaledRoot, err := json.Marshal(c)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode state")
 	}

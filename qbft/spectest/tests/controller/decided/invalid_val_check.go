@@ -23,16 +23,17 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 						[]types.OperatorID{1, 2, 3},
 						&qbft.Message{
 							MsgType:    qbft.CommitMsgType,
-							Height:     10,
+							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
 							Identifier: identifier[:],
 							Data:       testingutils.CommitDataBytes(testingutils.TestingInvalidValueCheck),
 						}),
 				},
-
-				DecidedVal:         testingutils.TestingInvalidValueCheck,
-				DecidedCnt:         1,
-				ControllerPostRoot: "8be69818570269c47665bcfb8d4a3834387f4ee5d41eaaf03702af5334dd17de",
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedCnt: 1,
+					DecidedVal: testingutils.TestingInvalidValueCheck,
+				},
+				ControllerPostRoot: "6de21b20df093322f914d50f817b1fe139439f427f3d9889a58cfa0f09dce48e",
 			},
 		},
 	}

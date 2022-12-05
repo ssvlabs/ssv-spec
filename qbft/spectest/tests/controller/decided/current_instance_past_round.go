@@ -124,11 +124,13 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 		Name: "decide current instance past round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:         []byte{1, 2, 3, 4},
-				InputMessages:      msgs,
-				DecidedVal:         []byte{1, 2, 3, 4},
-				DecidedCnt:         1,
-				ControllerPostRoot: "e7e94573bd69d0fac4ee33b931efbc3a995142e8937497b5ad536f5b2b0864f4",
+				InputValue:    []byte{1, 2, 3, 4},
+				InputMessages: msgs,
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedCnt: 1,
+					DecidedVal: []byte{1, 2, 3, 4},
+				},
+				ControllerPostRoot: "4a43a4237144801c2f898f05b48a5f93044a87b4688631afcb52a621660fd6ce",
 			},
 		},
 	}
