@@ -22,7 +22,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 				},
-				PostDutyRunnerStateRoot: "81393f948e60c50bb7fe2b7560e63aa4677ad47afe276d7516bf5f44cc509512",
+				PostDutyRunnerStateRoot: "5dd1adfea0427eb13c98a2eb742ae2913a971e3dddd5b499e7bb0dca37a9d3a0",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -36,7 +36,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 				},
-				PostDutyRunnerStateRoot: "e39518c455b1edb8303b3dd883e1ed5d1fb017ae879b9ecd97ec9f83c47ed8fe",
+				PostDutyRunnerStateRoot: "c631ed8b09f8f4e8e64f663f990d660dd2c2be1cba6aaaf81c74864c8f4b550d",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -50,7 +50,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 				},
-				PostDutyRunnerStateRoot: "72b50da654329d7d8611e809f093f86b25a500e28c808595bc57280effd52e7b",
+				PostDutyRunnerStateRoot: "4bea9c68eaf314a46280416f22c77eb5df8055f5538ffe0a6e7922c07ca7f400",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

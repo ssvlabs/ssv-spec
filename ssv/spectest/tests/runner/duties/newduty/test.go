@@ -2,6 +2,7 @@ package newduty
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -23,12 +24,18 @@ func (test *StartNewRunnerDutySpecTest) TestName() string {
 }
 
 func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
+	rrr, _ := test.Runner.GetBaseRunner().QBFTController.GetRoot()
+	fmt.Printf("%x\n", rrr)
+
 	err := test.Runner.StartNewDuty(test.Duty)
 	if len(test.ExpectedError) > 0 {
 		require.EqualError(t, err, test.ExpectedError)
 	} else {
 		require.NoError(t, err)
 	}
+
+	rrr, _ = test.Runner.GetBaseRunner().QBFTController.GetRoot()
+	fmt.Printf("%x\n", rrr)
 
 	// test output message
 	broadcastedMsgs := test.Runner.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
