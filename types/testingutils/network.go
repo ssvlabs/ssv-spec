@@ -52,7 +52,7 @@ func (net *TestingNetwork) SyncHighestDecided(identifier types.MessageID) error 
 //}
 
 // SyncDecidedByRange will sync decided messages from-to (including them)
-func (net *TestingNetwork) SyncDecidedByRange(from, to qbft.Height) {
+func (net *TestingNetwork) SyncDecidedByRange(identifier types.MessageID, from, to qbft.Height) {
 	net.DecidedByRange = [2]qbft.Height{from, to}
 }
 

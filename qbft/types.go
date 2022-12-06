@@ -24,7 +24,7 @@ type Syncer interface {
 	// SyncHighestDecided tries to fetch the highest decided from peers (not blocking)
 	SyncHighestDecided(identifier types.MessageID) error
 	// SyncDecidedByRange will trigger sync from-to heights (including)
-	SyncDecidedByRange(from, to Height)
+	SyncDecidedByRange(identifier types.MessageID, to, from Height)
 }
 
 // Network is the interface for networking across QBFT components
