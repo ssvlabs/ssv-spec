@@ -92,11 +92,3 @@ var testingInstanceStruct = &Instance{
 		},
 	},
 }
-var testingControllerStruct = &Controller{
-	Identifier: []byte{1, 2, 3, 4},
-	Height:     Height(1),
-	Share:      testingShare,
-	StoredInstances: []*Instance{
-		testingInstanceStruct,
-	},
-}
