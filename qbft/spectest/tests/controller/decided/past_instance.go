@@ -32,15 +32,29 @@ func PastInstance() *tests.ControllerSpecTest {
 						[]types.OperatorID{1, 2, 3},
 						&qbft.Message{
 							MsgType:    qbft.CommitMsgType,
-							Height:     99,
+							Height:     80,
+							Round:      qbft.FirstRound,
+							Identifier: identifier[:],
+							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						}),
+					testingutils.MultiSignQBFTMsg(
+						[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						&qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     90,
 							Round:      qbft.FirstRound,
 							Identifier: identifier[:],
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				DecidedVal:         []byte{1, 2, 3, 4},
-				DecidedCnt:         1,
-				ControllerPostRoot: "d9834788859abee970bdcd9d4195ae0292513ef9783ec0c9c6b54fd4856849ce",
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedCnt:               3,
+					DecidedVal:               []byte{1, 2, 3, 4},
+					CalledSyncDecidedByRange: true,
+					DecidedByRangeValues:     [2]qbft.Height{0, 100},
+				},
+				ControllerPostRoot: "25380db6689a3448153ec3b920dc0c1132477cbf263b373507e3258fd6bcc348",
 			},
 		},
 	}

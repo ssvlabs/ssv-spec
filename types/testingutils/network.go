@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
@@ -11,6 +12,7 @@ type TestingNetwork struct {
 	BlameOutput               *dkg.BlameOutput
 	SyncHighestDecidedCnt     int
 	SyncHighestChangeRoundCnt int
+	DecidedByRange            [2]qbft.Height
 }
 
 func NewTestingNetwork() *TestingNetwork {
@@ -48,6 +50,11 @@ func (net *TestingNetwork) SyncHighestDecided(identifier types.MessageID) error 
 //func (net *TestingNetwork) SyncHighestDecided() error {
 //	return nil
 //}
+
+// SyncDecidedByRange will sync decided messages from-to (including them)
+func (net *TestingNetwork) SyncDecidedByRange(identifier types.MessageID, from, to qbft.Height) {
+	net.DecidedByRange = [2]qbft.Height{from, to}
+}
 
 // BroadcastDKGMessage will broadcast a msg to the dkg network
 func (net *TestingNetwork) BroadcastDKGMessage(msg *dkg.SignedMessage) error {

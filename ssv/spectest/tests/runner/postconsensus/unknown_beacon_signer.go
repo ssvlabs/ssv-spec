@@ -26,7 +26,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongBeaconSignerMsg(ks.Shares[1], 1, 5, ks)),
 				},
-				PostDutyRunnerStateRoot: "77deed5f4370b8edee28892c6226e69070aef4f2fed9ad48ea9e1a20a487b240",
+				PostDutyRunnerStateRoot: "637c1a239496ea1417e60a86688c3a03da2aa18981018eee18613ed1a7536527",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -43,7 +43,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSigSyncCommitteeWrongBeaconSignerMsg(ks.Shares[1], 1, 5)),
 				},
-				PostDutyRunnerStateRoot: "26f10eb7501cf6e62b7fab784ac261865a6d28a8163e4beb53d89618e665d992",
+				PostDutyRunnerStateRoot: "c3cd935d78e8122ecca9a6c3fdfa10043c78b4883762bf1a58c20f14c8b6523d",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -60,7 +60,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsg(ks.Shares[1], 1, 5)),
 				},
-				PostDutyRunnerStateRoot: "2541bd375b3a9faef535a255aa285cb83bcef1f6b422c804a21318a10426bc7f",
+				PostDutyRunnerStateRoot: "b0f52e31a41c744054ecc8f9915496b581e41cde404e8a2f25563609c22558c5",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -77,7 +77,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusSigAggregatorWrongBeaconSignerMsg(ks.Shares[1], 1, 5)),
 				},
-				PostDutyRunnerStateRoot: "d3540c94cbee7cbe6b0ba0c9688ec9199923fe9bc14c4eb7a2ec2a1ca45cf80d",
+				PostDutyRunnerStateRoot: "392a7dc0d9dd28e8036e31a5ea0cdcfc984fcf78e08b82b52b8c1fffe4b99962",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -94,7 +94,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusSigAttestationWrongBeaconSignerMsg(ks.Shares[1], 1, 5, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "65152758493189b41d7b294f178973ff7d93c739e19ad52598d74f73e018f24a",
+				PostDutyRunnerStateRoot: "4511192d8f5499bb0081d8b929c6e2c38b4d14bfd8959ef2e8b2b3ccf6add378",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,

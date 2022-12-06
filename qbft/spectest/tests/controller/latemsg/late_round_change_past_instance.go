@@ -8,8 +8,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// LateProposalPastInstance tests process proposal msg for a previously decided instance
-func LateProposalPastInstance() *tests.ControllerSpecTest {
+// LateRoundChangePastInstance tests process round change msg for a previously decided instance
+func LateRoundChangePastInstance() *tests.ControllerSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
@@ -26,48 +26,50 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 		return &tests.RunInstanceData{
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
-			BroadcastedDecided: testingutils.MultiSignQBFTMsg(
-				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.CommitMsgType,
-					Height:     height,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-				}),
-			DecidedVal:         []byte{1, 2, 3, 4},
-			DecidedCnt:         1,
+			ExpectedDecidedState: tests.DecidedState{
+				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+					[]types.OperatorID{1, 2, 3},
+					&qbft.Message{
+						MsgType:    qbft.CommitMsgType,
+						Height:     height,
+						Round:      qbft.FirstRound,
+						Identifier: identifier[:],
+						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+					}),
+				DecidedVal: []byte{1, 2, 3, 4},
+				DecidedCnt: 1,
+			},
+
 			ControllerPostRoot: postRoot,
 		}
 	}
 
 	return &tests.ControllerSpecTest{
-		Name: "late proposal past instance",
+		Name: "late round change past instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "aa402d7487719b17dde352e2ac602ba2c7d895e615ab12cd93d816f6c4fa0967"),
-			instanceData(1, "457bc465febc4d1d626ad19d0f83621fbca5f0c2c6f9f3665292c602e615896a"),
-			instanceData(2, "060c2a36313e8de4cfa530d7839945439e54344c3368eab749c61c5a76eb602c"),
-			instanceData(3, "80f4ea4b56c6062724bc789eb3455c33650191e2c7f775f59b40b9fecc35f93b"),
-			instanceData(4, "3003436a999f2fbd9d4c130591361243190fd3ab1da6d92463cbc832f8165abf"),
-			instanceData(5, "e7a2324d9cbd69497455b50bde88cb47524b79b14653d024caf06ac7a2b28ba7"),
+			instanceData(qbft.FirstHeight, "0370be5066cbbf1efead61d9b182309afd989b3b720163f7029cbad79537eb4b"),
+			instanceData(1, "72f925307e1d7af4d664a9e0339462a5c9d04bc17ceebe6084a506da89596d30"),
+			instanceData(2, "411af5dd976dd829af4429d16c314e579a5ce98807122a4330071699e6cfdbb1"),
+			instanceData(3, "21ef7d1175c6cc9c05ea489fc6ffa51215d0cce49a9bb4e9e14718e91803faf6"),
+			instanceData(4, "1c2eebe8f3cc38f0063a3633a23827e0721298a4c4dfcc465bdc7f861f4bd75a"),
+			instanceData(5, "2a95f62f8de66bc821c07c1476452aadacd45435b2a1a73c19f24d87460091ff"),
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1]},
-						[]types.OperatorID{1},
+						[]*bls.SecretKey{ks.Shares[4]},
+						[]types.OperatorID{4},
 						&qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
+							MsgType:    qbft.RoundChangeMsgType,
 							Height:     4,
 							Round:      qbft.FirstRound,
 							Identifier: identifier[:],
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				ControllerPostRoot: "26b5b7ae9b897b482e560f8bae0fc3c20ccd0d1263e94f5ff289ca9fb0ffae71",
+				ControllerPostRoot: "ff9a11fe4e4e17359000d5e2b063c05cca5b93d1f341e4c24a3bb16c4ace876b",
 			},
 		},
-		ExpectedError: "could not process msg: proposal invalid: proposal is not valid with current state",
 	}
 }

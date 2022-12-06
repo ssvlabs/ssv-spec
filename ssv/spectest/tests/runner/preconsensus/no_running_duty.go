@@ -20,7 +20,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "7877850bfa14563397de29454a67e9d29758d7d9f79ffeeab6a6c4737d9130e2",
+				PostDutyRunnerStateRoot: "9f3595faec852f285df352268e1b33eb333b59146c6c2748f8332f99f135721b",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
@@ -32,7 +32,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "62c4650ef510eb72461779fd14d126f16860e503095c79fe843163e8c51d9775",
+				PostDutyRunnerStateRoot: "074d2bff32fa025412363ec367e4d02afa891c99157520946a16534f4fdf7271",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing selection proof message: invalid pre-consensus message: no running duty",
@@ -44,7 +44,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "0b23fa8aeb36f80f3a892c971eb588b4a5eac1a2c1ec6f5c01f698d66ce59085",
+				PostDutyRunnerStateRoot: "17dd1e0e5cb9106b01e15ef3d73ca4b84d9db84c44f0dd8518a693ea896aa654",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",

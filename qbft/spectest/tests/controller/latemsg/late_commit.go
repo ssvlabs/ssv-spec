@@ -28,19 +28,21 @@ func LateCommit() *tests.ControllerSpecTest {
 			{
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
-				DecidedVal:    []byte{1, 2, 3, 4},
-				DecidedCnt:    1,
-				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
-				ControllerPostRoot: "11bc9e5f7ba15091d31f735de715069376fefd44c563d4e2a71f3e8b56bd8bc3",
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedCnt: 1,
+					BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						&qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     qbft.FirstHeight,
+							Round:      qbft.FirstRound,
+							Identifier: identifier[:],
+							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						}),
+				},
+				ControllerPostRoot: "4c3865c500ae85a9b98b126911039e91db9a7ab1b55f9f7f4e914fe9391d2334",
 			},
 		},
 	}

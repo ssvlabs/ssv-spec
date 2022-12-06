@@ -130,21 +130,23 @@ func LateRoundChangePastRound() *tests.ControllerSpecTest {
 			{
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
-				DecidedVal:    []byte{1, 2, 3, 4},
-				DecidedCnt:    1,
-				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      2,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
-				ControllerPostRoot: "f28b31c33267ff5bbecce465db8a66f8090dc1a1c8ae8416d4f00c616474c0b1",
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedCnt: 1,
+					BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						&qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     qbft.FirstHeight,
+							Round:      2,
+							Identifier: identifier[:],
+							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						}),
+				},
+
+				ControllerPostRoot: "bb2e61b20360347bf1c48c31e78069a26c59cfd0e06ada43ba799966b0f8b9fd",
 			},
 		},
-		//ExpectedError: "could not process msg: proposal invalid: proposal is not valid with current state",
 	}
 }
