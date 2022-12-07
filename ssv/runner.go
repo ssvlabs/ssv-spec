@@ -180,6 +180,9 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.Signe
 }
 
 func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
+	if err := input.ValidateForDuty(runner.GetBaseRunner().BeaconRoleType); err != nil {
+		return errors.Wrap(err, "invalid input value")
+	}
 	byts, err := input.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode ConsensusData")
