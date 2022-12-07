@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/pkg/errors"
 )
 
 type ContributionsMap map[phase0.BLSSignature]*altair.SyncCommitteeContribution
@@ -52,6 +53,36 @@ type ConsensusData struct {
 	SyncCommitteeBlockRoot phase0.Root
 	// SyncCommitteeContribution map holds as key the selection proof for the contribution
 	SyncCommitteeContribution ContributionsMap
+}
+
+func (cid *ConsensusData) ValidateForDuty(role BeaconRole) error {
+	if cid.Duty == nil {
+		return errors.New("duty is nil")
+	}
+
+	if role == BNRoleAttester && cid.AttestationData == nil {
+		return errors.New("attestation data is nil")
+	}
+
+	if role == BNRoleAggregator && cid.AggregateAndProof == nil {
+		return errors.New("aggregate and proof data is nil")
+	}
+
+	if role == BNRoleProposer {
+		if cid.BlockData == nil && cid.BlindedBlockData == nil {
+			return errors.New("block data is nil")
+		}
+
+		if cid.BlockData != nil && cid.BlindedBlockData != nil {
+			return errors.New("block and blinded block data are both != nil")
+		}
+	}
+
+	if role == BNRoleSyncCommitteeContribution && len(cid.SyncCommitteeContribution) == 0 {
+		return errors.New("sync committee contribution data is nil")
+	}
+
+	return nil
 }
 
 func (cid *ConsensusData) Encode() ([]byte, error) {
