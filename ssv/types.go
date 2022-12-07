@@ -63,7 +63,7 @@ type SyncCommitteeContributionCalls interface {
 	// SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
 	SyncCommitteeSubnetID(index phase0.CommitteeIndex) (uint64, error)
 	// GetSyncCommitteeContribution returns
-	GetSyncCommitteeContribution(slot phase0.Slot, subnetID uint64, pubKey phase0.BLSPubKey) (*altair.SyncCommitteeContribution, error)
+	GetSyncCommitteeContribution(slot phase0.Slot, subnetID uint64) (*altair.SyncCommitteeContribution, error)
 	// SubmitSignedContributionAndProof broadcasts to the network
 	SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error
 }

@@ -381,7 +381,7 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *spec.Attestation) er
 }
 
 // GetBeaconBlock returns beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*bellatrix.BeaconBlock, error) {
+func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, graffiti, randao []byte) (*bellatrix.BeaconBlock, error) {
 	return TestingBeaconBlock, nil
 }
 
@@ -393,7 +393,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBloc
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
-func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, slotSig []byte) (*spec.AggregateAndProof, error) {
+func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(duty *types.Duty, slotSig []byte) (*spec.AggregateAndProof, error) {
 	return TestingAggregateAndProof, nil
 }
 
@@ -405,7 +405,7 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.Signe
 }
 
 // GetSyncMessageBlockRoot returns beacon block root for sync committee
-func (bn *TestingBeaconNode) GetSyncMessageBlockRoot() (spec.Root, error) {
+func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot spec.Slot) (spec.Root, error) {
 	return TestingSyncCommitteeBlockRoot, nil
 }
 
@@ -436,11 +436,11 @@ func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, erro
 // SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
 func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index spec.CommitteeIndex) (uint64, error) {
 	// each subcommittee index correlates to TestingContributionProofRoots by index
-	return index, nil
+	return uint64(index) / (types.SyncCommitteeSize / types.SyncCommitteeSubnetCount), nil
 }
 
 // GetSyncCommitteeContribution returns
-func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, subnetID uint64, pubKey spec.BLSPubKey) (*altair.SyncCommitteeContribution, error) {
+func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, subnetID uint64) (*altair.SyncCommitteeContribution, error) {
 	return TestingSyncCommitteeContributions[subnetID], nil
 }
 
