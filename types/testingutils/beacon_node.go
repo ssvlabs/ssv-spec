@@ -433,7 +433,11 @@ func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, erro
 // SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
 func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index spec.CommitteeIndex) (uint64, error) {
 	// each subcommittee index correlates to TestingContributionProofRoots by index
-	return uint64(index) / (types.SyncCommitteeSize / types.SyncCommitteeSubnetCount), nil
+
+	// TODO: the right way to calculate https://github.dev/prysmaticlabs/prysm/blob/648ab9f2c249f1d06d0aad4328e8df429ceaf66c/validator/client/sync_committee.go#L136
+	//return uint64(index) / (types.SyncCommitteeSize / types.SyncCommitteeSubnetCount), nil
+
+	return uint64(index), nil
 }
 
 // GetSyncCommitteeContribution returns
