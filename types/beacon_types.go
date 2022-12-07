@@ -23,7 +23,7 @@ var (
 
 	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
 
-	//SyncCommitteeSize                    uint64 = 512
+	SyncCommitteeSize                    uint64 = 512
 	SyncCommitteeSubnetCount             uint64 = 4
 	TargetAggregatorsPerSyncSubcommittee uint64 = 16
 )
