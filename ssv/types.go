@@ -61,7 +61,7 @@ type SyncCommitteeContributionCalls interface {
 	// IsSyncCommitteeAggregator returns true if aggregator
 	IsSyncCommitteeAggregator(proof []byte) (bool, error)
 	// SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
-	SyncCommitteeSubnetID(subCommitteeID uint64) (uint64, error)
+	SyncCommitteeSubnetID(index phase0.CommitteeIndex) (uint64, error)
 	// GetSyncCommitteeContribution returns
 	GetSyncCommitteeContribution(slot phase0.Slot, subnetID uint64, pubKey phase0.BLSPubKey) (*altair.SyncCommitteeContribution, error)
 	// SubmitSignedContributionAndProof broadcasts to the network

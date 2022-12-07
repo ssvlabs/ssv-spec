@@ -434,9 +434,9 @@ func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, erro
 }
 
 // SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
-func (bn *TestingBeaconNode) SyncCommitteeSubnetID(subCommitteeID uint64) (uint64, error) {
+func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index spec.CommitteeIndex) (uint64, error) {
 	// each subcommittee index correlates to TestingContributionProofRoots by index
-	return subCommitteeID, nil
+	return index, nil
 }
 
 // GetSyncCommitteeContribution returns
