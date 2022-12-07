@@ -23,9 +23,9 @@ var (
 
 	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
 
-	SyncCommitteeSize                    = 512
-	SyncCommitteeSubnetCount             = 4
-	TargetAggregatorsPerSyncSubcommittee = 16
+	SyncCommitteeSize                    uint64 = 512
+	SyncCommitteeSubnetCount             uint64 = 4
+	TargetAggregatorsPerSyncSubcommittee uint64 = 16
 )
 
 // MaxEffectiveBalanceInGwei is the max effective balance
