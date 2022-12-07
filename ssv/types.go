@@ -56,8 +56,6 @@ type SyncCommitteeCalls interface {
 
 // SyncCommitteeContributionCalls interface has all sync committee contribution duty specific calls
 type SyncCommitteeContributionCalls interface {
-	// GetSyncSubcommitteeIndex returns sync committee indexes for aggregator
-	GetSyncSubcommitteeIndex(slot phase0.Slot, pubKey phase0.BLSPubKey) ([]uint64, error)
 	// IsSyncCommitteeAggregator returns true if aggregator
 	IsSyncCommitteeAggregator(proof []byte) (bool, error)
 	// SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index

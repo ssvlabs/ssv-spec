@@ -172,7 +172,7 @@ var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommi
 	}
 }
 
-var TestingContributionProofIndexes = []uint64{0, 1, 2}
+var TestingContributionProofIndexes = []spec.CommitteeIndex{0, 1, 2}
 var TestingContributionProofsSigned = func() []spec.BLSSignature {
 	// signed with 3515c7d08e5affd729e9579f7588d30f2342ee6f6a9334acf006345262162c6f
 	byts1, _ := hex.DecodeString("b18833bb7549ec33e8ac414ba002fd45bb094ca300bd24596f04a434a89beea462401da7c6b92fb3991bd17163eb603604a40e8dd6781266c990023446776ff42a9313df26a0a34184a590e57fa4003d610c2fa214db4e7dec468592010298bc")
@@ -285,37 +285,40 @@ var TestingAggregatorDutyNextEpoch = &types.Duty{
 }
 
 var TestingSyncCommitteeDuty = &types.Duty{
-	Type:                    types.BNRoleSyncCommittee,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleSyncCommittee,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
 var TestingSyncCommitteeContributionDuty = &types.Duty{
-	Type:                    types.BNRoleSyncCommitteeContribution,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleSyncCommitteeContribution,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
 // TestingSyncCommitteeContributionNexEpochDuty testing for a second duty start
 var TestingSyncCommitteeContributionNexEpochDuty = &types.Duty{
-	Type:                    types.BNRoleSyncCommitteeContribution,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot2,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleSyncCommitteeContribution,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot2,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
 var TestingUnknownDutyType = &types.Duty{
@@ -414,12 +417,6 @@ func (bn *TestingBeaconNode) SubmitSyncMessage(msg *altair.SyncCommitteeMessage)
 	r, _ := msg.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
-}
-
-// GetSyncSubcommitteeIndex returns sync committee indexes for aggregator
-func (bn *TestingBeaconNode) GetSyncSubcommitteeIndex(slot spec.Slot, pubKey spec.BLSPubKey) ([]uint64, error) {
-	// each subcommittee index correlates to TestingContributionProofRoots by index
-	return TestingContributionProofIndexes, nil
 }
 
 // IsSyncCommitteeAggregator returns tru if aggregator
