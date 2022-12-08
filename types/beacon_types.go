@@ -83,7 +83,7 @@ type Duty struct {
 	// ValidatorCommitteeIndex is the index of the validator in the list of validators in the committee.
 	ValidatorCommitteeIndex uint64
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
-	ValidatorSyncCommitteeIndices []spec.CommitteeIndex `json:"-"`
+	ValidatorSyncCommitteeIndices []spec.CommitteeIndex
 }
 
 // Available networks.
