@@ -8,14 +8,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
+func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
-	if fr.state.currentRound != Round2 {
-		return nil, dkg.ErrInvalidRound{}
+	if !fr.canProceedThisRound() {
+		return false, nil, nil
 	}
+	fr.state.currentRound = Round2
 
 	if !fr.needToRunCurrentRound() {
-		return nil, nil
+		return false, nil, nil
 	}
 
 	bcast := make(map[uint32]*frost.Round1Bcast)
@@ -25,24 +26,24 @@ func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(dkgMessage.Message.Data); err != nil {
-			return nil, errors.Wrap(err, "failed to decode protocol msg")
+			return false, nil, errors.Wrap(err, "failed to decode protocol msg")
 		}
 		verifiers := new(sharing.FeldmanVerifier)
 		for _, commitmentBytes := range protocolMessage.Round1Message.Commitment {
 			commitment, err := thisCurve.Point.FromAffineCompressed(commitmentBytes)
 			if err != nil {
-				return nil, errors.Wrap(err, "failed to decode commitment point")
+				return false, nil, errors.Wrap(err, "failed to decode commitment point")
 			}
 			verifiers.Commitments = append(verifiers.Commitments, commitment)
 		}
 
 		Wi, err := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofS)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to decode scalar")
+			return false, nil, errors.Wrap(err, "failed to decode scalar")
 		}
 		Ci, err := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofR)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to decode scalar")
+			return false, nil, errors.Wrap(err, "failed to decode scalar")
 		}
 
 		bcastMessage := &frost.Round1Bcast{
@@ -60,7 +61,11 @@ func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 		shareBytes, err := ecies.Decrypt(fr.config.sessionSK, encryptedShare)
 		if err != nil {
 			fr.state.currentRound = Blame
-			return fr.createAndBroadcastBlameOfInvalidShare(peerOID)
+			out, err := fr.createAndBroadcastBlameOfInvalidShare(peerOID)
+			if err != nil {
+				return false, nil, err
+			}
+			return true, out, nil
 		}
 
 		share := &sharing.ShamirShare{
@@ -73,13 +78,17 @@ func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 		err = verifiers.Verify(share)
 		if err != nil {
 			fr.state.currentRound = Blame
-			return fr.createAndBroadcastBlameOfInvalidShare(peerOID)
+			out, err := fr.createAndBroadcastBlameOfInvalidShare(peerOID)
+			if err != nil {
+				return false, nil, err
+			}
+			return true, out, nil
 		}
 	}
 
 	bCastMessage, err := fr.state.participant.Round2(bcast, p2psend)
 	if err != nil {
-		return nil, err
+		return false, nil, err
 	}
 
 	msg := &ProtocolMsg{
@@ -90,5 +99,5 @@ func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 		},
 	}
 	_, err = fr.broadcastDKGMessage(msg)
-	return nil, err
+	return false, nil, err
 }

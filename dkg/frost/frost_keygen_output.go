@@ -9,19 +9,20 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
+func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
-	if fr.state.currentRound != KeygenOutput {
-		return nil, dkg.ErrInvalidRound{}
+	if !fr.canProceedThisRound() {
+		return false, nil, nil
 	}
+	fr.state.currentRound = KeygenOutput
 
 	if !fr.needToRunCurrentRound() {
-		return nil, nil
+		return false, nil, nil
 	}
 
 	reconstructed, err := fr.verifyShares()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to verify shares")
+		return false, nil, errors.Wrap(err, "failed to verify shares")
 	}
 
 	reconstructedBytes := reconstructed.Serialize()
@@ -34,13 +35,13 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	for _, operatorID := range fr.config.operators {
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(fr.state.msgs[Round2][operatorID].Message.Data); err != nil {
-			return nil, errors.Wrap(err, "failed to decode protocol msg")
+			return false, nil, errors.Wrap(err, "failed to decode protocol msg")
 		}
 
 		if operatorID == uint32(fr.config.operatorID) {
 			sk := &bls.SecretKey{}
 			if err := sk.Deserialize(fr.state.participant.SkShare.Bytes()); err != nil {
-				return nil, err
+				return false, nil, err
 			}
 
 			out.Share = sk
@@ -49,7 +50,7 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 
 		pk := &bls.PublicKey{}
 		if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
-			return nil, err
+			return false, nil, err
 		}
 
 		operatorPubKeys[types.OperatorID(operatorID)] = pk
@@ -58,10 +59,10 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	out.OperatorPubKeys = operatorPubKeys
 
 	if !bytes.Equal(out.ValidatorPK, reconstructedBytes) {
-		return nil, errors.New("can't reconstruct to the validator pk")
+		return false, nil, errors.New("can't reconstruct to the validator pk")
 	}
 
-	return out, nil
+	return true, &dkg.ProtocolOutcome{ProtocolOutput: out}, nil
 }
 
 func (fr *FROST) verifyShares() (*bls.G1, error) {

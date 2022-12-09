@@ -6,31 +6,31 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-func (fr *FROST) processRound1() error {
+func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
-	if fr.state.currentRound != Round1 {
-		return dkg.ErrInvalidRound{}
+	if !fr.canProceedThisRound() {
+		return false, nil, nil
 	}
+	fr.state.currentRound = Round1
 
 	if !fr.needToRunCurrentRound() {
-		return fr.state.participant.SkipRound1()
+		return false, nil, fr.state.participant.SkipRound1()
 	}
 
 	var (
 		skI []byte // secret to be shared, nil if new keygen, lagrange interpolation of own part of secret if resharing
-		err error
 	)
 
 	if fr.isResharing() {
 		skI, err = fr.partialInterpolate()
 		if err != nil {
-			return err
+			return false, nil, err
 		}
 	}
 
 	bCastMessage, p2pMessages, err := fr.state.participant.Round1(skI)
 	if err != nil {
-		return err
+		return false, nil, err
 	}
 
 	// get bytes representation of commitment points
@@ -50,14 +50,14 @@ func (fr *FROST) processRound1() error {
 		shamirShare := p2pMessages[operatorID]
 
 		if err := share.Deserialize(shamirShare.Value); err != nil {
-			return err
+			return false, nil, err
 		}
 
 		fr.state.operatorShares[operatorID] = share
 
 		encryptedShare, err := fr.encryptByOperatorID(operatorID, shamirShare.Value)
 		if err != nil {
-			return err
+			return false, nil, err
 		}
 		shares[operatorID] = encryptedShare
 	}
@@ -72,7 +72,7 @@ func (fr *FROST) processRound1() error {
 		},
 	}
 	_, err = fr.broadcastDKGMessage(msg)
-	return err
+	return false, nil, err
 }
 
 func (fr *FROST) partialInterpolate() ([]byte, error) {

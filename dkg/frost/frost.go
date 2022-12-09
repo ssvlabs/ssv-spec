@@ -34,12 +34,12 @@ type FROST struct {
 
 type ProtocolConfig struct {
 	identifier      dkg.RequestID
-	operatorID      types.OperatorID
-	sessionSK       *ecies.PrivateKey
 	threshold       uint32
-	operatorsOld    []uint32
+	operatorID      types.OperatorID
 	operators       []uint32
+	operatorsOld    []uint32
 	oldKeyGenOutput *dkg.KeyGenOutput
+	sessionSK       *ecies.PrivateKey
 }
 
 type ProtocolState struct {
@@ -94,8 +94,8 @@ func New(
 		storage: storage,
 		config: ProtocolConfig{
 			identifier: requestID,
-			operatorID: operatorID,
 			threshold:  uint32(init.Threshold),
+			operatorID: operatorID,
 			operators:  types.OperatorList(init.OperatorIDs).ToUint32List(),
 		},
 		state: &ProtocolState{
@@ -126,9 +126,9 @@ func NewResharing(
 		storage: storage,
 		config: ProtocolConfig{
 			identifier:      requestID,
+			threshold:       uint32(init.Threshold),
 			operatorID:      operatorID,
 			operators:       types.OperatorList(init.OperatorIDs).ToUint32List(),
-			threshold:       uint32(init.Threshold),
 			operatorsOld:    types.OperatorList(operatorsOld).ToUint32List(),
 			oldKeyGenOutput: output,
 		},
@@ -175,7 +175,7 @@ func (fr *FROST) Start() error {
 	return err
 }
 
-func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
+func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if err := fr.validateSignedMessage(msg); err != nil {
 		return false, nil, errors.Wrap(err, "failed to Validate signed message")
@@ -200,7 +200,6 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome,
 			return false, nil, err
 		}
 		return true, outcome, nil
-
 	}
 
 	if protocolMessage.Round == Blame {
@@ -221,32 +220,14 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome,
 
 	switch fr.state.currentRound {
 	case Preparation:
-		if fr.canProceedThisRound() {
-			fr.state.currentRound = Round1
-			if err := fr.processRound1(); err != nil {
-				return false, nil, err
-			}
-		}
+		return fr.processRound1()
 	case Round1:
-		if fr.canProceedThisRound() {
-			fr.state.currentRound = Round2
-			outcome, err := fr.processRound2()
-			return outcome != nil, outcome, err
-		}
+		return fr.processRound2()
 	case Round2:
-		if fr.canProceedThisRound() {
-			fr.state.currentRound = KeygenOutput
-			out, err := fr.processKeygenOutput()
-			if err != nil {
-				return false, nil, err
-			}
-			return true, &dkg.ProtocolOutcome{ProtocolOutput: out}, nil
-		}
+		return fr.processKeygenOutput()
 	default:
 		return true, nil, dkg.ErrInvalidRound{}
 	}
-
-	return false, nil, nil
 }
 
 func (fr *FROST) canProceedThisRound() bool {
