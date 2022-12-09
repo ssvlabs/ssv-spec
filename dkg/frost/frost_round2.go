@@ -52,19 +52,19 @@ func (fr *FROST) processRound2() (*dkg.ProtocolOutcome, error) {
 		}
 		bcast[peerOID] = bcastMessage
 
-		if uint32(fr.state.operatorID) == peerOID {
+		if uint32(fr.config.operatorID) == peerOID {
 			continue
 		}
 
-		encryptedShare := protocolMessage.Round1Message.Shares[uint32(fr.state.operatorID)]
-		shareBytes, err := ecies.Decrypt(fr.state.sessionSK, encryptedShare)
+		encryptedShare := protocolMessage.Round1Message.Shares[uint32(fr.config.operatorID)]
+		shareBytes, err := ecies.Decrypt(fr.config.sessionSK, encryptedShare)
 		if err != nil {
 			fr.state.currentRound = Blame
 			return fr.createAndBroadcastBlameOfInvalidShare(peerOID)
 		}
 
 		share := &sharing.ShamirShare{
-			Id:    uint32(fr.state.operatorID),
+			Id:    uint32(fr.config.operatorID),
 			Value: shareBytes,
 		}
 

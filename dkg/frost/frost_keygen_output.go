@@ -27,17 +27,17 @@ func (fr *FROST) processKeygenOutput() (*dkg.KeyGenOutput, error) {
 	reconstructedBytes := reconstructed.Serialize()
 
 	out := &dkg.KeyGenOutput{
-		Threshold: uint64(fr.state.threshold),
+		Threshold: uint64(fr.config.threshold),
 	}
 
 	operatorPubKeys := make(map[types.OperatorID]*bls.PublicKey)
-	for _, operatorID := range fr.state.operators {
+	for _, operatorID := range fr.config.operators {
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(fr.state.msgs[Round2][operatorID].Message.Data); err != nil {
 			return nil, errors.Wrap(err, "failed to decode protocol msg")
 		}
 
-		if operatorID == uint32(fr.state.operatorID) {
+		if operatorID == uint32(fr.config.operatorID) {
 			sk := &bls.SecretKey{}
 			if err := sk.Deserialize(fr.state.participant.SkShare.Bytes()); err != nil {
 				return nil, err
@@ -68,13 +68,13 @@ func (fr *FROST) verifyShares() (*bls.G1, error) {
 
 	var (
 		quorumStart       = 0
-		quorumEnd         = int(fr.state.threshold)
+		quorumEnd         = int(fr.config.threshold)
 		prevReconstructed = (*bls.G1)(nil)
 	)
 
 	// Sliding window of quorum 0...threshold until n-threshold...n
-	for quorumEnd < len(fr.state.operators) {
-		quorum := fr.state.operators[quorumStart:quorumEnd]
+	for quorumEnd < len(fr.config.operators) {
+		quorum := fr.config.operators[quorumStart:quorumEnd]
 		currReconstructed, err := fr.verifyShare(quorum)
 		if err != nil {
 			return nil, err

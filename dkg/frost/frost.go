@@ -28,25 +28,25 @@ type FROST struct {
 	network dkg.Network
 	signer  types.DKGSigner
 	storage dkg.Storage
-
-	state *State
+	config  ProtocolConfig
+	state   *ProtocolState
 }
 
-type State struct {
-	identifier dkg.RequestID
-	operatorID types.OperatorID
-	sessionSK  *ecies.PrivateKey
-
-	threshold    uint32
-	currentRound ProtocolRound
-	participant  *frost.DkgParticipant
-
-	operators      []uint32
-	operatorsOld   []uint32
-	operatorShares map[uint32]*bls.SecretKey
-
-	msgs            ProtocolMessageStore
+type ProtocolConfig struct {
+	identifier      dkg.RequestID
+	operatorID      types.OperatorID
+	sessionSK       *ecies.PrivateKey
+	threshold       uint32
+	operatorsOld    []uint32
+	operators       []uint32
 	oldKeyGenOutput *dkg.KeyGenOutput
+}
+
+type ProtocolState struct {
+	currentRound   ProtocolRound
+	participant    *frost.DkgParticipant
+	msgs           ProtocolMessageStore
+	operatorShares map[uint32]*bls.SecretKey
 }
 
 type ProtocolRound int
@@ -92,14 +92,16 @@ func New(
 		network: network,
 		signer:  signer,
 		storage: storage,
-		state: &State{
-			identifier:     requestID,
-			operatorID:     operatorID,
-			threshold:      uint32(init.Threshold),
+		config: ProtocolConfig{
+			identifier: requestID,
+			operatorID: operatorID,
+			threshold:  uint32(init.Threshold),
+			operators:  types.OperatorList(init.OperatorIDs).ToUint32List(),
+		},
+		state: &ProtocolState{
 			currentRound:   Uninitialized,
-			operators:      types.OperatorList(init.OperatorIDs).ToUint32List(),
-			operatorShares: make(map[uint32]*bls.SecretKey),
 			msgs:           newProtocolMessageStore(),
+			operatorShares: make(map[uint32]*bls.SecretKey),
 		},
 	}
 
@@ -122,17 +124,18 @@ func NewResharing(
 		network: network,
 		signer:  signer,
 		storage: storage,
-
-		state: &State{
+		config: ProtocolConfig{
 			identifier:      requestID,
 			operatorID:      operatorID,
-			threshold:       uint32(init.Threshold),
-			currentRound:    Uninitialized,
 			operators:       types.OperatorList(init.OperatorIDs).ToUint32List(),
+			threshold:       uint32(init.Threshold),
 			operatorsOld:    types.OperatorList(operatorsOld).ToUint32List(),
-			operatorShares:  make(map[uint32]*bls.SecretKey),
-			msgs:            newProtocolMessageStore(),
 			oldKeyGenOutput: output,
+		},
+		state: &ProtocolState{
+			currentRound:   Uninitialized,
+			msgs:           newProtocolMessageStore(),
+			operatorShares: make(map[uint32]*bls.SecretKey),
 		},
 	}
 }
@@ -145,7 +148,7 @@ func (fr *FROST) Start() error {
 	if _, err := rand.Read(ctx); err != nil {
 		return err
 	}
-	participant, err := frost.NewDkgParticipant(uint32(fr.state.operatorID), fr.state.threshold, string(ctx), thisCurve, fr.state.operators...)
+	participant, err := frost.NewDkgParticipant(uint32(fr.config.operatorID), fr.config.threshold, string(ctx), thisCurve, fr.config.operators...)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize a dkg participant")
 	}
@@ -159,7 +162,7 @@ func (fr *FROST) Start() error {
 	if err != nil {
 		return errors.Wrap(err, "failed to generate session sk")
 	}
-	fr.state.sessionSK = k
+	fr.config.sessionSK = k
 
 	msg := &ProtocolMsg{
 		Round: fr.state.currentRound,
@@ -249,9 +252,9 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome,
 func (fr *FROST) canProceedThisRound() bool {
 	// Note: for Resharing, Preparation (New Committee) -> Round1 (Old Committee) -> Round2 (New Committee)
 	if fr.isResharing() && fr.state.currentRound == Round1 {
-		return fr.allMessagesReceivedFor(Round1, fr.state.operatorsOld)
+		return fr.allMessagesReceivedFor(Round1, fr.config.operatorsOld)
 	}
-	return fr.allMessagesReceivedFor(fr.state.currentRound, fr.state.operators)
+	return fr.allMessagesReceivedFor(fr.state.currentRound, fr.config.operators)
 }
 
 func (fr *FROST) allMessagesReceivedFor(round ProtocolRound, operators []uint32) bool {
@@ -264,12 +267,12 @@ func (fr *FROST) allMessagesReceivedFor(round ProtocolRound, operators []uint32)
 }
 
 func (fr *FROST) isResharing() bool {
-	return len(fr.state.operatorsOld) > 0
+	return len(fr.config.operatorsOld) > 0
 }
 
 func (fr *FROST) inOldCommittee() bool {
-	for _, id := range fr.state.operatorsOld {
-		if types.OperatorID(id) == fr.state.operatorID {
+	for _, id := range fr.config.operatorsOld {
+		if types.OperatorID(id) == fr.config.operatorID {
 			return true
 		}
 	}
@@ -277,8 +280,8 @@ func (fr *FROST) inOldCommittee() bool {
 }
 
 func (fr *FROST) inNewCommittee() bool {
-	for _, id := range fr.state.operators {
-		if types.OperatorID(id) == fr.state.operatorID {
+	for _, id := range fr.config.operators {
+		if types.OperatorID(id) == fr.config.operatorID {
 			return true
 		}
 	}
@@ -300,7 +303,7 @@ func (fr *FROST) needToRunCurrentRound() bool {
 }
 
 func (fr *FROST) validateSignedMessage(msg *dkg.SignedMessage) error {
-	if msg.Message.Identifier != fr.state.identifier {
+	if msg.Message.Identifier != fr.config.identifier {
 		return errors.New("got mismatching identifier")
 	}
 
@@ -357,18 +360,18 @@ func (fr *FROST) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
 	bcastMessage := &dkg.SignedMessage{
 		Message: &dkg.Message{
 			MsgType:    dkg.ProtocolMsgType,
-			Identifier: fr.state.identifier,
+			Identifier: fr.config.identifier,
 			Data:       msgBytes,
 		},
-		Signer: fr.state.operatorID,
+		Signer: fr.config.operatorID,
 	}
 
-	exist, operator, err := fr.storage.GetDKGOperator(fr.state.operatorID)
+	exist, operator, err := fr.storage.GetDKGOperator(fr.config.operatorID)
 	if err != nil {
 		return nil, err
 	}
 	if !exist {
-		return nil, errors.Errorf("operator with id %d not found", fr.state.operatorID)
+		return nil, errors.Errorf("operator with id %d not found", fr.config.operatorID)
 	}
 
 	sig, err := fr.signer.SignDKGOutput(bcastMessage, operator.ETHAddress)
@@ -384,7 +387,7 @@ func (fr *FROST) broadcastDKGMessage(msg *ProtocolMsg) (*dkg.SignedMessage, erro
 	if err != nil {
 		return bcastMessage, err
 	}
-	fr.state.msgs[fr.state.currentRound][uint32(fr.state.operatorID)] = bcastMessage
+	fr.state.msgs[fr.state.currentRound][uint32(fr.config.operatorID)] = bcastMessage
 	err = fr.network.BroadcastDKGMessage(bcastMessage)
 	return bcastMessage, err
 }

@@ -41,8 +41,8 @@ func (fr *FROST) processRound1() error {
 
 	// encrypted shares by operators
 	shares := make(map[uint32][]byte)
-	for _, operatorID := range fr.state.operators {
-		if uint32(fr.state.operatorID) == operatorID {
+	for _, operatorID := range fr.config.operators {
+		if uint32(fr.config.operatorID) == operatorID {
 			continue
 		}
 
@@ -82,12 +82,12 @@ func (fr *FROST) partialInterpolate() ([]byte, error) {
 
 	skI := new(bls.Fr)
 
-	indices := make([]bls.Fr, fr.state.oldKeyGenOutput.Threshold)
-	values := make([]bls.Fr, fr.state.oldKeyGenOutput.Threshold)
-	for i, id := range fr.state.operatorsOld {
+	indices := make([]bls.Fr, fr.config.oldKeyGenOutput.Threshold)
+	values := make([]bls.Fr, fr.config.oldKeyGenOutput.Threshold)
+	for i, id := range fr.config.operatorsOld {
 		(&indices[i]).SetInt64(int64(id))
-		if types.OperatorID(id) == fr.state.operatorID {
-			err := (&values[i]).Deserialize(fr.state.oldKeyGenOutput.Share.Serialize())
+		if types.OperatorID(id) == fr.config.operatorID {
+			err := (&values[i]).Deserialize(fr.config.oldKeyGenOutput.Share.Serialize())
 			if err != nil {
 				return nil, err
 			}

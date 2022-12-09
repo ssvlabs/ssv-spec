@@ -166,7 +166,7 @@ func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, n
 			Type:             InconsistentMessage,
 			TargetOperatorID: uint32(newMessage.Signer),
 			BlameData:        [][]byte{existingMessageBytes, newMessageBytes},
-			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
+			BlamerSessionSk:  fr.config.sessionSK.Bytes(),
 		},
 	}
 	signedMessage, err := fr.broadcastDKGMessage(msg)
@@ -189,7 +189,7 @@ func (fr *FROST) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (*dkg.
 			Type:             InvalidShare,
 			TargetOperatorID: culpritOID,
 			BlameData:        [][]byte{round1Bytes},
-			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
+			BlamerSessionSk:  fr.config.sessionSK.Bytes(),
 		},
 	}
 	signedMessage, err := fr.broadcastDKGMessage(msg)
@@ -213,7 +213,7 @@ func (fr *FROST) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, mess
 			Type:             InvalidMessage,
 			TargetOperatorID: culpritOID,
 			BlameData:        [][]byte{bytes},
-			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
+			BlamerSessionSk:  fr.config.sessionSK.Bytes(),
 		},
 	}
 	signedMsg, err := fr.broadcastDKGMessage(msg)
