@@ -9,17 +9,24 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (fr *FROST) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg) (bool, error) {
+func (fr *FROST) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, signedMessage *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
+	fr.state.currentRound = Blame
+
+	var valid bool
 	switch protocolMessage.BlameMessage.Type {
 	case InvalidShare:
-		return fr.processBlameTypeInvalidShare(blamerOID, protocolMessage.BlameMessage)
+		valid, err = fr.processBlameTypeInvalidShare(blamerOID, protocolMessage.BlameMessage)
 	case InconsistentMessage:
-		return fr.processBlameTypeInconsistentMessage(protocolMessage.BlameMessage)
+		valid, err = fr.processBlameTypeInconsistentMessage(protocolMessage.BlameMessage)
 	case InvalidMessage:
-		return fr.processBlameTypeInvalidMessage(protocolMessage.BlameMessage)
+		valid, err = fr.processBlameTypeInvalidMessage(protocolMessage.BlameMessage)
 	default:
-		return false, errors.New("unrecognized blame type")
+		valid, err = false, errors.New("unrecognized blame type")
 	}
+	if err != nil {
+		return false, nil, err
+	}
+	return true, &dkg.ProtocolOutcome{BlameOutput: &dkg.BlameOutput{Valid: valid, BlameMessage: signedMessage}}, nil
 }
 
 func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *BlameMessage) (bool /*valid*/, error) {

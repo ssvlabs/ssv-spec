@@ -202,29 +202,19 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolOutc
 		return true, outcome, nil
 	}
 
-	if protocolMessage.Round == Blame {
-		fr.state.currentRound = Blame
-		valid, err := fr.checkBlame(uint32(msg.Signer), protocolMessage)
-		if err != nil {
-			return false, nil, err
-		}
-		return valid, &dkg.ProtocolOutcome{
-			BlameOutput: &dkg.BlameOutput{
-				Valid:        valid,
-				BlameMessage: msg,
-			},
-		}, nil
-	}
-
 	fr.state.msgs[protocolMessage.Round][uint32(msg.Signer)] = msg
 
-	switch fr.state.currentRound {
+	switch protocolMessage.Round {
 	case Preparation:
 		return fr.processRound1()
 	case Round1:
 		return fr.processRound2()
 	case Round2:
 		return fr.processKeygenOutput()
+	case Blame:
+		// here we are checking blame right away unlike other rounds where
+		// we wait to receive messages from all the operators in the protocol
+		return fr.checkBlame(uint32(msg.Signer), protocolMessage, msg)
 	default:
 		return true, nil, dkg.ErrInvalidRound{}
 	}
