@@ -32,6 +32,38 @@ type FROST struct {
 	state   *ProtocolState
 }
 
+type ProtocolConfig struct {
+	identifier      dkg.RequestID
+	threshold       uint32
+	operatorID      types.OperatorID
+	operators       []uint32
+	operatorsOld    []uint32
+	oldKeyGenOutput *dkg.KeyGenOutput
+	sessionSK       *ecies.PrivateKey
+}
+
+func (c *ProtocolConfig) isResharing() bool {
+	return len(c.operatorsOld) > 0
+}
+
+func (c *ProtocolConfig) inOldCommittee() bool {
+	for _, id := range c.operatorsOld {
+		if types.OperatorID(id) == c.operatorID {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *ProtocolConfig) inNewCommittee() bool {
+	for _, id := range c.operators {
+		if types.OperatorID(id) == c.operatorID {
+			return true
+		}
+	}
+	return false
+}
+
 type ProtocolState struct {
 	currentRound   ProtocolRound
 	participant    *frost.DkgParticipant
@@ -57,6 +89,25 @@ var rounds = []ProtocolRound{
 	Round2,
 	KeygenOutput,
 	Blame,
+}
+
+type ProtocolMessageStore map[ProtocolRound]map[uint32]*dkg.SignedMessage
+
+func newProtocolMessageStore() ProtocolMessageStore {
+	m := make(map[ProtocolRound]map[uint32]*dkg.SignedMessage)
+	for _, round := range rounds {
+		m[round] = make(map[uint32]*dkg.SignedMessage)
+	}
+	return m
+}
+
+func (msgStore ProtocolMessageStore) allMessagesReceivedFor(round ProtocolRound, operators []uint32) bool {
+	for _, operatorID := range operators {
+		if _, ok := msgStore[round][operatorID]; !ok {
+			return false
+		}
+	}
+	return true
 }
 
 func New(
