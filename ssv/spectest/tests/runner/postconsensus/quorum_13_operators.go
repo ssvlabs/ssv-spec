@@ -33,7 +33,7 @@ func Quorum13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[8], 8, ks)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[9], 9, ks)),
 				},
-				PostDutyRunnerStateRoot: "d64755cad075af74dd3294e0b50786e63ca4fffcbaaa8076223b44adfce03abb",
+				PostDutyRunnerStateRoot: "cf5bbec8436524b612efd0cb7a51d1e667a838fbe529dc135d0b320d88be689d",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
@@ -61,7 +61,7 @@ func Quorum13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[8], 8)),
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[9], 9)),
 				},
-				PostDutyRunnerStateRoot: "1d0488f645f29d2f43365cbbc8963d1d62512c2715fbb43cbb0d5ed315319375",
+				PostDutyRunnerStateRoot: "41350f2e36f0401e2092bd24f6f6a554088891dd580344a56b8e3058f1d6a1bf",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
@@ -87,7 +87,7 @@ func Quorum13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[8], 8)),
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[9], 9)),
 				},
-				PostDutyRunnerStateRoot: "f781b872af0ed5d99b16efdcb72297f77191dddbd3f7f19e842b91cd419ed498",
+				PostDutyRunnerStateRoot: "e955de2c389771ea890cae01a4b0c2636e41e0a6ea07bb0800be6de8f3764d92",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
@@ -113,7 +113,7 @@ func Quorum13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[8], 8)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[9], 9)),
 				},
-				PostDutyRunnerStateRoot: "1166ce515ca56f436ff02c5094f68891b6aba33f390dc15ec3b79f0d0d30c8b8",
+				PostDutyRunnerStateRoot: "32fee6ef2e4dc23d2647b523c888c5ffae9e3b489c79ee03301aac2fef917b87",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
@@ -139,7 +139,7 @@ func Quorum13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[8], 8, qbft.FirstHeight)),
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[9], 9, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "03b5a8c1a4936b0843916acf6e95cb52f09333ef3effb926a2e9fc543ee5a485",
+				PostDutyRunnerStateRoot: "ea70e953ea3b7ae56dd0303d4dd14cc9f41629f6947440d3430f09833d0efc76",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
