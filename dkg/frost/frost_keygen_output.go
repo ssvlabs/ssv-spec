@@ -24,9 +24,9 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to verify shares")
 	}
-
 	reconstructedBytes := reconstructed.Serialize()
 
+	// prepare keygen output
 	out := &dkg.KeyGenOutput{
 		Threshold: uint64(fr.config.threshold),
 	}
@@ -39,23 +39,20 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 		}
 
 		if operatorID == uint32(fr.config.operatorID) {
+			out.ValidatorPK = protocolMessage.Round2Message.Vk
 			sk := &bls.SecretKey{}
 			if err := sk.Deserialize(fr.state.participant.SkShare.Bytes()); err != nil {
 				return false, nil, err
 			}
-
 			out.Share = sk
-			out.ValidatorPK = protocolMessage.Round2Message.Vk
 		}
 
 		pk := &bls.PublicKey{}
 		if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
 			return false, nil, err
 		}
-
 		operatorPubKeys[types.OperatorID(operatorID)] = pk
 	}
-
 	out.OperatorPubKeys = operatorPubKeys
 
 	if !bytes.Equal(out.ValidatorPK, reconstructedBytes) {
@@ -121,7 +118,6 @@ func (fr *FROST) getXVec(operators []uint32) ([]bls.Fr, error) {
 func (fr *FROST) getYVec(operators []uint32) ([]bls.G1, error) {
 	yVec := make([]bls.G1, 0)
 	for _, operator := range operators {
-
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(fr.state.msgs[Round2][operator].Message.Data); err != nil {
 			return nil, errors.Wrap(err, "failed to decode protocol msg")
@@ -131,7 +127,6 @@ func (fr *FROST) getYVec(operators []uint32) ([]bls.G1, error) {
 		if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
 			return nil, errors.Wrap(err, "failed to deserialize public key")
 		}
-
 		y := bls.CastFromPublicKey(pk)
 		yVec = append(yVec, *y)
 	}

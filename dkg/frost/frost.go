@@ -185,21 +185,15 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolOutc
 	if err := protocolMessage.Decode(msg.Message.Data); err != nil {
 		return false, nil, errors.Wrap(err, "failed to decode protocol msg")
 	}
+
 	if err := protocolMessage.Validate(); err != nil {
-		fr.state.currentRound = Blame
-		outcome, err := fr.createAndBroadcastBlameOfInvalidMessage(uint32(msg.Signer), msg)
-		return true, outcome, err
+		return fr.createAndBroadcastBlameOfInvalidMessage(uint32(msg.Signer), msg)
 	}
 
 	existingMessage, ok := fr.state.msgs[protocolMessage.Round][uint32(msg.Signer)]
-
-	if isBlameTypeInconsisstent := ok && !fr.haveSameRoot(existingMessage, msg); isBlameTypeInconsisstent {
-		fr.state.currentRound = Blame
-		outcome, err := fr.createAndBroadcastBlameOfInconsistentMessage(existingMessage, msg)
-		if err != nil {
-			return false, nil, err
-		}
-		return true, outcome, nil
+	isBlameTypeInconsisstent := (ok && !fr.haveSameRoot(existingMessage, msg))
+	if isBlameTypeInconsisstent {
+		return fr.createAndBroadcastBlameOfInconsistentMessage(existingMessage, msg)
 	}
 
 	fr.state.msgs[protocolMessage.Round][uint32(msg.Signer)] = msg
@@ -356,9 +350,11 @@ func (fr *FROST) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
 func (fr *FROST) broadcastDKGMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
 	bcastMessage, err := fr.toSignedMessage(msg)
 	if err != nil {
-		return bcastMessage, err
+		return nil, err
 	}
 	fr.state.msgs[fr.state.currentRound][uint32(fr.config.operatorID)] = bcastMessage
-	err = fr.network.BroadcastDKGMessage(bcastMessage)
-	return bcastMessage, err
+	if err = fr.network.BroadcastDKGMessage(bcastMessage); err != nil {
+		return nil, err
+	}
+	return bcastMessage, nil
 }

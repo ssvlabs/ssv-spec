@@ -85,18 +85,6 @@ func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *Bl
 	return false, err
 }
 
-func (fr *FROST) decodeMessage(data []byte) (*dkg.SignedMessage, *ProtocolMsg, error) {
-	signedMsg := &dkg.SignedMessage{}
-	if err := signedMsg.Decode(data); err != nil {
-		return nil, nil, errors.Wrap(err, "failed to decode signed message")
-	}
-	pMsg := &ProtocolMsg{}
-	if err := pMsg.Decode(signedMsg.Message.Data); err != nil {
-		return signedMsg, nil, errors.Wrap(err, "failed to decode protocol msg")
-	}
-	return signedMsg, pMsg, nil
-}
-
 func (fr *FROST) processBlameTypeInconsistentMessage(blameMessage *BlameMessage) (bool /*valid*/, error) {
 	if err := blameMessage.Validate(); err != nil {
 		return false, errors.Wrap(err, "invalid blame message")
@@ -158,15 +146,30 @@ func (fr *FROST) processBlameTypeInvalidMessage(blameMessage *BlameMessage) (boo
 	return false, errors.New("message is valid")
 }
 
-func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) (*dkg.ProtocolOutcome, error) {
+func (fr *FROST) decodeMessage(data []byte) (*dkg.SignedMessage, *ProtocolMsg, error) {
+	signedMsg := &dkg.SignedMessage{}
+	if err := signedMsg.Decode(data); err != nil {
+		return nil, nil, errors.Wrap(err, "failed to decode signed message")
+	}
+	pMsg := &ProtocolMsg{}
+	if err := pMsg.Decode(signedMsg.Message.Data); err != nil {
+		return signedMsg, nil, errors.Wrap(err, "failed to decode protocol msg")
+	}
+	return signedMsg, pMsg, nil
+}
+
+func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
+	fr.state.currentRound = Blame
+
 	existingMessageBytes, err := existingMessage.Encode()
 	if err != nil {
-		return nil, err
+		return false, nil, err
 	}
 	newMessageBytes, err := newMessage.Encode()
 	if err != nil {
-		return nil, err
+		return false, nil, err
 	}
+
 	msg := &ProtocolMsg{
 		Round: Blame,
 		BlameMessage: &BlameMessage{
@@ -176,19 +179,26 @@ func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, n
 			BlamerSessionSk:  fr.config.sessionSK.Bytes(),
 		},
 	}
+
 	signedMessage, err := fr.broadcastDKGMessage(msg)
-	return &dkg.ProtocolOutcome{
+	if err != nil {
+		return false, nil, err
+	}
+
+	return true, &dkg.ProtocolOutcome{
 		BlameOutput: &dkg.BlameOutput{
 			Valid:        true,
 			BlameMessage: signedMessage,
 		},
-	}, err
+	}, nil
 }
 
-func (fr *FROST) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (*dkg.ProtocolOutcome, error) {
+func (fr *FROST) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
+	fr.state.currentRound = Blame
+
 	round1Bytes, err := fr.state.msgs[Round1][culpritOID].Encode()
 	if err != nil {
-		return nil, err
+		return false, nil, err
 	}
 	msg := &ProtocolMsg{
 		Round: Blame,
@@ -200,18 +210,23 @@ func (fr *FROST) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (*dkg.
 		},
 	}
 	signedMessage, err := fr.broadcastDKGMessage(msg)
-	return &dkg.ProtocolOutcome{
+	if err != nil {
+		return false, nil, err
+	}
+	return true, &dkg.ProtocolOutcome{
 		BlameOutput: &dkg.BlameOutput{
 			Valid:        true,
 			BlameMessage: signedMessage,
 		},
-	}, err
+	}, nil
 }
 
-func (fr *FROST) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, message *dkg.SignedMessage) (*dkg.ProtocolOutcome, error) {
+func (fr *FROST) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, message *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
+	fr.state.currentRound = Blame
+
 	bytes, err := message.Encode()
 	if err != nil {
-		return nil, err
+		return false, nil, err
 	}
 
 	msg := &ProtocolMsg{
@@ -223,14 +238,18 @@ func (fr *FROST) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, mess
 			BlamerSessionSk:  fr.config.sessionSK.Bytes(),
 		},
 	}
-	signedMsg, err := fr.broadcastDKGMessage(msg)
 
-	return &dkg.ProtocolOutcome{
+	signedMsg, err := fr.broadcastDKGMessage(msg)
+	if err != nil {
+		return false, nil, err
+	}
+
+	return true, &dkg.ProtocolOutcome{
 		BlameOutput: &dkg.BlameOutput{
 			Valid:        true,
 			BlameMessage: signedMsg,
 		},
-	}, err
+	}, nil
 }
 
 func (fr *FROST) haveSameRoot(existingMessage, newMessage *dkg.SignedMessage) bool {

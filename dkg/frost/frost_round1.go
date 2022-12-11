@@ -17,13 +17,9 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 		return false, nil, fr.state.participant.SkipRound1()
 	}
 
-	var (
-		skI []byte // secret to be shared, nil if new keygen, lagrange interpolation of own part of secret if resharing
-	)
-
+	var skI []byte // secret to be shared, nil if new keygen, lagrange interpolation of own part of secret if resharing
 	if fr.isResharing() {
-		skI, err = fr.partialInterpolate()
-		if err != nil {
+		if skI, err = fr.partialInterpolate(); err != nil {
 			return false, nil, err
 		}
 	}
@@ -39,20 +35,18 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 		commitments = append(commitments, commitment.ToAffineCompressed())
 	}
 
-	// encrypted shares by operators
+	// get shares encrypted by operators
 	shares := make(map[uint32][]byte)
 	for _, operatorID := range fr.config.operators {
 		if uint32(fr.config.operatorID) == operatorID {
 			continue
 		}
 
-		share := &bls.SecretKey{}
 		shamirShare := p2pMessages[operatorID]
-
+		share := &bls.SecretKey{}
 		if err := share.Deserialize(shamirShare.Value); err != nil {
 			return false, nil, err
 		}
-
 		fr.state.operatorShares[operatorID] = share
 
 		encryptedShare, err := fr.encryptByOperatorID(operatorID, shamirShare.Value)
@@ -71,6 +65,7 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 			Shares:     shares,
 		},
 	}
+
 	_, err = fr.broadcastDKGMessage(msg)
 	return false, nil, err
 }
@@ -79,8 +74,6 @@ func (fr *FROST) partialInterpolate() ([]byte, error) {
 	if !fr.isResharing() {
 		return nil, nil
 	}
-
-	skI := new(bls.Fr)
 
 	indices := make([]bls.Fr, fr.config.oldKeyGenOutput.Threshold)
 	values := make([]bls.Fr, fr.config.oldKeyGenOutput.Threshold)
@@ -96,6 +89,7 @@ func (fr *FROST) partialInterpolate() ([]byte, error) {
 		}
 	}
 
+	skI := new(bls.Fr)
 	if err := bls.FrLagrangeInterpolation(skI, indices, values); err != nil {
 		return nil, err
 	}

@@ -22,12 +22,13 @@ func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOu
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
-	for peerOID, dkgMessage := range fr.state.msgs[Round1] {
-
+	for peerOpID, dkgMessage := range fr.state.msgs[Round1] {
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(dkgMessage.Message.Data); err != nil {
 			return false, nil, errors.Wrap(err, "failed to decode protocol msg")
 		}
+
+		// prepare broadcast message
 		verifiers := new(sharing.FeldmanVerifier)
 		for _, commitmentBytes := range protocolMessage.Round1Message.Commitment {
 			commitment, err := thisCurve.Point.FromAffineCompressed(commitmentBytes)
@@ -36,7 +37,6 @@ func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOu
 			}
 			verifiers.Commitments = append(verifiers.Commitments, commitment)
 		}
-
 		Wi, err := thisCurve.Scalar.SetBytes(protocolMessage.Round1Message.ProofS)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to decode scalar")
@@ -45,45 +45,32 @@ func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOu
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to decode scalar")
 		}
-
 		bcastMessage := &frost.Round1Bcast{
 			Verifiers: verifiers,
 			Wi:        Wi,
 			Ci:        Ci,
 		}
-		bcast[peerOID] = bcastMessage
+		bcast[peerOpID] = bcastMessage
 
-		if uint32(fr.config.operatorID) == peerOID {
+		// prepare p2p message
+		if uint32(fr.config.operatorID) == peerOpID {
 			continue
 		}
 
 		encryptedShare := protocolMessage.Round1Message.Shares[uint32(fr.config.operatorID)]
 		shareBytes, err := ecies.Decrypt(fr.config.sessionSK, encryptedShare)
 		if err != nil {
-			fr.state.currentRound = Blame
-			out, err := fr.createAndBroadcastBlameOfInvalidShare(peerOID)
-			if err != nil {
-				return false, nil, err
-			}
-			return true, out, nil
-		}
+			return fr.createAndBroadcastBlameOfInvalidShare(peerOpID)
 
+		}
 		share := &sharing.ShamirShare{
 			Id:    uint32(fr.config.operatorID),
 			Value: shareBytes,
 		}
-
-		p2psend[peerOID] = share
-
-		err = verifiers.Verify(share)
-		if err != nil {
-			fr.state.currentRound = Blame
-			out, err := fr.createAndBroadcastBlameOfInvalidShare(peerOID)
-			if err != nil {
-				return false, nil, err
-			}
-			return true, out, nil
+		if err = verifiers.Verify(share); err != nil {
+			return fr.createAndBroadcastBlameOfInvalidShare(peerOpID)
 		}
+		p2psend[peerOpID] = share
 	}
 
 	bCastMessage, err := fr.state.participant.Round2(bcast, p2psend)
@@ -98,6 +85,7 @@ func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOu
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),
 		},
 	}
+
 	_, err = fr.broadcastDKGMessage(msg)
 	return false, nil, err
 }
