@@ -110,6 +110,7 @@ func (msgStore ProtocolMessageStore) allMessagesReceivedFor(round ProtocolRound,
 	return true
 }
 
+// TODO: func New(network dkg.Network, signer types.DKGSigner, storage dkg.Storage, config ProtocolConfig) {}
 func New(
 	network dkg.Network,
 	operatorID types.OperatorID,
@@ -119,24 +120,13 @@ func New(
 	init *dkg.Init,
 ) dkg.Protocol {
 
-	fr := &FROST{
-		network: network,
-		signer:  signer,
-		storage: storage,
-		config: ProtocolConfig{
-			identifier: requestID,
-			threshold:  uint32(init.Threshold),
-			operatorID: operatorID,
-			operators:  types.OperatorList(init.OperatorIDs).ToUint32List(),
-		},
-		state: &ProtocolState{
-			currentRound:   Uninitialized,
-			msgs:           newProtocolMessageStore(),
-			operatorShares: make(map[uint32]*bls.SecretKey),
-		},
+	config := ProtocolConfig{
+		identifier: requestID,
+		threshold:  uint32(init.Threshold),
+		operatorID: operatorID,
+		operators:  types.OperatorList(init.OperatorIDs).ToUint32List(),
 	}
-
-	return fr
+	return newProtocol(network, signer, storage, config)
 }
 
 // Temporary, TODO: Remove and use interface with Reshare
@@ -151,18 +141,23 @@ func NewResharing(
 	output *dkg.KeyGenOutput,
 ) dkg.Protocol {
 
+	config := ProtocolConfig{
+		identifier:      requestID,
+		threshold:       uint32(init.Threshold),
+		operatorID:      operatorID,
+		operators:       types.OperatorList(init.OperatorIDs).ToUint32List(),
+		operatorsOld:    types.OperatorList(operatorsOld).ToUint32List(),
+		oldKeyGenOutput: output,
+	}
+	return newProtocol(network, signer, storage, config)
+}
+
+func newProtocol(network dkg.Network, signer types.DKGSigner, storage dkg.Storage, config ProtocolConfig) dkg.Protocol {
 	return &FROST{
 		network: network,
 		signer:  signer,
 		storage: storage,
-		config: ProtocolConfig{
-			identifier:      requestID,
-			threshold:       uint32(init.Threshold),
-			operatorID:      operatorID,
-			operators:       types.OperatorList(init.OperatorIDs).ToUint32List(),
-			operatorsOld:    types.OperatorList(operatorsOld).ToUint32List(),
-			oldKeyGenOutput: output,
-		},
+		config:  config,
 		state: &ProtocolState{
 			currentRound:   Uninitialized,
 			msgs:           newProtocolMessageStore(),
