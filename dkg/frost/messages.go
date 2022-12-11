@@ -2,6 +2,7 @@ package frost
 
 import (
 	"encoding/json"
+
 	"github.com/bloxapp/ssv-spec/dkg"
 	ecies "github.com/ecies/go/v2"
 	"github.com/pkg/errors"
@@ -200,8 +201,7 @@ func (t BlameType) ToString() string {
 	m := map[BlameType]string{
 		InconsistentMessage: "Inconsistent Message",
 		InvalidShare:        "Invalid Share",
-		//FailedEcies:         "Failed Ecies",
-		InvalidMessage: "Invalid Message",
+		InvalidMessage:      "Invalid Message",
 	}
 	return m[t]
 }

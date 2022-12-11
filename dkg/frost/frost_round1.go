@@ -18,7 +18,7 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 	}
 
 	var skI []byte // secret to be shared, nil if new keygen, lagrange interpolation of own part of secret if resharing
-	if fr.isResharing() {
+	if fr.config.isResharing() {
 		if skI, err = fr.partialInterpolate(); err != nil {
 			return false, nil, err
 		}
@@ -71,7 +71,7 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 }
 
 func (fr *FROST) partialInterpolate() ([]byte, error) {
-	if !fr.isResharing() {
+	if !fr.config.isResharing() {
 		return nil, nil
 	}
 
