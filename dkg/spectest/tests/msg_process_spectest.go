@@ -26,7 +26,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	testingutils.ResetRandSeed()
+	// testingutils.ResetRandSeed()
 	node := test.TestingNode
 
 	var lastErr error
