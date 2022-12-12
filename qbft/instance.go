@@ -1,6 +1,7 @@
 package qbft
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"sync"
@@ -117,6 +118,94 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 		return false, nil, nil, res.(error)
 	}
 	return i.State.Decided, i.State.DecidedValue, aggregatedCommit, nil
+}
+
+func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
+	if msg.Message.Height != i.State.Height {
+		return errors.New("msg Height wrong")
+	}
+	if msg.Message.Round != i.State.Round {
+		return errors.New("msg round wrong")
+	}
+	if len(msg.GetSigners()) != 1 {
+		return errors.New("proposal msg allows 1 signer")
+	}
+
+	if err := msg.Signature.VerifyByOperators(msg, i.config.GetSignatureDomainType(), types.QBFTSignatureType, i.State.Share.Committee); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	switch msg.Message.MsgType {
+	case ProposalMsgType:
+		proposalData, err := msg.Message.GetProposalData()
+		if err != nil {
+			return errors.Wrap(err, "could not get proposal data")
+		}
+		if err := proposalData.Validate(); err != nil {
+			return errors.Wrap(err, "proposalData invalid")
+		}
+
+		if !msg.MatchedSigners([]types.OperatorID{proposer(i.State, i.config, msg.Message.Round)}) {
+			return errors.New("proposal leader invalid")
+		}
+
+		if (i.State.ProposalAcceptedForCurrentRound == nil && msg.Message.Round == i.State.Round) ||
+			msg.Message.Round > i.State.Round {
+			return nil
+		}
+		return errors.New("proposal is not valid with current state")
+	case PrepareMsgType:
+		prepareData, err := msg.Message.GetPrepareData()
+		if err != nil {
+			return errors.Wrap(err, "could not get prepare data")
+		}
+		if err := prepareData.Validate(); err != nil {
+			return errors.Wrap(err, "prepareData invalid")
+		}
+
+		proposedMsg := i.State.ProposalAcceptedForCurrentRound
+		if proposedMsg == nil {
+			return errors.New("did not receive proposal for this round")
+		}
+		proposedCommitData, err := proposedMsg.Message.GetCommitData()
+		if err != nil {
+			return errors.Wrap(err, "could not get proposed commit data")
+		}
+		if !bytes.Equal(proposedCommitData.Data, prepareData.Data) {
+			return errors.New("proposed data different than commit msg data")
+		}
+	case CommitMsgType:
+		msgCommitData, err := msg.Message.GetCommitData()
+		if err != nil {
+			return errors.Wrap(err, "could not get msg commit data")
+		}
+		if err := msgCommitData.Validate(); err != nil {
+			return errors.Wrap(err, "commit data invalid")
+		}
+
+		proposedMsg := i.State.ProposalAcceptedForCurrentRound
+		if proposedMsg == nil {
+			return errors.New("did not receive proposal for this round")
+		}
+		proposedCommitData, err := proposedMsg.Message.GetCommitData()
+		if err != nil {
+			return errors.Wrap(err, "could not get proposed commit data")
+		}
+		if !bytes.Equal(proposedCommitData.Data, msgCommitData.Data) {
+			return errors.New("proposed data different than commit msg data")
+		}
+	case RoundChangeMsgType:
+		rcData, err := msg.Message.GetRoundChangeData()
+		if err != nil {
+			return errors.Wrap(err, "could not get roundChange data ")
+		}
+		if err := rcData.Validate(); err != nil {
+			return errors.Wrap(err, "roundChangeData invalid")
+		}
+	default:
+		return errors.New("signed message type not supported")
+	}
+	return nil
 }
 
 // IsDecided interface implementation

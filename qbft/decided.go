@@ -7,7 +7,7 @@ import (
 
 // UponDecided returns decided msg if decided, nil otherwise
 func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
-	if err := validateDecided(
+	if err := ValidateDecided(
 		c.config,
 		msg,
 		c.Share,
@@ -57,12 +57,12 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	return nil, nil
 }
 
-func validateDecided(
+func ValidateDecided(
 	config IConfig,
 	signedDecided *SignedMessage,
 	share *types.Share,
 ) error {
-	if !isDecidedMsg(share, signedDecided) {
+	if !IsDecidedMsg(share, signedDecided) {
 		return errors.New("not a decided msg")
 	}
 
@@ -85,7 +85,7 @@ func validateDecided(
 	return nil
 }
 
-// returns true if signed commit has all quorum sigs
-func isDecidedMsg(share *types.Share, signedDecided *SignedMessage) bool {
+// IsDecidedMsg returns true if signed commit has all quorum sigs
+func IsDecidedMsg(share *types.Share, signedDecided *SignedMessage) bool {
 	return share.HasQuorum(len(signedDecided.Signers)) && signedDecided.Message.MsgType == CommitMsgType
 }
