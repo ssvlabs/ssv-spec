@@ -161,3 +161,28 @@ func (km *testingKeyManager) RemoveShare(pubKey string) error {
 	delete(km.keys, pubKey)
 	return nil
 }
+
+var (
+	encryptedDataCache = map[string][]byte{}
+	decryptedDataCache = map[string][]byte{}
+)
+
+func TestingEncryption(pk *rsa.PublicKey, data []byte) []byte {
+	id := hex.EncodeToString(pk.N.Bytes()) + fmt.Sprintf("%x", pk.E) + hex.EncodeToString(data)
+	if found := encryptedDataCache[id]; found != nil {
+		return found
+	}
+	cipherText, _ := types.Encrypt(pk, data)
+	encryptedDataCache[id] = cipherText
+	return cipherText
+}
+
+func TestingDecryption(sk *rsa.PrivateKey, data []byte) []byte {
+	id := hex.EncodeToString(sk.N.Bytes()) + fmt.Sprintf("%x", sk.E) + hex.EncodeToString(data)
+	if found := decryptedDataCache[id]; found != nil {
+		return found
+	}
+	plaintext, _ := types.Decrypt(sk, data)
+	decryptedDataCache[id] = plaintext
+	return plaintext
+}
