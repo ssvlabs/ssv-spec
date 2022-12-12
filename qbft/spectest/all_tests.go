@@ -29,7 +29,11 @@ var AllTests = []SpecTest{
 	timeout.Round5(),
 	timeout.Round20(),
 
+	decided.Valid(),
 	decided.HasQuorum(),
+	decided.LateDecided(),
+	decided.LateDecidedBiggerQuorum(),
+	decided.LateDecidedSmallerQuorum(),
 	decided.NoQuorum(),
 	decided.DuplicateMsg(),
 	decided.DuplicateSigners(),
@@ -37,9 +41,6 @@ var AllTests = []SpecTest{
 	decided.Invalid(),
 	decided.InvalidData(),
 	decided.InvalidValCheckData(),
-	decided.LateDecided(),
-	decided.LateDecidedBiggerQuorum(),
-	decided.LateDecidedSmallerQuorum(),
 	decided.PastInstance(),
 	decided.UnknownSigner(),
 	decided.WrongMsgType(),
@@ -51,7 +52,7 @@ var AllTests = []SpecTest{
 	decided.CurrentInstanceFutureRound(),
 
 	processmsg.MsgError(),
-	processmsg.SavedAndBroadcastedDecided(),
+	processmsg.BroadcastedDecided(),
 	processmsg.SingleConsensusMsg(),
 	processmsg.FullDecided(),
 	processmsg.InvalidIdentifier(),
@@ -75,7 +76,6 @@ var AllTests = []SpecTest{
 	latemsg.LateRoundChangePastRound(),
 	latemsg.FullFlowAfterDecided(),
 
-	startinstance.Valid(),
 	futuremsg.NoSigners(),
 	futuremsg.MultiSigners(),
 	futuremsg.Cleanup(),
@@ -85,6 +85,7 @@ var AllTests = []SpecTest{
 	futuremsg.UnknownSigner(),
 	futuremsg.WrongSig(),
 
+	startinstance.Valid(),
 	startinstance.EmptyValue(),
 	startinstance.NilValue(),
 	startinstance.PostFutureDecided(),

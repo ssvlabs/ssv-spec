@@ -11,14 +11,20 @@ import (
 	"testing"
 )
 
+type DecidedState struct {
+	DecidedVal               []byte
+	DecidedCnt               uint
+	BroadcastedDecided       *qbft.SignedMessage
+	CalledSyncDecidedByRange bool
+	DecidedByRangeValues     [2]qbft.Height
+}
+
 type RunInstanceData struct {
-	InputValue         []byte
-	InputMessages      []*qbft.SignedMessage
-	DecidedVal         []byte
-	DecidedCnt         uint
-	BroadcastedDecided *qbft.SignedMessage
-	ControllerPostRoot string
-	ExpectedTimerState *testingutils.TimerState
+	InputValue           []byte
+	InputMessages        []*qbft.SignedMessage
+	ControllerPostRoot   string
+	ExpectedTimerState   *testingutils.TimerState
+	ExpectedDecidedState DecidedState
 }
 
 type ControllerSpecTest struct {
@@ -71,6 +77,7 @@ func (test *ControllerSpecTest) testTimer(
 func (test *ControllerSpecTest) testProcessMsg(
 	t *testing.T,
 	contr *qbft.Controller,
+	config *qbft.Config,
 	runData *RunInstanceData,
 ) error {
 	decidedCnt := 0
@@ -84,10 +91,18 @@ func (test *ControllerSpecTest) testProcessMsg(
 			decidedCnt++
 
 			data, _ := decided.Message.GetCommitData()
-			require.EqualValues(t, runData.DecidedVal, data.Data)
+			require.EqualValues(t, runData.ExpectedDecidedState.DecidedVal, data.Data)
 		}
 	}
-	require.EqualValues(t, runData.DecidedCnt, decidedCnt)
+	require.EqualValues(t, runData.ExpectedDecidedState.DecidedCnt, decidedCnt)
+
+	// verify sync decided by range calls
+	if runData.ExpectedDecidedState.CalledSyncDecidedByRange {
+		require.EqualValues(t, runData.ExpectedDecidedState.DecidedByRangeValues, config.GetNetwork().(*testingutils.TestingNetwork).DecidedByRange)
+	} else {
+		require.EqualValues(t, [2]qbft.Height{0, 0}, config.GetNetwork().(*testingutils.TestingNetwork).DecidedByRange)
+	}
+
 	return lastErr
 }
 
@@ -97,7 +112,7 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 	identifier types.MessageID,
 	runData *RunInstanceData,
 ) {
-	if runData.BroadcastedDecided != nil {
+	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
 		// test broadcasted
 		broadcastedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 		require.Greater(t, len(broadcastedMsgs), 0)
@@ -112,12 +127,12 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 			r1, err := msg1.GetRoot()
 			require.NoError(t, err)
 
-			r2, err := runData.BroadcastedDecided.GetRoot()
+			r2, err := runData.ExpectedDecidedState.BroadcastedDecided.GetRoot()
 			require.NoError(t, err)
 
 			if bytes.Equal(r1, r2) &&
-				reflect.DeepEqual(runData.BroadcastedDecided.Signers, msg1.Signers) &&
-				reflect.DeepEqual(runData.BroadcastedDecided.Signature, msg1.Signature) {
+				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signers, msg1.Signers) &&
+				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signature, msg1.Signature) {
 				require.False(t, found)
 				found = true
 			}
@@ -141,7 +156,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 
 	test.testTimer(t, config, runData)
 
-	if err := test.testProcessMsg(t, contr, runData); err != nil {
+	if err := test.testProcessMsg(t, contr, config, runData); err != nil {
 		lastErr = err
 	}
 

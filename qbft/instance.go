@@ -3,9 +3,11 @@ package qbft
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/pkg/errors"
 	"sync"
+
+	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 type ProposedValueCheckF func(data []byte) error
@@ -65,10 +67,6 @@ func (i *Instance) Start(value []byte, height Height) {
 			if err := i.Broadcast(proposal); err != nil {
 				fmt.Printf("%s\n", err.Error())
 			}
-		}
-
-		if err := i.config.GetNetwork().SyncHighestRoundChange(types.MessageIDFromBytes(i.State.ID), i.State.Height); err != nil {
-			fmt.Printf("%s\n", err.Error())
 		}
 	})
 }

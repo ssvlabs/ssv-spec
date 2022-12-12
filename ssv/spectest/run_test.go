@@ -243,6 +243,10 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 	newInst.State.ID = inst.State.ID
 	newInst.State.LastPreparedValue = inst.State.LastPreparedValue
 	newInst.State.LastPreparedRound = inst.State.LastPreparedRound
+	newInst.State.ProposeContainer = inst.State.ProposeContainer
+	newInst.State.PrepareContainer = inst.State.PrepareContainer
+	newInst.State.CommitContainer = inst.State.CommitContainer
+	newInst.State.RoundChangeContainer = inst.State.RoundChangeContainer
 	return newInst
 }
 

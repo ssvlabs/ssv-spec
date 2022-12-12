@@ -12,11 +12,11 @@ import (
 func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	startInstance := func(r ssv.Runner, value []byte) ssv.Runner {
-		r.GetBaseRunner().QBFTController.StoredInstances[0] = qbft.NewInstance(
+		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
+			qbft.FirstHeight))
 
 		return r
 	}
@@ -41,7 +41,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestSyncCommitteeContributionConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "1b5f2eda95cf263dad08c09a862ec315adfb8855571fb20726e255811228342f",
+				PostDutyRunnerStateRoot: "d0c00f9b767f16946f86d80756c0f0988f3685db49e5038d6a4f33ce81d347fb",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
@@ -62,7 +62,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestSyncCommitteeConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "5e81ee58fad3d7c02f54f401234524ac3f465fdc8c32723266311cd1825a8304",
+				PostDutyRunnerStateRoot: "2e2a58d3ea15c6b3468f3ea9ffce807f663b181573854463e611cb607ff1041a",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
@@ -83,7 +83,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestAggregatorConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "5d8a164ef5813ffe87116d4ad46e73039217f91e21b52136ab99b5daad4cef3a",
+				PostDutyRunnerStateRoot: "77a4ee061468407abae9506867b6cad0320e76be964c67ef0a15e33a478248eb",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
@@ -104,7 +104,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "eedc676b732f43b7ddca05715229c67afc6c8facd9be453fb57d5c3a7690f221",
+				PostDutyRunnerStateRoot: "fd8621b9335998f23b981f99c41fea833c359875eb22fef794185fe965bd0562",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
@@ -125,7 +125,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestAttesterConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "277b689e76422ee20594c4fec7f24d6b57a71ad27c69ac8676d0012842a36969",
+				PostDutyRunnerStateRoot: "401f046d8bfcf98fc35f923f4c8a196b2f06dd3ec6fcdeb4e7e6bd0124f8a4e1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},

@@ -24,7 +24,7 @@ func SingleConsensusMsg() *tests.ControllerSpecTest {
 						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
 					}),
 				},
-				ControllerPostRoot: "7e21f00c892268dc90ada02ac5326329ff44b8b93aec52a51c11ec9b12077f78",
+				ControllerPostRoot: "a102d94bcaed693bf7c33c7220a35ceb382a4c718796925fa03d4ab0d93670c6",
 			},
 		},
 	}

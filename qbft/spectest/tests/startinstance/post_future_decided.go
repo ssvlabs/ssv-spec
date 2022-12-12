@@ -14,15 +14,17 @@ func PreviousDecided() *tests.ControllerSpecTest {
 		Name: "start instance prev decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:         []byte{1, 2, 3, 4},
-				InputMessages:      testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet()),
-				DecidedVal:         []byte{1, 2, 3, 4},
-				DecidedCnt:         1,
-				ControllerPostRoot: "aa402d7487719b17dde352e2ac602ba2c7d895e615ab12cd93d816f6c4fa0967",
+				InputValue:    []byte{1, 2, 3, 4},
+				InputMessages: testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, testingutils.Testing4SharesSet()),
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedCnt: 1,
+				},
+				ControllerPostRoot: "0370be5066cbbf1efead61d9b182309afd989b3b720163f7029cbad79537eb4b",
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "ef4b84dc6704519af8f6c4a510a2d9d0a44ce52155f6508635dacbd34324b32e",
+				ControllerPostRoot: "0e0db8b36601bef53328c1f1e94e4c3faa02084c743cce138dc2edcce2e5d79e",
 			},
 		},
 	}
