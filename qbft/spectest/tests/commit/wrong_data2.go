@@ -68,6 +68,6 @@ func WrongData2() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
-		ExpectedError: "invalid signed message: proposed data different than commit msg data",
+		ExpectedError: "invalid signed message: proposed data mistmatch",
 	}
 }

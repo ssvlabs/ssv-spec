@@ -44,6 +44,6 @@ func JustificationNoQuorum() *tests.MsgProcessingSpecTest {
 		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "round change msg invalid: no justifications quorum",
+		ExpectedError:  "invalid signed message: no justifications quorum",
 	}
 }

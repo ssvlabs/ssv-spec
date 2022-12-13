@@ -97,6 +97,6 @@ func JustificationsValueNotJustified() *tests.MsgProcessingSpecTest {
 		PostRoot:       "5a71daf1a4ee817826596858f76e56a1a85aedd85b9c4e65e73fc4c4667e65b0",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "proposal invalid: proposal not justified: proposed data doesn't match highest prepared",
+		ExpectedError:  "invalid signed message: proposal not justified: proposed data doesn't match highest prepared",
 	}
 }

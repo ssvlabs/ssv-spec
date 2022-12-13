@@ -1,7 +1,6 @@
 package qbft
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"sync"
@@ -125,92 +124,47 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		return errors.Wrap(err, "invalid signed message")
 	}
 
-	if msg.Message.Height != i.State.Height {
-		return errors.New("msg Height wrong")
-	}
-	if len(msg.GetSigners()) != 1 {
-		return errors.New("msg allows 1 signer")
-	}
-
-	if err := msg.Signature.VerifyByOperators(msg, i.config.GetSignatureDomainType(), types.QBFTSignatureType, i.State.Share.Committee); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
-	}
-
 	switch msg.Message.MsgType {
 	case ProposalMsgType:
-		proposalData, err := msg.Message.GetProposalData()
-		if err != nil {
-			return errors.Wrap(err, "could not get proposal data")
-		}
-		if err := proposalData.Validate(); err != nil {
-			return errors.Wrap(err, "proposalData invalid")
-		}
-
-		if !msg.MatchedSigners([]types.OperatorID{proposer(i.State, i.config, msg.Message.Round)}) {
-			return errors.New("proposal leader invalid")
-		}
-
-		if (i.State.ProposalAcceptedForCurrentRound == nil && msg.Message.Round == i.State.Round) ||
-			msg.Message.Round > i.State.Round {
-			return nil
-		}
-		return errors.New("proposal is not valid with current state")
+		return isValidProposal(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case PrepareMsgType:
-		if msg.Message.Round != i.State.Round {
-			return errors.New("msg round wrong")
-		}
-
-		prepareData, err := msg.Message.GetPrepareData()
-		if err != nil {
-			return errors.Wrap(err, "could not get prepare data")
-		}
-		if err := prepareData.Validate(); err != nil {
-			return errors.Wrap(err, "prepareData invalid")
-		}
-
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
-			return errors.New("invalid signed message: invalid signed message: did not receive proposal for this round")
+			return errors.New("did not receive proposal for this round")
 		}
-		proposedCommitData, err := proposedMsg.Message.GetCommitData()
+		acceptedProposalData, err := proposedMsg.Message.GetCommitData()
 		if err != nil {
-			return errors.Wrap(err, "could not get proposed commit data")
+			return errors.Wrap(err, "could not get accepted proposal data")
 		}
-		if !bytes.Equal(proposedCommitData.Data, prepareData.Data) {
-			return errors.New("proposed data different than commit msg data")
-		}
+		return validSignedPrepareForHeightRoundAndValue(
+			i.config,
+			msg,
+			i.State.Height,
+			i.State.Round,
+			acceptedProposalData.Data,
+			i.State.Share.Committee,
+		)
 	case CommitMsgType:
-		if msg.Message.Round != i.State.Round {
-			return errors.New("msg round wrong")
-		}
-
-		msgCommitData, err := msg.Message.GetCommitData()
-		if err != nil {
-			return errors.Wrap(err, "could not get msg commit data")
-		}
-		if err := msgCommitData.Validate(); err != nil {
-			return errors.Wrap(err, "commit data invalid")
-		}
-
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
-			return errors.New("invalid signed message: invalid signed message: did not receive proposal for this round")
+			return errors.New("did not receive proposal for this round")
 		}
-		proposedCommitData, err := proposedMsg.Message.GetCommitData()
-		if err != nil {
-			return errors.Wrap(err, "could not get proposed commit data")
-		}
-		if !bytes.Equal(proposedCommitData.Data, msgCommitData.Data) {
-			return errors.New("proposed data different than commit msg data")
-		}
+		return validateCommit(
+			i.config,
+			msg,
+			i.State.Height,
+			i.State.Round,
+			i.State.ProposalAcceptedForCurrentRound,
+			i.State.Share.Committee,
+		)
 	case RoundChangeMsgType:
-		rcData, err := msg.Message.GetRoundChangeData()
-		if err != nil {
-			return errors.Wrap(err, "could not get roundChange data ")
-		}
-		if err := rcData.Validate(); err != nil {
-			return errors.Wrap(err, "roundChangeData invalid")
-		}
+		return validRoundChange(i.State, i.config, msg, i.State.Height, msg.Message.Round)
 	default:
 		return errors.New("signed message type not supported")
 	}

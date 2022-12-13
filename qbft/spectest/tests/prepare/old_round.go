@@ -56,6 +56,6 @@ func OldRound() *tests.MsgProcessingSpecTest {
 		Pre:           pre,
 		PostRoot:      "3a85ee7abc9275684534414a639bd4d968f66bb319214da057a47ab8f9a881b4",
 		InputMessages: msgs,
-		ExpectedError: "invalid signed message: msg round wrong",
+		ExpectedError: "invalid signed message: wrong msg round",
 	}
 }
