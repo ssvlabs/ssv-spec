@@ -40,6 +40,6 @@ func SecondProposalForRound() *tests.MsgProcessingSpecTest {
 				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
 			}),
 		},
-		ExpectedError: "proposal invalid: proposal is not valid with current state",
+		ExpectedError: "invalid signed message: proposal is not valid with current state",
 	}
 }

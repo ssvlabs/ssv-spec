@@ -2,27 +2,22 @@ module github.com/bloxapp/ssv-spec
 
 go 1.17
 
-replace github.com/coinbase/kryptology => github.com/RockX-SG/kryptology v1.5.6-0.20221017030241-a65fc893311e
 
 require (
 	github.com/attestantio/go-eth2-client v0.11.3
-	github.com/coinbase/kryptology v1.8.0
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0
-	github.com/ecies/go/v2 v2.0.4
 	github.com/ethereum/go-ethereum v1.10.18
 	github.com/ferranbt/fastssz v0.0.0-20220103083642-bc5fefefa28b
 	github.com/herumi/bls-eth-go-binary v0.0.0-20220509081320-2d8ab06de53c
+	github.com/libp2p/go-libp2p v0.22.0
+	github.com/libp2p/go-libp2p-pubsub v0.8.2
 	github.com/pkg/errors v0.9.1
 	github.com/prysmaticlabs/go-bitfield v0.0.0-20210809151128-385d8c5e3fb7
 	github.com/stretchr/testify v1.8.0
 )
 
 require (
-	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
-	github.com/btcsuite/btcd v0.21.0-beta.0.20201114000516-e9c7a5ac6401 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
-	github.com/bwesterb/go-ristretto v1.2.0 // indirect
-	github.com/consensys/gnark-crypto v0.5.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/goccy/go-yaml v1.9.5 // indirect
@@ -33,9 +28,6 @@ require (
 	github.com/ipfs/go-log/v2 v2.5.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.1.0 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect
-	github.com/libp2p/go-libp2p v0.22.0 // indirect
-	github.com/libp2p/go-libp2p-core v0.20.1 // indirect
-	github.com/libp2p/go-libp2p-pubsub v0.8.2 // indirect
 	github.com/libp2p/go-msgio v0.2.0 // indirect
 	github.com/libp2p/go-openssl v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect

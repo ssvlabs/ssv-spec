@@ -28,6 +28,6 @@ func WrongSig() *tests.MsgProcessingSpecTest {
 		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "round change msg invalid: round change msg signature invalid: failed to verify signature",
+		ExpectedError:  "invalid signed message: msg signature invalid: failed to verify signature",
 	}
 }

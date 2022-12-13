@@ -2,8 +2,6 @@ package types
 
 import (
 	"bytes"
-	"crypto/rsa"
-
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
@@ -31,14 +29,6 @@ var (
 	DKGSignatureType     SignatureType = [4]byte{3, 0, 0, 0}
 )
 
-// EncryptionCalls captures all RSA share encryption calls
-type EncryptionCalls interface {
-	// Decrypt given a rsa pubkey and a PKCS1v15 cipher text byte array, returns the decrypted data
-	Decrypt(pk *rsa.PrivateKey, cipher []byte) ([]byte, error)
-	// Encrypt given a rsa pubkey and data returns an PKCS1v15 encrypted cipher
-	Encrypt(pk *rsa.PublicKey, data []byte) ([]byte, error)
-}
-
 type BeaconSigner interface {
 	// SignBeaconObject returns signature and root.
 	SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte) (Signature, []byte, error)
@@ -50,7 +40,6 @@ type BeaconSigner interface {
 
 // SSVSigner used for all SSV specific signing
 type SSVSigner interface {
-	EncryptionCalls
 	SignRoot(data Root, sigType SignatureType, pk []byte) (Signature, error)
 }
 

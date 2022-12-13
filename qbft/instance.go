@@ -91,7 +91,7 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
 func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
-	if err := msg.Validate(); err != nil {
+	if err := i.BaseMsgValidation(msg); err != nil {
 		return false, nil, nil, errors.Wrap(err, "invalid signed message")
 	}
 
@@ -121,14 +121,15 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 }
 
 func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
+	if err := msg.Validate(); err != nil {
+		return errors.Wrap(err, "invalid signed message")
+	}
+
 	if msg.Message.Height != i.State.Height {
 		return errors.New("msg Height wrong")
 	}
-	if msg.Message.Round != i.State.Round {
-		return errors.New("msg round wrong")
-	}
 	if len(msg.GetSigners()) != 1 {
-		return errors.New("proposal msg allows 1 signer")
+		return errors.New("msg allows 1 signer")
 	}
 
 	if err := msg.Signature.VerifyByOperators(msg, i.config.GetSignatureDomainType(), types.QBFTSignatureType, i.State.Share.Committee); err != nil {
@@ -155,6 +156,10 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		}
 		return errors.New("proposal is not valid with current state")
 	case PrepareMsgType:
+		if msg.Message.Round != i.State.Round {
+			return errors.New("msg round wrong")
+		}
+
 		prepareData, err := msg.Message.GetPrepareData()
 		if err != nil {
 			return errors.Wrap(err, "could not get prepare data")
@@ -165,7 +170,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
-			return errors.New("did not receive proposal for this round")
+			return errors.New("invalid signed message: invalid signed message: did not receive proposal for this round")
 		}
 		proposedCommitData, err := proposedMsg.Message.GetCommitData()
 		if err != nil {
@@ -175,6 +180,10 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			return errors.New("proposed data different than commit msg data")
 		}
 	case CommitMsgType:
+		if msg.Message.Round != i.State.Round {
+			return errors.New("msg round wrong")
+		}
+
 		msgCommitData, err := msg.Message.GetCommitData()
 		if err != nil {
 			return errors.Wrap(err, "could not get msg commit data")
@@ -185,7 +194,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
-			return errors.New("did not receive proposal for this round")
+			return errors.New("invalid signed message: invalid signed message: did not receive proposal for this round")
 		}
 		proposedCommitData, err := proposedMsg.Message.GetCommitData()
 		if err != nil {
