@@ -84,6 +84,8 @@ func validateConsensusMsg(runner ssv.Runner, data []byte) error {
 		return qbft.ValidateDecided(contr.GetConfig(), signedMsg, contr.Share)
 	} else if signedMsg.Message.Height > contr.Height {
 		return qbft.ValidateFutureMsg(contr.GetConfig(), signedMsg, contr.Share.Committee)
+	} else if signedMsg.Message.Height > contr.Height {
+		return qbft.ValidateFutureMsg(contr.GetConfig(), signedMsg, contr.Share.Committee)
 	} else {
 		if inst := contr.StoredInstances.FindInstance(signedMsg.Message.Height); inst != nil {
 			return inst.BaseMsgValidation(signedMsg)
