@@ -168,7 +168,6 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 	default:
 		return errors.New("signed message type not supported")
 	}
-	return nil
 }
 
 // IsDecided interface implementation
