@@ -39,7 +39,6 @@ type ProtocolConfig struct {
 	operators       []uint32
 	operatorsOld    []uint32
 	oldKeyGenOutput *dkg.KeyGenOutput
-	sessionSK       *ecies.PrivateKey
 }
 
 func (c *ProtocolConfig) isResharing() bool {
@@ -67,6 +66,7 @@ func (c *ProtocolConfig) inNewCommittee() bool {
 type ProtocolState struct {
 	currentRound   ProtocolRound
 	participant    *frost.DkgParticipant
+	sessionSK      *ecies.PrivateKey
 	msgs           ProtocolMessageStore
 	operatorShares map[uint32]*bls.SecretKey
 }
@@ -188,7 +188,7 @@ func (fr *FROST) Start() error {
 	if err != nil {
 		return errors.Wrap(err, "failed to generate session sk")
 	}
-	fr.config.sessionSK = k
+	fr.state.sessionSK = k
 
 	msg := &ProtocolMsg{
 		Round: fr.state.currentRound,

@@ -58,7 +58,7 @@ func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOu
 		}
 
 		encryptedShare := protocolMessage.Round1Message.Shares[uint32(fr.config.operatorID)]
-		shareBytes, err := ecies.Decrypt(fr.config.sessionSK, encryptedShare)
+		shareBytes, err := ecies.Decrypt(fr.state.sessionSK, encryptedShare)
 		if err != nil {
 			return fr.createAndBroadcastBlameOfInvalidShare(peerOpID)
 
