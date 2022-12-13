@@ -27,6 +27,6 @@ func MsgError() *tests.ControllerSpecTest {
 				ControllerPostRoot: "7b74be21fcdae2e7ed495882d1a499642c15a7f732f210ee84fb40cc97d1ce96",
 			},
 		},
-		ExpectedError: "could not process msg: proposal invalid: proposal not justified: change round has no quorum",
+		ExpectedError: "could not process msg: invalid signed message: proposal not justified: change round has no quorum",
 	}
 }

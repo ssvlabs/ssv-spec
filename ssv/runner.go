@@ -75,7 +75,7 @@ func (b *BaseRunner) canStartNewDuty() error {
 
 // basePreConsensusMsgProcessing is a base func that all runner implementation can call for processing a pre-consensus msg
 func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
-	if err := b.validatePreConsensusMsg(runner, signedMsg); err != nil {
+	if err := b.ValidatePreConsensusMsg(runner, signedMsg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid pre-consensus message")
 	}
 
@@ -126,7 +126,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 
 // basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg
 func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
-	if err := b.validatePostConsensusMsg(runner, signedMsg); err != nil {
+	if err := b.ValidatePostConsensusMsg(runner, signedMsg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid post-consensus message")
 	}
 

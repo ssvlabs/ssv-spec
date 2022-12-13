@@ -9,7 +9,7 @@ import (
 	"sort"
 )
 
-func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
@@ -26,7 +26,7 @@ func (b *BaseRunner) validatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
-func (b *BaseRunner) validatePostConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}

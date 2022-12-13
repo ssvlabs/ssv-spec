@@ -28,7 +28,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 		return r
 	}
 
-	err := "failed processing consensus message: could not process msg: did not receive proposal for this round"
+	err := "failed processing consensus message: could not process msg: invalid signed message: did not receive proposal for this round"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid post finish",

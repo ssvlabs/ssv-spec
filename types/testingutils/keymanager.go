@@ -118,16 +118,6 @@ func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Doma
 	return nil, nil, errors.New("pk not found")
 }
 
-// Decrypt given a rsa privkey and a PKCS1v15 cipher text byte array, returns the decrypted data
-func (km *testingKeyManager) Decrypt(sk *rsa.PrivateKey, cipher []byte) ([]byte, error) {
-	return TestingDecryption(sk, cipher), nil
-}
-
-// Encrypt given a rsa pubkey and data returns an PKCS1v15 e
-func (km *testingKeyManager) Encrypt(pk *rsa.PublicKey, data []byte) ([]byte, error) {
-	return TestingEncryption(pk, data), nil
-}
-
 // SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
 func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Address) (types.Signature, error) {
 	root, err := output.GetRoot()

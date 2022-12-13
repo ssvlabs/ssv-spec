@@ -32,6 +32,6 @@ func UnknownSigner() *tests.ControllerSpecTest {
 				ControllerPostRoot: "7b74be21fcdae2e7ed495882d1a499642c15a7f732f210ee84fb40cc97d1ce96",
 			},
 		},
-		ExpectedError: "invalid decided msg: invalid decided msg: commit msg signature invalid: unknown signer",
+		ExpectedError: "invalid decided msg: invalid decided msg: msg signature invalid: unknown signer",
 	}
 }

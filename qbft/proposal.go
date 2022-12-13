@@ -6,12 +6,9 @@ import (
 	"github.com/pkg/errors"
 )
 
+// uponProposal process proposal message
+// Assumes proposal message is valid!
 func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
-	valCheck := i.config.GetValueCheckF()
-	if err := isValidProposal(i.State, i.config, signedProposal, valCheck, i.State.Share.Committee); err != nil {
-		return errors.Wrap(err, "proposal invalid")
-	}
-
 	addedMsg, err := proposeMsgContainer.AddFirstMsgForSignerAndRound(signedProposal)
 	if err != nil {
 		return errors.Wrap(err, "could not add proposal msg to container")
@@ -57,13 +54,13 @@ func isValidProposal(
 		return errors.New("msg type is not proposal")
 	}
 	if signedProposal.Message.Height != state.Height {
-		return errors.New("proposal Height is wrong")
+		return errors.New("wrong msg height")
 	}
 	if len(signedProposal.GetSigners()) != 1 {
-		return errors.New("proposal msg allows 1 signer")
+		return errors.New("msg allows 1 signer")
 	}
 	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "proposal msg signature invalid")
+		return errors.Wrap(err, "msg signature invalid")
 	}
 	if !signedProposal.MatchedSigners([]types.OperatorID{proposer(state, config, signedProposal.Message.Round)}) {
 		return errors.New("proposal leader invalid")

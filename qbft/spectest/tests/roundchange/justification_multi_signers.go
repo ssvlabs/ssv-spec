@@ -52,6 +52,6 @@ func JustificationMultiSigners() *tests.MsgProcessingSpecTest {
 		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "round change msg invalid: round change justification invalid: prepare msg allows 1 signer",
+		ExpectedError:  "invalid signed message: round change justification invalid: msg allows 1 signer",
 	}
 }

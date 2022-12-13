@@ -7,22 +7,8 @@ import (
 )
 
 // UponCommit returns true if a quorum of commit messages was received.
+// Assumes commit message is valid!
 func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *MsgContainer) (bool, []byte, *SignedMessage, error) {
-	if i.State.ProposalAcceptedForCurrentRound == nil {
-		return false, nil, nil, errors.New("did not receive proposal for this round")
-	}
-
-	if err := validateCommit(
-		i.config,
-		signedCommit,
-		i.State.Height,
-		i.State.Round,
-		i.State.ProposalAcceptedForCurrentRound,
-		i.State.Share.Committee,
-	); err != nil {
-		return false, nil, nil, errors.Wrap(err, "commit msg invalid")
-	}
-
 	addMsg, err := commitMsgContainer.AddFirstMsgForSignerAndRound(signedCommit)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not add commit msg to container")
@@ -144,7 +130,7 @@ func baseCommitValidation(
 		return errors.New("commit msg type is wrong")
 	}
 	if signedCommit.Message.Height != height {
-		return errors.New("commit Height is wrong")
+		return errors.New("wrong msg height")
 	}
 
 	msgCommitData, err := signedCommit.Message.GetCommitData()
@@ -157,7 +143,7 @@ func baseCommitValidation(
 
 	// verify signature
 	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "commit msg signature invalid")
+		return errors.Wrap(err, "msg signature invalid")
 	}
 
 	return nil
@@ -172,15 +158,15 @@ func validateCommit(
 	operators []*types.Operator,
 ) error {
 	if err := baseCommitValidation(config, signedCommit, height, operators); err != nil {
-		return errors.Wrap(err, "invalid commit msg")
+		return err
 	}
 
 	if len(signedCommit.Signers) != 1 {
-		return errors.New("commit msgs allow 1 signer")
+		return errors.New("msg allows 1 signer")
 	}
 
 	if signedCommit.Message.Round != round {
-		return errors.New("commit round is wrong")
+		return errors.New("wrong msg round")
 	}
 
 	proposedCommitData, err := proposedMsg.Message.GetCommitData()
@@ -194,7 +180,7 @@ func validateCommit(
 	}
 
 	if !bytes.Equal(proposedCommitData.Data, msgCommitData.Data) {
-		return errors.New("proposed data different than commit msg data")
+		return errors.New("proposed data mistmatch")
 	}
 
 	return nil

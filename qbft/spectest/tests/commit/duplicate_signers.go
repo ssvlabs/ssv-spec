@@ -35,6 +35,6 @@ func DuplicateSigners() *tests.MsgProcessingSpecTest {
 			commit,
 		},
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: non unique signer",
+		ExpectedError:  "invalid signed message: invalid signed message: non unique signer",
 	}
 }

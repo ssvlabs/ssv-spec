@@ -45,6 +45,6 @@ func LateProposal() *tests.ControllerSpecTest {
 				ControllerPostRoot: "0370be5066cbbf1efead61d9b182309afd989b3b720163f7029cbad79537eb4b",
 			},
 		},
-		ExpectedError: "could not process msg: proposal invalid: proposal is not valid with current state",
+		ExpectedError: "could not process msg: invalid signed message: proposal is not valid with current state",
 	}
 }

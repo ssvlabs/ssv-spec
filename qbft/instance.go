@@ -90,7 +90,7 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
 func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
-	if err := msg.Validate(); err != nil {
+	if err := i.BaseMsgValidation(msg); err != nil {
 		return false, nil, nil, errors.Wrap(err, "invalid signed message")
 	}
 
@@ -117,6 +117,57 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 		return false, nil, nil, res.(error)
 	}
 	return i.State.Decided, i.State.DecidedValue, aggregatedCommit, nil
+}
+
+func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
+	if err := msg.Validate(); err != nil {
+		return errors.Wrap(err, "invalid signed message")
+	}
+
+	switch msg.Message.MsgType {
+	case ProposalMsgType:
+		return isValidProposal(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
+	case PrepareMsgType:
+		proposedMsg := i.State.ProposalAcceptedForCurrentRound
+		if proposedMsg == nil {
+			return errors.New("did not receive proposal for this round")
+		}
+		acceptedProposalData, err := proposedMsg.Message.GetCommitData()
+		if err != nil {
+			return errors.Wrap(err, "could not get accepted proposal data")
+		}
+		return validSignedPrepareForHeightRoundAndValue(
+			i.config,
+			msg,
+			i.State.Height,
+			i.State.Round,
+			acceptedProposalData.Data,
+			i.State.Share.Committee,
+		)
+	case CommitMsgType:
+		proposedMsg := i.State.ProposalAcceptedForCurrentRound
+		if proposedMsg == nil {
+			return errors.New("did not receive proposal for this round")
+		}
+		return validateCommit(
+			i.config,
+			msg,
+			i.State.Height,
+			i.State.Round,
+			i.State.ProposalAcceptedForCurrentRound,
+			i.State.Share.Committee,
+		)
+	case RoundChangeMsgType:
+		return validRoundChange(i.State, i.config, msg, i.State.Height, msg.Message.Round)
+	default:
+		return errors.New("signed message type not supported")
+	}
 }
 
 // IsDecided interface implementation
