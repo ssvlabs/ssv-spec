@@ -5,10 +5,12 @@ import (
 
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
+// processKeygenOutput verifies validatorPK from round2 and returns protocol outcome
 func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {
@@ -20,6 +22,8 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 		return false, nil, nil
 	}
 
+	// verify shares by reconstructing consistent validatorPK over a sliding
+	// window of t (threshold) operators
 	reconstructed, err := fr.verifyShares()
 	if err != nil {
 		return false, nil, errors.Wrap(err, "failed to verify shares")
@@ -38,6 +42,7 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 			return false, nil, errors.Wrap(err, "failed to decode protocol msg")
 		}
 
+		// set vk and secret share to output for this participant
 		if operatorID == uint32(fr.config.operatorID) {
 			out.ValidatorPK = protocolMessage.Round2Message.Vk
 			sk := &bls.SecretKey{}
@@ -47,6 +52,7 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 			out.Share = sk
 		}
 
+		// set operator public key for all operators
 		pk := &bls.PublicKey{}
 		if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
 			return false, nil, err
@@ -55,6 +61,7 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 	}
 	out.OperatorPubKeys = operatorPubKeys
 
+	// assert validatorPK output from frost is equal to reconstructed Vk
 	if !bytes.Equal(out.ValidatorPK, reconstructedBytes) {
 		return false, nil, errors.New("can't reconstruct to the validator pk")
 	}
@@ -62,18 +69,19 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 	return true, &dkg.ProtocolOutcome{ProtocolOutput: out}, nil
 }
 
+// verifyShares reconstructs Vk over a sliding window of t (threshold) operators
+// and checks if reconstructed Vk is consistent
 func (fr *FROST) verifyShares() (*bls.G1, error) {
 
 	var (
 		quorumStart       = 0
-		quorumEnd         = int(fr.config.threshold)
 		prevReconstructed = (*bls.G1)(nil)
 	)
 
 	// Sliding window of quorum 0...threshold until n-threshold...n
-	for quorumEnd < len(fr.config.operators) {
+	for quorumEnd := int(fr.config.threshold); quorumEnd < len(fr.config.operators); quorumEnd++ {
 		quorum := fr.config.operators[quorumStart:quorumEnd]
-		currReconstructed, err := fr.verifyShare(quorum)
+		currReconstructed, err := fr.reconstructValidatorPK(quorum)
 		if err != nil {
 			return nil, err
 		}
@@ -82,12 +90,11 @@ func (fr *FROST) verifyShares() (*bls.G1, error) {
 		}
 		prevReconstructed = currReconstructed
 		quorumStart++
-		quorumEnd++
 	}
 	return prevReconstructed, nil
 }
 
-func (fr *FROST) verifyShare(operators []uint32) (*bls.G1, error) {
+func (fr *FROST) reconstructValidatorPK(operators []uint32) (*bls.G1, error) {
 	xVec, err := fr.getXVec(operators)
 	if err != nil {
 		return nil, err

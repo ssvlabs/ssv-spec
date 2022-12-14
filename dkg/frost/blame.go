@@ -123,6 +123,8 @@ func (fr *FROST) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, sign
 	return true, &dkg.ProtocolOutcome{BlameOutput: &dkg.BlameOutput{Valid: valid, BlameMessage: signedMessage}}, nil
 }
 
+// processBlameTypeInvalidShare checks if blame message for invalid share is
+// valid by verifying commitments in blame message
 func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *BlameMessage) (bool /*valid*/, error) {
 	if err := blameMessage.Validate(); err != nil {
 		return false, errors.Wrap(err, "invalid blame message")
@@ -179,6 +181,8 @@ func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *Bl
 	return false, err
 }
 
+// processBlameTypeInconsistentMessage verifies blame of inconsisstent message
+// type by comparing roots of both messages
 func (fr *FROST) processBlameTypeInconsistentMessage(blameMessage *BlameMessage) (bool /*valid*/, error) {
 	if err := blameMessage.Validate(); err != nil {
 		return false, errors.Wrap(err, "invalid blame message")
@@ -219,6 +223,8 @@ func (fr *FROST) processBlameTypeInconsistentMessage(blameMessage *BlameMessage)
 	return true, nil
 }
 
+// processBlameTypeInvalidMessage verifies blame of invalid message type by
+// validating signed message and protocol message
 func (fr *FROST) processBlameTypeInvalidMessage(blameMessage *BlameMessage) (bool /*valid*/, error) {
 	if err := blameMessage.Validate(); err != nil {
 		return false, errors.Wrap(err, "invalid blame message")

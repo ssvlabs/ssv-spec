@@ -6,6 +6,8 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
+// processRound1 splits secret into shares between ooperators and broadcasts round1
+// message with encrypted shares, commitments and Schnorr proof values
 func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {

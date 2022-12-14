@@ -8,6 +8,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+// processRound2 verifies incoming shares from all operators and broadcasts round2
+// message with validatorPK and its public key
 func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {
