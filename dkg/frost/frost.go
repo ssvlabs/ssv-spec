@@ -24,6 +24,10 @@ func init() {
 	types.InitBLS()
 }
 
+// FROST contains network to broadcast messages, signer to sign outgoing messages,
+// storage to store keygen output, config to store protocol configuration such as id,
+// threshold, operator list etc and state contains properties that changes over the
+// runtime of the protocol like current round, msgs etc
 type FROST struct {
 	network dkg.Network
 	signer  types.DKGSigner
@@ -32,6 +36,8 @@ type FROST struct {
 	state   *ProtocolState
 }
 
+// ProtocolConfig contains properties needed to start the protocol like requestID,
+// operatorID, threshold, operator list etc.
 type ProtocolConfig struct {
 	identifier      dkg.RequestID
 	threshold       uint32
@@ -63,6 +69,8 @@ func (c *ProtocolConfig) inNewCommittee() bool {
 	return false
 }
 
+// ProtocolState maintains value for current round, messages, sessions key and
+// operator shares. these properties will change over the runtime of the protocol
 type ProtocolState struct {
 	currentRound   ProtocolRound
 	participant    *frost.DkgParticipant
@@ -71,6 +79,7 @@ type ProtocolState struct {
 	operatorShares map[uint32]*bls.SecretKey
 }
 
+// ProtocolRound is enum for all the rounds in the protocol
 type ProtocolRound int
 
 const (
@@ -91,6 +100,7 @@ var rounds = []ProtocolRound{
 	Blame,
 }
 
+// ProtocolMessageStore stores incoming messages by round from all operators
 type ProtocolMessageStore map[ProtocolRound]map[uint32]*dkg.SignedMessage
 
 func newProtocolMessageStore() ProtocolMessageStore {
@@ -99,6 +109,15 @@ func newProtocolMessageStore() ProtocolMessageStore {
 		m[round] = make(map[uint32]*dkg.SignedMessage)
 	}
 	return m
+}
+
+func (msgStore ProtocolMessageStore) saveMessage(round ProtocolRound, msg *dkg.SignedMessage) (existingMessage *dkg.SignedMessage, err error) {
+	existingMessage, exists := msgStore[round][uint32(msg.Signer)]
+	if exists {
+		return existingMessage, errors.New("msg already exists")
+	}
+	msgStore[round][uint32(msg.Signer)] = msg
+	return nil, nil
 }
 
 func (msgStore ProtocolMessageStore) allMessagesReceivedFor(round ProtocolRound, operators []uint32) bool {
@@ -110,6 +129,7 @@ func (msgStore ProtocolMessageStore) allMessagesReceivedFor(round ProtocolRound,
 	return true
 }
 
+// New creates a new protocol instance for new keygen
 // TODO: func New(network dkg.Network, signer types.DKGSigner, storage dkg.Storage, config ProtocolConfig) {}
 func New(
 	network dkg.Network,
@@ -129,6 +149,7 @@ func New(
 	return newProtocol(network, signer, storage, config)
 }
 
+// NewResharing creates a new protocol instance for resharing
 // Temporary, TODO: Remove and use interface with Reshare
 func NewResharing(
 	network dkg.Network,
@@ -166,10 +187,12 @@ func newProtocol(network dkg.Network, signer types.DKGSigner, storage dkg.Storag
 	}
 }
 
+// Start initializes frost participant, generates a session key pair and broadcasts preparation message.
 // TODO: If Reshare, confirm participating operators using qbft before kick-starting this process.
 func (fr *FROST) Start() error {
 	fr.state.currentRound = Preparation
 
+	// create a new dkg participant
 	ctx := make([]byte, 16)
 	if _, err := rand.Read(ctx); err != nil {
 		return err
@@ -181,49 +204,52 @@ func (fr *FROST) Start() error {
 	fr.state.participant = participant
 
 	if !fr.needToRunCurrentRound() {
-		return nil
+		return nil // preparation round only runs in new committee
 	}
 
+	// generate session key pair
 	k, err := ecies.GenerateKey()
 	if err != nil {
 		return errors.Wrap(err, "failed to generate session sk")
 	}
 	fr.state.sessionSK = k
 
+	// create and broadcast PreparationMessage
 	msg := &ProtocolMsg{
-		Round: fr.state.currentRound,
+		Round: Preparation,
 		PreparationMessage: &PreparationMessage{
 			SessionPk: k.PublicKey.Bytes(true),
 		},
 	}
-
 	_, err = fr.broadcastDKGMessage(msg)
 	return err
 }
 
+// ProcessMsg  decodes and validates incoming message. It then check for blame
+// or proceed with processing these messages based on their round.
 func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
+	// validated signed message
 	if err := fr.validateSignedMessage(msg); err != nil {
 		return false, nil, errors.Wrap(err, "failed to Validate signed message")
 	}
 
+	// decodes and validates protocol message
 	protocolMessage := &ProtocolMsg{}
 	if err := protocolMessage.Decode(msg.Message.Data); err != nil {
 		return false, nil, errors.Wrap(err, "failed to decode protocol msg")
 	}
-
 	if err := protocolMessage.Validate(); err != nil {
 		return fr.createAndBroadcastBlameOfInvalidMessage(uint32(msg.Signer), msg)
 	}
 
-	existingMessage, ok := fr.state.msgs[protocolMessage.Round][uint32(msg.Signer)]
-	isBlameTypeInconsisstent := (ok && !fr.haveSameRoot(existingMessage, msg))
-	if isBlameTypeInconsisstent {
+	// store incoming message unless it already exists, then check for blame
+	existingMessage, err := fr.state.msgs.saveMessage(protocolMessage.Round, msg)
+	if err != nil && !haveSameRoot(existingMessage, msg) {
 		return fr.createAndBroadcastBlameOfInconsistentMessage(existingMessage, msg)
 	}
 
-	fr.state.msgs[protocolMessage.Round][uint32(msg.Signer)] = msg
-
+	// process message based on their round
 	switch protocolMessage.Round {
 	case Preparation:
 		return fr.processRound1()

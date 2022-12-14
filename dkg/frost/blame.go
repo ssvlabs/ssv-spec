@@ -208,7 +208,7 @@ func (fr *FROST) processBlameTypeInconsistentMessage(blameMessage *BlameMessage)
 		return false, errors.New("invalid protocol message")
 	}
 
-	if fr.haveSameRoot(signedMsg1, signedMsg2) {
+	if haveSameRoot(signedMsg1, signedMsg2) {
 		return false, errors.New("the two messages are consistent")
 	}
 

@@ -70,18 +70,6 @@ func (fr *FROST) broadcastDKGMessage(msg *ProtocolMsg) (*dkg.SignedMessage, erro
 	return bcastMessage, nil
 }
 
-func (fr *FROST) haveSameRoot(existingMessage, newMessage *dkg.SignedMessage) bool {
-	r1, err := existingMessage.GetRoot()
-	if err != nil {
-		return false
-	}
-	r2, err := newMessage.GetRoot()
-	if err != nil {
-		return false
-	}
-	return bytes.Equal(r1, r2)
-}
-
 func (fr *FROST) decodeMessage(data []byte) (*dkg.SignedMessage, *ProtocolMsg, error) {
 	signedMsg := &dkg.SignedMessage{}
 	if err := signedMsg.Decode(data); err != nil {
@@ -92,4 +80,16 @@ func (fr *FROST) decodeMessage(data []byte) (*dkg.SignedMessage, *ProtocolMsg, e
 		return signedMsg, nil, errors.Wrap(err, "failed to decode protocol msg")
 	}
 	return signedMsg, pMsg, nil
+}
+
+func haveSameRoot(existingMessage, newMessage *dkg.SignedMessage) bool {
+	r1, err := existingMessage.GetRoot()
+	if err != nil {
+		return false
+	}
+	r2, err := newMessage.GetRoot()
+	if err != nil {
+		return false
+	}
+	return bytes.Equal(r1, r2)
 }
