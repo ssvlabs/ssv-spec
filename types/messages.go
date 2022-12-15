@@ -49,7 +49,7 @@ func NewMsgID(pk []byte, role BeaconRole) MessageID {
 }
 
 func (msgID MessageID) String() string {
-	return hex.EncodeToString(msgID[:])
+	return hex.EncodeToString(msgID.GetPubKey()) + "-" + msgID.GetRoleType().String()
 }
 
 func MessageIDFromBytes(mid []byte) MessageID {
