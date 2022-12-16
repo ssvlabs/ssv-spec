@@ -75,7 +75,7 @@ type ProtocolState struct {
 	currentRound   ProtocolRound
 	participant    *frost.DkgParticipant
 	sessionSK      *ecies.PrivateKey
-	msgContainer   *MsgContainer
+	msgContainer   IMsgContainer
 	operatorShares map[uint32]*bls.SecretKey
 }
 
@@ -240,9 +240,9 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolOutc
 func (fr *FROST) canProceedThisRound() bool {
 	// Note: for Resharing, Preparation (New Committee) -> Round1 (Old Committee) -> Round2 (New Committee)
 	if fr.config.isResharing() && fr.state.currentRound == Round1 {
-		return fr.state.msgContainer.allMessagesReceivedFor(Round1, fr.config.operatorsOld)
+		return fr.state.msgContainer.AllMessagesReceivedFor(Round1, fr.config.operatorsOld)
 	}
-	return fr.state.msgContainer.allMessagesReceivedFor(fr.state.currentRound, fr.config.operators)
+	return fr.state.msgContainer.AllMessagesReceivedFor(fr.state.currentRound, fr.config.operators)
 }
 
 func (fr *FROST) needToRunCurrentRound() bool {

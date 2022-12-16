@@ -47,7 +47,7 @@ func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, n
 func (fr *FROST) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
 
-	round1Msg, err := fr.state.msgContainer.GetSignedMessage(Round1, culpritOID)
+	round1Msg, err := fr.state.msgContainer.GetSignedMsg(Round1, culpritOID)
 	if err != nil {
 		return false, nil, err
 	}

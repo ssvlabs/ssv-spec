@@ -7,11 +7,23 @@ import (
 	"github.com/pkg/errors"
 )
 
+type IMsgContainer interface {
+	SaveMsg(round ProtocolRound, msg *dkg.SignedMessage) (existingMessage *dkg.SignedMessage, err error)
+	GetSignedMsg(round ProtocolRound, operatorID uint32) (*dkg.SignedMessage, error)
+	GetPreparationMsg(operatorID uint32) (*PreparationMessage, error)
+	GetRound1Msg(operatorID uint32) (*Round1Message, error)
+	GetRound2Msg(operatorID uint32) (*Round2Message, error)
+	GetBlameMsg(operatorID uint32) (*BlameMessage, error)
+	GetMessageForRound(round ProtocolRound, operatorID uint32) (interface{}, error)
+	AllMessagesForRound(round ProtocolRound) map[uint32]*dkg.SignedMessage
+	AllMessagesReceivedFor(round ProtocolRound, operators []uint32) bool
+}
+
 type MsgContainer struct {
 	msgs map[ProtocolRound]map[uint32]*dkg.SignedMessage
 }
 
-func newMsgContainer() *MsgContainer {
+func newMsgContainer() IMsgContainer {
 	m := make(map[ProtocolRound]map[uint32]*dkg.SignedMessage)
 	for _, round := range rounds {
 		m[round] = make(map[uint32]*dkg.SignedMessage)
@@ -28,7 +40,7 @@ func (msgContainer *MsgContainer) SaveMsg(round ProtocolRound, msg *dkg.SignedMe
 	return nil, nil
 }
 
-func (msgContainer *MsgContainer) GetSignedMessage(round ProtocolRound, operatorID uint32) (*dkg.SignedMessage, error) {
+func (msgContainer *MsgContainer) GetSignedMsg(round ProtocolRound, operatorID uint32) (*dkg.SignedMessage, error) {
 	signedMsg, exist := msgContainer.msgs[round][operatorID]
 	if !exist {
 		return nil, ErrMsgNotFound{round: round, operatorID: operatorID}
@@ -37,7 +49,7 @@ func (msgContainer *MsgContainer) GetSignedMessage(round ProtocolRound, operator
 }
 
 func (msgContainer *MsgContainer) GetPreparationMsg(operatorID uint32) (*PreparationMessage, error) {
-	msg, err := msgContainer.GetMessage(Preparation, operatorID)
+	msg, err := msgContainer.GetMessageForRound(Preparation, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +61,7 @@ func (msgContainer *MsgContainer) GetPreparationMsg(operatorID uint32) (*Prepara
 }
 
 func (msgContainer *MsgContainer) GetRound1Msg(operatorID uint32) (*Round1Message, error) {
-	msg, err := msgContainer.GetMessage(Round1, operatorID)
+	msg, err := msgContainer.GetMessageForRound(Round1, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +73,7 @@ func (msgContainer *MsgContainer) GetRound1Msg(operatorID uint32) (*Round1Messag
 }
 
 func (msgContainer *MsgContainer) GetRound2Msg(operatorID uint32) (*Round2Message, error) {
-	msg, err := msgContainer.GetMessage(Round2, operatorID)
+	msg, err := msgContainer.GetMessageForRound(Round2, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +85,7 @@ func (msgContainer *MsgContainer) GetRound2Msg(operatorID uint32) (*Round2Messag
 }
 
 func (msgContainer *MsgContainer) GetBlameMsg(operatorID uint32) (*BlameMessage, error) {
-	msg, err := msgContainer.GetMessage(Blame, operatorID)
+	msg, err := msgContainer.GetMessageForRound(Blame, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +96,7 @@ func (msgContainer *MsgContainer) GetBlameMsg(operatorID uint32) (*BlameMessage,
 	return prepMsg, nil
 }
 
-func (msgContainer *MsgContainer) GetMessage(round ProtocolRound, operatorID uint32) (interface{}, error) {
+func (msgContainer *MsgContainer) GetMessageForRound(round ProtocolRound, operatorID uint32) (interface{}, error) {
 	msg, ok := msgContainer.msgs[round][operatorID]
 	if !ok {
 		return nil, ErrMsgNotFound{round: round, operatorID: operatorID}
@@ -111,7 +123,7 @@ func (msgContainer *MsgContainer) AllMessagesForRound(round ProtocolRound) map[u
 	return msgContainer.msgs[round]
 }
 
-func (msgContainer *MsgContainer) allMessagesReceivedFor(round ProtocolRound, operators []uint32) bool {
+func (msgContainer *MsgContainer) AllMessagesReceivedFor(round ProtocolRound, operators []uint32) bool {
 	for _, operatorID := range operators {
 		if _, ok := msgContainer.msgs[round][operatorID]; !ok {
 			return false
