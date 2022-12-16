@@ -8,22 +8,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (fr *FROST) encryptByOperatorID(operatorID uint32, data []byte) ([]byte, error) {
-	msg, ok := fr.state.msgs[Preparation][operatorID]
-	if !ok {
-		return nil, errors.New("no session pk found for the operator")
+func (state *ProtocolState) encryptByOperatorID(operatorID uint32, data []byte) ([]byte, error) {
+	msg, err := state.msgContainer.GetPreparationMsg(operatorID)
+	if err != nil {
+		return nil, errors.Wrapf(err, "no session pk found for the operator")
 	}
-
-	protocolMessage := &ProtocolMsg{}
-	if err := protocolMessage.Decode(msg.Message.Data); err != nil {
-		return nil, errors.Wrap(err, "failed to decode protocol msg")
-	}
-
-	sessionPK, err := ecies.NewPublicKeyFromBytes(protocolMessage.PreparationMessage.SessionPk)
+	sessionPK, err := ecies.NewPublicKeyFromBytes(msg.SessionPk)
 	if err != nil {
 		return nil, err
 	}
-
 	return ecies.Encrypt(sessionPK, data)
 }
 
@@ -63,14 +56,13 @@ func (fr *FROST) broadcastDKGMessage(msg *ProtocolMsg) (*dkg.SignedMessage, erro
 	if err != nil {
 		return nil, err
 	}
-	fr.state.msgs[fr.state.currentRound][uint32(fr.config.operatorID)] = bcastMessage
-	if err = fr.network.BroadcastDKGMessage(bcastMessage); err != nil {
+	if _, err = fr.state.msgContainer.SaveMsg(fr.state.currentRound, bcastMessage); err != nil {
 		return nil, err
 	}
-	return bcastMessage, nil
+	return bcastMessage, fr.network.BroadcastDKGMessage(bcastMessage)
 }
 
-func (fr *FROST) decodeMessage(data []byte) (*dkg.SignedMessage, *ProtocolMsg, error) {
+func decodeMessage(data []byte) (*dkg.SignedMessage, *ProtocolMsg, error) {
 	signedMsg := &dkg.SignedMessage{}
 	if err := signedMsg.Decode(data); err != nil {
 		return nil, nil, errors.Wrap(err, "failed to decode signed message")

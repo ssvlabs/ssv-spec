@@ -51,7 +51,7 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 		}
 		fr.state.operatorShares[operatorID] = share
 
-		encryptedShare, err := fr.encryptByOperatorID(operatorID, shamirShare.Value)
+		encryptedShare, err := fr.state.encryptByOperatorID(operatorID, shamirShare.Value)
 		if err != nil {
 			return false, nil, err
 		}

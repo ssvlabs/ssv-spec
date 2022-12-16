@@ -47,10 +47,15 @@ func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, n
 func (fr *FROST) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
 
-	round1Bytes, err := fr.state.msgs[Round1][culpritOID].Encode()
+	round1Msg, err := fr.state.msgContainer.GetSignedMessage(Round1, culpritOID)
 	if err != nil {
 		return false, nil, err
 	}
+	round1Bytes, err := round1Msg.Encode()
+	if err != nil {
+		return false, nil, err
+	}
+
 	msg := &ProtocolMsg{
 		Round: Blame,
 		BlameMessage: &BlameMessage{
@@ -132,7 +137,7 @@ func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *Bl
 	if len(blameMessage.BlameData) != 1 {
 		return false, errors.New("invalid blame data")
 	}
-	signedMessage, protocolMessage, err := fr.decodeMessage(blameMessage.BlameData[0])
+	signedMessage, protocolMessage, err := decodeMessage(blameMessage.BlameData[0])
 	if err != nil {
 		return false, errors.Wrap(err, "failed to decode signed message")
 	}
@@ -141,19 +146,26 @@ func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *Bl
 		return false, errors.Wrap(err, "failed to Validate signature for blame data")
 	}
 
-	round1Message := protocolMessage.Round1Message
-
-	blamerPrepSignedMessage := fr.state.msgs[Preparation][blamerOID]
-	blamerPrepProtocolMessage := &ProtocolMsg{}
-	err = blamerPrepProtocolMessage.Decode(blamerPrepSignedMessage.Message.Data)
-	if err != nil || blamerPrepProtocolMessage.PreparationMessage == nil {
-		return false, errors.New("unable to decode blamer's PreparationMessage")
+	blamerPrepMsg, err := fr.state.msgContainer.GetPreparationMsg(blamerOID)
+	if err != nil {
+		return false, errors.New("unable to retrieve blamer's PreparationMessage")
 	}
 
 	blamerSessionSK := ecies.NewPrivateKeyFromBytes(blameMessage.BlamerSessionSk)
 	blamerSessionPK := blamerSessionSK.PublicKey.Bytes(true)
-	if !bytes.Equal(blamerSessionPK, blamerPrepProtocolMessage.PreparationMessage.SessionPk) {
+	if !bytes.Equal(blamerSessionPK, blamerPrepMsg.SessionPk) {
 		return false, errors.New("blame's session pubkey is invalid")
+	}
+
+	round1Message := protocolMessage.Round1Message
+
+	shareBytes, err := ecies.Decrypt(blamerSessionSK, round1Message.Shares[blamerOID])
+	if err != nil {
+		return true, nil
+	}
+	share := &sharing.ShamirShare{
+		Id:    blamerOID,
+		Value: shareBytes,
 	}
 
 	verifiers := new(sharing.FeldmanVerifier)
@@ -165,20 +177,8 @@ func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *Bl
 		verifiers.Commitments = append(verifiers.Commitments, commitment)
 	}
 
-	shareBytes, err := ecies.Decrypt(blamerSessionSK, round1Message.Shares[blamerOID])
-	if err != nil {
-		return true, nil
-	}
-
-	share := &sharing.ShamirShare{
-		Id:    blamerOID,
-		Value: shareBytes,
-	}
-
-	if err = verifiers.Verify(share); err != nil {
-		return true, nil
-	}
-	return false, err
+	// verification fails -> blame is valid
+	return verifiers.Verify(share) != nil, nil
 }
 
 // processBlameTypeInconsistentMessage verifies blame of inconsisstent message
@@ -192,7 +192,7 @@ func (fr *FROST) processBlameTypeInconsistentMessage(blameMessage *BlameMessage)
 		return false, errors.New("invalid blame data")
 	}
 
-	signedMsg1, protocolMessage1, err := fr.decodeMessage(blameMessage.BlameData[0])
+	signedMsg1, protocolMessage1, err := decodeMessage(blameMessage.BlameData[0])
 
 	if err != nil {
 		return false, err
@@ -202,7 +202,7 @@ func (fr *FROST) processBlameTypeInconsistentMessage(blameMessage *BlameMessage)
 		return false, errors.New("invalid protocol message")
 	}
 
-	signedMsg2, protocolMessage2, err := fr.decodeMessage(blameMessage.BlameData[1])
+	signedMsg2, protocolMessage2, err := decodeMessage(blameMessage.BlameData[1])
 
 	if err != nil {
 		return false, err
@@ -232,7 +232,7 @@ func (fr *FROST) processBlameTypeInvalidMessage(blameMessage *BlameMessage) (boo
 	if len(blameMessage.BlameData) != 1 {
 		return false, errors.New("invalid blame data")
 	}
-	signedMsg, pMsg, err := fr.decodeMessage(blameMessage.BlameData[0])
+	signedMsg, pMsg, err := decodeMessage(blameMessage.BlameData[0])
 	if err != nil {
 		return false, err
 	} else if err := fr.validateSignedMessage(signedMsg); err != nil {

@@ -24,7 +24,7 @@ func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOu
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
-	for peerOpID, dkgMessage := range fr.state.msgs[Round1] {
+	for peerOpID, dkgMessage := range fr.state.msgContainer.AllMessagesForRound(Round1) {
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(dkgMessage.Message.Data); err != nil {
 			return false, nil, errors.Wrap(err, "failed to decode protocol msg")

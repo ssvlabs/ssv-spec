@@ -37,14 +37,14 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 
 	operatorPubKeys := make(map[types.OperatorID]*bls.PublicKey)
 	for _, operatorID := range fr.config.operators {
-		protocolMessage := &ProtocolMsg{}
-		if err := protocolMessage.Decode(fr.state.msgs[Round2][operatorID].Message.Data); err != nil {
-			return false, nil, errors.Wrap(err, "failed to decode protocol msg")
+		msg, err := fr.state.msgContainer.GetRound2Msg(operatorID)
+		if err != nil {
+			return false, nil, errors.Wrap(err, "failed to retrieve round2 msg")
 		}
 
 		// set vk and secret share to output for this participant
 		if operatorID == uint32(fr.config.operatorID) {
-			out.ValidatorPK = protocolMessage.Round2Message.Vk
+			out.ValidatorPK = msg.Vk
 			sk := &bls.SecretKey{}
 			if err := sk.Deserialize(fr.state.participant.SkShare.Bytes()); err != nil {
 				return false, nil, err
@@ -54,7 +54,7 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 
 		// set operator public key for all operators
 		pk := &bls.PublicKey{}
-		if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
+		if err := pk.Deserialize(msg.VkShare); err != nil {
 			return false, nil, err
 		}
 		operatorPubKeys[types.OperatorID(operatorID)] = pk
@@ -124,14 +124,13 @@ func (fr *FROST) getXVec(operators []uint32) ([]bls.Fr, error) {
 
 func (fr *FROST) getYVec(operators []uint32) ([]bls.G1, error) {
 	yVec := make([]bls.G1, 0)
-	for _, operator := range operators {
-		protocolMessage := &ProtocolMsg{}
-		if err := protocolMessage.Decode(fr.state.msgs[Round2][operator].Message.Data); err != nil {
-			return nil, errors.Wrap(err, "failed to decode protocol msg")
+	for _, operatorID := range operators {
+		msg, err := fr.state.msgContainer.GetRound2Msg(operatorID)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to retrieve round2 msg")
 		}
-
 		pk := &bls.PublicKey{}
-		if err := pk.Deserialize(protocolMessage.Round2Message.VkShare); err != nil {
+		if err := pk.Deserialize(msg.VkShare); err != nil {
 			return nil, errors.Wrap(err, "failed to deserialize public key")
 		}
 		y := bls.CastFromPublicKey(pk)

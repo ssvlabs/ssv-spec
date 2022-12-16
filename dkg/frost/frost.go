@@ -75,7 +75,7 @@ type ProtocolState struct {
 	currentRound   ProtocolRound
 	participant    *frost.DkgParticipant
 	sessionSK      *ecies.PrivateKey
-	msgs           ProtocolMessageStore
+	msgContainer   *MsgContainer
 	operatorShares map[uint32]*bls.SecretKey
 }
 
@@ -98,35 +98,6 @@ var rounds = []ProtocolRound{
 	Round2,
 	KeygenOutput,
 	Blame,
-}
-
-// ProtocolMessageStore stores incoming messages by round from all operators
-type ProtocolMessageStore map[ProtocolRound]map[uint32]*dkg.SignedMessage
-
-func newProtocolMessageStore() ProtocolMessageStore {
-	m := make(map[ProtocolRound]map[uint32]*dkg.SignedMessage)
-	for _, round := range rounds {
-		m[round] = make(map[uint32]*dkg.SignedMessage)
-	}
-	return m
-}
-
-func (msgStore ProtocolMessageStore) saveMessage(round ProtocolRound, msg *dkg.SignedMessage) (existingMessage *dkg.SignedMessage, err error) {
-	existingMessage, exists := msgStore[round][uint32(msg.Signer)]
-	if exists {
-		return existingMessage, errors.New("msg already exists")
-	}
-	msgStore[round][uint32(msg.Signer)] = msg
-	return nil, nil
-}
-
-func (msgStore ProtocolMessageStore) allMessagesReceivedFor(round ProtocolRound, operators []uint32) bool {
-	for _, operatorID := range operators {
-		if _, ok := msgStore[round][operatorID]; !ok {
-			return false
-		}
-	}
-	return true
 }
 
 // New creates a new protocol instance for new keygen
@@ -181,7 +152,7 @@ func newProtocol(network dkg.Network, signer types.DKGSigner, storage dkg.Storag
 		config:  config,
 		state: &ProtocolState{
 			currentRound:   Uninitialized,
-			msgs:           newProtocolMessageStore(),
+			msgContainer:   newMsgContainer(),
 			operatorShares: make(map[uint32]*bls.SecretKey),
 		},
 	}
@@ -244,7 +215,7 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolOutc
 	}
 
 	// store incoming message unless it already exists, then check for blame
-	existingMessage, err := fr.state.msgs.saveMessage(protocolMessage.Round, msg)
+	existingMessage, err := fr.state.msgContainer.SaveMsg(protocolMessage.Round, msg)
 	if err != nil && !haveSameRoot(existingMessage, msg) {
 		return fr.createAndBroadcastBlameOfInconsistentMessage(existingMessage, msg)
 	}
@@ -269,9 +240,9 @@ func (fr *FROST) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolOutc
 func (fr *FROST) canProceedThisRound() bool {
 	// Note: for Resharing, Preparation (New Committee) -> Round1 (Old Committee) -> Round2 (New Committee)
 	if fr.config.isResharing() && fr.state.currentRound == Round1 {
-		return fr.state.msgs.allMessagesReceivedFor(Round1, fr.config.operatorsOld)
+		return fr.state.msgContainer.allMessagesReceivedFor(Round1, fr.config.operatorsOld)
 	}
-	return fr.state.msgs.allMessagesReceivedFor(fr.state.currentRound, fr.config.operators)
+	return fr.state.msgContainer.allMessagesReceivedFor(fr.state.currentRound, fr.config.operators)
 }
 
 func (fr *FROST) needToRunCurrentRound() bool {
