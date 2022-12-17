@@ -10,7 +10,7 @@ import (
 
 // processRound2 verifies incoming shares from all operators and broadcasts round2
 // message with validatorPK and its public key
-func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
+func (fr *Instance) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {
 		return false, nil, nil
@@ -55,18 +55,18 @@ func (fr *FROST) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOu
 		bcast[peerOpID] = bcastMessage
 
 		// prepare p2p message
-		if uint32(fr.config.operatorID) == peerOpID {
+		if uint32(fr.instanceParams.operatorID) == peerOpID {
 			continue
 		}
 
-		encryptedShare := protocolMessage.Round1Message.Shares[uint32(fr.config.operatorID)]
+		encryptedShare := protocolMessage.Round1Message.Shares[uint32(fr.instanceParams.operatorID)]
 		shareBytes, err := ecies.Decrypt(fr.state.sessionSK, encryptedShare)
 		if err != nil {
 			return fr.createAndBroadcastBlameOfInvalidShare(peerOpID)
 
 		}
 		share := &sharing.ShamirShare{
-			Id:    uint32(fr.config.operatorID),
+			Id:    uint32(fr.instanceParams.operatorID),
 			Value: shareBytes,
 		}
 		if err = verifiers.Verify(share); err != nil {

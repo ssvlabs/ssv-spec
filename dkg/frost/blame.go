@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
+func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
 
 	existingMessageBytes, err := existingMessage.Encode()
@@ -44,7 +44,7 @@ func (fr *FROST) createAndBroadcastBlameOfInconsistentMessage(existingMessage, n
 	}, nil
 }
 
-func (fr *FROST) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
+func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
 
 	round1Msg, err := fr.state.msgContainer.GetSignedMsg(Round1, culpritOID)
@@ -77,7 +77,7 @@ func (fr *FROST) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool,
 	}, nil
 }
 
-func (fr *FROST) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, message *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
+func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, message *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
 
 	bytes, err := message.Encode()
@@ -108,7 +108,7 @@ func (fr *FROST) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, mess
 	}, nil
 }
 
-func (fr *FROST) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, signedMessage *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
+func (fr *Instance) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, signedMessage *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 	fr.state.currentRound = Blame
 
 	var valid bool
@@ -130,7 +130,7 @@ func (fr *FROST) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, sign
 
 // processBlameTypeInvalidShare checks if blame message for invalid share is
 // valid by verifying commitments in blame message
-func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *BlameMessage) (bool /*valid*/, error) {
+func (fr *Instance) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *BlameMessage) (bool /*valid*/, error) {
 	if err := blameMessage.Validate(); err != nil {
 		return false, errors.Wrap(err, "invalid blame message")
 	}
@@ -183,7 +183,7 @@ func (fr *FROST) processBlameTypeInvalidShare(blamerOID uint32, blameMessage *Bl
 
 // processBlameTypeInconsistentMessage verifies blame of inconsisstent message
 // type by comparing roots of both messages
-func (fr *FROST) processBlameTypeInconsistentMessage(blameMessage *BlameMessage) (bool /*valid*/, error) {
+func (fr *Instance) processBlameTypeInconsistentMessage(blameMessage *BlameMessage) (bool /*valid*/, error) {
 	if err := blameMessage.Validate(); err != nil {
 		return false, errors.Wrap(err, "invalid blame message")
 	}
@@ -225,7 +225,7 @@ func (fr *FROST) processBlameTypeInconsistentMessage(blameMessage *BlameMessage)
 
 // processBlameTypeInvalidMessage verifies blame of invalid message type by
 // validating signed message and protocol message
-func (fr *FROST) processBlameTypeInvalidMessage(blameMessage *BlameMessage) (bool /*valid*/, error) {
+func (fr *Instance) processBlameTypeInvalidMessage(blameMessage *BlameMessage) (bool /*valid*/, error) {
 	if err := blameMessage.Validate(); err != nil {
 		return false, errors.Wrap(err, "invalid blame message")
 	}

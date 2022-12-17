@@ -11,7 +11,7 @@ import (
 )
 
 // processKeygenOutput verifies validatorPK from round2 and returns protocol outcome
-func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
+func (fr *Instance) processKeygenOutput() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {
 		return false, nil, nil
@@ -32,18 +32,18 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 
 	// prepare keygen output
 	out := &dkg.KeyGenOutput{
-		Threshold: uint64(fr.config.threshold),
+		Threshold: uint64(fr.instanceParams.threshold),
 	}
 
 	operatorPubKeys := make(map[types.OperatorID]*bls.PublicKey)
-	for _, operatorID := range fr.config.operators {
+	for _, operatorID := range fr.instanceParams.operators {
 		msg, err := fr.state.msgContainer.GetRound2Msg(operatorID)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to retrieve round2 msg")
 		}
 
 		// set vk and secret share to output for this participant
-		if operatorID == uint32(fr.config.operatorID) {
+		if operatorID == uint32(fr.instanceParams.operatorID) {
 			out.ValidatorPK = msg.Vk
 			sk := &bls.SecretKey{}
 			if err := sk.Deserialize(fr.state.participant.SkShare.Bytes()); err != nil {
@@ -71,7 +71,7 @@ func (fr *FROST) processKeygenOutput() (finished bool, protocolOutcome *dkg.Prot
 
 // verifyShares reconstructs Vk over a sliding window of t (threshold) operators
 // and checks if reconstructed Vk is consistent
-func (fr *FROST) verifyShares() (*bls.G1, error) {
+func (fr *Instance) verifyShares() (*bls.G1, error) {
 
 	var (
 		quorumStart       = 0
@@ -79,8 +79,8 @@ func (fr *FROST) verifyShares() (*bls.G1, error) {
 	)
 
 	// Sliding window of quorum 0...threshold until n-threshold...n
-	for quorumEnd := int(fr.config.threshold); quorumEnd < len(fr.config.operators); quorumEnd++ {
-		quorum := fr.config.operators[quorumStart:quorumEnd]
+	for quorumEnd := int(fr.instanceParams.threshold); quorumEnd < len(fr.instanceParams.operators); quorumEnd++ {
+		quorum := fr.instanceParams.operators[quorumStart:quorumEnd]
 		currReconstructed, err := fr.reconstructValidatorPK(quorum)
 		if err != nil {
 			return nil, err
@@ -94,7 +94,7 @@ func (fr *FROST) verifyShares() (*bls.G1, error) {
 	return prevReconstructed, nil
 }
 
-func (fr *FROST) reconstructValidatorPK(operators []uint32) (*bls.G1, error) {
+func (fr *Instance) reconstructValidatorPK(operators []uint32) (*bls.G1, error) {
 	xVec, err := fr.getXVec(operators)
 	if err != nil {
 		return nil, err
@@ -112,7 +112,7 @@ func (fr *FROST) reconstructValidatorPK(operators []uint32) (*bls.G1, error) {
 	return reconstructed, nil
 }
 
-func (fr *FROST) getXVec(operators []uint32) ([]bls.Fr, error) {
+func (fr *Instance) getXVec(operators []uint32) ([]bls.Fr, error) {
 	xVec := make([]bls.Fr, 0)
 	for _, operator := range operators {
 		x := bls.Fr{}
@@ -122,7 +122,7 @@ func (fr *FROST) getXVec(operators []uint32) ([]bls.Fr, error) {
 	return xVec, nil
 }
 
-func (fr *FROST) getYVec(operators []uint32) ([]bls.G1, error) {
+func (fr *Instance) getYVec(operators []uint32) ([]bls.G1, error) {
 	yVec := make([]bls.G1, 0)
 	for _, operatorID := range operators {
 		msg, err := fr.state.msgContainer.GetRound2Msg(operatorID)

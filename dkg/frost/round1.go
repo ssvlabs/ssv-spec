@@ -8,7 +8,7 @@ import (
 
 // processRound1 splits secret into shares between ooperators and broadcasts round1
 // message with encrypted shares, commitments and Schnorr proof values
-func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
+func (fr *Instance) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {
 		return false, nil, nil
@@ -20,7 +20,7 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 	}
 
 	var skI []byte // secret to be shared, nil if new keygen, lagrange interpolation of own part of secret if resharing
-	if fr.config.isResharing() {
+	if fr.instanceParams.isResharing() {
 		if skI, err = fr.partialInterpolate(); err != nil {
 			return false, nil, err
 		}
@@ -39,8 +39,8 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 
 	// get shares encrypted by operators
 	shares := make(map[uint32][]byte)
-	for _, operatorID := range fr.config.operators {
-		if uint32(fr.config.operatorID) == operatorID {
+	for _, operatorID := range fr.instanceParams.operators {
+		if uint32(fr.instanceParams.operatorID) == operatorID {
 			continue
 		}
 
@@ -72,17 +72,17 @@ func (fr *FROST) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOu
 	return false, nil, err
 }
 
-func (fr *FROST) partialInterpolate() ([]byte, error) {
-	if !fr.config.isResharing() {
+func (fr *Instance) partialInterpolate() ([]byte, error) {
+	if !fr.instanceParams.isResharing() {
 		return nil, nil
 	}
 
-	indices := make([]bls.Fr, fr.config.oldKeyGenOutput.Threshold)
-	values := make([]bls.Fr, fr.config.oldKeyGenOutput.Threshold)
-	for i, id := range fr.config.operatorsOld {
+	indices := make([]bls.Fr, fr.instanceParams.oldKeyGenOutput.Threshold)
+	values := make([]bls.Fr, fr.instanceParams.oldKeyGenOutput.Threshold)
+	for i, id := range fr.instanceParams.operatorsOld {
 		(&indices[i]).SetInt64(int64(id))
-		if types.OperatorID(id) == fr.config.operatorID {
-			err := (&values[i]).Deserialize(fr.config.oldKeyGenOutput.Share.Serialize())
+		if types.OperatorID(id) == fr.instanceParams.operatorID {
+			err := (&values[i]).Deserialize(fr.instanceParams.oldKeyGenOutput.Share.Serialize())
 			if err != nil {
 				return nil, err
 			}
