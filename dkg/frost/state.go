@@ -39,6 +39,27 @@ func (c *Config) GetStorage() dkg.Storage {
 	return c.storage
 }
 
+// ProtocolRound is enum for all the rounds in the protocol
+type ProtocolRound int
+
+const (
+	Uninitialized ProtocolRound = iota
+	Preparation
+	Round1
+	Round2
+	KeygenOutput
+	Blame
+)
+
+var rounds = []ProtocolRound{
+	Uninitialized,
+	Preparation,
+	Round1,
+	Round2,
+	KeygenOutput,
+	Blame,
+}
+
 // State maintains value for current round, messages, sessions key and
 // operator shares. these properties will change over the runtime of the protocol
 type State struct {
@@ -47,6 +68,14 @@ type State struct {
 	sessionSK      *ecies.PrivateKey
 	msgContainer   IMsgContainer
 	operatorShares map[uint32]*bls.SecretKey
+}
+
+func initState() *State {
+	return &State{
+		currentRound:   Uninitialized,
+		msgContainer:   newMsgContainer(),
+		operatorShares: make(map[uint32]*bls.SecretKey),
+	}
 }
 
 func (state *State) encryptByOperatorID(operatorID uint32, data []byte) ([]byte, error) {
@@ -59,4 +88,37 @@ func (state *State) encryptByOperatorID(operatorID uint32, data []byte) ([]byte,
 		return nil, err
 	}
 	return ecies.Encrypt(sessionPK, data)
+}
+
+// InstanceParams contains properties needed to start the protocol like requestID,
+// operatorID, threshold, operator list etc.
+type InstanceParams struct {
+	identifier      dkg.RequestID
+	threshold       uint32
+	operatorID      types.OperatorID
+	operators       []uint32
+	operatorsOld    []uint32
+	oldKeyGenOutput *dkg.KeyGenOutput
+}
+
+func (c *InstanceParams) isResharing() bool {
+	return len(c.operatorsOld) > 0
+}
+
+func (c *InstanceParams) inOldCommittee() bool {
+	for _, id := range c.operatorsOld {
+		if types.OperatorID(id) == c.operatorID {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *InstanceParams) inNewCommittee() bool {
+	for _, id := range c.operators {
+		if types.OperatorID(id) == c.operatorID {
+			return true
+		}
+	}
+	return false
 }

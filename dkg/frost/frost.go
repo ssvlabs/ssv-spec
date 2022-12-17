@@ -10,7 +10,6 @@ import (
 	ecies "github.com/ecies/go/v2"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
 
@@ -33,60 +32,6 @@ type Instance struct {
 	config *Config
 
 	instanceParams InstanceParams
-}
-
-// InstanceParams contains properties needed to start the protocol like requestID,
-// operatorID, threshold, operator list etc.
-type InstanceParams struct {
-	identifier      dkg.RequestID
-	threshold       uint32
-	operatorID      types.OperatorID
-	operators       []uint32
-	operatorsOld    []uint32
-	oldKeyGenOutput *dkg.KeyGenOutput
-}
-
-func (c *InstanceParams) isResharing() bool {
-	return len(c.operatorsOld) > 0
-}
-
-func (c *InstanceParams) inOldCommittee() bool {
-	for _, id := range c.operatorsOld {
-		if types.OperatorID(id) == c.operatorID {
-			return true
-		}
-	}
-	return false
-}
-
-func (c *InstanceParams) inNewCommittee() bool {
-	for _, id := range c.operators {
-		if types.OperatorID(id) == c.operatorID {
-			return true
-		}
-	}
-	return false
-}
-
-// ProtocolRound is enum for all the rounds in the protocol
-type ProtocolRound int
-
-const (
-	Uninitialized ProtocolRound = iota
-	Preparation
-	Round1
-	Round2
-	KeygenOutput
-	Blame
-)
-
-var rounds = []ProtocolRound{
-	Uninitialized,
-	Preparation,
-	Round1,
-	Round2,
-	KeygenOutput,
-	Blame,
 }
 
 // New creates a new protocol instance for new keygen
@@ -140,11 +85,7 @@ func newProtocol(network dkg.Network, signer types.DKGSigner, storage dkg.Storag
 			signer:  signer,
 			storage: storage,
 		},
-		state: &State{
-			currentRound:   Uninitialized,
-			msgContainer:   newMsgContainer(),
-			operatorShares: make(map[uint32]*bls.SecretKey),
-		},
+		state:          initState(),
 		instanceParams: instanceParams,
 	}
 }
