@@ -29,11 +29,10 @@ func init() {
 // threshold, operator list etc and state contains properties that changes over the
 // runtime of the protocol like current round, msgs etc
 type Instance struct {
-	network        dkg.Network
-	signer         types.DKGSigner
-	storage        dkg.Storage
+	state  *State
+	config *Config
+
 	instanceParams InstanceParams
-	state          *State
 }
 
 // InstanceParams contains properties needed to start the protocol like requestID,
@@ -67,28 +66,6 @@ func (c *InstanceParams) inNewCommittee() bool {
 		}
 	}
 	return false
-}
-
-// State maintains value for current round, messages, sessions key and
-// operator shares. these properties will change over the runtime of the protocol
-type State struct {
-	currentRound   ProtocolRound
-	participant    *frost.DkgParticipant
-	sessionSK      *ecies.PrivateKey
-	msgContainer   IMsgContainer
-	operatorShares map[uint32]*bls.SecretKey
-}
-
-func (state *State) encryptByOperatorID(operatorID uint32, data []byte) ([]byte, error) {
-	msg, err := state.msgContainer.GetPreparationMsg(operatorID)
-	if err != nil {
-		return nil, errors.Wrapf(err, "no session pk found for the operator")
-	}
-	sessionPK, err := ecies.NewPublicKeyFromBytes(msg.SessionPk)
-	if err != nil {
-		return nil, err
-	}
-	return ecies.Encrypt(sessionPK, data)
 }
 
 // ProtocolRound is enum for all the rounds in the protocol
@@ -158,15 +135,17 @@ func NewResharing(
 
 func newProtocol(network dkg.Network, signer types.DKGSigner, storage dkg.Storage, instanceParams InstanceParams) dkg.Protocol {
 	return &Instance{
-		network:        network,
-		signer:         signer,
-		storage:        storage,
-		instanceParams: instanceParams,
+		config: &Config{
+			network: network,
+			signer:  signer,
+			storage: storage,
+		},
 		state: &State{
 			currentRound:   Uninitialized,
 			msgContainer:   newMsgContainer(),
 			operatorShares: make(map[uint32]*bls.SecretKey),
 		},
+		instanceParams: instanceParams,
 	}
 }
 
@@ -204,8 +183,11 @@ func (fr *Instance) Start() error {
 			SessionPk: k.PublicKey.Bytes(true),
 		},
 	}
-	_, err = fr.broadcastDKGMessage(msg)
-	return err
+	bcastMsg, err := fr.saveSignedMsg(msg)
+	if err != nil {
+		return err
+	}
+	return fr.config.network.BroadcastDKGMessage(bcastMsg)
 }
 
 // ProcessMsg  decodes and validates incoming message. It then check for blame
@@ -276,7 +258,7 @@ func (fr *Instance) validateSignedMessage(msg *dkg.SignedMessage) error {
 		return errors.New("got mismatching identifier")
 	}
 
-	found, operator, err := fr.storage.GetDKGOperator(msg.Signer)
+	found, operator, err := fr.config.GetStorage().GetDKGOperator(msg.Signer)
 	if !found {
 		return errors.New("unable to find signer")
 	}
@@ -316,7 +298,7 @@ func (fr *Instance) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error
 		Signer: fr.instanceParams.operatorID,
 	}
 
-	exist, operator, err := fr.storage.GetDKGOperator(fr.instanceParams.operatorID)
+	exist, operator, err := fr.config.GetStorage().GetDKGOperator(fr.instanceParams.operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -324,7 +306,7 @@ func (fr *Instance) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error
 		return nil, errors.Errorf("operator with id %d not found", fr.instanceParams.operatorID)
 	}
 
-	sig, err := fr.signer.SignDKGOutput(bcastMessage, operator.ETHAddress)
+	sig, err := fr.config.GetSigner().SignDKGOutput(bcastMessage, operator.ETHAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -332,7 +314,7 @@ func (fr *Instance) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error
 	return bcastMessage, nil
 }
 
-func (fr *Instance) broadcastDKGMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
+func (fr *Instance) saveSignedMsg(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
 	bcastMessage, err := fr.toSignedMessage(msg)
 	if err != nil {
 		return nil, err
@@ -340,5 +322,5 @@ func (fr *Instance) broadcastDKGMessage(msg *ProtocolMsg) (*dkg.SignedMessage, e
 	if _, err = fr.state.msgContainer.SaveMsg(fr.state.currentRound, bcastMessage); err != nil {
 		return nil, err
 	}
-	return bcastMessage, fr.network.BroadcastDKGMessage(bcastMessage)
+	return bcastMessage, nil
 }

@@ -88,6 +88,9 @@ func (fr *Instance) processRound2() (finished bool, protocolOutcome *dkg.Protoco
 		},
 	}
 
-	_, err = fr.broadcastDKGMessage(msg)
-	return false, nil, err
+	bcastMsg, err := fr.saveSignedMsg(msg)
+	if err != nil {
+		return false, nil, err
+	}
+	return false, nil, fr.config.network.BroadcastDKGMessage(bcastMsg)
 }

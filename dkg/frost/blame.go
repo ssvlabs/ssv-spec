@@ -31,15 +31,18 @@ func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage
 		},
 	}
 
-	signedMessage, err := fr.broadcastDKGMessage(msg)
+	bcastMsg, err := fr.saveSignedMsg(msg)
 	if err != nil {
+		return false, nil, err
+	}
+	if err := fr.config.network.BroadcastDKGMessage(bcastMsg); err != nil {
 		return false, nil, err
 	}
 
 	return true, &dkg.ProtocolOutcome{
 		BlameOutput: &dkg.BlameOutput{
 			Valid:        true,
-			BlameMessage: signedMessage,
+			BlameMessage: bcastMsg,
 		},
 	}, nil
 }
@@ -65,14 +68,19 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bo
 			BlamerSessionSk:  fr.state.sessionSK.Bytes(),
 		},
 	}
-	signedMessage, err := fr.broadcastDKGMessage(msg)
+
+	bcastMsg, err := fr.saveSignedMsg(msg)
 	if err != nil {
 		return false, nil, err
 	}
+	if err := fr.config.network.BroadcastDKGMessage(bcastMsg); err != nil {
+		return false, nil, err
+	}
+
 	return true, &dkg.ProtocolOutcome{
 		BlameOutput: &dkg.BlameOutput{
 			Valid:        true,
-			BlameMessage: signedMessage,
+			BlameMessage: bcastMsg,
 		},
 	}, nil
 }
@@ -95,15 +103,18 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, m
 		},
 	}
 
-	signedMsg, err := fr.broadcastDKGMessage(msg)
+	bcastMsg, err := fr.saveSignedMsg(msg)
 	if err != nil {
+		return false, nil, err
+	}
+	if err := fr.config.network.BroadcastDKGMessage(bcastMsg); err != nil {
 		return false, nil, err
 	}
 
 	return true, &dkg.ProtocolOutcome{
 		BlameOutput: &dkg.BlameOutput{
 			Valid:        true,
-			BlameMessage: signedMsg,
+			BlameMessage: bcastMsg,
 		},
 	}, nil
 }
