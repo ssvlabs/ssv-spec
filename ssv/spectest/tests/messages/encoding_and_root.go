@@ -8,7 +8,7 @@ import (
 func EncodingAndRoot() *MsgSpecTest {
 	msg := &ssv.SignedPartialSignatureMessage{
 		Signature: make([]byte, 96),
-		Signer:    11,
+		Signer:    12,
 		Message: ssv.PartialSignatureMessages{
 			Type: ssv.PostConsensusPartialSig,
 			Messages: []*ssv.PartialSignatureMessage{

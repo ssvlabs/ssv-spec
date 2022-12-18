@@ -7,11 +7,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// UnknownBeaconSigner tests PartialSignatureMessage unknown signer
-func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
+// InconsistentBeaconSigner tests a beacon signer != SignedPartialSignatureMessage.signer
+func InconsistentBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus unknown beacon signer",
+		Name: "pre consensus inconsistent beacon signer",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
@@ -24,7 +24,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: could not verify Beacon partial Signature: unknown signer",
+				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: inconsistent signers",
 			},
 			{
 				Name:   "aggregator selection proof",
@@ -37,7 +37,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: could not verify Beacon partial Signature: unknown signer",
+				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: inconsistent signers",
 			},
 			{
 				Name:   "randao",
@@ -50,7 +50,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: could not verify Beacon partial Signature: unknown signer",
+				ExpectedError: "failed processing randao message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: inconsistent signers",
 			},
 		},
 	}
