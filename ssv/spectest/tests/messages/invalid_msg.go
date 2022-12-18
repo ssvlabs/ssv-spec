@@ -16,6 +16,6 @@ func InvalidMsg() *MsgSpecTest {
 	return &MsgSpecTest{
 		Name:          "invalid message",
 		Messages:      []*ssv.SignedPartialSignatureMessage{msg},
-		ExpectedError: "message invalid: PartialSignatureMessage sig invalid",
+		ExpectedError: "inconsistent signers",
 	}
 }

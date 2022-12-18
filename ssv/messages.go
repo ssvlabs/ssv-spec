@@ -199,5 +199,12 @@ func (spcsm *SignedPartialSignatureMessage) Validate() error {
 	if spcsm.Signer == 0 {
 		return errors.New("signer ID 0 not allowed")
 	}
+
+	for _, msg := range spcsm.Message.Messages {
+		if spcsm.Signer != msg.Signer {
+			return errors.New("inconsistent signers")
+		}
+	}
+
 	return spcsm.Message.Validate()
 }

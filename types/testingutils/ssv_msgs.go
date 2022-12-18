@@ -330,31 +330,39 @@ var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.Ope
 }
 
 var PreConsensusRandaoMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, 1)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 1, false)
 }
 
 // PreConsensusRandaoNextEpochMsg testing for a second duty start
 var PreConsensusRandaoNextEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch2, 1)
+	return randaoMsg(sk, id, false, TestingDutyEpoch2, 1, false)
 }
 
 var PreConsensusRandaoDifferentEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch+1, 1)
+	return randaoMsg(sk, id, false, TestingDutyEpoch+1, 1, false)
 }
 
 var PreConsensusRandaoTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, 2)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 2, false)
 }
 
 var PreConsensusRandaoTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, 0)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 0, false)
 }
 
 var PreConsensusRandaoNoMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, 0)
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 0, false)
 }
 
-var PreConsensusRandaoDifferentSignerMsg = func(msgSigner, randaoSigner *bls.SecretKey, msgSignerID, randaoSignerID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+var PreConsensusRandaoWrongBeaconSigMsg = func(sk *bls.SecretKey, id types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return randaoMsg(sk, id, false, TestingDutyEpoch, 1, true)
+}
+
+var PreConsensusRandaoDifferentSignerMsg = func(
+	msgSigner, randaoSigner *bls.SecretKey,
+	msgSignerID,
+	randaoSignerID types.OperatorID,
+) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(TestingDutyEpoch, types.DomainRandao)
@@ -384,11 +392,15 @@ var randaoMsg = func(
 	wrongRoot bool,
 	epoch spec.Epoch,
 	msgCnt int,
+	wrongBeaconSig bool,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(epoch, types.DomainRandao)
 	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(epoch), d, sk.GetPublicKey().Serialize())
+	if wrongBeaconSig {
+		signed, root, _ = signer.SignBeaconObject(types.SSZUint64(TestingDutyEpoch), d, Testing7SharesSet().ValidatorPK.Serialize())
+	}
 
 	msgs := ssv.PartialSignatureMessages{
 		Type:     ssv.RandaoPartialSig,
@@ -418,24 +430,28 @@ var PreConsensusSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, 
 	return PreConsensusCustomSlotSelectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot)
 }
 
+var PreConsensusSelectionProofWrongBeaconSigMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, 1, true)
+}
+
 var PreConsensusSelectionProofNextEpochMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot2, TestingDutySlot2, 1)
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot2, TestingDutySlot2, 1, false)
 }
 
 var PreConsensusSelectionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, 3)
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, 3, false)
 }
 
 var PreConsensusSelectionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, 0)
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, 0, false)
 }
 
 var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot spec.Slot) *ssv.SignedPartialSignatureMessage {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, 1)
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, 1, false)
 }
 
 var PreConsensusWrongMsgSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, 1)
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, 1, false)
 }
 
 var selectionProofMsg = func(
@@ -446,11 +462,15 @@ var selectionProofMsg = func(
 	slot spec.Slot,
 	msgSlot spec.Slot,
 	msgCnt int,
+	wrongBeaconSig bool,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(1, types.DomainSelectionProof)
 	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(slot), d, beaconsk.GetPublicKey().Serialize())
+	if wrongBeaconSig {
+		signed, root, _ = signer.SignBeaconObject(types.SSZUint64(slot), d, Testing7SharesSet().ValidatorPK.Serialize())
+	}
 
 	_msgs := make([]*ssv.PartialSignatureMessage, 0)
 	for i := 0; i < msgCnt; i++ {
@@ -649,24 +669,28 @@ var PreConsensusContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgI
 	return PreConsensusCustomSlotContributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot)
 }
 
+var PreConsensusContributionProofWrongBeaconSigMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, false, true)
+}
+
 var PreConsensusContributionProofNextEpochMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot2, TestingDutySlot2, false)
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot2, TestingDutySlot2, false, false)
 }
 
 var PreConsensusCustomSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot spec.Slot) *ssv.SignedPartialSignatureMessage {
-	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, false)
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, false, false)
 }
 
 var PreConsensusWrongMsgSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, false)
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, false, false)
 }
 
 var PreConsensusWrongOrderContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, true)
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, true, false)
 }
 
 var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	ret := contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, false)
+	ret := contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, false, false)
 	msg := &ssv.PartialSignatureMessages{
 		Type:     ssv.ContributionProofs,
 		Messages: append(ret.Message.Messages, ret.Message.Messages[0]),
@@ -681,7 +705,7 @@ var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.Sec
 }
 
 var PreConsensusContributionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	ret := contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, false)
+	ret := contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, false, false)
 	msg := &ssv.PartialSignatureMessages{
 		Type:     ssv.ContributionProofs,
 		Messages: ret.Message.Messages[0:2],
@@ -701,6 +725,7 @@ var contributionProofMsg = func(
 	slot spec.Slot,
 	msgSlot spec.Slot,
 	wrongMsgOrder bool,
+	wrongBeaconSig bool,
 ) *ssv.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -714,6 +739,10 @@ var contributionProofMsg = func(
 			SubcommitteeIndex: subnet,
 		}
 		sig, root, _ := signer.SignBeaconObject(data, d, beaconsk.GetPublicKey().Serialize())
+		if wrongBeaconSig {
+			sig, root, _ = signer.SignBeaconObject(data, d, Testing7SharesSet().ValidatorPK.Serialize())
+		}
+
 		msg := &ssv.PartialSignatureMessage{
 			PartialSignature: sig[:],
 			SigningRoot:      ensureRoot(root),
@@ -790,7 +819,7 @@ var PostConsensusWrongSigSyncCommitteeContributionMsg = func(sk *bls.SecretKey, 
 	return postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, false, true, false)
 }
 
-var PostConsensusSigSyncCommitteeContributionWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID, keySet *TestKeySet) *ssv.SignedPartialSignatureMessage {
+var PostConsensusSigSyncCommitteeContributionWrongSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID, keySet *TestKeySet) *ssv.SignedPartialSignatureMessage {
 	ret := postConsensusSyncCommitteeContributionMsg(sk, beaconSigner, TestingValidatorIndex, keySet, false, true, false)
 	ret.Signer = id
 	return ret

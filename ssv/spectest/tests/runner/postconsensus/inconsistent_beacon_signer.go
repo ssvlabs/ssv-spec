@@ -8,12 +8,12 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// UnknownBeaconSigner tests an unknown beacon signer
-func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
+// InconsistentBeaconSigner tests a beacon signer != SignedPartialSignatureMessage.signer
+func InconsistentBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "failed processing post consensus message: invalid post-consensus message: could not verify Beacon partial Signature: unknown signer"
+	expectedError := "failed processing post consensus message: invalid post-consensus message: SignedPartialSignatureMessage invalid: inconsistent signers"
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus unknown beacon signer",
+		Name: "post consensus inconsistent beacon signer",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -24,7 +24,7 @@ func UnknownBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongBeaconSignerMsg(ks.Shares[1], 1, 5, ks)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongSignerMsg(ks.Shares[1], 1, 5, ks)),
 				},
 				PostDutyRunnerStateRoot: "d12a562cba23fe156380cb61200ab8abe6aec9dd90a6842040b2ef57e50f26a2",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
