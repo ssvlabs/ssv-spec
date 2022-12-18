@@ -226,42 +226,17 @@ func (fr *Instance) validateSignedMessage(msg *dkg.SignedMessage) error {
 	return nil
 }
 
-func (fr *Instance) toSignedMessage(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
-	msgBytes, err := msg.Encode()
-	if err != nil {
-		return nil, err
-	}
-
-	bcastMessage := &dkg.SignedMessage{
-		Message: &dkg.Message{
-			MsgType:    dkg.ProtocolMsgType,
-			Identifier: fr.instanceParams.identifier,
-			Data:       msgBytes,
-		},
-		Signer: fr.instanceParams.operatorID,
-	}
-
-	exist, operator, err := fr.config.GetStorage().GetDKGOperator(fr.instanceParams.operatorID)
-	if err != nil {
-		return nil, err
-	}
-	if !exist {
-		return nil, errors.Errorf("operator with id %d not found", fr.instanceParams.operatorID)
-	}
-
-	sig, err := fr.config.GetSigner().SignDKGOutput(bcastMessage, operator.ETHAddress)
-	if err != nil {
-		return nil, err
-	}
-	bcastMessage.Signature = sig
-	return bcastMessage, nil
-}
-
 func (fr *Instance) saveSignedMsg(msg *ProtocolMsg) (*dkg.SignedMessage, error) {
-	bcastMessage, err := fr.toSignedMessage(msg)
+	bcastMessage, err := msg.ToSignedMessage(
+		fr.instanceParams.identifier,
+		fr.instanceParams.operatorID,
+		fr.config.GetStorage(),
+		fr.config.GetSigner(),
+	)
 	if err != nil {
 		return nil, err
 	}
+
 	if _, err = fr.state.msgContainer.SaveMsg(fr.state.currentRound, bcastMessage); err != nil {
 		return nil, err
 	}

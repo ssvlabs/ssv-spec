@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/types"
 	ecies "github.com/ecies/go/v2"
 	"github.com/pkg/errors"
 )
@@ -64,6 +65,37 @@ func (msg *ProtocolMsg) Validate() error {
 		return msg.Round2Message.Validate()
 	}
 	return nil
+}
+
+func (msg *ProtocolMsg) ToSignedMessage(id dkg.RequestID, operatorID types.OperatorID, storage dkg.Storage, signer types.DKGSigner) (*dkg.SignedMessage, error) {
+	msgBytes, err := msg.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	bcastMessage := &dkg.SignedMessage{
+		Message: &dkg.Message{
+			MsgType:    dkg.ProtocolMsgType,
+			Identifier: id,
+			Data:       msgBytes,
+		},
+		Signer: operatorID,
+	}
+
+	exist, operator, err := storage.GetDKGOperator(operatorID)
+	if err != nil {
+		return nil, err
+	}
+	if !exist {
+		return nil, errors.Errorf("operator with id %d not found", operatorID)
+	}
+
+	sig, err := signer.SignDKGOutput(bcastMessage, operator.ETHAddress)
+	if err != nil {
+		return nil, err
+	}
+	bcastMessage.Signature = sig
+	return bcastMessage, nil
 }
 
 // Encode returns a msg encoded bytes or error
