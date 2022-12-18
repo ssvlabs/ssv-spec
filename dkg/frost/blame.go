@@ -9,6 +9,9 @@ import (
 	"github.com/pkg/errors"
 )
 
+// createAndBroadcastBlameOfInconsistentMessage function creates a Protocol
+// Message to blame an inconsistent message, including the existing message and
+// the new message as blame data.
 func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
 
@@ -47,6 +50,9 @@ func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage
 	}, nil
 }
 
+// createAndBroadcastBlameOfInvalidShare function creates a Protocol
+// Message to blame an invalid share, including the round 1 message from culprit
+// operator
 func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
 
@@ -85,6 +91,9 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bo
 	}, nil
 }
 
+// createAndBroadcastBlameOfInvalidMessage function creates a Protocol Message to
+// blame an invalid message, including the operatorID of the culprit and the
+// received signed message.
 func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, message *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
 
@@ -119,6 +128,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, m
 	}, nil
 }
 
+// checkBlame checks validity of the blame message as per its blame type
 func (fr *Instance) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, signedMessage *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 	fr.state.currentRound = Blame
 

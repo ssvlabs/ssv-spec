@@ -10,7 +10,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-// processKeygenOutput verifies validatorPK from round2 and returns protocol outcome
+// processKeygenOutput function can be executed once all messages from round 2
+// have been received. It reconstructs the Vk using the received VkShares and
+// verifies that it is consistent. The keygen output is then created, including
+// the Validator PK, operator public keys, and the operator's own share, and
+// returned as a Protocol Outcome.
 func (fr *Instance) processKeygenOutput() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {

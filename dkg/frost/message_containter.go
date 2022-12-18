@@ -14,7 +14,7 @@ type IMsgContainer interface {
 	GetRound1Msg(operatorID uint32) (*Round1Message, error)
 	GetRound2Msg(operatorID uint32) (*Round2Message, error)
 	GetBlameMsg(operatorID uint32) (*BlameMessage, error)
-	GetMessageForRound(round ProtocolRound, operatorID uint32) (interface{}, error)
+	GetMessage(round ProtocolRound, operatorID uint32) (interface{}, error)
 	AllMessagesForRound(round ProtocolRound) map[uint32]*dkg.SignedMessage
 	AllMessagesReceivedFor(round ProtocolRound, operators []uint32) bool
 }
@@ -49,7 +49,7 @@ func (msgContainer *MsgContainer) GetSignedMsg(round ProtocolRound, operatorID u
 }
 
 func (msgContainer *MsgContainer) GetPreparationMsg(operatorID uint32) (*PreparationMessage, error) {
-	msg, err := msgContainer.GetMessageForRound(Preparation, operatorID)
+	msg, err := msgContainer.GetMessage(Preparation, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (msgContainer *MsgContainer) GetPreparationMsg(operatorID uint32) (*Prepara
 }
 
 func (msgContainer *MsgContainer) GetRound1Msg(operatorID uint32) (*Round1Message, error) {
-	msg, err := msgContainer.GetMessageForRound(Round1, operatorID)
+	msg, err := msgContainer.GetMessage(Round1, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (msgContainer *MsgContainer) GetRound1Msg(operatorID uint32) (*Round1Messag
 }
 
 func (msgContainer *MsgContainer) GetRound2Msg(operatorID uint32) (*Round2Message, error) {
-	msg, err := msgContainer.GetMessageForRound(Round2, operatorID)
+	msg, err := msgContainer.GetMessage(Round2, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (msgContainer *MsgContainer) GetRound2Msg(operatorID uint32) (*Round2Messag
 }
 
 func (msgContainer *MsgContainer) GetBlameMsg(operatorID uint32) (*BlameMessage, error) {
-	msg, err := msgContainer.GetMessageForRound(Blame, operatorID)
+	msg, err := msgContainer.GetMessage(Blame, operatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (msgContainer *MsgContainer) GetBlameMsg(operatorID uint32) (*BlameMessage,
 	return prepMsg, nil
 }
 
-func (msgContainer *MsgContainer) GetMessageForRound(round ProtocolRound, operatorID uint32) (interface{}, error) {
+func (msgContainer *MsgContainer) GetMessage(round ProtocolRound, operatorID uint32) (interface{}, error) {
 	msg, ok := msgContainer.msgs[round][operatorID]
 	if !ok {
 		return nil, ErrMsgNotFound{round: round, operatorID: operatorID}

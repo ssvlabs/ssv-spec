@@ -8,8 +8,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-// processRound2 verifies incoming shares from all operators and broadcasts round2
-// message with validatorPK and its public key
+// processRound2 can run once all the messages for round 1 are received. It
+// verifies shares from commitments using fieldman verifier (VSS). If the share
+// is invalid, it creates a blame request of invalid share otherwise it proceeds
+// to run round 2 in frost library which return Vk and Vkshare (public key of
+// its own share). It serializes Vk and Vkshare into Protocol Message and broadcasts it over the network
 func (fr *Instance) processRound2() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {

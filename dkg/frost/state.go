@@ -60,8 +60,8 @@ var rounds = []ProtocolRound{
 	Blame,
 }
 
-// State maintains value for current round, messages, sessions key and
-// operator shares. these properties will change over the runtime of the protocol
+// State tracks protocol's current round, stores messages in MsgContainer, stores
+// session key and operator's secret shares
 type State struct {
 	currentRound   ProtocolRound
 	participant    *frost.DkgParticipant

@@ -23,10 +23,9 @@ func init() {
 	types.InitBLS()
 }
 
-// Instance contains network to broadcast messages, signer to sign outgoing messages,
-// storage to store keygen output, config to store protocol configuration such as id,
-// threshold, operator list etc and state contains properties that changes over the
-// runtime of the protocol like current round, msgs etc
+// Instance is a single FROST DKG instance. It implements Start to init DKG
+// parameters and broadcast session key, and ProcessMsg to process 2 rounds of
+// frost, blame and keygen output messages
 type Instance struct {
 	state  *State
 	config *Config
@@ -90,8 +89,10 @@ func newProtocol(network dkg.Network, signer types.DKGSigner, storage dkg.Storag
 	}
 }
 
-// Start initializes frost participant, generates a session key pair and broadcasts preparation message.
-// TODO: If Reshare, confirm participating operators using qbft before kick-starting this process.
+// Start initializes frost participant, generates a session key pair and
+// broadcasts preparation message.
+// TODO: If Reshare, confirm participating operators using qbft before kick-
+// starting this process.
 func (fr *Instance) Start() error {
 	fr.state.currentRound = Preparation
 
@@ -132,7 +133,8 @@ func (fr *Instance) Start() error {
 }
 
 // ProcessMsg  decodes and validates incoming message. It then check for blame
-// or proceed with processing these messages based on their round.
+// to create and broadcast blame message or proceeds with processing 2 rounds of
+// frost, blame or keygen-output as per the message's round
 func (fr *Instance) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	// validated signed message

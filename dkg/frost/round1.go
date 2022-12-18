@@ -6,8 +6,13 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// processRound1 splits secret into shares between ooperators and broadcasts round1
-// message with encrypted shares, commitments and Schnorr proof values
+// processRound1 function can only be executed once all messages for the
+// Preparation round have been received. It runs round 1 in the frost library and
+// returns shares, commitments, and Schnorr's proof. These elements, including
+// encrypted shares, are then serialized into a protocol message and broadcasted
+// over the network. In the case of resharing, the secret from the old keygen
+// output is used for splitting, while a random secret is generated and split
+// using Shamir's secret sharing method for the new keygen.
 func (fr *Instance) processRound1() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 
 	if !fr.canProceedThisRound() {
