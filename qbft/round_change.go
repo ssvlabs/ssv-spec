@@ -104,7 +104,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
 ) (*SignedMessage, []byte, error) {
-	roundChanges := roundChangeMsgContainer.MessagesForRound(state.Round)
+	roundChanges := roundChangeMsgContainer.MessagesForRound(signedRoundChange.Message.Round)
 
 	// optimization, if no round change quorum can return false
 	if !HasQuorum(state.Share, roundChanges) {

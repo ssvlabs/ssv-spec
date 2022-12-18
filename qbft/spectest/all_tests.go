@@ -244,4 +244,5 @@ var AllTests = []SpecTest{
 	roundchange.QuorumOrder2(),
 	roundchange.QuorumOrder1(),
 	roundchange.QuorumMsgNotPrepared(),
+	roundchange.JustificationPastRound(),
 }
