@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// decode message deserializes bytes data into signed msg and protocol msg
 func decodeMessage(data []byte) (*dkg.SignedMessage, *ProtocolMsg, error) {
 	signedMsg := &dkg.SignedMessage{}
 	if err := signedMsg.Decode(data); err != nil {
@@ -19,6 +20,7 @@ func decodeMessage(data []byte) (*dkg.SignedMessage, *ProtocolMsg, error) {
 	return signedMsg, pMsg, nil
 }
 
+// haveSameRoot compares root (sha256 sum of data) of given 2 signed message
 func haveSameRoot(existingMessage, newMessage *dkg.SignedMessage) bool {
 	r1, err := existingMessage.GetRoot()
 	if err != nil {
