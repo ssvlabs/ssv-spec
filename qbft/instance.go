@@ -164,7 +164,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChange(i.State, i.config, msg, i.State.Height, msg.Message.Round)
+		return validRoundChange(i.State, i.config, msg, i.State.Height, i.State.Round)
 	default:
 		return errors.New("signed message type not supported")
 	}
