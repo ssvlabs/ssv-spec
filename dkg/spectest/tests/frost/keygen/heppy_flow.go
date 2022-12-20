@@ -52,47 +52,47 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(2),
+				Data:       frost.Testing_PreparationMessageBytes(2, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(3),
+				Data:       frost.Testing_PreparationMessageBytes(3, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(4),
+				Data:       frost.Testing_PreparationMessageBytes(4, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(2),
+				Data:       frost.Testing_Round1MessageBytes(2, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(3),
+				Data:       frost.Testing_Round1MessageBytes(3, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(4),
+				Data:       frost.Testing_Round1MessageBytes(4, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.Round2MessageBytes(2),
+				Data:       frost.Testing_Round2MessageBytes(2, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[3].SK, 3, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.Round2MessageBytes(3),
+				Data:       frost.Testing_Round2MessageBytes(3, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[4].SK, 4, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.Round2MessageBytes(4),
+				Data:       frost.Testing_Round2MessageBytes(4, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 				MsgType:    dkg.DepositDataMsgType,
@@ -129,17 +129,17 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.PreparationMessageBytes(1),
+				Data:       frost.Testing_PreparationMessageBytes(1, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.Round1MessageBytes(1),
+				Data:       frost.Testing_Round1MessageBytes(1, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       testingutils.KeygenMsgStore.Round2MessageBytes(1),
+				Data:       frost.Testing_Round2MessageBytes(1, testingutils.KeygenMsgStore),
 			}),
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.DepositDataMsgType,

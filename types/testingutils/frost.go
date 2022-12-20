@@ -4,12 +4,10 @@ import (
 	"crypto/ecdsa"
 	crand "crypto/rand"
 	"crypto/rsa"
-	"encoding/hex"
 	"math/big"
 	mrand "math/rand"
 
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -136,58 +134,6 @@ type FrostMsgStore struct {
 		VkShare string
 		SkShare string
 	}
-}
-
-func (frMsgStore FrostMsgStore) PreparationMessageBytes(id types.OperatorID) []byte {
-	pk, _ := hex.DecodeString(frMsgStore.SessionPKs[id])
-	msg := &frost.ProtocolMsg{
-		Round: frost.Preparation,
-		PreparationMessage: &frost.PreparationMessage{
-			SessionPk: pk,
-		},
-	}
-	byts, _ := msg.Encode()
-	return byts
-}
-
-func (frMsgStore FrostMsgStore) Round1MessageBytes(id types.OperatorID) []byte {
-	commitments := make([][]byte, 0)
-	for _, commitment := range frMsgStore.Round1[id].Commitments {
-		cbytes, _ := hex.DecodeString(commitment)
-		commitments = append(commitments, cbytes)
-	}
-	proofS, _ := hex.DecodeString(frMsgStore.Round1[id].ProofS)
-	proofR, _ := hex.DecodeString(frMsgStore.Round1[id].ProofR)
-	shares := map[uint32][]byte{}
-	for peerID, share := range frMsgStore.Round1[id].Shares {
-		shareBytes, _ := hex.DecodeString(share)
-		shares[peerID] = shareBytes
-	}
-	msg := frost.ProtocolMsg{
-		Round: frost.Round1,
-		Round1Message: &frost.Round1Message{
-			Commitment: commitments,
-			ProofS:     proofS,
-			ProofR:     proofR,
-			Shares:     shares,
-		},
-	}
-	byts, _ := msg.Encode()
-	return byts
-}
-
-func (frMsgStore FrostMsgStore) Round2MessageBytes(id types.OperatorID) []byte {
-	vk, _ := hex.DecodeString(frMsgStore.Round2[id].Vk)
-	vkshare, _ := hex.DecodeString(frMsgStore.Round2[id].VkShare)
-	msg := frost.ProtocolMsg{
-		Round: frost.Round2,
-		Round2Message: &frost.Round2Message{
-			Vk:      vk,
-			VkShare: vkshare,
-		},
-	}
-	byts, _ := msg.Encode()
-	return byts
 }
 
 // Keygen
