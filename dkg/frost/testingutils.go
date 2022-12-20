@@ -3,8 +3,10 @@ package frost
 import (
 	"encoding/hex"
 
+	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	ecies "github.com/ecies/go/v2"
 )
 
 func Testing_PreparationMessageBytes(id types.OperatorID, frMsgStore testingutils.FrostMsgStore) []byte {
@@ -57,4 +59,26 @@ func Testing_Round2MessageBytes(id types.OperatorID, frMsgStore testingutils.Fro
 	}
 	byts, _ := msg.Encode()
 	return byts
+}
+
+func BlameMessageBytes(id types.OperatorID, blameType BlameType, blameMessages []*dkg.SignedMessage) []byte {
+	blameData := make([][]byte, 0)
+	for _, blameMessage := range blameMessages {
+		byts, _ := blameMessage.Encode()
+		blameData = append(blameData, byts)
+	}
+
+	skBytes, _ := hex.DecodeString(testingutils.KeygenMsgStore.SessionSKs[1])
+	sk := ecies.NewPrivateKeyFromBytes(skBytes)
+
+	ret, _ := (&ProtocolMsg{
+		Round: Blame,
+		BlameMessage: &BlameMessage{
+			Type:             blameType,
+			TargetOperatorID: uint32(id),
+			BlameData:        blameData,
+			BlamerSessionSk:  sk.Bytes(),
+		},
+	}).Encode()
+	return ret
 }

@@ -82,7 +82,7 @@ func BlameTypeInvalidScalar_HappyFlow() *tests.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data: BlameMessageBytes(2, frost.InvalidMessage, []*dkg.SignedMessage{
+				Data: frost.BlameMessageBytes(2, frost.InvalidMessage, []*dkg.SignedMessage{
 					testingutils.SignDKGMsg(ks.DKGOperators[2].SK, 2, &dkg.Message{
 						MsgType:    dkg.ProtocolMsgType,
 						Identifier: identifier,

@@ -3,35 +3,9 @@ package blame
 import (
 	"encoding/hex"
 
-	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/frost"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/coinbase/kryptology/pkg/core/curves"
-	ecies "github.com/ecies/go/v2"
 )
-
-func BlameMessageBytes(id types.OperatorID, blameType frost.BlameType, blameMessages []*dkg.SignedMessage) []byte {
-	blameData := make([][]byte, 0)
-	for _, blameMessage := range blameMessages {
-		byts, _ := blameMessage.Encode()
-		blameData = append(blameData, byts)
-	}
-
-	skBytes, _ := hex.DecodeString(testingutils.KeygenMsgStore.SessionSKs[1])
-	sk := ecies.NewPrivateKeyFromBytes(skBytes)
-
-	ret, _ := (&frost.ProtocolMsg{
-		Round: frost.Blame,
-		BlameMessage: &frost.BlameMessage{
-			Type:             blameType,
-			TargetOperatorID: uint32(id),
-			BlameData:        blameData,
-			BlamerSessionSk:  sk.Bytes(),
-		},
-	}).Encode()
-	return ret
-}
 
 func makeInvalidForInvalidScalar(data []byte) []byte {
 	protocolMessage := &frost.ProtocolMsg{}
