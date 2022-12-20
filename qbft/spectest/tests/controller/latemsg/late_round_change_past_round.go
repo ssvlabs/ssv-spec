@@ -125,7 +125,8 @@ func LateRoundChangePastRound() *tests.ControllerSpecTest {
 	}...)
 
 	return &tests.ControllerSpecTest{
-		Name: "late round change past round",
+		Name:          "late round change past round",
+		ExpectedError: "could not process msg: invalid signed message: wrong msg round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
@@ -144,8 +145,7 @@ func LateRoundChangePastRound() *tests.ControllerSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-
-				ControllerPostRoot: "bb2e61b20360347bf1c48c31e78069a26c59cfd0e06ada43ba799966b0f8b9fd",
+				ControllerPostRoot: "b0fd6098e01e0bee8cac21654e8a6c0f6a0b0634499146fbb722b9af2c459c2d",
 			},
 		},
 	}
