@@ -9,6 +9,27 @@ import (
 	ecies "github.com/ecies/go/v2"
 )
 
+var testProtocolRound = Preparation
+
+func testSignedMessage(round ProtocolRound, operatorID types.OperatorID) *dkg.SignedMessage {
+	sk := testingutils.TestingKeygenKeySet().DKGOperators[operatorID].SK
+	msg := &dkg.Message{
+		MsgType:    dkg.ProtocolMsgType,
+		Identifier: dkg.NewRequestID(testingutils.TestingKeygenKeySet().DKGOperators[operatorID].ETHAddress, uint32(operatorID)),
+	}
+	switch round {
+	case Preparation:
+		msg.Data = Testing_PreparationMessageBytes(operatorID, testingutils.KeygenMsgStore)
+	case Round1:
+		msg.Data = Testing_Round1MessageBytes(operatorID, testingutils.KeygenMsgStore)
+	case Round2:
+		msg.Data = Testing_Round2MessageBytes(operatorID, testingutils.KeygenMsgStore)
+	case Blame:
+		msg.Data = BlameMessageBytes(operatorID, InvalidMessage, nil)
+	}
+	return testingutils.SignDKGMsg(sk, operatorID, msg)
+}
+
 func Testing_PreparationMessageBytes(id types.OperatorID, frMsgStore testingutils.FrostMsgStore) []byte {
 	pk, _ := hex.DecodeString(frMsgStore.SessionPKs[id])
 	msg := &ProtocolMsg{

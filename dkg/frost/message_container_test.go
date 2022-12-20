@@ -4,31 +4,8 @@ import (
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/dkg"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
-
-var testProtocolRound = Preparation
-
-func testSignedMessage(round ProtocolRound, operatorID types.OperatorID) *dkg.SignedMessage {
-	sk := testingutils.TestingKeygenKeySet().DKGOperators[operatorID].SK
-	msg := &dkg.Message{
-		MsgType:    dkg.ProtocolMsgType,
-		Identifier: testingutils.GetRandRequestID(),
-	}
-	switch round {
-	case Preparation:
-		msg.Data = Testing_PreparationMessageBytes(operatorID, testingutils.KeygenMsgStore)
-	case Round1:
-		msg.Data = Testing_Round1MessageBytes(operatorID, testingutils.KeygenMsgStore)
-	case Round2:
-		msg.Data = Testing_Round2MessageBytes(operatorID, testingutils.KeygenMsgStore)
-	case Blame:
-		msg.Data = BlameMessageBytes(operatorID, InvalidMessage, nil)
-	}
-	return testingutils.SignDKGMsg(sk, operatorID, msg)
-}
 
 func TestMsgContainer_SaveMsg(t *testing.T) {
 	t.Run("new message", func(t *testing.T) {
