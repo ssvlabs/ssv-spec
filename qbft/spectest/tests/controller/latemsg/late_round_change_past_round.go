@@ -126,7 +126,7 @@ func LateRoundChangePastRound() *tests.ControllerSpecTest {
 
 	return &tests.ControllerSpecTest{
 		Name:          "late round change past round",
-		ExpectedError: "could not process msg: invalid signed message: wrong msg round",
+		ExpectedError: "could not process msg: invalid signed message: past round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
