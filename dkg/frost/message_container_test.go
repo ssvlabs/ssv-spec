@@ -19,7 +19,7 @@ func TestMsgContainer_SaveMsg(t *testing.T) {
 	t.Run("message exist", func(t *testing.T) {
 		testMsg := testSignedMessage(testProtocolRound, 1)
 		c := newMsgContainer()
-		c.SaveMsg(testProtocolRound, testMsg)
+		_, _ = c.SaveMsg(testProtocolRound, testMsg)
 
 		existingMessage, err := c.SaveMsg(testProtocolRound, testMsg)
 		require.Error(t, err)
@@ -39,7 +39,7 @@ func TestMsgContainer_GetSignedMsg(t *testing.T) {
 	t.Run("signed message exist", func(t *testing.T) {
 		c := newMsgContainer()
 		testMsg := testSignedMessage(testProtocolRound, 1)
-		c.SaveMsg(testProtocolRound, testMsg)
+		_, _ = c.SaveMsg(testProtocolRound, testMsg)
 
 		returnedMsg, err := c.GetSignedMsg(testProtocolRound, 1)
 		require.NoError(t, err)
@@ -50,7 +50,7 @@ func TestMsgContainer_GetSignedMsg(t *testing.T) {
 func TestMsgContainer_GetPreparationMsg(t *testing.T) {
 	t.Run("preparation message exists", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Preparation, testSignedMessage(Preparation, 1))
+		_, _ = c.SaveMsg(Preparation, testSignedMessage(Preparation, 1))
 
 		returnedMsg, err := c.GetPreparationMsg(1)
 		require.NoError(t, err)
@@ -67,7 +67,7 @@ func TestMsgContainer_GetPreparationMsg(t *testing.T) {
 
 	t.Run("preparation message is nil", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Preparation, testSignedMessage(Round1, 1))
+		_, _ = c.SaveMsg(Preparation, testSignedMessage(Round1, 1))
 
 		returnedMsg, err := c.GetPreparationMsg(1)
 		require.ErrorIs(t, err, ErrMsgNil{round: Preparation, operatorID: 1})
@@ -78,7 +78,7 @@ func TestMsgContainer_GetPreparationMsg(t *testing.T) {
 func TestMsgContainer_GetRound1Msg(t *testing.T) {
 	t.Run("round1 message exists", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Round1, testSignedMessage(Round1, 1))
+		_, _ = c.SaveMsg(Round1, testSignedMessage(Round1, 1))
 
 		returnedMsg, err := c.GetRound1Msg(1)
 		require.NoError(t, err)
@@ -95,7 +95,7 @@ func TestMsgContainer_GetRound1Msg(t *testing.T) {
 
 	t.Run("round1 message is nil", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Round1, testSignedMessage(Preparation, 1))
+		_, _ = c.SaveMsg(Round1, testSignedMessage(Preparation, 1))
 
 		returnedMsg, err := c.GetRound1Msg(1)
 		require.ErrorIs(t, err, ErrMsgNil{round: Round1, operatorID: 1})
@@ -106,7 +106,7 @@ func TestMsgContainer_GetRound1Msg(t *testing.T) {
 func TestMsgContainer_GetRound2Msg(t *testing.T) {
 	t.Run("round2 message exists", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Round2, testSignedMessage(Round2, 1))
+		_, _ = c.SaveMsg(Round2, testSignedMessage(Round2, 1))
 
 		returnedMsg, err := c.GetRound2Msg(1)
 		require.NoError(t, err)
@@ -123,7 +123,7 @@ func TestMsgContainer_GetRound2Msg(t *testing.T) {
 
 	t.Run("round2 message is nil", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Round2, testSignedMessage(Preparation, 1))
+		_, _ = c.SaveMsg(Round2, testSignedMessage(Preparation, 1))
 
 		returnedMsg, err := c.GetRound2Msg(1)
 		require.ErrorIs(t, err, ErrMsgNil{round: Round2, operatorID: 1})
@@ -134,7 +134,7 @@ func TestMsgContainer_GetRound2Msg(t *testing.T) {
 func TestMsgContainer_GetBlameMsg(t *testing.T) {
 	t.Run("round2 message exists", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Blame, testSignedMessage(Blame, 1))
+		_, _ = c.SaveMsg(Blame, testSignedMessage(Blame, 1))
 
 		returnedMsg, err := c.GetBlameMsg(1)
 		require.NoError(t, err)
@@ -151,7 +151,7 @@ func TestMsgContainer_GetBlameMsg(t *testing.T) {
 
 	t.Run("round2 message is nil", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Blame, testSignedMessage(Preparation, 1))
+		_, _ = c.SaveMsg(Blame, testSignedMessage(Preparation, 1))
 
 		returnedMsg, err := c.GetBlameMsg(1)
 		require.ErrorIs(t, err, ErrMsgNil{round: Blame, operatorID: 1})
@@ -166,8 +166,8 @@ func TestMsgContainer_AllMessagesForRound(t *testing.T) {
 			1: testSignedMessage(Preparation, 1),
 			2: testSignedMessage(Preparation, 2),
 		}
-		c.SaveMsg(Preparation, expected[1])
-		c.SaveMsg(Preparation, expected[2])
+		_, _ = c.SaveMsg(Preparation, expected[1])
+		_, _ = c.SaveMsg(Preparation, expected[2])
 
 		actual := c.AllMessagesForRound(Preparation)
 		require.EqualValues(t, expected, actual)
@@ -177,8 +177,8 @@ func TestMsgContainer_AllMessagesForRound(t *testing.T) {
 func TestMsgContainer_AllMessagesReceivedFor(t *testing.T) {
 	t.Run("true case", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Preparation, testSignedMessage(Preparation, 1))
-		c.SaveMsg(Preparation, testSignedMessage(Preparation, 2))
+		_, _ = c.SaveMsg(Preparation, testSignedMessage(Preparation, 1))
+		_, _ = c.SaveMsg(Preparation, testSignedMessage(Preparation, 2))
 
 		ok := c.AllMessagesReceivedFor(Preparation, []uint32{1, 2})
 		require.EqualValues(t, true, ok)
@@ -186,7 +186,7 @@ func TestMsgContainer_AllMessagesReceivedFor(t *testing.T) {
 
 	t.Run("false case", func(t *testing.T) {
 		c := newMsgContainer()
-		c.SaveMsg(Preparation, testSignedMessage(Preparation, 1))
+		_, _ = c.SaveMsg(Preparation, testSignedMessage(Preparation, 1))
 
 		ok := c.AllMessagesReceivedFor(Preparation, []uint32{1, 2})
 		require.EqualValues(t, false, ok)
