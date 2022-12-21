@@ -124,6 +124,10 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		return errors.Wrap(err, "invalid signed message")
 	}
 
+	if msg.Message.Round < i.State.Round {
+		return errors.New("past round")
+	}
+
 	switch msg.Message.MsgType {
 	case ProposalMsgType:
 		return isValidProposal(
@@ -164,7 +168,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChange(i.State, i.config, msg, i.State.Height, i.State.Round)
+		return validRoundChange(i.State, i.config, msg, i.State.Height, msg.Message.Round)
 	default:
 		return errors.New("signed message type not supported")
 	}
