@@ -130,10 +130,7 @@ func (km *testingKeyManager) Encrypt(pk *rsa.PublicKey, data []byte) ([]byte, er
 
 // SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
 func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Address) (types.Signature, error) {
-	domain := types.PrimusTestnet
-	sigType := types.DKGSignatureType
-
-	root, err := types.ComputeSigningRoot(output, types.ComputeSignatureDomain(domain, sigType))
+	root, err := output.GetRoot()
 	if err != nil {
 		return nil, err
 	}

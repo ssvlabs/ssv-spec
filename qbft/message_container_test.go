@@ -71,6 +71,22 @@ func TestMsgContainer_Marshaling(t *testing.T) {
 	require.EqualValues(t, byts, decodedByts)
 }
 
+func TestMsgContainer_AddMsg(t *testing.T) {
+	t.Run("same message, one with more signers", func(t *testing.T) {
+		c := &MsgContainer{
+			Msgs: map[Round][]*SignedMessage{},
+		}
+
+		c.AddMsg(&SignedMessage{Signers: []types.OperatorID{1, 2, 3}, Message: &Message{Round: 1, Data: []byte{1, 2, 3, 4}}})
+		c.AddMsg(&SignedMessage{Signers: []types.OperatorID{1}, Message: &Message{Round: 1, Data: []byte{1, 2, 3, 4}}})
+		c.AddMsg(&SignedMessage{Signers: []types.OperatorID{1, 2, 3, 4}, Message: &Message{Round: 1, Data: []byte{1, 2, 3, 4}}})
+
+		cnt, msgs := c.LongestUniqueSignersForRoundAndValue(1, []byte{1, 2, 3, 4})
+		require.EqualValues(t, []types.OperatorID{1, 2, 3, 4}, cnt)
+		require.Len(t, msgs, 1)
+	})
+}
+
 func TestMsgContainer_UniqueSignersSetForRoundAndValue(t *testing.T) {
 	t.Run("multi common signers with different values", func(t *testing.T) {
 		c := &MsgContainer{

@@ -6,7 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// F1FutureMsgs tests a f+1 future msgs that trigger decdied futuremsg
+// F1FutureMsgs tests a f+1 future msgs that trigger decided sync
 func F1FutureMsgs() *ControllerSyncSpecTest {
 	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
@@ -30,6 +30,6 @@ func F1FutureMsgs() *ControllerSyncSpecTest {
 			}),
 		},
 		SyncDecidedCalledCnt: 1,
-		ControllerPostRoot:   "4143f41114629c9d7e012ac3ef2b29dafbde78992b8604d50e7c43bb96b027ae",
+		ControllerPostRoot:   "7bee6bd5f821cefc83a95b990cb127ce82016edfa3c247f6930a8d98bc0c2982",
 	}
 }

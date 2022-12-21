@@ -24,7 +24,7 @@ func MsgError() *tests.ControllerSpecTest {
 						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
 					}),
 				},
-				ControllerPostRoot: "5b6ebc3aa0bfcedd466fca3fca7e1dcc0245def7d61d65aee1462436d819c7d0",
+				ControllerPostRoot: "7b74be21fcdae2e7ed495882d1a499642c15a7f732f210ee84fb40cc97d1ce96",
 			},
 		},
 		ExpectedError: "could not process msg: proposal invalid: proposal not justified: change round has no quorum",

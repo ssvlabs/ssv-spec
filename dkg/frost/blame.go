@@ -2,7 +2,6 @@ package frost
 
 import (
 	"bytes"
-
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/coinbase/kryptology/pkg/sharing"
 	ecies "github.com/ecies/go/v2"

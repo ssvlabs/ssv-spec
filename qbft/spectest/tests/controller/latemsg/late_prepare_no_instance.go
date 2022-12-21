@@ -26,8 +26,12 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 					}),
 			},
-			DecidedVal:         []byte{1, 2, 3, 4},
-			DecidedCnt:         1,
+			ExpectedDecidedState: tests.DecidedState{
+				DecidedVal:               []byte{1, 2, 3, 4},
+				DecidedCnt:               1,
+				CalledSyncDecidedByRange: true,
+				DecidedByRangeValues:     [2]qbft.Height{height - 3, height},
+			},
 			ControllerPostRoot: postRoot,
 		}
 	}
@@ -35,13 +39,9 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "late prepare no instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "8a5153ccfbefa992ac8b4af6aad2d050c553a95359d0bc49feaef5c11c7139a2"),
-			instanceData(1, "edffa599e2ff18bcb82a63116ab452649fe974b63432b05ab5919df16079fb68"),
-			instanceData(2, "42323740998181ec00bfcf28fb8095c8f5fd3e43266ca43f0448b3ef42ac2a60"),
-			instanceData(3, "cb17defa61f9e6175884f7ae8f372dabefe601360737e43162c6d52a2fa7f6e4"),
-			instanceData(4, "2266f4d33838f251c22dcf787551bb6dd7381b689353b8147853338917dddf37"),
-			instanceData(5, "57c0602606e7e5b186a570d9ff9dc80717ba6da075a769057374b9f2ebe81653"),
-			instanceData(8, "d8c0f5362ae874ded286627c1076a894d26ab61238c37a0a75bcc2e331822073"),
+			instanceData(3, "29648f3c50aec14f76731c0650a45f64373da08010ec4cee7236d1156558a213"),
+			instanceData(7, "85bd7b4f02b2d1b29eef0f171c3cc5e208a2f39bf0f00bc2a3bd955dab2d4389"),
+			instanceData(11, "e7ff49c725608be250eebf277e5d88c6408750e527759db5546a7abc0a186c98"),
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
@@ -50,13 +50,17 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 						[]types.OperatorID{4},
 						&qbft.Message{
 							MsgType:    qbft.PrepareMsgType,
-							Height:     qbft.FirstHeight,
+							Height:     2,
 							Round:      qbft.FirstRound,
 							Identifier: identifier[:],
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				ControllerPostRoot: "69b8be89bbd2b48e81644c689709d6ce0f43f898a2f7ef3b888d84a0cb264db7",
+				ExpectedDecidedState: tests.DecidedState{
+					CalledSyncDecidedByRange: true, // leftovers from the previous calls
+					DecidedByRangeValues:     [2]qbft.Height{8, 11},
+				},
+				ControllerPostRoot: "e0204ddedc95ffe4360ae469877cb3a28745fe8e74a681b2595243aed5489b6c",
 			},
 		},
 		ExpectedError: "instance not found",

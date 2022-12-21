@@ -24,8 +24,10 @@ func InvalidIdentifier() *tests.ControllerSpecTest {
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.SignQBFTMsg(share, 1, msg),
 				},
-				DecidedVal:         nil,
-				ControllerPostRoot: "5b6ebc3aa0bfcedd466fca3fca7e1dcc0245def7d61d65aee1462436d819c7d0",
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedVal: nil,
+				},
+				ControllerPostRoot: "7b74be21fcdae2e7ed495882d1a499642c15a7f732f210ee84fb40cc97d1ce96",
 			},
 		},
 		ExpectedError: "invalid msg: message doesn't belong to Identifier",

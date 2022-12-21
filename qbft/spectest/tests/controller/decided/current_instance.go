@@ -74,9 +74,11 @@ func CurrentInstance() *tests.ControllerSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				DecidedVal:         []byte{1, 2, 3, 4},
-				DecidedCnt:         1,
-				ControllerPostRoot: "a3945ad86891579e53430688e8fde340bfdb0457916c6d9627f3f6ba59d24e27",
+				ExpectedDecidedState: tests.DecidedState{
+					DecidedCnt: 1,
+					DecidedVal: []byte{1, 2, 3, 4},
+				},
+				ControllerPostRoot: "4b5f00fd0787e3985e6b7c57d13d18701c2fa345e36a9ce4e26520fa1a3a5e3b",
 			},
 		},
 	}
