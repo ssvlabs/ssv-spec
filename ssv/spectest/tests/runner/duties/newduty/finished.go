@@ -43,7 +43,7 @@ func Finished() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee",
 				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "02274203580a12cc3051ab79b90fc1514f788653791269cf681158f344689a56",
+				PostDutyRunnerStateRoot: "c4e3b008ec5f41605599f19754d1cfcd88433abd1dd8f0b9631ed82a65d25ea6",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 			{
@@ -68,7 +68,7 @@ func Finished() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "attester",
 				Runner:                  finishRunner(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "9302df952cc59718f2b7d3edc59be07a4564b2a34846f84000bd56e076f267b1",
+				PostDutyRunnerStateRoot: "75ec5f86d3b173c26e903851bc2d83d739fc8c2c272eee9a4f6c47ca2b54ad7d",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 		},

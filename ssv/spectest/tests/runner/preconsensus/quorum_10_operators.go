@@ -26,7 +26,7 @@ func Quorum10Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[6], ks.Shares[6], 6, 6)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[7], ks.Shares[7], 7, 7)),
 				},
-				PostDutyRunnerStateRoot: "7a137df5bd20b604f1b50d0b4ba0f0d42a0ac1cfa9536efcf25729c5c8eea5fb",
+				PostDutyRunnerStateRoot: "3ccd9d72feea09d64a53c657aaae207de3204980735506fba9955f353a7bcf39",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -44,7 +44,7 @@ func Quorum10Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[6], ks.Shares[6], 6, 6)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[7], ks.Shares[7], 7, 7)),
 				},
-				PostDutyRunnerStateRoot: "46da46ab0e983a8022e1696da9d612beb5f1c9e2e9a52599cc4396c04b9a19cb",
+				PostDutyRunnerStateRoot: "d66f54a9af28ab31238c340bf327956fd96adb936b3fb21106e904378bdee280",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -62,7 +62,7 @@ func Quorum10Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[6], ks.Shares[6], 6, 6)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[7], ks.Shares[7], 7, 7)),
 				},
-				PostDutyRunnerStateRoot: "dc1e86058b990b4f25b8322ee45cc86cb81581848c9bdcfe2a17b2203d4b62ab",
+				PostDutyRunnerStateRoot: "c4dd8100f1bc2f9b85c9bb9d72224a2b88824dcc219b6f9f28cc59b28582a88d",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

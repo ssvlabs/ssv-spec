@@ -53,7 +53,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee",
 				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "f7618994ae07abf9e4911fd83c6aa6b552704d86d050de708f9cca5bf44b91d1",
+				PostDutyRunnerStateRoot: "2dfc0ab329ae35dea7c0f7cdb582b53e15578ee2e724dca486237a6c0ee72f81",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 			{
@@ -78,7 +78,7 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "attester",
 				Runner:                  decideWrong(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "10c3363809c47a3dc2e705970c2d40d70c03c2b95978196714ef14a2952c8bda",
+				PostDutyRunnerStateRoot: "7bf73c160bf43c0fd77b17d73b7f149274c0e2eda6f9ac959ad7789f7ae9883f",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 		},

@@ -26,7 +26,7 @@ func TooFewRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionTooFewRootsMsg(ks.Shares[1], 1, ks)),
 				},
-				PostDutyRunnerStateRoot: "d12a562cba23fe156380cb61200ab8abe6aec9dd90a6842040b2ef57e50f26a2",
+				PostDutyRunnerStateRoot: "c1089973e856d5092932072d230ef92dffecdfafbe127f32073e4bb7d57e621f",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -43,7 +43,7 @@ func TooFewRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeTooFewRootsMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "4e84eca5e18d0aebcac7de43d886c04c3182c37d00f13e1040a80b215bce918e",
+				PostDutyRunnerStateRoot: "99fadc81c2b23628fdd36ec7ccd633494a2a902b0d2192b86e360744774a93c7",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -60,7 +60,7 @@ func TooFewRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerTooFewRootsMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "8750d044bb1d5d919c901a889a7058241744c89b8a5df42714a4af091bfa387c",
+				PostDutyRunnerStateRoot: "6e24c1ff380e948ed25d3c22a1742215424488ddf171dc5868836841fbe9e5c9",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -77,7 +77,7 @@ func TooFewRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorTooFewRootsMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "59756858e7fb953f3273ba26ea4e48b491eebc98abb2f86054bd1d62d7a1d620",
+				PostDutyRunnerStateRoot: "f5f47a9bdaba3e5d76e18bd73d6b592c900a4abc8810a5f1f51a03be28d77e84",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -94,7 +94,7 @@ func TooFewRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationTooFewRootsMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "09d81b254934d9bd37b28d3e72ffc5e0fce2d3a0c61b3e4204b9ba4043270869",
+				PostDutyRunnerStateRoot: "b3287f8e3398b780053b16d6bc0c2a858b9f5cc9daed973aed6b33efc0044bdb",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
