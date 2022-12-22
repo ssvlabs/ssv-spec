@@ -104,7 +104,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.CommitDataBytes(testingutils.TestProposerConsensusDataByts),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "cace810b30635d5ed6e1a4b1484add992c7677566ce5d3e7b250a86a4f8afcbf",
+				PostDutyRunnerStateRoot: "2473c3fddd9bba52d28d5fa466601ec583e718c67fcf9adb528979abd5aa0e1f",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,

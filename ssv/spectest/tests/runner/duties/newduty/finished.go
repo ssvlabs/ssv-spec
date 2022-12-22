@@ -59,7 +59,7 @@ func Finished() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "proposer",
 				Runner:                  finishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpoch),
 				Duty:                    testingutils.TestingProposerDutyNextEpoch,
-				PostDutyRunnerStateRoot: "970b351ea007de26b72ebdbc108431fa8429f8f2d7a30e6258beabe754dd31d8",
+				PostDutyRunnerStateRoot: "abf986734b8de1055fde7ec46c9f8f1f790fdd610b641d8cbd24cd4bafd07e12",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

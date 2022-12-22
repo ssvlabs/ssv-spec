@@ -57,7 +57,7 @@ func PreDecided() *tests.MultiMsgProcessingSpecTest {
 
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "9f9055349ee93bc8f6f140f9950e65afc03f6f639ab1036468a80b28d9aeb6c6",
+				PostDutyRunnerStateRoot: "a5a4c4291a3f0860a7bfdb33f501671553e18c23829f0c8e6b679ec7110b0767",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},

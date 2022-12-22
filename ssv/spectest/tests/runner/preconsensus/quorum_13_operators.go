@@ -68,7 +68,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[8], ks.Shares[8], 8, 8)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[9], ks.Shares[9], 9, 9)),
 				},
-				PostDutyRunnerStateRoot: "c6a34761a8419b92009c7ced9de9855ac065518ac573ab1f50b27c9883a3dd28",
+				PostDutyRunnerStateRoot: "d35d35a6e5f2a1b195bc7bad33083d3f003ea39e9a9560ae2e6110064000b02f",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

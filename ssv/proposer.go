@@ -13,6 +13,8 @@ import (
 
 type ProposerRunner struct {
 	BaseRunner *BaseRunner
+	// ProducesBlindedBlocks is true when the runner will only produce blinded blocks
+	ProducesBlindedBlocks bool
 
 	beacon   BeaconNode
 	network  Network

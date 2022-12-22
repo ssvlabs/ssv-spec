@@ -60,7 +60,7 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "proposer",
 				Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpoch),
 				Duty:                    testingutils.TestingProposerDutyNextEpoch,
-				PostDutyRunnerStateRoot: "472a3509adce333aebaa9e70199281203dce2b87f7a1cf06171c5549a6d38193",
+				PostDutyRunnerStateRoot: "68303e20c5a72f2a1ec80c6836afa1df3dcd6a2ad6503cfcc7fd7b31ccebf282",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

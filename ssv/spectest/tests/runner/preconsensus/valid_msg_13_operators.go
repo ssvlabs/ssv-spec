@@ -65,7 +65,7 @@ func ValidMessage13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[7], ks.Shares[7], 7, 7)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[8], ks.Shares[8], 8, 8)),
 				},
-				PostDutyRunnerStateRoot: "33c194c4d8576e31373b902c7ba057b5e911d57c5b03a61ed520dd9da4a1879d",
+				PostDutyRunnerStateRoot: "078185608dd5daa239ac3c0c00316407680ad2d9a43ba48af525dae823c3134e",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

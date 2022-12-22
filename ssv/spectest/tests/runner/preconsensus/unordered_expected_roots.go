@@ -40,7 +40,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    testingutils.TestingProposerDuty,
 				Messages:                []*types.SSVMessage{},
-				PostDutyRunnerStateRoot: "d46ee9acb3d6b3386c80e3947e83ac73063be1607b7fdd4a011f9814978082c4",
+				PostDutyRunnerStateRoot: "bcab5dcdbc19a1747669746086a37163ca90cd4184924619393444d9ea3218f7",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

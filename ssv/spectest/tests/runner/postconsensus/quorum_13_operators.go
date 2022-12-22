@@ -87,7 +87,7 @@ func Quorum13Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[8], 8)),
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[9], 9)),
 				},
-				PostDutyRunnerStateRoot: "c8b1d2f444d52907d603dce459e0c37b02e38632af16e615573f3f94f570388c",
+				PostDutyRunnerStateRoot: "effc666f2d6385127bf8b70d3516244e22dd08ab893cab19575c68e0a3e17349",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),

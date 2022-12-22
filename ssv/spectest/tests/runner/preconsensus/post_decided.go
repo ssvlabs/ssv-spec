@@ -90,7 +90,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "f063b619da459dad08594f469b094f99f86a9f7ad7399d9a3d01826ce4942e6b",
+				PostDutyRunnerStateRoot: "3ca9161827a082c49e3c665cb24a18eb042036d2bf762b4e4daf3a3e0e16a404",
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},

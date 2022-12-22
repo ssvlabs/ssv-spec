@@ -62,7 +62,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "ffcdadcfa1ebc4b750102c854a41b3355f32316187992666bf0c568b026df9c0",
+				PostDutyRunnerStateRoot: "a6d5017a9dc8c6cfd49bfa56ed873040e08cb93ab0074df150d87f25c5a605b5",
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",

@@ -60,7 +60,7 @@ func UnknownSigner() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsg(ks.Shares[1], 5, 5)),
 				},
-				PostDutyRunnerStateRoot: "6e24c1ff380e948ed25d3c22a1742215424488ddf171dc5868836841fbe9e5c9",
+				PostDutyRunnerStateRoot: "77b68ecd04883fad88a8616903a32b29958ffd8a18431425d0681b69f1e2d104",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,

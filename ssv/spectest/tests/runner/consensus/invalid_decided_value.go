@@ -129,7 +129,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "8273ad358f08466cece478e97c5b857dcc2fb5819de31d07e82d9bc71c0ea4df",
+				PostDutyRunnerStateRoot: "8f53715c1c3562b0393727874bb06d961ffcdba48b5e6e763322952a674115ed",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
