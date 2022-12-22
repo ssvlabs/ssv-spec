@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/hex"
 	"encoding/json"
+	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -46,6 +47,7 @@ type ConsensusData struct {
 	Duty                   *Duty
 	AttestationData        *phase0.AttestationData
 	BlockData              *bellatrix.BeaconBlock
+	BlindedBlockData       *v1.BlindedBeaconBlock
 	AggregateAndProof      *phase0.AggregateAndProof
 	SyncCommitteeBlockRoot phase0.Root
 	// SyncCommitteeContribution map holds as key the selection proof for the contribution
