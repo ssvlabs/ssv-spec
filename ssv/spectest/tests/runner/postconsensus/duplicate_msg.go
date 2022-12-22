@@ -60,7 +60,7 @@ func DuplicateMsg() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "c3c1ff8e4579f6eb3371217de087b4bd13e8527786503ce1bf4dfc841039d20b",
+				PostDutyRunnerStateRoot: "fd6fde21124c0858415acb04e8a9c166440e00fa1cd193307f4423fe17fa1103",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,

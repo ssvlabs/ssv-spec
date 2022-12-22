@@ -53,7 +53,7 @@ func PostQuorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "9f8af8eecd23e70e902104b23f2c8bb6ae7fa638d5ef16b0aee21f2bb54dd93c",
+				PostDutyRunnerStateRoot: "009d09b7c6bc719694f58dfa7529ee52db7d9466afb36300def2bdeddbfd125b",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

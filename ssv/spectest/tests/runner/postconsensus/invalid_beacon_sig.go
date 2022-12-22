@@ -60,7 +60,7 @@ func InvalidBeaconSignature() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongSigProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "77b68ecd04883fad88a8616903a32b29958ffd8a18431425d0681b69f1e2d104",
+				PostDutyRunnerStateRoot: "4d32a19a86ab51bd316277395976d26afe0bedf93a37d6c800a67dc52bca5579",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,

@@ -112,7 +112,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "0ed307a5e0ac35d689e129b9ee76fe5b20ffabc67ee45129df9894ee935699ed",
+				PostDutyRunnerStateRoot: "3f0391840d137123d9566b1120c106255f674644010cee6ea66edfc9df6ebd20",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},

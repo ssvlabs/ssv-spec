@@ -51,7 +51,7 @@ func ValidDecided13Operators() *tests.MultiMsgProcessingSpecTest {
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    testingutils.TestingProposerDuty,
 				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusDataByts, ks, types.BNRoleProposer),
-				PostDutyRunnerStateRoot: "e96872d2259ba7a0dbba3b598489369260bcf755c2552b0516ad9c7d1a91a2bb",
+				PostDutyRunnerStateRoot: "99318635d86ed901130313158776f9a30b4d904b3774265f6919ac17f5c3fb16",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),

@@ -104,7 +104,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "2e2956fec0a87d326ba7901eb13a761f1f740490a111fc78f5aa083c807ee272",
+				PostDutyRunnerStateRoot: "ca6dfd105a818f9227c68c189258d6c66ec8d3faccf287206fa5acd98b503df9",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
