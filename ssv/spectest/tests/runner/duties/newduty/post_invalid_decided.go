@@ -5,7 +5,6 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // PostInvalidDecided tests starting a new duty after prev was decided with an invalid decided value
@@ -39,20 +38,8 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 
-		err := r.ProcessConsensus(testingutils.MultiSignQBFTMsg(
-			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-			[]types.OperatorID{1, 2, 3},
-			&qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
-				Identifier: r.GetBaseRunner().QBFTController.Identifier,
-				Data:       testingutils.CommitDataBytes(consensusDataByts(r.GetBaseRunner().BeaconRoleType)),
-			}))
-		expectedError := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type"
-		if err.Error() != expectedError {
-			panic(err.Error())
-		}
+		r.GetBaseRunner().State.RunningInstance.State.Decided = true
+		r.GetBaseRunner().State.RunningInstance.State.DecidedValue = testingutils.CommitDataBytes(consensusDataByts(r.GetBaseRunner().BeaconRoleType))
 
 		return r
 	}

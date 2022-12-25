@@ -1,7 +1,6 @@
 package valcheckduty
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -9,34 +8,8 @@ import (
 
 // WrongDutyType tests duty.Type not attester
 func WrongDutyType() *valcheck.MultiSpecTest {
-	consensusDataBytsF := func(role types.BeaconRole) []byte {
-		data := &types.ConsensusData{
-			Duty: &types.Duty{
-				Type:                    role,
-				PubKey:                  testingutils.TestingValidatorPubKey,
-				Slot:                    testingutils.TestingDutySlot,
-				ValidatorIndex:          testingutils.TestingValidatorIndex,
-				CommitteeIndex:          3,
-				CommitteesAtSlot:        36,
-				CommitteeLength:         128,
-				ValidatorCommitteeIndex: 11,
-			},
-			AttestationData: &spec.AttestationData{
-				Slot:            testingutils.TestingDutySlot,
-				Index:           3,
-				BeaconBlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-				Source: &spec.Checkpoint{
-					Epoch: 0,
-					Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-				},
-				Target: &spec.Checkpoint{
-					Epoch: 1,
-					Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-				},
-			},
-		}
-
-		input, _ := data.Encode()
+	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
+		input, _ := cd.Encode()
 		return input
 	}
 
@@ -47,36 +20,36 @@ func WrongDutyType() *valcheck.MultiSpecTest {
 				Name:          "sync committee aggregator",
 				Network:       types.NowTestNetwork,
 				BeaconRole:    types.BNRoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(types.BNRoleProposer),
-				ExpectedError: "duty invalid: wrong beacon role type",
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				ExpectedError: "invalid value: sync committee contribution data is nil",
 			},
 			{
 				Name:          "sync committee",
 				Network:       types.NowTestNetwork,
 				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(types.BNRoleProposer),
-				ExpectedError: "duty invalid: wrong beacon role type",
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				ExpectedError: "duty invalid: wrong beacon role type", // it passes ConsensusData validation since  SyncCommitteeBlockRoot can't be nil, it's [32]byte
 			},
 			{
 				Name:          "aggregator",
 				Network:       types.NowTestNetwork,
 				BeaconRole:    types.BNRoleAggregator,
-				Input:         consensusDataBytsF(types.BNRoleProposer),
-				ExpectedError: "duty invalid: wrong beacon role type",
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				ExpectedError: "invalid value: aggregate and proof data is nil",
 			},
 			{
 				Name:          "proposer",
 				Network:       types.NowTestNetwork,
 				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(types.BNRoleAttester),
-				ExpectedError: "duty invalid: wrong beacon role type",
+				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
+				ExpectedError: "invalid value: block data is nil",
 			},
 			{
 				Name:          "attester",
 				Network:       types.NowTestNetwork,
 				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(types.BNRoleProposer),
-				ExpectedError: "duty invalid: wrong beacon role type",
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				ExpectedError: "invalid value: attestation data is nil",
 			},
 		},
 	}
