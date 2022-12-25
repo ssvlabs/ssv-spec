@@ -5,7 +5,6 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // PostInvalidDecided tests starting a new duty after prev was decided with an invalid decided value
@@ -39,20 +38,8 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 
-		err := r.ProcessConsensus(testingutils.MultiSignQBFTMsg(
-			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-			[]types.OperatorID{1, 2, 3},
-			&qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
-				Identifier: r.GetBaseRunner().QBFTController.Identifier,
-				Data:       testingutils.CommitDataBytes(consensusDataByts(r.GetBaseRunner().BeaconRoleType)),
-			}))
-		expectedError := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type"
-		if err.Error() != expectedError {
-			panic(err.Error())
-		}
+		r.GetBaseRunner().State.RunningInstance.State.Decided = true
+		r.GetBaseRunner().State.RunningInstance.State.DecidedValue = testingutils.CommitDataBytes(consensusDataByts(r.GetBaseRunner().BeaconRoleType))
 
 		return r
 	}
@@ -64,7 +51,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  decideWrong(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
-				PostDutyRunnerStateRoot: "fc20e5cc2a0b343bc72a409d38d5df8025f1ec699e3b7b93fc0c6a5a70cedd72",
+				PostDutyRunnerStateRoot: "7490ab4913a6b42bd338123b0f2f829742d7f5a17c2f840b87dd243b89cda15a",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -73,14 +60,14 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee",
 				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "86bc8594d64a27f1c02d4e64a91987f133b169877d4c82c575a1ea7618ee67cb",
+				PostDutyRunnerStateRoot: "d87b9d59a4b3a387f78b711b1345c91210fda51ee5025750bd92508bb4ad3671",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty),
 				Duty:                    testingutils.TestingAggregatorDuty,
-				PostDutyRunnerStateRoot: "269fcd04984ce3304550b5472582e08332719932dde1dabee69afbb14d13d413",
+				PostDutyRunnerStateRoot: "72dc9fe4f72d38bf6b4ff43f60969300bba7a8d51cf93b994bfb2cbb47a6b20b",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -89,7 +76,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "proposer",
 				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDuty),
 				Duty:                    testingutils.TestingProposerDuty,
-				PostDutyRunnerStateRoot: "50b149e406e669728a31a2065b568c7fb1dba042382be5e1b57c2613a48734ff",
+				PostDutyRunnerStateRoot: "3f072deef0fb386635cf1b4beb69131f3942fe9ba012b75a403c46489abc696b",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -98,7 +85,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "attester",
 				Runner:                  decideWrong(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "0e2e75c5de07e7c19807ea407a6825cff4f0c8eed0f1fc24b8a502d5eb4c4d25",
+				PostDutyRunnerStateRoot: "7f143c3aa16f34bfd59a509eaa237954a63e8346f557b7b1f1fe2242002041a4",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 		},
