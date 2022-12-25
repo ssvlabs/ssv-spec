@@ -396,7 +396,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBloc
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
-func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(duty *types.Duty, slotSig []byte) (*spec.AggregateAndProof, error) {
+func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, committeeLength uint64, slotSig []byte) (*spec.AggregateAndProof, error) {
 	return TestingAggregateAndProof, nil
 }
 
@@ -433,10 +433,6 @@ func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, erro
 // SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
 func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index spec.CommitteeIndex) (uint64, error) {
 	// each subcommittee index correlates to TestingContributionProofRoots by index
-
-	// TODO: the right way to calculate https://github.dev/prysmaticlabs/prysm/blob/648ab9f2c249f1d06d0aad4328e8df429ceaf66c/validator/client/sync_committee.go#L136
-	//return uint64(index) / (types.SyncCommitteeSize / types.SyncCommitteeSubnetCount), nil
-
 	return uint64(index), nil
 }
 

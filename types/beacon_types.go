@@ -22,11 +22,6 @@ var (
 	DomainContributionAndProof        = [4]byte{0x09, 0x00, 0x00, 0x00}
 
 	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
-
-	SyncCommitteeSize                    uint64 = 512
-	SyncCommitteeSubnetCount             uint64 = 4
-	TargetAggregatorsPerSyncSubcommittee uint64 = 16
-	EpochsPerSyncCommitteePeriod         uint64 = 256
 )
 
 // MaxEffectiveBalanceInGwei is the max effective balance
