@@ -446,6 +446,18 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBloc
 	return nil
 }
 
+// GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
+func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*v1.BlindedBeaconBlock, error) {
+	return TestingBlindedBeaconBlock, nil
+}
+
+// SubmitBlindedBeaconBlock submit the blinded block to the node
+func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *v1.SignedBlindedBeaconBlock) error {
+	r, _ := block.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
 func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, committeeLength uint64, index spec.ValidatorIndex, slotSig []byte) (*spec.AggregateAndProof, error) {
 	return TestingAggregateAndProof, nil

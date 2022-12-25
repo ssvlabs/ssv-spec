@@ -19,6 +19,6 @@ func AttestationDataNil() *valcheck.SpecTest {
 		Network:       types.PraterNetwork,
 		BeaconRole:    types.BNRoleAttester,
 		Input:         input,
-		ExpectedError: "attestation data nil",
+		ExpectedError: "invalid value: attestation data is nil",
 	}
 }
