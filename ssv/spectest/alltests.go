@@ -2,6 +2,7 @@ package spectest
 
 import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
@@ -18,6 +19,8 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	runner.FullHappyFlow(),
+
 	postconsensus.TooManyRoots(),
 	postconsensus.TooFewRoots(),
 	postconsensus.UnorderedExpectedRoots(),

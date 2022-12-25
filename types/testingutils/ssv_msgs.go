@@ -50,6 +50,12 @@ var TestProposerConsensusData = &types.ConsensusData{
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
 
+var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
+	Duty:             TestingProposerDuty,
+	BlindedBlockData: TestingBlindedBeaconBlock,
+}
+var TestProposerBlindedBlockConsensusDataByts, _ = TestProposerBlindedBlockConsensusData.Encode()
+
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	Duty:                   TestingSyncCommitteeDuty,
 	SyncCommitteeBlockRoot: TestingSyncCommitteeBlockRoot,
