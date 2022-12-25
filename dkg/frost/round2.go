@@ -96,5 +96,5 @@ func (fr *Instance) processRound2() (finished bool, protocolOutcome *dkg.Protoco
 	if err != nil {
 		return false, nil, err
 	}
-	return false, nil, fr.config.network.BroadcastDKGMessage(bcastMsg)
+	return false, nil, fr.config.GetNetwork().BroadcastDKGMessage(bcastMsg)
 }

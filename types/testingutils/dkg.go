@@ -22,12 +22,12 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 	network := NewTestingNetwork()
 	km := NewTestingKeyManager()
 	config := &dkg.Config{
-		KeygenProtocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID, signer types.DKGSigner, storage dkg.Storage, init *dkg.Init) dkg.Protocol {
+		KeygenProtocol: func(dkg.RequestID, types.OperatorID, dkg.IConfig, *dkg.Init) dkg.Protocol {
 			return &TestingKeygenProtocol{
 				KeyGenOutput: keySet.KeyGenOutput(1),
 			}
 		},
-		ReshareProtocol: func(network dkg.Network, operatorID types.OperatorID, identifier dkg.RequestID, signer types.DKGSigner, storage dkg.Storage, oldOperators []types.OperatorID, reshare *dkg.Reshare, output *dkg.KeyGenOutput) dkg.Protocol {
+		ReshareProtocol: func(dkg.RequestID, types.OperatorID, dkg.IConfig, *dkg.Reshare) dkg.Protocol {
 			return &TestingKeygenProtocol{
 				KeyGenOutput: keySet.KeyGenOutput(1),
 			}

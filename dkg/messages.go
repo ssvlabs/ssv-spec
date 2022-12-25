@@ -169,12 +169,16 @@ func (msg *Init) Decode(data []byte) error {
 
 // Reshare triggers the resharing protocol
 type Reshare struct {
-	// ValidatorPK is the the public key to be reshared
-	ValidatorPK types.ValidatorPK
 	// OperatorIDs are the operators in the new set
 	OperatorIDs []types.OperatorID
 	// Threshold is the threshold of the new set
 	Threshold uint16
+	// ValidatorPK is the the public key to be reshared
+	ValidatorPK types.ValidatorPK
+	// OldOperatorIDs are the operators in the old set
+	OldOperatorIDs []types.OperatorID
+	// OldKeyGenOutput is the KeygenOutput from the old committee
+	OldKeyGenOutput *KeyGenOutput
 }
 
 func (msg *Reshare) Validate() error {

@@ -63,7 +63,7 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.KeygenProtocol(n.config.Network, n.operator.OperatorID, id, n.config.Signer, n.config.Storage, initMsg),
+		protocol:              n.config.KeygenProtocol(id, n.operator.OperatorID, n.config, initMsg),
 		config:                n.config,
 	}
 
@@ -79,6 +79,8 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 	if err != nil {
 		return nil, errors.Wrap(err, "could not find the keygen output from storage")
 	}
+	reshareMsg.OldKeyGenOutput = kgOutput
+	reshareMsg.OldOperatorIDs = n.operatorsOld
 	r := &runner{
 		Operator:              n.operator,
 		ReshareMsg:            reshareMsg,
@@ -87,7 +89,7 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.ReshareProtocol(n.config.Network, n.operator.OperatorID, id, n.config.Signer, n.config.Storage, n.operatorsOld, reshareMsg, kgOutput),
+		protocol:              n.config.ReshareProtocol(id, n.operator.OperatorID, n.config, reshareMsg),
 		config:                n.config,
 	}
 

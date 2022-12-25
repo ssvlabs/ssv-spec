@@ -34,14 +34,37 @@ type Operator struct {
 	EncryptionPubKey *rsa.PublicKey
 }
 
+type IConfig interface {
+	// GetSigner returns a Signer instance
+	GetSigner() types.DKGSigner
+	// GetNetwork returns a p2p Network instance
+	GetNetwork() Network
+	// GetStorage returns a Storage instance
+	GetStorage() Storage
+}
+
 type Config struct {
 	// Protocol the DKG protocol implementation
-	KeygenProtocol      func(network Network, operatorID types.OperatorID, identifier RequestID, signer types.DKGSigner, storage Storage, init *Init) Protocol
-	ReshareProtocol     func(network Network, operatorID types.OperatorID, identifier RequestID, signer types.DKGSigner, storage Storage, oldOperators []types.OperatorID, reshare *Reshare, output *KeyGenOutput) Protocol
+	KeygenProtocol      func(RequestID, types.OperatorID, IConfig, *Init) Protocol
+	ReshareProtocol     func(RequestID, types.OperatorID, IConfig, *Reshare) Protocol
 	Network             Network
 	Storage             Storage
 	SignatureDomainType types.DomainType
 	Signer              types.DKGSigner
+}
+
+func (c *Config) GetSigner() types.DKGSigner {
+	return c.Signer
+}
+
+// GetNetwork returns a p2p Network instance
+func (c *Config) GetNetwork() Network {
+	return c.Network
+}
+
+// GetStorage returns a Storage instance
+func (c *Config) GetStorage() Storage {
+	return c.Storage
 }
 
 type ErrInvalidRound struct{}
