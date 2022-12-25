@@ -26,6 +26,7 @@ var (
 	SyncCommitteeSize                    uint64 = 512
 	SyncCommitteeSubnetCount             uint64 = 4
 	TargetAggregatorsPerSyncSubcommittee uint64 = 16
+	EpochsPerSyncCommitteePeriod         uint64 = 256
 )
 
 // MaxEffectiveBalanceInGwei is the max effective balance

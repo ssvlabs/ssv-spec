@@ -81,6 +81,10 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 		return errors.Wrap(err, "failed to submit aggregate and proof")
 	}
 
+	if res == nil {
+		return errors.New("selection proof is nil")
+	}
+
 	input := &types.ConsensusData{
 		Duty:              duty,
 		AggregateAndProof: res,
@@ -193,7 +197,7 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	}
 
 	// sign msg
-	signature, err := r.GetSigner().SignRoot(msg, types.PartialSignatureType, r.GetShare().SharePubKey)
+	signature, err := r.GetSigner().SignRoot(msgs, types.PartialSignatureType, r.GetShare().SharePubKey)
 	if err != nil {
 		return errors.Wrap(err, "could not sign PartialSignatureMessage for selection proof")
 	}
