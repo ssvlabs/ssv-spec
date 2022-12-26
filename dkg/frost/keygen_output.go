@@ -73,8 +73,10 @@ func (fr *Instance) processKeygenOutput() (finished bool, protocolOutcome *dkg.P
 	return true, &dkg.ProtocolOutcome{ProtocolOutput: out}, nil
 }
 
-// verifyShares reconstructs Vk over a sliding window of t (threshold) operators
-// and checks if reconstructed Vk is consistent
+// verifyShares uses a sliding window of size t (threshold) to iterate through
+// operators and reconstruct Vk with each operator included at least once. Compare
+// resulting Vk values to determine if all reconstructions are the same,
+// indicating share validity.
 func (fr *Instance) verifyShares() (*bls.G1, error) {
 
 	var (
@@ -82,7 +84,6 @@ func (fr *Instance) verifyShares() (*bls.G1, error) {
 		prevReconstructed = (*bls.G1)(nil)
 	)
 
-	// Sliding window of quorum 0...threshold until n-threshold...n
 	for quorumEnd := int(fr.instanceParams.threshold); quorumEnd < len(fr.instanceParams.operators); quorumEnd++ {
 		quorum := fr.instanceParams.operators[quorumStart:quorumEnd]
 		currReconstructed, err := fr.reconstructValidatorPK(quorum)
