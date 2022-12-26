@@ -3,7 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	v1 "github.com/attestantio/go-eth2-client/api/v1"
+	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -176,7 +176,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 		copy(specSig[:], sig)
 
 		if r.ProducesBlindedBlocks {
-			blk := &v1.SignedBlindedBeaconBlock{
+			blk := &bellatrix2.SignedBlindedBeaconBlock{
 				Message:   r.GetState().DecidedValue.BlindedBlockData,
 				Signature: specSig,
 			}

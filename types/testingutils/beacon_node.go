@@ -3,6 +3,7 @@ package testingutils
 import (
 	"encoding/hex"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
+	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	altair "github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -81,7 +82,7 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 			DepositCount: 100,
 			BlockHash:    []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		},
-		Graffiti:          []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Graffiti:          [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		ProposerSlashings: []*spec.ProposerSlashing{},
 		AttesterSlashings: []*spec.AttesterSlashing{},
 		Attestations: []*spec.Attestation{
@@ -114,15 +115,15 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 		},
 	},
 }
-var TestingBlindedBeaconBlock = func() *v1.BlindedBeaconBlock {
+var TestingBlindedBeaconBlock = func() *bellatrix2.BlindedBeaconBlock {
 	fullBlk := TestingBeaconBlock
 	txRoot, _ := types.SSZTransactions(fullBlk.Body.ExecutionPayload.Transactions).HashTreeRoot()
-	ret := &v1.BlindedBeaconBlock{
+	ret := &bellatrix2.BlindedBeaconBlock{
 		Slot:          fullBlk.Slot,
 		ProposerIndex: fullBlk.ProposerIndex,
 		ParentRoot:    fullBlk.ParentRoot,
 		StateRoot:     fullBlk.StateRoot,
-		Body: &v1.BlindedBeaconBlockBody{
+		Body: &bellatrix2.BlindedBeaconBlockBody{
 			RANDAOReveal:      fullBlk.Body.RANDAOReveal,
 			ETH1Data:          fullBlk.Body.ETH1Data,
 			Graffiti:          fullBlk.Body.Graffiti,
@@ -278,6 +279,14 @@ var TestingSignedSyncCommitteeContributions = func(
 	}
 }
 
+var TestingFeeRecipient = bellatrix.ExecutionAddress(ethAddressFromHex("535953b5a6040074948cf185eaa7d2abbd66808f"))
+var TestingValidatorRegistration = &v1.ValidatorRegistration{
+	FeeRecipient: TestingFeeRecipient,
+	GasLimit:     1,
+	Timestamp:    types.NowTestNetwork.EpochStartTime(),
+	Pubkey:       TestingValidatorPubKey,
+}
+
 var TestingAttesterDuty = &types.Duty{
 	Type:                    types.BNRoleAttester,
 	PubKey:                  TestingValidatorPubKey,
@@ -372,6 +381,13 @@ var TestingSyncCommitteeContributionNexEpochDuty = &types.Duty{
 	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
+var TestingValidatorRegistrationDuty = &types.Duty{
+	Type:           types.BNRoleValidatorRegistration,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           types.NowTestNetwork.FirstSlotAtEpoch(types.NowTestNetwork.EstimatedCurrentEpoch()),
+	ValidatorIndex: TestingValidatorIndex,
+}
+
 var TestingUnknownDutyType = &types.Duty{
 	Type:                    UnknownDutyType,
 	PubKey:                  TestingValidatorPubKey,
@@ -447,12 +463,12 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBloc
 }
 
 // GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*v1.BlindedBeaconBlock, error) {
+func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*bellatrix2.BlindedBeaconBlock, error) {
 	return TestingBlindedBeaconBlock, nil
 }
 
 // SubmitBlindedBeaconBlock submit the blinded block to the node
-func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *v1.SignedBlindedBeaconBlock) error {
+func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *bellatrix2.SignedBlindedBeaconBlock) error {
 	r, _ := block.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
