@@ -31,6 +31,11 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *SignedPa
 		return errors.New("no running duty")
 	}
 
+	// TODO https://github.com/bloxapp/ssv-spec/issues/142 need to fix with this issue solution instead.
+	if b.State.DecidedValue == nil {
+		return errors.New("no decided value")
+	}
+
 	if b.State.RunningInstance == nil {
 		return errors.New("no running consensus instance")
 	}

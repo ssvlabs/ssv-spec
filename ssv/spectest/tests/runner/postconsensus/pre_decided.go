@@ -12,7 +12,7 @@ import (
 func PreDecided() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	err := "failed processing post consensus message: invalid post-consensus message: consensus instance not decided"
+	err := "failed processing post consensus message: invalid post-consensus message: no decided value"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus before decided",
 		Tests: []*tests.MsgProcessingSpecTest{
