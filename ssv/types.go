@@ -41,7 +41,7 @@ type ProposerCalls interface {
 // AggregatorCalls interface has all attestation aggregator duty specific calls
 type AggregatorCalls interface {
 	// SubmitAggregateSelectionProof returns an AggregateAndProof object
-	SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) (*phase0.AggregateAndProof, error)
+	SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (*phase0.AggregateAndProof, error)
 	// SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
 	SubmitSignedAggregateSelectionProof(msg *phase0.SignedAggregateAndProof) error
 }

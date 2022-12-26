@@ -396,7 +396,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBloc
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
-func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, committeeLength uint64, slotSig []byte) (*spec.AggregateAndProof, error) {
+func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, committeeLength uint64, index spec.ValidatorIndex, slotSig []byte) (*spec.AggregateAndProof, error) {
 	return TestingAggregateAndProof, nil
 }
 
