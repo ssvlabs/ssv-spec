@@ -1,7 +1,6 @@
 package testingutils
 
 import (
-	"fmt"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -505,7 +504,7 @@ var selectionProofMsg = func(
 }
 
 var PreConsensusValidatorRegistrationMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgID, false, types.NowTestNetwork.EstimatedCurrentEpoch(), false)
+	return validatorRegistrationMsg(msgSK, msgID, false, TestingDutyEpoch, false)
 }
 
 var validatorRegistrationMsg = func(
@@ -523,8 +522,6 @@ var validatorRegistrationMsg = func(
 	if wrongBeaconSig {
 		signed, root, _ = signer.SignBeaconObject(TestingValidatorRegistration, d, Testing7SharesSet().ValidatorPK.Serialize())
 	}
-
-	fmt.Printf("msg obj r %+v\n", TestingValidatorRegistration)
 
 	msgs := ssv.PartialSignatureMessages{
 		Type: ssv.ValidatorRegistrationPartialSig,

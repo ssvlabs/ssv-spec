@@ -3,7 +3,6 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"fmt"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -92,8 +91,6 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty *types.Duty) error {
 		return errors.Wrap(err, "could not calculate validator registration")
 	}
 
-	fmt.Printf("exe obj r %+v\n", vr)
-
 	// sign partial randao
 	msg, err := r.BaseRunner.signBeaconObject(r, vr, duty.Slot, types.DomainApplicationBuilder)
 	if err != nil {
@@ -135,10 +132,12 @@ func (r *ValidatorRegistrationRunner) calculateValidatorRegistration() (*v1.Vali
 	pk := phase0.BLSPubKey{}
 	copy(pk[:], r.BaseRunner.Share.ValidatorPubKey)
 
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.Slot)
+
 	return &v1.ValidatorRegistration{
 		FeeRecipient: r.BaseRunner.Share.FeeRecipientAddress,
 		GasLimit:     1,
-		Timestamp:    r.BaseRunner.BeaconNetwork.EpochStartTime(), // time changes in testing between creating the msg and now
+		Timestamp:    r.BaseRunner.BeaconNetwork.EpochStartTime(epoch),
 		Pubkey:       pk,
 	}, nil
 }
