@@ -40,6 +40,10 @@ var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
+var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleValidatorRegistration, nil, keySet)
+}
+
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
 }
@@ -115,6 +119,14 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
+		)
+	case types.BNRoleValidatorRegistration:
+		return ssv.NewValidatorRegistrationRunner(
+			types.NowTestNetwork,
+			share,
+			NewTestingBeaconNode(),
+			net,
+			km,
 		)
 	case UnknownDutyType:
 		ret := ssv.NewAttesterRunnner(

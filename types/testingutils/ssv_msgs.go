@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"fmt"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -106,6 +107,10 @@ var SSVMsgSyncCommittee = func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.S
 
 var SSVMsgSyncCommitteeContribution = func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution))
+}
+
+var SSVMsgValidatorRegistration = func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.SignedPartialSignatureMessage) *types.SSVMessage {
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleValidatorRegistration))
 }
 
 var ssvMsg = func(qbftMsg *qbft.SignedMessage, postMsg *ssv.SignedPartialSignatureMessage, msgID types.MessageID) *types.SSVMessage {
@@ -495,6 +500,56 @@ var selectionProofMsg = func(
 	return &ssv.SignedPartialSignatureMessage{
 		Message:   msgs,
 		Signature: msgSig,
+		Signer:    id,
+	}
+}
+
+var PreConsensusValidatorRegistrationMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgID, false, types.NowTestNetwork.EstimatedCurrentEpoch(), false)
+}
+
+var validatorRegistrationMsg = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	wrongRoot bool,
+	epoch spec.Epoch,
+	wrongBeaconSig bool,
+) *ssv.SignedPartialSignatureMessage {
+	signer := NewTestingKeyManager()
+	beacon := NewTestingBeaconNode()
+	d, _ := beacon.DomainData(epoch, types.DomainApplicationBuilder)
+
+	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistration, d, sk.GetPublicKey().Serialize())
+	if wrongBeaconSig {
+		signed, root, _ = signer.SignBeaconObject(TestingValidatorRegistration, d, Testing7SharesSet().ValidatorPK.Serialize())
+	}
+
+	fmt.Printf("msg obj r %+v\n", TestingValidatorRegistration)
+
+	msgs := ssv.PartialSignatureMessages{
+		Type: ssv.ValidatorRegistrationPartialSig,
+		Messages: []*ssv.PartialSignatureMessage{
+			{
+				PartialSignature: signed,
+				SigningRoot:      root,
+				Signer:           id,
+			},
+		},
+	}
+
+	msg := &ssv.PartialSignatureMessage{
+		PartialSignature: signed[:],
+		SigningRoot:      root,
+		Signer:           id,
+	}
+	if wrongRoot {
+		msg.SigningRoot = make([]byte, 32)
+	}
+
+	sig, _ := signer.SignRoot(msgs, types.PartialSignatureType, sk.GetPublicKey().Serialize())
+	return &ssv.SignedPartialSignatureMessage{
+		Message:   msgs,
+		Signature: sig,
 		Signer:    id,
 	}
 }

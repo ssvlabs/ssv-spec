@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 )
 
 // Share holds all info about the QBFT/ SSV Committee for msg signing and verification
@@ -12,6 +13,7 @@ type Share struct {
 	Committee             []*Operator
 	Quorum, PartialQuorum uint64
 	DomainType            DomainType
+	FeeRecipientAddress   bellatrix.ExecutionAddress
 	Graffiti              []byte
 }
 
