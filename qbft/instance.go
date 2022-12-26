@@ -124,6 +124,10 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		return errors.Wrap(err, "invalid signed message")
 	}
 
+	if msg.Message.Round < i.State.Round {
+		return errors.New("past round")
+	}
+
 	switch msg.Message.MsgType {
 	case ProposalMsgType:
 		return isValidProposal(

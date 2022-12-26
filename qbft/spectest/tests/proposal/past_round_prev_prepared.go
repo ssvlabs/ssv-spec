@@ -75,6 +75,6 @@ func PastRoundProposalPrevPrepared() *tests.MsgProcessingSpecTest {
 		PostRoot:       "36ff2e09d3d5f31610fefda7e7193fc190ebea5bd058b5a163f0c9fd7e5d78e0",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: proposal is not valid with current state",
+		ExpectedError:  "invalid signed message: past round",
 	}
 }
