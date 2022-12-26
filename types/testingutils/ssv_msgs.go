@@ -504,12 +504,25 @@ var selectionProofMsg = func(
 }
 
 var PreConsensusValidatorRegistrationMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgID, false, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch, false)
+}
+
+var PreConsensusValidatorRegistrationTooFewRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 0, false, TestingDutyEpoch, false)
+}
+
+var PreConsensusValidatorRegistrationTooManyRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutyEpoch, false)
+}
+
+var PreConsensusValidatorRegistrationDifferentEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutyEpoch, false)
 }
 
 var validatorRegistrationMsg = func(
-	sk *bls.SecretKey,
-	id types.OperatorID,
+	sk, beaconSK *bls.SecretKey,
+	id, beaconID types.OperatorID,
+	msgCnt int,
 	wrongRoot bool,
 	epoch spec.Epoch,
 	wrongBeaconSig bool,
@@ -518,20 +531,26 @@ var validatorRegistrationMsg = func(
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(epoch, types.DomainApplicationBuilder)
 
-	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistration, d, sk.GetPublicKey().Serialize())
+	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistration, d, beaconSK.GetPublicKey().Serialize())
+	if wrongRoot {
+		signed, root, _ = signer.SignBeaconObject(TestingValidatorRegistrationWrong, d, beaconSK.GetPublicKey().Serialize())
+	}
 	if wrongBeaconSig {
 		signed, root, _ = signer.SignBeaconObject(TestingValidatorRegistration, d, Testing7SharesSet().ValidatorPK.Serialize())
 	}
 
 	msgs := ssv.PartialSignatureMessages{
-		Type: ssv.ValidatorRegistrationPartialSig,
-		Messages: []*ssv.PartialSignatureMessage{
-			{
-				PartialSignature: signed,
-				SigningRoot:      root,
-				Signer:           id,
-			},
-		},
+		Type:     ssv.ValidatorRegistrationPartialSig,
+		Messages: []*ssv.PartialSignatureMessage{},
+	}
+
+	for i := 0; i < msgCnt; i++ {
+		msg := &ssv.PartialSignatureMessage{
+			PartialSignature: signed[:],
+			SigningRoot:      root,
+			Signer:           beaconID,
+		}
+		msgs.Messages = append(msgs.Messages, msg)
 	}
 
 	msg := &ssv.PartialSignatureMessage{

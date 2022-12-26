@@ -58,6 +58,22 @@ func PostQuorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
+			{
+				Name:   "validator registration",
+				Runner: testingutils.ValidatorRegistrationRunner(ks),
+				Duty:   testingutils.TestingValidatorRegistrationDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[4], 4)),
+				},
+				PostDutyRunnerStateRoot: "04ad3229a77e9cdc2bbe4886eada68e2412c298b15e6a70d542db517cc26a447",
+				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: "failed processing validator registration message: invalid pre-consensus message: no running duty",
+			},
 		},
 	}
 }

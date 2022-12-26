@@ -49,6 +49,18 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
 			},
+			{
+				Name:   "validator registration",
+				Runner: testingutils.ValidatorRegistrationRunner(ks),
+				Duty:   testingutils.TestingValidatorRegistrationDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
+				},
+				PostDutyRunnerStateRoot: "efcf694556d4ddeb6fb54b794b8cf04277e1a47ab161e827d48d6b1fc8d383e9",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",
+			},
 		},
 	}
 }

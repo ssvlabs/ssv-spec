@@ -52,7 +52,7 @@ func (r *ValidatorRegistrationRunner) HasRunningDuty() bool {
 func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
 	quorum, _, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
-		return errors.Wrap(err, "failed processing randao message")
+		return errors.Wrap(err, "failed processing validator registration message")
 	}
 
 	// quorum returns true only once (first time quorum achieved)

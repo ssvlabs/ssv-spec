@@ -52,6 +52,19 @@ func TooFewRoots() *tests.MultiMsgProcessingSpecTest {
 				},
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: no PartialSignatureMessages messages",
 			},
+			{
+				Name:   "validator registration",
+				Runner: testingutils.ValidatorRegistrationRunner(ks),
+				Duty:   testingutils.TestingValidatorRegistrationDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationTooFewRootsMsg(ks.Shares[1], 1)),
+				},
+				PostDutyRunnerStateRoot: "f5ae91f93c1352e8e94ef1564e6cf298c4244120d843bf1733417770ff6c65af",
+				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: "failed processing validator registration message: invalid pre-consensus message: SignedPartialSignatureMessage invalid: no PartialSignatureMessages messages",
+			},
 		},
 	}
 }
