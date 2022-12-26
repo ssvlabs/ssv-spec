@@ -419,7 +419,7 @@ func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[strin
 
 // GetBeaconNetwork returns the beacon network the node is on
 func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
-	return types.NowTestNetwork
+	return types.BeaconTestNetwork
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index

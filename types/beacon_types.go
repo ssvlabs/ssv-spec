@@ -3,7 +3,6 @@ package types
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
-	"sync"
 	"time"
 )
 
@@ -91,8 +90,8 @@ const (
 	// MainNetwork represents the main network.
 	MainNetwork BeaconNetwork = "mainnet"
 
-	// NowTestNetwork is a simple test network with genesis time always equal to now, meaning now is slot 0
-	NowTestNetwork BeaconNetwork = "now_test_network"
+	// BeaconTestNetwork is a simple test network with a custom genesis time
+	BeaconTestNetwork BeaconNetwork = "now_test_network"
 )
 
 // BeaconNetwork represents the network.
@@ -105,8 +104,8 @@ func NetworkFromString(n string) BeaconNetwork {
 		return PraterNetwork
 	case string(MainNetwork):
 		return MainNetwork
-	case string(NowTestNetwork):
-		return NowTestNetwork
+	case string(BeaconTestNetwork):
+		return BeaconTestNetwork
 	default:
 		return ""
 	}
@@ -119,15 +118,12 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 		return [4]byte{0x00, 0x00, 0x10, 0x20}
 	case MainNetwork:
 		return [4]byte{0, 0, 0, 0}
-	case NowTestNetwork:
+	case BeaconTestNetwork:
 		return [4]byte{0x99, 0x99, 0x99, 0x99}
 	default:
 		return [4]byte{0x98, 0x98, 0x98, 0x98}
 	}
 }
-
-var nowTestNetworkGenesisTime = uint64(0)
-var once sync.Once
 
 // MinGenesisTime returns min genesis time value
 func (n BeaconNetwork) MinGenesisTime() uint64 {
@@ -136,11 +132,8 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 		return 1616508000
 	case MainNetwork:
 		return 1606824023
-	case NowTestNetwork:
-		once.Do(func() {
-			nowTestNetworkGenesisTime = uint64(time.Now().Unix())
-		})
-		return nowTestNetworkGenesisTime
+	case BeaconTestNetwork:
+		return 1616508000
 	default:
 		return 0
 	}
