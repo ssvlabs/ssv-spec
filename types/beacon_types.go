@@ -186,9 +186,8 @@ func (n BeaconNetwork) FirstSlotAtEpoch(epoch spec.Epoch) spec.Slot {
 	return spec.Slot(uint64(epoch) * n.SlotsPerEpoch())
 }
 
-func (n BeaconNetwork) EpochStartTime() time.Time {
-	currentEpoch := n.EstimatedCurrentEpoch()
-	firstSlot := n.FirstSlotAtEpoch(currentEpoch)
+func (n BeaconNetwork) EpochStartTime(epoch spec.Epoch) time.Time {
+	firstSlot := n.FirstSlotAtEpoch(epoch)
 	t := n.EstimatedTimeAtSlot(firstSlot)
 	return time.Unix(t, 0)
 }

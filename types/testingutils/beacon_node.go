@@ -283,7 +283,7 @@ var TestingFeeRecipient = bellatrix.ExecutionAddress(ethAddressFromHex("535953b5
 var TestingValidatorRegistration = &v1.ValidatorRegistration{
 	FeeRecipient: TestingFeeRecipient,
 	GasLimit:     1,
-	Timestamp:    types.NowTestNetwork.EpochStartTime(),
+	Timestamp:    types.PraterNetwork.EpochStartTime(TestingDutyEpoch),
 	Pubkey:       TestingValidatorPubKey,
 }
 
@@ -384,7 +384,7 @@ var TestingSyncCommitteeContributionNexEpochDuty = &types.Duty{
 var TestingValidatorRegistrationDuty = &types.Duty{
 	Type:           types.BNRoleValidatorRegistration,
 	PubKey:         TestingValidatorPubKey,
-	Slot:           types.NowTestNetwork.FirstSlotAtEpoch(types.NowTestNetwork.EstimatedCurrentEpoch()),
+	Slot:           TestingDutySlot,
 	ValidatorIndex: TestingValidatorIndex,
 }
 
