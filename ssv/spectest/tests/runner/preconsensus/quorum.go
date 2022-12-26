@@ -78,7 +78,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 				},
-				PostDutyRunnerStateRoot: "ff6b65005d3abe4844d7a11b947d4e920da075ee47bac92e45584ca7ed875fdb",
+				PostDutyRunnerStateRoot: "04ad3229a77e9cdc2bbe4886eada68e2412c298b15e6a70d542db517cc26a447",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

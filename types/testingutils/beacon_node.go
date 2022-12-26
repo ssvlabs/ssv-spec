@@ -286,6 +286,12 @@ var TestingValidatorRegistration = &v1.ValidatorRegistration{
 	Timestamp:    types.PraterNetwork.EpochStartTime(TestingDutyEpoch),
 	Pubkey:       TestingValidatorPubKey,
 }
+var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
+	FeeRecipient: TestingFeeRecipient,
+	GasLimit:     5,
+	Timestamp:    types.PraterNetwork.EpochStartTime(TestingDutyEpoch),
+	Pubkey:       TestingValidatorPubKey,
+}
 
 var TestingAttesterDuty = &types.Duty{
 	Type:                    types.BNRoleAttester,
