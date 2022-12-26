@@ -29,7 +29,7 @@ func FarFutureTarget() *valcheck.SpecTest {
 				Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 			},
 			Target: &spec.Checkpoint{
-				Epoch: 3,
+				Epoch: 10000000,
 				Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 			},
 		},
@@ -39,7 +39,7 @@ func FarFutureTarget() *valcheck.SpecTest {
 
 	return &valcheck.SpecTest{
 		Name:          "attestation value check far future target",
-		Network:       types.NowTestNetwork,
+		Network:       types.BeaconTestNetwork,
 		BeaconRole:    types.BNRoleAttester,
 		Input:         input,
 		ExpectedError: "attestation data target epoch is into far future",
