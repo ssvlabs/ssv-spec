@@ -3,6 +3,7 @@ package types
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
+	"sync"
 	"time"
 )
 
@@ -125,6 +126,9 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 	}
 }
 
+var nowTestNetworkGenesisTime = uint64(0)
+var once sync.Once
+
 // MinGenesisTime returns min genesis time value
 func (n BeaconNetwork) MinGenesisTime() uint64 {
 	switch n {
@@ -133,7 +137,10 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 	case MainNetwork:
 		return 1606824023
 	case NowTestNetwork:
-		return uint64(time.Now().Unix())
+		once.Do(func() {
+			nowTestNetworkGenesisTime = uint64(time.Now().Unix())
+		})
+		return nowTestNetworkGenesisTime
 	default:
 		return 0
 	}
