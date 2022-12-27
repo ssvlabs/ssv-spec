@@ -2,19 +2,22 @@ package testingutils
 
 import (
 	"encoding/hex"
+
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
 type testingStorage struct {
-	operators   map[types.OperatorID]*dkg.Operator
-	keygenoupts map[string]*dkg.KeyGenOutput
+	operators       map[types.OperatorID]*dkg.Operator
+	keygenoupts     map[string]*dkg.KeyGenOutput
+	oldOperatorList map[string][]types.OperatorID
 }
 
 func NewTestingStorage() *testingStorage {
 	ret := &testingStorage{
-		operators:   make(map[types.OperatorID]*dkg.Operator),
-		keygenoupts: make(map[string]*dkg.KeyGenOutput),
+		operators:       make(map[types.OperatorID]*dkg.Operator),
+		keygenoupts:     make(map[string]*dkg.KeyGenOutput),
+		oldOperatorList: make(map[string][]types.OperatorID),
 	}
 
 	for i, s := range Testing13SharesSet().DKGOperators {
@@ -25,6 +28,7 @@ func NewTestingStorage() *testingStorage {
 		}
 	}
 
+	ret.oldOperatorList[TestingResharingKeySet().ValidatorPK.SerializeToHexStr()] = []types.OperatorID{1, 2, 3}
 	return ret
 }
 
@@ -43,4 +47,8 @@ func (s *testingStorage) SaveKeyGenOutput(output *dkg.KeyGenOutput) error {
 
 func (s *testingStorage) GetKeyGenOutput(pk types.ValidatorPK) (*dkg.KeyGenOutput, error) {
 	return s.keygenoupts[hex.EncodeToString(pk)], nil
+}
+
+func (s *testingStorage) GetDKGOperators(pk types.ValidatorPK) ([]types.OperatorID, error) {
+	return s.oldOperatorList[hex.EncodeToString(pk)], nil
 }

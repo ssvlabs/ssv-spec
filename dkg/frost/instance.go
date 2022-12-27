@@ -57,16 +57,17 @@ func NewResharing(
 	requestID dkg.RequestID,
 	operatorID types.OperatorID,
 	config dkg.IConfig,
-	init *dkg.Reshare,
+	reshare *dkg.Reshare,
+	reshareParams *dkg.ReshareParams,
 ) dkg.Protocol {
 
 	instanceParams := InstanceParams{
 		identifier:      requestID,
-		threshold:       uint32(init.Threshold),
+		threshold:       uint32(reshare.Threshold),
 		operatorID:      operatorID,
-		operators:       types.OperatorList(init.OperatorIDs).ToUint32List(),
-		operatorsOld:    types.OperatorList(init.OldOperatorIDs).ToUint32List(),
-		oldKeyGenOutput: init.OldKeyGenOutput,
+		operators:       types.OperatorList(reshare.OperatorIDs).ToUint32List(),
+		operatorsOld:    types.OperatorList(reshareParams.OldOperatorIDs).ToUint32List(),
+		oldKeyGenOutput: reshareParams.OldKeygenOutput,
 	}
 	return newProtocol(config, instanceParams)
 }

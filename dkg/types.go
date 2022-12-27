@@ -20,6 +20,7 @@ type Network interface {
 type Storage interface {
 	// GetDKGOperator returns true and operator object if found by operator ID
 	GetDKGOperator(operatorID types.OperatorID) (bool, *Operator, error)
+	GetDKGOperators(pk types.ValidatorPK) ([]types.OperatorID, error)
 	SaveKeyGenOutput(output *KeyGenOutput) error
 	GetKeyGenOutput(pk types.ValidatorPK) (*KeyGenOutput, error)
 }
@@ -46,7 +47,7 @@ type IConfig interface {
 type Config struct {
 	// Protocol the DKG protocol implementation
 	KeygenProtocol      func(RequestID, types.OperatorID, IConfig, *Init) Protocol
-	ReshareProtocol     func(RequestID, types.OperatorID, IConfig, *Reshare) Protocol
+	ReshareProtocol     func(RequestID, types.OperatorID, IConfig, *Reshare, *ReshareParams) Protocol
 	Network             Network
 	Storage             Storage
 	SignatureDomainType types.DomainType

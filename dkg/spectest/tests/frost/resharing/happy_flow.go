@@ -21,13 +21,12 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		types.ValidatorPK(ks.ValidatorPK.Serialize()),
 	)
 
-	testingNode := dkg.NewResharingNode(
+	testingNode := dkg.NewNode(
 		&dkg.Operator{
 			OperatorID:       5,
 			ETHAddress:       ks.DKGOperators[5].ETHAddress,
 			EncryptionPubKey: &ks.DKGOperators[5].EncryptionKey.PublicKey,
 		},
-		[]types.OperatorID{1, 2, 3}, // old committee
 		&dkg.Config{
 			KeygenProtocol:  frost.New,
 			ReshareProtocol: frost.NewResharing,

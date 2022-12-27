@@ -169,16 +169,12 @@ func (msg *Init) Decode(data []byte) error {
 
 // Reshare triggers the resharing protocol
 type Reshare struct {
+	// ValidatorPK is the the public key to be reshared
+	ValidatorPK types.ValidatorPK
 	// OperatorIDs are the operators in the new set
 	OperatorIDs []types.OperatorID
 	// Threshold is the threshold of the new set
 	Threshold uint16
-	// ValidatorPK is the the public key to be reshared
-	ValidatorPK types.ValidatorPK
-	// OldOperatorIDs are the operators in the old set
-	OldOperatorIDs []types.OperatorID
-	// OldKeyGenOutput is the KeygenOutput from the old committee
-	OldKeyGenOutput *KeyGenOutput
 }
 
 func (msg *Reshare) Validate() error {
@@ -206,6 +202,26 @@ func (msg *Reshare) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *Reshare) Decode(data []byte) error {
 	return json.Unmarshal(data, msg)
+}
+
+type ReshareParams struct {
+	OldOperatorIDs  []types.OperatorID
+	OldKeygenOutput *KeyGenOutput
+}
+
+func (reshareMsg *ReshareParams) LoadFromStorage(pk types.ValidatorPK, storage Storage) error {
+	keygenOutput, err := storage.GetKeyGenOutput(pk)
+	if err != nil {
+		return errors.Wrap(err, "could not find the keygen output from storage")
+	}
+	reshareMsg.OldKeygenOutput = keygenOutput
+
+	operators, err := storage.GetDKGOperators(pk)
+	if err != nil {
+		return errors.Wrap(err, "could not find old operators from storage")
+	}
+	reshareMsg.OldOperatorIDs = operators
+	return nil
 }
 
 // Output is the last message in every DKG which marks a specific node's end of process

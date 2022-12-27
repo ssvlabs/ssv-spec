@@ -27,7 +27,7 @@ var TestingDKGNode = func(keySet *TestKeySet) *dkg.Node {
 				KeyGenOutput: keySet.KeyGenOutput(1),
 			}
 		},
-		ReshareProtocol: func(dkg.RequestID, types.OperatorID, dkg.IConfig, *dkg.Reshare) dkg.Protocol {
+		ReshareProtocol: func(dkg.RequestID, types.OperatorID, dkg.IConfig, *dkg.Reshare, *dkg.ReshareParams) dkg.Protocol {
 			return &TestingKeygenProtocol{
 				KeyGenOutput: keySet.KeyGenOutput(1),
 			}
