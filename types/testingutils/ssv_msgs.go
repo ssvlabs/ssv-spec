@@ -733,7 +733,7 @@ var contributionProofMsg = func(
 
 	msgs := make([]*ssv.PartialSignatureMessage, 0)
 	for index := range TestingContributionProofIndexes {
-		subnet, _ := beacon.SyncCommitteeSubnetID(uint64(index))
+		subnet, _ := beacon.SyncCommitteeSubnetID(spec.CommitteeIndex(index))
 		data := &altair.SyncAggregatorSelectionData{
 			Slot:              slot,
 			SubcommitteeIndex: subnet,
@@ -841,7 +841,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 	msgs := make([]*ssv.PartialSignatureMessage, 0)
 	for index := range TestingSyncCommitteeContributions {
 		// sign proof
-		subnet, _ := beacon.SyncCommitteeSubnetID(uint64(index))
+		subnet, _ := beacon.SyncCommitteeSubnetID(spec.CommitteeIndex(index))
 		if wrongRoot {
 			subnet = 1
 		}
@@ -856,7 +856,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 		copy(blsProofSig[:], proofSig)
 
 		// get contribution
-		contribution, _ := beacon.GetSyncCommitteeContribution(TestingDutySlot, subnet, TestingValidatorPubKey)
+		contribution, _ := beacon.GetSyncCommitteeContribution(TestingDutySlot, subnet)
 
 		// sign contrib and proof
 		contribAndProof := &altair.ContributionAndProof{

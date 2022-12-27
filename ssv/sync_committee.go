@@ -149,7 +149,7 @@ func (r *SyncCommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashR
 func (r *SyncCommitteeRunner) executeDuty(duty *types.Duty) error {
 	// TODO - waitOneThirdOrValidBlock
 
-	root, err := r.GetBeaconNode().GetSyncMessageBlockRoot()
+	root, err := r.GetBeaconNode().GetSyncMessageBlockRoot(duty.Slot)
 	if err != nil {
 		return errors.Wrap(err, "failed to get sync committee block root")
 	}

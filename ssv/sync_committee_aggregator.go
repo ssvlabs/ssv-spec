@@ -70,10 +70,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 		Duty:                      duty,
 		SyncCommitteeContribution: make(map[phase0.BLSSignature]*altair.SyncCommitteeContribution),
 	}
-	indexes, err := r.GetBeaconNode().GetSyncSubcommitteeIndex(duty.Slot, duty.PubKey)
-	if err != nil {
-		return errors.Wrap(err, "failed fetching sync subcommittee indexes")
-	}
+
 	anyIsAggregator := false
 	for i, root := range roots {
 		// reconstruct selection proof sig
@@ -95,11 +92,11 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 		anyIsAggregator = true
 
 		// fetch sync committee contribution
-		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(indexes[i])
+		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(r.GetState().StartingDuty.ValidatorSyncCommitteeIndices[i])
 		if err != nil {
 			return errors.Wrap(err, "could not get sync committee subnet ID")
 		}
-		contribution, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.Slot, subnet, r.GetState().StartingDuty.PubKey)
+		contribution, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.Slot, subnet)
 		if err != nil {
 			return errors.Wrap(err, "could not get sync committee contribution")
 		}
@@ -240,13 +237,8 @@ func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib *al
 }
 
 func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	indexes, err := r.GetBeaconNode().GetSyncSubcommitteeIndex(r.GetState().StartingDuty.Slot, r.GetState().StartingDuty.PubKey)
-	if err != nil {
-		return nil, types.DomainError, errors.Wrap(err, "failed fetching sync subcommittee indexes")
-	}
-
 	sszIndexes := make([]ssz.HashRoot, 0)
-	for _, index := range indexes {
+	for _, index := range r.GetState().StartingDuty.ValidatorSyncCommitteeIndices {
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(index)
 		if err != nil {
 			return nil, types.DomainError, errors.Wrap(err, "could not get sync committee subnet ID")
@@ -279,17 +271,12 @@ func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([
 // 3) Once consensus decides, sign partial contribution data (for each subcommittee) and broadcast
 // 4) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedContributionAndProof (for each subcommittee) sig to the BN
 func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
-	indexes, err := r.GetBeaconNode().GetSyncSubcommitteeIndex(duty.Slot, duty.PubKey)
-	if err != nil {
-		return errors.Wrap(err, "failed fetching sync subcommittee indexes")
-	}
-
 	// sign selection proofs
 	msgs := PartialSignatureMessages{
 		Type:     ContributionProofs,
 		Messages: []*PartialSignatureMessage{},
 	}
-	for _, index := range indexes {
+	for _, index := range r.GetState().StartingDuty.ValidatorSyncCommitteeIndices {
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(index)
 		if err != nil {
 			return errors.Wrap(err, "could not get sync committee subnet ID")

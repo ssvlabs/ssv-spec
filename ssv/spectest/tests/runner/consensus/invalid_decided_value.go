@@ -12,7 +12,7 @@ import (
 // InvalidDecidedValue tests an invalid decided value
 func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type"
+	expectedError := "failed processing post consensus message: invalid post-consensus message: no decided value"
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{
 			Duty: &types.Duty{
@@ -53,8 +53,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.SyncCommitteeContributionMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
 							}), nil),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)), // no qbft msg to mock the missing decided value
 				},
-				PostDutyRunnerStateRoot: "1509d59215568c0ad60f567c54e45ff18a64bb50d564892dd27a8955aacc5c3e",
+				PostDutyRunnerStateRoot: "5364e32fbf393a6172b1d8e5724934e24c2429928ec5030f5632794ddc5a3ec0",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -76,8 +77,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.SyncCommitteeMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommittee)),
 							}), nil),
+					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "88451606b4a9a3e44881e5dc98e19708ceb6130440d5cb1751763bc70b8aa137",
+				PostDutyRunnerStateRoot: "789b4ab5f2377498be6cd7d6b765b3a2d0e98e757c59be73f2d8270b2eae1fc1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedError,
 			},
@@ -101,8 +103,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.AggregatorMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAggregator)),
 							}), nil),
+					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "f9377d6edf48e50042ccb7c7b7d9c98745d57b1b28c25db5bb96da95d9e0969a",
+				PostDutyRunnerStateRoot: "cbdb3514a2c0919f0f7e67d47505f3523242086f0ba47812586df8234cfb517a",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -128,8 +131,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.ProposerMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "1113fc0cd49d7a294260e592fdaef0b90bbb0c9e96254339d19ce446a7135f36",
+				PostDutyRunnerStateRoot: "350e73a702f19ae3940c5ce3007397015be71ce058eda4f13e7884bd4f44ece2",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
@@ -151,8 +155,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.AttesterMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAttester)),
 							}), nil),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "3caaf9548455b00619d72ae84a4099592fa97668631502ae7da35963fd954957",
+				PostDutyRunnerStateRoot: "b4f8c1c74bf7c9fa347bb74ef98b87a04e6fec175b0fc8ec12c594540536a120",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedError,
 			},
