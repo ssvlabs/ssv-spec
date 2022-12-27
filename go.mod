@@ -2,6 +2,7 @@ module github.com/bloxapp/ssv-spec
 
 go 1.17
 
+
 require (
 	github.com/attestantio/go-eth2-client v0.11.3
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0
@@ -21,7 +22,6 @@ require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/goccy/go-yaml v1.9.5 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
 	github.com/ipfs/go-cid v0.2.0 // indirect
 	github.com/ipfs/go-log v1.0.5 // indirect
