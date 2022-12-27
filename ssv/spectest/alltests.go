@@ -49,6 +49,7 @@ var AllTests = []SpecTest{
 	newduty.Valid(),
 	newduty.PostWrongDecided(),
 	newduty.PostInvalidDecided(),
+	newduty.PostFutureDecided(),
 
 	consensus.FutureDecided(),
 	consensus.InvalidDecidedValue(),
