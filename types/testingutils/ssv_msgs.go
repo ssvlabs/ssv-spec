@@ -31,6 +31,10 @@ var SyncCommitteeContributionMsgID = func() []byte {
 	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution)
 	return ret[:]
 }()
+var ValidatorRegistrationMsgID = func() []byte {
+	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleValidatorRegistration)
+	return ret[:]
+}()
 
 var TestAttesterConsensusData = &types.ConsensusData{
 	Duty:            TestingAttesterDuty,

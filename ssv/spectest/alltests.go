@@ -116,6 +116,7 @@ var AllTests = []SpecTest{
 	newduty.PostWrongDecided(),
 	newduty.PostInvalidDecided(),
 
+	consensus.ValidMessage(),
 	consensus.FutureDecided(),
 	consensus.InvalidDecidedValue(),
 	consensus.NoRunningDuty(),
