@@ -147,6 +147,7 @@ func (c *Controller) canStartInstanceForValue(value []byte) error {
 	return c.CanStartInstance()
 }
 
+// CanStartInstance returns nil if controller can start a new instance
 func (c *Controller) CanStartInstance() error {
 	// check prev instance if prev instance is not the first instance
 	inst := c.StoredInstances.FindInstance(c.Height)
