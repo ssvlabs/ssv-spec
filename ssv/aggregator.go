@@ -81,10 +81,6 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 		return errors.Wrap(err, "failed to submit aggregate and proof")
 	}
 
-	if res == nil {
-		return errors.New("selection proof is nil")
-	}
-
 	input := &types.ConsensusData{
 		Duty:              duty,
 		AggregateAndProof: res,
