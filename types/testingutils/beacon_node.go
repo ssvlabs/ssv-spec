@@ -457,7 +457,7 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *spec.Attestation) er
 }
 
 // GetBeaconBlock returns beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, graffiti, randao []byte) (*bellatrix.BeaconBlock, error) {
+func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*bellatrix.BeaconBlock, error) {
 	return TestingBeaconBlock, nil
 }
 
