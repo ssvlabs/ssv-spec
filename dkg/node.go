@@ -43,15 +43,6 @@ func NewNode(operator *Operator, config *Config) *Node {
 	}
 }
 
-// func NewResharingNode(operator *Operator, operatorsOld []types.OperatorID, config *Config) *Node {
-// 	return &Node{
-// 		operator:     operator,
-// 		operatorsOld: operatorsOld,
-// 		config:       config,
-// 		runners:      make(Runners, 0),
-// 	}
-// }
-
 func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 	r := &runner{
 		Operator:              n.operator,
