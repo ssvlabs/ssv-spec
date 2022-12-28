@@ -116,7 +116,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 
 	// specific duty sig
 	var blkToSign ssz.HashRoot
-	if r.ProducesBlindedBlocks {
+	if r.decidedBlindedBlock() {
 		blkToSign = decidedValue.BlindedBlockData
 	} else {
 		blkToSign = decidedValue.BlockData
@@ -175,7 +175,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		if r.ProducesBlindedBlocks {
+		if r.decidedBlindedBlock() {
 			blk := &bellatrix2.SignedBlindedBeaconBlock{
 				Message:   r.GetState().DecidedValue.BlindedBlockData,
 				Signature: specSig,
@@ -197,6 +197,15 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 	return nil
 }
 
+// decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
+// WARNING!! should be called after decided only
+func (r *ProposerRunner) decidedBlindedBlock() bool {
+	if r.BaseRunner.State.DecidedValue.BlockData != nil {
+		return false
+	}
+	return true
+}
+
 func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.Slot)
 	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
@@ -204,7 +213,7 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	if r.ProducesBlindedBlocks {
+	if r.decidedBlindedBlock() {
 		return []ssz.HashRoot{r.BaseRunner.State.DecidedValue.BlindedBlockData}, types.DomainProposer, nil
 	}
 	return []ssz.HashRoot{r.BaseRunner.State.DecidedValue.BlockData}, types.DomainProposer, nil
