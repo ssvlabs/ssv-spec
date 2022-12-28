@@ -63,14 +63,7 @@ func (b *BaseRunner) canStartNewDuty() error {
 		return nil
 	}
 
-	// check if instance running first as we can't start new duty if it does
-	if b.State.RunningInstance != nil {
-		// check consensus decided
-		if decided, _ := b.State.RunningInstance.IsDecided(); !decided {
-			return errors.New("consensus on duty is running")
-		}
-	}
-	return nil
+	return b.QBFTController.CanStartInstance()
 }
 
 // basePreConsensusMsgProcessing is a base func that all runner implementation can call for processing a pre-consensus msg

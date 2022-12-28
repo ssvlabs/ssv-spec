@@ -7,13 +7,13 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// NotDecided tests starting duty before finished or decided
-func NotDecided() *MultiStartNewRunnerDutySpecTest {
+// PostFutureDecided tests starting duty after a future decided
+func PostFutureDecided() *MultiStartNewRunnerDutySpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
 	// nolint
-	startRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	futureDecide := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
@@ -21,59 +21,61 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
+
+		futureDecidedInstance := qbft.NewInstance(
+			r.GetBaseRunner().QBFTController.GetConfig(),
+			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Identifier,
+			50)
+		futureDecidedInstance.State.Decided = true
+		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, futureDecidedInstance)
+		r.GetBaseRunner().QBFTController.Height = 50
 		return r
 	}
 
-	expectedErr := "previous instance hasn't Decided"
 	return &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty not decided",
+		Name: "new duty post future decided",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionNexEpochDuty),
+				Runner:                  futureDecide(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionNexEpochDuty),
 				Duty:                    testingutils.TestingSyncCommitteeContributionNexEpochDuty,
-				PostDutyRunnerStateRoot: "abe5f5dc6688ef9f4a43faa747657cb6cab916bfb94198de1972ed06c0d8fc0b",
+				PostDutyRunnerStateRoot: "cd7102eeaf5429ffba7ba91820477a4b7928450f59e98fd15b10fffeadf29f5a",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedErr,
 			},
 			{
 				Name:                    "sync committee",
-				Runner:                  startRunner(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Runner:                  futureDecide(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "531a5aeb6d035bf5886f88e1eefe39b069e5375c9a7ce489b3b63ac7542336d1",
+				PostDutyRunnerStateRoot: "ed5e58c63364cec98a445ada8997f3878b1506bdfdce4ac7a9088e74bf770d77",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedErr,
 			},
 			{
 				Name:                    "aggregator",
-				Runner:                  startRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDutyNextEpoch),
+				Runner:                  futureDecide(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDutyNextEpoch),
 				Duty:                    testingutils.TestingAggregatorDutyNextEpoch,
-				PostDutyRunnerStateRoot: "d507a425ecba939592dc4b1db1d0226627b149ab54de03685dfc7be869b5c092",
+				PostDutyRunnerStateRoot: "f5184f9d8f0dd3427fc87c12478c183c1a7b86977b44c6caa597c8b447360c7d",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedErr,
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpoch),
+				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpoch),
 				Duty:                    testingutils.TestingProposerDutyNextEpoch,
-				PostDutyRunnerStateRoot: "38f9a25f24cdebb193b0fda2d858d7dd8eaeb6d5d8318f8f2e77b118202c578f",
+				PostDutyRunnerStateRoot: "28ad79510cddbada7546caca3c7eb369c1c60d88745f2670528ec2e1f2dff2ac",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedErr,
 			},
 			{
 				Name:                    "attester",
-				Runner:                  startRunner(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
+				Runner:                  futureDecide(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "2dd1e68acd5fcfe7d7545294567b5deda8747dd3430a040a7bc97405add2c6fd",
+				PostDutyRunnerStateRoot: "c64970f81c113a9ccf6216ab59a87e4d29674d6fcd3ab83c662f22a8197d7b73",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedErr,
 			},
 		},
 	}

@@ -41,7 +41,7 @@ func NewController(
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
 func (c *Controller) StartNewInstance(value []byte) error {
-	if err := c.canStartInstance(value); err != nil {
+	if err := c.canStartInstanceForValue(value); err != nil {
 		return errors.Wrap(err, "can't start new QBFT instance")
 	}
 
@@ -138,12 +138,17 @@ func (c *Controller) addAndStoreNewInstance() *Instance {
 	return i
 }
 
-func (c *Controller) canStartInstance(value []byte) error {
+func (c *Controller) canStartInstanceForValue(value []byte) error {
 	// check value
 	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
 		return errors.Wrap(err, "value invalid")
 	}
 
+	return c.CanStartInstance()
+}
+
+// CanStartInstance returns nil if controller can start a new instance
+func (c *Controller) CanStartInstance() error {
 	// check prev instance if prev instance is not the first instance
 	inst := c.StoredInstances.FindInstance(c.Height)
 	if inst == nil {
