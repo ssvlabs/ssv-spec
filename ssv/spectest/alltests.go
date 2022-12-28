@@ -52,6 +52,7 @@ var AllTests = []SpecTest{
 	newduty.Valid(),
 	newduty.PostWrongDecided(),
 	newduty.PostInvalidDecided(),
+	newduty.PostFutureDecided(),
 
 	consensus.FutureDecided(),
 	consensus.InvalidDecidedValue(),
@@ -62,6 +63,7 @@ var AllTests = []SpecTest{
 	consensus.ValidDecided7Operators(),
 	consensus.ValidDecided10Operators(),
 	consensus.ValidDecided13Operators(),
+	consensus.ValidMessage(),
 
 	synccommitteeaggregator.SomeAggregatorQuorum(),
 	synccommitteeaggregator.NoneAggregatorQuorum(),
