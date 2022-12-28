@@ -45,7 +45,7 @@ func NotDecided() *MultiStartNewRunnerDutySpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
 				PostDutyRunnerStateRoot: "531a5aeb6d035bf5886f88e1eefe39b069e5375c9a7ce489b3b63ac7542336d1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "consensus on duty is running",
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name:                    "aggregator",
