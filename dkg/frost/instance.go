@@ -66,7 +66,7 @@ func NewResharing(
 		threshold:       uint32(reshare.Threshold),
 		operatorID:      operatorID,
 		operators:       types.OperatorList(reshare.OperatorIDs).ToUint32List(),
-		operatorsOld:    types.OperatorList(reshareParams.OldOperatorIDs).ToUint32List(),
+		operatorsOld:    types.OperatorList(reshare.OldOperatorIDs).ToUint32List(),
 		oldKeyGenOutput: reshareParams.OldKeygenOutput,
 	}
 	return newProtocol(config, instanceParams)

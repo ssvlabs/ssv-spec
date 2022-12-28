@@ -73,16 +73,17 @@ var InitMessageData = func(operators []types.OperatorID, threshold uint16, withd
 	}
 }
 
-var ReshareMessageDataBytes = func(operators []types.OperatorID, threshold uint16, validatorPK types.ValidatorPK) []byte {
-	byts, _ := ReshareMessageData(operators, threshold, validatorPK).Encode()
+var ReshareMessageDataBytes = func(operators []types.OperatorID, threshold uint16, validatorPK types.ValidatorPK, oldOperators []types.OperatorID) []byte {
+	byts, _ := ReshareMessageData(operators, threshold, validatorPK, oldOperators).Encode()
 	return byts
 }
 
-var ReshareMessageData = func(operators []types.OperatorID, threshold uint16, validatorPK types.ValidatorPK) *dkg.Reshare {
+var ReshareMessageData = func(operators []types.OperatorID, threshold uint16, validatorPK types.ValidatorPK, oldOperators []types.OperatorID) *dkg.Reshare {
 	return &dkg.Reshare{
-		ValidatorPK: validatorPK,
-		OperatorIDs: operators,
-		Threshold:   threshold,
+		ValidatorPK:    validatorPK,
+		OperatorIDs:    operators,
+		Threshold:      threshold,
+		OldOperatorIDs: oldOperators,
 	}
 }
 

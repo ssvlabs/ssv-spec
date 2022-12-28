@@ -175,6 +175,8 @@ type Reshare struct {
 	OperatorIDs []types.OperatorID
 	// Threshold is the threshold of the new set
 	Threshold uint16
+	// list of old operators selected by user upon reshare request
+	OldOperatorIDs []types.OperatorID
 }
 
 func (msg *Reshare) Validate() error {
@@ -205,7 +207,6 @@ func (msg *Reshare) Decode(data []byte) error {
 }
 
 type ReshareParams struct {
-	OldOperatorIDs  []types.OperatorID
 	OldKeygenOutput *KeyGenOutput
 }
 
@@ -215,12 +216,6 @@ func (reshareMsg *ReshareParams) LoadFromStorage(pk types.ValidatorPK, storage S
 		return errors.Wrap(err, "could not find the keygen output from storage")
 	}
 	reshareMsg.OldKeygenOutput = keygenOutput
-
-	operators, err := storage.GetDKGOperators(pk)
-	if err != nil {
-		return errors.Wrap(err, "could not find old operators from storage")
-	}
-	reshareMsg.OldOperatorIDs = operators
 	return nil
 }
 

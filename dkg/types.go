@@ -20,7 +20,6 @@ type Network interface {
 type Storage interface {
 	// GetDKGOperator returns true and operator object if found by operator ID
 	GetDKGOperator(operatorID types.OperatorID) (bool, *Operator, error)
-	GetDKGOperators(pk types.ValidatorPK) ([]types.OperatorID, error)
 	SaveKeyGenOutput(output *KeyGenOutput) error
 	GetKeyGenOutput(pk types.ValidatorPK) (*KeyGenOutput, error)
 }

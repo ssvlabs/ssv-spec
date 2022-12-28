@@ -19,6 +19,7 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		[]types.OperatorID{5, 6, 7, 8}, // new committee
 		uint16(ks.Threshold),
 		types.ValidatorPK(ks.ValidatorPK.Serialize()),
+		[]types.OperatorID{1, 2, 3},
 	)
 
 	testingNode := dkg.NewNode(
