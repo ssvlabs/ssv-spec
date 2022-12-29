@@ -119,6 +119,31 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError: errStr,
 			},
 			{
+				Name:   "proposer (blinded block)",
+				Runner: testingutils.ProposerBlindedBlockRunner(ks),
+				Duty:   testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgProposer(testingutils.MultiSignQBFTMsg(
+						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						&qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     2,
+							Round:      qbft.FirstRound,
+							Identifier: getID(types.BNRoleProposer),
+							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+						}), nil),
+				},
+				PostDutyRunnerStateRoot: "cad75704dcd80b4687362fbd3a3c870e6c7abd65d874a6986163ab8e2f08b6b5",
+				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+				},
+				ExpectedError: errStr,
+			},
+			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   testingutils.TestingAttesterDuty,

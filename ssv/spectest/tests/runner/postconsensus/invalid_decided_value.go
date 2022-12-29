@@ -1,4 +1,4 @@
-package consensus
+package postconsensus
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -52,6 +52,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.SyncCommitteeContributionMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
 							}), nil),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)), // no qbft msg to mock the missing decided value
 				},
 				PostDutyRunnerStateRoot: "5364e32fbf393a6172b1d8e5724934e24c2429928ec5030f5632794ddc5a3ec0",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
@@ -75,6 +76,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.SyncCommitteeMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommittee)),
 							}), nil),
+					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "789b4ab5f2377498be6cd7d6b765b3a2d0e98e757c59be73f2d8270b2eae1fc1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
@@ -100,6 +102,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.AggregatorMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAggregator)),
 							}), nil),
+					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "cbdb3514a2c0919f0f7e67d47505f3523242086f0ba47812586df8234cfb517a",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
@@ -127,6 +130,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.ProposerMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "350e73a702f19ae3940c5ce3007397015be71ce058eda4f13e7884bd4f44ece2",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
@@ -154,8 +158,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.ProposerMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "06310c138a71e78915d6f3217b5a88f1ac20178154600deeb7d58fa21b4e9a93",
+				PostDutyRunnerStateRoot: "350e73a702f19ae3940c5ce3007397015be71ce058eda4f13e7884bd4f44ece2",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
@@ -177,6 +182,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.AttesterMsgID,
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAttester)),
 							}), nil),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
 				PostDutyRunnerStateRoot: "b4f8c1c74bf7c9fa347bb74ef98b87a04e6fec175b0fc8ec12c594540536a120",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},

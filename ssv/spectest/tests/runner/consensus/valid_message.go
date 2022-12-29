@@ -98,7 +98,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
-				Name:   "proposer blinded block",
+				Name:   "proposer (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
@@ -111,10 +111,10 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
 							Identifier: testingutils.ProposerMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerConsensusDataByts, nil, nil),
+							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerBlindedBlockConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "e4d9a7acc0014a169e3de5ab00b4d4de36d6ad0a448b4462604e335c597e44de",
+				PostDutyRunnerStateRoot: "6e66de107885be6e2d60a1dc53a7bbb909eb44590cd88d71c25cfe9e23f18d79",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},

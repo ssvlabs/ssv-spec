@@ -109,6 +109,27 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				DontStartDuty:           true,
 			},
 			{
+				Name: "proposer (blinded block)",
+				Runner: startInstance(
+					testingutils.ProposerBlindedBlockRunner(ks),
+					testingutils.TestProposerBlindedBlockConsensusDataByts,
+				),
+				Duty: testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+							MsgType:    qbft.ProposalMsgType,
+							Height:     qbft.FirstHeight,
+							Round:      qbft.FirstRound,
+							Identifier: testingutils.ProposerMsgID,
+							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerBlindedBlockConsensusDataByts, nil, nil),
+						}), nil),
+				},
+				PostDutyRunnerStateRoot: "5e982dd86d046bb26cee80362a4f7937653dae0377244bc2a4553d487942640a",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+			},
+			{
 				Name: "attester",
 				Runner: startInstance(
 					testingutils.AttesterRunner(ks),
