@@ -53,6 +53,19 @@ func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: wrong signing root",
 			},
 			{
+				Name:   "randao (blinded block)",
+				Runner: testingutils.ProposerBlindedBlockRunner(ks),
+				Duty:   testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentEpochMsg(ks.Shares[1], 1)),
+				},
+				PostDutyRunnerStateRoot: "2a122d8afb55f8cf02b7008d9e525d4dbd5dd839e752be9dd5be577e653c56e4",
+				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: "failed processing randao message: invalid pre-consensus message: wrong signing root",
+			},
+			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   testingutils.TestingValidatorRegistrationDuty,

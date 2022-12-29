@@ -56,7 +56,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
-				Name:   "randao blinded block",
+				Name:   "randao (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
@@ -64,7 +64,7 @@ func Quorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 				},
-				PostDutyRunnerStateRoot: "509248043fb07164cc72a985960d1db18f1f9b7e1ea6731ca195ea192f6cd8e3",
+				PostDutyRunnerStateRoot: "f5d9df4d09f5847bd77e88209e6ab4915a021e1499e747ff87a2f07911bd93ee",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
