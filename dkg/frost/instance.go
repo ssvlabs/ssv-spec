@@ -94,7 +94,9 @@ func newProtocol(network dkg.Network, signer types.DKGSigner, storage dkg.Storag
 // TODO: If Reshare, confirm participating operators using qbft before kick-
 // starting this process.
 func (fr *Instance) Start() error {
+	fr.state.roundTImer.OnTimeout(fr.UponRoundTimeout)
 	fr.state.currentRound = Preparation
+	fr.state.roundTImer.TimeoutForRound(fr.state.currentRound)
 
 	// create a new dkg participant
 	ctx := make([]byte, 16)
@@ -169,6 +171,8 @@ func (fr *Instance) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolO
 		// here we are checking blame right away unlike other rounds where
 		// we wait to receive messages from all the operators in the protocol
 		return fr.checkBlame(uint32(msg.Signer), protocolMessage, msg)
+	case Timeout:
+		return fr.ProcessTimeoutMessage()
 	default:
 		return true, nil, dkg.ErrInvalidRound{}
 	}

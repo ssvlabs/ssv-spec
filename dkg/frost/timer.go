@@ -7,6 +7,7 @@ import (
 )
 
 type RoundTimeoutFunc func(ProtocolRound) time.Duration
+type OnTimeoutFn func() error
 
 // RoundTimeout returns the number of seconds until next timeout for a give round
 func RoundTimeout(ProtocolRound) time.Duration {
@@ -21,14 +22,14 @@ type RoundTimer struct {
 	// timer is the underlying time.Timer
 	timer *time.Timer
 	// result holds the result of the timer
-	done func()
+	done OnTimeoutFn
 	// round is the current round of the timer
 	round        int64
 	roundTimeout RoundTimeoutFunc
 }
 
 // New creates a new instance of RoundTimer.
-func NewRoundTimer(pctx context.Context, done func()) *RoundTimer {
+func NewRoundTimer(pctx context.Context, done OnTimeoutFn) *RoundTimer {
 	ctx, cancelCtx := context.WithCancel(pctx)
 	return &RoundTimer{
 		ctx:          ctx,
@@ -40,7 +41,7 @@ func NewRoundTimer(pctx context.Context, done func()) *RoundTimer {
 }
 
 // OnTimeout sets a function called on timeout.
-func (t *RoundTimer) OnTimeout(done func()) {
+func (t *RoundTimer) OnTimeout(done OnTimeoutFn) {
 	t.done = done
 }
 
@@ -79,7 +80,8 @@ func (t *RoundTimer) waitForRound(round ProtocolRound, timeout <-chan time.Time)
 	case <-timeout:
 		if t.Round() == round {
 			if done != nil {
-				done()
+				_ = done()
+
 			}
 		}
 	}

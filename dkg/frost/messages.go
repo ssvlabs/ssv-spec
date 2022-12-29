@@ -15,6 +15,7 @@ type ProtocolMsg struct {
 	Round1Message      *Round1Message      `json:"round1,omitempty"`
 	Round2Message      *Round2Message      `json:"round2,omitempty"`
 	BlameMessage       *BlameMessage       `json:"blame,omitempty"`
+	TimeoutMessage     *TimeoutMessage     `json:"timeout,omitempty"`
 }
 
 func (msg *ProtocolMsg) hasOnlyOneMsg() bool {
@@ -236,4 +237,8 @@ func (t BlameType) ToString() string {
 		InvalidMessage:      "Invalid Message",
 	}
 	return m[t]
+}
+
+type TimeoutMessage struct {
+	Round ProtocolRound
 }

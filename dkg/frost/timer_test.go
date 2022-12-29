@@ -12,8 +12,9 @@ import (
 func TestRoundTimer_TimeoutForRound(t *testing.T) {
 	t.Run("TimeoutForRound", func(t *testing.T) {
 		count := int32(0)
-		onTimeout := func() {
+		onTimeout := func() error {
 			atomic.AddInt32(&count, 1)
+			return nil
 		}
 		timer := NewRoundTimer(context.Background(), onTimeout)
 		timer.roundTimeout = func(round ProtocolRound) time.Duration {
@@ -27,8 +28,9 @@ func TestRoundTimer_TimeoutForRound(t *testing.T) {
 
 	t.Run("timeout round before elapsed", func(t *testing.T) {
 		count := int32(0)
-		onTimeout := func() {
+		onTimeout := func() error {
 			atomic.AddInt32(&count, 1)
+			return nil
 		}
 		timer := NewRoundTimer(context.Background(), onTimeout)
 		timer.roundTimeout = func(round ProtocolRound) time.Duration {

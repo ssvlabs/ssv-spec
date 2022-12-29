@@ -1,6 +1,8 @@
 package frost
 
 import (
+	"context"
+
 	"github.com/coinbase/kryptology/pkg/dkg/frost"
 	ecies "github.com/ecies/go/v2"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -17,6 +19,7 @@ const (
 	Round2
 	KeygenOutput
 	Blame
+	Timeout
 )
 
 var rounds = []ProtocolRound{
@@ -26,12 +29,14 @@ var rounds = []ProtocolRound{
 	Round2,
 	KeygenOutput,
 	Blame,
+	Timeout,
 }
 
 // State tracks protocol's current round, stores messages in MsgContainer, stores
 // session key and operator's secret shares
 type State struct {
 	currentRound   ProtocolRound
+	roundTImer     *RoundTimer
 	participant    *frost.DkgParticipant
 	sessionSK      *ecies.PrivateKey
 	msgContainer   IMsgContainer
@@ -43,6 +48,7 @@ func initState() *State {
 		currentRound:   Uninitialized,
 		msgContainer:   newMsgContainer(),
 		operatorShares: make(map[uint32]*bls.SecretKey),
+		roundTImer:     NewRoundTimer(context.Background(), nil),
 	}
 }
 
