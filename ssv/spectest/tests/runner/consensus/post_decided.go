@@ -95,6 +95,26 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
+				Name:   "proposer (blinded block)",
+				Runner: testingutils.ProposerBlindedBlockRunner(ks),
+				Duty:   testingutils.TestingProposerDuty,
+				Messages: append(
+					testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusDataByts, ks, types.BNRoleProposer),
+					testingutils.SSVMsgProposer(
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     qbft.FirstHeight,
+							Round:      qbft.FirstRound,
+							Identifier: testingutils.ProposerMsgID,
+							Data:       testingutils.CommitDataBytes(testingutils.TestProposerBlindedBlockConsensusDataByts),
+						}), nil)),
+				PostDutyRunnerStateRoot: "d0961591aa8ea601d5adf48e6e7ddb5fcca89d8b51ce55407cfd37ccb533ca28",
+				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+				},
+			},
+			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   testingutils.TestingAttesterDuty,

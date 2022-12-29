@@ -103,6 +103,7 @@ var AllTests = []SpecTest{
 	//postconsensus.Quorum7Operators(),
 	//postconsensus.Quorum10Operators(),
 	//postconsensus.Quorum13Operators(),
+	//postconsensus.InvalidDecidedValue(),
 	//
 	//newduty.ConsensusNotStarted(),
 	//newduty.NotDecided(),

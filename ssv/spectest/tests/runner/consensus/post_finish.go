@@ -110,6 +110,25 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError:           err,
 			},
 			{
+				Name:   "proposer (blinded block)",
+				Runner: finishRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDuty),
+				Duty:   testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(
+						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[4], types.OperatorID(4), &qbft.Message{
+							MsgType:    qbft.CommitMsgType,
+							Height:     qbft.FirstHeight,
+							Round:      qbft.FirstRound,
+							Identifier: testingutils.ProposerMsgID,
+							Data:       testingutils.CommitDataBytes(testingutils.TestProposerBlindedBlockConsensusDataByts),
+						}), nil),
+				},
+				PostDutyRunnerStateRoot: "3f667fcc28d662918d3b9eb47d257af09cfb5f25bfabc51ee5bbf8784d169fea",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+				ExpectedError:           err,
+			},
+			{
 				Name:   "attester",
 				Runner: finishRunner(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:   testingutils.TestingAttesterDuty,
