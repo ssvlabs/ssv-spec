@@ -46,6 +46,16 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
+				Name:                    "randao (blinded block)",
+				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
+				Duty:                    testingutils.TestingProposerDuty,
+				Messages:                []*types.SSVMessage{},
+				PostDutyRunnerStateRoot: "2a122d8afb55f8cf02b7008d9e525d4dbd5dd839e752be9dd5be577e653c56e4",
+				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   testingutils.TestingValidatorRegistrationDuty,

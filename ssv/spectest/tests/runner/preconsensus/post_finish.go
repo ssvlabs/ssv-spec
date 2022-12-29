@@ -68,6 +68,21 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
 			},
 			{
+				Name: "randao (blinded block)",
+				Runner: finishRunner(
+					testingutils.ProposerBlindedBlockRunner(ks),
+					testingutils.TestingProposerDuty,
+				),
+				Duty: testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+				},
+				PostDutyRunnerStateRoot: "39698eca01b24b21cb307aae49150d7b35eb3256fbfa64cfaca213f0016945cd",
+				DontStartDuty:           true,
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+			},
+			{
 				Name: "validator registration",
 				Runner: finishRunner(
 					testingutils.ValidatorRegistrationRunner(ks),

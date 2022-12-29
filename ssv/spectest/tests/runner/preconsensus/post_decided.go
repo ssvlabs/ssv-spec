@@ -94,6 +94,26 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				DontStartDuty:           true,
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
+			{
+				Name: "randao (blinded block)",
+				Runner: decideRunner(
+					testingutils.ProposerBlindedBlockRunner(ks),
+					testingutils.TestingProposerDuty,
+					testingutils.TestProposerBlindedBlockConsensusData,
+					[]*ssv.SignedPartialSignatureMessage{
+						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2),
+						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3),
+					},
+				),
+				Duty: testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+				},
+				PostDutyRunnerStateRoot: "50593bc477c0a77cc07186cda738a06c57389dc4a57aba3e0283a768545a4f27",
+				DontStartDuty:           true,
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+			},
 		},
 	}
 }

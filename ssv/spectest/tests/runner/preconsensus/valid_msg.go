@@ -50,6 +50,18 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
+				Name:   "randao (blinded block)",
+				Runner: testingutils.ProposerBlindedBlockRunner(ks),
+				Duty:   testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+				},
+				PostDutyRunnerStateRoot: "d1b2e299e9f3decad78a8e57e9ec138b7282182f3b672b8ae338849c0d8be088",
+				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   testingutils.TestingAttesterDuty,
