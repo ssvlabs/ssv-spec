@@ -153,7 +153,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 							Data:       testingutils.ProposalDataBytes(testingutils.TestAttesterConsensusDataByts, nil, nil),
 						}), nil),
 				},
-				PostDutyRunnerStateRoot: "ff6b65005d3abe4844d7a11b947d4e920da075ee47bac92e45584ca7ed875fdb",
+				PostDutyRunnerStateRoot: "8537211ecec3ab151ca6d8e21294d64a8f828260cbc41bfa86e9e904dce801c2",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

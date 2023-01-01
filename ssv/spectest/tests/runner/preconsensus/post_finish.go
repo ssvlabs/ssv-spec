@@ -92,7 +92,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "1a126632a260fc2158d52d655a9c15146d5ab462dc291ec27a0a07ee95e1c9ec",
+				PostDutyRunnerStateRoot: "f2184491e6f927cc405645fb4a8da14ac1c3829afa584b108244a1b9f531a97a",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",
