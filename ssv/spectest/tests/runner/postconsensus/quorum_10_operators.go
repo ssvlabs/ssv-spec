@@ -89,6 +89,30 @@ func Quorum10Operators() *tests.MultiMsgProcessingSpecTest {
 				DontStartDuty: true,
 			},
 			{
+				Name: "proposer (blinded block)",
+				Runner: decideRunner(
+					testingutils.ProposerBlindedBlockRunner(ks),
+					testingutils.TestingProposerDuty,
+					testingutils.TestProposerBlindedBlockConsensusData,
+				),
+				Duty: testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[5], 5)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[6], 6)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[7], 7)),
+				},
+				PostDutyRunnerStateRoot: "9e183ba8585c65222bf702ef5c390e53dd564ed0d01345bd7377135fe7429f50",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+				},
+				DontStartDuty: true,
+			},
+			{
 				Name: "aggregator",
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),

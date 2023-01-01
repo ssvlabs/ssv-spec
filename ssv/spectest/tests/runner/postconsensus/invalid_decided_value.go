@@ -29,6 +29,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 		return byts
 	}
 
+	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "decided invalid value",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -58,7 +59,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: sync committee contribution data is nil",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "sync committee",
@@ -80,7 +81,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "789b4ab5f2377498be6cd7d6b765b3a2d0e98e757c59be73f2d8270b2eae1fc1",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name:   "aggregator",
@@ -108,7 +109,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: aggregate and proof data is nil",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "proposer",
@@ -136,7 +137,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: block data is nil",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -160,11 +161,11 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 							}), nil),
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "350e73a702f19ae3940c5ce3007397015be71ce058eda4f13e7884bd4f44ece2",
+				PostDutyRunnerStateRoot: "06310c138a71e78915d6f3217b5a88f1ac20178154600deeb7d58fa21b4e9a93",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: block data is nil",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "attester",
@@ -186,7 +187,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "b4f8c1c74bf7c9fa347bb74ef98b87a04e6fec175b0fc8ec12c594540536a120",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: attestation data is nil",
+				ExpectedError:           expectedErr,
 			},
 		},
 	}

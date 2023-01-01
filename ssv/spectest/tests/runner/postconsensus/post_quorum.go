@@ -84,6 +84,28 @@ func PostQuorum() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError: expectedErr,
 			},
 			{
+				Name: "proposer (blinded block)",
+				Runner: decideRunner(
+					testingutils.ProposerBlindedBlockRunner(ks),
+					testingutils.TestingProposerDuty,
+					testingutils.TestProposerBlindedBlockConsensusData,
+				),
+				Duty: testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4)),
+				},
+				PostDutyRunnerStateRoot: "ba46cb2156a784e78a50ca4278d8c85a1f254ef7a3f05c7d3d2fd22f476acc05",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+				},
+				DontStartDuty: true,
+				ExpectedError: expectedErr,
+			},
+			{
 				Name: "aggregator",
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),

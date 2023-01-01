@@ -64,6 +64,22 @@ func ValidMessage13Operators() *tests.MultiMsgProcessingSpecTest {
 				DontStartDuty:           true,
 			},
 			{
+				Name: "proposer (blinded block)",
+				Runner: decideRunner(
+					testingutils.ProposerBlindedBlockRunner(ks),
+					testingutils.TestingProposerDuty,
+					testingutils.TestProposerBlindedBlockConsensusData,
+				),
+				Duty: testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+				},
+				PostDutyRunnerStateRoot: "e302be9084870a35e843540c99fac544a3556f2b95cc9a773a453691eceb2633",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+			},
+			{
 				Name: "aggregator",
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),
