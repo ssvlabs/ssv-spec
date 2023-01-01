@@ -67,6 +67,23 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				ExpectedError:           err,
 			},
 			{
+				Name: "proposer (blinded block)",
+				Runner: finishRunner(
+					testingutils.ProposerBlindedBlockRunner(ks),
+					testingutils.TestingProposerDuty,
+					testingutils.TestProposerBlindedBlockConsensusData,
+				),
+				Duty: testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4)),
+				},
+				PostDutyRunnerStateRoot: "862cf092871a48c0cea44967acc93bb3cb3b55f860fe1484897b3a17852bde3c",
+				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+				ExpectedError:           err,
+			},
+			{
 				Name: "aggregator",
 				Runner: finishRunner(
 					testingutils.AggregatorRunner(ks),
