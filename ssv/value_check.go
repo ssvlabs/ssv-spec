@@ -45,7 +45,7 @@ func AttesterValueCheckF(
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
-		if err := cd.ValidateForDuty(types.BNRoleAttester); err != nil {
+		if err := cd.Validate(); err != nil {
 			return errors.Wrap(err, "invalid value")
 		}
 
@@ -88,7 +88,7 @@ func ProposerValueCheckF(
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
-		if err := cd.ValidateForDuty(types.BNRoleProposer); err != nil {
+		if err := cd.Validate(); err != nil {
 			return errors.Wrap(err, "invalid value")
 		}
 
@@ -110,7 +110,7 @@ func AggregatorValueCheckF(
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
-		if err := cd.ValidateForDuty(types.BNRoleAggregator); err != nil {
+		if err := cd.Validate(); err != nil {
 			return errors.Wrap(err, "invalid value")
 		}
 
@@ -132,7 +132,7 @@ func SyncCommitteeValueCheckF(
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
-		if err := cd.ValidateForDuty(types.BNRoleSyncCommittee); err != nil {
+		if err := cd.Validate(); err != nil {
 			return errors.Wrap(err, "invalid value")
 		}
 
@@ -154,7 +154,7 @@ func SyncCommitteeContributionValueCheckF(
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
-		if err := cd.ValidateForDuty(types.BNRoleSyncCommitteeContribution); err != nil {
+		if err := cd.Validate(); err != nil {
 			return errors.Wrap(err, "invalid value")
 		}
 

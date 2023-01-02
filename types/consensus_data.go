@@ -55,10 +55,12 @@ type ConsensusData struct {
 	SyncCommitteeContribution ContributionsMap
 }
 
-func (cid *ConsensusData) ValidateForDuty(role BeaconRole) error {
+func (cid *ConsensusData) Validate() error {
 	if cid.Duty == nil {
 		return errors.New("duty is nil")
 	}
+
+	role := cid.Duty.Type
 
 	if role == BNRoleAttester && cid.AttestationData == nil {
 		return errors.New("attestation data is nil")
