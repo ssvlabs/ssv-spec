@@ -33,7 +33,7 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee",
 				Runner:                  startRunner(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "eefb398de44e5321980ca3474b4a480cf1e688e54ca9d5c74b5b2412f7693fc7",
+				PostDutyRunnerStateRoot: "2c4a3a6aa312f25fdb6eef98fc9036eb3db007c6a4a05f3e6137737189acce49",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 			{
@@ -58,7 +58,7 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "attester",
 				Runner:                  startRunner(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "e2a107146e8fbbe70b617cc6ac31e1b43dda031ff3597a87ff8821dd49fe4bb7",
+				PostDutyRunnerStateRoot: "27a84d7d33b8851a5b0e241280ddb160049768179c74295cb9c35fb875fe44e7",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 			},
 		},
