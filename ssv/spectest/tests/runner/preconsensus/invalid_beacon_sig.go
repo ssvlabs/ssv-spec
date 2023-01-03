@@ -20,7 +20,7 @@ func InvalidBeaconSignature() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofWrongBeaconSigMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "abe78d812d565ca7fe6feba32af83199977260ba39f1e91a409837f8247931fe",
+				PostDutyRunnerStateRoot: "93f63d09f9a12244c8ca751934450e7be81f89eb876dc76119ae7a7153ed405c",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -33,7 +33,7 @@ func InvalidBeaconSignature() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofWrongBeaconSigMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "9a20d699ce5e1ac9106ce3b4684c9556c9959fdaa18264725278a944f8d708dd",
+				PostDutyRunnerStateRoot: "57a6fb4d6bf799353c3c0980e3eb31ff32f0c100ebe04f6025dc06fc983ef52b",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -46,7 +46,7 @@ func InvalidBeaconSignature() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongBeaconSigMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "0c3e3ecd96f75003b56f4b8f02ef7da661674028a7a8c4c654e663971c53f94a",
+				PostDutyRunnerStateRoot: "65cd178a17356e48a1d7de571c0d56f791f6c4654b5b03e385adea510f7c55d1",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

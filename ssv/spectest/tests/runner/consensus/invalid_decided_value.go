@@ -53,11 +53,11 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "5364e32fbf393a6172b1d8e5724934e24c2429928ec5030f5632794ddc5a3ec0",
+				PostDutyRunnerStateRoot: "0af45421d2783454761cfe0b8a9b04cdcd6b4804f30c5006e6aac8d27c7ddf9d",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: sync committee contribution data is nil",
+				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
 			},
 			{
 				Name:   "sync committee",
@@ -76,7 +76,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommittee)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "789b4ab5f2377498be6cd7d6b765b3a2d0e98e757c59be73f2d8270b2eae1fc1",
+				PostDutyRunnerStateRoot: "3c3604bbd9ac903fb950e876776ae8c18f85d8720580ee1bd97b381325e6279a",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
 			},
@@ -101,11 +101,11 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAggregator)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "cbdb3514a2c0919f0f7e67d47505f3523242086f0ba47812586df8234cfb517a",
+				PostDutyRunnerStateRoot: "bfb64998bfc225e6de5e348ea9b593abf56f8bd288a7f57547282ee7241ff5a8",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: aggregate and proof data is nil",
+				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
 			},
 			{
 				Name:   "proposer",
@@ -128,11 +128,11 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "350e73a702f19ae3940c5ce3007397015be71ce058eda4f13e7884bd4f44ece2",
+				PostDutyRunnerStateRoot: "5579e26481827f402b6b7843bf4e1dd88fa7039d76743f41998377ae4b1dfa45",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: block data is nil",
+				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -159,7 +159,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: block data is nil",
+				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
 			},
 			{
 				Name:   "attester",
@@ -178,9 +178,9 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAttester)),
 							}), nil),
 				},
-				PostDutyRunnerStateRoot: "b4f8c1c74bf7c9fa347bb74ef98b87a04e6fec175b0fc8ec12c594540536a120",
+				PostDutyRunnerStateRoot: "9707c8c84cd72b655b828a2bff10726d94f328b0ef85e3d91a213384a85f8f09",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: attestation data is nil",
+				ExpectedError:           "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
 			},
 		},
 	}

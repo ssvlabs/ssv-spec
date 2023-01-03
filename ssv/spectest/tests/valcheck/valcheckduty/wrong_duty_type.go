@@ -42,14 +42,14 @@ func WrongDutyType() *valcheck.MultiSpecTest {
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleProposer,
 				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
-				ExpectedError: "invalid value: block data is nil",
+				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
 				Name:          "attester",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleAttester,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
-				ExpectedError: "invalid value: attestation data is nil",
+				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 		},
 	}
