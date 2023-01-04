@@ -200,10 +200,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 // decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (r *ProposerRunner) decidedBlindedBlock() bool {
-	if r.BaseRunner.State.DecidedValue.BlockData != nil {
-		return false
-	}
-	return true
+	return r.BaseRunner.State.DecidedValue.BlindedBlockData != nil
 }
 
 func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
