@@ -78,7 +78,7 @@ func PreparedPreviouslyDuplicateRCQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:     "duplicate rc msg justification (prepared) quorum",
 		Pre:      pre,
-		PostRoot: "6a1c7c45f1a8c31198fc96e26fad86d9b6b95f0acf8def6cea78e0886e42d8a8",
+		PostRoot: "a7f93cae896e0723f338fedf27b347026326ba652551475fb58c062f09368632",
 		InputMessages: append(msgs, testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,

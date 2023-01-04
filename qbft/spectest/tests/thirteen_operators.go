@@ -149,7 +149,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow thirteen operators",
 		Pre:           pre,
-		PostRoot:      "19ca526d736aa0f589085724e838d8f6c36c4bc562065d70fdebdfde0a769e54",
+		PostRoot:      "993089af55d17e4b5482e9b2147c28e8766d1662be32ea131f7fd242c242fb22",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

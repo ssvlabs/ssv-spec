@@ -34,7 +34,7 @@ func Valid() *tests.ControllerSpecTest {
 					DecidedVal:               []byte{1, 2, 3, 4},
 					CalledSyncDecidedByRange: false,
 				},
-				ControllerPostRoot: "73ba8a44f10c67c1885385c76076fea5b57c2561c0d506f6d15ec62414f38591",
+				ControllerPostRoot: "c6e9b748e73de916edf6fb3a70c228f000ba014dc0a1bc54fa387fe528172fc8",
 			},
 		},
 	}

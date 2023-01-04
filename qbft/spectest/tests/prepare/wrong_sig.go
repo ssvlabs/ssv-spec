@@ -30,7 +30,7 @@ func WrongSignature() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare wrong sig",
 		Pre:           pre,
-		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
+		PostRoot:      "69c049da1936e3727d09f976754cc7ee3a5cb7d85fa1e079f0465096b0a15cdb",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: msg signature invalid: failed to verify signature",
 	}

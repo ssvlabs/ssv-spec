@@ -31,7 +31,7 @@ func F1DifferentFutureRoundsNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change f+1 not prepared",
 		Pre:           pre,
-		PostRoot:      "a5e0b34626a0e85cf4494c1ca3b89b7ad5469dff321b05f476955ca2ab173770",
+		PostRoot:      "6fff8e31d81c7f0121d00a1b6d16c66f0e733eed38ade739cad139d8fd63592f",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

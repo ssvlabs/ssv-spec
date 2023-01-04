@@ -78,7 +78,7 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 					DecidedCnt: 1,
 					DecidedVal: []byte{1, 2, 3, 4},
 				},
-				ControllerPostRoot: "4317e9b5d69a4b07a4811beca8d6a14486d44f1defde1fa5b188ca76cca4f8e3",
+				ControllerPostRoot: "b024fa11d0365dd22d55e6a3852426c30b1834e941269b564faa841f30d6f18e",
 			},
 		},
 	}

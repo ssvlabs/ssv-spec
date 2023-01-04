@@ -43,7 +43,7 @@ func LateRoundChange() *tests.ControllerSpecTest {
 						}),
 				},
 
-				ControllerPostRoot: "c033dd865f23536de4cda05964bdb40aa8ad489417b1a65d85485e32d66bc918",
+				ControllerPostRoot: "5fadadceb02c4ddc1766145cb772231d3df24dbd821ffef5e7ddc044c4bcc21c",
 			},
 		},
 	}

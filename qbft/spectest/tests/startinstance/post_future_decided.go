@@ -20,11 +20,11 @@ func PreviousDecided() *tests.ControllerSpecTest {
 					DecidedVal: []byte{1, 2, 3, 4},
 					DecidedCnt: 1,
 				},
-				ControllerPostRoot: "0370be5066cbbf1efead61d9b182309afd989b3b720163f7029cbad79537eb4b",
+				ControllerPostRoot: "f82a7925fa41a67b245d6f97b13c1d272632ac4efe0380847ac8c9378f5bb04b",
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "0e0db8b36601bef53328c1f1e94e4c3faa02084c743cce138dc2edcce2e5d79e",
+				ControllerPostRoot: "2647484fe3528a7f2247a606184a924ffdef5b8a9a769673149960cea554158e",
 			},
 		},
 	}

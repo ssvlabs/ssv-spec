@@ -29,7 +29,7 @@ func DuplicateMsgDifferentValue() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal duplicate message different value",
 		Pre:           pre,
-		PostRoot:      "93f809fcad476369d03647b6a6661ba3313af3e7b3446d9f639513c2c25f53a9",
+		PostRoot:      "29a2c55b35764defde05fe670fb4ba60889c30745752e22a41e3e6f6e6dbbc2b",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

@@ -22,7 +22,7 @@ func Round2() *SpecTest {
 	return &SpecTest{
 		Name:     "round 2",
 		Pre:      pre,
-		PostRoot: "5a71daf1a4ee817826596858f76e56a1a85aedd85b9c4e65e73fc4c4667e65b0",
+		PostRoot: "d76f5d27ebdc1f33ed4af370fc7edb8a117d29a759597dbdf45560095a28151e",
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 				MsgType:    qbft.RoundChangeMsgType,

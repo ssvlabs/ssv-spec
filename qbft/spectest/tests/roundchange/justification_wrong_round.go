@@ -48,7 +48,7 @@ func JustificationWrongRound() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change justification wrong round",
 		Pre:            pre,
-		PostRoot:       "e64e526f363f8f9b654f7aa11001d71c5df4edf3b094df0a9725e570a3db27e7",
+		PostRoot:       "00eeb94859eac77f900d7984d6f46fc0c1a769edaa36fffc34caebc08d99f478",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: round change justification invalid: wrong msg round",

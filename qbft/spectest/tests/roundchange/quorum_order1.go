@@ -62,7 +62,7 @@ func QuorumOrder1() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum order 1",
 		Pre:           pre,
-		PostRoot:      "90f089b5314c7447d94f134c0ee06626fc975ed681739a662cd1dcf98f060ea2",
+		PostRoot:      "515e7bd60c0225c400d9f30cbce062b77807cd39735a387c22c107e0e978937c",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

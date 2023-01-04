@@ -145,7 +145,7 @@ func LateCommitPastRound() *tests.ControllerSpecTest {
 						}),
 				},
 
-				ControllerPostRoot: "b0fd6098e01e0bee8cac21654e8a6c0f6a0b0634499146fbb722b9af2c459c2d",
+				ControllerPostRoot: "8b6512d58c22d65f9920871065a449d77110be805669137c43c5d41161f1f839",
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: past round",
