@@ -31,7 +31,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "decided invalid value",
+		Name: "post consensus decided invalid value",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

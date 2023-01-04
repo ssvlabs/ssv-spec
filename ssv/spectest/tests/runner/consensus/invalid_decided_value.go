@@ -30,7 +30,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 	}
 
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "decided invalid value",
+		Name: "consensus decided invalid value",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

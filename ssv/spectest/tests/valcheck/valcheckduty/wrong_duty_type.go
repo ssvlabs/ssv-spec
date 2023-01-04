@@ -21,7 +21,7 @@ func WrongDutyType() *valcheck.MultiSpecTest {
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleSyncCommitteeContribution,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
-				ExpectedError: "invalid value: sync committee contribution data is nil",
+				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
 				Name:          "sync committee",
@@ -35,7 +35,7 @@ func WrongDutyType() *valcheck.MultiSpecTest {
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleAggregator,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
-				ExpectedError: "invalid value: aggregate and proof data is nil",
+				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
 				Name:          "proposer",
