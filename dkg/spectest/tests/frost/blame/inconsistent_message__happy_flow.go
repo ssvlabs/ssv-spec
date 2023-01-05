@@ -29,12 +29,12 @@ func BlameTypeInconsistentMessage_HappyFlow() *tests.MsgProcessingSpecTest {
 			EncryptionPubKey: &ks.DKGOperators[1].EncryptionKey.PublicKey,
 		},
 		&dkg.Config{
-			KeygenProtocol:  frost.New,
-			ReshareProtocol: frost.NewResharing,
-			Network:         network,
-			Storage:         storage,
-			// SignatureDomainType: sigDomainType,
-			Signer: keyManager,
+			KeygenProtocol:      frost.New,
+			ReshareProtocol:     frost.NewResharing,
+			Network:             network,
+			Storage:             storage,
+			SignatureDomainType: types.PrimusTestnet,
+			Signer:              keyManager,
 		},
 	)
 

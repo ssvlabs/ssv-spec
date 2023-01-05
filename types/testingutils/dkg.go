@@ -172,7 +172,8 @@ func (ks *TestKeySet) SignedOutputObject(requestID dkg.RequestID, opId types.Ope
 	if root != nil {
 		o.DepositDataSignature = ks.ValidatorSK.SignByte(root).Serialize()
 	}
-	root1, _ := o.GetRoot()
+	// root1, _ := o.GetRoot()
+	root1, _ := types.ComputeSigningRoot(o, types.ComputeSignatureDomain(types.PrimusTestnet, types.DKGSignatureType))
 
 	sig, _ := crypto.Sign(root1, ks.DKGOperators[opId].SK)
 

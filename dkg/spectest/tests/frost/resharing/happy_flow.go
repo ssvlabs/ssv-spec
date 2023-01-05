@@ -29,12 +29,12 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 		},
 		[]types.OperatorID{1, 2, 3}, // old committee
 		&dkg.Config{
-			KeygenProtocol:  frost.New,
-			ReshareProtocol: frost.NewResharing,
-			Network:         network,
-			Storage:         storage,
-			Signer:          keyManager,
-			// SignatureDomainType: sigDomainType,
+			KeygenProtocol:      frost.New,
+			ReshareProtocol:     frost.NewResharing,
+			Network:             network,
+			Storage:             storage,
+			Signer:              keyManager,
+			SignatureDomainType: types.PrimusTestnet,
 		},
 	)
 
