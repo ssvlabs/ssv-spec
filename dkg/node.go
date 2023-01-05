@@ -31,10 +31,8 @@ func (runners Runners) DeleteRunner(id RequestID) {
 // Node is responsible for receiving and managing DKG session and messages
 type Node struct {
 	operator *Operator
-	// runners holds all active running DKG runners
-	operatorsOld []types.OperatorID
-	runners      Runners
-	config       *Config
+	runners  Runners // runners holds all active running DKG runners
+	config   *Config
 }
 
 func NewNode(operator *Operator, config *Config) *Node {
@@ -42,15 +40,6 @@ func NewNode(operator *Operator, config *Config) *Node {
 		operator: operator,
 		config:   config,
 		runners:  make(Runners, 0),
-	}
-}
-
-func NewResharingNode(operator *Operator, operatorsOld []types.OperatorID, config *Config) *Node {
-	return &Node{
-		operator:     operator,
-		operatorsOld: operatorsOld,
-		config:       config,
-		runners:      make(Runners, 0),
 	}
 }
 
@@ -63,7 +52,7 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.KeygenProtocol(n.config.Network, n.operator.OperatorID, id, n.config.Signer, n.config.Storage, initMsg),
+		protocol:              n.config.KeygenProtocol(id, n.operator.OperatorID, n.config, initMsg),
 		config:                n.config,
 	}
 
@@ -75,10 +64,11 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 }
 
 func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, error) {
-	kgOutput, err := n.config.Storage.GetKeyGenOutput(reshareMsg.ValidatorPK)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not find the keygen output from storage")
+	reshareParams := &ReshareParams{}
+	if err := reshareParams.LoadFromStorage(reshareMsg.ValidatorPK, n.config.Storage); err != nil {
+		return nil, err
 	}
+
 	r := &runner{
 		Operator:              n.operator,
 		ReshareMsg:            reshareMsg,
@@ -87,7 +77,7 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 		DepositDataRoot:       nil,
 		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
 		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
-		protocol:              n.config.ReshareProtocol(n.config.Network, n.operator.OperatorID, id, n.config.Signer, n.config.Storage, n.operatorsOld, reshareMsg, kgOutput),
+		protocol:              n.config.ReshareProtocol(id, n.operator.OperatorID, n.config, reshareMsg, reshareParams),
 		config:                n.config,
 	}
 

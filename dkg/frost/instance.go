@@ -28,7 +28,7 @@ func init() {
 // frost, blame and keygen output messages
 type Instance struct {
 	state  *State
-	config *Config
+	config dkg.IConfig
 
 	instanceParams InstanceParams
 }
@@ -36,11 +36,9 @@ type Instance struct {
 // New creates a new protocol instance for new keygen
 // TODO: func New(network dkg.Network, signer types.DKGSigner, storage dkg.Storage, config ProtocolConfig) {}
 func New(
-	network dkg.Network,
-	operatorID types.OperatorID,
 	requestID dkg.RequestID,
-	signer types.DKGSigner,
-	storage dkg.Storage,
+	operatorID types.OperatorID,
+	config dkg.IConfig,
 	init *dkg.Init,
 ) dkg.Protocol {
 
@@ -50,42 +48,36 @@ func New(
 		operatorID: operatorID,
 		operators:  types.OperatorList(init.OperatorIDs).ToUint32List(),
 	}
-	return newProtocol(network, signer, storage, instanceParams)
+	return newProtocol(config, instanceParams)
 }
 
 // NewResharing creates a new protocol instance for resharing
 // Temporary, TODO: Remove and use interface with Reshare
 func NewResharing(
-	network dkg.Network,
-	operatorID types.OperatorID,
 	requestID dkg.RequestID,
-	signer types.DKGSigner,
-	storage dkg.Storage,
-	operatorsOld []types.OperatorID,
-	init *dkg.Reshare,
-	output *dkg.KeyGenOutput,
+	operatorID types.OperatorID,
+	config dkg.IConfig,
+	reshare *dkg.Reshare,
+	reshareParams *dkg.ReshareParams,
 ) dkg.Protocol {
 
 	instanceParams := InstanceParams{
 		identifier:      requestID,
-		threshold:       uint32(init.Threshold),
+		threshold:       uint32(reshare.Threshold),
 		operatorID:      operatorID,
-		operators:       types.OperatorList(init.OperatorIDs).ToUint32List(),
-		operatorsOld:    types.OperatorList(operatorsOld).ToUint32List(),
-		oldKeyGenOutput: output,
+		operators:       types.OperatorList(reshare.OperatorIDs).ToUint32List(),
+		operatorsOld:    types.OperatorList(reshare.OldOperatorIDs).ToUint32List(),
+		oldKeyGenOutput: reshareParams.OldKeygenOutput,
 	}
-	return newProtocol(network, signer, storage, instanceParams)
+	return newProtocol(config, instanceParams)
 }
 
-func newProtocol(network dkg.Network, signer types.DKGSigner, storage dkg.Storage, instanceParams InstanceParams) dkg.Protocol {
+func newProtocol(config dkg.IConfig, instanceParams InstanceParams) dkg.Protocol {
 	return &Instance{
-		config: &Config{
-			network: network,
-			signer:  signer,
-			storage: storage,
-		},
-		state:          initState(),
+		config:         config,
 		instanceParams: instanceParams,
+
+		state: initState(),
 	}
 }
 
@@ -129,7 +121,7 @@ func (fr *Instance) Start() error {
 	if err != nil {
 		return err
 	}
-	return fr.config.network.BroadcastDKGMessage(bcastMsg)
+	return fr.config.GetNetwork().BroadcastDKGMessage(bcastMsg)
 }
 
 // ProcessMsg  decodes and validates incoming message. It then check for blame
