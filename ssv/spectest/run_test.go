@@ -114,7 +114,8 @@ func TestJson(t *testing.T) {
 }
 
 func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newduty.StartNewRunnerDutySpecTest {
-	runnerMap := m["Runner"].(map[string]interface{})["BaseRunner"].(map[string]interface{})
+	runnerMap := m["Runner"].(map[string]interface{})
+	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
 	duty := &types.Duty{}
 	byts, _ := json.Marshal(m["Duty"])
@@ -128,7 +129,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
-	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(runnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
+	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(baseRunnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
 
 	runner := fixRunnerForRun(t, runnerMap, ks)
 
@@ -143,7 +144,8 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 }
 
 func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests2.MsgProcessingSpecTest {
-	runnerMap := m["Runner"].(map[string]interface{})["BaseRunner"].(map[string]interface{})
+	runnerMap := m["Runner"].(map[string]interface{})
+	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
 	duty := &types.Duty{}
 	byts, _ := json.Marshal(m["Duty"])
@@ -173,7 +175,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		}
 	}
 
-	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(runnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
+	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(baseRunnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
 
 	// runner
 	runner := fixRunnerForRun(t, runnerMap, ks)
@@ -191,18 +193,29 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	}
 }
 
-func fixRunnerForRun(t *testing.T, baseRunner map[string]interface{}, ks *testingutils.TestKeySet) ssv.Runner {
+func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testingutils.TestKeySet) ssv.Runner {
+	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
+
 	base := &ssv.BaseRunner{}
-	byts, _ := json.Marshal(baseRunner)
+	byts, _ := json.Marshal(baseRunnerMap)
 	require.NoError(t, json.Unmarshal(byts, &base))
 
 	ret := baseRunnerForRole(base.BeaconRoleType, base, ks)
-	ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
-	if ret.GetBaseRunner().State != nil {
-		if ret.GetBaseRunner().State.RunningInstance != nil {
-			ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
+
+	// specific for blinded block
+	if blindedBlocks, ok := runnerMap["ProducesBlindedBlocks"]; ok {
+		ret.(*ssv.ProposerRunner).ProducesBlindedBlocks = blindedBlocks.(bool)
+	}
+
+	if ret.GetBaseRunner().QBFTController != nil {
+		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
+		if ret.GetBaseRunner().State != nil {
+			if ret.GetBaseRunner().State.RunningInstance != nil {
+				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
+			}
 		}
 	}
+
 	return ret
 }
 
@@ -271,6 +284,10 @@ func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingu
 	case types.BNRoleSyncCommitteeContribution:
 		ret := testingutils.SyncCommitteeContributionRunner(ks)
 		ret.(*ssv.SyncCommitteeAggregatorRunner).BaseRunner = base
+		return ret
+	case types.BNRoleValidatorRegistration:
+		ret := testingutils.ValidatorRegistrationRunner(ks)
+		ret.(*ssv.ValidatorRegistrationRunner).BaseRunner = base
 		return ret
 	case testingutils.UnknownDutyType:
 		ret := testingutils.UnknownDutyTypeRunner(ks)

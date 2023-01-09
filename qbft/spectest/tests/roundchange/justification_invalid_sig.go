@@ -48,7 +48,7 @@ func JustificationInvalidSig() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "justification invalid sig",
 		Pre:            pre,
-		PostRoot:       "4aafcc4aa9e2435579c85aa26e659fe650aefb8becb5738d32dd9286f7ff27c3",
+		PostRoot:       "f807a3d5343ca20e3b757fa63eae9b9dd70e09e03249048badebf54e62290103",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: round change justification invalid: msg signature invalid: failed to verify signature",

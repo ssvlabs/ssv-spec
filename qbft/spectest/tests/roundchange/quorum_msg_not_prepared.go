@@ -62,7 +62,7 @@ func QuorumMsgNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum msg not prepared",
 		Pre:           pre,
-		PostRoot:      "578e59d3fba60d1cca6e2f022c2845148c2c98dee22aa2a30aa3d6ecce47d768",
+		PostRoot:      "7a694445a4a45867d4b1158b0cdaa92e5e1b6e5541a772ee7f30ce7e85947b93",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

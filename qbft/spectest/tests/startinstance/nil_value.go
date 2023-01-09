@@ -11,7 +11,7 @@ func NilValue() *tests.ControllerSpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:         nil,
-				ControllerPostRoot: "475fd29d6449d161b9d2925b73023dce8c28f0fb2faedaeb2f8b8214de08ac69",
+				ControllerPostRoot: "8d4a1b5011b185f3b657b7b9e55c82940768031a5f858a623f529d068f1fd28b",
 			},
 		},
 		ExpectedError: "can't start new QBFT instance: value invalid: invalid value",

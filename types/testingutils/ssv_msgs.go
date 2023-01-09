@@ -31,6 +31,10 @@ var SyncCommitteeContributionMsgID = func() []byte {
 	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution)
 	return ret[:]
 }()
+var ValidatorRegistrationMsgID = func() []byte {
+	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleValidatorRegistration)
+	return ret[:]
+}()
 
 var TestAttesterConsensusData = &types.ConsensusData{
 	Duty:            TestingAttesterDuty,
@@ -49,6 +53,12 @@ var TestProposerConsensusData = &types.ConsensusData{
 	BlockData: TestingBeaconBlock,
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
+
+var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
+	Duty:             TestingProposerDuty,
+	BlindedBlockData: TestingBlindedBeaconBlock,
+}
+var TestProposerBlindedBlockConsensusDataByts, _ = TestProposerBlindedBlockConsensusData.Encode()
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	Duty:                   TestingSyncCommitteeDuty,
@@ -100,6 +110,10 @@ var SSVMsgSyncCommittee = func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.S
 
 var SSVMsgSyncCommitteeContribution = func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution))
+}
+
+var SSVMsgValidatorRegistration = func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.SignedPartialSignatureMessage) *types.SSVMessage {
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleValidatorRegistration))
 }
 
 var ssvMsg = func(qbftMsg *qbft.SignedMessage, postMsg *ssv.SignedPartialSignatureMessage, msgID types.MessageID) *types.SSVMessage {
@@ -489,6 +503,73 @@ var selectionProofMsg = func(
 	return &ssv.SignedPartialSignatureMessage{
 		Message:   msgs,
 		Signature: msgSig,
+		Signer:    id,
+	}
+}
+
+var PreConsensusValidatorRegistrationMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch, false)
+}
+
+var PreConsensusValidatorRegistrationTooFewRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 0, false, TestingDutyEpoch, false)
+}
+
+var PreConsensusValidatorRegistrationTooManyRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutyEpoch, false)
+}
+
+var PreConsensusValidatorRegistrationDifferentEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *ssv.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutyEpoch, false)
+}
+
+var validatorRegistrationMsg = func(
+	sk, beaconSK *bls.SecretKey,
+	id, beaconID types.OperatorID,
+	msgCnt int,
+	wrongRoot bool,
+	epoch spec.Epoch,
+	wrongBeaconSig bool,
+) *ssv.SignedPartialSignatureMessage {
+	signer := NewTestingKeyManager()
+	beacon := NewTestingBeaconNode()
+	d, _ := beacon.DomainData(epoch, types.DomainApplicationBuilder)
+
+	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistration, d, beaconSK.GetPublicKey().Serialize())
+	if wrongRoot {
+		signed, root, _ = signer.SignBeaconObject(TestingValidatorRegistrationWrong, d, beaconSK.GetPublicKey().Serialize())
+	}
+	if wrongBeaconSig {
+		signed, root, _ = signer.SignBeaconObject(TestingValidatorRegistration, d, Testing7SharesSet().ValidatorPK.Serialize())
+	}
+
+	msgs := ssv.PartialSignatureMessages{
+		Type:     ssv.ValidatorRegistrationPartialSig,
+		Messages: []*ssv.PartialSignatureMessage{},
+	}
+
+	for i := 0; i < msgCnt; i++ {
+		msg := &ssv.PartialSignatureMessage{
+			PartialSignature: signed[:],
+			SigningRoot:      root,
+			Signer:           beaconID,
+		}
+		msgs.Messages = append(msgs.Messages, msg)
+	}
+
+	msg := &ssv.PartialSignatureMessage{
+		PartialSignature: signed[:],
+		SigningRoot:      root,
+		Signer:           id,
+	}
+	if wrongRoot {
+		msg.SigningRoot = make([]byte, 32)
+	}
+
+	sig, _ := signer.SignRoot(msgs, types.PartialSignatureType, sk.GetPublicKey().Serialize())
+	return &ssv.SignedPartialSignatureMessage{
+		Message:   msgs,
+		Signature: sig,
 		Signer:    id,
 	}
 }

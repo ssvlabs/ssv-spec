@@ -18,6 +18,8 @@ const (
 	SelectionProofPartialSig
 	// ContributionProofs is the partial selection proofs for sync committee contributions (it's an array of sigs)
 	ContributionProofs
+	// ValidatorRegistrationPartialSig is a partial signature over a ValidatorRegistration object
+	ValidatorRegistrationPartialSig
 )
 
 type PartialSignatureMessages struct {

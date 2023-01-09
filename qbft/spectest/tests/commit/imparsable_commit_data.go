@@ -50,7 +50,7 @@ func ImparsableCommitData() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "imparsable commit data",
 		Pre:           pre,
-		PostRoot:      "a272dbf34be030245fcc44b3210f3137e0cc47e745d0130584de7ff17a47123f",
+		PostRoot:      "d382895e5ab872f6ff0e2e06994864c04c19a9dc38559cbcc750ba6025178316",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: could not get msg commit data: could not decode commit data from message: invalid character '\\x01' looking for beginning of value",
 		OutputMessages: []*qbft.SignedMessage{

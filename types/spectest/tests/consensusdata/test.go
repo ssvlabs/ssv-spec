@@ -26,3 +26,22 @@ func (test *EncodingSpecTest) Run(t *testing.T) {
 
 	require.EqualValues(t, bytsDecoded, byts)
 }
+
+type ValidationSpecTest struct {
+	Name        string
+	Obj         *types.ConsensusData
+	ExpectedErr string
+}
+
+func (test *ValidationSpecTest) TestName() string {
+	return test.Name
+}
+
+func (test *ValidationSpecTest) Run(t *testing.T) {
+	err := test.Obj.Validate()
+	if len(test.ExpectedErr) > 0 {
+		require.EqualError(t, err, test.ExpectedErr)
+	} else {
+		require.NoError(t, err)
+	}
+}

@@ -54,7 +54,7 @@ func F1SpeedupPrevPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up prev prepared",
 		Pre:           pre,
-		PostRoot:      "726c342cfa3f31400e6c2818854d4b92102d913347971ef4fe1591db42f70185",
+		PostRoot:      "11d51b0be234088820b2417c997c96647d98f00a24e2b5ddc38a75660e526f26",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

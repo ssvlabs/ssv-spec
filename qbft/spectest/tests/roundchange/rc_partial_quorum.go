@@ -38,7 +38,7 @@ func RoundChangePartialQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change partial quorum",
 		Pre:           pre,
-		PostRoot:      "d8dfc36d134845f4519f211ccf0e4a3da8b16206b3127380242306001633f27a",
+		PostRoot:      "6635a0d7d840285c6adaf0362ded6a47bada8d8676f95e81baff69f2ee1b5818",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

@@ -29,7 +29,7 @@ func ImparsableProposalData() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "imparsable prepare data",
 		Pre:           pre,
-		PostRoot:      "be41977d818071451988105377df7c5ccf89ecc05ddf033b7b3b83d89f52d530",
+		PostRoot:      "69c049da1936e3727d09f976754cc7ee3a5cb7d85fa1e079f0465096b0a15cdb",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: could not get prepare data: could not decode prepare data from message: invalid character '\\x01' looking for beginning of value",
 	}

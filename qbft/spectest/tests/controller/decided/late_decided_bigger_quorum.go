@@ -43,7 +43,7 @@ func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				ControllerPostRoot: "09ecff541bdc7e5d01136c0cf496bf66bd7cff7c826b32aefb84a8ae80d8f474",
+				ControllerPostRoot: "b8627a8f7c6dc93ec283be5ec7fe7f8b4cdf512b29a97f23e1f894a691b1add5",
 			},
 		},
 	}

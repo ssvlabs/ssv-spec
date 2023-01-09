@@ -58,7 +58,7 @@ func MultiSignerNoOverlap() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "multi signer, no overlap",
 		Pre:           pre,
-		PostRoot:      "8a6a660d010979213ddd3d93a34810fa8e0a5d3f505c2c0c02502522faabed67",
+		PostRoot:      "81ca09e54350c6f6234062a5ab615b1f193aff355d0d8c56c12a30b9ef6083ec",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

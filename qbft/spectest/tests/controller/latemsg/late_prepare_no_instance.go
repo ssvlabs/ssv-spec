@@ -39,9 +39,9 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "late prepare no instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(3, "29648f3c50aec14f76731c0650a45f64373da08010ec4cee7236d1156558a213"),
-			instanceData(7, "85bd7b4f02b2d1b29eef0f171c3cc5e208a2f39bf0f00bc2a3bd955dab2d4389"),
-			instanceData(11, "e7ff49c725608be250eebf277e5d88c6408750e527759db5546a7abc0a186c98"),
+			instanceData(3, "ef701ee47bd9cf0c877ebe7148bc210803da594e12837c632fd9c56f658956ff"),
+			instanceData(7, "d37a7c38cdea9f71111410ca3d6db6b9ca5746caa8833f722d2cf3c552ea735b"),
+			instanceData(11, "78bce27afd40e40c155d5701823a983a3d20ba6bae6f74dafd228f9b4f434082"),
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
@@ -60,7 +60,7 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 					CalledSyncDecidedByRange: true, // leftovers from the previous calls
 					DecidedByRangeValues:     [2]qbft.Height{8, 11},
 				},
-				ControllerPostRoot: "e0204ddedc95ffe4360ae469877cb3a28745fe8e74a681b2595243aed5489b6c",
+				ControllerPostRoot: "21a7699ab552e583595d3138b87c99aa82cae149e592c7607b964da4b793f96a",
 			},
 		},
 		ExpectedError: "instance not found",

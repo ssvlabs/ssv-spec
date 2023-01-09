@@ -7,27 +7,41 @@ import (
 )
 
 var AttesterRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
 var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleProposer, ssv.ProposerValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+	return baseRunner(types.BNRoleProposer, ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+}
+
+var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
+	ret := baseRunner(
+		types.BNRoleProposer,
+		ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex),
+		keySet,
+	)
+	ret.(*ssv.ProposerRunner).ProducesBlindedBlocks = true
+	return ret
 }
 
 var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleAggregator, ssv.AggregatorValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+	return baseRunner(types.BNRoleAggregator, ssv.AggregatorValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
 var SyncCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleSyncCommittee, ssv.SyncCommitteeValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+	return baseRunner(types.BNRoleSyncCommittee, ssv.SyncCommitteeValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
 }
 
 var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+	return baseRunner(types.BNRoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+}
+
+var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleValidatorRegistration, nil, keySet)
 }
 
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
@@ -58,7 +72,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 	switch role {
 	case types.BNRoleAttester:
 		return ssv.NewAttesterRunnner(
-			types.NowTestNetwork,
+			types.BeaconTestNetwork,
 			share,
 			contr,
 			NewTestingBeaconNode(),
@@ -68,7 +82,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		)
 	case types.BNRoleAggregator:
 		return ssv.NewAggregatorRunner(
-			types.NowTestNetwork,
+			types.BeaconTestNetwork,
 			share,
 			contr,
 			NewTestingBeaconNode(),
@@ -78,7 +92,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		)
 	case types.BNRoleProposer:
 		return ssv.NewProposerRunner(
-			types.NowTestNetwork,
+			types.BeaconTestNetwork,
 			share,
 			contr,
 			NewTestingBeaconNode(),
@@ -88,7 +102,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		)
 	case types.BNRoleSyncCommittee:
 		return ssv.NewSyncCommitteeRunner(
-			types.NowTestNetwork,
+			types.BeaconTestNetwork,
 			share,
 			contr,
 			NewTestingBeaconNode(),
@@ -98,7 +112,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		)
 	case types.BNRoleSyncCommitteeContribution:
 		return ssv.NewSyncCommitteeAggregatorRunner(
-			types.NowTestNetwork,
+			types.BeaconTestNetwork,
 			share,
 			contr,
 			NewTestingBeaconNode(),
@@ -106,9 +120,17 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			km,
 			valCheck,
 		)
+	case types.BNRoleValidatorRegistration:
+		return ssv.NewValidatorRegistrationRunner(
+			types.PraterNetwork,
+			share,
+			NewTestingBeaconNode(),
+			net,
+			km,
+		)
 	case UnknownDutyType:
 		ret := ssv.NewAttesterRunnner(
-			types.NowTestNetwork,
+			types.BeaconTestNetwork,
 			share,
 			contr,
 			NewTestingBeaconNode(),

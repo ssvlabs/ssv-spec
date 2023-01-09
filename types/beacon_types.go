@@ -20,6 +20,7 @@ var (
 	DomainSyncCommittee               = [4]byte{0x07, 0x00, 0x00, 0x00}
 	DomainSyncCommitteeSelectionProof = [4]byte{0x08, 0x00, 0x00, 0x00}
 	DomainContributionAndProof        = [4]byte{0x09, 0x00, 0x00, 0x00}
+	DomainApplicationBuilder          = [4]byte{0x00, 0x00, 0x00, 0x01}
 
 	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
 )
@@ -58,6 +59,8 @@ const (
 	BNRoleProposer
 	BNRoleSyncCommittee
 	BNRoleSyncCommitteeContribution
+
+	BNRoleValidatorRegistration
 )
 
 // Duty represent data regarding the duty type with the duty data
@@ -90,8 +93,8 @@ const (
 	// MainNetwork represents the main network.
 	MainNetwork BeaconNetwork = "mainnet"
 
-	// NowTestNetwork is a simple test network with genesis time always equal to now, meaning now is slot 0
-	NowTestNetwork BeaconNetwork = "now_test_network"
+	// BeaconTestNetwork is a simple test network with a custom genesis time
+	BeaconTestNetwork BeaconNetwork = "now_test_network"
 )
 
 // BeaconNetwork represents the network.
@@ -104,8 +107,8 @@ func NetworkFromString(n string) BeaconNetwork {
 		return PraterNetwork
 	case string(MainNetwork):
 		return MainNetwork
-	case string(NowTestNetwork):
-		return NowTestNetwork
+	case string(BeaconTestNetwork):
+		return BeaconTestNetwork
 	default:
 		return ""
 	}
@@ -118,7 +121,7 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 		return [4]byte{0x00, 0x00, 0x10, 0x20}
 	case MainNetwork:
 		return [4]byte{0, 0, 0, 0}
-	case NowTestNetwork:
+	case BeaconTestNetwork:
 		return [4]byte{0x99, 0x99, 0x99, 0x99}
 	default:
 		return [4]byte{0x98, 0x98, 0x98, 0x98}
@@ -132,8 +135,8 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 		return 1616508000
 	case MainNetwork:
 		return 1606824023
-	case NowTestNetwork:
-		return uint64(time.Now().Unix())
+	case BeaconTestNetwork:
+		return 1616508000
 	default:
 		return 0
 	}
@@ -163,6 +166,11 @@ func (n BeaconNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
 	return spec.Slot(uint64(time-genesis) / uint64(n.SlotDurationSec().Seconds()))
 }
 
+func (n BeaconNetwork) EstimatedTimeAtSlot(slot spec.Slot) int64 {
+	d := int64(slot) * int64(n.SlotsPerEpoch())
+	return int64(n.MinGenesisTime()) + d
+}
+
 // EstimatedCurrentEpoch estimates the current epoch
 // https://github.com/ethereum/eth2.0-specs/blob/dev/specs/phase0/beacon-chain.md#compute_start_slot_at_epoch
 func (n BeaconNetwork) EstimatedCurrentEpoch() spec.Epoch {
@@ -172,6 +180,16 @@ func (n BeaconNetwork) EstimatedCurrentEpoch() spec.Epoch {
 // EstimatedEpochAtSlot estimates epoch at the given slot
 func (n BeaconNetwork) EstimatedEpochAtSlot(slot spec.Slot) spec.Epoch {
 	return spec.Epoch(slot / spec.Slot(n.SlotsPerEpoch()))
+}
+
+func (n BeaconNetwork) FirstSlotAtEpoch(epoch spec.Epoch) spec.Slot {
+	return spec.Slot(uint64(epoch) * n.SlotsPerEpoch())
+}
+
+func (n BeaconNetwork) EpochStartTime(epoch spec.Epoch) time.Time {
+	firstSlot := n.FirstSlotAtEpoch(epoch)
+	t := n.EstimatedTimeAtSlot(firstSlot)
+	return time.Unix(t, 0)
 }
 
 // ComputeETHDomain returns computed domain

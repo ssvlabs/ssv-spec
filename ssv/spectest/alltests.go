@@ -2,8 +2,10 @@ package spectest
 
 import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
@@ -18,6 +20,8 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	runner.FullHappyFlow(),
+
 	postconsensus.TooManyRoots(),
 	postconsensus.TooFewRoots(),
 	postconsensus.UnorderedExpectedRoots(),
@@ -41,6 +45,7 @@ var AllTests = []SpecTest{
 	postconsensus.Quorum7Operators(),
 	postconsensus.Quorum10Operators(),
 	postconsensus.Quorum13Operators(),
+	postconsensus.InvalidDecidedValue(),
 
 	newduty.ConsensusNotStarted(),
 	newduty.NotDecided(),
@@ -54,16 +59,21 @@ var AllTests = []SpecTest{
 	consensus.FutureDecided(),
 	consensus.InvalidDecidedValue(),
 	consensus.NoRunningDuty(),
+	consensus.NoRunningConsensusInstance(),
 	consensus.PostFinish(),
 	consensus.PostDecided(),
 	consensus.ValidDecided(),
 	consensus.ValidDecided7Operators(),
 	consensus.ValidDecided10Operators(),
 	consensus.ValidDecided13Operators(),
+	consensus.ValidMessage(),
 
 	synccommitteeaggregator.SomeAggregatorQuorum(),
 	synccommitteeaggregator.NoneAggregatorQuorum(),
 	synccommitteeaggregator.AllAggregatorQuorum(),
+
+	proposer.ProposeBlindedBlockDecidedRegular(),
+	proposer.ProposeRegularBlockDecidedBlinded(),
 
 	preconsensus.NoRunningDuty(),
 	preconsensus.TooFewRoots(),

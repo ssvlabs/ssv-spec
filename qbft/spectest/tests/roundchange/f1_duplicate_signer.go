@@ -55,7 +55,7 @@ func F1DuplicateSigner() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change f+1 duplicate",
 		Pre:            pre,
-		PostRoot:       "cc38402bbf897a098b8c96c0391b2c0053bf2663b143d1529151d607b92b610e",
+		PostRoot:       "a26cbb26c0dee54d78a6c0c39f0d526d84da5f14c0784e2b013ce28fa3141627",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

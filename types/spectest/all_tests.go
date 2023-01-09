@@ -29,5 +29,17 @@ var AllTests = []SpecTest{
 	encryption.EncryptBLSSK(),
 
 	consensusdata.Encoding(),
+	consensusdata.DutyNil(),
+	consensusdata.ValidAttester(),
+	consensusdata.NoAttestationData(),
+	consensusdata.ValidAggregator(),
+	consensusdata.NoAggregatorData(),
+	consensusdata.ValidProposer(),
+	consensusdata.ValidBlindedProposer(),
+	consensusdata.NilBlock(),
+	consensusdata.BlockAndBlindedBlock(),
+	consensusdata.ValidSyncCommitteeAggregator(),
+	consensusdata.EmptySyncCommitteeAggregator(),
+
 	beacon.DepositData(),
 }

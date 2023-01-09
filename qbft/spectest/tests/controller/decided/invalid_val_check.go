@@ -33,7 +33,7 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingInvalidValueCheck,
 				},
-				ControllerPostRoot: "6de21b20df093322f914d50f817b1fe139439f427f3d9889a58cfa0f09dce48e",
+				ControllerPostRoot: "befc8626cb71ca1b8493d41f54a709b22bbf530302177b8668fd77562ca3040e",
 			},
 		},
 	}

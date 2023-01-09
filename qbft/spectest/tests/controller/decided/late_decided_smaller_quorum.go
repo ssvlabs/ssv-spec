@@ -43,7 +43,7 @@ func LateDecidedSmallerQuorum() *tests.ControllerSpecTest {
 					DecidedCnt: 1,
 					DecidedVal: []byte{1, 2, 3, 4},
 				},
-				ControllerPostRoot: "b63e74a47e4751f69b522fe00c7e38444695b25fa3b0be51f538765399f14aaa",
+				ControllerPostRoot: "89bd457473c3ab63c8cdf82dce089f41f47e3ed28b982f11e7a775e80156404d",
 			},
 		},
 	}

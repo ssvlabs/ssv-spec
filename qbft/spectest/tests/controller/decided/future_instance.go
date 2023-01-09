@@ -34,7 +34,7 @@ func FutureInstance() *tests.ControllerSpecTest {
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{0, 10},
 				},
-				ControllerPostRoot: "fe0a1f75a599b436548dbc0179179506eb060e2ea8d048afa145b1a2229c64c8",
+				ControllerPostRoot: "6ec856c53c4febbeeb0d816b81a04425f5a7bdf107c7cf3d28a519c3fee6ce6e",
 			},
 		},
 	}

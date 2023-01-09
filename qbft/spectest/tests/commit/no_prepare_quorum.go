@@ -60,7 +60,7 @@ func NoPrepareQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit no prepare quorum",
 		Pre:           pre,
-		PostRoot:      "921f65d00452d96eff7160514b97e9786d9b8d145ddc36b8ea8d23046e76b728",
+		PostRoot:      "a789f5c8934ec150137c83c940cbfbb057f564fd579432778b688cfe64a02260",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{

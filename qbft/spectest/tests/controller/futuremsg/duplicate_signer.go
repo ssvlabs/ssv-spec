@@ -52,7 +52,7 @@ func DuplicateSigner() *ControllerSyncSpecTest {
 			}),
 		},
 		SyncDecidedCalledCnt: 1,
-		ControllerPostRoot:   "7bee6bd5f821cefc83a95b990cb127ce82016edfa3c247f6930a8d98bc0c2982",
+		ControllerPostRoot:   "ca7eaf0f0b404b601dc8dd471924794ce32ef6bcb88721098b7b6014001754c1",
 		ExpectedError:        "discarded future msg",
 	}
 }

@@ -42,7 +42,7 @@ func LateCommit() *tests.ControllerSpecTest {
 							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
 						}),
 				},
-				ControllerPostRoot: "4c3865c500ae85a9b98b126911039e91db9a7ab1b55f9f7f4e914fe9391d2334",
+				ControllerPostRoot: "61a03b8249dac35278398d36018b6037a8c92868bbc60a2ba4922dffccb30c39",
 			},
 		},
 	}
