@@ -15,7 +15,7 @@ var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
 }
 
 var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleProposer, ssv.ProposerValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex), keySet)
+	return baseRunner(types.BNRoleProposer, ssv.ProposerValueCheckF(NewTestingKeyManager(), types.NowTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil), keySet)
 }
 
 var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {

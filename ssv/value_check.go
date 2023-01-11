@@ -70,7 +70,7 @@ func AttesterValueCheckF(
 			return errors.New("attestation data source > target")
 		}
 
-		return signer.IsAttestationSlashable(cd.AttestationData)
+		return signer.IsAttestationSlashable(validatorPK, cd.AttestationData)
 	}
 }
 
@@ -79,6 +79,7 @@ func ProposerValueCheckF(
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
+	sharePublicKey []byte,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
@@ -89,7 +90,8 @@ func ProposerValueCheckF(
 		if err := dutyValueCheck(cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
 			return errors.Wrap(err, "duty invalid")
 		}
-		return nil
+
+		return signer.IsBeaconBlockSlashable(sharePublicKey, cd.BlockData)
 	}
 }
 
