@@ -47,7 +47,7 @@ func (test *SpecTest) Run(t *testing.T) {
 func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueCheckF {
 	switch test.BeaconRole {
 	case types.BNRoleAttester:
-		return ssv.AttesterValueCheckF(signer, test.Network, testingutils.TestingValidatorPubKey[:], testingutils.TestingValidatorIndex)
+		return ssv.AttesterValueCheckF(signer, test.Network, testingutils.TestingValidatorPubKey[:], testingutils.TestingValidatorIndex, nil)
 	case types.BNRoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, testingutils.TestingValidatorPubKey[:], testingutils.TestingValidatorIndex, nil)
 	case types.BNRoleAggregator:

@@ -39,6 +39,7 @@ func AttesterValueCheckF(
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
+	sharePublicKey []byte,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
@@ -70,7 +71,7 @@ func AttesterValueCheckF(
 			return errors.New("attestation data source > target")
 		}
 
-		return signer.IsAttestationSlashable(validatorPK, cd.AttestationData)
+		return signer.IsAttestationSlashable(sharePublicKey, cd.AttestationData)
 	}
 }
 
