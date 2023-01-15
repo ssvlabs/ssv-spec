@@ -31,11 +31,11 @@ var (
 
 type BeaconSigner interface {
 	// SignBeaconObject returns signature and root.
-	SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte) (Signature, []byte, error)
+	SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, role BeaconRole) (Signature, []byte, error)
 	// IsAttestationSlashable returns error if attestation is slashable
-	IsAttestationSlashable(data *spec.AttestationData) error
-	// IsBeaconBlockSlashable returns true if the given block is slashable
-	IsBeaconBlockSlashable(block *bellatrix.BeaconBlock) error
+	IsAttestationSlashable(pk []byte, data *spec.AttestationData) error
+	// IsBeaconBlockSlashable returns error if the given block is slashable
+	IsBeaconBlockSlashable(pk []byte, block *bellatrix.BeaconBlock) error
 }
 
 // SSVSigner used for all SSV specific signing

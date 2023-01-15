@@ -75,7 +75,7 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 }
 
 // IsAttestationSlashable returns error if attestation is slashable
-func (km *testingKeyManager) IsAttestationSlashable(data *spec.AttestationData) error {
+func (km *testingKeyManager) IsAttestationSlashable(pk []byte, data *spec.AttestationData) error {
 	for _, r := range km.slashableDataRoots {
 		r2, _ := data.HashTreeRoot()
 		if bytes.Equal(r, r2[:]) {
@@ -97,12 +97,12 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 	return nil, errors.New("pk not found")
 }
 
-// IsBeaconBlockSlashable returns true if the given block is slashable
-func (km *testingKeyManager) IsBeaconBlockSlashable(block *bellatrix.BeaconBlock) error {
+// IsBeaconBlockSlashable returns error if the given block is slashable
+func (km *testingKeyManager) IsBeaconBlockSlashable(pk []byte, block *bellatrix.BeaconBlock) error {
 	return nil
 }
 
-func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte) (types.Signature, []byte, error) {
+func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, role types.BeaconRole) (types.Signature, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		r, err := types.ComputeETHSigningRoot(obj, domain)
 		if err != nil {
