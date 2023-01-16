@@ -1,10 +1,9 @@
 package types
 
 import (
-	"time"
-
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
+	"time"
 )
 
 var GenesisValidatorsRoot = spec.Root{}
@@ -91,9 +90,6 @@ const (
 
 	// NowTestNetwork is a simple test network with genesis time always equal to now, meaning now is slot 0
 	NowTestNetwork BeaconNetwork = "now_test_network"
-
-	// GoerliNetwork BeaconNetwork represents the Goerli test network
-	GoerliNetwork BeaconNetwork = "goerli"
 )
 
 // BeaconNetwork represents the network.
@@ -102,8 +98,6 @@ type BeaconNetwork string
 // NetworkFromString returns network from the given string value
 func NetworkFromString(n string) BeaconNetwork {
 	switch n {
-	case string(GoerliNetwork):
-		return GoerliNetwork
 	case string(PraterNetwork):
 		return PraterNetwork
 	case string(MainNetwork):
@@ -118,8 +112,6 @@ func NetworkFromString(n string) BeaconNetwork {
 // ForkVersion returns the fork version of the network.
 func (n BeaconNetwork) ForkVersion() [4]byte {
 	switch n {
-	case GoerliNetwork:
-		return [4]byte{0x00, 0x00, 0x10, 0x20}
 	case PraterNetwork:
 		return [4]byte{0x00, 0x00, 0x10, 0x20}
 	case MainNetwork:
@@ -134,8 +126,6 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 // MinGenesisTime returns min genesis time value
 func (n BeaconNetwork) MinGenesisTime() uint64 {
 	switch n {
-	case GoerliNetwork:
-		return 1614588812
 	case PraterNetwork:
 		return 1616508000
 	case MainNetwork:
