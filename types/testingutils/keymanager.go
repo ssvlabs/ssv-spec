@@ -102,7 +102,7 @@ func (km *testingKeyManager) IsBeaconBlockSlashable(pk []byte, block *bellatrix.
 	return nil
 }
 
-func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, role types.BeaconRole) (types.Signature, []byte, error) {
+func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (types.Signature, []byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		r, err := types.ComputeETHSigningRoot(obj, domain)
 		if err != nil {

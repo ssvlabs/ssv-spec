@@ -66,7 +66,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1, types.BNRoleAttester)),
+					testingutils.SSVMsgAttester(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "27a84d7d33b8851a5b0e241280ddb160049768179c74295cb9c35fb875fe44e7",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
@@ -77,7 +77,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1, types.BNRoleSyncCommittee)),
+					testingutils.SSVMsgSyncCommittee(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "2c4a3a6aa312f25fdb6eef98fc9036eb3db007c6a4a05f3e6137737189acce49",
 				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
