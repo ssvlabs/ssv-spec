@@ -17,10 +17,9 @@ var signBeaconObject = func(
 	obj ssz.HashRoot,
 	domainType spec.DomainType,
 	ks *TestKeySet,
-	role types.BeaconRole,
 ) spec.BLSSignature {
 	domain, _ := NewTestingBeaconNode().DomainData(1, domainType)
-	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize(), role)
+	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize(), domainType)
 
 	blsSig := spec.BLSSignature{}
 	copy(blsSig[:], ret)
@@ -56,7 +55,7 @@ var TestingSignedAttestation = func(ks *TestKeySet) *spec.Attestation {
 	aggregationBitfield.SetBitAt(TestingAttesterDuty.ValidatorCommitteeIndex, true)
 	return &spec.Attestation{
 		Data:            TestingAttestationData,
-		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks, types.BNRoleAttester),
+		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
 		AggregationBits: aggregationBitfield,
 	}
 }
@@ -171,7 +170,7 @@ var TestingWrongBeaconBlock = func() *bellatrix.BeaconBlock {
 var TestingSignedBeaconBlock = func(ks *TestKeySet) *bellatrix.SignedBeaconBlock {
 	return &bellatrix.SignedBeaconBlock{
 		Message:   TestingBeaconBlock,
-		Signature: signBeaconObject(TestingBeaconBlock, types.DomainProposer, ks, types.BNRoleProposer),
+		Signature: signBeaconObject(TestingBeaconBlock, types.DomainProposer, ks),
 	}
 }
 
@@ -200,7 +199,7 @@ var TestingWrongAggregateAndProof = func() *spec.AggregateAndProof {
 var TestingSignedAggregateAndProof = func(ks *TestKeySet) *spec.SignedAggregateAndProof {
 	return &spec.SignedAggregateAndProof{
 		Message:   TestingAggregateAndProof,
-		Signature: signBeaconObject(TestingAggregateAndProof, types.DomainAggregateAndProof, ks, types.BNRoleAggregator),
+		Signature: signBeaconObject(TestingAggregateAndProof, types.DomainAggregateAndProof, ks),
 	}
 }
 
@@ -221,7 +220,7 @@ var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommi
 		Slot:            TestingDutySlot,
 		BeaconBlockRoot: TestingSyncCommitteeBlockRoot,
 		ValidatorIndex:  TestingValidatorIndex,
-		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks, types.BNRoleSyncCommittee),
+		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
 	}
 }
 
@@ -276,7 +275,7 @@ var TestingSignedSyncCommitteeContributions = func(
 	}
 	return &altair.SignedContributionAndProof{
 		Message:   msg,
-		Signature: signBeaconObject(msg, types.DomainContributionAndProof, ks, types.BNRoleSyncCommitteeContribution),
+		Signature: signBeaconObject(msg, types.DomainContributionAndProof, ks),
 	}
 }
 
