@@ -3,11 +3,12 @@ package alea
 import (
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
+	"fmt"
 )
 
 // uponProposal process proposal message
 // Assumes proposal message is valid!
-func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
+func (i *Instance) uponProposal2(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
 	return nil
 	// addedMsg, err := proposeMsgContainer.AddFirstMsgForSignerAndRound(signedProposal)
 	// if err != nil {
@@ -42,6 +43,70 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 
 	// return nil
 }
+
+func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
+    
+	fmt.Println("uponProposalFunction")
+
+	// Add message to container
+    proposeMsgContainer.AddMsg(signedProposal)
+	fmt.Println("\tAdded message to container")
+
+    // Check if container has reached maximum size
+    if proposeMsgContainer.Len(i.State.AleaDefaultRound) < i.config.GetBatchSize() {
+		fmt.Println("\tReturning. Len not big enough to match batch size")
+		fmt.Println("\tcontainer length:",proposeMsgContainer.Len(i.State.AleaDefaultRound),", batch size:",i.config.GetBatchSize())
+		return nil
+    }
+
+	fmt.Println("\treached batch size")
+
+    // Create VCBCMessage with all messages in the container
+    // vcbcMsg := &VCBCMessage{Messages: proposeMsgContainer.MessagesForRound(i.State.AleaDefaultRound)}
+    // byts, err := json.Marshal(vcbcMsg)
+    // if err != nil {
+    //     return errors.Wrap(err, "could not marshal VCBC message")
+    // }
+
+    // Broadcast VCBCMessage
+    // msgID := types.MessageID{}
+	signedMessages := proposeMsgContainer.MessagesForRound(i.State.AleaDefaultRound)
+	proposalData := make([]*ProposalData,0)
+	for i := range signedMessages {
+		data, err := signedMessages[i].Message.GetProposalData();
+		if err != nil {
+			errors.Wrap(err, "could not get proposal data from message in container")
+		}
+		proposalData = append(proposalData,data)
+	}
+
+	fmt.Println("\tcreated proposal data")
+	msgToBroadcast, err := CreateVCBC(i.State, i.config, proposalData, i.State.Priority)
+	fmt.Println("\tcreated VCBC message to broadcast")
+	if err != nil {
+		return errors.Wrap(err, "failed to create VCBC message")
+	}
+    // copy(msgID[:], signedProposal.Message.Identifier)
+    // msgToBroadcast := &types.SSVMessage{
+    //     MsgType: types.VCBCMsgType,
+    //     MsgID:   msgID,
+    //     Data:    byts,
+    // }
+    if err := i.Broadcast(msgToBroadcast); err != nil {
+        return errors.Wrap(err, "failed to broadcast VCBC message")
+    }
+	fmt.Println("\tbroadcasted")
+
+    // Clear container
+    proposeMsgContainer.Clear()
+	fmt.Println("\tcleared container")
+
+	// Increment priority
+	i.State.Priority += 1
+	fmt.Println("\tincremented priority")
+    return nil
+}
+
 
 func isValidProposal(
 	state *State,
@@ -219,7 +284,7 @@ func CreateProposal(state *State, config IConfig, value []byte/*, roundChanges, 
 	msg := &Message{
 		MsgType:    ProposalMsgType,
 		Height:     state.Height,
-		Round:      state.Round,
+		Round:      state.AleaDefaultRound,
 		Identifier: state.ID,
 		Data:       dataByts,
 	}

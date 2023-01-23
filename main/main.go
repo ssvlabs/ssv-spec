@@ -32,6 +32,7 @@ var TestingConfig = func(keySet *testingutils.TestKeySet) *alea.Config {
 		},
 		Network: testingutils.NewTestingNetworkAlea(),
 		Timer:   testingutils.NewTestingTimerAlea(),
+		BatchSize: 2,
 	}
 }
 
@@ -90,6 +91,19 @@ func main() {
 	fmt.Println("created Controller", controller)
 
 	controller.StartNewInstance([]byte{1})
+
+	instance := controller.InstanceForHeight(0)
+	proposal, err := alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,1})
+	if err != nil {
+		errors.Wrap(err, "could not create proposal")
+	}
+	controller.ProcessMsg(proposal)
+	proposal, err = alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,2})
+	controller.ProcessMsg(proposal)
+	proposal, err = alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,3})
+	controller.ProcessMsg(proposal)
+	proposal, err = alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,4})
+	controller.ProcessMsg(proposal)
 
 	// var controller = NewController([]byte{1, 2, 3, 4} /*identifier*/,testingShare,types.PrimusTestnet,TestingConfig(testingutils.Testing4SharesSet()))
 	// fmt.Print("created Controller")

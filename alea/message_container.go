@@ -126,3 +126,15 @@ func (c *MsgContainer) Encode() ([]byte, error) {
 func (c *MsgContainer) Decode(data []byte) error {
 	return json.Unmarshal(data, &c)
 }
+
+// Len returns the number of messages stored
+func (c *MsgContainer) Len(roundNumber Round) (int) {
+	return len(c.Msgs[roundNumber])
+}
+
+// Clear the container
+func (c *MsgContainer) Clear() {
+	for roundNumber, _ := range c.Msgs {
+		c.Msgs[roundNumber] = nil
+	}
+}

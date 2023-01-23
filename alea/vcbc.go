@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func CreateVCBC(state *State, config IConfig,proposalData []*ProposalData, priority int) (*SignedMessage, error) {
+func CreateVCBC(state *State, config IConfig, proposalData []*ProposalData, priority int) (*SignedMessage, error) {
 	vcbcData := &VCBCData{
 		ProposalData:	proposalData,
 		Priority:		priority,					
@@ -17,7 +17,7 @@ func CreateVCBC(state *State, config IConfig,proposalData []*ProposalData, prior
 	msg := &Message{
 		MsgType:    VCBCMsgType,
 		Height:     state.Height,
-		Round:      state.Round,
+		Round:      state.AleaDefaultRound,
 		Identifier: state.ID,
 		Data:       dataByts,
 	}

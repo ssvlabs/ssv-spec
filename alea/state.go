@@ -24,6 +24,8 @@ type IConfig interface {
 	GetNetwork() Network
 	// GetTimer returns round timer
 	GetTimer() Timer
+	// GetBatchSize returns the batch size
+	GetBatchSize() int
 }
 
 type Config struct {
@@ -34,6 +36,7 @@ type Config struct {
 	ProposerF   ProposerF
 	Network     Network
 	Timer       Timer
+	BatchSize	int
 }
 
 // GetSigner returns a Signer instance
@@ -71,6 +74,11 @@ func (c *Config) GetTimer() Timer {
 	return c.Timer
 }
 
+// GetBatchSize returns the constant batch size
+func (c *Config) GetBatchSize() int {
+	return c.BatchSize
+}
+
 type State struct {
 	Share                           *types.Share
 	ID                              []byte // instance Identifier
@@ -90,7 +98,8 @@ type State struct {
 	ABAContainer			*MsgContainer
 	FillGapContainer		*MsgContainer
 	FillerContainer		 	*MsgContainer
-
+	Priority				int
+	AleaDefaultRound		Round
 }
 
 // GetRoot returns the state's deterministic root

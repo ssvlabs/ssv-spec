@@ -42,6 +42,8 @@ func NewInstance(
 			ABAContainer:      	  NewMsgContainer(),
 			FillGapContainer: 	  NewMsgContainer(),
 			FillerContainer: 	  NewMsgContainer(),
+			Priority: 			  0,
+			AleaDefaultRound:	  FirstRound,
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
@@ -109,8 +111,8 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 
 	res := i.processMsgF.Run(func() interface{} {
 		switch msg.Message.MsgType {
-		// case ProposalMsgType:
-		// 	return i.uponProposal(msg, i.State.ProposeContainer)
+		case ProposalMsgType:
+			return i.uponProposal(msg, i.State.ProposeContainer)
 		// case PrepareMsgType:
 		// 	return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
 		// case CommitMsgType:
