@@ -7,7 +7,7 @@ import (
 	altair "github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/goccy/go-yaml"
 	"github.com/prysmaticlabs/go-bitfield"

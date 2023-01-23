@@ -1,8 +1,8 @@
 package consensusdata
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // EmptySyncCommitteeAggregator tests a invalid sync committee aggregator

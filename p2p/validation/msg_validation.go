@@ -2,9 +2,9 @@ package validation
 
 import (
 	"context"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"

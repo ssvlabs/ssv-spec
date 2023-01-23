@@ -1,9 +1,9 @@
 package newduty
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // ConsensusNotStarted tests starting duty after prev already started but for some duties' consensus didn't start because pre-consensus didnt get quorum (different duties will enable starting a new duty)

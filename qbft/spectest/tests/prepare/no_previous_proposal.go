@@ -1,10 +1,10 @@
 package prepare
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // NoPreviousProposal tests prepare msg without receiving a previous proposal state.ProposalAcceptedForCurrentRound == nil

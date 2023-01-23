@@ -1,4 +1,4 @@
-module github.com/bloxapp/ssv-spec
+module github.com/MatheusFranco99/ssv-spec-AleaBFT
 
 go 1.17
 

@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // PreparedPreviouslyDuplicateRCQuorum tests a proposal for > 1 round, prepared previously with quorum of round change but 2 are duplicates

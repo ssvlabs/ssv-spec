@@ -1,8 +1,8 @@
 package newduty
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // Valid tests a valid start duty

@@ -6,7 +6,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest"
 )
 
 //go:generate go run main.go

@@ -1,16 +1,16 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/messages"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/runner"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/runner/consensus"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/runner/postconsensus"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/runner/preconsensus"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/valcheck/valcheckattestations"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/valcheck/valcheckduty"
 	"testing"
 )
 

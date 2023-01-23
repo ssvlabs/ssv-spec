@@ -2,8 +2,8 @@ package ssv
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 )

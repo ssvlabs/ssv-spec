@@ -1,9 +1,9 @@
 package valcheckduty
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests/valcheck"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // WrongDutyType tests duty.Type not attester

@@ -1,10 +1,10 @@
 package preconsensus
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // Quorum10Operators  tests a quorum of valid SignedPartialSignatureMessage (10 operators)

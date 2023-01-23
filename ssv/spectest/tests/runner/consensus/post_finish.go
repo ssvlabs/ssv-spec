@@ -1,11 +1,11 @@
 package consensus
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv/spectest/tests"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // PostFinish tests a valid commit msg after runner finished

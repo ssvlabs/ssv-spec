@@ -1,7 +1,7 @@
 package messages
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv"
 )
 
 // EncodingAndRoot tests SignedPartialSignatureMessage encoding + root

@@ -1,6 +1,6 @@
 package testingutils
 
-import "github.com/bloxapp/ssv-spec/qbft"
+import "github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
 
 type TimerState struct {
 	Timeouts int
