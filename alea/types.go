@@ -7,6 +7,7 @@ import (
 
 type Round uint64
 type Height uint64
+type Priority uint64
 
 const (
 	NoRound     Round  = 0 // NoRound represents a nil/ zero round

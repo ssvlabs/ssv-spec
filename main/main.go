@@ -90,20 +90,60 @@ func main() {
 	fmt.Println("Controller: identifier, height, stored instances, future msg container, domain, share, config")
 	fmt.Println("created Controller", controller)
 
-	controller.StartNewInstance([]byte{1})
+	controller2 := alea.NewController(
+		[]byte{1, 2, 3, 4},
+		TestingShare(ks,2),
+		testingutils.TestingConfig(ks).Domain,
+		config,
+	)
+	fmt.Println("Controller: identifier, height, stored instances, future msg container, domain, share, config")
+	fmt.Println("created Controller2", controller2)
 
+	controller.StartNewInstance([]byte{1})
 	instance := controller.InstanceForHeight(0)
-	proposal, err := alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,1})
+	fmt.Println("Instance:", instance)
+
+	controller2.StartNewInstance([]byte{2})
+	instance2 := controller2.InstanceForHeight(0)
+	fmt.Println("Instance2:", instance2)
+
+	
+
+	proposal1, err := alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,1})
 	if err != nil {
-		errors.Wrap(err, "could not create proposal")
+		errors.Wrap(err, "could not create proposal message")
 	}
-	controller.ProcessMsg(proposal)
-	proposal, err = alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,2})
-	controller.ProcessMsg(proposal)
-	proposal, err = alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,3})
-	controller.ProcessMsg(proposal)
-	proposal, err = alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,4})
-	controller.ProcessMsg(proposal)
+	controller.ProcessMsg(proposal1)
+	proposal2, err := alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,2})
+	controller.ProcessMsg(proposal2)
+
+
+	proposalData1,err := proposal1.Message.GetProposalData()
+	if err != nil {
+		errors.Wrap(err, "could not get proposal data from proposal message created")
+	}
+	proposalData2,err := proposal2.Message.GetProposalData()
+
+
+	vcbcMessage,err := alea.CreateVCBC(instance.State,instance.GetConfig(),[]*alea.ProposalData{proposalData1,proposalData2},0)
+	if err != nil {
+		errors.Wrap(err, "could not create vcbc message")
+		return
+	}
+	controller2.ProcessMsg(vcbcMessage)
+
+
+
+	proposal3, err := alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,3})
+	controller.ProcessMsg(proposal3)
+	proposal4, err := alea.CreateProposal(instance.State,instance.GetConfig(),[]byte{1,4})
+	controller.ProcessMsg(proposal4)
+
+	proposalData3,err := proposal3.Message.GetProposalData()
+	proposalData4,err := proposal4.Message.GetProposalData()
+	vcbcMessage2,err := alea.CreateVCBC(instance.State,instance.GetConfig(),[]*alea.ProposalData{proposalData3,proposalData4},0)
+	controller2.ProcessMsg(vcbcMessage2)
+
 
 	// var controller = NewController([]byte{1, 2, 3, 4} /*identifier*/,testingShare,types.PrimusTestnet,TestingConfig(testingutils.Testing4SharesSet()))
 	// fmt.Print("created Controller")

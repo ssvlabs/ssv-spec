@@ -98,8 +98,12 @@ type State struct {
 	ABAContainer			*MsgContainer
 	FillGapContainer		*MsgContainer
 	FillerContainer		 	*MsgContainer
-	Priority				int
+
+	Priority				Priority
 	AleaDefaultRound		Round
+
+	queues					map[types.OperatorID]*VCBCQueue
+	S						*VCBCQueue
 }
 
 // GetRoot returns the state's deterministic root

@@ -42,8 +42,10 @@ func NewInstance(
 			ABAContainer:      	  NewMsgContainer(),
 			FillGapContainer: 	  NewMsgContainer(),
 			FillerContainer: 	  NewMsgContainer(),
-			Priority: 			  0,
+			Priority: 			  Priority(0),
 			AleaDefaultRound:	  FirstRound,
+			queues:				  make(map[types.OperatorID]*VCBCQueue),
+			S:					  NewVCBCQueue(),
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
@@ -113,6 +115,8 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 		switch msg.Message.MsgType {
 		case ProposalMsgType:
 			return i.uponProposal(msg, i.State.ProposeContainer)
+		case VCBCMsgType:
+			return i.uponVCBC(msg, i.State.VCBCContainer)
 		// case PrepareMsgType:
 		// 	return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
 		// case CommitMsgType:
@@ -146,6 +150,14 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 	switch msg.Message.MsgType {
 	case ProposalMsgType:
 		return isValidProposal(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
+	case VCBCMsgType:
+		return isValidVCBC(
 			i.State,
 			i.config,
 			msg,

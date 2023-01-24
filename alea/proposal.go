@@ -8,45 +8,19 @@ import (
 
 // uponProposal process proposal message
 // Assumes proposal message is valid!
-func (i *Instance) uponProposal2(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
-	return nil
-	// addedMsg, err := proposeMsgContainer.AddFirstMsgForSignerAndRound(signedProposal)
-	// if err != nil {
-	// 	return errors.Wrap(err, "could not add proposal msg to container")
-	// }
-	// if !addedMsg {
-	// 	return nil // uponProposal was already called
-	// }
-
-	// newRound := signedProposal.Message.Round
-	// i.State.ProposalAcceptedForCurrentRound = signedProposal
-
-	// // A future justified proposal should bump us into future round and reset timer
-	// if signedProposal.Message.Round > i.State.Round {
-	// 	i.config.GetTimer().TimeoutForRound(signedProposal.Message.Round)
-	// }
-	// i.State.Round = newRound
-
-	// proposalData, err := signedProposal.Message.GetProposalData()
-	// if err != nil {
-	// 	return errors.Wrap(err, "could not get proposal data")
-	// }
-
-	// prepare, err := CreatePrepare(i.State, i.config, newRound, proposalData.Data)
-	// if err != nil {
-	// 	return errors.Wrap(err, "could not create prepare msg")
-	// }
-
-	// if err := i.Broadcast(prepare); err != nil {
-	// 	return errors.Wrap(err, "failed to broadcast prepare message")
-	// }
-
-	// return nil
-}
-
 func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
     
-	fmt.Println("uponProposalFunction")
+	fmt.Println("uponProposal function")
+
+	proposalDataReceived, err := signedProposal.Message.GetProposalData()
+	if err != nil{
+		errors.Wrap(err, "could not get proposal data from signedProposal")
+	}
+
+	if i.State.S.hasProposal(proposalDataReceived) {
+		fmt.Println("\tmessage already contained in S queue (already delivered)")
+		return nil
+	}
 
 	// Add message to container
     proposeMsgContainer.AddMsg(signedProposal)

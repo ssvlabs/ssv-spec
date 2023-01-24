@@ -85,7 +85,7 @@ func (d *ProposalData) Validate() error {
 
 type VCBCData struct {
 	ProposalData                []*ProposalData
-	Priority				 	int
+	Priority				 	Priority
 }
 
 // Encode returns a msg encoded bytes or error
