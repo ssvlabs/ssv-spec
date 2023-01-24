@@ -46,6 +46,8 @@ func NewInstance(
 			AleaDefaultRound:	  FirstRound,
 			queues:				  make(map[types.OperatorID]*VCBCQueue),
 			S:					  NewVCBCQueue(),
+			ABARound:			  FirstRound,
+			StopAgreement:		  false,
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
@@ -60,16 +62,26 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.State.Height = height
 
 		fmt.Println("Starting instance")
-		proposal, err := CreateProposal(i.State, i.config, i.StartValue /*,nil, nil*/)
-		// nolint
-		if err != nil {
-			fmt.Printf("%s\n", err.Error())
-		}
-		// nolint
-		if err := i.Broadcast(proposal); err != nil {
-			fmt.Printf("%s\n", err.Error())
-		}
-		fmt.Println("Broadcasted")
+
+		// state variables are initiated on constructor NewInstance (namely, queues and S)
+		// The broadcast part runs as an instance receive proposal or vcbc messages
+		// proposal message is the message that a client sends to the node
+		// vcbc message is the broadcast a node does after receiving a batch size number of proposals
+
+		// The agreement component consists of an infinite loop and we shall call it with another Thread
+		go i.StartAgreementComponent()
+
+
+		// proposal, err := CreateProposal(i.State, i.config, i.StartValue /*,nil, nil*/)
+		// // nolint
+		// if err != nil {
+		// 	fmt.Printf("%s\n", err.Error())
+		// }
+		// // nolint
+		// if err := i.Broadcast(proposal); err != nil {
+		// 	fmt.Printf("%s\n", err.Error())
+		// }
+		// fmt.Println("Broadcasted")
 
 		// i.config.GetTimer().TimeoutForRound(FirstRound)
 
@@ -86,6 +98,75 @@ func (i *Instance) Start(value []byte, height Height) {
 		// 	}
 		// }
 	})
+}
+
+func (i *Instance) StartAgreementComponent() error {
+
+	i.State.ABARound = 0
+	for {
+		if i.State.StopAgreement {
+			break
+		}
+		// calculate the round leader
+        leader := i.config.GetProposerF()(i.State,i.State.ABARound)
+        // get the local queue associated with the leader's id
+		if _, exists := i.State.queues[leader]; !exists {
+			i.State.queues[leader] = NewVCBCQueue()
+		}
+		queue := i.State.queues[leader]
+        // get the value of the queue with the lowest priority value
+        value, priority := queue.Peek()
+        if value == nil {
+            // propose 0 to the ABA protocol if the queue is empty
+			abaVote, err := CreateABA(i.State, i.config, 0, i.State.ABARound)
+			if err != nil {
+				errors.Wrap(err,"failed to create ABA message")
+			}
+            i.Broadcast(abaVote)
+        } else {
+            // propose 1 to the ABA protocol if the queue has a value
+			abaVote, err := CreateABA(i.State, i.config, 1, i.State.ABARound)
+			if err != nil {
+				errors.Wrap(err,"failed to create ABA message")
+			}
+			i.Broadcast(abaVote)
+            // wait for the ABA protocol to complete
+            result := i.WaitABAGroup()
+            if result == 1 {
+                // if the protocol agreed on the value of the leader replica, deliver it
+                if !i.State.S.hasProposalList(value) {
+					fillGapMsg, err := CreateFillGap(i.State, i.config, leader, priority)
+					if err != nil {
+						errors.Wrap(err,"failed to create FillGap message")
+					}
+                    i.Broadcast(fillGapMsg)
+                    // wait for the value to be received
+                    i.WaitFillGapResponse()
+                }
+                // remove the value from the queue and add it to S
+                queue.Dequeue()
+                i.State.S.Dequeue()
+                // return the value to the client
+                i.Deliver(value)
+            } else {
+                // increment the round number if the protocol didn't agree on the value
+                i.State.ABARound++
+            }
+		}
+	}
+	return nil
+
+}
+
+
+func (i *Instance) WaitABAGroup() int {
+	return 1
+}
+func (i *Instance) WaitFillGapResponse() int {
+	return 1
+}
+func (i *Instance) Deliver(proposals []*ProposalData) int {
+	return 1
 }
 
 func (i *Instance) Broadcast(msg *SignedMessage) error {

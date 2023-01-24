@@ -5,10 +5,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-func CreateFillGap(state *State, config IConfig, operatorID types.OperatorID, head int) (*SignedMessage, error) {
+func CreateFillGap(state *State, config IConfig, operatorID types.OperatorID, priority Priority) (*SignedMessage, error) {
 	fillgapData := &FillGapData{
 		OperatorID:		operatorID,
-		Head:			head,					
+		Priority:			priority,					
 	}
 	dataByts, err := fillgapData.Encode()
 	if err != nil {

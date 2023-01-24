@@ -143,7 +143,7 @@ func (d *ABAData) Validate() error {
 
 type FillGapData struct {
 	OperatorID                  types.OperatorID
-	Head				 		int
+	Priority				 	Priority
 }
 
 // Encode returns a msg encoded bytes or error

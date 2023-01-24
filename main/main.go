@@ -144,9 +144,17 @@ func main() {
 	vcbcMessage2,err := alea.CreateVCBC(instance.State,instance.GetConfig(),[]*alea.ProposalData{proposalData3,proposalData4},0)
 	controller2.ProcessMsg(vcbcMessage2)
 
-
-	// var controller = NewController([]byte{1, 2, 3, 4} /*identifier*/,testingShare,types.PrimusTestnet,TestingConfig(testingutils.Testing4SharesSet()))
-	// fmt.Print("created Controller")
+	// k := 0
+	// for {
+	// 	if instance.State.StopAgreement {
+	// 		break
+	// 	} else {
+	// 		k += 1
+	// 	}
+	// 	if (k == 1e9) {
+	// 		instance.State.StopAgreement = true
+	// 	}
+	// }
 }
 
 
