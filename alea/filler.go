@@ -3,6 +3,7 @@ package alea
 import (
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
+	// "fmt"
 )
 
 func CreateFiller(state *State, config IConfig, entries []ProposalData) (*SignedMessage, error) {

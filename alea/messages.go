@@ -47,6 +47,10 @@ const (
 	ABAMsgType
 	FillGapMsgType
 	FillerMsgType
+	ABAInitMsgType
+	ABAAuxMsgType
+	ABAConfMsgType
+	ABAFinishMsgType
 )
 
 // =========================
@@ -194,6 +198,118 @@ func (d *FillerData) Validate() error {
 
 
 // =========================
+//			ABAInit
+// =========================
+
+type ABAInitData struct {
+	Vote	byte
+	Round	Round
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *ABAInitData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *ABAInitData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *ABAInitData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("ABAInitData is invalid")
+	// }
+	return nil
+}
+
+// =========================
+//			ABAAux
+// =========================
+
+type ABAAuxData struct {
+	Vote	byte
+	Round	Round
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *ABAAuxData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *ABAAuxData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *ABAAuxData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("ABAAuxData is invalid")
+	// }
+	return nil
+}
+
+// =========================
+//			ABAConf
+// =========================
+
+type ABAConfData struct {
+	Votes	[]byte
+	Round	Round
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *ABAConfData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *ABAConfData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *ABAConfData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("ABAConfData is invalid")
+	// }
+	return nil
+}
+
+// =========================
+//			ABAFinish
+// =========================
+
+type ABAFinishData struct {
+	Vote	byte
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *ABAFinishData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *ABAFinishData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *ABAFinishData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("ABAFinishData is invalid")
+	// }
+	return nil
+}
+
+
+// =========================
 //			Message
 // =========================
 
@@ -215,7 +331,7 @@ func (msg *Message) GetProposalData() (*ProposalData, error) {
 	return ret, nil
 }
 
-// GetVCBCData returns proposal specific data
+// GetVCBCData returns vcbc specific data
 func (msg *Message) GetVCBCData() (*VCBCData, error) {
 	ret := &VCBCData{}
 	if err := ret.Decode(msg.Data); err != nil {
@@ -224,7 +340,7 @@ func (msg *Message) GetVCBCData() (*VCBCData, error) {
 	return ret, nil
 }
 
-// GetABAData returns proposal specific data
+// GetABAData returns aba specific data
 func (msg *Message) GetABAData() (*ABAData, error) {
 	ret := &ABAData{}
 	if err := ret.Decode(msg.Data); err != nil {
@@ -233,7 +349,7 @@ func (msg *Message) GetABAData() (*ABAData, error) {
 	return ret, nil
 }
 
-// GetFillGapData returns proposal specific data
+// GetFillGapData returns fillgap specific data
 func (msg *Message) GetFillGapData() (*FillGapData, error) {
 	ret := &FillGapData{}
 	if err := ret.Decode(msg.Data); err != nil {
@@ -242,7 +358,7 @@ func (msg *Message) GetFillGapData() (*FillGapData, error) {
 	return ret, nil
 }
 
-// GetFillerData returns proposal specific data
+// GetFillerData returns filler specific data
 func (msg *Message) GetFillerData() (*FillerData, error) {
 	ret := &FillerData{}
 	if err := ret.Decode(msg.Data); err != nil {
@@ -250,6 +366,43 @@ func (msg *Message) GetFillerData() (*FillerData, error) {
 	}
 	return ret, nil
 }
+
+// GetABAInitData returns abainit specific data
+func (msg *Message) GetABAInitData() (*ABAInitData, error) {
+	ret := &ABAInitData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode ABAInit data from message")
+	}
+	return ret, nil
+}
+
+// GetABAAuxData returns abainit specific data
+func (msg *Message) GetABAAuxData() (*ABAAuxData, error) {
+	ret := &ABAAuxData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode ABAAuxData from message")
+	}
+	return ret, nil
+}
+
+// GetABAConfData returns abainit specific data
+func (msg *Message) GetABAConfData() (*ABAConfData, error) {
+	ret := &ABAConfData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode ABAConfData from message")
+	}
+	return ret, nil
+}
+
+// GetABAFinishData returns abainit specific data
+func (msg *Message) GetABAFinishData() (*ABAFinishData, error) {
+	ret := &ABAFinishData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode ABAFinishData from message")
+	}
+	return ret, nil
+}
+
 
 
 // Encode returns a msg encoded bytes or error

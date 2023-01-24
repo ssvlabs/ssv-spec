@@ -107,6 +107,7 @@ type State struct {
 
 	ABARound				Round
 	StopAgreement			bool
+	ABAState				*ABAState
 }
 
 // GetRoot returns the state's deterministic root

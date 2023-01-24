@@ -3,7 +3,14 @@ package alea
 import (
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
+	"fmt"
 )
+
+
+func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer *MsgContainer) error {   
+	fmt.Println("uponFillGap function")
+	return nil
+}
 
 func CreateFillGap(state *State, config IConfig, operatorID types.OperatorID, priority Priority) (*SignedMessage, error) {
 	fillgapData := &FillGapData{

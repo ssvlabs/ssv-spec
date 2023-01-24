@@ -48,6 +48,8 @@ func NewInstance(
 			S:					  NewVCBCQueue(),
 			ABARound:			  FirstRound,
 			StopAgreement:		  false,
+			ABAState:			  NewABAState(FirstRound),
+
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
@@ -116,52 +118,50 @@ func (i *Instance) StartAgreementComponent() error {
 		queue := i.State.queues[leader]
         // get the value of the queue with the lowest priority value
         value, priority := queue.Peek()
+		vote := byte(0)
         if value == nil {
+
             // propose 0 to the ABA protocol if the queue is empty
-			abaVote, err := CreateABA(i.State, i.config, 0, i.State.ABARound)
-			if err != nil {
-				errors.Wrap(err,"failed to create ABA message")
-			}
-            i.Broadcast(abaVote)
+			// abaVote, err := CreateABA(i.State, i.config, 0, i.State.ABARound)
+			// if err != nil {
+			// 	errors.Wrap(err,"failed to create ABA message")
+			// }
+			vote = byte(0)
         } else {
             // propose 1 to the ABA protocol if the queue has a value
-			abaVote, err := CreateABA(i.State, i.config, 1, i.State.ABARound)
-			if err != nil {
-				errors.Wrap(err,"failed to create ABA message")
-			}
-			i.Broadcast(abaVote)
-            // wait for the ABA protocol to complete
-            result := i.WaitABAGroup()
-            if result == 1 {
-                // if the protocol agreed on the value of the leader replica, deliver it
-                if !i.State.S.hasProposalList(value) {
-					fillGapMsg, err := CreateFillGap(i.State, i.config, leader, priority)
-					if err != nil {
-						errors.Wrap(err,"failed to create FillGap message")
-					}
-                    i.Broadcast(fillGapMsg)
-                    // wait for the value to be received
-                    i.WaitFillGapResponse()
-                }
-                // remove the value from the queue and add it to S
-                queue.Dequeue()
-                i.State.S.Dequeue()
-                // return the value to the client
-                i.Deliver(value)
-            } else {
-                // increment the round number if the protocol didn't agree on the value
-                i.State.ABARound++
-            }
+			// abaVote, err := CreateABA(i.State, i.config, 1, i.State.ABARound)
+			// if err != nil {
+			// 	errors.Wrap(err,"failed to create ABA message")
+			// }
+			vote = byte(1)
 		}
+
+		// wait for the ABA protocol to complete
+		result := i.StartABA(vote)
+		if result == 1 {
+			// if the protocol agreed on the value of the leader replica, deliver it
+			
+			if vote == 0 {
+				fillGapMsg, err := CreateFillGap(i.State, i.config, leader, priority)
+				if err != nil {
+					errors.Wrap(err,"failed to create FillGap message")
+				}
+				i.Broadcast(fillGapMsg)
+				// wait for the value to be received
+				i.WaitFillGapResponse()
+			}
+			// remove the value from the queue and add it to S
+			queue.Dequeue()
+			i.State.S.Dequeue()
+			// return the value to the client
+			i.Deliver(value)
+		}
+		// increment the round number
+		i.State.ABARound++
 	}
 	return nil
-
 }
 
-
-func (i *Instance) WaitABAGroup() int {
-	return 1
-}
 func (i *Instance) WaitFillGapResponse() int {
 	return 1
 }
@@ -198,6 +198,18 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 			return i.uponProposal(msg, i.State.ProposeContainer)
 		case VCBCMsgType:
 			return i.uponVCBC(msg, i.State.VCBCContainer)
+		case FillGapMsgType:
+			return nil
+		case FillerMsgType:
+			return nil
+		case ABAInitMsgType:
+			return nil
+		case ABAAuxMsgType:
+			return nil
+		case ABAConfMsgType:
+			return nil
+		case ABAFinishMsgType:
+			return nil
 		// case PrepareMsgType:
 		// 	return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
 		// case CommitMsgType:

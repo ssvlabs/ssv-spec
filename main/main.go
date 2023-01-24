@@ -75,11 +75,11 @@ func main() {
 	// fmt.Println("created Share", testingShare)
 	ks := testingutils.Testing4SharesSet()
 	fmt.Println("Ks structure:validator SK, validator PK, shareCount, quorum, partialQuorum, shares (map), DKGOperators map to structure with SK, ETHAddr, EncryptionKey")
-	fmt.Println("created Ks", ks)
+	fmt.Println("\t\tcreated Ks", ks)
 
 	config := TestingConfig(ks)
 	fmt.Println("Config: signer, signing pk, domain, valueCheckF, ProposerF, network, timer")
-	fmt.Println("created Config", config)
+	fmt.Println("\t\tcreated Config", config)
 
 	controller := alea.NewController(
 		[]byte{1, 2, 3, 4},
@@ -88,7 +88,8 @@ func main() {
 		config,
 	)
 	fmt.Println("Controller: identifier, height, stored instances, future msg container, domain, share, config")
-	fmt.Println("created Controller", controller)
+	fmt.Println("\t\tcreated Controller", controller)
+	fmt.Println("\tShare:", controller.Share)
 
 	controller2 := alea.NewController(
 		[]byte{1, 2, 3, 4},
@@ -97,15 +98,15 @@ func main() {
 		config,
 	)
 	fmt.Println("Controller: identifier, height, stored instances, future msg container, domain, share, config")
-	fmt.Println("created Controller2", controller2)
+	fmt.Println("\t\tcreated Controller2", controller2)
 
 	controller.StartNewInstance([]byte{1})
 	instance := controller.InstanceForHeight(0)
-	fmt.Println("Instance:", instance)
+	fmt.Println("\tInstance:", instance)
 
 	controller2.StartNewInstance([]byte{2})
 	instance2 := controller2.InstanceForHeight(0)
-	fmt.Println("Instance2:", instance2)
+	fmt.Println("\tInstance2:", instance2)
 
 	
 
