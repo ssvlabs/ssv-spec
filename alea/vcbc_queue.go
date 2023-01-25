@@ -73,6 +73,15 @@ func (queue *VCBCQueue) Clear() {
 	queue.priority = nil
 }
 
+func (queue * VCBCQueue) GetValues() [][]*ProposalData {
+	return queue.data
+}
+
+func (queue * VCBCQueue) GetPriorities() []Priority {
+	return queue.priority
+}
+
+
 
 func (queue *VCBCQueue) hasProposal(proposalInstance *ProposalData) bool {
 	queue.mutex.Lock()

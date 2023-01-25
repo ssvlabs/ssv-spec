@@ -3,12 +3,45 @@ package alea
 import (
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
-	// "fmt"
+	"fmt"
 )
 
-func CreateFiller(state *State, config IConfig, entries []ProposalData) (*SignedMessage, error) {
+func (i *Instance) uponFiller(signedFiller *SignedMessage, fillerMsgContainer *MsgContainer) error {   
+	fmt.Println("uponFiller function")
+
+
+	fillerData, err := signedFiller.Message.GetFillerData()
+	if err != nil{
+		errors.Wrap(err, "could not get filler data from signedFiller")
+	}
+
+	// Add message to container
+    fillerMsgContainer.AddMsg(signedFiller)
+
+	entries := fillerData.Entries
+	priorities := fillerData.Priorities
+	operatorID := fillerData.OperatorID
+
+	queue := i.State.queues[operatorID]
+
+	_, localPriority := queue.Peek()
+
+	for idx, priority := range priorities {
+		if priority > localPriority {
+			queue.Enqueue(entries[idx],priority)
+		}
+	}
+	
+
+	return nil
+}
+
+
+func CreateFiller(state *State, config IConfig, entries [][]*ProposalData, priorities []Priority, operatorID types.OperatorID) (*SignedMessage, error) {
 	fillerData := &FillerData{
-		Entries:		entries,					
+		Entries:		entries,	
+		Priorities: 	priorities,
+		OperatorID:		operatorID,	
 	}
 	dataByts, err := fillerData.Encode()
 	if err != nil {

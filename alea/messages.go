@@ -174,7 +174,9 @@ func (d *FillGapData) Validate() error {
 // =========================
 
 type FillerData struct {
-	Entries                     	[]ProposalData
+	Entries                     	[][]*ProposalData
+	Priorities						[]Priority
+	OperatorID						types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
