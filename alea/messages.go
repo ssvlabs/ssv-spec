@@ -51,6 +51,12 @@ const (
 	ABAAuxMsgType
 	ABAConfMsgType
 	ABAFinishMsgType
+	VCBCBroadcastMsgType
+	VCBCSendMsgType
+	VCBCReadyMsgType
+	VCBCFinalMsgType
+	VCBCRequestMsgType
+	VCBCAnswerMsgType
 )
 
 // =========================
@@ -310,6 +316,182 @@ func (d *ABAFinishData) Validate() error {
 	return nil
 }
 
+// =========================
+//			VCBCBroadcast
+// =========================
+
+type VCBCBroadcastData struct {
+	Proposals		[]*ProposalData
+	Priority		Priority
+	Author			types.OperatorID
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *VCBCBroadcastData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *VCBCBroadcastData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *VCBCBroadcastData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("VCBCBroadcastData is invalid")
+	// }
+	return nil
+}
+
+// =========================
+//			VCBCSend
+// =========================
+
+type VCBCSendData struct {
+	Proposals		[]*ProposalData
+	Priority		Priority
+	Author			types.OperatorID
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *VCBCSendData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *VCBCSendData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *VCBCSendData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("VCBCSendData is invalid")
+	// }
+	return nil
+}
+
+// =========================
+//			VCBCReady
+// =========================
+
+type VCBCReadyData struct {
+	Hash			[]byte
+	Priority		Priority
+	// Proof			types.Signature
+	Author			types.OperatorID
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *VCBCReadyData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *VCBCReadyData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *VCBCReadyData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("VCBCReadyData is invalid")
+	// }
+	return nil
+}
+
+// =========================
+//			VCBCFinal
+// =========================
+
+type VCBCFinalData struct {
+	Hash			[]byte
+	Priority		Priority
+	Proof			types.Signature
+	Author			types.OperatorID
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *VCBCFinalData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *VCBCFinalData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *VCBCFinalData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("VCBCFinalData is invalid")
+	// }
+	return nil
+}
+
+// =========================
+//			VCBCRequest
+// =========================
+
+type VCBCRequestData struct {
+	Priority		Priority
+	Author			types.OperatorID
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *VCBCRequestData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *VCBCRequestData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *VCBCRequestData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("VCBCRequestData is invalid")
+	// }
+	return nil
+}
+
+// =========================
+//			VCBCAnswer
+// =========================
+
+type VCBCAnswerData struct {
+	Proposals		[]*ProposalData
+	Priority		Priority
+	Proof			types.Signature
+	Author			types.OperatorID
+}
+
+// Encode returns a msg encoded bytes or error
+func (d *VCBCAnswerData) Encode() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+// Decode returns error if decoding failed
+func (d *VCBCAnswerData) Decode(data []byte) error {
+	return json.Unmarshal(data, &d)
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (d *VCBCAnswerData) Validate() error {
+	// if len(d.Entries) == 0 {
+	// 	return errors.New("VCBCAnswerData is invalid")
+	// }
+	return nil
+}
+
 
 // =========================
 //			Message
@@ -401,6 +583,60 @@ func (msg *Message) GetABAFinishData() (*ABAFinishData, error) {
 	ret := &ABAFinishData{}
 	if err := ret.Decode(msg.Data); err != nil {
 		return nil, errors.Wrap(err, "could not decode ABAFinishData from message")
+	}
+	return ret, nil
+}
+
+// VCBCBroadcastData returns abainit specific data
+func (msg *Message) GetVCBCBroadcastData() (*VCBCBroadcastData, error) {
+	ret := &VCBCBroadcastData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode VCBCBroadcastData from message")
+	}
+	return ret, nil
+}
+
+// VCBCSendData returns abainit specific data
+func (msg *Message) GetVCBCSendData() (*VCBCSendData, error) {
+	ret := &VCBCSendData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode VCBCSendData from message")
+	}
+	return ret, nil
+}
+
+// VCBCReadyData returns abainit specific data
+func (msg *Message) GetVCBCReadyData() (*VCBCReadyData, error) {
+	ret := &VCBCReadyData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode VCBCReadyData from message")
+	}
+	return ret, nil
+}
+
+// VCBCFinalData returns abainit specific data
+func (msg *Message) GetVCBCFinalData() (*VCBCFinalData, error) {
+	ret := &VCBCFinalData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode VCBCFinalData from message")
+	}
+	return ret, nil
+}
+
+// VCBCRequestData returns abainit specific data
+func (msg *Message) GetVCBCRequestData() (*VCBCRequestData, error) {
+	ret := &VCBCRequestData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode VCBCRequestData from message")
+	}
+	return ret, nil
+}
+
+// VCBCAnswerData returns abainit specific data
+func (msg *Message) GetVCBCAnswerData() (*VCBCAnswerData, error) {
+	ret := &VCBCAnswerData{}
+	if err := ret.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode VCBCAnswerData from message")
 	}
 	return ret, nil
 }
@@ -576,3 +812,4 @@ func (signedMsg *SignedMessage) Validate() error {
 
 	return signedMsg.Message.Validate()
 }
+

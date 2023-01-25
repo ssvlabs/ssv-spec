@@ -110,6 +110,11 @@ type State struct {
 	ABAState				*ABAState
 
 	FillerMsgReceived		chan bool
+
+	VCBCr					map[types.OperatorID]map[Priority]uint64
+	VCBCW					map[types.OperatorID]map[Priority][]*SignedMessage
+	VCBCm					map[types.OperatorID]map[Priority][]*ProposalData
+	VCBCu					map[types.OperatorID]map[Priority]types.Signature
 }
 
 // GetRoot returns the state's deterministic root

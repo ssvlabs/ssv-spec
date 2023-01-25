@@ -50,6 +50,11 @@ func NewInstance(
 			StopAgreement:		  false,
 			ABAState:			  NewABAState(FirstRound),
 			FillerMsgReceived:	  make(chan bool),
+			VCBCr:			   	  make(map[types.OperatorID]map[Priority]uint64),
+			VCBCW:				  make(map[types.OperatorID]map[Priority][]*SignedMessage),
+			VCBCm:				  make(map[types.OperatorID]map[Priority][]*ProposalData),
+			VCBCu:				  make(map[types.OperatorID]map[Priority]types.Signature),
+
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),

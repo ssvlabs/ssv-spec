@@ -4,6 +4,8 @@ import (
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 	"fmt"
+	"crypto/sha256"
+	"encoding/json"
 )
 
 // uponProposal process proposal message
@@ -53,15 +55,14 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	}
 	fmt.Println("\tcreated proposal data")
 
-	// create VCBC message and broadcasts
-	msgToBroadcast, err := CreateVCBC(i.State, i.config, proposalData, i.State.Priority)
-	fmt.Println("\tcreated VCBC message to broadcast")
+	// create VCBCBroadcast message and broadcasts
+	msgToBroadcast, err := CreateVCBCBroadcast(i.State, i.config, proposalData, i.State.Priority, i.State.Share.OperatorID)
 	if err != nil {
-		return errors.Wrap(err, "failed to create VCBC message")
+		return errors.Wrap(err, "failed to create VCBCBroadcast message")
 	}
-    if err := i.Broadcast(msgToBroadcast); err != nil {
-        return errors.Wrap(err, "failed to broadcast VCBC message")
-    }
+	fmt.Println("\tcreated VCBCBroadcast message to broadcast")
+
+    i.Broadcast(msgToBroadcast)
 	fmt.Println("\tbroadcasted")
 
     // Clear container
@@ -72,6 +73,32 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	i.State.Priority += 1
 	fmt.Println("\tincremented priority")
     return nil
+}
+
+
+// Encode returns the list encoded bytes or error
+func EncodeProposals(proposals []*ProposalData) ([]byte, error) {
+	return json.Marshal(proposals)
+}
+
+// Decode returns error if decoding failed
+func DecodeProposals(data []byte) []*ProposalData {
+	proposals := make([]*ProposalData,0)
+	err := json.Unmarshal(data, &proposals)
+	if err != nil {
+		errors.Wrap(err, "could not unmarshal proposals")
+	}
+	return proposals
+}
+
+// GetHash returns the SHA-256 hash
+func GetProposalsHash(proposals []*ProposalData) ([]byte, error) {
+	encoded, err := EncodeProposals(proposals)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode proposals")
+	}
+	ret := sha256.Sum256(encoded)
+	return ret[:], nil
 }
 
 

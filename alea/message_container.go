@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"reflect"
 )
 
 type MsgContainer struct {
@@ -137,4 +138,19 @@ func (c *MsgContainer) Clear() {
 	for roundNumber, _ := range c.Msgs {
 		c.Msgs[roundNumber] = nil
 	}
+}
+
+// HasMsg returns if message exists in the container
+func (c *MsgContainer) HasMsg(msg *SignedMessage) (bool, error) {
+	if c.Msgs[msg.Message.Round] == nil {
+		return false, nil
+	}
+
+	for _, existingMsg := range c.Msgs[msg.Message.Round] {
+		if reflect.DeepEqual(msg, existingMsg) {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
