@@ -11,12 +11,11 @@ func (i *Instance) uponVCBC(signedVCBC *SignedMessage, vcbcMsgContainer *MsgCont
     
 	fmt.Println("uponVCBC function")
 
-	// OperatorID who sent the message (and first signed it)
+	// get sender, which is the OperatorID who sent the message (and first signed it)
 	senderID := signedVCBC.GetSigners()[0]
-
 	fmt.Println("\tgot senderID:",senderID)
 
-	// initializes queue if it doesn't exist
+	// initializes queue of the sender if it doesn't exist
 	if _, exists := i.State.queues[senderID]; !exists {
 		i.State.queues[senderID] = NewVCBCQueue()
 	}
@@ -41,7 +40,7 @@ func (i *Instance) uponVCBC(signedVCBC *SignedMessage, vcbcMsgContainer *MsgCont
 	}
 	fmt.Println("\tlocal S hasn't yet this list of proposal:",vcbcData)
 
-
+	// store proposals and priorioty value
 	queue.Enqueue(vcbcData.ProposalData, vcbcData.Priority)
 	fmt.Println("\tenqueueing proposal list and priority")
 	fmt.Println("\tnew queue:",i.State.queues[senderID])

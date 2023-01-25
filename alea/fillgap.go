@@ -10,7 +10,7 @@ import (
 func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer *MsgContainer) error {   
 	fmt.Println("uponFillGap function")
 
-
+	// get data
 	fillGapData, err := signedFillGap.Message.GetFillGapData()
 	if err != nil{
 		errors.Wrap(err, "could not get fillgap data from signedFillGap")
@@ -19,17 +19,26 @@ func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer
 	// Add message to container
     fillgapMsgContainer.AddMsg(signedFillGap)
 
+	// get structure values
 	operatorID := fillGapData.OperatorID
 	priorityAsked := fillGapData.Priority
 
+	// get the desired queue
 	queue := i.State.queues[operatorID]
-	_, priority := queue.Peek()
+	// get highest local priority
+	_, priority := queue.PeekLast()
 	
+	// if has more entries than the asker (sender of the message), sends FILLER message with local entries
 	if priority >= priorityAsked {
+		// init values, priority list
 		returnValues := make([][]*ProposalData,0)
 		returnPriorities := make([]Priority,0)
+
+		// get local values and priorities
 		values := queue.GetValues()
 		priorities := queue.GetPriorities()
+
+		// for each, test if priority if above and, if so, adds to the FILLER list
 		for idx,priority := range priorities {
 			if priority >= priorityAsked {
 				returnValues = append(returnValues,values[idx])
@@ -37,6 +46,7 @@ func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer
 			}
 		}
 
+		// sends FILLER message
 		fillerMsg, err := CreateFiller(i.State, i.config, returnValues, returnPriorities, operatorID)
 		if err != nil {
 			errors.Wrap(err,"failed to create Filler message")

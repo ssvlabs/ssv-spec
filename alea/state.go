@@ -105,9 +105,11 @@ type State struct {
 	queues					map[types.OperatorID]*VCBCQueue
 	S						*VCBCQueue
 
-	ABARound				Round
+	ACRound					Round
 	StopAgreement			bool
 	ABAState				*ABAState
+
+	FillerMsgReceived		chan bool
 }
 
 // GetRoot returns the state's deterministic root

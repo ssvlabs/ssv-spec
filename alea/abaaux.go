@@ -11,55 +11,61 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage, abaAuxMsgContainer *M
 	
 	fmt.Println("uponABAAux function")
 
+	// get message Data
 	ABAAuxData, err := signedABAAux.Message.GetABAAuxData()
 	if err != nil{
 		errors.Wrap(err, "could not get ABAAuxData from signedABAAux")
 	}
 
-	// add the message to the container
+	// add the message to the containers
 	i.State.ABAState.ABAAuxContainer.AddMsg(signedABAAux)
+	abaAuxMsgContainer.AddMsg(signedABAAux)
 
+
+	// increment counter
 	if ABAAuxData.Vote == 1 {
 		i.State.ABAState.Aux1Counter += 1
-
-		if i.State.ABAState.Aux1Counter >= i.State.Share.Quorum {
-			contains := false
-			for _,vote := range i.State.ABAState.Values[ABAAuxData.Round] {
-				if vote == ABAAuxData.Vote {
-					contains = true
-				}
-			}
-			if contains {
-				confMsg, err := CreateABAConf(i.State, i.config, i.State.ABAState.Values[ABAAuxData.Round], ABAAuxData.Round)
-				if err != nil {
-					errors.Wrap(err,"failed to create ABA Conf message after strong support")
-				}
-				i.Broadcast(confMsg)
-			}
-		}
-
 	} else {
 		i.State.ABAState.Aux0Counter += 1
+	}
 
-		if i.State.ABAState.Aux1Counter >= i.State.Share.Quorum {
-			contains := false
-			for _,vote := range i.State.ABAState.Values[ABAAuxData.Round] {
-				if vote == ABAAuxData.Vote {
-					contains = true
+	// if received 2f+1 AUX messages, try to send CONF
+	if (i.State.ABAState.Aux1Counter + i.State.ABAState.Aux0Counter) >= i.State.Share.Quorum && !i.State.ABAState.SentConf {
+		// produce list of values received by AUX
+		auxVals := make([]byte,0)
+		if i.State.ABAState.Aux1Counter > 0 {
+			auxVals = append(auxVals,byte(1))
+		}
+		if i.State.ABAState.Aux0Counter > 0 {
+			auxVals = append(auxVals,byte(0))
+		}
+
+		// determine how many values received by AUX are in the values list
+		equalValues := 0
+		for _, auxVal := range auxVals {
+			for _, val := range i.State.ABAState.Values[ABAAuxData.Round] {
+				if auxVal == val {
+					equalValues += 1
 				}
-			}
-			if contains {
-				confMsg, err := CreateABAConf(i.State, i.config, i.State.ABAState.Values[ABAAuxData.Round], ABAAuxData.Round)
-				if err != nil {
-					errors.Wrap(err,"failed to create ABA Conf message after strong support")
-				}
-				i.Broadcast(confMsg)
 			}
 		}
+
+		// if every value exists in the values list (is contained), broadcast CONF with round values
+		if equalValues == len(auxVals) {
+			// broadcast CONF message
+			confMsg, err := CreateABAConf(i.State, i.config, i.State.ABAState.Values[ABAAuxData.Round], ABAAuxData.Round)
+			if err != nil {
+				errors.Wrap(err,"failed to create ABA Conf message after strong support")
+			}
+			i.Broadcast(confMsg)
+
+			// update sent flag
+			i.State.ABAState.SentConf = true
+		}
+
 	}
 	
 	return nil
-
 }
 
 

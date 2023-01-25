@@ -9,7 +9,7 @@ import (
 func (i *Instance) uponFiller(signedFiller *SignedMessage, fillerMsgContainer *MsgContainer) error {   
 	fmt.Println("uponFiller function")
 
-
+	// get data
 	fillerData, err := signedFiller.Message.GetFillerData()
 	if err != nil{
 		errors.Wrap(err, "could not get filler data from signedFiller")
@@ -18,20 +18,26 @@ func (i *Instance) uponFiller(signedFiller *SignedMessage, fillerMsgContainer *M
 	// Add message to container
     fillerMsgContainer.AddMsg(signedFiller)
 
+	// get values from structure
 	entries := fillerData.Entries
 	priorities := fillerData.Priorities
 	operatorID := fillerData.OperatorID
 
+	// get queue of the node to which the filler message intends to add entries
 	queue := i.State.queues[operatorID]
 
-	_, localPriority := queue.Peek()
+	// get local highest priority value 
+	_, localLastPriority := queue.PeekLast()
 
+	// if message has entries with higher priority, store value
 	for idx, priority := range priorities {
-		if priority > localPriority {
+		if priority > localLastPriority {
 			queue.Enqueue(entries[idx],priority)
 		}
 	}
-	
+
+	// signal that filler message was received (used for node to stop waiting in the recovery mechanism part)
+	i.State.FillerMsgReceived <- true
 
 	return nil
 }

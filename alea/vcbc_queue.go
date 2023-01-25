@@ -35,8 +35,22 @@ func (queue *VCBCQueue) Peek() ([]*ProposalData, Priority) {
 		return nil, Priority(0)
 	}
 
-	lastProposals := queue.data[0]
-	lastPriority := queue.priority[0]
+	oldestProposals := queue.data[0]
+	oldestPriority := queue.priority[0]
+
+	return oldestProposals, oldestPriority
+}
+
+func (queue *VCBCQueue) PeekLast() ([]*ProposalData, Priority) {
+	queue.mutex.Lock()
+	defer queue.mutex.Unlock()
+
+	if len(queue.data) == 0 {
+		return nil, Priority(0)
+	}
+
+	lastProposals := queue.data[len(queue.data)-1]
+	lastPriority := queue.priority[len(queue.priority)-1]
 
 	return lastProposals, lastPriority
 }

@@ -12,11 +12,13 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
     
 	fmt.Println("uponProposal function")
 
+	// get Data
 	proposalDataReceived, err := signedProposal.Message.GetProposalData()
 	if err != nil{
 		errors.Wrap(err, "could not get proposal data from signedProposal")
 	}
 
+	// check if message has been already delivered
 	if i.State.S.hasProposal(proposalDataReceived) {
 		fmt.Println("\tmessage already contained in S queue (already delivered)")
 		return nil
@@ -26,7 +28,7 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
     proposeMsgContainer.AddMsg(signedProposal)
 	fmt.Println("\tAdded message to container")
 
-    // Check if container has reached maximum size
+    // Check if container has less maximum size. If so, returns
     if proposeMsgContainer.Len(i.State.AleaDefaultRound) < i.config.GetBatchSize() {
 		fmt.Println("\tReturning. Len not big enough to match batch size")
 		fmt.Println("\tcontainer length:",proposeMsgContainer.Len(i.State.AleaDefaultRound),", batch size:",i.config.GetBatchSize())
@@ -35,16 +37,12 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 
 	fmt.Println("\treached batch size")
 
-    // Create VCBCMessage with all messages in the container
-    // vcbcMsg := &VCBCMessage{Messages: proposeMsgContainer.MessagesForRound(i.State.AleaDefaultRound)}
-    // byts, err := json.Marshal(vcbcMsg)
-    // if err != nil {
-    //     return errors.Wrap(err, "could not marshal VCBC message")
-    // }
+	// broadcast VCBC with received proposals
 
-    // Broadcast VCBCMessage
-    // msgID := types.MessageID{}
+	// get messages
 	signedMessages := proposeMsgContainer.MessagesForRound(i.State.AleaDefaultRound)
+
+	// extract proposal datas
 	proposalData := make([]*ProposalData,0)
 	for i := range signedMessages {
 		data, err := signedMessages[i].Message.GetProposalData();
@@ -53,19 +51,14 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 		}
 		proposalData = append(proposalData,data)
 	}
-
 	fmt.Println("\tcreated proposal data")
+
+	// create VCBC message and broadcasts
 	msgToBroadcast, err := CreateVCBC(i.State, i.config, proposalData, i.State.Priority)
 	fmt.Println("\tcreated VCBC message to broadcast")
 	if err != nil {
 		return errors.Wrap(err, "failed to create VCBC message")
 	}
-    // copy(msgID[:], signedProposal.Message.Identifier)
-    // msgToBroadcast := &types.SSVMessage{
-    //     MsgType: types.VCBCMsgType,
-    //     MsgID:   msgID,
-    //     Data:    byts,
-    // }
     if err := i.Broadcast(msgToBroadcast); err != nil {
         return errors.Wrap(err, "failed to broadcast VCBC message")
     }
