@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
@@ -23,7 +24,7 @@ func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	return share.HasQuorum(len(uniqueSigners))
 }
 
-//HasPartialQuorum returns true if a unique set of signers has partial quorum
+// HasPartialQuorum returns true if a unique set of signers has partial quorum
 func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
@@ -33,7 +34,6 @@ func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	}
 	return share.HasPartialQuorum(len(uniqueSigners))
 }
-
 
 // =========================
 //		Message Types
@@ -64,7 +64,7 @@ const (
 // =========================
 
 type ProposalData struct {
-	Data                     []byte
+	Data []byte
 	// RoundChangeJustification []*SignedMessage
 	// PrepareJustification     []*SignedMessage
 }
@@ -83,19 +83,18 @@ func (d *ProposalData) Decode(data []byte) error {
 // Msg validation checks the msg, it's variables for validity.
 func (d *ProposalData) Validate() error {
 	if len(d.Data) == 0 {
-		return errors.New("ProposalData data is invalid")
+		return errors.New("ProposalData: data is invalid")
 	}
 	return nil
 }
-
 
 // =========================
 //			VCBC
 // =========================
 
 type VCBCData struct {
-	ProposalData                []*ProposalData
-	Priority				 	Priority
+	ProposalData []*ProposalData
+	Priority     Priority
 }
 
 // Encode returns a msg encoded bytes or error
@@ -111,20 +110,25 @@ func (d *VCBCData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *VCBCData) Validate() error {
-	// if len(d.Data) == 0 {
-	// 	return errors.New("ProposalData data is invalid")
-	// }
+	if len(d.ProposalData) == 0 {
+		return errors.New("VCBCData: no proposals")
+	}
+	for _, proposal := range d.ProposalData {
+		err := proposal.Validate()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
-
 
 // =========================
 //			ABA
 // =========================
 
 type ABAData struct {
-	Vote                     	byte
-	Round				 		Round
+	Vote  byte
+	Round Round
 }
 
 // Encode returns a msg encoded bytes or error
@@ -140,20 +144,19 @@ func (d *ABAData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *ABAData) Validate() error {
-	// if len(d.Data) == 0 {
-	// 	return errors.New("ProposalData data is invalid")
-	// }
+	if d.Vote != 0 && d.Vote != 1 {
+		return errors.New("ABAData: vote not 0 or 1")
+	}
 	return nil
 }
-
 
 // =========================
 //			FillGap
 // =========================
 
 type FillGapData struct {
-	OperatorID                  types.OperatorID
-	Priority				 	Priority
+	OperatorID types.OperatorID
+	Priority   Priority
 }
 
 // Encode returns a msg encoded bytes or error
@@ -169,9 +172,6 @@ func (d *FillGapData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *FillGapData) Validate() error {
-	// if len(d.Data) == 0 {
-	// 	return errors.New("ProposalData data is invalid")
-	// }
 	return nil
 }
 
@@ -180,9 +180,9 @@ func (d *FillGapData) Validate() error {
 // =========================
 
 type FillerData struct {
-	Entries                     	[][]*ProposalData
-	Priorities						[]Priority
-	OperatorID						types.OperatorID
+	Entries    [][]*ProposalData
+	Priorities []Priority
+	OperatorID types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -198,20 +198,37 @@ func (d *FillerData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *FillerData) Validate() error {
-	if len(d.Entries) == 0 {
-		return errors.New("ProposalData data is invalid")
+	if len(d.Priorities) == 0 {
+		return errors.New("FillerData: empty priorities")
 	}
+	if len(d.Entries) == 0 {
+		return errors.New("FillerData: empty entries")
+	}
+	if len(d.Entries) != len(d.Priorities) {
+		return errors.New("FillerData: entries len different than priorities len")
+	}
+	for _, proposals := range d.Entries {
+		if len(proposals) == 0 {
+			return errors.New("FillerData: empty proposals")
+		}
+		for _, proposal := range proposals {
+			err := proposal.Validate()
+			if err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
-
 
 // =========================
 //			ABAInit
 // =========================
 
 type ABAInitData struct {
-	Vote	byte
-	Round	Round
+	Vote  byte
+	Round Round
 }
 
 // Encode returns a msg encoded bytes or error
@@ -227,9 +244,9 @@ func (d *ABAInitData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *ABAInitData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("ABAInitData is invalid")
-	// }
+	if d.Vote != 0 && d.Vote != 1 {
+		return errors.New("ABAInitData: vote not 0 or 1")
+	}
 	return nil
 }
 
@@ -238,8 +255,8 @@ func (d *ABAInitData) Validate() error {
 // =========================
 
 type ABAAuxData struct {
-	Vote	byte
-	Round	Round
+	Vote  byte
+	Round Round
 }
 
 // Encode returns a msg encoded bytes or error
@@ -255,9 +272,9 @@ func (d *ABAAuxData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *ABAAuxData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("ABAAuxData is invalid")
-	// }
+	if d.Vote != 0 && d.Vote != 1 {
+		return errors.New("ABAAuxData: vote not 0 or 1")
+	}
 	return nil
 }
 
@@ -266,8 +283,8 @@ func (d *ABAAuxData) Validate() error {
 // =========================
 
 type ABAConfData struct {
-	Votes	[]byte
-	Round	Round
+	Votes []byte
+	Round Round
 }
 
 // Encode returns a msg encoded bytes or error
@@ -283,9 +300,14 @@ func (d *ABAConfData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *ABAConfData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("ABAConfData is invalid")
-	// }
+	if len(d.Votes) == 0 {
+		return errors.New("ABAConfData: empty votes")
+	}
+	for _, vote := range d.Votes {
+		if vote != 0 && vote != 1 {
+			return errors.New("ABAConfData: vote not 0 or 1")
+		}
+	}
 	return nil
 }
 
@@ -294,7 +316,7 @@ func (d *ABAConfData) Validate() error {
 // =========================
 
 type ABAFinishData struct {
-	Vote	byte
+	Vote byte
 }
 
 // Encode returns a msg encoded bytes or error
@@ -310,9 +332,9 @@ func (d *ABAFinishData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *ABAFinishData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("ABAFinishData is invalid")
-	// }
+	if d.Vote != 0 && d.Vote != 1 {
+		return errors.New("ABAFinishData: vote not 0 or 1")
+	}
 	return nil
 }
 
@@ -321,9 +343,9 @@ func (d *ABAFinishData) Validate() error {
 // =========================
 
 type VCBCBroadcastData struct {
-	Proposals		[]*ProposalData
-	Priority		Priority
-	Author			types.OperatorID
+	Proposals []*ProposalData
+	Priority  Priority
+	Author    types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -339,9 +361,15 @@ func (d *VCBCBroadcastData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *VCBCBroadcastData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("VCBCBroadcastData is invalid")
-	// }
+	if len(d.Proposals) == 0 {
+		return errors.New("VCBCBroadcastData: no proposals")
+	}
+	for _, proposal := range d.Proposals {
+		err := proposal.Validate()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -350,9 +378,9 @@ func (d *VCBCBroadcastData) Validate() error {
 // =========================
 
 type VCBCSendData struct {
-	Proposals		[]*ProposalData
-	Priority		Priority
-	Author			types.OperatorID
+	Proposals []*ProposalData
+	Priority  Priority
+	Author    types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -368,9 +396,15 @@ func (d *VCBCSendData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *VCBCSendData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("VCBCSendData is invalid")
-	// }
+	if len(d.Proposals) == 0 {
+		return errors.New("VCBCSendData: no proposals")
+	}
+	for _, proposal := range d.Proposals {
+		err := proposal.Validate()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -379,10 +413,10 @@ func (d *VCBCSendData) Validate() error {
 // =========================
 
 type VCBCReadyData struct {
-	Hash			[]byte
-	Priority		Priority
+	Hash     []byte
+	Priority Priority
 	// Proof			types.Signature
-	Author			types.OperatorID
+	Author types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -398,9 +432,9 @@ func (d *VCBCReadyData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *VCBCReadyData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("VCBCReadyData is invalid")
-	// }
+	if len(d.Hash) == 0 {
+		return errors.New("VCBCReadyData: empty hash")
+	}
 	return nil
 }
 
@@ -409,10 +443,10 @@ func (d *VCBCReadyData) Validate() error {
 // =========================
 
 type VCBCFinalData struct {
-	Hash			[]byte
-	Priority		Priority
-	Proof			types.Signature
-	Author			types.OperatorID
+	Hash     []byte
+	Priority Priority
+	Proof    types.Signature
+	Author   types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -428,9 +462,9 @@ func (d *VCBCFinalData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *VCBCFinalData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("VCBCFinalData is invalid")
-	// }
+	if len(d.Hash) == 0 {
+		return errors.New("VCBCFinalData: empty hash")
+	}
 	return nil
 }
 
@@ -439,8 +473,8 @@ func (d *VCBCFinalData) Validate() error {
 // =========================
 
 type VCBCRequestData struct {
-	Priority		Priority
-	Author			types.OperatorID
+	Priority Priority
+	Author   types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -456,9 +490,6 @@ func (d *VCBCRequestData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *VCBCRequestData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("VCBCRequestData is invalid")
-	// }
 	return nil
 }
 
@@ -467,10 +498,10 @@ func (d *VCBCRequestData) Validate() error {
 // =========================
 
 type VCBCAnswerData struct {
-	Proposals		[]*ProposalData
-	Priority		Priority
-	Proof			types.Signature
-	Author			types.OperatorID
+	Proposals []*ProposalData
+	Priority  Priority
+	Proof     types.Signature
+	Author    types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -486,12 +517,17 @@ func (d *VCBCAnswerData) Decode(data []byte) error {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (d *VCBCAnswerData) Validate() error {
-	// if len(d.Entries) == 0 {
-	// 	return errors.New("VCBCAnswerData is invalid")
-	// }
+	if len(d.Proposals) == 0 {
+		return errors.New("VCBCAnswerData: no proposals")
+	}
+	for _, proposal := range d.Proposals {
+		err := proposal.Validate()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
-
 
 // =========================
 //			Message
@@ -504,7 +540,6 @@ type Message struct {
 	Identifier []byte // instance Identifier this msg belongs to
 	Data       []byte
 }
-
 
 // GetProposalData returns proposal specific data
 func (msg *Message) GetProposalData() (*ProposalData, error) {
@@ -641,8 +676,6 @@ func (msg *Message) GetVCBCAnswerData() (*VCBCAnswerData, error) {
 	return ret, nil
 }
 
-
-
 // Encode returns a msg encoded bytes or error
 func (msg *Message) Encode() ([]byte, error) {
 	return json.Marshal(msg)
@@ -672,7 +705,7 @@ func (msg *Message) Validate() error {
 	if len(msg.Data) == 0 {
 		return errors.New("message data is invalid")
 	}
-	if msg.MsgType > 5 {
+	if msg.MsgType > 14 {
 		return errors.New("message type is invalid")
 	}
 	return nil
@@ -812,4 +845,3 @@ func (signedMsg *SignedMessage) Validate() error {
 
 	return signedMsg.Message.Validate()
 }
-
