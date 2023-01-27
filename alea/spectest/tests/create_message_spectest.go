@@ -41,6 +41,7 @@ type CreateMsgSpecTest struct {
 	Hash          []byte
 	Proof         types.Signature
 	Proofs        []types.Signature
+	AggregatedMsg []byte
 	CreateType    string
 	ExpectedRoot  string
 	ExpectedError string
@@ -199,7 +200,7 @@ func (test *CreateMsgSpecTest) createVCBCFinal() (*alea.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfigAlea(ks)
 
-	return alea.CreateVCBCFinal(state, config, test.Hash, test.Priority, test.Proof, test.Author)
+	return alea.CreateVCBCFinal(state, config, test.Hash, test.Priority, test.AggregatedMsg, test.Author)
 }
 
 func (test *CreateMsgSpecTest) createVCBCRequest() (*alea.SignedMessage, error) {

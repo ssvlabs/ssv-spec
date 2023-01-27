@@ -1,6 +1,7 @@
 package alea
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
@@ -24,16 +25,10 @@ func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
 	}
 
 	// check if it's the first time. If not, return. If yes, update map and continue
-	if _, exists := i.State.VCBCState.ReceivedReady[vcbcReadyData.Author]; !exists {
-		i.State.VCBCState.ReceivedReady[vcbcReadyData.Author] = make(map[Priority]map[types.OperatorID]bool)
-	}
-	if _, exists := i.State.VCBCState.ReceivedReady[vcbcReadyData.Author][vcbcReadyData.Priority]; !exists {
-		i.State.VCBCState.ReceivedReady[vcbcReadyData.Author][vcbcReadyData.Priority] = make(map[types.OperatorID]bool)
-	}
-	if i.State.VCBCState.ReceivedReady[vcbcReadyData.Author][vcbcReadyData.Priority][senderID] {
+	if i.State.VCBCState.hasReceivedReady(vcbcReadyData.Author, vcbcReadyData.Priority, senderID) {
 		return nil
 	} else {
-		i.State.VCBCState.ReceivedReady[vcbcReadyData.Author][vcbcReadyData.Priority][senderID] = true
+		i.State.VCBCState.setReceivedReady(vcbcReadyData.Author, vcbcReadyData.Priority, senderID, true)
 	}
 
 	// If this is the author of the VCBC proposals -> aggregate signature
@@ -62,6 +57,7 @@ func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
 			if i.verbose {
 				fmt.Println("\treached quorum")
 			}
+
 			aggregatedMessage, err := AggregateMsgs(W)
 			if err != nil {
 				return errors.Wrap(err, "uponVCBCReady: unable to aggregate messages to produce VCBCFinal")
@@ -71,7 +67,12 @@ func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
 			}
 			i.State.VCBCState.setU(vcbcReadyData.Author, vcbcReadyData.Priority, aggregatedMessage.Signature)
 
-			vcbcFinalMsg, err := CreateVCBCFinal(i.State, i.config, vcbcReadyData.Hash, vcbcReadyData.Priority, aggregatedMessage.Signature, vcbcReadyData.Author)
+			aggregatedMsg, err := aggregatedMessage.Encode()
+			if err != nil {
+				return errors.Wrap(err, "uponVCBCReady: could not encode aggregated msg")
+			}
+
+			vcbcFinalMsg, err := CreateVCBCFinal(i.State, i.config, vcbcReadyData.Hash, vcbcReadyData.Priority, aggregatedMsg, vcbcReadyData.Author)
 			if err != nil {
 				return errors.Wrap(err, "uponVCBCReady: failed to create VCBCReady message with proof")
 			}
@@ -102,6 +103,61 @@ func AggregateMsgs(msgs []*SignedMessage) (*SignedMessage, error) {
 		}
 	}
 	return ret, nil
+}
+
+func isValidVCBCReady(
+	state *State,
+	config IConfig,
+	signedProposal *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedProposal.Message.MsgType != VCBCReadyMsgType {
+		return errors.New("msg type is not VCBCReadyMsgType")
+	}
+	if signedProposal.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedProposal.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	VCBCReadyData, err := signedProposal.Message.GetVCBCReadyData()
+	if err != nil {
+		return errors.Wrap(err, "could not get VCBCReadyData data")
+	}
+	if err := VCBCReadyData.Validate(); err != nil {
+		return errors.Wrap(err, "VCBCReadyData invalid")
+	}
+
+	// author
+	author := VCBCReadyData.Author
+	authorInCommittee := false
+	for _, opID := range operators {
+		if opID.OperatorID == author {
+			authorInCommittee = true
+		}
+	}
+	if !authorInCommittee {
+		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+	}
+
+	// priority & hash
+	priority := VCBCReadyData.Priority
+	if state.VCBCState.hasM(author, priority) {
+		localHash, err := GetProposalsHash(state.VCBCState.getM(author, priority))
+		if err != nil {
+			return errors.Wrap(err, "could not get local hash")
+		}
+		if !bytes.Equal(localHash, VCBCReadyData.Hash) {
+			return errors.Wrap(err, "existing (priority,author) proposals have different hash")
+		}
+	}
+
+	return nil
 }
 
 func CreateVCBCReady(state *State, config IConfig, hash []byte, priority Priority, author types.OperatorID) (*SignedMessage, error) {

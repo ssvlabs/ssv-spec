@@ -195,7 +195,10 @@ func HappyFlow() *MsgProcessingSpecTest {
 	if err != nil {
 		errors.Wrap(err, "could not aggregate vcbcready messages in happy flow")
 	}
-	proof := aggregatedReadyMessages.Signature
+	aggregatedMsgBytes, err := aggregatedReadyMessages.Encode()
+	if err != nil {
+		errors.Wrap(err, "could not encode aggregated msg")
+	}
 
 	msgs := []*alea.SignedMessage{signedProposal1, signedProposal2, vcbcReady1, vcbcReady2, vcbcReady3, abainit1, abainit2, abainit3, abainit4, abaaux1, abaaux2, abaaux3, abaaux4, abaconf1, abaconf2, abaconf3, abaconf4, abafinish1, abafinish2, abafinish3, abafinish4}
 	return &MsgProcessingSpecTest{
@@ -216,7 +219,7 @@ func HappyFlow() *MsgProcessingSpecTest {
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.VCBCFinalDataBytes(hash, priority, proof, author),
+				Data:       testingutils.VCBCFinalDataBytes(hash, priority, aggregatedMsgBytes, author),
 			}),
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAInitMsgType,

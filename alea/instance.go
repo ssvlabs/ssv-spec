@@ -170,9 +170,21 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 	case FillerMsgType:
 		return nil
 	case VCBCSendMsgType:
-		return nil
+		return isValidVCBCSend(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case VCBCReadyMsgType:
-		return nil
+		return isValidVCBCReady(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case VCBCFinalMsgType:
 		return nil
 	case VCBCRequestMsgType:

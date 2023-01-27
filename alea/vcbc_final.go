@@ -38,7 +38,7 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 	}
 
 	// compare hash with reiceved one
-	if bytes.Compare(vcbcFinalData.Hash, localHash) != 0 {
+	if !bytes.Equal(vcbcFinalData.Hash, localHash) {
 		if i.verbose {
 			fmt.Println("\tdifferent hash, quiting.")
 		}
@@ -54,7 +54,7 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 	}
 
 	// store proof
-	i.State.VCBCState.setU(vcbcFinalData.Author, vcbcFinalData.Priority, vcbcFinalData.Proof)
+	i.State.VCBCState.setU(vcbcFinalData.Author, vcbcFinalData.Priority, vcbcFinalData.AggregatedMsg)
 
 	// create VCBCDeliver message and broadcasts
 	proposals = i.State.VCBCState.getM(vcbcFinalData.Author, vcbcFinalData.Priority)
@@ -70,12 +70,79 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 	return nil
 }
 
-func CreateVCBCFinal(state *State, config IConfig, hash []byte, priority Priority, proof types.Signature, author types.OperatorID) (*SignedMessage, error) {
+func isValidVCBCFinal(
+	state *State,
+	config IConfig,
+	signedProposal *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedProposal.Message.MsgType != VCBCFinalMsgType {
+		return errors.New("msg type is not VCBCFinalMsgType")
+	}
+	if signedProposal.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedProposal.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	VCBCFinalData, err := signedProposal.Message.GetVCBCFinalData()
+	if err != nil {
+		return errors.Wrap(err, "could not get VCBCFinalData data")
+	}
+	if err := VCBCFinalData.Validate(); err != nil {
+		return errors.Wrap(err, "VCBCFinalData invalid")
+	}
+
+	// author
+	author := VCBCFinalData.Author
+	authorInCommittee := false
+	for _, opID := range operators {
+		if opID.OperatorID == author {
+			authorInCommittee = true
+		}
+	}
+	if !authorInCommittee {
+		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+	}
+
+	// priority & hash
+	priority := VCBCFinalData.Priority
+	if state.VCBCState.hasM(author, priority) {
+		localHash, err := GetProposalsHash(state.VCBCState.getM(author, priority))
+		if err != nil {
+			return errors.Wrap(err, "could not get local hash")
+		}
+		if !bytes.Equal(localHash, VCBCFinalData.Hash) {
+			return errors.Wrap(err, "existing (priority,author) proposals have different hash")
+		}
+	}
+
+	// AggregatedMsg
+	aggregatedMsg := VCBCFinalData.AggregatedMsg
+	var signedAggregatedMessage *SignedMessage
+	signedAggregatedMessage.Decode(aggregatedMsg)
+
+	if err := signedAggregatedMessage.Signature.VerifyByOperators(signedAggregatedMessage, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "aggregatedMsg signature invalid")
+	}
+	if len(signedAggregatedMessage.GetSigners()) < int(state.Share.Quorum) {
+		return errors.Wrap(err, "aggregatedMsg signers don't reach quorum")
+	}
+
+	return nil
+}
+
+func CreateVCBCFinal(state *State, config IConfig, hash []byte, priority Priority, aggregatedMsg []byte, author types.OperatorID) (*SignedMessage, error) {
 	vcbcFinalData := &VCBCFinalData{
-		Hash:     hash,
-		Priority: priority,
-		Proof:    proof,
-		Author:   author,
+		Hash:          hash,
+		Priority:      priority,
+		AggregatedMsg: aggregatedMsg,
+		Author:        author,
 	}
 	dataByts, err := vcbcFinalData.Encode()
 	if err != nil {

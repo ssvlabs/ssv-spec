@@ -85,6 +85,18 @@ func (d *ProposalData) Validate() error {
 	return nil
 }
 
+func (d *ProposalData) Equal(other *ProposalData) bool {
+	if len(d.Data) != len(other.Data) {
+		return false
+	}
+	for idx, value := range d.Data {
+		if value != d.Data[idx] {
+			return false
+		}
+	}
+	return true
+}
+
 // =========================
 //			FillGap
 // =========================
@@ -344,10 +356,10 @@ func (d *VCBCReadyData) Validate() error {
 // =========================
 
 type VCBCFinalData struct {
-	Hash     []byte
-	Priority Priority
-	Proof    types.Signature
-	Author   types.OperatorID
+	Hash          []byte
+	Priority      Priority
+	AggregatedMsg []byte
+	Author        types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -365,6 +377,9 @@ func (d *VCBCFinalData) Decode(data []byte) error {
 func (d *VCBCFinalData) Validate() error {
 	if len(d.Hash) == 0 {
 		return errors.New("VCBCFinalData: empty hash")
+	}
+	if len(d.AggregatedMsg) == 0 {
+		return errors.New("VCBCFinalData: empty ready msg byts")
 	}
 	return nil
 }

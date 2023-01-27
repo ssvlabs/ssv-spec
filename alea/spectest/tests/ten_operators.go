@@ -72,8 +72,10 @@ func TenOperators() *MsgProcessingSpecTest {
 	if err != nil {
 		errors.Wrap(err, "could not aggregate vcbcready messages in happy flow")
 	}
-	proof := aggregatedReadyMessages.Signature
-
+	aggregatedMsgBytes, err := aggregatedReadyMessages.Encode()
+	if err != nil {
+		errors.Wrap(err, "could not encode aggregated msg")
+	}
 	// msgs for VCBC agreement
 	// init
 	vote := byte(1)
@@ -154,7 +156,7 @@ func TenOperators() *MsgProcessingSpecTest {
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.VCBCFinalDataBytes(hash, priority, proof, author),
+				Data:       testingutils.VCBCFinalDataBytes(hash, priority, aggregatedMsgBytes, author),
 			}),
 			testingutils.SignAleaMsg(testingutils.Testing10SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAInitMsgType,

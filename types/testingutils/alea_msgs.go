@@ -110,12 +110,12 @@ var VCBCReadyDataBytes = func(hash []byte, priority alea.Priority, author types.
 	ret, _ := d.Encode()
 	return ret
 }
-var VCBCFinalDataBytes = func(hash []byte, priority alea.Priority, proof types.Signature, author types.OperatorID) []byte {
+var VCBCFinalDataBytes = func(hash []byte, priority alea.Priority, aggregatedMsg []byte, author types.OperatorID) []byte {
 	d := &alea.VCBCFinalData{
-		Hash:     hash,
-		Priority: priority,
-		Proof:    proof,
-		Author:   author,
+		Hash:          hash,
+		Priority:      priority,
+		AggregatedMsg: aggregatedMsg,
+		Author:        author,
 	}
 	ret, _ := d.Encode()
 	return ret

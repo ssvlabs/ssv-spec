@@ -107,9 +107,6 @@ func isValidProposal(
 	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
-	if !signedProposal.MatchedSigners([]types.OperatorID{proposer(state, config, signedProposal.Message.Round)}) {
-		return errors.New("proposal leader invalid")
-	}
 
 	proposalData, err := signedProposal.Message.GetProposalData()
 	if err != nil {
@@ -119,16 +116,7 @@ func isValidProposal(
 		return errors.Wrap(err, "proposalData invalid")
 	}
 
-	if (state.ProposalAcceptedForCurrentRound == nil && signedProposal.Message.Round == state.Round) ||
-		signedProposal.Message.Round > state.Round {
-		return nil
-	}
-	return errors.New("proposal is not valid with current state")
-}
-
-func proposer(state *State, config IConfig, round Round) types.OperatorID {
-	// TODO - https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/29ae5a44551466453a84d4d17b9e083ecf189d97/dafny/spec/L1/node_auxiliary_functions.dfy#L304-L323
-	return config.GetProposerF()(state, round)
+	return nil
 }
 
 // CreateProposal

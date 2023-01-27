@@ -62,6 +62,57 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 	return nil
 }
 
+func isValidVCBCSend(
+	state *State,
+	config IConfig,
+	signedProposal *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedProposal.Message.MsgType != VCBCSendMsgType {
+		return errors.New("msg type is not VCBCSend")
+	}
+	if signedProposal.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedProposal.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	VCBCSendData, err := signedProposal.Message.GetVCBCSendData()
+	if err != nil {
+		return errors.Wrap(err, "could not get vcbcsend data")
+	}
+	if err := VCBCSendData.Validate(); err != nil {
+		return errors.Wrap(err, "VCBCSendData invalid")
+	}
+
+	// author
+	author := VCBCSendData.Author
+	authorInCommittee := false
+	for _, opID := range operators {
+		if opID.OperatorID == author {
+			authorInCommittee = true
+		}
+	}
+	if !authorInCommittee {
+		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+	}
+
+	// priority
+	priority := VCBCSendData.Priority
+	if state.VCBCState.hasM(author, priority) {
+		if !state.VCBCState.equalM(author, priority, VCBCSendData.Proposals) {
+			return errors.Wrap(err, "existing (priority,author) with different proposals")
+		}
+	}
+
+	return nil
+}
+
 func CreateVCBCSend(state *State, config IConfig, proposals []*ProposalData, priority Priority, author types.OperatorID) (*SignedMessage, error) {
 	vcbcSendData := &VCBCSendData{
 		Proposals: proposals,

@@ -104,6 +104,22 @@ func (s *VCBCState) setM(operatorID types.OperatorID, priority Priority, proposa
 	s.VCBCm[operatorID][priority] = proposals
 }
 
+func (s *VCBCState) equalM(operatorID types.OperatorID, priority Priority, proposals []*ProposalData) bool {
+	if !s.hasM(operatorID, priority) {
+		return false
+	}
+
+	if len(s.VCBCm[operatorID][priority]) != len(proposals) {
+		return false
+	}
+	for idx, proposal := range s.VCBCm[operatorID][priority] {
+		if !proposal.Equal(proposals[idx]) {
+			return false
+		}
+	}
+	return true
+}
+
 func (s *VCBCState) hasU(operatorID types.OperatorID, priority Priority) bool {
 	if _, exists := s.VCBCu[operatorID]; exists {
 		if _, exists := s.VCBCu[operatorID][priority]; exists {
