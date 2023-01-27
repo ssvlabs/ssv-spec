@@ -73,24 +73,24 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 func isValidVCBCFinal(
 	state *State,
 	config IConfig,
-	signedProposal *SignedMessage,
+	signedMsg *SignedMessage,
 	valCheck ProposedValueCheckF,
 	operators []*types.Operator,
 ) error {
-	if signedProposal.Message.MsgType != VCBCFinalMsgType {
+	if signedMsg.Message.MsgType != VCBCFinalMsgType {
 		return errors.New("msg type is not VCBCFinalMsgType")
 	}
-	if signedProposal.Message.Height != state.Height {
+	if signedMsg.Message.Height != state.Height {
 		return errors.New("wrong msg height")
 	}
-	if len(signedProposal.GetSigners()) != 1 {
+	if len(signedMsg.GetSigners()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
-	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
-	VCBCFinalData, err := signedProposal.Message.GetVCBCFinalData()
+	VCBCFinalData, err := signedMsg.Message.GetVCBCFinalData()
 	if err != nil {
 		return errors.Wrap(err, "could not get VCBCFinalData data")
 	}

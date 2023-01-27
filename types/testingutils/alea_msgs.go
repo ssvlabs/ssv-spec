@@ -52,11 +52,12 @@ var FillGapDataBytes = func(operatorID types.OperatorID, priority alea.Priority)
 	ret, _ := d.Encode()
 	return ret
 }
-var FillerDataBytes = func(entries [][]*alea.ProposalData, priorities []alea.Priority, operatorID types.OperatorID) []byte {
+var FillerDataBytes = func(entries [][]*alea.ProposalData, priorities []alea.Priority, aggregatedMsgs [][]byte, operatorID types.OperatorID) []byte {
 	d := &alea.FillerData{
-		Entries:    entries,
-		Priorities: priorities,
-		OperatorID: operatorID,
+		Entries:        entries,
+		Priorities:     priorities,
+		AggregatedMsgs: aggregatedMsgs,
+		OperatorID:     operatorID,
 	}
 	ret, _ := d.Encode()
 	return ret
@@ -128,12 +129,12 @@ var VCBCRequestDataBytes = func(priority alea.Priority, author types.OperatorID)
 	ret, _ := d.Encode()
 	return ret
 }
-var VCBCAnswerDataBytes = func(proposals []*alea.ProposalData, priority alea.Priority, proof types.Signature, author types.OperatorID) []byte {
+var VCBCAnswerDataBytes = func(proposals []*alea.ProposalData, priority alea.Priority, aggregatedMsg []byte, author types.OperatorID) []byte {
 	d := &alea.VCBCAnswerData{
-		Proposals: proposals,
-		Priority:  priority,
-		Proof:     proof,
-		Author:    author,
+		Proposals:     proposals,
+		Priority:      priority,
+		AggregatedMsg: aggregatedMsg,
+		Author:        author,
 	}
 	ret, _ := d.Encode()
 	return ret

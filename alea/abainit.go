@@ -86,6 +86,46 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage, abaInitMsgContainer
 	return nil
 }
 
+func isValidABAInit(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedMsg.Message.MsgType != ABAInitMsgType {
+		return errors.New("msg type is not ABAInitMsgType")
+	}
+	if signedMsg.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	ABAInitData, err := signedMsg.Message.GetABAInitData()
+	if err != nil {
+		return errors.Wrap(err, "could not get ABAInitData data")
+	}
+	if err := ABAInitData.Validate(); err != nil {
+		return errors.Wrap(err, "ABAInitData invalid")
+	}
+
+	// vote
+	vote := ABAInitData.Vote
+	if vote != 0 && vote != 1 {
+		return errors.Wrap(err, "vote different than 0 and 1")
+	}
+
+	// round
+	// round := ABAInitData.Round
+
+	return nil
+}
+
 func CreateABAInit(state *State, config IConfig, vote byte, round Round) (*SignedMessage, error) {
 	ABAInitData := &ABAInitData{
 		Vote:  vote,

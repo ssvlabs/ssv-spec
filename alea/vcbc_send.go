@@ -65,24 +65,24 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 func isValidVCBCSend(
 	state *State,
 	config IConfig,
-	signedProposal *SignedMessage,
+	signedMsg *SignedMessage,
 	valCheck ProposedValueCheckF,
 	operators []*types.Operator,
 ) error {
-	if signedProposal.Message.MsgType != VCBCSendMsgType {
+	if signedMsg.Message.MsgType != VCBCSendMsgType {
 		return errors.New("msg type is not VCBCSend")
 	}
-	if signedProposal.Message.Height != state.Height {
+	if signedMsg.Message.Height != state.Height {
 		return errors.New("wrong msg height")
 	}
-	if len(signedProposal.GetSigners()) != 1 {
+	if len(signedMsg.GetSigners()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
-	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
-	VCBCSendData, err := signedProposal.Message.GetVCBCSendData()
+	VCBCSendData, err := signedMsg.Message.GetVCBCSendData()
 	if err != nil {
 		return errors.Wrap(err, "could not get vcbcsend data")
 	}

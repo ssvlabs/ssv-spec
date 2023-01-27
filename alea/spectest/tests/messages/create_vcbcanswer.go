@@ -18,12 +18,12 @@ func CreateVCBCAnswer() *tests.CreateMsgSpecTest {
 	proposals := []*alea.ProposalData{proposal1, proposal2}
 
 	return &tests.CreateMsgSpecTest{
-		CreateType:   tests.CreateVCBCAnswer,
-		Name:         "create vcbcanswer",
-		Proposals:    proposals,
-		Priority:     alea.Priority(1),
-		Proof:        types.Signature{},
-		Author:       types.OperatorID(10),
-		ExpectedRoot: "cec515cc38c1905933214aedae8653963c5e27ea224c49ce05ab76ab4128eb9b",
+		CreateType:    tests.CreateVCBCAnswer,
+		Name:          "create vcbcanswer",
+		Proposals:     proposals,
+		Priority:      alea.Priority(1),
+		AggregatedMsg: []byte{5, 6, 7, 8},
+		Author:        types.OperatorID(10),
+		ExpectedRoot:  "a54e426ac86f2134101eaa30b722611e4069c790da72775c846f886c430c5206",
 	}
 }

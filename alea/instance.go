@@ -166,9 +166,21 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case FillGapMsgType:
-		return nil
+		return isValidFillGap(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case FillerMsgType:
-		return nil
+		return isValidFiller(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case VCBCSendMsgType:
 		return isValidVCBCSend(
 			i.State,
@@ -186,11 +198,29 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case VCBCFinalMsgType:
-		return nil
+		return isValidVCBCFinal(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case VCBCRequestMsgType:
-		return nil
+		return isValidVCBCRequest(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case VCBCAnswerMsgType:
-		return nil
+		return isValidVCBCAnswer(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case ABAInitMsgType:
 		return nil
 	case ABAAuxMsgType:

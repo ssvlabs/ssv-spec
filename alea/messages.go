@@ -127,10 +127,10 @@ func (d *FillGapData) Validate() error {
 // =========================
 
 type FillerData struct {
-	Entries    [][]*ProposalData
-	Priorities []Priority
-	Proofs     []types.Signature
-	OperatorID types.OperatorID
+	Entries        [][]*ProposalData
+	Priorities     []Priority
+	AggregatedMsgs [][]byte
+	OperatorID     types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -414,10 +414,10 @@ func (d *VCBCRequestData) Validate() error {
 // =========================
 
 type VCBCAnswerData struct {
-	Proposals []*ProposalData
-	Priority  Priority
-	Proof     types.Signature
-	Author    types.OperatorID
+	Proposals     []*ProposalData
+	Priority      Priority
+	AggregatedMsg []byte
+	Author        types.OperatorID
 }
 
 // Encode returns a msg encoded bytes or error

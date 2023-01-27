@@ -32,6 +32,49 @@ func (i *Instance) uponVCBCRequest(signedMessage *SignedMessage) error {
 	return nil
 }
 
+func isValidVCBCRequest(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedMsg.Message.MsgType != VCBCRequestMsgType {
+		return errors.New("msg type is not VCBCRequestMsgType")
+	}
+	if signedMsg.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	VCBCRequestData, err := signedMsg.Message.GetVCBCRequestData()
+	if err != nil {
+		return errors.Wrap(err, "could not get VCBCRequestData data")
+	}
+	if err := VCBCRequestData.Validate(); err != nil {
+		return errors.Wrap(err, "VCBCRequestData invalid")
+	}
+
+	// author
+	author := VCBCRequestData.Author
+	authorInCommittee := false
+	for _, opID := range operators {
+		if opID.OperatorID == author {
+			authorInCommittee = true
+		}
+	}
+	if !authorInCommittee {
+		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+	}
+
+	return nil
+}
+
 func CreateVCBCRequest(state *State, config IConfig, priority Priority, author types.OperatorID) (*SignedMessage, error) {
 	vcbcRequestData := &VCBCRequestData{
 		Priority: priority,

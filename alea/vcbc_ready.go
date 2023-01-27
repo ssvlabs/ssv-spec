@@ -65,14 +65,15 @@ func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
 			if i.verbose {
 				fmt.Println("\tgot aggregatedMessage")
 			}
-			i.State.VCBCState.setU(vcbcReadyData.Author, vcbcReadyData.Priority, aggregatedMessage.Signature)
 
-			aggregatedMsg, err := aggregatedMessage.Encode()
+			aggregatedMsgEncoded, err := aggregatedMessage.Encode()
 			if err != nil {
 				return errors.Wrap(err, "uponVCBCReady: could not encode aggregated msg")
 			}
 
-			vcbcFinalMsg, err := CreateVCBCFinal(i.State, i.config, vcbcReadyData.Hash, vcbcReadyData.Priority, aggregatedMsg, vcbcReadyData.Author)
+			i.State.VCBCState.setU(vcbcReadyData.Author, vcbcReadyData.Priority, aggregatedMsgEncoded)
+
+			vcbcFinalMsg, err := CreateVCBCFinal(i.State, i.config, vcbcReadyData.Hash, vcbcReadyData.Priority, aggregatedMsgEncoded, vcbcReadyData.Author)
 			if err != nil {
 				return errors.Wrap(err, "uponVCBCReady: failed to create VCBCReady message with proof")
 			}
@@ -108,24 +109,24 @@ func AggregateMsgs(msgs []*SignedMessage) (*SignedMessage, error) {
 func isValidVCBCReady(
 	state *State,
 	config IConfig,
-	signedProposal *SignedMessage,
+	signedMsg *SignedMessage,
 	valCheck ProposedValueCheckF,
 	operators []*types.Operator,
 ) error {
-	if signedProposal.Message.MsgType != VCBCReadyMsgType {
+	if signedMsg.Message.MsgType != VCBCReadyMsgType {
 		return errors.New("msg type is not VCBCReadyMsgType")
 	}
-	if signedProposal.Message.Height != state.Height {
+	if signedMsg.Message.Height != state.Height {
 		return errors.New("wrong msg height")
 	}
-	if len(signedProposal.GetSigners()) != 1 {
+	if len(signedMsg.GetSigners()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
-	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
-	VCBCReadyData, err := signedProposal.Message.GetVCBCReadyData()
+	VCBCReadyData, err := signedMsg.Message.GetVCBCReadyData()
 	if err != nil {
 		return errors.Wrap(err, "could not get VCBCReadyData data")
 	}

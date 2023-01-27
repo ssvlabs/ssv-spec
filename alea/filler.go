@@ -1,6 +1,8 @@
 package alea
 
 import (
+	"bytes"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
@@ -41,12 +43,93 @@ func (i *Instance) uponFiller(signedFiller *SignedMessage, fillerMsgContainer *M
 	return nil
 }
 
-func CreateFiller(state *State, config IConfig, entries [][]*ProposalData, priorities []Priority, proofs []types.Signature, operatorID types.OperatorID) (*SignedMessage, error) {
+func isValidFiller(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedMsg.Message.MsgType != FillerMsgType {
+		return errors.New("msg type is not FillerMsgType")
+	}
+	if signedMsg.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	FillerData, err := signedMsg.Message.GetFillerData()
+	if err != nil {
+		return errors.Wrap(err, "could not get FillerData data")
+	}
+	if err := FillerData.Validate(); err != nil {
+		return errors.Wrap(err, "FillerData invalid")
+	}
+
+	// author
+	operatorID := FillerData.OperatorID
+	InCommittee := false
+	for _, opID := range operators {
+		if opID.OperatorID == operatorID {
+			InCommittee = true
+		}
+	}
+	if !InCommittee {
+		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+	}
+
+	// priority
+	priorities := FillerData.Priorities
+	for idx, priority := range priorities {
+		if state.VCBCState.hasM(operatorID, priority) {
+			if !state.VCBCState.equalM(operatorID, priority, FillerData.Entries[idx]) {
+				return errors.Wrap(err, "existing (priority,author) with different proposals")
+			}
+		}
+	}
+
+	// AggregatedMsg
+	aggregatedMsgs := FillerData.AggregatedMsgs
+	for idx, aggregatedMsg := range aggregatedMsgs {
+
+		var signedAggregatedMessage *SignedMessage
+		signedAggregatedMessage.Decode(aggregatedMsg)
+
+		if err := signedAggregatedMessage.Signature.VerifyByOperators(signedAggregatedMessage, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+			return errors.Wrap(err, "aggregatedMsg signature invalid")
+		}
+		if len(signedAggregatedMessage.GetSigners()) < int(state.Share.Quorum) {
+			return errors.Wrap(err, "aggregatedMsg signers don't reach quorum")
+		}
+
+		var vcbcReadyData *VCBCReadyData
+		vcbcReadyData, err = signedAggregatedMessage.Message.GetVCBCReadyData()
+		if err != nil {
+			return errors.Wrap(err, "could not get VCBCReadyData from given aggregated message")
+		}
+		givenHash, err := GetProposalsHash(FillerData.Entries[idx])
+		if err != nil {
+			return errors.Wrap(err, "could not get hash from given proposals")
+		}
+		if !bytes.Equal(givenHash, vcbcReadyData.Hash) {
+			return errors.Wrap(err, "hash of proposals given doesn't match hash in the VCBCReadyData of the aggregated message")
+		}
+	}
+
+	return nil
+}
+
+func CreateFiller(state *State, config IConfig, entries [][]*ProposalData, priorities []Priority, aggregatedMsgs [][]byte, operatorID types.OperatorID) (*SignedMessage, error) {
 	fillerData := &FillerData{
-		Entries:    entries,
-		Priorities: priorities,
-		Proofs:     proofs,
-		OperatorID: operatorID,
+		Entries:        entries,
+		Priorities:     priorities,
+		AggregatedMsgs: aggregatedMsgs,
+		OperatorID:     operatorID,
 	}
 	dataByts, err := fillerData.Encode()
 	if err != nil {

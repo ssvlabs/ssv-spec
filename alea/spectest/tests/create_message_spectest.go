@@ -28,23 +28,22 @@ const (
 )
 
 type CreateMsgSpecTest struct {
-	Name          string
-	Value         []byte
-	Proposals     []*alea.ProposalData
-	Priority      alea.Priority
-	Vote          byte
-	Votes         []byte
-	Author        types.OperatorID
-	Entries       [][]*alea.ProposalData
-	Priorities    []alea.Priority
-	Round         alea.Round
-	Hash          []byte
-	Proof         types.Signature
-	Proofs        []types.Signature
-	AggregatedMsg []byte
-	CreateType    string
-	ExpectedRoot  string
-	ExpectedError string
+	Name           string
+	Value          []byte
+	Proposals      []*alea.ProposalData
+	Priority       alea.Priority
+	Vote           byte
+	Votes          []byte
+	Author         types.OperatorID
+	Entries        [][]*alea.ProposalData
+	Priorities     []alea.Priority
+	Round          alea.Round
+	Hash           []byte
+	AggregatedMsg  []byte
+	AggregatedMsgs [][]byte
+	CreateType     string
+	ExpectedRoot   string
+	ExpectedError  string
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
@@ -123,7 +122,7 @@ func (test *CreateMsgSpecTest) createFiller() (*alea.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfigAlea(ks)
 
-	return alea.CreateFiller(state, config, test.Entries, test.Priorities, test.Proofs, test.Author)
+	return alea.CreateFiller(state, config, test.Entries, test.Priorities, test.AggregatedMsgs, test.Author)
 }
 
 func (test *CreateMsgSpecTest) createABAInit() (*alea.SignedMessage, error) {
@@ -222,7 +221,7 @@ func (test *CreateMsgSpecTest) createVCBCAnswer() (*alea.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfigAlea(ks)
 
-	return alea.CreateVCBCAnswer(state, config, test.Proposals, test.Priority, test.Proof, test.Author)
+	return alea.CreateVCBCAnswer(state, config, test.Proposals, test.Priority, test.AggregatedMsg, test.Author)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

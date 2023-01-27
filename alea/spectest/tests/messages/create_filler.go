@@ -28,11 +28,12 @@ func CreateFiller() *tests.CreateMsgSpecTest {
 	entries := [][]*alea.ProposalData{proposals1, proposals2}
 
 	return &tests.CreateMsgSpecTest{
-		CreateType:   tests.CreateFiller,
-		Name:         "create filler",
-		Entries:      entries,
-		Priorities:   []alea.Priority{alea.Priority(1), alea.Priority(2)},
-		Author:       types.OperatorID(10),
-		ExpectedRoot: "0045c04cc030682e625af244c59efc64aa3401dcdab28700c43ad78e5c115875",
+		CreateType:     tests.CreateFiller,
+		Name:           "create filler",
+		Entries:        entries,
+		Priorities:     []alea.Priority{alea.Priority(1), alea.Priority(2)},
+		AggregatedMsgs: [][]byte{{1, 2, 3, 4}, {1, 2, 3, 4}},
+		Author:         types.OperatorID(10),
+		ExpectedRoot:   "f827ac937c433cd5578894ac6b73365ebf94c276168f96b085bda09e446777f3",
 	}
 }

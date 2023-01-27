@@ -24,12 +24,12 @@ func CreateVCBCFinal() *tests.CreateMsgSpecTest {
 	}
 
 	return &tests.CreateMsgSpecTest{
-		CreateType:   tests.CreateVCBCFinal,
-		Name:         "create vcbcfinal",
-		Hash:         hash,
-		Priority:     alea.Priority(1),
-		Proof:        types.Signature{},
-		Author:       types.OperatorID(10),
-		ExpectedRoot: "b202537f841a17755f1a8ebf819129c915e97adfac08ea118c61635c4e2fadc5",
+		CreateType:    tests.CreateVCBCFinal,
+		Name:          "create vcbcfinal",
+		Hash:          hash,
+		Priority:      alea.Priority(1),
+		AggregatedMsg: []byte{5, 6, 7, 8},
+		Author:        types.OperatorID(10),
+		ExpectedRoot:  "c3b32c63bcffbfbb788ed58c937dda7cce20131246bb0059cfc10b0b673aeae4",
 	}
 }

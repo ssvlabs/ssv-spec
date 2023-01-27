@@ -12,7 +12,7 @@ type VCBCState struct {
 	// used to store data from SEND messages received
 	VCBCm map[types.OperatorID]map[Priority][]*ProposalData
 	// used to store receipt proofs
-	VCBCu map[types.OperatorID]map[Priority]types.Signature
+	VCBCu map[types.OperatorID]map[Priority][]byte
 
 	// store already received ready messages
 	ReceivedReady map[types.OperatorID]map[Priority]map[types.OperatorID]bool
@@ -25,7 +25,7 @@ func NewVCBCState() *VCBCState {
 		VCBCr:         make(map[types.OperatorID]map[Priority]uint64),
 		VCBCW:         make(map[types.OperatorID]map[Priority][]*SignedMessage),
 		VCBCm:         make(map[types.OperatorID]map[Priority][]*ProposalData),
-		VCBCu:         make(map[types.OperatorID]map[Priority]types.Signature),
+		VCBCu:         make(map[types.OperatorID]map[Priority][]byte),
 		ReceivedReady: make(map[types.OperatorID]map[Priority]map[types.OperatorID]bool),
 	}
 }
@@ -128,20 +128,20 @@ func (s *VCBCState) hasU(operatorID types.OperatorID, priority Priority) bool {
 	}
 	return false
 }
-func (s *VCBCState) getU(operatorID types.OperatorID, priority Priority) types.Signature {
+func (s *VCBCState) getU(operatorID types.OperatorID, priority Priority) []byte {
 	if _, exists := s.VCBCu[operatorID]; !exists {
-		s.VCBCu[operatorID] = make(map[Priority]types.Signature)
+		s.VCBCu[operatorID] = make(map[Priority][]byte)
 	}
 	if _, exists := s.VCBCu[operatorID][priority]; !exists {
 		s.VCBCu[operatorID][priority] = nil
 	}
 	return s.VCBCu[operatorID][priority]
 }
-func (s *VCBCState) setU(operatorID types.OperatorID, priority Priority, sig types.Signature) {
+func (s *VCBCState) setU(operatorID types.OperatorID, priority Priority, u []byte) {
 	if _, exists := s.VCBCu[operatorID]; !exists {
-		s.VCBCu[operatorID] = make(map[Priority]types.Signature)
+		s.VCBCu[operatorID] = make(map[Priority][]byte)
 	}
-	s.VCBCu[operatorID][priority] = sig
+	s.VCBCu[operatorID][priority] = u
 }
 
 func (s *VCBCState) hasReceivedReady(author types.OperatorID, priority Priority, operatorID types.OperatorID) bool {

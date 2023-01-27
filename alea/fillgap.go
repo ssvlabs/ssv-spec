@@ -30,7 +30,7 @@ func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer
 		// init values, priority list
 		returnValues := make([][]*ProposalData, 0)
 		returnPriorities := make([]Priority, 0)
-		returnProofs := make([]types.Signature, 0)
+		returnProofs := make([][]byte, 0)
 
 		// get local values and priorities
 		values := queue.GetValues()
@@ -53,6 +53,49 @@ func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer
 
 		// FIX ME : send only to sender of fillGap msg
 		i.Broadcast(fillerMsg)
+	}
+
+	return nil
+}
+
+func isValidFillGap(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedMsg.Message.MsgType != FillGapMsgType {
+		return errors.New("msg type is not FillGapMsgType")
+	}
+	if signedMsg.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	FillGapData, err := signedMsg.Message.GetFillGapData()
+	if err != nil {
+		return errors.Wrap(err, "could not get FillGapData data")
+	}
+	if err := FillGapData.Validate(); err != nil {
+		return errors.Wrap(err, "FillGapData invalid")
+	}
+
+	// operatorID
+	operatorID := FillGapData.OperatorID
+	InCommittee := false
+	for _, opID := range operators {
+		if opID.OperatorID == operatorID {
+			InCommittee = true
+		}
+	}
+	if !InCommittee {
+		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
 	}
 
 	return nil

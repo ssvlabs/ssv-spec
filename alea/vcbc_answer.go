@@ -1,6 +1,8 @@
 package alea
 
 import (
+	"bytes"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
@@ -20,7 +22,7 @@ func (i *Instance) uponVCBCAnswer(signedMessage *SignedMessage) error {
 	}
 
 	// update local values
-	i.State.VCBCState.setU(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.Proof)
+	i.State.VCBCState.setU(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.AggregatedMsg)
 	i.State.VCBCState.setM(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.Proposals)
 
 	// add vcbc output
@@ -29,12 +31,88 @@ func (i *Instance) uponVCBCAnswer(signedMessage *SignedMessage) error {
 	return nil
 }
 
-func CreateVCBCAnswer(state *State, config IConfig, proposals []*ProposalData, priority Priority, proof types.Signature, author types.OperatorID) (*SignedMessage, error) {
+func isValidVCBCAnswer(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedMsg.Message.MsgType != VCBCAnswerMsgType {
+		return errors.New("msg type is not VCBCAnswerMsgType")
+	}
+	if signedMsg.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	VCBCAnswerData, err := signedMsg.Message.GetVCBCAnswerData()
+	if err != nil {
+		return errors.Wrap(err, "could not get VCBCAnswerData data")
+	}
+	if err := VCBCAnswerData.Validate(); err != nil {
+		return errors.Wrap(err, "VCBCAnswerData invalid")
+	}
+
+	// author
+	author := VCBCAnswerData.Author
+	authorInCommittee := false
+	for _, opID := range operators {
+		if opID.OperatorID == author {
+			authorInCommittee = true
+		}
+	}
+	if !authorInCommittee {
+		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+	}
+
+	// priority
+	priority := VCBCAnswerData.Priority
+	if state.VCBCState.hasM(author, priority) {
+		if !state.VCBCState.equalM(author, priority, VCBCAnswerData.Proposals) {
+			return errors.Wrap(err, "existing (priority,author) with different proposals")
+		}
+	}
+
+	// AggregatedMsg
+	aggregatedMsg := VCBCAnswerData.AggregatedMsg
+	var signedAggregatedMessage *SignedMessage
+	signedAggregatedMessage.Decode(aggregatedMsg)
+
+	if err := signedAggregatedMessage.Signature.VerifyByOperators(signedAggregatedMessage, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "aggregatedMsg signature invalid")
+	}
+	if len(signedAggregatedMessage.GetSigners()) < int(state.Share.Quorum) {
+		return errors.Wrap(err, "aggregatedMsg signers don't reach quorum")
+	}
+
+	var vcbcReadyData *VCBCReadyData
+	vcbcReadyData, err = signedAggregatedMessage.Message.GetVCBCReadyData()
+	if err != nil {
+		return errors.Wrap(err, "could not get VCBCReadyData from given aggregated message")
+	}
+	givenHash, err := GetProposalsHash(VCBCAnswerData.Proposals)
+	if err != nil {
+		return errors.Wrap(err, "could not get hash from given proposals")
+	}
+	if !bytes.Equal(givenHash, vcbcReadyData.Hash) {
+		return errors.Wrap(err, "hash of proposals given doesn't match hash in the VCBCReadyData of the aggregated message")
+	}
+
+	return nil
+}
+
+func CreateVCBCAnswer(state *State, config IConfig, proposals []*ProposalData, priority Priority, aggregatedMsg []byte, author types.OperatorID) (*SignedMessage, error) {
 	vcbcAnswerData := &VCBCAnswerData{
-		Proposals: proposals,
-		Priority:  priority,
-		Proof:     proof,
-		Author:    author,
+		Proposals:     proposals,
+		Priority:      priority,
+		AggregatedMsg: aggregatedMsg,
+		Author:        author,
 	}
 	dataByts, err := vcbcAnswerData.Encode()
 	if err != nil {
