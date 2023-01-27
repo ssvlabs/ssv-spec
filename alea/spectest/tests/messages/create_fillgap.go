@@ -13,6 +13,6 @@ func CreateFillGap() *tests.CreateMsgSpecTest {
 		Name:         "create fillgap",
 		Author:       types.OperatorID(10),
 		Priority:     alea.Priority(2),
-		ExpectedRoot: "05883fb7b1c121c5edd97f827a1d71468376b4dd713d8720c1b4f977cf249f4b",
+		ExpectedRoot: "657e1c9f0774f2b611f0301bc4f6f9ebe40743169f361f4f134b67591f31d68d",
 	}
 }

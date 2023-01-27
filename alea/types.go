@@ -15,6 +15,10 @@ const (
 	FirstHeight Height = 0
 )
 
+const (
+	FirstPriority Priority = 0
+)
+
 // Timer is an interface for a round timer, calling the UponRoundTimeout when times out
 type Timer interface {
 	// TimeoutForRound will reset running timer if exists and will start a new timer for a specific round

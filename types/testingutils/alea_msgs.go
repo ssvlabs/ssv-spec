@@ -44,22 +44,6 @@ var ProposalDataBytesAlea = func(data []byte) []byte {
 	ret, _ := d.Encode()
 	return ret
 }
-var VCBCDataBytes = func(proposals []*alea.ProposalData, priority alea.Priority) []byte {
-	d := &alea.VCBCData{
-		ProposalData: proposals,
-		Priority:     priority,
-	}
-	ret, _ := d.Encode()
-	return ret
-}
-var ABADataBytes = func(vote byte, round alea.Round) []byte {
-	d := &alea.ABAData{
-		Vote:  vote,
-		Round: round,
-	}
-	ret, _ := d.Encode()
-	return ret
-}
 var FillGapDataBytes = func(operatorID types.OperatorID, priority alea.Priority) []byte {
 	d := &alea.FillGapData{
 		OperatorID: operatorID,
@@ -104,15 +88,6 @@ var ABAConfDataBytes = func(votes []byte, round alea.Round) []byte {
 var ABAFinishDataBytes = func(vote byte) []byte {
 	d := &alea.ABAFinishData{
 		Vote: vote,
-	}
-	ret, _ := d.Encode()
-	return ret
-}
-var VCBCBroadcastDataBytes = func(proposals []*alea.ProposalData, priority alea.Priority, author types.OperatorID) []byte {
-	d := &alea.VCBCBroadcastData{
-		Proposals: proposals,
-		Priority:  priority,
-		Author:    author,
 	}
 	ret, _ := d.Encode()
 	return ret

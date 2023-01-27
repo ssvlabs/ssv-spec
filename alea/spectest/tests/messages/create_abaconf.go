@@ -12,6 +12,6 @@ func CreateABAConf() *tests.CreateMsgSpecTest {
 		Name:         "create abaconf",
 		Votes:        []byte{0, 1},
 		Round:        alea.Round(1),
-		ExpectedRoot: "5dbe678d18f27700ffc95909614f227fda250130e018a28c103b5065eaaaaeea",
+		ExpectedRoot: "fb876db4888fd020bbec1d715d2ed813872bc550b45ad81b68fcc64372d8bf1b",
 	}
 }

@@ -8,7 +8,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea"
 	tests2 "github.com/MatheusFranco99/ssv-spec-AleaBFT/alea/spectest/tests"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -40,6 +42,26 @@ func TestJson(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			testType := strings.Split(name, "_")[0]
 			switch testType {
+			case reflect.TypeOf(&tests2.MsgProcessingSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &tests2.MsgProcessingSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				// a little trick we do to instantiate all the internal instance params
+				preByts, _ := typedTest.Pre.Encode()
+				pre := alea.NewInstance(
+					testingutils.TestingConfigAlea(testingutils.KeySetForShare(typedTest.Pre.State.Share)),
+					typedTest.Pre.State.Share,
+					typedTest.Pre.State.ID,
+					typedTest.Pre.State.Height,
+				)
+				err = pre.Decode(preByts)
+				require.NoError(t, err)
+				typedTest.Pre = pre
+
+				tests[testName] = typedTest
+				typedTest.Run(t)
 			case reflect.TypeOf(&tests2.MsgSpecTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)

@@ -1,67 +1,94 @@
 package alea
 
 import (
+	"fmt"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
-	"fmt"
 )
 
-func (i *Instance) uponVCBCReady(signedMessage *SignedMessage, msgContainer *MsgContainer) error {   
-	fmt.Println("uponVCBCReady function")
-
+func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
+	if i.verbose {
+		fmt.Println("uponVCBCReady")
+	}
 	// get Data
 	vcbcReadyData, err := signedMessage.Message.GetVCBCReadyData()
-	if err != nil{
-		errors.Wrap(err, "could not get vcbcReadyData data from signedMessage")
+	if err != nil {
+		errors.Wrap(err, "uponVCBCReady: could not get vcbcReadyData data from signedMessage")
 	}
 
-	// before adding, check if it was already received
-	msgAlreadyReceived, err := msgContainer.HasMsg(signedMessage)
-	if err != nil{
-		errors.Wrap(err, "could not check if message has already been received")
+	// get sender ID
+	senderID := signedMessage.GetSigners()[0]
+	if i.verbose {
+		fmt.Println("\tgod senderID:", senderID)
 	}
 
-	// Add message to container
-    msgContainer.AddMsg(signedMessage)
+	// check if it's the first time. If not, return. If yes, update map and continue
+	if _, exists := i.State.VCBCState.ReceivedReady[vcbcReadyData.Author]; !exists {
+		i.State.VCBCState.ReceivedReady[vcbcReadyData.Author] = make(map[Priority]map[types.OperatorID]bool)
+	}
+	if _, exists := i.State.VCBCState.ReceivedReady[vcbcReadyData.Author][vcbcReadyData.Priority]; !exists {
+		i.State.VCBCState.ReceivedReady[vcbcReadyData.Author][vcbcReadyData.Priority] = make(map[types.OperatorID]bool)
+	}
+	if i.State.VCBCState.ReceivedReady[vcbcReadyData.Author][vcbcReadyData.Priority][senderID] {
+		return nil
+	} else {
+		i.State.VCBCState.ReceivedReady[vcbcReadyData.Author][vcbcReadyData.Priority][senderID] = true
+	}
 
-	// get sender of the message
-
-	// if message hasn't been received and this is the author of the VCBC -> aggregate signature
-	if !msgAlreadyReceived && vcbcReadyData.Author == i.State.Share.OperatorID {
+	// If this is the author of the VCBC proposals -> aggregate signature
+	if vcbcReadyData.Author == i.State.Share.OperatorID {
+		if i.verbose {
+			fmt.Println("\tgoing to update W and r")
+		}
 
 		// update W, the list of signedMessages to be aggregated later
-		W := i.State.VCBCW[vcbcReadyData.Author][vcbcReadyData.Priority]
-		W = append(W,signedMessage)
-		
+		i.State.VCBCState.appendToW(vcbcReadyData.Author, vcbcReadyData.Priority, signedMessage)
+		W := i.State.VCBCState.getW(vcbcReadyData.Author, vcbcReadyData.Priority)
+
 		// update counter associated with author and priority
-		r := i.State.VCBCr[vcbcReadyData.Author][vcbcReadyData.Priority]
-		r = r + 1
-		
+		i.State.VCBCState.incrementR(vcbcReadyData.Author, vcbcReadyData.Priority)
+		r := i.State.VCBCState.getR(vcbcReadyData.Author, vcbcReadyData.Priority)
+
+		if i.verbose {
+			fmt.Println("\tW:", W)
+		}
+		if i.verbose {
+			fmt.Println("\tr:", r)
+		}
+
 		// if reached quorum, aggregate signatures and broadcast FINAL message
 		if r >= i.State.Share.Quorum {
-			aggregatedMessage, err := aggregateMsgs(W)
-			if err != nil {
-				return errors.Wrap(err,"unable to aggregate messages to produce VCBCFinal")
+			if i.verbose {
+				fmt.Println("\treached quorum")
 			}
-			i.State.VCBCu[vcbcReadyData.Author][vcbcReadyData.Priority] = aggregatedMessage.Signature
-
-			vcbcFinalMsg, err := CreateVCBCFinal(i.State, i.config, vcbcReadyData.Hash, vcbcReadyData.Priority,  aggregatedMessage.Signature, vcbcReadyData.Author)
+			aggregatedMessage, err := AggregateMsgs(W)
 			if err != nil {
-				return errors.Wrap(err, "failed to create VCBCReady message with proof")
+				return errors.Wrap(err, "uponVCBCReady: unable to aggregate messages to produce VCBCFinal")
+			}
+			if i.verbose {
+				fmt.Println("\tgot aggregatedMessage")
+			}
+			i.State.VCBCState.setU(vcbcReadyData.Author, vcbcReadyData.Priority, aggregatedMessage.Signature)
+
+			vcbcFinalMsg, err := CreateVCBCFinal(i.State, i.config, vcbcReadyData.Hash, vcbcReadyData.Priority, aggregatedMessage.Signature, vcbcReadyData.Author)
+			if err != nil {
+				return errors.Wrap(err, "uponVCBCReady: failed to create VCBCReady message with proof")
+			}
+			if i.verbose {
+				fmt.Println("\tBroadcasting VCBCFinal")
 			}
 			i.Broadcast(vcbcFinalMsg)
 
-			
 		}
 	}
-	
+
 	return nil
 }
 
-
-func aggregateMsgs(msgs []*SignedMessage) (*SignedMessage, error) {
+func AggregateMsgs(msgs []*SignedMessage) (*SignedMessage, error) {
 	if len(msgs) == 0 {
-		return nil, errors.New("can't aggregate zero msgs")
+		return nil, errors.New("AggregateMsgs: can't aggregate zero msgs")
 	}
 
 	var ret *SignedMessage
@@ -70,28 +97,26 @@ func aggregateMsgs(msgs []*SignedMessage) (*SignedMessage, error) {
 			ret = m.DeepCopy()
 		} else {
 			if err := ret.Aggregate(m); err != nil {
-				return nil, errors.Wrap(err, "could not aggregate msg")
+				return nil, errors.Wrap(err, "AggregateMsgs: could not aggregate msg")
 			}
 		}
 	}
 	return ret, nil
 }
 
-
-
-func CreateVCBCReady(state *State, config IConfig, hash []byte, priority Priority,author types.OperatorID) (*SignedMessage, error) {
+func CreateVCBCReady(state *State, config IConfig, hash []byte, priority Priority, author types.OperatorID) (*SignedMessage, error) {
 	vcbcReadyData := &VCBCReadyData{
-		Hash:			hash,	
-		Priority: 		priority,
+		Hash:     hash,
+		Priority: priority,
 		// Proof:			proof,
-		Author:			author,	
+		Author: author,
 	}
 	dataByts, err := vcbcReadyData.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode vcbcReadyData")
+		return nil, errors.Wrap(err, "CreateVCBCReady: could not encode vcbcReadyData")
 	}
 	msg := &Message{
-		MsgType:    FillerMsgType,
+		MsgType:    VCBCReadyMsgType,
 		Height:     state.Height,
 		Round:      state.Round,
 		Identifier: state.ID,
@@ -99,7 +124,7 @@ func CreateVCBCReady(state *State, config IConfig, hash []byte, priority Priorit
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed signing filler msg")
+		return nil, errors.Wrap(err, "CreateVCBCReady: failed signing filler msg")
 	}
 
 	signedMsg := &SignedMessage{

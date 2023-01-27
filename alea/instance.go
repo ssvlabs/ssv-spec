@@ -22,6 +22,7 @@ type Instance struct {
 	processMsgF *types.ThreadSafeF
 	startOnce   sync.Once
 	StartValue  []byte
+	verbose     bool
 }
 
 func NewInstance(
@@ -32,32 +33,26 @@ func NewInstance(
 ) *Instance {
 	return &Instance{
 		State: &State{
-			Share:                share,
-			ID:                   identifier,
-			Round:                FirstRound,
-			Height:               height,
-			LastPreparedRound:    NoRound,
-			ProposeContainer:     NewMsgContainer(),
-			VCBCContainer:     	  NewMsgContainer(),
-			ABAContainer:      	  NewMsgContainer(),
-			FillGapContainer: 	  NewMsgContainer(),
-			FillerContainer: 	  NewMsgContainer(),
-			Priority: 			  Priority(0),
-			AleaDefaultRound:	  FirstRound,
-			queues:				  make(map[types.OperatorID]*VCBCQueue),
-			S:					  NewVCBCQueue(),
-			ACRound:			  FirstRound,
-			StopAgreement:		  false,
-			ABAState:			  NewABAState(FirstRound),
-			FillerMsgReceived:	  make(chan bool),
-			VCBCr:			   	  make(map[types.OperatorID]map[Priority]uint64),
-			VCBCW:				  make(map[types.OperatorID]map[Priority][]*SignedMessage),
-			VCBCm:				  make(map[types.OperatorID]map[Priority][]*ProposalData),
-			VCBCu:				  make(map[types.OperatorID]map[Priority]types.Signature),
-
+			Share:             share,
+			ID:                identifier,
+			Round:             FirstRound,
+			Height:            height,
+			LastPreparedRound: NoRound,
+			ProposeContainer:  NewMsgContainer(),
+			BatchSize:         2,
+			VCBCState:         NewVCBCState(),
+			FillGapContainer:  NewMsgContainer(),
+			FillerContainer:   NewMsgContainer(),
+			AleaDefaultRound:  FirstRound,
+			Delivered:         NewVCBCQueue(),
+			ACRound:           FirstRound,
+			StopAgreement:     false,
+			ABAState:          NewABAState(FirstRound),
+			FillerMsgReceived: 0,
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
+		verbose:     false,
 	}
 }
 
@@ -68,7 +63,7 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.State.Round = FirstRound
 		i.State.Height = height
 
-		fmt.Println("Starting instance")
+		// fmt.Println("Starting instance")
 
 		// -> Init
 		// state variables are initiated on constructor NewInstance (namely, queues and S)
@@ -102,6 +97,11 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 		MsgID:   msgID,
 		Data:    byts,
 	}
+
+	if i.verbose {
+		fmt.Println("\tBroadcasting:", msg.Message.MsgType, msg.Message.Data)
+	}
+
 	return i.config.GetNetwork().Broadcast(msgToBroadcast)
 }
 
@@ -115,31 +115,28 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 		switch msg.Message.MsgType {
 		case ProposalMsgType:
 			return i.uponProposal(msg, i.State.ProposeContainer)
-		case VCBCMsgType:
-			return i.uponVCBC(msg, i.State.VCBCContainer)
 		case FillGapMsgType:
-			return nil
+			return i.uponFillGap(msg, i.State.FillGapContainer)
 		case FillerMsgType:
-			return nil
+			return i.uponFiller(msg, i.State.FillerContainer)
 		case ABAInitMsgType:
-			return nil
+			return i.uponABAInit(msg, i.State.ABAState.ABAInitContainer)
 		case ABAAuxMsgType:
-			return nil
+			return i.uponABAAux(msg, i.State.ABAState.ABAAuxContainer)
 		case ABAConfMsgType:
-			return nil
+			return i.uponABAConf(msg, i.State.ABAState.ABAConfContainer)
 		case ABAFinishMsgType:
-			return nil
-		// case PrepareMsgType:
-		// 	return i.uponPrepare(msg, i.State.PrepareContainer, i.State.CommitContainer)
-		// case CommitMsgType:
-		// 	decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
-		// 	if decided {
-		// 		i.State.Decided = decided
-		// 		i.State.DecidedValue = decidedValue
-		// 	}
-		// 	return err
-		// case RoundChangeMsgType:
-		// 	return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
+			return i.uponABAFinish(msg, i.State.ABAState.ABAFinishContainer)
+		case VCBCSendMsgType:
+			return i.uponVCBCSend(msg)
+		case VCBCReadyMsgType:
+			return i.uponVCBCReady(msg)
+		case VCBCFinalMsgType:
+			return i.uponVCBCFinal(msg)
+		case VCBCRequestMsgType:
+			return i.uponVCBCRequest(msg)
+		case VCBCAnswerMsgType:
+			return i.uponVCBCAnswer(msg)
 		default:
 			return errors.New("signed message type not supported")
 		}
@@ -168,14 +165,29 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.config.GetValueCheckF(),
 			i.State.Share.Committee,
 		)
-	case VCBCMsgType:
-		return isValidVCBC(
-			i.State,
-			i.config,
-			msg,
-			i.config.GetValueCheckF(),
-			i.State.Share.Committee,
-		)
+	case FillGapMsgType:
+		return nil
+	case FillerMsgType:
+		return nil
+	case VCBCSendMsgType:
+		return nil
+	case VCBCReadyMsgType:
+		return nil
+	case VCBCFinalMsgType:
+		return nil
+	case VCBCRequestMsgType:
+		return nil
+	case VCBCAnswerMsgType:
+		return nil
+	case ABAInitMsgType:
+		return nil
+	case ABAAuxMsgType:
+		return nil
+	case ABAConfMsgType:
+		return nil
+	case ABAFinishMsgType:
+		return nil
+
 	// case PrepareMsgType:
 	// 	proposedMsg := i.State.ProposalAcceptedForCurrentRound
 	// 	if proposedMsg == nil {

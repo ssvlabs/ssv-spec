@@ -1,128 +1,56 @@
 package alea
 
 import (
+	"fmt"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
-	"fmt"
 )
 
+func (i *Instance) StartVCBC(priority Priority) error {
 
-func (i *Instance) uponVCBC(signedVCBC *SignedMessage, vcbcMsgContainer *MsgContainer) error {
-    
-	fmt.Println("uponVCBC function")
+	author := i.State.Share.OperatorID
+	proposals := i.State.VCBCState.getM(author, priority)
 
-	// get sender, which is the OperatorID who sent the message (and first signed it)
-	senderID := signedVCBC.GetSigners()[0]
-	fmt.Println("\tgot senderID:",senderID)
-
-	// initializes queue of the sender if it doesn't exist
-	if _, exists := i.State.queues[senderID]; !exists {
-		i.State.queues[senderID] = NewVCBCQueue()
-	}
-
-	// gets the sender's associated queue
-	queue := i.State.queues[senderID]
-	fmt.Println("\tgot senderID's queue:",queue)
-
-
-	// gets the VCBC data from the message
-	vcbcData, err := signedVCBC.Message.GetVCBCData()
+	// create VCBCSend message and broadcasts
+	msgToBroadcast, err := CreateVCBCSend(i.State, i.config, proposals, priority, author)
 	if err != nil {
-    	return errors.Wrap(err, "could not get VCBCData from message")
+		return errors.Wrap(err, "StartVCBC: failed to create VCBCSend message")
 	}
-	fmt.Println("\tgot vcbcData:",vcbcData)
-
-
-	// check if it was already delivered
-	if i.State.S.hasProposalList(vcbcData.ProposalData) {
-		fmt.Println("\tlist of proposals from VCBC already contained in S queue (already delivered)")
-		return nil
+	if i.verbose {
+		fmt.Println("\tbroadcasting VCBCSend")
 	}
-	fmt.Println("\tlocal S hasn't yet this list of proposal:",vcbcData)
+	i.Broadcast(msgToBroadcast)
 
-	// store proposals and priorioty value
-	queue.Enqueue(vcbcData.ProposalData, vcbcData.Priority)
-	fmt.Println("\tenqueueing proposal list and priority")
-	fmt.Println("\tnew queue:",i.State.queues[senderID])
+	if i.verbose {
+		fmt.Println("\tadding proposals to local queue")
+	}
+	if i.verbose {
+		fmt.Println("\tOld queue:", i.State.VCBCState.queues[author])
+	}
+	i.AddVCBCOutput(proposals, priority, author)
+	if i.verbose {
+		fmt.Println("\tNew queue:", i.State.VCBCState.queues[author])
+	}
 
 	return nil
 }
 
+func (i *Instance) AddVCBCOutput(proposals []*ProposalData, priorioty Priority, author types.OperatorID) {
 
-func isValidVCBC(
-	state *State,
-	config IConfig,
-	signedVCBC *SignedMessage,
-	valCheck ProposedValueCheckF,
-	operators []*types.Operator,
-) error {
-	if signedVCBC.Message.MsgType != VCBCMsgType {
-		return errors.New("msg type is not proposal")
-	}
-	if signedVCBC.Message.Height != state.Height {
-		return errors.New("wrong msg height")
-	}
-	if len(signedVCBC.GetSigners()) != 1 {
-		return errors.New("msg allows 1 signer")
-	}
-	if err := signedVCBC.Signature.VerifyByOperators(signedVCBC, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+	// initializes queue of the author if it doesn't exist
+	if _, exists := i.State.VCBCState.queues[author]; !exists {
+		i.State.VCBCState.queues[author] = NewVCBCQueue()
 	}
 
-	vcbcData, err := signedVCBC.Message.GetVCBCData()
-	if err != nil {
-		return errors.Wrap(err, "could not get vcbc data")
-	}
-	if err := vcbcData.Validate(); err != nil {
-		return errors.Wrap(err, "vcbcData invalid")
+	// gets the sender's associated queue
+	queue := i.State.VCBCState.queues[author]
+
+	// check if it was already delivered
+	if i.State.Delivered.hasProposalList(proposals) {
+		return
 	}
 
-	// if err := isProposalJustification(
-	// 	state,
-	// 	config,
-	// 	proposalData.RoundChangeJustification,
-	// 	proposalData.PrepareJustification,
-	// 	state.Height,
-	// 	signedVCBC.Message.Round,
-	// 	proposalData.Data,
-	// 	valCheck,
-	// ); err != nil {
-	// 	return errors.Wrap(err, "proposal not justified")
-	// }
-
-	if (state.ProposalAcceptedForCurrentRound == nil && signedVCBC.Message.Round == state.Round) ||
-		signedVCBC.Message.Round > state.Round {
-		return nil
-	}
-	return errors.New("proposal is not valid with current state")
-}
-
-
-func CreateVCBC(state *State, config IConfig, proposalData []*ProposalData, priority Priority) (*SignedMessage, error) {
-	vcbcData := &VCBCData{
-		ProposalData:	proposalData,
-		Priority:		priority,					
-	}
-	dataByts, err := vcbcData.Encode()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not encode vcbc data")
-	}
-	msg := &Message{
-		MsgType:    VCBCMsgType,
-		Height:     state.Height,
-		Round:      state.AleaDefaultRound,
-		Identifier: state.ID,
-		Data:       dataByts,
-	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed signing vcbc msg")
-	}
-
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   msg,
-	}
-	return signedMsg, nil
+	// store proposals and priorioty value
+	queue.Enqueue(proposals, priorioty)
 }

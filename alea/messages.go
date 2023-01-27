@@ -43,15 +43,12 @@ type MessageType int
 
 const (
 	ProposalMsgType MessageType = iota
-	VCBCMsgType
-	ABAMsgType
 	FillGapMsgType
 	FillerMsgType
 	ABAInitMsgType
 	ABAAuxMsgType
 	ABAConfMsgType
 	ABAFinishMsgType
-	VCBCBroadcastMsgType
 	VCBCSendMsgType
 	VCBCReadyMsgType
 	VCBCFinalMsgType
@@ -89,68 +86,6 @@ func (d *ProposalData) Validate() error {
 }
 
 // =========================
-//			VCBC
-// =========================
-
-type VCBCData struct {
-	ProposalData []*ProposalData
-	Priority     Priority
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *VCBCData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *VCBCData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *VCBCData) Validate() error {
-	if len(d.ProposalData) == 0 {
-		return errors.New("VCBCData: no proposals")
-	}
-	for _, proposal := range d.ProposalData {
-		err := proposal.Validate()
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// =========================
-//			ABA
-// =========================
-
-type ABAData struct {
-	Vote  byte
-	Round Round
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *ABAData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *ABAData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *ABAData) Validate() error {
-	if d.Vote != 0 && d.Vote != 1 {
-		return errors.New("ABAData: vote not 0 or 1")
-	}
-	return nil
-}
-
-// =========================
 //			FillGap
 // =========================
 
@@ -182,6 +117,7 @@ func (d *FillGapData) Validate() error {
 type FillerData struct {
 	Entries    [][]*ProposalData
 	Priorities []Priority
+	Proofs     []types.Signature
 	OperatorID types.OperatorID
 }
 
@@ -334,41 +270,6 @@ func (d *ABAFinishData) Decode(data []byte) error {
 func (d *ABAFinishData) Validate() error {
 	if d.Vote != 0 && d.Vote != 1 {
 		return errors.New("ABAFinishData: vote not 0 or 1")
-	}
-	return nil
-}
-
-// =========================
-//			VCBCBroadcast
-// =========================
-
-type VCBCBroadcastData struct {
-	Proposals []*ProposalData
-	Priority  Priority
-	Author    types.OperatorID
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *VCBCBroadcastData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *VCBCBroadcastData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *VCBCBroadcastData) Validate() error {
-	if len(d.Proposals) == 0 {
-		return errors.New("VCBCBroadcastData: no proposals")
-	}
-	for _, proposal := range d.Proposals {
-		err := proposal.Validate()
-		if err != nil {
-			return err
-		}
 	}
 	return nil
 }
@@ -550,24 +451,6 @@ func (msg *Message) GetProposalData() (*ProposalData, error) {
 	return ret, nil
 }
 
-// GetVCBCData returns vcbc specific data
-func (msg *Message) GetVCBCData() (*VCBCData, error) {
-	ret := &VCBCData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode VCBC data from message")
-	}
-	return ret, nil
-}
-
-// GetABAData returns aba specific data
-func (msg *Message) GetABAData() (*ABAData, error) {
-	ret := &ABAData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode ABA data from message")
-	}
-	return ret, nil
-}
-
 // GetFillGapData returns fillgap specific data
 func (msg *Message) GetFillGapData() (*FillGapData, error) {
 	ret := &FillGapData{}
@@ -618,15 +501,6 @@ func (msg *Message) GetABAFinishData() (*ABAFinishData, error) {
 	ret := &ABAFinishData{}
 	if err := ret.Decode(msg.Data); err != nil {
 		return nil, errors.Wrap(err, "could not decode ABAFinishData from message")
-	}
-	return ret, nil
-}
-
-// VCBCBroadcastData returns abainit specific data
-func (msg *Message) GetVCBCBroadcastData() (*VCBCBroadcastData, error) {
-	ret := &VCBCBroadcastData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode VCBCBroadcastData from message")
 	}
 	return ret, nil
 }
@@ -705,7 +579,7 @@ func (msg *Message) Validate() error {
 	if len(msg.Data) == 0 {
 		return errors.New("message data is invalid")
 	}
-	if msg.MsgType > 14 {
+	if msg.MsgType > 11 {
 		return errors.New("message type is invalid")
 	}
 	return nil

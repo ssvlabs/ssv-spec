@@ -1,120 +1,102 @@
 package alea
 
 import (
+	"fmt"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
-	"fmt"
 )
 
-
 func (i *Instance) uponABAInit(signedABAInit *SignedMessage, abaInitMsgContainer *MsgContainer) error {
-	
-	fmt.Println("uponABAInit function")
+
+	if i.verbose {
+		fmt.Println("uponABAInit")
+	}
 
 	// get data
 	abaInitData, err := signedABAInit.Message.GetABAInitData()
-	if err != nil{
-		errors.Wrap(err, "could not get abainitdata from signedABAInit")
+	if err != nil {
+		errors.Wrap(err, "uponABAInit: could not get abainitdata from signedABAInit")
 	}
 
 	// add the message to the container
-	i.State.ABAState.ABAInitContainer.AddMsg(signedABAInit)
 	abaInitMsgContainer.AddMsg(signedABAInit)
 
-
-	// Increase counter and
-	// if weak support (partial quorum) is achieved for a value different from the input, broadcast a new init
-	// if strong support (quorum) is achieved, add to values and broadcast AUX
-	if abaInitData.Vote == 1 {
-		i.State.ABAState.Init1Counter += 1
-	} else {
-		i.State.ABAState.Init0Counter += 1
+	// Increase counter
+	i.State.ABAState.InitCounter[abaInitData.Vote] += 1
+	if i.verbose {
+		fmt.Println("\tupdated counter. Vote:", abaInitData.Vote, ". InitCounter:", i.State.ABAState.InitCounter)
 	}
 
-	// weak support
-
-	// if never sent INIT(1) and reached PartialQuorum (i.e. f+1, weak support), send INIT 1
-	if !i.State.ABAState.SentInit1 && i.State.ABAState.Init1Counter >= i.State.Share.PartialQuorum{
-		// send INIT(1)
-		initMsg, err := CreateABAInit(i.State, i.config, byte(1), abaInitData.Round)
-		if err != nil {
-			errors.Wrap(err,"failed to create ABA Init message after weak support")
+	// weak support -> send INIT
+	// if never sent INIT(b) but reached PartialQuorum (i.e. f+1, weak support), send INIT(b)
+	for _, vote := range []byte{0, 1} {
+		if !i.State.ABAState.SentInit[vote] && i.State.ABAState.InitCounter[vote] >= i.State.Share.PartialQuorum {
+			if i.verbose {
+				fmt.Println("\tgot weak support for (and never sent):", vote)
+			}
+			// send INIT
+			initMsg, err := CreateABAInit(i.State, i.config, vote, abaInitData.Round)
+			if err != nil {
+				errors.Wrap(err, "uponABAInit: failed to create ABA Init message after weak support")
+			}
+			if i.verbose {
+				fmt.Println("\tsending INIT")
+			}
+			i.Broadcast(initMsg)
+			// update sent flag
+			i.State.ABAState.SentInit[vote] = true
 		}
-		i.Broadcast(initMsg)
-		// update sent flag
-		i.State.ABAState.SentInit1 = true
-	}
-	// (same thing for 0) if never sent INIT(0) and reached PartialQuorum (i.e. f+1, weak support), send INIT 0
-	if !i.State.ABAState.SentInit0 && i.State.ABAState.Init0Counter >= i.State.Share.PartialQuorum{
-		// send INIT(0)
-		initMsg, err := CreateABAInit(i.State, i.config, byte(0), abaInitData.Round)
-		if err != nil {
-			errors.Wrap(err,"failed to create ABA Init message after weak support")
-		}
-		i.Broadcast(initMsg)
-		// update sent flag
-		i.State.ABAState.SentInit0 = true
 	}
 
+	// strong support -> send AUX
+	// if never sent AUX(b) but reached Quorum (i.e. 2f+1, strong support), sends AUX(b) and add b to values
+	for _, vote := range []byte{0, 1} {
 
-	// strong support
+		if !i.State.ABAState.SentAux[vote] && i.State.ABAState.InitCounter[vote] >= i.State.Share.Quorum {
+			if i.verbose {
+				fmt.Println("\tgot strong support and never sent AUX:", vote)
+			}
 
-	
-	// if never sent AUX(1) and reached Quorum (i.e. 2f+1, strong support), sends AUX(1) and add 1 to values
-	if  !i.State.ABAState.SentAux1 && i.State.ABAState.Init1Counter >= i.State.Share.Quorum {
-		// sends AUX(1)
-		auxMsg, err := CreateABAAux(i.State, i.config, byte(1), abaInitData.Round)
-		if err != nil {
-			errors.Wrap(err,"failed to create ABA Aux message after strong init support")
+			// initializes queue if it doesn't exist
+			if _, exists := i.State.ABAState.Values[abaInitData.Round]; !exists {
+				i.State.ABAState.Values[abaInitData.Round] = make([]byte, 0)
+			}
+			// append vote
+			i.State.ABAState.Values[abaInitData.Round] = append(i.State.ABAState.Values[abaInitData.Round], vote)
+			if i.verbose {
+				fmt.Println("\tadded vote to local values for round", abaInitData.Round, ", values:", i.State.ABAState.Values[abaInitData.Round])
+			}
+
+			// sends AUX(b)
+			auxMsg, err := CreateABAAux(i.State, i.config, vote, abaInitData.Round)
+			if err != nil {
+				errors.Wrap(err, "uponABAInit: failed to create ABA Aux message after strong init support")
+			}
+			if i.verbose {
+				fmt.Println("\tsending ABAAux")
+			}
+			i.Broadcast(auxMsg)
+
+			// update sent flag
+			i.State.ABAState.SentAux[vote] = true
 		}
-		i.Broadcast(auxMsg)
-
-		// initializes queue if it doesn't exist
-		if _, exists := i.State.ABAState.Values[i.State.ABAState.Round]; !exists {
-			i.State.ABAState.Values[i.State.ABAState.Round] = make([]byte,0)
-		}
-		// append vote
-		i.State.ABAState.Values[i.State.ABAState.Round] = append(i.State.ABAState.Values[i.State.ABAState.Round],byte(1))
-
-		// update sent flag
-		i.State.ABAState.SentAux1 = true
-	}
-	// if never sent AUX(0) and reached Quorum (i.e. 2f+1, strong support), sends AUX(0) and add 0 to values
-	if  !i.State.ABAState.SentAux0 && i.State.ABAState.Init0Counter >= i.State.Share.Quorum {
-		// sends AUX(1)
-		auxMsg, err := CreateABAAux(i.State, i.config, byte(0), abaInitData.Round)
-		if err != nil {
-			errors.Wrap(err,"failed to create ABA Aux message after strong init support")
-		}
-		i.Broadcast(auxMsg)
-
-		// initializes queue if it doesn't exist
-		if _, exists := i.State.ABAState.Values[i.State.ABAState.Round]; !exists {
-			i.State.ABAState.Values[i.State.ABAState.Round] = make([]byte,0)
-		}
-		// append vote
-		i.State.ABAState.Values[i.State.ABAState.Round] = append(i.State.ABAState.Values[i.State.ABAState.Round],byte(0))
-
-		// update sent flag
-		i.State.ABAState.SentAux0 = true
 	}
 
 	return nil
-
 }
-	
 
 func CreateABAInit(state *State, config IConfig, vote byte, round Round) (*SignedMessage, error) {
 	ABAInitData := &ABAInitData{
-		Vote:		vote,
-		Round:		round,					
+		Vote:  vote,
+		Round: round,
 	}
 	dataByts, err := ABAInitData.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode abainit data")
+		return nil, errors.Wrap(err, "CreateABAInit: could not encode abainit data")
 	}
 	msg := &Message{
-		MsgType:    FillerMsgType,
+		MsgType:    ABAInitMsgType,
 		Height:     state.Height,
 		Round:      state.Round,
 		Identifier: state.ID,
@@ -122,7 +104,7 @@ func CreateABAInit(state *State, config IConfig, vote byte, round Round) (*Signe
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed signing abainit msg")
+		return nil, errors.Wrap(err, "CreateABAInit: failed signing abainit msg")
 	}
 
 	signedMsg := &SignedMessage{

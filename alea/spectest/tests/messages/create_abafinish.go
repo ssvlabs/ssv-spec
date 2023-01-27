@@ -10,6 +10,6 @@ func CreateABAFinish() *tests.CreateMsgSpecTest {
 		CreateType:   tests.CreateABAFinish,
 		Name:         "create abafinish",
 		Vote:         byte(1),
-		ExpectedRoot: "c3cf296cf80a558fbc0a0de00759745f864268a123dc2e8e442f4883c54f0a82",
+		ExpectedRoot: "05199530233dfcc27804128c18f3f0cad9e5f06cf7041fbeb492857c6bdb7c91",
 	}
 }

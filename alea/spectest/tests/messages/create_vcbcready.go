@@ -29,6 +29,6 @@ func CreateVCBCReady() *tests.CreateMsgSpecTest {
 		Hash:         hash,
 		Priority:     alea.Priority(1),
 		Author:       types.OperatorID(10),
-		ExpectedRoot: "bfab94740b0565179fa0d89b62435c67bf8c98f6e78906351d646727df1e2af4",
+		ExpectedRoot: "f794c52083dc3c1afd530af09cea735f75a9b1d501333bc7ef07a15aa33cb1ba",
 	}
 }

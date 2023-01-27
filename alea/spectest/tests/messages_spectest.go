@@ -34,22 +34,6 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			if err := rc.Validate(); err != nil {
 				lastErr = err
 			}
-		case alea.VCBCMsgType:
-			rc := alea.VCBCData{}
-			if err := rc.Decode(msg.Message.Data); err != nil {
-				lastErr = err
-			}
-			if err := rc.Validate(); err != nil {
-				lastErr = err
-			}
-		case alea.ABAMsgType:
-			rc := alea.ABAData{}
-			if err := rc.Decode(msg.Message.Data); err != nil {
-				lastErr = err
-			}
-			if err := rc.Validate(); err != nil {
-				lastErr = err
-			}
 		case alea.FillGapMsgType:
 			rc := alea.FillGapData{}
 			if err := rc.Decode(msg.Message.Data); err != nil {
@@ -92,14 +76,6 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			}
 		case alea.ABAFinishMsgType:
 			rc := alea.ABAFinishData{}
-			if err := rc.Decode(msg.Message.Data); err != nil {
-				lastErr = err
-			}
-			if err := rc.Validate(); err != nil {
-				lastErr = err
-			}
-		case alea.VCBCBroadcastMsgType:
-			rc := alea.VCBCBroadcastData{}
 			if err := rc.Decode(msg.Message.Data); err != nil {
 				lastErr = err
 			}

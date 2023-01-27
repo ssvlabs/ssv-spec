@@ -3,6 +3,7 @@ package alea
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
@@ -24,8 +25,6 @@ type IConfig interface {
 	GetNetwork() Network
 	// GetTimer returns round timer
 	GetTimer() Timer
-	// GetBatchSize returns the batch size
-	GetBatchSize() int
 }
 
 type Config struct {
@@ -36,7 +35,6 @@ type Config struct {
 	ProposerF   ProposerF
 	Network     Network
 	Timer       Timer
-	BatchSize	int
 }
 
 // GetSigner returns a Signer instance
@@ -74,11 +72,6 @@ func (c *Config) GetTimer() Timer {
 	return c.Timer
 }
 
-// GetBatchSize returns the constant batch size
-func (c *Config) GetBatchSize() int {
-	return c.BatchSize
-}
-
 type State struct {
 	Share                           *types.Share
 	ID                              []byte // instance Identifier
@@ -90,31 +83,25 @@ type State struct {
 	Decided                         bool
 	DecidedValue                    []byte
 
-	ProposeContainer     	*MsgContainer
+	ProposeContainer     *MsgContainer
 	PrepareContainer     *MsgContainer
 	CommitContainer      *MsgContainer
 	RoundChangeContainer *MsgContainer
-	VCBCContainer			*MsgContainer
-	ABAContainer			*MsgContainer
-	FillGapContainer		*MsgContainer
-	FillerContainer		 	*MsgContainer
 
-	Priority				Priority
-	AleaDefaultRound		Round
+	// alea
+	AleaDefaultRound Round
+	Delivered        *VCBCQueue
+	BatchSize        int
 
-	queues					map[types.OperatorID]*VCBCQueue
-	S						*VCBCQueue
+	VCBCState *VCBCState
 
-	ACRound					Round
-	StopAgreement			bool
-	ABAState				*ABAState
+	ACRound       Round
+	StopAgreement bool
+	ABAState      *ABAState
 
-	FillerMsgReceived		chan bool
-
-	VCBCr					map[types.OperatorID]map[Priority]uint64
-	VCBCW					map[types.OperatorID]map[Priority][]*SignedMessage
-	VCBCm					map[types.OperatorID]map[Priority][]*ProposalData
-	VCBCu					map[types.OperatorID]map[Priority]types.Signature
+	FillerMsgReceived int
+	FillGapContainer  *MsgContainer
+	FillerContainer   *MsgContainer
 }
 
 // GetRoot returns the state's deterministic root

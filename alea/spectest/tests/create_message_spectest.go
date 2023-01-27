@@ -13,7 +13,6 @@ import (
 const (
 	CreateProposal      = "CreateProposal"
 	CreateVCBC          = "CreateVCBC"
-	CreateABA           = "CreateABA"
 	CreateFillGap       = "CreateFillGap"
 	CreateFiller        = "CreateFiller"
 	CreateABAInit       = "CreateABAInit"
@@ -41,6 +40,7 @@ type CreateMsgSpecTest struct {
 	Round         alea.Round
 	Hash          []byte
 	Proof         types.Signature
+	Proofs        []types.Signature
 	CreateType    string
 	ExpectedRoot  string
 	ExpectedError string
@@ -52,10 +52,6 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	switch test.CreateType {
 	case CreateProposal:
 		msg, lastErr = test.createProposal()
-	case CreateVCBC:
-		msg, lastErr = test.createVCBC()
-	case CreateABA:
-		msg, lastErr = test.createABA()
 	case CreateFillGap:
 		msg, lastErr = test.createFillGap()
 	case CreateFiller:
@@ -68,8 +64,6 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 		msg, lastErr = test.createABAConf()
 	case CreateABAFinish:
 		msg, lastErr = test.createABAFinish()
-	case CreateVCBCBroadcast:
-		msg, lastErr = test.createVCBCBroadcast()
 	case CreateVCBCSend:
 		msg, lastErr = test.createVCBCSend()
 	case CreateVCBCReady:
@@ -109,28 +103,6 @@ func (test *CreateMsgSpecTest) createProposal() (*alea.SignedMessage, error) {
 	return alea.CreateProposal(state, config, test.Value)
 }
 
-func (test *CreateMsgSpecTest) createVCBC() (*alea.SignedMessage, error) {
-	ks := testingutils.Testing4SharesSet()
-	state := &alea.State{
-		Share: testingutils.TestingShareAlea(ks),
-		ID:    []byte{1, 2, 3, 4},
-	}
-	config := testingutils.TestingConfigAlea(ks)
-
-	return alea.CreateVCBC(state, config, test.Proposals, test.Priority)
-}
-
-func (test *CreateMsgSpecTest) createABA() (*alea.SignedMessage, error) {
-	ks := testingutils.Testing4SharesSet()
-	state := &alea.State{
-		Share: testingutils.TestingShareAlea(ks),
-		ID:    []byte{1, 2, 3, 4},
-	}
-	config := testingutils.TestingConfigAlea(ks)
-
-	return alea.CreateABA(state, config, test.Vote, test.Round)
-}
-
 func (test *CreateMsgSpecTest) createFillGap() (*alea.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &alea.State{
@@ -150,7 +122,7 @@ func (test *CreateMsgSpecTest) createFiller() (*alea.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfigAlea(ks)
 
-	return alea.CreateFiller(state, config, test.Entries, test.Priorities, test.Author)
+	return alea.CreateFiller(state, config, test.Entries, test.Priorities, test.Proofs, test.Author)
 }
 
 func (test *CreateMsgSpecTest) createABAInit() (*alea.SignedMessage, error) {
@@ -195,17 +167,6 @@ func (test *CreateMsgSpecTest) createABAFinish() (*alea.SignedMessage, error) {
 	config := testingutils.TestingConfigAlea(ks)
 
 	return alea.CreateABAFinish(state, config, test.Vote)
-}
-
-func (test *CreateMsgSpecTest) createVCBCBroadcast() (*alea.SignedMessage, error) {
-	ks := testingutils.Testing4SharesSet()
-	state := &alea.State{
-		Share: testingutils.TestingShareAlea(ks),
-		ID:    []byte{1, 2, 3, 4},
-	}
-	config := testingutils.TestingConfigAlea(ks)
-
-	return alea.CreateVCBCBroadcast(state, config, test.Proposals, test.Priority, test.Author)
 }
 
 func (test *CreateMsgSpecTest) createVCBCSend() (*alea.SignedMessage, error) {

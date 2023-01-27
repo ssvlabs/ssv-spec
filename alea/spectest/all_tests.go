@@ -3,6 +3,7 @@ package spectest
 import (
 	"testing"
 
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea/spectest/tests"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea/spectest/tests/messages"
 )
 
@@ -12,6 +13,11 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+
+	tests.HappyFlow(),
+	tests.SevenOperators(),
+	tests.TenOperators(),
+	tests.ThirteenOperators(),
 
 	messages.MsgNilIdentifier(),
 	messages.MsgNonZeroIdentifier(),
@@ -30,15 +36,12 @@ var AllTests = []SpecTest{
 	messages.ProposalDataInvalid(),
 	messages.SignedMessageSigner0(),
 
-	messages.CreateVCBC(),
-	messages.CreateABA(),
 	messages.CreateFillGap(),
 	messages.CreateFiller(),
 	messages.CreateABAInit(),
 	messages.CreateABAAux(),
 	messages.CreateABAConf(),
 	messages.CreateABAFinish(),
-	messages.CreateVCBCBroadcast(),
 	messages.CreateVCBCSend(),
 	messages.CreateVCBCReady(),
 	messages.CreateVCBCFinal(),

@@ -24,6 +24,6 @@ func CreateVCBCAnswer() *tests.CreateMsgSpecTest {
 		Priority:     alea.Priority(1),
 		Proof:        types.Signature{},
 		Author:       types.OperatorID(10),
-		ExpectedRoot: "79724cc65ca79a26e4b97d989f654e9be37e2662a59f1e0b42c780fb13f1a1a2",
+		ExpectedRoot: "cec515cc38c1905933214aedae8653963c5e27ea224c49ce05ab76ab4128eb9b",
 	}
 }

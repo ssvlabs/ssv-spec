@@ -1,84 +1,85 @@
 package alea
 
 import (
+	"fmt"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
-	"fmt"
 )
 
-
 func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage, abaFinishMsgContainer *MsgContainer) error {
-	
-	fmt.Println("uponABAFinish function")
-
+	if i.verbose {
+		fmt.Println("uponABAFinish")
+	}
 	// get data
 	ABAFinishData, err := signedABAFinish.Message.GetABAFinishData()
-	if err != nil{
-		errors.Wrap(err, "could not get ABAFinishData from signedABAConf")
+	if err != nil {
+		errors.Wrap(err, "uponABAFinish: could not get ABAFinishData from signedABAConf")
 	}
 
 	// add the message to the container
-	i.State.ABAState.ABAFinishContainer.AddMsg(signedABAFinish)
 	abaFinishMsgContainer.AddMsg(signedABAFinish)
 
 	// get vote from FINISH message
 	vote := ABAFinishData.Vote
-	
+
 	// increment counter
-	if vote == 1 {
-		i.State.ABAState.Finish1Counter += 1
-	} else {
-		i.State.ABAState.Finish0Counter += 1
+	i.State.ABAState.FinishCounter[vote] += 1
+	if i.verbose {
+		fmt.Println("\tincremented finish counter:", i.State.ABAState.FinishCounter)
 	}
 
-	// if FINISH(1) reached partial quorum and never broadcasted FINISH(1), broadcast
-	if !i.State.ABAState.SentFinish1 && i.State.ABAState.Finish1Counter >= i.State.Share.PartialQuorum {
-		// broadcast FINISH(1)
-		finishMsg, err := CreateABAFinish(i.State, i.config, byte(1))
-		if err != nil {
-			errors.Wrap(err,"failed to create ABA Finish message")
-		}
-		i.Broadcast(finishMsg)
-		// update sent flag
-		i.State.ABAState.SentFinish1 = true
-	}
-	// if FINISH(0) reached partial quorum and never broadcasted FINISH(0), broadcast
-	if !i.State.ABAState.SentFinish0 && i.State.ABAState.Finish0Counter >= i.State.Share.PartialQuorum {
-		// broadcast FINISH(0)
-		finishMsg, err := CreateABAFinish(i.State, i.config, byte(0))
-		if err != nil {
-			errors.Wrap(err,"failed to create ABA Finish message")
-		}
-		i.Broadcast(finishMsg)
-		// update sent flag
-		i.State.ABAState.SentFinish0 = true
+	if i.verbose {
+		fmt.Println("\tSentFinish:", i.State.ABAState.SentFinish)
 	}
 
-	// if FINISH(1) counter reached Quorum, decide for 1 and send termination signal
-	if i.State.ABAState.Finish1Counter >= i.State.Share.Quorum {
-		i.State.ABAState.Vdecided = byte(1)
-		i.State.ABAState.Terminate <- true
+	// if FINISH(b) reached partial quorum and never broadcasted FINISH(b), broadcast
+	for _, vote := range []byte{0, 1} {
+
+		if !i.State.ABAState.SentFinish[vote] && i.State.ABAState.FinishCounter[vote] >= i.State.Share.PartialQuorum {
+			if i.verbose {
+				fmt.Println("\treached partial quorum of finish and never sent -> sending new, for vote:", vote)
+				fmt.Println("\tsentFinish[vote]:", i.State.ABAState.SentFinish[vote], ", vote", vote)
+
+			}
+			// broadcast FINISH
+			finishMsg, err := CreateABAFinish(i.State, i.config, vote)
+			if err != nil {
+				errors.Wrap(err, "uponABAFinish: failed to create ABA Finish message")
+			}
+			if i.verbose {
+				fmt.Println("\tsending ABAFinish")
+			}
+			i.Broadcast(finishMsg)
+			// update sent flag
+			i.State.ABAState.SentFinish[vote] = true
+		}
 	}
-	// if FINISH(0) counter reached Quorum, decide for 0 and send termination signal
-	if i.State.ABAState.Finish0Counter >= i.State.Share.Quorum {
-		i.State.ABAState.Vdecided = byte(0)
-		i.State.ABAState.Terminate <- true
+
+	// if FINISH(b) reached Quorum, decide for b and send termination signal
+	for _, vote := range []byte{0, 1} {
+		if i.State.ABAState.FinishCounter[vote] >= i.State.Share.Quorum {
+			if i.verbose {
+				fmt.Println("\treached quorum for vote:", vote)
+			}
+			i.State.ABAState.Vdecided = vote
+			i.State.ABAState.Terminate = true
+		}
 	}
 
 	return nil
 }
 
-
 func CreateABAFinish(state *State, config IConfig, vote byte) (*SignedMessage, error) {
 	ABAFinishData := &ABAFinishData{
-		Vote:		vote,			
+		Vote: vote,
 	}
 	dataByts, err := ABAFinishData.Encode()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not encode abafinish data")
 	}
 	msg := &Message{
-		MsgType:    FillerMsgType,
+		MsgType:    ABAFinishMsgType,
 		Height:     state.Height,
 		Round:      state.Round,
 		Identifier: state.ID,

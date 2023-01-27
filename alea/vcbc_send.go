@@ -1,77 +1,79 @@
 package alea
 
 import (
+	"fmt"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
-	"fmt"
 )
 
-func (i *Instance) uponVCBCSend(signedMessage *SignedMessage, msgContainer *MsgContainer) error {   
-	fmt.Println("uponVCBCSend function")
+func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
+
+	if i.verbose {
+		fmt.Println("uponVCBCSend")
+	}
 
 	// get Data
 	vcbcSendData, err := signedMessage.Message.GetVCBCSendData()
-	if err != nil{
-		errors.Wrap(err, "could not get vcbcSendData data from signedMessage")
+	if err != nil {
+		errors.Wrap(err, "uponVCBCSend: could not get vcbcSendData data from signedMessage")
 	}
 
-	// before adding, check if it was already received
-	msgAlreadyReceived, err := msgContainer.HasMsg(signedMessage)
-	if err != nil{
-		errors.Wrap(err, "could not check if message has already been received")
+	// check if it was already received. If yes -> return, else -> store and send READY
+	if i.State.VCBCState.hasM(vcbcSendData.Author, vcbcSendData.Priority) {
+		return nil
+	} else {
+		i.State.VCBCState.setM(vcbcSendData.Author, vcbcSendData.Priority, vcbcSendData.Proposals)
 	}
-	// Add message to container
-    msgContainer.AddMsg(signedMessage)
 
 	// get sender of the message
 	senderID := signedMessage.GetSigners()[0]
+	if i.verbose {
+		fmt.Println("\tgot senderID:", senderID)
+	}
 
 	// if message hasn't been received and the Author of the VCBC is the same as the sender of the message -> sign and answer with READY
-	if senderID == vcbcSendData.Author && !msgAlreadyReceived {
-		
+	if senderID == vcbcSendData.Author {
+		if i.verbose {
+			fmt.Println("\tsenderID is the same as the author")
+		}
+
 		hash, err := GetProposalsHash(vcbcSendData.Proposals)
-		if err != nil{
-			errors.Wrap(err, "could not get hash of proposals")
-		}
-
-		// create VCBCready message with nil proof
-		// vcbcReadyMsg, err := CreateVCBCReady(i.State, i.config, hash, vcbcSendData.Priority, nil,vcbcSendData.Author)
-		// if err != nil {
-		// 	return errors.Wrap(err, "failed to create VCBCReady message with nil proof")
-		// }
-
-		// sign the VCBCReady message with nil proof
-		// sig, err := i.config.GetSigner().SignRoot(vcbcReadyMsg, types.QBFTSignatureType, i.State.Share.SharePubKey)
-		// if err != nil {
-		// 	return errors.Wrap(err, "failed to sign root of vcbcReady msg")
-		// }
-
-		// create VCBCready message with proof
-		vcbcReadyMsgWithSign, err := CreateVCBCReady(i.State, i.config, hash, vcbcSendData.Priority, vcbcSendData.Author)
 		if err != nil {
-			return errors.Wrap(err, "failed to create VCBCReady message with proof")
+			return errors.Wrap(err, "uponVCBCSend: could not get hash of proposals")
+		}
+		if i.verbose {
+			fmt.Println("\tgot hash")
 		}
 
+		// create VCBCReady message with proof
+		vcbcReadyMsg, err := CreateVCBCReady(i.State, i.config, hash, vcbcSendData.Priority, vcbcSendData.Author)
+		if err != nil {
+			return errors.Wrap(err, "uponVCBCSend: failed to create VCBCReady message with proof")
+		}
+
+		if i.verbose {
+			fmt.Println("\tBroadcasting VCBC ready")
+		}
 		// FIX ME : send specifically to author
-		i.Broadcast(vcbcReadyMsgWithSign)
+		i.Broadcast(vcbcReadyMsg)
 	}
-	
+
 	return nil
 }
 
-
 func CreateVCBCSend(state *State, config IConfig, proposals []*ProposalData, priority Priority, author types.OperatorID) (*SignedMessage, error) {
 	vcbcSendData := &VCBCSendData{
-		Proposals:		proposals,	
-		Priority: 		priority,
-		Author:			author,	
+		Proposals: proposals,
+		Priority:  priority,
+		Author:    author,
 	}
 	dataByts, err := vcbcSendData.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode vcbcSendData")
+		return nil, errors.Wrap(err, "CreateVCBCSend: could not encode vcbcSendData")
 	}
 	msg := &Message{
-		MsgType:    FillerMsgType,
+		MsgType:    VCBCSendMsgType,
 		Height:     state.Height,
 		Round:      state.Round,
 		Identifier: state.ID,
@@ -79,7 +81,7 @@ func CreateVCBCSend(state *State, config IConfig, proposals []*ProposalData, pri
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed signing filler msg")
+		return nil, errors.Wrap(err, "CreateVCBCSend: failed signing filler msg")
 	}
 
 	signedMsg := &SignedMessage{

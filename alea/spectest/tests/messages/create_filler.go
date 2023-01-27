@@ -33,6 +33,6 @@ func CreateFiller() *tests.CreateMsgSpecTest {
 		Entries:      entries,
 		Priorities:   []alea.Priority{alea.Priority(1), alea.Priority(2)},
 		Author:       types.OperatorID(10),
-		ExpectedRoot: "28d3649069510a18262882789bf4fc3dd37cb00052107ec4e650fbbd21a3cab2",
+		ExpectedRoot: "0045c04cc030682e625af244c59efc64aa3401dcdab28700c43ad78e5c115875",
 	}
 }

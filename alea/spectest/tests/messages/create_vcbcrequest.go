@@ -13,6 +13,6 @@ func CreateVCBCRequest() *tests.CreateMsgSpecTest {
 		Name:         "create vcbcrequest",
 		Author:       types.OperatorID(10),
 		Priority:     alea.Priority(2),
-		ExpectedRoot: "cffcc7bbaabb55f6f9d71d75d13b8f8ba824d2b7b838dab8639de2ea19628c86",
+		ExpectedRoot: "3630543f3c58eaddb741f03ecc0ef57d2da67cd63f3c778c708b568f3a7fe8c7",
 	}
 }

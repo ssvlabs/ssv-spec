@@ -12,6 +12,6 @@ func CreateABAInit() *tests.CreateMsgSpecTest {
 		Name:         "create abainit",
 		Vote:         byte(1),
 		Round:        alea.Round(1),
-		ExpectedRoot: "81cc6b475b941c46b07ba86362d8f049ed8bfd630ca648d8823e704736291be4",
+		ExpectedRoot: "eb24ad0d50549b80ff747ba2e7fdfbfbbd4029de6b18580889f0857780dc2bcb",
 	}
 }
