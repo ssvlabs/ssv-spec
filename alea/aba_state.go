@@ -1,5 +1,7 @@
 package alea
 
+import "github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+
 type ABAState struct {
 	// message containers
 	ABAInitContainer   *MsgContainer
@@ -7,19 +9,19 @@ type ABAState struct {
 	ABAConfContainer   *MsgContainer
 	ABAFinishContainer *MsgContainer
 	// message counters
-	InitCounter   []uint64
-	AuxCounter    []uint64
-	ConfCounter   uint64
-	FinishCounter []uint64
+	InitCounter   map[Round]map[byte][]types.OperatorID
+	AuxCounter    map[Round]map[byte][]types.OperatorID
+	ConfCounter   map[Round][]types.OperatorID
+	FinishCounter map[byte][]types.OperatorID
 	// already sent message flags
-	SentInit   []bool
-	SentAux    []bool
-	SentConf   bool
+	SentInit   map[Round][]bool
+	SentAux    map[Round][]bool
+	SentConf   map[Round]bool
 	SentFinish []bool
 	// current ABA round
 	ACRound Round
 	// value inputed to ABA
-	Vin byte
+	Vin map[Round]byte
 	// value decided by ABA
 	Vdecided byte
 	// current ABA round
@@ -31,25 +33,31 @@ type ABAState struct {
 }
 
 func NewABAState(acRound Round) *ABAState {
-	return &ABAState{
+	abaState := &ABAState{
 		ABAInitContainer:   NewMsgContainer(),
 		ABAAuxContainer:    NewMsgContainer(),
 		ABAConfContainer:   NewMsgContainer(),
 		ABAFinishContainer: NewMsgContainer(),
-		InitCounter:        make([]uint64, 2),
-		AuxCounter:         make([]uint64, 2),
-		ConfCounter:        0,
-		FinishCounter:      make([]uint64, 2),
-		SentInit:           make([]bool, 2),
-		SentAux:            make([]bool, 2),
-		SentConf:           false,
+		InitCounter:        make(map[Round]map[byte][]types.OperatorID),
+		AuxCounter:         make(map[Round]map[byte][]types.OperatorID),
+		ConfCounter:        make(map[Round][]types.OperatorID),
+		FinishCounter:      make(map[byte][]types.OperatorID),
+		SentInit:           make(map[Round][]bool),
+		SentAux:            make(map[Round][]bool),
+		SentConf:           make(map[Round]bool),
 		SentFinish:         make([]bool, 2),
 		ACRound:            acRound,
-		Vin:                byte(2),
+		Vin:                make(map[Round]byte),
 		Vdecided:           byte(2),
 		Round:              FirstRound,
 		Values:             make(map[Round][]byte),
 	}
+
+	abaState.InitMaps(FirstRound)
+	abaState.FinishCounter[0] = make([]types.OperatorID, 0)
+	abaState.FinishCounter[1] = make([]types.OperatorID, 0)
+
+	return abaState
 }
 
 func (s *ABAState) Coin(round Round) byte {
@@ -57,22 +65,172 @@ func (s *ABAState) Coin(round Round) byte {
 	return byte(round % 2)
 }
 
+func (s *ABAState) InitMaps(round Round) {
+
+	if _, exists := s.InitCounter[round]; !exists {
+		s.InitCounter[round] = make(map[byte][]types.OperatorID)
+		s.InitCounter[round][0] = make([]types.OperatorID, 0)
+		s.InitCounter[round][1] = make([]types.OperatorID, 0)
+	}
+
+	if _, exists := s.AuxCounter[round]; !exists {
+		s.AuxCounter[round] = make(map[byte][]types.OperatorID, 2)
+		s.AuxCounter[round][0] = make([]types.OperatorID, 0)
+		s.AuxCounter[round][1] = make([]types.OperatorID, 0)
+	}
+
+	if _, exists := s.ConfCounter[round]; !exists {
+		s.ConfCounter[round] = make([]types.OperatorID, 0)
+	}
+
+	if _, exists := s.SentInit[round]; !exists {
+		s.SentInit[round] = make([]bool, 2)
+	}
+	if _, exists := s.SentAux[round]; !exists {
+		s.SentAux[round] = make([]bool, 2)
+	}
+	if _, exists := s.SentConf[round]; !exists {
+		s.SentConf[round] = false
+	}
+
+	if _, exists := s.Values[round]; !exists {
+		s.Values[round] = make([]byte, 0)
+	}
+}
+
 func (s *ABAState) IncrementRound() {
 	// update info
 	s.Round += 1
-	// s.ABAInitContainer.Clear()
-	// s.ABAAuxContainer.Clear()
-	// s.ABAConfContainer.Clear()
-	// s.ABAFinishContainer.Clear()
+	s.InitMaps(s.Round)
+}
 
-	s.InitCounter = make([]uint64, 2)
-	s.AuxCounter = make([]uint64, 2)
-	s.ConfCounter = 0
-	// s.FinishCounter = make([]uint64, 2)
-	s.SentInit = make([]bool, 2)
-	s.SentAux = make([]bool, 2)
-	s.SentConf = false
-	// s.SentFinish = make([]bool, 2)
+func (s *ABAState) hasInit(round Round, operatorID types.OperatorID) bool {
+	for _, vote := range []byte{0, 1} {
+		for _, opID := range s.InitCounter[round][vote] {
+			if opID == operatorID {
+				return true
+			}
+		}
+	}
+	return false
+}
+func (s *ABAState) hasAux(round Round, operatorID types.OperatorID) bool {
+	for _, vote := range []byte{0, 1} {
+		for _, opID := range s.AuxCounter[round][vote] {
+			if opID == operatorID {
+				return true
+			}
+		}
+	}
+	return false
+}
+func (s *ABAState) hasConf(round Round, operatorID types.OperatorID) bool {
+	for _, opID := range s.ConfCounter[round] {
+		if opID == operatorID {
+			return true
+		}
+	}
+	return false
+}
+func (s *ABAState) hasFinish(operatorID types.OperatorID) bool {
+	for _, vote := range []byte{0, 1} {
+		for _, opID := range s.FinishCounter[vote] {
+			if opID == operatorID {
+				return true
+			}
+		}
+	}
+	return false
+}
 
-	s.Values = make(map[Round][]byte)
+func (s *ABAState) countInit(round Round, vote byte) uint64 {
+	return uint64(len(s.InitCounter[round][vote]))
+}
+func (s *ABAState) countAux(round Round, vote byte) uint64 {
+	return uint64(len(s.AuxCounter[round][vote]))
+}
+func (s *ABAState) countConf(round Round) uint64 {
+	return uint64(len(s.ConfCounter[round]))
+}
+func (s *ABAState) countFinish(vote byte) uint64 {
+	return uint64(len(s.FinishCounter[vote]))
+}
+
+func (s *ABAState) setInit(round Round, operatorID types.OperatorID, vote byte) {
+	s.InitCounter[round][vote] = append(s.InitCounter[round][vote], operatorID)
+}
+func (s *ABAState) setAux(round Round, operatorID types.OperatorID, vote byte) {
+	s.AuxCounter[round][vote] = append(s.AuxCounter[round][vote], operatorID)
+}
+func (s *ABAState) setConf(round Round, operatorID types.OperatorID) {
+	s.ConfCounter[round] = append(s.ConfCounter[round], operatorID)
+}
+func (s *ABAState) setFinish(operatorID types.OperatorID, vote byte) {
+	s.FinishCounter[vote] = append(s.FinishCounter[vote], operatorID)
+}
+
+func (s *ABAState) sentInit(round Round, vote byte) bool {
+	return s.SentInit[round][vote]
+}
+func (s *ABAState) sentAux(round Round, vote byte) bool {
+	return s.SentAux[round][vote]
+}
+func (s *ABAState) sentConf(round Round) bool {
+	return s.SentConf[round]
+}
+func (s *ABAState) sentFinish(vote byte) bool {
+	return s.SentFinish[vote]
+}
+
+func (s *ABAState) setSentInit(round Round, vote byte, value bool) {
+	s.SentInit[round][vote] = value
+}
+func (s *ABAState) setSentAux(round Round, vote byte, value bool) {
+	s.SentAux[round][vote] = value
+}
+func (s *ABAState) setSentConf(round Round, value bool) {
+	s.SentConf[round] = value
+}
+func (s *ABAState) setSentFinish(vote byte, value bool) {
+	s.SentFinish[vote] = value
+}
+
+func (s *ABAState) GetValues(round Round) []byte {
+	return s.Values[round]
+}
+
+func (s *ABAState) AddToValues(round Round, vote byte) {
+	for _, value := range s.Values[round] {
+		if value == vote {
+			return
+		}
+	}
+	s.Values[round] = append(s.Values[round], vote)
+}
+
+func (s *ABAState) isContainedInValues(round Round, values []byte) bool {
+	num_equal := 0
+	for _, value := range values {
+		for _, storedValue := range s.Values[round] {
+			if value == storedValue {
+				num_equal += 1
+			}
+		}
+	}
+	return num_equal == len(values)
+}
+func (s *ABAState) existsInValues(round Round, value byte) bool {
+	for _, storedValue := range s.Values[round] {
+		if value == storedValue {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *ABAState) setVInput(round Round, vote byte) {
+	s.Vin[round] = vote
+}
+func (s *ABAState) getVInput(round Round) byte {
+	return s.Vin[round]
 }

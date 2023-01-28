@@ -20,26 +20,39 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage, abaAuxMsgContainer *M
 	// add the message to the containers
 	abaAuxMsgContainer.AddMsg(signedABAAux)
 
-	voteInLocalValues := false
-	for _, value := range i.State.ABAState.Values[ABAAuxData.Round] {
-		if value == ABAAuxData.Vote {
-			voteInLocalValues = true
-		}
+	// if message is old, return
+	if ABAAuxData.Round < i.State.ABAState.Round {
+		return nil
 	}
+
+	// sender
+	senderID := signedABAAux.GetSigners()[0]
+
+	alreadyReceived := i.State.ABAState.hasAux(ABAAuxData.Round, senderID)
+	if i.verbose {
+		fmt.Println("\tsenderID:", senderID, ", vote:", ABAAuxData.Vote, ", round:", ABAAuxData.Round, ", already received before:", alreadyReceived)
+	}
+	// if already received this msg, return
+	if alreadyReceived {
+		return nil
+	}
+
+	voteInLocalValues := i.State.ABAState.existsInValues(ABAAuxData.Round, ABAAuxData.Vote)
 	if i.verbose {
 		fmt.Println("\tvote received is in local values:", voteInLocalValues, ". Local values (of round", ABAAuxData.Round, "):", i.State.ABAState.Values[ABAAuxData.Round], ". Vote:", ABAAuxData.Vote)
 	}
 
 	if voteInLocalValues {
 		// increment counter
-		i.State.ABAState.AuxCounter[ABAAuxData.Vote] += 1
+
+		i.State.ABAState.setAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
 		if i.verbose {
-			fmt.Println("\tincremented aux counter. Vote:", ABAAuxData.Vote, ". Conter:", i.State.ABAState.AuxCounter)
+			fmt.Println("\tincremented aux counter. Vote:", ABAAuxData.Vote)
 		}
 	}
 
 	// if received 2f+1 AUX messages, try to send CONF
-	if (i.State.ABAState.AuxCounter[0]+i.State.ABAState.AuxCounter[1]) >= i.State.Share.Quorum && !i.State.ABAState.SentConf {
+	if (i.State.ABAState.countAux(ABAAuxData.Round, 0)+i.State.ABAState.countAux(ABAAuxData.Round, 1)) >= i.State.Share.Quorum && !i.State.ABAState.sentConf(ABAAuxData.Round) {
 		if i.verbose {
 			fmt.Println("\tgot quorum of AUX and never sent conf")
 		}
@@ -55,7 +68,44 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage, abaAuxMsgContainer *M
 		i.Broadcast(confMsg)
 
 		// update sent flag
-		i.State.ABAState.SentConf = true
+		i.State.ABAState.setSentConf(ABAAuxData.Round, true)
+	}
+
+	return nil
+}
+
+func isValidABAAux(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedMsg.Message.MsgType != ABAAuxMsgType {
+		return errors.New("msg type is not ABAAuxMsgType")
+	}
+	if signedMsg.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	ABAAuxData, err := signedMsg.Message.GetABAAuxData()
+	if err != nil {
+		return errors.Wrap(err, "could not get ABAAuxData data")
+	}
+	if err := ABAAuxData.Validate(); err != nil {
+		return errors.Wrap(err, "ABAAuxData invalid")
+	}
+
+	// vote
+	vote := ABAAuxData.Vote
+	if vote != 0 && vote != 1 {
+		return errors.Wrap(err, "vote different than 0 and 1")
 	}
 
 	return nil

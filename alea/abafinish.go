@@ -20,11 +20,23 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage, abaFinishMsgCon
 	// add the message to the container
 	abaFinishMsgContainer.AddMsg(signedABAFinish)
 
+	// sender
+	senderID := signedABAFinish.GetSigners()[0]
+
+	alreadyReceived := i.State.ABAState.hasFinish(senderID)
+	if i.verbose {
+		fmt.Println("\tsenderID:", senderID, ", vote:", ABAFinishData.Vote, ", already received before:", alreadyReceived)
+	}
+	// if already received this msg, return
+	if alreadyReceived {
+		return nil
+	}
+
 	// get vote from FINISH message
 	vote := ABAFinishData.Vote
 
 	// increment counter
-	i.State.ABAState.FinishCounter[vote] += 1
+	i.State.ABAState.setFinish(senderID, vote)
 	if i.verbose {
 		fmt.Println("\tincremented finish counter:", i.State.ABAState.FinishCounter)
 	}
@@ -36,10 +48,10 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage, abaFinishMsgCon
 	// if FINISH(b) reached partial quorum and never broadcasted FINISH(b), broadcast
 	for _, vote := range []byte{0, 1} {
 
-		if !i.State.ABAState.SentFinish[vote] && i.State.ABAState.FinishCounter[vote] >= i.State.Share.PartialQuorum {
+		if !i.State.ABAState.sentFinish(vote) && i.State.ABAState.countFinish(vote) >= i.State.Share.PartialQuorum {
 			if i.verbose {
 				fmt.Println("\treached partial quorum of finish and never sent -> sending new, for vote:", vote)
-				fmt.Println("\tsentFinish[vote]:", i.State.ABAState.SentFinish[vote], ", vote", vote)
+				fmt.Println("\tsentFinish[vote]:", i.State.ABAState.sentFinish(vote), ", vote", vote)
 
 			}
 			// broadcast FINISH
@@ -52,19 +64,56 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage, abaFinishMsgCon
 			}
 			i.Broadcast(finishMsg)
 			// update sent flag
-			i.State.ABAState.SentFinish[vote] = true
+			i.State.ABAState.setSentFinish(vote, true)
 		}
 	}
 
 	// if FINISH(b) reached Quorum, decide for b and send termination signal
 	for _, vote := range []byte{0, 1} {
-		if i.State.ABAState.FinishCounter[vote] >= i.State.Share.Quorum {
+		if i.State.ABAState.countFinish(vote) >= i.State.Share.Quorum {
 			if i.verbose {
 				fmt.Println("\treached quorum for vote:", vote)
 			}
 			i.State.ABAState.Vdecided = vote
 			i.State.ABAState.Terminate = true
 		}
+	}
+
+	return nil
+}
+
+func isValidABAFinish(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
+) error {
+	if signedMsg.Message.MsgType != ABAFinishMsgType {
+		return errors.New("msg type is not ABAFinishMsgType")
+	}
+	if signedMsg.Message.Height != state.Height {
+		return errors.New("wrong msg height")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	ABAFinishData, err := signedMsg.Message.GetABAFinishData()
+	if err != nil {
+		return errors.Wrap(err, "could not get ABAFinishData data")
+	}
+	if err := ABAFinishData.Validate(); err != nil {
+		return errors.Wrap(err, "ABAFinishData invalid")
+	}
+
+	// vote
+	vote := ABAFinishData.Vote
+	if vote != 0 && vote != 1 {
+		return errors.Wrap(err, "vote different than 0 and 1")
 	}
 
 	return nil

@@ -129,7 +129,7 @@ func (i *Instance) WaitFillGapResponse(leader types.OperatorID, priority Priorit
 
 func (i *Instance) StartABA(vote byte) byte {
 	// set ABA's input value
-	i.State.ABAState.Vin = vote
+	i.State.ABAState.setVInput(i.State.ABAState.Round, vote)
 
 	// broadcast INIT message with input vote
 	initMsg, err := CreateABAInit(i.State, i.config, vote, i.State.ABAState.Round)
@@ -139,7 +139,7 @@ func (i *Instance) StartABA(vote byte) byte {
 	i.Broadcast(initMsg)
 
 	// update sent flag
-	i.State.ABAState.SentInit[vote] = true
+	i.State.ABAState.setSentInit(i.State.ABAState.Round, vote, true)
 
 	// wait until channel Terminate receives a signal
 	for {

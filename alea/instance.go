@@ -52,7 +52,7 @@ func NewInstance(
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
-		verbose:     false,
+		verbose:     true,
 	}
 }
 
@@ -222,13 +222,37 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case ABAInitMsgType:
-		return nil
+		return isValidABAInit(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case ABAAuxMsgType:
-		return nil
+		return isValidABAAux(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case ABAConfMsgType:
-		return nil
+		return isValidABAConf(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 	case ABAFinishMsgType:
-		return nil
+		return isValidABAFinish(
+			i.State,
+			i.config,
+			msg,
+			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
+		)
 
 	// case PrepareMsgType:
 	// 	proposedMsg := i.State.ProposalAcceptedForCurrentRound
