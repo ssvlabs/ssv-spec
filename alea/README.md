@@ -15,7 +15,7 @@ Message queueing and retry are important as there is no guarantee as to when a m
 - [X] Implement ABA
 - [X] Implement VCBC
 - [X] Proposal, VCBC, Fill validation
-- [ ] ABA validation
+- [X] ABA validation
 - [X] Message tests
 - [X] Happy Flow tests
 - [ ] Proposal tests
