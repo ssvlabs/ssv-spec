@@ -1,6 +1,8 @@
 package alea
 
-import "github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+import (
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+)
 
 type VCBCState struct {
 	Priority Priority

@@ -14,7 +14,7 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 	// get message Data
 	ABAAuxData, err := signedABAAux.Message.GetABAAuxData()
 	if err != nil {
-		errors.Wrap(err, "uponABAAux: could not get ABAAuxData from signedABAAux")
+		return errors.Wrap(err, "uponABAAux: could not get ABAAuxData from signedABAAux")
 	}
 
 	// if future round -> intialize future state
@@ -66,11 +66,13 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 		if i.verbose {
 			fmt.Println("\tgot quorum of AUX and never sent conf")
 		}
-
+		if i.verbose {
+			fmt.Println("\tsending:", abaState.Values[ABAAuxData.Round], "for round:", ABAAuxData.Round)
+		}
 		// broadcast CONF message
 		confMsg, err := CreateABAConf(i.State, i.config, abaState.Values[ABAAuxData.Round], ABAAuxData.Round, ABAAuxData.ACRound)
 		if err != nil {
-			errors.Wrap(err, "uponABAAux: failed to create ABA Conf message after strong support")
+			return errors.Wrap(err, "uponABAAux: failed to create ABA Conf message after strong support")
 		}
 		if i.verbose {
 			fmt.Println("\tbroadcasting ABAConf")
@@ -116,7 +118,7 @@ func isValidABAAux(
 	// vote
 	vote := ABAAuxData.Vote
 	if vote != 0 && vote != 1 {
-		return errors.Wrap(err, "vote different than 0 and 1")
+		return errors.New("vote different than 0 and 1")
 	}
 
 	return nil

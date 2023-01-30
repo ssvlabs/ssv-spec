@@ -14,7 +14,7 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 	// get data
 	ABAFinishData, err := signedABAFinish.Message.GetABAFinishData()
 	if err != nil {
-		errors.Wrap(err, "uponABAFinish: could not get ABAFinishData from signedABAConf")
+		return errors.Wrap(err, "uponABAFinish: could not get ABAFinishData from signedABAConf")
 	}
 
 	// if future round -> intialize future state
@@ -67,7 +67,7 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 				// broadcast FINISH
 				finishMsg, err := CreateABAFinish(i.State, i.config, vote, ABAFinishData.ACRound)
 				if err != nil {
-					errors.Wrap(err, "uponABAFinish: failed to create ABA Finish message")
+					return errors.Wrap(err, "uponABAFinish: failed to create ABA Finish message")
 				}
 				if i.verbose {
 					fmt.Println("\tsending ABAFinish")
@@ -125,7 +125,7 @@ func isValidABAFinish(
 	// vote
 	vote := ABAFinishData.Vote
 	if vote != 0 && vote != 1 {
-		return errors.Wrap(err, "vote different than 0 and 1")
+		return errors.New("vote different than 0 and 1")
 	}
 
 	return nil

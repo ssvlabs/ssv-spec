@@ -49,7 +49,10 @@ func (i *Instance) StartAgreementComponent() error {
 		}
 
 		// start ABA protocol
-		result := i.StartABA(vote)
+		result, err := i.StartABA(vote)
+		if err != nil {
+			return errors.Wrap(err, "failed to start ABA and get result")
+		}
 		if i.verbose {
 			fmt.Println("\tABA result:", result)
 		}
@@ -70,7 +73,7 @@ func (i *Instance) StartAgreementComponent() error {
 					fillerContLen := i.State.FillerContainer.Len(i.State.AleaDefaultRound)
 					fillGapMsg, err := CreateFillGap(i.State, i.config, leader, priority)
 					if err != nil {
-						errors.Wrap(err, "StartAgreementComponent: failed to create FillGap message")
+						return errors.Wrap(err, "StartAgreementComponent: failed to create FillGap message")
 					}
 					if i.verbose {
 						fmt.Println("\tBroadcasting fill gap")
@@ -130,14 +133,14 @@ func (i *Instance) WaitFillGapResponse(leader types.OperatorID, priority Priorit
 	}
 }
 
-func (i *Instance) StartABA(vote byte) byte {
+func (i *Instance) StartABA(vote byte) (byte, error) {
 	// set ABA's input value
 	i.State.ACState.GetCurrentABAState().setVInput(i.State.ACState.GetCurrentABAState().Round, vote)
 
 	// broadcast INIT message with input vote
 	initMsg, err := CreateABAInit(i.State, i.config, vote, i.State.ACState.GetCurrentABAState().Round, i.State.ACState.ACRound)
 	if err != nil {
-		errors.Wrap(err, "StartABA: failed to create ABA Init message")
+		return byte(2), errors.Wrap(err, "StartABA: failed to create ABA Init message")
 	}
 	i.Broadcast(initMsg)
 
@@ -155,5 +158,5 @@ func (i *Instance) StartABA(vote byte) byte {
 	// i.State.ACState.GetCurrentABAState().Terminate = false
 
 	// returns the decided value
-	return i.State.ACState.GetCurrentABAState().Vdecided
+	return i.State.ACState.GetCurrentABAState().Vdecided, nil
 }

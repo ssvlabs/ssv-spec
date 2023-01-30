@@ -16,7 +16,7 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 	// get Data
 	vcbcSendData, err := signedMessage.Message.GetVCBCSendData()
 	if err != nil {
-		errors.Wrap(err, "uponVCBCSend: could not get vcbcSendData data from signedMessage")
+		errors.New("uponVCBCSend: could not get vcbcSendData data from signedMessage")
 	}
 
 	// check if it was already received. If yes -> return, else -> store and send READY
@@ -32,6 +32,12 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 		fmt.Println("\tgot senderID:", senderID)
 	}
 
+	// if it's the sender and the author, just add the not added ready signature
+	if senderID == i.State.Share.OperatorID && senderID == vcbcSendData.Author {
+		i.AddOwnVCBCReady(vcbcSendData.Proposals, vcbcSendData.Priority)
+		return nil
+	}
+
 	// if message hasn't been received and the Author of the VCBC is the same as the sender of the message -> sign and answer with READY
 	if senderID == vcbcSendData.Author {
 		if i.verbose {
@@ -40,7 +46,7 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 
 		hash, err := GetProposalsHash(vcbcSendData.Proposals)
 		if err != nil {
-			return errors.Wrap(err, "uponVCBCSend: could not get hash of proposals")
+			return errors.New("uponVCBCSend: could not get hash of proposals")
 		}
 		if i.verbose {
 			fmt.Println("\tgot hash")
@@ -49,7 +55,7 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 		// create VCBCReady message with proof
 		vcbcReadyMsg, err := CreateVCBCReady(i.State, i.config, hash, vcbcSendData.Priority, vcbcSendData.Author)
 		if err != nil {
-			return errors.Wrap(err, "uponVCBCSend: failed to create VCBCReady message with proof")
+			return errors.New("uponVCBCSend: failed to create VCBCReady message with proof")
 		}
 
 		if i.verbose {
@@ -99,14 +105,18 @@ func isValidVCBCSend(
 		}
 	}
 	if !authorInCommittee {
-		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+		return errors.New("author (OperatorID) doesn't exist in Committee")
+	}
+
+	if author != signedMsg.GetSigners()[0] {
+		return errors.New("author of VCBCSend differs from sender of the message")
 	}
 
 	// priority
 	priority := VCBCSendData.Priority
 	if state.VCBCState.hasM(author, priority) {
 		if !state.VCBCState.equalM(author, priority, VCBCSendData.Proposals) {
-			return errors.Wrap(err, "existing (priority,author) with different proposals")
+			return errors.New("existing (priority,author) with different proposals")
 		}
 	}
 

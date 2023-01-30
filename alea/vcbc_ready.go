@@ -15,7 +15,7 @@ func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
 	// get Data
 	vcbcReadyData, err := signedMessage.Message.GetVCBCReadyData()
 	if err != nil {
-		errors.Wrap(err, "uponVCBCReady: could not get vcbcReadyData data from signedMessage")
+		return errors.Wrap(err, "uponVCBCReady: could not get vcbcReadyData data from signedMessage")
 	}
 
 	// get sender ID
@@ -143,7 +143,7 @@ func isValidVCBCReady(
 		}
 	}
 	if !authorInCommittee {
-		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+		return errors.New("author (OperatorID) doesn't exist in Committee")
 	}
 
 	// priority & hash
@@ -154,7 +154,7 @@ func isValidVCBCReady(
 			return errors.Wrap(err, "could not get local hash")
 		}
 		if !bytes.Equal(localHash, VCBCReadyData.Hash) {
-			return errors.Wrap(err, "existing (priority,author) proposals have different hash")
+			return errors.New("existing (priority,author) proposals have different hash")
 		}
 	}
 

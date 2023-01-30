@@ -90,7 +90,7 @@ func (d *ProposalData) Equal(other *ProposalData) bool {
 		return false
 	}
 	for idx, value := range d.Data {
-		if value != d.Data[idx] {
+		if value != other.Data[idx] {
 			return false
 		}
 	}

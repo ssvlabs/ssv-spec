@@ -15,7 +15,7 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 	// get Data
 	vcbcFinalData, err := signedMessage.Message.GetVCBCFinalData()
 	if err != nil {
-		errors.Wrap(err, "uponVCBCFinal: could not get vcbcFinalData data from signedMessage")
+		return errors.Wrap(err, "uponVCBCFinal: could not get vcbcFinalData data from signedMessage")
 	}
 
 	// check if it has the message locally. If not, returns (since it can't validate the hash)
@@ -31,7 +31,7 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 	// get hash
 	localHash, err := GetProposalsHash(proposals)
 	if err != nil {
-		errors.Wrap(err, "uponVCBCFinal: could not get hash of local proposals")
+		return errors.Wrap(err, "uponVCBCFinal: could not get hash of local proposals")
 	}
 	if i.verbose {
 		fmt.Println("\tgot hash")
@@ -107,7 +107,7 @@ func isValidVCBCFinal(
 		}
 	}
 	if !authorInCommittee {
-		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+		return errors.New("author (OperatorID) doesn't exist in Committee")
 	}
 
 	// priority & hash
@@ -118,20 +118,36 @@ func isValidVCBCFinal(
 			return errors.Wrap(err, "could not get local hash")
 		}
 		if !bytes.Equal(localHash, VCBCFinalData.Hash) {
-			return errors.Wrap(err, "existing (priority,author) proposals have different hash")
+			return errors.New("existing (priority,author) proposals have different hash")
 		}
 	}
 
 	// AggregatedMsg
 	aggregatedMsg := VCBCFinalData.AggregatedMsg
-	var signedAggregatedMessage *SignedMessage
+	signedAggregatedMessage := &SignedMessage{}
 	signedAggregatedMessage.Decode(aggregatedMsg)
 
 	if err := signedAggregatedMessage.Signature.VerifyByOperators(signedAggregatedMessage, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "aggregatedMsg signature invalid")
 	}
 	if len(signedAggregatedMessage.GetSigners()) < int(state.Share.Quorum) {
-		return errors.Wrap(err, "aggregatedMsg signers don't reach quorum")
+		return errors.New("aggregatedMsg signers don't reach quorum")
+	}
+
+	// AggregatedMsg data
+	aggrMsgData := &VCBCReadyData{}
+	err = aggrMsgData.Decode(signedAggregatedMessage.Message.Data)
+	if err != nil {
+		return errors.Wrap(err, "could get VCBCReadyData from aggregated msg data")
+	}
+	if !bytes.Equal(VCBCFinalData.Hash, aggrMsgData.Hash) {
+		return errors.New("aggregated message has different hash than the given on the message")
+	}
+	if aggrMsgData.Author != VCBCFinalData.Author {
+		return errors.New("aggregated message has different author than the given on the message")
+	}
+	if aggrMsgData.Priority != VCBCFinalData.Priority {
+		return errors.New("aggregated message has different priority than the given on the message")
 	}
 
 	return nil

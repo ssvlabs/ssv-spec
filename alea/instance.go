@@ -51,7 +51,7 @@ func NewInstance(
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
-		verbose:     false,
+		verbose:     true,
 	}
 }
 

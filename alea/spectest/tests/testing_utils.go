@@ -26,14 +26,14 @@ var SignedProposal3 = testingutils.SignAleaMsg(testingutils.Testing4SharesSet().
 	Height:     alea.FirstHeight,
 	Round:      alea.FirstRound,
 	Identifier: []byte{1, 2, 3, 4},
-	Data:       testingutils.ProposalDataBytesAlea([]byte{9, 10, 11, 12}),
+	Data:       testingutils.ProposalDataBytesAlea([]byte{1, 3, 5, 7}),
 })
 var SignedProposal4 = testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 	MsgType:    alea.ProposalMsgType,
 	Height:     alea.FirstHeight,
 	Round:      alea.FirstRound,
 	Identifier: []byte{1, 2, 3, 4},
-	Data:       testingutils.ProposalDataBytesAlea([]byte{13, 14, 15, 16}),
+	Data:       testingutils.ProposalDataBytesAlea([]byte{2, 4, 6, 8}),
 })
 
 var ProposalData1, _ = SignedProposal1.Message.GetProposalData()
@@ -42,7 +42,7 @@ var ProposalData3, _ = SignedProposal3.Message.GetProposalData()
 var ProposalData4, _ = SignedProposal4.Message.GetProposalData()
 
 var ProposalDataList = []*alea.ProposalData{ProposalData1, ProposalData2}
-var ProposalDataList2 = []*alea.ProposalData{ProposalData1, ProposalData2}
+var ProposalDataList2 = []*alea.ProposalData{ProposalData3, ProposalData4}
 
 var Entries = [][]*alea.ProposalData{{ProposalData1, ProposalData2}, {ProposalData3, ProposalData4}}
 var Priorities = []alea.Priority{alea.FirstPriority, alea.FirstPriority + 1}
@@ -50,16 +50,16 @@ var Priorities = []alea.Priority{alea.FirstPriority, alea.FirstPriority + 1}
 var Hash, _ = alea.GetProposalsHash([]*alea.ProposalData{ProposalData1, ProposalData2})
 var Hash2, _ = alea.GetProposalsHash([]*alea.ProposalData{ProposalData3, ProposalData4})
 
-var AggregatedMsgBytes = func() []byte {
+var AggregatedMsgBytes = func(author types.OperatorID, priority alea.Priority) []byte {
 
 	readyMsgs := make([]*alea.SignedMessage, 0)
-	for opID := 1; opID <= 4; opID++ {
+	for opID := 1; opID <= 3; opID++ {
 		signedMessage := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 			MsgType:    alea.VCBCReadyMsgType,
 			Height:     alea.FirstHeight,
 			Round:      alea.FirstRound,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.VCBCReadyDataBytes(Hash, alea.FirstPriority, types.OperatorID(1)),
+			Data:       testingutils.VCBCReadyDataBytes(Hash, priority, author),
 		})
 		readyMsgs = append(readyMsgs, signedMessage)
 	}
@@ -74,18 +74,18 @@ var AggregatedMsgBytes = func() []byte {
 		errors.Wrap(err, "could not encode aggregated msg")
 	}
 	return aggregatedMsgBytes
-}()
+}
 
-var AggregatedMsgBytes2 = func() []byte {
+var AggregatedMsgBytes2 = func(author types.OperatorID, priority alea.Priority) []byte {
 
 	readyMsgs := make([]*alea.SignedMessage, 0)
-	for opID := 1; opID <= 4; opID++ {
+	for opID := 1; opID <= 3; opID++ {
 		signedMessage := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 			MsgType:    alea.VCBCReadyMsgType,
 			Height:     alea.FirstHeight,
 			Round:      alea.FirstRound,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.VCBCReadyDataBytes(Hash2, alea.FirstPriority, types.OperatorID(1)),
+			Data:       testingutils.VCBCReadyDataBytes(Hash2, priority, author),
 		})
 		readyMsgs = append(readyMsgs, signedMessage)
 	}
@@ -100,6 +100,8 @@ var AggregatedMsgBytes2 = func() []byte {
 		errors.Wrap(err, "could not encode aggregated msg")
 	}
 	return aggregatedMsgBytes
-}()
+}
 
-var AggregatedMsgBytesList = [][]byte{AggregatedMsgBytes, AggregatedMsgBytes2}
+var AggregatedMsgBytesList = func(author types.OperatorID, priority alea.Priority) [][]byte {
+	return [][]byte{AggregatedMsgBytes(author, priority), AggregatedMsgBytes2(author, priority+1)}
+}

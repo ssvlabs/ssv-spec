@@ -69,13 +69,13 @@ func EncodeProposals(proposals []*ProposalData) ([]byte, error) {
 }
 
 // Decode returns error if decoding failed
-func DecodeProposals(data []byte) []*ProposalData {
+func DecodeProposals(data []byte) ([]*ProposalData, error) {
 	proposals := make([]*ProposalData, 0)
 	err := json.Unmarshal(data, &proposals)
 	if err != nil {
-		errors.Wrap(err, "DecodeProposals: could not unmarshal proposals")
+		return nil, errors.Wrap(err, "DecodeProposals: could not unmarshal proposals")
 	}
-	return proposals
+	return proposals, nil
 }
 
 // GetHash returns the SHA-256 hash

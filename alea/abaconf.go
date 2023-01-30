@@ -14,7 +14,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 	// get data
 	ABAConfData, err := signedABAConf.Message.GetABAConfData()
 	if err != nil {
-		errors.Wrap(err, "uponABAConf:could not get ABAConfData from signedABAConf")
+		return errors.Wrap(err, "uponABAConf:could not get ABAConfData from signedABAConf")
 	}
 
 	// if future round -> intialize future state
@@ -92,7 +92,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 				if !abaState.sentFinish(s) {
 					finishMsg, err := CreateABAFinish(i.State, i.config, s, ABAConfData.ACRound)
 					if err != nil {
-						errors.Wrap(err, "uponABAConf: failed to create ABA Finish message")
+						return errors.Wrap(err, "uponABAConf: failed to create ABA Finish message")
 					}
 					if i.verbose {
 						fmt.Println("\tSending ABAFinish")
@@ -119,7 +119,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 		// start new round sending INIT message with vote
 		initMsg, err := CreateABAInit(i.State, i.config, abaState.getVInput(abaState.Round), abaState.Round, ABAConfData.ACRound)
 		if err != nil {
-			errors.Wrap(err, "uponABAConf: failed to create ABA Init message")
+			return errors.Wrap(err, "uponABAConf: failed to create ABA Init message")
 		}
 		if i.verbose {
 			fmt.Println("\tSending ABAInit with new Vin:", abaState.Vin[abaState.Round], ", for round:", abaState.Round)
@@ -162,7 +162,7 @@ func isValidABAConf(
 	votes := ABAConfData.Votes
 	for _, vote := range votes {
 		if vote != 0 && vote != 1 {
-			return errors.Wrap(err, "vote different than 0 and 1")
+			return errors.New("vote different than 0 and 1")
 		}
 	}
 

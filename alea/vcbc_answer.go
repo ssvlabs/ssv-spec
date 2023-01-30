@@ -2,12 +2,17 @@ package alea
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
 
 func (i *Instance) uponVCBCAnswer(signedMessage *SignedMessage) error {
+
+	if i.verbose {
+		fmt.Println("uponVCBCAnswer")
+	}
 
 	// get Data
 	vcbcAnswerData, err := signedMessage.Message.GetVCBCAnswerData()
@@ -18,7 +23,16 @@ func (i *Instance) uponVCBCAnswer(signedMessage *SignedMessage) error {
 	// check if has local aggregated signature
 	hasLocalSignature := i.State.VCBCState.hasU(vcbcAnswerData.Author, vcbcAnswerData.Priority)
 	if hasLocalSignature {
+		if i.verbose {
+			fmt.Println("already had proof, returning")
+		}
 		return nil
+	}
+
+	if i.State.VCBCState.hasM(vcbcAnswerData.Author, vcbcAnswerData.Priority) {
+		if !i.State.VCBCState.equalM(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.Proposals) {
+			return errors.New("answer has different proposals than stores ones")
+		}
 	}
 
 	// update local values
@@ -68,7 +82,7 @@ func isValidVCBCAnswer(
 		}
 	}
 	if !authorInCommittee {
-		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+		return errors.New("author (OperatorID) doesn't exist in Committee")
 	}
 
 	// priority
@@ -81,18 +95,18 @@ func isValidVCBCAnswer(
 
 	// AggregatedMsg
 	aggregatedMsg := VCBCAnswerData.AggregatedMsg
-	var signedAggregatedMessage *SignedMessage
+	signedAggregatedMessage := &SignedMessage{}
 	signedAggregatedMessage.Decode(aggregatedMsg)
 
 	if err := signedAggregatedMessage.Signature.VerifyByOperators(signedAggregatedMessage, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "aggregatedMsg signature invalid")
 	}
 	if len(signedAggregatedMessage.GetSigners()) < int(state.Share.Quorum) {
-		return errors.Wrap(err, "aggregatedMsg signers don't reach quorum")
+		return errors.New("aggregatedMsg signers don't reach quorum")
 	}
 
-	var vcbcReadyData *VCBCReadyData
-	vcbcReadyData, err = signedAggregatedMessage.Message.GetVCBCReadyData()
+	// AggregatedMsg data
+	vcbcReadyData, err := signedAggregatedMessage.Message.GetVCBCReadyData()
 	if err != nil {
 		return errors.Wrap(err, "could not get VCBCReadyData from given aggregated message")
 	}
@@ -101,7 +115,13 @@ func isValidVCBCAnswer(
 		return errors.Wrap(err, "could not get hash from given proposals")
 	}
 	if !bytes.Equal(givenHash, vcbcReadyData.Hash) {
-		return errors.Wrap(err, "hash of proposals given doesn't match hash in the VCBCReadyData of the aggregated message")
+		return errors.New("hash of proposals given doesn't match hash in the VCBCReadyData of the aggregated message")
+	}
+	if vcbcReadyData.Author != VCBCAnswerData.Author {
+		return errors.New("author given doesn't match author in the VCBCReadyData of the aggregated message")
+	}
+	if vcbcReadyData.Priority != VCBCAnswerData.Priority {
+		return errors.New("priority given doesn't match priority in the VCBCReadyData of the aggregated message")
 	}
 
 	return nil

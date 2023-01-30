@@ -69,7 +69,7 @@ func isValidVCBCRequest(
 		}
 	}
 	if !authorInCommittee {
-		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+		return errors.New("author (OperatorID) doesn't exist in Committee")
 	}
 
 	return nil

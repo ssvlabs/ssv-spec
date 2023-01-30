@@ -1,16 +1,22 @@
 package alea
 
 import (
+	"fmt"
+
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
 
 func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer *MsgContainer) error {
 
+	if i.verbose {
+		fmt.Println("uponFillGap")
+	}
+
 	// get data
 	fillGapData, err := signedFillGap.Message.GetFillGapData()
 	if err != nil {
-		errors.Wrap(err, "uponFillGap: could not get fillgap data from signedFillGap")
+		return errors.Wrap(err, "uponFillGap: could not get fillgap data from signedFillGap")
 	}
 
 	// Add message to container
@@ -27,6 +33,9 @@ func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer
 
 	// if has more entries than the asker (sender of the message), sends FILLER message with local entries
 	if priority >= priorityAsked {
+		if i.verbose {
+			fmt.Println("\thas proposals with the desired priority and above")
+		}
 		// init values, priority list
 		returnValues := make([][]*ProposalData, 0)
 		returnPriorities := make([]Priority, 0)
@@ -45,10 +54,16 @@ func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer
 			}
 		}
 
+		if i.verbose {
+			fmt.Println("\tCreating filler msg")
+			fmt.Println("\treturn values:", returnValues)
+			fmt.Println("\treturn priorities:", returnPriorities)
+		}
+
 		// sends FILLER message
 		fillerMsg, err := CreateFiller(i.State, i.config, returnValues, returnPriorities, returnProofs, operatorID)
 		if err != nil {
-			errors.Wrap(err, "uponFillGap: failed to create Filler message")
+			return errors.Wrap(err, "uponFillGap: failed to create Filler message")
 		}
 
 		// FIX ME : send only to sender of fillGap msg
@@ -95,7 +110,7 @@ func isValidFillGap(
 		}
 	}
 	if !InCommittee {
-		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+		return errors.New("author (OperatorID) doesn't exist in Committee")
 	}
 
 	return nil

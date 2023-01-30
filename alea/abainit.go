@@ -16,7 +16,7 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 	// get data
 	abaInitData, err := signedABAInit.Message.GetABAInitData()
 	if err != nil {
-		errors.Wrap(err, "uponABAInit: could not get abainitdata from signedABAInit")
+		return errors.Wrap(err, "uponABAInit: could not get abainitdata from signedABAInit")
 	}
 
 	// if future round -> intialize future state
@@ -66,7 +66,7 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 			// send INIT
 			initMsg, err := CreateABAInit(i.State, i.config, vote, abaInitData.Round, abaInitData.ACRound)
 			if err != nil {
-				errors.Wrap(err, "uponABAInit: failed to create ABA Init message after weak support")
+				return errors.Wrap(err, "uponABAInit: failed to create ABA Init message after weak support")
 			}
 			if i.verbose {
 				fmt.Println("\tsending INIT")
@@ -97,7 +97,7 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 			// sends AUX(b)
 			auxMsg, err := CreateABAAux(i.State, i.config, vote, abaInitData.Round, abaInitData.ACRound)
 			if err != nil {
-				errors.Wrap(err, "uponABAInit: failed to create ABA Aux message after strong init support")
+				return errors.Wrap(err, "uponABAInit: failed to create ABA Aux message after strong init support")
 			}
 			if i.verbose {
 				fmt.Println("\tsending ABAAux")
@@ -144,7 +144,7 @@ func isValidABAInit(
 	// vote
 	vote := ABAInitData.Vote
 	if vote != 0 && vote != 1 {
-		return errors.Wrap(err, "vote different than 0 and 1")
+		return errors.New("vote different than 0 and 1")
 	}
 
 	return nil

@@ -22,7 +22,7 @@ func MultiSigner() *tests.MsgProcessingSpecTest {
 		}),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal multi signer",
+		Name:           "abafinish multi signer",
 		Pre:            pre,
 		PostRoot:       "84ecec5237cd4c1ca3ce3044e04e792a8abed2d470f29e1dd9416ac00511eec2",
 		InputMessages:  msgs,

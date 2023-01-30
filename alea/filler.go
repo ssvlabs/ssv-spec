@@ -12,7 +12,7 @@ func (i *Instance) uponFiller(signedFiller *SignedMessage, fillerMsgContainer *M
 	// get data
 	fillerData, err := signedFiller.Message.GetFillerData()
 	if err != nil {
-		errors.Wrap(err, "uponFiller: could not get filler data from signedFiller")
+		return errors.Wrap(err, "uponFiller: could not get filler data from signedFiller")
 	}
 
 	// Add message to container
@@ -80,7 +80,7 @@ func isValidFiller(
 		}
 	}
 	if !InCommittee {
-		return errors.Wrap(err, "author (OperatorID) doesn't exist in Committee")
+		return errors.New("author (OperatorID) doesn't exist in Committee")
 	}
 
 	// priority
@@ -88,7 +88,7 @@ func isValidFiller(
 	for idx, priority := range priorities {
 		if state.VCBCState.hasM(operatorID, priority) {
 			if !state.VCBCState.equalM(operatorID, priority, FillerData.Entries[idx]) {
-				return errors.Wrap(err, "existing (priority,author) with different proposals")
+				return errors.New("existing (priority,author) with different proposals")
 			}
 		}
 	}
@@ -97,18 +97,17 @@ func isValidFiller(
 	aggregatedMsgs := FillerData.AggregatedMsgs
 	for idx, aggregatedMsg := range aggregatedMsgs {
 
-		var signedAggregatedMessage *SignedMessage
+		signedAggregatedMessage := &SignedMessage{}
 		signedAggregatedMessage.Decode(aggregatedMsg)
 
 		if err := signedAggregatedMessage.Signature.VerifyByOperators(signedAggregatedMessage, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 			return errors.Wrap(err, "aggregatedMsg signature invalid")
 		}
 		if len(signedAggregatedMessage.GetSigners()) < int(state.Share.Quorum) {
-			return errors.Wrap(err, "aggregatedMsg signers don't reach quorum")
+			return errors.New("aggregatedMsg signers don't reach quorum")
 		}
 
-		var vcbcReadyData *VCBCReadyData
-		vcbcReadyData, err = signedAggregatedMessage.Message.GetVCBCReadyData()
+		vcbcReadyData, err := signedAggregatedMessage.Message.GetVCBCReadyData()
 		if err != nil {
 			return errors.Wrap(err, "could not get VCBCReadyData from given aggregated message")
 		}
@@ -117,7 +116,13 @@ func isValidFiller(
 			return errors.Wrap(err, "could not get hash from given proposals")
 		}
 		if !bytes.Equal(givenHash, vcbcReadyData.Hash) {
-			return errors.Wrap(err, "hash of proposals given doesn't match hash in the VCBCReadyData of the aggregated message")
+			return errors.New("hash of proposals given doesn't match hash in the VCBCReadyData of the aggregated message")
+		}
+		if vcbcReadyData.Author != FillerData.OperatorID {
+			return errors.New("author given doesn't match author in the VCBCReadyData of the aggregated message")
+		}
+		if vcbcReadyData.Priority != FillerData.Priorities[idx] {
+			return errors.New("priority given doesn't match priority in the VCBCReadyData of the aggregated message")
 		}
 	}
 

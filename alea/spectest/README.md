@@ -53,10 +53,13 @@
 - [X] VCBCSend with wrong height
 - [X] VCBCSend with wrong signature
 - [X] VCBCSend with empty data
-- [ ] VCBCSend after batch size of proposals
-- [ ] 2 VCBCSend after 2 batch size of proposals
-- [ ] VCBCSend duplicated
-- [ ] VCBCSend same author and priority with different data
+- [X] VCBCSend after batch size of proposals
+- [X] 2 VCBCSend after 2 batch size of proposals
+- [X] VCBCSend receive from other node
+- [X] VCBCSend receive multiple msgs from other nodes
+- [X] VCBCSend wrong author
+- [X] VCBCSend duplicated
+- [X] VCBCSend (duplicated) same author and priority with different data
 
 ### VCBCReady
 - [X] VCBCReady with multi signer
@@ -64,8 +67,11 @@
 - [X] VCBCReady with wrong height
 - [X] VCBCReady with wrong signature
 - [X] VCBCReady with empty hash
-- [ ] VCBCReady with wrong hash
-- [ ] VCBCReady duplicated
+- [X] VCBCReady with wrong hash
+- [X] VCBCReady duplicated
+- [X] VCBCReady receive msg
+- [X] VCBCReady receive quorum
+- [X] VCBCReady with unexpected author
 
 ### VCBCFinal
 - [X] VCBCFinal with multi signer
@@ -74,33 +80,41 @@
 - [X] VCBCFinal with wrong signature
 - [X] VCBCFinal with empty aggregated message bytes (proof)
 - [X] VCBCFinal with empty hash
-- [ ] VCBCFinal with wrong aggregated signature
-- [ ] VCBCFinal duplicated
+- [X] VCBCFinal with wrong aggregated signature
+- [X] VCBCFinal duplicated
+- [X] VCBCFinal receive message
+- [X] VCBCFinal receive message than receive request
 
 ### VCBCRequest
 - [X] VCBCRequest with multi signer
 - [X] VCBCRequest with unknown signer
 - [X] VCBCRequest with wrong height
 - [X] VCBCRequest with wrong signature
-- [ ] VCBCRequest with empty data
+- [X] VCBCRequest with wrong author
+- [X] VCBCRequest with wrong priority
+- [X] VCBCRequest receive message
 
 ### VCBCAnswer
 - [X] VCBCAnswer with multi signer
 - [X] VCBCAnswer with unknown signer
 - [X] VCBCAnswer with wrong height
 - [X] VCBCAnswer with wrong signature
-- [ ] VCBCAnswer with empty data
-- [ ] VCBCAnswer with wrong aggregated signature
-- [ ] VCBCAnswer with wrong data
+- [X] VCBCAnswer with empty data
+- [X] VCBCAnswer with wrong data
+- [X] VCBCAnswer with wrong priority
+- [X] VCBCAnswer with wrong answer
 
 ### ABAInit
 - [X] ABAInit with multi signer
 - [X] ABAInit with unknown signer
 - [X] ABAInit with wrong height
 - [X] ABAInit with wrong signature
-- [ ] ABAInit with empty data
-- [ ] ABAInit with invalid vote
-- [ ] ABAInit duplicated
+- [X] ABAInit with invalid vote
+- [X] ABAInit duplicated
+- [X] ABAInit receive
+- [X] ABAInit receive quorum
+- [X] ABAInit receive two quorums
+- [X] ABAInit abastart
 
 
 ### ABAAux
@@ -108,11 +122,13 @@
 - [X] ABAAux with unknown signer
 - [X] ABAAux with wrong height
 - [X] ABAAux with wrong signature
-- [ ] ABAAux with empty data
-- [ ] ABAAux with invalid vote
-- [ ] ABAAux duplicated
-- [ ] ABAAux reaching quorum
-- [ ] ABAAux not reaching quorum
+- [X] ABAAux with invalid vote
+- [X] ABAAux duplicated
+- [X] ABAAux receive
+- [X] ABAAux receive quorum
+- [X] ABAAux receive two quorum
+- [X] ABAAux not reaching quorum
+
 
 ### ABAConf
 - [X] ABAConf with multi signer
@@ -147,13 +163,16 @@
 - [X] FillGap with unknown signer
 - [X] FillGap with wrong height
 - [X] FillGap with wrong signature
-- [ ] FillGap with empty data
+- [X] FillGap with receive
+- [X] FillGap with wrong priority
+- [X] FillGap with wrong answer
 
 ### Filler
 - [X] Filler with multi signer
 - [X] Filler with unknown signer
 - [X] Filler with wrong height
 - [X] Filler with wrong signature
-- [ ] Filler with empty data
-- [ ] Filler with wrong aggregated signature
-- [ ] Filler with wrong data
+- [X] Filler with empty data
+- [X] Filler with wrong answer
+- [X] Filler with wrong data
+- [X] Filler with wrong priority
