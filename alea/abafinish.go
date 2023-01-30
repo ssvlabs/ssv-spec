@@ -55,26 +55,28 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 	}
 
 	// if FINISH(b) reached partial quorum and never broadcasted FINISH(b), broadcast
-	for _, vote := range []byte{0, 1} {
+	if !abaState.sentFinish(byte(0)) && !abaState.sentFinish(byte(1)) {
+		for _, vote := range []byte{0, 1} {
 
-		if !abaState.sentFinish(vote) && abaState.countFinish(vote) >= i.State.Share.PartialQuorum {
-			if i.verbose {
-				fmt.Println("\treached partial quorum of finish and never sent -> sending new, for vote:", vote)
-				fmt.Println("\tsentFinish[vote]:", abaState.sentFinish(vote), ", vote", vote)
+			if abaState.countFinish(vote) >= i.State.Share.PartialQuorum {
+				if i.verbose {
+					fmt.Println("\treached partial quorum of finish and never sent -> sending new, for vote:", vote)
+					fmt.Println("\tsentFinish[vote]:", abaState.sentFinish(vote), ", vote", vote)
 
+				}
+				// broadcast FINISH
+				finishMsg, err := CreateABAFinish(i.State, i.config, vote, ABAFinishData.ACRound)
+				if err != nil {
+					errors.Wrap(err, "uponABAFinish: failed to create ABA Finish message")
+				}
+				if i.verbose {
+					fmt.Println("\tsending ABAFinish")
+				}
+				i.Broadcast(finishMsg)
+				// update sent flag
+				abaState.setSentFinish(vote, true)
+				abaState.setFinish(i.State.Share.OperatorID, vote)
 			}
-			// broadcast FINISH
-			finishMsg, err := CreateABAFinish(i.State, i.config, vote, ABAFinishData.ACRound)
-			if err != nil {
-				errors.Wrap(err, "uponABAFinish: failed to create ABA Finish message")
-			}
-			if i.verbose {
-				fmt.Println("\tsending ABAFinish")
-			}
-			i.Broadcast(finishMsg)
-			// update sent flag
-			abaState.setSentFinish(vote, true)
-			abaState.setFinish(i.State.Share.OperatorID, vote)
 		}
 	}
 
