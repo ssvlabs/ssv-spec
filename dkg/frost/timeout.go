@@ -21,7 +21,7 @@ func (fr *Instance) UponRoundTimeout() error {
 	if err != nil {
 		return err
 	}
-	return fr.config.network.BroadcastDKGMessage(bcastMsg)
+	return fr.config.GetNetwork().BroadcastDKGMessage(bcastMsg)
 }
 
 func (fr *Instance) ProcessTimeoutMessage() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {

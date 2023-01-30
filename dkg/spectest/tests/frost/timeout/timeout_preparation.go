@@ -10,6 +10,10 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+var (
+	delayTime = 110 * time.Millisecond
+)
+
 func Timeout_Preparation() *tests.MsgProcessingSpecTest {
 	ks := testingutils.TestingKeygenKeySet()
 	network := testingutils.NewTestingNetwork()
@@ -24,8 +28,6 @@ func Timeout_Preparation() *tests.MsgProcessingSpecTest {
 		testingutils.TestingForkVersion,
 	)
 	initBytes, _ := init.Encode()
-
-	delayTime := 3 * time.Second
 
 	testingNode := dkg.NewNode(
 		&dkg.Operator{

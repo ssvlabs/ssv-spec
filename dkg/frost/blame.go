@@ -38,7 +38,7 @@ func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage
 	if err != nil {
 		return false, nil, err
 	}
-	if err := fr.config.network.BroadcastDKGMessage(bcastMsg); err != nil {
+	if err := fr.config.GetNetwork().BroadcastDKGMessage(bcastMsg); err != nil {
 		return false, nil, err
 	}
 
@@ -79,7 +79,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bo
 	if err != nil {
 		return false, nil, err
 	}
-	if err := fr.config.network.BroadcastDKGMessage(bcastMsg); err != nil {
+	if err := fr.config.GetNetwork().BroadcastDKGMessage(bcastMsg); err != nil {
 		return false, nil, err
 	}
 
@@ -116,7 +116,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, m
 	if err != nil {
 		return false, nil, err
 	}
-	if err := fr.config.network.BroadcastDKGMessage(bcastMsg); err != nil {
+	if err := fr.config.GetNetwork().BroadcastDKGMessage(bcastMsg); err != nil {
 		return false, nil, err
 	}
 

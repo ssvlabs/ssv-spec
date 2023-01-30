@@ -267,13 +267,15 @@ func (r *runner) validateSignedOutput(msg *SignedOutput) error {
 
 	var (
 		root []byte
+		data types.Root
 	)
 
 	if msg.BlameData == nil {
-		root, err = msg.Data.GetRoot()
+		data = msg.Data
 	} else {
-		root, err = msg.BlameData.GetRoot()
+		data = msg.BlameData
 	}
+	root, err = types.ComputeSigningRoot(data, types.ComputeSignatureDomain(r.config.SignatureDomainType, types.DKGSignatureType))
 	if err != nil {
 		return errors.Wrap(err, "fail to get root")
 	}

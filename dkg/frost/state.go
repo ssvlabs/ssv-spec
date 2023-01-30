@@ -48,12 +48,17 @@ func (round ProtocolRound) String() string {
 // State tracks protocol's current round, stores messages in MsgContainer, stores
 // session key and operator's secret shares
 type State struct {
-	currentRound   ProtocolRound
-	roundTImer     *RoundTimer
-	participant    *frost.DkgParticipant
-	sessionSK      *ecies.PrivateKey
-	msgContainer   IMsgContainer
+	currentRound ProtocolRound
+	// underlying participant from frost lib
+	participant *frost.DkgParticipant
+	// session keypair for other operators to encrypt messages sent to this operator
+	sessionSK *ecies.PrivateKey
+	// a container to store messages for each round from each operator
+	msgContainer IMsgContainer
+	// shares generated for each operator using shamir secret sharing in round 1
 	operatorShares map[uint32]*bls.SecretKey
+	// underlying timer for timeout
+	roundTImer *RoundTimer
 }
 
 func initState() *State {

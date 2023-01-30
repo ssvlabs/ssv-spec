@@ -226,7 +226,7 @@ const (
 	InconsistentMessage BlameType = iota
 	// InvalidShare refers to an operator sending invalid share
 	InvalidShare
-	//// InvalidMessage refers to messages containing invalid values
+	// InvalidMessage refers to messages containing invalid values
 	InvalidMessage
 )
 

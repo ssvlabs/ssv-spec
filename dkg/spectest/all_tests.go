@@ -3,6 +3,9 @@ package spectest
 import (
 	"testing"
 
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/blame"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/keygen"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/resharing"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/timeout"
 )
 
@@ -15,13 +18,13 @@ var AllTests = []SpecTest{
 	// tests.HappyFlow(),
 	// tests.ResharingHappyFlow(),
 
-	// keygen.HappyFlow(),
-	// resharing.HappyFlow(),
-	// blame.BlameTypeInvalidCommitment_HappyFlow(),
-	// blame.BlameTypeInvalidScalar_HappyFlow(),
-	// blame.BlameTypeInconsistentMessage_HappyFlow(),
-	// blame.BlameTypeInvalidShare_HappyFlow(),
-	// blame.BlameTypeInvalidShare_FailedDecrypt_HappyFlow(),
+	keygen.HappyFlow(),
+	resharing.HappyFlow(),
+	blame.BlameTypeInvalidCommitment_HappyFlow(),
+	blame.BlameTypeInvalidScalar_HappyFlow(),
+	blame.BlameTypeInconsistentMessage_HappyFlow(),
+	blame.BlameTypeInvalidShare_HappyFlow(),
+	blame.BlameTypeInvalidShare_FailedDecrypt_HappyFlow(),
 
 	timeout.Timeout_Preparation(),
 	timeout.Timeout_Round1(),

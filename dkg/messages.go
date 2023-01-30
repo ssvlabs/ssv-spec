@@ -175,6 +175,8 @@ type Reshare struct {
 	OperatorIDs []types.OperatorID
 	// Threshold is the threshold of the new set
 	Threshold uint16
+	// list of old operators selected by user upon reshare request
+	OldOperatorIDs []types.OperatorID
 }
 
 func (msg *Reshare) Validate() error {
@@ -202,6 +204,19 @@ func (msg *Reshare) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *Reshare) Decode(data []byte) error {
 	return json.Unmarshal(data, msg)
+}
+
+type ReshareParams struct {
+	OldKeygenOutput *KeyGenOutput
+}
+
+func (reshareMsg *ReshareParams) LoadFromStorage(pk types.ValidatorPK, storage Storage) error {
+	keygenOutput, err := storage.GetKeyGenOutput(pk)
+	if err != nil {
+		return errors.Wrap(err, "could not find the keygen output from storage")
+	}
+	reshareMsg.OldKeygenOutput = keygenOutput
+	return nil
 }
 
 // Output is the last message in every DKG which marks a specific node's end of process

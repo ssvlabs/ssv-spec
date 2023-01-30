@@ -1,8 +1,6 @@
 package timeout
 
 import (
-	"time"
-
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
@@ -24,8 +22,6 @@ func Timeout_Round2() *tests.MsgProcessingSpecTest {
 		testingutils.TestingForkVersion,
 	)
 	initBytes, _ := init.Encode()
-
-	delayTime := 3 * time.Second
 
 	testingNode := dkg.NewNode(
 		&dkg.Operator{

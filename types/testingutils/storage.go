@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"encoding/hex"
+
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
 )
