@@ -55,7 +55,15 @@ func SevenOperators() *MsgProcessingSpecTest {
 	// msgs for VCBC agreement
 
 	readyMsgs := make([]*alea.SignedMessage, 0)
-	for opID := 1; opID <= STRONG_SUPPORT; opID++ {
+	signedMessage := testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[types.OperatorID(1)], types.OperatorID(1), &alea.Message{
+		MsgType:    alea.VCBCReadyMsgType,
+		Height:     alea.FirstHeight,
+		Round:      alea.FirstRound,
+		Identifier: []byte{1, 2, 3, 4},
+		Data:       testingutils.VCBCReadyDataBytes(hash, priority, author),
+	})
+	readyMsgs = append(readyMsgs, signedMessage)
+	for opID := 2; opID <= STRONG_SUPPORT; opID++ {
 		signedMessage := testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 			MsgType:    alea.VCBCReadyMsgType,
 			Height:     alea.FirstHeight,
@@ -81,28 +89,29 @@ func SevenOperators() *MsgProcessingSpecTest {
 	// init
 	vote := byte(1)
 	round := alea.FirstRound
+	acRound := alea.FirstACRound
 
-	for opID := 1; opID <= N_OPERATORS; opID++ {
+	for opID := 2; opID <= N_OPERATORS; opID++ {
 		signedMessage := testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 			MsgType:    alea.ABAInitMsgType,
 			Height:     alea.FirstHeight,
 			Round:      alea.FirstRound,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ABAInitDataBytes(vote, round),
+			Data:       testingutils.ABAInitDataBytes(vote, round, acRound),
 		})
 		signedMessages = append(signedMessages, signedMessage)
 	}
 
 	// aux
 
-	for opID := 1; opID <= N_OPERATORS; opID++ {
+	for opID := 2; opID <= N_OPERATORS; opID++ {
 		if opID != MAIN_OPERATOR {
 			signedMessage := testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 				MsgType:    alea.ABAAuxMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ABAAuxDataBytes(vote, round),
+				Data:       testingutils.ABAAuxDataBytes(vote, round, acRound),
 			})
 			signedMessages = append(signedMessages, signedMessage)
 		}
@@ -111,14 +120,14 @@ func SevenOperators() *MsgProcessingSpecTest {
 	// conf
 	votes := []byte{1}
 
-	for opID := 1; opID <= N_OPERATORS; opID++ {
+	for opID := 2; opID <= N_OPERATORS; opID++ {
 		if opID != MAIN_OPERATOR {
 			signedMessage := testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 				MsgType:    alea.ABAConfMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ABAConfDataBytes(votes, round),
+				Data:       testingutils.ABAConfDataBytes(votes, round, acRound),
 			})
 			signedMessages = append(signedMessages, signedMessage)
 		}
@@ -126,14 +135,14 @@ func SevenOperators() *MsgProcessingSpecTest {
 
 	// finish
 
-	for opID := 1; opID <= N_OPERATORS; opID++ {
+	for opID := 2; opID <= N_OPERATORS; opID++ {
 		if opID != MAIN_OPERATOR {
 			signedMessage := testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 				MsgType:    alea.ABAFinishMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ABAFinishDataBytes(vote),
+				Data:       testingutils.ABAFinishDataBytes(vote, acRound),
 			})
 			signedMessages = append(signedMessages, signedMessage)
 		}
@@ -142,9 +151,16 @@ func SevenOperators() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow seven operators",
 		Pre:           pre,
-		PostRoot:      "8c8af84893fb1de3b1b881d22ec492011909878c5ff331e91508cb5665b7dab4",
+		PostRoot:      "3cdcc56a3569b3f81a760d0b3d713a993e7bd1a8f77b28b8edd5f0383f315c99",
 		InputMessages: signedMessages,
 		OutputMessages: []*alea.SignedMessage{
+			testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+				MsgType:    alea.ABAInitMsgType,
+				Height:     alea.FirstHeight,
+				Round:      alea.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.ABAInitDataBytes(byte(0), round, acRound),
+			}),
 			testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.VCBCSendMsgType,
 				Height:     alea.FirstHeight,
@@ -164,35 +180,42 @@ func SevenOperators() *MsgProcessingSpecTest {
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ABAInitDataBytes(vote, round),
+				Data:       testingutils.ABAInitDataBytes(vote, round, acRound),
 			}),
 			testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAAuxMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ABAAuxDataBytes(vote, round),
+				Data:       testingutils.ABAAuxDataBytes(vote, round, acRound),
 			}),
 			testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAConfMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ABAConfDataBytes(votes, round),
+				Data:       testingutils.ABAConfDataBytes(votes, round, acRound),
 			}),
 			testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAFinishMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ABAFinishDataBytes(vote),
+				Data:       testingutils.ABAFinishDataBytes(vote, acRound),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAInitMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ABAInitDataBytes(vote, round+1),
+				Data:       testingutils.ABAInitDataBytes(vote, round+1, acRound),
+			}),
+			testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+				MsgType:    alea.ABAInitMsgType,
+				Height:     alea.FirstHeight,
+				Round:      alea.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.ABAInitDataBytes(byte(0), round, acRound+1),
 			}),
 		},
 	}

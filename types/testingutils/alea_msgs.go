@@ -62,33 +62,37 @@ var FillerDataBytes = func(entries [][]*alea.ProposalData, priorities []alea.Pri
 	ret, _ := d.Encode()
 	return ret
 }
-var ABAInitDataBytes = func(vote byte, round alea.Round) []byte {
+var ABAInitDataBytes = func(vote byte, round alea.Round, acRound alea.ACRound) []byte {
 	d := &alea.ABAInitData{
-		Vote:  vote,
-		Round: round,
+		Vote:    vote,
+		Round:   round,
+		ACRound: acRound,
 	}
 	ret, _ := d.Encode()
 	return ret
 }
-var ABAAuxDataBytes = func(vote byte, round alea.Round) []byte {
+var ABAAuxDataBytes = func(vote byte, round alea.Round, acRound alea.ACRound) []byte {
 	d := &alea.ABAAuxData{
-		Vote:  vote,
-		Round: round,
+		Vote:    vote,
+		Round:   round,
+		ACRound: acRound,
 	}
 	ret, _ := d.Encode()
 	return ret
 }
-var ABAConfDataBytes = func(votes []byte, round alea.Round) []byte {
+var ABAConfDataBytes = func(votes []byte, round alea.Round, acRound alea.ACRound) []byte {
 	d := &alea.ABAConfData{
-		Votes: votes,
-		Round: round,
+		Votes:   votes,
+		Round:   round,
+		ACRound: acRound,
 	}
 	ret, _ := d.Encode()
 	return ret
 }
-var ABAFinishDataBytes = func(vote byte) []byte {
+var ABAFinishDataBytes = func(vote byte, acRound alea.ACRound) []byte {
 	d := &alea.ABAFinishData{
-		Vote: vote,
+		Vote:    vote,
+		ACRound: acRound,
 	}
 	ret, _ := d.Encode()
 	return ret

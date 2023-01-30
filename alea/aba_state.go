@@ -19,7 +19,7 @@ type ABAState struct {
 	SentConf   map[Round]bool
 	SentFinish []bool
 	// current ABA round
-	ACRound Round
+	ACRound ACRound
 	// value inputed to ABA
 	Vin map[Round]byte
 	// value decided by ABA
@@ -32,7 +32,7 @@ type ABAState struct {
 	Terminate bool
 }
 
-func NewABAState(acRound Round) *ABAState {
+func NewABAState(acRound ACRound) *ABAState {
 	abaState := &ABAState{
 		ABAInitContainer:   NewMsgContainer(),
 		ABAAuxContainer:    NewMsgContainer(),
@@ -53,7 +53,7 @@ func NewABAState(acRound Round) *ABAState {
 		Values:             make(map[Round][]byte),
 	}
 
-	abaState.InitMaps(FirstRound)
+	abaState.InitializeRound(FirstRound)
 	abaState.FinishCounter[0] = make([]types.OperatorID, 0)
 	abaState.FinishCounter[1] = make([]types.OperatorID, 0)
 
@@ -65,7 +65,7 @@ func (s *ABAState) Coin(round Round) byte {
 	return byte(round % 2)
 }
 
-func (s *ABAState) InitMaps(round Round) {
+func (s *ABAState) InitializeRound(round Round) {
 
 	if _, exists := s.InitCounter[round]; !exists {
 		s.InitCounter[round] = make(map[byte][]types.OperatorID)
@@ -101,25 +101,21 @@ func (s *ABAState) InitMaps(round Round) {
 func (s *ABAState) IncrementRound() {
 	// update info
 	s.Round += 1
-	s.InitMaps(s.Round)
+	s.InitializeRound(s.Round)
 }
 
-func (s *ABAState) hasInit(round Round, operatorID types.OperatorID) bool {
-	for _, vote := range []byte{0, 1} {
-		for _, opID := range s.InitCounter[round][vote] {
-			if opID == operatorID {
-				return true
-			}
+func (s *ABAState) hasInit(round Round, operatorID types.OperatorID, vote byte) bool {
+	for _, opID := range s.InitCounter[round][vote] {
+		if opID == operatorID {
+			return true
 		}
 	}
 	return false
 }
-func (s *ABAState) hasAux(round Round, operatorID types.OperatorID) bool {
-	for _, vote := range []byte{0, 1} {
-		for _, opID := range s.AuxCounter[round][vote] {
-			if opID == operatorID {
-				return true
-			}
+func (s *ABAState) hasAux(round Round, operatorID types.OperatorID, vote byte) bool {
+	for _, opID := range s.AuxCounter[round][vote] {
+		if opID == operatorID {
+			return true
 		}
 	}
 	return false
@@ -233,4 +229,12 @@ func (s *ABAState) setVInput(round Round, vote byte) {
 }
 func (s *ABAState) getVInput(round Round) byte {
 	return s.Vin[round]
+}
+
+func (s *ABAState) setDecided(vote byte) {
+	s.Vdecided = vote
+}
+
+func (s *ABAState) setTerminate(value bool) {
+	s.Terminate = value
 }

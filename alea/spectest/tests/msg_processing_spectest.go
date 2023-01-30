@@ -22,6 +22,7 @@ type MsgProcessingSpecTest struct {
 	OutputMessages     []*alea.SignedMessage
 	ExpectedError      string
 	ExpectedTimerState *testingutils.TimerStateAlea
+	DontRunAC          bool
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
@@ -32,6 +33,9 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		}
 	}
 
+	if !test.DontRunAC {
+		go test.Pre.Start([]byte{1, 2, 3, 4}, alea.FirstHeight)
+	}
 	var lastErr error
 	for _, msg := range test.InputMessages {
 		_, _, _, err := test.Pre.ProcessMsg(msg)
@@ -39,6 +43,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 			lastErr = err
 		}
 	}
+
+	test.Pre.State.StopAgreement = true
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)

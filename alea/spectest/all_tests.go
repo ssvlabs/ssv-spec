@@ -5,6 +5,7 @@ import (
 
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea/spectest/tests"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea/spectest/tests/messages"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea/spectest/tests/proposal"
 )
 
 type SpecTest interface {
@@ -47,4 +48,10 @@ var AllTests = []SpecTest{
 	messages.CreateVCBCFinal(),
 	messages.CreateVCBCRequest(),
 	messages.CreateVCBCAnswer(),
+
+	proposal.MultiSigner(),
+	proposal.PostDecided(),
+	proposal.UnknownSigner(),
+	proposal.WrongHeight(),
+	proposal.WrongSignature(),
 }

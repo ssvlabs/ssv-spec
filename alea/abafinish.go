@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage, abaFinishMsgContainer *MsgContainer) error {
+func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 	if i.verbose {
 		fmt.Println("uponABAFinish")
 	}
@@ -17,45 +17,54 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage, abaFinishMsgCon
 		errors.Wrap(err, "uponABAFinish: could not get ABAFinishData from signedABAConf")
 	}
 
+	// if future round -> intialize future state
+	if ABAFinishData.ACRound > i.State.ACState.ACRound {
+		i.State.ACState.InitializeRound(ABAFinishData.ACRound)
+	}
+	// old message -> ignore
+	if ABAFinishData.ACRound < i.State.ACState.ACRound {
+		return nil
+	}
+
+	abaState := i.State.ACState.GetABAState(ABAFinishData.ACRound)
+
 	// add the message to the container
-	abaFinishMsgContainer.AddMsg(signedABAFinish)
+	abaState.ABAFinishContainer.AddMsg(signedABAFinish)
 
 	// sender
 	senderID := signedABAFinish.GetSigners()[0]
 
-	alreadyReceived := i.State.ABAState.hasFinish(senderID)
+	alreadyReceived := abaState.hasFinish(senderID)
 	if i.verbose {
 		fmt.Println("\tsenderID:", senderID, ", vote:", ABAFinishData.Vote, ", already received before:", alreadyReceived)
 	}
-	// if already received this msg, return
-	if alreadyReceived {
-		return nil
-	}
+	// if never received this msg, update
+	if !alreadyReceived {
 
-	// get vote from FINISH message
-	vote := ABAFinishData.Vote
+		// get vote from FINISH message
+		vote := ABAFinishData.Vote
 
-	// increment counter
-	i.State.ABAState.setFinish(senderID, vote)
-	if i.verbose {
-		fmt.Println("\tincremented finish counter:", i.State.ABAState.FinishCounter)
-	}
-
-	if i.verbose {
-		fmt.Println("\tSentFinish:", i.State.ABAState.SentFinish)
+		// increment counter
+		abaState.setFinish(senderID, vote)
+		if i.verbose {
+			fmt.Println("\tincremented finish counter:", abaState.FinishCounter)
+		}
+		if i.verbose {
+			fmt.Println("\tSentFinish:", abaState.SentFinish)
+		}
 	}
 
 	// if FINISH(b) reached partial quorum and never broadcasted FINISH(b), broadcast
 	for _, vote := range []byte{0, 1} {
 
-		if !i.State.ABAState.sentFinish(vote) && i.State.ABAState.countFinish(vote) >= i.State.Share.PartialQuorum {
+		if !abaState.sentFinish(vote) && abaState.countFinish(vote) >= i.State.Share.PartialQuorum {
 			if i.verbose {
 				fmt.Println("\treached partial quorum of finish and never sent -> sending new, for vote:", vote)
-				fmt.Println("\tsentFinish[vote]:", i.State.ABAState.sentFinish(vote), ", vote", vote)
+				fmt.Println("\tsentFinish[vote]:", abaState.sentFinish(vote), ", vote", vote)
 
 			}
 			// broadcast FINISH
-			finishMsg, err := CreateABAFinish(i.State, i.config, vote)
+			finishMsg, err := CreateABAFinish(i.State, i.config, vote, ABAFinishData.ACRound)
 			if err != nil {
 				errors.Wrap(err, "uponABAFinish: failed to create ABA Finish message")
 			}
@@ -64,18 +73,19 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage, abaFinishMsgCon
 			}
 			i.Broadcast(finishMsg)
 			// update sent flag
-			i.State.ABAState.setSentFinish(vote, true)
+			abaState.setSentFinish(vote, true)
+			abaState.setFinish(i.State.Share.OperatorID, vote)
 		}
 	}
 
 	// if FINISH(b) reached Quorum, decide for b and send termination signal
 	for _, vote := range []byte{0, 1} {
-		if i.State.ABAState.countFinish(vote) >= i.State.Share.Quorum {
+		if abaState.countFinish(vote) >= i.State.Share.Quorum {
 			if i.verbose {
 				fmt.Println("\treached quorum for vote:", vote)
 			}
-			i.State.ABAState.Vdecided = vote
-			i.State.ABAState.Terminate = true
+			abaState.setDecided(vote)
+			abaState.setTerminate(true)
 		}
 	}
 
@@ -119,9 +129,10 @@ func isValidABAFinish(
 	return nil
 }
 
-func CreateABAFinish(state *State, config IConfig, vote byte) (*SignedMessage, error) {
+func CreateABAFinish(state *State, config IConfig, vote byte, acRound ACRound) (*SignedMessage, error) {
 	ABAFinishData := &ABAFinishData{
-		Vote: vote,
+		Vote:    vote,
+		ACRound: acRound,
 	}
 	dataByts, err := ABAFinishData.Encode()
 	if err != nil {

@@ -1,31 +1,32 @@
-package tests
+package proposal
 
 import (
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea/spectest/tests"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 	"github.com/pkg/errors"
 )
 
-// ThirteenOperators tests a simple full happy flow until decided
-func ThirteenOperators() *MsgProcessingSpecTest {
+// PostDecided: happy flow + same proposal again
+func PostDecided() *tests.MsgProcessingSpecTest {
 
-	pre := testingutils.ThirteenOperatorsInstanceAlea()
+	pre := testingutils.BaseInstanceAlea()
 
-	N_OPERATORS := 13
-	STRONG_SUPPORT := 9
-	// WEAK_SUPPORT := 5
+	N_OPERATORS := 4
+	STRONG_SUPPORT := 3
+	// WEAK_SUPPORT := 2
 	MAIN_OPERATOR := 1
 
 	// client requests
-	signedProposal1 := testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+	signedProposal1 := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 		MsgType:    alea.ProposalMsgType,
 		Height:     alea.FirstHeight,
 		Round:      alea.FirstRound,
 		Identifier: []byte{1, 2, 3, 4},
 		Data:       testingutils.ProposalDataBytesAlea([]byte{1, 2, 3, 4}),
 	})
-	signedProposal2 := testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+	signedProposal2 := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 		MsgType:    alea.ProposalMsgType,
 		Height:     alea.FirstHeight,
 		Round:      alea.FirstRound,
@@ -55,7 +56,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 	// msgs for VCBC agreement
 
 	readyMsgs := make([]*alea.SignedMessage, 0)
-	signedMessage := testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[types.OperatorID(1)], types.OperatorID(1), &alea.Message{
+	signedMessage := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[types.OperatorID(1)], types.OperatorID(1), &alea.Message{
 		MsgType:    alea.VCBCReadyMsgType,
 		Height:     alea.FirstHeight,
 		Round:      alea.FirstRound,
@@ -64,7 +65,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 	})
 	readyMsgs = append(readyMsgs, signedMessage)
 	for opID := 2; opID <= STRONG_SUPPORT; opID++ {
-		signedMessage := testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
+		signedMessage := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 			MsgType:    alea.VCBCReadyMsgType,
 			Height:     alea.FirstHeight,
 			Round:      alea.FirstRound,
@@ -92,7 +93,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 	acRound := alea.FirstACRound
 
 	for opID := 2; opID <= N_OPERATORS; opID++ {
-		signedMessage := testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
+		signedMessage := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 			MsgType:    alea.ABAInitMsgType,
 			Height:     alea.FirstHeight,
 			Round:      alea.FirstRound,
@@ -106,7 +107,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 
 	for opID := 2; opID <= N_OPERATORS; opID++ {
 		if opID != MAIN_OPERATOR {
-			signedMessage := testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
+			signedMessage := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 				MsgType:    alea.ABAAuxMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
@@ -122,7 +123,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 
 	for opID := 2; opID <= N_OPERATORS; opID++ {
 		if opID != MAIN_OPERATOR {
-			signedMessage := testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
+			signedMessage := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 				MsgType:    alea.ABAConfMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
@@ -137,7 +138,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 
 	for opID := 2; opID <= N_OPERATORS; opID++ {
 		if opID != MAIN_OPERATOR {
-			signedMessage := testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
+			signedMessage := testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[types.OperatorID(opID)], types.OperatorID(opID), &alea.Message{
 				MsgType:    alea.ABAFinishMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
@@ -148,69 +149,71 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 		}
 	}
 
-	return &MsgProcessingSpecTest{
-		Name:          "happy flow thirteen operators",
+	signedMessages = append(signedMessages, signedProposal1)
+
+	return &tests.MsgProcessingSpecTest{
+		Name:          "post decided proposal",
 		Pre:           pre,
-		PostRoot:      "055bae24811db89046fe1e1d47754a7da8ea27461e13f43741b81b9f6403b1bf",
+		PostRoot:      "2bc514a8239fbaa6ed58507afbfe2ad3bee86282500e42cb227b58d1018cf630",
 		InputMessages: signedMessages,
 		OutputMessages: []*alea.SignedMessage{
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAInitMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.ABAInitDataBytes(byte(0), round, acRound),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.VCBCSendMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.VCBCSendDataBytes([]*alea.ProposalData{proposalData1, proposalData2}, priority, author),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.VCBCFinalMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.VCBCFinalDataBytes(hash, priority, aggregatedMsgBytes, author),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAInitMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.ABAInitDataBytes(vote, round, acRound),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAAuxMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.ABAAuxDataBytes(vote, round, acRound),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAConfMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.ABAConfDataBytes(votes, round, acRound),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAFinishMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.ABAFinishDataBytes(vote, acRound),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAInitMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.ABAInitDataBytes(vote, round+1, acRound),
 			}),
-			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
 				MsgType:    alea.ABAInitMsgType,
 				Height:     alea.FirstHeight,
 				Round:      alea.FirstRound,
@@ -218,5 +221,6 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 				Data:       testingutils.ABAInitDataBytes(byte(0), round, acRound+1),
 			}),
 		},
+		ExpectedError: "proposal already delivered",
 	}
 }

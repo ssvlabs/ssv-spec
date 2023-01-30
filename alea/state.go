@@ -95,9 +95,8 @@ type State struct {
 
 	VCBCState *VCBCState
 
-	ACRound       Round
 	StopAgreement bool
-	ABAState      *ABAState
+	ACState       *ACState
 
 	FillerMsgReceived int
 	FillGapContainer  *MsgContainer

@@ -45,14 +45,13 @@ func NewInstance(
 			FillerContainer:   NewMsgContainer(),
 			AleaDefaultRound:  FirstRound,
 			Delivered:         NewVCBCQueue(),
-			ACRound:           FirstRound,
 			StopAgreement:     false,
-			ABAState:          NewABAState(FirstRound),
+			ACState:           NewACState(),
 			FillerMsgReceived: 0,
 		},
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
-		verbose:     true,
+		verbose:     false,
 	}
 }
 
@@ -120,13 +119,13 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 		case FillerMsgType:
 			return i.uponFiller(msg, i.State.FillerContainer)
 		case ABAInitMsgType:
-			return i.uponABAInit(msg, i.State.ABAState.ABAInitContainer)
+			return i.uponABAInit(msg)
 		case ABAAuxMsgType:
-			return i.uponABAAux(msg, i.State.ABAState.ABAAuxContainer)
+			return i.uponABAAux(msg)
 		case ABAConfMsgType:
-			return i.uponABAConf(msg, i.State.ABAState.ABAConfContainer)
+			return i.uponABAConf(msg)
 		case ABAFinishMsgType:
-			return i.uponABAFinish(msg, i.State.ABAState.ABAFinishContainer)
+			return i.uponABAFinish(msg)
 		case VCBCSendMsgType:
 			return i.uponVCBCSend(msg)
 		case VCBCReadyMsgType:
@@ -253,39 +252,6 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.config.GetValueCheckF(),
 			i.State.Share.Committee,
 		)
-
-	// case PrepareMsgType:
-	// 	proposedMsg := i.State.ProposalAcceptedForCurrentRound
-	// 	if proposedMsg == nil {
-	// 		return errors.New("did not receive proposal for this round")
-	// 	}
-	// 	acceptedProposalData, err := proposedMsg.Message.GetCommitData()
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "could not get accepted proposal data")
-	// 	}
-	// 	return validSignedPrepareForHeightRoundAndValue(
-	// 		i.config,
-	// 		msg,
-	// 		i.State.Height,
-	// 		i.State.Round,
-	// 		acceptedProposalData.Data,
-	// 		i.State.Share.Committee,
-	// 	)
-	// case CommitMsgType:
-	// 	proposedMsg := i.State.ProposalAcceptedForCurrentRound
-	// 	if proposedMsg == nil {
-	// 		return errors.New("did not receive proposal for this round")
-	// 	}
-	// 	return validateCommit(
-	// 		i.config,
-	// 		msg,
-	// 		i.State.Height,
-	// 		i.State.Round,
-	// 		i.State.ProposalAcceptedForCurrentRound,
-	// 		i.State.Share.Committee,
-	// 	)
-	// case RoundChangeMsgType:
-	// 	return validRoundChange(i.State, i.config, msg, i.State.Height, msg.Message.Round)
 	default:
 		return errors.New("signed message type not supported")
 	}

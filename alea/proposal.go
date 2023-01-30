@@ -29,9 +29,9 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	// check if message has been already delivered
 	if i.State.Delivered.hasProposal(proposalDataReceived) {
 		if i.verbose {
-			fmt.Println("\talready has proposal")
+			fmt.Println("\tDelivered Queue:", i.State.Delivered, ". Has the proposal:", proposalDataReceived, i.State.Delivered.hasProposal(proposalDataReceived))
 		}
-		return nil
+		return errors.New("proposal already delivered")
 	}
 
 	// Add message to container
@@ -45,7 +45,7 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	}
 
 	// Check if container has less maximum size. If so, returns
-	if proposeMsgContainer.Len(i.State.AleaDefaultRound) < i.State.BatchSize {
+	if len(i.State.VCBCState.getM(i.State.Share.OperatorID, i.State.VCBCState.Priority)) < i.State.BatchSize {
 		if i.verbose {
 			fmt.Println("\tdidn't reach batch size")
 		}

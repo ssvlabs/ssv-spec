@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (i *Instance) uponABAConf(signedABAConf *SignedMessage, abaConfMsgContainer *MsgContainer) error {
+func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 	if i.verbose {
 		fmt.Println("uponABAConf")
 	}
@@ -17,69 +17,80 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage, abaConfMsgContainer
 		errors.Wrap(err, "uponABAConf:could not get ABAConfData from signedABAConf")
 	}
 
-	// add the message to the container
-	abaConfMsgContainer.AddMsg(signedABAConf)
-
-	// if message is old, return
-	if ABAConfData.Round < i.State.ABAState.Round {
+	// if future round -> intialize future state
+	if ABAConfData.ACRound > i.State.ACState.ACRound {
+		i.State.ACState.InitializeRound(ABAConfData.ACRound)
+	}
+	if ABAConfData.Round > i.State.ACState.GetCurrentABAState().Round {
+		i.State.ACState.GetCurrentABAState().InitializeRound(ABAConfData.Round)
+	}
+	// old message -> ignore
+	if ABAConfData.ACRound < i.State.ACState.ACRound {
 		return nil
 	}
+	if ABAConfData.Round < i.State.ACState.GetCurrentABAState().Round {
+		return nil
+	}
+
+	abaState := i.State.ACState.GetABAState(ABAConfData.ACRound)
+
+	// add the message to the containers
+	abaState.ABAConfContainer.AddMsg(signedABAConf)
 
 	// sender
 	senderID := signedABAConf.GetSigners()[0]
 
-	alreadyReceived := i.State.ABAState.hasConf(ABAConfData.Round, senderID)
+	alreadyReceived := abaState.hasConf(ABAConfData.Round, senderID)
 	if i.verbose {
 		fmt.Println("\tsenderID:", senderID, ", votes:", ABAConfData.Votes, ", round:", ABAConfData.Round, ", already received before:", alreadyReceived)
 	}
-	// if already received this msg, return
-	if alreadyReceived {
-		return nil
-	}
+	// if never received this msg, update
+	if !alreadyReceived {
 
-	// determine if votes list is contained in local round values list
-	isContained := i.State.ABAState.isContainedInValues(ABAConfData.Round, ABAConfData.Votes)
-	// list is contained -> update CONF counter
-	if isContained {
-		i.State.ABAState.setConf(ABAConfData.Round, senderID)
-		if i.verbose {
-			fmt.Println("\tupdated confcounter:", i.State.ABAState.countConf(ABAConfData.Round))
+		// determine if votes list is contained in local round values list
+		isContained := abaState.isContainedInValues(ABAConfData.Round, ABAConfData.Votes)
+		// list is contained -> update CONF counter
+		if isContained {
+			abaState.setConf(ABAConfData.Round, senderID)
+			if i.verbose {
+				fmt.Println("\tupdated confcounter:", abaState.countConf(ABAConfData.Round))
+			}
 		}
 	}
 
 	// reached strong support -> try to decide value
-	if i.State.ABAState.countConf(ABAConfData.Round) >= i.State.Share.Quorum {
+	if abaState.countConf(ABAConfData.Round) >= i.State.Share.Quorum {
 		if i.verbose {
 			fmt.Println("\treached quorum")
 		}
 
 		// get common coin
-		s := i.State.ABAState.Coin(i.State.ABAState.Round)
+		s := abaState.Coin(abaState.Round)
 		if i.verbose {
 			fmt.Println("\tcoin:", s)
 		}
 
 		// if values = {0,1}, choose randomly (i.e. coin) value for next round
-		if len(i.State.ABAState.Values[ABAConfData.Round]) == 2 {
+		if len(abaState.Values[ABAConfData.Round]) == 2 {
 
-			i.State.ABAState.setVInput(ABAConfData.Round+1, s)
+			abaState.setVInput(ABAConfData.Round+1, s)
 			if i.verbose {
-				fmt.Println("\tlength of values is 2", i.State.ABAState.Values[ABAConfData.Round], "-> storing coin to next Vin")
+				fmt.Println("\tlength of values is 2", abaState.Values[ABAConfData.Round], "-> storing coin to next Vin")
 			}
 		} else {
 			if i.verbose {
-				fmt.Println("\tlength of values is 1:", i.State.ABAState.Values[ABAConfData.Round])
+				fmt.Println("\tlength of values is 1:", abaState.Values[ABAConfData.Round])
 			}
-			i.State.ABAState.setVInput(ABAConfData.Round+1, i.State.ABAState.GetValues(ABAConfData.Round)[0])
+			abaState.setVInput(ABAConfData.Round+1, abaState.GetValues(ABAConfData.Round)[0])
 
 			// if value has only one value, sends FINISH
-			if i.State.ABAState.GetValues(ABAConfData.Round)[0] == s {
+			if abaState.GetValues(ABAConfData.Round)[0] == s {
 				if i.verbose {
 					fmt.Println("\tvalue equal to S")
 				}
 				// check if indeed never sent FINISH message for this vote
-				if !i.State.ABAState.sentFinish(s) {
-					finishMsg, err := CreateABAFinish(i.State, i.config, s)
+				if !abaState.sentFinish(s) {
+					finishMsg, err := CreateABAFinish(i.State, i.config, s, ABAConfData.ACRound)
 					if err != nil {
 						errors.Wrap(err, "uponABAConf: failed to create ABA Finish message")
 					}
@@ -87,9 +98,10 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage, abaConfMsgContainer
 						fmt.Println("\tSending ABAFinish")
 					}
 					i.Broadcast(finishMsg)
-					i.State.ABAState.setSentFinish(s, true)
+					abaState.setSentFinish(s, true)
+					abaState.setFinish(i.State.Share.OperatorID, s)
 					if i.verbose {
-						fmt.Println("\tupdated SentFinish:", i.State.ABAState.SentFinish)
+						fmt.Println("\tupdated SentFinish:", abaState.SentFinish)
 					}
 				}
 			}
@@ -97,20 +109,20 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage, abaConfMsgContainer
 
 		// increment round
 		if i.verbose {
-			fmt.Println("\twill icrement round. Round now:", i.State.ABAState.Round)
+			fmt.Println("\twill icrement round. Round now:", abaState.Round)
 		}
-		i.State.ABAState.IncrementRound()
+		abaState.IncrementRound()
 		if i.verbose {
-			fmt.Println("\tnew round:", i.State.ABAState.Round)
+			fmt.Println("\tnew round:", abaState.Round)
 		}
 
 		// start new round sending INIT message with vote
-		initMsg, err := CreateABAInit(i.State, i.config, i.State.ABAState.getVInput(i.State.ABAState.Round), i.State.ABAState.Round)
+		initMsg, err := CreateABAInit(i.State, i.config, abaState.getVInput(abaState.Round), abaState.Round, ABAConfData.ACRound)
 		if err != nil {
 			errors.Wrap(err, "uponABAConf: failed to create ABA Init message")
 		}
 		if i.verbose {
-			fmt.Println("\tSending ABAInit with new Vin:", i.State.ABAState.Vin[i.State.ABAState.Round], ", for round:", i.State.ABAState.Round)
+			fmt.Println("\tSending ABAInit with new Vin:", abaState.Vin[abaState.Round], ", for round:", abaState.Round)
 		}
 		i.Broadcast(initMsg)
 	}
@@ -157,10 +169,11 @@ func isValidABAConf(
 	return nil
 }
 
-func CreateABAConf(state *State, config IConfig, votes []byte, round Round) (*SignedMessage, error) {
+func CreateABAConf(state *State, config IConfig, votes []byte, round Round, acRound ACRound) (*SignedMessage, error) {
 	ABAConfData := &ABAConfData{
-		Votes: votes,
-		Round: round,
+		Votes:   votes,
+		Round:   round,
+		ACRound: acRound,
 	}
 	dataByts, err := ABAConfData.Encode()
 	if err != nil {

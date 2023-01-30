@@ -175,8 +175,9 @@ func (d *FillerData) Validate() error {
 // =========================
 
 type ABAInitData struct {
-	Vote  byte
-	Round Round
+	Vote    byte
+	Round   Round
+	ACRound ACRound
 }
 
 // Encode returns a msg encoded bytes or error
@@ -203,8 +204,9 @@ func (d *ABAInitData) Validate() error {
 // =========================
 
 type ABAAuxData struct {
-	Vote  byte
-	Round Round
+	Vote    byte
+	Round   Round
+	ACRound ACRound
 }
 
 // Encode returns a msg encoded bytes or error
@@ -231,8 +233,9 @@ func (d *ABAAuxData) Validate() error {
 // =========================
 
 type ABAConfData struct {
-	Votes []byte
-	Round Round
+	Votes   []byte
+	Round   Round
+	ACRound ACRound
 }
 
 // Encode returns a msg encoded bytes or error
@@ -264,7 +267,8 @@ func (d *ABAConfData) Validate() error {
 // =========================
 
 type ABAFinishData struct {
-	Vote byte
+	Vote    byte
+	ACRound ACRound
 }
 
 // Encode returns a msg encoded bytes or error

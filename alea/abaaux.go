@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (i *Instance) uponABAAux(signedABAAux *SignedMessage, abaAuxMsgContainer *MsgContainer) error {
+func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 	if i.verbose {
 		fmt.Println("uponABAAux")
 	}
@@ -17,48 +17,58 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage, abaAuxMsgContainer *M
 		errors.Wrap(err, "uponABAAux: could not get ABAAuxData from signedABAAux")
 	}
 
-	// add the message to the containers
-	abaAuxMsgContainer.AddMsg(signedABAAux)
-
-	// if message is old, return
-	if ABAAuxData.Round < i.State.ABAState.Round {
+	// if future round -> intialize future state
+	if ABAAuxData.ACRound > i.State.ACState.ACRound {
+		i.State.ACState.InitializeRound(ABAAuxData.ACRound)
+	}
+	if ABAAuxData.Round > i.State.ACState.GetCurrentABAState().Round {
+		i.State.ACState.GetCurrentABAState().InitializeRound(ABAAuxData.Round)
+	}
+	// old message -> ignore
+	if ABAAuxData.ACRound < i.State.ACState.ACRound {
 		return nil
 	}
+	if ABAAuxData.Round < i.State.ACState.GetCurrentABAState().Round {
+		return nil
+	}
+
+	abaState := i.State.ACState.GetABAState(ABAAuxData.ACRound)
+
+	// add the message to the containers
+	abaState.ABAAuxContainer.AddMsg(signedABAAux)
 
 	// sender
 	senderID := signedABAAux.GetSigners()[0]
 
-	alreadyReceived := i.State.ABAState.hasAux(ABAAuxData.Round, senderID)
+	alreadyReceived := abaState.hasAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
 	if i.verbose {
 		fmt.Println("\tsenderID:", senderID, ", vote:", ABAAuxData.Vote, ", round:", ABAAuxData.Round, ", already received before:", alreadyReceived)
 	}
-	// if already received this msg, return
-	if alreadyReceived {
-		return nil
-	}
-
-	voteInLocalValues := i.State.ABAState.existsInValues(ABAAuxData.Round, ABAAuxData.Vote)
-	if i.verbose {
-		fmt.Println("\tvote received is in local values:", voteInLocalValues, ". Local values (of round", ABAAuxData.Round, "):", i.State.ABAState.Values[ABAAuxData.Round], ". Vote:", ABAAuxData.Vote)
-	}
-
-	if voteInLocalValues {
-		// increment counter
-
-		i.State.ABAState.setAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
+	// if never received this msg, increment counter
+	if !alreadyReceived {
+		voteInLocalValues := abaState.existsInValues(ABAAuxData.Round, ABAAuxData.Vote)
 		if i.verbose {
-			fmt.Println("\tincremented aux counter. Vote:", ABAAuxData.Vote)
+			fmt.Println("\tvote received is in local values:", voteInLocalValues, ". Local values (of round", ABAAuxData.Round, "):", abaState.Values[ABAAuxData.Round], ". Vote:", ABAAuxData.Vote)
+		}
+
+		if voteInLocalValues {
+			// increment counter
+
+			abaState.setAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
+			if i.verbose {
+				fmt.Println("\tincremented aux counter. Vote:", ABAAuxData.Vote)
+			}
 		}
 	}
 
 	// if received 2f+1 AUX messages, try to send CONF
-	if (i.State.ABAState.countAux(ABAAuxData.Round, 0)+i.State.ABAState.countAux(ABAAuxData.Round, 1)) >= i.State.Share.Quorum && !i.State.ABAState.sentConf(ABAAuxData.Round) {
+	if (abaState.countAux(ABAAuxData.Round, 0)+abaState.countAux(ABAAuxData.Round, 1)) >= i.State.Share.Quorum && !abaState.sentConf(ABAAuxData.Round) {
 		if i.verbose {
 			fmt.Println("\tgot quorum of AUX and never sent conf")
 		}
 
 		// broadcast CONF message
-		confMsg, err := CreateABAConf(i.State, i.config, i.State.ABAState.Values[ABAAuxData.Round], ABAAuxData.Round)
+		confMsg, err := CreateABAConf(i.State, i.config, abaState.Values[ABAAuxData.Round], ABAAuxData.Round, ABAAuxData.ACRound)
 		if err != nil {
 			errors.Wrap(err, "uponABAAux: failed to create ABA Conf message after strong support")
 		}
@@ -68,7 +78,8 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage, abaAuxMsgContainer *M
 		i.Broadcast(confMsg)
 
 		// update sent flag
-		i.State.ABAState.setSentConf(ABAAuxData.Round, true)
+		abaState.setSentConf(ABAAuxData.Round, true)
+		abaState.setConf(ABAAuxData.Round, i.State.Share.OperatorID)
 	}
 
 	return nil
@@ -111,10 +122,11 @@ func isValidABAAux(
 	return nil
 }
 
-func CreateABAAux(state *State, config IConfig, vote byte, round Round) (*SignedMessage, error) {
+func CreateABAAux(state *State, config IConfig, vote byte, round Round, acRound ACRound) (*SignedMessage, error) {
 	ABAAuxData := &ABAAuxData{
-		Vote:  vote,
-		Round: round,
+		Vote:    vote,
+		Round:   round,
+		ACRound: acRound,
 	}
 	dataByts, err := ABAAuxData.Encode()
 	if err != nil {

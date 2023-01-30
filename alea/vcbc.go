@@ -33,6 +33,28 @@ func (i *Instance) StartVCBC(priority Priority) error {
 		fmt.Println("\tNew queue:", i.State.VCBCState.queues[author])
 	}
 
+	if err = i.AddOwnVCBCReady(proposals, priority); err != nil {
+		return errors.Wrap(err, "StartVCBC: could not perform own VCBCReady")
+	}
+	if i.verbose {
+		fmt.Println("\tCreated own VCBCReady")
+	}
+
+	return nil
+}
+
+func (i *Instance) AddOwnVCBCReady(proposals []*ProposalData, priorioty Priority) error {
+
+	hash, err := GetProposalsHash(proposals)
+	if err != nil {
+		return errors.Wrap(err, "AddOwnVCBCReady: could not get hash of proposals")
+	}
+	// create VCBCReady message with proof
+	vcbcReadyMsg, err := CreateVCBCReady(i.State, i.config, hash, priorioty, i.State.Share.OperatorID)
+	if err != nil {
+		return errors.Wrap(err, "uponVCBCSend: failed to create VCBCReady message with proof")
+	}
+	i.uponVCBCReady(vcbcReadyMsg)
 	return nil
 }
 

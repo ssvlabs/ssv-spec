@@ -38,6 +38,7 @@ type CreateMsgSpecTest struct {
 	Entries        [][]*alea.ProposalData
 	Priorities     []alea.Priority
 	Round          alea.Round
+	ACRound        alea.ACRound
 	Hash           []byte
 	AggregatedMsg  []byte
 	AggregatedMsgs [][]byte
@@ -133,7 +134,7 @@ func (test *CreateMsgSpecTest) createABAInit() (*alea.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfigAlea(ks)
 
-	return alea.CreateABAInit(state, config, test.Vote, test.Round)
+	return alea.CreateABAInit(state, config, test.Vote, test.Round, test.ACRound)
 }
 
 func (test *CreateMsgSpecTest) createABAAux() (*alea.SignedMessage, error) {
@@ -144,7 +145,7 @@ func (test *CreateMsgSpecTest) createABAAux() (*alea.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfigAlea(ks)
 
-	return alea.CreateABAAux(state, config, test.Vote, test.Round)
+	return alea.CreateABAAux(state, config, test.Vote, test.Round, test.ACRound)
 }
 
 func (test *CreateMsgSpecTest) createABAConf() (*alea.SignedMessage, error) {
@@ -155,7 +156,7 @@ func (test *CreateMsgSpecTest) createABAConf() (*alea.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfigAlea(ks)
 
-	return alea.CreateABAConf(state, config, test.Votes, test.Round)
+	return alea.CreateABAConf(state, config, test.Votes, test.Round, test.ACRound)
 }
 
 func (test *CreateMsgSpecTest) createABAFinish() (*alea.SignedMessage, error) {
@@ -166,7 +167,7 @@ func (test *CreateMsgSpecTest) createABAFinish() (*alea.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfigAlea(ks)
 
-	return alea.CreateABAFinish(state, config, test.Vote)
+	return alea.CreateABAFinish(state, config, test.Vote, test.ACRound)
 }
 
 func (test *CreateMsgSpecTest) createVCBCSend() (*alea.SignedMessage, error) {
