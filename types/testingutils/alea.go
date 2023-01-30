@@ -25,7 +25,8 @@ var TestingConfigAlea = func(keySet *TestKeySet) *alea.Config {
 			return nil
 		},
 		ProposerF: func(state *alea.State, round alea.Round) types.OperatorID {
-			return 1
+			ans := int(round)%len(state.Share.Committee) + 1
+			return types.OperatorID(ans)
 		},
 		Network: NewTestingNetworkAlea(),
 		Timer:   NewTestingTimerAlea(),

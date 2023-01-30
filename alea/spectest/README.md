@@ -135,28 +135,23 @@
 - [X] ABAConf with unknown signer
 - [X] ABAConf with wrong height
 - [X] ABAConf with wrong signature
-- [ ] ABAConf with empty data
-- [ ] ABAConf duplicated
-- [ ] ABAConf with invalid votes
-- [ ] ABAConf reaching quorum
-- [ ] ABAConf not reaching quorum
-- [ ] ABAConf reaching quorum, len(values)== 1, coin same value
-- [ ] ABAConf reaching quorum, len(values)== 1, coin different value
-- [ ] ABAConf reaching quorum, len(values)== 2
-- [ ] ABAConf reaching quorum, len(values)== 1, coin same value but alredy sent Finish with same value
-- [ ] ABAConf reaching quorum, len(values)== 1, coin same value but alredy sent Finish with different value
+- [X] ABAConf with invalid votes
+- [X] ABAConf reaching quorum
+- [X] ABAConf not reaching quorum
+- [X] ABAConf receive
+- [X] ABAConf reaching two values quorum
+
 
 ### ABAFinish
 - [X] ABAFinish with multi signer
 - [X] ABAFinish with unknown signer
 - [X] ABAFinish with wrong height
 - [X] ABAFinish with wrong signature
-- [ ] ABAFinish with empty data
-- [ ] ABAFinish with invalid vote
-- [ ] ABAFinish duplicated
-- [ ] ABAFinish weak support
-- [ ] ABAFinish weak support but already sent Finish
-- [ ] ABAFinish strong support
+- [X] ABAFinish with invalid vote
+- [X] ABAFinish duplicate
+- [X] ABAFinish receive
+- [X] ABAFinish receive quorum
+- [X] ABAFinish receive no quorum
 
 ### FillGap
 - [X] FillGap with multi signer
@@ -176,3 +171,6 @@
 - [X] Filler with wrong answer
 - [X] Filler with wrong data
 - [X] Filler with wrong priority
+
+### Flow
+- [X] big flow with 7 operators (2 VCBC owner, 1 VCBC received, 2 AC Rounds)

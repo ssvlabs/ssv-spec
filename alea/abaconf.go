@@ -125,6 +125,8 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 			fmt.Println("\tSending ABAInit with new Vin:", abaState.Vin[abaState.Round], ", for round:", abaState.Round)
 		}
 		i.Broadcast(initMsg)
+		abaState.setSentInit(abaState.Round, abaState.getVInput(abaState.Round), true)
+		abaState.setInit(abaState.Round, i.State.Share.OperatorID, abaState.getVInput(abaState.Round))
 	}
 
 	return nil

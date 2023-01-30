@@ -24,6 +24,9 @@ func (i *Instance) StartAgreementComponent() error {
 
 		// calculate the round leader (to get value to be decided on)
 		leader := i.config.GetProposerF()(i.State, Round(i.State.ACState.ACRound))
+		if i.verbose {
+			fmt.Println("\tLeader:", leader)
+		}
 
 		// get the local queue associated with the leader's id (create if there isn't one)
 		if _, exists := i.State.VCBCState.queues[leader]; !exists {
