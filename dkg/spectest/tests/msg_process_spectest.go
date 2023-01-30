@@ -3,6 +3,7 @@ package tests
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/bloxapp/ssv-spec/types"
@@ -19,6 +20,8 @@ type MsgProcessingSpecTest struct {
 	Output         map[types.OperatorID]*dkg.SignedOutput
 	KeySet         *testingutils.TestKeySet
 	ExpectedError  string
+
+	LastMsgDelay *time.Duration
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -30,7 +33,12 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	node := test.TestingNode
 
 	var lastErr error
-	for _, msg := range test.InputMessages {
+	for idx, msg := range test.InputMessages {
+
+		if idx+1 == len(test.InputMessages) && test.LastMsgDelay != nil {
+			time.Sleep(*test.LastMsgDelay) // adds delay to last input msg to emulate timeout
+		}
+
 		byts, _ := msg.Encode()
 		err := node.ProcessMessage(&types.SSVMessage{
 			MsgType: types.DKGMsgType,
@@ -58,6 +66,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 			require.Equal(t, types.DKGMsgType, bMsg.MsgType)
 			sMsg := &dkg.SignedMessage{}
 			require.NoError(t, sMsg.Decode(bMsg.Data))
+
 			if sMsg.Message.MsgType == dkg.OutputMsgType {
 				require.Equal(t, dkg.OutputMsgType, msg.Message.MsgType, "OutputMsgType expected")
 				o1 := &dkg.SignedOutput{}
@@ -85,6 +94,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 		}
 	}
+
 	streamed := node.GetConfig().Network.(*testingutils.TestingNetwork).DKGOutputs
 	if len(test.Output) > 0 {
 		require.Len(t, streamed, len(test.Output))

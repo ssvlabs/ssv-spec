@@ -32,6 +32,19 @@ var rounds = []ProtocolRound{
 	Timeout,
 }
 
+func (round ProtocolRound) String() string {
+	m := map[ProtocolRound]string{
+		Uninitialized: "Uninitialized",
+		Preparation:   "Preparation",
+		Round1:        "Round1",
+		Round2:        "Round2",
+		KeygenOutput:  "KeygenOutput",
+		Blame:         "Blame",
+		Timeout:       "Timeout",
+	}
+	return m[round]
+}
+
 // State tracks protocol's current round, stores messages in MsgContainer, stores
 // session key and operator's secret shares
 type State struct {

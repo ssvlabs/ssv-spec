@@ -14,7 +14,6 @@ import (
 // the new message as blame data.
 func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
-	fr.state.roundTImer.TimeoutForRound(fr.state.currentRound)
 
 	existingMessageBytes, err := existingMessage.Encode()
 	if err != nil {
@@ -56,7 +55,6 @@ func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage
 // operator
 func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
-	fr.state.roundTImer.TimeoutForRound(fr.state.currentRound)
 
 	round1Msg, err := fr.state.msgContainer.GetSignedMsg(Round1, culpritOID)
 	if err != nil {
@@ -98,7 +96,6 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bo
 // received signed message.
 func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, message *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
 	fr.state.currentRound = Blame
-	fr.state.roundTImer.TimeoutForRound(fr.state.currentRound)
 
 	bytes, err := message.Encode()
 	if err != nil {
@@ -134,7 +131,6 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, m
 // checkBlame checks validity of the blame message as per its blame type
 func (fr *Instance) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, signedMessage *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
 	fr.state.currentRound = Blame
-	fr.state.roundTImer.TimeoutForRound(fr.state.currentRound)
 
 	var valid bool
 	switch protocolMessage.BlameMessage.Type {

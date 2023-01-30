@@ -1,6 +1,8 @@
 package frost
 
-import "github.com/bloxapp/ssv-spec/dkg"
+import (
+	"github.com/bloxapp/ssv-spec/dkg"
+)
 
 func (fr *Instance) UponRoundTimeout() error {
 	if fr.state.currentRound != fr.state.roundTImer.Round() {
@@ -9,7 +11,6 @@ func (fr *Instance) UponRoundTimeout() error {
 	prevRound := fr.state.currentRound
 	fr.state.currentRound = Timeout
 
-	// create and broadcast PreparationMessage
 	msg := &ProtocolMsg{
 		Round: Timeout,
 		TimeoutMessage: &TimeoutMessage{
@@ -24,5 +25,5 @@ func (fr *Instance) UponRoundTimeout() error {
 }
 
 func (fr *Instance) ProcessTimeoutMessage() (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
-	return true, nil, nil
+	return true, &dkg.ProtocolOutcome{}, nil
 }
