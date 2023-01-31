@@ -57,7 +57,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 
 	// test output message
-	broadcastedMsgs := node.GetConfig().Network.(*testingutils.TestingNetwork).BroadcastedMsgs
+	broadcastedMsgs := node.GetConfig().GetNetwork().(*testingutils.TestingNetwork).GetBroadcastMessages()
 	if len(test.OutputMessages) > 0 {
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 

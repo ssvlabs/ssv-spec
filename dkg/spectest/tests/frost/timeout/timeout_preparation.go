@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	delayTime = 110 * time.Millisecond
+	delayTime = 2100 * (time.Millisecond)
 )
 
 func Timeout_Preparation() *tests.MsgProcessingSpecTest {

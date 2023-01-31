@@ -87,8 +87,8 @@ func newProtocol(config dkg.IConfig, instanceParams InstanceParams) dkg.Protocol
 // starting this process.
 func (fr *Instance) Start() error {
 	fr.state.roundTImer.OnTimeout(fr.UponRoundTimeout)
-	fr.state.currentRound = Preparation
-	fr.state.roundTImer.TimeoutForRound(fr.state.currentRound)
+	fr.state.SetCurrentRound(Preparation)
+	fr.state.roundTImer.TimeoutForRound(fr.state.GetCurrentRound())
 
 	// create a new dkg participant
 	ctx := make([]byte, 16)
@@ -172,17 +172,17 @@ func (fr *Instance) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolO
 
 func (fr *Instance) canProceedThisRound() bool {
 	// Note: for Resharing, Preparation (New Committee) -> Round1 (Old Committee) -> Round2 (New Committee)
-	if fr.instanceParams.isResharing() && fr.state.currentRound == Round1 {
+	if fr.instanceParams.isResharing() && fr.state.GetCurrentRound() == Round1 {
 		return fr.state.msgContainer.AllMessagesReceivedFor(Round1, fr.instanceParams.operatorsOld)
 	}
-	return fr.state.msgContainer.AllMessagesReceivedFor(fr.state.currentRound, fr.instanceParams.operators)
+	return fr.state.msgContainer.AllMessagesReceivedFor(fr.state.GetCurrentRound(), fr.instanceParams.operators)
 }
 
 func (fr *Instance) needToRunCurrentRound() bool {
 	if !fr.instanceParams.isResharing() {
 		return true // always run for new keygen
 	}
-	switch fr.state.currentRound {
+	switch fr.state.GetCurrentRound() {
 	case Preparation, Round2, KeygenOutput:
 		return fr.instanceParams.inNewCommittee()
 	case Round1:
@@ -233,7 +233,7 @@ func (fr *Instance) saveSignedMsg(msg *ProtocolMsg) (*dkg.SignedMessage, error) 
 		return nil, err
 	}
 
-	if _, err = fr.state.msgContainer.SaveMsg(fr.state.currentRound, bcastMessage); err != nil {
+	if _, err = fr.state.msgContainer.SaveMsg(fr.state.GetCurrentRound(), bcastMessage); err != nil {
 		return nil, err
 	}
 	return bcastMessage, nil

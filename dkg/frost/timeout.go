@@ -5,11 +5,11 @@ import (
 )
 
 func (fr *Instance) UponRoundTimeout() error {
-	if fr.state.currentRound != fr.state.roundTImer.Round() {
+	if fr.state.GetCurrentRound() != fr.state.roundTImer.Round() {
 		return nil
 	}
-	prevRound := fr.state.currentRound
-	fr.state.currentRound = Timeout
+	prevRound := fr.state.GetCurrentRound()
+	fr.state.SetCurrentRound(Timeout)
 
 	msg := &ProtocolMsg{
 		Round: Timeout,

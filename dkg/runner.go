@@ -300,6 +300,13 @@ func (r *runner) validateDepositDataRoot(msg *PartialDepositData) error {
 
 func (r *runner) validateDepositDataSig(msg *PartialDepositData) error {
 
+	if r.KeygenOutcome == nil ||
+		r.KeygenOutcome.ProtocolOutput == nil ||
+		r.KeygenOutcome.ProtocolOutput.OperatorPubKeys == nil {
+
+		return errors.New("missing keygen outcome or operator public keys")
+	}
+
 	// find operator and verify msg
 	sharePK, found := r.KeygenOutcome.ProtocolOutput.OperatorPubKeys[msg.Signer]
 	if !found {

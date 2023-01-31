@@ -9,8 +9,8 @@ import (
 type RoundTimeoutFunc func(ProtocolRound) time.Duration
 type OnTimeoutFn func() error
 
-var defaultTimeout int = 100
-var defaultTimeDuration = time.Millisecond
+var defaultTimeout int = 2
+var defaultTimeDuration = time.Second
 
 // RoundTimeout returns the number of seconds until next timeout for a give round
 func RoundTimeout(ProtocolRound) time.Duration {

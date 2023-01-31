@@ -2,6 +2,7 @@ package frost
 
 import (
 	"context"
+	"sync"
 
 	"github.com/coinbase/kryptology/pkg/dkg/frost"
 	ecies "github.com/ecies/go/v2"
@@ -48,7 +49,10 @@ func (round ProtocolRound) String() string {
 // State tracks protocol's current round, stores messages in MsgContainer, stores
 // session key and operator's secret shares
 type State struct {
+	// round mutex ensures atomic access to current round
+	roundMutex   *sync.Mutex
 	currentRound ProtocolRound
+
 	// underlying participant from frost lib
 	participant *frost.DkgParticipant
 	// session keypair for other operators to encrypt messages sent to this operator
@@ -67,6 +71,7 @@ func initState() *State {
 		msgContainer:   newMsgContainer(),
 		operatorShares: make(map[uint32]*bls.SecretKey),
 		roundTImer:     NewRoundTimer(context.Background(), nil),
+		roundMutex:     new(sync.Mutex),
 	}
 }
 
@@ -80,4 +85,18 @@ func (state *State) encryptByOperatorID(operatorID uint32, data []byte) ([]byte,
 		return nil, err
 	}
 	return ecies.Encrypt(sessionPK, data)
+}
+
+func (state *State) GetCurrentRound() ProtocolRound {
+	state.roundMutex.Lock()
+	defer state.roundMutex.Unlock()
+
+	return state.currentRound
+}
+
+func (state *State) SetCurrentRound(round ProtocolRound) {
+	state.roundMutex.Lock()
+	defer state.roundMutex.Unlock()
+
+	state.currentRound = round
 }
