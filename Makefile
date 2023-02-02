@@ -20,3 +20,7 @@ test:
 .PHONY: generate-jsons
 generate-jsons:
 	@go generate ./...
+
+.PHONY: generate-ssz
+generate-ssz:
+	@go generate ./...
