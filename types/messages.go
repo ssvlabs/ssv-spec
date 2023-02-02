@@ -11,8 +11,10 @@ import (
 type ValidatorPK []byte
 
 const (
+	domainSize       = 4
+	domainStartPos   = 0
 	pubKeySize       = 48
-	pubKeyStartPos   = 0
+	pubKeyStartPos   = domainStartPos + domainSize
 	roleTypeSize     = 4
 	roleTypeStartPos = pubKeyStartPos + pubKeySize
 )
@@ -30,7 +32,11 @@ func (vid ValidatorPK) MessageIDBelongs(msgID MessageID) bool {
 }
 
 // MessageID is used to identify and route messages to the right validator and Runner
-type MessageID [52]byte
+type MessageID [56]byte
+
+func (msg MessageID) GetDomain() []byte {
+	return msg[domainStartPos : domainStartPos+domainSize]
+}
 
 func (msg MessageID) GetPubKey() []byte {
 	return msg[pubKeyStartPos : pubKeyStartPos+pubKeySize]
@@ -41,11 +47,11 @@ func (msg MessageID) GetRoleType() BeaconRole {
 	return BeaconRole(binary.LittleEndian.Uint32(roleByts))
 }
 
-func NewMsgID(pk []byte, role BeaconRole) MessageID {
+func NewMsgID(domain DomainType, pk []byte, role BeaconRole) MessageID {
 	roleByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 
-	return newMessageID(pk, roleByts)
+	return newMessageID(domain[:], pk, roleByts)
 }
 
 func (msgID MessageID) String() string {
@@ -53,14 +59,19 @@ func (msgID MessageID) String() string {
 }
 
 func MessageIDFromBytes(mid []byte) MessageID {
-	if len(mid) < pubKeySize+roleTypeSize {
+	if len(mid) < domainSize+pubKeySize+roleTypeSize {
 		return MessageID{}
 	}
-	return newMessageID(mid[pubKeyStartPos:pubKeyStartPos+pubKeySize], mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize])
+	return newMessageID(
+		mid[domainStartPos:domainStartPos+domainSize],
+		mid[pubKeyStartPos:pubKeyStartPos+pubKeySize],
+		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
+	)
 }
 
-func newMessageID(pk, roleByts []byte) MessageID {
+func newMessageID(domain, pk, roleByts []byte) MessageID {
 	mid := MessageID{}
+	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
 	copy(mid[pubKeyStartPos:pubKeyStartPos+pubKeySize], pk)
 	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
 	return mid
@@ -96,8 +107,8 @@ type MessageSignature interface {
 // SSVMessage is the main message passed within the SSV network, it can contain different types of messages (QBTF, Sync, etc.)
 type SSVMessage struct {
 	MsgType MsgType
-	MsgID   MessageID
-	Data    []byte
+	MsgID   MessageID `ssz-size:"56"`
+	Data    []byte    `ssz-max:"65536"` // 2^16
 }
 
 func (msg *SSVMessage) GetType() MsgType {

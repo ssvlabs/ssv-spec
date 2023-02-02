@@ -39,11 +39,7 @@ func (s *Share) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	offset += len(s.Committee) * 56
 
 	// Field (4) 'DomainType'
-	if size := len(s.DomainType); size != 4 {
-		err = ssz.ErrBytesLengthFn("Share.DomainType", size, 4)
-		return
-	}
-	dst = append(dst, s.DomainType...)
+	dst = append(dst, s.DomainType[:]...)
 
 	// Field (5) 'FeeRecipientAddress'
 	dst = append(dst, s.FeeRecipientAddress[:]...)
@@ -105,10 +101,7 @@ func (s *Share) UnmarshalSSZ(buf []byte) error {
 	}
 
 	// Field (4) 'DomainType'
-	if cap(s.DomainType) == 0 {
-		s.DomainType = make([]byte, 0, len(buf[108:112]))
-	}
-	s.DomainType = append(s.DomainType, buf[108:112]...)
+	copy(s.DomainType[:], buf[108:112])
 
 	// Field (5) 'FeeRecipientAddress'
 	copy(s.FeeRecipientAddress[:], buf[112:132])
@@ -192,11 +185,7 @@ func (s *Share) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	}
 
 	// Field (4) 'DomainType'
-	if size := len(s.DomainType); size != 4 {
-		err = ssz.ErrBytesLengthFn("Share.DomainType", size, 4)
-		return
-	}
-	hh.PutBytes(s.DomainType)
+	hh.PutBytes(s.DomainType[:])
 
 	// Field (5) 'FeeRecipientAddress'
 	hh.PutBytes(s.FeeRecipientAddress[:])

@@ -10,11 +10,13 @@ import (
 )
 
 // DomainType is a unique identifier for signatures, 2 identical pieces of data signed with different domains will result in different sigs
-type DomainType []byte
+type DomainType [4]byte
 
 var (
-	PrimusTestnet = DomainType("primus_testnet")
-	ShifuTestnet  = DomainType("shifu_testnet")
+	GenesisMainnet = DomainType{0x0, 0x0, 0x0, 0x0}
+	PrimusTestnet  = DomainType{0x0, 0x0, 0x1, 0x0}
+	ShifuTestnet   = DomainType{0x0, 0x0, 0x1, 0x1}
+	ShifuV2Testnet = DomainType{0x0, 0x0, 0x1, 0x2}
 )
 
 type SignatureType [4]byte
