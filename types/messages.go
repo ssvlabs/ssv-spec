@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-	"encoding/json"
 )
 
 // ValidatorPK is an eth2 validator public key
@@ -108,7 +107,7 @@ type MessageSignature interface {
 type SSVMessage struct {
 	MsgType MsgType
 	MsgID   MessageID `ssz-size:"56"`
-	Data    []byte    `ssz-max:"65536"` // 2^16
+	Data    []byte    `ssz-max:"1073872896"` // 2^30+2^16
 }
 
 func (msg *SSVMessage) GetType() MsgType {
@@ -127,10 +126,10 @@ func (msg *SSVMessage) GetData() []byte {
 
 // Encode returns a msg encoded bytes or error
 func (msg *SSVMessage) Encode() ([]byte, error) {
-	return json.Marshal(msg)
+	return msg.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (msg *SSVMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &msg)
+	return msg.UnmarshalSSZ(data)
 }

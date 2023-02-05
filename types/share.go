@@ -1,9 +1,5 @@
 package types
 
-import (
-	"encoding/json"
-)
-
 // Share holds all info about the QBFT/ SSV Committee for msg signing and verification
 type Share struct {
 	OperatorID            OperatorID
@@ -29,9 +25,9 @@ func (share *Share) HasPartialQuorum(cnt int) bool {
 }
 
 func (share *Share) Encode() ([]byte, error) {
-	return json.Marshal(share)
+	return share.MarshalSSZ()
 }
 
 func (share *Share) Decode(data []byte) error {
-	return json.Unmarshal(data, share)
+	return share.UnmarshalSSZ(data)
 }

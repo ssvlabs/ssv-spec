@@ -149,7 +149,7 @@ func ComputeSigningRoot(data Root, domain SignatureDomain) ([]byte, error) {
 }
 
 func ComputeSignatureDomain(domain DomainType, sigType SignatureType) SignatureDomain {
-	return SignatureDomain(append(domain, sigType[:]...))
+	return SignatureDomain(append(domain[:], sigType[:]...))
 }
 
 // ReconstructSignatures receives a map of user indexes and serialized bls.Sign.
