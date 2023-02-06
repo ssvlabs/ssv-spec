@@ -47,18 +47,9 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 	}
 	// if never received this msg, increment counter
 	if !alreadyReceived {
-		voteInLocalValues := abaState.existsInValues(ABAAuxData.Round, ABAAuxData.Vote)
+		abaState.setAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
 		if i.verbose {
-			fmt.Println("\tvote received is in local values:", voteInLocalValues, ". Local values (of round", ABAAuxData.Round, "):", abaState.Values[ABAAuxData.Round], ". Vote:", ABAAuxData.Vote)
-		}
-
-		if voteInLocalValues {
-			// increment counter
-
-			abaState.setAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
-			if i.verbose {
-				fmt.Println("\tincremented aux counter. Vote:", ABAAuxData.Vote)
-			}
+			fmt.Println("\tincremented aux counter. Vote:", ABAAuxData.Vote)
 		}
 	}
 
@@ -67,6 +58,21 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 		if i.verbose {
 			fmt.Println("\tgot quorum of AUX and never sent conf")
 		}
+		if i.verbose {
+			fmt.Println("\tcalculating q")
+		}
+		q := abaState.CountAuxInValues(ABAAuxData.Round)
+		if i.verbose {
+			fmt.Println("\tq:", q, ", quorum:", i.State.Share.Quorum)
+		}
+
+		if q < i.State.Share.Quorum {
+			if i.verbose {
+				fmt.Println("\tcurrent quorum of msgs doesn't reach quorum of msgs with votes in local values. q (votes in local values):", q)
+			}
+			return nil
+		}
+
 		if i.verbose {
 			fmt.Println("\tsending:", abaState.Values[ABAAuxData.Round], "for round:", ABAAuxData.Round)
 		}

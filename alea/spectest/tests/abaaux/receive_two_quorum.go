@@ -56,7 +56,7 @@ func ReceiveTwoQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "abaaux receive two quorum",
 		Pre:           pre,
-		PostRoot:      "f442d5530d91ab3cbdeee348b023c85e97c17f4fe8f1cce9a220a6d1ff1d80b6",
+		PostRoot:      "8eebfef5ffaf6cde774cd22e7bc325493fbb46c7dc08a70c29c69621742a9645",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

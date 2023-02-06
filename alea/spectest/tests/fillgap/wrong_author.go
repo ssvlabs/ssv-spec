@@ -37,7 +37,7 @@ func WrongAuthor() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "fillgap receive wrong author",
 		Pre:           pre,
-		PostRoot:      "5068c0e43e247c8e6ffe24e163cee775adb9f7020a7c592309c850c8be0061e4",
+		PostRoot:      "8f55506ca913e5767b9547b01864b059cabd43abfe8d950b718d2fb03cb79a65",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: author (OperatorID) doesn't exist in Committee",
 		OutputMessages: []*alea.SignedMessage{

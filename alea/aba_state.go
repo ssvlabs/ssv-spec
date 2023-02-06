@@ -14,6 +14,7 @@ type ABAState struct {
 	InitCounter   map[Round]map[byte][]types.OperatorID
 	AuxCounter    map[Round]map[byte][]types.OperatorID
 	ConfCounter   map[Round][]types.OperatorID
+	ConfValues    map[Round]map[types.OperatorID][]byte
 	FinishCounter map[byte][]types.OperatorID
 	// already sent message flags
 	SentInit   map[Round][]bool
@@ -43,6 +44,7 @@ func NewABAState(acRound ACRound) *ABAState {
 		InitCounter:        make(map[Round]map[byte][]types.OperatorID),
 		AuxCounter:         make(map[Round]map[byte][]types.OperatorID),
 		ConfCounter:        make(map[Round][]types.OperatorID),
+		ConfValues:         make(map[Round]map[types.OperatorID][]byte),
 		FinishCounter:      make(map[byte][]types.OperatorID),
 		SentInit:           make(map[Round][]bool),
 		SentAux:            make(map[Round][]bool),
@@ -78,6 +80,9 @@ func (s *ABAState) InitializeRound(round Round) {
 
 	if _, exists := s.ConfCounter[round]; !exists {
 		s.ConfCounter[round] = make([]types.OperatorID, 0)
+	}
+	if _, exists := s.ConfValues[round]; !exists {
+		s.ConfValues[round] = make(map[types.OperatorID][]byte)
 	}
 
 	if _, exists := s.SentInit[round]; !exists {
@@ -155,8 +160,16 @@ func (s *ABAState) setInit(round Round, operatorID types.OperatorID, vote byte) 
 func (s *ABAState) setAux(round Round, operatorID types.OperatorID, vote byte) {
 	s.AuxCounter[round][vote] = append(s.AuxCounter[round][vote], operatorID)
 }
-func (s *ABAState) setConf(round Round, operatorID types.OperatorID) {
+func (s *ABAState) setConf(round Round, operatorID types.OperatorID, votes []byte) {
 	s.ConfCounter[round] = append(s.ConfCounter[round], operatorID)
+
+	if _, exists := s.ConfValues[round]; !exists {
+		s.ConfValues[round] = make(map[types.OperatorID][]byte)
+	}
+	s.ConfValues[round][operatorID] = make([]byte, 0)
+	for _, vote := range votes {
+		s.ConfValues[round][operatorID] = append(s.ConfValues[round][operatorID], vote)
+	}
 }
 func (s *ABAState) setFinish(operatorID types.OperatorID, vote byte) {
 	s.FinishCounter[vote] = append(s.FinishCounter[vote], operatorID)
@@ -219,6 +232,35 @@ func (s *ABAState) existsInValues(round Round, value byte) bool {
 		}
 	}
 	return false
+}
+
+func (s *ABAState) CountAuxInValues(round Round) uint64 {
+	ans := uint64(0)
+	if s.existsInValues(round, byte(0)) {
+		ans += uint64(len(s.AuxCounter[round][byte(0)]))
+	}
+	if s.existsInValues(round, byte(1)) {
+		ans += uint64(len(s.AuxCounter[round][byte(1)]))
+	}
+	return ans
+}
+
+func (s *ABAState) CountConfContainedInValues(round Round) uint64 {
+
+	if _, exists := s.ConfCounter[round]; !exists {
+		return uint64(0)
+	}
+
+	ans := uint64(0)
+
+	for _, opID := range s.ConfCounter[round] {
+		if votes, exists := s.ConfValues[round][opID]; exists {
+			if s.isContainedInValues(round, votes) {
+				ans += uint64(1)
+			}
+		}
+	}
+	return ans
 }
 
 func (s *ABAState) setVInput(round Round, vote byte) {

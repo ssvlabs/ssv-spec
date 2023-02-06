@@ -57,15 +57,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 
-	// if test.ExpectedTimerState != nil {
-	// 	// checks round timer state
-	// 	timer, ok := test.Pre.GetConfig().GetTimer().(*testingutils.TestAleaTimer)
-	// 	if ok && timer != nil {
-	// 		require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts, "timer should have expected timeouts count")
-	// 		require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round, "timer should have expected round")
-	// 	}
-	// }
-
 	postRoot, err := test.Pre.State.GetRoot()
 	require.NoError(t, err)
 

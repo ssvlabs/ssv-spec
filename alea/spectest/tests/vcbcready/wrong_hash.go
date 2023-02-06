@@ -37,7 +37,7 @@ func WrongHash() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "vcbcready wrong hash",
 		Pre:           pre,
-		PostRoot:      "d85a8c173dfa5c211eb819fb1911ee2f7d43cc6d9404e3804ef372d79bd593cd",
+		PostRoot:      "b2a407ff98d1b828229339e758543442535cf9d4fce1e68893dba0009b845c12",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

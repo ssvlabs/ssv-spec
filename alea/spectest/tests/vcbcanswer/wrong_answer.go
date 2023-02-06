@@ -30,7 +30,7 @@ func WrongAnswer() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "vcbcanswer wrong answer",
 		Pre:           pre,
-		PostRoot:      "4765e12543727300292085bab35e10129fd6d9c17a16728059b3e2e1aa70465e",
+		PostRoot:      "1766d8a4d592d6e2a46b7d5a9236bbd9ef8f0918f5eea88dcc5ad8fe102fbbc1",
 		InputMessages: msgs,
 		ExpectedError: "answer has different proposals than stores ones",
 		DontRunAC:     true,

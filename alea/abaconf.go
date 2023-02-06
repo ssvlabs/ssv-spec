@@ -46,22 +46,24 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 	}
 	// if never received this msg, update
 	if !alreadyReceived {
-
-		// determine if votes list is contained in local round values list
-		isContained := abaState.isContainedInValues(ABAConfData.Round, ABAConfData.Votes)
-		// list is contained -> update CONF counter
-		if isContained {
-			abaState.setConf(ABAConfData.Round, senderID)
-			if i.verbose {
-				fmt.Println("\tupdated confcounter:", abaState.countConf(ABAConfData.Round))
-			}
+		abaState.setConf(ABAConfData.Round, senderID, ABAConfData.Votes)
+		if i.verbose {
+			fmt.Println("\tupdated confcounter:", abaState.countConf(ABAConfData.Round))
 		}
 	}
 
 	// reached strong support -> try to decide value
 	if abaState.countConf(ABAConfData.Round) >= i.State.Share.Quorum {
 		if i.verbose {
-			fmt.Println("\treached quorum")
+			fmt.Println("\treached quorum of conf")
+		}
+
+		q := abaState.CountConfContainedInValues(ABAConfData.Round)
+		if q < i.State.Share.Quorum {
+			if i.verbose {
+				fmt.Println("\tbut quorum reached doesn't have quorum of contained valued")
+			}
+			return nil
 		}
 
 		// get common coin
