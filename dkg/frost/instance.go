@@ -86,9 +86,9 @@ func newProtocol(config dkg.IConfig, instanceParams InstanceParams) dkg.Protocol
 // TODO: If Reshare, confirm participating operators using qbft before kick-
 // starting this process.
 func (fr *Instance) Start() error {
-	fr.state.roundTImer.OnTimeout(fr.UponRoundTimeout)
+	fr.state.roundTimer.OnTimeout(fr.UponRoundTimeout)
 	fr.state.SetCurrentRound(Preparation)
-	fr.state.roundTImer.TimeoutForRound(fr.state.GetCurrentRound())
+	fr.state.roundTimer.StartRoundTimeoutTimer(fr.state.GetCurrentRound())
 
 	// create a new dkg participant
 	ctx := make([]byte, 16)

@@ -5,7 +5,7 @@ import (
 )
 
 func (fr *Instance) UponRoundTimeout() error {
-	if fr.state.GetCurrentRound() != fr.state.roundTImer.Round() {
+	if fr.state.GetCurrentRound() != fr.state.roundTimer.Round() {
 		return nil
 	}
 	prevRound := fr.state.GetCurrentRound()

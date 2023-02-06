@@ -9,12 +9,11 @@ import (
 type RoundTimeoutFunc func(ProtocolRound) time.Duration
 type OnTimeoutFn func() error
 
-var defaultTimeout int = 2
-var defaultTimeDuration = time.Second
+var DefaultTimeoutDuration = 10 * time.Minute
 
 // RoundTimeout returns the number of seconds until next timeout for a give round
 func RoundTimeout(ProtocolRound) time.Duration {
-	return time.Duration(defaultTimeout) * defaultTimeDuration
+	return DefaultTimeoutDuration
 }
 
 // RoundTimer helps to manage current instance rounds.
@@ -31,7 +30,7 @@ type RoundTimer struct {
 	roundTimeout RoundTimeoutFunc
 }
 
-// New creates a new instance of RoundTimer.
+// NewRoundTimer creates a new instance of RoundTimer.
 func NewRoundTimer(pctx context.Context, done OnTimeoutFn) *RoundTimer {
 	ctx, cancelCtx := context.WithCancel(pctx)
 	return &RoundTimer{
@@ -53,8 +52,8 @@ func (t *RoundTimer) Round() ProtocolRound {
 	return ProtocolRound(atomic.LoadInt64(&t.round))
 }
 
-// TimeoutForRound times out for a given round.
-func (t *RoundTimer) TimeoutForRound(round ProtocolRound) {
+// StartRoundTimeoutTimer times out for a given round.
+func (t *RoundTimer) StartRoundTimeoutTimer(round ProtocolRound) {
 	atomic.StoreInt64(&t.round, int64(round))
 	timeout := t.roundTimeout(round)
 	// preparing the underlying timer

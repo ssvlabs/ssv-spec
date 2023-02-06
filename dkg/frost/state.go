@@ -62,7 +62,7 @@ type State struct {
 	// shares generated for each operator using shamir secret sharing in round 1
 	operatorShares map[uint32]*bls.SecretKey
 	// underlying timer for timeout
-	roundTImer *RoundTimer
+	roundTimer *RoundTimer
 }
 
 func initState() *State {
@@ -70,7 +70,7 @@ func initState() *State {
 		currentRound:   Uninitialized,
 		msgContainer:   newMsgContainer(),
 		operatorShares: make(map[uint32]*bls.SecretKey),
-		roundTImer:     NewRoundTimer(context.Background(), nil),
+		roundTimer:     NewRoundTimer(context.Background(), nil),
 		roundMutex:     new(sync.Mutex),
 	}
 }

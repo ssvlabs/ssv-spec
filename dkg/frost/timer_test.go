@@ -20,7 +20,7 @@ func TestRoundTimer_TimeoutForRound(t *testing.T) {
 		timer.roundTimeout = func(round ProtocolRound) time.Duration {
 			return 1100 * time.Millisecond
 		}
-		timer.TimeoutForRound(ProtocolRound(1))
+		timer.StartRoundTimeoutTimer(ProtocolRound(1))
 		require.Equal(t, int32(0), atomic.LoadInt32(&count))
 		<-time.After(timer.roundTimeout(ProtocolRound(1)) + time.Millisecond*10)
 		require.Equal(t, int32(1), atomic.LoadInt32(&count))
@@ -37,9 +37,9 @@ func TestRoundTimer_TimeoutForRound(t *testing.T) {
 			return 1100 * time.Millisecond
 		}
 
-		timer.TimeoutForRound(ProtocolRound(1))
+		timer.StartRoundTimeoutTimer(ProtocolRound(1))
 		<-time.After(timer.roundTimeout(ProtocolRound(1)) / 2)
-		timer.TimeoutForRound(ProtocolRound(2)) // reset before elapsed
+		timer.StartRoundTimeoutTimer(ProtocolRound(2)) // reset before elapsed
 		require.Equal(t, int32(0), atomic.LoadInt32(&count))
 		<-time.After(timer.roundTimeout(ProtocolRound(2)) + time.Millisecond*10)
 		require.Equal(t, int32(1), atomic.LoadInt32(&count))
