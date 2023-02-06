@@ -63,8 +63,6 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.State.Round = FirstRound
 		i.State.Height = height
 
-		// fmt.Println("Starting instance")
-
 		// -> Init
 		// state variables are initiated on constructor NewInstance (namely, queues and S)
 
@@ -79,7 +77,7 @@ func (i *Instance) Start(value []byte, height Height) {
 }
 
 func (i *Instance) Deliver(proposals []*ProposalData) int {
-	// FIX ME : to be implemented
+	// FIX ME : to be adjusted according to the QBFT implementation
 	return 1
 }
 

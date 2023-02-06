@@ -1,21 +1,21 @@
 package alea
 
 import (
-    "reflect"
+	"reflect"
 	"sync"
 )
 
 type VCBCQueue struct {
-	data [][]*ProposalData
+	data     [][]*ProposalData
 	priority []Priority
-	mutex  sync.Mutex
+	mutex    sync.Mutex
 }
 
 func NewVCBCQueue() *VCBCQueue {
 	return &VCBCQueue{
-		data: make([][]*ProposalData,0),
-		priority: make([]Priority,0),
-		mutex: sync.Mutex{},
+		data:     make([][]*ProposalData, 0),
+		priority: make([]Priority, 0),
+		mutex:    sync.Mutex{},
 	}
 }
 
@@ -23,8 +23,8 @@ func (queue *VCBCQueue) Enqueue(proposals []*ProposalData, priority Priority) {
 	queue.mutex.Lock()
 	defer queue.mutex.Unlock()
 
-	queue.data = append(queue.data,proposals)
-	queue.priority = append(queue.priority,priority)
+	queue.data = append(queue.data, proposals)
+	queue.priority = append(queue.priority, priority)
 }
 
 func (queue *VCBCQueue) Peek() ([]*ProposalData, Priority) {
@@ -87,23 +87,21 @@ func (queue *VCBCQueue) Clear() {
 	queue.priority = nil
 }
 
-func (queue * VCBCQueue) GetValues() [][]*ProposalData {
+func (queue *VCBCQueue) GetValues() [][]*ProposalData {
 	return queue.data
 }
 
-func (queue * VCBCQueue) GetPriorities() []Priority {
+func (queue *VCBCQueue) GetPriorities() []Priority {
 	return queue.priority
 }
-
-
 
 func (queue *VCBCQueue) hasProposal(proposalInstance *ProposalData) bool {
 	queue.mutex.Lock()
 	defer queue.mutex.Unlock()
 
-	for _,proposals := range queue.data {
-		for _,proposal := range proposals {
-			if reflect.DeepEqual(proposal,proposalInstance) {
+	for _, proposals := range queue.data {
+		for _, proposal := range proposals {
+			if reflect.DeepEqual(proposal, proposalInstance) {
 				return true
 			}
 		}
@@ -115,8 +113,17 @@ func (queue *VCBCQueue) hasProposalList(proposalList []*ProposalData) bool {
 	queue.mutex.Lock()
 	defer queue.mutex.Unlock()
 
-	for _,proposals := range queue.data {
-		if reflect.DeepEqual(proposals,proposalList) {
+	for _, proposals := range queue.data {
+		if reflect.DeepEqual(proposals, proposalList) {
+			return true
+		}
+	}
+	return false
+}
+
+func (queue *VCBCQueue) hasPriority(priority Priority) bool {
+	for _, p := range queue.priority {
+		if p == priority {
 			return true
 		}
 	}

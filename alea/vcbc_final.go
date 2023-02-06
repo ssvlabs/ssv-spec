@@ -21,14 +21,14 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 	// check if it has the message locally. If not, returns (since it can't validate the hash)
 	if !i.State.VCBCState.hasM(vcbcFinalData.Author, vcbcFinalData.Priority) {
 		if i.verbose {
-			fmt.Println("\tDidn't have the message locally")
+			fmt.Println("\tDon't have the message locally. Can't validate hash, returning")
 		}
 		return nil
 	}
 
 	proposals := i.State.VCBCState.getM(vcbcFinalData.Author, vcbcFinalData.Priority)
 
-	// get hash
+	// get hash of local proposals
 	localHash, err := GetProposalsHash(proposals)
 	if err != nil {
 		return errors.Wrap(err, "uponVCBCFinal: could not get hash of local proposals")
@@ -45,19 +45,8 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 		return nil
 	}
 
-	// check if already has local aggregated signature. If so, returns (since it alreasy has and delivered the proposals).
-	if i.State.VCBCState.hasU(vcbcFinalData.Author, vcbcFinalData.Priority) {
-		if i.verbose {
-			fmt.Println("\talready has proof, quiting.")
-		}
-		return nil
-	}
-
 	// store proof
 	i.State.VCBCState.setU(vcbcFinalData.Author, vcbcFinalData.Priority, vcbcFinalData.AggregatedMsg)
-
-	// create VCBCDeliver message and broadcasts
-	proposals = i.State.VCBCState.getM(vcbcFinalData.Author, vcbcFinalData.Priority)
 
 	if i.verbose {
 		fmt.Println("\tAdding to VCBC output.")

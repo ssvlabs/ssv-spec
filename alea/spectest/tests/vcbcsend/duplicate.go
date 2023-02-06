@@ -40,6 +40,13 @@ func Duplicate() *tests.MsgProcessingSpecTest {
 				Identifier: []byte{1, 2, 3, 4},
 				Data:       testingutils.VCBCReadyDataBytes(tests.Hash, alea.FirstPriority, types.OperatorID(2)),
 			}),
+			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
+				MsgType:    alea.VCBCReadyMsgType,
+				Height:     alea.FirstHeight,
+				Round:      alea.FirstRound,
+				Identifier: []byte{1, 2, 3, 4},
+				Data:       testingutils.VCBCReadyDataBytes(tests.Hash, alea.FirstPriority, types.OperatorID(2)),
+			}),
 		},
 		DontRunAC: true,
 	}

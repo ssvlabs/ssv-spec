@@ -19,10 +19,8 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 		errors.New("uponVCBCSend: could not get vcbcSendData data from signedMessage")
 	}
 
-	// check if it was already received. If yes -> return, else -> store and send READY
-	if i.State.VCBCState.hasM(vcbcSendData.Author, vcbcSendData.Priority) {
-		return nil
-	} else {
+	// check if it was already received. If not -> store
+	if !i.State.VCBCState.hasM(vcbcSendData.Author, vcbcSendData.Priority) {
 		i.State.VCBCState.setM(vcbcSendData.Author, vcbcSendData.Priority, vcbcSendData.Proposals)
 	}
 
@@ -32,13 +30,13 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 		fmt.Println("\tgot senderID:", senderID)
 	}
 
-	// if it's the sender and the author, just add the not added ready signature
+	// if it's the sender and the author, just add the ready signature
 	if senderID == i.State.Share.OperatorID && senderID == vcbcSendData.Author {
 		i.AddOwnVCBCReady(vcbcSendData.Proposals, vcbcSendData.Priority)
 		return nil
 	}
 
-	// if message hasn't been received and the Author of the VCBC is the same as the sender of the message -> sign and answer with READY
+	// if the Author of the VCBC is the same as the sender of the message -> sign and answer with READY
 	if senderID == vcbcSendData.Author {
 		if i.verbose {
 			fmt.Println("\tsenderID is the same as the author")
