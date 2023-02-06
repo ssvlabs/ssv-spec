@@ -42,15 +42,11 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 	// sender
 	senderID := signedABAInit.GetSigners()[0]
 
-	alreadyReceived := abaState.hasInit(abaInitData.Round, senderID, abaInitData.Vote)
 	if i.verbose {
-		fmt.Println("\tsenderID:", senderID, ", vote:", abaInitData.Vote, ", round:", abaInitData.Round, ", already received before:", alreadyReceived)
+		fmt.Println("\tsenderID:", senderID, ", vote:", abaInitData.Vote, ", round:", abaInitData.Round, ", already received before:", abaState.hasInit(abaInitData.Round, senderID, abaInitData.Vote))
 	}
-	// if never received this msg, update
-	if !alreadyReceived {
-		// Set received msg
+	if !abaState.hasInit(abaInitData.Round, senderID, abaInitData.Vote) {
 		abaState.setInit(abaInitData.Round, senderID, abaInitData.Vote)
-
 		if i.verbose {
 			fmt.Println("\tupdated counter. Vote:", abaInitData.Vote, ". InitCounter:", abaState.InitCounter)
 		}
@@ -74,7 +70,8 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 			i.Broadcast(initMsg)
 			// update sent flag
 			abaState.setSentInit(abaInitData.Round, vote, true)
-			abaState.setInit(abaInitData.Round, i.State.Share.OperatorID, vote)
+			// process own init msg
+			i.uponABAInit(initMsg)
 		}
 	}
 
@@ -106,7 +103,8 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 
 			// update sent flag
 			abaState.setSentAux(abaInitData.Round, vote, true)
-			abaState.setAux(abaInitData.Round, i.State.Share.OperatorID, vote)
+			// process own aux msg
+			i.uponABAAux(auxMsg)
 		}
 	}
 

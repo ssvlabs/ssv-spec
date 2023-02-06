@@ -82,7 +82,8 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 
 		// update sent flag
 		abaState.setSentConf(ABAAuxData.Round, true)
-		abaState.setConf(ABAAuxData.Round, i.State.Share.OperatorID)
+		// process own conf msg
+		i.uponABAConf(confMsg)
 	}
 
 	return nil

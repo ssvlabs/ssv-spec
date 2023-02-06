@@ -25,7 +25,7 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 	if ABAFinishData.ACRound > i.State.ACState.ACRound {
 		i.State.ACState.InitializeRound(ABAFinishData.ACRound)
 	}
-	
+
 	abaState := i.State.ACState.GetABAState(ABAFinishData.ACRound)
 
 	// add the message to the container
@@ -73,9 +73,11 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 					fmt.Println("\tsending ABAFinish")
 				}
 				i.Broadcast(finishMsg)
+
 				// update sent flag
 				abaState.setSentFinish(vote, true)
-				abaState.setFinish(i.State.Share.OperatorID, vote)
+				// process own finish msg
+				i.uponABAFinish(finishMsg)
 			}
 		}
 	}

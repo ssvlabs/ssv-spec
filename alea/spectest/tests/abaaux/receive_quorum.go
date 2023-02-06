@@ -36,7 +36,7 @@ func ReceiveQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "abaaux receive quorum",
 		Pre:           pre,
-		PostRoot:      "eb32bb4a7a8391677985bde03ca13e8155ddc9b3315575a5d90fdef75268df49",
+		PostRoot:      "48fa8268f33cee656488730069cf648e9ea129c31f44680f8994e6488ce64932",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

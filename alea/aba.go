@@ -149,7 +149,9 @@ func (i *Instance) StartABA(vote byte) (byte, error) {
 
 	// update sent flag
 	i.State.ACState.GetCurrentABAState().setSentInit(i.State.ACState.GetCurrentABAState().Round, vote, true)
-	i.State.ACState.GetCurrentABAState().setInit(i.State.ACState.GetCurrentABAState().Round, i.State.Share.OperatorID, vote)
+
+	// process own init msg
+	i.uponABAInit(initMsg)
 
 	// wait until channel Terminate receives a signal
 	for {

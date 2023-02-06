@@ -372,7 +372,7 @@ func Flow7Op() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "flow 7 operators 4 proposals",
 		Pre:           pre,
-		PostRoot:      "35b5853cad636fb2cebce322bc45927db426fda4a192ace63dd8be9b45e0b8e0",
+		PostRoot:      "a198aaaf42293c2b36ee628a9e175b6c6e5b3434090c902fd9b08f4239ec6e86",
 		InputMessages: signedMessages,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing7SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

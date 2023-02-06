@@ -98,11 +98,10 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 						fmt.Println("\tSending ABAFinish")
 					}
 					i.Broadcast(finishMsg)
+					// update sent finish flag
 					abaState.setSentFinish(s, true)
-					abaState.setFinish(i.State.Share.OperatorID, s)
-					if i.verbose {
-						fmt.Println("\tupdated SentFinish:", abaState.SentFinish)
-					}
+					// process own finish msg
+					i.uponABAFinish(finishMsg)
 				}
 			}
 		}
@@ -125,8 +124,10 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 			fmt.Println("\tSending ABAInit with new Vin:", abaState.Vin[abaState.Round], ", for round:", abaState.Round)
 		}
 		i.Broadcast(initMsg)
+		// update sent init flag
 		abaState.setSentInit(abaState.Round, abaState.getVInput(abaState.Round), true)
-		abaState.setInit(abaState.Round, i.State.Share.OperatorID, abaState.getVInput(abaState.Round))
+		// process own aux msg
+		i.uponABAInit(initMsg)
 	}
 
 	return nil

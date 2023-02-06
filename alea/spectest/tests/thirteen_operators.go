@@ -151,7 +151,7 @@ func ThirteenOperators() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow thirteen operators",
 		Pre:           pre,
-		PostRoot:      "807309d19be3b62ac7673d608a4eb5e2e2f944f3027ec74c41d70cdf97db03b7",
+		PostRoot:      "710d33ad83071e2586b58f5ef01dbfb616da9021bd85cb67e7e15a170fdd9322",
 		InputMessages: signedMessages,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing13SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

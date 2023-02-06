@@ -154,7 +154,7 @@ func PostDecided() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "post decided proposal",
 		Pre:           pre,
-		PostRoot:      "30f6702c40ea19adb2327f25ebe97e6231a574e69ee89833ebe51519d7230719",
+		PostRoot:      "b151321b9ff4adc60998dfc98c955ee9b2751066cdfb2722396b2e835df437ea",
 		InputMessages: signedMessages,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

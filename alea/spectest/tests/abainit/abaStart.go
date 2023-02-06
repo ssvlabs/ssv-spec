@@ -23,7 +23,7 @@ func AbaStart() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "abainit abastart",
 		Pre:           pre,
-		PostRoot:      "ce4a9b59d8eb50cfb437ce09762faf19e083d304b6c664fdf4962f96ee80be20",
+		PostRoot:      "9afcd94fdb051f30f7f8073f6a776f32ef1190c0b0bd02bb64729a60ffe15901",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{
