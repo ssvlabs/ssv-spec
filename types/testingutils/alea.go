@@ -30,6 +30,9 @@ var TestingConfigAlea = func(keySet *TestKeySet) *alea.Config {
 		},
 		Network: NewTestingNetworkAlea(),
 		Timer:   NewTestingTimerAlea(),
+		CoinF: func(round alea.Round) byte {
+			return byte(round % 2)
+		},
 	}
 }
 

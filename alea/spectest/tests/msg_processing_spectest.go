@@ -29,11 +29,13 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	// a simple hack to change the proposer func
 	if test.Pre.State.Height == ChangeProposerFuncInstanceHeight {
 		test.Pre.GetConfig().(*alea.Config).ProposerF = func(state *alea.State, round alea.Round) types.OperatorID {
-			fmt.Println("Len:", len(state.Share.Committee))
 			ans := int(round)%len(state.Share.Committee) + 1
-			fmt.Println("ans:", ans)
 			return types.OperatorID(ans)
 		}
+	}
+
+	test.Pre.GetConfig().(*alea.Config).CoinF = func(round alea.Round) byte {
+		return byte(round % 2)
 	}
 
 	if !test.DontRunAC {

@@ -17,19 +17,20 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 		return errors.Wrap(err, "uponABAAux: could not get ABAAuxData from signedABAAux")
 	}
 
-	// if future round -> intialize future state
-	if ABAAuxData.ACRound > i.State.ACState.ACRound {
-		i.State.ACState.InitializeRound(ABAAuxData.ACRound)
-	}
-	if ABAAuxData.Round > i.State.ACState.GetCurrentABAState().Round {
-		i.State.ACState.GetCurrentABAState().InitializeRound(ABAAuxData.Round)
-	}
 	// old message -> ignore
 	if ABAAuxData.ACRound < i.State.ACState.ACRound {
 		return nil
 	}
 	if ABAAuxData.Round < i.State.ACState.GetCurrentABAState().Round {
 		return nil
+	}
+
+	// if future round -> intialize future state
+	if ABAAuxData.ACRound > i.State.ACState.ACRound {
+		i.State.ACState.InitializeRound(ABAAuxData.ACRound)
+	}
+	if ABAAuxData.Round > i.State.ACState.GetABAState(ABAAuxData.ACRound).Round {
+		i.State.ACState.GetABAState(ABAAuxData.ACRound).InitializeRound(ABAAuxData.Round)
 	}
 
 	abaState := i.State.ACState.GetABAState(ABAAuxData.ACRound)

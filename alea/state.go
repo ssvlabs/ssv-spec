@@ -25,6 +25,8 @@ type IConfig interface {
 	GetNetwork() Network
 	// GetTimer returns round timer
 	GetTimer() Timer
+	// GetCoinF returns a shared coin
+	GetCoinF() CoinF
 }
 
 type Config struct {
@@ -35,6 +37,7 @@ type Config struct {
 	ProposerF   ProposerF
 	Network     Network
 	Timer       Timer
+	CoinF       CoinF
 }
 
 // GetSigner returns a Signer instance
@@ -70,6 +73,11 @@ func (c *Config) GetNetwork() Network {
 // GetTimer returns round timer
 func (c *Config) GetTimer() Timer {
 	return c.Timer
+}
+
+// GetCoinF returns random coin
+func (c *Config) GetCoinF() CoinF {
+	return c.CoinF
 }
 
 type State struct {

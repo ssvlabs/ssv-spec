@@ -12,6 +12,7 @@ import (
 
 type ProposedValueCheckF func(data []byte) error
 type ProposerF func(state *State, round Round) types.OperatorID
+type CoinF func(round Round) byte
 
 // Instance is a single QBFT instance that starts with a Start call (including a value).
 // Every new msg the ProcessMsg function needs to be called

@@ -19,19 +19,19 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 		return errors.Wrap(err, "uponABAInit: could not get abainitdata from signedABAInit")
 	}
 
-	// if future round -> intialize future state
-	if abaInitData.ACRound > i.State.ACState.ACRound {
-		i.State.ACState.InitializeRound(abaInitData.ACRound)
-	}
-	if abaInitData.Round > i.State.ACState.GetCurrentABAState().Round {
-		i.State.ACState.GetCurrentABAState().InitializeRound(abaInitData.Round)
-	}
 	// old message -> ignore
 	if abaInitData.ACRound < i.State.ACState.ACRound {
 		return nil
 	}
 	if abaInitData.Round < i.State.ACState.GetCurrentABAState().Round {
 		return nil
+	}
+	// if future round -> intialize future state
+	if abaInitData.ACRound > i.State.ACState.ACRound {
+		i.State.ACState.InitializeRound(abaInitData.ACRound)
+	}
+	if abaInitData.Round > i.State.ACState.GetABAState(abaInitData.ACRound).Round {
+		i.State.ACState.GetABAState(abaInitData.ACRound).InitializeRound(abaInitData.Round)
 	}
 
 	abaState := i.State.ACState.GetABAState(abaInitData.ACRound)

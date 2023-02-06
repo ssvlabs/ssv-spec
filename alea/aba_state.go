@@ -1,6 +1,8 @@
 package alea
 
-import "github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+import (
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+)
 
 type ABAState struct {
 	// message containers
@@ -58,11 +60,6 @@ func NewABAState(acRound ACRound) *ABAState {
 	abaState.FinishCounter[1] = make([]types.OperatorID, 0)
 
 	return abaState
-}
-
-func (s *ABAState) Coin(round Round) byte {
-	// FIX ME : implement a RANDOM coin generator given the round number
-	return byte(round % 2)
 }
 
 func (s *ABAState) InitializeRound(round Round) {

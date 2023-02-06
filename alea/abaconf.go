@@ -17,19 +17,19 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 		return errors.Wrap(err, "uponABAConf:could not get ABAConfData from signedABAConf")
 	}
 
-	// if future round -> intialize future state
-	if ABAConfData.ACRound > i.State.ACState.ACRound {
-		i.State.ACState.InitializeRound(ABAConfData.ACRound)
-	}
-	if ABAConfData.Round > i.State.ACState.GetCurrentABAState().Round {
-		i.State.ACState.GetCurrentABAState().InitializeRound(ABAConfData.Round)
-	}
 	// old message -> ignore
 	if ABAConfData.ACRound < i.State.ACState.ACRound {
 		return nil
 	}
 	if ABAConfData.Round < i.State.ACState.GetCurrentABAState().Round {
 		return nil
+	}
+	// if future round -> intialize future state
+	if ABAConfData.ACRound > i.State.ACState.ACRound {
+		i.State.ACState.InitializeRound(ABAConfData.ACRound)
+	}
+	if ABAConfData.Round > i.State.ACState.GetABAState(ABAConfData.ACRound).Round {
+		i.State.ACState.GetABAState(ABAConfData.ACRound).InitializeRound(ABAConfData.Round)
 	}
 
 	abaState := i.State.ACState.GetABAState(ABAConfData.ACRound)
@@ -65,7 +65,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 		}
 
 		// get common coin
-		s := abaState.Coin(abaState.Round)
+		s := i.config.GetCoinF()(abaState.Round)
 		if i.verbose {
 			fmt.Println("\tcoin:", s)
 		}
