@@ -10,6 +10,8 @@ import (
 
 // DomainType is a unique identifier for signatures, 2 identical pieces of data signed with different domains will result in different sigs
 type DomainType [4]byte
+type SignatureDomain []byte
+type Signature []byte
 
 var (
 	GenesisMainnet = DomainType{0x0, 0x0, 0x0, 0x0}

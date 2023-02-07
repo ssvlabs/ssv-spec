@@ -1,7 +1,6 @@
 package preconsensus
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -25,7 +24,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 				},
 				PostDutyRunnerStateRoot: "ca42365630418096326a55c0c9b8eaeec28e76742b30d8aab30a5b34b48c20f6",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -41,7 +40,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 				},
 				PostDutyRunnerStateRoot: "ad17671687b6cda720670d63b9465ac80b2558310939e020ee787b5a625ef7ab",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -57,7 +56,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 				},
 				PostDutyRunnerStateRoot: "0273652c8ed850f18bb72f9d408c3eca25e8e755b87801d6d334eaec80f0f8ac",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
@@ -73,7 +72,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 				},
 				PostDutyRunnerStateRoot: "40490b6f433984ece7717e76b76e7c785b2bacf50a1c0d5106ab122d4996129b",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
@@ -89,7 +88,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[5], 5)),
 				},
 				PostDutyRunnerStateRoot: "37525e24aef03b9e6283c8f65ec18daffbfa56c31d2ad9590b3501d00b0c2609",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},

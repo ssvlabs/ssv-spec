@@ -16,7 +16,7 @@ type MsgProcessingSpecTest struct {
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
-	OutputMessages         []*ssv.SignedPartialSignatureMessage
+	OutputMessages         []*types.SignedPartialSignatureMessage
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
@@ -94,7 +94,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 			continue
 		}
 
-		msg1 := &ssv.SignedPartialSignatureMessage{}
+		msg1 := &types.SignedPartialSignatureMessage{}
 		require.NoError(t, msg1.Decode(msg.Data))
 		msg2 := test.OutputMessages[index]
 		require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))

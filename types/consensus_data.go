@@ -101,9 +101,10 @@ func (c Contributions) SizeSSZ() int {
 
 // ConsensusData holds all relevant duty and data Decided on by consensus
 type ConsensusData struct {
-	Duty    Duty
-	Version spec.DataVersion
-	DataSSZ []byte `ssz-max:"1073807360"` // 2^30+2^16 (considering max block size 2^30)
+	Duty                       Duty
+	Version                    spec.DataVersion
+	PreConsensusJustifications []*SignedPartialSignatureMessage `ssz-max:"13"`
+	DataSSZ                    []byte                           `ssz-max:"1073807360"` // 2^30+2^16 (considering max block size 2^30)
 }
 
 func (cid *ConsensusData) Validate() error {

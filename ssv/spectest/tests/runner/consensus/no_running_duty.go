@@ -42,7 +42,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "ae7ee7e668eb90c4188316a8db8a4b36cd329bc859dd997cc5b9be60fb4e89e7",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
@@ -63,7 +63,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "e2bcc9c4304b5e8409628039f900e2dac104ca75f7b2d12f1cd52b45b44eac75",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
@@ -84,7 +84,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "f81db6a51506ad7a4ccb972e84eabd7f45132ea825f06df7c65c07d8583fe006",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
@@ -105,7 +105,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "e2f2c71d4ffd08093bc57b937f5c2618973315f92835559bf3ea272a1c033517",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
@@ -126,7 +126,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "5e982dd86d046bb26cee80362a4f7937653dae0377244bc2a4553d487942640a",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
@@ -147,7 +147,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "14771f0b1b77704b58a9c62a9ce06566964747ddf60f3f9c280b356b31a5d126",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
 			{
@@ -165,7 +165,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "34b8788e99ec86321d758e7a55a7e688bb91cc15d0a8fd581cf28f0839601fbd",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "no consensus phase for validator registration",

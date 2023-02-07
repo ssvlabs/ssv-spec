@@ -2,7 +2,6 @@ package consensus
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -32,7 +31,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "47055e82f253fcd78f4894daf2c767e8c6103ddc2680c72de4a8f33c90bec71f",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 			},
@@ -51,7 +50,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "3c1787117e28b213fe40635df9117366bfbc0667f43515d8fcb82affe8789edb",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:   "aggregator",
@@ -71,7 +70,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "d7217dc0e005cc9128c61aece91e9ccae04de88916eec5e4ae50d34b1a1d5558",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 			},
@@ -93,7 +92,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "fed1353e0e9b78bab550562d600f2ab4a51c493fa0ba937d2931389670bb8241",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
 			},
@@ -115,7 +114,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "6e66de107885be6e2d60a1dc53a7bbb909eb44590cd88d71c25cfe9e23f18d79",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
 			},
@@ -134,7 +133,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "6aeb76c29e065169fe1887e7bde9bae524966e193bb4dd95d6b43fcca62cfa37",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:   "validator registration",
@@ -154,7 +153,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "c1962da29cafc215b3be80fee5c3403377918cd8f15a28ed3f0326fface3116b",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "no consensus phase for validator registration",

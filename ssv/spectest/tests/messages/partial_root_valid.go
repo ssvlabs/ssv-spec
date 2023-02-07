@@ -2,7 +2,7 @@ package messages
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -14,7 +14,7 @@ func PartialRootValid() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "partial root valid",
-		Messages: []*ssv.SignedPartialSignatureMessage{
+		Messages: []*types.SignedPartialSignatureMessage{
 			msg,
 		},
 	}

@@ -11,9 +11,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type SignatureDomain []byte
-type Signature []byte
-
 // VerifyByOperators verifies signature by the provided operators
 func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, sigType SignatureType, operators []*Operator) error {
 	// decode sig

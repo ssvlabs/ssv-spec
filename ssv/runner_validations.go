@@ -9,7 +9,7 @@ import (
 	"sort"
 )
 
-func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
@@ -26,7 +26,7 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
-func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
@@ -73,7 +73,7 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.Cons
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
 	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
 		return errors.New("wrong expected roots count")
 	}
@@ -104,7 +104,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialS
 		return err
 	}
 
-	sortedRoots := func(msgs PartialSignatureMessages) [][]byte {
+	sortedRoots := func(msgs types.PartialSignatureMessages) [][]byte {
 		ret := make([][]byte, 0)
 		for _, msg := range msgs.Messages {
 			ret = append(ret, msg.SigningRoot)

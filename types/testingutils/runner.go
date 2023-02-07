@@ -178,7 +178,7 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
 	id := types.NewMsgID(TestingValidatorPubKey[:], role)
 
-	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *ssv.SignedPartialSignatureMessage) *types.SSVMessage {
+	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 		var byts []byte
 		var msgType types.MsgType
 		if partialSigMsg != nil {

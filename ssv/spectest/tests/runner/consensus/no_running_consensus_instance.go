@@ -2,7 +2,6 @@ package consensus
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -30,7 +29,7 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "93f63d09f9a12244c8ca751934450e7be81f89eb876dc76119ae7a7153ed405c",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedErr,
@@ -50,7 +49,7 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "3c1787117e28b213fe40635df9117366bfbc0667f43515d8fcb82affe8789edb",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:   "aggregator",
@@ -67,7 +66,7 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "57a6fb4d6bf799353c3c0980e3eb31ff32f0c100ebe04f6025dc06fc983ef52b",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedErr,
@@ -87,7 +86,7 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "65cd178a17356e48a1d7de571c0d56f791f6c4654b5b03e385adea510f7c55d1",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
 				ExpectedError: expectedErr,
@@ -107,7 +106,7 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "2a122d8afb55f8cf02b7008d9e525d4dbd5dd839e752be9dd5be577e653c56e4",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 				},
 				ExpectedError: expectedErr,
@@ -127,7 +126,7 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "6aeb76c29e065169fe1887e7bde9bae524966e193bb4dd95d6b43fcca62cfa37",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
 	}

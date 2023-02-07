@@ -13,7 +13,7 @@ func (b *BaseRunner) signBeaconObject(
 	obj ssz.HashRoot,
 	slot spec.Slot,
 	domainType spec.DomainType,
-) (*PartialSignatureMessage, error) {
+) (*types.PartialSignatureMessage, error) {
 	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
 	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
 	if err != nil {
@@ -25,20 +25,20 @@ func (b *BaseRunner) signBeaconObject(
 		return nil, errors.Wrap(err, "could not sign beacon object")
 	}
 
-	return &PartialSignatureMessage{
+	return &types.PartialSignatureMessage{
 		PartialSignature: sig,
 		SigningRoot:      r,
 		Signer:           runner.GetBaseRunner().Share.OperatorID,
 	}, nil
 }
 
-func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *PartialSignatureMessages) (*SignedPartialSignatureMessage, error) {
+func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSignatureMessages) (*types.SignedPartialSignatureMessage, error) {
 	signature, err := runner.GetSigner().SignRoot(msg, types.PartialSignatureType, b.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign PartialSignatureMessage for PostConsensusContainer")
 	}
 
-	return &SignedPartialSignatureMessage{
+	return &types.SignedPartialSignatureMessage{
 		Message:   *msg,
 		Signature: signature,
 		Signer:    b.Share.OperatorID,
@@ -46,7 +46,7 @@ func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *PartialSignatureMe
 }
 
 func (b *BaseRunner) validatePartialSigMsg(
-	signedMsg *SignedPartialSignatureMessage,
+	signedMsg *types.SignedPartialSignatureMessage,
 	slot spec.Slot,
 ) error {
 	if err := signedMsg.Validate(); err != nil {
@@ -66,7 +66,7 @@ func (b *BaseRunner) validatePartialSigMsg(
 	return nil
 }
 
-func (b *BaseRunner) verifyBeaconPartialSignature(msg *PartialSignatureMessage) error {
+func (b *BaseRunner) verifyBeaconPartialSignature(msg *types.PartialSignatureMessage) error {
 	signer := msg.Signer
 	signature := msg.PartialSignature
 	root := msg.SigningRoot

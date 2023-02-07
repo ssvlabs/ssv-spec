@@ -14,7 +14,7 @@ type StartNewRunnerDutySpecTest struct {
 	Runner                  ssv.Runner
 	Duty                    *types.Duty
 	PostDutyRunnerStateRoot string
-	OutputMessages          []*ssv.SignedPartialSignatureMessage
+	OutputMessages          []*types.SignedPartialSignatureMessage
 	ExpectedError           string
 }
 
@@ -39,7 +39,7 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 				continue
 			}
 
-			msg1 := &ssv.SignedPartialSignatureMessage{}
+			msg1 := &types.SignedPartialSignatureMessage{}
 			require.NoError(t, msg1.Decode(msg.Data))
 			msg2 := test.OutputMessages[index]
 			require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))

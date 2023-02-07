@@ -2,7 +2,7 @@ package messages
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -15,7 +15,7 @@ func SigTooShort() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "sig too short",
-		Messages: []*ssv.SignedPartialSignatureMessage{
+		Messages: []*types.SignedPartialSignatureMessage{
 			msg,
 		},
 		ExpectedError: "SignedPartialSignatureMessage sig invalid",

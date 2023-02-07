@@ -3,7 +3,6 @@ package proposer
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -45,7 +44,7 @@ func ProposeBlindedBlockDecidedRegular() *tests.MsgProcessingSpecTest {
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 		},
 		PostDutyRunnerStateRoot: "cb96348639218e73f803afa8a243d1ccb97a1190fa8fec83d2dbac14cd05849d",
-		OutputMessages: []*ssv.SignedPartialSignatureMessage{
+		OutputMessages: []*types.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 			testingutils.PostConsensusProposerMsg(testingutils.Testing4SharesSet().Shares[1], 1),
 		},

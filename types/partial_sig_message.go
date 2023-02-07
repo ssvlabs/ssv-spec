@@ -1,9 +1,8 @@
-package ssv
+package types
 
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
@@ -24,7 +23,7 @@ const (
 
 type PartialSignatureMessages struct {
 	Type     PartialSigMsgType
-	Messages []*PartialSignatureMessage
+	Messages []*PartialSignatureMessage `ssz-max:"13"`
 }
 
 // Encode returns a msg encoded bytes or error
@@ -59,15 +58,11 @@ func (msgs PartialSignatureMessages) Validate() error {
 	return nil
 }
 
-type PartialSignatureMetaData struct {
-	ContributionSubCommitteeIndex uint64
-}
-
 // PartialSignatureMessage is a msg for partial Beacon chain related signatures (like partial attestation, block, randao sigs)
 type PartialSignatureMessage struct {
-	PartialSignature []byte // The Beacon chain partial Signature for a duty
-	SigningRoot      []byte // the root signed in PartialSignature
-	Signer           types.OperatorID
+	PartialSignature Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty
+	SigningRoot      []byte    `ssz-size:"32"` // the root signed in PartialSignature
+	Signer           OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -105,8 +100,8 @@ func (pcsm *PartialSignatureMessage) Validate() error {
 // SignedPartialSignatureMessage is an operator's signature over PartialSignatureMessage
 type SignedPartialSignatureMessage struct {
 	Message   PartialSignatureMessages
-	Signature types.Signature
-	Signer    types.OperatorID
+	Signature Signature `ssz-size:"96"`
+	Signer    OperatorID
 }
 
 // Encode returns a msg encoded bytes or error
@@ -119,19 +114,19 @@ func (spcsm *SignedPartialSignatureMessage) Decode(data []byte) error {
 	return json.Unmarshal(data, &spcsm)
 }
 
-func (spcsm *SignedPartialSignatureMessage) GetSignature() types.Signature {
+func (spcsm *SignedPartialSignatureMessage) GetSignature() Signature {
 	return spcsm.Signature
 }
 
-func (spcsm *SignedPartialSignatureMessage) GetSigners() []types.OperatorID {
-	return []types.OperatorID{spcsm.Signer}
+func (spcsm *SignedPartialSignatureMessage) GetSigners() []OperatorID {
+	return []OperatorID{spcsm.Signer}
 }
 
 func (spcsm *SignedPartialSignatureMessage) GetRoot() ([]byte, error) {
 	return spcsm.Message.GetRoot()
 }
 
-func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg types.MessageSignature) error {
+func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg MessageSignature) error {
 	//if !bytes.Equal(spcsm.GetRoot(), signedMsg.GetRoot()) {
 	//	return errors.New("can't aggregate msgs with different roots")
 	//}
@@ -166,13 +161,13 @@ func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg types.MessageSig
 }
 
 // MatchedSigners returns true if the provided Signer ids are equal to GetSignerIds() without order significance
-func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []types.OperatorID) bool {
-	toMatchCnt := make(map[types.OperatorID]int)
+func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []OperatorID) bool {
+	toMatchCnt := make(map[OperatorID]int)
 	for _, id := range ids {
 		toMatchCnt[id]++
 	}
 
-	foundCnt := make(map[types.OperatorID]int)
+	foundCnt := make(map[OperatorID]int)
 	for _, id := range spcsm.GetSigners() {
 		foundCnt[id]++
 	}

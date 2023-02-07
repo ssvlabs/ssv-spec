@@ -1,17 +1,17 @@
 package messages
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 // EncodingAndRoot tests SignedPartialSignatureMessage encoding + root
 func EncodingAndRoot() *MsgSpecTest {
-	msg := &ssv.SignedPartialSignatureMessage{
+	msg := &types.SignedPartialSignatureMessage{
 		Signature: make([]byte, 96),
 		Signer:    12,
-		Message: ssv.PartialSignatureMessages{
-			Type: ssv.PostConsensusPartialSig,
-			Messages: []*ssv.PartialSignatureMessage{
+		Message: types.PartialSignatureMessages{
+			Type: types.PostConsensusPartialSig,
+			Messages: []*types.PartialSignatureMessage{
 				{
 					PartialSignature: make([]byte, 96),
 					Signer:           12,
@@ -31,7 +31,7 @@ func EncodingAndRoot() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "encoding",
-		Messages: []*ssv.SignedPartialSignatureMessage{
+		Messages: []*types.SignedPartialSignatureMessage{
 			msg,
 		},
 		EncodedMessages: [][]byte{

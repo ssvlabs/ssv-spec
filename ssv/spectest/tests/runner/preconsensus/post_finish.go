@@ -34,7 +34,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "40482ad49af61384f8215f0a4507a51b6c4f5a85f0a2fe151177641d24d935a1",
 				DontStartDuty:           true,
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
 			},
 			{
@@ -49,7 +49,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "033f78c36eb9b7ae4650faf443a3521fd5753fd6ee3db8631fe36ff813870db7",
 				DontStartDuty:           true,
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing selection proof message: invalid pre-consensus message: no running duty",
 			},
 			{
@@ -64,7 +64,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "80ae2c2068c366f884526e5e0289017a9b40b6f55010c57f97a4d9b009f17d09",
 				DontStartDuty:           true,
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
 			},
 			{
@@ -79,7 +79,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "39698eca01b24b21cb307aae49150d7b35eb3256fbfa64cfaca213f0016945cd",
 				DontStartDuty:           true,
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
 			},
 			{
@@ -93,7 +93,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "f2184491e6f927cc405645fb4a8da14ac1c3829afa584b108244a1b9f531a97a",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",
 			},
