@@ -68,8 +68,13 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 		return nil
 	}
 
+	attestationData, err := decidedValue.GetAttestationData()
+	if err != nil {
+		return errors.Wrap(err, "could not get attestation data")
+	}
+
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AttestationData, decidedValue.Duty.Slot, types.DomainAttester)
+	msg, err := r.BaseRunner.signBeaconObject(r, attestationData, decidedValue.Duty.Slot, types.DomainAttester)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -90,7 +95,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -110,6 +115,11 @@ func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 		return nil
 	}
 
+	attestationData, err := r.GetState().DecidedValue.GetAttestationData()
+	if err != nil {
+		return errors.Wrap(err, "could not get attestation data")
+	}
+
 	for _, root := range roots {
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
 		if err != nil {
@@ -123,7 +133,7 @@ func (r *AttesterRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureM
 		aggregationBitfield := bitfield.NewBitlist(r.GetState().DecidedValue.Duty.CommitteeLength)
 		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
 		signedAtt := &phase0.Attestation{
-			Data:            r.GetState().DecidedValue.AttestationData,
+			Data:            attestationData,
 			Signature:       specSig,
 			AggregationBits: aggregationBitfield,
 		}
@@ -143,7 +153,12 @@ func (r *AttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *AttesterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{r.BaseRunner.State.DecidedValue.AttestationData}, types.DomainAttester, nil
+	attestationData, err := r.GetState().DecidedValue.GetAttestationData()
+	if err != nil {
+		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get attestation data")
+	}
+
+	return []ssz.HashRoot{attestationData}, types.DomainAttester, nil
 }
 
 // executeDuty steps:
@@ -154,14 +169,20 @@ func (r *AttesterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 func (r *AttesterRunner) executeDuty(duty *types.Duty) error {
 	// TODO - waitOneThirdOrValidBlock
 
-	attData, err := r.GetBeaconNode().GetAttestationData(duty.Slot, duty.CommitteeIndex)
+	attData, ver, err := r.GetBeaconNode().GetAttestationData(duty.Slot, duty.CommitteeIndex)
 	if err != nil {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
 
+	attDataByts, err := attData.MarshalSSZ()
+	if err != nil {
+		return errors.Wrap(err, "could not marshal attestation data")
+	}
+
 	input := &types.ConsensusData{
-		Duty:            duty,
-		AttestationData: attData,
+		Duty:    *duty,
+		Version: ver,
+		DataSSZ: attDataByts,
 	}
 
 	if err := r.BaseRunner.decide(r, input); err != nil {

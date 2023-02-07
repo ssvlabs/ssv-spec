@@ -19,18 +19,18 @@ func (c *Contribution) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(100)
 
-	// Field (0) 'K'
-	dst = append(dst, c.K[:]...)
+	// Field (0) 'SelectionProofSig'
+	dst = append(dst, c.SelectionProofSig[:]...)
 
-	// Offset (1) 'V'
+	// Offset (1) 'Contribution'
 	dst = ssz.WriteOffset(dst, offset)
-	if c.V == nil {
-		c.V = new(altair.SyncCommitteeContribution)
+	if c.Contribution == nil {
+		c.Contribution = new(altair.SyncCommitteeContribution)
 	}
-	offset += c.V.SizeSSZ()
+	offset += c.Contribution.SizeSSZ()
 
-	// Field (1) 'V'
-	if dst, err = c.V.MarshalSSZTo(dst); err != nil {
+	// Field (1) 'Contribution'
+	if dst, err = c.Contribution.MarshalSSZTo(dst); err != nil {
 		return
 	}
 
@@ -48,10 +48,10 @@ func (c *Contribution) UnmarshalSSZ(buf []byte) error {
 	tail := buf
 	var o1 uint64
 
-	// Field (0) 'K'
-	copy(c.K[:], buf[0:96])
+	// Field (0) 'SelectionProofSig'
+	copy(c.SelectionProofSig[:], buf[0:96])
 
-	// Offset (1) 'V'
+	// Offset (1) 'Contribution'
 	if o1 = ssz.ReadOffset(buf[96:100]); o1 > size {
 		return ssz.ErrOffset
 	}
@@ -60,13 +60,13 @@ func (c *Contribution) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrInvalidVariableOffset
 	}
 
-	// Field (1) 'V'
+	// Field (1) 'Contribution'
 	{
 		buf = tail[o1:]
-		if c.V == nil {
-			c.V = new(altair.SyncCommitteeContribution)
+		if c.Contribution == nil {
+			c.Contribution = new(altair.SyncCommitteeContribution)
 		}
-		if err = c.V.UnmarshalSSZ(buf); err != nil {
+		if err = c.Contribution.UnmarshalSSZ(buf); err != nil {
 			return err
 		}
 	}
@@ -77,11 +77,11 @@ func (c *Contribution) UnmarshalSSZ(buf []byte) error {
 func (c *Contribution) SizeSSZ() (size int) {
 	size = 100
 
-	// Field (1) 'V'
-	if c.V == nil {
-		c.V = new(altair.SyncCommitteeContribution)
+	// Field (1) 'Contribution'
+	if c.Contribution == nil {
+		c.Contribution = new(altair.SyncCommitteeContribution)
 	}
-	size += c.V.SizeSSZ()
+	size += c.Contribution.SizeSSZ()
 
 	return
 }
@@ -95,11 +95,11 @@ func (c *Contribution) HashTreeRoot() ([32]byte, error) {
 func (c *Contribution) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	indx := hh.Index()
 
-	// Field (0) 'K'
-	hh.PutBytes(c.K[:])
+	// Field (0) 'SelectionProofSig'
+	hh.PutBytes(c.SelectionProofSig[:])
 
-	// Field (1) 'V'
-	if err = c.V.HashTreeRootWith(hh); err != nil {
+	// Field (1) 'Contribution'
+	if err = c.Contribution.HashTreeRootWith(hh); err != nil {
 		return
 	}
 

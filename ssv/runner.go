@@ -97,14 +97,9 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		return false, nil, err
 	}
 
-	// get decided value
-	decidedData, err := decidedMsg.Message.GetCommitData()
-	if err != nil {
-		return false, nil, errors.Wrap(err, "failed to get decided data")
-	}
-
+	// decode consensus data
 	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedData.Data); err != nil {
+	if err := decidedValue.Decode(decidedMsg.FullData); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 

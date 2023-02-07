@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	ssz "github.com/ferranbt/fastssz"
@@ -37,7 +36,7 @@ type BeaconSigner interface {
 	// IsAttestationSlashable returns error if attestation is slashable
 	IsAttestationSlashable(pk []byte, data *spec.AttestationData) error
 	// IsBeaconBlockSlashable returns error if the given block is slashable
-	IsBeaconBlockSlashable(pk []byte, block *bellatrix.BeaconBlock) error
+	IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error
 }
 
 // SSVSigner used for all SSV specific signing

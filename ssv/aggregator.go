@@ -76,14 +76,19 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 	// TODO waitToSlotTwoThirds
 
 	// get block data
-	res, err := r.GetBeaconNode().SubmitAggregateSelectionProof(duty.Slot, duty.CommitteeIndex, duty.CommitteeLength, duty.ValidatorIndex, fullSig)
+	res, ver, err := r.GetBeaconNode().SubmitAggregateSelectionProof(duty.Slot, duty.CommitteeIndex, duty.CommitteeLength, duty.ValidatorIndex, fullSig)
 	if err != nil {
 		return errors.Wrap(err, "failed to submit aggregate and proof")
 	}
 
+	byts, err := res.MarshalSSZ()
+	if err != nil {
+		return errors.Wrap(err, "could not marshal aggregate and proof")
+	}
 	input := &types.ConsensusData{
-		Duty:              duty,
-		AggregateAndProof: res,
+		Duty:    *duty,
+		Version: ver,
+		DataSSZ: byts,
 	}
 
 	if err := r.BaseRunner.decide(r, input); err != nil {
@@ -104,8 +109,13 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 		return nil
 	}
 
+	aggregateAndProof, err := decidedValue.GetAggregateAndProof()
+	if err != nil {
+		return errors.Wrap(err, "could not get aggregate and proof")
+	}
+
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
+	msg, err := r.BaseRunner.signBeaconObject(r, aggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -126,7 +136,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -154,8 +164,13 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatur
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
+		aggregateAndProof, err := r.GetState().DecidedValue.GetAggregateAndProof()
+		if err != nil {
+			return errors.Wrap(err, "could not get aggregate and proof")
+		}
+
 		msg := &phase0.SignedAggregateAndProof{
-			Message:   r.GetState().DecidedValue.AggregateAndProof,
+			Message:   aggregateAndProof,
 			Signature: specSig,
 		}
 		if err := r.GetBeaconNode().SubmitSignedAggregateSelectionProof(msg); err != nil {
@@ -172,7 +187,12 @@ func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot,
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{r.BaseRunner.State.DecidedValue.AggregateAndProof}, types.DomainAggregateAndProof, nil
+	aggregateAndProof, err := r.GetState().DecidedValue.GetAggregateAndProof()
+	if err != nil {
+		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get aggregate and proof")
+	}
+
+	return []ssz.HashRoot{aggregateAndProof}, types.DomainAggregateAndProof, nil
 }
 
 // executeDuty steps:
@@ -210,7 +230,7 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {

@@ -18,32 +18,29 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 	}
 
 	// calculate commit quorum and act upon it
-	quorum, commitMsgs, err := commitQuorumForRoundValue(i.State, commitMsgContainer, signedCommit.Message.Data, signedCommit.Message.Round)
+	quorum, commitMsgs, err := commitQuorumForRoundRoot(i.State, commitMsgContainer, signedCommit.Message.Root, signedCommit.Message.Round)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}
 	if quorum {
-		msgCommitData, err := signedCommit.Message.GetCommitData()
-		if err != nil {
-			return false, nil, nil, errors.Wrap(err, "could not get msg commit data")
-		}
+		fullData := i.State.ProposalAcceptedForCurrentRound.FullData /* must have value there, checked on validateCommit */
 
-		agg, err := aggregateCommitMsgs(commitMsgs)
+		agg, err := aggregateCommitMsgs(commitMsgs, fullData)
 		if err != nil {
 			return false, nil, nil, errors.Wrap(err, "could not aggregate commit msgs")
 		}
-		return true, msgCommitData.Data, agg, nil
+		return true, fullData, agg, nil
 	}
 	return false, nil, nil, nil
 }
 
 // returns true if there is a quorum for the current round for this provided value
-func commitQuorumForRoundValue(state *State, commitMsgContainer *MsgContainer, value []byte, round Round) (bool, []*SignedMessage, error) {
-	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndValue(round, value)
+func commitQuorumForRoundRoot(state *State, commitMsgContainer *MsgContainer, root [32]byte, round Round) (bool, []*SignedMessage, error) {
+	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndRoot(round, root)
 	return state.Share.HasQuorum(len(signers)), msgs, nil
 }
 
-func aggregateCommitMsgs(msgs []*SignedMessage) (*SignedMessage, error) {
+func aggregateCommitMsgs(msgs []*SignedMessage, fullData []byte) (*SignedMessage, error) {
 	if len(msgs) == 0 {
 		return nil, errors.New("can't aggregate zero commit msgs")
 	}
@@ -58,6 +55,7 @@ func aggregateCommitMsgs(msgs []*SignedMessage) (*SignedMessage, error) {
 			}
 		}
 	}
+	ret.FullData = fullData
 	return ret, nil
 }
 
@@ -92,20 +90,14 @@ Commit(
                         )
                     );
 */
-func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, error) {
-	commitData := &CommitData{
-		Data: value,
-	}
-	dataByts, err := commitData.Encode()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed encoding prepare data")
-	}
+func CreateCommit(state *State, config IConfig, root [32]byte) (*SignedMessage, error) {
 	msg := &Message{
 		MsgType:    CommitMsgType,
 		Height:     state.Height,
 		Round:      state.Round,
 		Identifier: state.ID,
-		Data:       dataByts,
+
+		Root: root,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
@@ -115,7 +107,7 @@ func CreateCommit(state *State, config IConfig, value []byte) (*SignedMessage, e
 	signedMsg := &SignedMessage{
 		Signature: sig,
 		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   msg,
+		Message:   *msg,
 	}
 	return signedMsg, nil
 }
@@ -133,12 +125,8 @@ func baseCommitValidation(
 		return errors.New("wrong msg height")
 	}
 
-	msgCommitData, err := signedCommit.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get msg commit data")
-	}
-	if err := msgCommitData.Validate(); err != nil {
-		return errors.Wrap(err, "msgCommitData invalid")
+	if err := signedCommit.Validate(); err != nil {
+		return errors.Wrap(err, "signed commit invalid")
 	}
 
 	// verify signature
@@ -169,17 +157,7 @@ func validateCommit(
 		return errors.New("wrong msg round")
 	}
 
-	proposedCommitData, err := proposedMsg.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get proposed commit data")
-	}
-
-	msgCommitData, err := signedCommit.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get msg commit data")
-	}
-
-	if !bytes.Equal(proposedCommitData.Data, msgCommitData.Data) {
+	if !bytes.Equal(proposedMsg.Message.Root[:], signedCommit.Message.Root[:]) {
 		return errors.New("proposed data mistmatch")
 	}
 

@@ -11,8 +11,8 @@ import (
 )
 
 type Contribution struct {
-	K [96]byte `ssz-size:"96"`
-	V *altair.SyncCommitteeContribution
+	SelectionProofSig [96]byte `ssz-size:"96"`
+	Contribution      *altair.SyncCommitteeContribution
 }
 
 // Contributions --
@@ -107,6 +107,31 @@ type ConsensusData struct {
 }
 
 func (cid *ConsensusData) Validate() error {
+	switch cid.Duty.Type {
+	case BNRoleAttester:
+		if _, err := cid.GetAttestationData(); err != nil {
+			return err
+		}
+	case BNRoleAggregator:
+		if _, err := cid.GetAggregateAndProof(); err != nil {
+			return err
+		}
+	case BNRoleProposer:
+		_, err1 := cid.GetBlockData()
+		_, err2 := cid.GetBlindedBlockData()
+		if err1 != nil && err2 != nil {
+			return err1
+		}
+		if err1 == nil && err2 == nil {
+			return errors.New("no beacon data")
+		}
+	case BNRoleSyncCommittee:
+		return nil
+	case BNRoleSyncCommitteeContribution:
+		if _, err := cid.GetSyncCommitteeContributions(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -150,7 +175,7 @@ func (ci *ConsensusData) GetSyncCommitteeBlockRoot() (phase0.Root, error) {
 	return phase0.Root(ret), nil
 }
 
-func (ci *ConsensusData) GetContributionMap() (Contributions, error) {
+func (ci *ConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
 	ret := Contributions{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")

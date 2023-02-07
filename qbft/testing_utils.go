@@ -11,7 +11,7 @@ var TestingMessage = &Message{
 	Height:     FirstHeight,
 	Round:      FirstRound,
 	Identifier: []byte{1, 2, 3, 4},
-	Data:       []byte{1, 2, 3, 4},
+	Root:       [32]byte{},
 }
 var testingSignedMsg = func() *SignedMessage {
 	return SignMsg(TestingSK, 1, TestingMessage)
@@ -24,7 +24,7 @@ var SignMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *Message) *Signed
 	sig := sk.SignByte(r)
 
 	return &SignedMessage{
-		Message:   msg,
+		Message:   *msg,
 		Signers:   []types.OperatorID{id},
 		Signature: sig.Serialize(),
 	}

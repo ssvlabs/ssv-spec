@@ -69,7 +69,11 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 	}
 
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZBytes(decidedValue.SyncCommitteeBlockRoot[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)
+	root, err := decidedValue.GetSyncCommitteeBlockRoot()
+	if err != nil {
+		return errors.Wrap(err, "could not get sync committee block root")
+	}
+	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZBytes(root[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -90,7 +94,7 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -110,6 +114,11 @@ func (r *SyncCommitteeRunner) ProcessPostConsensus(signedMsg *SignedPartialSigna
 		return nil
 	}
 
+	blockRoot, err := r.GetState().DecidedValue.GetSyncCommitteeBlockRoot()
+	if err != nil {
+		return errors.Wrap(err, "could not get sync committee block root")
+	}
+
 	for _, root := range roots {
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
 		if err != nil {
@@ -120,7 +129,7 @@ func (r *SyncCommitteeRunner) ProcessPostConsensus(signedMsg *SignedPartialSigna
 
 		msg := &altair.SyncCommitteeMessage{
 			Slot:            r.GetState().DecidedValue.Duty.Slot,
-			BeaconBlockRoot: r.GetState().DecidedValue.SyncCommitteeBlockRoot,
+			BeaconBlockRoot: blockRoot,
 			ValidatorIndex:  r.GetState().DecidedValue.Duty.ValidatorIndex,
 			Signature:       specSig,
 		}
@@ -138,7 +147,12 @@ func (r *SyncCommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRo
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *SyncCommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{types.SSZBytes(r.BaseRunner.State.DecidedValue.SyncCommitteeBlockRoot[:])}, types.DomainSyncCommittee, nil
+	root, err := r.GetState().DecidedValue.GetSyncCommitteeBlockRoot()
+	if err != nil {
+		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get sync committee block root")
+	}
+
+	return []ssz.HashRoot{types.SSZBytes(root[:])}, types.DomainSyncCommittee, nil
 }
 
 // executeDuty steps:
@@ -149,14 +163,15 @@ func (r *SyncCommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashR
 func (r *SyncCommitteeRunner) executeDuty(duty *types.Duty) error {
 	// TODO - waitOneThirdOrValidBlock
 
-	root, err := r.GetBeaconNode().GetSyncMessageBlockRoot(duty.Slot)
+	root, ver, err := r.GetBeaconNode().GetSyncMessageBlockRoot(duty.Slot)
 	if err != nil {
 		return errors.Wrap(err, "failed to get sync committee block root")
 	}
 
 	input := &types.ConsensusData{
-		Duty:                   duty,
-		SyncCommitteeBlockRoot: root,
+		Duty:    *duty,
+		Version: ver,
+		DataSSZ: root[:],
 	}
 
 	if err := r.BaseRunner.decide(r, input); err != nil {

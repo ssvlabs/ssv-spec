@@ -39,7 +39,7 @@ var SignQBFTMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *qbft.Message
 }
 var ProposalDataBytes = func(data []byte, rcj, pj []*qbft.SignedMessage) []byte {
 	d := &qbft.ProposalData{
-		Data:                     data,
+		Root:                     data,
 		RoundChangeJustification: rcj,
 		PrepareJustification:     pj,
 	}
@@ -55,7 +55,7 @@ var PrepareDataBytes = func(data []byte) []byte {
 }
 var CommitDataBytes = func(data []byte) []byte {
 	d := &qbft.CommitData{
-		Data: data,
+		Root: data,
 	}
 	ret, _ := d.Encode()
 	return ret
@@ -65,7 +65,7 @@ var RoundChangeDataBytes = func(preparedValue []byte, preparedRound qbft.Round) 
 }
 var RoundChangePreparedDataBytes = func(preparedValue []byte, preparedRound qbft.Round, justif []*qbft.SignedMessage) []byte {
 	d := &qbft.RoundChangeData{
-		PreparedValue:            preparedValue,
+		PreparedValueRoot:        preparedValue,
 		PreparedRound:            preparedRound,
 		RoundChangeJustification: justif,
 	}

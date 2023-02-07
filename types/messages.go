@@ -107,7 +107,7 @@ type MessageSignature interface {
 type SSVMessage struct {
 	MsgType MsgType
 	MsgID   MessageID `ssz-size:"56"`
-	Data    []byte    `ssz-max:"1073872896"` // 2^30+2^16
+	Data    []byte    `ssz-max:"1074003968"` // 2^30+2^18
 }
 
 func (msg *SSVMessage) GetType() MsgType {
