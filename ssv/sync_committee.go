@@ -219,11 +219,11 @@ func (r *SyncCommitteeRunner) Decode(data []byte) error {
 }
 
 // GetRoot returns the root used for signing and verification
-func (r *SyncCommitteeRunner) GetRoot() ([]byte, error) {
+func (r *SyncCommitteeRunner) GetRoot() ([32]byte, error) {
 	marshaledRoot, err := r.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode DutyRunnerState")
+		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
 	}
 	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+	return ret, nil
 }

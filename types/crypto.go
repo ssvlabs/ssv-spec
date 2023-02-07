@@ -141,7 +141,7 @@ func ComputeSigningRoot(data Root, domain SignatureDomain) ([]byte, error) {
 		return nil, errors.Wrap(err, "could not get root from Root")
 	}
 
-	ret := sha256.Sum256(append(dataRoot, domain...))
+	ret := sha256.Sum256(append(dataRoot[:], domain...))
 	return ret[:], nil
 }
 

@@ -108,9 +108,9 @@ func (msg *Message) Decode(data []byte) error {
 }
 
 // GetRoot returns the root used for signing and verification
-func (msg *Message) GetRoot() ([]byte, error) {
+func (msg *Message) GetRoot() ([32]byte, error) {
 	r, err := msg.HashTreeRoot()
-	return r[:], err
+	return r, err
 }
 
 // Validate returns error if msg validation doesn't pass.
@@ -193,7 +193,7 @@ func (signedMsg *SignedMessage) Aggregate(sig types.MessageSignature) error {
 	if err != nil {
 		return errors.Wrap(err, "could not get signature root")
 	}
-	if !bytes.Equal(r1, r2) {
+	if !bytes.Equal(r1[:], r2[:]) {
 		return errors.New("can't aggregate, roots not equal")
 	}
 
@@ -218,7 +218,7 @@ func (signedMsg *SignedMessage) Decode(data []byte) error {
 }
 
 // GetRoot returns the root used for signing and verification
-func (signedMsg *SignedMessage) GetRoot() ([]byte, error) {
+func (signedMsg *SignedMessage) GetRoot() ([32]byte, error) {
 	return signedMsg.Message.GetRoot()
 }
 

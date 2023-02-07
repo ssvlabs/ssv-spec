@@ -89,7 +89,7 @@ const (
 
 type Root interface {
 	// GetRoot returns the root used for signing and verification
-	GetRoot() ([]byte, error)
+	GetRoot() ([32]byte, error)
 }
 
 // MessageSignature includes all functions relevant for a signed message (QBFT message, post consensus msg, etc)
