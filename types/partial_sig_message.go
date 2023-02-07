@@ -1,8 +1,6 @@
 package types
 
 import (
-	"crypto/sha256"
-	"encoding/json"
 	"github.com/pkg/errors"
 )
 
@@ -28,22 +26,17 @@ type PartialSignatureMessages struct {
 
 // Encode returns a msg encoded bytes or error
 func (msgs *PartialSignatureMessages) Encode() ([]byte, error) {
-	return json.Marshal(msgs)
+	return msgs.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (msgs *PartialSignatureMessages) Decode(data []byte) error {
-	return json.Unmarshal(data, msgs)
+	return msgs.UnmarshalSSZ(data)
 }
 
 // GetRoot returns the root used for signing and verification
-func (msgs PartialSignatureMessages) GetRoot() ([]byte, error) {
-	marshaledRoot, err := msgs.Encode()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not encode PartialSignatureMessages")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+func (msgs PartialSignatureMessages) GetRoot() ([32]byte, error) {
+	return msgs.HashTreeRoot()
 }
 
 func (msgs PartialSignatureMessages) Validate() error {
@@ -67,30 +60,19 @@ type PartialSignatureMessage struct {
 
 // Encode returns a msg encoded bytes or error
 func (pcsm *PartialSignatureMessage) Encode() ([]byte, error) {
-	return json.Marshal(pcsm)
+	return pcsm.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (pcsm *PartialSignatureMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, pcsm)
+	return pcsm.UnmarshalSSZ(data)
 }
 
-func (pcsm *PartialSignatureMessage) GetRoot() ([]byte, error) {
-	marshaledRoot, err := pcsm.Encode()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not encode PartialSignatureMessage")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+func (pcsm *PartialSignatureMessage) GetRoot() ([32]byte, error) {
+	return pcsm.HashTreeRoot()
 }
 
 func (pcsm *PartialSignatureMessage) Validate() error {
-	if len(pcsm.PartialSignature) != 96 {
-		return errors.New("PartialSignatureMessage sig invalid")
-	}
-	if len(pcsm.SigningRoot) != 32 {
-		return errors.New("SigningRoot invalid")
-	}
 	if pcsm.Signer == 0 {
 		return errors.New("signer ID 0 not allowed")
 	}
@@ -106,12 +88,12 @@ type SignedPartialSignatureMessage struct {
 
 // Encode returns a msg encoded bytes or error
 func (spcsm *SignedPartialSignatureMessage) Encode() ([]byte, error) {
-	return json.Marshal(spcsm)
+	return spcsm.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (spcsm *SignedPartialSignatureMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &spcsm)
+	return spcsm.UnmarshalSSZ(data)
 }
 
 func (spcsm *SignedPartialSignatureMessage) GetSignature() Signature {
@@ -122,7 +104,7 @@ func (spcsm *SignedPartialSignatureMessage) GetSigners() []OperatorID {
 	return []OperatorID{spcsm.Signer}
 }
 
-func (spcsm *SignedPartialSignatureMessage) GetRoot() ([]byte, error) {
+func (spcsm *SignedPartialSignatureMessage) GetRoot() ([32]byte, error) {
 	return spcsm.Message.GetRoot()
 }
 
