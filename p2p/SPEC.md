@@ -179,7 +179,7 @@ More information regarding the protocol can be found in [iBFT annotated paper (B
 ### Message Structure
 
 Messages structure and more information can be found in 
-[ssv-spec/types](https://github.com/bloxapp/ssv-spec/blob/main/types/messages.go).
+[ssv-spec/types](https://github.com/MatheusFranco99/ssv-spec/blob/main/types/messages.go).
 
 ---
 

@@ -1,7 +1,7 @@
 package encryption
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 )
 
 // SimpleEncrypt tests simple rsa encrypt

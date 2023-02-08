@@ -1,7 +1,7 @@
 package ssvmsg
 
 import (
-	"github.com/bloxapp/ssv-spec/types/spectest"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/spectest"
 )
 
 // Encoding tests encoding of a ssv message

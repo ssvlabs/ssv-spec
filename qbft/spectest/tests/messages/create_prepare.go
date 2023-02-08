@@ -1,6 +1,6 @@
 package messages
 
-import "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+import "github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests"
 
 // CreatePrepare tests creating a prepare msg
 func CreatePrepare() *tests.CreateMsgSpecTest {

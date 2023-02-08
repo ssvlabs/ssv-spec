@@ -1,19 +1,19 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/startinstance"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/commit"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/controller/decided"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/controller/futuremsg"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/controller/latemsg"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/controller/processmsg"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/messages"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/prepare"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/proposal"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/proposer"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/roundchange"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/startinstance"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/timeout"
 	"testing"
 )
 

@@ -1,6 +1,6 @@
 package messages
 
-import "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+import "github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests"
 
 // CreateCommit tests creating a commit msg
 func CreateCommit() *tests.CreateMsgSpecTest {

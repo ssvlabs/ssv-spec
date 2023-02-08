@@ -1,9 +1,9 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/spectest/tests/beacon"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/spectest/tests/consensusdata"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/spectest/tests/encryption"
 	"testing"
 )
 

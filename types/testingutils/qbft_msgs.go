@@ -1,8 +1,8 @@
 package testingutils
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 

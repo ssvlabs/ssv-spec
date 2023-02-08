@@ -1,7 +1,7 @@
 package startinstance
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests"
 )
 
 // PreviousNotDecided tests starting an instance when the previous one not decided

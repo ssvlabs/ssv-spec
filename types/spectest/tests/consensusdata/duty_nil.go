@@ -1,7 +1,7 @@
 package consensusdata
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 )
 
 // DutyNil tests a nil duty obj

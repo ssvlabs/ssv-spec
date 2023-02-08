@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

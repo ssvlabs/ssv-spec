@@ -2,17 +2,17 @@ package spectest
 
 import (
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/timeout"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	tests2 "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	tests2 "github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft/spectest/tests/controller/futuremsg"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
 

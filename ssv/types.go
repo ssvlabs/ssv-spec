@@ -5,8 +5,8 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/p2p"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/p2p"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 )
 
 // DutyRunners is a map of duty runners mapped by msg id hex.

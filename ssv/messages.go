@@ -3,7 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
 

@@ -1,8 +1,8 @@
 package testingutils
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/ssv"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 )
 
 var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {

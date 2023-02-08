@@ -2,7 +2,7 @@ package ssv
 
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
 

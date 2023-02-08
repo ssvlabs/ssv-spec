@@ -2,8 +2,8 @@ package synccommitteeaggregator
 
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types/testingutils"
 )
 
 // AllAggregatorQuorum tests a quorum of selection proofs of which all are aggregator
