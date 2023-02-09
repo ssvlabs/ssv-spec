@@ -79,24 +79,24 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPa
 	}
 
 	// convert expected roots to map and mark unique roots when verified
-	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][]byte, error) {
+	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][32]byte, error) {
 		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.Slot)
 		d, err := runner.GetBeaconNode().DomainData(epoch, domain)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get pre consensus root domain")
 		}
 
-		ret := make([][]byte, 0)
+		ret := make([][32]byte, 0)
 		for _, rootI := range expectedRootObjs {
 			r, err := types.ComputeETHSigningRoot(rootI, d)
 			if err != nil {
 				return nil, errors.Wrap(err, "could not compute ETH signing root")
 			}
-			ret = append(ret, r[:])
+			ret = append(ret, r)
 		}
 
 		sort.Slice(ret, func(i, j int) bool {
-			return string(ret[i]) < string(ret[j])
+			return string(ret[i][:]) < string(ret[j][:])
 		})
 		return ret, nil
 	}(expectedRootObjs)
@@ -104,21 +104,21 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPa
 		return err
 	}
 
-	sortedRoots := func(msgs types.PartialSignatureMessages) [][]byte {
-		ret := make([][]byte, 0)
+	sortedRoots := func(msgs types.PartialSignatureMessages) [][32]byte {
+		ret := make([][32]byte, 0)
 		for _, msg := range msgs.Messages {
 			ret = append(ret, msg.SigningRoot)
 		}
 
 		sort.Slice(ret, func(i, j int) bool {
-			return string(ret[i]) < string(ret[j])
+			return string(ret[i][:]) < string(ret[j][:])
 		})
 		return ret
 	}(signedMsg.Message)
 
 	// verify roots
 	for i, r := range sortedRoots {
-		if !bytes.Equal(sortedExpectedRoots[i], r) {
+		if !bytes.Equal(sortedExpectedRoots[i][:], r[:]) {
 			return errors.New("wrong signing root")
 		}
 	}

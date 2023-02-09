@@ -2,9 +2,11 @@ package types
 
 import (
 	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
+	capella2 "github.com/attestantio/go-eth2-client/api/v1/capella"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
+	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -12,7 +14,7 @@ import (
 
 type Contribution struct {
 	SelectionProofSig [96]byte `ssz-size:"96"`
-	Contribution      *altair.SyncCommitteeContribution
+	Contribution      altair.SyncCommitteeContribution
 }
 
 // Contributions --
@@ -118,8 +120,18 @@ func (cid *ConsensusData) Validate() error {
 			return err
 		}
 	case BNRoleProposer:
-		_, err1 := cid.GetBlockData()
-		_, err2 := cid.GetBlindedBlockData()
+		var err1, err2 error
+		switch cid.Version {
+		case spec.DataVersionBellatrix:
+			_, err1 = cid.GetBellatrixBlockData()
+			_, err2 = cid.GetBellatrixBlindedBlockData()
+		case spec.DataVersionCapella:
+			_, err1 = cid.GetCapellaBlockData()
+			_, err2 = cid.GetCapellaBlindedBlockData()
+		default:
+			return errors.New("invalid block data")
+		}
+
 		if err1 != nil && err2 != nil {
 			return err1
 		}
@@ -144,7 +156,7 @@ func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 	return ret, nil
 }
 
-func (ci *ConsensusData) GetBlockData() (*bellatrix.BeaconBlock, error) {
+func (ci *ConsensusData) GetBellatrixBlockData() (*bellatrix.BeaconBlock, error) {
 	ret := &bellatrix.BeaconBlock{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
@@ -152,8 +164,24 @@ func (ci *ConsensusData) GetBlockData() (*bellatrix.BeaconBlock, error) {
 	return ret, nil
 }
 
-func (ci *ConsensusData) GetBlindedBlockData() (*bellatrix2.BlindedBeaconBlock, error) {
+func (ci *ConsensusData) GetBellatrixBlindedBlockData() (*bellatrix2.BlindedBeaconBlock, error) {
 	ret := &bellatrix2.BlindedBeaconBlock{}
+	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		return nil, errors.Wrap(err, "could not unmarshal ssz")
+	}
+	return ret, nil
+}
+
+func (ci *ConsensusData) GetCapellaBlockData() (*capella.BeaconBlock, error) {
+	ret := &capella.BeaconBlock{}
+	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		return nil, errors.Wrap(err, "could not unmarshal ssz")
+	}
+	return ret, nil
+}
+
+func (ci *ConsensusData) GetCapellaBlindedBlockData() (*capella2.BlindedBeaconBlock, error) {
+	ret := &capella2.BlindedBeaconBlock{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
 	}

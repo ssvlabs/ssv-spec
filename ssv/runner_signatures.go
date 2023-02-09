@@ -83,7 +83,7 @@ func (b *BaseRunner) verifyBeaconPartialSignature(msg *types.PartialSignatureMes
 			}
 
 			// verify
-			if !sig.VerifyByte(pk, root) {
+			if !sig.VerifyByte(pk, root[:]) {
 				return errors.New("wrong signature")
 			}
 			return nil

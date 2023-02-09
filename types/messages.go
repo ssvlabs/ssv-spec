@@ -97,10 +97,6 @@ type MessageSignature interface {
 	Root
 	GetSignature() Signature
 	GetSigners() []OperatorID
-	// MatchedSigners returns true if the provided signer ids are equal to GetSignerIds() without order significance
-	MatchedSigners(ids []OperatorID) bool
-	// Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
-	Aggregate(signedMsg MessageSignature) error
 }
 
 // SSVMessage is the main message passed within the SSV network, it can contain different types of messages (QBTF, Sync, etc.)

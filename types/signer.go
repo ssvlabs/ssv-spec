@@ -16,8 +16,9 @@ type Signature []byte
 var (
 	GenesisMainnet = DomainType{0x0, 0x0, 0x0, 0x0}
 	PrimusTestnet  = DomainType{0x0, 0x0, 0x1, 0x0}
-	ShifuTestnet   = DomainType{0x0, 0x0, 0x1, 0x1}
-	ShifuV2Testnet = DomainType{0x0, 0x0, 0x1, 0x2}
+	ShifuTestnet   = DomainType{0x0, 0x0, 0x2, 0x0}
+	ShifuV2Testnet = DomainType{0x0, 0x0, 0x2, 0x1}
+	V3Testnet      = DomainType{0x0, 0x0, 0x3, 0x1}
 )
 
 type SignatureType [4]byte
@@ -34,7 +35,7 @@ var (
 
 type BeaconSigner interface {
 	// SignBeaconObject returns signature and root.
-	SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (Signature, []byte, error)
+	SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (Signature, [32]byte, error)
 	// IsAttestationSlashable returns error if attestation is slashable
 	IsAttestationSlashable(pk []byte, data *spec.AttestationData) error
 	// IsBeaconBlockSlashable returns error if the given block is slashable

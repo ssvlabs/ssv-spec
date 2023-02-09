@@ -54,7 +54,7 @@ func (msgs PartialSignatureMessages) Validate() error {
 // PartialSignatureMessage is a msg for partial Beacon chain related signatures (like partial attestation, block, randao sigs)
 type PartialSignatureMessage struct {
 	PartialSignature Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty
-	SigningRoot      []byte    `ssz-size:"32"` // the root signed in PartialSignature
+	SigningRoot      [32]byte  `ssz-size:"32"` // the root signed in PartialSignature
 	Signer           OperatorID
 }
 
@@ -108,73 +108,7 @@ func (spcsm *SignedPartialSignatureMessage) GetRoot() ([32]byte, error) {
 	return spcsm.Message.GetRoot()
 }
 
-func (spcsm *SignedPartialSignatureMessage) Aggregate(signedMsg MessageSignature) error {
-	//if !bytes.Equal(spcsm.GetRoot(), signedMsg.GetRoot()) {
-	//	return errors.New("can't aggregate msgs with different roots")
-	//}
-	//
-	//// verify no matching Signer
-	//for _, signerID := range spcsm.Signer {
-	//	for _, toMatchID := range signedMsg.GetSigners() {
-	//		if signerID == toMatchID {
-	//			return errors.New("Signer IDs partially/ fully match")
-	//		}
-	//	}
-	//}
-	//
-	//allSigners := append(spcsm.Signer, signedMsg.GetSigners()...)
-	//
-	//// verify and aggregate
-	//sig1, err := blsSig(spcsm.Signature)
-	//if err != nil {
-	//	return errors.Wrap(err, "could not parse PartialSignature")
-	//}
-	//
-	//sig2, err := blsSig(signedMsg.GetSignature())
-	//if err != nil {
-	//	return errors.Wrap(err, "could not parse PartialSignature")
-	//}
-	//
-	//sig1.Add(sig2)
-	//spcsm.Signature = sig1.Serialize()
-	//spcsm.Signer = allSigners
-	//return nil
-	panic("implement")
-}
-
-// MatchedSigners returns true if the provided Signer ids are equal to GetSignerIds() without order significance
-func (spcsm *SignedPartialSignatureMessage) MatchedSigners(ids []OperatorID) bool {
-	toMatchCnt := make(map[OperatorID]int)
-	for _, id := range ids {
-		toMatchCnt[id]++
-	}
-
-	foundCnt := make(map[OperatorID]int)
-	for _, id := range spcsm.GetSigners() {
-		foundCnt[id]++
-	}
-
-	for id, cnt := range toMatchCnt {
-		if cnt != foundCnt[id] {
-			return false
-		}
-	}
-	return true
-}
-
-//
-//func blsSig(sig []byte) (*bls.Sign, error) {
-//	ret := &bls.Sign{}
-//	if err := ret.Deserialize(sig); err != nil {
-//		return nil, errors.Wrap(err, "could not covert PartialSignature byts to bls.sign")
-//	}
-//	return ret, nil
-//}
-
 func (spcsm *SignedPartialSignatureMessage) Validate() error {
-	if len(spcsm.Signature) != 96 {
-		return errors.New("SignedPartialSignatureMessage sig invalid")
-	}
 	if spcsm.Signer == 0 {
 		return errors.New("signer ID 0 not allowed")
 	}

@@ -96,10 +96,10 @@ func ProposerValueCheckF(
 			return errors.Wrap(err, "duty invalid")
 		}
 
-		if blockData, err := cd.GetBlindedBlockData(); err == nil {
+		if blockData, err := cd.GetBellatrixBlindedBlockData(); err == nil {
 			return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
 		}
-		if blockData, err := cd.GetBlockData(); err == nil {
+		if blockData, err := cd.GetBellatrixBlockData(); err == nil {
 			return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
 		}
 

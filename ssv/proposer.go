@@ -126,9 +126,9 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	// specific duty sig
 	var blkToSign ssz.HashRoot
 	if r.decidedBlindedBlock() {
-		blkToSign, err = decidedValue.GetBlindedBlockData()
+		blkToSign, err = decidedValue.GetBellatrixBlindedBlockData()
 	} else {
-		blkToSign, err = decidedValue.GetBlockData()
+		blkToSign, err = decidedValue.GetBellatrixBlockData()
 	}
 	if err != nil {
 		return errors.Wrap(err, "could not get block")
@@ -189,7 +189,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 		copy(specSig[:], sig)
 
 		if r.decidedBlindedBlock() {
-			data, err := r.GetState().DecidedValue.GetBlindedBlockData()
+			data, err := r.GetState().DecidedValue.GetBellatrixBlindedBlockData()
 			if err != nil {
 				return errors.Wrap(err, "could not get blinded block")
 			}
@@ -202,7 +202,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
 			}
 		} else {
-			data, err := r.GetState().DecidedValue.GetBlockData()
+			data, err := r.GetState().DecidedValue.GetBellatrixBlockData()
 			if err != nil {
 				return errors.Wrap(err, "could not get block")
 			}
@@ -223,7 +223,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 // decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (r *ProposerRunner) decidedBlindedBlock() bool {
-	_, err := r.BaseRunner.State.DecidedValue.GetBlindedBlockData()
+	_, err := r.BaseRunner.State.DecidedValue.GetBellatrixBlindedBlockData()
 	return err == nil
 }
 
@@ -235,14 +235,14 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	if r.decidedBlindedBlock() {
-		data, err := r.GetState().DecidedValue.GetBlindedBlockData()
+		data, err := r.GetState().DecidedValue.GetBellatrixBlindedBlockData()
 		if err != nil {
 			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block")
 		}
 		return []ssz.HashRoot{data}, types.DomainProposer, nil
 	}
 
-	data, err := r.GetState().DecidedValue.GetBlockData()
+	data, err := r.GetState().DecidedValue.GetBellatrixBlockData()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block")
 	}

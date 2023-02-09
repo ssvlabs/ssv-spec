@@ -110,7 +110,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 	for i, c := range contributionObjs {
 		contributions = append(contributions, &types.Contribution{
 			SelectionProofSig: selectionProofs[i],
-			Contribution:      c,
+			Contribution:      *c,
 		})
 	}
 	byts, err := contributions.MarshalSSZ()
@@ -224,7 +224,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Si
 			if err != nil {
 				return errors.Wrap(err, "could not generate contribution and proof")
 			}
-			if !bytes.Equal(root, contribAndProofRoot[:]) {
+			if !bytes.Equal(root[:], contribAndProofRoot[:]) {
 				continue // not the correct root
 			}
 
@@ -249,10 +249,10 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Si
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib *altair.SyncCommitteeContribution, proof phase0.BLSSignature) (*altair.ContributionAndProof, phase0.Root, error) {
+func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib altair.SyncCommitteeContribution, proof phase0.BLSSignature) (*altair.ContributionAndProof, phase0.Root, error) {
 	contribAndProof := &altair.ContributionAndProof{
 		AggregatorIndex: r.GetState().DecidedValue.Duty.ValidatorIndex,
-		Contribution:    contrib,
+		Contribution:    &contrib,
 		SelectionProof:  proof,
 	}
 

@@ -178,14 +178,14 @@ func ReconstructSignatures(signatures map[OperatorID][]byte) (*bls.Sign, error) 
 	return &reconstructedSig, err
 }
 
-func VerifyReconstructedSignature(sig *bls.Sign, validatorPubKey, root []byte) error {
+func VerifyReconstructedSignature(sig *bls.Sign, validatorPubKey []byte, root [32]byte) error {
 	pk := &bls.PublicKey{}
 	if err := pk.Deserialize(validatorPubKey); err != nil {
 		return errors.Wrap(err, "could not deserialize validator pk")
 	}
 
 	// verify reconstructed sig
-	if res := sig.VerifyByte(pk, root); !res {
+	if res := sig.VerifyByte(pk, root[:]); !res {
 		return errors.New("could not reconstruct a valid signature")
 	}
 	return nil

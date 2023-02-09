@@ -23,4 +23,6 @@ generate-jsons:
 
 .PHONY: generate-ssz
 generate-ssz:
-	@go generate ./...
+	@go generate ./qbft/
+	@go generate ./ssv/
+	@go generate ./types/
