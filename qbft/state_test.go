@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -17,7 +18,7 @@ func TestState_Decoding(t *testing.T) {
 					PubKey:     []byte{1, 2, 3, 4},
 				},
 			},
-			DomainType: types.PrimusTestnet,
+			DomainType: testingutils.TestingSSVDomainType,
 		},
 		ID:                []byte{1, 2, 3, 4},
 		Round:             1,
@@ -47,7 +48,7 @@ func TestState_Decoding(t *testing.T) {
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.ValidatorPubKey)
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.Committee[0].PubKey)
 	require.EqualValues(t, 1, decodedState.Share.Committee[0].OperatorID)
-	require.EqualValues(t, types.PrimusTestnet, decodedState.Share.DomainType)
+	require.EqualValues(t, testingutils.TestingSSVDomainType, decodedState.Share.DomainType)
 
 	require.EqualValues(t, 3, decodedState.LastPreparedRound)
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.LastPreparedValue)

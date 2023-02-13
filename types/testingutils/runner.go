@@ -50,7 +50,7 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 
 var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
 	share := TestingShare(keySet)
-	identifier := types.NewMsgID(TestingValidatorPubKey[:], role)
+	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 	net := NewTestingNetwork()
 	km := NewTestingKeyManager()
 
@@ -65,7 +65,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 	contr := qbft.NewController(
 		identifier[:],
 		share,
-		types.PrimusTestnet,
+		TestingSSVDomainType,
 		config,
 	)
 
@@ -159,10 +159,9 @@ var DecidedRunnerUnknownDutyType = func(keySet *TestKeySet) ssv.Runner {
 
 var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height, keySet *TestKeySet) ssv.Runner {
 	v := BaseValidator(keySet)
-	consensusDataByts, _ := consensusInput.Encode()
-	msgs := DecidingMsgsForHeight(consensusDataByts, []byte{1, 2, 3, 4}, height, keySet)
+	msgs := DecidingMsgsForHeight(consensusInput, []byte{1, 2, 3, 4}, height, keySet)
 
-	if err := v.DutyRunners[types.BNRoleAttester].StartNewDuty(consensusInput.Duty); err != nil {
+	if err := v.DutyRunners[types.BNRoleAttester].StartNewDuty(&consensusInput.Duty); err != nil {
 		panic(err.Error())
 	}
 	for _, msg := range msgs {
@@ -175,8 +174,8 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	return v.DutyRunners[types.BNRoleAttester]
 }
 
-var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
-	id := types.NewMsgID(TestingValidatorPubKey[:], role)
+var SSVDecidingMsgs = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
+	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
 	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 		var byts []byte
@@ -221,16 +220,23 @@ var SSVDecidingMsgs = func(consensusData []byte, ks *TestKeySet, role types.Beac
 	return base
 }
 
-var DecidingMsgsForHeight = func(consensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
 	msgs := make([]*qbft.SignedMessage, 0)
-	for h := qbft.Height(qbft.FirstHeight); h <= height; h++ {
-		msgs = append(msgs, SignQBFTMsg(keySet.Shares[1], 1, &qbft.Message{
+
+	r, _ := consensusData.HashTreeRoot()
+	fullData, _ := consensusData.MarshalSSZ()
+
+	for h := qbft.FirstHeight; h <= height; h++ {
+		// proposal
+		s := SignQBFTMsg(keySet.Shares[1], 1, &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
 			Height:     h,
 			Round:      qbft.FirstRound,
 			Identifier: msgIdentifier,
-			Data:       ProposalDataBytes(consensusData, nil, nil),
-		}))
+			Root:       r,
+		})
+		s.FullData = fullData
+		msgs = append(msgs, s)
 
 		// prepare
 		for i := uint64(1); i <= keySet.Threshold; i++ {
@@ -239,7 +245,7 @@ var DecidingMsgsForHeight = func(consensusData, msgIdentifier []byte, height qbf
 				Height:     h,
 				Round:      qbft.FirstRound,
 				Identifier: msgIdentifier,
-				Data:       PrepareDataBytes(consensusData),
+				Root:       r,
 			}))
 		}
 		// commit
@@ -249,7 +255,7 @@ var DecidingMsgsForHeight = func(consensusData, msgIdentifier []byte, height qbf
 				Height:     h,
 				Round:      qbft.FirstRound,
 				Identifier: msgIdentifier,
-				Data:       CommitDataBytes(consensusData),
+				Root:       r,
 			}))
 		}
 	}

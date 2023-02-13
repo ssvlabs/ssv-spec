@@ -102,16 +102,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 	duty := r.GetState().StartingDuty
 
 	// fetch contributions
-	contributionObjs, ver, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.Slot, subnets)
+	contributions, ver, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.Slot, selectionProofs, subnets)
 	if err != nil {
 		return errors.Wrap(err, "could not get sync committee contribution")
-	}
-	contributions := make(types.Contributions, 0)
-	for i, c := range contributionObjs {
-		contributions = append(contributions, &types.Contribution{
-			SelectionProofSig: selectionProofs[i],
-			Contribution:      *c,
-		})
 	}
 	byts, err := contributions.MarshalSSZ()
 	if err != nil {

@@ -25,50 +25,15 @@ var MultiSignQBFTMsg = func(sks []*bls.SecretKey, ids []types.OperatorID, msg *q
 }
 
 var SignQBFTMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *qbft.Message) *qbft.SignedMessage {
-	domain := types.PrimusTestnet
+	domain := TestingSSVDomainType
 	sigType := types.QBFTSignatureType
 
 	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
 	sig := sk.SignByte(r)
 
 	return &qbft.SignedMessage{
-		Message:   msg,
+		Message:   *msg,
 		Signers:   []types.OperatorID{id},
 		Signature: sig.Serialize(),
 	}
-}
-var ProposalDataBytes = func(data []byte, rcj, pj []*qbft.SignedMessage) []byte {
-	d := &qbft.ProposalData{
-		Root:                     data,
-		RoundChangeJustification: rcj,
-		PrepareJustification:     pj,
-	}
-	ret, _ := d.Encode()
-	return ret
-}
-var PrepareDataBytes = func(data []byte) []byte {
-	d := &qbft.PrepareData{
-		Data: data,
-	}
-	ret, _ := d.Encode()
-	return ret
-}
-var CommitDataBytes = func(data []byte) []byte {
-	d := &qbft.CommitData{
-		Root: data,
-	}
-	ret, _ := d.Encode()
-	return ret
-}
-var RoundChangeDataBytes = func(preparedValue []byte, preparedRound qbft.Round) []byte {
-	return RoundChangePreparedDataBytes(preparedValue, preparedRound, nil)
-}
-var RoundChangePreparedDataBytes = func(preparedValue []byte, preparedRound qbft.Round, justif []*qbft.SignedMessage) []byte {
-	d := &qbft.RoundChangeData{
-		PreparedValueRoot:        preparedValue,
-		PreparedRound:            preparedRound,
-		RoundChangeJustification: justif,
-	}
-	ret, _ := d.Encode()
-	return ret
 }

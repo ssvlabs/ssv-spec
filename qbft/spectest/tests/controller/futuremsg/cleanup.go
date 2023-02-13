@@ -9,7 +9,7 @@ import (
 
 // Cleanup tests cleaning up future msgs container
 func Cleanup() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
 	return &ControllerSyncSpecTest{

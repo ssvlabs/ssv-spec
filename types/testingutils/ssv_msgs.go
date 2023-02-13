@@ -9,110 +9,107 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
+var TestingSSVDomainType = types.V3Testnet
 var AttesterMsgID = func() []byte {
-	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleAttester)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
 	return ret[:]
 }()
 
 var ProposerMsgID = func() []byte {
-	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleProposer)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleProposer)
 	return ret[:]
 }()
 var AggregatorMsgID = func() []byte {
-	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleAggregator)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAggregator)
 	return ret[:]
 }()
 var SyncCommitteeMsgID = func() []byte {
-	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommittee)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommittee)
 	return ret[:]
 }()
 var SyncCommitteeContributionMsgID = func() []byte {
-	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution)
 	return ret[:]
 }()
 var ValidatorRegistrationMsgID = func() []byte {
-	ret := types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleValidatorRegistration)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleValidatorRegistration)
 	return ret[:]
 }()
 
 var TestAttesterConsensusData = &types.ConsensusData{
-	Duty:            TestingAttesterDuty,
-	AttestationData: TestingAttestationData,
+	Duty:    TestingAttesterDuty,
+	DataSSZ: TestingAttestationDataBytes,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAggregatorConsensusData = &types.ConsensusData{
-	Duty:              TestingAggregatorDuty,
-	AggregateAndProof: TestingAggregateAndProof,
+	Duty:    TestingAggregatorDuty,
+	DataSSZ: TestingAggregateAndProofBytes,
 }
 var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
 var TestProposerConsensusData = &types.ConsensusData{
-	Duty:      TestingProposerDuty,
-	BlockData: TestingBeaconBlock,
+	Duty:    TestingProposerDuty,
+	DataSSZ: TestingBeaconBlockBytes,
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
 
 var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
-	Duty:             TestingProposerDuty,
-	BlindedBlockData: TestingBlindedBeaconBlock,
+	Duty:    TestingProposerDuty,
+	DataSSZ: TestingBlindedBeaconBlockBytes,
 }
 var TestProposerBlindedBlockConsensusDataByts, _ = TestProposerBlindedBlockConsensusData.Encode()
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
-	Duty:                   TestingSyncCommitteeDuty,
-	SyncCommitteeBlockRoot: TestingSyncCommitteeBlockRoot,
+	Duty:    TestingSyncCommitteeDuty,
+	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
-	Duty: TestingSyncCommitteeContributionDuty,
-	SyncCommitteeContribution: map[spec.BLSSignature]*altair.SyncCommitteeContribution{
-		TestingContributionProofsSigned[0]: TestingSyncCommitteeContributions[0],
-		TestingContributionProofsSigned[1]: TestingSyncCommitteeContributions[1],
-		TestingContributionProofsSigned[2]: TestingSyncCommitteeContributions[2],
-	},
+	Duty:    TestingSyncCommitteeContributionDuty,
+	DataSSZ: TestingSyncCommitteeContributionsConsensusDataBytes,
 }
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()
 
 var TestConsensusUnkownDutyTypeData = &types.ConsensusData{
-	Duty:            TestingUnknownDutyType,
-	AttestationData: TestingAttestationData,
+	Duty:    TestingUnknownDutyType,
+	DataSSZ: TestingAttestationDataBytes,
 }
 var TestConsensusUnkownDutyTypeDataByts, _ = TestConsensusUnkownDutyTypeData.Encode()
 
 var TestConsensusWrongDutyPKData = &types.ConsensusData{
-	Duty:            TestingWrongDutyPK,
-	AttestationData: TestingAttestationData,
+	Duty:    TestingWrongDutyPK,
+	DataSSZ: TestingAttestationDataBytes,
 }
 var TestConsensusWrongDutyPKDataByts, _ = TestConsensusWrongDutyPKData.Encode()
 
 var SSVMsgAttester = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleAttester))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester))
 }
 
 var SSVMsgWrongID = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingWrongValidatorPubKey[:], types.BNRoleAttester))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingWrongValidatorPubKey[:], types.BNRoleAttester))
 }
 
 var SSVMsgProposer = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleProposer))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleProposer))
 }
 
 var SSVMsgAggregator = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleAggregator))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAggregator))
 }
 
 var SSVMsgSyncCommittee = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommittee))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommittee))
 }
 
 var SSVMsgSyncCommitteeContribution = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution))
 }
 
 var SSVMsgValidatorRegistration = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingValidatorPubKey[:], types.BNRoleValidatorRegistration))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleValidatorRegistration))
 }
 
 var ssvMsg = func(qbftMsg *qbft.SignedMessage, postMsg *types.SignedPartialSignatureMessage, msgID types.MessageID) *types.SSVMessage {
@@ -426,7 +423,7 @@ var randaoMsg = func(
 			Signer:           id,
 		}
 		if wrongRoot {
-			msg.SigningRoot = make([]byte, 32)
+			msg.SigningRoot = [32]byte{}
 		}
 		msgs.Messages = append(msgs.Messages, msg)
 	}
@@ -562,7 +559,7 @@ var validatorRegistrationMsg = func(
 		Signer:           id,
 	}
 	if wrongRoot {
-		msg.SigningRoot = make([]byte, 32)
+		msg.SigningRoot = [32]byte{}
 	}
 
 	sig, _ := signer.SignRoot(msgs, types.PartialSignatureType, sk.GetPublicKey().Serialize())
@@ -920,29 +917,11 @@ var postConsensusSyncCommitteeContributionMsg = func(
 
 	msgs := make([]*types.PartialSignatureMessage, 0)
 	for index := range TestingSyncCommitteeContributions {
-		// sign proof
-		subnet, _ := beacon.SyncCommitteeSubnetID(spec.CommitteeIndex(index))
-		if wrongRoot {
-			subnet = 1
-		}
-		data := &altair.SyncAggregatorSelectionData{
-			Slot:              TestingDutySlot,
-			SubcommitteeIndex: subnet,
-		}
-		dProof, _ := beacon.DomainData(1, types.DomainSyncCommitteeSelectionProof)
-
-		proofSig, _, _ := signer.SignBeaconObject(data, dProof, keySet.ValidatorPK.Serialize(), types.DomainSyncCommitteeSelectionProof)
-		blsProofSig := spec.BLSSignature{}
-		copy(blsProofSig[:], proofSig)
-
-		// get contribution
-		contribution, _ := beacon.GetSyncCommitteeContribution(TestingDutySlot, subnet)
-
 		// sign contrib and proof
 		contribAndProof := &altair.ContributionAndProof{
 			AggregatorIndex: validatorIndex,
-			Contribution:    contribution,
-			SelectionProof:  blsProofSig,
+			Contribution:    &TestingSyncCommitteeContributionsConsensusData[index].Contribution,
+			SelectionProof:  TestingSyncCommitteeContributionsConsensusData[index].SelectionProofSig,
 		}
 
 		signed, root, _ := signer.SignBeaconObject(contribAndProof, dContribAndProof, sk.GetPublicKey().Serialize(), types.DomainSyncCommitteeSelectionProof)
@@ -981,12 +960,12 @@ var postConsensusSyncCommitteeContributionMsg = func(
 // ensureRoot ensures that SigningRoot will have sufficient allocated memory
 // otherwise we get panic from bls:
 // github.com/herumi/bls-eth-go-binary/bls.(*Sign).VerifyByte:738
-func ensureRoot(root []byte) []byte {
+func ensureRoot(root [32]byte) [32]byte {
 	n := len(root)
 	if n == 0 {
 		n = 1
 	}
-	tmp := make([]byte, n)
+	tmp := [32]byte{}
 	copy(tmp[:], root[:])
-	return tmp[:]
+	return tmp
 }
