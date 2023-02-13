@@ -37,3 +37,82 @@ var SignQBFTMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *qbft.Message
 		Signature: sig.Serialize(),
 	}
 }
+
+var TestingInvalidMessage = func(sk *bls.SecretKey, id types.OperatorID, msgType qbft.MessageType) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    msgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: []byte{}, // invalid
+		Root:       TestingQBFTRootData,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = TestingQBFTFullData
+	return ret
+}
+
+var TestingProposalMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+	return TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
+}
+var TestingProposalMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      round,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       TestingQBFTRootData,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = TestingQBFTFullData
+	return ret
+}
+
+var TestingPrepareMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+	return TestingPrepareMessageWithRound(sk, id, qbft.FirstRound)
+}
+var TestingPrepareMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.PrepareMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      round,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       TestingQBFTRootData,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	return ret
+}
+
+var TestingCommitMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+	return TestingCommitMessageWithRound(sk, id, qbft.FirstRound)
+}
+var TestingCommitMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+	return TestingCommitMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData)
+}
+var TestingCommitMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9})
+}
+var TestingCommitMessageWrongHeight = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9})
+}
+var TestingCommitMessageWithParams = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.CommitMsgType,
+		Height:     height,
+		Round:      round,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       root,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	return ret
+}
+var TestingCommitMultiSignerMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.CommitMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       TestingQBFTRootData,
+	}
+	ret := MultiSignQBFTMsg(sks, ids, msg)
+	return ret
+}

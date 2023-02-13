@@ -26,12 +26,12 @@ func TestState_Decoding(t *testing.T) {
 		LastPreparedRound: 3,
 		LastPreparedValue: []byte{1, 2, 3, 4},
 		ProposalAcceptedForCurrentRound: &SignedMessage{
-			Message: &Message{
+			Message: Message{
 				MsgType:    CommitMsgType,
 				Height:     1,
 				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Data:       []byte{1, 2, 3, 4},
+				Root:       testingutils.TestingSyncCommitteeBlockRoot,
 			},
 			Signature: []byte{1, 2, 3, 4},
 			Signers:   []types.OperatorID{1},
@@ -62,5 +62,5 @@ func TestState_Decoding(t *testing.T) {
 	require.EqualValues(t, 1, decodedState.ProposalAcceptedForCurrentRound.Message.Height)
 	require.EqualValues(t, 2, decodedState.ProposalAcceptedForCurrentRound.Message.Round)
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Identifier)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Data)
+	require.EqualValues(t, testingutils.TestingSyncCommitteeBlockRoot, decodedState.ProposalAcceptedForCurrentRound.Message.Root)
 }

@@ -2,10 +2,16 @@ package testingutils
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
+
+var TestingQBFTFullData = []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+var TestingQBFTRootData = func() [32]byte {
+	return sha256.Sum256(TestingQBFTFullData)
+}()
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
