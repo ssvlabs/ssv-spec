@@ -39,6 +39,9 @@ var SignQBFTMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *qbft.Message
 }
 
 var TestingInvalidMessage = func(sk *bls.SecretKey, id types.OperatorID, msgType qbft.MessageType) *qbft.SignedMessage {
+	return TestingMultiSignerInvalidMessage([]*bls.SecretKey{sk}, []types.OperatorID{id}, msgType)
+}
+var TestingMultiSignerInvalidMessage = func(sks []*bls.SecretKey, ids []types.OperatorID, msgType qbft.MessageType) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    msgType,
 		Height:     qbft.FirstHeight,
@@ -46,11 +49,14 @@ var TestingInvalidMessage = func(sk *bls.SecretKey, id types.OperatorID, msgType
 		Identifier: []byte{}, // invalid
 		Root:       TestingQBFTRootData,
 	}
-	ret := SignQBFTMsg(sk, id, msg)
+	ret := MultiSignQBFTMsg(sks, ids, msg)
 	ret.FullData = TestingQBFTFullData
 	return ret
 }
 
+/**
+Proposal messages
+*/
 var TestingProposalMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
 }
@@ -66,7 +72,22 @@ var TestingProposalMessageWithRound = func(sk *bls.SecretKey, id types.OperatorI
 	ret.FullData = TestingQBFTFullData
 	return ret
 }
+var TestingMultiSignerProposalMessage = func(sk []*bls.SecretKey, id []types.OperatorID) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       TestingQBFTRootData,
+	}
+	ret := MultiSignQBFTMsg(sk, id, msg)
+	ret.FullData = TestingQBFTFullData
+	return ret
+}
 
+/**
+Prepare messages
+*/
 var TestingPrepareMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingPrepareMessageWithRound(sk, id, qbft.FirstRound)
 }
@@ -82,6 +103,9 @@ var TestingPrepareMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID
 	return ret
 }
 
+/**
+Commit messages
+*/
 var TestingCommitMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingCommitMessageWithRound(sk, id, qbft.FirstRound)
 }
@@ -106,13 +130,51 @@ var TestingCommitMessageWithParams = func(sk *bls.SecretKey, id types.OperatorID
 	return ret
 }
 var TestingCommitMultiSignerMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
+	return TestingCommitMultiSignerMessageWithRound(sks, ids, qbft.FirstRound)
+}
+var TestingCommitMultiSignerMessageWithRound = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+	return TestingCommitMultiSignerMessageWithParams(sks, ids, round, qbft.FirstHeight, TestingQBFTRootData)
+}
+var TestingCommitMultiSignerMessageWithHeight = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, TestingQBFTRootData)
+}
+var TestingCommitMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
+		Height:     height,
+		Round:      round,
 		Identifier: []byte{1, 2, 3, 4},
-		Root:       TestingQBFTRootData,
+		Root:       root,
 	}
 	ret := MultiSignQBFTMsg(sks, ids, msg)
+	return ret
+}
+var TestingInvalidCommitMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.CommitMsgType,
+		Height:     height,
+		Round:      round,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       root,
+	}
+	ret := MultiSignQBFTMsg(sks, ids, msg)
+	return ret
+}
+
+/**
+Round Change messages
+*/
+var TestingRoundChangeMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+	return TestingRoundChangeMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData)
+}
+var TestingRoundChangeMessageWithParams = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.RoundChangeMsgType,
+		Height:     height,
+		Round:      round,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       root,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
 	return ret
 }

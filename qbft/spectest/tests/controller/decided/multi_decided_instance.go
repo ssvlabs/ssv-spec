@@ -10,21 +10,13 @@ import (
 
 // MultiDecidedInstances tests deciding multiple instances
 func MultiDecidedInstances() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	ks := testingutils.Testing4SharesSet()
+
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
 		return &tests.RunInstanceData{
 			InputValue: []byte{1, 2, 3, 4},
 			InputMessages: []*qbft.SignedMessage{
-				testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     height,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
+				testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, height),
 			},
 			ExpectedDecidedState: tests.DecidedState{
 				DecidedCnt: 1,

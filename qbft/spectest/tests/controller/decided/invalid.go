@@ -10,18 +10,9 @@ import (
 
 // Invalid tests decided msg where msg.validate() != nil
 func Invalid() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.MultiSignQBFTMsg(
-		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-		[]types.OperatorID{1, 2, 3},
-		&qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     10,
-			Round:      qbft.FirstRound,
-			Identifier: identifier[:],
-			Data:       []byte{1, 2, 3, 4},
-		})
+
+	msg := testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3})
 	msg.Signers = []types.OperatorID{}
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid msg",
