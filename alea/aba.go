@@ -29,10 +29,10 @@ func (i *Instance) StartAgreementComponent() error {
 		}
 
 		// get the local queue associated with the leader's id (create if there isn't one)
-		if _, exists := i.State.VCBCState.queues[leader]; !exists {
-			i.State.VCBCState.queues[leader] = NewVCBCQueue()
+		if _, exists := i.State.VCBCState.Queues[leader]; !exists {
+			i.State.VCBCState.Queues[leader] = NewVCBCQueue()
 		}
-		queue := i.State.VCBCState.queues[leader]
+		queue := i.State.VCBCState.Queues[leader]
 
 		// get the value of the queue with the lowest priority value
 		value, priority := queue.Peek()
@@ -71,7 +71,7 @@ func (i *Instance) StartAgreementComponent() error {
 				if i.verbose {
 					fmt.Println("\tresult 1 but voted 0")
 				}
-				if !i.State.VCBCState.hasM(leader, priority) {
+				if !i.State.VCBCState.HasM(leader, priority) {
 					// create FILLGAP message
 					fillerContLen := i.State.FillerContainer.Len(i.State.AleaDefaultRound)
 					fillGapMsg, err := CreateFillGap(i.State, i.config, leader, priority)
@@ -116,7 +116,7 @@ func (i *Instance) StartAgreementComponent() error {
 
 func (i *Instance) WaitFillGapResponse(leader types.OperatorID, priority Priority, fillerContLen int) {
 	// gets the leader queue
-	queue := i.State.VCBCState.queues[leader]
+	queue := i.State.VCBCState.Queues[leader]
 	currentFillerNum := fillerContLen
 	for {
 		// if has the desired priority, returns
@@ -138,7 +138,7 @@ func (i *Instance) WaitFillGapResponse(leader types.OperatorID, priority Priorit
 
 func (i *Instance) StartABA(vote byte) (byte, error) {
 	// set ABA's input value
-	i.State.ACState.GetCurrentABAState().setVInput(i.State.ACState.GetCurrentABAState().Round, vote)
+	i.State.ACState.GetCurrentABAState().SetVInput(i.State.ACState.GetCurrentABAState().Round, vote)
 
 	// broadcast INIT message with input vote
 	initMsg, err := CreateABAInit(i.State, i.config, vote, i.State.ACState.GetCurrentABAState().Round, i.State.ACState.ACRound)
@@ -148,7 +148,7 @@ func (i *Instance) StartABA(vote byte) (byte, error) {
 	i.Broadcast(initMsg)
 
 	// update sent flag
-	i.State.ACState.GetCurrentABAState().setSentInit(i.State.ACState.GetCurrentABAState().Round, vote, true)
+	i.State.ACState.GetCurrentABAState().SetSentInit(i.State.ACState.GetCurrentABAState().Round, vote, true)
 
 	// process own init msg
 	i.uponABAInit(initMsg)

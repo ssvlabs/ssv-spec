@@ -19,14 +19,14 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 	}
 
 	// check if it has the message locally. If not, returns (since it can't validate the hash)
-	if !i.State.VCBCState.hasM(vcbcFinalData.Author, vcbcFinalData.Priority) {
+	if !i.State.VCBCState.HasM(vcbcFinalData.Author, vcbcFinalData.Priority) {
 		if i.verbose {
 			fmt.Println("\tDon't have the message locally. Can't validate hash, returning")
 		}
 		return nil
 	}
 
-	proposals := i.State.VCBCState.getM(vcbcFinalData.Author, vcbcFinalData.Priority)
+	proposals := i.State.VCBCState.GetM(vcbcFinalData.Author, vcbcFinalData.Priority)
 
 	// get hash of local proposals
 	localHash, err := GetProposalsHash(proposals)
@@ -46,14 +46,14 @@ func (i *Instance) uponVCBCFinal(signedMessage *SignedMessage) error {
 	}
 
 	// store proof
-	i.State.VCBCState.setU(vcbcFinalData.Author, vcbcFinalData.Priority, vcbcFinalData.AggregatedMsg)
+	i.State.VCBCState.SetU(vcbcFinalData.Author, vcbcFinalData.Priority, vcbcFinalData.AggregatedMsg)
 
 	if i.verbose {
 		fmt.Println("\tAdding to VCBC output.")
 	}
 	i.AddVCBCOutput(proposals, vcbcFinalData.Priority, vcbcFinalData.Author)
 	if i.verbose {
-		fmt.Println("\tnew queue for", vcbcFinalData.Author, " and priority", vcbcFinalData.Priority, ":", i.State.VCBCState.queues[vcbcFinalData.Author])
+		fmt.Println("\tnew queue for", vcbcFinalData.Author, " and priority", vcbcFinalData.Priority, ":", i.State.VCBCState.Queues[vcbcFinalData.Author])
 	}
 
 	return nil
@@ -101,8 +101,8 @@ func isValidVCBCFinal(
 
 	// priority & hash
 	priority := VCBCFinalData.Priority
-	if state.VCBCState.hasM(author, priority) {
-		localHash, err := GetProposalsHash(state.VCBCState.getM(author, priority))
+	if state.VCBCState.HasM(author, priority) {
+		localHash, err := GetProposalsHash(state.VCBCState.GetM(author, priority))
 		if err != nil {
 			return errors.Wrap(err, "could not get local hash")
 		}

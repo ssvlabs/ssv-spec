@@ -27,9 +27,9 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	}
 
 	// check if message has been already delivered
-	if i.State.Delivered.hasProposal(proposalDataReceived) {
+	if i.State.Delivered.HasProposal(proposalDataReceived) {
 		if i.verbose {
-			fmt.Println("\tDelivered Queue:", i.State.Delivered, ". Has the proposal:", proposalDataReceived, i.State.Delivered.hasProposal(proposalDataReceived))
+			fmt.Println("\tDelivered Queue:", i.State.Delivered, ". Has the proposal:", proposalDataReceived, i.State.Delivered.HasProposal(proposalDataReceived))
 		}
 		return errors.New("proposal already delivered")
 	}
@@ -38,14 +38,14 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 	proposeMsgContainer.AddMsg(signedProposal)
 
 	// add to vcbc state
-	i.State.VCBCState.appendToM(i.State.Share.OperatorID, i.State.VCBCState.Priority, proposalDataReceived)
+	i.State.VCBCState.AppendToM(i.State.Share.OperatorID, i.State.VCBCState.Priority, proposalDataReceived)
 
 	if i.verbose {
 		fmt.Println("\tadded to own VCBC messages")
 	}
 
 	// Check if container has less maximum size. If so, returns
-	if len(i.State.VCBCState.getM(i.State.Share.OperatorID, i.State.VCBCState.Priority)) < i.State.BatchSize {
+	if len(i.State.VCBCState.GetM(i.State.Share.OperatorID, i.State.VCBCState.Priority)) < i.State.BatchSize {
 		if i.verbose {
 			fmt.Println("\tdidn't reach batch size")
 		}

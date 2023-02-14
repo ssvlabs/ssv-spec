@@ -30,7 +30,7 @@ func Duplicate() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "abaaux duplicate",
 		Pre:           pre,
-		PostRoot:      "a41f3acae42d3d38fc1693b4d9219e398f7b0b51e9000df432c29a137fbc009a",
+		PostRoot:      "d89c44b77e53e96c430a4255c6e81fa41fb129d39c0b0cfea1f311922c070820",
 		InputMessages: msgs,
 		DontRunAC:     true,
 	}

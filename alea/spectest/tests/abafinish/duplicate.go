@@ -40,7 +40,7 @@ func Duplicate() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "abafinish duplicate",
 		Pre:           pre,
-		PostRoot:      "c3d5acc590af1b2cf139f3007684c6a46eec487baae4233c254084e37457b5eb",
+		PostRoot:      "141ad8c2146879c93840c641c8286337842ed7a6c66c1e537761509db05ff581",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

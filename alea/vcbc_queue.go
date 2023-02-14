@@ -95,7 +95,7 @@ func (queue *VCBCQueue) GetPriorities() []Priority {
 	return queue.priority
 }
 
-func (queue *VCBCQueue) hasProposal(proposalInstance *ProposalData) bool {
+func (queue *VCBCQueue) HasProposal(proposalInstance *ProposalData) bool {
 	queue.mutex.Lock()
 	defer queue.mutex.Unlock()
 
@@ -109,7 +109,7 @@ func (queue *VCBCQueue) hasProposal(proposalInstance *ProposalData) bool {
 	return false
 }
 
-func (queue *VCBCQueue) hasProposalList(proposalList []*ProposalData) bool {
+func (queue *VCBCQueue) HasProposalList(proposalList []*ProposalData) bool {
 	queue.mutex.Lock()
 	defer queue.mutex.Unlock()
 

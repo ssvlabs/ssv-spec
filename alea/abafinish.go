@@ -34,7 +34,7 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 	// sender
 	senderID := signedABAFinish.GetSigners()[0]
 
-	alreadyReceived := abaState.hasFinish(senderID)
+	alreadyReceived := abaState.HasFinish(senderID)
 	if i.verbose {
 		fmt.Println("\tsenderID:", senderID, ", vote:", ABAFinishData.Vote, ", already received before:", alreadyReceived)
 	}
@@ -45,7 +45,7 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 		vote := ABAFinishData.Vote
 
 		// increment counter
-		abaState.setFinish(senderID, vote)
+		abaState.SetFinish(senderID, vote)
 		if i.verbose {
 			fmt.Println("\tincremented finish counter:", abaState.FinishCounter)
 		}
@@ -55,13 +55,13 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 	}
 
 	// if FINISH(b) reached partial quorum and never broadcasted FINISH(b), broadcast
-	if !abaState.sentFinish(byte(0)) && !abaState.sentFinish(byte(1)) {
+	if !abaState.SentFinish(byte(0)) && !abaState.SentFinish(byte(1)) {
 		for _, vote := range []byte{0, 1} {
 
-			if abaState.countFinish(vote) >= i.State.Share.PartialQuorum {
+			if abaState.CountFinish(vote) >= i.State.Share.PartialQuorum {
 				if i.verbose {
 					fmt.Println("\treached partial quorum of finish and never sent -> sending new, for vote:", vote)
-					fmt.Println("\tsentFinish[vote]:", abaState.sentFinish(vote), ", vote", vote)
+					fmt.Println("\tSentFinish[vote]:", abaState.SentFinish(vote), ", vote", vote)
 
 				}
 				// broadcast FINISH
@@ -75,7 +75,7 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 				i.Broadcast(finishMsg)
 
 				// update sent flag
-				abaState.setSentFinish(vote, true)
+				abaState.SetSentFinish(vote, true)
 				// process own finish msg
 				i.uponABAFinish(finishMsg)
 			}
@@ -84,12 +84,12 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 
 	// if FINISH(b) reached Quorum, decide for b and send termination signal
 	for _, vote := range []byte{0, 1} {
-		if abaState.countFinish(vote) >= i.State.Share.Quorum {
+		if abaState.CountFinish(vote) >= i.State.Share.Quorum {
 			if i.verbose {
 				fmt.Println("\treached quorum for vote:", vote)
 			}
-			abaState.setDecided(vote)
-			abaState.setTerminate(true)
+			abaState.SetDecided(vote)
+			abaState.SetTerminate(true)
 		}
 	}
 

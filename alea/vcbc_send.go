@@ -20,7 +20,7 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 	}
 
 	// check if it was already received. If not -> store
-	if !i.State.VCBCState.hasM(vcbcSendData.Author, vcbcSendData.Priority) {
+	if !i.State.VCBCState.HasM(vcbcSendData.Author, vcbcSendData.Priority) {
 		i.State.VCBCState.setM(vcbcSendData.Author, vcbcSendData.Priority, vcbcSendData.Proposals)
 	}
 
@@ -112,8 +112,8 @@ func isValidVCBCSend(
 
 	// priority
 	priority := VCBCSendData.Priority
-	if state.VCBCState.hasM(author, priority) {
-		if !state.VCBCState.equalM(author, priority, VCBCSendData.Proposals) {
+	if state.VCBCState.HasM(author, priority) {
+		if !state.VCBCState.EqualM(author, priority, VCBCSendData.Proposals) {
 			return errors.New("existing (priority,author) with different proposals")
 		}
 	}

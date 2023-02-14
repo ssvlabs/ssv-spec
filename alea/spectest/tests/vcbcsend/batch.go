@@ -15,7 +15,7 @@ func Batch() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "vcbcsend batch",
 		Pre:           pre,
-		PostRoot:      "b2a407ff98d1b828229339e758543442535cf9d4fce1e68893dba0009b845c12",
+		PostRoot:      "52563b777a769800dd9f1deaabfac940ad69f65fafb0512bdb2c2071325b6647",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

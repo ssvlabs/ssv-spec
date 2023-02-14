@@ -25,10 +25,10 @@ func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
 	}
 
 	// check if it's the first time. If not, return. If yes, update map and continue
-	if i.State.VCBCState.hasReceivedReady(vcbcReadyData.Author, vcbcReadyData.Priority, senderID) {
+	if i.State.VCBCState.HasReceivedReady(vcbcReadyData.Author, vcbcReadyData.Priority, senderID) {
 		return nil
 	} else {
-		i.State.VCBCState.setReceivedReady(vcbcReadyData.Author, vcbcReadyData.Priority, senderID, true)
+		i.State.VCBCState.SetReceivedReady(vcbcReadyData.Author, vcbcReadyData.Priority, senderID, true)
 	}
 
 	// If this is the author of the VCBC proposals -> aggregate signature
@@ -38,12 +38,12 @@ func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
 		}
 
 		// update W, the list of signedMessages to be aggregated later
-		i.State.VCBCState.appendToW(vcbcReadyData.Author, vcbcReadyData.Priority, signedMessage)
-		W := i.State.VCBCState.getW(vcbcReadyData.Author, vcbcReadyData.Priority)
+		i.State.VCBCState.AppendToW(vcbcReadyData.Author, vcbcReadyData.Priority, signedMessage)
+		W := i.State.VCBCState.GetW(vcbcReadyData.Author, vcbcReadyData.Priority)
 
 		// update counter associated with author and priority
-		i.State.VCBCState.incrementR(vcbcReadyData.Author, vcbcReadyData.Priority)
-		r := i.State.VCBCState.getR(vcbcReadyData.Author, vcbcReadyData.Priority)
+		i.State.VCBCState.IncrementR(vcbcReadyData.Author, vcbcReadyData.Priority)
+		r := i.State.VCBCState.GetR(vcbcReadyData.Author, vcbcReadyData.Priority)
 
 		if i.verbose {
 			fmt.Println("\tW:", W)
@@ -71,7 +71,7 @@ func (i *Instance) uponVCBCReady(signedMessage *SignedMessage) error {
 				return errors.Wrap(err, "uponVCBCReady: could not encode aggregated msg")
 			}
 
-			i.State.VCBCState.setU(vcbcReadyData.Author, vcbcReadyData.Priority, aggregatedMsgEncoded)
+			i.State.VCBCState.SetU(vcbcReadyData.Author, vcbcReadyData.Priority, aggregatedMsgEncoded)
 
 			vcbcFinalMsg, err := CreateVCBCFinal(i.State, i.config, vcbcReadyData.Hash, vcbcReadyData.Priority, aggregatedMsgEncoded, vcbcReadyData.Author)
 			if err != nil {
@@ -150,8 +150,8 @@ func isValidVCBCReady(
 
 	// priority & hash
 	priority := VCBCReadyData.Priority
-	if state.VCBCState.hasM(author, priority) {
-		localHash, err := GetProposalsHash(state.VCBCState.getM(author, priority))
+	if state.VCBCState.HasM(author, priority) {
+		localHash, err := GetProposalsHash(state.VCBCState.GetM(author, priority))
 		if err != nil {
 			return errors.Wrap(err, "could not get local hash")
 		}

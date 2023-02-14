@@ -41,20 +41,20 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 	// sender
 	senderID := signedABAAux.GetSigners()[0]
 
-	alreadyReceived := abaState.hasAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
+	alreadyReceived := abaState.HasAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
 	if i.verbose {
 		fmt.Println("\tsenderID:", senderID, ", vote:", ABAAuxData.Vote, ", round:", ABAAuxData.Round, ", already received before:", alreadyReceived)
 	}
 	// if never received this msg, increment counter
 	if !alreadyReceived {
-		abaState.setAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
+		abaState.SetAux(ABAAuxData.Round, senderID, ABAAuxData.Vote)
 		if i.verbose {
 			fmt.Println("\tincremented aux counter. Vote:", ABAAuxData.Vote)
 		}
 	}
 
 	// if received 2f+1 AUX messages, try to send CONF
-	if (abaState.countAux(ABAAuxData.Round, 0)+abaState.countAux(ABAAuxData.Round, 1)) >= i.State.Share.Quorum && !abaState.sentConf(ABAAuxData.Round) {
+	if (abaState.CountAux(ABAAuxData.Round, 0)+abaState.CountAux(ABAAuxData.Round, 1)) >= i.State.Share.Quorum && !abaState.SentConf(ABAAuxData.Round) {
 		if i.verbose {
 			fmt.Println("\tgot quorum of AUX and never sent conf")
 		}
@@ -87,7 +87,7 @@ func (i *Instance) uponABAAux(signedABAAux *SignedMessage) error {
 		i.Broadcast(confMsg)
 
 		// update sent flag
-		abaState.setSentConf(ABAAuxData.Round, true)
+		abaState.SetSentConf(ABAAuxData.Round, true)
 		// process own conf msg
 		i.uponABAConf(confMsg)
 	}

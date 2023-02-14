@@ -37,7 +37,7 @@ func ReceiveMultiple() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "vcbcsend receive multiple vcbcsend",
 		Pre:           pre,
-		PostRoot:      "6172833367f0423aa6a2bef55725245c1ca7db1775b812dc533e755629b90068",
+		PostRoot:      "312db47364ca302a048fdac053b00a7e68c39fe892bc2ba755da8eed523706b4",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

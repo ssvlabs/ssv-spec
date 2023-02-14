@@ -23,7 +23,7 @@ func WrongSignature() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "vcbcfinal wrong proposal sig",
 		Pre:           pre,
-		PostRoot:      "f831e111116961c37e9c383d1e6e3532e2ec3d1513dfe995f002f7be80e64a8c",
+		PostRoot:      "d0669999d2f4f17dd4888e9602362eb73a7c961e8090c5e5ea2e5e6d5608e9cd",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: msg signature invalid: failed to verify signature",
 		DontRunAC:     true,

@@ -6,7 +6,7 @@ import (
 
 type VCBCState struct {
 	Priority Priority
-	queues   map[types.OperatorID]*VCBCQueue
+	Queues   map[types.OperatorID]*VCBCQueue
 
 	// used to store info about READY messages received
 	VCBCr map[types.OperatorID]map[Priority]uint64
@@ -23,7 +23,7 @@ type VCBCState struct {
 func NewVCBCState() *VCBCState {
 	return &VCBCState{
 		Priority:      FirstPriority,
-		queues:        make(map[types.OperatorID]*VCBCQueue),
+		Queues:        make(map[types.OperatorID]*VCBCQueue),
 		VCBCr:         make(map[types.OperatorID]map[Priority]uint64),
 		VCBCW:         make(map[types.OperatorID]map[Priority][]*SignedMessage),
 		VCBCm:         make(map[types.OperatorID]map[Priority][]*ProposalData),
@@ -32,7 +32,7 @@ func NewVCBCState() *VCBCState {
 	}
 }
 
-func (s *VCBCState) getR(operatorID types.OperatorID, priority Priority) uint64 {
+func (s *VCBCState) GetR(operatorID types.OperatorID, priority Priority) uint64 {
 	if _, exists := s.VCBCr[operatorID]; !exists {
 		s.VCBCr[operatorID] = make(map[Priority]uint64)
 	}
@@ -41,7 +41,7 @@ func (s *VCBCState) getR(operatorID types.OperatorID, priority Priority) uint64 
 	}
 	return s.VCBCr[operatorID][priority]
 }
-func (s *VCBCState) incrementR(operatorID types.OperatorID, priority Priority) {
+func (s *VCBCState) IncrementR(operatorID types.OperatorID, priority Priority) {
 	if _, exists := s.VCBCr[operatorID]; !exists {
 		s.VCBCr[operatorID] = make(map[Priority]uint64)
 	}
@@ -51,7 +51,7 @@ func (s *VCBCState) incrementR(operatorID types.OperatorID, priority Priority) {
 	s.VCBCr[operatorID][priority] += 1
 }
 
-func (s *VCBCState) getW(operatorID types.OperatorID, priority Priority) []*SignedMessage {
+func (s *VCBCState) GetW(operatorID types.OperatorID, priority Priority) []*SignedMessage {
 	if _, exists := s.VCBCW[operatorID]; !exists {
 		s.VCBCW[operatorID] = make(map[Priority][]*SignedMessage)
 	}
@@ -61,7 +61,7 @@ func (s *VCBCState) getW(operatorID types.OperatorID, priority Priority) []*Sign
 	return s.VCBCW[operatorID][priority]
 }
 
-func (s *VCBCState) appendToW(operatorID types.OperatorID, priority Priority, signedMessage *SignedMessage) {
+func (s *VCBCState) AppendToW(operatorID types.OperatorID, priority Priority, signedMessage *SignedMessage) {
 	if _, exists := s.VCBCW[operatorID]; !exists {
 		s.VCBCW[operatorID] = make(map[Priority][]*SignedMessage)
 	}
@@ -71,7 +71,7 @@ func (s *VCBCState) appendToW(operatorID types.OperatorID, priority Priority, si
 	s.VCBCW[operatorID][priority] = append(s.VCBCW[operatorID][priority], signedMessage)
 }
 
-func (s *VCBCState) hasM(operatorID types.OperatorID, priority Priority) bool {
+func (s *VCBCState) HasM(operatorID types.OperatorID, priority Priority) bool {
 	if _, exists := s.VCBCm[operatorID]; exists {
 		if _, exists := s.VCBCm[operatorID][priority]; exists {
 			return true
@@ -79,7 +79,7 @@ func (s *VCBCState) hasM(operatorID types.OperatorID, priority Priority) bool {
 	}
 	return false
 }
-func (s *VCBCState) getM(operatorID types.OperatorID, priority Priority) []*ProposalData {
+func (s *VCBCState) GetM(operatorID types.OperatorID, priority Priority) []*ProposalData {
 	if _, exists := s.VCBCm[operatorID]; !exists {
 		s.VCBCm[operatorID] = make(map[Priority][]*ProposalData)
 	}
@@ -89,7 +89,7 @@ func (s *VCBCState) getM(operatorID types.OperatorID, priority Priority) []*Prop
 	return s.VCBCm[operatorID][priority]
 }
 
-func (s *VCBCState) appendToM(operatorID types.OperatorID, priority Priority, proposal *ProposalData) {
+func (s *VCBCState) AppendToM(operatorID types.OperatorID, priority Priority, proposal *ProposalData) {
 	if _, exists := s.VCBCm[operatorID]; !exists {
 		s.VCBCm[operatorID] = make(map[Priority][]*ProposalData)
 	}
@@ -106,8 +106,8 @@ func (s *VCBCState) setM(operatorID types.OperatorID, priority Priority, proposa
 	s.VCBCm[operatorID][priority] = proposals
 }
 
-func (s *VCBCState) equalM(operatorID types.OperatorID, priority Priority, proposals []*ProposalData) bool {
-	if !s.hasM(operatorID, priority) {
+func (s *VCBCState) EqualM(operatorID types.OperatorID, priority Priority, proposals []*ProposalData) bool {
+	if !s.HasM(operatorID, priority) {
 		return false
 	}
 
@@ -130,7 +130,7 @@ func (s *VCBCState) hasU(operatorID types.OperatorID, priority Priority) bool {
 	}
 	return false
 }
-func (s *VCBCState) getU(operatorID types.OperatorID, priority Priority) []byte {
+func (s *VCBCState) GetU(operatorID types.OperatorID, priority Priority) []byte {
 	if _, exists := s.VCBCu[operatorID]; !exists {
 		s.VCBCu[operatorID] = make(map[Priority][]byte)
 	}
@@ -139,14 +139,14 @@ func (s *VCBCState) getU(operatorID types.OperatorID, priority Priority) []byte 
 	}
 	return s.VCBCu[operatorID][priority]
 }
-func (s *VCBCState) setU(operatorID types.OperatorID, priority Priority, u []byte) {
+func (s *VCBCState) SetU(operatorID types.OperatorID, priority Priority, u []byte) {
 	if _, exists := s.VCBCu[operatorID]; !exists {
 		s.VCBCu[operatorID] = make(map[Priority][]byte)
 	}
 	s.VCBCu[operatorID][priority] = u
 }
 
-func (s *VCBCState) hasReceivedReady(author types.OperatorID, priority Priority, operatorID types.OperatorID) bool {
+func (s *VCBCState) HasReceivedReady(author types.OperatorID, priority Priority, operatorID types.OperatorID) bool {
 	if _, exists := s.ReceivedReady[author]; !exists {
 		s.ReceivedReady[author] = make(map[Priority]map[types.OperatorID]bool)
 	}
@@ -159,7 +159,7 @@ func (s *VCBCState) hasReceivedReady(author types.OperatorID, priority Priority,
 	return s.ReceivedReady[author][priority][operatorID]
 }
 
-func (s *VCBCState) setReceivedReady(author types.OperatorID, priority Priority, operatorID types.OperatorID, received bool) {
+func (s *VCBCState) SetReceivedReady(author types.OperatorID, priority Priority, operatorID types.OperatorID, received bool) {
 	if _, exists := s.ReceivedReady[author]; !exists {
 		s.ReceivedReady[author] = make(map[Priority]map[types.OperatorID]bool)
 	}

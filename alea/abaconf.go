@@ -40,20 +40,20 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 	// sender
 	senderID := signedABAConf.GetSigners()[0]
 
-	alreadyReceived := abaState.hasConf(ABAConfData.Round, senderID)
+	alreadyReceived := abaState.HasConf(ABAConfData.Round, senderID)
 	if i.verbose {
 		fmt.Println("\tsenderID:", senderID, ", votes:", ABAConfData.Votes, ", round:", ABAConfData.Round, ", already received before:", alreadyReceived)
 	}
 	// if never received this msg, update
 	if !alreadyReceived {
-		abaState.setConf(ABAConfData.Round, senderID, ABAConfData.Votes)
+		abaState.SetConf(ABAConfData.Round, senderID, ABAConfData.Votes)
 		if i.verbose {
-			fmt.Println("\tupdated confcounter:", abaState.countConf(ABAConfData.Round))
+			fmt.Println("\tupdated confcounter:", abaState.CountConf(ABAConfData.Round))
 		}
 	}
 
 	// reached strong support -> try to decide value
-	if abaState.countConf(ABAConfData.Round) >= i.State.Share.Quorum {
+	if abaState.CountConf(ABAConfData.Round) >= i.State.Share.Quorum {
 		if i.verbose {
 			fmt.Println("\treached quorum of conf")
 		}
@@ -75,7 +75,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 		// if values = {0,1}, choose randomly (i.e. coin) value for next round
 		if len(abaState.Values[ABAConfData.Round]) == 2 {
 
-			abaState.setVInput(ABAConfData.Round+1, s)
+			abaState.SetVInput(ABAConfData.Round+1, s)
 			if i.verbose {
 				fmt.Println("\tlength of values is 2", abaState.Values[ABAConfData.Round], "-> storing coin to next Vin")
 			}
@@ -83,7 +83,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 			if i.verbose {
 				fmt.Println("\tlength of values is 1:", abaState.Values[ABAConfData.Round])
 			}
-			abaState.setVInput(ABAConfData.Round+1, abaState.GetValues(ABAConfData.Round)[0])
+			abaState.SetVInput(ABAConfData.Round+1, abaState.GetValues(ABAConfData.Round)[0])
 
 			// if value has only one value, sends FINISH
 			if abaState.GetValues(ABAConfData.Round)[0] == s {
@@ -91,7 +91,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 					fmt.Println("\tvalue equal to S")
 				}
 				// check if indeed never sent FINISH message for this vote
-				if !abaState.sentFinish(s) {
+				if !abaState.SentFinish(s) {
 					finishMsg, err := CreateABAFinish(i.State, i.config, s, ABAConfData.ACRound)
 					if err != nil {
 						return errors.Wrap(err, "uponABAConf: failed to create ABA Finish message")
@@ -101,7 +101,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 					}
 					i.Broadcast(finishMsg)
 					// update sent finish flag
-					abaState.setSentFinish(s, true)
+					abaState.SetSentFinish(s, true)
 					// process own finish msg
 					i.uponABAFinish(finishMsg)
 				}
@@ -118,7 +118,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 		}
 
 		// start new round sending INIT message with vote
-		initMsg, err := CreateABAInit(i.State, i.config, abaState.getVInput(abaState.Round), abaState.Round, ABAConfData.ACRound)
+		initMsg, err := CreateABAInit(i.State, i.config, abaState.GetVInput(abaState.Round), abaState.Round, ABAConfData.ACRound)
 		if err != nil {
 			return errors.Wrap(err, "uponABAConf: failed to create ABA Init message")
 		}
@@ -127,7 +127,7 @@ func (i *Instance) uponABAConf(signedABAConf *SignedMessage) error {
 		}
 		i.Broadcast(initMsg)
 		// update sent init flag
-		abaState.setSentInit(abaState.Round, abaState.getVInput(abaState.Round), true)
+		abaState.SetSentInit(abaState.Round, abaState.GetVInput(abaState.Round), true)
 		// process own aux msg
 		i.uponABAInit(initMsg)
 	}

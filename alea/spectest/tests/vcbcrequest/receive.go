@@ -37,7 +37,7 @@ func Receive() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "vcbcrequest receive",
 		Pre:           pre,
-		PostRoot:      "8f55506ca913e5767b9547b01864b059cabd43abfe8d950b718d2fb03cb79a65",
+		PostRoot:      "c4b71dfcf939585b980ae36a3583aa46e4427a246dc40182cf430f5ae22df48f",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

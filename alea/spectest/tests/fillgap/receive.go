@@ -51,7 +51,7 @@ func Receive() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "fillgap receive",
 		Pre:           pre,
-		PostRoot:      "9fe1609d2c1914bed4efceb6039a9fe3997e256971ab5d958894587a0efb4798",
+		PostRoot:      "56b5f709c6d777250118d9b3c9d5f000ba0a9ac00a7f7f43edef2f44b6649c4c",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

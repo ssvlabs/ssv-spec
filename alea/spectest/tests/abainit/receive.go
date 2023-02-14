@@ -23,7 +23,7 @@ func Receive() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "abainit receive",
 		Pre:           pre,
-		PostRoot:      "5db1ca48a30fb6414d01953e59237fcb299dbe34f4c2587ceb762227fad45543",
+		PostRoot:      "7ca28025b2d7d327bebc9b34284e349a67d3b2ef3e66e829689a129310b131fb",
 		InputMessages: msgs,
 		DontRunAC:     true,
 	}

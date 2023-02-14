@@ -15,7 +15,7 @@ func TwoBatches() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "vcbcsend two batch",
 		Pre:           pre,
-		PostRoot:      "774edf5499f4c4573a79be4bf4b1b6243db05e7c521699110537895a0869a116",
+		PostRoot:      "401a6ac30101f9534fb6de6f512f1b2845e2b267495c10082bf0aa8d1194a19b",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

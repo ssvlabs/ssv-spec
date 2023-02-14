@@ -43,10 +43,10 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 	senderID := signedABAInit.GetSigners()[0]
 
 	if i.verbose {
-		fmt.Println("\tsenderID:", senderID, ", vote:", abaInitData.Vote, ", round:", abaInitData.Round, ", already received before:", abaState.hasInit(abaInitData.Round, senderID, abaInitData.Vote))
+		fmt.Println("\tsenderID:", senderID, ", vote:", abaInitData.Vote, ", round:", abaInitData.Round, ", already received before:", abaState.HasInit(abaInitData.Round, senderID, abaInitData.Vote))
 	}
-	if !abaState.hasInit(abaInitData.Round, senderID, abaInitData.Vote) {
-		abaState.setInit(abaInitData.Round, senderID, abaInitData.Vote)
+	if !abaState.HasInit(abaInitData.Round, senderID, abaInitData.Vote) {
+		abaState.SetInit(abaInitData.Round, senderID, abaInitData.Vote)
 		if i.verbose {
 			fmt.Println("\tupdated counter. Vote:", abaInitData.Vote, ". InitCounter:", abaState.InitCounter)
 		}
@@ -55,7 +55,7 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 	// weak support -> send INIT
 	// if never sent INIT(b) but reached PartialQuorum (i.e. f+1, weak support), send INIT(b)
 	for _, vote := range []byte{0, 1} {
-		if !abaState.sentInit(abaInitData.Round, vote) && abaState.countInit(abaInitData.Round, vote) >= i.State.Share.PartialQuorum {
+		if !abaState.SentInit(abaInitData.Round, vote) && abaState.CountInit(abaInitData.Round, vote) >= i.State.Share.PartialQuorum {
 			if i.verbose {
 				fmt.Println("\tgot weak support for (and never sent):", vote)
 			}
@@ -69,7 +69,7 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 			}
 			i.Broadcast(initMsg)
 			// update sent flag
-			abaState.setSentInit(abaInitData.Round, vote, true)
+			abaState.SetSentInit(abaInitData.Round, vote, true)
 			// process own init msg
 			i.uponABAInit(initMsg)
 		}
@@ -79,7 +79,7 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 	// if never sent AUX(b) but reached Quorum (i.e. 2f+1, strong support), sends AUX(b) and add b to values
 	for _, vote := range []byte{0, 1} {
 
-		if !abaState.sentAux(abaInitData.Round, vote) && abaState.countInit(abaInitData.Round, vote) >= i.State.Share.Quorum {
+		if !abaState.SentAux(abaInitData.Round, vote) && abaState.CountInit(abaInitData.Round, vote) >= i.State.Share.Quorum {
 			if i.verbose {
 				fmt.Println("\tgot strong support and never sent AUX:", vote)
 			}
@@ -102,7 +102,7 @@ func (i *Instance) uponABAInit(signedABAInit *SignedMessage) error {
 			i.Broadcast(auxMsg)
 
 			// update sent flag
-			abaState.setSentAux(abaInitData.Round, vote, true)
+			abaState.SetSentAux(abaInitData.Round, vote, true)
 			// process own aux msg
 			i.uponABAAux(auxMsg)
 		}

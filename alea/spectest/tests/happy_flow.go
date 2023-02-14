@@ -151,7 +151,7 @@ func HappyFlow() *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow four operators",
 		Pre:           pre,
-		PostRoot:      "dd53abe9d9caf96d81184bf7addefd11f16ce5e8a87ccaea57f253e0d3ff6931",
+		PostRoot:      "8722f6175abbc70f12faaf67a4d8781c1fc633600be32b266837c322392b5235",
 		InputMessages: signedMessages,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

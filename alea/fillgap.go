@@ -27,7 +27,7 @@ func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer
 	priorityAsked := fillGapData.Priority
 
 	// get the desired queue
-	queue := i.State.VCBCState.queues[operatorID]
+	queue := i.State.VCBCState.Queues[operatorID]
 	// get highest local priority
 	_, priority := queue.PeekLast()
 
@@ -50,7 +50,7 @@ func (i *Instance) uponFillGap(signedFillGap *SignedMessage, fillgapMsgContainer
 			if priority >= priorityAsked {
 				returnValues = append(returnValues, values[idx])
 				returnPriorities = append(returnPriorities, priority)
-				returnProofs = append(returnProofs, i.State.VCBCState.getU(operatorID, priority))
+				returnProofs = append(returnProofs, i.State.VCBCState.GetU(operatorID, priority))
 			}
 		}
 

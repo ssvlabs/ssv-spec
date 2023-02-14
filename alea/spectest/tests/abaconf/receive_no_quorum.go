@@ -46,7 +46,7 @@ func ReceiveNoQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "abaconf receive no quorum",
 		Pre:           pre,
-		PostRoot:      "086e603d09c40631f588acc33f48b7036b65101972d0d47290ef303b557a9d9f",
+		PostRoot:      "a435926d2002f07fab7b363ee9b94755aea6289ce9b1a7d7e6e0da8fe81a9dc2",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

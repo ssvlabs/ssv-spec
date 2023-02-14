@@ -44,7 +44,7 @@ func UnexpectedAuthor() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "vcbcready unexpected author",
 		Pre:           pre,
-		PostRoot:      "aecb8b3bb3bac8315bda6e23c85a0253505f96e5692d66537147718e317a0ca6",
+		PostRoot:      "f7ab3c4922fc76c9d7fdc208c5c063793127da6112c7ae6b7d7af275c9d09429",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

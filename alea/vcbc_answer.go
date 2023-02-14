@@ -29,14 +29,14 @@ func (i *Instance) uponVCBCAnswer(signedMessage *SignedMessage) error {
 		return nil
 	}
 
-	if i.State.VCBCState.hasM(vcbcAnswerData.Author, vcbcAnswerData.Priority) {
-		if !i.State.VCBCState.equalM(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.Proposals) {
+	if i.State.VCBCState.HasM(vcbcAnswerData.Author, vcbcAnswerData.Priority) {
+		if !i.State.VCBCState.EqualM(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.Proposals) {
 			return errors.New("answer has different proposals than stores ones")
 		}
 	}
 
 	// update local values
-	i.State.VCBCState.setU(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.AggregatedMsg)
+	i.State.VCBCState.SetU(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.AggregatedMsg)
 	i.State.VCBCState.setM(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.Proposals)
 
 	// add vcbc output
@@ -87,8 +87,8 @@ func isValidVCBCAnswer(
 
 	// priority
 	priority := VCBCAnswerData.Priority
-	if state.VCBCState.hasM(author, priority) {
-		if !state.VCBCState.equalM(author, priority, VCBCAnswerData.Proposals) {
+	if state.VCBCState.HasM(author, priority) {
+		if !state.VCBCState.EqualM(author, priority, VCBCAnswerData.Proposals) {
 			return errors.Wrap(err, "existing (priority,author) with different proposals")
 		}
 	}

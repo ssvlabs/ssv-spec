@@ -37,7 +37,7 @@ func UnknownPriority() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "fillgap unknown priority",
 		Pre:           pre,
-		PostRoot:      "2b310f011d680a1aa9e2a89c90462171b362909fa35beb6b734f7650d2da52c6",
+		PostRoot:      "ad265e1ece6dfaf21919c9076bb4a3b40c2cfd0962be9f11c38cecaf33b61cce",
 		InputMessages: msgs,
 		OutputMessages: []*alea.SignedMessage{
 			testingutils.SignAleaMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &alea.Message{

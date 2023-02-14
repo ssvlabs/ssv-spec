@@ -10,7 +10,7 @@ import (
 func (i *Instance) StartVCBC(priority Priority) error {
 
 	author := i.State.Share.OperatorID
-	proposals := i.State.VCBCState.getM(author, priority)
+	proposals := i.State.VCBCState.GetM(author, priority)
 
 	// create VCBCSend message and broadcasts
 	msgToBroadcast, err := CreateVCBCSend(i.State, i.config, proposals, priority, author)
@@ -50,15 +50,15 @@ func (i *Instance) AddOwnVCBCReady(proposals []*ProposalData, priorioty Priority
 func (i *Instance) AddVCBCOutput(proposals []*ProposalData, priority Priority, author types.OperatorID) {
 
 	// initializes queue of the author if it doesn't exist
-	if _, exists := i.State.VCBCState.queues[author]; !exists {
-		i.State.VCBCState.queues[author] = NewVCBCQueue()
+	if _, exists := i.State.VCBCState.Queues[author]; !exists {
+		i.State.VCBCState.Queues[author] = NewVCBCQueue()
 	}
 
 	// gets the sender's associated queue
-	queue := i.State.VCBCState.queues[author]
+	queue := i.State.VCBCState.Queues[author]
 
 	// check if it was already delivered
-	if i.State.Delivered.hasProposalList(proposals) {
+	if i.State.Delivered.HasProposalList(proposals) {
 		return
 	}
 

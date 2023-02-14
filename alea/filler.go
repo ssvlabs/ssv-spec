@@ -25,7 +25,7 @@ func (i *Instance) uponFiller(signedFiller *SignedMessage, fillerMsgContainer *M
 	operatorID := fillerData.OperatorID
 
 	// get queue of the node to which the filler message intends to add entries
-	queue := i.State.VCBCState.queues[operatorID]
+	queue := i.State.VCBCState.Queues[operatorID]
 
 	// get local highest priority value
 	_, localLastPriority := queue.PeekLast()
@@ -86,8 +86,8 @@ func isValidFiller(
 	// priority
 	priorities := FillerData.Priorities
 	for idx, priority := range priorities {
-		if state.VCBCState.hasM(operatorID, priority) {
-			if !state.VCBCState.equalM(operatorID, priority, FillerData.Entries[idx]) {
+		if state.VCBCState.HasM(operatorID, priority) {
+			if !state.VCBCState.EqualM(operatorID, priority, FillerData.Entries[idx]) {
 				return errors.New("existing (priority,author) with different proposals")
 			}
 		}

@@ -18,8 +18,8 @@ func (i *Instance) uponVCBCRequest(signedMessage *SignedMessage) error {
 		return nil
 	}
 
-	proposals := i.State.VCBCState.getM(vcbcRequestData.Author, vcbcRequestData.Priority)
-	u := i.State.VCBCState.getU(vcbcRequestData.Author, vcbcRequestData.Priority)
+	proposals := i.State.VCBCState.GetM(vcbcRequestData.Author, vcbcRequestData.Priority)
+	u := i.State.VCBCState.GetU(vcbcRequestData.Author, vcbcRequestData.Priority)
 
 	msgToBroadcast, err := CreateVCBCAnswer(i.State, i.config, proposals, vcbcRequestData.Priority, u, vcbcRequestData.Author)
 	if err != nil {
