@@ -327,7 +327,7 @@ func CreateRoundChange(state *State, config IConfig, newRound Round, instanceSta
 		return nil, errors.Wrap(err, "could not generate round change data")
 	}
 
-	justificationsData, err := marshalJustifications(justifications)
+	justificationsData, err := MarshalJustifications(justifications)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not marshal justifications")
 	}

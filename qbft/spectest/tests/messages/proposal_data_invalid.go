@@ -7,17 +7,12 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ProposalDataInvalid tests proposal data len == 0
+// ProposalDataInvalid tests proposal data is invalid
 func ProposalDataInvalid() *tests.MsgSpecTest {
-	d := &qbft.ProposalData{}
-	byts, _ := d.Encode()
-	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      10,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       byts,
-	})
+	ks := testingutils.Testing4SharesSet()
+	msg := testingutils.TestingProposalMessageWithParams(
+		ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.WrongRoot,
+		nil, nil)
 
 	return &tests.MsgSpecTest{
 		Name: "proposal data invalid",

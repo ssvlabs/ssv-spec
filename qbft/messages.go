@@ -76,7 +76,7 @@ func unmarshalJustifications(data [][]byte) ([]*SignedMessage, error) {
 	return ret, nil
 }
 
-func marshalJustifications(msgs []*SignedMessage) ([][]byte, error) {
+func MarshalJustifications(msgs []*SignedMessage) ([][]byte, error) {
 	ret := make([][]byte, len(msgs))
 	for i, m := range msgs {
 		d, err := m.MarshalSSZ()

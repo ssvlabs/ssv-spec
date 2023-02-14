@@ -11,14 +11,12 @@ import (
 // MultiSigner tests a proposal msg with > 1 signers
 func MultiSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
-		testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2}, &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-		}),
+		testingutils.TestingMultiSignerProposalMessage(
+			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2]},
+			[]types.OperatorID{1, 2},
+		),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal multi signer",

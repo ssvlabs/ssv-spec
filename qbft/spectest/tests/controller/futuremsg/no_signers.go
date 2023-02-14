@@ -8,16 +8,9 @@ import (
 
 // NoSigners tests future msg with no signers
 func NoSigners() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	msg := testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
-		MsgType:    qbft.PrepareMsgType,
-		Height:     10,
-		Round:      3,
-		Identifier: identifier[:],
-		Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-	})
+	msg := testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 3, 3, 10, testingutils.TestingQBFTRootData)
 	msg.Signers = []types.OperatorID{}
 
 	return &ControllerSyncSpecTest{

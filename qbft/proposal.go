@@ -218,11 +218,11 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		return nil, errors.Wrap(err, "could not hash input data")
 	}
 
-	roundChangesData, err := marshalJustifications(roundChanges)
+	roundChangesData, err := MarshalJustifications(roundChanges)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not marshal justifications")
 	}
-	preparesData, err := marshalJustifications(prepares)
+	preparesData, err := MarshalJustifications(prepares)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not marshal justifications")
 	}

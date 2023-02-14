@@ -14,7 +14,7 @@ func DuplicateSigners() *tests.MsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], 1)
-	commit := testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2})
+	commit := testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2]}, []types.OperatorID{1, 2})
 	commit.Signers = []types.OperatorID{1, 1}
 
 	return &tests.MsgProcessingSpecTest{

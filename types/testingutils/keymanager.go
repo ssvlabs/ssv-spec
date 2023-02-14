@@ -135,7 +135,7 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 }
 
 func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {
-	panic("implemet")
+	panic("implement")
 }
 
 func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {

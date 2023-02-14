@@ -38,7 +38,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Name: "sync committee aggregator selection proof",
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
-					testingutils.TestingSyncCommitteeContributionDuty,
+					&testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 					[]*types.SignedPartialSignatureMessage{
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -46,7 +46,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -58,7 +58,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Name: "aggregator selection proof",
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),
-					testingutils.TestingAggregatorDuty,
+					&testingutils.TestingAggregatorDuty,
 					testingutils.TestAggregatorConsensusData,
 					[]*types.SignedPartialSignatureMessage{
 						testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -66,7 +66,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 						testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: testingutils.TestingAggregatorDuty,
+				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -78,7 +78,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Name: "randao",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDuty,
+					&testingutils.TestingProposerDuty,
 					testingutils.TestProposerConsensusData,
 					[]*types.SignedPartialSignatureMessage{
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -86,7 +86,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -98,7 +98,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Name: "randao (blinded block)",
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDuty,
+					&testingutils.TestingProposerDuty,
 					testingutils.TestProposerBlindedBlockConsensusData,
 					[]*types.SignedPartialSignatureMessage{
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -106,7 +106,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},

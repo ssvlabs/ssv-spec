@@ -15,7 +15,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusWrongOrderContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
@@ -27,7 +27,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:                    "aggregator selection proof",
 				Runner:                  testingutils.AggregatorRunner(ks),
-				Duty:                    testingutils.TestingAggregatorDuty,
+				Duty:                    &testingutils.TestingAggregatorDuty,
 				Messages:                []*types.SSVMessage{},
 				PostDutyRunnerStateRoot: "57a6fb4d6bf799353c3c0980e3eb31ff32f0c100ebe04f6025dc06fc983ef52b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -37,7 +37,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:                    "randao",
 				Runner:                  testingutils.ProposerRunner(ks),
-				Duty:                    testingutils.TestingProposerDuty,
+				Duty:                    &testingutils.TestingProposerDuty,
 				Messages:                []*types.SSVMessage{},
 				PostDutyRunnerStateRoot: "65cd178a17356e48a1d7de571c0d56f791f6c4654b5b03e385adea510f7c55d1",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -47,7 +47,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:                    "randao (blinded block)",
 				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:                    testingutils.TestingProposerDuty,
+				Duty:                    &testingutils.TestingProposerDuty,
 				Messages:                []*types.SSVMessage{},
 				PostDutyRunnerStateRoot: "2a122d8afb55f8cf02b7008d9e525d4dbd5dd839e752be9dd5be577e653c56e4",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -57,7 +57,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   testingutils.TestingValidatorRegistrationDuty,
+				Duty:   &testingutils.TestingValidatorRegistrationDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},

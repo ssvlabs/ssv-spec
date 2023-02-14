@@ -20,14 +20,14 @@ func Cleanup() *ControllerSyncSpecTest {
 				Height:     5,
 				Round:      qbft.FirstRound,
 				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+				Root:       [32]byte{1, 2, 3, 4},
 			}),
 			testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
 				MsgType:    qbft.PrepareMsgType,
 				Height:     10,
 				Round:      3,
 				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+				Root:       [32]byte{1, 2, 3, 4},
 			}),
 
 			testingutils.MultiSignQBFTMsg(
@@ -38,7 +38,7 @@ func Cleanup() *ControllerSyncSpecTest {
 					Height:     10,
 					Round:      qbft.FirstRound,
 					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+					Root:       [32]byte{1, 2, 3, 4},
 				}),
 
 			testingutils.SignQBFTMsg(ks.Shares[2], 2, &qbft.Message{
@@ -46,7 +46,7 @@ func Cleanup() *ControllerSyncSpecTest {
 				Height:     11,
 				Round:      3,
 				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+				Root:       [32]byte{1, 2, 3, 4},
 			}),
 		},
 		SyncDecidedCalledCnt: 1,

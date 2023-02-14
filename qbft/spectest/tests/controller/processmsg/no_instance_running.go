@@ -10,7 +10,6 @@ import (
 
 // NoInstanceRunning tests a process msg for height in which there is no running instance
 func NoInstanceRunning() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "no instance running",
@@ -18,23 +17,12 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.MultiSignQBFTMsg(
+					testingutils.TestingCommitMultiSignerMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     50,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
-					testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
-						MsgType:    qbft.ProposalMsgType,
-						Height:     2,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-					}),
+						50,
+					),
+					testingutils.TestingProposalMessageWithHeight(ks.Shares[1], 1, 2),
 				},
 
 				ExpectedDecidedState: tests.DecidedState{

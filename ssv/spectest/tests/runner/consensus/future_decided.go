@@ -1,7 +1,6 @@
 package consensus
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -13,7 +12,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.BeaconRole) []byte {
-		ret := types.NewMsgID(testingutils.TestingValidatorPubKey[:], role)
+		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return ret[:]
 	}
 
@@ -25,21 +24,20 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
-					testingutils.SSVMsgSyncCommitteeContribution(testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     2,
-							Round:      qbft.FirstRound,
-							Identifier: getID(types.BNRoleSyncCommitteeContribution),
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}), nil),
+					testingutils.SSVMsgSyncCommitteeContribution(
+						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							2,
+							getID(types.BNRoleSyncCommitteeContribution),
+						),
+						nil,
+					),
 				},
 				PostDutyRunnerStateRoot: "b0b770dfb03fb2b2530f0e3d1ea269639c54ee03f4a75d18a18e8c8324b8f637",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -50,18 +48,17 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee",
 				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     2,
-							Round:      qbft.FirstRound,
-							Identifier: getID(types.BNRoleSyncCommittee),
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}), nil),
+					testingutils.SSVMsgSyncCommittee(
+						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							2,
+							getID(types.BNRoleSyncCommittee),
+						),
+						nil,
+					),
 				},
 				PostDutyRunnerStateRoot: "7a201ae85b215a1af4732a2d519a3d28d2848aac1724cd4d24a103b05d02b683",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -70,21 +67,20 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   testingutils.TestingAggregatorDuty,
+				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
-					testingutils.SSVMsgAggregator(testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     2,
-							Round:      qbft.FirstRound,
-							Identifier: getID(types.BNRoleAggregator),
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}), nil),
+					testingutils.SSVMsgAggregator(
+						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							2,
+							getID(types.BNRoleAggregator),
+						),
+						nil,
+					),
 				},
 				PostDutyRunnerStateRoot: "0df459cdbb965e07dc63493e656f8e0086b65bd4e7b4d922857e63097bd3f33a",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -95,68 +91,65 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
-					testingutils.SSVMsgProposer(testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     2,
-							Round:      qbft.FirstRound,
-							Identifier: getID(types.BNRoleProposer),
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}), nil),
+					testingutils.SSVMsgProposer(
+						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							2,
+							getID(types.BNRoleProposer),
+						),
+						nil,
+					),
 				},
 				PostDutyRunnerStateRoot: "e9e011cec6219def6bcd545fbb8201b12ae38e5f4eb6713a90745145e0b2710e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
 				ExpectedError: errStr,
 			},
 			{
 				Name:   "proposer (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
-					testingutils.SSVMsgProposer(testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     2,
-							Round:      qbft.FirstRound,
-							Identifier: getID(types.BNRoleProposer),
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}), nil),
+					testingutils.SSVMsgProposer(
+						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							2,
+							getID(types.BNRoleProposer),
+						),
+						nil,
+					),
 				},
 				PostDutyRunnerStateRoot: "cad75704dcd80b4687362fbd3a3c870e6c7abd65d874a6986163ab8e2f08b6b5",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
 				ExpectedError: errStr,
 			},
 			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
+				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     2,
-							Round:      qbft.FirstRound,
-							Identifier: getID(types.BNRoleAttester),
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}), nil),
+					testingutils.SSVMsgAttester(
+						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							2,
+							getID(types.BNRoleAttester),
+						),
+						nil,
+					),
 				},
 				PostDutyRunnerStateRoot: "ae50555585c7f0a4d8b3d1a6c9138bb00d8b0ebdb62d6b792f7187eeb5a6e4b0",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},

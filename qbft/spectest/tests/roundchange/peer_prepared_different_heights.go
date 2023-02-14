@@ -12,74 +12,24 @@ func PeerPreparedDifferentHeights() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 3
 
+	ks := testingutils.Testing4SharesSet()
 	prepareMsgs1 := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
 	}
 	prepareMsgs2 := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
 	}
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      3,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      3,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs1),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      3,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 2, prepareMsgs2),
-		}),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 3),
+		testingutils.TestingRoundChangeMessageWithParams(
+			ks.Shares[2], types.OperatorID(2), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+			qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs1)),
+		testingutils.TestingRoundChangeMessageWithParams(ks.Shares[3], types.OperatorID(3), 3, qbft.FirstHeight,
+			testingutils.TestingQBFTRootData, 2, testingutils.MarshalJustifications(prepareMsgs2)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -88,13 +38,9 @@ func PeerPreparedDifferentHeights() *tests.MsgProcessingSpecTest {
 		PostRoot:      "b9d881241faa45f22faf1eeca7918237a99c82c7264fa053dbffb6114af11462",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.ProposalMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      3,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, msgs, prepareMsgs2),
-			}),
+			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 3, qbft.FirstHeight,
+				testingutils.TestingQBFTRootData,
+				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs2)),
 		},
 	}
 }

@@ -10,21 +10,16 @@ import (
 
 // LateRoundChangeNoInstance tests process round change msg for a previously decided instance (which is no longer part of stored instances)
 func LateRoundChangeNoInstance() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	ks := testingutils.Testing4SharesSet()
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
 		return &tests.RunInstanceData{
 			InputValue: []byte{1, 2, 3, 4},
 			InputMessages: []*qbft.SignedMessage{
-				testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2], testingutils.Testing4SharesSet().Shares[3]},
+				testingutils.TestingCommitMultiSignerMessageWithHeight(
+					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     height,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
+					height,
+				),
 			},
 			ExpectedDecidedState: tests.DecidedState{
 				DecidedVal:               []byte{1, 2, 3, 4},
@@ -46,16 +41,11 @@ func LateRoundChangeNoInstance() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[4]},
+					testingutils.TestingMultiSignerRoundChangeMessageWithHeight(
+						[]*bls.SecretKey{ks.Shares[4]},
 						[]types.OperatorID{4},
-						&qbft.Message{
-							MsgType:    qbft.RoundChangeMsgType,
-							Height:     2,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+						2,
+					),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					CalledSyncDecidedByRange: true, // leftovers from the previous calls

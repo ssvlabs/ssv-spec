@@ -15,7 +15,7 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 2, 2)),
 				},
@@ -28,7 +28,7 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "aggregator selection proof",
 				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   testingutils.TestingAggregatorDuty,
+				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 2, 2)),
 				},
@@ -41,7 +41,7 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 2, 2)),
 				},
@@ -54,7 +54,7 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "randao (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 2, 2)),
 				},

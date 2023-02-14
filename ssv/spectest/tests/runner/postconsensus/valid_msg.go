@@ -47,10 +47,10 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name: "sync committee contribution",
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
-					testingutils.TestingSyncCommitteeContributionDuty,
+					&testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 				},
@@ -63,10 +63,10 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name: "sync committee",
 				Runner: decideRunner(
 					testingutils.SyncCommitteeRunner(ks),
-					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestingSyncCommitteeDuty,
 					testingutils.TestSyncCommitteeConsensusData,
 				),
-				Duty: testingutils.TestingSyncCommitteeDuty,
+				Duty: &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
@@ -79,10 +79,10 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDuty,
+					&testingutils.TestingProposerDuty,
 					testingutils.TestProposerConsensusData,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
@@ -95,10 +95,10 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name: "proposer (blinded block)",
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDuty,
+					&testingutils.TestingProposerDuty,
 					testingutils.TestProposerBlindedBlockConsensusData,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
@@ -111,10 +111,10 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name: "aggregator",
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),
-					testingutils.TestingAggregatorDuty,
+					&testingutils.TestingAggregatorDuty,
 					testingutils.TestAggregatorConsensusData,
 				),
-				Duty: testingutils.TestingAggregatorDuty,
+				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 				},
@@ -127,10 +127,10 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Name: "attester",
 				Runner: decideRunner(
 					testingutils.AttesterRunner(ks),
-					testingutils.TestingAttesterDuty,
+					&testingutils.TestingAttesterDuty,
 					testingutils.TestAttesterConsensusData,
 				),
-				Duty: testingutils.TestingAttesterDuty,
+				Duty: &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
@@ -142,7 +142,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   testingutils.TestingValidatorRegistrationDuty,
+				Duty:   &testingutils.TestingValidatorRegistrationDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),

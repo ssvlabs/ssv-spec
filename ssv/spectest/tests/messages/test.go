@@ -10,7 +10,7 @@ type MsgSpecTest struct {
 	Name            string
 	Messages        []*types.SignedPartialSignatureMessage
 	EncodedMessages [][]byte
-	ExpectedRoots   [][]byte
+	ExpectedRoots   [][32]byte
 	ExpectedError   string
 }
 

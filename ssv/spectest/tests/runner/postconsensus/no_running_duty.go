@@ -17,7 +17,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 				},
@@ -30,7 +30,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee",
 				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
@@ -43,7 +43,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
@@ -56,7 +56,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "proposer (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
@@ -69,7 +69,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   testingutils.TestingAggregatorDuty,
+				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 				},
@@ -82,7 +82,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
+				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},

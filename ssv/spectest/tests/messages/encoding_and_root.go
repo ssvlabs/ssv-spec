@@ -15,12 +15,12 @@ func EncodingAndRoot() *MsgSpecTest {
 				{
 					PartialSignature: make([]byte, 96),
 					Signer:           12,
-					SigningRoot:      make([]byte, 32),
+					SigningRoot:      [32]byte{},
 				},
 				{
 					PartialSignature: make([]byte, 96),
 					Signer:           12,
-					SigningRoot:      make([]byte, 32),
+					SigningRoot:      [32]byte{},
 				},
 			},
 		},
@@ -37,7 +37,7 @@ func EncodingAndRoot() *MsgSpecTest {
 		EncodedMessages: [][]byte{
 			byts,
 		},
-		ExpectedRoots: [][]byte{
+		ExpectedRoots: [][32]byte{
 			r,
 		},
 	}

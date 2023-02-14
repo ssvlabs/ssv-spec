@@ -10,17 +10,20 @@ import (
 
 // LateRoundChange tests process late round change msg for an instance which just decided
 func LateRoundChange() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, ks)
-	msgs = append(msgs, testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
-		MsgType:    qbft.RoundChangeMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: identifier[:],
-		Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-	}))
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessage(ks.Shares[1], 1),
+
+		testingutils.TestingPrepareMessage(ks.Shares[1], 1),
+		testingutils.TestingPrepareMessage(ks.Shares[2], 2),
+		testingutils.TestingPrepareMessage(ks.Shares[3], 3),
+
+		testingutils.TestingCommitMessage(ks.Shares[1], 1),
+		testingutils.TestingCommitMessage(ks.Shares[2], 2),
+		testingutils.TestingCommitMessage(ks.Shares[3], 3),
+	}
+	msgs = append(msgs, testingutils.TestingRoundChangeMessage(ks.Shares[4], 4))
 
 	return &tests.ControllerSpecTest{
 		Name: "late round change",
@@ -31,16 +34,10 @@ func LateRoundChange() *tests.ControllerSpecTest {
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: []byte{1, 2, 3, 4},
 					DecidedCnt: 1,
-					BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+					),
 				},
 
 				ControllerPostRoot: "5fadadceb02c4ddc1766145cb772231d3df24dbd821ffef5e7ddc044c4bcc21c",

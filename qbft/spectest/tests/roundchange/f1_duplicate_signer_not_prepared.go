@@ -10,22 +10,11 @@ import (
 // F1DuplicateSignerNotPrepared tests not accepting f+1 speed for duplicate signer (not prev prepared)
 func F1DuplicateSignerNotPrepared() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      5,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-		}),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
 	}
 
 	return &tests.MsgProcessingSpecTest{

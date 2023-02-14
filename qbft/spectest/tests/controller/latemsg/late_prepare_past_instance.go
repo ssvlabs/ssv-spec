@@ -10,10 +10,19 @@ import (
 
 // LatePreparePastInstance tests process prepare msg for a previously decided instance
 func LatePreparePastInstance() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	allMsgs := testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], 5, ks)
+	allMsgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessageWithHeight(ks.Shares[1], 1, 5),
+
+		testingutils.TestingPrepareMessageWithHeight(ks.Shares[1], 1, 5),
+		testingutils.TestingPrepareMessageWithHeight(ks.Shares[2], 2, 5),
+		testingutils.TestingPrepareMessageWithHeight(ks.Shares[3], 3, 5),
+
+		testingutils.TestingCommitMessageWithHeight(ks.Shares[1], 1, 5),
+		testingutils.TestingCommitMessageWithHeight(ks.Shares[2], 2, 5),
+		testingutils.TestingCommitMessageWithHeight(ks.Shares[3], 3, 5),
+	}
 	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
@@ -27,16 +36,11 @@ func LatePreparePastInstance() *tests.ControllerSpecTest {
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
-				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     height,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
+					height,
+				),
 				DecidedVal: []byte{1, 2, 3, 4},
 				DecidedCnt: 1,
 			},
@@ -56,16 +60,11 @@ func LatePreparePastInstance() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.MultiSignQBFTMsg(
+					testingutils.TestingPrepareMultiSignerMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[4]},
 						[]types.OperatorID{4},
-						&qbft.Message{
-							MsgType:    qbft.PrepareMsgType,
-							Height:     4,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+						4,
+					),
 				},
 				ControllerPostRoot: "b6a0be59841bd89b1d7cebfab60a21994b5961861e7a6b5031208175629415ad",
 			},

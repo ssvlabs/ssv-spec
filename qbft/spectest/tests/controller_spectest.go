@@ -39,7 +39,7 @@ func (test *ControllerSpecTest) TestName() string {
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
@@ -90,8 +90,7 @@ func (test *ControllerSpecTest) testProcessMsg(
 		if decided != nil {
 			decidedCnt++
 
-			data, _ := decided.Message.GetCommitData()
-			require.EqualValues(t, runData.ExpectedDecidedState.DecidedVal, data.Data)
+			require.EqualValues(t, runData.ExpectedDecidedState.DecidedVal, decided.FullData)
 		}
 	}
 	require.EqualValues(t, runData.ExpectedDecidedState.DecidedCnt, decidedCnt)
@@ -130,7 +129,7 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 			r2, err := runData.ExpectedDecidedState.BroadcastedDecided.GetRoot()
 			require.NoError(t, err)
 
-			if bytes.Equal(r1, r2) &&
+			if r1 == r2 &&
 				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signers, msg1.Signers) &&
 				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signature, msg1.Signature) {
 				require.False(t, found)

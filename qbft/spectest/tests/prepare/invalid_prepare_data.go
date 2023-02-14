@@ -9,22 +9,18 @@ import (
 
 // InvalidPrepareData tests prepare data for which prepareData.validate() != nil
 func InvalidPrepareData() *tests.MsgProcessingSpecTest {
+	ks := testingutils.Testing4SharesSet()
+
 	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-	})
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
+		testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      qbft.FirstRound,
 			Identifier: []byte{1, 2, 3, 4},
-			Data:       nil,
+			Root:       [32]byte{},
 		}),
 	}
 

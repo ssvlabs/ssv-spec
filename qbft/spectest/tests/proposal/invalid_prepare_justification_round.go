@@ -10,61 +10,23 @@ import (
 // InvalidPrepareJustificationRound tests a proposal for > 1 round, prepared previously but one of the prepare justifications has round != highest prepared round
 func InvalidPrepareJustificationRound() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	ks := testingutils.Testing4SharesSet()
 
 	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
 	}
 	rcMsgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
-		}),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
 	}
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, rcMsgs, prepareMsgs),
-		}),
+		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+			testingutils.TestingQBFTRootData,
+			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
+		),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:           "invalid prepare justification round",

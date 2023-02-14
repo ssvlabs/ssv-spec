@@ -110,8 +110,6 @@ var AllTests = []SpecTest{
 	messages.PartialSigTooShort(),
 	messages.PartialSigTooLong(),
 	messages.PartialRootValid(),
-	messages.PartialRootTooShort(),
-	messages.PartialRootTooLong(),
 	messages.MessageSigner0(),
 	messages.SignedMsgSigner0(),
 

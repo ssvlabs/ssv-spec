@@ -9,23 +9,13 @@ import (
 
 // WrongSignature tests a single prepare received with a wrong signature
 func WrongSignature() *tests.MsgProcessingSpecTest {
+	ks := testingutils.Testing4SharesSet()
+
 	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-	})
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(2)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare wrong sig",

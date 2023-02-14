@@ -7,17 +7,10 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PrepareDataInvalid tests prepare data len == 0
+// PrepareDataInvalid tests prepare data is invalid
 func PrepareDataInvalid() *tests.MsgSpecTest {
-	d := &qbft.PrepareData{}
-	byts, _ := d.Encode()
-	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.PrepareMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      10,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       byts,
-	})
+	ks := testingutils.Testing4SharesSet()
+	msg := testingutils.TestingPrepareMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.WrongRoot)
 
 	return &tests.MsgSpecTest{
 		Name: "prepare data invalid",

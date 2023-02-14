@@ -2,7 +2,7 @@ package messages
 
 import "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 
-// InalidHashDataRoot tests an invalid hash data root
-func InalidHashDataRoot() *tests.MsgSpecTest {
+// InvalidHashDataRoot tests an invalid hash data root
+func InvalidHashDataRoot() *tests.MsgSpecTest {
 	panic("implement")
 }

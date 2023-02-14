@@ -18,10 +18,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "sync committee contribution",
 				Runner: finishRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
-					testingutils.TestingSyncCommitteeContributionDuty,
+					&testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4, ks)),
 				},
@@ -35,10 +35,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "sync committee",
 				Runner: finishRunner(
 					testingutils.SyncCommitteeRunner(ks),
-					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestingSyncCommitteeDuty,
 					testingutils.TestSyncCommitteeConsensusData,
 				),
-				Duty: testingutils.TestingSyncCommitteeDuty,
+				Duty: &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4)),
 				},
@@ -52,10 +52,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "proposer",
 				Runner: finishRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDuty,
+					&testingutils.TestingProposerDuty,
 					testingutils.TestProposerConsensusData,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4)),
 				},
@@ -69,10 +69,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "proposer (blinded block)",
 				Runner: finishRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDuty,
+					&testingutils.TestingProposerDuty,
 					testingutils.TestProposerBlindedBlockConsensusData,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4)),
 				},
@@ -86,10 +86,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "aggregator",
 				Runner: finishRunner(
 					testingutils.AggregatorRunner(ks),
-					testingutils.TestingAggregatorDuty,
+					&testingutils.TestingAggregatorDuty,
 					testingutils.TestAggregatorConsensusData,
 				),
-				Duty: testingutils.TestingAggregatorDuty,
+				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4)),
 				},
@@ -103,10 +103,10 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "attester",
 				Runner: finishRunner(
 					testingutils.AttesterRunner(ks),
-					testingutils.TestingAttesterDuty,
+					&testingutils.TestingAttesterDuty,
 					testingutils.TestAttesterConsensusData,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight)),
 				},

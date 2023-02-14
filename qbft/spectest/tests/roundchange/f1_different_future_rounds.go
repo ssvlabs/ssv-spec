@@ -10,46 +10,18 @@ import (
 // F1DifferentFutureRounds tests f+1 speedup with one rc prev prepared
 func F1DifferentFutureRounds() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	ks := testingutils.Testing4SharesSet()
 
 	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
 	}
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      5,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      10,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, qbft.FirstRound, prepareMsgs),
-		}),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[2], types.OperatorID(2), 10,
+			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -58,13 +30,7 @@ func F1DifferentFutureRounds() *tests.MsgProcessingSpecTest {
 		PostRoot:      "342d0646bc8da4112539b97c68f21ef98bb784a2f97923bc1a81ff92656b8e92",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      5,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-			}),
+			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 1,

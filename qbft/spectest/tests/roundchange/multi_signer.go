@@ -12,15 +12,14 @@ import (
 func MultiSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
+	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{types.OperatorID(1), types.OperatorID(2)}, &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-		}),
+		testingutils.TestingMultiSignerRoundChangeMessageWithRound(
+			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2]},
+			[]types.OperatorID{types.OperatorID(1), types.OperatorID(2)},
+			2,
+		),
 	}
 
 	return &tests.MsgProcessingSpecTest{

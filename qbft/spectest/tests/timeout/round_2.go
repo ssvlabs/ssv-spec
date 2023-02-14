@@ -11,26 +11,14 @@ func Round2() *SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      2,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-	})
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 2)
 
 	return &SpecTest{
 		Name:     "round 2",
 		Pre:      pre,
 		PostRoot: "d76f5d27ebdc1f33ed4af370fc7edb8a117d29a759597dbdf45560095a28151e",
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      3,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-			}),
+			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 3),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 1,

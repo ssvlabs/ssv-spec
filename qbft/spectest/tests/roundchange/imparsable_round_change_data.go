@@ -11,15 +11,10 @@ import (
 func ImparsableRoundChangeData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
+	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.RoundChangeMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      2,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       []byte{1, 1},
-		}),
+		testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.WrongRoot, 0, nil),
 	}
 
 	return &tests.MsgProcessingSpecTest{
