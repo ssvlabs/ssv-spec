@@ -15,7 +15,7 @@ func UnknownSigner() *tests.MsgProcessingSpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessageWrongRoot(ks.Shares[1], types.OperatorID(5)),
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(5)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare unknown signer",
