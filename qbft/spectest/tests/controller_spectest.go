@@ -39,7 +39,7 @@ func (test *ControllerSpecTest) TestName() string {
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
-	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := []byte{1, 2, 3, 4}
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
@@ -108,7 +108,7 @@ func (test *ControllerSpecTest) testProcessMsg(
 func (test *ControllerSpecTest) testBroadcastedDecided(
 	t *testing.T,
 	config *qbft.Config,
-	identifier types.MessageID,
+	identifier []byte,
 	runData *RunInstanceData,
 ) {
 	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
@@ -117,7 +117,12 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 		require.Greater(t, len(broadcastedMsgs), 0)
 		found := false
 		for _, msg := range broadcastedMsgs {
-			if !bytes.Equal(identifier[:], msg.MsgID[:]) {
+
+			// a hack for testing non standard messageID identifiers since we copy them into a MessageID this fixes it
+			msgID := types.MessageID{}
+			copy(msgID[:], identifier)
+
+			if !bytes.Equal(msgID[:], msg.MsgID[:]) {
 				continue
 			}
 
@@ -144,7 +149,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	t *testing.T,
 	contr *qbft.Controller,
 	config *qbft.Config,
-	identifier types.MessageID,
+	identifier []byte,
 	runData *RunInstanceData,
 ) error {
 	err := contr.StartNewInstance(runData.InputValue)

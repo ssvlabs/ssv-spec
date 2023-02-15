@@ -28,14 +28,14 @@ func FullDecided() *tests.ControllerSpecTest {
 					testingutils.TestingCommitMessage(ks.Shares[3], 3),
 				},
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: "f82a7925fa41a67b245d6f97b13c1d272632ac4efe0380847ac8c9378f5bb04b",
+				ControllerPostRoot: "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97",
 			},
 		},
 	}
