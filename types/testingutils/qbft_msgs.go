@@ -7,6 +7,8 @@ import (
 )
 
 var DefaultIdentifier = []byte{1, 2, 3, 4}
+
+// TODO: "DifferentRoot"?
 var WrongRoot = [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9}
 
 var MarshalJustifications = func(msgs []*qbft.SignedMessage) [][]byte {
