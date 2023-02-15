@@ -16,7 +16,7 @@ func AfterProposal() *tests.MsgProcessingSpecTest {
 	rcMsgs := []*qbft.SignedMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
 		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
 	}
 
 	msgs := append(rcMsgs, []*qbft.SignedMessage{
