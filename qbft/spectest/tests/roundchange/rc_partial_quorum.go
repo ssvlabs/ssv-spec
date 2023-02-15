@@ -14,7 +14,7 @@ func RoundChangePartialQuorum() *tests.MsgProcessingSpecTest {
 
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 3),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
 		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
 	}
 
