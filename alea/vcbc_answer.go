@@ -37,7 +37,7 @@ func (i *Instance) uponVCBCAnswer(signedMessage *SignedMessage) error {
 
 	// update local values
 	i.State.VCBCState.SetU(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.AggregatedMsg)
-	i.State.VCBCState.setM(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.Proposals)
+	i.State.VCBCState.SetM(vcbcAnswerData.Author, vcbcAnswerData.Priority, vcbcAnswerData.Proposals)
 
 	// add vcbc output
 	i.AddVCBCOutput(vcbcAnswerData.Proposals, vcbcAnswerData.Priority, vcbcAnswerData.Author)

@@ -99,7 +99,7 @@ func (s *VCBCState) AppendToM(operatorID types.OperatorID, priority Priority, pr
 	s.VCBCm[operatorID][priority] = append(s.VCBCm[operatorID][priority], proposal)
 }
 
-func (s *VCBCState) setM(operatorID types.OperatorID, priority Priority, proposals []*ProposalData) {
+func (s *VCBCState) SetM(operatorID types.OperatorID, priority Priority, proposals []*ProposalData) {
 	if _, exists := s.VCBCm[operatorID]; !exists {
 		s.VCBCm[operatorID] = make(map[Priority][]*ProposalData)
 	}

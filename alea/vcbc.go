@@ -63,7 +63,7 @@ func (i *Instance) AddVCBCOutput(proposals []*ProposalData, priority Priority, a
 	}
 
 	// check if queue alreasy has proposals and priority
-	if queue.hasPriority(priority) {
+	if queue.HasPriority(priority) {
 		return
 	}
 

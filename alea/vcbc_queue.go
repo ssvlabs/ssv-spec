@@ -121,7 +121,7 @@ func (queue *VCBCQueue) HasProposalList(proposalList []*ProposalData) bool {
 	return false
 }
 
-func (queue *VCBCQueue) hasPriority(priority Priority) bool {
+func (queue *VCBCQueue) HasPriority(priority Priority) bool {
 	for _, p := range queue.priority {
 		if p == priority {
 			return true

@@ -21,7 +21,7 @@ func (i *Instance) uponVCBCSend(signedMessage *SignedMessage) error {
 
 	// check if it was already received. If not -> store
 	if !i.State.VCBCState.HasM(vcbcSendData.Author, vcbcSendData.Priority) {
-		i.State.VCBCState.setM(vcbcSendData.Author, vcbcSendData.Priority, vcbcSendData.Proposals)
+		i.State.VCBCState.SetM(vcbcSendData.Author, vcbcSendData.Priority, vcbcSendData.Proposals)
 	}
 
 	// get sender of the message
