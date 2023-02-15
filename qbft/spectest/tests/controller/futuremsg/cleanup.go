@@ -9,45 +9,19 @@ import (
 
 // Cleanup tests cleaning up future msgs container
 func Cleanup() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
 	return &ControllerSyncSpecTest{
 		Name: "future msgs cleanup",
 		InputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     5,
-				Round:      qbft.FirstRound,
-				Identifier: identifier[:],
-				Root:       [32]byte{1, 2, 3, 4},
-			}),
-			testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     10,
-				Round:      3,
-				Identifier: identifier[:],
-				Root:       [32]byte{1, 2, 3, 4},
-			}),
-
-			testingutils.MultiSignQBFTMsg(
+			testingutils.TestingCommitMessageWithHeight(ks.Shares[4], 4, 5),
+			testingutils.TestingPrepareMessageWithParams(ks.Shares[4], 4, 3, 10, testingutils.TestingQBFTRootData),
+			testingutils.TestingCommitMultiSignerMessageWithHeight(
 				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.CommitMsgType,
-					Height:     10,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Root:       [32]byte{1, 2, 3, 4},
-				}),
-
-			testingutils.SignQBFTMsg(ks.Shares[2], 2, &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     11,
-				Round:      3,
-				Identifier: identifier[:],
-				Root:       [32]byte{1, 2, 3, 4},
-			}),
+				10,
+			),
+			testingutils.TestingPrepareMessageWithParams(ks.Shares[2], 2, 3, 11, testingutils.TestingQBFTRootData),
 		},
 		SyncDecidedCalledCnt: 1,
 		ControllerPostRoot:   "2a506a58b7abbbcffd6d4ee92f154c826947ce56672564155772435456315c6d",
