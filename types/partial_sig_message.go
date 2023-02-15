@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 )
 
@@ -21,6 +22,7 @@ const (
 
 type PartialSignatureMessages struct {
 	Type     PartialSigMsgType
+	Slot     phase0.Slot
 	Messages []*PartialSignatureMessage `ssz-max:"13"`
 }
 
