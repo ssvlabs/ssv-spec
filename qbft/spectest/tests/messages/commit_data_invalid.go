@@ -10,7 +10,9 @@ import (
 // CommitDataInvalid tests commit data len == 0
 func CommitDataInvalid() *tests.MsgSpecTest {
 	keySet := testingutils.Testing4SharesSet()
-	msg := testingutils.TestingCommitMessageWrongRoot(keySet.Shares[1], types.OperatorID(1))
+	msg := testingutils.TestingCommitMessageWithParams(
+		keySet.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.WrongRoot,
+	)
 
 	return &tests.MsgSpecTest{
 		Name: "commit data invalid",
