@@ -12,7 +12,7 @@ func WrongProposer() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[2], types.OperatorID(1)),
+		testingutils.TestingProposalMessage(ks.Shares[2], types.OperatorID(2)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong proposer",
