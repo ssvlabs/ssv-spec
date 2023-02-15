@@ -22,9 +22,9 @@ func FutureRound() *tests.MsgProcessingSpecTest {
 	}
 
 	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
-		testingutils.TestingProposalMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
-		testingutils.TestingProposalMessageWithRound(ks.Shares[3], types.OperatorID(3), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 10),
 	}
 
 	msgs := []*qbft.SignedMessage{
