@@ -15,11 +15,11 @@ func BroadcastedDecided() *tests.ControllerSpecTest {
 		Name: "broadcast decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: testingutils.TestingQBFTFullData,
+				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 					testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks),
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedVal: []byte{1, 2, 3, 4},
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},

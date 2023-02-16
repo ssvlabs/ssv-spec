@@ -18,7 +18,7 @@ func Invalid() *tests.ControllerSpecTest {
 		Name: "decide invalid msg",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: testingutils.TestingQBFTFullData,
+				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					msg,
 				},

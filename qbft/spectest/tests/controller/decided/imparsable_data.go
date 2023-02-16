@@ -15,7 +15,7 @@ func ImparsableData() *tests.ControllerSpecTest {
 		Name: "decide imparsable data",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: testingutils.TestingQBFTFullData,
+				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingMultiSignerInvalidMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, qbft.CommitMsgType),
 				},
