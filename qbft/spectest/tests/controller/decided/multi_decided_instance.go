@@ -20,7 +20,7 @@ func MultiDecidedInstances() *tests.ControllerSpecTest {
 			},
 			ExpectedDecidedState: tests.DecidedState{
 				DecidedCnt: 1,
-				DecidedVal: []byte{1, 2, 3, 4},
+				DecidedVal: testingutils.TestingQBFTFullData,
 			},
 			ControllerPostRoot: postRoot,
 		}
