@@ -14,6 +14,53 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	// sanity tests to be completed
+	//decided.Valid(),
+	//decided.HasQuorum(),
+	//decided.LateDecidedBiggerQuorum(),
+	//decided.LateDecidedSmallerQuorum(),
+	//decided.DuplicateMsg(),
+	//decided.WrongSignature(),
+	//decided.CurrentInstancePastRound(),
+	//decided.CurrentInstanceFutureRound(),
+	//processmsg.NoInstanceRunning(),
+
+	//latemsg.LateCommit(),
+	//latemsg.LateCommitPastRound(),
+
+	//futuremsg.Cleanup(),
+	//futuremsg.DuplicateSigner(),
+	//futuremsg.F1FutureMsgs(),
+
+	//startinstance.Valid(),
+	//startinstance.EmptyValue(),
+	//startinstance.NilValue(),
+
+	//proposer.FourOperators(),
+	//proposer.SevenOperators(),
+	//proposer.TenOperators(),
+	//proposer.ThirteenOperators(),
+
+	//proposal.CurrentRoundPrevPrepared(),
+	//proposal.PreparedPreviouslyJustification(),
+	//proposal.FirstRoundJustification(),
+	//proposal.FutureRoundPrevNotPrepared(),
+	//proposal.FutureRound(),
+	//proposal.NoRCJustification(),
+	//proposal.WrongProposer(),
+	//proposal.WrongSignature(),
+	//proposal.InvalidFullData(),
+
+	//prepare.HappyFlow(),
+
+	//commit.HappyFlow(),
+
+	//roundchange.HappyFlow(),
+	//roundchange.F1Speedup(),
+	//roundchange.F1SpeedupPrevPrepared(),
+	//roundchange.NotProposer(),
+	//roundchange.ValidJustification(),
+
 	// sanity tests
 	proposal.CurrentRoundPrevNotPrepared(),
 	decided.WrongSignature(),
@@ -61,10 +108,10 @@ var AllTests = []SpecTest{
 	//latemsg.LateCommit(),
 	//latemsg.LateCommitPastRound(),
 	//latemsg.LateCommitNoInstance(),
-	////latemsg.LateCommitPastInstance(), // TODO: fix panic
+	//latemsg.LateCommitPastInstance(), // TODO: fix panic
 	//latemsg.LatePrepare(),
 	//latemsg.LatePrepareNoInstance(),
-	////latemsg.LatePreparePastInstance(), // TODO: fix panic
+	//latemsg.LatePreparePastInstance(), // TODO: fix panic
 	//latemsg.LatePreparePastRound(),
 	//latemsg.LateProposal(),
 	//latemsg.LateProposalNoInstance(),
@@ -135,6 +182,8 @@ var AllTests = []SpecTest{
 	//tests.TenOperators(),
 	//tests.ThirteenOperators(),
 	//
+
+	//proposal.InvalidFullData(),
 	//proposal.CurrentRoundPrevNotPrepared(),
 	//proposal.CurrentRoundPrevPrepared(),
 	//proposal.PastRoundProposalPrevPrepared(),
@@ -162,7 +211,7 @@ var AllTests = []SpecTest{
 	//proposal.InvalidPrepareJustificationValue(),
 	//proposal.InvalidPrepareJustificationRound(),
 	//proposal.InvalidProposalData(),
-	////proposal.InvalidValueCheck(), // TODO: implement
+	//proposal.InvalidValueCheck(), // TODO: implement
 	//proposal.MultiSigner(),
 	//proposal.PostDecided(),
 	//proposal.PostPrepared(),
