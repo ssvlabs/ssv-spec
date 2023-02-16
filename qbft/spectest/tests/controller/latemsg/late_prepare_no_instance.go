@@ -13,7 +13,7 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
 		return &tests.RunInstanceData{
-			InputValue: testingutils.TestingQBFTFullData,
+			InputValue: []byte{1, 2, 3, 4},
 			InputMessages: []*qbft.SignedMessage{
 				testingutils.TestingCommitMultiSignerMessageWithHeight(
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
@@ -22,7 +22,7 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 				),
 			},
 			ExpectedDecidedState: tests.DecidedState{
-				DecidedVal:               testingutils.TestingQBFTFullData,
+				DecidedVal:               []byte{1, 2, 3, 4},
 				DecidedCnt:               1,
 				CalledSyncDecidedByRange: true,
 				DecidedByRangeValues:     [2]qbft.Height{height - 3, height},
@@ -38,7 +38,7 @@ func LatePrepareNoInstance() *tests.ControllerSpecTest {
 			instanceData(7, "d37a7c38cdea9f71111410ca3d6db6b9ca5746caa8833f722d2cf3c552ea735b"),
 			instanceData(11, "78bce27afd40e40c155d5701823a983a3d20ba6bae6f74dafd228f9b4f434082"),
 			{
-				InputValue: testingutils.TestingQBFTFullData,
+				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[4]},

@@ -42,10 +42,10 @@ func FullFlowAfterDecided() *tests.ControllerSpecTest {
 		Name: "full flow after decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    testingutils.TestingQBFTFullData,
+				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedVal: []byte{1, 2, 3, 4},
 					DecidedCnt: 1,
 				},
 				ControllerPostRoot: "01e47ae99d11e44ab170204a587f175753464acd6092c6da1dcbf7d97eeaf3a0",
