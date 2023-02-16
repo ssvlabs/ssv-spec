@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"bytes"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -96,13 +97,29 @@ func ProposerValueCheckF(
 			return errors.Wrap(err, "duty invalid")
 		}
 
-		if blockData, err := cd.GetBellatrixBlindedBlockData(); err == nil {
-			return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
+		if cd.DecidedBlindedBlock() {
+			switch cd.Version {
+			case spec.DataVersionBellatrix:
+				if blockData, err := cd.GetBellatrixBlindedBlockData(); err == nil {
+					return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
+				}
+			case spec.DataVersionCapella:
+				if blockData, err := cd.GetCapellaBlindedBlockData(); err == nil {
+					return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
+				}
+			}
+		} else {
+			switch cd.Version {
+			case spec.DataVersionBellatrix:
+				if blockData, err := cd.GetBellatrixBlockData(); err == nil {
+					return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
+				}
+			case spec.DataVersionCapella:
+				if blockData, err := cd.GetCapellaBlockData(); err == nil {
+					return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
+				}
+			}
 		}
-		if blockData, err := cd.GetBellatrixBlockData(); err == nil {
-			return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
-		}
-
 		return errors.New("no block data")
 	}
 }

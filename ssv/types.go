@@ -1,10 +1,9 @@
 package ssv
 
 import (
-	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
+	"github.com/attestantio/go-eth2-client/api"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/p2p"
 	"github.com/bloxapp/ssv-spec/types"
@@ -40,9 +39,9 @@ type ProposerCalls interface {
 	// GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
 	GetBlindedBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// SubmitBeaconBlock submit the block to the node
-	SubmitBeaconBlock(block *bellatrix.SignedBeaconBlock) error
+	SubmitBeaconBlock(block *spec.VersionedSignedBeaconBlock) error
 	// SubmitBlindedBeaconBlock submit the blinded block to the node
-	SubmitBlindedBeaconBlock(block *bellatrix2.SignedBlindedBeaconBlock) error
+	SubmitBlindedBeaconBlock(block *api.VersionedSignedBlindedBeaconBlock) error
 }
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls

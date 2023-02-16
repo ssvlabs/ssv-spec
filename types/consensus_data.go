@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/attestantio/go-eth2-client/api"
 	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	capella2 "github.com/attestantio/go-eth2-client/api/v1/capella"
 	"github.com/attestantio/go-eth2-client/spec"
@@ -162,6 +163,110 @@ func (ci *ConsensusData) GetBellatrixBlockData() (*bellatrix.BeaconBlock, error)
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
 	}
 	return ret, nil
+}
+
+// DecidedBlindedBlock returns true if decided value has a blinded block, false if regular block
+// WARNING!! should be called after decided only
+func (ci *ConsensusData) DecidedBlindedBlock() bool {
+	switch ci.Version {
+	case spec.DataVersionBellatrix:
+		_, err := ci.GetBellatrixBlindedBlockData()
+		return err == nil
+	case spec.DataVersionCapella:
+		_, err := ci.GetCapellaBlindedBlockData()
+		return err == nil
+	default:
+		return false
+	}
+}
+
+func (ci *ConsensusData) GetBlockRoot() (ssz.HashRoot, error) {
+	switch ci.Version {
+	case spec.DataVersionBellatrix:
+		blk, err := ci.GetBellatrixBlindedBlockData()
+		if err == nil { // if no error, is blinded block
+			return blk, nil
+		}
+		return ci.GetBellatrixBlindedBlockData()
+	case spec.DataVersionCapella:
+		blk, err := ci.GetCapellaBlindedBlockData()
+		if err == nil { // if no error, is blinded block
+			return blk, nil
+		}
+		return ci.GetCapellaBlockData()
+	default:
+		return nil, errors.New("not supported version")
+	}
+}
+
+func (ci *ConsensusData) GetVersionedBlock(sig phase0.BLSSignature) (*spec.VersionedSignedBeaconBlock, error) {
+	switch ci.Version {
+	case spec.DataVersionBellatrix:
+		data, err := ci.GetBellatrixBlockData()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get bellatrix block")
+		}
+
+		blk := &bellatrix.SignedBeaconBlock{
+			Message:   data,
+			Signature: sig,
+		}
+		return &spec.VersionedSignedBeaconBlock{
+			Version:   spec.DataVersionBellatrix,
+			Bellatrix: blk,
+		}, nil
+	case spec.DataVersionCapella:
+		data, err := ci.GetCapellaBlockData()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get vapella block")
+		}
+
+		blk := &capella.SignedBeaconBlock{
+			Message:   data,
+			Signature: sig,
+		}
+		return &spec.VersionedSignedBeaconBlock{
+			Version: spec.DataVersionCapella,
+			Capella: blk,
+		}, nil
+	default:
+		return nil, errors.New("not supported version")
+	}
+}
+
+func (ci *ConsensusData) GetVersionedBlindedBlock(sig phase0.BLSSignature) (*api.VersionedSignedBlindedBeaconBlock, error) {
+	switch ci.Version {
+	case spec.DataVersionBellatrix:
+		data, err := ci.GetBellatrixBlindedBlockData()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get bellatrix block")
+		}
+
+		blk := &bellatrix2.SignedBlindedBeaconBlock{
+			Message:   data,
+			Signature: sig,
+		}
+		return &api.VersionedSignedBlindedBeaconBlock{
+			Version:   spec.DataVersionBellatrix,
+			Bellatrix: blk,
+		}, nil
+	case spec.DataVersionCapella:
+		data, err := ci.GetCapellaBlindedBlockData()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get vapella block")
+		}
+
+		blk := &capella2.SignedBlindedBeaconBlock{
+			Message:   data,
+			Signature: sig,
+		}
+		return &api.VersionedSignedBlindedBeaconBlock{
+			Version: spec.DataVersionCapella,
+			Capella: blk,
+		}, nil
+	default:
+		return nil, errors.New("not supported version")
+	}
 }
 
 func (ci *ConsensusData) GetBellatrixBlindedBlockData() (*bellatrix2.BlindedBeaconBlock, error) {

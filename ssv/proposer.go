@@ -3,9 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -124,12 +122,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 
 	// specific duty sig
-	var blkToSign ssz.HashRoot
-	if r.decidedBlindedBlock() {
-		blkToSign, err = decidedValue.GetBellatrixBlindedBlockData()
-	} else {
-		blkToSign, err = decidedValue.GetBellatrixBlockData()
-	}
+	blkToSign, err := decidedValue.GetBlockRoot()
 	if err != nil {
 		return errors.Wrap(err, "could not get block")
 	}
@@ -188,43 +181,26 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		if r.decidedBlindedBlock() {
-			data, err := r.GetState().DecidedValue.GetBellatrixBlindedBlockData()
+		if r.GetState().DecidedValue.DecidedBlindedBlock() {
+			versionedBlindedBlock, err := r.GetState().DecidedValue.GetVersionedBlindedBlock(specSig)
 			if err != nil {
-				return errors.Wrap(err, "could not get blinded block")
+				return errors.Wrap(err, "could not get versioned blinded block")
 			}
-
-			blk := &bellatrix2.SignedBlindedBeaconBlock{
-				Message:   data,
-				Signature: specSig,
-			}
-			if err := r.GetBeaconNode().SubmitBlindedBeaconBlock(blk); err != nil {
+			if err := r.GetBeaconNode().SubmitBlindedBeaconBlock(versionedBlindedBlock); err != nil {
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
 			}
 		} else {
-			data, err := r.GetState().DecidedValue.GetBellatrixBlockData()
+			versionedBlock, err := r.GetState().DecidedValue.GetVersionedBlock(specSig)
 			if err != nil {
-				return errors.Wrap(err, "could not get block")
+				return errors.Wrap(err, "could not get versioned block")
 			}
-
-			blk := &bellatrix.SignedBeaconBlock{
-				Message:   data,
-				Signature: specSig,
-			}
-			if err := r.GetBeaconNode().SubmitBeaconBlock(blk); err != nil {
+			if err := r.GetBeaconNode().SubmitBeaconBlock(versionedBlock); err != nil {
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
 			}
 		}
 	}
 	r.GetState().Finished = true
 	return nil
-}
-
-// decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
-// WARNING!! should be called after decided only
-func (r *ProposerRunner) decidedBlindedBlock() bool {
-	_, err := r.BaseRunner.State.DecidedValue.GetBellatrixBlindedBlockData()
-	return err == nil
 }
 
 func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
@@ -234,15 +210,7 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	if r.decidedBlindedBlock() {
-		data, err := r.GetState().DecidedValue.GetBellatrixBlindedBlockData()
-		if err != nil {
-			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block")
-		}
-		return []ssz.HashRoot{data}, types.DomainProposer, nil
-	}
-
-	data, err := r.GetState().DecidedValue.GetBellatrixBlockData()
+	data, err := r.GetState().DecidedValue.GetBlockRoot()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block")
 	}
