@@ -26,7 +26,7 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 				},
 
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal:               []byte{1, 2, 3, 4},
+					DecidedVal:               testingutils.TestingQBFTFullData,
 					DecidedCnt:               1,
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{0, 50},
