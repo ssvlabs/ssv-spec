@@ -22,7 +22,7 @@ func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt:         1,
-					DecidedVal:         []byte{1, 2, 3, 4},
+					DecidedVal:         testingutils.TestingQBFTFullData,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
 				},
 				ControllerPostRoot: "b61697f2ff067f353262fec6946aaf5c0ee94fd56e98128757fe737af83b754d",

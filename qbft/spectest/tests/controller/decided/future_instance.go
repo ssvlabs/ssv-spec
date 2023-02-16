@@ -21,7 +21,7 @@ func FutureInstance() *tests.ControllerSpecTest {
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt:               1,
-					DecidedVal:               []byte{1, 2, 3, 4},
+					DecidedVal:               testingutils.TestingQBFTFullData,
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{0, 10},
 				},

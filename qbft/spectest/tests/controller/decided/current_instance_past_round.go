@@ -46,7 +46,7 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 				},
 				ControllerPostRoot: "a96bbf6034a156f6a7196c255e60b5f6a592ab30130cab0d3b4ac2cbc1dd9ac4",
 			},
