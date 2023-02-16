@@ -15,7 +15,7 @@ func FullDecided() *tests.ControllerSpecTest {
 		Name: "full decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingProposalMessage(ks.Shares[1], 1),
 
@@ -35,7 +35,7 @@ func FullDecided() *tests.ControllerSpecTest {
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97",
+				ControllerPostRoot: "4c96913e87aa17c9f0d5c1b6b220cbc7a66b7b40ef55f1059f1e1fa9f59c94d9",
 			},
 		},
 	}
