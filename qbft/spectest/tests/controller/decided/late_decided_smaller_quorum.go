@@ -22,7 +22,7 @@ func LateDecidedSmallerQuorum() *tests.ControllerSpecTest {
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 				},
 				ControllerPostRoot: "89bd457473c3ab63c8cdf82dce089f41f47e3ed28b982f11e7a775e80156404d",
 			},
