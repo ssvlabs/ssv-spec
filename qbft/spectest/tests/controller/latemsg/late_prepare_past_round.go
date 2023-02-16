@@ -44,7 +44,7 @@ func LatePreparePastRound() *tests.ControllerSpecTest {
 		Name: "late prepare past round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,

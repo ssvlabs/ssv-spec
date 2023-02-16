@@ -15,7 +15,7 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 		Name: "no instance running",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},

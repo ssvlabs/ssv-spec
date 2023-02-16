@@ -25,7 +25,7 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
 		return &tests.RunInstanceData{
-			InputValue:    []byte{1, 2, 3, 4},
+			InputValue:    testingutils.TestingQBFTFullData,
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
 				DecidedVal: testingutils.TestingQBFTFullData,
@@ -51,7 +51,7 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 			instanceData(4, "848261610a945d4aa24174fe73471ba2c3b85f1147c9fc5a704ff77c3f1a7bbb"),
 			instanceData(5, "bd7d5dc577276a5262d188270dcee321198349aea6eb19e6b6d5446d3bbcd827"),
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingMultiSignerRoundChangeMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[1]},

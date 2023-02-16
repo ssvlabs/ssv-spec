@@ -20,7 +20,7 @@ func LatePrepare() *tests.ControllerSpecTest {
 		Name: "late prepare",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,

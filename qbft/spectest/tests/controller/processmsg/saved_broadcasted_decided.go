@@ -15,7 +15,7 @@ func BroadcastedDecided() *tests.ControllerSpecTest {
 		Name: "broadcast decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 					testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks),
 				ExpectedDecidedState: tests.DecidedState{

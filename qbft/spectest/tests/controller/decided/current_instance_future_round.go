@@ -15,7 +15,7 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 		Name: "decide current instance future round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingProposalMessage(ks.Shares[1], 1),
 

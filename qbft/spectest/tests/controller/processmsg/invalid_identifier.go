@@ -18,7 +18,7 @@ func InvalidIdentifier() *tests.ControllerSpecTest {
 		Name: "invalid identifier",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
 						MsgType:    qbft.ProposalMsgType,
