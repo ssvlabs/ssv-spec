@@ -15,7 +15,7 @@ func Cleanup() *ControllerSyncSpecTest {
 		Name: "future msgs cleanup",
 		InputMessages: []*qbft.SignedMessage{
 			testingutils.TestingCommitMessageWithHeight(ks.Shares[4], 4, 5),
-			testingutils.TestingPrepareMessageWithParams(ks.Shares[4], 4, 3, 10, testingutils.TestingQBFTRootData),
+			testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 3, 3, 10, testingutils.TestingQBFTRootData),
 			testingutils.TestingCommitMultiSignerMessageWithHeight(
 				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 				[]types.OperatorID{1, 2, 3},
