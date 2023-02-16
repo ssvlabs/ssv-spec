@@ -4,6 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
 	"testing"
 )
 
@@ -14,6 +15,9 @@ type SpecTest interface {
 
 var AllTests = []SpecTest{
 	// sanity tests
+	proposal.CurrentRoundPrevNotPrepared(),
+	decided.WrongSignature(),
+	decided.LateDecided(),
 	decided.Valid(),
 	processmsg.FullDecided(),
 	tests.HappyFlow(),
