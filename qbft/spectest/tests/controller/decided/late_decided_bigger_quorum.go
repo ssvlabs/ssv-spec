@@ -11,17 +11,8 @@ import (
 // LateDecidedBiggerQuorum tests processing a decided msg for a just decided instance (with a bigger quorum)
 func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], 1),
-
-		testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-		testingutils.TestingPrepareMessage(ks.Shares[2], 2),
-		testingutils.TestingPrepareMessage(ks.Shares[3], 3),
-
-		testingutils.TestingCommitMessage(ks.Shares[1], 1),
-		testingutils.TestingCommitMessage(ks.Shares[2], 2),
-		testingutils.TestingCommitMessage(ks.Shares[3], 3),
-	}
+	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3], ks.Shares[4]}, []types.OperatorID{1, 2, 3, 4}))
 	return &tests.ControllerSpecTest{
 		Name: "decide late decided bigger quorum",

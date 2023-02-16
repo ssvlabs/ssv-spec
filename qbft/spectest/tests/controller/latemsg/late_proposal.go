@@ -12,17 +12,8 @@ import (
 func LateProposal() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], 1),
-
-		testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-		testingutils.TestingPrepareMessage(ks.Shares[2], 2),
-		testingutils.TestingPrepareMessage(ks.Shares[3], 3),
-
-		testingutils.TestingCommitMessage(ks.Shares[1], 1),
-		testingutils.TestingCommitMessage(ks.Shares[2], 2),
-		testingutils.TestingCommitMessage(ks.Shares[3], 3),
-	}
+	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingProposalMessage(ks.Shares[1], 1))
 
 	return &tests.ControllerSpecTest{
