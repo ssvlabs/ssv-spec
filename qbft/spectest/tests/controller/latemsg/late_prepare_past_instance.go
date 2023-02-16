@@ -12,17 +12,9 @@ import (
 func LatePreparePastInstance() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	allMsgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithHeight(ks.Shares[1], 1, 5),
+	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, 5, ks)
 
-		testingutils.TestingPrepareMessageWithHeight(ks.Shares[1], 1, 5),
-		testingutils.TestingPrepareMessageWithHeight(ks.Shares[2], 2, 5),
-		testingutils.TestingPrepareMessageWithHeight(ks.Shares[3], 3, 5),
-
-		testingutils.TestingCommitMessageWithHeight(ks.Shares[1], 1, 5),
-		testingutils.TestingCommitMessageWithHeight(ks.Shares[2], 2, 5),
-		testingutils.TestingCommitMessageWithHeight(ks.Shares[3], 3, 5),
-	}
 	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]

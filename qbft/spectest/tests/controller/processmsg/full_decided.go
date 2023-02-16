@@ -15,27 +15,18 @@ func FullDecided() *tests.ControllerSpecTest {
 		Name: "full decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
-					testingutils.TestingProposalMessage(ks.Shares[1], 1),
-
-					testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-					testingutils.TestingPrepareMessage(ks.Shares[2], 2),
-					testingutils.TestingPrepareMessage(ks.Shares[3], 3),
-
-					testingutils.TestingCommitMessage(ks.Shares[1], 1),
-					testingutils.TestingCommitMessage(ks.Shares[2], 2),
-					testingutils.TestingCommitMessage(ks.Shares[3], 3),
-				},
+				InputValue: testingutils.TestingQBFTFullData,
+				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+					testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks),
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: "f82a7925fa41a67b245d6f97b13c1d272632ac4efe0380847ac8c9378f5bb04b",
+				ControllerPostRoot: "4c96913e87aa17c9f0d5c1b6b220cbc7a66b7b40ef55f1059f1e1fa9f59c94d9",
 			},
 		},
 	}
