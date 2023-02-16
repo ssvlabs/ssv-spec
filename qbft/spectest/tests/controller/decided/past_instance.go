@@ -15,7 +15,7 @@ func PastInstance() *tests.ControllerSpecTest {
 		Name: "decide past instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, 100),
 					testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, 80),
@@ -23,7 +23,7 @@ func PastInstance() *tests.ControllerSpecTest {
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt:               3,
-					DecidedVal:               []byte{1, 2, 3, 4},
+					DecidedVal:               testingutils.TestingQBFTFullData,
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{0, 100},
 				},

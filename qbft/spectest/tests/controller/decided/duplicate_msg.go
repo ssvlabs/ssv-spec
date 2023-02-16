@@ -15,14 +15,14 @@ func DuplicateMsg() *tests.ControllerSpecTest {
 		Name: "decide duplicate msg",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, 10),
 					testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, 10),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt:               1,
-					DecidedVal:               []byte{1, 2, 3, 4},
+					DecidedVal:               testingutils.TestingQBFTFullData,
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{0, 10},
 				},

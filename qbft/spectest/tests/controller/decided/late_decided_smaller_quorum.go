@@ -15,14 +15,14 @@ func LateDecidedSmallerQuorum() *tests.ControllerSpecTest {
 		Name: "decide late decided smaller quorum",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3], ks.Shares[4]}, []types.OperatorID{1, 2, 3, 4}),
 					testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 				},
 				ControllerPostRoot: "89bd457473c3ab63c8cdf82dce089f41f47e3ed28b982f11e7a775e80156404d",
 			},
