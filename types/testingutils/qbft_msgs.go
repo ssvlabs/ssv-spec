@@ -6,6 +6,7 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
+// TODO: "TestingIdentifier"?
 var DefaultIdentifier = []byte{1, 2, 3, 4}
 
 // TODO: "DifferentRoot"?
@@ -278,6 +279,7 @@ var TestingRoundChangeMessageWithParams = func(
 		RoundChangeJustification: roundChangeJustification,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = TestingQBFTFullData
 	return ret
 }
 var TestingMultiSignerRoundChangeMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
