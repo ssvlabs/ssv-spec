@@ -26,7 +26,8 @@ func CurrentInstancePastRound() *tests.ControllerSpecTest {
 	}
 	msgs = append(msgs, rcMsgs...)
 	msgs = append(msgs, []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithRound(ks.Shares[1], 1, 2),
+		testingutils.TestingProposalMessageWithRoundAndRC(ks.Shares[1], 1, 2,
+			testingutils.MarshalJustifications(rcMsgs)),
 
 		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], 1, 2),
 		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], 2, 2),
