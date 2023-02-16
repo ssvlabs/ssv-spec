@@ -13,7 +13,7 @@ func SingleConsensusMsg() *tests.ControllerSpecTest {
 		Name: "single consensus msg",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: testingutils.TestingQBFTFullData,
+				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingProposalMessage(ks.Shares[1], 1),
 				},

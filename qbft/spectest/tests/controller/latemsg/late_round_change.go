@@ -20,10 +20,10 @@ func LateRoundChange() *tests.ControllerSpecTest {
 		Name: "late round change",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    testingutils.TestingQBFTFullData,
+				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedVal: []byte{1, 2, 3, 4},
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},

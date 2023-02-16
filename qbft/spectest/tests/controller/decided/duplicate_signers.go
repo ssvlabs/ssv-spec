@@ -19,7 +19,7 @@ func DuplicateSigners() *tests.ControllerSpecTest {
 		Name: "decide duplicate signer",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: testingutils.TestingQBFTFullData,
+				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					msg,
 				},

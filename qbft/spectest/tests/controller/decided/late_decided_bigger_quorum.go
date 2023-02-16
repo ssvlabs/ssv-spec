@@ -18,11 +18,11 @@ func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
 		Name: "decide late decided bigger quorum",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    testingutils.TestingQBFTFullData,
+				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt:         1,
-					DecidedVal:         testingutils.TestingQBFTFullData,
+					DecidedVal:         []byte{1, 2, 3, 4},
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
 				},
 				ControllerPostRoot: "b61697f2ff067f353262fec6946aaf5c0ee94fd56e98128757fe737af83b754d",

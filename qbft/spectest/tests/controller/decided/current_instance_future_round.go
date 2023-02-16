@@ -15,7 +15,7 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 		Name: "decide current instance future round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: testingutils.TestingQBFTFullData,
+				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingProposalMessage(ks.Shares[1], 1),
 
@@ -29,7 +29,7 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
-					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedVal: []byte{1, 2, 3, 4},
 				},
 				ControllerPostRoot: "22a652c6cf6e1243c2a82a72c31ae733e614e5f886e700acaa81210f04659664",
 			},

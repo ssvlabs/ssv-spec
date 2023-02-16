@@ -14,7 +14,7 @@ func MsgError() *tests.ControllerSpecTest {
 		Name: "process msg error",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue: testingutils.TestingQBFTFullData,
+				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingProposalMessageWithRound(ks.Shares[1], 1, 100),
 				},

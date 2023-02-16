@@ -44,10 +44,10 @@ func LatePreparePastRound() *tests.ControllerSpecTest {
 		Name: "late prepare past round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:    testingutils.TestingQBFTFullData,
+				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedVal: []byte{1, 2, 3, 4},
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithRound(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
