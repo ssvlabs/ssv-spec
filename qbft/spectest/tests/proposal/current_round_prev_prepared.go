@@ -35,7 +35,7 @@ func CurrentRoundPrevPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal happy flow round > 1 (prev prepared)",
 		Pre:           pre,
-		PostRoot:      "471b3e91d8480cb0a5a4f5c35f7bbf6cff2ec564432956cb001ef0afda6a9840",
+		PostRoot:      "1d6b7cd0d77efabb5755072f2b502baa33759c2d5ce8df098294bfeec231a560",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], 1, 10),
