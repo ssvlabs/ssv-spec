@@ -24,7 +24,7 @@ func LateDecidedSmallerQuorum() *tests.ControllerSpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: "89bd457473c3ab63c8cdf82dce089f41f47e3ed28b982f11e7a775e80156404d",
+				ControllerPostRoot: "c8ea9638aa8aa332763f5b79fe26d88bbcb173837b64545d871eec89df6b7ee5",
 			},
 		},
 	}
