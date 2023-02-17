@@ -48,6 +48,6 @@ func Cleanup() *ControllerSyncSpecTest {
 			}),
 		},
 		SyncDecidedCalledCnt: 1,
-		ControllerPostRoot:   "2a506a58b7abbbcffd6d4ee92f154c826947ce56672564155772435456315c6d",
+		ControllerPostRoot:   "cd0e7827cc4f55c6972925aa38b79050ae7f99d6083032127b9ee1fbd28caae0",
 	}
 }

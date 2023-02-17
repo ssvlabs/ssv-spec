@@ -30,6 +30,6 @@ func F1FutureMsgs() *ControllerSyncSpecTest {
 			}),
 		},
 		SyncDecidedCalledCnt: 1,
-		ControllerPostRoot:   "ca7eaf0f0b404b601dc8dd471924794ce32ef6bcb88721098b7b6014001754c1",
+		ControllerPostRoot:   "98c0625374dc64e6350eb704812d9222f9a6121a87c2a55a8b1a3f8790e87c77",
 	}
 }
