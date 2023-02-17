@@ -23,7 +23,8 @@ func F1Speedup() *tests.MsgProcessingSpecTest {
 		PostRoot:      "c99d294655d3783f0d8985346023d428880ad3646a20cb91ccdb16df9c705770",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
+			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight,
+				[32]byte{}, 0, [][]byte{}),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 1,
