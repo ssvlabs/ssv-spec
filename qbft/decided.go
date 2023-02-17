@@ -79,7 +79,7 @@ func ValidateDecided(
 		return errors.Wrap(err, "could not hash input data")
 	}
 	if !bytes.Equal(r[:], signedDecided.Message.Root[:]) {
-		return errors.Wrap(err, "H(data) != root")
+		return errors.New("H(data) != root")
 	}
 
 	return nil
