@@ -29,7 +29,8 @@ func F1SpeedupPrevPrepared() *tests.MsgProcessingSpecTest {
 		PostRoot:      "11d51b0be234088820b2417c997c96647d98f00a24e2b5ddc38a75660e526f26",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
+			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight,
+				[32]byte{}, 0, [][]byte{}),
 		},
 	}
 }

@@ -24,7 +24,8 @@ func NotProposer() *tests.MsgProcessingSpecTest {
 		PostRoot:      "6d37a7e47f5e4fa3cc2416c52cb894863f6ffbcae7ac77c7c232e9131f9641de",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.Shares[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight),
+			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight,
+				[32]byte{}, 0, [][]byte{}),
 		},
 	}
 }
