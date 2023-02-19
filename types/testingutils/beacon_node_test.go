@@ -6,7 +6,7 @@ import (
 )
 
 func TestBeaconBlockRoot(t *testing.T) {
-	r1, _ := TestingBeaconBlock.HashTreeRoot()
-	r2, _ := TestingBlindedBeaconBlock.HashTreeRoot()
+	r1, _ := TestingBellatrixBeaconBlock.HashTreeRoot()
+	r2, _ := TestingBellatrixBlindedBeaconBlock.HashTreeRoot()
 	require.EqualValues(t, r1, r2)
 }

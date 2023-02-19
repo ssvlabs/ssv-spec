@@ -253,7 +253,7 @@ func (ci *ConsensusData) GetVersionedBlindedBlock(sig phase0.BLSSignature) (*api
 	case spec.DataVersionCapella:
 		data, err := ci.GetCapellaBlindedBlockData()
 		if err != nil {
-			return nil, errors.Wrap(err, "could not get vapella block")
+			return nil, errors.Wrap(err, "could not get capella block")
 		}
 
 		blk := &capella2.SignedBlindedBeaconBlock{

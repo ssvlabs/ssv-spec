@@ -52,14 +52,14 @@ var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 var TestProposerConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
 	Version: spec2.DataVersionBellatrix,
-	DataSSZ: TestingBeaconBlockBytes,
+	DataSSZ: TestingBellatrixBeaconBlockBytes,
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
 
 var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
 	Version: spec2.DataVersionBellatrix,
-	DataSSZ: TestingBlindedBeaconBlockBytes,
+	DataSSZ: TestingBellatrixBlindedBeaconBlockBytes,
 }
 var TestProposerBlindedBlockConsensusDataByts, _ = TestProposerBlindedBlockConsensusData.Encode()
 
@@ -284,7 +284,7 @@ var postConsensusBeaconBlockMsg = func(
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 
-	block := TestingBeaconBlock
+	block := TestingBellatrixBeaconBlock
 	if wrongRoot {
 		block = TestingWrongBeaconBlock
 	}
@@ -298,7 +298,7 @@ var postConsensusBeaconBlockMsg = func(
 	copy(blsSig[:], sig)
 
 	signed := bellatrix.SignedBeaconBlock{
-		Message:   TestingBeaconBlock,
+		Message:   TestingBellatrixBeaconBlock,
 		Signature: blsSig,
 	}
 
