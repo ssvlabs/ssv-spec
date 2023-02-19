@@ -49,7 +49,7 @@ func ValidDecided7Operators() *tests.MultiMsgProcessingSpecTest {
 				Name:                    "proposer",
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    &testingutils.TestingProposerDuty,
-				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer),
+				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 				PostDutyRunnerStateRoot: "30a5d335824253e09fae02fb11e050cd033f98f0408d32a3094870035b3288b5",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
@@ -60,7 +60,7 @@ func ValidDecided7Operators() *tests.MultiMsgProcessingSpecTest {
 				Name:                    "proposer (blinded block)",
 				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:                    &testingutils.TestingProposerDuty,
-				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer),
+				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 				PostDutyRunnerStateRoot: "6c0e91ba3b90f98ce8521749880eebee13bbe6d09f532c8a2a9e36175c3f0850",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),

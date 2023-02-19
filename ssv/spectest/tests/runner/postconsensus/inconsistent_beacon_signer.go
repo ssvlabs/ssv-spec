@@ -53,7 +53,7 @@ func InconsistentBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
 					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerConsensusData,
+					testingutils.TestProposerBellatrixConsensusData,
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
@@ -70,7 +70,7 @@ func InconsistentBeaconSigner() *tests.MultiMsgProcessingSpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
 					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerBlindedBlockConsensusData,
+					testingutils.TestProposerBellatrixBlindedBlockConsensusData,
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{

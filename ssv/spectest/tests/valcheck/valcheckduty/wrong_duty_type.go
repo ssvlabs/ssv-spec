@@ -20,21 +20,21 @@ func WrongDutyType() *valcheck.MultiSpecTest {
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestProposerBellatrixConsensusData),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
 				Name:          "sync committee",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestProposerBellatrixConsensusData),
 				ExpectedError: "duty invalid: wrong beacon role type", // it passes ConsensusData validation since  SyncCommitteeBlockRoot can't be nil, it's [32]byte
 			},
 			{
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestProposerBellatrixConsensusData),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
@@ -48,7 +48,7 @@ func WrongDutyType() *valcheck.MultiSpecTest {
 				Name:          "attester",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestProposerBellatrixConsensusData),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 		},

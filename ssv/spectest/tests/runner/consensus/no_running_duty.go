@@ -92,7 +92,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Name: "proposer",
 				Runner: startInstance(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestProposerConsensusDataByts,
+					testingutils.TestProposerConsensusDataByts(spec.DataVersionBellatrix),
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
@@ -102,7 +102,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
 							Identifier: testingutils.ProposerMsgID,
-							Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts),
+							Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts(spec.DataVersionBellatrix)),
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "e2f2c71d4ffd08093bc57b937f5c2618973315f92835559bf3ea272a1c033517",
@@ -113,7 +113,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Name: "proposer (blinded block)",
 				Runner: startInstance(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestProposerBlindedBlockConsensusDataByts,
+					testingutils.TestProposerBlindedBlockConsensusDataByts(spec.DataVersionBellatrix),
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
@@ -123,7 +123,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
 							Identifier: testingutils.ProposerMsgID,
-							Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts),
+							Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts(spec.DataVersionBellatrix)),
 						}), nil),
 				},
 				PostDutyRunnerStateRoot: "5e982dd86d046bb26cee80362a4f7937653dae0377244bc2a4553d487942640a",

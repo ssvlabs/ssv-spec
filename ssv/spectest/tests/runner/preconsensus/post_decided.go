@@ -79,7 +79,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
 					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerConsensusData,
+					testingutils.TestProposerBellatrixConsensusData,
 					[]*types.SignedPartialSignatureMessage{
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2),
@@ -99,7 +99,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
 					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerBlindedBlockConsensusData,
+					testingutils.TestProposerBellatrixBlindedBlockConsensusData,
 					[]*types.SignedPartialSignatureMessage{
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2),

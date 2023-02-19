@@ -79,14 +79,14 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer),
+					testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 					testingutils.SSVMsgProposer(
 						testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
 							MsgType:    qbft.CommitMsgType,
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
 							Identifier: testingutils.ProposerMsgID,
-							Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts),
+							Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts(spec.DataVersionBellatrix)),
 						}), nil)),
 				PostDutyRunnerStateRoot: "6615341c37a4bc1af2bef6460a44c06870061ef8aed2c5a30a5f082d45b8dc2f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -99,14 +99,14 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer),
+					testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 					testingutils.SSVMsgProposer(
 						testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
 							MsgType:    qbft.CommitMsgType,
 							Height:     qbft.FirstHeight,
 							Round:      qbft.FirstRound,
 							Identifier: testingutils.ProposerMsgID,
-							Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts),
+							Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts(spec.DataVersionBellatrix)),
 						}), nil)),
 				PostDutyRunnerStateRoot: "d0961591aa8ea601d5adf48e6e7ddb5fcca89d8b51ce55407cfd37ccb533ca28",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

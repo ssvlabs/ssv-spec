@@ -49,19 +49,48 @@ var TestAggregatorConsensusData = &types.ConsensusData{
 }
 var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
-var TestProposerConsensusData = &types.ConsensusData{
-	Duty:    TestingProposerDuty,
+var TestProposerBellatrixConsensusData = &types.ConsensusData{
+	Duty:    *TestingProposerDuty,
 	Version: spec2.DataVersionBellatrix,
 	DataSSZ: TestingBellatrixBeaconBlockBytes,
 }
-var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
+var TestProposerCapellaConsensusData = &types.ConsensusData{
+	Duty:    *TestingProposerDuty,
+	DataSSZ: TestingCapellaBeaconBlockBytes,
+}
 
-var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
-	Duty:    TestingProposerDuty,
+var TestProposerConsensusDataByts = func(version spec2.DataVersion) []byte {
+	var res []byte
+	switch version {
+	case spec2.DataVersionBellatrix:
+		res, _ = TestProposerBellatrixConsensusData.Encode()
+	case spec2.DataVersionCapella:
+		res, _ = TestProposerCapellaConsensusData.Encode()
+	}
+	return res
+}
+
+var TestProposerBellatrixBlindedBlockConsensusData = &types.ConsensusData{
+	Duty:    *TestingProposerDuty,
 	Version: spec2.DataVersionBellatrix,
 	DataSSZ: TestingBellatrixBlindedBeaconBlockBytes,
 }
-var TestProposerBlindedBlockConsensusDataByts, _ = TestProposerBlindedBlockConsensusData.Encode()
+
+var TestProposerCapellaBlindedBlockConsensusData = &types.ConsensusData{
+	Duty:    *TestingProposerDuty,
+	DataSSZ: TestingCapellaBlindedBeaconBlockBytes,
+}
+
+var TestProposerBlindedBlockConsensusDataByts = func(v spec2.DataVersion) []byte {
+	var res []byte
+	switch v {
+	case spec2.DataVersionBellatrix:
+		res, _ = TestProposerBellatrixBlindedBlockConsensusData.Encode()
+	case spec2.DataVersionCapella:
+		res, _ = TestProposerCapellaBlindedBlockConsensusData.Encode()
+	}
+	return res
+}
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeDuty,

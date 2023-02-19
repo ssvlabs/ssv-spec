@@ -50,7 +50,7 @@ func WrongValidatorPK() *valcheck.MultiSpecTest {
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestProposerBellatrixConsensusData),
 				ExpectedError: expectedErr,
 			},
 			{

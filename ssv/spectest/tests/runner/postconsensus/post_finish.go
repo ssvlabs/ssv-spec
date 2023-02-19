@@ -53,7 +53,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Runner: finishRunner(
 					testingutils.ProposerRunner(ks),
 					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerConsensusData,
+					testingutils.TestProposerBellatrixConsensusData,
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
@@ -70,7 +70,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Runner: finishRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
 					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerBlindedBlockConsensusData,
+					testingutils.TestProposerBellatrixBlindedBlockConsensusData,
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{

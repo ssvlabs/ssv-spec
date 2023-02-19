@@ -1,6 +1,7 @@
 package consensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -49,7 +50,7 @@ func ValidDecided() *tests.MultiMsgProcessingSpecTest {
 				Name:                    "proposer",
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    &testingutils.TestingProposerDuty,
-				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer),
+				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 				PostDutyRunnerStateRoot: "67b85d530e12cbee105b5db66e13123dcff099e7a66c6e06d47475897463967f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
@@ -60,7 +61,7 @@ func ValidDecided() *tests.MultiMsgProcessingSpecTest {
 				Name:                    "proposer (blinded block)",
 				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:                    &testingutils.TestingProposerDuty,
-				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer),
+				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 				PostDutyRunnerStateRoot: "8d3e35b862b2ca0ec622a6db25db4bc8688b6bae7ea3f230d3f5670b932d2a36",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),

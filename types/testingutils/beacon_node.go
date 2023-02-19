@@ -173,8 +173,6 @@ var TestingBellatrixBlindedBeaconBlockBytes = func() []byte {
 	return ret
 }()
 
-//////////////////////
-
 var TestingCapellaBeaconBlock = &capella.BeaconBlock{
 	Slot:          12,
 	ProposerIndex: 10,
@@ -286,10 +284,38 @@ var TestingWrongBeaconBlock = func() *bellatrix.BeaconBlock {
 	return ret
 }()
 
-var TestingSignedBeaconBlock = func(ks *TestKeySet) *bellatrix.SignedBeaconBlock {
-	return &bellatrix.SignedBeaconBlock{
-		Message:   TestingBellatrixBeaconBlock,
-		Signature: signBeaconObject(TestingBellatrixBeaconBlock, types.DomainProposer, ks),
+var TestingSignedBeaconBlock = func(ks *TestKeySet, v spec2.DataVersion) ssz.HashRoot {
+	switch v {
+	case spec2.DataVersionBellatrix:
+		return &bellatrix.SignedBeaconBlock{
+			Message:   TestingBellatrixBeaconBlock,
+			Signature: signBeaconObject(TestingBellatrixBeaconBlock, types.DomainProposer, ks),
+		}
+	case spec2.DataVersionCapella:
+		return &capella.SignedBeaconBlock{
+			Message:   TestingCapellaBeaconBlock,
+			Signature: signBeaconObject(TestingCapellaBeaconBlock, types.DomainProposer, ks),
+		}
+	default:
+		return nil
+	}
+}
+
+var TestingSignedBlindedBeaconBlock = func(ks *TestKeySet, v spec2.DataVersion) ssz.HashRoot {
+	switch v {
+	case spec2.DataVersionBellatrix:
+		return &bellatrix2.SignedBlindedBeaconBlock{
+			Message:   TestingBellatrixBlindedBeaconBlock,
+			Signature: signBeaconObject(TestingBellatrixBlindedBeaconBlock, types.DomainProposer, ks),
+		}
+	case spec2.DataVersionCapella:
+		/*return &capella2.SignedBlindedBeaconBlock{ TODO go-eth2-client is not supporting ssz yet
+			Message:   TestingCapellaBlindedBeaconBlock,
+			Signature: signBeaconObject(TestingCapellaBlindedBeaconBlock, types.DomainProposer, ks),
+		}*/
+		return nil
+	default:
+		return nil
 	}
 }
 
@@ -448,7 +474,7 @@ var TestingAttesterDuty = types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-var TestingProposerDuty = types.Duty{
+var TestingProposerDuty = &types.Duty{
 	Type:                    types.BNRoleProposer,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot,

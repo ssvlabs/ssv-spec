@@ -64,7 +64,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
 					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerConsensusData,
+					testingutils.TestProposerBellatrixConsensusData,
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
@@ -77,7 +77,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "e7f81015870281deade1f08c9b4fc0a906396c58b4e6933a51cfd5615149de3f",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, spec.DataVersionBellatrix)),
 				},
 				DontStartDuty: true,
 			},
@@ -86,7 +86,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
 					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerBlindedBlockConsensusData,
+					testingutils.TestProposerBellatrixBlindedBlockConsensusData,
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
@@ -99,7 +99,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "c75fc4f697839c65065b76450cf6aa0a44fce43cdb457a1bebc5712fcb4a15a7",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, spec.DataVersionBellatrix)),
 				},
 				DontStartDuty: true,
 			},

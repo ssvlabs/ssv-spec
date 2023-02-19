@@ -2,6 +2,8 @@ package proposer
 
 import (
 	"crypto/sha256"
+
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -10,16 +12,87 @@ import (
 )
 
 // ProposeRegularBlockDecidedBlinded tests proposing a regular block but the decided block is a blinded block. Full flow
-func ProposeRegularBlockDecidedBlinded() *tests.MsgProcessingSpecTest {
+func ProposeRegularBlockDecidedBlinded() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.MsgProcessingSpecTest{
-		Name:   "propose regular decide blinded",
-		Runner: testingutils.ProposerRunner(ks),
-		Duty:   &testingutils.TestingProposerDuty,
-		Messages: []*types.SSVMessage{
-			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+	return &tests.MultiMsgProcessingSpecTest{
+		Name: "propose regular decide blinded",
+		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name:   "bellatrix",
+				Runner: testingutils.ProposerRunner(ks),
+				Duty:   testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+
+					testingutils.SSVMsgProposer(
+						testingutils.MultiSignQBFTMsg(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							&qbft.Message{
+								MsgType:    qbft.CommitMsgType,
+								Height:     qbft.FirstHeight,
+								Round:      qbft.FirstRound,
+								Identifier: testingutils.ProposerMsgID,
+								Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts(spec.DataVersionBellatrix)),
+							}), nil),
+
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+				},
+				PostDutyRunnerStateRoot: "43e1262aa8da50bd370d34b1b54a3da52bb04d84f334bf58467ae33848df754d",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, spec.DataVersionBellatrix)),
+				},
+			},
+			{
+				Name:   "capella",
+				Runner: testingutils.ProposerRunner(ks),
+				Duty:   testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+
+					testingutils.SSVMsgProposer(
+						testingutils.MultiSignQBFTMsg(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							&qbft.Message{
+								MsgType:    qbft.CommitMsgType,
+								Height:     qbft.FirstHeight,
+								Round:      qbft.FirstRound,
+								Identifier: testingutils.ProposerMsgID,
+								Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts(spec.DataVersionCapella)),
+							}), nil),
+
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+				},
+				PostDutyRunnerStateRoot: "43e1262aa8da50bd370d34b1b54a3da52bb04d84f334bf58467ae33848df754d",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, spec.DataVersionCapella)),
+				},
+			},
+			{
+				Name:   "unknown",
+				Runner: testingutils.ProposerRunner(ks),
+				Duty:   &testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 
 			testingutils.SSVMsgProposer(
 				testingutils.MultiSignQBFTMsg(
@@ -32,18 +105,31 @@ func ProposeRegularBlockDecidedBlinded() *tests.MsgProcessingSpecTest {
 						Identifier: testingutils.ProposerMsgID,
 						Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts),
 					}), nil),
+					testingutils.SSVMsgProposer(
+						testingutils.MultiSignQBFTMsg(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+							[]types.OperatorID{1, 2, 3},
+							&qbft.Message{
+								MsgType:    qbft.CommitMsgType,
+								Height:     qbft.FirstHeight,
+								Round:      qbft.FirstRound,
+								Identifier: testingutils.ProposerMsgID,
+								Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts(-1)), // mock unknown version
+							}), nil),
 
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
-		},
-		PostDutyRunnerStateRoot: "43e1262aa8da50bd370d34b1b54a3da52bb04d84f334bf58467ae33848df754d",
-		OutputMessages: []*types.SignedPartialSignatureMessage{
-			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-			testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
-		},
-		BeaconBroadcastedRoots: []string{
-			getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+				},
+				PostDutyRunnerStateRoot: "43e1262aa8da50bd370d34b1b54a3da52bb04d84f334bf58467ae33848df754d",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, -1)), // mock unknown version
+				},
+			},
 		},
 	}
 }

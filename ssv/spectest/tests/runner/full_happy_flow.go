@@ -2,6 +2,7 @@ package runner
 
 import (
 	"encoding/hex"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -117,7 +118,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, spec.DataVersionBellatrix)),
 				},
 			},
 			{
@@ -138,7 +139,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestProposerBlindedBlockConsensusDataByts(ks, spec.DataVersionBellatrix)),
 				},
 			},
 			{
