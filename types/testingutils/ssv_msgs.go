@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	spec2 "github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -50,12 +51,14 @@ var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
 var TestProposerConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
+	Version: spec2.DataVersionBellatrix,
 	DataSSZ: TestingBeaconBlockBytes,
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
 
 var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
+	Version: spec2.DataVersionBellatrix,
 	DataSSZ: TestingBlindedBeaconBlockBytes,
 }
 var TestProposerBlindedBlockConsensusDataByts, _ = TestProposerBlindedBlockConsensusData.Encode()
@@ -419,6 +422,7 @@ var randaoMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type:     types.RandaoPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 	for i := 0; i < msgCnt; i++ {
