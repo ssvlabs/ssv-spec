@@ -46,6 +46,9 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	BeaconRoleType types.BeaconRole
+
+	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
+	highestDecidedSlot spec.Slot
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
@@ -102,6 +105,9 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	if err := decidedValue.Decode(decidedMsg.FullData); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
+
+	// update the highest decided slot
+	b.highestDecidedSlot = decidedValue.Duty.Slot
 
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")

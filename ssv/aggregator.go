@@ -27,13 +27,15 @@ func NewAggregatorRunner(
 	network Network,
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
+	highestDecidedSlot phase0.Slot,
 ) Runner {
 	return &AggregatorRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType: types.BNRoleAggregator,
-			BeaconNetwork:  beaconNetwork,
-			Share:          share,
-			QBFTController: qbftController,
+			BeaconRoleType:     types.BNRoleAggregator,
+			BeaconNetwork:      beaconNetwork,
+			Share:              share,
+			QBFTController:     qbftController,
+			highestDecidedSlot: highestDecidedSlot,
 		},
 
 		beacon:   beacon,

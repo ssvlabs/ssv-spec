@@ -28,13 +28,15 @@ func NewSyncCommitteeRunner(
 	network Network,
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
+	highestDecidedSlot phase0.Slot,
 ) Runner {
 	return &SyncCommitteeRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType: types.BNRoleSyncCommittee,
-			BeaconNetwork:  beaconNetwork,
-			Share:          share,
-			QBFTController: qbftController,
+			BeaconRoleType:     types.BNRoleSyncCommittee,
+			BeaconNetwork:      beaconNetwork,
+			Share:              share,
+			QBFTController:     qbftController,
+			highestDecidedSlot: highestDecidedSlot,
 		},
 
 		beacon:   beacon,

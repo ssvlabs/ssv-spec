@@ -32,13 +32,15 @@ func NewProposerRunner(
 	network Network,
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
+	highestDecidedSlot phase0.Slot,
 ) Runner {
 	return &ProposerRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType: types.BNRoleProposer,
-			BeaconNetwork:  beaconNetwork,
-			Share:          share,
-			QBFTController: qbftController,
+			BeaconRoleType:     types.BNRoleProposer,
+			BeaconNetwork:      beaconNetwork,
+			Share:              share,
+			QBFTController:     qbftController,
+			highestDecidedSlot: highestDecidedSlot,
 		},
 
 		beacon:   beacon,
