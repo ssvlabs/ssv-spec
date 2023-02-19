@@ -180,25 +180,6 @@ func (ci *ConsensusData) DecidedBlindedBlock() bool {
 	}
 }
 
-func (ci *ConsensusData) GetBlockRoot() (ssz.HashRoot, error) {
-	switch ci.Version {
-	case spec.DataVersionBellatrix:
-		blk, err := ci.GetBellatrixBlindedBlockData()
-		if err == nil { // if no error, is blinded block
-			return blk, nil
-		}
-		return ci.GetBellatrixBlindedBlockData()
-	case spec.DataVersionCapella:
-		blk, err := ci.GetCapellaBlindedBlockData()
-		if err == nil { // if no error, is blinded block
-			return blk, nil
-		}
-		return ci.GetCapellaBlockData()
-	default:
-		return nil, errors.New("not supported version")
-	}
-}
-
 func (ci *ConsensusData) GetVersionedBlock(sig phase0.BLSSignature) (*spec.VersionedSignedBeaconBlock, error) {
 	switch ci.Version {
 	case spec.DataVersionBellatrix:
