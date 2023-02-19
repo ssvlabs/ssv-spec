@@ -205,6 +205,7 @@ var postConsensusAttestationMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
+		Slot: TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed,
@@ -231,6 +232,7 @@ var PostConsensusProposerTooManyRootsMsg = func(sk *bls.SecretKey, id types.Oper
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: ret.Message.Messages,
 	}
 
@@ -299,6 +301,7 @@ var postConsensusBeaconBlockMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
+		Slot: TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed.Signature[:],
@@ -323,6 +326,7 @@ var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.Ope
 
 	msg := types.PartialSignatureMessages{
 		Type: types.RandaoPartialSig,
+		Slot: TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed[:],
@@ -380,6 +384,7 @@ var PreConsensusRandaoDifferentSignerMsg = func(
 
 	msg := types.PartialSignatureMessages{
 		Type: types.RandaoPartialSig,
+		Slot: TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed[:],
@@ -493,6 +498,7 @@ var selectionProofMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type:     types.SelectionProofPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: _msgs,
 	}
 	msgSig, _ := signer.SignRoot(msgs, types.PartialSignatureType, sk.GetPublicKey().Serialize())
@@ -541,6 +547,7 @@ var validatorRegistrationMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type:     types.ValidatorRegistrationPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
@@ -641,6 +648,7 @@ var postConsensusAggregatorMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
+		Slot: TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed,
@@ -726,6 +734,7 @@ var postConsensusSyncCommitteeMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
+		Slot: TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed,
@@ -837,6 +846,7 @@ var contributionProofMsg = func(
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,
+		Slot:     TestingDutySlot,
 		Messages: msgs,
 	}
 
@@ -946,6 +956,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: msgs,
 	}
 

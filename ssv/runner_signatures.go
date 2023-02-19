@@ -45,12 +45,16 @@ func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSigna
 	}, nil
 }
 
-func (b *BaseRunner) validatePartialSigMsg(
+func (b *BaseRunner) validatePartialSigMsgForSlot(
 	signedMsg *types.SignedPartialSignatureMessage,
 	slot spec.Slot,
 ) error {
 	if err := signedMsg.Validate(); err != nil {
 		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
+	}
+
+	if signedMsg.Message.Slot != slot {
+		return errors.New("invalid partial sig slot")
 	}
 
 	if err := signedMsg.GetSignature().VerifyByOperators(signedMsg, b.Share.DomainType, types.PartialSignatureType, b.Share.Committee); err != nil {
