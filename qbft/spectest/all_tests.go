@@ -143,7 +143,6 @@ var AllTests = []SpecTest{
 	//
 	//messages.RoundChangeDataInvalidJustifications(),
 	//messages.RoundChangeDataInvalidPreparedRound(),
-	//messages.RoundChangeDataInvalidPreparedValue(),
 	//messages.RoundChangePrePreparedJustifications(),
 	//messages.RoundChangeNotPreparedJustifications(),
 	//messages.CommitDataEncoding(),
