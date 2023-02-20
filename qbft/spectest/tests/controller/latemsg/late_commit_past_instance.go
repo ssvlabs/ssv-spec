@@ -33,7 +33,7 @@ func LateCommitPastInstance() *tests.ControllerSpecTest {
 					[]types.OperatorID{1, 2, 3},
 					height,
 				),
-				DecidedVal: []byte{1, 2, 3, 4},
+				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 			},
 			ControllerPostRoot: postRoot,

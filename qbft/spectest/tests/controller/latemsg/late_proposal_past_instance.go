@@ -28,7 +28,7 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
-				DecidedVal: []byte{1, 2, 3, 4},
+				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
