@@ -3,13 +3,16 @@ package processmsg
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // InvalidIdentifier tests a process msg with the wrong identifier
 func InvalidIdentifier() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.TestingProposalMessage(ks.Shares[1], 1)
+
+	invalidPK := make([]byte, 32)
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, invalidPK, types.BNRoleAttester)
 
 	return &tests.ControllerSpecTest{
 		Name: "invalid identifier",
@@ -17,12 +20,18 @@ func InvalidIdentifier() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					msg,
+					testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
+						MsgType:    qbft.ProposalMsgType,
+						Height:     qbft.FirstHeight,
+						Round:      qbft.FirstRound,
+						Identifier: identifier[:],
+						Root:       testingutils.TestingQBFTRootData,
+					}),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: nil,
 				},
-				ControllerPostRoot: "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "invalid msg: message doesn't belong to Identifier",
