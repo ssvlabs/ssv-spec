@@ -84,7 +84,6 @@ var AllTests = []SpecTest{
 	//decided.NoQuorum(),
 	//decided.DuplicateMsg(),
 	//decided.DuplicateSigners(),
-	//decided.ImparsableData(),
 	//decided.Invalid(),
 	////decided.InvalidFullData(), // TODO: implement
 	//decided.InvalidValCheckData(),
@@ -193,7 +192,6 @@ var AllTests = []SpecTest{
 	//proposal.FirstRoundJustification(),
 	//proposal.FutureRoundPrevNotPrepared(),
 	//proposal.FutureRound(),
-	//proposal.ImparsableProposalData(),
 	//proposal.InvalidRoundChangeJustificationPrepared(),
 	//proposal.InvalidRoundChangeJustification(),
 	//proposal.PreparedPreviouslyNoRCJustificationQuorum(),
@@ -219,7 +217,6 @@ var AllTests = []SpecTest{
 	//
 	//prepare.DuplicateMsg(),
 	//prepare.HappyFlow(),
-	//prepare.ImparsableProposalData(),
 	//prepare.InvalidPrepareData(),
 	//prepare.MultiSigner(),
 	//prepare.NoPreviousProposal(),
@@ -274,7 +271,6 @@ var AllTests = []SpecTest{
 	//roundchange.DuplicateMsgQuorum(),
 	//roundchange.DuplicateMsgQuorumPreparedRCFirst(),
 	//roundchange.DuplicateMsg(),
-	//roundchange.ImparsableRoundChangeData(),
 	//roundchange.NotProposer(),
 	//roundchange.ValidJustification(),
 	//roundchange.F1DuplicateSigner(),
