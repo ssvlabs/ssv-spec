@@ -244,7 +244,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 		}
 
 		if !bytes.Equal(r[:], signedMsg.Message.Root[:]) {
-			return errors.Wrap(err, "H(data) != root")
+			return errors.New("H(data) != root")
 		}
 
 		if !HasQuorum(state.Share, prepareMsgs) {
