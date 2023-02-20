@@ -143,7 +143,6 @@ var AllTests = []SpecTest{
 	//
 	//messages.RoundChangeDataInvalidJustifications(),
 	//messages.RoundChangeDataInvalidPreparedRound(),
-	//messages.RoundChangeDataInvalidPreparedValue(),
 	//messages.RoundChangePrePreparedJustifications(),
 	//messages.RoundChangeNotPreparedJustifications(),
 	//messages.CommitDataEncoding(),
@@ -204,7 +203,6 @@ var AllTests = []SpecTest{
 	//proposal.DuplicateRCMsg(),
 	//proposal.InvalidPrepareJustificationValue(),
 	//proposal.InvalidPrepareJustificationRound(),
-	//proposal.InvalidProposalData(),
 	//proposal.InvalidValueCheck(), // TODO: implement
 	//proposal.MultiSigner(),
 	//proposal.PostDecided(),
