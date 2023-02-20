@@ -107,19 +107,15 @@ var AllTests = []SpecTest{
 	//
 	//latemsg.LateCommit(),
 	//latemsg.LateCommitPastRound(),
-	//latemsg.LateCommitNoInstance(),
-	//latemsg.LateCommitPastInstance(), // TODO: fix panic
+	//latemsg.LateCommitPastInstance(),
 	//latemsg.LatePrepare(),
-	//latemsg.LatePrepareNoInstance(),
-	//latemsg.LatePreparePastInstance(), // TODO: fix panic
+	//latemsg.LatePreparePastInstance(),
 	//latemsg.LatePreparePastRound(),
 	//latemsg.LateProposal(),
-	//latemsg.LateProposalNoInstance(),
-	////latemsg.LateProposalPastInstance(), // TODO: fix panic
+	//latemsg.LateProposalPastInstance(),
 	//latemsg.LateProposalPastRound(),
 	//latemsg.LateRoundChange(),
-	//latemsg.LateRoundChangeNoInstance(),
-	////latemsg.LateRoundChangePastInstance(), // TODO: fix panic
+	//latemsg.LateRoundChangePastInstance(),
 	//latemsg.LateRoundChangePastRound(),
 	//latemsg.FullFlowAfterDecided(),
 	//
