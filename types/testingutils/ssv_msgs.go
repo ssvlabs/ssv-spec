@@ -56,6 +56,20 @@ var TestProposerConsensusData = &types.ConsensusData{
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
 
+var TestProposerWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i+1], i+1))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       TestingProposerDuty,
+		Version:                    spec2.DataVersionBellatrix,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingBeaconBlockBytes,
+	}
+}
+
 var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
 	Version: spec2.DataVersionBellatrix,

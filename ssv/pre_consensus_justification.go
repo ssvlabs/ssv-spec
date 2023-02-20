@@ -64,26 +64,30 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 // processPreConsensusJustification processes pre-consensus justification
 // highestDecidedDutySlot is the highest decided duty slot known
 // is the qbft message carrying  the pre-consensus justification
+/** Flow:
+1) needs to process justifications
+2) validate data
+3) validate message
+	3.1) validate consensus data
+	3.2) validate each signed msg
+	3.3) validate quorum for justifications
+	3.4) validate unique signers
+	3.5) validate duty.slot == message slot
+	3.6) validate message roots equal
+	3.7) validate sigs
+4) if cd.Duty.Slot > highestDecidedDutySlot return nil
+5) if no running instance, run instance with consensus data duty
+6) add pre-consensus sigs to container
+7) decided on duty
+*/
 func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDecidedDutySlot phase0.Slot, msg *qbft.SignedMessage) error {
-	// TODO should validate qbft message?
-	/**
-	0) needs to process justifications
-	1) validate message
-		1.1) validate consensus data
-		1.2) validate each signed msg
-		1.3) validate quorum for justifications
-		1.4) validate unique signers
-		1.5) validate duty.slot == message slot
-		1.6) validate message roots equal
-		1.7) validate sigs
-	2) if cd.Duty.Slot > highestDecidedDutySlot return nil
-	3) if no running instance, run instance with consensus data duty
-	4) add pre-consensus sigs to container
-	5) decided on duty
-	*/
-
 	if !b.shouldProcessingJustificationsForHeight(msg) {
 		return nil
+	}
+
+	// validate data
+	if err := runner.GetValCheckF()(msg.FullData); err != nil {
+		return err
 	}
 
 	cd := &types.ConsensusData{}
@@ -99,9 +103,27 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 		return err
 	}
 
+	// if no duty is running start one
 	if !b.hasRunningDuty() {
-		b.setupForNewDuty(&cd.Duty)
+		b.baseSetupForNewDuty(&cd.Duty)
 	}
 
-	return nil
+	// add pre-consensus sigs to state container
+	var r [][32]byte
+	for _, signedMsg := range cd.PreConsensusJustifications {
+		quorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PreConsensusContainer)
+		if err != nil {
+			return errors.Wrap(err, "invalid partial sig processing")
+		}
+
+		if quorum {
+			r = roots
+			break
+		}
+	}
+	if len(r) == 0 {
+		return errors.New("invalid pre-consensus justification quorum")
+	}
+
+	return b.decide(runner, cd)
 }

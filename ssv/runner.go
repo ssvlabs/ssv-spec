@@ -51,12 +51,17 @@ type BaseRunner struct {
 	highestDecidedSlot spec.Slot
 }
 
+// setupForNewDuty is sets the runner for a new duty
+func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
+	b.State = NewRunnerState(b.Share.Quorum, duty)
+}
+
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
 func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 	if err := b.canStartNewDuty(); err != nil {
 		return err
 	}
-	b.State = NewRunnerState(b.Share.Quorum, duty)
+	b.baseSetupForNewDuty(duty)
 	return runner.executeDuty(duty)
 }
 
