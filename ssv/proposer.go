@@ -122,7 +122,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 
 	// specific duty sig
-	blkToSign, err := getBlockRoot(decidedValue)
+	blkToSign, _, err := GetBlockRoot(decidedValue)
 	if err != nil {
 		return errors.Wrap(err, "could not get block")
 	}
@@ -210,7 +210,7 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	data, err := getBlockRoot(r.GetState().DecidedValue)
+	data, _, err := GetBlockRoot(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block")
 	}
@@ -262,23 +262,36 @@ func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 	return nil
 }
 
-func getBlockRoot(ci *types.ConsensusData) (ssz.HashRoot, error) {
+func GetBlockRoot(ci *types.ConsensusData) (ssz.HashRoot, bool, error) {
+	var err1, err2 error
+	var r ssz.HashRoot
+	var blinded bool
 	switch ci.Version {
 	case spec.DataVersionBellatrix:
-		blk, err := ci.GetBellatrixBlindedBlockData()
-		if err == nil { // if no error, is blinded block
-			return blk, nil
+		bellatrixBlindedBlk, err2 := ci.GetBellatrixBlindedBlockData()
+		if err2 == nil { // if no error, is blinded block
+			r, blinded = bellatrixBlindedBlk, true
+		} else {
+			r, err1 = ci.GetBellatrixBlockData()
 		}
-		return ci.GetBellatrixBlindedBlockData()
 	case spec.DataVersionCapella:
-		blk, err := ci.GetCapellaBlindedBlockData()
-		if err == nil { // if no error, is blinded block
-			return blk, nil
+		capellaBlindedBlockData, err2 := ci.GetCapellaBlindedBlockData()
+		if err2 == nil { // if no error, is blinded block
+			r, blinded = capellaBlindedBlockData, true
+		} else {
+			r, err1 = ci.GetCapellaBlockData()
 		}
-		return ci.GetCapellaBlockData()
 	default:
-		return nil, errors.New("not supported version")
+		return nil, false, errors.New("not supported version")
 	}
+
+	if err1 != nil && err2 != nil {
+		return nil, false, err1
+	}
+	if err1 == nil && err2 == nil {
+		return nil, false, errors.New("no beacon data")
+	}
+	return r, blinded, err1
 }
 
 func (r *ProposerRunner) GetBaseRunner() *BaseRunner {

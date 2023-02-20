@@ -9,6 +9,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/ssv"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 )
@@ -121,24 +122,8 @@ func (cid *ConsensusData) Validate() error {
 			return err
 		}
 	case BNRoleProposer:
-		var err1, err2 error
-		switch cid.Version {
-		case spec.DataVersionBellatrix:
-			_, err1 = cid.GetBellatrixBlockData()
-			_, err2 = cid.GetBellatrixBlindedBlockData()
-		case spec.DataVersionCapella:
-			_, err1 = cid.GetCapellaBlockData()
-			_, err2 = cid.GetCapellaBlindedBlockData()
-		default:
-			return errors.New("invalid block data")
-		}
-
-		if err1 != nil && err2 != nil {
-			return err1
-		}
-		if err1 == nil && err2 == nil {
-			return errors.New("no beacon data")
-		}
+		_, _, err := ssv.GetBlockRoot(cid)
+		return err
 	case BNRoleSyncCommittee:
 		return nil
 	case BNRoleSyncCommitteeContribution:
@@ -168,16 +153,8 @@ func (ci *ConsensusData) GetBellatrixBlockData() (*bellatrix.BeaconBlock, error)
 // DecidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (ci *ConsensusData) DecidedBlindedBlock() bool {
-	switch ci.Version {
-	case spec.DataVersionBellatrix:
-		_, err := ci.GetBellatrixBlindedBlockData()
-		return err == nil
-	case spec.DataVersionCapella:
-		_, err := ci.GetCapellaBlindedBlockData()
-		return err == nil
-	default:
-		return false
-	}
+	_, blinded, _ := ssv.GetBlockRoot(ci)
+	return blinded
 }
 
 func (ci *ConsensusData) GetVersionedBlock(sig phase0.BLSSignature) (*spec.VersionedSignedBeaconBlock, error) {
