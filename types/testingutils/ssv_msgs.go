@@ -976,10 +976,6 @@ var postConsensusSyncCommitteeContributionMsg = func(
 // otherwise we get panic from bls:
 // github.com/herumi/bls-eth-go-binary/bls.(*Sign).VerifyByte:738
 func ensureRoot(root [32]byte) [32]byte {
-	n := len(root)
-	if n == 0 {
-		n = 1
-	}
 	tmp := [32]byte{}
 	copy(tmp[:], root[:])
 	return tmp
