@@ -30,6 +30,7 @@ func ProposeRegularBlockDecidedBlinded() *tests.MultiMsgProcessingSpecTest {
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							testingutils.TestProposerConsensusDataByts(spec.DataVersionBellatrix),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,
@@ -64,6 +65,7 @@ func ProposeRegularBlockDecidedBlinded() *tests.MultiMsgProcessingSpecTest {
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							testingutils.TestProposerConsensusDataByts(spec.DataVersionCapella),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,
@@ -88,33 +90,23 @@ func ProposeRegularBlockDecidedBlinded() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "unknown",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 
-			testingutils.SSVMsgProposer(
-				testingutils.MultiSignQBFTMsg(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: testingutils.ProposerMsgID,
-						Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts),
-					}), nil),
 					testingutils.SSVMsgProposer(
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							testingutils.TestProposerConsensusDataByts(spec.DataVersionPhase0),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.ProposerMsgID,
-								Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts(-1)), // mock unknown version
+								Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts(spec.DataVersionPhase0)), // mock not supported version
 							}), nil),
 
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
@@ -127,8 +119,9 @@ func ProposeRegularBlockDecidedBlinded() *tests.MultiMsgProcessingSpecTest {
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, -1)), // mock unknown version
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, spec.DataVersionPhase0)), //  mock not supported version
 				},
+				ExpectedError: "no decided value",
 			},
 		},
 	}

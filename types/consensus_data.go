@@ -9,7 +9,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/ssv"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 )
@@ -122,7 +121,7 @@ func (cid *ConsensusData) Validate() error {
 			return err
 		}
 	case BNRoleProposer:
-		_, _, err := ssv.GetBlockRoot(cid)
+		_, _, err := cid.GetBlockRoot()
 		return err
 	case BNRoleSyncCommittee:
 		return nil
@@ -150,10 +149,50 @@ func (ci *ConsensusData) GetBellatrixBlockData() (*bellatrix.BeaconBlock, error)
 	return ret, nil
 }
 
+func (ci *ConsensusData) GetBlockRoot() (ssz.HashRoot, bool, error) {
+	validate := func(err1 error, err2 error) error {
+		if err1 != nil && err2 != nil {
+			return err1
+		}
+		if err1 == nil && err2 == nil {
+			return errors.New("no beacon data")
+		}
+		return nil
+	}
+
+	switch ci.Version {
+	case spec.DataVersionBellatrix:
+		bellatrixBlk, err1 := ci.GetBellatrixBlockData()
+		bellatrixBlindedBlk, err2 := ci.GetBellatrixBlindedBlockData()
+		if err := validate(err1, err2); err != nil {
+			return nil, false, err
+		}
+		if err2 == nil { // if no error, is blinded block
+			return bellatrixBlindedBlk, true, err2
+		} else {
+			return bellatrixBlk, false, err1
+		}
+
+	case spec.DataVersionCapella:
+		capellaBlockData, err1 := ci.GetCapellaBlockData()
+		capellaBlindedBlockData, err2 := ci.GetCapellaBlindedBlockData()
+		if err := validate(err1, err2); err != nil {
+			return nil, false, err
+		}
+		if err2 == nil { // if no error, is blinded block
+			return capellaBlindedBlockData, true, err2
+		} else {
+			return capellaBlockData, false, err1
+		}
+	default:
+		return nil, false, errors.New("not supported version")
+	}
+}
+
 // DecidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (ci *ConsensusData) DecidedBlindedBlock() bool {
-	_, blinded, _ := ssv.GetBlockRoot(ci)
+	_, blinded, _ := ci.GetBlockRoot()
 	return blinded
 }
 

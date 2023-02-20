@@ -1,6 +1,7 @@
 package spectest
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"testing"
 )
 
@@ -63,8 +64,8 @@ var AllTests = []SpecTest{
 	//synccommitteeaggregator.NoneAggregatorQuorum(),
 	//synccommitteeaggregator.AllAggregatorQuorum(),
 	//
-	//proposer.ProposeBlindedBlockDecidedRegular(),
-	//proposer.ProposeRegularBlockDecidedBlinded(),
+	proposer.ProposeBlindedBlockDecidedRegular(),
+	proposer.ProposeRegularBlockDecidedBlinded(),
 	//
 	//preconsensus.NoRunningDuty(),
 	//preconsensus.TooFewRoots(),

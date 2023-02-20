@@ -67,8 +67,8 @@ func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  decideWrong(testingutils.ProposerRunner(ks), &testingutils.TestingProposerDuty),
-				Duty:                    &testingutils.TestingProposerDuty,
+				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDuty),
+				Duty:                    testingutils.TestingProposerDuty,
 				PostDutyRunnerStateRoot: "3fa6c2ff801628fd93d92d7ce7776e4c3a39825605cefe7cdbc3f00b726665cd",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty

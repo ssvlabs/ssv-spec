@@ -45,6 +45,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							consensusDataByts(types.BNRoleSyncCommitteeContribution),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,
@@ -68,6 +69,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							consensusDataByts(types.BNRoleSyncCommittee),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,
@@ -93,6 +95,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							consensusDataByts(types.BNRoleAggregator),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,
@@ -120,6 +123,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							consensusDataByts(types.BNRoleProposer),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,
@@ -147,6 +151,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							consensusDataByts(types.BNRoleProposer),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,
@@ -170,6 +175,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 						testingutils.MultiSignQBFTMsg(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
+							consensusDataByts(types.BNRoleAttester),
 							&qbft.Message{
 								MsgType:    qbft.CommitMsgType,
 								Height:     qbft.FirstHeight,

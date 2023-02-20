@@ -120,9 +120,8 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	if !decided {
 		return nil
 	}
-
 	// specific duty sig
-	blkToSign, _, err := GetBlockRoot(decidedValue)
+	blkToSign, _, err := decidedValue.GetBlockRoot()
 	if err != nil {
 		return errors.Wrap(err, "could not get block")
 	}
@@ -210,7 +209,7 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	data, _, err := GetBlockRoot(r.GetState().DecidedValue)
+	data, _, err := r.GetState().DecidedValue.GetBlockRoot()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block")
 	}
@@ -260,38 +259,6 @@ func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 		return errors.Wrap(err, "can't broadcast partial randao sig")
 	}
 	return nil
-}
-
-func GetBlockRoot(ci *types.ConsensusData) (ssz.HashRoot, bool, error) {
-	var err1, err2 error
-	var r ssz.HashRoot
-	var blinded bool
-	switch ci.Version {
-	case spec.DataVersionBellatrix:
-		bellatrixBlindedBlk, err2 := ci.GetBellatrixBlindedBlockData()
-		if err2 == nil { // if no error, is blinded block
-			r, blinded = bellatrixBlindedBlk, true
-		} else {
-			r, err1 = ci.GetBellatrixBlockData()
-		}
-	case spec.DataVersionCapella:
-		capellaBlindedBlockData, err2 := ci.GetCapellaBlindedBlockData()
-		if err2 == nil { // if no error, is blinded block
-			r, blinded = capellaBlindedBlockData, true
-		} else {
-			r, err1 = ci.GetCapellaBlockData()
-		}
-	default:
-		return nil, false, errors.New("not supported version")
-	}
-
-	if err1 != nil && err2 != nil {
-		return nil, false, err1
-	}
-	if err1 == nil && err2 == nil {
-		return nil, false, errors.New("no beacon data")
-	}
-	return r, blinded, err1
 }
 
 func (r *ProposerRunner) GetBaseRunner() *BaseRunner {

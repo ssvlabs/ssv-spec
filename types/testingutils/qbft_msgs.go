@@ -21,7 +21,7 @@ var MarshalJustifications = func(msgs []*qbft.SignedMessage) [][]byte {
 	return bytes
 }
 
-var MultiSignQBFTMsg = func(sks []*bls.SecretKey, ids []types.OperatorID, msg *qbft.Message) *qbft.SignedMessage {
+var MultiSignQBFTMsg = func(sks []*bls.SecretKey, ids []types.OperatorID, fullData []byte, msg *qbft.Message) *qbft.SignedMessage {
 	if len(sks) == 0 || len(ids) != len(sks) {
 		panic("sks != ids")
 	}
@@ -35,7 +35,7 @@ var MultiSignQBFTMsg = func(sks []*bls.SecretKey, ids []types.OperatorID, msg *q
 			}
 		}
 	}
-
+	signed.FullData = fullData
 	return signed
 }
 
@@ -64,7 +64,7 @@ var TestingMultiSignerInvalidMessage = func(sks []*bls.SecretKey, ids []types.Op
 		Identifier: []byte{}, // invalid
 		Root:       TestingQBFTRootData,
 	}
-	ret := MultiSignQBFTMsg(sks, ids, msg)
+	ret := MultiSignQBFTMsg(sks, ids, TestingQBFTFullData, msg)
 	ret.FullData = TestingQBFTFullData
 	return ret
 }
@@ -124,7 +124,7 @@ var TestingMultiSignerProposalMessageWithParams = func(sk []*bls.SecretKey, id [
 		Identifier: []byte{1, 2, 3, 4},
 		Root:       root,
 	}
-	ret := MultiSignQBFTMsg(sk, id, msg)
+	ret := MultiSignQBFTMsg(sk, id, TestingQBFTFullData, msg)
 	ret.FullData = TestingQBFTFullData
 	return ret
 }
@@ -181,7 +181,7 @@ var TestingPrepareMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids 
 		Identifier: []byte{1, 2, 3, 4},
 		Root:       root,
 	}
-	ret := MultiSignQBFTMsg(sks, ids, msg)
+	ret := MultiSignQBFTMsg(sks, ids, TestingQBFTFullData, msg)
 	ret.FullData = TestingQBFTFullData
 	return ret
 }
@@ -251,7 +251,7 @@ var TestingCommitMultiSignerMessageWithParams = func(
 		Identifier: identifier,
 		Root:       root,
 	}
-	ret := MultiSignQBFTMsg(sks, ids, msg)
+	ret := MultiSignQBFTMsg(sks, ids, TestingQBFTFullData, msg)
 	ret.FullData = fullData
 	return ret
 }
@@ -329,7 +329,7 @@ var TestingMultiSignerRoundChangeMessageWithParams = func(sk []*bls.SecretKey, i
 		Identifier: []byte{1, 2, 3, 4},
 		Root:       root,
 	}
-	ret := MultiSignQBFTMsg(sk, id, msg)
+	ret := MultiSignQBFTMsg(sk, id, TestingQBFTFullData, msg)
 	ret.FullData = TestingQBFTFullData
 	return ret
 }

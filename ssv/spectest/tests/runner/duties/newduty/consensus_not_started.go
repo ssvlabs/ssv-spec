@@ -47,8 +47,8 @@ func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  startRunner(testingutils.ProposerRunner(ks), &testingutils.TestingProposerDuty),
-				Duty:                    &testingutils.TestingProposerDuty,
+				Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDuty),
+				Duty:                    testingutils.TestingProposerDuty,
 				PostDutyRunnerStateRoot: "65cd178a17356e48a1d7de571c0d56f791f6c4654b5b03e385adea510f7c55d1",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
