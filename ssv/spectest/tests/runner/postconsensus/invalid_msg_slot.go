@@ -1,44 +1,20 @@
 package postconsensus
 
 import (
-	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	ssz "github.com/ferranbt/fastssz"
 )
 
-func getSSZRootNoError(obj ssz.HashRoot) string {
-	r, _ := obj.HashTreeRoot()
-	return hex.EncodeToString(r[:])
-}
-
-func finishRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
-	ret := decideRunner(r, duty, decidedValue)
-	ret.GetBaseRunner().State.Finished = true
-	return ret
-}
-
-func decideRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
-	r.GetBaseRunner().State = ssv.NewRunnerState(r.GetBaseRunner().Share.Quorum, duty)
-	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-		r.GetBaseRunner().QBFTController.GetConfig(),
-		r.GetBaseRunner().Share,
-		r.GetBaseRunner().QBFTController.Identifier,
-		qbft.FirstHeight)
-	r.GetBaseRunner().State.RunningInstance.State.Decided = true
-	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, _ = decidedValue.Encode()
-	r.GetBaseRunner().State.DecidedValue = decidedValue
-	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-	r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
-	return r
-}
-
-// ValidMessage tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages
-func ValidMessage() *tests.MultiMsgProcessingSpecTest {
+// InValidMessageSlot tests a valid SignedPartialSignatureMessage with an invalid msg slot
+func InValidMessageSlot() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
+
+	invalidateSlot := func(msg *types.SignedPartialSignatureMessage) *types.SignedPartialSignatureMessage {
+		msg.Message.Slot = testingutils.TestingDutySlot2
+		return msg
+	}
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus valid msg",
@@ -52,12 +28,13 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, invalidateSlot(testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 				},
-				PostDutyRunnerStateRoot: "a3b004922aac2503051a1098bb77fcf91d106db0d2127a9ee3afdbae3fbf60c0",
+				PostDutyRunnerStateRoot: "70c2a6e6f6e3d48d6eb9d2ad2664af0870048ecfcd712b37e5fbf55a31a3dd7a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
 			},
 			{
 				Name: "sync committee",
@@ -68,12 +45,13 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgSyncCommittee(nil, invalidateSlot(testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "e70e14ff694aa8c41985ebf113de5f59363264b40da2b6324dcd9f2605e1841e",
+				PostDutyRunnerStateRoot: "6e0fa05d0d4bba966ce77421503ca5993fc494749d106fde136cc3f6ca65b084",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
 			},
 			{
 				Name: "proposer",
@@ -84,12 +62,13 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, invalidateSlot(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "48f122b6807f0a9128703120ef18ca1e976fadca4f8375f04c7a68ef075b023b",
+				PostDutyRunnerStateRoot: "d1aa009a3bff79cee4ee9bedd565d0c780ebd14926a19d1f7ffa02d1efaf08ff",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -100,12 +79,13 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, invalidateSlot(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "c452b8ccb726d4c6d2ff00f4ae08ec7001b6a95a3ce2dda1d57560e4590d3436",
+				PostDutyRunnerStateRoot: "489df86e741833d579260e6fd73971d38ffcffbbe26b1dc952c8536b68146b3f",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
 			},
 			{
 				Name: "aggregator",
@@ -116,12 +96,13 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgAggregator(nil, invalidateSlot(testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "b0b3ad187064938e82373b5c15732e4522f8f51db84074f906784d98cf93d594",
+				PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
 			},
 			{
 				Name: "attester",
@@ -132,12 +113,13 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+					testingutils.SSVMsgAttester(nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
 				},
-				PostDutyRunnerStateRoot: "e76de69f02eab8d067b77f4cb1d9bf0da90cf3b744bbb91d2b3ca6077c57668f",
+				PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
 			},
 			{
 				Name:   "validator registration",
@@ -147,7 +129,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
-					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+					testingutils.SSVMsgValidatorRegistration(nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
 				},
 				PostDutyRunnerStateRoot: "f36c8b537afaba0894dbc8c87cb94466d8ac2623e9283f1c584e3d544b5f2b88",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

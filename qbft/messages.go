@@ -79,7 +79,7 @@ func unmarshalJustifications(data [][]byte) ([]*SignedMessage, error) {
 func MarshalJustifications(msgs []*SignedMessage) ([][]byte, error) {
 	ret := make([][]byte, len(msgs))
 	for i, m := range msgs {
-		d, err := m.MarshalSSZ()
+		d, err := m.WithoutFUllData().MarshalSSZ()
 		if err != nil {
 			return nil, err
 		}
@@ -269,4 +269,13 @@ func (signedMsg *SignedMessage) Validate() error {
 	}
 
 	return signedMsg.Message.Validate()
+}
+
+// WithoutFUllData returns SignedMessage without full data
+func (signedMsg *SignedMessage) WithoutFUllData() *SignedMessage {
+	return &SignedMessage{
+		Signers:   signedMsg.Signers,
+		Signature: signedMsg.Signature,
+		Message:   signedMsg.Message,
+	}
 }

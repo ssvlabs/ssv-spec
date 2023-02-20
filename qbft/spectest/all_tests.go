@@ -176,6 +176,9 @@ var AllTests = []SpecTest{
 	//messages.CommitDataInvalid(),
 	//messages.ProposalDataInvalid(),
 	//messages.SignedMessageSigner0(),
+	//messages.MarshaJustifications(),
+	//messages.MarshaJustificationsWithFullData(),
+	//messages.UnMarshaJustifications(),
 	//
 	//tests.HappyFlow(),
 	//tests.SevenOperators(),

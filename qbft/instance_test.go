@@ -1,19 +1,21 @@
-package qbft
+package qbft_test
 
 import (
+	"testing"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestInstance_Marshaling(t *testing.T) {
-	var TestingMessage = &Message{
-		MsgType:    ProposalMsgType,
-		Height:     FirstHeight,
-		Round:      FirstRound,
+	var TestingMessage = &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
 		Identifier: []byte{1, 2, 3, 4},
 		Root:       testingutils.TestingQBFTRootData,
 	}
@@ -23,7 +25,7 @@ func TestInstance_Marshaling(t *testing.T) {
 		ret.SetByCSPRNG()
 		return ret
 	}()
-	testingSignedMsg := func() *SignedMessage {
+	testingSignedMsg := func() *qbft.SignedMessage {
 		return testingutils.SignQBFTMsg(TestingSK, 1, TestingMessage)
 	}()
 	testingValidatorPK := spec.BLSPubKey{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4}
@@ -41,8 +43,8 @@ func TestInstance_Marshaling(t *testing.T) {
 			},
 		},
 	}
-	i := &Instance{
-		State: &State{
+	i := &qbft.Instance{
+		State: &qbft.State{
 			Share:                           testingShare,
 			ID:                              []byte{1, 2, 3, 4},
 			Round:                           1,
@@ -53,29 +55,29 @@ func TestInstance_Marshaling(t *testing.T) {
 			Decided:                         false,
 			DecidedValue:                    []byte{1, 2, 3, 4},
 
-			ProposeContainer: &MsgContainer{
-				Msgs: map[Round][]*SignedMessage{
+			ProposeContainer: &qbft.MsgContainer{
+				Msgs: map[qbft.Round][]*qbft.SignedMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
-			PrepareContainer: &MsgContainer{
-				Msgs: map[Round][]*SignedMessage{
+			PrepareContainer: &qbft.MsgContainer{
+				Msgs: map[qbft.Round][]*qbft.SignedMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
-			CommitContainer: &MsgContainer{
-				Msgs: map[Round][]*SignedMessage{
+			CommitContainer: &qbft.MsgContainer{
+				Msgs: map[qbft.Round][]*qbft.SignedMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
-			RoundChangeContainer: &MsgContainer{
-				Msgs: map[Round][]*SignedMessage{
+			RoundChangeContainer: &qbft.MsgContainer{
+				Msgs: map[qbft.Round][]*qbft.SignedMessage{
 					1: {
 						testingSignedMsg,
 					},
@@ -87,7 +89,7 @@ func TestInstance_Marshaling(t *testing.T) {
 	byts, err := i.Encode()
 	require.NoError(t, err)
 
-	decoded := &Instance{}
+	decoded := &qbft.Instance{}
 	require.NoError(t, decoded.Decode(byts))
 
 	bytsDecoded, err := decoded.Encode()
