@@ -22,7 +22,7 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 					),
 				},
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal:               []byte{1, 2, 3, 4},
+					DecidedVal:               testingutils.TestingQBFTFullData,
 					DecidedCnt:               1,
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
@@ -32,7 +32,7 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal:               []byte{1, 2, 3, 4},
+					DecidedVal:               testingutils.TestingQBFTFullData,
 					DecidedCnt:               0,
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
