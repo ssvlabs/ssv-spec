@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// Valid tests a valid pre-consensus justification
-func Valid() *tests.MultiMsgProcessingSpecTest {
+// ValidNoRunningDuty tests a valid pre-consensus justification for a runner that has no running duty
+func ValidNoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData) *qbft.SignedMessage {
@@ -28,7 +28,7 @@ func Valid() *tests.MultiMsgProcessingSpecTest {
 	}
 
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus justification valid",
+		Name: "pre consensus justification valid no running duty",
 		Tests: []*tests.MsgProcessingSpecTest{
 			//{
 			//	Name:   "sync committee aggregator selection proof",
@@ -61,10 +61,9 @@ func Valid() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks)), nil),
 				},
-				PostDutyRunnerStateRoot: "aa3cf0b43cea31e9c4bc13b5e4cbb150b362d15fffd5c8d5fdc4848bb4eff638",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
+				PostDutyRunnerStateRoot: "5ba69a8b0fa59b3afbc64dc85edc32e45347169fb420378a801c6ed8486340fd",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
 			},
 			//{
 			//	Name:   "randao (blinded block)",

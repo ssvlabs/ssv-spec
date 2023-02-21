@@ -11,6 +11,7 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	pre_consensus_justifications.ValidNoRunningDuty(),
 	pre_consensus_justifications.Valid(),
 
 	//runner.FullHappyFlow(),
