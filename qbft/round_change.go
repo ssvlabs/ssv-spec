@@ -199,7 +199,14 @@ func isReceivedProposalJustification(
 	return nil
 }
 
-func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, height Height, round Round) error {
+func validRoundChangeForData(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	height Height,
+	round Round,
+	fullData []byte,
+) error {
 	if signedMsg.Message.MsgType != RoundChangeMsgType {
 		return errors.New("round change msg type is wrong")
 	}
@@ -224,7 +231,7 @@ func validRoundChange(state *State, config IConfig, signedMsg *SignedMessage, he
 	// Addition to formal spec
 	// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
 	if signedMsg.Message.RoundChangePrepared() {
-		r, err := HashDataRoot(signedMsg.FullData)
+		r, err := HashDataRoot(fullData)
 		if err != nil {
 			return errors.Wrap(err, "could not hash input data")
 		}
