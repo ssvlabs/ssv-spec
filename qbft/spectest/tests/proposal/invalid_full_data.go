@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidFullData tests signed commit with an invalid full data field (H(full data) != root)
+// InvalidFullData tests signed proposal with an invalid full data field (H(full data) != root)
 func InvalidFullData() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
