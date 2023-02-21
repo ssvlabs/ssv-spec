@@ -9,8 +9,8 @@ import (
 
 // CurrentRound tests a commit msg with current round, should process
 func CurrentRound() *tests.MsgProcessingSpecTest {
-	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
+	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
 
 	msgs := []*qbft.SignedMessage{

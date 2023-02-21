@@ -105,7 +105,7 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 		// no need to fail processing instance deciding if failed to save/ broadcast
 		fmt.Printf("%s\n", err.Error())
 	}
-	return msg, nil
+	return decidedMsg, nil
 }
 
 // BaseMsgValidation returns error if msg is invalid (base validation)

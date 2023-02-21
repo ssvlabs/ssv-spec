@@ -14,7 +14,7 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.Sig
 		return errors.New("no running duty")
 	}
 
-	if err := b.validatePartialSigMsg(signedMsg, b.State.StartingDuty.Slot); err != nil {
+	if err := b.validatePartialSigMsgForSlot(signedMsg, b.State.StartingDuty.Slot); err != nil {
 		return err
 	}
 
@@ -49,7 +49,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.Si
 		return errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
-	if err := b.validatePartialSigMsg(signedMsg, decidedValue.Duty.Slot); err != nil {
+	if err := b.validatePartialSigMsgForSlot(signedMsg, decidedValue.Duty.Slot); err != nil {
 		return err
 	}
 

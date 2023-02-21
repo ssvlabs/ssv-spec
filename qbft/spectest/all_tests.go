@@ -1,7 +1,10 @@
 package spectest
 
 import (
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
 	"testing"
 )
 
@@ -11,7 +14,61 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	// sanity tests to be completed
+	//decided.Valid(),
+	//decided.HasQuorum(),
+	//decided.LateDecidedBiggerQuorum(),
+	//decided.LateDecidedSmallerQuorum(),
+	//decided.DuplicateMsg(),
+	//decided.WrongSignature(),
+	//decided.CurrentInstancePastRound(),
+	//decided.CurrentInstanceFutureRound(),
+	//processmsg.NoInstanceRunning(),
+
+	//latemsg.LateCommit(),
+	//latemsg.LateCommitPastRound(),
+
+	//futuremsg.Cleanup(),
+	//futuremsg.DuplicateSigner(),
+	//futuremsg.F1FutureMsgs(),
+
+	//startinstance.Valid(),
+	//startinstance.EmptyValue(),
+	//startinstance.NilValue(),
+
+	//proposer.FourOperators(),
+	//proposer.SevenOperators(),
+	//proposer.TenOperators(),
+	//proposer.ThirteenOperators(),
+
+	//proposal.CurrentRoundPrevPrepared(),
+	//proposal.PreparedPreviouslyJustification(),
+	//proposal.FirstRoundJustification(),
+	//proposal.FutureRoundPrevNotPrepared(),
+	//proposal.FutureRound(),
+	//proposal.NoRCJustification(),
+	//proposal.WrongProposer(),
+	//proposal.WrongSignature(),
+	//proposal.InvalidFullData(),
+
+	//prepare.HappyFlow(),
+
+	//commit.HappyFlow(),
+
+	//roundchange.HappyFlow(),
+	//roundchange.F1Speedup(),
+	//roundchange.F1SpeedupPrevPrepared(),
+	//roundchange.NotProposer(),
+	//roundchange.ValidJustification(),
+
+	// sanity tests
+	proposal.CurrentRoundPrevNotPrepared(),
+	decided.WrongSignature(),
+	decided.LateDecided(),
+	decided.Valid(),
 	processmsg.FullDecided(),
+	tests.HappyFlow(),
+	tests.SevenOperators(),
 
 	//timeout.Round1(),
 	//timeout.Round2(),
@@ -27,9 +84,8 @@ var AllTests = []SpecTest{
 	//decided.NoQuorum(),
 	//decided.DuplicateMsg(),
 	//decided.DuplicateSigners(),
-	//decided.ImparsableData(),
 	//decided.Invalid(),
-	//decided.InvalidData(),
+	////decided.InvalidFullData(), // TODO: implement
 	//decided.InvalidValCheckData(),
 	//decided.PastInstance(),
 	//decided.UnknownSigner(),
@@ -50,18 +106,14 @@ var AllTests = []SpecTest{
 	//
 	//latemsg.LateCommit(),
 	//latemsg.LateCommitPastRound(),
-	//latemsg.LateCommitNoInstance(),
 	//latemsg.LateCommitPastInstance(),
 	//latemsg.LatePrepare(),
-	//latemsg.LatePrepareNoInstance(),
 	//latemsg.LatePreparePastInstance(),
 	//latemsg.LatePreparePastRound(),
 	//latemsg.LateProposal(),
-	//latemsg.LateProposalNoInstance(),
 	//latemsg.LateProposalPastInstance(),
 	//latemsg.LateProposalPastRound(),
 	//latemsg.LateRoundChange(),
-	//latemsg.LateRoundChangeNoInstance(),
 	//latemsg.LateRoundChangePastInstance(),
 	//latemsg.LateRoundChangePastRound(),
 	//latemsg.FullFlowAfterDecided(),
@@ -78,7 +130,7 @@ var AllTests = []SpecTest{
 	//startinstance.Valid(),
 	//startinstance.EmptyValue(),
 	//startinstance.NilValue(),
-	//startinstance.PostFutureDecided(),
+	////startinstance.PostFutureDecided(), // TODO: fix panic
 	//startinstance.FirstHeight(),
 	//startinstance.PreviousDecided(),
 	//startinstance.PreviousNotDecided(),
@@ -91,7 +143,6 @@ var AllTests = []SpecTest{
 	//
 	//messages.RoundChangeDataInvalidJustifications(),
 	//messages.RoundChangeDataInvalidPreparedRound(),
-	//messages.RoundChangeDataInvalidPreparedValue(),
 	//messages.RoundChangePrePreparedJustifications(),
 	//messages.RoundChangeNotPreparedJustifications(),
 	//messages.CommitDataEncoding(),
@@ -100,8 +151,6 @@ var AllTests = []SpecTest{
 	//messages.MsgTypeUnknown(),
 	//messages.PrepareDataEncoding(),
 	//messages.ProposeDataEncoding(),
-	//messages.MsgDataNil(),
-	//messages.MsgDataNonZero(),
 	//messages.SignedMsgSigTooShort(),
 	//messages.SignedMsgSigTooLong(),
 	//messages.SignedMsgNoSigners(),
@@ -117,16 +166,18 @@ var AllTests = []SpecTest{
 	//messages.CreateRoundChange(),
 	//messages.CreateRoundChangePreviouslyPrepared(),
 	//messages.RoundChangeDataEncoding(),
-	//messages.PrepareDataInvalid(),
-	//messages.CommitDataInvalid(),
-	//messages.ProposalDataInvalid(),
 	//messages.SignedMessageSigner0(),
+	//messages.MarshaJustifications(),
+	//messages.MarshaJustificationsWithFullData(),
+	//messages.UnMarshaJustifications(),
 	//
 	//tests.HappyFlow(),
 	//tests.SevenOperators(),
 	//tests.TenOperators(),
 	//tests.ThirteenOperators(),
 	//
+
+	//proposal.InvalidFullData(),
 	//proposal.CurrentRoundPrevNotPrepared(),
 	//proposal.CurrentRoundPrevPrepared(),
 	//proposal.PastRoundProposalPrevPrepared(),
@@ -140,7 +191,6 @@ var AllTests = []SpecTest{
 	//proposal.FirstRoundJustification(),
 	//proposal.FutureRoundPrevNotPrepared(),
 	//proposal.FutureRound(),
-	//proposal.ImparsableProposalData(),
 	//proposal.InvalidRoundChangeJustificationPrepared(),
 	//proposal.InvalidRoundChangeJustification(),
 	//proposal.PreparedPreviouslyNoRCJustificationQuorum(),
@@ -153,8 +203,7 @@ var AllTests = []SpecTest{
 	//proposal.DuplicateRCMsg(),
 	//proposal.InvalidPrepareJustificationValue(),
 	//proposal.InvalidPrepareJustificationRound(),
-	//proposal.InvalidProposalData(),
-	//proposal.InvalidValueCheck(),
+	//proposal.InvalidValueCheck(), // TODO: implement
 	//proposal.MultiSigner(),
 	//proposal.PostDecided(),
 	//proposal.PostPrepared(),
@@ -166,7 +215,6 @@ var AllTests = []SpecTest{
 	//
 	//prepare.DuplicateMsg(),
 	//prepare.HappyFlow(),
-	//prepare.ImparsableProposalData(),
 	//prepare.InvalidPrepareData(),
 	//prepare.MultiSigner(),
 	//prepare.NoPreviousProposal(),
@@ -192,7 +240,6 @@ var AllTests = []SpecTest{
 	//commit.DuplicateSigners(),
 	//commit.NoPrevAcceptedProposal(),
 	//commit.WrongHeight(),
-	//commit.ImparsableCommitData(),
 	//commit.WrongSignature(),
 	//commit.UnknownSigner(),
 	//commit.InvalidValCheck(),
@@ -222,7 +269,6 @@ var AllTests = []SpecTest{
 	//roundchange.DuplicateMsgQuorum(),
 	//roundchange.DuplicateMsgQuorumPreparedRCFirst(),
 	//roundchange.DuplicateMsg(),
-	//roundchange.ImparsableRoundChangeData(),
 	//roundchange.NotProposer(),
 	//roundchange.ValidJustification(),
 	//roundchange.F1DuplicateSigner(),

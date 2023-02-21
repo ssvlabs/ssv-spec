@@ -1,6 +1,7 @@
 package proposer
 
 import (
+	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -14,7 +15,7 @@ func ProposeRegularBlockDecidedBlinded() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:   "propose regular decide blinded",
 		Runner: testingutils.ProposerRunner(ks),
-		Duty:   testingutils.TestingProposerDuty,
+		Duty:   &testingutils.TestingProposerDuty,
 		Messages: []*types.SSVMessage{
 			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -29,7 +30,7 @@ func ProposeRegularBlockDecidedBlinded() *tests.MsgProcessingSpecTest {
 						Height:     qbft.FirstHeight,
 						Round:      qbft.FirstRound,
 						Identifier: testingutils.ProposerMsgID,
-						Data:       testingutils.CommitDataBytes(testingutils.TestProposerBlindedBlockConsensusDataByts),
+						Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts),
 					}), nil),
 
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
@@ -38,8 +39,8 @@ func ProposeRegularBlockDecidedBlinded() *tests.MsgProcessingSpecTest {
 		},
 		PostDutyRunnerStateRoot: "43e1262aa8da50bd370d34b1b54a3da52bb04d84f334bf58467ae33848df754d",
 		OutputMessages: []*types.SignedPartialSignatureMessage{
-			testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
-			testingutils.PostConsensusProposerMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
+			testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
 		},
 		BeaconBroadcastedRoots: []string{
 			getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),

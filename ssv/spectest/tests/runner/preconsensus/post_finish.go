@@ -26,9 +26,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "sync committee aggregator selection proof",
 				Runner: finishRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
-					testingutils.TestingSyncCommitteeContributionDuty,
+					&testingutils.TestingSyncCommitteeContributionDuty,
 				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -41,9 +41,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "aggregator selection proof",
 				Runner: finishRunner(
 					testingutils.AggregatorRunner(ks),
-					testingutils.TestingAggregatorDuty,
+					&testingutils.TestingAggregatorDuty,
 				),
-				Duty: testingutils.TestingAggregatorDuty,
+				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -56,9 +56,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "randao",
 				Runner: finishRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDuty,
+					&testingutils.TestingProposerDuty,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -71,9 +71,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "randao (blinded block)",
 				Runner: finishRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDuty,
+					&testingutils.TestingProposerDuty,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
@@ -86,9 +86,9 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Name: "validator registration",
 				Runner: finishRunner(
 					testingutils.ValidatorRegistrationRunner(ks),
-					testingutils.TestingValidatorRegistrationDuty,
+					&testingutils.TestingValidatorRegistrationDuty,
 				),
-				Duty: testingutils.TestingValidatorRegistrationDuty,
+				Duty: &testingutils.TestingValidatorRegistrationDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},

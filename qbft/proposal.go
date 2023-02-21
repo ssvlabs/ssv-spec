@@ -126,7 +126,7 @@ func isProposalJustification(
 		// no quorum, duplicate signers,  invalid still has quorum, invalid no quorum
 		// prepared
 		for _, rc := range roundChangeMsgs {
-			if err := validRoundChange(state, config, rc, height, round); err != nil {
+			if err := validRoundChangeForData(state, config, rc, height, round, fullData); err != nil {
 				return errors.Wrap(err, "change round msg not valid")
 			}
 		}
@@ -218,11 +218,11 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		return nil, errors.Wrap(err, "could not hash input data")
 	}
 
-	roundChangesData, err := marshalJustifications(roundChanges)
+	roundChangesData, err := MarshalJustifications(roundChanges)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not marshal justifications")
 	}
-	preparesData, err := marshalJustifications(prepares)
+	preparesData, err := MarshalJustifications(prepares)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not marshal justifications")
 	}

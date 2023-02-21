@@ -1,14 +1,16 @@
-package qbft
+package qbft_test
 
 import (
+	"testing"
+
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestState_Decoding(t *testing.T) {
-	state := &State{
+	state := &qbft.State{
 		Share: &types.Share{
 			OperatorID:      1,
 			ValidatorPubKey: []byte{1, 2, 3, 4},
@@ -25,9 +27,9 @@ func TestState_Decoding(t *testing.T) {
 		Height:            2,
 		LastPreparedRound: 3,
 		LastPreparedValue: []byte{1, 2, 3, 4},
-		ProposalAcceptedForCurrentRound: &SignedMessage{
-			Message: Message{
-				MsgType:    CommitMsgType,
+		ProposalAcceptedForCurrentRound: &qbft.SignedMessage{
+			Message: qbft.Message{
+				MsgType:    qbft.CommitMsgType,
 				Height:     1,
 				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
@@ -41,7 +43,7 @@ func TestState_Decoding(t *testing.T) {
 	byts, err := state.Encode()
 	require.NoError(t, err)
 
-	decodedState := &State{}
+	decodedState := &qbft.State{}
 	require.NoError(t, decodedState.Decode(byts))
 
 	require.EqualValues(t, 1, decodedState.Share.OperatorID)
@@ -58,7 +60,7 @@ func TestState_Decoding(t *testing.T) {
 
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Signature)
 	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.Signers)
-	require.EqualValues(t, CommitMsgType, decodedState.ProposalAcceptedForCurrentRound.Message.MsgType)
+	require.EqualValues(t, qbft.CommitMsgType, decodedState.ProposalAcceptedForCurrentRound.Message.MsgType)
 	require.EqualValues(t, 1, decodedState.ProposalAcceptedForCurrentRound.Message.Height)
 	require.EqualValues(t, 2, decodedState.ProposalAcceptedForCurrentRound.Message.Round)
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Identifier)

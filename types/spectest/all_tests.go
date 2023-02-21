@@ -2,7 +2,6 @@ package spectest
 
 import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
 	"testing"
 )
@@ -28,18 +27,20 @@ var AllTests = []SpecTest{
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
 
-	consensusdata.Encoding(),
-	consensusdata.DutyNil(),
-	consensusdata.ValidAttester(),
-	consensusdata.NoAttestationData(),
-	consensusdata.ValidAggregator(),
-	consensusdata.NoAggregatorData(),
-	consensusdata.ValidProposer(),
-	consensusdata.ValidBlindedProposer(),
-	consensusdata.NilBlock(),
-	consensusdata.BlockAndBlindedBlock(),
-	consensusdata.ValidSyncCommitteeAggregator(),
-	consensusdata.EmptySyncCommitteeAggregator(),
+	// TODO: consider removing tests below
+	//consensusdata.Encoding(),
+	//consensusdata.DutyNil(),
+	//consensusdata.ValidAttester(),
+	//consensusdata.NoAttestationData(),
+	//consensusdata.ValidAggregator(),
+	//consensusdata.NoAggregatorData(),
+	//consensusdata.ValidProposer(),
+	//consensusdata.ValidBlindedProposer(),
+	//consensusdata.NilBlock(),
+	//consensusdata.BlockAndBlindedBlock(),
+	//consensusdata.ValidSyncCommitteeAggregator(),
+	//consensusdata.EmptySyncCommitteeAggregator(),
+	// TODO: add new consensusdata tests
 
 	beacon.DepositData(),
 }

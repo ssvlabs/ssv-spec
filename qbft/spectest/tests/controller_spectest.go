@@ -39,7 +39,7 @@ func (test *ControllerSpecTest) TestName() string {
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := []byte{1, 2, 3, 4}
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
@@ -90,8 +90,7 @@ func (test *ControllerSpecTest) testProcessMsg(
 		if decided != nil {
 			decidedCnt++
 
-			data, _ := decided.Message.GetCommitData()
-			require.EqualValues(t, runData.ExpectedDecidedState.DecidedVal, data.Data)
+			require.EqualValues(t, runData.ExpectedDecidedState.DecidedVal, decided.FullData)
 		}
 	}
 	require.EqualValues(t, runData.ExpectedDecidedState.DecidedCnt, decidedCnt)
@@ -109,7 +108,7 @@ func (test *ControllerSpecTest) testProcessMsg(
 func (test *ControllerSpecTest) testBroadcastedDecided(
 	t *testing.T,
 	config *qbft.Config,
-	identifier types.MessageID,
+	identifier []byte,
 	runData *RunInstanceData,
 ) {
 	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
@@ -118,7 +117,12 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 		require.Greater(t, len(broadcastedMsgs), 0)
 		found := false
 		for _, msg := range broadcastedMsgs {
-			if !bytes.Equal(identifier[:], msg.MsgID[:]) {
+
+			// a hack for testing non standard messageID identifiers since we copy them into a MessageID this fixes it
+			msgID := types.MessageID{}
+			copy(msgID[:], identifier)
+
+			if !bytes.Equal(msgID[:], msg.MsgID[:]) {
 				continue
 			}
 
@@ -130,7 +134,7 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 			r2, err := runData.ExpectedDecidedState.BroadcastedDecided.GetRoot()
 			require.NoError(t, err)
 
-			if bytes.Equal(r1, r2) &&
+			if r1 == r2 &&
 				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signers, msg1.Signers) &&
 				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signature, msg1.Signature) {
 				require.False(t, found)
@@ -145,7 +149,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	t *testing.T,
 	contr *qbft.Controller,
 	config *qbft.Config,
-	identifier types.MessageID,
+	identifier []byte,
 	runData *RunInstanceData,
 ) error {
 	err := contr.StartNewInstance(runData.InputValue)

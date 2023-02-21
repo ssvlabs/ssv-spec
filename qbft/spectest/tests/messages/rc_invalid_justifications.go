@@ -9,13 +9,10 @@ import (
 
 // RoundChangeDataInvalidJustifications tests PreparedRound != NoRound len(RoundChangeJustification) == 0
 func RoundChangeDataInvalidJustifications() *tests.MsgSpecTest {
-	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.RoundChangeMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      10,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.RoundChangePreparedDataBytes([]byte{1, 2, 3, 4}, 1, nil),
-	})
+	ks := testingutils.Testing4SharesSet()
+
+	msg := testingutils.TestingRoundChangeMessageWithParams(
+		ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData, 1, nil)
 
 	return &tests.MsgSpecTest{
 		Name: "rc prev prepared no justifications",

@@ -9,13 +9,8 @@ import (
 
 // PrepareDataEncoding tests encoding PrepareData
 func PrepareDataEncoding() *tests.MsgSpecTest {
-	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.PrepareMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-	})
+	ks := testingutils.Testing4SharesSet()
+	msg := testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1))
 
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
@@ -28,7 +23,7 @@ func PrepareDataEncoding() *tests.MsgSpecTest {
 		EncodedMessages: [][]byte{
 			b,
 		},
-		ExpectedRoots: [][]byte{
+		ExpectedRoots: [][32]byte{
 			r,
 		},
 	}

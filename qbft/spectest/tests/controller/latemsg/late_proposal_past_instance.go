@@ -10,10 +10,11 @@ import (
 
 // LateProposalPastInstance tests process proposal msg for a previously decided instance
 func LateProposalPastInstance() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	allMsgs := testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], 5, ks)
+	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, 5, ks)
+
 	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
@@ -27,18 +28,13 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
-				DecidedVal: []byte{1, 2, 3, 4},
+				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
-				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     height,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
+					height,
+				),
 			},
 
 			ControllerPostRoot: postRoot,
@@ -57,16 +53,11 @@ func LateProposalPastInstance() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.MultiSignQBFTMsg(
+					testingutils.TestingMultiSignerRoundChangeMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[1]},
 						[]types.OperatorID{1},
-						&qbft.Message{
-							MsgType:    qbft.RoundChangeMsgType,
-							Height:     2,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-						}),
+						2,
+					),
 				},
 				ControllerPostRoot: "132b23e6846c4f9732987d1a7c8cc571fcae0dc2e4fb4b8f5f3588ae3db01426",
 			},

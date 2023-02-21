@@ -29,7 +29,7 @@ func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 				},
 				ControllerPostRoot: "b024fa11d0365dd22d55e6a3852426c30b1834e941269b564faa841f30d6f18e",
 			},

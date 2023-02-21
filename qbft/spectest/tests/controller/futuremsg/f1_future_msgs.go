@@ -8,8 +8,8 @@ import (
 
 // F1FutureMsgs tests a f+1 future msgs that trigger decided sync
 func F1FutureMsgs() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 
 	return &ControllerSyncSpecTest{
 		Name: "f+1 future msgs",
@@ -19,14 +19,14 @@ func F1FutureMsgs() *ControllerSyncSpecTest {
 				Height:     5,
 				Round:      qbft.FirstRound,
 				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+				Root:       testingutils.TestingQBFTRootData,
 			}),
 			testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
 				MsgType:    qbft.PrepareMsgType,
 				Height:     10,
 				Round:      3,
 				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
+				Root:       testingutils.TestingQBFTRootData,
 			}),
 		},
 		SyncDecidedCalledCnt: 1,

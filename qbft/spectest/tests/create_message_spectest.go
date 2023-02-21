@@ -18,7 +18,7 @@ const (
 
 type CreateMsgSpecTest struct {
 	Name                                             string
-	Value                                            []byte
+	Value                                            [32]byte
 	Round                                            qbft.Round
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
@@ -53,7 +53,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 
-	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r))
+	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 }
 
 func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
@@ -86,7 +86,7 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, test.PrepareJustifications)
+	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
@@ -99,7 +99,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 
 	if len(test.PrepareJustifications) > 0 {
 		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
-		state.LastPreparedValue = test.Value
+		state.LastPreparedValue = test.Value[:]
 
 		for _, msg := range test.PrepareJustifications {
 			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
@@ -109,7 +109,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 		}
 	}
 
-	return qbft.CreateRoundChange(state, config, 1, test.Value)
+	return qbft.CreateRoundChange(state, config, 1, test.Value[:])
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

@@ -10,10 +10,11 @@ import (
 
 // LateRoundChangePastInstance tests process round change msg for a previously decided instance
 func LateRoundChangePastInstance() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	allMsgs := testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], 5, ks)
+	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, 5, ks)
+
 	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
@@ -27,17 +28,12 @@ func LateRoundChangePastInstance() *tests.ControllerSpecTest {
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
-				BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     height,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
-				DecidedVal: []byte{1, 2, 3, 4},
+					height,
+				),
+				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 			},
 
@@ -57,16 +53,11 @@ func LateRoundChangePastInstance() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.MultiSignQBFTMsg(
+					testingutils.TestingMultiSignerRoundChangeMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[4]},
 						[]types.OperatorID{4},
-						&qbft.Message{
-							MsgType:    qbft.RoundChangeMsgType,
-							Height:     4,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+						4,
+					),
 				},
 				ControllerPostRoot: "d38a806fe0ca8def63b1877896348645e318b47fbdf964390046f2b13bfa14c2",
 			},

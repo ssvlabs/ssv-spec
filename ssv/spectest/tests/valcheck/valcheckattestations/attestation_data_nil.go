@@ -9,8 +9,8 @@ import (
 // AttestationDataNil tests attestation data != nil
 func AttestationDataNil() *valcheck.SpecTest {
 	consensusData := &types.ConsensusData{
-		Duty:            testingutils.TestingAttesterDuty,
-		AttestationData: nil,
+		Duty:    testingutils.TestingAttesterDuty,
+		DataSSZ: nil,
 	}
 	input, _ := consensusData.Encode()
 

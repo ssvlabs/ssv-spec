@@ -1,7 +1,6 @@
 package dutyexe
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -13,55 +12,15 @@ func WrongDutyPubKey() *tests.MsgProcessingSpecTest {
 	dr := testingutils.AttesterRunner(ks)
 
 	msgs := []*types.SSVMessage{
-		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes(testingutils.TestConsensusWrongDutyPKDataByts, nil, nil),
-		}), nil),
-		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes(testingutils.TestConsensusWrongDutyPKDataByts),
-		}), nil),
-		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[2], 2, &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes(testingutils.TestConsensusWrongDutyPKDataByts),
-		}), nil),
-		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes(testingutils.TestConsensusWrongDutyPKDataByts),
-		}), nil),
-		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes(testingutils.TestConsensusWrongDutyPKDataByts),
-		}), nil),
-		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[2], 2, &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes(testingutils.TestConsensusWrongDutyPKDataByts),
-		}), nil),
-		testingutils.SSVMsgAttester(testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.CommitDataBytes(testingutils.TestConsensusWrongDutyPKDataByts),
-		}), nil),
+		testingutils.SSVMsgAttester(testingutils.TestingProposalMessage(ks.Shares[1], 1), nil),
+
+		testingutils.SSVMsgAttester(testingutils.TestingPrepareMessage(ks.Shares[1], 1), nil),
+		testingutils.SSVMsgAttester(testingutils.TestingPrepareMessage(ks.Shares[2], 2), nil),
+		testingutils.SSVMsgAttester(testingutils.TestingPrepareMessage(ks.Shares[3], 3), nil),
+
+		testingutils.SSVMsgAttester(testingutils.TestingCommitMessage(ks.Shares[1], 1), nil),
+		testingutils.SSVMsgAttester(testingutils.TestingCommitMessage(ks.Shares[2], 2), nil),
+		testingutils.SSVMsgAttester(testingutils.TestingCommitMessage(ks.Shares[3], 3), nil),
 	}
 
 	return &tests.MsgProcessingSpecTest{

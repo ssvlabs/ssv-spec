@@ -9,13 +9,9 @@ import (
 
 // SignedMsgSigTooShort tests SignedMessage len(signature) < 96
 func SignedMsgSigTooShort() *tests.MsgSpecTest {
-	msg := testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.CommitMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
-		Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-	})
+	ks := testingutils.Testing4SharesSet()
+
+	msg := testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1))
 	msg.Signature = make([]byte, 95)
 
 	return &tests.MsgSpecTest{

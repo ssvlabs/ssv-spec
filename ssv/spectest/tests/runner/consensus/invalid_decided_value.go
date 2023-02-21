@@ -1,6 +1,7 @@
 package consensus
 
 import (
+	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -13,7 +14,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{
-			Duty: &types.Duty{
+			Duty: types.Duty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
 				Slot:                    testingutils.TestingDutySlot,
@@ -34,7 +35,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -49,7 +50,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.SyncCommitteeContributionMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "0af45421d2783454761cfe0b8a9b04cdcd6b4804f30c5006e6aac8d27c7ddf9d",
@@ -61,7 +62,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee",
 				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(
 						testingutils.MultiSignQBFTMsg(
@@ -72,7 +73,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.SyncCommitteeMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommittee)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleSyncCommittee)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "3c3604bbd9ac903fb950e876776ae8c18f85d8720580ee1bd97b381325e6279a",
@@ -82,7 +83,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   testingutils.TestingAggregatorDuty,
+				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -97,7 +98,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.AggregatorMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAggregator)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleAggregator)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "bfb64998bfc225e6de5e348ea9b593abf56f8bd288a7f57547282ee7241ff5a8",
@@ -109,7 +110,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -124,19 +125,19 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.ProposerMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "5579e26481827f402b6b7843bf4e1dd88fa7039d76743f41998377ae4b1dfa45",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
 				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
 			},
 			{
 				Name:   "proposer (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -151,19 +152,19 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.ProposerMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "06310c138a71e78915d6f3217b5a88f1ac20178154600deeb7d58fa21b4e9a93",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(testingutils.Testing4SharesSet().Shares[1], 1),
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
 				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
 			},
 			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
+				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(
 						testingutils.MultiSignQBFTMsg(
@@ -174,7 +175,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.AttesterMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAttester)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleAttester)),
 							}), nil),
 				},
 				PostDutyRunnerStateRoot: "9707c8c84cd72b655b828a2bff10726d94f328b0ef85e3d91a213384a85f8f09",

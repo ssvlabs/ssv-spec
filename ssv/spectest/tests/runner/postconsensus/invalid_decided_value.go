@@ -1,6 +1,7 @@
 package postconsensus
 
 import (
+	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -13,7 +14,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{
-			Duty: &types.Duty{
+			Duty: types.Duty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
 				Slot:                    testingutils.TestingDutySlot,
@@ -35,7 +36,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -50,7 +51,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.SyncCommitteeContributionMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleSyncCommitteeContribution)),
 							}), nil),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)), // no qbft msg to mock the missing decided value
 				},
@@ -63,7 +64,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "sync committee",
 				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(
 						testingutils.MultiSignQBFTMsg(
@@ -74,7 +75,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.SyncCommitteeMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleSyncCommittee)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleSyncCommittee)),
 							}), nil),
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
@@ -85,7 +86,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   testingutils.TestingAggregatorDuty,
+				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -100,7 +101,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.AggregatorMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAggregator)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleAggregator)),
 							}), nil),
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 				},
@@ -113,7 +114,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -128,7 +129,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.ProposerMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
@@ -141,7 +142,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "proposer (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDuty,
+				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
@@ -156,7 +157,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.ProposerMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleProposer)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
@@ -169,7 +170,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
+				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(
 						testingutils.MultiSignQBFTMsg(
@@ -180,7 +181,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Height:     qbft.FirstHeight,
 								Round:      qbft.FirstRound,
 								Identifier: testingutils.AttesterMsgID,
-								Data:       testingutils.CommitDataBytes(consensusDataByts(types.BNRoleAttester)),
+								Root:       sha256.Sum256(consensusDataByts(types.BNRoleAttester)),
 							}), nil),
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},

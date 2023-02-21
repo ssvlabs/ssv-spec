@@ -21,10 +21,10 @@ func Valid() *tests.ControllerSpecTest {
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt:               1,
-					DecidedVal:               []byte{1, 2, 3, 4},
+					DecidedVal:               testingutils.TestingQBFTFullData,
 					CalledSyncDecidedByRange: false,
 				},
-				ControllerPostRoot: "c6e9b748e73de916edf6fb3a70c228f000ba014dc0a1bc54fa387fe528172fc8",
+				ControllerPostRoot: "f552f5aedb2e0d7933e77c4297c69e761000e88f78ae02e0afd4d053847b8d5c",
 			},
 		},
 	}

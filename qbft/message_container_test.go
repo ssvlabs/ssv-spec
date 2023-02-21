@@ -1,4 +1,4 @@
-package qbft
+package qbft_test
 
 import (
 	"testing"

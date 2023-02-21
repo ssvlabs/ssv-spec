@@ -221,10 +221,14 @@ var SSVDecidingMsgs = func(consensusData *types.ConsensusData, ks *TestKeySet, r
 }
 
 var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
-	msgs := make([]*qbft.SignedMessage, 0)
-
 	r, _ := consensusData.HashTreeRoot()
 	fullData, _ := consensusData.MarshalSSZ()
+
+	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
+}
+
+var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	msgs := make([]*qbft.SignedMessage, 0)
 
 	for h := qbft.FirstHeight; h <= height; h++ {
 		// proposal
@@ -233,7 +237,7 @@ var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifi
 			Height:     h,
 			Round:      qbft.FirstRound,
 			Identifier: msgIdentifier,
-			Root:       r,
+			Root:       root,
 		})
 		s.FullData = fullData
 		msgs = append(msgs, s)
@@ -245,7 +249,7 @@ var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifi
 				Height:     h,
 				Round:      qbft.FirstRound,
 				Identifier: msgIdentifier,
-				Root:       r,
+				Root:       root,
 			}))
 		}
 		// commit
@@ -255,7 +259,7 @@ var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifi
 				Height:     h,
 				Round:      qbft.FirstRound,
 				Identifier: msgIdentifier,
-				Root:       r,
+				Root:       root,
 			}))
 		}
 	}
