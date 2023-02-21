@@ -149,6 +149,7 @@ func (ci *ConsensusData) GetBellatrixBlockData() (*bellatrix.BeaconBlock, error)
 	return ret, nil
 }
 
+// GetBlockRoot return block hashRoot base on the beacon version, if block is blinded and error
 func (ci *ConsensusData) GetBlockRoot() (ssz.HashRoot, bool, error) {
 	validate := func(err1 error, err2 error) error {
 		if err1 != nil && err2 != nil {
