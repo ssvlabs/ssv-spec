@@ -178,6 +178,27 @@ var TestingPrepareMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids 
 	ret.FullData = TestingQBFTFullData
 	return ret
 }
+var TestingPrepareMultiSignerMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
+	return TestingPrepareMultiSignerMessageWithRound(sks, ids, qbft.FirstRound)
+}
+var TestingPrepareMultiSignerMessageWithRound = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+	return TestingPrepareMultiSignerMessageWithParams(sks, ids, round, qbft.FirstHeight, TestingQBFTRootData)
+}
+var TestingPrepareMultiSignerMessageWithHeight = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+	return TestingPrepareMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, TestingQBFTRootData)
+}
+var TestingPrepareMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.PrepareMsgType,
+		Height:     height,
+		Round:      round,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       root,
+	}
+	ret := MultiSignQBFTMsg(sks, ids, msg)
+	ret.FullData = TestingQBFTFullData
+	return ret
+}
 
 /*
 *
