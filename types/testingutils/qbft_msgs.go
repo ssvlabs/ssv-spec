@@ -154,6 +154,7 @@ var TestingPrepareMessageWithParams = func(sk *bls.SecretKey, id types.OperatorI
 		Root:       root,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = TestingQBFTFullData
 	return ret
 }
 var TestingPrepareMultiSignerMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {

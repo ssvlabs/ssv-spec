@@ -130,7 +130,7 @@ var AllTests = []SpecTest{
 	//startinstance.Valid(),
 	//startinstance.EmptyValue(),
 	//startinstance.NilValue(),
-	////startinstance.PostFutureDecided(), // TODO: fix panic
+	//startinstance.PostFutureDecided(),
 	//startinstance.FirstHeight(),
 	//startinstance.PreviousDecided(),
 	//startinstance.PreviousNotDecided(),
