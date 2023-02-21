@@ -2,6 +2,7 @@ package consensus
 
 import (
 	"crypto/sha256"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -91,7 +92,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "6615341c37a4bc1af2bef6460a44c06870061ef8aed2c5a30a5f082d45b8dc2f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 			},
 			{
@@ -111,7 +112,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "d0961591aa8ea601d5adf48e6e7ddb5fcca89d8b51ce55407cfd37ccb533ca28",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 			},
 			{

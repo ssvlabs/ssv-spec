@@ -1,6 +1,7 @@
 package postconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -68,11 +69,11 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[5], 5)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[5], 5, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "e7f81015870281deade1f08c9b4fc0a906396c58b4e6933a51cfd5615149de3f",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -90,11 +91,11 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[5], 5)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[4], 4, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[5], 5, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "c75fc4f697839c65065b76450cf6aa0a44fce43cdb457a1bebc5712fcb4a15a7",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},

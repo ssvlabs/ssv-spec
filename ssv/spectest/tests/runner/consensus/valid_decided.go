@@ -54,7 +54,7 @@ func ValidDecided() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "67b85d530e12cbee105b5db66e13123dcff099e7a66c6e06d47475897463967f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 			},
 			{
@@ -65,7 +65,7 @@ func ValidDecided() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "8d3e35b862b2ca0ec622a6db25db4bc8688b6bae7ea3f230d3f5670b932d2a36",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 			},
 			{

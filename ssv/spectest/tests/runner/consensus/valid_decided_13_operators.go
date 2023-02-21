@@ -1,6 +1,7 @@
 package consensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -53,7 +54,7 @@ func ValidDecided13Operators() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "2c7903a5fe0e4297ce2cbc49b50a8b082f4ded4c409b371b606cecc46a4c9825",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 			},
 			{
@@ -64,7 +65,7 @@ func ValidDecided13Operators() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "ba67fdb66dba8aebfcf4bd18aabbfc9308599c6ae2c8d231cd0e6c829394598f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 			},
 			{

@@ -2,6 +2,7 @@ package postconsensus
 
 import (
 	"crypto/sha256"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -135,7 +136,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.ProposerMsgID,
 								Root:       sha256.Sum256(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "5579e26481827f402b6b7843bf4e1dd88fa7039d76743f41998377ae4b1dfa45",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -164,7 +165,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 								Identifier: testingutils.ProposerMsgID,
 								Root:       sha256.Sum256(consensusDataByts(types.BNRoleProposer)),
 							}), nil),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "06310c138a71e78915d6f3217b5a88f1ac20178154600deeb7d58fa21b4e9a93",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

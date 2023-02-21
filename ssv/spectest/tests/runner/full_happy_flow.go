@@ -107,15 +107,15 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 				Messages: append(
 					testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer), // consensus
 					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
 				PostDutyRunnerStateRoot: "271406f9d3e3c394fc01047dcca2b296700eff5c319b920ed3fc2c5108c938bb",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks, spec.DataVersionBellatrix)),
@@ -128,15 +128,15 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 				Messages: append(
 					testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer), // consensus
 					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
 				PostDutyRunnerStateRoot: "379a5f353fa9674c4fb537938d58544a0130573aeb1f4ee4cd72c25e88d7838b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestProposerBlindedBlockConsensusDataByts(ks, spec.DataVersionBellatrix)),

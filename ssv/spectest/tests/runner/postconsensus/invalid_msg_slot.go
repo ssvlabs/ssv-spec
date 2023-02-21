@@ -1,6 +1,7 @@
 package postconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -62,7 +63,7 @@ func InValidMessageSlot() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, invalidateSlot(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1))),
+					testingutils.SSVMsgProposer(nil, invalidateSlot(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix))),
 				},
 				PostDutyRunnerStateRoot: "d1aa009a3bff79cee4ee9bedd565d0c780ebd14926a19d1f7ffa02d1efaf08ff",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -79,7 +80,7 @@ func InValidMessageSlot() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, invalidateSlot(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1))),
+					testingutils.SSVMsgProposer(nil, invalidateSlot(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix))),
 				},
 				PostDutyRunnerStateRoot: "489df86e741833d579260e6fd73971d38ffcffbbe26b1dc952c8536b68146b3f",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},

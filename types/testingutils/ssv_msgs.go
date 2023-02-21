@@ -3,10 +3,10 @@ package testingutils
 import (
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
+	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
@@ -56,7 +56,14 @@ var TestProposerBellatrixConsensusData = &types.ConsensusData{
 }
 var TestProposerCapellaConsensusData = &types.ConsensusData{
 	Duty:    *TestingProposerDuty,
+	Version: spec2.DataVersionCapella,
 	DataSSZ: TestingCapellaBeaconBlockBytes,
+}
+
+var TestProposerPhase0ConsensusData = &types.ConsensusData{
+	Duty:    *TestingProposerDuty,
+	Version: spec2.DataVersionPhase0,
+	DataSSZ: TestingPhase0BeaconBlockBytes,
 }
 
 var TestProposerConsensusDataByts = func(version spec2.DataVersion) []byte {
@@ -66,6 +73,8 @@ var TestProposerConsensusDataByts = func(version spec2.DataVersion) []byte {
 		res, _ = TestProposerBellatrixConsensusData.Encode()
 	case spec2.DataVersionCapella:
 		res, _ = TestProposerCapellaConsensusData.Encode()
+	case spec2.DataVersionPhase0:
+		res, _ = TestProposerPhase0ConsensusData.Encode()
 	}
 	return res
 }
@@ -78,6 +87,7 @@ var TestProposerBellatrixBlindedBlockConsensusData = &types.ConsensusData{
 
 var TestProposerCapellaBlindedBlockConsensusData = &types.ConsensusData{
 	Duty:    *TestingProposerDuty,
+	Version: spec2.DataVersionCapella,
 	DataSSZ: TestingCapellaBlindedBeaconBlockBytes,
 }
 
@@ -254,12 +264,12 @@ var postConsensusAttestationMsg = func(
 	}
 }
 
-var PostConsensusProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return postConsensusBeaconBlockMsg(sk, id, false, false)
+var PostConsensusProposerMsg = func(sk *bls.SecretKey, id types.OperatorID, v spec2.DataVersion) *types.SignedPartialSignatureMessage {
+	return postConsensusBeaconBlockMsg(sk, id, v, false, false)
 }
 
 var PostConsensusProposerTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	ret := postConsensusBeaconBlockMsg(sk, id, false, false)
+	ret := postConsensusBeaconBlockMsg(sk, id, spec2.DataVersionBellatrix, false, false)
 	ret.Message.Messages = append(ret.Message.Messages, ret.Message.Messages[0])
 
 	msg := &types.PartialSignatureMessages{
@@ -291,15 +301,15 @@ var PostConsensusProposerTooFewRootsMsg = func(sk *bls.SecretKey, id types.Opera
 }
 
 var PostConsensusWrongProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return postConsensusBeaconBlockMsg(sk, id, true, false)
+	return postConsensusBeaconBlockMsg(sk, id, spec2.DataVersionBellatrix, true, false)
 }
 
 var PostConsensusWrongSigProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return postConsensusBeaconBlockMsg(sk, id, false, true)
+	return postConsensusBeaconBlockMsg(sk, id, spec2.DataVersionBellatrix, false, true)
 }
 
 var PostConsensusSigProposerWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID) *types.SignedPartialSignatureMessage {
-	ret := postConsensusBeaconBlockMsg(sk, beaconSigner, false, true)
+	ret := postConsensusBeaconBlockMsg(sk, beaconSigner, spec2.DataVersionBellatrix, false, true)
 	ret.Signer = id
 	return ret
 }
@@ -307,36 +317,40 @@ var PostConsensusSigProposerWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, b
 var postConsensusBeaconBlockMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
+	v spec2.DataVersion,
 	wrongRoot bool,
 	wrongBeaconSig bool,
 ) *types.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 
-	block := TestingBellatrixBeaconBlock
-	if wrongRoot {
-		block = TestingWrongBeaconBlock
+	var blockHashRoot ssz.HashRoot
+	switch v {
+	case spec2.DataVersionBellatrix:
+		blockHashRoot = TestingBellatrixBeaconBlock
+	case spec2.DataVersionCapella:
+		blockHashRoot = TestingCapellaBeaconBlock
+	default:
+		blockHashRoot = TestingPhase0BeaconBlock // version is not supported
+	}
+	if wrongRoot { // only support bellatrix
+		blockHashRoot = TestingWrongBeaconBlock
 	}
 
 	d, _ := beacon.DomainData(1, types.DomainProposer) // epoch doesn't matter here, hard coded
-	sig, root, _ := signer.SignBeaconObject(block, d, sk.GetPublicKey().Serialize(), types.DomainProposer)
+	sig, root, _ := signer.SignBeaconObject(blockHashRoot, d, sk.GetPublicKey().Serialize(), types.DomainProposer)
 	if wrongBeaconSig {
-		sig, root, _ = signer.SignBeaconObject(block, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainProposer)
+		sig, root, _ = signer.SignBeaconObject(blockHashRoot, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainProposer)
 	}
 	blsSig := spec.BLSSignature{}
 	copy(blsSig[:], sig)
-
-	signed := bellatrix.SignedBeaconBlock{
-		Message:   TestingBellatrixBeaconBlock,
-		Signature: blsSig,
-	}
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
 		Slot: TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{
 			{
-				PartialSignature: signed.Signature[:],
+				PartialSignature: blsSig[:],
 				SigningRoot:      root,
 				Signer:           id,
 			},

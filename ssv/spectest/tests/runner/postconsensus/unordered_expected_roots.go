@@ -1,6 +1,7 @@
 package postconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -55,7 +56,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "b579dd599c17f742b2ecbcc9e8bce52e006e033a60a363528c7fe13c8a4d7778",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -71,7 +72,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "b984ef07ccafef09393c8251838fe459c9d37d3ea6706541709a4bdc215cea20",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},

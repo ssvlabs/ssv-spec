@@ -1,6 +1,7 @@
 package postconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -45,7 +46,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "8a2416a0f62d227c0e823de5b5c54d859230376a2f7657eb1a71c859b3e2665c",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -58,7 +59,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "a0b7a94f24ef679af43f3b41eff747ede38b9de0f693f8cc0025e756e0af8a4d",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},

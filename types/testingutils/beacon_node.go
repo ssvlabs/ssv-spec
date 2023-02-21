@@ -79,6 +79,37 @@ var Transactions = func() []bellatrix.Transaction {
 	return res.Transactions
 }()
 
+var TestingPhase0BeaconBlock = &spec.BeaconBlock{
+	Slot:          12,
+	ProposerIndex: 10,
+	ParentRoot:    spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	StateRoot:     spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	Body: &spec.BeaconBlockBody{
+		RANDAOReveal: spec.BLSSignature{},
+		ETH1Data: &spec.ETH1Data{
+			DepositRoot:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+			DepositCount: 100,
+			BlockHash:    []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		},
+		Graffiti:          [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		ProposerSlashings: []*spec.ProposerSlashing{},
+		AttesterSlashings: []*spec.AttesterSlashing{},
+		Attestations: []*spec.Attestation{
+			{
+				AggregationBits: bitfield.NewBitlist(122),
+				Data:            TestingAttestationData,
+				Signature:       spec.BLSSignature{},
+			},
+		},
+		Deposits:       nil,
+		VoluntaryExits: nil,
+	},
+}
+var TestingPhase0BeaconBlockBytes = func() []byte {
+	ret, _ := TestingPhase0BeaconBlock.MarshalSSZ()
+	return ret
+}()
+
 var TestingBellatrixBeaconBlock = &bellatrix.BeaconBlock{
 	Slot:          12,
 	ProposerIndex: 10,
@@ -628,7 +659,8 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *spec.Attestation) er
 
 // GetBeaconBlock returns beacon block by the given slot and committee index
 func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec2.DataVersion, error) {
-	return TestingBellatrixBeaconBlock, spec2.DataVersionBellatrix, nil
+	return TestingBellatrixBeaconBlock, spec2.DataVersionBellatrix, nil //Need to support all versions
+	//return TestingCapellaBeaconBlock, spec2.DataVersionCapella, nil //Need to support all versions
 }
 
 // SubmitBeaconBlock submit the block to the node
