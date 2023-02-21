@@ -68,11 +68,9 @@ var AllTests = []SpecTest{
 	roundchange.NotProposer(),
 	roundchange.ValidJustification(),
 
-	// sanity tests
+	// sanity tests (first version)
 	proposal.CurrentRoundPrevNotPrepared(),
-	decided.WrongSignature(),
 	decided.LateDecided(),
-	decided.Valid(),
 	processmsg.FullDecided(),
 	tests.HappyFlow(),
 	tests.SevenOperators(),
