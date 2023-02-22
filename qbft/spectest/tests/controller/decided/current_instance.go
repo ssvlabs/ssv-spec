@@ -32,7 +32,7 @@ func CurrentInstance() *tests.ControllerSpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: "12fb900494537e891f774dacdfc1ea1ae9e11fdb099221eed157b0b517672cae",
+				ControllerPostRoot: "9a5519c1584d326e7c20cb1a824af5dc7139bac2f4d1ced2ff13b5aacfe9ab33",
 			},
 		},
 	}
