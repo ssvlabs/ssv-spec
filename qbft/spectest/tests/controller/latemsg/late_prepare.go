@@ -23,7 +23,7 @@ func LatePrepare() *tests.ControllerSpecTest {
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
