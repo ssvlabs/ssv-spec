@@ -101,7 +101,7 @@ var TestingProposalMessageWithParams = func(
 		MsgType:                  qbft.ProposalMsgType,
 		Height:                   height,
 		Round:                    round,
-		Identifier:               []byte{1, 2, 3, 4},
+		Identifier:               DefaultIdentifier,
 		Root:                     root,
 		RoundChangeJustification: roundChangeJustification,
 		PrepareJustification:     prepareJustification,
@@ -121,7 +121,7 @@ var TestingMultiSignerProposalMessageWithParams = func(sk []*bls.SecretKey, id [
 		MsgType:    qbft.ProposalMsgType,
 		Height:     height,
 		Round:      round,
-		Identifier: []byte{1, 2, 3, 4},
+		Identifier: DefaultIdentifier,
 		Root:       root,
 	}
 	ret := MultiSignQBFTMsg(sk, id, msg)
@@ -178,7 +178,7 @@ var TestingPrepareMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids 
 		MsgType:    qbft.PrepareMsgType,
 		Height:     height,
 		Round:      round,
-		Identifier: []byte{1, 2, 3, 4},
+		Identifier: DefaultIdentifier,
 		Root:       root,
 	}
 	ret := MultiSignQBFTMsg(sks, ids, msg)
@@ -280,7 +280,7 @@ var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *bls.SecretKey, i
 		MsgType:    qbft.RoundChangeMsgType,
 		Height:     height,
 		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
+		Identifier: DefaultIdentifier,
 		Root:       TestingQBFTRootData,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
@@ -300,7 +300,7 @@ var TestingRoundChangeMessageWithParams = func(
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   height,
 		Round:                    round,
-		Identifier:               []byte{1, 2, 3, 4},
+		Identifier:               DefaultIdentifier,
 		Root:                     root,
 		DataRound:                dataRound,
 		RoundChangeJustification: roundChangeJustification,
@@ -326,7 +326,7 @@ var TestingMultiSignerRoundChangeMessageWithParams = func(sk []*bls.SecretKey, i
 		MsgType:    qbft.RoundChangeMsgType,
 		Height:     height,
 		Round:      round,
-		Identifier: []byte{1, 2, 3, 4},
+		Identifier: DefaultIdentifier,
 		Root:       root,
 	}
 	ret := MultiSignQBFTMsg(sk, id, msg)
