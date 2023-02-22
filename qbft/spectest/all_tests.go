@@ -90,16 +90,16 @@ var AllTests = []SpecTest{
 	//decided.DuplicateSigners(),
 	//decided.Invalid(),
 	////decided.InvalidFullData(), // TODO: implement
-	//decided.InvalidValCheckData(), // TODO: fix
+	//decided.InvalidValCheckData(), // TODO: fix test
 	//decided.PastInstance(),
 	//decided.UnknownSigner(),
 	//decided.WrongMsgType(),
 	//decided.WrongSignature(),
 	//decided.MultiDecidedInstances(),
 	//decided.FutureInstance(),
-	//decided.CurrentInstance(), // TODO: fix
-	//decided.CurrentInstancePastRound(), // TODO: fix
-	//decided.CurrentInstanceFutureRound(), // TODO: fix
+	//decided.CurrentInstance(), // TODO: fix test
+	//decided.CurrentInstancePastRound(), // TODO: fix test
+	//decided.CurrentInstanceFutureRound(), // TODO: fix test
 	//
 	//processmsg.MsgError(),
 	//processmsg.BroadcastedDecided(),
@@ -184,7 +184,7 @@ var AllTests = []SpecTest{
 	//proposal.PreparedPreviouslyJustification(),
 	//proposal.DifferentJustifications(),
 	//proposal.JustificationsNotHeighest(),
-	//proposal.JustificationsValueNotJustified(), // TODO: fix
+	//proposal.JustificationsValueNotJustified(), // TODO: fix test
 	//proposal.DuplicateMsg(),
 	//proposal.DuplicateMsgDifferentRoot(),
 	//proposal.FirstRoundJustification(),
@@ -194,14 +194,14 @@ var AllTests = []SpecTest{
 	//proposal.InvalidRoundChangeJustification(),
 	//proposal.PreparedPreviouslyNoRCJustificationQuorum(),
 	//proposal.NoRCJustification(),
-	proposal.PreparedPreviouslyNoPrepareJustificationQuorum(), // TODO: fix
+	proposal.PreparedPreviouslyNoPrepareJustificationQuorum(), // TODO: fix test
 	//proposal.PreparedPreviouslyDuplicatePrepareMsg(),
 	//proposal.PreparedPreviouslyDuplicatePrepareQuorum(),
 	//proposal.PreparedPreviouslyDuplicateRCMsg(),
 	//proposal.PreparedPreviouslyDuplicateRCQuorum(),
 	//proposal.DuplicateRCMsg(),
-	proposal.InvalidPrepareJustificationValue(), // TODO: fix
-	proposal.InvalidPrepareJustificationRound(), // TODO: fix
+	proposal.InvalidPrepareJustificationValue(), // TODO: fix test
+	proposal.InvalidPrepareJustificationRound(), // TODO: fix test
 	//proposal.InvalidValueCheck(), // TODO: implement
 	//proposal.MultiSigner(),
 	//proposal.PostDecided(),
@@ -214,7 +214,7 @@ var AllTests = []SpecTest{
 	//
 	//prepare.DuplicateMsg(),
 	//prepare.HappyFlow(),
-	//prepare.InvalidPrepareData(), // TODO: fix
+	//prepare.InvalidPrepareData(), // TODO: fix test
 	//prepare.MultiSigner(),
 	//prepare.NoPreviousProposal(),
 	//prepare.OldRound(),
@@ -230,7 +230,7 @@ var AllTests = []SpecTest{
 	//commit.PastRound(),
 	//commit.DuplicateMsg(),
 	//commit.HappyFlow(),
-	//commit.InvalidCommitData(), // TODO: fix
+	//commit.InvalidCommitData(), // TODO: fix test
 	//commit.PostDecided(),
 	//commit.WrongData1(),
 	//commit.WrongData2(),
@@ -253,20 +253,20 @@ var AllTests = []SpecTest{
 	//roundchange.QuorumPrepared(),
 	//roundchange.PeerPrepared(),
 	//roundchange.PeerPreparedDifferentHeights(),
-	//roundchange.JustificationWrongValue(), // TODO: fix
+	//roundchange.JustificationWrongValue(), // TODO: fix test
 	//roundchange.JustificationWrongRound(),
 	//roundchange.JustificationNoQuorum(),
 	//roundchange.JustificationMultiSigners(),
 	//roundchange.JustificationInvalidSig(),
 	//roundchange.JustificationInvalidRound(),
-	//roundchange.JustificationInvalidPrepareData(), // TODO: fix
+	//roundchange.JustificationInvalidPrepareData(), // TODO: fix test
 	//roundchange.JustificationDuplicateMsg(),
-	//roundchange.InvalidRoundChangeData(), // TODO: fix
-	//roundchange.F1DifferentFutureRounds(), // TODO: fix
-	//roundchange.F1DifferentFutureRoundsNotPrepared(), // TODO: fix
+	//roundchange.InvalidRoundChangeData(), // TODO: fix test
+	//roundchange.F1DifferentFutureRounds(), // TODO: fix test
+	//roundchange.F1DifferentFutureRoundsNotPrepared(), // TODO: fix test
 	//roundchange.PastRound(),
 	//roundchange.DuplicateMsgQuorum(),
-	//roundchange.DuplicateMsgQuorumPreparedRCFirst(), // TODO: fix
+	//roundchange.DuplicateMsgQuorumPreparedRCFirst(), // TODO: fix test
 	//roundchange.DuplicateMsg(),
 	//roundchange.NotProposer(),
 	//roundchange.ValidJustification(),
@@ -275,9 +275,9 @@ var AllTests = []SpecTest{
 	//roundchange.F1Speedup(),
 	//roundchange.F1SpeedupPrevPrepared(),
 	//roundchange.AfterProposal(),
-	//roundchange.RoundChangePartialQuorum(), // TODO: fix
+	//roundchange.RoundChangePartialQuorum(), // TODO: fix test
 	//roundchange.QuorumOrder2(),
-	//roundchange.QuorumOrder1(), // TODO: fix
-	//roundchange.QuorumMsgNotPrepared(), // TODO: fix
+	//roundchange.QuorumOrder1(), // TODO: fix test
+	//roundchange.QuorumMsgNotPrepared(), // TODO: fix test
 	//roundchange.JustificationPastRound(),
 }
