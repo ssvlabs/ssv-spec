@@ -257,7 +257,6 @@ var AllTests = []SpecTest{
 	//roundchange.JustificationMultiSigners(),
 	//roundchange.JustificationInvalidSig(),
 	//roundchange.JustificationInvalidRound(),
-	//roundchange.JustificationInvalidPrepareData(), // TODO: fix test
 	//roundchange.JustificationDuplicateMsg(),
 	//roundchange.InvalidRoundChangeData(), // TODO: fix test
 	//roundchange.F1DifferentFutureRounds(), // TODO: fix test
