@@ -186,7 +186,7 @@ var AllTests = []SpecTest{
 	//proposal.JustificationsNotHeighest(),
 	//proposal.JustificationsValueNotJustified(),
 	//proposal.DuplicateMsg(),
-	//proposal.DuplicateMsgDifferentValue(),
+	//proposal.DuplicateMsgDifferentRoot(),
 	//proposal.FirstRoundJustification(),
 	//proposal.FutureRoundPrevNotPrepared(),
 	//proposal.FutureRound(),

@@ -85,7 +85,16 @@ var TestingProposalMessageWithHeight = func(sk *bls.SecretKey, id types.Operator
 	return TestingProposalMessageWithParams(sk, id, qbft.FirstRound, height, TestingQBFTRootData, nil, nil)
 }
 var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingProposalMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, DifferentRoot, nil, nil)
+	msg := &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: TestingIdentifier,
+		Root:       DifferentRoot,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = DifferentFullData
+	return ret
 }
 var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, roundChangeJustification, nil)
