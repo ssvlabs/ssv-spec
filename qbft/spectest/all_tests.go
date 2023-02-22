@@ -146,7 +146,6 @@ var AllTests = []SpecTest{
 	//proposer.ThirteenOperators(),
 	//
 	//messages.RoundChangeDataInvalidJustifications(),
-	//messages.RoundChangeDataInvalidPreparedRound(),
 	//messages.RoundChangePrePreparedJustifications(),
 	//messages.RoundChangeNotPreparedJustifications(),
 	//messages.CommitDataEncoding(),
