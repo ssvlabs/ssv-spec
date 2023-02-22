@@ -97,7 +97,7 @@ var AllTests = []SpecTest{
 	//decided.WrongSignature(),
 	//decided.MultiDecidedInstances(),
 	//decided.FutureInstance(),
-	//decided.CurrentInstance(), // TODO: fix test
+	//decided.CurrentInstance(),
 	//decided.CurrentInstancePastRound(),
 	//decided.CurrentInstanceFutureRound(),
 	//
