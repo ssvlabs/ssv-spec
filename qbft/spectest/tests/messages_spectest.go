@@ -25,7 +25,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			continue
 		}
 
-		if msg.Message.MsgType == qbft.RoundChangeMsgType && len(msg.Message.RoundChangeJustification) == 0 {
+		if msg.Message.RoundChangePrepared() && len(msg.Message.RoundChangeJustification) == 0 {
 			lastErr = errors.New("round change justification invalid")
 		}
 
