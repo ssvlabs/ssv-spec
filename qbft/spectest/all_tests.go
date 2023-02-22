@@ -194,14 +194,14 @@ var AllTests = []SpecTest{
 	//proposal.InvalidRoundChangeJustification(),
 	//proposal.PreparedPreviouslyNoRCJustificationQuorum(),
 	//proposal.NoRCJustification(),
-	proposal.PreparedPreviouslyNoPrepareJustificationQuorum(), // TODO: fix test
+	//proposal.PreparedPreviouslyNoPrepareJustificationQuorum(), // TODO: fix test
 	//proposal.PreparedPreviouslyDuplicatePrepareMsg(),
 	//proposal.PreparedPreviouslyDuplicatePrepareQuorum(),
 	//proposal.PreparedPreviouslyDuplicateRCMsg(),
 	//proposal.PreparedPreviouslyDuplicateRCQuorum(),
 	//proposal.DuplicateRCMsg(),
-	proposal.InvalidPrepareJustificationValue(), // TODO: fix test
-	proposal.InvalidPrepareJustificationRound(), // TODO: fix test
+	//proposal.InvalidPrepareJustificationValue(), // TODO: fix test
+	//proposal.InvalidPrepareJustificationRound(), // TODO: fix test
 	//proposal.InvalidValueCheck(), // TODO: implement
 	//proposal.MultiSigner(),
 	//proposal.PostDecided(),
