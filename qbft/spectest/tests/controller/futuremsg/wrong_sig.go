@@ -12,7 +12,8 @@ func WrongSig() *ControllerSyncSpecTest {
 	return &ControllerSyncSpecTest{
 		Name: "future msg wrong sig",
 		InputMessages: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 2, 3, 10, testingutils.TestingQBFTRootData),
+			testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 2, 3, 10,
+				testingutils.DefaultIdentifier, testingutils.TestingQBFTRootData),
 		},
 		SyncDecidedCalledCnt: 0,
 		ControllerPostRoot:   "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
