@@ -201,7 +201,7 @@ var AllTests = []SpecTest{
 	//proposal.PreparedPreviouslyDuplicateRCQuorum(),
 	//proposal.DuplicateRCMsg(),
 	//proposal.InvalidPrepareJustificationValue(),
-	//proposal.InvalidPrepareJustificationRound(), // TODO: fix test
+	//proposal.InvalidPrepareJustificationRound(),
 	//proposal.InvalidValueCheck(), // TODO: implement
 	//proposal.MultiSigner(),
 	//proposal.PostDecided(),

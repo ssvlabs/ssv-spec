@@ -18,9 +18,12 @@ func InvalidPrepareJustificationRound() *tests.MsgProcessingSpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
 	}
 	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+			testingutils.MarshalJustifications(prepareMsgs)),
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[2], types.OperatorID(2), 2,
+			testingutils.MarshalJustifications(prepareMsgs)),
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[3], types.OperatorID(3), 2,
+			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
@@ -31,7 +34,7 @@ func InvalidPrepareJustificationRound() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "invalid prepare justification round",
 		Pre:            pre,
-		PostRoot:       "e9a7c1b25a014f281d084637bdc50ec144f1262b5cc87eeb6b4493d27d10a69b",
+		PostRoot:       "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
