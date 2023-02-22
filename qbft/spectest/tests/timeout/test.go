@@ -2,10 +2,12 @@ package timeout
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
+	"log"
 	"testing"
 )
 
@@ -43,10 +45,14 @@ func (test *SpecTest) Run(t *testing.T) {
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 
 		for i, msg := range test.OutputMessages {
+			bytes1, _ := json.Marshal(msg)
+			log.Println("want: ", string(bytes1))
 			r1, _ := msg.GetRoot()
 
 			msg2 := &qbft.SignedMessage{}
 			require.NoError(t, msg2.Decode(broadcastedMsgs[i].Data))
+			bytes2, _ := json.Marshal(msg2)
+			log.Println("have: ", string(bytes2))
 			r2, _ := msg2.GetRoot()
 
 			require.EqualValuesf(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
