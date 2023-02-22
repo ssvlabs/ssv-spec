@@ -21,7 +21,7 @@ func NotProposer() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change justification not proposer",
 		Pre:           pre,
-		PostRoot:      "6d37a7e47f5e4fa3cc2416c52cb894863f6ffbcae7ac77c7c232e9131f9641de",
+		PostRoot:      "caadfd7b182f2f7fe27d6a7aeeedf0b3a9525d574418f38d78e90ab85cd74f34",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight,

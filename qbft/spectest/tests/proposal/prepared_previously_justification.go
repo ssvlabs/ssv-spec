@@ -19,9 +19,12 @@ func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
 	}
 	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+			testingutils.MarshalJustifications(prepareMsgs)),
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[2], types.OperatorID(2), 2,
+			testingutils.MarshalJustifications(prepareMsgs)),
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[3], types.OperatorID(3), 2,
+			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
 	msgs := []*qbft.SignedMessage{
@@ -38,7 +41,7 @@ func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "previously prepared proposal",
 		Pre:           pre,
-		PostRoot:      "146c12b2ad626200f2bb8f933ec259b92e9128a3010b6a55c8de95225199c45a",
+		PostRoot:      "c750be146fad8375d8107451eabf8458d3216afa550d4380fc476cce8077a90e",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks10.Shares[1], types.OperatorID(1)),

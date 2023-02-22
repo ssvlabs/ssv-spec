@@ -77,7 +77,7 @@ func isValidProposal(
 		return errors.Wrap(err, "could not hash input data")
 	}
 	if !bytes.Equal(signedProposal.Message.Root[:], r[:]) {
-		return errors.Wrap(err, "H(data) != root")
+		return errors.New("H(data) != root")
 	}
 
 	// get justifications

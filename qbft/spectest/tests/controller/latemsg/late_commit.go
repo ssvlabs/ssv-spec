@@ -30,7 +30,7 @@ func LateCommit() *tests.ControllerSpecTest {
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: "61a03b8249dac35278398d36018b6037a8c92868bbc60a2ba4922dffccb30c39",
+				ControllerPostRoot: "0a04b3b92d44f929df35bf88c6f4eeb91862db2af65319cd679015fc08158341",
 			},
 		},
 	}

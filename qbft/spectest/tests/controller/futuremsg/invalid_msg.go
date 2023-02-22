@@ -11,14 +11,8 @@ func InvalidMsg() *ControllerSyncSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 
-	msg := testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
-		MsgType:    qbft.PrepareMsgType,
-		Height:     10,
-		Round:      3,
-		Identifier: identifier[:],
-		Root:       testingutils.TestingQBFTRootData,
-	})
-
+	msg := testingutils.TestingPrepareMessageWithParams(
+		ks.Shares[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData)
 	msg.Signers = nil
 
 	return &ControllerSyncSpecTest{

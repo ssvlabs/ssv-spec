@@ -39,7 +39,7 @@ func HappyFlow() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change happy flow",
 		Pre:           pre,
-		PostRoot:      "7ddc968659ada6660342d019b1350abfbc4e8e50f71572fdca2b3d39ade59dc1",
+		PostRoot:      "fbd68c0d90d12a2f3994e0af51d9d9dae5afedbcfebedcdcfca6f0b6b3b4c0ad",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),

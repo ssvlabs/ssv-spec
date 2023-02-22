@@ -17,7 +17,7 @@ func InvalidPrepareJustificationValue() *tests.MsgProcessingSpecTest {
 		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
 		testingutils.TestingPrepareMessageWithParams(
 			// TODO: different value instead of wrong root
-			ks.Shares[3], types.OperatorID(3), qbft.FirstRound, qbft.FirstHeight, testingutils.WrongRoot),
+			ks.Shares[3], types.OperatorID(3), qbft.FirstRound, qbft.FirstHeight, testingutils.DefaultIdentifier, testingutils.WrongRoot),
 	}
 	rcMsgs := []*qbft.SignedMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),

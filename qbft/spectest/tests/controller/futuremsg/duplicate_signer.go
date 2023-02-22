@@ -14,45 +14,20 @@ func DuplicateSigner() *ControllerSyncSpecTest {
 	return &ControllerSyncSpecTest{
 		Name: "future msg duplicate signer",
 		InputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     5,
-				Round:      qbft.FirstRound,
-				Identifier: identifier[:],
-				Root:       testingutils.TestingQBFTRootData,
-			}),
-			testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     10,
-				Round:      3,
-				Identifier: identifier[:],
-				Root:       testingutils.TestingQBFTRootData,
-			}),
+			testingutils.TestingCommitMessageWithParams(
+				ks.Shares[4], 4, qbft.FirstRound, 5, identifier[:], testingutils.TestingQBFTRootData),
+			testingutils.TestingPrepareMessageWithParams(
+				ks.Shares[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData),
 
-			testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     6,
-				Round:      qbft.FirstRound,
-				Identifier: identifier[:],
-				Root:       testingutils.TestingQBFTRootData,
-			}),
-			testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     2,
-				Round:      qbft.FirstRound,
-				Identifier: identifier[:],
-				Root:       testingutils.TestingQBFTRootData,
-			}),
-			testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     50,
-				Round:      qbft.FirstRound,
-				Identifier: identifier[:],
-				Root:       testingutils.TestingQBFTRootData,
-			}),
+			testingutils.TestingPrepareMessageWithParams(
+				ks.Shares[4], 4, qbft.FirstRound, 6, identifier[:], testingutils.TestingQBFTRootData),
+			testingutils.TestingRoundChangeMessageWithHeightAndIdentifier(
+				ks.Shares[4], 4, 2, identifier[:]),
+			testingutils.TestingCommitMessageWithParams(
+				ks.Shares[4], 4, qbft.FirstRound, 50, identifier[:], testingutils.TestingQBFTRootData),
 		},
 		SyncDecidedCalledCnt: 1,
-		ControllerPostRoot:   "ca7eaf0f0b404b601dc8dd471924794ce32ef6bcb88721098b7b6014001754c1",
+		ControllerPostRoot:   "98c0625374dc64e6350eb704812d9222f9a6121a87c2a55a8b1a3f8790e87c77",
 		ExpectedError:        "discarded future msg",
 	}
 }

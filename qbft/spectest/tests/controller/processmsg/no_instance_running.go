@@ -31,7 +31,7 @@ func NoInstanceRunning() *tests.ControllerSpecTest {
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{0, 50},
 				},
-				ControllerPostRoot: "e73515e6ec3c6766264dd4f51c205c9aa0e0d598ee4f9c1705dd6aa74e9e96e3",
+				ControllerPostRoot: "e8da00ea07e1e5098026373c51e38a681215e12ca4bdeb1f1efbb9d4f3325a92",
 			},
 		},
 		ExpectedError: "instance not found",

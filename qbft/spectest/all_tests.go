@@ -2,9 +2,16 @@ package spectest
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/startinstance"
 	"testing"
 )
 
@@ -15,57 +22,54 @@ type SpecTest interface {
 
 var AllTests = []SpecTest{
 	// sanity tests to be completed
-	//decided.Valid(),
-	//decided.HasQuorum(),
-	//decided.LateDecidedBiggerQuorum(),
-	//decided.LateDecidedSmallerQuorum(),
-	//decided.DuplicateMsg(),
-	//decided.WrongSignature(),
-	//decided.CurrentInstancePastRound(),
-	//decided.CurrentInstanceFutureRound(),
-	//processmsg.NoInstanceRunning(),
-
-	//latemsg.LateCommit(),
-	//latemsg.LateCommitPastRound(),
-
-	//futuremsg.Cleanup(),
-	//futuremsg.DuplicateSigner(),
-	//futuremsg.F1FutureMsgs(),
-
-	//startinstance.Valid(),
-	//startinstance.EmptyValue(),
-	//startinstance.NilValue(),
-
-	//proposer.FourOperators(),
-	//proposer.SevenOperators(),
-	//proposer.TenOperators(),
-	//proposer.ThirteenOperators(),
-
-	//proposal.CurrentRoundPrevPrepared(),
-	//proposal.PreparedPreviouslyJustification(),
-	//proposal.FirstRoundJustification(),
-	//proposal.FutureRoundPrevNotPrepared(),
-	//proposal.FutureRound(),
-	//proposal.NoRCJustification(),
-	//proposal.WrongProposer(),
-	//proposal.WrongSignature(),
-	//proposal.InvalidFullData(),
-
-	//prepare.HappyFlow(),
-
-	//commit.HappyFlow(),
-
-	//roundchange.HappyFlow(),
-	//roundchange.F1Speedup(),
-	//roundchange.F1SpeedupPrevPrepared(),
-	//roundchange.NotProposer(),
-	//roundchange.ValidJustification(),
-
-	// sanity tests
-	proposal.CurrentRoundPrevNotPrepared(),
-	decided.WrongSignature(),
-	decided.LateDecided(),
 	decided.Valid(),
+	decided.HasQuorum(),
+	decided.LateDecidedBiggerQuorum(),
+	decided.LateDecidedSmallerQuorum(),
+	decided.DuplicateMsg(),
+	decided.WrongSignature(),
+	decided.CurrentInstancePastRound(),
+	decided.CurrentInstanceFutureRound(),
+	processmsg.NoInstanceRunning(),
+
+	latemsg.LateCommit(),
+	latemsg.LateCommitPastRound(),
+
+	futuremsg.Cleanup(),
+	futuremsg.DuplicateSigner(),
+	futuremsg.F1FutureMsgs(),
+
+	startinstance.Valid(),
+	startinstance.EmptyValue(),
+	startinstance.NilValue(),
+
+	proposer.FourOperators(),
+	proposer.SevenOperators(),
+	proposer.TenOperators(),
+	proposer.ThirteenOperators(),
+
+	proposal.PreparedPreviouslyJustification(),
+	proposal.FirstRoundJustification(),
+	proposal.FutureRoundPrevNotPrepared(),
+	proposal.FutureRound(),
+	proposal.NoRCJustification(),
+	proposal.WrongProposer(),
+	proposal.WrongSignature(),
+	proposal.InvalidFullData(),
+
+	prepare.HappyFlow(),
+
+	commit.HappyFlow(),
+
+	roundchange.HappyFlow(),
+	roundchange.F1Speedup(),
+	roundchange.F1SpeedupPrevPrepared(),
+	roundchange.NotProposer(),
+	roundchange.ValidJustification(),
+
+	// sanity tests (first version)
+	proposal.NotPreparedPreviouslyJustification(),
+	decided.LateDecided(),
 	processmsg.FullDecided(),
 	tests.HappyFlow(),
 	tests.SevenOperators(),
@@ -178,8 +182,6 @@ var AllTests = []SpecTest{
 	//
 
 	//proposal.InvalidFullData(),
-	//proposal.CurrentRoundPrevNotPrepared(),
-	//proposal.CurrentRoundPrevPrepared(),
 	//proposal.PastRoundProposalPrevPrepared(),
 	//proposal.NotPreparedPreviouslyJustification(),
 	//proposal.PreparedPreviouslyJustification(),
