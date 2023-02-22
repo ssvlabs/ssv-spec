@@ -137,20 +137,27 @@ var TestingPrepareMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.S
 	return TestingPrepareMessageWithRound(sk, id, qbft.FirstRound)
 }
 var TestingPrepareMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
-	return TestingPrepareMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData)
+	return TestingPrepareMessageWithParams(sk, id, round, qbft.FirstHeight, DefaultIdentifier, TestingQBFTRootData)
 }
 var TestingPrepareMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
-	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, height, TestingQBFTRootData)
+	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, height, DefaultIdentifier, TestingQBFTRootData)
 }
 var TestingPrepareMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, WrongRoot)
+	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, DefaultIdentifier, WrongRoot)
 }
-var TestingPrepareMessageWithParams = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
+var TestingPrepareMessageWithParams = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	round qbft.Round,
+	height qbft.Height,
+	identifier []byte,
+	root [32]byte,
+) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.PrepareMsgType,
 		Height:     height,
 		Round:      round,
-		Identifier: []byte{1, 2, 3, 4},
+		Identifier: identifier,
 		Root:       root,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
@@ -187,23 +194,30 @@ var TestingCommitMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.Si
 	return TestingCommitMessageWithRound(sk, id, qbft.FirstRound)
 }
 var TestingCommitMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
-	return TestingCommitMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData)
+	return TestingCommitMessageWithParams(sk, id, round, qbft.FirstHeight, DefaultIdentifier, TestingQBFTRootData)
 }
 var TestingCommitMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
-	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, height, TestingQBFTRootData)
+	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, height, DefaultIdentifier, TestingQBFTRootData)
 }
 var TestingCommitMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, WrongRoot)
+	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, DefaultIdentifier, WrongRoot)
 }
 var TestingCommitMessageWrongHeight = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, WrongRoot)
+	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, DefaultIdentifier, WrongRoot)
 }
-var TestingCommitMessageWithParams = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
+var TestingCommitMessageWithParams = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	round qbft.Round,
+	height qbft.Height,
+	identifier []byte,
+	root [32]byte,
+) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
 		Height:     height,
 		Round:      round,
-		Identifier: []byte{1, 2, 3, 4},
+		Identifier: identifier,
 		Root:       root,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
@@ -260,6 +274,18 @@ var TestingRoundChangeMessageWithRoundAndHeight = func(sk *bls.SecretKey, id typ
 }
 var TestingRoundChangeMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
 	return TestingRoundChangeMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, qbft.FirstRound, roundChangeJustification)
+}
+var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, identifier []byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.RoundChangeMsgType,
+		Height:     height,
+		Round:      qbft.FirstRound,
+		Identifier: []byte{1, 2, 3, 4},
+		Root:       TestingQBFTRootData,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = TestingQBFTFullData
+	return ret
 }
 var TestingRoundChangeMessageWithParams = func(
 	sk *bls.SecretKey,

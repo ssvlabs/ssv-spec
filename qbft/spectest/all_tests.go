@@ -48,7 +48,6 @@ var AllTests = []SpecTest{
 	proposer.TenOperators(),
 	proposer.ThirteenOperators(),
 
-	proposal.CurrentRoundPrevPrepared(),
 	proposal.PreparedPreviouslyJustification(),
 	proposal.FirstRoundJustification(),
 	proposal.FutureRoundPrevNotPrepared(),
@@ -69,7 +68,7 @@ var AllTests = []SpecTest{
 	roundchange.ValidJustification(),
 
 	// sanity tests (first version)
-	proposal.CurrentRoundPrevNotPrepared(),
+	proposal.NotPreparedPreviouslyJustification(),
 	decided.LateDecided(),
 	processmsg.FullDecided(),
 	tests.HappyFlow(),
@@ -183,8 +182,6 @@ var AllTests = []SpecTest{
 	//
 
 	//proposal.InvalidFullData(),
-	//proposal.CurrentRoundPrevNotPrepared(),
-	//proposal.CurrentRoundPrevPrepared(),
 	//proposal.PastRoundProposalPrevPrepared(),
 	//proposal.NotPreparedPreviouslyJustification(),
 	//proposal.PreparedPreviouslyJustification(),

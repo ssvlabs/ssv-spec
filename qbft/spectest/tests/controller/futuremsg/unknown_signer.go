@@ -10,7 +10,8 @@ import (
 func UnknownSigner() *ControllerSyncSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msg := testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 3, 3, 10, testingutils.TestingQBFTRootData)
+	msg := testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 3, 3, 10,
+		testingutils.DefaultIdentifier, testingutils.TestingQBFTRootData)
 	msg.Signers = []types.OperatorID{10}
 
 	return &ControllerSyncSpecTest{
