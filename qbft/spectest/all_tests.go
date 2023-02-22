@@ -194,7 +194,7 @@ var AllTests = []SpecTest{
 	//proposal.InvalidRoundChangeJustification(),
 	//proposal.PreparedPreviouslyNoRCJustificationQuorum(),
 	//proposal.NoRCJustification(),
-	//proposal.PreparedPreviouslyNoPrepareJustificationQuorum(), // TODO: fix test
+	//proposal.PreparedPreviouslyNoPrepareJustificationQuorum(),
 	//proposal.PreparedPreviouslyDuplicatePrepareMsg(),
 	//proposal.PreparedPreviouslyDuplicatePrepareQuorum(),
 	//proposal.PreparedPreviouslyDuplicateRCMsg(),
