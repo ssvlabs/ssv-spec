@@ -14,7 +14,7 @@ func DuplicateMsgDifferentValue() *tests.MsgProcessingSpecTest {
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
 		// TODO: different value instead of wrong root
-		testingutils.TestingProposalMessageWrongRoot(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingProposalMessageDifferentRoot(ks.Shares[1], types.OperatorID(1)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal duplicate message different value",

@@ -22,7 +22,7 @@ func Round5() *SpecTest {
 				MsgType:                  qbft.RoundChangeMsgType,
 				Height:                   qbft.FirstHeight,
 				Round:                    6,
-				Identifier:               testingutils.DefaultIdentifier,
+				Identifier:               testingutils.TestingIdentifier,
 				Root:                     [32]byte{},
 				RoundChangeJustification: [][]byte{},
 				PrepareJustification:     [][]byte{},

@@ -1,16 +1,18 @@
 package testingutils
 
 import (
+	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// TODO: "TestingIdentifier"?
-var DefaultIdentifier = []byte{1, 2, 3, 4}
+var TestingIdentifier = []byte{1, 2, 3, 4}
 
-// TODO: "DifferentRoot"?
-var WrongRoot = [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9}
+var DifferentFullData = append(TestingQBFTFullData, []byte("different")...)
+var DifferentRoot = func() [32]byte {
+	return sha256.Sum256(DifferentFullData)
+}()
 
 var MarshalJustifications = func(msgs []*qbft.SignedMessage) [][]byte {
 	bytes, err := qbft.MarshalJustifications(msgs)
@@ -82,8 +84,8 @@ var TestingProposalMessageWithRound = func(sk *bls.SecretKey, id types.OperatorI
 var TestingProposalMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, qbft.FirstRound, height, TestingQBFTRootData, nil, nil)
 }
-var TestingProposalMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingProposalMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, WrongRoot, nil, nil)
+var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+	return TestingProposalMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, DifferentRoot, nil, nil)
 }
 var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, roundChangeJustification, nil)
@@ -101,7 +103,7 @@ var TestingProposalMessageWithParams = func(
 		MsgType:                  qbft.ProposalMsgType,
 		Height:                   height,
 		Round:                    round,
-		Identifier:               DefaultIdentifier,
+		Identifier:               TestingIdentifier,
 		Root:                     root,
 		RoundChangeJustification: roundChangeJustification,
 		PrepareJustification:     prepareJustification,
@@ -121,7 +123,7 @@ var TestingMultiSignerProposalMessageWithParams = func(sk []*bls.SecretKey, id [
 		MsgType:    qbft.ProposalMsgType,
 		Height:     height,
 		Round:      round,
-		Identifier: DefaultIdentifier,
+		Identifier: TestingIdentifier,
 		Root:       root,
 	}
 	ret := MultiSignQBFTMsg(sk, id, msg)
@@ -137,13 +139,13 @@ var TestingPrepareMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.S
 	return TestingPrepareMessageWithRound(sk, id, qbft.FirstRound)
 }
 var TestingPrepareMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
-	return TestingPrepareMessageWithParams(sk, id, round, qbft.FirstHeight, DefaultIdentifier, TestingQBFTRootData)
+	return TestingPrepareMessageWithParams(sk, id, round, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData)
 }
 var TestingPrepareMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
-	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, height, DefaultIdentifier, TestingQBFTRootData)
+	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, height, TestingIdentifier, TestingQBFTRootData)
 }
 var TestingPrepareMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, DefaultIdentifier, WrongRoot)
+	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, DifferentRoot)
 }
 var TestingPrepareMessageWithParams = func(
 	sk *bls.SecretKey,
@@ -178,7 +180,7 @@ var TestingPrepareMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids 
 		MsgType:    qbft.PrepareMsgType,
 		Height:     height,
 		Round:      round,
-		Identifier: DefaultIdentifier,
+		Identifier: TestingIdentifier,
 		Root:       root,
 	}
 	ret := MultiSignQBFTMsg(sks, ids, msg)
@@ -194,16 +196,16 @@ var TestingCommitMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.Si
 	return TestingCommitMessageWithRound(sk, id, qbft.FirstRound)
 }
 var TestingCommitMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
-	return TestingCommitMessageWithParams(sk, id, round, qbft.FirstHeight, DefaultIdentifier, TestingQBFTRootData)
+	return TestingCommitMessageWithParams(sk, id, round, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData)
 }
 var TestingCommitMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
-	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, height, DefaultIdentifier, TestingQBFTRootData)
+	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, height, TestingIdentifier, TestingQBFTRootData)
 }
 var TestingCommitMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, DefaultIdentifier, WrongRoot)
+	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, DifferentRoot)
 }
 var TestingCommitMessageWrongHeight = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, DefaultIdentifier, WrongRoot)
+	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, TestingIdentifier, DifferentRoot)
 }
 var TestingCommitMessageWithParams = func(
 	sk *bls.SecretKey,
@@ -227,10 +229,10 @@ var TestingCommitMultiSignerMessage = func(sks []*bls.SecretKey, ids []types.Ope
 	return TestingCommitMultiSignerMessageWithRound(sks, ids, qbft.FirstRound)
 }
 var TestingCommitMultiSignerMessageWithRound = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round) *qbft.SignedMessage {
-	return TestingCommitMultiSignerMessageWithParams(sks, ids, round, qbft.FirstHeight, DefaultIdentifier, TestingQBFTRootData, TestingQBFTFullData)
+	return TestingCommitMultiSignerMessageWithParams(sks, ids, round, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData, TestingQBFTFullData)
 }
 var TestingCommitMultiSignerMessageWithHeight = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height) *qbft.SignedMessage {
-	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, DefaultIdentifier, TestingQBFTRootData, TestingQBFTFullData)
+	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, TestingIdentifier, TestingQBFTRootData, TestingQBFTFullData)
 }
 var TestingCommitMultiSignerMessageWithHeightAndIdentifier = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height, identifier []byte) *qbft.SignedMessage {
 	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, identifier, TestingQBFTRootData, TestingQBFTFullData)
@@ -280,7 +282,7 @@ var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *bls.SecretKey, i
 		MsgType:    qbft.RoundChangeMsgType,
 		Height:     height,
 		Round:      qbft.FirstRound,
-		Identifier: DefaultIdentifier,
+		Identifier: TestingIdentifier,
 		Root:       TestingQBFTRootData,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
@@ -300,7 +302,7 @@ var TestingRoundChangeMessageWithParams = func(
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   height,
 		Round:                    round,
-		Identifier:               DefaultIdentifier,
+		Identifier:               TestingIdentifier,
 		Root:                     root,
 		DataRound:                dataRound,
 		RoundChangeJustification: roundChangeJustification,
@@ -319,14 +321,14 @@ var TestingMultiSignerRoundChangeMessageWithHeight = func(sks []*bls.SecretKey, 
 	return TestingMultiSignerRoundChangeMessageWithParams(sks, ids, qbft.FirstRound, height, TestingQBFTRootData)
 }
 var TestingRoundChangeMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
-	return TestingRoundChangeMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, WrongRoot, qbft.NoRound, nil)
+	return TestingRoundChangeMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, DifferentRoot, qbft.NoRound, nil)
 }
 var TestingMultiSignerRoundChangeMessageWithParams = func(sk []*bls.SecretKey, id []types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.RoundChangeMsgType,
 		Height:     height,
 		Round:      round,
-		Identifier: DefaultIdentifier,
+		Identifier: TestingIdentifier,
 		Root:       root,
 	}
 	ret := MultiSignQBFTMsg(sk, id, msg)

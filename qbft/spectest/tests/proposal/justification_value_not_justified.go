@@ -33,17 +33,22 @@ func JustificationsValueNotJustified() *tests.MsgProcessingSpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
 	}
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithParams(
-			// TODO: different value instead of wrong root
-			ks.Shares[1], types.OperatorID(1), 3, qbft.FirstHeight, testingutils.WrongRoot,
-			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs2)),
-	}
+	msg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
+		MsgType:                  qbft.ProposalMsgType,
+		Height:                   qbft.FirstHeight,
+		Round:                    3,
+		Identifier:               testingutils.TestingIdentifier,
+		Root:                     testingutils.DifferentRoot,
+		RoundChangeJustification: testingutils.MarshalJustifications(rcMsgs),
+		PrepareJustification:     testingutils.MarshalJustifications(prepareMsgs2),
+	})
+	msg.FullData = testingutils.DifferentFullData
+
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal value not justified",
 		Pre:            pre,
 		PostRoot:       "d76f5d27ebdc1f33ed4af370fc7edb8a117d29a759597dbdf45560095a28151e",
-		InputMessages:  msgs,
+		InputMessages:  []*qbft.SignedMessage{msg},
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: proposed data doesn't match highest prepared",
 	}
