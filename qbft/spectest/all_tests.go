@@ -98,8 +98,8 @@ var AllTests = []SpecTest{
 	//decided.MultiDecidedInstances(),
 	//decided.FutureInstance(),
 	//decided.CurrentInstance(), // TODO: fix test
-	//decided.CurrentInstancePastRound(), // TODO: fix test
-	//decided.CurrentInstanceFutureRound(), // TODO: fix test
+	//decided.CurrentInstancePastRound(),
+	//decided.CurrentInstanceFutureRound(),
 	//
 	//processmsg.MsgError(),
 	//processmsg.BroadcastedDecided(),
