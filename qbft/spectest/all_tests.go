@@ -251,7 +251,6 @@ var AllTests = []SpecTest{
 	//roundchange.QuorumPrepared(),
 	//roundchange.PeerPrepared(),
 	//roundchange.PeerPreparedDifferentHeights(),
-	//roundchange.JustificationWrongValue(), // TODO: fix test
 	//roundchange.JustificationWrongRound(),
 	//roundchange.JustificationNoQuorum(),
 	//roundchange.JustificationMultiSigners(),
