@@ -214,7 +214,6 @@ var AllTests = []SpecTest{
 	//
 	//prepare.DuplicateMsg(),
 	//prepare.HappyFlow(),
-	//prepare.InvalidPrepareData(), // TODO: fix test
 	//prepare.MultiSigner(),
 	//prepare.NoPreviousProposal(),
 	//prepare.OldRound(),
@@ -230,7 +229,6 @@ var AllTests = []SpecTest{
 	//commit.PastRound(),
 	//commit.DuplicateMsg(),
 	//commit.HappyFlow(),
-	//commit.InvalidCommitData(), // TODO: fix test
 	//commit.PostDecided(),
 	//commit.WrongData1(),
 	//commit.WrongData2(),
