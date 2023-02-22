@@ -154,8 +154,6 @@ var AllTests = []SpecTest{
 	//messages.MsgTypeUnknown(),
 	//messages.PrepareDataEncoding(),
 	//messages.ProposeDataEncoding(),
-	//messages.SignedMsgSigTooShort(),
-	//messages.SignedMsgSigTooLong(),
 	//messages.SignedMsgNoSigners(),
 	//messages.SignedMsgDuplicateSigners(),
 	//messages.SignedMsgMultiSigners(),
