@@ -1,7 +1,6 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/pre_consensus_justifications"
 	"testing"
 )
 
@@ -11,8 +10,9 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	pre_consensus_justifications.ValidNoRunningDuty(),
-	pre_consensus_justifications.Valid(),
+	// TODO - DO NOT TOUCH (Alon)
+	//pre_consensus_justifications.ValidNoRunningDuty(),
+	//pre_consensus_justifications.Valid(),
 
 	//runner.FullHappyFlow(),
 	//
