@@ -184,7 +184,6 @@ var AllTests = []SpecTest{
 	//proposal.PreparedPreviouslyJustification(),
 	//proposal.DifferentJustifications(),
 	//proposal.JustificationsNotHeighest(),
-	//proposal.JustificationsValueNotJustified(), // TODO: fix test
 	//proposal.DuplicateMsg(),
 	//proposal.DuplicateMsgDifferentRoot(),
 	//proposal.FirstRoundJustification(),
