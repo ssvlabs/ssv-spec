@@ -1,6 +1,7 @@
 package decided
 
 import (
+	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -17,14 +18,21 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					// how to pass invalid value?
-					testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
+					testingutils.TestingCommitMultiSignerMessageWithParams(
+						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]types.OperatorID{1, 2, 3},
+						qbft.FirstRound,
+						qbft.FirstHeight,
+						testingutils.TestingIdentifier,
+						sha256.Sum256(testingutils.TestingInvalidValueCheck),
+						testingutils.TestingInvalidValueCheck,
+					),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingInvalidValueCheck,
 				},
-				ControllerPostRoot: "befc8626cb71ca1b8493d41f54a709b22bbf530302177b8668fd77562ca3040e",
+				ControllerPostRoot: "c7420429b97ed92ad8f21bdef11421c74d86c5d93131a8942d825d1c0aab969c",
 			},
 		},
 	}
