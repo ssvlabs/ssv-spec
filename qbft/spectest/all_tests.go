@@ -257,11 +257,11 @@ var AllTests = []SpecTest{
 	//roundchange.JustificationInvalidSig(),
 	//roundchange.JustificationInvalidRound(),
 	//roundchange.JustificationDuplicateMsg(),
-	//roundchange.F1DifferentFutureRounds(),            // TODO: fix test
-	//roundchange.F1DifferentFutureRoundsNotPrepared(), // TODO: fix test
+	//roundchange.F1DifferentFutureRounds(),
+	//roundchange.F1DifferentFutureRoundsNotPrepared(),
 	//roundchange.PastRound(),
 	//roundchange.DuplicateMsgQuorum(),
-	//roundchange.DuplicateMsgQuorumPreparedRCFirst(), // TODO: fix test
+	//roundchange.DuplicateMsgQuorumPreparedRCFirst(),
 	//roundchange.DuplicateMsg(),
 	//roundchange.NotProposer(),
 	//roundchange.ValidJustification(),
@@ -270,9 +270,9 @@ var AllTests = []SpecTest{
 	//roundchange.F1Speedup(),
 	//roundchange.F1SpeedupPrevPrepared(),
 	//roundchange.AfterProposal(),
-	//roundchange.RoundChangePartialQuorum(), // TODO: fix test
+	//roundchange.RoundChangePartialQuorum(),
 	//roundchange.QuorumOrder2(),
-	//roundchange.QuorumOrder1(), // TODO: fix test
-	//roundchange.QuorumMsgNotPrepared(), // TODO: fix test
+	//roundchange.QuorumOrder1(),
+	//roundchange.QuorumMsgNotPrepared(),
 	//roundchange.JustificationPastRound(),
 }
