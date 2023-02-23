@@ -90,7 +90,7 @@ var AllTests = []SpecTest{
 	//decided.DuplicateSigners(),
 	//decided.Invalid(),
 	////decided.InvalidFullData(), // TODO: implement
-	//decided.InvalidValCheckData(), // TODO: fix test
+	//decided.InvalidValCheckData(),
 	//decided.PastInstance(),
 	//decided.UnknownSigner(),
 	//decided.WrongMsgType(),
