@@ -28,11 +28,12 @@ func QuorumOrder1() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum order 1",
 		Pre:           pre,
-		PostRoot:      "515e7bd60c0225c400d9f30cbce062b77807cd39735a387c22c107e0e978937c",
+		PostRoot:      "f8fde754bbe247962fcbd9c8890f79f256ee4e5af7aaa13fc5da2ee85b89333c",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
-				testingutils.MarshalJustifications(prepareMsgs)),
+			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+				testingutils.TestingQBFTRootData,
+				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
 }
