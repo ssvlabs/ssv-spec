@@ -2,8 +2,10 @@ package testingutils
 
 import (
 	"encoding/hex"
+	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
+	spec2 "github.com/attestantio/go-eth2-client/spec"
 	altair "github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -456,6 +458,11 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *spec.Attestation) er
 	return nil
 }
 
+// SubmitValidatorRegistration submits a validator registration
+func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig spec.BLSSignature) error {
+	return nil
+}
+
 // GetBeaconBlock returns beacon block by the given slot and committee index
 func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*bellatrix.BeaconBlock, error) {
 	return TestingBeaconBlock, nil
@@ -469,13 +476,17 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBloc
 }
 
 // GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*bellatrix2.BlindedBeaconBlock, error) {
-	return TestingBlindedBeaconBlock, nil
+func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, graffiti, randao []byte) (*api.VersionedBlindedBeaconBlock, error) {
+	return &api.VersionedBlindedBeaconBlock{
+		Version:   spec2.DataVersionBellatrix,
+		Bellatrix: TestingBlindedBeaconBlock,
+		Capella:   nil,
+	}, nil
 }
 
 // SubmitBlindedBeaconBlock submit the blinded block to the node
-func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *bellatrix2.SignedBlindedBeaconBlock) error {
-	r, _ := block.HashTreeRoot()
+func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedSignedBlindedBeaconBlock) error {
+	r, _ := block.Bellatrix.HashTreeRoot() // TODO need to support multi forks
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }

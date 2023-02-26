@@ -50,7 +50,7 @@ func (r *ValidatorRegistrationRunner) HasRunningDuty() bool {
 }
 
 func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
-	quorum, _, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing validator registration message")
 	}
@@ -60,6 +60,18 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *SignedParti
 		return nil
 	}
 
+	for _, root := range roots {
+		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
+		if err != nil {
+			return errors.Wrap(err, "could not reconstruct post consensus signature")
+		}
+		specSig := phase0.BLSSignature{}
+		copy(specSig[:], sig)
+
+		if err := r.beacon.SubmitValidatorRegistration(r.BaseRunner.Share.ValidatorPubKey, r.BaseRunner.Share.FeeRecipientAddress, specSig); err != nil {
+			return errors.Wrap(err, "could not submit validator registration")
+		}
+	}
 	r.GetState().Finished = true
 	return nil
 }
