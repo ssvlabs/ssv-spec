@@ -47,6 +47,8 @@ func (r BeaconRole) String() string {
 		return "SYNC_COMMITTEE"
 	case BNRoleSyncCommitteeContribution:
 		return "SYNC_COMMITTEE_CONTRIBUTION"
+	case BNRoleValidatorRegistration:
+		return "VALIDATOR_REGISTRATION"
 	default:
 		return "UNDEFINED"
 	}
