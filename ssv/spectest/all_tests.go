@@ -1,6 +1,11 @@
 package spectest
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"testing"
 )
 
@@ -10,6 +15,40 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	// sanity tests - begin
+
+	runner.FullHappyFlow(),
+	newduty.NotDecided(),
+	newduty.PostDecided(),
+
+	preconsensus.NoRunningDuty(),
+	preconsensus.DuplicateMsg(),
+	preconsensus.PostFinish(),
+	preconsensus.PostDecided(),
+	preconsensus.PostQuorum(),
+	preconsensus.Quorum(),
+	preconsensus.Quorum7Operators(),
+	preconsensus.UnknownSigner(),
+
+	consensus.NoRunningDuty(),
+	consensus.NoRunningConsensusInstance(),
+	consensus.PostFinish(),
+	consensus.PostDecided(),
+	consensus.ValidDecided(),
+	consensus.ValidDecided7Operators(),
+	consensus.FutureDecided(),
+
+	postconsensus.UnknownSigner(),
+	postconsensus.InconsistentBeaconSigner(),
+	postconsensus.DuplicateMsgDifferentRoots(),
+	postconsensus.DuplicateMsg(),
+	postconsensus.PreDecided(),
+	postconsensus.PostQuorum(),
+	postconsensus.Quorum(),
+	postconsensus.Quorum7Operators(),
+
+	// sanity tests - end
+
 	//runner.FullHappyFlow(),
 	//
 	//postconsensus.TooManyRoots(),

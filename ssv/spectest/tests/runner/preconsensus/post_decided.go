@@ -50,7 +50,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "0a660b3aade3032c27190c65fe75c2b44cb9a929d8a25ead1847a5ae4c1134c4",
+				PostDutyRunnerStateRoot: "5de3f07115e63472b4680b5401d15350e56ceae80f2c7e299b16356af12531a6",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
@@ -70,7 +70,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "ab30fbb1171f0d9ee3d6a917551da38e4ee14f52b587c0fe809e440b1a9af73a",
+				PostDutyRunnerStateRoot: "652b5d09688116a451f9fe342eda3a7265acedd2a05c6555afb6865a71c0eed1",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
@@ -90,7 +90,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "80271bf774d719618e671401b2d4f91f33df1028eecf0b5ed8d9d0b2957e8309",
+				PostDutyRunnerStateRoot: "b750ef28800c3403698472e04d98848e16cead7b51b797bad4ed8bdf51e9323c",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
@@ -110,7 +110,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "50593bc477c0a77cc07186cda738a06c57389dc4a57aba3e0283a768545a4f27",
+				PostDutyRunnerStateRoot: "5c632900f8e59809f3a366a0cdbd71d2f4598e39100e7bccca4d1a18130fb7cf",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
