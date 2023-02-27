@@ -23,6 +23,7 @@ type ValidatorRegistrationRunner struct {
 func NewValidatorRegistrationRunner(
 	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
+	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
@@ -32,6 +33,7 @@ func NewValidatorRegistrationRunner(
 			BeaconRoleType: types.BNRoleValidatorRegistration,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
+			QBFTController: qbftController,
 		},
 
 		beacon:  beacon,
