@@ -13,6 +13,8 @@ type SpecTest interface {
 var AllTests = []SpecTest{
 	//pre_consensus_justifications.ValidNoRunningDuty(),
 	pre_consensus_justifications.Valid(),
+	//consensus.ValidPreConsensusJustifications(),
+	//consensus.InvalidPreConsensusJustifications(),
 
 	//runner.FullHappyFlow(),
 	//
@@ -62,6 +64,8 @@ var AllTests = []SpecTest{
 	//consensus.ValidDecided10Operators(),
 	//consensus.ValidDecided13Operators(),
 	//consensus.ValidMessage(),
+	//consensus.ValidPreConsensusJustifications(),
+	//consensus.InvalidPreConsensusJustifications(),
 	//
 	//synccommitteeaggregator.SomeAggregatorQuorum(),
 	//synccommitteeaggregator.NoneAggregatorQuorum(),
