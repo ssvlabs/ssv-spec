@@ -56,6 +56,36 @@ var TestProposerConsensusData = &types.ConsensusData{
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
 
+// TestAttesterWithJustificationsConsensusData is an invalid msg sa attester doesn't have pre-consensus
+var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i+1], i+1))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       TestingAttesterDuty,
+		Version:                    spec2.DataVersionBellatrix,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingAttestationDataBytes,
+	}
+}
+
+// TestSyncCommitteeWithJustificationsConsensusData is an invalid sync committee msg (doesn't have pre-consensus)
+var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i+1], i+1))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       TestingSyncCommitteeDuty,
+		Version:                    spec2.DataVersionBellatrix,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingSyncCommitteeBlockRoot[:],
+	}
+}
+
 var TestProposerWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
@@ -67,6 +97,20 @@ var TestProposerWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 		Version:                    spec2.DataVersionBellatrix,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingBeaconBlockBytes,
+	}
+}
+
+var TestProposerBlindedWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i+1], i+1))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       TestingProposerDuty,
+		Version:                    spec2.DataVersionBellatrix,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingBlindedBeaconBlockBytes,
 	}
 }
 
@@ -487,6 +531,20 @@ var PreConsensusWrongMsgSlotSelectionProofMsg = func(msgSK, beaconSK *bls.Secret
 	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, 1, false)
 }
 
+var TestSelectionProofWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusSelectionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       TestingAggregatorDuty,
+		Version:                    spec2.DataVersionBellatrix,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingAggregateAndProofBytes,
+	}
+}
+
 var selectionProofMsg = func(
 	sk *bls.SecretKey,
 	beaconsk *bls.SecretKey,
@@ -791,6 +849,20 @@ var PreConsensusWrongMsgSlotContributionProofMsg = func(msgSK, beaconSK *bls.Sec
 
 var PreConsensusWrongOrderContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.SignedPartialSignatureMessage {
 	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, true, false)
+}
+
+var TestContributionProofWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusContributionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       TestingSyncCommitteeContributionDuty,
+		Version:                    spec2.DataVersionBellatrix,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingSyncCommitteeContributionsConsensusDataBytes,
+	}
 }
 
 var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.SignedPartialSignatureMessage {

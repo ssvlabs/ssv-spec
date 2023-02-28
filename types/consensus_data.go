@@ -115,6 +115,9 @@ func (cid *ConsensusData) Validate() error {
 		if _, err := cid.GetAttestationData(); err != nil {
 			return err
 		}
+		if len(cid.PreConsensusJustifications) > 0 {
+			return errors.New("attester invalid justifications")
+		}
 	case BNRoleAggregator:
 		if _, err := cid.GetAggregateAndProof(); err != nil {
 			return err
@@ -139,11 +142,18 @@ func (cid *ConsensusData) Validate() error {
 			return errors.New("no beacon data")
 		}
 	case BNRoleSyncCommittee:
+		if len(cid.PreConsensusJustifications) > 0 {
+			return errors.New("sync committee invalid justifications")
+		}
 		return nil
 	case BNRoleSyncCommitteeContribution:
 		if _, err := cid.GetSyncCommitteeContributions(); err != nil {
 			return err
 		}
+	case BNRoleValidatorRegistration:
+		return errors.New("validator registration has no consensus data")
+	default:
+		return errors.New("unknown duty role")
 	}
 	return nil
 }

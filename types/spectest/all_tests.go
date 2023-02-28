@@ -40,6 +40,17 @@ var AllTests = []SpecTest{
 	//consensusdata.BlockAndBlindedBlock(),
 	//consensusdata.ValidSyncCommitteeAggregator(),
 	//consensusdata.EmptySyncCommitteeAggregator(),
+	//consensusdata.AttesterJustifications(),
+	//consensusdata.AttesterNoValidation(),
+	//consensusdata.ProposerJustifications(),
+	//consensusdata.ProposerNoJustifications(),
+	//consensusdata.AggregatorJustifications(),
+	//consensusdata.AggregatorNoJustifications(),
+	//consensusdata.SyncCommitteeJustifications(),
+	//consensusdata.SyncCommitteeNoJustifications(),
+	//consensusdata.SyncCommitteeContributionJustifications(),
+	//consensusdata.SyncCommitteeNoContributionJustifications(),
+	//consensusdata.ValidatorRegistration(),
 	// TODO: add new consensusdata tests
 
 	beacon.DepositData(),
