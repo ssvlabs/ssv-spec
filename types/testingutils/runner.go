@@ -1,7 +1,6 @@
 package testingutils
 
 import (
-	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
@@ -222,8 +221,9 @@ var SSVDecidingMsgs = func(consensusData *types.ConsensusData, ks *TestKeySet, r
 }
 
 var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	byts, _ := consensusData.Encode()
+	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
-	r := sha256.Sum256(fullData)
 
 	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
