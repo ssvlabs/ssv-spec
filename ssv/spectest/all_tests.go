@@ -92,7 +92,7 @@ var AllTests = []SpecTest{
 	preconsensus.Quorum10Operators(),
 	preconsensus.Quorum13Operators(),
 	preconsensus.ValidMessage(),
-	preconsensus.InValidMessageSlot(),
+	preconsensus.InvalidMessageSlot(),
 	preconsensus.ValidMessage7Operators(),
 	preconsensus.ValidMessage10Operators(),
 	preconsensus.ValidMessage13Operators(),
