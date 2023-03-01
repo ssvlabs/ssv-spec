@@ -219,6 +219,15 @@ func (reshareMsg *ReshareParams) LoadFromStorage(pk types.ValidatorPK, storage S
 	return nil
 }
 
+func inOldCommittee(op types.OperatorID, l []types.OperatorID) bool {
+	for _, opID := range l {
+		if opID == op {
+			return true
+		}
+	}
+	return false
+}
+
 // Output is the last message in every DKG which marks a specific node's end of process
 type Output struct {
 	// RequestID for the DKG instance (not used for signing)
