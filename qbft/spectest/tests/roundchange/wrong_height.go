@@ -20,7 +20,7 @@ func WrongHeight() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change invalid height",
 		Pre:            pre,
-		PostRoot:       "f807a3d5343ca20e3b757fa63eae9b9dd70e09e03249048badebf54e62290103",
+		PostRoot:       "ddb0f7e1a8888a8de5295005872d8525d6afea053121993dc65e34fcb7f290b2",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: wrong msg height",

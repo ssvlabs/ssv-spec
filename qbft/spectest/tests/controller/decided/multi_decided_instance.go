@@ -29,17 +29,17 @@ func MultiDecidedInstances() *tests.ControllerSpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "multi decide instances",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "c6e9b748e73de916edf6fb3a70c228f000ba014dc0a1bc54fa387fe528172fc8"),
-			instanceData(1, "82e7de180912adfab8d5d5fbf1443b3bbedcfa16d1c35db4a1021e24db05e1d2"),
-			instanceData(2, "db1af8f252886e69f88c66dd6e5c2c7ac790e539ff49b66aebe3f32dd4b7e8be"),
-			instanceData(3, "cb70954bdae99971eac93a84f00f2fc792def306c71a86f9423f0234115fe0ed"),
-			instanceData(4, "2c4d72bbaef85bcbbeede1e0cf05ad05c213b1ccf59d426351a196740ea8f3f6"),
-			instanceData(5, "ca37672d0543116ec7fcd79ed3c15654acde54d0220b22cc40ba161a5f4b3099"),
-			instanceData(6, "445521b9d6db9263821aeb0a4544a34d336fbc2c6d0561cdf6860602f3a73e15"),
-			instanceData(7, "004c6b6a8dfbe9249115642af579a9e78877519eb950bd0192173987c1e99f8a"),
-			instanceData(8, "2d500dd95118bd2d7b12b593acc126500e417198de9260c6e46eac117c85dc57"),
-			instanceData(9, "2f89a0c05e5f04a00b65cbd9ba6adfe36342002bc76f935ab25384e4a0afedf3"),
-			instanceData(10, "fed477fd0aa2f5bafd53acb422ae0d5a3571a308327acc8eefacc7d0d3ddb539"),
+			instanceData(qbft.FirstHeight, "f552f5aedb2e0d7933e77c4297c69e761000e88f78ae02e0afd4d053847b8d5c"),
+			instanceData(1, "e8da0b4b1afeee3b611e2c91feb6a66b48dc6287728ab6211c40bac76282ebc4"),
+			instanceData(2, "1fcc752b2ec7645dd4f46c50c7e0260699aceebfe03c8812cfd5aaaa059a9659"),
+			instanceData(3, "64dd8825012aae061b0d2cdd36e6379f1b30c1fb8f7d8db2c800161565e9bee1"),
+			instanceData(4, "dbafdd3370a7cb493058842a2036b9a95a6aa0040300f1cf96ab74f086eb7749"),
+			instanceData(5, "562a4c43ebed97b9f6f24fbb2fa5c9850f6ed921187e70c667143028250fb301"),
+			instanceData(6, "489ca498ca6fb5e38e6b28a2bb54fb5b8ac57892647972e4c91ce48aa8d17950"),
+			instanceData(7, "c83067c025a4222fe887fecf099f0a8a6c4372bafce05a588bbb11f640700910"),
+			instanceData(8, "fd9008ae027eff439bc2acfeeaab368ecd93d7964b1e1ddd7c760bdebfde0a92"),
+			instanceData(9, "4bc1dca94e40137aa7e000ad13b9b6eca02f7a6b31f3730971dfc162f5c941f5"),
+			instanceData(10, "a76efa101019ba414067c5918e419a9dcc31a348035c7357fa073852d46d98fc"),
 		},
 	}
 }

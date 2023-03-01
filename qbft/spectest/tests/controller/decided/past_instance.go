@@ -27,7 +27,7 @@ func PastInstance() *tests.ControllerSpecTest {
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{0, 100},
 				},
-				ControllerPostRoot: "e70b0570f08e58a8719544d7c89c75264135565cb1dd260ad4217d9ae9d2ae7b",
+				ControllerPostRoot: "d2f7f4bfc09d8695021a3c10657907e6196adda7ff8f06c9b48a368539a2e7bf",
 			},
 		},
 	}

@@ -41,7 +41,7 @@ func JustificationsNotHeighest() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal justification not highest",
 		Pre:            pre,
-		PostRoot:       "d76f5d27ebdc1f33ed4af370fc7edb8a117d29a759597dbdf45560095a28151e",
+		PostRoot:       "beaef03728ef5dadfd5daf11046923930e787f0d77b824326bd7ec65c2338b45",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: signed prepare not valid",
