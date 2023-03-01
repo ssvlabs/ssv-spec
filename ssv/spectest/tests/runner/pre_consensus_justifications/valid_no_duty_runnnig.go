@@ -11,14 +11,14 @@ import (
 func ValidNoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgF := func(obj *types.ConsensusData) *qbft.SignedMessage {
+	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
 		fullData, _ := obj.Encode()
 		root, _ := obj.HashTreeRoot()
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
 			Height:     1,
 			Round:      qbft.FirstRound,
-			Identifier: testingutils.ProposerMsgID,
+			Identifier: id,
 			Root:       root,
 		}
 		signed := testingutils.SignQBFTMsg(ks.Shares[1], 1, msg)
@@ -30,87 +30,73 @@ func ValidNoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus justification valid no running duty",
 		Tests: []*tests.MsgProcessingSpecTest{
-			//{
-			//	Name:   "sync committee aggregator selection proof",
-			//	Runner: testingutils.SyncCommitteeContributionRunner(ks),
-			//	Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-			//	},
-			//	PostDutyRunnerStateRoot: "8d9edd36c3634e54d76985ddb4fa80f3427b47ab7dfab6053e7a396ab5ee494f",
-			//	OutputMessages: []*types.SignedPartialSignatureMessage{
-			//		testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-			//	},
-			//},
-			//{
-			//	Name:   "aggregator selection proof",
-			//	Runner: testingutils.AggregatorRunner(ks),
-			//	Duty:   &testingutils.TestingAggregatorDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-			//	},
-			//	PostDutyRunnerStateRoot: "c5d864ca6a4ede7fe637846d080e0fe2cf1f4597c463cbf9a675bfbb78eacfc5",
-			//	OutputMessages: []*types.SignedPartialSignatureMessage{
-			//		testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-			//	},
-			//},
+			{
+				Name:   "sync committee aggregator selection proof",
+				Runner: testingutils.SyncCommitteeContributionRunner(ks),
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "17f18a6d0985ea944251bf9b6cc28c2ed5ceb685564fe5598cad8c2654c9b543",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+			},
+			{
+				Name:   "aggregator selection proof",
+				Runner: testingutils.AggregatorRunner(ks),
+				Duty:   &testingutils.TestingAggregatorDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "c502e1b533be473b5a79593478dff209751509b7f4907109fbf8852938185db8",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+			},
 			{
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks)), nil),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "5ba69a8b0fa59b3afbc64dc85edc32e45347169fb420378a801c6ed8486340fd",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},
-			//{
-			//	Name:   "randao (blinded block)",
-			//	Runner: testingutils.ProposerBlindedBlockRunner(ks),
-			//	Duty:   &testingutils.TestingProposerDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-			//	},
-			//	PostDutyRunnerStateRoot: "66967c4a461039e82dd60ca2ccd13ba82691bb43d5835a2b45394bfb4c0bc0ef",
-			//	OutputMessages: []*types.SignedPartialSignatureMessage{
-			//		testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-			//	},
-			//},
-			//{
-			//	Name:   "attester",
-			//	Runner: testingutils.AttesterRunner(ks),
-			//	Duty:   &testingutils.TestingAttesterDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgAttester(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
-			//	},
-			//	PostDutyRunnerStateRoot: "1d42abde3ed6e27699960aa7476bb672a5c9f74f466896560f35597b56083853",
-			//	OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			//	ExpectedError:           "no pre consensus sigs required for attester role",
-			//},
-			//{
-			//	Name:   "sync committee",
-			//	Runner: testingutils.SyncCommitteeRunner(ks),
-			//	Duty:   &testingutils.TestingSyncCommitteeDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgSyncCommittee(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
-			//	},
-			//	PostDutyRunnerStateRoot: "26ea6d64e3660d677bc4fe7f02d951b7ddd5df142204f089cd8706b426b8a0d9",
-			//	OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			//	ExpectedError:           "no pre consensus sigs required for sync committee role",
-			//},
-			//{
-			//	Name:   "validator registration",
-			//	Runner: testingutils.ValidatorRegistrationRunner(ks),
-			//	Duty:   &testingutils.TestingValidatorRegistrationDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
-			//	},
-			//	PostDutyRunnerStateRoot: "6258dff05d5c0d040ce20933dd433073ac5badd1deb9f277097c0ce9bc92a57f",
-			//	OutputMessages: []*types.SignedPartialSignatureMessage{
-			//		testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-			//	},
-			//},
+			{
+				Name:   "randao (blinded block)",
+				Runner: testingutils.ProposerBlindedBlockRunner(ks),
+				Duty:   &testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "fb7158179913484f391c8cc2a5efc79e1e195efd99c949aba8f68173965f2b67",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+			},
+			{
+
+				Name:   "attester",
+				Runner: testingutils.AttesterRunner(ks),
+				Duty:   &testingutils.TestingAttesterDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterWithJustificationsConsensusData(ks), testingutils.AttesterMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "22297b32fbb3bdabdc5f1b6df5c6e2dfc241ad55f9069f00626b12ebae589912",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.SyncCommitteeRunner(ks),
+				Duty:   &testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeWithJustificationsConsensusData(ks), testingutils.SyncCommitteeMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "c67d65112c567bd10a8305f14485f4fcd7eab5258478a75b848be5d8379bfa0b",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+			},
 		},
 	}
 }
