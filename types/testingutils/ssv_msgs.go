@@ -159,6 +159,7 @@ var PostConsensusAttestationTooManyRootsMsg = func(sk *bls.SecretKey, id types.O
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: ret.Message.Messages,
 	}
 
@@ -173,6 +174,7 @@ var PostConsensusAttestationTooManyRootsMsg = func(sk *bls.SecretKey, id types.O
 var PostConsensusAttestationTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.SignedPartialSignatureMessage {
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
@@ -250,6 +252,7 @@ var PostConsensusProposerTooManyRootsMsg = func(sk *bls.SecretKey, id types.Oper
 var PostConsensusProposerTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
@@ -591,6 +594,7 @@ var PostConsensusAggregatorTooManyRootsMsg = func(sk *bls.SecretKey, id types.Op
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: ret.Message.Messages,
 	}
 
@@ -605,6 +609,7 @@ var PostConsensusAggregatorTooManyRootsMsg = func(sk *bls.SecretKey, id types.Op
 var PostConsensusAggregatorTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
@@ -679,6 +684,7 @@ var PostConsensusSyncCommitteeTooManyRootsMsg = func(sk *bls.SecretKey, id types
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: ret.Message.Messages,
 	}
 
@@ -693,6 +699,7 @@ var PostConsensusSyncCommitteeTooManyRootsMsg = func(sk *bls.SecretKey, id types
 var PostConsensusSyncCommitteeTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
@@ -783,6 +790,7 @@ var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.Sec
 	ret := contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, false, false)
 	msg := &types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,
+		Slot:     TestingDutySlot,
 		Messages: append(ret.Message.Messages, ret.Message.Messages[0]),
 	}
 
@@ -798,6 +806,7 @@ var PreConsensusContributionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.Secr
 	ret := contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, false, false)
 	msg := &types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,
+		Slot:     TestingDutySlot,
 		Messages: ret.Message.Messages[0:2],
 	}
 
@@ -876,6 +885,7 @@ var PostConsensusSyncCommitteeContributionTooManyRootsMsg = func(sk *bls.SecretK
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: ret.Message.Messages,
 	}
 
@@ -891,6 +901,7 @@ var PostConsensusSyncCommitteeContributionTooFewRootsMsg = func(sk *bls.SecretKe
 	ret := postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, false, false, false)
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
 		Messages: ret.Message.Messages[0:2],
 	}
 

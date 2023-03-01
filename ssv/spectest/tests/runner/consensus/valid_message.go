@@ -1,8 +1,6 @@
 package consensus
 
 import (
-	"crypto/sha256"
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -23,15 +21,12 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.SyncCommitteeContributionMsgID,
-							Root:       sha256.Sum256(testingutils.TestSyncCommitteeContributionConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID,
+							testingutils.TestSyncCommitteeContributionConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "47055e82f253fcd78f4894daf2c767e8c6103ddc2680c72de4a8f33c90bec71f",
+				PostDutyRunnerStateRoot: "8e654f9119c443b1ff26b9839e9b75dae216a98894935f8b190e9fc16bb78b6b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -42,15 +37,12 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(
-						testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.SyncCommitteeMsgID,
-							Root:       sha256.Sum256(testingutils.TestSyncCommitteeConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID,
+							testingutils.TestSyncCommitteeConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "3c1787117e28b213fe40635df9117366bfbc0667f43515d8fcb82affe8789edb",
+				PostDutyRunnerStateRoot: "941338be935cec87018b8c076d81ebd28a54e46097352fd4585a89a2bf59b3a2",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -62,15 +54,12 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					testingutils.SSVMsgAggregator(
-						testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.AggregatorMsgID,
-							Root:       sha256.Sum256(testingutils.TestAggregatorConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID,
+							testingutils.TestAggregatorConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "d7217dc0e005cc9128c61aece91e9ccae04de88916eec5e4ae50d34b1a1d5558",
+				PostDutyRunnerStateRoot: "4132ed5cdaf315342f3b411e9a1d136aafac743c75741617dc646a347ba279f3",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -84,15 +73,12 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
 					testingutils.SSVMsgProposer(
-						testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ProposerMsgID,
-							Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+							testingutils.TestProposerConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "fed1353e0e9b78bab550562d600f2ab4a51c493fa0ba937d2931389670bb8241",
+				PostDutyRunnerStateRoot: "6c08d5ea9d4ca4a67897ab9a1612dd31c8066cfaa67d7c811478d19d9ab2ff3d",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
@@ -106,15 +92,12 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
 					testingutils.SSVMsgProposer(
-						testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ProposerMsgID,
-							Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+							testingutils.TestProposerBlindedBlockConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "6e66de107885be6e2d60a1dc53a7bbb909eb44590cd88d71c25cfe9e23f18d79",
+				PostDutyRunnerStateRoot: "de242932fd91d9f6c8fc0abb005fcd254de7d7c05822495077658baf13b64de2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
@@ -125,15 +108,12 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(
-						testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.AttesterMsgID,
-							Root:       sha256.Sum256(testingutils.TestAttesterConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.AttesterMsgID,
+							testingutils.TestAttesterConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "6aeb76c29e065169fe1887e7bde9bae524966e193bb4dd95d6b43fcca62cfa37",
+				PostDutyRunnerStateRoot: "0d5b671f94eeddcb00025dd70fa52d259cafaa5f284645db4fd20e943e2e900d",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -145,15 +125,12 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 					testingutils.SSVMsgValidatorRegistration(
-						testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ValidatorRegistrationMsgID,
-							Root:       sha256.Sum256(testingutils.TestAttesterConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID,
+							testingutils.TestAttesterConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "c1962da29cafc215b3be80fee5c3403377918cd8f15a28ed3f0326fface3116b",
+				PostDutyRunnerStateRoot: "f36c8b537afaba0894dbc8c87cb94466d8ac2623e9283f1c584e3d544b5f2b88",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
