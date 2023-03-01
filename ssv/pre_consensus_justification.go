@@ -8,7 +8,7 @@ import (
 )
 
 func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMessage) bool {
-	rightQBFTHeight := b.QBFTController.CanStartInstance() == nil && b.QBFTController.Height+1 == msg.Message.Height
+	rightQBFTHeight := b.QBFTController.CanStartInstance() == nil && (b.QBFTController.Height == msg.Message.Height || b.QBFTController.Height+1 == msg.Message.Height)
 	hasData := len(msg.FullData) > 0
 	requiresPreConsensus := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
 	return rightQBFTHeight && hasData && requiresPreConsensus
