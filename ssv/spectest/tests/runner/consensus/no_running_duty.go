@@ -42,6 +42,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "5bdca31d56869d967df58ebedd89e130071a50dd92a482c79b01a342251b41e0",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "sync committee",
@@ -61,6 +62,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "b99077b644b160fd35d1a138a68ea9abf21990d74df22a1284e3f5cf2b527350",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "aggregator",
@@ -80,6 +82,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "8b1322320222b9894052c6c17d621535a37ece0d5ae7f324096a23c4c50a3b02",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "proposer",
@@ -99,6 +102,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "483814963f6daeb4a730d1adad7d0524eb4edf224f98e201b4261786a8f88d71",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -118,6 +122,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "dbbd72ea8094fb8be921f44f383fbd8880c05abf84d960a37a4fb28bbd743b18",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "attester",
@@ -137,6 +142,7 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "7508cb14dd0d5833d218141b74b6fd8c512a54e99143c7f91d754ea3f08f1bd6",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name:   "validator registration",
