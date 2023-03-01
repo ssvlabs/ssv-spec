@@ -77,7 +77,7 @@ func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationDifferentEpochMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "8537211ecec3ab151ca6d8e21294d64a8f828260cbc41bfa86e9e904dce801c2",
+				PostDutyRunnerStateRoot: "6243b3e1bab5196fd3a149de1bb7a05c38d37d7be665670f9e9280ae3869e6e0",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

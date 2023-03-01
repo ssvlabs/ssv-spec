@@ -62,17 +62,18 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *SignedParti
 		return nil
 	}
 
-	for _, root := range roots {
-		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
-		if err != nil {
-			return errors.Wrap(err, "could not reconstruct post consensus signature")
-		}
-		specSig := phase0.BLSSignature{}
-		copy(specSig[:], sig)
+	// only 1 root, verified in basePreConsensusMsgProcessing
+	root := roots[0]
+	// randao is relevant only for block proposals, no need to check type
+	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
+	if err != nil {
+		return errors.Wrap(err, "could not reconstruct randao sig")
+	}
+	specSig := phase0.BLSSignature{}
+	copy(specSig[:], fullSig)
 
-		if err := r.beacon.SubmitValidatorRegistration(r.BaseRunner.Share.ValidatorPubKey, r.BaseRunner.Share.FeeRecipientAddress, specSig); err != nil {
-			return errors.Wrap(err, "could not submit validator registration")
-		}
+	if err := r.beacon.SubmitValidatorRegistration(r.BaseRunner.Share.ValidatorPubKey, r.BaseRunner.Share.FeeRecipientAddress, specSig); err != nil {
+		return errors.Wrap(err, "could not submit validator registration")
 	}
 	r.GetState().Finished = true
 	return nil

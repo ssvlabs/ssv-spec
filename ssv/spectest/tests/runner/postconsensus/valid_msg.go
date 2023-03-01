@@ -149,7 +149,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "c1962da29cafc215b3be80fee5c3403377918cd8f15a28ed3f0326fface3116b",
+				PostDutyRunnerStateRoot: "f0457e51f1a098918479c5cadc369a221175e5f9f753fd1a7d73ecad6397ab9a",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

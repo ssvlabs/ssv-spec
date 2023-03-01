@@ -72,7 +72,7 @@ func TooFewRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationTooFewRootsMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "34b8788e99ec86321d758e7a55a7e688bb91cc15d0a8fd581cf28f0839601fbd",
+				PostDutyRunnerStateRoot: "254e575ba2361c64027aa0012fb76c939f118e687e9868692d115a3437b7b66d",
 				OutputMessages: []*ssv.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
