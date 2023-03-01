@@ -1,7 +1,6 @@
 package consensus
 
 import (
-	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -29,7 +28,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 		return r
 	}
 
-	err := "failed processing consensus message: could not process msg: invalid signed message: did not receive proposal for this round"
+	err := "failed processing consensus message: no running duty"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid post finish",
@@ -40,15 +39,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.SyncCommitteeContributionMsgID,
-							Root:       sha256.Sum256(testingutils.TestSyncCommitteeContributionConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID,
+							testingutils.TestSyncCommitteeContributionConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "dbc5a425e55618d83b245a71e1858419f8cd6d4b1b1022b68403da001c950601",
+				PostDutyRunnerStateRoot: "553f1bb89ca27f2aa29c0b3189a38c88db7737be68acbf01e5a5da9c393a8ff3",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -59,15 +55,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(
-						testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.SyncCommitteeMsgID,
-							Root:       sha256.Sum256(testingutils.TestSyncCommitteeConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID,
+							testingutils.TestSyncCommitteeConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "47bbee3eb9895a8e3a96dde11075ed8ceb879f5548259ad06684f9a7c66034dc",
+				PostDutyRunnerStateRoot: "0212769c14fefed5e3b3ae818c81599b179d4649ed72af6eed5ce8b35f5ddc42",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -78,15 +71,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(
-						testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.AggregatorMsgID,
-							Root:       sha256.Sum256(testingutils.TestAggregatorConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID,
+							testingutils.TestAggregatorConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "4a13cd997588052e33c46ecefee5621665d78dc4ffce1894a31cccf50124c2bc",
+				PostDutyRunnerStateRoot: "492178be09b36eaa78045a0d8fa57eeefe5ecfc156825a30ee82c1f3d7af417d",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -97,15 +87,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ProposerMsgID,
-							Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+							testingutils.TestProposerConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "11a906a8bd9216788e2789bea9d935149ed232b41026888291a97a827d32ed67",
+				PostDutyRunnerStateRoot: "0dafef7a86a129d11dc45d6b0fe486c048e8396595d48181e0bb355b441a982d",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -116,15 +103,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ProposerMsgID,
-							Root:       sha256.Sum256(testingutils.TestProposerBlindedBlockConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+							testingutils.TestProposerBlindedBlockConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "fc6c34a1ed8638d25426f5c6989e203c0e32016527f014d36e06dff79cb6a7ce",
+				PostDutyRunnerStateRoot: "98ba32735afd9148bd2aaf3c3eea7e3b0cd863f3fd757149b89e3f85744f5c57",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -135,15 +119,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(
-						testingutils.SignQBFTMsg(ks.Shares[4], types.OperatorID(4), &qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.AttesterMsgID,
-							Root:       sha256.Sum256(testingutils.TestAttesterConsensusDataByts),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.AttesterMsgID,
+							testingutils.TestAttesterConsensusDataByts,
+						), nil),
 				},
-				PostDutyRunnerStateRoot: "1978eeab8c871d7ee680f35dac401df80899efca5b6623f2ae1f6d1d64d05426",
+				PostDutyRunnerStateRoot: "bb56e847531f94f1a52e0bcd133e6b62df8e31eed3951d86bcb067d989670dea",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
