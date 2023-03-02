@@ -32,7 +32,7 @@ var AllTests = []tests.TestF{
 	decided.DuplicateMsg,
 	decided.DuplicateSigners,
 	decided.Invalid,
-	//decided.InvalidFullData, // TODO: implement
+	decided.InvalidFullData,
 	decided.InvalidValCheckData,
 	decided.PastInstance,
 	decided.UnknownSigner,
@@ -142,7 +142,7 @@ var AllTests = []tests.TestF{
 	proposal.DuplicateRCMsg,
 	proposal.InvalidPrepareJustificationValue,
 	proposal.InvalidPrepareJustificationRound,
-	//proposal.InvalidValueCheck, // TODO: implement
+	proposal.InvalidValueCheck,
 	proposal.MultiSigner,
 	proposal.PostDecided,
 	proposal.PostPrepared,
