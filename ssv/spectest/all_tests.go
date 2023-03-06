@@ -11,11 +11,14 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	//consensus.ValidPreConsensusJustifications(),
+	//consensus.InvalidPreConsensusJustifications(),
+
+	pre_consensus_justifications.FirstHeightNotStarted(),
+	pre_consensus_justifications.PreviousValidPreConsensus(),
 	pre_consensus_justifications.HappyFlow(),
 	pre_consensus_justifications.ValidNoRunningDuty(),
 	pre_consensus_justifications.Valid(),
-	//consensus.ValidPreConsensusJustifications(),
-	//consensus.InvalidPreConsensusJustifications(),
 
 	//runner.FullHappyFlow(),
 	//

@@ -76,6 +76,12 @@ Proposal messages
 var TestingProposalMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
 }
+var TestingProposalMessageWithID = func(sk *bls.SecretKey, id types.OperatorID, msgID types.MessageID) *qbft.SignedMessage {
+	ret := TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
+	ret.Message.Identifier = msgID[:]
+	ret.Signature = SignQBFTMsg(sk, id, &ret.Message).Signature
+	return ret
+}
 var TestingProposalMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, nil, nil)
 }

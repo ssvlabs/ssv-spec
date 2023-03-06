@@ -13,7 +13,7 @@ func ValidNoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
 		fullData, _ := obj.Encode()
-		root, _ := obj.HashTreeRoot()
+		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
 			Height:     1,
@@ -80,7 +80,7 @@ func ValidNoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterWithJustificationsConsensusData(ks), testingutils.AttesterMsgID), nil),
+					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "22297b32fbb3bdabdc5f1b6df5c6e2dfc241ad55f9069f00626b12ebae589912",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -91,7 +91,7 @@ func ValidNoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeWithJustificationsConsensusData(ks), testingutils.SyncCommitteeMsgID), nil),
+					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "c67d65112c567bd10a8305f14485f4fcd7eab5258478a75b848be5d8379bfa0b",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},

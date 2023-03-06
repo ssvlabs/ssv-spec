@@ -283,7 +283,7 @@ var TestingSyncCommitteeContributions = []*altair.SyncCommitteeContribution{
 		Signature:         spec.BLSSignature{},
 	},
 }
-var TestingSyncCommitteeContributionsConsensusData = func() types.Contributions {
+var TestingSyncCommitteeContributionsData = func() types.Contributions {
 	d := types.Contributions{}
 	d = append(d, &types.Contribution{
 		SelectionProofSig: TestingContributionProofsSigned[0],
@@ -300,8 +300,8 @@ var TestingSyncCommitteeContributionsConsensusData = func() types.Contributions 
 	return d
 }()
 
-var TestingSyncCommitteeContributionsConsensusDataBytes = func() []byte {
-	ret, _ := TestingSyncCommitteeContributionsConsensusData.MarshalSSZ()
+var TestingSyncCommitteeContributionsDataBytes = func() []byte {
+	ret, _ := TestingSyncCommitteeContributionsData.MarshalSSZ()
 	return ret
 }()
 
@@ -564,7 +564,7 @@ func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index spec.CommitteeIndex) (u
 
 // GetSyncCommitteeContribution returns
 func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, selectionProofs []spec.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec2.DataVersion, error) {
-	return &TestingSyncCommitteeContributionsConsensusData, spec2.DataVersionBellatrix, nil
+	return &TestingSyncCommitteeContributionsData, spec2.DataVersionBellatrix, nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network

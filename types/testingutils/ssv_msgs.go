@@ -129,7 +129,7 @@ var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encod
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeContributionDuty,
-	DataSSZ: TestingSyncCommitteeContributionsConsensusDataBytes,
+	DataSSZ: TestingSyncCommitteeContributionsDataBytes,
 }
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()
 
@@ -861,7 +861,7 @@ var TestContributionProofWithJustificationsConsensusData = func(ks *TestKeySet) 
 		Duty:                       TestingSyncCommitteeContributionDuty,
 		Version:                    spec2.DataVersionBellatrix,
 		PreConsensusJustifications: justif,
-		DataSSZ:                    TestingSyncCommitteeContributionsConsensusDataBytes,
+		DataSSZ:                    TestingSyncCommitteeContributionsDataBytes,
 	}
 }
 
@@ -1020,8 +1020,8 @@ var postConsensusSyncCommitteeContributionMsg = func(
 		// sign contrib and proof
 		contribAndProof := &altair.ContributionAndProof{
 			AggregatorIndex: validatorIndex,
-			Contribution:    &TestingSyncCommitteeContributionsConsensusData[index].Contribution,
-			SelectionProof:  TestingSyncCommitteeContributionsConsensusData[index].SelectionProofSig,
+			Contribution:    &TestingSyncCommitteeContributionsData[index].Contribution,
+			SelectionProof:  TestingSyncCommitteeContributionsData[index].SelectionProofSig,
 		}
 
 		signed, root, _ := signer.SignBeaconObject(contribAndProof, dContribAndProof, sk.GetPublicKey().Serialize(), types.DomainSyncCommitteeSelectionProof)
