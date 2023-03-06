@@ -255,6 +255,9 @@ var TestingCommitMultiSignerMessageWithHeight = func(sks []*bls.SecretKey, ids [
 var TestingCommitMultiSignerMessageWithHeightAndIdentifier = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height, identifier []byte) *qbft.SignedMessage {
 	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, identifier, TestingQBFTRootData, TestingQBFTFullData)
 }
+var TestingCommitMultiSignerMessageWithIdentifierAndFullData = func(sks []*bls.SecretKey, ids []types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
+	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, qbft.FirstHeight, identifier, sha256.Sum256(fullData), fullData)
+}
 var TestingCommitMultiSignerMessageWithParams = func(
 	sks []*bls.SecretKey,
 	ids []types.OperatorID,

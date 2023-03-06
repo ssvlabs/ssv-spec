@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // PostFinish tests a valid commit msg after runner finished
@@ -39,12 +40,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.SyncCommitteeContributionMsgID,
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "553f1bb89ca27f2aa29c0b3189a38c88db7737be68acbf01e5a5da9c393a8ff3",
+				PostDutyRunnerStateRoot: "4770e71fd7fadd8838ea2b374b66c268f28cdb6d2b0fb13dbe7f9a350e0e5000",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -55,12 +56,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.SyncCommitteeMsgID,
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "0212769c14fefed5e3b3ae818c81599b179d4649ed72af6eed5ce8b35f5ddc42",
+				PostDutyRunnerStateRoot: "8e3e1558982cf51ecb3f47d199bdf97f81e3832e6245135039277e7c4f6ad3f2",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -71,12 +72,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.AggregatorMsgID,
 							testingutils.TestAggregatorConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "492178be09b36eaa78045a0d8fa57eeefe5ecfc156825a30ee82c1f3d7af417d",
+				PostDutyRunnerStateRoot: "c6e3fe8fd7eb58e44c80697fdeac5d3744052e4935c75b822b6a92f59967a4be",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -87,12 +88,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.ProposerMsgID,
 							testingutils.TestProposerConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "0dafef7a86a129d11dc45d6b0fe486c048e8396595d48181e0bb355b441a982d",
+				PostDutyRunnerStateRoot: "b6004984d5ead1bda1669ff30f7187cda21053ef864f96f84f83f3bf07c40901",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -103,12 +104,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.ProposerMsgID,
 							testingutils.TestProposerBlindedBlockConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "98ba32735afd9148bd2aaf3c3eea7e3b0cd863f3fd757149b89e3f85744f5c57",
+				PostDutyRunnerStateRoot: "5faf7aa76c33d5daa7b116399cc5914e2aec1d1d7fc1e3b422ceee4939160902",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -119,12 +120,12 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.AttesterMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.AttesterMsgID,
 							testingutils.TestAttesterConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "bb56e847531f94f1a52e0bcd133e6b62df8e31eed3951d86bcb067d989670dea",
+				PostDutyRunnerStateRoot: "24f92801f570d569fa9a0f903bb1c0deab2edea965d2ce46e1b6c7e4225b97a4",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
