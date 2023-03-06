@@ -62,6 +62,15 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
 
+	// isFutureMessage returns true if message height is from a future instance.
+	// It takes into consideration a special case where FirstHeight didn't start but the c.Height == FirstHeight (since we bump height on start instance)
+	var isFutureMessage = func(msgHeight Height) bool {
+		if c.Height == FirstHeight && c.StoredInstances.FindInstance(c.Height) == nil {
+			return true
+		}
+		return msgHeight > c.Height
+	}
+
 	/**
 	Main controller processing flow
 	_______________________________
@@ -71,7 +80,7 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	*/
 	if IsDecidedMsg(c.Share, msg) {
 		return c.UponDecided(msg)
-	} else if msg.Message.Height > c.Height {
+	} else if isFutureMessage(msg.Message.Height) {
 		return c.UponFutureMsg(msg)
 	} else {
 		return c.UponExistingInstanceMsg(msg)
