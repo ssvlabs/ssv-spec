@@ -2,9 +2,11 @@ package testingutils
 
 import (
 	"crypto/sha256"
+
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 var TestingIdentifier = []byte{1, 2, 3, 4}
@@ -164,6 +166,18 @@ var TestingPrepareMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorI
 }
 var TestingPrepareMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, DifferentRoot)
+}
+var TestingPrepareMessageWithFullData = func(sk *bls.SecretKey, id types.OperatorID, fullData []byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.PrepareMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: TestingIdentifier,
+		Root:       sha256.Sum256(fullData),
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = fullData
+	return ret
 }
 var TestingPrepareMessageWithParams = func(
 	sk *bls.SecretKey,
