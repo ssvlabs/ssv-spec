@@ -110,9 +110,9 @@ var AllTests = []tests.TestF{
 	messages.CreateRoundChangePreviouslyPrepared,
 	messages.RoundChangeDataEncoding,
 	messages.SignedMessageSigner0,
-	//messages.MarshaJustifications,  // TODO: implement
-	//messages.MarshaJustificationsWithFullData,  // TODO: implement
-	//messages.UnMarshaJustifications,  // TODO: implement
+	messages.MarshaJustifications,
+	messages.MarshaJustificationsWithFullData,
+	messages.UnMarshaJustifications,
 
 	tests.HappyFlow,
 	tests.SevenOperators,
