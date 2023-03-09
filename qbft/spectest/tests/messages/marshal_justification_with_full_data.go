@@ -11,12 +11,17 @@ import (
 func MarshalJustificationsWithFullData() *tests.MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	encodedRCMsg, _ := testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], 1, 2).MarshalSSZ()
-	encodedPrepareMsg, _ := testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)).MarshalSSZ()
+	rcMsgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], 1, 2),
+	}
+
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+	}
 
 	msg := testingutils.TestingProposalMessageWithParams(
 		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
-		[][]byte{encodedRCMsg}, [][]byte{encodedPrepareMsg})
+		testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs))
 
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()

@@ -206,6 +206,23 @@ var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id type
 	ret.FullData = []byte{}
 	return ret
 }
+var TestingPrepareMessageWithRoundAndFullData = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	round qbft.Round,
+	fullData []byte,
+) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.PrepareMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      round,
+		Identifier: TestingIdentifier,
+		Root:       sha256.Sum256(fullData),
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = fullData
+	return ret
+}
 var TestingPrepareMessageWithParams = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -376,6 +393,23 @@ var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *bls.SecretKey, i
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = TestingQBFTFullData
+	return ret
+}
+var TestingRoundChangeMessageWithRoundAndFullData = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	round qbft.Round,
+	fullData []byte,
+) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.RoundChangeMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      round,
+		Identifier: TestingIdentifier,
+		Root:       sha256.Sum256(fullData),
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = fullData
 	return ret
 }
 var TestingRoundChangeMessageWithParams = func(

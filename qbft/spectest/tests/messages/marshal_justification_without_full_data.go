@@ -7,16 +7,16 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// MarshalJustifications tests marshalling justifications
-func MarshalJustifications() *tests.MsgSpecTest {
+// MarshalJustificationsWithoutFullData tests marshalling justifications without full data.
+func MarshalJustificationsWithoutFullData() *tests.MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], 1, 2),
+		testingutils.TestingRoundChangeMessageWithRoundAndFullData(ks.Shares[1], 1, 2, nil),
 	}
 
 	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessageWithRoundAndFullData(ks.Shares[1], types.OperatorID(1), 1, nil),
 	}
 
 	msg := testingutils.TestingProposalMessageWithParams(
