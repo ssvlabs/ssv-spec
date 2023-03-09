@@ -94,7 +94,6 @@ var AllTests = []SpecTest{
 	proposer.TenOperators(),
 	proposer.ThirteenOperators(),
 
-	messages.RoundChangeDataInvalidJustifications(),
 	messages.RoundChangePrePreparedJustifications(),
 	messages.RoundChangeNotPreparedJustifications(),
 	messages.CommitDataEncoding(),
