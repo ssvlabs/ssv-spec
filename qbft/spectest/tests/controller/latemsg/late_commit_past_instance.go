@@ -13,7 +13,7 @@ func LateCommitPastInstance() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, 5, ks)
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
 
 	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]

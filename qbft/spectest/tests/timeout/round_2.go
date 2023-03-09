@@ -16,9 +16,17 @@ func Round2() *SpecTest {
 	return &SpecTest{
 		Name:     "round 2",
 		Pre:      pre,
-		PostRoot: "d76f5d27ebdc1f33ed4af370fc7edb8a117d29a759597dbdf45560095a28151e",
+		PostRoot: "beaef03728ef5dadfd5daf11046923930e787f0d77b824326bd7ec65c2338b45",
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 3),
+			testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
+				MsgType:                  qbft.RoundChangeMsgType,
+				Height:                   qbft.FirstHeight,
+				Round:                    3,
+				Identifier:               testingutils.TestingIdentifier,
+				Root:                     [32]byte{},
+				RoundChangeJustification: [][]byte{},
+				PrepareJustification:     [][]byte{},
+			}),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 1,

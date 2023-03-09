@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"errors"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -23,10 +22,6 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 		if err := msg.Validate(); err != nil {
 			lastErr = err
 			continue
-		}
-
-		if msg.Message.MsgType == qbft.RoundChangeMsgType && len(msg.Message.RoundChangeJustification) == 0 {
-			lastErr = errors.New("round change justification invalid")
 		}
 
 		if len(test.EncodedMessages) > 0 {

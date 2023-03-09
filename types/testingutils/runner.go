@@ -221,7 +221,8 @@ var SSVDecidingMsgs = func(consensusData *types.ConsensusData, ks *TestKeySet, r
 }
 
 var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
-	r, _ := consensusData.HashTreeRoot()
+	byts, _ := consensusData.Encode()
+	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
 
 	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)

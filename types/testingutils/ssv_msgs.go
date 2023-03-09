@@ -938,6 +938,10 @@ var postConsensusSyncCommitteeContributionMsg = func(
 			SelectionProof:  TestingSyncCommitteeContributionsConsensusData[index].SelectionProofSig,
 		}
 
+		if wrongRoot {
+			contribAndProof.AggregatorIndex = 100
+		}
+
 		signed, root, _ := signer.SignBeaconObject(contribAndProof, dContribAndProof, sk.GetPublicKey().Serialize(), types.DomainSyncCommitteeSelectionProof)
 		if wrongBeaconSig {
 			signed, root, _ = signer.SignBeaconObject(contribAndProof, dContribAndProof, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainSyncCommitteeSelectionProof)

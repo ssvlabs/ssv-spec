@@ -21,10 +21,11 @@ func RoundChangePartialQuorum() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change partial quorum",
 		Pre:           pre,
-		PostRoot:      "6635a0d7d840285c6adaf0362ded6a47bada8d8676f95e81baff69f2ee1b5818",
+		PostRoot:      "a91c62dca4813bc577f3441b7ce9e221fb96af65aa14b56af88af69c784b586e",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
+			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+				[32]byte{}, 0, [][]byte{}),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 1,

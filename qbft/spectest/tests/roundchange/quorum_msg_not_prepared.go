@@ -28,11 +28,12 @@ func QuorumMsgNotPrepared() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum msg not prepared",
 		Pre:           pre,
-		PostRoot:      "7a694445a4a45867d4b1158b0cdaa92e5e1b6e5541a772ee7f30ce7e85947b93",
+		PostRoot:      "ce52b74e850002c75ea9a52749285b8778c0411989e2e0547547ed26bdb31211",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
-				testingutils.MarshalJustifications(prepareMsgs)),
+			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+				testingutils.TestingQBFTRootData,
+				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
 }
