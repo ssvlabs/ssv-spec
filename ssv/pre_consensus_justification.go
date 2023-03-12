@@ -15,6 +15,7 @@ func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMes
 }
 
 func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData) error {
+	test invalid consensus data
 	if err := data.Validate(); err != nil {
 		return err
 	}
@@ -26,6 +27,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 
 	signers := make(map[types.OperatorID]bool)
 	roots := make(map[[32]byte]bool)
+	rootCount := 0
 	for i, msg := range data.PreConsensusJustifications {
 		if err := msg.Validate(); err != nil {
 			return err
@@ -38,22 +40,37 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 			return errors.New("duplicate signer")
 		}
 
+		// verify all justifications have the same root count
+		if i == 0 {
+			rootCount = len(msg.Message.Messages)
+		} else {
+			if rootCount != len(msg.Message.Messages) {
+				return errors.New("inconsistent root count")
+			}
+		}
+
 		// validate roots
 		for _, msgRoot := range msg.Message.Messages {
 			// validate roots
 			if i == 0 {
-				// record roots
-				if !roots[msgRoot.SigningRoot] {
-					roots[msgRoot.SigningRoot] = true
+				// check signer did not sign duplicate root
+				if roots[msgRoot.SigningRoot] {
+					return errors.New("duplicate signed root")
 				}
+
+				// record roots
+				roots[msgRoot.SigningRoot] = true
 			} else {
 				// compare roots
 				if !roots[msgRoot.SigningRoot] {
-					return errors.New("invalid roots")
+					return errors.New("inconsistent roots")
 				}
 			}
 		}
 
+		test invalid sig
+		test unknown signer
+		test invalid slot
 		// verify sigs and duty.slot == msg.slot
 		if err := b.validatePartialSigMsgForSlot(msg, data.Duty.Slot); err != nil {
 			return err

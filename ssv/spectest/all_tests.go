@@ -11,9 +11,12 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	//consensus.ValidPreConsensusJustifications(),
-	//consensus.InvalidPreConsensusJustifications(),
-
+	pre_consensus_justifications.InconsistentRootCount(),
+	pre_consensus_justifications.DuplicateRoots(),
+	pre_consensus_justifications.InconsistentRoots(),
+	pre_consensus_justifications.DuplicateJustificationSigner(),
+	pre_consensus_justifications.InvalidJustification(),
+	pre_consensus_justifications.MissingQuorum(),
 	pre_consensus_justifications.FirstHeightNotStarted(),
 	pre_consensus_justifications.PreviousValidPreConsensus(),
 	pre_consensus_justifications.HappyFlow(),
