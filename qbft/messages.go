@@ -109,8 +109,7 @@ func (msg *Message) Decode(data []byte) error {
 
 // GetRoot returns the root used for signing and verification
 func (msg *Message) GetRoot() ([32]byte, error) {
-	r, err := msg.HashTreeRoot()
-	return r, err
+	return msg.HashTreeRoot()
 }
 
 // Validate returns error if msg validation doesn't pass.
