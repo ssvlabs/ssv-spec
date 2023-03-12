@@ -21,6 +21,6 @@ func SomeAggregatorQuorum() *SyncCommitteeAggregatorProofSpecTest {
 			hex.EncodeToString(testingutils.TestingContributionProofsSigned[1][:]): false,
 			hex.EncodeToString(testingutils.TestingContributionProofsSigned[2][:]): true,
 		},
-		PostDutyRunnerStateRoot: "d04aea90c1accad2b1e36c1ba7b6132a6d88561cc32cbd1e5817a21bb923d004",
+		PostDutyRunnerStateRoot: "71b26b4c4060c79425eb22e78cfbd8ed0076771f1088b8a15c6e2bfdf3b325d8",
 	}
 }

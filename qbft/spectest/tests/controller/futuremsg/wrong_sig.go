@@ -8,22 +8,17 @@ import (
 
 // WrongSig tests future msg with invalid sig
 func WrongSig() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 
 	return &ControllerSyncSpecTest{
 		Name: "future msg wrong sig",
 		InputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(ks.Shares[3], 2, &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     10,
-				Round:      3,
-				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-			}),
+			testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 2, 3, 10,
+				identifier[:], testingutils.TestingQBFTRootData),
 		},
 		SyncDecidedCalledCnt: 0,
-		ControllerPostRoot:   "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+		ControllerPostRoot:   "3b9cd21ca426a4e9e3188e0c8d931861a8f263636c4c0369da84fe9a99fb2fa5",
 		ExpectedError:        "invalid future msg: msg signature invalid: failed to verify signature",
 	}
 }

@@ -16,7 +16,7 @@ type MsgProcessingSpecTest struct {
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
-	OutputMessages         []*ssv.SignedPartialSignatureMessage
+	OutputMessages         []*types.SignedPartialSignatureMessage
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
@@ -57,7 +57,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	// post root
 	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
-	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
+	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
 }
 
 func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
@@ -94,7 +94,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 			continue
 		}
 
-		msg1 := &ssv.SignedPartialSignatureMessage{}
+		msg1 := &types.SignedPartialSignatureMessage{}
 		require.NoError(t, msg1.Decode(msg.Data))
 		msg2 := test.OutputMessages[index]
 		require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))
@@ -104,20 +104,20 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		for i, partialSigMsg2 := range msg2.Message.Messages {
 			r2, err := partialSigMsg2.GetRoot()
 			require.NoError(t, err)
-			if _, found := roots[hex.EncodeToString(r2)]; !found {
-				roots[hex.EncodeToString(r2)] = ""
+			if _, found := roots[hex.EncodeToString(r2[:])]; !found {
+				roots[hex.EncodeToString(r2[:])] = ""
 			} else {
-				roots[hex.EncodeToString(r2)] = hex.EncodeToString(r2)
+				roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
 			}
 
 			partialSigMsg1 := msg1.Message.Messages[i]
 			r1, err := partialSigMsg1.GetRoot()
 			require.NoError(t, err)
 
-			if _, found := roots[hex.EncodeToString(r1)]; !found {
-				roots[hex.EncodeToString(r1)] = ""
+			if _, found := roots[hex.EncodeToString(r1[:])]; !found {
+				roots[hex.EncodeToString(r1[:])] = ""
 			} else {
-				roots[hex.EncodeToString(r1)] = hex.EncodeToString(r1)
+				roots[hex.EncodeToString(r1[:])] = hex.EncodeToString(r1[:])
 			}
 		}
 		for k, v := range roots {

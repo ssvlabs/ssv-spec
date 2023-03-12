@@ -61,12 +61,12 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 		}
 		return dutyRunner.ProcessConsensus(signedMsg)
 	case types.SSVPartialSignatureMsgType:
-		signedMsg := &SignedPartialSignatureMessage{}
+		signedMsg := &types.SignedPartialSignatureMessage{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
-		if signedMsg.Message.Type == PostConsensusPartialSig {
+		if signedMsg.Message.Type == types.PostConsensusPartialSig {
 			return dutyRunner.ProcessPostConsensus(signedMsg)
 		}
 		return dutyRunner.ProcessPreConsensus(signedMsg)

@@ -32,7 +32,7 @@ const MaxEffectiveBalanceInGwei uint64 = 32000000000
 const BLSWithdrawalPrefixByte = byte(0)
 
 // BeaconRole type of the validator role for a specific duty
-type BeaconRole int
+type BeaconRole uint64
 
 // String returns name of the role
 func (r BeaconRole) String() string {
@@ -68,7 +68,7 @@ type Duty struct {
 	// Type is the duty type (attest, propose)
 	Type BeaconRole
 	// PubKey is the public key of the validator that should attest.
-	PubKey spec.BLSPubKey
+	PubKey spec.BLSPubKey `ssz-size:"48"`
 	// Slot is the slot in which the validator should attest.
 	Slot spec.Slot
 	// ValidatorIndex is the index of the validator that should attest.
@@ -82,7 +82,7 @@ type Duty struct {
 	// ValidatorCommitteeIndex is the index of the validator in the list of validators in the committee.
 	ValidatorCommitteeIndex uint64
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
-	ValidatorSyncCommitteeIndices []spec.CommitteeIndex
+	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
 }
 
 // Available networks.

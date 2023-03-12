@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/binary"
+	"fmt"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	ssz "github.com/ferranbt/fastssz"
 )
@@ -78,4 +79,46 @@ func (b SSZTransactions) HashTreeRootWith(hh ssz.HashWalker) error {
 // HashTreeRoot --
 func (b SSZTransactions) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(b)
+}
+
+// SSZ32Bytes --
+type SSZ32Bytes [32]byte
+
+func (b SSZ32Bytes) HashTreeRoot() ([32]byte, error) {
+	return ssz.HashWithDefaultHasher(b)
+}
+
+func (b SSZ32Bytes) GetTree() (*ssz.Node, error) {
+	return ssz.ProofTree(b)
+}
+
+func (b SSZ32Bytes) HashTreeRootWith(hh ssz.HashWalker) error {
+	indx := hh.Index()
+	hh.PutBytes(b[:])
+	hh.Merkleize(indx)
+	return nil
+}
+
+// UnmarshalSSZ --
+func (b SSZ32Bytes) UnmarshalSSZ(buf []byte) error {
+	if len(buf) != b.SizeSSZ() {
+		return fmt.Errorf("expected buffer of length %d receiced %d", b.SizeSSZ(), len(buf))
+	}
+	copy(b[:], buf[:])
+	return nil
+}
+
+// MarshalSSZTo --
+func (b SSZ32Bytes) MarshalSSZTo(dst []byte) ([]byte, error) {
+	return append(dst, b[:]...), nil
+}
+
+// MarshalSSZ --
+func (b SSZ32Bytes) MarshalSSZ() ([]byte, error) {
+	return b[:], nil
+}
+
+// SizeSSZ returns the size of the serialized object.
+func (b SSZ32Bytes) SizeSSZ() int {
+	return 32
 }

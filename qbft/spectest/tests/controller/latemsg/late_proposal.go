@@ -10,17 +10,11 @@ import (
 
 // LateProposal tests process late proposal msg for an instance which just decided
 func LateProposal() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, ks)
-	msgs = append(msgs, testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: identifier[:],
-		Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-	}))
+	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+	msgs = append(msgs, testingutils.TestingProposalMessage(ks.Shares[1], 1))
 
 	return &tests.ControllerSpecTest{
 		Name: "late proposal",
@@ -29,20 +23,14 @@ func LateProposal() *tests.ControllerSpecTest {
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
-					BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+					),
 				},
-				ControllerPostRoot: "f82a7925fa41a67b245d6f97b13c1d272632ac4efe0380847ac8c9378f5bb04b",
+				ControllerPostRoot: "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97",
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: proposal is not valid with current state",

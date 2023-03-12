@@ -2,7 +2,7 @@ package messages
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -11,11 +11,11 @@ func InvalidMsg() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Message.Messages = append(msg.Message.Messages, &ssv.PartialSignatureMessage{})
+	msg.Message.Messages = append(msg.Message.Messages, &types.PartialSignatureMessage{})
 
 	return &MsgSpecTest{
 		Name:          "invalid message",
-		Messages:      []*ssv.SignedPartialSignatureMessage{msg},
+		Messages:      []*types.SignedPartialSignatureMessage{msg},
 		ExpectedError: "inconsistent signers",
 	}
 }

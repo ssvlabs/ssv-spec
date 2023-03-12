@@ -4,15 +4,16 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-	"encoding/json"
 )
 
 // ValidatorPK is an eth2 validator public key
 type ValidatorPK []byte
 
 const (
+	domainSize       = 4
+	domainStartPos   = 0
 	pubKeySize       = 48
-	pubKeyStartPos   = 0
+	pubKeyStartPos   = domainStartPos + domainSize
 	roleTypeSize     = 4
 	roleTypeStartPos = pubKeyStartPos + pubKeySize
 )
@@ -30,7 +31,11 @@ func (vid ValidatorPK) MessageIDBelongs(msgID MessageID) bool {
 }
 
 // MessageID is used to identify and route messages to the right validator and Runner
-type MessageID [52]byte
+type MessageID [56]byte
+
+func (msg MessageID) GetDomain() []byte {
+	return msg[domainStartPos : domainStartPos+domainSize]
+}
 
 func (msg MessageID) GetPubKey() []byte {
 	return msg[pubKeyStartPos : pubKeyStartPos+pubKeySize]
@@ -41,11 +46,11 @@ func (msg MessageID) GetRoleType() BeaconRole {
 	return BeaconRole(binary.LittleEndian.Uint32(roleByts))
 }
 
-func NewMsgID(pk []byte, role BeaconRole) MessageID {
+func NewMsgID(domain DomainType, pk []byte, role BeaconRole) MessageID {
 	roleByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 
-	return newMessageID(pk, roleByts)
+	return newMessageID(domain[:], pk, roleByts)
 }
 
 func (msgID MessageID) String() string {
@@ -53,14 +58,19 @@ func (msgID MessageID) String() string {
 }
 
 func MessageIDFromBytes(mid []byte) MessageID {
-	if len(mid) < pubKeySize+roleTypeSize {
+	if len(mid) < domainSize+pubKeySize+roleTypeSize {
 		return MessageID{}
 	}
-	return newMessageID(mid[pubKeyStartPos:pubKeyStartPos+pubKeySize], mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize])
+	return newMessageID(
+		mid[domainStartPos:domainStartPos+domainSize],
+		mid[pubKeyStartPos:pubKeyStartPos+pubKeySize],
+		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
+	)
 }
 
-func newMessageID(pk, roleByts []byte) MessageID {
+func newMessageID(domain, pk, roleByts []byte) MessageID {
 	mid := MessageID{}
+	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
 	copy(mid[pubKeyStartPos:pubKeyStartPos+pubKeySize], pk)
 	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
 	return mid
@@ -79,7 +89,7 @@ const (
 
 type Root interface {
 	// GetRoot returns the root used for signing and verification
-	GetRoot() ([]byte, error)
+	GetRoot() ([32]byte, error)
 }
 
 // MessageSignature includes all functions relevant for a signed message (QBFT message, post consensus msg, etc)
@@ -87,17 +97,13 @@ type MessageSignature interface {
 	Root
 	GetSignature() Signature
 	GetSigners() []OperatorID
-	// MatchedSigners returns true if the provided signer ids are equal to GetSignerIds() without order significance
-	MatchedSigners(ids []OperatorID) bool
-	// Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
-	Aggregate(signedMsg MessageSignature) error
 }
 
 // SSVMessage is the main message passed within the SSV network, it can contain different types of messages (QBTF, Sync, etc.)
 type SSVMessage struct {
 	MsgType MsgType
-	MsgID   MessageID
-	Data    []byte
+	MsgID   MessageID `ssz-size:"56"`
+	Data    []byte    `ssz-max:"1074003968"` // 2^30+2^18
 }
 
 func (msg *SSVMessage) GetType() MsgType {
@@ -116,10 +122,10 @@ func (msg *SSVMessage) GetData() []byte {
 
 // Encode returns a msg encoded bytes or error
 func (msg *SSVMessage) Encode() ([]byte, error) {
-	return json.Marshal(msg)
+	return msg.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (msg *SSVMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &msg)
+	return msg.UnmarshalSSZ(data)
 }

@@ -11,9 +11,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type SignatureDomain []byte
-type Signature []byte
-
 // VerifyByOperators verifies signature by the provided operators
 func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, sigType SignatureType, operators []*Operator) error {
 	// decode sig
@@ -144,12 +141,12 @@ func ComputeSigningRoot(data Root, domain SignatureDomain) ([]byte, error) {
 		return nil, errors.Wrap(err, "could not get root from Root")
 	}
 
-	ret := sha256.Sum256(append(dataRoot, domain...))
+	ret := sha256.Sum256(append(dataRoot[:], domain...))
 	return ret[:], nil
 }
 
 func ComputeSignatureDomain(domain DomainType, sigType SignatureType) SignatureDomain {
-	return SignatureDomain(append(domain, sigType[:]...))
+	return SignatureDomain(append(domain[:], sigType[:]...))
 }
 
 // ReconstructSignatures receives a map of user indexes and serialized bls.Sign.
@@ -181,14 +178,14 @@ func ReconstructSignatures(signatures map[OperatorID][]byte) (*bls.Sign, error) 
 	return &reconstructedSig, err
 }
 
-func VerifyReconstructedSignature(sig *bls.Sign, validatorPubKey, root []byte) error {
+func VerifyReconstructedSignature(sig *bls.Sign, validatorPubKey []byte, root [32]byte) error {
 	pk := &bls.PublicKey{}
 	if err := pk.Deserialize(validatorPubKey); err != nil {
 		return errors.Wrap(err, "could not deserialize validator pk")
 	}
 
 	// verify reconstructed sig
-	if res := sig.VerifyByte(pk, root); !res {
+	if res := sig.VerifyByte(pk, root[:]); !res {
 		return errors.New("could not reconstruct a valid signature")
 	}
 	return nil

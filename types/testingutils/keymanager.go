@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -35,7 +34,7 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		keys:           map[string]*bls.SecretKey{},
 		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 		encryptionKeys: nil,
-		domain:         types.PrimusTestnet,
+		domain:         TestingSSVDomainType,
 
 		slashableDataRoots: slashableDataRoots,
 	}
@@ -98,24 +97,24 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 }
 
 // IsBeaconBlockSlashable returns error if the given block is slashable
-func (km *testingKeyManager) IsBeaconBlockSlashable(pk []byte, block *bellatrix.BeaconBlock) error {
+func (km *testingKeyManager) IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error {
 	return nil
 }
 
-func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (types.Signature, []byte, error) {
+func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (types.Signature, [32]byte, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		r, err := types.ComputeETHSigningRoot(obj, domain)
 		if err != nil {
-			return nil, nil, errors.Wrap(err, "could not compute signing root")
+			return nil, [32]byte{}, errors.Wrap(err, "could not compute signing root")
 		}
 
 		sig := k.SignByte(r[:])
 		blsSig := spec.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
-		return sig.Serialize(), r[:], nil
+		return sig.Serialize(), r, nil
 	}
-	return nil, nil, errors.New("pk not found")
+	return nil, [32]byte{}, errors.New("pk not found")
 }
 
 // SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
@@ -128,7 +127,7 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 	if sk == nil {
 		return nil, errors.New(fmt.Sprintf("unable to find ecdsa key for address %v", address.String()))
 	}
-	sig, err := crypto.Sign(root, sk)
+	sig, err := crypto.Sign(root[:], sk)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +135,7 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 }
 
 func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {
-	panic("implemet")
+	panic("implement")
 }
 
 func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {

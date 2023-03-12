@@ -1,27 +1,25 @@
 package consensusdata
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// Encoding tests encoding of a ConsensusData struct
-func Encoding() *EncodingSpecTest {
-	data := &types.ConsensusData{
-		Duty:                   testingutils.TestingAttesterDuty,
-		AttestationData:        testingutils.TestingAttestationData,
-		BlockData:              testingutils.TestingBeaconBlock,
-		AggregateAndProof:      testingutils.TestingAggregateAndProof,
-		SyncCommitteeBlockRoot: testingutils.TestingSyncCommitteeBlockRoot,
-		SyncCommitteeContribution: types.ContributionsMap{
-			testingutils.TestingContributionProofsSigned[0]: testingutils.TestingSyncCommitteeContributions[0],
-			testingutils.TestingContributionProofsSigned[1]: testingutils.TestingSyncCommitteeContributions[1],
-			testingutils.TestingContributionProofsSigned[2]: testingutils.TestingSyncCommitteeContributions[2],
-		},
+// Encoding tests encoding of a ssv message
+func Encoding() *EncodingTest {
+	msg := testingutils.TestSyncCommitteeContributionConsensusData
+
+	byts, err := msg.Encode()
+	if err != nil {
+		panic(err.Error())
+	}
+	root, err := msg.HashTreeRoot()
+	if err != nil {
+		panic(err.Error())
 	}
 
-	return &EncodingSpecTest{
-		Name: "encoding ConsensusData",
-		Obj:  data,
+	return &EncodingTest{
+		Name:         "ConsensusData encoding",
+		Data:         byts,
+		ExpectedRoot: root,
 	}
 }

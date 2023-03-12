@@ -10,75 +10,29 @@ import (
 
 // CurrentInstance tests a decided msg received for current running instance
 func CurrentInstance() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
+
 	return &tests.ControllerSpecTest{
 		Name: "decide current instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-						MsgType:    qbft.ProposalMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-					}),
+					testingutils.TestingProposalMessage(ks.Shares[1], 1),
 
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-						MsgType:    qbft.PrepareMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-					}),
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-						MsgType:    qbft.PrepareMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-					}),
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-						MsgType:    qbft.PrepareMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-					}),
+					testingutils.TestingPrepareMessage(ks.Shares[1], 1),
+					testingutils.TestingPrepareMessage(ks.Shares[2], 2),
+					testingutils.TestingPrepareMessage(ks.Shares[3], 3),
 
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-					}),
-
-					testingutils.MultiSignQBFTMsg(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+					testingutils.TestingCommitMessage(ks.Shares[1], 1),
+					testingutils.TestingCommitMessage(ks.Shares[2], 2),
+					testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: "12fb900494537e891f774dacdfc1ea1ae9e11fdb099221eed157b0b517672cae",
+				ControllerPostRoot: "9a5519c1584d326e7c20cb1a824af5dc7139bac2f4d1ced2ff13b5aacfe9ab33",
 			},
 		},
 	}

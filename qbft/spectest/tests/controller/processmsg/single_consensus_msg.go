@@ -3,28 +3,21 @@ package processmsg
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // SingleConsensusMsg tests process msg of a single msg
 func SingleConsensusMsg() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "single consensus msg",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], 1, &qbft.Message{
-						MsgType:    qbft.ProposalMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
-						Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-					}),
+					testingutils.TestingProposalMessage(ks.Shares[1], 1),
 				},
-				ControllerPostRoot: "ede93c772804aff585990dc09b29d841ce55e024831ea05674960b126922a0af",
+				ControllerPostRoot: "c9258515e169e330c535d38068f2dc6bf3f61e6d36a941ea41a0133435afae22",
 			},
 		},
 	}

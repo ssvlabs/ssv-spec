@@ -19,7 +19,7 @@ func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
 	}
 }
 
-func (ps *PartialSigContainer) AddSignature(sigMsg *PartialSignatureMessage) {
+func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessage) {
 	if ps.Signatures[rootHex(sigMsg.SigningRoot)] == nil {
 		ps.Signatures[rootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID][]byte)
 	}
@@ -31,7 +31,7 @@ func (ps *PartialSigContainer) AddSignature(sigMsg *PartialSignatureMessage) {
 	}
 }
 
-func (ps *PartialSigContainer) ReconstructSignature(root, validatorPubKey []byte) ([]byte, error) {
+func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte) ([]byte, error) {
 	// Reconstruct signatures
 	signature, err := types.ReconstructSignatures(ps.Signatures[rootHex(root)])
 	if err != nil {
@@ -43,10 +43,10 @@ func (ps *PartialSigContainer) ReconstructSignature(root, validatorPubKey []byte
 	return signature.Serialize(), nil
 }
 
-func (ps *PartialSigContainer) HasQuorum(root []byte) bool {
+func (ps *PartialSigContainer) HasQuorum(root [32]byte) bool {
 	return uint64(len(ps.Signatures[rootHex(root)])) >= ps.Quorum
 }
 
-func rootHex(r []byte) string {
-	return hex.EncodeToString(r)
+func rootHex(r [32]byte) string {
+	return hex.EncodeToString(r[:])
 }

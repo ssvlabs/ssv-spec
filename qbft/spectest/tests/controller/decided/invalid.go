@@ -10,18 +10,13 @@ import (
 
 // Invalid tests decided msg where msg.validate() != nil
 func Invalid() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.MultiSignQBFTMsg(
+
+	msg := testingutils.TestingCommitMultiSignerMessageWithHeight(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 		[]types.OperatorID{1, 2, 3},
-		&qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     10,
-			Round:      qbft.FirstRound,
-			Identifier: identifier[:],
-			Data:       []byte{1, 2, 3, 4},
-		})
+		10,
+	)
 	msg.Signers = []types.OperatorID{}
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid msg",
@@ -31,7 +26,7 @@ func Invalid() *tests.ControllerSpecTest {
 				InputMessages: []*qbft.SignedMessage{
 					msg,
 				},
-				ControllerPostRoot: "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "invalid future msg: invalid decided msg: message signers is empty",

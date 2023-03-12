@@ -2,7 +2,7 @@ package messages
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -19,7 +19,7 @@ func MessageSigner0() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "message signer 0",
-		Messages: []*ssv.SignedPartialSignatureMessage{
+		Messages: []*types.SignedPartialSignatureMessage{
 			msgPre,
 			msgPost,
 		},

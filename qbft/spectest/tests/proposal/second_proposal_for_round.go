@@ -10,35 +10,19 @@ import (
 // SecondProposalForRound tests a second proposal (by same signer) for current round. state.ProposalAcceptedForCurrentRound != nil && signedProposal.Message.Round == state.Round
 func SecondProposalForRound() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-		}),
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 3}, nil, nil),
-		}),
+		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+		// TODO: originally using different value
+		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "second proposal for round",
 		Pre:           pre,
-		PostRoot:      "29a2c55b35764defde05fe670fb4ba60889c30745752e22a41e3e6f6e6dbbc2b",
+		PostRoot:      "ce6d77d0602c7a368a6f86a32d70495b47e6d9fcfd2f5ad0d2952a3f5ac963e7",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      qbft.FirstRound,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-			}),
+			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 		},
 		ExpectedError: "invalid signed message: proposal is not valid with current state",
 	}

@@ -49,7 +49,7 @@ func (r *ValidatorRegistrationRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, _, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing validator registration message")
@@ -68,7 +68,7 @@ func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *qbft.SignedMes
 	return errors.New("no consensus phase for validator registration")
 }
 
-func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	return errors.New("no post consensus phase for validator registration")
 }
 
@@ -96,9 +96,9 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "could not sign validator registration")
 	}
-	msgs := PartialSignatureMessages{
-		Type:     ValidatorRegistrationPartialSig,
-		Messages: []*PartialSignatureMessage{msg},
+	msgs := types.PartialSignatureMessages{
+		Type:     types.ValidatorRegistrationPartialSig,
+		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
 	// sign msg
@@ -106,7 +106,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao msg")
 	}
-	signedPartialMsg := &SignedPartialSignatureMessage{
+	signedPartialMsg := &types.SignedPartialSignatureMessage{
 		Message:   msgs,
 		Signature: signature,
 		Signer:    r.GetShare().OperatorID,
@@ -119,7 +119,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
@@ -181,11 +181,11 @@ func (r *ValidatorRegistrationRunner) Decode(data []byte) error {
 }
 
 // GetRoot returns the root used for signing and verification
-func (r *ValidatorRegistrationRunner) GetRoot() ([]byte, error) {
+func (r *ValidatorRegistrationRunner) GetRoot() ([32]byte, error) {
 	marshaledRoot, err := r.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode DutyRunnerState")
+		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
 	}
 	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+	return ret, nil
 }

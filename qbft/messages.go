@@ -3,10 +3,15 @@ package qbft
 import (
 	"bytes"
 	"crypto/sha256"
-	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
+
+// HashDataRoot hashes input data to root
+func HashDataRoot(data []byte) ([32]byte, error) {
+	ret := sha256.Sum256(data)
+	return ret, nil
+}
 
 // HasQuorum returns true if a unique set of signers has quorum
 func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
@@ -30,7 +35,7 @@ func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	return share.HasPartialQuorum(len(uniqueSigners))
 }
 
-type MessageType int
+type MessageType uint64
 
 const (
 	ProposalMsgType MessageType = iota
@@ -39,177 +44,72 @@ const (
 	RoundChangeMsgType
 )
 
-type ProposalData struct {
-	Data                     []byte
-	RoundChangeJustification []*SignedMessage
-	PrepareJustification     []*SignedMessage
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *ProposalData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *ProposalData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *ProposalData) Validate() error {
-	if len(d.Data) == 0 {
-		return errors.New("ProposalData data is invalid")
-	}
-	return nil
-}
-
-type PrepareData struct {
-	Data []byte
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *PrepareData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *PrepareData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *PrepareData) Validate() error {
-	if len(d.Data) == 0 {
-		return errors.New("PrepareData data is invalid")
-	}
-	return nil
-}
-
-type CommitData struct {
-	Data []byte
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *CommitData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *CommitData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *CommitData) Validate() error {
-	if len(d.Data) == 0 {
-		return errors.New("CommitData data is invalid")
-	}
-	return nil
-}
-
-type RoundChangeData struct {
-	PreparedValue            []byte
-	PreparedRound            Round
-	RoundChangeJustification []*SignedMessage
-}
-
-func (d *RoundChangeData) Prepared() bool {
-	if d.PreparedRound != NoRound || len(d.PreparedValue) != 0 {
-		return true
-	}
-	return false
-}
-
-// Encode returns a msg encoded bytes or error
-func (d *RoundChangeData) Encode() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-// Decode returns error if decoding failed
-func (d *RoundChangeData) Decode(data []byte) error {
-	return json.Unmarshal(data, &d)
-}
-
-// Validate returns error if msg validation doesn't pass.
-// Msg validation checks the msg, it's variables for validity.
-func (d *RoundChangeData) Validate() error {
-	if d.Prepared() {
-		if len(d.PreparedValue) == 0 {
-			return errors.New("round change prepared value invalid")
-		}
-		if len(d.RoundChangeJustification) == 0 {
-			return errors.New("round change justification invalid")
-		}
-		// TODO - should next proposal data be equal to prepared value?
-	}
-	return nil
-}
-
 type Message struct {
 	MsgType    MessageType
 	Height     Height // QBFT instance Height
 	Round      Round  // QBFT round for which the msg is for
-	Identifier []byte // instance Identifier this msg belongs to
-	Data       []byte
+	Identifier []byte `ssz-max:"56"` // instance Identifier this msg belongs to
+
+	Root                     [32]byte `ssz-size:"32"`
+	DataRound                Round
+	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
+	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
 }
 
-// GetProposalData returns proposal specific data
-func (msg *Message) GetProposalData() (*ProposalData, error) {
-	ret := &ProposalData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode proposal data from message")
+func (msg *Message) GetRoundChangeJustifications() ([]*SignedMessage, error) {
+	return unmarshalJustifications(msg.RoundChangeJustification)
+}
+
+func (msg *Message) GetPrepareJustifications() ([]*SignedMessage, error) {
+	return unmarshalJustifications(msg.PrepareJustification)
+}
+
+func unmarshalJustifications(data [][]byte) ([]*SignedMessage, error) {
+	ret := make([]*SignedMessage, len(data))
+	for i, d := range data {
+		sMsg := &SignedMessage{}
+		if err := sMsg.UnmarshalSSZ(d); err != nil {
+			return nil, err
+		}
+		ret[i] = sMsg
 	}
 	return ret, nil
 }
 
-// GetPrepareData returns prepare specific data
-func (msg *Message) GetPrepareData() (*PrepareData, error) {
-	ret := &PrepareData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode prepare data from message")
+func MarshalJustifications(msgs []*SignedMessage) ([][]byte, error) {
+	ret := make([][]byte, len(msgs))
+	for i, m := range msgs {
+		d, err := m.WithoutFUllData().MarshalSSZ()
+		if err != nil {
+			return nil, err
+		}
+		ret[i] = d
 	}
 	return ret, nil
 }
 
-// GetCommitData returns commit specific data
-func (msg *Message) GetCommitData() (*CommitData, error) {
-	ret := &CommitData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode commit data from message")
+// RoundChangePrepared returns true if message is a RoundChange and prepared
+func (msg *Message) RoundChangePrepared() bool {
+	if msg.MsgType != RoundChangeMsgType {
+		return false
 	}
-	return ret, nil
-}
 
-// GetRoundChangeData returns round change specific data
-func (msg *Message) GetRoundChangeData() (*RoundChangeData, error) {
-	ret := &RoundChangeData{}
-	if err := ret.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode round change data from message")
-	}
-	return ret, nil
+	return msg.DataRound != NoRound
 }
 
 // Encode returns a msg encoded bytes or error
 func (msg *Message) Encode() ([]byte, error) {
-	return json.Marshal(msg)
+	return msg.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (msg *Message) Decode(data []byte) error {
-	return json.Unmarshal(data, &msg)
+	return msg.UnmarshalSSZ(data)
 }
 
 // GetRoot returns the root used for signing and verification
-func (msg *Message) GetRoot() ([]byte, error) {
-	marshaledRoot, err := msg.Encode()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not encode message")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+func (msg *Message) GetRoot() ([32]byte, error) {
+	return msg.HashTreeRoot()
 }
 
 // Validate returns error if msg validation doesn't pass.
@@ -218,8 +118,11 @@ func (msg *Message) Validate() error {
 	if len(msg.Identifier) == 0 {
 		return errors.New("message identifier is invalid")
 	}
-	if len(msg.Data) == 0 {
-		return errors.New("message data is invalid")
+	if _, err := msg.GetRoundChangeJustifications(); err != nil {
+		return err
+	}
+	if _, err := msg.GetPrepareJustifications(); err != nil {
+		return err
 	}
 	if msg.MsgType > 5 {
 		return errors.New("message type is invalid")
@@ -228,9 +131,11 @@ func (msg *Message) Validate() error {
 }
 
 type SignedMessage struct {
-	Signature types.Signature
-	Signers   []types.OperatorID
-	Message   *Message // message for which this signature is for
+	Signature types.Signature    `ssz-size:"96"`
+	Signers   []types.OperatorID `ssz-max:"13"`
+	Message   Message            // message for which this signature is for
+
+	FullData []byte `ssz-max:"1073872896"` // 2^30+2^17
 }
 
 func (signedMsg *SignedMessage) GetSignature() types.Signature {
@@ -287,7 +192,7 @@ func (signedMsg *SignedMessage) Aggregate(sig types.MessageSignature) error {
 	if err != nil {
 		return errors.Wrap(err, "could not get signature root")
 	}
-	if !bytes.Equal(r1, r2) {
+	if !bytes.Equal(r1[:], r2[:]) {
 		return errors.New("can't aggregate, roots not equal")
 	}
 
@@ -303,16 +208,16 @@ func (signedMsg *SignedMessage) Aggregate(sig types.MessageSignature) error {
 
 // Encode returns a msg encoded bytes or error
 func (signedMsg *SignedMessage) Encode() ([]byte, error) {
-	return json.Marshal(signedMsg)
+	return signedMsg.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (signedMsg *SignedMessage) Decode(data []byte) error {
-	return json.Unmarshal(data, &signedMsg)
+	return signedMsg.UnmarshalSSZ(data)
 }
 
 // GetRoot returns the root used for signing and verification
-func (signedMsg *SignedMessage) GetRoot() ([]byte, error) {
+func (signedMsg *SignedMessage) GetRoot() ([32]byte, error) {
 	return signedMsg.Message.GetRoot()
 }
 
@@ -325,24 +230,27 @@ func (signedMsg *SignedMessage) DeepCopy() *SignedMessage {
 	copy(ret.Signers, signedMsg.Signers)
 	copy(ret.Signature, signedMsg.Signature)
 
-	ret.Message = &Message{
+	ret.Message = Message{
 		MsgType:    signedMsg.Message.MsgType,
 		Height:     signedMsg.Message.Height,
 		Round:      signedMsg.Message.Round,
 		Identifier: make([]byte, len(signedMsg.Message.Identifier)),
-		Data:       make([]byte, len(signedMsg.Message.Data)),
+		//Data:       make([]byte, len(signedMsg.Message.Data)),
+
+		Root:                     signedMsg.Message.Root,
+		DataRound:                signedMsg.Message.DataRound,
+		PrepareJustification:     signedMsg.Message.PrepareJustification,
+		RoundChangeJustification: signedMsg.Message.RoundChangeJustification,
 	}
 	copy(ret.Message.Identifier, signedMsg.Message.Identifier)
-	copy(ret.Message.Data, signedMsg.Message.Data)
+	//copy(ret.Message.Data, signedMsg.Message.Data)
+	copy(ret.FullData, signedMsg.FullData)
 	return ret
 }
 
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (signedMsg *SignedMessage) Validate() error {
-	if len(signedMsg.Signature) != 96 {
-		return errors.New("message signature is invalid")
-	}
 	if len(signedMsg.Signers) == 0 {
 		return errors.New("message signers is empty")
 	}
@@ -360,4 +268,13 @@ func (signedMsg *SignedMessage) Validate() error {
 	}
 
 	return signedMsg.Message.Validate()
+}
+
+// WithoutFUllData returns SignedMessage without full data
+func (signedMsg *SignedMessage) WithoutFUllData() *SignedMessage {
+	return &SignedMessage{
+		Signers:   signedMsg.Signers,
+		Signature: signedMsg.Signature,
+		Message:   signedMsg.Message,
+	}
 }

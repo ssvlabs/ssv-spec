@@ -33,14 +33,14 @@ func (c *MsgContainer) MessagesForRound(round Round) []*SignedMessage {
 	return make([]*SignedMessage, 0)
 }
 
-// MessagesForRoundAndValue returns all msgs for round and value, empty slice otherwise
-func (c *MsgContainer) MessagesForRoundAndValue(round Round, value []byte) []*SignedMessage {
+// MessagesForRoundAndRoot returns all msgs for round and value, empty slice otherwise
+func (c *MsgContainer) MessagesForRoundAndRoot(round Round, root [32]byte) []*SignedMessage {
 	if c.Msgs[round] != nil {
 		ret := make([]*SignedMessage, 0)
 		for i := 0; i < len(c.Msgs[round]); i++ {
 			m := c.Msgs[round][i]
 
-			if !bytes.Equal(m.Message.Data, value) {
+			if !bytes.Equal(m.Message.Root[:], root[:]) {
 				continue
 			}
 			ret = append(ret, m)
@@ -50,8 +50,8 @@ func (c *MsgContainer) MessagesForRoundAndValue(round Round, value []byte) []*Si
 	return make([]*SignedMessage, 0)
 }
 
-// LongestUniqueSignersForRoundAndValue returns the longest set of unique signers and msgs for a specific round and value
-func (c *MsgContainer) LongestUniqueSignersForRoundAndValue(round Round, value []byte) ([]types.OperatorID, []*SignedMessage) {
+// LongestUniqueSignersForRoundAndRoot returns the longest set of unique signers and msgs for a specific round and value
+func (c *MsgContainer) LongestUniqueSignersForRoundAndRoot(round Round, root [32]byte) ([]types.OperatorID, []*SignedMessage) {
 	signersRet := make([]types.OperatorID, 0)
 	msgsRet := make([]*SignedMessage, 0)
 	if c.Msgs[round] == nil {
@@ -61,7 +61,7 @@ func (c *MsgContainer) LongestUniqueSignersForRoundAndValue(round Round, value [
 	for i := 0; i < len(c.Msgs[round]); i++ {
 		m := c.Msgs[round][i]
 
-		if !bytes.Equal(m.Message.Data, value) {
+		if !bytes.Equal(m.Message.Root[:], root[:]) {
 			continue
 		}
 
@@ -72,7 +72,7 @@ func (c *MsgContainer) LongestUniqueSignersForRoundAndValue(round Round, value [
 		for j := i + 1; j < len(c.Msgs[round]); j++ {
 			m2 := c.Msgs[round][j]
 
-			if !bytes.Equal(m2.Message.Data, value) {
+			if !bytes.Equal(m2.Message.Root[:], root[:]) {
 				continue
 			}
 

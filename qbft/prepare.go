@@ -12,10 +12,6 @@ func (i *Instance) uponPrepare(
 	signedPrepare *SignedMessage,
 	prepareMsgContainer,
 	commitMsgContainer *MsgContainer) error {
-	acceptedProposalData, err := i.State.ProposalAcceptedForCurrentRound.Message.GetProposalData()
-	if err != nil {
-		return errors.Wrap(err, "could not get accepted proposal data")
-	}
 
 	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
 	if err != nil {
@@ -33,12 +29,12 @@ func (i *Instance) uponPrepare(
 		return nil // already moved to commit stage
 	}
 
-	proposedValue := acceptedProposalData.Data
+	proposedRoot := i.State.ProposalAcceptedForCurrentRound.Message.Root
 
-	i.State.LastPreparedValue = proposedValue
+	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.FullData
 	i.State.LastPreparedRound = i.State.Round
 
-	commitMsg, err := CreateCommit(i.State, i.config, proposedValue)
+	commitMsg, err := CreateCommit(i.State, i.config, proposedRoot)
 	if err != nil {
 		return errors.Wrap(err, "could not create commit msg")
 	}
@@ -50,52 +46,41 @@ func (i *Instance) uponPrepare(
 	return nil
 }
 
-func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) []*SignedMessage {
+func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*SignedMessage, error) {
 	if state.LastPreparedValue == nil {
-		return nil
+		return nil, nil
+	}
+
+	r, err := HashDataRoot(state.LastPreparedValue)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not hash input data")
 	}
 
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
 	ret := make([]*SignedMessage, 0)
 	for _, msg := range prepareMsgs {
-		if err := validSignedPrepareForHeightRoundAndValue(config, msg, state.Height, state.LastPreparedRound, state.LastPreparedValue, state.Share.Committee); err == nil {
+		if err := validSignedPrepareForHeightRoundAndRoot(
+			config,
+			msg,
+			state.Height,
+			state.LastPreparedRound,
+			r,
+			state.Share.Committee,
+		); err == nil {
 			ret = append(ret, msg)
 		}
 	}
-	return ret
+	return ret, nil
 }
 
-// validPreparesForHeightRoundAndValue returns an aggregated prepare msg for a specific Height and round
-//func validPreparesForHeightRoundAndValue(
-//	config IConfig,
-//	prepareMessages []*SignedMessage,
-//	height Height,
-//	round Round,
-//	value []byte,
-//	operators []*types.Operator) *SignedMessage {
-//	var aggregatedPrepareMsg *SignedMessage
-//	for _, signedMsg := range prepareMessages {
-//		if err := validSignedPrepareForHeightRoundAndValue(config, signedMsg, height, round, value, operators); err == nil {
-//			if aggregatedPrepareMsg == nil {
-//				aggregatedPrepareMsg = signedMsg
-//			} else {
-//				// TODO: check error
-//				// nolint
-//				aggregatedPrepareMsg.Aggregate(signedMsg)
-//			}
-//		}
-//	}
-//	return aggregatedPrepareMsg
-//}
-
-// validSignedPrepareForHeightRoundAndValue known in dafny spec as validSignedPrepareForHeightRoundAndDigest
+// validSignedPrepareForHeightRoundAndRoot known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
-func validSignedPrepareForHeightRoundAndValue(
+func validSignedPrepareForHeightRoundAndRoot(
 	config IConfig,
 	signedPrepare *SignedMessage,
 	height Height,
 	round Round,
-	value []byte,
+	root [32]byte,
 	operators []*types.Operator) error {
 	if signedPrepare.Message.MsgType != PrepareMsgType {
 		return errors.New("prepare msg type is wrong")
@@ -107,15 +92,11 @@ func validSignedPrepareForHeightRoundAndValue(
 		return errors.New("wrong msg round")
 	}
 
-	prepareData, err := signedPrepare.Message.GetPrepareData()
-	if err != nil {
-		return errors.Wrap(err, "could not get prepare data")
-	}
-	if err := prepareData.Validate(); err != nil {
+	if err := signedPrepare.Validate(); err != nil {
 		return errors.Wrap(err, "prepareData invalid")
 	}
 
-	if !bytes.Equal(prepareData.Data, value) {
+	if !bytes.Equal(signedPrepare.Message.Root[:], root[:]) {
 		return errors.New("proposed data mistmatch")
 	}
 
@@ -142,20 +123,14 @@ Prepare(
                         )
                 );
 */
-func CreatePrepare(state *State, config IConfig, newRound Round, value []byte) (*SignedMessage, error) {
-	prepareData := &PrepareData{
-		Data: value,
-	}
-	dataByts, err := prepareData.Encode()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed encoding prepare data")
-	}
+func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) (*SignedMessage, error) {
 	msg := &Message{
 		MsgType:    PrepareMsgType,
 		Height:     state.Height,
 		Round:      newRound,
 		Identifier: state.ID,
-		Data:       dataByts,
+
+		Root: root,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
@@ -165,7 +140,7 @@ func CreatePrepare(state *State, config IConfig, newRound Round, value []byte) (
 	signedMsg := &SignedMessage{
 		Signature: sig,
 		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   msg,
+		Message:   *msg,
 	}
 	return signedMsg, nil
 }

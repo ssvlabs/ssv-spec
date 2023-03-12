@@ -1,16 +1,16 @@
 package messages
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 type MsgSpecTest struct {
 	Name            string
-	Messages        []*ssv.SignedPartialSignatureMessage
+	Messages        []*types.SignedPartialSignatureMessage
 	EncodedMessages [][]byte
-	ExpectedRoots   [][]byte
+	ExpectedRoots   [][32]byte
 	ExpectedError   string
 }
 
@@ -33,7 +33,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			require.NoError(t, err)
 			require.EqualValues(t, test.EncodedMessages[i], byts)
 
-			decoded := &ssv.SignedPartialSignatureMessage{}
+			decoded := &types.SignedPartialSignatureMessage{}
 			require.NoError(t, decoded.Decode(byts))
 			decodedRoot, err := decoded.GetRoot()
 			require.NoError(t, err)

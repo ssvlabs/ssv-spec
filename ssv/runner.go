@@ -26,11 +26,11 @@ type Runner interface {
 	// HasRunningDuty returns true if it has a running duty
 	HasRunningDuty() bool
 	// ProcessPreConsensus processes all pre-consensus msgs, returns error if can't process
-	ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error
+	ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error
 	// ProcessConsensus processes all consensus msgs, returns error if can't process
 	ProcessConsensus(msg *qbft.SignedMessage) error
 	// ProcessPostConsensus processes all post-consensus msgs, returns error if can't process
-	ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error
+	ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error
 
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
@@ -67,7 +67,7 @@ func (b *BaseRunner) canStartNewDuty() error {
 }
 
 // basePreConsensusMsgProcessing is a base func that all runner implementation can call for processing a pre-consensus msg
-func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
+func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *types.SignedPartialSignatureMessage) (bool, [][32]byte, error) {
 	if err := b.ValidatePreConsensusMsg(runner, signedMsg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid pre-consensus message")
 	}
@@ -90,21 +90,16 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 
 	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
 	if !b.hasRunningDuty() {
-		return false, nil, err
+		return false, nil, errors.New("no running duty")
 	}
 
 	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
 		return false, nil, err
 	}
 
-	// get decided value
-	decidedData, err := decidedMsg.Message.GetCommitData()
-	if err != nil {
-		return false, nil, errors.Wrap(err, "failed to get decided data")
-	}
-
+	// decode consensus data
 	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedData.Data); err != nil {
+	if err := decidedValue.Decode(decidedMsg.FullData); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
@@ -118,7 +113,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 }
 
 // basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg
-func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *SignedPartialSignatureMessage) (bool, [][]byte, error) {
+func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *types.SignedPartialSignatureMessage) (bool, [][32]byte, error) {
 	if err := b.ValidatePostConsensusMsg(runner, signedMsg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid post-consensus message")
 	}
@@ -129,10 +124,10 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *Si
 
 // basePartialSigMsgProcessing adds an already validated partial msg to the container, checks for quorum and returns true (and roots) if quorum exists
 func (b *BaseRunner) basePartialSigMsgProcessing(
-	signedMsg *SignedPartialSignatureMessage,
+	signedMsg *types.SignedPartialSignatureMessage,
 	container *PartialSigContainer,
-) (bool, [][]byte, error) {
-	roots := make([][]byte, 0)
+) (bool, [][32]byte, error) {
+	roots := make([][32]byte, 0)
 	anyQuorum := false
 	for _, msg := range signedMsg.Message.Messages {
 		prevQuorum := container.HasQuorum(msg.SigningRoot)

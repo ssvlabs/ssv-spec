@@ -11,7 +11,7 @@ func EmptyValue() *tests.ControllerSpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:         []byte{},
-				ControllerPostRoot: "8d4a1b5011b185f3b657b7b9e55c82940768031a5f858a623f529d068f1fd28b",
+				ControllerPostRoot: "baf3ccea443a6c639b76dccf2d9c4fb5e48318473797de9b55e4d8de48fccc6b",
 			},
 		},
 		ExpectedError: "can't start new QBFT instance: value invalid: invalid value",
