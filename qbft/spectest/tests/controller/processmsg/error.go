@@ -18,7 +18,7 @@ func MsgError() *tests.ControllerSpecTest {
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingProposalMessageWithRound(ks.Shares[1], 1, 100),
 				},
-				ControllerPostRoot: "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: proposal not justified: change round has no quorum",

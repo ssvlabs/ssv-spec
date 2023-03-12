@@ -6,8 +6,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InValidMessageSlot tests a valid SignedPartialSignatureMessage an invalid msg slot
-func InValidMessageSlot() *tests.MultiMsgProcessingSpecTest {
+// InvalidMessageSlot tests a valid SignedPartialSignatureMessage an invalid msg slot
+func InvalidMessageSlot() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	invalidateSlot := func(msg *types.SignedPartialSignatureMessage) *types.SignedPartialSignatureMessage {
@@ -16,7 +16,7 @@ func InValidMessageSlot() *tests.MultiMsgProcessingSpecTest {
 	}
 
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus valid msg",
+		Name: "pre consensus invalid msg slot",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

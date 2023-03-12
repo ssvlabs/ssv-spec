@@ -17,13 +17,18 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 	// nolint
 	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
-		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
-			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
+		// *qbft.Instance cannot be shared between StoredInstances and RunningInstance
+		// because JSON decoder creates a new *qbft.Instance for each of them
+		newInstance := func() *qbft.Instance {
+			return qbft.NewInstance(
+				r.GetBaseRunner().QBFTController.GetConfig(),
+				r.GetBaseRunner().Share,
+				r.GetBaseRunner().QBFTController.Identifier,
+				qbft.FirstHeight)
+		}
+		r.GetBaseRunner().State.RunningInstance = newInstance()
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
+		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, newInstance())
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		r.GetBaseRunner().State.Finished = true
 		return r
@@ -45,7 +50,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "4770e71fd7fadd8838ea2b374b66c268f28cdb6d2b0fb13dbe7f9a350e0e5000",
+				PostDutyRunnerStateRoot: "5416fdd1e8e5ac26d01bce867630c8956b6b8444b1d92e0f2d2b1e23322dba24",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -61,7 +66,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "8e3e1558982cf51ecb3f47d199bdf97f81e3832e6245135039277e7c4f6ad3f2",
+				PostDutyRunnerStateRoot: "781e504c4c8d952a4145fed6453f7709fccf632f597ec5bc3071cbd6aca8522b",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -77,7 +82,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestAggregatorConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "c6e3fe8fd7eb58e44c80697fdeac5d3744052e4935c75b822b6a92f59967a4be",
+				PostDutyRunnerStateRoot: "dc23550fb81816c01ca495936ead9b98469d27b9f6f3a1edd871b11934724ad3",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -93,7 +98,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestProposerConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "b6004984d5ead1bda1669ff30f7187cda21053ef864f96f84f83f3bf07c40901",
+				PostDutyRunnerStateRoot: "b165432cb8ec536de81e16cc2de5ae621c787931530f26fee235a9f2bc368cfb",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -109,7 +114,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestProposerBlindedBlockConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "5faf7aa76c33d5daa7b116399cc5914e2aec1d1d7fc1e3b422ceee4939160902",
+				PostDutyRunnerStateRoot: "0d55336a5a0f0f2624d0396b3b4f1f5509ff69fe0e14708d18c69c92190a6966",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -125,7 +130,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestAttesterConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "24f92801f570d569fa9a0f903bb1c0deab2edea965d2ce46e1b6c7e4225b97a4",
+				PostDutyRunnerStateRoot: "c9b543054dd8a3a051ae68599171c4e7dc926f9ba0862d4d75aa90da248c5956",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,

@@ -26,7 +26,7 @@ func BroadcastedDecided() *tests.ControllerSpecTest {
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: "f82a7925fa41a67b245d6f97b13c1d272632ac4efe0380847ac8c9378f5bb04b",
+				ControllerPostRoot: "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97",
 			},
 		},
 	}

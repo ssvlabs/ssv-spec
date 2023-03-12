@@ -1,9 +1,7 @@
 package proposer
 
 import (
-	"crypto/sha256"
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -29,22 +27,18 @@ func ProposeBlindedBlockDecidedRegular() *tests.MsgProcessingSpecTest {
 			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 
 			testingutils.SSVMsgProposer(
-				testingutils.MultiSignQBFTMsg(
+				testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
-					&qbft.Message{
-						MsgType:    qbft.CommitMsgType,
-						Height:     qbft.FirstHeight,
-						Round:      qbft.FirstRound,
-						Identifier: testingutils.ProposerMsgID,
-						Root:       sha256.Sum256(testingutils.TestProposerConsensusDataByts),
-					}), nil),
+					testingutils.ProposerMsgID,
+					testingutils.TestProposerConsensusDataByts,
+				), nil),
 
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 		},
-		PostDutyRunnerStateRoot: "cb96348639218e73f803afa8a243d1ccb97a1190fa8fec83d2dbac14cd05849d",
+		PostDutyRunnerStateRoot: "f3d290c9921e630b8911b5b6b6e1fdf249b9c7bd222020ff603cef3bfb1e0e25",
 		OutputMessages: []*types.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 			testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
