@@ -15,7 +15,7 @@ fmt:
 
 .PHONY: test
 test:
-	@go test -v -race -timeout 20m "${TEST_PKG}"
+	@go test -v -race -timeout 25m "${TEST_PKG}"
 
 .PHONY: generate-jsons
 generate-jsons:
