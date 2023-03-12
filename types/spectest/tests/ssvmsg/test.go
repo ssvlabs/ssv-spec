@@ -1,4 +1,4 @@
-package consensusdata
+package ssvmsg
 
 import (
 	"testing"

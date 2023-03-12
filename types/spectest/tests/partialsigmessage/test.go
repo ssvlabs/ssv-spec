@@ -1,4 +1,4 @@
-package consensusdata
+package partialsigmessage
 
 import (
 	"testing"
