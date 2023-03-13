@@ -117,18 +117,6 @@ var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.Opera
 var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, roundChangeJustification, nil)
 }
-var TestingProposalMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
-	msg := &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: identifier,
-		Root:       sha256.Sum256(fullData),
-	}
-	ret := SignQBFTMsg(sk, id, msg)
-	ret.FullData = fullData
-	return ret
-}
 var TestingProposalMessageWithParams = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,

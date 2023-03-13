@@ -7,6 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"

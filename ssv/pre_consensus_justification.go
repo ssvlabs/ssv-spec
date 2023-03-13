@@ -10,12 +10,13 @@ import (
 func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMessage) bool {
 	rightQBFTHeight := b.QBFTController.CanStartInstance() == nil && (b.QBFTController.Height == msg.Message.Height || b.QBFTController.Height+1 == msg.Message.Height)
 	hasData := len(msg.FullData) > 0
+	rightMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
 	requiresPreConsensus := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
-	return rightQBFTHeight && hasData && requiresPreConsensus
+	return rightQBFTHeight && hasData && rightMsgTYpe && requiresPreConsensus
 }
 
 func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData) error {
-	test invalid consensus data
+	//test invalid consensus data
 	if err := data.Validate(); err != nil {
 		return err
 	}
@@ -68,9 +69,9 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 			}
 		}
 
-		test invalid sig
-		test unknown signer
-		test invalid slot
+		//test invalid sig
+		//test unknown signer
+		//test invalid slot
 		// verify sigs and duty.slot == msg.slot
 		if err := b.validatePartialSigMsgForSlot(msg, data.Duty.Slot); err != nil {
 			return err

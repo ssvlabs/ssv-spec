@@ -1,6 +1,7 @@
 package consensus
 
 import (
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -9,7 +10,6 @@ import (
 // NoRunningConsensusInstance tests a valid proposal msg before consensus instance starts
 func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedErr := "failed processing consensus message: instance not found"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus no running consensus instance",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -19,17 +19,21 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.SyncCommitteeContributionMsgID,
-							testingutils.TestSyncCommitteeContributionConsensusDataByts,
+						testingutils.TestingPrepareMessageWithParams(
+							ks.Shares[1],
+							1,
+							qbft.FirstRound,
+							qbft.FirstHeight,
+							testingutils.SyncCommitteeContributionMsgID,
+							testingutils.TestingQBFTRootData,
 						),
 						nil),
 				},
-				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
+				PostDutyRunnerStateRoot: "b2e883cc81caaed04f3e40e8561ae55aa1f6abcdb3168e5cc5c834b1d327026e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedErr,
+				ExpectedError: "", // with pre-consensus justifications there will always be an instance
 			},
 			{
 				Name:   "sync committee",
@@ -52,17 +56,21 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID,
-							testingutils.TestAggregatorConsensusDataByts,
+						testingutils.TestingPrepareMessageWithParams(
+							ks.Shares[1],
+							1,
+							qbft.FirstRound,
+							qbft.FirstHeight,
+							testingutils.AggregatorMsgID,
+							testingutils.TestingQBFTRootData,
 						),
 						nil),
 				},
-				PostDutyRunnerStateRoot: "c54e71de23c3957b73abbb0e7b9e195b3f8f6370d62fbec256224faecf177fee",
+				PostDutyRunnerStateRoot: "6e1095601c6fbbd6ba5912dfe296b50db2ae67d4115bce7aa2ad0b091c693ea5",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedErr,
+				ExpectedError: "", // with pre-consensus justifications there will always be an instance
 			},
 			{
 				Name:   "proposer",
@@ -70,17 +78,21 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
-							testingutils.TestProposerConsensusDataByts,
+						testingutils.TestingPrepareMessageWithParams(
+							ks.Shares[1],
+							1,
+							qbft.FirstRound,
+							qbft.FirstHeight,
+							testingutils.ProposerMsgID,
+							testingutils.TestingQBFTRootData,
 						),
 						nil),
 				},
-				PostDutyRunnerStateRoot: "56eafcb33392ded888a0fefe30ba49e52aa00ab36841cb10c9dc1aa2935af347",
+				PostDutyRunnerStateRoot: "a70427708a0ab6995225538b39e7de5cb622af9651fb02a162c6bfbdf5d0966d",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
-				ExpectedError: expectedErr,
+				ExpectedError: "", // with pre-consensus justifications there will always be an instance
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -88,17 +100,21 @@ func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
-							testingutils.TestProposerBlindedBlockConsensusDataByts,
+						testingutils.TestingPrepareMessageWithParams(
+							ks.Shares[1],
+							1,
+							qbft.FirstRound,
+							qbft.FirstHeight,
+							testingutils.ProposerMsgID,
+							testingutils.TestingQBFTRootData,
 						),
 						nil),
 				},
-				PostDutyRunnerStateRoot: "2ce3241658f324f352c77909f4043934eedf38e939ae638c5ce6acf28e965646",
+				PostDutyRunnerStateRoot: "dc9ee0b1b1d1562763855898c9962957bc5d4f3090890419c22e0162705e9ca0",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
-				ExpectedError: expectedErr,
+				ExpectedError: "", // with pre-consensus justifications there will always be an instance
 			},
 			{
 				Name:   "attester",
