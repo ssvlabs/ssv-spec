@@ -27,7 +27,7 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
 				},
-				ControllerPostRoot: "6ec856c53c4febbeeb0d816b81a04425f5a7bdf107c7cf3d28a519c3fee6ce6e",
+				ControllerPostRoot: "589b0c0352f1c22875246f2e66530d5fda62f646434b250ade128c61c16f47bd",
 			},
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -37,7 +37,7 @@ func PostFutureDecided() *tests.ControllerSpecTest {
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
 				},
-				ControllerPostRoot: "9255cf35e771cc91f931f1ed291137c7de4229d3fd2b46a638f1e214bd2a9a04",
+				ControllerPostRoot: "b4553bc2b2e105311bcc65dfa18efeeb8a44ff01a6e9c2a34417afed3b474b02",
 			},
 		},
 	}

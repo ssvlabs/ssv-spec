@@ -13,7 +13,7 @@ func LatePrepare() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks)
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingPrepareMessage(ks.Shares[4], 4))
 
 	return &tests.ControllerSpecTest{
@@ -31,7 +31,7 @@ func LatePrepare() *tests.ControllerSpecTest {
 					),
 				},
 
-				ControllerPostRoot: "02aa5a07a245cd4e88af2ecc154c4d3dc7c045b8c0c19a7d31b3223ac0cd4522",
+				ControllerPostRoot: "bdef629f3a8234faa1111cba866b04c907b822003410ca0b067111fa0c048841",
 			},
 		},
 	}

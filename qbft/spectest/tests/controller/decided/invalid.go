@@ -12,7 +12,11 @@ import (
 func Invalid() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msg := testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3})
+	msg := testingutils.TestingCommitMultiSignerMessageWithHeight(
+		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+		[]types.OperatorID{1, 2, 3},
+		10,
+	)
 	msg.Signers = []types.OperatorID{}
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid msg",
@@ -22,7 +26,7 @@ func Invalid() *tests.ControllerSpecTest {
 				InputMessages: []*qbft.SignedMessage{
 					msg,
 				},
-				ControllerPostRoot: "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "invalid future msg: invalid decided msg: message signers is empty",

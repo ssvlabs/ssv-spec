@@ -13,7 +13,7 @@ func LateProposal() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks)
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingProposalMessage(ks.Shares[1], 1))
 
 	return &tests.ControllerSpecTest{
@@ -30,7 +30,7 @@ func LateProposal() *tests.ControllerSpecTest {
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: "f82a7925fa41a67b245d6f97b13c1d272632ac4efe0380847ac8c9378f5bb04b",
+				ControllerPostRoot: "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97",
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: proposal is not valid with current state",

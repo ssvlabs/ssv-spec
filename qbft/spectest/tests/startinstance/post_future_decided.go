@@ -16,16 +16,16 @@ func PreviousDecided() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-					testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks),
+					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks),
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 				},
-				ControllerPostRoot: "f82a7925fa41a67b245d6f97b13c1d272632ac4efe0380847ac8c9378f5bb04b",
+				ControllerPostRoot: "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97",
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "2647484fe3528a7f2247a606184a924ffdef5b8a9a769673149960cea554158e",
+				ControllerPostRoot: "5c23b58681df24d3131dab8fcff377035d03bb5a8db99c16c68bd644baa2d3b3",
 			},
 		},
 	}

@@ -11,12 +11,12 @@ import (
 func InvalidMessage() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	invaldiateMsg := func(msg *types.SignedPartialSignatureMessage) *types.SignedPartialSignatureMessage {
-		msg.Signature = nil
+	invalidMsg := func(msg *types.SignedPartialSignatureMessage) *types.SignedPartialSignatureMessage {
+		msg.Signer = 0
 		return msg
 	}
 
-	err := "failed processing post consensus message: invalid post-consensus message: SignedPartialSignatureMessage invalid: SignedPartialSignatureMessage sig invalid"
+	err := "failed processing post consensus message: invalid post-consensus message: SignedPartialSignatureMessage invalid: signer ID 0 not allowed"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid msg",
@@ -30,9 +30,9 @@ func InvalidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, invaldiateMsg(testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, invalidMsg(testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 				},
-				PostDutyRunnerStateRoot: "5f70323f99cc96693e30d0ebd9ec3dac7f75948045e4089c7ba630f6c0b5422d",
+				PostDutyRunnerStateRoot: "70c2a6e6f6e3d48d6eb9d2ad2664af0870048ecfcd712b37e5fbf55a31a3dd7a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -47,9 +47,9 @@ func InvalidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, invaldiateMsg(testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+					testingutils.SSVMsgSyncCommittee(nil, invalidMsg(testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "eff09708ecaa0cd6e19ad8e841592a13eda84da98526be66eaac292e9d340fdc",
+				PostDutyRunnerStateRoot: "6e0fa05d0d4bba966ce77421503ca5993fc494749d106fde136cc3f6ca65b084",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -64,9 +64,9 @@ func InvalidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, invaldiateMsg(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1))),
+					testingutils.SSVMsgProposer(nil, invalidMsg(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "5ffdf605dded2c2e140cbca6ef8b0cb1b4192cf087530bc9d36f5a2f907c6b84",
+				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -81,9 +81,9 @@ func InvalidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, invaldiateMsg(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1))),
+					testingutils.SSVMsgProposer(nil, invalidMsg(testingutils.PostConsensusProposerMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "a2e539418ce3768e21786ab7a7377a100d6064d6a02fb6c0b83aad2f7e12485c",
+				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -98,9 +98,9 @@ func InvalidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, invaldiateMsg(testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
+					testingutils.SSVMsgAggregator(nil, invalidMsg(testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "177d2430aafdb3efadf58e342d60e5e324adf7798cea07744d45b6ea68e97245",
+				PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -115,9 +115,9 @@ func InvalidMessage() *tests.MultiMsgProcessingSpecTest {
 				),
 				Duty: &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, invaldiateMsg(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+					testingutils.SSVMsgAttester(nil, invalidMsg(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
 				},
-				PostDutyRunnerStateRoot: "2741163569f537af394880fa208fbb916cfea41280403a1ecd509e26d9f98d4d",
+				PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,

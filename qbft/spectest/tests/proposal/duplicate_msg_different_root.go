@@ -7,19 +7,18 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// DuplicateMsgDifferentValue tests a duplicate proposal msg processing (second one with different value)
-func DuplicateMsgDifferentValue() *tests.MsgProcessingSpecTest {
+// DuplicateMsgDifferentRoot tests a duplicate proposal msg processing (second one with different root)
+func DuplicateMsgDifferentRoot() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
-		// TODO: different value instead of wrong root
-		testingutils.TestingProposalMessageWrongRoot(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingProposalMessageDifferentRoot(ks.Shares[1], types.OperatorID(1)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal duplicate message different value",
 		Pre:           pre,
-		PostRoot:      "29a2c55b35764defde05fe670fb4ba60889c30745752e22a41e3e6f6e6dbbc2b",
+		PostRoot:      "ce6d77d0602c7a368a6f86a32d70495b47e6d9fcfd2f5ad0d2952a3f5ac963e7",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),

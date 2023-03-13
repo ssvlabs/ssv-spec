@@ -10,8 +10,9 @@ import (
 func UnknownSigner() *ControllerSyncSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	msg := testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 3, 3, 10,
-		testingutils.DefaultIdentifier, testingutils.TestingQBFTRootData)
+		identifier[:], testingutils.TestingQBFTRootData)
 	msg.Signers = []types.OperatorID{10}
 
 	return &ControllerSyncSpecTest{
@@ -20,7 +21,7 @@ func UnknownSigner() *ControllerSyncSpecTest {
 			msg,
 		},
 		SyncDecidedCalledCnt: 0,
-		ControllerPostRoot:   "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+		ControllerPostRoot:   "3b9cd21ca426a4e9e3188e0c8d931861a8f263636c4c0369da84fe9a99fb2fa5",
 		ExpectedError:        "invalid future msg: msg signature invalid: unknown signer",
 	}
 }

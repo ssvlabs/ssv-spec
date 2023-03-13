@@ -6,8 +6,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// Quorum130Operators  tests a quorum of valid SignedPartialSignatureMessage (13 operators)
-func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
+// Quorum13Operators  tests a quorum of valid SignedPartialSignatureMessage (13 operators)
+func Quorum13Operators() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing13SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus quorum 13 operators",
@@ -27,7 +27,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[8], ks.Shares[8], 8, 8)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[9], ks.Shares[9], 9, 9)),
 				},
-				PostDutyRunnerStateRoot: "9a4b54617c7c416b29e914c91d53454eb00f3cd4baf743242ca8cfa74d67cd96",
+				PostDutyRunnerStateRoot: "ae2d815b890986e03ae88b1fd79061426d79baf8b0a18393776442a69eb8fe74",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -47,7 +47,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[8], ks.Shares[8], 8, 8)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[9], ks.Shares[9], 9, 9)),
 				},
-				PostDutyRunnerStateRoot: "23e5bd037ec4106c378278cfaf9012f52c00e363f1c9e3f0ac92aa9664c0b0d6",
+				PostDutyRunnerStateRoot: "ce789c6504eca88685468dd4c143e104b5b8cb76b0d1780324ff24597fb21624",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -67,7 +67,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[8], ks.Shares[8], 8, 8)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[9], ks.Shares[9], 9, 9)),
 				},
-				PostDutyRunnerStateRoot: "33745d54090edccbb6fa3d407f7c6f1dc656061f7e80817931929c3611059656",
+				PostDutyRunnerStateRoot: "592b2df376168633259529c7b7c00f814b69d1f912fd3725057edb69320ba65a",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -87,7 +87,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[8], ks.Shares[8], 8, 8)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[9], ks.Shares[9], 9, 9)),
 				},
-				PostDutyRunnerStateRoot: "ebe204fdc199922dc5af74c234892cfc0591a3286c1a278ec8f07b743db7c181",
+				PostDutyRunnerStateRoot: "ad3337dda0f1c6bfd104cc8eceb1840e70c9810fc46fd5bdd8149898c7b82d6d",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -107,7 +107,7 @@ func Quorum130Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[8], 8)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[9], 9)),
 				},
-				PostDutyRunnerStateRoot: "47d50ace09bf6f4371ffd6edd7b9624d0c8dd03432aebeb4e609a03b89ca8d55",
+				PostDutyRunnerStateRoot: "33762ff6b8b9e9ea9a1b1c45b573dd194bc15a4db6ee248adf039b9c853926cd",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

@@ -17,7 +17,7 @@ func SingleConsensusMsg() *tests.ControllerSpecTest {
 				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingProposalMessage(ks.Shares[1], 1),
 				},
-				ControllerPostRoot: "ede93c772804aff585990dc09b29d841ce55e024831ea05674960b126922a0af",
+				ControllerPostRoot: "c9258515e169e330c535d38068f2dc6bf3f61e6d36a941ea41a0133435afae22",
 			},
 		},
 	}

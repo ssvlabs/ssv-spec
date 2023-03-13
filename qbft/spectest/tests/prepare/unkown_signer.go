@@ -20,7 +20,7 @@ func UnknownSigner() *tests.MsgProcessingSpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare unknown signer",
 		Pre:           pre,
-		PostRoot:      "69c049da1936e3727d09f976754cc7ee3a5cb7d85fa1e079f0465096b0a15cdb",
+		PostRoot:      "b61f5233721865ca43afc68f4ad5045eeb123f6e8f095ce76ecf956dabc74713",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: msg signature invalid: unknown signer",
 	}

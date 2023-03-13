@@ -13,7 +13,7 @@ func LateRoundChange() *tests.ControllerSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.DefaultIdentifier, qbft.FirstHeight, ks)
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingRoundChangeMessage(ks.Shares[4], 4))
 
 	return &tests.ControllerSpecTest{
@@ -31,7 +31,7 @@ func LateRoundChange() *tests.ControllerSpecTest {
 					),
 				},
 
-				ControllerPostRoot: "5fadadceb02c4ddc1766145cb772231d3df24dbd821ffef5e7ddc044c4bcc21c",
+				ControllerPostRoot: "748bb5748d521fca09a0636ab8764b372c3690e744cd6f1289b23f2daf5d7112",
 			},
 		},
 	}
