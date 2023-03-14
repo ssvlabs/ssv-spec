@@ -184,17 +184,3 @@ To generate all json spec tests, run:
 foo@bar:~$ go generate ./...
 ```
 Then run all tests
-
-## TODO
-- [//] Proposal duty execution + spec test + consensus validator
-- [//] Aggregator duty execution + spec test + consensus validator
-- [//] Sync committee duty execution + spec test + consensus validator
-- [//] Sync committee aggregator duty
-- [ ] Duty data validation (how do we ensure malicious leader doesn't proposer a non slashable attestation/ block but with invalid data)
-- [ ] Wait 1/3 or 2/3 of slot during duty execution? how else?
-- [X] implement 7,10,13 committee sizes
-- [X] improve pre-consensus partial sigs to support signed roots which are not necessarily what the local node signed (example: node 1 signed randao/ selection proof root X but nodes 2,3,4 signed Y)
-- [X] pre and post consensus timeout redesign as 32 slot timeout can cause the next duty not to start (if it starts in less than 32 slots)
-- [ ] Move ConsensusData struct to ssv package
-- [ ] Remove? storage interface? do we use it?
-- [ ] move spec structs from go-eth2-client to protolambda/zrnt?
