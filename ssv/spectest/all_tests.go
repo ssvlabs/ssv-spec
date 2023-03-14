@@ -8,6 +8,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/pre_consensus_justifications"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
@@ -20,6 +21,18 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	pre_consensus_justifications.DuplicateJustificationSigner(),
+	pre_consensus_justifications.DuplicateRoots(),
+	pre_consensus_justifications.FirstHeightNotStarted(),
+	pre_consensus_justifications.HappyFlow(),
+	pre_consensus_justifications.InconsistentRootCount(),
+	pre_consensus_justifications.InconsistentRoots(),
+	pre_consensus_justifications.InvalidJustification(),
+	pre_consensus_justifications.MissingQuorum(),
+	pre_consensus_justifications.PreviousValidPreConsensus(),
+	pre_consensus_justifications.Valid(),
+	pre_consensus_justifications.ValidNoRunningDuty(),
+
 	runner.FullHappyFlow(),
 
 	postconsensus.TooManyRoots(),
