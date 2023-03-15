@@ -2,16 +2,19 @@ package testingutils
 
 import (
 	"encoding/hex"
+
+	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	spec2 "github.com/attestantio/go-eth2-client/spec"
-	altair "github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/goccy/go-yaml"
 	"github.com/prysmaticlabs/go-bitfield"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 var signBeaconObject = func(
@@ -503,8 +506,18 @@ func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.
 }
 
 // SubmitBeaconBlock submit the block to the node
-func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBlock) error {
-	r, _ := block.HashTreeRoot()
+func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec2.VersionedSignedBeaconBlock) error {
+	var r [32]byte
+	switch block.Version {
+	case spec2.DataVersionPhase0:
+		r, _ = block.Phase0.HashTreeRoot()
+	case spec2.DataVersionAltair:
+		r, _ = block.Altair.HashTreeRoot()
+	case spec2.DataVersionBellatrix:
+		r, _ = block.Bellatrix.HashTreeRoot()
+	case spec2.DataVersionCapella:
+		r, _ = block.Capella.HashTreeRoot()
+	}
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
@@ -515,8 +528,14 @@ func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, committeeInde
 }
 
 // SubmitBlindedBeaconBlock submit the blinded block to the node
-func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *bellatrix2.SignedBlindedBeaconBlock) error {
-	r, _ := block.HashTreeRoot()
+func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedSignedBlindedBeaconBlock) error {
+	var r [32]byte
+	switch block.Version {
+	case spec2.DataVersionBellatrix:
+		r, _ = block.Bellatrix.HashTreeRoot()
+	case spec2.DataVersionCapella:
+		// TODO: no hashtreeroot for capella
+	}
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }

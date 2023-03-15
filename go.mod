@@ -3,7 +3,7 @@ module github.com/bloxapp/ssv-spec
 go 1.17
 
 require (
-	github.com/attestantio/go-eth2-client v0.15.1
+	github.com/attestantio/go-eth2-client v0.15.7
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0
 	github.com/ethereum/go-ethereum v1.10.18
 	github.com/ferranbt/fastssz v0.1.2

@@ -1,8 +1,9 @@
 package types
 
 import (
-	bellatrix2 "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
-	capella2 "github.com/attestantio/go-eth2-client/api/v1/capella"
+	"github.com/attestantio/go-eth2-client/api"
+	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
+	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
@@ -121,16 +122,8 @@ func (cid *ConsensusData) Validate() error {
 		}
 	case BNRoleProposer:
 		var err1, err2 error
-		switch cid.Version {
-		case spec.DataVersionBellatrix:
-			_, err1 = cid.GetBellatrixBlockData()
-			_, err2 = cid.GetBellatrixBlindedBlockData()
-		case spec.DataVersionCapella:
-			_, err1 = cid.GetCapellaBlockData()
-			_, err2 = cid.GetCapellaBlindedBlockData()
-		default:
-			return errors.New("invalid block data")
-		}
+		_, err1 = cid.GetBlockData()
+		_, err2 = cid.GetBlindedBlockData()
 
 		if err1 != nil && err2 != nil {
 			return err1
@@ -156,32 +149,108 @@ func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 	return ret, nil
 }
 
-func (ci *ConsensusData) GetBellatrixBlockData() (*bellatrix.BeaconBlock, error) {
-	ret := &bellatrix.BeaconBlock{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
+func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, error) {
+	switch ci.Version {
+	case spec.DataVersionPhase0:
+		ret := &phase0.BeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &spec.VersionedBeaconBlock{Phase0: ret, Version: spec.DataVersionPhase0}, nil
+	case spec.DataVersionAltair:
+		ret := &altair.BeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &spec.VersionedBeaconBlock{Altair: ret, Version: spec.DataVersionAltair}, nil
+	case spec.DataVersionBellatrix:
+		ret := &bellatrix.BeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &spec.VersionedBeaconBlock{Bellatrix: ret, Version: spec.DataVersionBellatrix}, nil
+	case spec.DataVersionCapella:
+		ret := &capella.BeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &spec.VersionedBeaconBlock{Capella: ret, Version: spec.DataVersionCapella}, nil
+	default:
+		return nil, errors.New("unknown beacon block version")
 	}
-	return ret, nil
 }
 
-func (ci *ConsensusData) GetBellatrixBlindedBlockData() (*bellatrix2.BlindedBeaconBlock, error) {
-	ret := &bellatrix2.BlindedBeaconBlock{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
+func (ci *ConsensusData) GetBlockHashRoot() (ssz.HashRoot, error) {
+	switch ci.Version {
+	case spec.DataVersionPhase0:
+		ret := &phase0.BeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return ret, nil
+	case spec.DataVersionAltair:
+		ret := &altair.BeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return ret, nil
+	case spec.DataVersionBellatrix:
+		ret := &bellatrix.BeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return ret, nil
+	case spec.DataVersionCapella:
+		ret := &capella.BeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return ret, nil
+	default:
+		return nil, errors.New("unknown beacon block version")
 	}
-	return ret, nil
 }
 
-func (ci *ConsensusData) GetCapellaBlockData() (*capella.BeaconBlock, error) {
-	ret := &capella.BeaconBlock{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
+func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedBeaconBlock, error) {
+	switch ci.Version {
+	case spec.DataVersionBellatrix:
+		ret := &apiv1bellatrix.BlindedBeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &api.VersionedBlindedBeaconBlock{Bellatrix: ret, Version: spec.DataVersionBellatrix}, nil
+	case spec.DataVersionCapella:
+		ret := &apiv1capella.BlindedBeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &api.VersionedBlindedBeaconBlock{Capella: ret, Version: spec.DataVersionCapella}, nil
+	default:
+		return nil, errors.New("unknown blinded beacon block version")
 	}
-	return ret, nil
 }
 
-func (ci *ConsensusData) GetCapellaBlindedBlockData() (*capella2.BlindedBeaconBlock, error) {
-	ret := &capella2.BlindedBeaconBlock{}
+func (ci *ConsensusData) GetBlindedBlockHashRoot() (ssz.HashRoot, error) {
+	switch ci.Version {
+	case spec.DataVersionBellatrix:
+		ret := &apiv1bellatrix.BlindedBeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return ret, nil
+	case spec.DataVersionCapella:
+		ret := &apiv1capella.BlindedBeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return ret, nil
+	}
+
+	return nil, errors.New("unknown blinded beacon block version")
+}
+
+func (ci *ConsensusData) GetBellatrixBlindedBlockData() (*apiv1bellatrix.BlindedBeaconBlock, error) {
+	ret := &apiv1bellatrix.BlindedBeaconBlock{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
 	}
