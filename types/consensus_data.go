@@ -249,14 +249,6 @@ func (ci *ConsensusData) GetBlindedBlockHashRoot() (ssz.HashRoot, error) {
 	return nil, errors.New("unknown blinded beacon block version")
 }
 
-func (ci *ConsensusData) GetBellatrixBlindedBlockData() (*apiv1bellatrix.BlindedBeaconBlock, error) {
-	ret := &apiv1bellatrix.BlindedBeaconBlock{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
-	}
-	return ret, nil
-}
-
 func (ci *ConsensusData) GetAggregateAndProof() (*phase0.AggregateAndProof, error) {
 	ret := &phase0.AggregateAndProof{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
