@@ -3,9 +3,10 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 )
@@ -16,24 +17,24 @@ type AggregatorRunner struct {
 	beacon   BeaconNode
 	network  Network
 	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	valCheck alea.ProposedValueCheckF
 }
 
 func NewAggregatorRunner(
 	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
-	qbftController *qbft.Controller,
+	aleaController *alea.Controller,
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
-	valCheck qbft.ProposedValueCheckF,
+	valCheck alea.ProposedValueCheckF,
 ) Runner {
 	return &AggregatorRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType: types.BNRoleAggregator,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
-			QBFTController: qbftController,
+			QBFTController: aleaController,
 		},
 
 		beacon:   beacon,
@@ -93,7 +94,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 	return nil
 }
 
-func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *AggregatorRunner) ProcessConsensus(signedMsg *alea.SignedMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
@@ -239,7 +240,7 @@ func (r *AggregatorRunner) GetState() *State {
 	return r.BaseRunner.State
 }
 
-func (r *AggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF {
+func (r *AggregatorRunner) GetValCheckF() alea.ProposedValueCheckF {
 	return r.valCheck
 }
 

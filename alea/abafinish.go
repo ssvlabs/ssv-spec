@@ -49,9 +49,9 @@ func (i *Instance) uponABAFinish(signedABAFinish *SignedMessage) error {
 		if i.verbose {
 			fmt.Println("\tincremented finish counter:", abaState.FinishCounter)
 		}
-		if i.verbose {
-			fmt.Println("\tSentFinish:", abaState.SentFinish)
-		}
+		// if i.verbose {
+		// 	fmt.Println("\tSentFinish:", abaState.SentFinish)
+		// }
 	}
 
 	// if FINISH(b) reached partial quorum and never broadcasted FINISH(b), broadcast

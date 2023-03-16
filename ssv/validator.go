@@ -1,7 +1,7 @@
 package ssv
 
 import (
-	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
@@ -55,7 +55,7 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
-		signedMsg := &qbft.SignedMessage{}
+		signedMsg := &alea.SignedMessage{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}

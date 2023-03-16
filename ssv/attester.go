@@ -3,9 +3,10 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
@@ -17,17 +18,17 @@ type AttesterRunner struct {
 	beacon   BeaconNode
 	network  Network
 	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	valCheck alea.ProposedValueCheckF
 }
 
 func NewAttesterRunnner(
 	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
-	qbftController *qbft.Controller,
+	qbftController *alea.Controller,
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
-	valCheck qbft.ProposedValueCheckF,
+	valCheck alea.ProposedValueCheckF,
 ) Runner {
 	return &AttesterRunner{
 		BaseRunner: &BaseRunner{
@@ -57,7 +58,7 @@ func (r *AttesterRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMe
 	return errors.New("no pre consensus sigs required for attester role")
 }
 
-func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *AttesterRunner) ProcessConsensus(signedMsg *alea.SignedMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
@@ -190,7 +191,7 @@ func (r *AttesterRunner) GetState() *State {
 	return r.BaseRunner.State
 }
 
-func (r *AttesterRunner) GetValCheckF() qbft.ProposedValueCheckF {
+func (r *AttesterRunner) GetValCheckF() alea.ProposedValueCheckF {
 	return r.valCheck
 }
 

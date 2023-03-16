@@ -3,7 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/pkg/errors"
 )
@@ -12,7 +12,7 @@ import (
 type State struct {
 	PreConsensusContainer  *PartialSigContainer
 	PostConsensusContainer *PartialSigContainer
-	RunningInstance        *qbft.Instance
+	RunningInstance        *alea.Instance
 	DecidedValue           *types.ConsensusData
 	// CurrentDuty is the duty the node pulled locally from the beacon node, might be different from decided duty
 	StartingDuty *types.Duty

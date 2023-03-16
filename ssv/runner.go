@@ -1,9 +1,9 @@
 package ssv
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea"
 	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 )
@@ -11,7 +11,7 @@ import (
 type Getters interface {
 	GetBaseRunner() *BaseRunner
 	GetBeaconNode() BeaconNode
-	GetValCheckF() qbft.ProposedValueCheckF
+	GetValCheckF() alea.ProposedValueCheckF
 	GetSigner() types.KeyManager
 	GetNetwork() Network
 }
@@ -28,7 +28,7 @@ type Runner interface {
 	// ProcessPreConsensus processes all pre-consensus msgs, returns error if can't process
 	ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error
 	// ProcessConsensus processes all consensus msgs, returns error if can't process
-	ProcessConsensus(msg *qbft.SignedMessage) error
+	ProcessConsensus(msg *alea.SignedMessage) error
 	// ProcessPostConsensus processes all post-consensus msgs, returns error if can't process
 	ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error
 
@@ -43,7 +43,7 @@ type Runner interface {
 type BaseRunner struct {
 	State          *State
 	Share          *types.Share
-	QBFTController *qbft.Controller
+	QBFTController *alea.Controller
 	BeaconNetwork  types.BeaconNetwork
 	BeaconRoleType types.BeaconRole
 }
@@ -77,7 +77,7 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *Sig
 }
 
 // baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
-func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
+func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *alea.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
 	prevDecided := false
 	if b.hasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
@@ -98,23 +98,24 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	}
 
 	// get decided value
-	decidedData, err := decidedMsg.Message.GetCommitData()
-	if err != nil {
-		return false, nil, errors.Wrap(err, "failed to get decided data")
-	}
+	// decidedData, err := decidedMsg.Message.GetCommitData()
+	// if err != nil {
+	// 	return false, nil, errors.Wrap(err, "failed to get decided data")
+	// }
 
-	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedData.Data); err != nil {
-		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
-	}
+	// decidedValue = &types.ConsensusData{}
+	// if err := decidedValue.Decode(decidedData.Data); err != nil {
+	// 	return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
+	// }
 
-	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
-		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
-	}
+	// if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
+	// 	return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
+	// }
 
-	runner.GetBaseRunner().State.DecidedValue = decidedValue
+	// runner.GetBaseRunner().State.DecidedValue = decidedValue
 
-	return true, decidedValue, nil
+	// return true, decidedValue, nil
+	return false, nil, nil
 }
 
 // basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg
@@ -154,9 +155,9 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 }
 
 // didDecideCorrectly returns true if the expected consensus instance decided correctly
-func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.SignedMessage) (bool, error) {
+func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *alea.SignedMessage) (bool, error) {
 	decided := decidedMsg != nil
-	decidedRunningInstance := decided && decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
+	decidedRunningInstance := decided //&& decidedMsg.Message.Height == b.State.RunningInstance.GetHeight()
 
 	if !decided {
 		return false, nil

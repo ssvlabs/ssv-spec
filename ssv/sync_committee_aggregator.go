@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
+
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/alea"
+	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/MatheusFranco99/ssv-spec-AleaBFT/qbft"
-	"github.com/MatheusFranco99/ssv-spec-AleaBFT/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 )
@@ -18,17 +19,17 @@ type SyncCommitteeAggregatorRunner struct {
 	beacon   BeaconNode
 	network  Network
 	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	valCheck alea.ProposedValueCheckF
 }
 
 func NewSyncCommitteeAggregatorRunner(
 	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
-	qbftController *qbft.Controller,
+	qbftController *alea.Controller,
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
-	valCheck qbft.ProposedValueCheckF,
+	valCheck alea.ProposedValueCheckF,
 ) Runner {
 	return &SyncCommitteeAggregatorRunner{
 		BaseRunner: &BaseRunner{
@@ -115,7 +116,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *alea.SignedMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
@@ -340,7 +341,7 @@ func (r *SyncCommitteeAggregatorRunner) GetState() *State {
 	return r.BaseRunner.State
 }
 
-func (r *SyncCommitteeAggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF {
+func (r *SyncCommitteeAggregatorRunner) GetValCheckF() alea.ProposedValueCheckF {
 	return r.valCheck
 }
 
