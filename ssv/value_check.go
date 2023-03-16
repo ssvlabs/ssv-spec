@@ -98,14 +98,14 @@ func ProposerValueCheckF(
 			return errors.Wrap(err, "duty invalid")
 		}
 
-		if blockData, err := cd.GetBlindedBlockData(); err == nil {
+		if blockData, _, err := cd.GetBlindedBlockData(); err == nil {
 			slot, err := blockData.Slot()
 			if err != nil {
 				return errors.Wrap(err, "failed to get slot from blinded block data")
 			}
 			return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 		}
-		if blockData, err := cd.GetBlockData(); err == nil {
+		if blockData, _, err := cd.GetBlockData(); err == nil {
 			slot, err := blockData.Slot()
 			if err != nil {
 				return errors.Wrap(err, "failed to get slot from block data")
