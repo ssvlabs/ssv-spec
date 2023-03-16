@@ -10,7 +10,7 @@ package types
 //go:generate go run .../fastssz/sszgen --path messages.go --exclude-objs ValidatorPK,MessageID,MsgType
 
 //go:generate rm -f ./beacon_types_encoding.go
-//go:generate go run .../fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.15.1/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole
+//go:generate go run .../fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.15.7/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole
 
 //go:generate rm -f ./partial_sig_message_encoding.go
 //go:generate go run .../fastssz/sszgen --path partial_sig_message.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.15.1/spec/phase0,./signer.go,./operator.go --exclude-objs PartialSigMsgType
