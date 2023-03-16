@@ -134,12 +134,12 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	if r.decidedBlindedBlock() {
 		_, blkToSign, err = decidedValue.GetBlindedBlockData()
 		if err != nil {
-			return errors.Wrap(err, "could not get blinded block as a hash root")
+			return errors.Wrap(err, "could not get blinded block data")
 		}
 	} else {
 		_, blkToSign, err = decidedValue.GetBlockData()
 		if err != nil {
-			return errors.Wrap(err, "could not get block as a hash root")
+			return errors.Wrap(err, "could not get block data")
 		}
 	}
 
@@ -316,14 +316,14 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 	if r.decidedBlindedBlock() {
 		_, data, err := r.GetState().DecidedValue.GetBlindedBlockData()
 		if err != nil {
-			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block as a hash root")
+			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block data")
 		}
 		return []ssz.HashRoot{data}, types.DomainProposer, nil
 	}
 
 	_, data, err := r.GetState().DecidedValue.GetBlockData()
 	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block as a hash root")
+		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
 	}
 	return []ssz.HashRoot{data}, types.DomainProposer, nil
 }
