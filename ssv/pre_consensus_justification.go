@@ -69,9 +69,6 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 			}
 		}
 
-		//test invalid sig
-		//test unknown signer
-		//test invalid slot
 		// verify sigs and duty.slot == msg.slot
 		if err := b.validatePartialSigMsgForSlot(msg, data.Duty.Slot); err != nil {
 			return err
