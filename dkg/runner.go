@@ -65,6 +65,10 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 				return true, errors.Wrap(err, "protocol finished without blame or keygen result")
 			}
 
+			if err := r.config.Storage.SaveKeyGenOutput(o.ProtocolOutput); err != nil {
+				return false, err
+			}
+
 			if r.isResharing() {
 				if err := r.prepareAndBroadcastOutput(); err != nil {
 					return false, err

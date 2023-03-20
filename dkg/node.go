@@ -65,8 +65,10 @@ func (n *Node) newRunner(id RequestID, initMsg *Init) (Runner, error) {
 
 func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, error) {
 	reshareParams := &ReshareParams{}
-	if err := reshareParams.LoadFromStorage(reshareMsg.ValidatorPK, n.config.Storage); err != nil {
-		return nil, err
+	if inOldCommittee(n.operator.OperatorID, reshareMsg.OldOperatorIDs) {
+		if err := reshareParams.LoadFromStorage(reshareMsg.ValidatorPK, n.config.Storage); err != nil {
+			return nil, err
+		}
 	}
 
 	r := &runner{
