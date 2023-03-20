@@ -13,7 +13,7 @@ import (
 // Message to blame an inconsistent message, including the existing message and
 // the new message as blame data.
 func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
-	fr.state.currentRound = Blame
+	fr.state.SetCurrentRound(Blame)
 
 	existingMessageBytes, err := existingMessage.Encode()
 	if err != nil {
@@ -54,7 +54,7 @@ func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage
 // Message to blame an invalid share, including the round 1 message from culprit
 // operator
 func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
-	fr.state.currentRound = Blame
+	fr.state.SetCurrentRound(Blame)
 
 	round1Msg, err := fr.state.msgContainer.GetSignedMsg(Round1, culpritOID)
 	if err != nil {
@@ -95,7 +95,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bo
 // blame an invalid message, including the operatorID of the culprit and the
 // received signed message.
 func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, message *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
-	fr.state.currentRound = Blame
+	fr.state.SetCurrentRound(Blame)
 
 	bytes, err := message.Encode()
 	if err != nil {
@@ -130,7 +130,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, m
 
 // checkBlame checks validity of the blame message as per its blame type
 func (fr *Instance) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, signedMessage *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
-	fr.state.currentRound = Blame
+	fr.state.SetCurrentRound(Blame)
 
 	var valid bool
 	switch protocolMessage.BlameMessage.Type {

@@ -20,7 +20,8 @@ func (fr *Instance) processKeygenOutput() (finished bool, protocolOutcome *dkg.P
 	if !fr.canProceedThisRound() {
 		return false, nil, nil
 	}
-	fr.state.currentRound = KeygenOutput
+	fr.state.SetCurrentRound(KeygenOutput)
+	fr.state.roundTimer.StartRoundTimeoutTimer(fr.state.GetCurrentRound())
 
 	if !fr.needToRunCurrentRound() {
 		return false, nil, nil

@@ -18,7 +18,8 @@ func (fr *Instance) processRound1() (finished bool, protocolOutcome *dkg.Protoco
 	if !fr.canProceedThisRound() {
 		return false, nil, nil
 	}
-	fr.state.currentRound = Round1
+	fr.state.SetCurrentRound(Round1)
+	fr.state.roundTimer.StartRoundTimeoutTimer(fr.state.GetCurrentRound())
 
 	if !fr.needToRunCurrentRound() {
 		return false, nil, fr.state.participant.SkipRound1()

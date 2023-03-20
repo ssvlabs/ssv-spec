@@ -103,3 +103,13 @@ func BlameMessageBytes(id types.OperatorID, blameType BlameType, blameMessages [
 	}).Encode()
 	return ret
 }
+
+func Testing_TimeoutMessageBytes(round ProtocolRound) []byte {
+	ret, _ := (&ProtocolMsg{
+		Round: Timeout,
+		TimeoutMessage: &TimeoutMessage{
+			Round: round,
+		},
+	}).Encode()
+	return ret
+}

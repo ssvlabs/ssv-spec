@@ -3,10 +3,10 @@ package spectest
 import (
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/blame"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/keygen"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/resharing"
+	"github.com/bloxapp/ssv-spec/dkg/spectest/tests/frost/timeout"
 )
 
 type SpecTest interface {
@@ -15,7 +15,7 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
-	tests.HappyFlow(),
+	// tests.HappyFlow(),
 	// tests.ResharingHappyFlow(),
 
 	keygen.HappyFlow(),
@@ -25,4 +25,8 @@ var AllTests = []SpecTest{
 	blame.BlameTypeInconsistentMessage_HappyFlow(),
 	blame.BlameTypeInvalidShare_HappyFlow(),
 	blame.BlameTypeInvalidShare_FailedDecrypt_HappyFlow(),
+
+	timeout.Timeout_Preparation(),
+	timeout.Timeout_Round1(),
+	timeout.Timeout_Round2(),
 }

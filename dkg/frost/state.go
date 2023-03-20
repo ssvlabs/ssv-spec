@@ -1,6 +1,9 @@
 package frost
 
 import (
+	"context"
+	"sync"
+
 	"github.com/coinbase/kryptology/pkg/dkg/frost"
 	ecies "github.com/ecies/go/v2"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -17,6 +20,7 @@ const (
 	Round2
 	KeygenOutput
 	Blame
+	Timeout
 )
 
 var rounds = []ProtocolRound{
@@ -26,12 +30,29 @@ var rounds = []ProtocolRound{
 	Round2,
 	KeygenOutput,
 	Blame,
+	Timeout,
+}
+
+func (round ProtocolRound) String() string {
+	m := map[ProtocolRound]string{
+		Uninitialized: "Uninitialized",
+		Preparation:   "Preparation",
+		Round1:        "Round1",
+		Round2:        "Round2",
+		KeygenOutput:  "KeygenOutput",
+		Blame:         "Blame",
+		Timeout:       "Timeout",
+	}
+	return m[round]
 }
 
 // State tracks protocol's current round, stores messages in MsgContainer, stores
 // session key and operator's secret shares
 type State struct {
+	// round mutex ensures atomic access to current round
+	roundMutex   *sync.Mutex
 	currentRound ProtocolRound
+
 	// underlying participant from frost lib
 	participant *frost.DkgParticipant
 	// session keypair for other operators to encrypt messages sent to this operator
@@ -40,6 +61,8 @@ type State struct {
 	msgContainer IMsgContainer
 	// shares generated for each operator using shamir secret sharing in round 1
 	operatorShares map[uint32]*bls.SecretKey
+	// underlying timer for timeout
+	roundTimer *RoundTimer
 }
 
 func initState() *State {
@@ -47,6 +70,8 @@ func initState() *State {
 		currentRound:   Uninitialized,
 		msgContainer:   newMsgContainer(),
 		operatorShares: make(map[uint32]*bls.SecretKey),
+		roundTimer:     NewRoundTimer(context.Background(), nil),
+		roundMutex:     new(sync.Mutex),
 	}
 }
 
@@ -60,4 +85,18 @@ func (state *State) encryptByOperatorID(operatorID uint32, data []byte) ([]byte,
 		return nil, err
 	}
 	return ecies.Encrypt(sessionPK, data)
+}
+
+func (state *State) GetCurrentRound() ProtocolRound {
+	state.roundMutex.Lock()
+	defer state.roundMutex.Unlock()
+
+	return state.currentRound
+}
+
+func (state *State) SetCurrentRound(round ProtocolRound) {
+	state.roundMutex.Lock()
+	defer state.roundMutex.Unlock()
+
+	state.currentRound = round
 }

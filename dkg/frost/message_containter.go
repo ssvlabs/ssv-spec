@@ -2,6 +2,7 @@ package frost
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/bloxapp/ssv-spec/dkg"
 	"github.com/pkg/errors"
@@ -20,6 +21,7 @@ type IMsgContainer interface {
 }
 
 type MsgContainer struct {
+	mu   *sync.Mutex
 	msgs map[ProtocolRound]map[uint32]*dkg.SignedMessage
 }
 
@@ -28,10 +30,13 @@ func newMsgContainer() IMsgContainer {
 	for _, round := range rounds {
 		m[round] = make(map[uint32]*dkg.SignedMessage)
 	}
-	return &MsgContainer{msgs: m}
+	return &MsgContainer{msgs: m, mu: new(sync.Mutex)}
 }
 
 func (msgContainer *MsgContainer) SaveMsg(round ProtocolRound, msg *dkg.SignedMessage) (existingMessage *dkg.SignedMessage, err error) {
+	msgContainer.mu.Lock()
+	defer msgContainer.mu.Unlock()
+
 	existingMessage, exists := msgContainer.msgs[round][uint32(msg.Signer)]
 	if exists {
 		return existingMessage, errors.New("msg already exists")
@@ -41,6 +46,9 @@ func (msgContainer *MsgContainer) SaveMsg(round ProtocolRound, msg *dkg.SignedMe
 }
 
 func (msgContainer *MsgContainer) GetSignedMsg(round ProtocolRound, operatorID uint32) (*dkg.SignedMessage, error) {
+	msgContainer.mu.Lock()
+	defer msgContainer.mu.Unlock()
+
 	signedMsg, exist := msgContainer.msgs[round][operatorID]
 	if !exist {
 		return nil, ErrMsgNotFound{round: round, operatorID: operatorID}
@@ -97,6 +105,9 @@ func (msgContainer *MsgContainer) GetBlameMsg(operatorID uint32) (*BlameMessage,
 }
 
 func (msgContainer *MsgContainer) GetMessage(round ProtocolRound, operatorID uint32) (interface{}, error) {
+	msgContainer.mu.Lock()
+	defer msgContainer.mu.Unlock()
+
 	msg, ok := msgContainer.msgs[round][operatorID]
 	if !ok {
 		return nil, ErrMsgNotFound{round: round, operatorID: operatorID}
@@ -120,10 +131,16 @@ func (msgContainer *MsgContainer) GetMessage(round ProtocolRound, operatorID uin
 }
 
 func (msgContainer *MsgContainer) AllMessagesForRound(round ProtocolRound) map[uint32]*dkg.SignedMessage {
+	msgContainer.mu.Lock()
+	defer msgContainer.mu.Unlock()
+
 	return msgContainer.msgs[round]
 }
 
 func (msgContainer *MsgContainer) AllMessagesReceivedFor(round ProtocolRound, operators []uint32) bool {
+	msgContainer.mu.Lock()
+	defer msgContainer.mu.Unlock()
+
 	for _, operatorID := range operators {
 		if _, ok := msgContainer.msgs[round][operatorID]; !ok {
 			return false
