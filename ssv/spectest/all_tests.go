@@ -21,6 +21,7 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	pre_consensus_justifications.InvalidConsensusData(),
 	pre_consensus_justifications.InvalidSlot(),
 	pre_consensus_justifications.UnknownSigner(),
 	pre_consensus_justifications.InvalidMessageSignature(),
