@@ -22,7 +22,7 @@ func (test *ControllerSyncSpecTest) TestName() string {
 }
 
 func (test *ControllerSyncSpecTest) Run(t *testing.T) {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],

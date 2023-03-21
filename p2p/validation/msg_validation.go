@@ -93,12 +93,12 @@ func validateConsensusMsg(runner ssv.Runner, data []byte) error {
 }
 
 func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
-	signedMsg := &ssv.SignedPartialSignatureMessage{}
+	signedMsg := &types.SignedPartialSignatureMessage{}
 	if err := signedMsg.Decode(data); err != nil {
 		return err
 	}
 
-	if signedMsg.Message.Type == ssv.PostConsensusPartialSig {
+	if signedMsg.Message.Type == types.PostConsensusPartialSig {
 		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, signedMsg)
 	}
 	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, signedMsg)

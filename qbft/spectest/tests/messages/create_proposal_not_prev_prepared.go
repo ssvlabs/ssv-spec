@@ -9,33 +9,16 @@ import (
 
 // CreateProposalNotPreviouslyPrepared tests creating a proposal msg, non-first round and not previously prepared
 func CreateProposalNotPreviouslyPrepared() *tests.CreateMsgSpecTest {
+	ks := testingutils.Testing4SharesSet()
 	return &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateProposal,
 		Name:       "create proposal not previously prepared",
-		Value:      []byte{1, 2, 3, 4},
+		Value:      [32]byte{1, 2, 3, 4},
 		RoundChangeJustifications: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      2,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-			}),
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[2], types.OperatorID(2), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      2,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-			}),
-			testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[3], types.OperatorID(3), &qbft.Message{
-				MsgType:    qbft.RoundChangeMsgType,
-				Height:     qbft.FirstHeight,
-				Round:      2,
-				Identifier: []byte{1, 2, 3, 4},
-				Data:       testingutils.RoundChangeDataBytes(nil, qbft.NoRound),
-			}),
+			testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
+			testingutils.TestingProposalMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+			testingutils.TestingProposalMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
 		},
-		ExpectedRoot: "89f88f24f9aa3496d925cb869b9de51b3be1379f1957fff15a0ba0ae83e241de",
+		ExpectedRoot: "45f15e2dc3a0c1bd13aa977ead44abfabab094864db4a77dcd0cd9a30e87c3bb",
 	}
 }

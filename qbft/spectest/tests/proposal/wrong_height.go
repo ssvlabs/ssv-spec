@@ -10,19 +10,14 @@ import (
 // WrongHeight tests a proposal msg received with the wrong height
 func WrongHeight() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     2,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-		}),
+		testingutils.TestingProposalMessageWithHeight(ks.Shares[1], types.OperatorID(1), 2),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong proposal height",
 		Pre:           pre,
-		PostRoot:      "e9a7c1b25a014f281d084637bdc50ec144f1262b5cc87eeb6b4493d27d10a69b",
+		PostRoot:      "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: wrong msg height",
 	}

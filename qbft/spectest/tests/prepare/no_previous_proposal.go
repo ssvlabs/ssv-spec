@@ -9,20 +9,17 @@ import (
 
 // NoPreviousProposal tests prepare msg without receiving a previous proposal state.ProposalAcceptedForCurrentRound == nil
 func NoPreviousProposal() *tests.MsgProcessingSpecTest {
+	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
+
 	msgs := []*qbft.SignedMessage{
-		testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.PrepareDataBytes([]byte{1, 2, 3, 4}),
-		}),
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 	}
+
 	return &tests.MsgProcessingSpecTest{
 		Name:          "no previous proposal for prepare",
 		Pre:           pre,
-		PostRoot:      "e9a7c1b25a014f281d084637bdc50ec144f1262b5cc87eeb6b4493d27d10a69b",
+		PostRoot:      "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: did not receive proposal for this round",
 	}

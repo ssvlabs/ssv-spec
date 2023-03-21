@@ -9,8 +9,24 @@ import (
 
 // CommitteeIndexMismatch tests Duty.CommitteeIndex != AttestationData.Index
 func CommitteeIndexMismatch() *valcheck.SpecTest {
+	attestationData := &spec.AttestationData{
+		Slot:            testingutils.TestingDutySlot,
+		Index:           3,
+		BeaconBlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Source: &spec.Checkpoint{
+			Epoch: 0,
+			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		},
+		Target: &spec.Checkpoint{
+			Epoch: 1,
+			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		},
+	}
+
+	attestationDataBytes, _ := attestationData.MarshalSSZ()
+
 	data := &types.ConsensusData{
-		Duty: &types.Duty{
+		Duty: types.Duty{
 			Type:                    types.BNRoleAttester,
 			PubKey:                  testingutils.TestingValidatorPubKey,
 			Slot:                    testingutils.TestingDutySlot,
@@ -20,19 +36,7 @@ func CommitteeIndexMismatch() *valcheck.SpecTest {
 			CommitteeLength:         128,
 			ValidatorCommitteeIndex: 11,
 		},
-		AttestationData: &spec.AttestationData{
-			Slot:            testingutils.TestingDutySlot,
-			Index:           3,
-			BeaconBlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-			Source: &spec.Checkpoint{
-				Epoch: 0,
-				Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-			},
-			Target: &spec.Checkpoint{
-				Epoch: 1,
-				Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-			},
-		},
+		DataSSZ: attestationDataBytes,
 	}
 
 	input, _ := data.Encode()

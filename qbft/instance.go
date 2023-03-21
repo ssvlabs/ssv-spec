@@ -142,16 +142,12 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		if proposedMsg == nil {
 			return errors.New("did not receive proposal for this round")
 		}
-		acceptedProposalData, err := proposedMsg.Message.GetCommitData()
-		if err != nil {
-			return errors.Wrap(err, "could not get accepted proposal data")
-		}
-		return validSignedPrepareForHeightRoundAndValue(
+		return validSignedPrepareForHeightRoundAndRoot(
 			i.config,
 			msg,
 			i.State.Height,
 			i.State.Round,
-			acceptedProposalData.Data,
+			proposedMsg.Message.Root,
 			i.State.Share.Committee,
 		)
 	case CommitMsgType:
@@ -168,7 +164,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChange(i.State, i.config, msg, i.State.Height, msg.Message.Round)
+		return validRoundChangeForData(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
 	default:
 		return errors.New("signed message type not supported")
 	}

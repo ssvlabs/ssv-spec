@@ -2,16 +2,22 @@ package testingutils
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
+var TestingQBFTFullData = []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+var TestingQBFTRootData = func() [32]byte {
+	return sha256.Sum256(TestingQBFTFullData)
+}()
+
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
 		Signer:    NewTestingKeyManager(),
 		SigningPK: keySet.Shares[1].GetPublicKey().Serialize(),
-		Domain:    types.PrimusTestnet,
+		Domain:    TestingSSVDomainType,
 		ValueCheckF: func(data []byte) error {
 			if bytes.Equal(data, TestingInvalidValueCheck) {
 				return errors.New("invalid value")
@@ -38,7 +44,7 @@ var TestingShare = func(keysSet *TestKeySet) *types.Share {
 		OperatorID:          1,
 		ValidatorPubKey:     keysSet.ValidatorPK.Serialize(),
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
-		DomainType:          types.PrimusTestnet,
+		DomainType:          TestingSSVDomainType,
 		Quorum:              keysSet.Threshold,
 		PartialQuorum:       keysSet.PartialThreshold,
 		Committee:           keysSet.Committee(),
@@ -64,7 +70,7 @@ var ThirteenOperatorsInstance = func() *qbft.Instance {
 
 var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {
 	ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
-	ret.StartValue = []byte{1, 2, 3, 4}
+	ret.StartValue = TestingQBFTFullData
 	return ret
 }
 
@@ -76,7 +82,7 @@ func NewTestingQBFTController(
 	return qbft.NewController(
 		identifier,
 		share,
-		types.PrimusTestnet,
+		TestingSSVDomainType,
 		config,
 	)
 }

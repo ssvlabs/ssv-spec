@@ -11,19 +11,17 @@ import (
 // MultiSigner tests a proposal msg with > 1 signers
 func MultiSigner() *tests.MsgProcessingSpecTest {
 	pre := testingutils.BaseInstance()
+	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
-		testingutils.MultiSignQBFTMsg([]*bls.SecretKey{testingutils.Testing4SharesSet().Shares[1], testingutils.Testing4SharesSet().Shares[2]}, []types.OperatorID{1, 2}, &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
-			Round:      qbft.FirstRound,
-			Identifier: []byte{1, 2, 3, 4},
-			Data:       testingutils.ProposalDataBytes([]byte{1, 2, 3, 4}, nil, nil),
-		}),
+		testingutils.TestingMultiSignerProposalMessage(
+			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2]},
+			[]types.OperatorID{1, 2},
+		),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal multi signer",
 		Pre:            pre,
-		PostRoot:       "e9a7c1b25a014f281d084637bdc50ec144f1262b5cc87eeb6b4493d27d10a69b",
+		PostRoot:       "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: msg allows 1 signer",

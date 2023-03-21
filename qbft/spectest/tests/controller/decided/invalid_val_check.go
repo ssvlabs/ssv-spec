@@ -1,6 +1,7 @@
 package decided
 
 import (
+	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -10,7 +11,6 @@ import (
 
 // InvalidValCheckData tests a decided message with invalid decided data (but should pass as it's decided)
 func InvalidValCheckData() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid value (should pass)",
@@ -18,22 +18,21 @@ func InvalidValCheckData() *tests.ControllerSpecTest {
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.MultiSignQBFTMsg(
+					testingutils.TestingCommitMultiSignerMessageWithParams(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes(testingutils.TestingInvalidValueCheck),
-						}),
+						qbft.FirstRound,
+						qbft.FirstHeight,
+						testingutils.TestingIdentifier,
+						sha256.Sum256(testingutils.TestingInvalidValueCheck),
+						testingutils.TestingInvalidValueCheck,
+					),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingInvalidValueCheck,
 				},
-				ControllerPostRoot: "befc8626cb71ca1b8493d41f54a709b22bbf530302177b8668fd77562ca3040e",
+				ControllerPostRoot: "c7420429b97ed92ad8f21bdef11421c74d86c5d93131a8942d825d1c0aab969c",
 			},
 		},
 	}

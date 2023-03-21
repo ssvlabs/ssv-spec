@@ -10,17 +10,11 @@ import (
 
 // LateRoundChange tests process late round change msg for an instance which just decided
 func LateRoundChange() *tests.ControllerSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := testingutils.DecidingMsgsForHeight([]byte{1, 2, 3, 4}, identifier[:], qbft.FirstHeight, ks)
-	msgs = append(msgs, testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
-		MsgType:    qbft.RoundChangeMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: identifier[:],
-		Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-	}))
+	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+	msgs = append(msgs, testingutils.TestingRoundChangeMessage(ks.Shares[4], 4))
 
 	return &tests.ControllerSpecTest{
 		Name: "late round change",
@@ -29,21 +23,15 @@ func LateRoundChange() *tests.ControllerSpecTest {
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal: []byte{1, 2, 3, 4},
+					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
-					BroadcastedDecided: testingutils.MultiSignQBFTMsg(
+					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
-						&qbft.Message{
-							MsgType:    qbft.CommitMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: identifier[:],
-							Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-						}),
+					),
 				},
 
-				ControllerPostRoot: "5fadadceb02c4ddc1766145cb772231d3df24dbd821ffef5e7ddc044c4bcc21c",
+				ControllerPostRoot: "748bb5748d521fca09a0636ab8764b372c3690e744cd6f1289b23f2daf5d7112",
 			},
 		},
 	}

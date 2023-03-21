@@ -30,20 +30,19 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SyncCommitteeContributionRunner(ks),
 					testingutils.TestSyncCommitteeContributionConsensusDataByts,
 				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.SyncCommitteeContributionMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestSyncCommitteeContributionConsensusDataByts, nil, nil),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID,
+							testingutils.TestSyncCommitteeContributionConsensusDataByts,
+						),
+						nil),
 				},
-				PostDutyRunnerStateRoot: "ae7ee7e668eb90c4188316a8db8a4b36cd329bc859dd997cc5b9be60fb4e89e7",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "40ad0587a87848675408886eda4f180caece4406851f873f0887b4800ac75429",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "sync committee",
@@ -51,20 +50,19 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SyncCommitteeRunner(ks),
 					testingutils.TestSyncCommitteeConsensusDataByts,
 				),
-				Duty: testingutils.TestingSyncCommitteeDuty,
+				Duty: &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.SyncCommitteeMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestSyncCommitteeConsensusDataByts, nil, nil),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID,
+							testingutils.TestSyncCommitteeConsensusDataByts,
+						),
+						nil),
 				},
-				PostDutyRunnerStateRoot: "e2bcc9c4304b5e8409628039f900e2dac104ca75f7b2d12f1cd52b45b44eac75",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "91b27703f146f5e2c057d4753afaf653e35a0296146afe1d7dc64e18cd27cd2e",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "aggregator",
@@ -72,20 +70,19 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 					testingutils.AggregatorRunner(ks),
 					testingutils.TestAggregatorConsensusDataByts,
 				),
-				Duty: testingutils.TestingAggregatorDuty,
+				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.AggregatorMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestAggregatorConsensusDataByts, nil, nil),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID,
+							testingutils.TestAggregatorConsensusDataByts,
+						),
+						nil),
 				},
-				PostDutyRunnerStateRoot: "f81db6a51506ad7a4ccb972e84eabd7f45132ea825f06df7c65c07d8583fe006",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "8b1322320222b9894052c6c17d621535a37ece0d5ae7f324096a23c4c50a3b02",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "proposer",
@@ -93,20 +90,19 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 					testingutils.ProposerRunner(ks),
 					testingutils.TestProposerConsensusDataByts,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ProposerMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerConsensusDataByts, nil, nil),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+							testingutils.TestProposerConsensusDataByts,
+						),
+						nil),
 				},
-				PostDutyRunnerStateRoot: "e2f2c71d4ffd08093bc57b937f5c2618973315f92835559bf3ea272a1c033517",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "483814963f6daeb4a730d1adad7d0524eb4edf224f98e201b4261786a8f88d71",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -114,20 +110,19 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 					testingutils.ProposerBlindedBlockRunner(ks),
 					testingutils.TestProposerBlindedBlockConsensusDataByts,
 				),
-				Duty: testingutils.TestingProposerDuty,
+				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ProposerMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestProposerBlindedBlockConsensusDataByts, nil, nil),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+							testingutils.TestProposerBlindedBlockConsensusDataByts,
+						),
+						nil),
 				},
-				PostDutyRunnerStateRoot: "5e982dd86d046bb26cee80362a4f7937653dae0377244bc2a4553d487942640a",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "dbbd72ea8094fb8be921f44f383fbd8880c05abf84d960a37a4fb28bbd743b18",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name: "attester",
@@ -135,37 +130,34 @@ func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 					testingutils.AttesterRunner(ks),
 					testingutils.TestAttesterConsensusDataByts,
 				),
-				Duty: testingutils.TestingAttesterDuty,
+				Duty: &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.AttesterMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestAttesterConsensusDataByts, nil, nil),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.AttesterMsgID,
+							testingutils.TestAttesterConsensusDataByts,
+						),
+						nil),
 				},
-				PostDutyRunnerStateRoot: "14771f0b1b77704b58a9c62a9ce06566964747ddf60f3f9c280b356b31a5d126",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "7508cb14dd0d5833d218141b74b6fd8c512a54e99143c7f91d754ea3f08f1bd6",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: no running duty",
 			},
 			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   testingutils.TestingValidatorRegistrationDuty,
+				Duty:   &testingutils.TestingValidatorRegistrationDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(
-						testingutils.SignQBFTMsg(testingutils.Testing4SharesSet().Shares[1], types.OperatorID(1), &qbft.Message{
-							MsgType:    qbft.ProposalMsgType,
-							Height:     qbft.FirstHeight,
-							Round:      qbft.FirstRound,
-							Identifier: testingutils.ValidatorRegistrationMsgID,
-							Data:       testingutils.ProposalDataBytes(testingutils.TestAttesterConsensusDataByts, nil, nil),
-						}), nil),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.Shares[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID,
+							testingutils.TestAttesterConsensusDataByts,
+						),
+						nil),
 				},
-				PostDutyRunnerStateRoot: "254e575ba2361c64027aa0012fb76c939f118e687e9868692d115a3437b7b66d",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "no consensus phase for validator registration",

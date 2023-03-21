@@ -32,44 +32,44 @@ func Finished() *MultiStartNewRunnerDutySpecTest {
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  finishRunner(testingutils.SyncCommitteeContributionRunner(ks), testingutils.TestingSyncCommitteeContributionNexEpochDuty),
-				Duty:                    testingutils.TestingSyncCommitteeContributionNexEpochDuty,
-				PostDutyRunnerStateRoot: "d46a8d498e403c17b5cef207a99f4da7b5ff7de2cdc73c3c3d588ead18cb3307",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				Runner:                  finishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionNexEpochDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				PostDutyRunnerStateRoot: "0ae01aec6a06e42b300b5de874574a19ac2c27a0a32f0ec77f3769a78392065d",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:                    "sync committee",
-				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
-				Duty:                    testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "6a0dc57a92abc028355a5f5f978c5d48b5c5377eb200369e2d8955ea689b85fa",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeDuty,
+				PostDutyRunnerStateRoot: "68136fef1b4cf9a0741f33d018cf232371207ae960317f7035ef115a65e711a0",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "aggregator",
-				Runner:                  finishRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDutyNextEpoch),
-				Duty:                    testingutils.TestingAggregatorDutyNextEpoch,
-				PostDutyRunnerStateRoot: "d41f116ce5808d14015a7fb9d796f411d10fbe0612ac44873e440406b91c7799",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				Runner:                  finishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDutyNextEpoch),
+				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
+				PostDutyRunnerStateRoot: "e8e43d54a9b3e66c2b6d65714d443be641dbd7db38b8ecf109f50aa09883ce37",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  finishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpoch),
-				Duty:                    testingutils.TestingProposerDutyNextEpoch,
-				PostDutyRunnerStateRoot: "af4ecfb6d8c9cf5bf293a7f35aeb22c6db97294c109e1c2b4d0e98d02ff59602",
-				OutputMessages: []*ssv.SignedPartialSignatureMessage{
+				Runner:                  finishRunner(testingutils.ProposerRunner(ks), &testingutils.TestingProposerDutyNextEpoch),
+				Duty:                    &testingutils.TestingProposerDutyNextEpoch,
+				PostDutyRunnerStateRoot: "8bb7114ca6cb9d4247a2fc955e9c881f9c1909752a0f330270251dfaa52adcc3",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:                    "attester",
-				Runner:                  finishRunner(testingutils.AttesterRunner(ks), testingutils.TestingAttesterDuty),
-				Duty:                    testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "6ff27f063988dda4a45a835206a028e9578b8cf4bc24cb0363ba13d0a34dede7",
-				OutputMessages:          []*ssv.SignedPartialSignatureMessage{},
+				Runner:                  finishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
+				Duty:                    &testingutils.TestingAttesterDuty,
+				PostDutyRunnerStateRoot: "203e72c4e6f9e55ffdaac1d62ae20d7f518fb704d76cfb07dc93a07118ed0df3",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
 	}

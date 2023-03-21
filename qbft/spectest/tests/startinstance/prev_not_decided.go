@@ -11,11 +11,11 @@ func PreviousNotDecided() *tests.ControllerSpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "can't start new QBFT instance: previous instance hasn't Decided",

@@ -9,12 +9,12 @@ import (
 	"sort"
 )
 
-func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
-	if err := b.validatePartialSigMsg(signedMsg, b.State.StartingDuty.Slot); err != nil {
+	if err := b.validatePartialSigMsgForSlot(signedMsg, b.State.StartingDuty.Slot); err != nil {
 		return err
 	}
 
@@ -26,7 +26,7 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *SignedPar
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
-func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
@@ -49,7 +49,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *SignedPa
 		return errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
-	if err := b.validatePartialSigMsg(signedMsg, decidedValue.Duty.Slot); err != nil {
+	if err := b.validatePartialSigMsgForSlot(signedMsg, decidedValue.Duty.Slot); err != nil {
 		return err
 	}
 
@@ -73,30 +73,30 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.Cons
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
 	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
 		return errors.New("wrong expected roots count")
 	}
 
 	// convert expected roots to map and mark unique roots when verified
-	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][]byte, error) {
+	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][32]byte, error) {
 		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.Slot)
 		d, err := runner.GetBeaconNode().DomainData(epoch, domain)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get pre consensus root domain")
 		}
 
-		ret := make([][]byte, 0)
+		ret := make([][32]byte, 0)
 		for _, rootI := range expectedRootObjs {
 			r, err := types.ComputeETHSigningRoot(rootI, d)
 			if err != nil {
 				return nil, errors.Wrap(err, "could not compute ETH signing root")
 			}
-			ret = append(ret, r[:])
+			ret = append(ret, r)
 		}
 
 		sort.Slice(ret, func(i, j int) bool {
-			return string(ret[i]) < string(ret[j])
+			return string(ret[i][:]) < string(ret[j][:])
 		})
 		return ret, nil
 	}(expectedRootObjs)
@@ -104,21 +104,21 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *SignedPartialS
 		return err
 	}
 
-	sortedRoots := func(msgs PartialSignatureMessages) [][]byte {
-		ret := make([][]byte, 0)
+	sortedRoots := func(msgs types.PartialSignatureMessages) [][32]byte {
+		ret := make([][32]byte, 0)
 		for _, msg := range msgs.Messages {
 			ret = append(ret, msg.SigningRoot)
 		}
 
 		sort.Slice(ret, func(i, j int) bool {
-			return string(ret[i]) < string(ret[j])
+			return string(ret[i][:]) < string(ret[j][:])
 		})
 		return ret
 	}(signedMsg.Message)
 
 	// verify roots
 	for i, r := range sortedRoots {
-		if !bytes.Equal(sortedExpectedRoots[i], r) {
+		if !bytes.Equal(sortedExpectedRoots[i][:], r[:]) {
 			return errors.New("wrong signing root")
 		}
 	}

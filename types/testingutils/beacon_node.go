@@ -42,6 +42,11 @@ var TestingAttestationData = &spec.AttestationData{
 		Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	},
 }
+var TestingAttestationDataBytes = func() []byte {
+	ret, _ := TestingAttestationData.MarshalSSZ()
+	return ret
+}()
+
 var TestingWrongAttestationData = func() *spec.AttestationData {
 	byts, _ := TestingAttestationData.MarshalSSZ()
 	ret := &spec.AttestationData{}
@@ -117,6 +122,11 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 		},
 	},
 }
+var TestingBeaconBlockBytes = func() []byte {
+	ret, _ := TestingBeaconBlock.MarshalSSZ()
+	return ret
+}()
+
 var TestingBlindedBeaconBlock = func() *bellatrix2.BlindedBeaconBlock {
 	fullBlk := TestingBeaconBlock
 	txRoot, _ := types.SSZTransactions(fullBlk.Body.ExecutionPayload.Transactions).HashTreeRoot()
@@ -156,6 +166,11 @@ var TestingBlindedBeaconBlock = func() *bellatrix2.BlindedBeaconBlock {
 
 	return ret
 }()
+var TestingBlindedBeaconBlockBytes = func() []byte {
+	ret, _ := TestingBlindedBeaconBlock.MarshalSSZ()
+	return ret
+}()
+
 var TestingWrongBeaconBlock = func() *bellatrix.BeaconBlock {
 	byts, err := TestingBeaconBlock.MarshalSSZ()
 	if err != nil {
@@ -185,6 +200,11 @@ var TestingAggregateAndProof = &spec.AggregateAndProof{
 		Data:            TestingAttestationData,
 	},
 }
+var TestingAggregateAndProofBytes = func() []byte {
+	ret, _ := TestingAggregateAndProof.MarshalSSZ()
+	return ret
+}()
+
 var TestingWrongAggregateAndProof = func() *spec.AggregateAndProof {
 	byts, err := TestingAggregateAndProof.MarshalSSZ()
 	if err != nil {
@@ -215,7 +235,7 @@ const (
 	UnknownDutyType = 100
 )
 
-var TestingSyncCommitteeBlockRoot = spec.Root{}
+var TestingSyncCommitteeBlockRoot = spec.Root{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
 var TestingSyncCommitteeWrongBlockRoot = spec.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommitteeMessage {
 	return &altair.SyncCommitteeMessage{
@@ -226,7 +246,7 @@ var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommi
 	}
 }
 
-var TestingContributionProofIndexes = []spec.CommitteeIndex{0, 1, 2}
+var TestingContributionProofIndexes = []uint64{0, 1, 2}
 var TestingContributionProofsSigned = func() []spec.BLSSignature {
 	// signed with 3515c7d08e5affd729e9579f7588d30f2342ee6f6a9334acf006345262162c6f
 	byts1, _ := hex.DecodeString("b18833bb7549ec33e8ac414ba002fd45bb094ca300bd24596f04a434a89beea462401da7c6b92fb3991bd17163eb603604a40e8dd6781266c990023446776ff42a9313df26a0a34184a590e57fa4003d610c2fa214db4e7dec468592010298bc")
@@ -241,7 +261,6 @@ var TestingContributionProofsSigned = func() []spec.BLSSignature {
 	}
 	return ret
 }()
-
 var TestingSyncCommitteeContributions = []*altair.SyncCommitteeContribution{
 	{
 		Slot:              TestingDutySlot,
@@ -265,6 +284,27 @@ var TestingSyncCommitteeContributions = []*altair.SyncCommitteeContribution{
 		Signature:         spec.BLSSignature{},
 	},
 }
+var TestingSyncCommitteeContributionsConsensusData = func() types.Contributions {
+	d := types.Contributions{}
+	d = append(d, &types.Contribution{
+		SelectionProofSig: TestingContributionProofsSigned[0],
+		Contribution:      *TestingSyncCommitteeContributions[0],
+	})
+	d = append(d, &types.Contribution{
+		SelectionProofSig: TestingContributionProofsSigned[1],
+		Contribution:      *TestingSyncCommitteeContributions[1],
+	})
+	d = append(d, &types.Contribution{
+		SelectionProofSig: TestingContributionProofsSigned[2],
+		Contribution:      *TestingSyncCommitteeContributions[2],
+	})
+	return d
+}()
+
+var TestingSyncCommitteeContributionsConsensusDataBytes = func() []byte {
+	ret, _ := TestingSyncCommitteeContributionsConsensusData.MarshalSSZ()
+	return ret
+}()
 
 var TestingSignedSyncCommitteeContributions = func(
 	contrib *altair.SyncCommitteeContribution,
@@ -295,7 +335,7 @@ var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 	Pubkey:       TestingValidatorPubKey,
 }
 
-var TestingAttesterDuty = &types.Duty{
+var TestingAttesterDuty = types.Duty{
 	Type:                    types.BNRoleAttester,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot,
@@ -306,7 +346,7 @@ var TestingAttesterDuty = &types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-var TestingProposerDuty = &types.Duty{
+var TestingProposerDuty = types.Duty{
 	Type:                    types.BNRoleProposer,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot,
@@ -318,7 +358,7 @@ var TestingProposerDuty = &types.Duty{
 }
 
 // TestingProposerDutyNextEpoch testing for a second duty start
-var TestingProposerDutyNextEpoch = &types.Duty{
+var TestingProposerDutyNextEpoch = types.Duty{
 	Type:                    types.BNRoleProposer,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot2,
@@ -329,7 +369,7 @@ var TestingProposerDutyNextEpoch = &types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-var TestingAggregatorDuty = &types.Duty{
+var TestingAggregatorDuty = types.Duty{
 	Type:                    types.BNRoleAggregator,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot,
@@ -341,7 +381,7 @@ var TestingAggregatorDuty = &types.Duty{
 }
 
 // TestingAggregatorDutyNextEpoch testing for a second duty start
-var TestingAggregatorDutyNextEpoch = &types.Duty{
+var TestingAggregatorDutyNextEpoch = types.Duty{
 	Type:                    types.BNRoleAggregator,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot2,
@@ -352,7 +392,7 @@ var TestingAggregatorDutyNextEpoch = &types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-var TestingSyncCommitteeDuty = &types.Duty{
+var TestingSyncCommitteeDuty = types.Duty{
 	Type:                          types.BNRoleSyncCommittee,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          TestingDutySlot,
@@ -364,7 +404,7 @@ var TestingSyncCommitteeDuty = &types.Duty{
 	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
-var TestingSyncCommitteeContributionDuty = &types.Duty{
+var TestingSyncCommitteeContributionDuty = types.Duty{
 	Type:                          types.BNRoleSyncCommitteeContribution,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          TestingDutySlot,
@@ -377,7 +417,7 @@ var TestingSyncCommitteeContributionDuty = &types.Duty{
 }
 
 // TestingSyncCommitteeContributionNexEpochDuty testing for a second duty start
-var TestingSyncCommitteeContributionNexEpochDuty = &types.Duty{
+var TestingSyncCommitteeContributionNexEpochDuty = types.Duty{
 	Type:                          types.BNRoleSyncCommitteeContribution,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          TestingDutySlot2,
@@ -389,14 +429,14 @@ var TestingSyncCommitteeContributionNexEpochDuty = &types.Duty{
 	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
-var TestingValidatorRegistrationDuty = &types.Duty{
+var TestingValidatorRegistrationDuty = types.Duty{
 	Type:           types.BNRoleValidatorRegistration,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot,
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-var TestingUnknownDutyType = &types.Duty{
+var TestingUnknownDutyType = types.Duty{
 	Type:                    UnknownDutyType,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    12,
@@ -407,7 +447,7 @@ var TestingUnknownDutyType = &types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-var TestingWrongDutyPK = &types.Duty{
+var TestingWrongDutyPK = types.Duty{
 	Type:                    types.BNRoleAttester,
 	PubKey:                  TestingWrongValidatorPubKey,
 	Slot:                    12,
@@ -447,8 +487,8 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *TestingBeaconNode) GetAttestationData(slot spec.Slot, committeeIndex spec.CommitteeIndex) (*spec.AttestationData, error) {
-	return TestingAttestationData, nil
+func (bn *TestingBeaconNode) GetAttestationData(slot spec.Slot, committeeIndex spec.CommitteeIndex) (ssz.Marshaler, spec2.DataVersion, error) {
+	return TestingAttestationData, spec2.DataVersionPhase0, nil
 }
 
 // SubmitAttestation submit the attestation to the node
@@ -464,8 +504,8 @@ func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecip
 }
 
 // GetBeaconBlock returns beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (*bellatrix.BeaconBlock, error) {
-	return TestingBeaconBlock, nil
+func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec2.DataVersion, error) {
+	return TestingBeaconBlock, spec2.DataVersionBellatrix, nil
 }
 
 // SubmitBeaconBlock submit the block to the node
@@ -476,12 +516,12 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *bellatrix.SignedBeaconBloc
 }
 
 // GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, graffiti, randao []byte) (*api.VersionedBlindedBeaconBlock, error) {
+func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, graffiti, randao []byte) (ssz.Marshaler, spec2.DataVersion, error) {
 	return &api.VersionedBlindedBeaconBlock{
 		Version:   spec2.DataVersionBellatrix,
 		Bellatrix: TestingBlindedBeaconBlock,
 		Capella:   nil,
-	}, nil
+	}, spec2.DataVersionBellatrix, nil
 }
 
 // SubmitBlindedBeaconBlock submit the blinded block to the node
@@ -492,8 +532,8 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedSigned
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
-func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, committeeLength uint64, index spec.ValidatorIndex, slotSig []byte) (*spec.AggregateAndProof, error) {
-	return TestingAggregateAndProof, nil
+func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, committeeLength uint64, index spec.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec2.DataVersion, error) {
+	return TestingAggregateAndProof, spec2.DataVersionPhase0, nil
 }
 
 // SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
@@ -504,8 +544,8 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.Signe
 }
 
 // GetSyncMessageBlockRoot returns beacon block root for sync committee
-func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot spec.Slot) (spec.Root, error) {
-	return TestingSyncCommitteeBlockRoot, nil
+func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot spec.Slot) (spec.Root, spec2.DataVersion, error) {
+	return TestingSyncCommitteeBlockRoot, spec2.DataVersionPhase0, nil
 }
 
 // SubmitSyncMessage submits a signed sync committee msg
@@ -533,8 +573,8 @@ func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index spec.CommitteeIndex) (u
 }
 
 // GetSyncCommitteeContribution returns
-func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, subnetID uint64) (*altair.SyncCommitteeContribution, error) {
-	return TestingSyncCommitteeContributions[subnetID], nil
+func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, selectionProofs []spec.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec2.DataVersion, error) {
+	return &TestingSyncCommitteeContributionsConsensusData, spec2.DataVersionBellatrix, nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network

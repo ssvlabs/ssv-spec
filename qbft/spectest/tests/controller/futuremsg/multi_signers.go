@@ -9,25 +9,21 @@ import (
 
 // MultiSigners tests future msg with multiple signers
 func MultiSigners() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 
 	return &ControllerSyncSpecTest{
 		Name: "future msgs multiple signers",
 		InputMessages: []*qbft.SignedMessage{
-			testingutils.MultiSignQBFTMsg(
+			testingutils.TestingPrepareMultiSignerMessageWithHeightAndIdentifier(
 				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.PrepareMsgType,
-					Height:     2,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-				}),
+				2,
+				identifier[:],
+			),
 		},
 		SyncDecidedCalledCnt: 0,
-		ControllerPostRoot:   "6bd17213f8e308190c4ebe49a22ec00c91ffd4c91a5515583391e9977423370f",
+		ControllerPostRoot:   "3b9cd21ca426a4e9e3188e0c8d931861a8f263636c4c0369da84fe9a99fb2fa5",
 		ExpectedError:        "invalid future msg: allows 1 signer",
 	}
 }

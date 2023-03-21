@@ -52,7 +52,7 @@ func (r *AggregatorRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing selection proof message")
@@ -76,14 +76,19 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignature
 	// TODO waitToSlotTwoThirds
 
 	// get block data
-	res, err := r.GetBeaconNode().SubmitAggregateSelectionProof(duty.Slot, duty.CommitteeIndex, duty.CommitteeLength, duty.ValidatorIndex, fullSig)
+	res, ver, err := r.GetBeaconNode().SubmitAggregateSelectionProof(duty.Slot, duty.CommitteeIndex, duty.CommitteeLength, duty.ValidatorIndex, fullSig)
 	if err != nil {
 		return errors.Wrap(err, "failed to submit aggregate and proof")
 	}
 
+	byts, err := res.MarshalSSZ()
+	if err != nil {
+		return errors.Wrap(err, "could not marshal aggregate and proof")
+	}
 	input := &types.ConsensusData{
-		Duty:              duty,
-		AggregateAndProof: res,
+		Duty:    *duty,
+		Version: ver,
+		DataSSZ: byts,
 	}
 
 	if err := r.BaseRunner.decide(r, input); err != nil {
@@ -104,14 +109,20 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 		return nil
 	}
 
+	aggregateAndProof, err := decidedValue.GetAggregateAndProof()
+	if err != nil {
+		return errors.Wrap(err, "could not get aggregate and proof")
+	}
+
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, decidedValue.AggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
+	msg, err := r.BaseRunner.signBeaconObject(r, aggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
-	postConsensusMsg := &PartialSignatureMessages{
-		Type:     PostConsensusPartialSig,
-		Messages: []*PartialSignatureMessage{msg},
+	postConsensusMsg := &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     decidedValue.Duty.Slot,
+		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
 	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
@@ -126,7 +137,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -136,7 +147,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 	return nil
 }
 
-func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -154,8 +165,13 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatur
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
+		aggregateAndProof, err := r.GetState().DecidedValue.GetAggregateAndProof()
+		if err != nil {
+			return errors.Wrap(err, "could not get aggregate and proof")
+		}
+
 		msg := &phase0.SignedAggregateAndProof{
-			Message:   r.GetState().DecidedValue.AggregateAndProof,
+			Message:   aggregateAndProof,
 			Signature: specSig,
 		}
 		if err := r.GetBeaconNode().SubmitSignedAggregateSelectionProof(msg); err != nil {
@@ -172,7 +188,12 @@ func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot,
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{r.BaseRunner.State.DecidedValue.AggregateAndProof}, types.DomainAggregateAndProof, nil
+	aggregateAndProof, err := r.GetState().DecidedValue.GetAggregateAndProof()
+	if err != nil {
+		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get aggregate and proof")
+	}
+
+	return []ssz.HashRoot{aggregateAndProof}, types.DomainAggregateAndProof, nil
 }
 
 // executeDuty steps:
@@ -187,9 +208,10 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")
 	}
-	msgs := PartialSignatureMessages{
-		Type:     SelectionProofPartialSig,
-		Messages: []*PartialSignatureMessage{msg},
+	msgs := types.PartialSignatureMessages{
+		Type:     types.SelectionProofPartialSig,
+		Slot:     duty.Slot,
+		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
 	// sign msg
@@ -197,7 +219,7 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "could not sign PartialSignatureMessage for selection proof")
 	}
-	signedPartialMsg := &SignedPartialSignatureMessage{
+	signedPartialMsg := &types.SignedPartialSignatureMessage{
 		Message:   msgs,
 		Signature: signature,
 		Signer:    r.GetShare().OperatorID,
@@ -210,7 +232,7 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
@@ -258,11 +280,11 @@ func (r *AggregatorRunner) Decode(data []byte) error {
 }
 
 // GetRoot returns the root used for signing and verification
-func (r *AggregatorRunner) GetRoot() ([]byte, error) {
+func (r *AggregatorRunner) GetRoot() ([32]byte, error) {
 	marshaledRoot, err := r.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode DutyRunnerState")
+		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
 	}
 	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+	return ret, nil
 }

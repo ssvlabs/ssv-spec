@@ -54,7 +54,7 @@ func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing sync committee selection proof message")
@@ -65,13 +65,11 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 		return nil
 	}
 
-	duty := r.GetState().StartingDuty
-	input := &types.ConsensusData{
-		Duty:                      duty,
-		SyncCommitteeContribution: make(map[phase0.BLSSignature]*altair.SyncCommitteeContribution),
-	}
-
 	anyIsAggregator := false
+
+	// get subnets
+	subnets := make([]uint64, 0)
+	selectionProofs := make([]phase0.BLSSignature, 0)
 	for i, root := range roots {
 		// reconstruct selection proof sig
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
@@ -80,6 +78,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 		}
 		blsSigSelectionProof := phase0.BLSSignature{}
 		copy(blsSigSelectionProof[:], sig)
+		selectionProofs = append(selectionProofs, blsSigSelectionProof)
 
 		aggregator, err := r.GetBeaconNode().IsSyncCommitteeAggregator(sig)
 		if err != nil {
@@ -92,16 +91,31 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *SignedPar
 		anyIsAggregator = true
 
 		// fetch sync committee contribution
-		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(r.GetState().StartingDuty.ValidatorSyncCommitteeIndices[i])
+		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(r.GetState().StartingDuty.ValidatorSyncCommitteeIndices[i]))
 		if err != nil {
 			return errors.Wrap(err, "could not get sync committee subnet ID")
 		}
-		contribution, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.Slot, subnet)
-		if err != nil {
-			return errors.Wrap(err, "could not get sync committee contribution")
-		}
 
-		input.SyncCommitteeContribution[blsSigSelectionProof] = contribution
+		subnets = append(subnets, subnet)
+	}
+
+	duty := r.GetState().StartingDuty
+
+	// fetch contributions
+	contributions, ver, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.Slot, selectionProofs, subnets)
+	if err != nil {
+		return errors.Wrap(err, "could not get sync committee contribution")
+	}
+	byts, err := contributions.MarshalSSZ()
+	if err != nil {
+		return errors.Wrap(err, "could not marshal contributions")
+	}
+
+	// create consensus object
+	input := &types.ConsensusData{
+		Duty:    *duty,
+		Version: ver,
+		DataSSZ: byts,
 	}
 
 	if anyIsAggregator {
@@ -126,10 +140,15 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 		return nil
 	}
 
+	contributions, err := decidedValue.GetSyncCommitteeContributions()
+	if err != nil {
+		return errors.Wrap(err, "could not get contributions")
+	}
+
 	// specific duty sig
-	msgs := make([]*PartialSignatureMessage, 0)
-	for proof, c := range decidedValue.SyncCommitteeContribution {
-		contribAndProof, _, err := r.generateContributionAndProof(c, proof)
+	msgs := make([]*types.PartialSignatureMessage, 0)
+	for _, c := range contributions {
+		contribAndProof, _, err := r.generateContributionAndProof(c.Contribution, c.SelectionProofSig)
 		if err != nil {
 			return errors.Wrap(err, "could not generate contribution and proof")
 		}
@@ -141,8 +160,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 
 		msgs = append(msgs, signed)
 	}
-	postConsensusMsg := &PartialSignatureMessages{
-		Type:     PostConsensusPartialSig,
+	postConsensusMsg := &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     decidedValue.Duty.Slot,
 		Messages: msgs,
 	}
 
@@ -158,7 +178,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
@@ -168,7 +188,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *SignedPartialSignatureMessage) error {
+func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -176,6 +196,12 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *SignedPa
 
 	if !quorum {
 		return nil
+	}
+
+	// get contributions
+	contributions, err := r.GetState().DecidedValue.GetSyncCommitteeContributions()
+	if err != nil {
+		return errors.Wrap(err, "could not get contributions")
 	}
 
 	for _, root := range roots {
@@ -186,13 +212,13 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *SignedPa
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		for proof, contribution := range r.GetState().DecidedValue.SyncCommitteeContribution {
+		for _, contribution := range contributions {
 			// match the right contrib and proof root to signed root
-			contribAndProof, contribAndProofRoot, err := r.generateContributionAndProof(contribution, proof)
+			contribAndProof, contribAndProofRoot, err := r.generateContributionAndProof(contribution.Contribution, contribution.SelectionProofSig)
 			if err != nil {
 				return errors.Wrap(err, "could not generate contribution and proof")
 			}
-			if !bytes.Equal(root, contribAndProofRoot[:]) {
+			if !bytes.Equal(root[:], contribAndProofRoot[:]) {
 				continue // not the correct root
 			}
 
@@ -217,10 +243,10 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *SignedPa
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib *altair.SyncCommitteeContribution, proof phase0.BLSSignature) (*altair.ContributionAndProof, phase0.Root, error) {
+func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib altair.SyncCommitteeContribution, proof phase0.BLSSignature) (*altair.ContributionAndProof, phase0.Root, error) {
 	contribAndProof := &altair.ContributionAndProof{
 		AggregatorIndex: r.GetState().DecidedValue.Duty.ValidatorIndex,
-		Contribution:    contrib,
+		Contribution:    &contrib,
 		SelectionProof:  proof,
 	}
 
@@ -239,7 +265,7 @@ func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib *al
 func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	sszIndexes := make([]ssz.HashRoot, 0)
 	for _, index := range r.GetState().StartingDuty.ValidatorSyncCommitteeIndices {
-		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(index)
+		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(index))
 		if err != nil {
 			return nil, types.DomainError, errors.Wrap(err, "could not get sync committee subnet ID")
 		}
@@ -254,9 +280,15 @@ func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	// get contributions
+	contributions, err := r.GetState().DecidedValue.GetSyncCommitteeContributions()
+	if err != nil {
+		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get contributions")
+	}
+
 	ret := make([]ssz.HashRoot, 0)
-	for proof, contrib := range r.BaseRunner.State.DecidedValue.SyncCommitteeContribution {
-		contribAndProof, _, err := r.generateContributionAndProof(contrib, proof)
+	for _, contrib := range contributions {
+		contribAndProof, _, err := r.generateContributionAndProof(contrib.Contribution, contrib.SelectionProofSig)
 		if err != nil {
 			return nil, types.DomainError, errors.Wrap(err, "could not generate contribution and proof")
 		}
@@ -272,12 +304,13 @@ func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([
 // 4) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedContributionAndProof (for each subcommittee) sig to the BN
 func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	// sign selection proofs
-	msgs := PartialSignatureMessages{
-		Type:     ContributionProofs,
-		Messages: []*PartialSignatureMessage{},
+	msgs := types.PartialSignatureMessages{
+		Type:     types.ContributionProofs,
+		Slot:     duty.Slot,
+		Messages: []*types.PartialSignatureMessage{},
 	}
 	for _, index := range r.GetState().StartingDuty.ValidatorSyncCommitteeIndices {
-		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(index)
+		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(index))
 		if err != nil {
 			return errors.Wrap(err, "could not get sync committee subnet ID")
 		}
@@ -298,7 +331,7 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "could not sign PartialSignatureMessage for contribution proofs")
 	}
-	signedPartialMsg := &SignedPartialSignatureMessage{
+	signedPartialMsg := &types.SignedPartialSignatureMessage{
 		Message:   msgs,
 		Signature: signature,
 		Signer:    r.GetShare().OperatorID,
@@ -311,7 +344,7 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
@@ -359,11 +392,11 @@ func (r *SyncCommitteeAggregatorRunner) Decode(data []byte) error {
 }
 
 // GetRoot returns the root used for signing and verification
-func (r *SyncCommitteeAggregatorRunner) GetRoot() ([]byte, error) {
+func (r *SyncCommitteeAggregatorRunner) GetRoot() ([32]byte, error) {
 	marshaledRoot, err := r.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode DutyRunnerState")
+		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
 	}
 	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+	return ret, nil
 }

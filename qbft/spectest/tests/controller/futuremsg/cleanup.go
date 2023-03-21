@@ -9,47 +9,29 @@ import (
 
 // Cleanup tests cleaning up future msgs container
 func Cleanup() *ControllerSyncSpecTest {
-	identifier := types.NewMsgID(testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	ks := testingutils.Testing4SharesSet()
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 
 	return &ControllerSyncSpecTest{
 		Name: "future msgs cleanup",
 		InputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(ks.Shares[4], 4, &qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     5,
-				Round:      qbft.FirstRound,
-				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-			}),
-			testingutils.SignQBFTMsg(ks.Shares[3], 3, &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     10,
-				Round:      3,
-				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-			}),
-
-			testingutils.MultiSignQBFTMsg(
+			testingutils.TestingCommitMessageWithParams(
+				ks.Shares[4], 4, qbft.FirstRound, 5, identifier[:], testingutils.TestingQBFTRootData),
+			testingutils.TestingPrepareMessageWithParams(
+				ks.Shares[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData),
+			testingutils.TestingCommitMultiSignerMessageWithParams(
 				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 				[]types.OperatorID{1, 2, 3},
-				&qbft.Message{
-					MsgType:    qbft.CommitMsgType,
-					Height:     10,
-					Round:      qbft.FirstRound,
-					Identifier: identifier[:],
-					Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-				}),
-
-			testingutils.SignQBFTMsg(ks.Shares[2], 2, &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     11,
-				Round:      3,
-				Identifier: identifier[:],
-				Data:       testingutils.CommitDataBytes([]byte{1, 2, 3, 4}),
-			}),
+				qbft.FirstRound,
+				10,
+				identifier[:],
+				testingutils.TestingQBFTRootData,
+				testingutils.TestingQBFTFullData,
+			),
+			testingutils.TestingPrepareMessageWithParams(
+				ks.Shares[2], 2, 3, 11, identifier[:], testingutils.TestingQBFTRootData),
 		},
 		SyncDecidedCalledCnt: 1,
-		ControllerPostRoot:   "2a506a58b7abbbcffd6d4ee92f154c826947ce56672564155772435456315c6d",
+		ControllerPostRoot:   "cd0e7827cc4f55c6972925aa38b79050ae7f99d6083032127b9ee1fbd28caae0",
 	}
 }

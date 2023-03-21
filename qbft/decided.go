@@ -1,6 +1,7 @@
 package qbft
 
 import (
+	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -15,12 +16,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.Wrap(err, "invalid decided msg")
 	}
 
-	// get decided value
-	data, err := msg.Message.GetCommitData()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get decided data")
-	}
-
+	// try to find instance
 	inst := c.InstanceForHeight(msg.Message.Height)
 	prevDecided := inst != nil && inst.State.Decided
 	isFutureDecided := msg.Message.Height > c.Height
@@ -29,16 +25,16 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Message.Height)
 		i.State.Round = msg.Message.Round
 		i.State.Decided = true
-		i.State.DecidedValue = data.Data
+		i.State.DecidedValue = msg.FullData
 		i.State.CommitContainer.AddMsg(msg)
 		c.StoredInstances.addNewInstance(i)
 	} else if decided, _ := inst.IsDecided(); !decided {
 		inst.State.Decided = true
 		inst.State.Round = msg.Message.Round
-		inst.State.DecidedValue = data.Data
+		inst.State.DecidedValue = msg.FullData
 		inst.State.CommitContainer.AddMsg(msg)
 	} else { // decide previously, add if has more signers
-		signers, _ := inst.State.CommitContainer.LongestUniqueSignersForRoundAndValue(msg.Message.Round, msg.Message.Data)
+		signers, _ := inst.State.CommitContainer.LongestUniqueSignersForRoundAndRoot(msg.Message.Round, msg.Message.Root)
 		if len(msg.Signers) > len(signers) {
 			inst.State.CommitContainer.AddMsg(msg)
 		}
@@ -74,12 +70,16 @@ func ValidateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	msgDecidedData, err := signedDecided.Message.GetCommitData()
-	if err != nil {
-		return errors.Wrap(err, "could not get msg decided data")
+	if err := signedDecided.Validate(); err != nil {
+		return errors.Wrap(err, "invalid decided")
 	}
-	if err := msgDecidedData.Validate(); err != nil {
-		return errors.Wrap(err, "invalid decided data")
+
+	r, err := HashDataRoot(signedDecided.FullData)
+	if err != nil {
+		return errors.Wrap(err, "could not hash input data")
+	}
+	if !bytes.Equal(r[:], signedDecided.Message.Root[:]) {
+		return errors.New("H(data) != root")
 	}
 
 	return nil
