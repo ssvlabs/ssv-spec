@@ -104,7 +104,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "db66cd09c759130d5128e8a26e80dd3a16d3aa234097c8149d8b90c525eb15c9",
+				PostDutyRunnerStateRoot: "0bb380e9ad605c19bfb2f01c50614cef8c24c18e66aea50b480af5c0bd18cc29",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
