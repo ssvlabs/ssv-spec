@@ -121,7 +121,7 @@ func TestJson(t *testing.T) {
 				err = pre.Decode(preByts)
 				require.NoError(t, err)
 				typedTest.Pre = pre
-				
+
 				tests[testName] = typedTest
 				typedTest.Run(t)
 			default:
