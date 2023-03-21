@@ -26,27 +26,27 @@ func WrongValidatorIndex() *valcheck.MultiSpecTest {
 	return &valcheck.MultiSpecTest{
 		Name: "wrong validator index",
 		Tests: []*valcheck.SpecTest{
-			//{
-			//	Name:          "sync committee aggregator",
-			//	Network:       types.BeaconTestNetwork,
-			//	BeaconRole:    types.BNRoleSyncCommitteeContribution,
-			//	Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
-			//	ExpectedError: expectedErr,
-			//},
-			//{
-			//	Name:          "sync committee",
-			//	Network:       types.BeaconTestNetwork,
-			//	BeaconRole:    types.BNRoleSyncCommittee,
-			//	Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
-			//	ExpectedError: expectedErr,
-			//},
-			//{
-			//	Name:          "aggregator",
-			//	Network:       types.BeaconTestNetwork,
-			//	BeaconRole:    types.BNRoleAggregator,
-			//	Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
-			//	ExpectedError: expectedErr,
-			//},
+			{
+				Name:          "sync committee aggregator",
+				Network:       types.BeaconTestNetwork,
+				BeaconRole:    types.BNRoleSyncCommitteeContribution,
+				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
+				ExpectedError: expectedErr,
+			},
+			{
+				Name:          "sync committee",
+				Network:       types.BeaconTestNetwork,
+				BeaconRole:    types.BNRoleSyncCommittee,
+				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
+				ExpectedError: expectedErr,
+			},
+			{
+				Name:          "aggregator",
+				Network:       types.BeaconTestNetwork,
+				BeaconRole:    types.BNRoleAggregator,
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
+				ExpectedError: expectedErr,
+			},
 			{
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
@@ -54,13 +54,13 @@ func WrongValidatorIndex() *valcheck.MultiSpecTest {
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
 				ExpectedError: expectedErr,
 			},
-			//{
-			//	Name:          "attester",
-			//	Network:       types.BeaconTestNetwork,
-			//	BeaconRole:    types.BNRoleAttester,
-			//	Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
-			//	ExpectedError: "duty invalid: wrong validator index",
-			//},
+			{
+				Name:          "attester",
+				Network:       types.BeaconTestNetwork,
+				BeaconRole:    types.BNRoleAttester,
+				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
+				ExpectedError: "duty invalid: wrong validator index",
+			},
 		},
 	}
 }
