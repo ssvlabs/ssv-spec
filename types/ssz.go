@@ -100,7 +100,7 @@ func (b SSZ32Bytes) HashTreeRootWith(hh ssz.HashWalker) error {
 }
 
 // UnmarshalSSZ --
-func (b SSZ32Bytes) UnmarshalSSZ(buf []byte) error {
+func (b *SSZ32Bytes) UnmarshalSSZ(buf []byte) error {
 	if len(buf) != b.SizeSSZ() {
 		return fmt.Errorf("expected buffer of length %d receiced %d", b.SizeSSZ(), len(buf))
 	}
