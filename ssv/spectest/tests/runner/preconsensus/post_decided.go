@@ -90,7 +90,7 @@ func PostDecided() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "b750ef28800c3403698472e04d98848e16cead7b51b797bad4ed8bdf51e9323c",
+				PostDutyRunnerStateRoot: "317a072b08adaf95cd0f5c6abd729013aafd780715b5f923fb96c975f7545d90",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
@@ -110,7 +110,7 @@ func PostDecided() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "5c632900f8e59809f3a366a0cdbd71d2f4598e39100e7bccca4d1a18130fb7cf",
+				PostDutyRunnerStateRoot: "c8666922192fc310d779cb2d7da113965159e4e0dbed6fae7c5a6e11424a0804",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},

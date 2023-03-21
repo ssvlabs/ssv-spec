@@ -2,11 +2,13 @@ package proposer
 
 import (
 	"encoding/hex"
+
+	ssz "github.com/ferranbt/fastssz"
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	ssz "github.com/ferranbt/fastssz"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 func getSSZRootNoError(obj ssz.HashRoot) string {
@@ -38,7 +40,7 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 		},
-		PostDutyRunnerStateRoot: "f3d290c9921e630b8911b5b6b6e1fdf249b9c7bd222020ff603cef3bfb1e0e25",
+		PostDutyRunnerStateRoot: "4dbd9cc14a55e1f2f5f1aed5170c8286dffd3bb4a2c46ddcf03ee23edc16e00e",
 		OutputMessages: []*types.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 			testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),

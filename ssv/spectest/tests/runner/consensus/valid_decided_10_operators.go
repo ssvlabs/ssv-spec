@@ -50,7 +50,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    &testingutils.TestingProposerDuty,
 				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer),
-				PostDutyRunnerStateRoot: "3df1cfe5434fbf28fe803fb986898830d536f60447a1d68a8ae36ad7d9b4a905",
+				PostDutyRunnerStateRoot: "433ddd67147c448766728c1eaaeccf29b18e73fd5f4f06ca6ad7fc9e18e3448c",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
@@ -61,7 +61,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:                    &testingutils.TestingProposerDuty,
 				Messages:                testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer),
-				PostDutyRunnerStateRoot: "be3be758ef0829c238c76db01b6a579e52fc425f6cf5cda9eeeec1d2ccc01862",
+				PostDutyRunnerStateRoot: "f15c6ec3742e8186fe29823934ff2003855b9b6b9b2376709a8b39dbe9a295f8",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),

@@ -1,10 +1,11 @@
 package consensus
 
 import (
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // InvalidDecidedValue tests an invalid decided value ConsensusData.Validate() != nil (unknown duty role)
@@ -112,7 +113,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							consensusDataByts(types.BNRoleProposer),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "69a1c7fc8cbd3cc8d7aa6cfb4493f849e08df3bb37c218d88eee97e87044b810",
+				PostDutyRunnerStateRoot: "c9e836440e903b44476fc5187fbb398bdfab2401e51b2ead08505049759ae16c",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
@@ -135,7 +136,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							consensusDataByts(types.BNRoleProposer),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "cec247510f2c061613cf71cca2a343cc02ac1488cf2f6150f0b7b7787aff7fb3",
+				PostDutyRunnerStateRoot: "a31058bf36bcdd744f51623c2b9704466e1a13dbc84816c067f0b73897453805",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},

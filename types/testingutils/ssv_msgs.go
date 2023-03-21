@@ -4,11 +4,12 @@ import (
 	"crypto/sha256"
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
+	"github.com/attestantio/go-eth2-client/spec/capella"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 var TestingSSVDomainType = types.V3Testnet
@@ -52,7 +53,7 @@ var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
 var TestProposerConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
-	Version: spec2.DataVersionBellatrix,
+	Version: spec2.DataVersionCapella,
 	DataSSZ: TestingBeaconBlockBytes,
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
@@ -116,7 +117,7 @@ var TestProposerBlindedWithJustificationsConsensusData = func(ks *TestKeySet) *t
 
 var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
-	Version: spec2.DataVersionBellatrix,
+	Version: spec2.DataVersionCapella,
 	DataSSZ: TestingBlindedBeaconBlockBytes,
 }
 var TestProposerBlindedBlockConsensusDataByts, _ = TestProposerBlindedBlockConsensusData.Encode()
@@ -368,7 +369,7 @@ var postConsensusBeaconBlockMsg = func(
 	blsSig := spec.BLSSignature{}
 	copy(blsSig[:], sig)
 
-	signed := bellatrix.SignedBeaconBlock{
+	signed := capella.SignedBeaconBlock{
 		Message:   TestingBeaconBlock,
 		Signature: blsSig,
 	}

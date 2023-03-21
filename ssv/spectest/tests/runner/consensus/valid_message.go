@@ -78,7 +78,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestProposerConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "6c08d5ea9d4ca4a67897ab9a1612dd31c8066cfaa67d7c811478d19d9ab2ff3d",
+				PostDutyRunnerStateRoot: "56cf75d451b18753c8b660d512c6e9f3264061b8d58c6ab9187b02d2839e64bb",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
@@ -97,7 +97,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestProposerBlindedBlockConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "de242932fd91d9f6c8fc0abb005fcd254de7d7c05822495077658baf13b64de2",
+				PostDutyRunnerStateRoot: "6235db264db7972db668a680b423bd904efe405d39e23518a37b949104408903",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},

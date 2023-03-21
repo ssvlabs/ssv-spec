@@ -56,7 +56,7 @@ func PreDecided() tests.SpecTest {
 
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "cca1d29c91112c5d12668e452fadc7796faa51576246b58157d19cc4b35726d6",
+				PostDutyRunnerStateRoot: "cbdb47b20e7111d9502ccbabe7835e7586029c64e120ff02cc9ff23ff815b38f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
@@ -74,7 +74,7 @@ func PreDecided() tests.SpecTest {
 
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "89e04234b29e1e83598fa8103479dc3bb04946e14fea14101bcbb68820b2a895",
+				PostDutyRunnerStateRoot: "77f51e8d63a93467af0a748098e682c341548a9220456025cfdb701e7820ed40",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},

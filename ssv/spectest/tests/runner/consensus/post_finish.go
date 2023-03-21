@@ -1,11 +1,12 @@
 package consensus
 
 import (
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // PostFinish tests a valid commit msg after runner finished
@@ -80,7 +81,7 @@ func PostFinish() tests.SpecTest {
 							testingutils.TestProposerConsensusDataByts,
 						), nil),
 				),
-				PostDutyRunnerStateRoot: "7bafe77f6aa303e2cd38f741ebd366d68b4ced79ffbd224b98904bb22a58d010",
+				PostDutyRunnerStateRoot: "053e24c9deb284fd42fc72a33a596c918009c6b365205d3f7282f7f9fe48c55b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
@@ -98,7 +99,7 @@ func PostFinish() tests.SpecTest {
 							testingutils.TestProposerBlindedBlockConsensusDataByts,
 						), nil),
 				),
-				PostDutyRunnerStateRoot: "d2d3d97a0bb878594c5b5319cbf1a1a6afe2467ef26fb2e47eb6d075b3c90428",
+				PostDutyRunnerStateRoot: "0651dc97605f2c0e71fcac7fe14271033e50d71970de6aada919d8afb4352059",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
