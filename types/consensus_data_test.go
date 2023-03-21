@@ -41,6 +41,7 @@ func TestConsensusData_GetBlockData(t *testing.T) {
 		require.Equal(t, vBlock.Capella.Slot, blk.Slot)
 
 		bdRoot, err := hashRoot.HashTreeRoot()
+		require.NoError(t, err)
 		require.EqualValues(t, expectedRoot, bdRoot)
 	})
 
@@ -99,6 +100,7 @@ func TestConsensusData_GetBlindedBlockData(t *testing.T) {
 		require.Equal(t, vBlock.Capella.Slot, blk.Slot)
 
 		bdRoot, err := hashRoot.HashTreeRoot()
+		require.NoError(t, err)
 		require.EqualValues(t, expectedRoot, bdRoot)
 	})
 
