@@ -5,11 +5,8 @@ import (
 	"encoding/json"
 
 	"github.com/attestantio/go-eth2-client/api"
-	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
@@ -206,17 +203,6 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 
 			var blkToSubmit *api.VersionedSignedBlindedBeaconBlock
 			switch vBlindedBlk.Version {
-			case spec.DataVersionBellatrix:
-				if vBlindedBlk.Bellatrix == nil {
-					return errors.New("bellatrix blinded block is nil")
-				}
-				blkToSubmit = &api.VersionedSignedBlindedBeaconBlock{
-					Version: spec.DataVersionBellatrix,
-					Bellatrix: &apiv1bellatrix.SignedBlindedBeaconBlock{
-						Message: vBlindedBlk.Bellatrix,
-					},
-				}
-				copy(blkToSubmit.Bellatrix.Signature[:], specSig[:])
 			case spec.DataVersionCapella:
 				if vBlindedBlk.Capella == nil {
 					return errors.New("capella blinded block is nil")
@@ -243,39 +229,6 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 
 			var blkToSubmit *spec.VersionedSignedBeaconBlock
 			switch vBlk.Version {
-			case spec.DataVersionPhase0:
-				if vBlk.Phase0 == nil {
-					return errors.New("phase0 block is nil")
-				}
-				blkToSubmit = &spec.VersionedSignedBeaconBlock{
-					Version: spec.DataVersionPhase0,
-					Phase0: &phase0.SignedBeaconBlock{
-						Message: vBlk.Phase0,
-					},
-				}
-				copy(blkToSubmit.Phase0.Signature[:], specSig[:])
-			case spec.DataVersionAltair:
-				if vBlk.Altair == nil {
-					return errors.New("altair block is nil")
-				}
-				blkToSubmit = &spec.VersionedSignedBeaconBlock{
-					Version: spec.DataVersionAltair,
-					Altair: &altair.SignedBeaconBlock{
-						Message: vBlk.Altair,
-					},
-				}
-				copy(blkToSubmit.Altair.Signature[:], specSig[:])
-			case spec.DataVersionBellatrix:
-				if vBlk.Bellatrix == nil {
-					return errors.New("bellatrix block is nil")
-				}
-				blkToSubmit = &spec.VersionedSignedBeaconBlock{
-					Version: spec.DataVersionBellatrix,
-					Bellatrix: &bellatrix.SignedBeaconBlock{
-						Message: vBlk.Bellatrix,
-					},
-				}
-				copy(blkToSubmit.Bellatrix.Signature[:], specSig[:])
 			case spec.DataVersionCapella:
 				if vBlk.Capella == nil {
 					return errors.New("capella block is nil")

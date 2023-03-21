@@ -2,11 +2,13 @@ package runner
 
 import (
 	"encoding/hex"
+
+	ssz "github.com/ferranbt/fastssz"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	ssz "github.com/ferranbt/fastssz"
 )
 
 func getSSZRootNoError(obj ssz.HashRoot) string {
@@ -111,7 +113,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "76812c0f14ff09067547e9528730749b0c0090d1a4872689a0b8480d7b538884",
+				PostDutyRunnerStateRoot: "b98eadc6cbdaaa7768f07170c7876b5c99df68ad46062db4a502b1df57312275",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
@@ -132,7 +134,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "90755cc41b814519fd9fdd14bc82d239997ba51340c297f25f5f1552f27f66c7",
+				PostDutyRunnerStateRoot: "7a386b7a9584daaa1113bff1f0d53f48ba4a914ba85841545bda7ba4dc522567",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
