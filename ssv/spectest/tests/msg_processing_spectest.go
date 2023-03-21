@@ -2,11 +2,12 @@ package tests
 
 import (
 	"encoding/hex"
+	"testing"
+
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type MsgProcessingSpecTest struct {
@@ -123,6 +124,9 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		for k, v := range roots {
 			require.EqualValues(t, k, v, "missing output msg")
 		}
+
+		// test that slot is correct in broadcasted msg
+		require.EqualValues(t, msg1.Message.Slot, msg2.Message.Slot)
 
 		index++
 	}
