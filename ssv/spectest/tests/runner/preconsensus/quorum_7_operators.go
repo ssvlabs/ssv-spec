@@ -23,7 +23,7 @@ func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 				},
-				PostDutyRunnerStateRoot: "bb7beea8272c7d88fe15b03da102f76c1f381697564c9f3ed3f2f9f53ec50e2f",
+				PostDutyRunnerStateRoot: "5bb9211032fb87653bc653ad072cc5bc44184cc7f42968157f3ff9d377d03580",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},

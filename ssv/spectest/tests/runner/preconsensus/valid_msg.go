@@ -78,7 +78,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "26ea6d64e3660d677bc4fe7f02d951b7ddd5df142204f089cd8706b426b8a0d9",
+				PostDutyRunnerStateRoot: "5b941fd17da3e3dc11003611dedc70f6ecb4f647f2951a47ed11990bcd1f5afc",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "no pre consensus sigs required for sync committee role",
 			},

@@ -39,7 +39,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						nil,
 					),
 				},
-				PostDutyRunnerStateRoot: "3414a05e85512a14aeca4090c1b0460e7e0eac6fd96cac2e5dd297f3d060c10a",
+				PostDutyRunnerStateRoot: "6e003cd912d95b73c177f276929f03180b02dc77fec38720d718f8361b53d2b8",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -60,7 +60,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						nil,
 					),
 				},
-				PostDutyRunnerStateRoot: "246c3dabb8de0c17022b5dcfca1a3f02f2716bd8ed0dc866949aff99d1f00c2d",
+				PostDutyRunnerStateRoot: "ef4080c54e4d1cad83e02388ce61ce499c93628a5176d5defb12c97856dcb4ee",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           errStr,
 			},

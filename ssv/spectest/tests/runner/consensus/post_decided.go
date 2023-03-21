@@ -25,7 +25,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 							ks.Shares[4], types.OperatorID(4), testingutils.SyncCommitteeContributionMsgID,
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil)),
-				PostDutyRunnerStateRoot: "0a9b43dc3399f16af48cbee160b64ab321b1404f647660e2b66e187732badb1f",
+				PostDutyRunnerStateRoot: "5448f47bb76e4639629e146c242cb27a4a265fae9d871f0fc0f3c66aeea60eb0",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -42,7 +42,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 							ks.Shares[4], types.OperatorID(4), testingutils.SyncCommitteeMsgID,
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil)),
-				PostDutyRunnerStateRoot: "7a3c081dc061c6a2e6418454c0a4503cb331cd7ae75ae9f977dd720373f1ef7a",
+				PostDutyRunnerStateRoot: "8097eefe5cbd4590de980ac66db0f033552f608fef580d1b9c452bcf2f1513fd",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},

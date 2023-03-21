@@ -62,7 +62,7 @@ func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee",
 				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "9779c4f9bc337bf74292b2594617676569d4bf8c8dda78bbae0060bd4fb64e65",
+				PostDutyRunnerStateRoot: "7ebeff8c3bc9728187dc49f7bc1257d36f5ed4bbc84f10c600ced9a89a0d473b",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{

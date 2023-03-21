@@ -50,7 +50,7 @@ func PostDecided() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "5de3f07115e63472b4680b5401d15350e56ceae80f2c7e299b16356af12531a6",
+				PostDutyRunnerStateRoot: "2a94b31d8d5b37fc7a1d05385e018142f383fbb7a535009c96da9d80d1c205ad",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},

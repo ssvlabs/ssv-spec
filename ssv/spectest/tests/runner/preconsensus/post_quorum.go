@@ -22,7 +22,7 @@ func PostQuorum() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "4373a2557586441137c8082cb38ea4675ce1d5e4363c7f19671eb9dbab03ab55",
+				PostDutyRunnerStateRoot: "a1eeca0f607ecfdc33cb0752f0c61745e6955e6dfccc154830141abda89d83e3",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},

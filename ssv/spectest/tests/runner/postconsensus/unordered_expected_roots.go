@@ -25,7 +25,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionWrongOrderMsg(ks.Shares[1], 1, ks)),
 				},
-				PostDutyRunnerStateRoot: "a3b004922aac2503051a1098bb77fcf91d106db0d2127a9ee3afdbae3fbf60c0",
+				PostDutyRunnerStateRoot: "f1283949bbe8a2cec6e76df6aed1cbfb38e1438ae1ceb55835ba0fa540fa564a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -41,7 +41,7 @@ func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "e70e14ff694aa8c41985ebf113de5f59363264b40da2b6324dcd9f2605e1841e",
+				PostDutyRunnerStateRoot: "8af0ed561466beb547bc32fac6887b5aa962833ee2d6ee3c50a259e60ab2421b",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
