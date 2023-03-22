@@ -23,7 +23,7 @@ func VersionedBlindedBlockUnknownVersion() *ProposerSpecTest {
 	}
 
 	return &ProposerSpecTest{
-		Name:            "consensus data versioned block unknown version",
+		Name:            "consensus data versioned blinded block unknown version",
 		DataCd:          dataCd,
 		DataBlk:         nil,
 		ExpectedCdRoot:  [32]byte{},
