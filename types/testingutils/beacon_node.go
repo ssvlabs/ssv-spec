@@ -2,15 +2,16 @@ package testingutils
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
-	spec2 "github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/goccy/go-yaml"
 	"github.com/pkg/errors"
@@ -21,29 +22,29 @@ import (
 
 var signBeaconObject = func(
 	obj ssz.HashRoot,
-	domainType spec.DomainType,
+	domainType phase0.DomainType,
 	ks *TestKeySet,
-) spec.BLSSignature {
+) phase0.BLSSignature {
 	domain, _ := NewTestingBeaconNode().DomainData(1, domainType)
 	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize(), domainType)
 
-	blsSig := spec.BLSSignature{}
+	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], ret)
 
 	return blsSig
 }
 
-var TestingAttestationData = &spec.AttestationData{
+var TestingAttestationData = &phase0.AttestationData{
 	Slot:            12,
 	Index:           3,
-	BeaconBlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-	Source: &spec.Checkpoint{
+	BeaconBlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	Source: &phase0.Checkpoint{
 		Epoch: 0,
-		Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	},
-	Target: &spec.Checkpoint{
+	Target: &phase0.Checkpoint{
 		Epoch: 1,
-		Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	},
 }
 var TestingAttestationDataBytes = func() []byte {
@@ -51,9 +52,9 @@ var TestingAttestationDataBytes = func() []byte {
 	return ret
 }()
 
-var TestingWrongAttestationData = func() *spec.AttestationData {
+var TestingWrongAttestationData = func() *phase0.AttestationData {
 	byts, _ := TestingAttestationData.MarshalSSZ()
-	ret := &spec.AttestationData{}
+	ret := &phase0.AttestationData{}
 	if err := ret.UnmarshalSSZ(byts); err != nil {
 		panic(err.Error())
 	}
@@ -61,10 +62,10 @@ var TestingWrongAttestationData = func() *spec.AttestationData {
 	return ret
 }()
 
-var TestingSignedAttestation = func(ks *TestKeySet) *spec.Attestation {
+var TestingSignedAttestation = func(ks *TestKeySet) *phase0.Attestation {
 	aggregationBitfield := bitfield.NewBitlist(TestingAttesterDuty.CommitteeLength)
 	aggregationBitfield.SetBitAt(TestingAttesterDuty.ValidatorCommitteeIndex, true)
-	return &spec.Attestation{
+	return &phase0.Attestation{
 		Data:            TestingAttestationData,
 		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
 		AggregationBits: aggregationBitfield,
@@ -92,36 +93,36 @@ var Withdrawals = func() []*capella.Withdrawal {
 var TestingBeaconBlock = &capella.BeaconBlock{
 	Slot:          12,
 	ProposerIndex: 10,
-	ParentRoot:    spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-	StateRoot:     spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	ParentRoot:    phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	StateRoot:     phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	Body: &capella.BeaconBlockBody{
-		RANDAOReveal: spec.BLSSignature{},
-		ETH1Data: &spec.ETH1Data{
-			DepositRoot:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		RANDAOReveal: phase0.BLSSignature{},
+		ETH1Data: &phase0.ETH1Data{
+			DepositRoot:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 			DepositCount: 100,
 			BlockHash:    []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		},
 		Graffiti:          [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-		ProposerSlashings: []*spec.ProposerSlashing{},
-		AttesterSlashings: []*spec.AttesterSlashing{},
-		Attestations: []*spec.Attestation{
+		ProposerSlashings: []*phase0.ProposerSlashing{},
+		AttesterSlashings: []*phase0.AttesterSlashing{},
+		Attestations: []*phase0.Attestation{
 			{
 				AggregationBits: bitfield.NewBitlist(122),
 				Data:            TestingAttestationData,
-				Signature:       spec.BLSSignature{},
+				Signature:       phase0.BLSSignature{},
 			},
 		},
-		Deposits:       []*spec.Deposit{},
-		VoluntaryExits: []*spec.SignedVoluntaryExit{},
+		Deposits:       []*phase0.Deposit{},
+		VoluntaryExits: []*phase0.SignedVoluntaryExit{},
 		SyncAggregate: &altair.SyncAggregate{
 			SyncCommitteeBits:      bitfield.NewBitvector512(),
-			SyncCommitteeSignature: spec.BLSSignature{},
+			SyncCommitteeSignature: phase0.BLSSignature{},
 		},
 		ExecutionPayload: &capella.ExecutionPayload{
-			ParentHash:    spec.Hash32{},
+			ParentHash:    phase0.Hash32{},
 			FeeRecipient:  bellatrix.ExecutionAddress{},
-			StateRoot:     spec.Hash32{},
-			ReceiptsRoot:  spec.Hash32{},
+			StateRoot:     phase0.Hash32{},
+			ReceiptsRoot:  phase0.Hash32{},
 			LogsBloom:     [256]byte{},
 			PrevRandao:    [32]byte{},
 			BlockNumber:   100,
@@ -129,7 +130,7 @@ var TestingBeaconBlock = &capella.BeaconBlock{
 			GasUsed:       800000,
 			Timestamp:     123456789,
 			BaseFeePerGas: [32]byte{},
-			BlockHash:     spec.Hash32{},
+			BlockHash:     phase0.Hash32{},
 			Transactions:  Transactions,
 			Withdrawals:   Withdrawals,
 		},
@@ -206,12 +207,12 @@ var TestingSignedBeaconBlock = func(ks *TestKeySet) *capella.SignedBeaconBlock {
 	}
 }
 
-var TestingAggregateAndProof = &spec.AggregateAndProof{
+var TestingAggregateAndProof = &phase0.AggregateAndProof{
 	AggregatorIndex: 1,
-	SelectionProof:  spec.BLSSignature{},
-	Aggregate: &spec.Attestation{
+	SelectionProof:  phase0.BLSSignature{},
+	Aggregate: &phase0.Attestation{
 		AggregationBits: bitfield.NewBitlist(128),
-		Signature:       spec.BLSSignature{},
+		Signature:       phase0.BLSSignature{},
 		Data:            TestingAttestationData,
 	},
 }
@@ -220,12 +221,12 @@ var TestingAggregateAndProofBytes = func() []byte {
 	return ret
 }()
 
-var TestingWrongAggregateAndProof = func() *spec.AggregateAndProof {
+var TestingWrongAggregateAndProof = func() *phase0.AggregateAndProof {
 	byts, err := TestingAggregateAndProof.MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
-	ret := &spec.AggregateAndProof{}
+	ret := &phase0.AggregateAndProof{}
 	if err := ret.UnmarshalSSZ(byts); err != nil {
 		panic(err.Error())
 	}
@@ -233,8 +234,8 @@ var TestingWrongAggregateAndProof = func() *spec.AggregateAndProof {
 	return ret
 }()
 
-var TestingSignedAggregateAndProof = func(ks *TestKeySet) *spec.SignedAggregateAndProof {
-	return &spec.SignedAggregateAndProof{
+var TestingSignedAggregateAndProof = func(ks *TestKeySet) *phase0.SignedAggregateAndProof {
+	return &phase0.SignedAggregateAndProof{
 		Message:   TestingAggregateAndProof,
 		Signature: signBeaconObject(TestingAggregateAndProof, types.DomainAggregateAndProof, ks),
 	}
@@ -250,8 +251,8 @@ const (
 	UnknownDutyType = 100
 )
 
-var TestingSyncCommitteeBlockRoot = spec.Root{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-var TestingSyncCommitteeWrongBlockRoot = spec.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+var TestingSyncCommitteeBlockRoot = phase0.Root{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+var TestingSyncCommitteeWrongBlockRoot = phase0.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommitteeMessage {
 	return &altair.SyncCommitteeMessage{
 		Slot:            TestingDutySlot,
@@ -262,15 +263,15 @@ var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommi
 }
 
 var TestingContributionProofIndexes = []uint64{0, 1, 2}
-var TestingContributionProofsSigned = func() []spec.BLSSignature {
+var TestingContributionProofsSigned = func() []phase0.BLSSignature {
 	// signed with 3515c7d08e5affd729e9579f7588d30f2342ee6f6a9334acf006345262162c6f
 	byts1, _ := hex.DecodeString("b18833bb7549ec33e8ac414ba002fd45bb094ca300bd24596f04a434a89beea462401da7c6b92fb3991bd17163eb603604a40e8dd6781266c990023446776ff42a9313df26a0a34184a590e57fa4003d610c2fa214db4e7dec468592010298bc")
 	byts2, _ := hex.DecodeString("9094342c95146554df849dc20f7425fca692dacee7cb45258ddd264a8e5929861469fda3d1567b9521cba83188ffd61a0dbe6d7180c7a96f5810d18db305e9143772b766d368aa96d3751f98d0ce2db9f9e6f26325702088d87f0de500c67c68")
 	byts3, _ := hex.DecodeString("a7f88ce43eff3aa8cdd2e3957c5bead4e21353fbecac6079a5398d03019bc45ff7c951785172deee70e9bc5abbc8ca6a0f0441e9d4cc9da74c31121357f7d7c7de9533f6f457da493e3314e22d554ab76613e469b050e246aff539a33807197c")
 
-	ret := make([]spec.BLSSignature, 0)
+	ret := make([]phase0.BLSSignature, 0)
 	for _, byts := range [][]byte{byts1, byts2, byts3} {
-		b := spec.BLSSignature{}
+		b := phase0.BLSSignature{}
 		copy(b[:], byts)
 		ret = append(ret, b)
 	}
@@ -282,21 +283,21 @@ var TestingSyncCommitteeContributions = []*altair.SyncCommitteeContribution{
 		BeaconBlockRoot:   TestingSyncCommitteeBlockRoot,
 		SubcommitteeIndex: 0,
 		AggregationBits:   bitfield.NewBitvector128(),
-		Signature:         spec.BLSSignature{},
+		Signature:         phase0.BLSSignature{},
 	},
 	{
 		Slot:              TestingDutySlot,
 		BeaconBlockRoot:   TestingSyncCommitteeBlockRoot,
 		SubcommitteeIndex: 1,
 		AggregationBits:   bitfield.NewBitvector128(),
-		Signature:         spec.BLSSignature{},
+		Signature:         phase0.BLSSignature{},
 	},
 	{
 		Slot:              TestingDutySlot,
 		BeaconBlockRoot:   TestingSyncCommitteeBlockRoot,
 		SubcommitteeIndex: 2,
 		AggregationBits:   bitfield.NewBitvector128(),
-		Signature:         spec.BLSSignature{},
+		Signature:         phase0.BLSSignature{},
 	},
 }
 var TestingContributionsData = func() types.Contributions {
@@ -323,7 +324,7 @@ var TestingContributionsDataBytes = func() []byte {
 
 var TestingSignedSyncCommitteeContributions = func(
 	contrib *altair.SyncCommitteeContribution,
-	proof spec.BLSSignature,
+	proof phase0.BLSSignature,
 	ks *TestKeySet) *altair.SignedContributionAndProof {
 	msg := &altair.ContributionAndProof{
 		AggregatorIndex: TestingValidatorIndex,
@@ -473,21 +474,21 @@ var TestingWrongDutyPK = types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-//func blsSigFromHex(str string) spec.BLSSignature {
+//func blsSigFromHex(str string) phase0.BLSSignature {
 //	byts, _ := hex.DecodeString(str)
-//	ret := spec.BLSSignature{}
+//	ret := phase0.BLSSignature{}
 //	copy(ret[:], byts)
 //	return ret
 //}
 
 type TestingBeaconNode struct {
-	BroadcastedRoots             []spec.Root
+	BroadcastedRoots             []phase0.Root
 	syncCommitteeAggregatorRoots map[string]bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
 	return &TestingBeaconNode{
-		BroadcastedRoots: []spec.Root{},
+		BroadcastedRoots: []phase0.Root{},
 	}
 }
 
@@ -502,48 +503,62 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *TestingBeaconNode) GetAttestationData(slot spec.Slot, committeeIndex spec.CommitteeIndex) (ssz.Marshaler, spec2.DataVersion, error) {
-	return TestingAttestationData, spec2.DataVersionPhase0, nil
+func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, spec.DataVersion, error) {
+	return TestingAttestationData, spec.DataVersionPhase0, nil
 }
 
 // SubmitAttestation submit the attestation to the node
-func (bn *TestingBeaconNode) SubmitAttestation(attestation *spec.Attestation) error {
+func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) error {
 	r, _ := attestation.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
 // GetBeaconBlock returns beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec2.DataVersion, error) {
-	return TestingBeaconBlock, spec2.DataVersionCapella, nil
+func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
+	return TestingBeaconBlock, spec.DataVersionCapella, nil
 }
 
 // SubmitBeaconBlock submit the block to the node
-func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec2.VersionedSignedBeaconBlock) error {
+func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock, sig phase0.BLSSignature) error {
 	var r [32]byte
 	switch block.Version {
-	case spec2.DataVersionCapella:
-		r, _ = block.Capella.HashTreeRoot()
+	case spec.DataVersionCapella:
+		if block.Capella == nil {
+			return errors.New("capella block is nil")
+		}
+		sb := &capella.SignedBeaconBlock{
+			Message:   block.Capella,
+			Signature: sig,
+		}
+		r, _ = sb.HashTreeRoot()
 	default:
-		return errors.Errorf("unknown block version %s", block.Version.String())
+		return fmt.Errorf("unknown block version %d", block.Version)
 	}
+
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
 // GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot spec.Slot, committeeIndex spec.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec2.DataVersion, error) {
-	return TestingBlindedBeaconBlock, spec2.DataVersionCapella, nil
+func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
+	return TestingBlindedBeaconBlock, spec.DataVersionCapella, nil
 }
 
 // SubmitBlindedBeaconBlock submit the blinded block to the node
-func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedSignedBlindedBeaconBlock) error {
+func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlindedBeaconBlock, sig phase0.BLSSignature) error {
 	var r [32]byte
+
 	switch block.Version {
-	case spec2.DataVersionCapella:
-		// TODO: no hashtreeroot for capella
-		// https://github.com/attestantio/go-eth2-client/issues/50
-		r, _ = block.Capella.HashTreeRoot()
+	case spec.DataVersionCapella:
+		if block.Capella == nil {
+			return errors.New("capella blinded block is nil")
+		}
+		sb := &apiv1capella.SignedBlindedBeaconBlock{
+			Message:   block.Capella,
+			Signature: sig,
+		}
+		r, _ = sb.HashTreeRoot()
 	default:
 		return errors.Errorf("unknown blinded block version %s", block.Version.String())
 	}
@@ -552,20 +567,20 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedSigned
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
-func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot spec.Slot, committeeIndex spec.CommitteeIndex, committeeLength uint64, index spec.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec2.DataVersion, error) {
-	return TestingAggregateAndProof, spec2.DataVersionPhase0, nil
+func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error) {
+	return TestingAggregateAndProof, spec.DataVersionPhase0, nil
 }
 
 // SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
-func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.SignedAggregateAndProof) error {
+func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *phase0.SignedAggregateAndProof) error {
 	r, _ := msg.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
 // GetSyncMessageBlockRoot returns beacon block root for sync committee
-func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot spec.Slot) (spec.Root, spec2.DataVersion, error) {
-	return TestingSyncCommitteeBlockRoot, spec2.DataVersionPhase0, nil
+func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.Root, spec.DataVersion, error) {
+	return TestingSyncCommitteeBlockRoot, spec.DataVersionPhase0, nil
 }
 
 // SubmitSyncMessage submits a signed sync committee msg
@@ -587,14 +602,14 @@ func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, erro
 }
 
 // SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
-func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index spec.CommitteeIndex) (uint64, error) {
+func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) (uint64, error) {
 	// each subcommittee index correlates to TestingContributionProofRoots by index
 	return uint64(index), nil
 }
 
 // GetSyncCommitteeContribution returns
-func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot spec.Slot, selectionProofs []spec.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec2.DataVersion, error) {
-	return &TestingContributionsData, spec2.DataVersionBellatrix, nil
+func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot phase0.Slot, selectionProofs []phase0.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec.DataVersion, error) {
+	return &TestingContributionsData, spec.DataVersionBellatrix, nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network
@@ -604,7 +619,7 @@ func (bn *TestingBeaconNode) SubmitSignedContributionAndProof(contribution *alta
 	return nil
 }
 
-func (bn *TestingBeaconNode) DomainData(epoch spec.Epoch, domain spec.DomainType) (spec.Domain, error) {
+func (bn *TestingBeaconNode) DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error) {
 	// epoch is used to calculate fork version, here we hard code it
 	return types.ComputeETHDomain(domain, types.GenesisForkVersion, types.GenesisValidatorsRoot)
 }

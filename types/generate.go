@@ -9,14 +9,11 @@ package types
 //go:generate rm -f ./messages_encoding.go
 //go:generate go run .../fastssz/sszgen --path messages.go --exclude-objs ValidatorPK,MessageID,MsgType
 
-// TODO: revert to attestantio/go-eth2-client once the issue resolved
-// https://github.com/attestantio/go-eth2-client/issues/50
-
 //go:generate rm -f ./beacon_types_encoding.go
-//go:generate go run .../fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/olegshmuelov/go-eth2-client@v0.0.0-20230321143339-08ced80c995f/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole
+//go:generate go run .../fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@6b2aee8911556e19ed0d349ace1caa08719eb27d/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole
 
 //go:generate rm -f ./partial_sig_message_encoding.go
-//go:generate go run .../fastssz/sszgen --path partial_sig_message.go --include $GOPATH/pkg/mod/github.com/olegshmuelov/go-eth2-client@v0.0.0-20230321143339-08ced80c995f/spec/phase0,./signer.go,./operator.go --exclude-objs PartialSigMsgType
+//go:generate go run .../fastssz/sszgen --path partial_sig_message.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@6b2aee8911556e19ed0d349ace1caa08719eb27d/spec/phase0,./signer.go,./operator.go --exclude-objs PartialSigMsgType
 
 //go:generate rm -f ./consensus_data_encoding.go
-//go:generate go run .../fastssz/sszgen --path consensus_data.go --include ./operator.go,./signer.go,./partial_sig_message.go,./beacon_types.go,$GOPATH/pkg/mod/github.com/olegshmuelov/go-eth2-client@v0.0.0-20230321143339-08ced80c995f/spec/phase0,$GOPATH/pkg/mod/github.com/olegshmuelov/go-eth2-client@v0.0.0-20230321143339-08ced80c995f/spec,$GOPATH/pkg/mod/github.com/olegshmuelov/go-eth2-client@v0.0.0-20230321143339-08ced80c995f/spec/altair --exclude-objs Contributions,BeaconNetwork,BeaconRole
+//go:generate go run .../fastssz/sszgen --path consensus_data.go --include ./operator.go,./signer.go,./partial_sig_message.go,./beacon_types.go,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@6b2aee8911556e19ed0d349ace1caa08719eb27d/spec/phase0,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@6b2aee8911556e19ed0d349ace1caa08719eb27d/spec,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@6b2aee8911556e19ed0d349ace1caa08719eb27d/spec/altair --exclude-objs Contributions,BeaconNetwork,BeaconRole
