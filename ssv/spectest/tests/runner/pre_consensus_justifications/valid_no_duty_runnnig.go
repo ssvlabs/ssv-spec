@@ -37,7 +37,7 @@ func ValidNoRunningDuty() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "17f18a6d0985ea944251bf9b6cc28c2ed5ceb685564fe5598cad8c2654c9b543",
+				PostDutyRunnerStateRoot: "f1cdb47ee453decf08c04161f463d9001a5eb197e348486190cebff438c75e35",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},

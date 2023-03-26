@@ -37,7 +37,7 @@ func Valid() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "17f18a6d0985ea944251bf9b6cc28c2ed5ceb685564fe5598cad8c2654c9b543",
+				PostDutyRunnerStateRoot: "f1cdb47ee453decf08c04161f463d9001a5eb197e348486190cebff438c75e35",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -96,7 +96,7 @@ func Valid() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "044f5465db19e9e45ec6319dfd870fd8d63352585d6653a719090cba511b13ef",
+				PostDutyRunnerStateRoot: "fa35779ebcdb59b635aa8e661cbbf006a7bae1eded677287001277a4205631a2",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},

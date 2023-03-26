@@ -107,7 +107,7 @@ func InvalidSlot() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "044f5465db19e9e45ec6319dfd870fd8d63352585d6653a719090cba511b13ef",
+				PostDutyRunnerStateRoot: "fa35779ebcdb59b635aa8e661cbbf006a7bae1eded677287001277a4205631a2",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},

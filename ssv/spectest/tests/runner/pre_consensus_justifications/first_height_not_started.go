@@ -37,7 +37,7 @@ func FirstHeightNotStarted() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "492f79bce29dbd47a04007bb6edb36723312547c6cde0ce42b1b4496d9fb927f",
+				PostDutyRunnerStateRoot: "1c71e2154b44d39541e65319701ce50b3e2d39fab616d2eb06fd72a67bff5793",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -96,7 +96,7 @@ func FirstHeightNotStarted() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "941338be935cec87018b8c076d81ebd28a54e46097352fd4585a89a2bf59b3a2",
+				PostDutyRunnerStateRoot: "5adbf2c86193070a8f74596275e7a62d48a6a573259150d7ec694b3571c7a787",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
