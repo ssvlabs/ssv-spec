@@ -50,7 +50,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 						), nil),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)), // no qbft msg to mock the missing decided value
 				},
-				PostDutyRunnerStateRoot: "6792d5f85a4160a5d853ba846fb201ab54dec0faa43c7b419c3c0ca86888b46e",
+				PostDutyRunnerStateRoot: "0e966c2d067b51f57254f5e56acd98673f026c89f3d4df74bd567f9668417501",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -70,7 +70,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 						), nil),
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "a27317f0e4418cf94b1366999131a5a3f0901f23c960efa03efc18156a94fb11",
+				PostDutyRunnerStateRoot: "668d436823d89c78e929c3b0ab3b76a5f3c2b29ea04333a26722bf6530a90b41",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedErr,
 			},

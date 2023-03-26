@@ -123,6 +123,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     decidedValue.Duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
@@ -211,6 +212,7 @@ func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgs := types.PartialSignatureMessages{
 		Type:     types.SelectionProofPartialSig,
+		Slot:     duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 

@@ -176,12 +176,19 @@ var SSVMsgValidatorRegistration = func(qbftMsg *qbft.SignedMessage, partialSigMs
 var ssvMsg = func(qbftMsg *qbft.SignedMessage, postMsg *types.SignedPartialSignatureMessage, msgID types.MessageID) *types.SSVMessage {
 	var msgType types.MsgType
 	var data []byte
+	var err error
 	if qbftMsg != nil {
 		msgType = types.SSVConsensusMsgType
-		data, _ = qbftMsg.Encode()
+		data, err = qbftMsg.Encode()
+		if err != nil {
+			panic(err)
+		}
 	} else if postMsg != nil {
 		msgType = types.SSVPartialSignatureMsgType
-		data, _ = postMsg.Encode()
+		data, err = postMsg.Encode()
+		if err != nil {
+			panic(err)
+		}
 	} else {
 		panic("msg type undefined")
 	}

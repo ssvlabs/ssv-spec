@@ -164,6 +164,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     decidedValue.Duty.Slot,
 		Messages: msgs,
 	}
 
@@ -307,6 +308,7 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	// sign selection proofs
 	msgs := types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,
+		Slot:     duty.Slot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 	for _, index := range r.GetState().StartingDuty.ValidatorSyncCommitteeIndices {

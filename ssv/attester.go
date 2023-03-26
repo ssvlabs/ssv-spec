@@ -82,6 +82,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     decidedValue.Duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 

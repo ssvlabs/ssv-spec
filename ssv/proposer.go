@@ -147,6 +147,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
+		Slot:     decidedValue.Duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
@@ -266,6 +267,7 @@ func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 	}
 	msgs := types.PartialSignatureMessages{
 		Type:     types.RandaoPartialSig,
+		Slot:     duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 

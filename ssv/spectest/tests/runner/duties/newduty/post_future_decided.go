@@ -49,7 +49,7 @@ func PostFutureDecided() *MultiStartNewRunnerDutySpecTest {
 				Name:                    "sync committee",
 				Runner:                  futureDecide(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "ba823b10661497d3d3a7c10a153559d41ae81e779c570d33f721edbf13ccf7c0",
+				PostDutyRunnerStateRoot: "d39238cb763ef4e6a49544657c8ae160822f85fb14a6e1769ce7c0a387156694",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{

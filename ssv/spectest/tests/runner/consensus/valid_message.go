@@ -26,7 +26,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "8e654f9119c443b1ff26b9839e9b75dae216a98894935f8b190e9fc16bb78b6b",
+				PostDutyRunnerStateRoot: "d9143e97c89f1c837df975f9d73b37e38e70963092ff0a3b84b4c0342aa50c7e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -42,7 +42,7 @@ func ValidMessage() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "941338be935cec87018b8c076d81ebd28a54e46097352fd4585a89a2bf59b3a2",
+				PostDutyRunnerStateRoot: "5adbf2c86193070a8f74596275e7a62d48a6a573259150d7ec694b3571c7a787",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
