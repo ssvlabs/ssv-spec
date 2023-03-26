@@ -1,10 +1,11 @@
 package consensus
 
 import (
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // FutureDecided tests a running instance at FirstHeight, then processing a decided msg from height 10 and returning decided but doesn't move to post consensus as it's not the same instance decided
@@ -106,7 +107,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						nil,
 					),
 				},
-				PostDutyRunnerStateRoot: "e26bb8f47bf89de816b732d7746524f8af22ffa40dbbbb97a316a3c55c0d0f55",
+				PostDutyRunnerStateRoot: "d239eaf711c59e7bbf8c9bf506c95a95051bd528f6bac57cf8465ee1cee821b9",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
@@ -130,7 +131,7 @@ func FutureDecided() *tests.MultiMsgProcessingSpecTest {
 						nil,
 					),
 				},
-				PostDutyRunnerStateRoot: "b56c9b79d69a5e27f050ebcf145f1d2c108e326de48d6f1af3c74fd4adec3620",
+				PostDutyRunnerStateRoot: "b3e4ccde5539ea5df610151039c16dc5333f8073e1bf658ec8904fc711168219",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},

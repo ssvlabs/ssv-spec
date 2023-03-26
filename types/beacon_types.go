@@ -1,9 +1,10 @@
 package types
 
 import (
+	"time"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
-	"time"
 )
 
 var GenesisValidatorsRoot = spec.Root{}

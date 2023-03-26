@@ -1,12 +1,13 @@
 package consensus
 
 import (
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // PostFinish tests a valid commit msg after runner finished
@@ -98,7 +99,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestProposerConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "b165432cb8ec536de81e16cc2de5ae621c787931530f26fee235a9f2bc368cfb",
+				PostDutyRunnerStateRoot: "053e24c9deb284fd42fc72a33a596c918009c6b365205d3f7282f7f9fe48c55b",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
@@ -114,7 +115,7 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 							testingutils.TestProposerBlindedBlockConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "0d55336a5a0f0f2624d0396b3b4f1f5509ff69fe0e14708d18c69c92190a6966",
+				PostDutyRunnerStateRoot: "0651dc97605f2c0e71fcac7fe14271033e50d71970de6aada919d8afb4352059",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           err,

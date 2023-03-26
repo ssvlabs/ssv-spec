@@ -1,6 +1,8 @@
 package spectest
 
 import (
+	"testing"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
@@ -11,7 +13,6 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
-	"testing"
 )
 
 type SpecTest interface {
