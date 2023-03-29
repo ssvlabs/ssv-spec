@@ -88,7 +88,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 		}
 	} else {
 		// get block data
-		obj, ver, err = r.GetBeaconNode().GetBeaconBlock(duty.Slot, duty.CommitteeIndex, r.GetShare().Graffiti, fullSig)
+		obj, ver, err = r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
 		if err != nil {
 			return errors.Wrap(err, "failed to get Beacon block")
 		}
