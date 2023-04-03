@@ -8,9 +8,15 @@ import (
 )
 
 func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMessage) bool {
-	rightQBFTHeight := b.QBFTController.CanStartInstance() == nil && (b.QBFTController.Height == msg.Message.Height || b.QBFTController.Height+1 == msg.Message.Height)
+	canStartInstance := b.QBFTController.CanStartInstance() == nil
+	firstHeight := canStartInstance && b.QBFTController.Height == msg.Message.Height && msg.Message.Height == qbft.FirstHeight
+	nextHeight := canStartInstance && msg.Message.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Message.Height
+	rightQBFTHeight := firstHeight || nextHeight
+
 	rightMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
+
 	requiresPreConsensus := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
+
 	return rightQBFTHeight && rightMsgTYpe && requiresPreConsensus
 }
 

@@ -21,19 +21,33 @@ func removePreConsensusMsgs(msgs []*types.SSVMessage, ks *testingutils.TestKeySe
 // HappyFlow  tests a full flow of an already started duty with pre-consensus justifications
 func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
+
+	consensusMsgs := func(cd *types.ConsensusData, role types.BeaconRole) []*types.SSVMessage {
+		id := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
+		qbftMsgs := testingutils.DecidingMsgsForHeight(cd, id[:], 2, ks)
+
+		ret := make([]*types.SSVMessage, 0)
+		for _, msg := range qbftMsgs {
+			byts, _ := msg.Encode()
+			ret = append(ret, &types.SSVMessage{
+				MsgType: types.SSVConsensusMsgType,
+				MsgID:   id,
+				Data:    byts,
+			})
+		}
+		return ret
+	}
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "full happy flow",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
-				Name:   "sync committee aggregator",
+				Name:   "sync committee aggregator first height",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
 					// consensus
-					removePreConsensusMsgs(
-						testingutils.SSVDecidingMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), ks, types.BNRoleSyncCommitteeContribution),
-						ks,
-					),
+					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), types.BNRoleSyncCommitteeContribution)[:7],
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
@@ -52,11 +66,35 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
-				Name:   "sync committee",
+				Name:   "sync committee aggregator > first height",
+				Runner: decideFirstHeight(testingutils.SyncCommitteeContributionRunner(ks)),
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Messages: append(
+					// consensus
+					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), types.BNRoleSyncCommitteeContribution)[7:14],
+					[]*types.SSVMessage{ // post consensus
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
+					}...,
+				),
+				PostDutyRunnerStateRoot: "139892acf4e22593f895344770a82b78288476889e54ebebb26d9382eba4e17a",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
+				},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
+					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
+					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
+				},
+			},
+			{
+				Name:   "sync committee first height",
 				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee), // consensus
+					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.BNRoleSyncCommittee)[:7], // consensus
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
@@ -72,15 +110,32 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
-				Name:   "aggregator",
+				Name:   "sync committee > first height",
+				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
+				Duty:   &testingutils.TestingSyncCommitteeDuty,
+				Messages: append(
+					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.BNRoleSyncCommittee)[7:14], // consensus
+					[]*types.SSVMessage{ // post consensus
+						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
+					}...,
+				),
+				PostDutyRunnerStateRoot: "0488511c9416bf29f7679d316068b2ad723d7440a5d93c8f51c95b0bb6e4047f",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+				},
+			},
+			{
+				Name:   "aggregator first height",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
 					// consensus
-					removePreConsensusMsgs(
-						testingutils.SSVDecidingMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), ks, types.BNRoleAggregator),
-						ks,
-					),
+					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), types.BNRoleAggregator)[:7],
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
@@ -97,15 +152,34 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
-				Name:   "proposer",
+				Name:   "aggregator > first height",
+				Runner: decideFirstHeight(testingutils.AggregatorRunner(ks)),
+				Duty:   &testingutils.TestingAggregatorDuty,
+				Messages: append(
+					// consensus
+					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), types.BNRoleAggregator)[7:14],
+					[]*types.SSVMessage{ // post consensus
+						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
+					}...,
+				),
+				PostDutyRunnerStateRoot: "dfa0c360fa5a320fa7823211eb208f38fa4c8fcd417c70f9451945b478ee5a48",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
+				},
+			},
+			{
+				Name:   "proposer first height",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: append(
 					// consensus
-					removePreConsensusMsgs(
-						testingutils.SSVDecidingMsgs(testingutils.TestProposerWithJustificationsConsensusData(ks), ks, types.BNRoleProposer),
-						ks,
-					),
+					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusData(ks), types.BNRoleProposer)[:7],
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
@@ -122,15 +196,34 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
-				Name:   "proposer blinded block",
+				Name:   "proposer > first height",
+				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
+				Duty:   &testingutils.TestingProposerDuty,
+				Messages: append(
+					// consensus
+					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusData(ks), types.BNRoleProposer)[7:14],
+					[]*types.SSVMessage{ // post consensus
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+					}...,
+				),
+				PostDutyRunnerStateRoot: "335e870fa3c015b9e232af2ccb48065a38789ff11725e86841aeac5b2fe9cff2",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+				},
+			},
+			{
+				Name:   "proposer blinded block first height",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: append(
 					// consensus
-					removePreConsensusMsgs(
-						testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), ks, types.BNRoleProposer),
-						ks,
-					),
+					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), types.BNRoleProposer)[:7],
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
@@ -147,11 +240,33 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
-				Name:   "attester",
+				Name:   "proposer blinded block > first height",
+				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
+				Duty:   &testingutils.TestingProposerDuty,
+				Messages: append(
+					// consensus
+					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), types.BNRoleProposer)[7:14],
+					[]*types.SSVMessage{ // post consensus
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+					}...,
+				),
+				PostDutyRunnerStateRoot: "c07ee02ae01e89270711cdff91fd3c9fe0117f6b6f1d275708f14c1e48344874",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+				},
+			},
+			{
+				Name:   "attester first height",
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgs(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester), // consensus
+					consensusMsgs(testingutils.TestAttesterConsensusData, types.BNRoleAttester)[:7], // consensus
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
@@ -167,7 +282,7 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 				},
 			},
 			{
-				Name:   "validator registration",
+				Name:   "validator registration first height",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
 				Messages: []*types.SSVMessage{
