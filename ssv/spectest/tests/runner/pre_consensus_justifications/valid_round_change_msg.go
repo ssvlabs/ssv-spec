@@ -15,7 +15,7 @@ func ValidRoundChangeMsg() *tests.MultiMsgProcessingSpecTest {
 		fullData, _ := obj.Encode()
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
+			MsgType:    qbft.RoundChangeMsgType,
 			Height:     1,
 			Round:      qbft.FirstRound,
 			Identifier: id,
@@ -28,52 +28,52 @@ func ValidRoundChangeMsg() *tests.MultiMsgProcessingSpecTest {
 	}
 
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus valid quorum",
+		Name: "pre consensus valid round change",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
+				Runner: decideFirstHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "f1cdb47ee453decf08c04161f463d9001a5eb197e348486190cebff438c75e35",
+				PostDutyRunnerStateRoot: "eb2b8dbc47bf1c7598e6db0659c7ea9395a6d8924db54790abf1c77628d50d44",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:   "aggregator selection proof",
-				Runner: testingutils.AggregatorRunner(ks),
+				Runner: decideFirstHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "8d811303faae71ad17666fef82e0692c695ab9388d436385be46a5821271f409",
+				PostDutyRunnerStateRoot: "4456fb2576481b2f5cb61e851497eca15e82819332d64a2a11e931c9a64ce140",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:   "randao",
-				Runner: testingutils.ProposerRunner(ks),
+				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "aa3cf0b43cea31e9c4bc13b5e4cbb150b362d15fffd5c8d5fdc4848bb4eff638",
+				PostDutyRunnerStateRoot: "0eb21816a5828fd993f7f545e124f32c54ef38961af6c768ba9f160760277ed7",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:   "randao (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
+				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "81d34e0b6c9a61243b607b194527313579e07499abafd82ed0a34dfecdab408e",
+				PostDutyRunnerStateRoot: "97a465828868bcddaad094217afb0826bee2abb314019d9f3f54c0795dcb53a5",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -81,22 +81,22 @@ func ValidRoundChangeMsg() *tests.MultiMsgProcessingSpecTest {
 			{
 
 				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
+				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "757b432ae782aca13549cdaeb5df8b292691bd8eaab0057ae779c59ed222fd79",
+				PostDutyRunnerStateRoot: "c68624598e1d901acf3720735be9e11648a491d538508a6658451272338b42ae",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
+				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "fa35779ebcdb59b635aa8e661cbbf006a7bae1eded677287001277a4205631a2",
+				PostDutyRunnerStateRoot: "d28fc482d502b25b2b176d14df889600c80db75023dc22c46f5383011fbed1a8",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},

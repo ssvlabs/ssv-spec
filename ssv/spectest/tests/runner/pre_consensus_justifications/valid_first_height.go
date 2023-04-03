@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// FirstHeightNotStarted tests a special case for first height which didn't start
-func FirstHeightNotStarted() *tests.MultiMsgProcessingSpecTest {
+// ValidFirstHeight tests a special case for first height which didn't start
+func ValidFirstHeight() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

@@ -8,9 +8,10 @@ import (
 )
 
 func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMessage) bool {
-	canStartInstance := b.QBFTController.CanStartInstance() == nil
-	firstHeight := canStartInstance && b.QBFTController.Height == msg.Message.Height && msg.Message.Height == qbft.FirstHeight
-	nextHeight := canStartInstance && msg.Message.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Message.Height
+	inst := b.QBFTController.InstanceForHeight(b.QBFTController.Height)
+	decidedInstance := inst != nil && inst.State != nil && inst.State.Decided
+	firstHeight := !decidedInstance && b.QBFTController.Height == msg.Message.Height && msg.Message.Height == qbft.FirstHeight
+	nextHeight := decidedInstance && msg.Message.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Message.Height
 	rightQBFTHeight := firstHeight || nextHeight
 
 	rightMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType

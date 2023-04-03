@@ -78,7 +78,7 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "139892acf4e22593f895344770a82b78288476889e54ebebb26d9382eba4e17a",
+				PostDutyRunnerStateRoot: "7ae02c3b32870918ff8db64966a27c9c3a0ab689a23fe943f42389c9f9ab228f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -121,7 +121,7 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "0488511c9416bf29f7679d316068b2ad723d7440a5d93c8f51c95b0bb6e4047f",
+				PostDutyRunnerStateRoot: "eebc533814dfc97cd96facd431a67cc26bc5653a4fd3301609a6a1a9be18afd5",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
@@ -164,7 +164,7 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "dfa0c360fa5a320fa7823211eb208f38fa4c8fcd417c70f9451945b478ee5a48",
+				PostDutyRunnerStateRoot: "34c57a66d9d914be3634469bd41a6e715937992ed7d99476f4b86968688f16c3",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
@@ -208,7 +208,7 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "335e870fa3c015b9e232af2ccb48065a38789ff11725e86841aeac5b2fe9cff2",
+				PostDutyRunnerStateRoot: "cecd64906415910e86f27bc94a827972f83f2d7f4518d36fd5919ac26fe53151",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
@@ -252,7 +252,7 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "c07ee02ae01e89270711cdff91fd3c9fe0117f6b6f1d275708f14c1e48344874",
+				PostDutyRunnerStateRoot: "c7dfee8db272e47d0436b315404f010289304aff3630459fccbb5e4aca709c1e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
