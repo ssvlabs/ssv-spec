@@ -14,10 +14,18 @@ func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMes
 	return rightQBFTHeight && rightMsgTYpe && requiresPreConsensus
 }
 
-func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData) error {
+func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData, highestDecidedDutySlot phase0.Slot) error {
 	//test invalid consensus data
 	if err := data.Validate(); err != nil {
 		return err
+	}
+
+	if b.BeaconRoleType != data.Duty.Type {
+		return errors.New("wrong beacon role")
+	}
+
+	if highestDecidedDutySlot >= data.Duty.Slot {
+		return errors.New("duty.slot < highest decided slot")
 	}
 
 	// validate justification quorum
@@ -83,26 +91,13 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 1) needs to process justifications
 2) validate data
 3) validate message
-	3.1) validate consensus data
-	3.2) validate each signed msg
-	3.3) validate quorum for justifications
-	3.4) validate unique signers
-	3.5) validate duty.slot == message slot
-	3.6) validate message roots equal
-	3.7) validate sigs
-4) if cd.Duty.Slot > highestDecidedDutySlot return nil
-5) if no running instance, run instance with consensus data duty
-6) add pre-consensus sigs to container
-7) decided on duty
+4) if no running instance, run instance with consensus data duty
+5) add pre-consensus sigs to container
+6) decided on duty
 */
 func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDecidedDutySlot phase0.Slot, msg *qbft.SignedMessage) error {
 	if !b.shouldProcessingJustificationsForHeight(msg) {
 		return nil
-	}
-
-	// validate data
-	if err := runner.GetValCheckF()(msg.FullData); err != nil {
-		return err
 	}
 
 	cd := &types.ConsensusData{}
@@ -110,11 +105,7 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 		return err
 	}
 
-	if highestDecidedDutySlot >= cd.Duty.Slot {
-		return errors.New("duty.slot < highest decided slot")
-	}
-
-	if err := b.validatePreConsensusJustifications(cd); err != nil {
+	if err := b.validatePreConsensusJustifications(cd, highestDecidedDutySlot); err != nil {
 		return err
 	}
 

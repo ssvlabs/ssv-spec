@@ -21,10 +21,17 @@ type SpecTest interface {
 }
 
 var AllTests = []SpecTest{
+	pre_consensus_justifications.PastSlot(),
+	pre_consensus_justifications.DecodeConsensusDataError(),
+	pre_consensus_justifications.FutureHeight(),
+	pre_consensus_justifications.PastHeight(),
+	pre_consensus_justifications.InvalidMsgType(),
+	pre_consensus_justifications.ValidRoundChangeMsg(),
+	//pre_consensus_justifications.WrongBeaconRole(),
 	pre_consensus_justifications.InvalidConsensusData(),
 	pre_consensus_justifications.InvalidSlot(),
 	pre_consensus_justifications.UnknownSigner(),
-	pre_consensus_justifications.InvalidMessageSignature(),
+	pre_consensus_justifications.InvalidJustificationSignature(),
 	pre_consensus_justifications.DuplicateJustificationSigner(),
 	pre_consensus_justifications.DuplicateRoots(),
 	pre_consensus_justifications.FirstHeightNotStarted(),

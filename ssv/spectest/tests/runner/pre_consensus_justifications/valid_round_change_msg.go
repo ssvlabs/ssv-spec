@@ -7,19 +7,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidMessageSignature tests an invalid pre-consensus justification message signature
-func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
+// ValidRoundChangeMsg tests a valid pre-consensus justification for a round change message
+func ValidRoundChangeMsg() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
-		// change signer to invalidate sig
-		if len(obj.PreConsensusJustifications) > 0 {
-			obj.PreConsensusJustifications[0].Signer = 2
-			for _, m := range obj.PreConsensusJustifications[0].Message.Messages {
-				m.Signer = 2
-			}
-		}
-
 		fullData, _ := obj.Encode()
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
@@ -35,10 +27,8 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 		return signed
 	}
 
-	expectedErr := "failed processing consensus message: invalid pre-consensus justification: failed to verify PartialSignature: failed to verify signature"
-
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus invalid msg sig",
+		Name: "pre consensus valid quorum",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
@@ -47,11 +37,10 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
+				PostDutyRunnerStateRoot: "f1cdb47ee453decf08c04161f463d9001a5eb197e348486190cebff438c75e35",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "aggregator selection proof",
@@ -60,11 +49,10 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "c54e71de23c3957b73abbb0e7b9e195b3f8f6370d62fbec256224faecf177fee",
+				PostDutyRunnerStateRoot: "8d811303faae71ad17666fef82e0692c695ab9388d436385be46a5821271f409",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao",
@@ -73,11 +61,10 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "56eafcb33392ded888a0fefe30ba49e52aa00ab36841cb10c9dc1aa2935af347",
+				PostDutyRunnerStateRoot: "aa3cf0b43cea31e9c4bc13b5e4cbb150b362d15fffd5c8d5fdc4848bb4eff638",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -86,11 +73,10 @@ func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "2ce3241658f324f352c77909f4043934eedf38e939ae638c5ce6acf28e965646",
+				PostDutyRunnerStateRoot: "81d34e0b6c9a61243b607b194527313579e07499abafd82ed0a34dfecdab408e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedErr,
 			},
 			{
 
