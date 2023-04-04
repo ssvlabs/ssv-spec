@@ -145,6 +145,9 @@ func (cid *ConsensusData) Validate() error {
 		if len(cid.PreConsensusJustifications) > 0 {
 			return errors.New("sync committee invalid justifications")
 		}
+		if _, err := cid.GetSyncCommitteeBlockRoot(); err != nil {
+			return err
+		}
 		return nil
 	case BNRoleSyncCommitteeContribution:
 		if _, err := cid.GetSyncCommitteeContributions(); err != nil {
