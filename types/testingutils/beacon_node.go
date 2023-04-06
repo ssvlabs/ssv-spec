@@ -519,6 +519,11 @@ func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecip
 	return nil
 }
 
+// SubmitValidatorRawRegistrations submits raw validator registrations
+func (bn *TestingBeaconNode) SubmitValidatorRawRegistrations(registrations []*api.VersionedSignedValidatorRegistration) error {
+	return nil
+}
+
 // GetBeaconBlock returns beacon block by the given slot and committee index
 func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	return TestingBeaconBlock, spec.DataVersionCapella, nil
