@@ -18,7 +18,7 @@ func Print(differences []Difference) {
 	}
 }
 
-func AddExternalCompare(prefix string, differences []Difference) Difference {
+func NestedCompare(prefix string, differences []Difference) Difference {
 	if len(differences) > 0 {
 		ret := fmt.Sprintf("%s", prefix)
 		for _, diff := range differences {
