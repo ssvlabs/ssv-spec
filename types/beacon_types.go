@@ -63,15 +63,6 @@ func (r BeaconRole) String() string {
 	}
 }
 
-func (r BeaconRole) RequiresPreConsensus() bool {
-	switch r {
-	case BNRoleProposer, BNRoleAggregator, BNRoleSyncCommitteeContribution, BNRoleValidatorRegistration:
-		return true
-	default:
-		return false
-	}
-}
-
 // Duty represent data regarding the duty type with the duty data
 type Duty struct {
 	// Type is the duty type (attest, propose)

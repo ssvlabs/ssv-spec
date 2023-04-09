@@ -39,7 +39,7 @@ func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 	}
 
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "full happy flow",
+		Name: "pre consensus full happy flow",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator first height",

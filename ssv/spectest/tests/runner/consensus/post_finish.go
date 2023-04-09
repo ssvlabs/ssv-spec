@@ -34,8 +34,6 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 		return r
 	}
 
-	err := "failed processing consensus message: no running duty"
-
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid post finish",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -53,7 +51,6 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "d93e23f373bb3f5787755d7490193341bdd20c7f77a231dab1c979b95e66e416",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "sync committee",
@@ -69,7 +66,6 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "01372c8c81c57fefd98e7c5a2c8ca2b3a6c2ce4043fe4fc226e8cd4b06358158",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "aggregator",
@@ -85,7 +81,6 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "dc23550fb81816c01ca495936ead9b98469d27b9f6f3a1edd871b11934724ad3",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "proposer",
@@ -101,7 +96,6 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "b165432cb8ec536de81e16cc2de5ae621c787931530f26fee235a9f2bc368cfb",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -117,7 +111,6 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "0d55336a5a0f0f2624d0396b3b4f1f5509ff69fe0e14708d18c69c92190a6966",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "attester",
@@ -133,7 +126,6 @@ func PostFinish() *tests.MultiMsgProcessingSpecTest {
 				PostDutyRunnerStateRoot: "c9b543054dd8a3a051ae68599171c4e7dc926f9ba0862d4d75aa90da248c5956",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 		},
 	}

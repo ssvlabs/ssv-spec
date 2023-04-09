@@ -124,8 +124,9 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	}
 
 	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
+	// do not return error if no running duty
 	if !b.hasRunningDuty() {
-		return false, nil, errors.New("no running duty")
+		return false, nil, nil
 	}
 
 	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
