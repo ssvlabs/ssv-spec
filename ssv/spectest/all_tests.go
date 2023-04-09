@@ -40,6 +40,9 @@ var AllTests = []SpecTest{
 	pre_consensus_justifications.DecidedInstance(),
 	pre_consensus_justifications.PreviousValidPreConsensus(),
 	pre_consensus_justifications.Valid(),
+	pre_consensus_justifications.Valid7Operators(),
+	pre_consensus_justifications.Valid10Operators(),
+	pre_consensus_justifications.Valid13Operators(),
 	pre_consensus_justifications.ValidFirstHeight(),
 	pre_consensus_justifications.ValidNoRunningDuty(),
 	pre_consensus_justifications.ValidRoundChangeMsg(),
@@ -84,7 +87,6 @@ var AllTests = []SpecTest{
 
 	consensus.FutureDecided(),
 	consensus.InvalidDecidedValue(),
-	consensus.NoRunningDuty(),
 	consensus.NoRunningConsensusInstance(),
 	consensus.PostFinish(),
 	consensus.PostDecided(),
@@ -93,6 +95,8 @@ var AllTests = []SpecTest{
 	consensus.ValidDecided10Operators(),
 	consensus.ValidDecided13Operators(),
 	consensus.ValidMessage(),
+	consensus.FutureMessage(),
+	consensus.PastMessage(),
 
 	synccommitteeaggregator.SomeAggregatorQuorum(),
 	synccommitteeaggregator.NoneAggregatorQuorum(),

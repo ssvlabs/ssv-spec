@@ -4,7 +4,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 )
 
-// Valid7Operators tests a 7 operator valid pre-consensus justification
-func Valid7Operators() *tests.MultiMsgProcessingSpecTest {
+// Valid10Operators tests a 10 operator valid pre-consensus justification
+func Valid10Operators() *tests.MultiMsgProcessingSpecTest {
 	panic("implement")
 }
