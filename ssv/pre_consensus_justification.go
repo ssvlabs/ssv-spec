@@ -10,15 +10,15 @@ import (
 func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMessage) bool {
 	inst := b.QBFTController.InstanceForHeight(b.QBFTController.Height)
 	decidedInstance := inst != nil && inst.State != nil && inst.State.Decided
-	firstHeight := !decidedInstance && b.QBFTController.Height == msg.Message.Height && msg.Message.Height == qbft.FirstHeight
-	nextHeight := decidedInstance && msg.Message.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Message.Height
-	rightQBFTHeight := firstHeight || nextHeight
+	firstHeightNotDecided := !decidedInstance && b.QBFTController.Height == msg.Message.Height && msg.Message.Height == qbft.FirstHeight
+	notFirstHeightDecided := decidedInstance && msg.Message.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Message.Height
+	correctQBFTState := firstHeightNotDecided || notFirstHeightDecided
 
-	rightMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
+	correctMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
 
-	requiresPreConsensus := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
+	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
 
-	return rightQBFTHeight && rightMsgTYpe && requiresPreConsensus
+	return correctQBFTState && correctMsgTYpe && correctBeaconRole
 }
 
 func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData, highestDecidedDutySlot phase0.Slot) error {
@@ -109,7 +109,7 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 
 	cd := &types.ConsensusData{}
 	if err := cd.Decode(msg.FullData); err != nil {
-		return err
+		return errors.Wrap(err, "could not decoded ConsensusData")
 	}
 
 	if err := b.validatePreConsensusJustifications(cd, highestDecidedDutySlot); err != nil {

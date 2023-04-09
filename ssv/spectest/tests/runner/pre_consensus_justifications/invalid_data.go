@@ -7,76 +7,80 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PastHeight tests justification with height <= current height (not valid)
-func PastHeight() *tests.MultiMsgProcessingSpecTest {
+// InvalidData tests error decoding consensusData
+func InvalidData() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
-		fullData, _ := obj.Encode()
-		root, _ := qbft.HashDataRoot(fullData)
+	invalidateMsgDataF := func(id []byte) *qbft.SignedMessage {
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
-			Height:     qbft.FirstHeight,
+			Height:     1,
 			Round:      qbft.FirstRound,
 			Identifier: id,
-			Root:       root,
+			Root:       testingutils.TestingQBFTRootData,
 		}
 		signed := testingutils.SignQBFTMsg(ks.Shares[1], 1, msg)
-		signed.FullData = fullData
+		signed.FullData = testingutils.TestingQBFTFullData
 
 		return signed
 	}
 
+	expectedErr := "failed processing consensus message: invalid pre-consensus justification: could not decoded ConsensusData: incorrect offset"
+
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus past height",
+		Name: "pre consensus invalid consensus data",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: decideFirstHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
+					testingutils.SSVMsgSyncCommitteeContribution(invalidateMsgDataF(testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "4779f0f8a875748eda9fd96ba1fdb4e9cec53211c17c8898af47f36436b89833",
+				PostDutyRunnerStateRoot: "2619aeecde47fe0efc36aa98fbb2df9834d9eee77f62abe0d10532dbd5215790",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "aggregator selection proof",
 				Runner: decideFirstHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
+					testingutils.SSVMsgAggregator(invalidateMsgDataF(testingutils.AggregatorMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "72188c3cc54996765881db396e36d32090053001b4922f54cfd85d6748c4ce6a",
+				PostDutyRunnerStateRoot: "db1b416873d19be76cddc92ded0d442ba0e642514973b5dfec45f587c6ffde15",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao",
 				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(invalidateMsgDataF(testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "c41cabb4acc27875342979ee8e77be17b29eea25442fe97c8c3a16711329c03f",
+				PostDutyRunnerStateRoot: "2754fc7ced14fb15f3f18556bb6b837620287cbbfbf908abafa5a0533fc4bc5f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao (blinded block)",
 				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(invalidateMsgDataF(testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "582b8769e018c48b9263655cc315d3b889e921d0bef59537325c414c1ca3bace",
+				PostDutyRunnerStateRoot: "6bd59da9f817b8e40112e58231e36738b9d021db4416c9eeec1dd0236a5362e2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 
@@ -84,20 +88,22 @@ func PastHeight() *tests.MultiMsgProcessingSpecTest {
 				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
+					testingutils.SSVMsgAttester(invalidateMsgDataF(testingutils.AttesterMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "a60c5cb9e8c0189086ae447ee5d1f5477a0be3eb3af4fb15f17679e930f52538",
+				PostDutyRunnerStateRoot: "81cb7b1d3ea3087d49f9773b3a2b75a87b901e50427d237f2a10c0e1904e7684",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding consensus data: incorrect offset",
 			},
 			{
 				Name:   "sync committee",
 				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
+					testingutils.SSVMsgSyncCommittee(invalidateMsgDataF(testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "81118c674d65bddd1c468e4ec6bb34d2d9355e2008083f3fed315e7af9061fd5",
+				PostDutyRunnerStateRoot: "38592232077cd45709a7c6cfdd20c9d899af9d79bc750add3c4b8f2b6794cb34",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding consensus data: incorrect offset",
 			},
 		},
 	}

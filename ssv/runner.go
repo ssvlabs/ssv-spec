@@ -51,6 +51,29 @@ type BaseRunner struct {
 	highestDecidedSlot spec.Slot
 }
 
+func NewBaseRunner(
+	state *State,
+	share *types.Share,
+	controller *qbft.Controller,
+	beaconNetwork types.BeaconNetwork,
+	beaconRoleType types.BeaconRole,
+	highestDecidedSlot spec.Slot,
+) *BaseRunner {
+	return &BaseRunner{
+		State:              state,
+		Share:              share,
+		QBFTController:     controller,
+		BeaconNetwork:      beaconNetwork,
+		BeaconRoleType:     beaconRoleType,
+		highestDecidedSlot: highestDecidedSlot,
+	}
+}
+
+// SetHighestDecidedSlot set highestDecidedSlot for base runner
+func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
+	b.highestDecidedSlot = slot
+}
+
 // setupForNewDuty is sets the runner for a new duty
 func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
 	b.State = NewRunnerState(b.Share.Quorum, duty)

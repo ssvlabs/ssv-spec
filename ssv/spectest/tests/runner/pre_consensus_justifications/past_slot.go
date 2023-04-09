@@ -1,10 +1,116 @@
 package pre_consensus_justifications
 
 import (
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // PastSlot tests justification with highestDecidedDutySlot >= data.Duty.Slot (not valid)
 func PastSlot() *tests.MultiMsgProcessingSpecTest {
-	panic("implement")
+	ks := testingutils.Testing4SharesSet()
+
+	bumpHighestDecidedSlot := func(r ssv.Runner) ssv.Runner {
+		r.GetBaseRunner().SetHighestDecidedSlot(100)
+		return decideFirstHeight(r)
+	}
+
+	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
+		fullData, _ := obj.Encode()
+		root, _ := qbft.HashDataRoot(fullData)
+		msg := &qbft.Message{
+			MsgType:    qbft.ProposalMsgType,
+			Height:     1,
+			Round:      qbft.FirstRound,
+			Identifier: id,
+			Root:       root,
+		}
+		signed := testingutils.SignQBFTMsg(ks.Shares[1], 1, msg)
+		signed.FullData = fullData
+
+		return signed
+	}
+
+	expectedErr := "failed processing consensus message: invalid pre-consensus justification: duty.slot < highest decided slot"
+
+	return &tests.MultiMsgProcessingSpecTest{
+		Name: "pre consensus past slot",
+		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name:   "sync committee aggregator selection proof",
+				Runner: bumpHighestDecidedSlot(testingutils.SyncCommitteeContributionRunner(ks)),
+				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "2619aeecde47fe0efc36aa98fbb2df9834d9eee77f62abe0d10532dbd5215790",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: expectedErr,
+			},
+			{
+				Name:   "aggregator selection proof",
+				Runner: bumpHighestDecidedSlot(testingutils.AggregatorRunner(ks)),
+				Duty:   &testingutils.TestingAggregatorDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "db1b416873d19be76cddc92ded0d442ba0e642514973b5dfec45f587c6ffde15",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: expectedErr,
+			},
+			{
+				Name:   "randao",
+				Runner: bumpHighestDecidedSlot(testingutils.ProposerRunner(ks)),
+				Duty:   &testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "2754fc7ced14fb15f3f18556bb6b837620287cbbfbf908abafa5a0533fc4bc5f",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: expectedErr,
+			},
+			{
+				Name:   "randao (blinded block)",
+				Runner: bumpHighestDecidedSlot(testingutils.ProposerBlindedBlockRunner(ks)),
+				Duty:   &testingutils.TestingProposerDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "6bd59da9f817b8e40112e58231e36738b9d021db4416c9eeec1dd0236a5362e2",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: expectedErr,
+			},
+			{
+
+				Name:   "attester",
+				Runner: bumpHighestDecidedSlot(testingutils.AttesterRunner(ks)),
+				Duty:   &testingutils.TestingAttesterDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "c913d1b6e4150231615ad2475a26b03403cc40fc7dd90c011c1c24a7bb39ae1a",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			},
+			{
+				Name:   "sync committee",
+				Runner: bumpHighestDecidedSlot(testingutils.SyncCommitteeRunner(ks)),
+				Duty:   &testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
+				},
+				PostDutyRunnerStateRoot: "4dbe7550c9fe66953ae2f5066463e8d1288fc37a4cc031b58d4b3e1a87220dc0",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			},
+		},
+	}
 }
