@@ -1,4 +1,4 @@
-package tests
+package qbftcomparable
 
 import "github.com/bloxapp/ssv-spec/qbft"
 

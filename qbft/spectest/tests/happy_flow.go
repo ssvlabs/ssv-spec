@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
+	comparable2 "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
@@ -60,7 +61,7 @@ func HappyFlow() *MsgProcessingSpecTest {
 	if err != nil {
 		panic(err.Error())
 	}
-	RootRegister[hex.EncodeToString(r)] = post
+	comparable2.RootRegister[hex.EncodeToString(r)] = post
 
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow",

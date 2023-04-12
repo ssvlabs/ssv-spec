@@ -1,4 +1,4 @@
-package tests
+package ssvcomparable
 
 import (
 	"github.com/bloxapp/ssv-spec/ssv"

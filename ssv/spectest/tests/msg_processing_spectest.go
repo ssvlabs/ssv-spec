@@ -2,6 +2,8 @@ package tests
 
 import (
 	"encoding/hex"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/comparable"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/ssv"
@@ -59,7 +61,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
-		testingutils.PrintDiff(test.Runner, RootRegister[test.PostDutyRunnerStateRoot])
+		comparable2.PrintDiff(test.Runner, ssvcomparable.RootRegister[test.PostDutyRunnerStateRoot])
 		require.Fail(t, "post runner state not equal")
 	}
 }

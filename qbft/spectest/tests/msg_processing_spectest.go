@@ -4,8 +4,10 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft"
+	comparable2 "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	comparable3 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -75,7 +77,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot) {
-		testingutils.PrintDiff(test.Pre.State, RootRegister[test.PostRoot])
+		comparable3.PrintDiff(test.Pre.State, comparable2.RootRegister[test.PostRoot])
 		require.Fail(t, "post state not equal")
 	}
 }
