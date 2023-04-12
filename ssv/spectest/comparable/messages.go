@@ -6,7 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*types.SSVMessage) {
+func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*types.SSVMessage) *ssv.PartialSigContainer {
 	for _, ssvMsg := range messages {
 		if ssvMsg.MsgType != types.SSVPartialSignatureMsgType {
 			continue
@@ -25,4 +25,5 @@ func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*type
 			container.Signatures[root][partialSigMsg.Signer] = partialSigMsg.PartialSignature
 		}
 	}
+	return container
 }
