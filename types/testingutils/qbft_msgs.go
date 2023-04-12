@@ -269,7 +269,7 @@ var TestingCommitMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID)
 var TestingCommitMessageWrongHeight = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, TestingIdentifier, DifferentRoot)
 }
-var TestingCommitMessageWithIdentifierAndFullDataRoot = func(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
+var TestingCommitMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
 		Height:     qbft.FirstHeight,
@@ -288,9 +288,6 @@ var TestingCommitMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id types
 		Round:      qbft.FirstRound,
 		Identifier: identifier,
 		Root:       root,
-
-		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = []byte{}

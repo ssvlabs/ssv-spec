@@ -72,10 +72,7 @@ var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encod
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeContributionDuty,
-	Version: spec2.DataVersionBellatrix,
 	DataSSZ: TestingSyncCommitteeContributionsConsensusDataBytes,
-
-	PreConsensusJustifications: []*types.SignedPartialSignatureMessage{},
 }
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()
 var TestSyncCommitteeContributionConsensusDataRoot = func() [32]byte {
