@@ -10,13 +10,13 @@ func CompareQBFTMessageContainer(source, target *qbft.MsgContainer) []testinguti
 	ret := make([]testingutilscomparable.Difference, 0)
 
 	if len(source.Msgs) != len(target.Msgs) {
-		ret = append(ret, testingutilscomparable.Sprintf("Committee length source/ target %d <---> %d", len(source.Msgs), len(target.Msgs)))
+		ret = append(ret, testingutilscomparable.Sprintf("Committee length", "source %d != target %d", len(source.Msgs), len(target.Msgs)))
 		return ret
 	}
 
 	for round := range source.Msgs {
 		if len(source.Msgs[round]) != len(target.Msgs[round]) {
-			ret = append(ret, testingutilscomparable.Sprintf("Round %d length source/ target %d <---> %d", round, len(source.Msgs), len(target.Msgs)))
+			ret = append(ret, testingutilscomparable.Sprintf(fmt.Sprintf("Round %d length", round), "source %d != target %d", len(source.Msgs), len(target.Msgs)))
 			return ret
 		}
 		for i := range source.Msgs[round] {

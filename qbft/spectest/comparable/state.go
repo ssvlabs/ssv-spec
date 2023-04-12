@@ -14,23 +14,23 @@ func CompareQBFTState(source, target *qbft.State) []testingutilscomparable.Diffe
 	}
 
 	if !bytes.Equal(source.ID, target.ID) {
-		ret = append(ret, testingutilscomparable.Sprintf("ID source/ target %x <---> %x", source.ID, target.ID))
+		ret = append(ret, testingutilscomparable.Sprintf("ID", "source %x != target %x", source.ID, target.ID))
 	}
 
 	if source.Round != target.Round {
-		ret = append(ret, testingutilscomparable.Sprintf("Round source/ target %d <---> %d", source.Round, target.Round))
+		ret = append(ret, testingutilscomparable.Sprintf("Round", "source %d != target %d", source.Round, target.Round))
 	}
 
 	if source.Height != target.Height {
-		ret = append(ret, testingutilscomparable.Sprintf("Height source/ target %d <---> %d", source.Height, target.Height))
+		ret = append(ret, testingutilscomparable.Sprintf("Height", "source %d != target %d", source.Height, target.Height))
 	}
 
 	if source.LastPreparedRound != target.LastPreparedRound {
-		ret = append(ret, testingutilscomparable.Sprintf("LastPreparedRound source/ target %d <---> %d", source.LastPreparedRound, target.LastPreparedRound))
+		ret = append(ret, testingutilscomparable.Sprintf("LastPreparedRound", "source %d != target %d", source.LastPreparedRound, target.LastPreparedRound))
 	}
 
 	if !bytes.Equal(source.LastPreparedValue, target.LastPreparedValue) {
-		ret = append(ret, testingutilscomparable.Sprintf("LastPreparedValue source/ target %x <---> %x", source.LastPreparedValue, target.LastPreparedValue))
+		ret = append(ret, testingutilscomparable.Sprintf("LastPreparedValue", "source %x != target %x", source.LastPreparedValue, target.LastPreparedValue))
 	}
 
 	if diff := testingutilscomparable.NestedCompare("ProposalAcceptedForCurrentRound", CompareQBFTSignedMessage(source.ProposalAcceptedForCurrentRound, target.ProposalAcceptedForCurrentRound)); len(diff) > 0 {
@@ -38,11 +38,11 @@ func CompareQBFTState(source, target *qbft.State) []testingutilscomparable.Diffe
 	}
 
 	if source.Decided != target.Decided {
-		ret = append(ret, testingutilscomparable.Sprintf("Decided source/ target %t <---> %t", source.Decided, target.Decided))
+		ret = append(ret, testingutilscomparable.Sprintf("Decided", "source %t != target %t", source.Decided, target.Decided))
 	}
 
 	if !bytes.Equal(source.DecidedValue, target.DecidedValue) {
-		ret = append(ret, testingutilscomparable.Sprintf("DecidedValue source/ target %x <---> %x", source.DecidedValue, target.DecidedValue))
+		ret = append(ret, testingutilscomparable.Sprintf("DecidedValue", "source %x != target %x", source.DecidedValue, target.DecidedValue))
 	}
 
 	if diff := testingutilscomparable.NestedCompare("ProposeContainer", CompareQBFTMessageContainer(source.ProposeContainer, target.ProposeContainer)); len(diff) > 0 {
@@ -70,7 +70,7 @@ func CompareQBFTState(source, target *qbft.State) []testingutilscomparable.Diffe
 		panic(err.Error())
 	}
 	if !bytes.Equal(r1[:], r2[:]) {
-		ret = append(ret, testingutilscomparable.Sprintf("Root source/ target %x <---> %x", r1, r2))
+		ret = append(ret, testingutilscomparable.Sprintf("Root", "source %x != target %x", r1, r2))
 	}
 
 	return ret
