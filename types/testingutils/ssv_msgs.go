@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"crypto/sha256"
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
@@ -71,9 +72,15 @@ var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encod
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeContributionDuty,
+	Version: spec2.DataVersionBellatrix,
 	DataSSZ: TestingSyncCommitteeContributionsConsensusDataBytes,
+
+	PreConsensusJustifications: []*types.SignedPartialSignatureMessage{},
 }
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()
+var TestSyncCommitteeContributionConsensusDataRoot = func() [32]byte {
+	return sha256.Sum256(TestSyncCommitteeContributionConsensusDataByts)
+}()
 
 var TestConsensusUnkownDutyTypeData = &types.ConsensusData{
 	Duty:    TestingUnknownDutyType,
