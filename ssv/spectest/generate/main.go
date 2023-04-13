@@ -37,10 +37,14 @@ func main() {
 
 func writeJson(data []byte) {
 	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "ssv", "spectest", "generate", "tests.json")
+	path := filepath.Join(basedir, "ssv", "spectest", "generate")
 
-	fmt.Printf("writing spec tests json to: %s\n", path)
-	if err := os.WriteFile(path, data, 0644); err != nil {
+	// try to create directory if it doesn't exist
+	os.Mkdir(path, os.ModeDir)
+
+	file := filepath.Join(path, "tests.json")
+	fmt.Printf("writing spec tests json to: %s\n", file)
+	if err := os.WriteFile(file, data, 0644); err != nil {
 		panic(err.Error())
 	}
 }
