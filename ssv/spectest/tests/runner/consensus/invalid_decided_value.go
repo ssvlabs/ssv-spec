@@ -27,6 +27,8 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 		return byts
 	}
 
+	expectedErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: unknown duty role"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus decided invalid value",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -51,7 +53,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "sync committee",
@@ -68,7 +70,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "668d436823d89c78e929c3b0ab3b76a5f3c2b29ea04333a26722bf6530a90b41",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name:   "aggregator",
@@ -91,7 +93,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "proposer",
@@ -114,7 +116,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -137,7 +139,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 				},
-				ExpectedError: "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "attester",
@@ -154,7 +156,7 @@ func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
 				},
 				PostDutyRunnerStateRoot: "52b2d859ff7ecc6c285412cf64c18df1e0574ce7e2ead7ac8736ce0d43754ae7",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: duty invalid: wrong beacon role type",
+				ExpectedError:           expectedErr,
 			},
 		},
 	}

@@ -46,6 +46,37 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	BeaconRoleType types.BeaconRole
+
+	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
+	highestDecidedSlot spec.Slot
+}
+
+func NewBaseRunner(
+	state *State,
+	share *types.Share,
+	controller *qbft.Controller,
+	beaconNetwork types.BeaconNetwork,
+	beaconRoleType types.BeaconRole,
+	highestDecidedSlot spec.Slot,
+) *BaseRunner {
+	return &BaseRunner{
+		State:              state,
+		Share:              share,
+		QBFTController:     controller,
+		BeaconNetwork:      beaconNetwork,
+		BeaconRoleType:     beaconRoleType,
+		highestDecidedSlot: highestDecidedSlot,
+	}
+}
+
+// SetHighestDecidedSlot set highestDecidedSlot for base runner
+func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
+	b.highestDecidedSlot = slot
+}
+
+// setupForNewDuty is sets the runner for a new duty
+func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
+	b.State = NewRunnerState(b.Share.Quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
@@ -53,7 +84,7 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 	if err := b.canStartNewDuty(); err != nil {
 		return err
 	}
-	b.State = NewRunnerState(b.Share.Quorum, duty)
+	b.baseSetupForNewDuty(duty)
 	return runner.executeDuty(duty)
 }
 
@@ -83,14 +114,19 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 
+	if err := b.processPreConsensusJustification(runner, b.highestDecidedSlot, msg); err != nil {
+		return false, nil, errors.Wrap(err, "invalid pre-consensus justification")
+	}
+
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
 		return false, nil, err
 	}
 
 	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
+	// do not return error if no running duty
 	if !b.hasRunningDuty() {
-		return false, nil, errors.New("no running duty")
+		return false, nil, nil
 	}
 
 	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
@@ -102,6 +138,9 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	if err := decidedValue.Decode(decidedMsg.FullData); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
+
+	// update the highest decided slot
+	b.highestDecidedSlot = decidedValue.Duty.Slot
 
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")

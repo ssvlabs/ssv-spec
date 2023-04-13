@@ -78,6 +78,24 @@ Proposal messages
 var TestingProposalMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
 }
+var TestingProposalMessageWithID = func(sk *bls.SecretKey, id types.OperatorID, msgID types.MessageID) *qbft.SignedMessage {
+	ret := TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
+	ret.Message.Identifier = msgID[:]
+	ret.Signature = SignQBFTMsg(sk, id, &ret.Message).Signature
+	return ret
+}
+var TestingProposalMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: identifier,
+		Root:       sha256.Sum256(fullData),
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = fullData
+	return ret
+}
 var TestingProposalMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, nil, nil)
 }
@@ -98,18 +116,6 @@ var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.Opera
 }
 var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, roundChangeJustification, nil)
-}
-var TestingProposalMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
-	msg := &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
-		Round:      qbft.FirstRound,
-		Identifier: identifier,
-		Root:       sha256.Sum256(fullData),
-	}
-	ret := SignQBFTMsg(sk, id, msg)
-	ret.FullData = fullData
-	return ret
 }
 var TestingProposalMessageWithParams = func(
 	sk *bls.SecretKey,

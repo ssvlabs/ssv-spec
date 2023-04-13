@@ -28,13 +28,15 @@ func NewAttesterRunnner(
 	network Network,
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
+	highestDecidedSlot phase0.Slot,
 ) Runner {
 	return &AttesterRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType: types.BNRoleAttester,
-			BeaconNetwork:  beaconNetwork,
-			Share:          share,
-			QBFTController: qbftController,
+			BeaconRoleType:     types.BNRoleAttester,
+			BeaconNetwork:      beaconNetwork,
+			Share:              share,
+			QBFTController:     qbftController,
+			highestDecidedSlot: highestDecidedSlot,
 		},
 
 		beacon:   beacon,

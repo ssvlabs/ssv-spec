@@ -79,6 +79,8 @@ var AllTests = []SpecTest{
 	futuremsg.InvalidMsg(),
 	futuremsg.UnknownSigner(),
 	futuremsg.WrongSig(),
+	futuremsg.FirstHeightNotStarted(),
+	futuremsg.FirstHeightStarted(),
 
 	startinstance.Valid(),
 	startinstance.EmptyValue(),
