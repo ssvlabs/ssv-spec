@@ -17,6 +17,7 @@ type StateComparison struct {
 	ValidatorRegistration     ssv.Runner
 }
 
+// Register will register state roots with a global registry to be compared against
 func (stateComp *StateComparison) Register() *StateComparison {
 	for _, runner := range []ssv.Runner{
 		stateComp.SyncCommitteeContribution,
