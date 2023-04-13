@@ -117,6 +117,21 @@ var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.Opera
 var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, roundChangeJustification, nil)
 }
+var TestingProposalMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: identifier,
+		Root:       sha256.Sum256(fullData),
+
+		RoundChangeJustification: [][]byte{},
+		PrepareJustification:     [][]byte{},
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = fullData
+	return ret
+}
 var TestingProposalMessageWithParams = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -194,6 +209,21 @@ var TestingPrepareMessageWithFullData = func(sk *bls.SecretKey, id types.Operato
 	ret.FullData = fullData
 	return ret
 }
+var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id types.OperatorID, identifier []byte, root [32]byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.PrepareMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: identifier,
+		Root:       root,
+
+		RoundChangeJustification: [][]byte{},
+		PrepareJustification:     [][]byte{},
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = []byte{}
+	return ret
+}
 var TestingPrepareMessageWithParams = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -267,6 +297,18 @@ var TestingCommitMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id t
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = fullData
+	return ret
+}
+var TestingCommitMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id types.OperatorID, identifier []byte, root [32]byte) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.CommitMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      qbft.FirstRound,
+		Identifier: identifier,
+		Root:       root,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = []byte{}
 	return ret
 }
 var TestingCommitMessageWithParams = func(
