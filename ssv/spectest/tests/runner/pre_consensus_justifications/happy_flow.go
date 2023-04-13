@@ -14,10 +14,6 @@ func getSSZRootNoError(obj ssz.HashRoot) string {
 	return hex.EncodeToString(r[:])
 }
 
-func removePreConsensusMsgs(msgs []*types.SSVMessage, ks *testingutils.TestKeySet) []*types.SSVMessage {
-	return msgs[ks.Threshold:]
-}
-
 // HappyFlow  tests a full flow of an already started duty with pre-consensus justifications
 func HappyFlow() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
