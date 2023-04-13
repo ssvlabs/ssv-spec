@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"runtime"
+	"strings"
 )
 
 //go:generate go run main.go
@@ -35,13 +37,16 @@ func main() {
 }
 
 func writeJson(data []byte) {
-	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "types", "spectest", "generate")
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("no caller info")
+	}
+	basedir = strings.TrimSuffix(basedir, "main.go")
 
 	// try to create directory if it doesn't exist
-	_ = os.Mkdir(path, os.ModeDir)
+	_ = os.Mkdir(basedir, os.ModeDir)
 
-	file := filepath.Join(path, "tests.json")
+	file := filepath.Join(basedir, "tests.json")
 
 	fmt.Printf("writing spec tests json to: %s\n", file)
 	if err := os.WriteFile(file, data, 0644); err != nil {
