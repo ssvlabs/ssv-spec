@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 
 	"github.com/bloxapp/ssv-spec/qbft/spectest"
@@ -36,12 +37,10 @@ func main() {
 
 func writeJson(data []byte) {
 	basedir, _ := os.Getwd()
-	//path := filepath.Join(basedir, "qbft", "spectest", "generate")
-	fileName := "tests.json"
-	fullPath := basedir + "/" + fileName
+	path := filepath.Join(basedir, "qbft", "spectest", "generate", "tests.json")
 
-	fmt.Printf("writing spec tests json to: %s\n", fullPath)
-	if err := os.WriteFile(fullPath, data, 0644); err != nil {
+	fmt.Printf("writing spec tests json to: %s\n", path)
+	if err := os.WriteFile(path, data, 0644); err != nil {
 		panic(err.Error())
 	}
 }

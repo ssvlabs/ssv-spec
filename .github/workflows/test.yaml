@@ -24,5 +24,11 @@ jobs:
       - name: Generate JSONs
         run: make generate-jsons
 
-      - name: Test
-        run: make test
+      - name: Test QBFT
+        run: make test-qbft
+
+       - name: Test SSV
+        run: make test-ssv
+
+      - name: Test Types
+        run: make test-types
