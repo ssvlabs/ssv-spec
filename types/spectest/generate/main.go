@@ -39,7 +39,7 @@ func writeJson(data []byte) {
 	path := filepath.Join(basedir, "types", "spectest", "generate")
 
 	// try to create directory if it doesn't exist
-	os.Mkdir(path, os.ModeDir)
+	_ = os.Mkdir(path, os.ModeDir)
 
 	file := filepath.Join(path, "tests.json")
 
