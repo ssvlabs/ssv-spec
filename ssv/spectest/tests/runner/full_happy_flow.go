@@ -17,6 +17,10 @@ func getSSZRootNoError(obj ssz.HashRoot) string {
 // FullHappyFlow  tests a full runner happy flow
 func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 	ks := testingutils.Testing4SharesSet()
+
+	// register runners and return roots
+	roots := fullHappyFlowStateComparison().Register().Roots()
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "full happy flow",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -25,22 +29,15 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
-					[]*types.SSVMessage{ // pre consensus
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
-					},
-					append(
-						// consensus
-						testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
-						[]*types.SSVMessage{ // post consensus
-							testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-							testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
-							testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
-						}...,
-					)...,
+					// consensus
+					testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
+					[]*types.SSVMessage{ // post consensus
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
+					}...,
 				),
-				PostDutyRunnerStateRoot: "4987127ad389bb9d21500d447686f135a19f59ae10192e82bf052278853ad3d1",
+				PostDutyRunnerStateRoot: roots[0], //"4987127ad389bb9d21500d447686f135a19f59ae10192e82bf052278853ad3d1",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -63,7 +60,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "48c73f57659b69131467ef133ccb35d7de2fe96438d30bfa2b5ea63b19ead011",
+				PostDutyRunnerStateRoot: roots[1], //"48c73f57659b69131467ef133ccb35d7de2fe96438d30bfa2b5ea63b19ead011",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
@@ -90,7 +87,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 						}...,
 					)...,
 				),
-				PostDutyRunnerStateRoot: "298bbb63d87a36eef30926c2c21baad6990db0f8fa03a83ca56b2463c7f0065c",
+				PostDutyRunnerStateRoot: roots[2], //"298bbb63d87a36eef30926c2c21baad6990db0f8fa03a83ca56b2463c7f0065c",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
@@ -111,7 +108,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "76812c0f14ff09067547e9528730749b0c0090d1a4872689a0b8480d7b538884",
+				PostDutyRunnerStateRoot: roots[3], // "76812c0f14ff09067547e9528730749b0c0090d1a4872689a0b8480d7b538884",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
@@ -132,7 +129,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "90755cc41b814519fd9fdd14bc82d239997ba51340c297f25f5f1552f27f66c7",
+				PostDutyRunnerStateRoot: roots[4], // "90755cc41b814519fd9fdd14bc82d239997ba51340c297f25f5f1552f27f66c7",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
@@ -153,7 +150,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: "9d55ff5721b21c5b99dd4b4bacb0acda0b674112fe3cec55cc6aeb04ad5dc2fc",
+				PostDutyRunnerStateRoot: roots[5], // "9d55ff5721b21c5b99dd4b4bacb0acda0b674112fe3cec55cc6aeb04ad5dc2fc",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},
@@ -170,7 +167,7 @@ func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 				},
-				PostDutyRunnerStateRoot: "f36c8b537afaba0894dbc8c87cb94466d8ac2623e9283f1c584e3d544b5f2b88",
+				PostDutyRunnerStateRoot: roots[6], // "f36c8b537afaba0894dbc8c87cb94466d8ac2623e9283f1c584e3d544b5f2b88",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
