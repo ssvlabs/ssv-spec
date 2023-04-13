@@ -27,7 +27,7 @@ jobs:
       - name: Test QBFT
         run: make test-qbft
 
-       - name: Test SSV
+      - name: Test SSV
         run: make test-ssv
 
       - name: Test Types
