@@ -27,10 +27,9 @@ func TestAll(t *testing.T) {
 
 func TestJson(t *testing.T) {
 	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate")
-	fileName := "tests.json"
+	path := filepath.Join(basedir, "generate", "tests.json")
 	untypedTests := map[string]interface{}{}
-	byteValue, err := os.ReadFile(path + "/" + fileName)
+	byteValue, err := os.ReadFile(path)
 	if err != nil {
 		panic(err.Error())
 	}
