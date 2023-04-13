@@ -62,7 +62,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
 		comparable2.PrintDiff(test.Runner, ssvcomparable.RootRegister[test.PostDutyRunnerStateRoot])
-		require.Fail(t, "post runner state not equal")
+		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
 	}
 }
 
