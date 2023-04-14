@@ -17,7 +17,7 @@ func InvalidFullData() tests.SpecTest {
 		[]types.OperatorID{1, 2, 3},
 		10,
 	)
-	msg.FullData = []byte{}
+	msg.FullData = []byte("invalid")
 
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid full data",

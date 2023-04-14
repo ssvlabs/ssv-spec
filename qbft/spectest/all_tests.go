@@ -14,6 +14,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/startinstance"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
+	"testing"
 )
 
 var AllTests = []tests.TestF{
