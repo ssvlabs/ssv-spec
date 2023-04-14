@@ -7,7 +7,7 @@ import (
 )
 
 // NoRunningDuty tests a valid partial pre consensus msg before duty starts
-func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
+func NoRunningDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus no running duty",

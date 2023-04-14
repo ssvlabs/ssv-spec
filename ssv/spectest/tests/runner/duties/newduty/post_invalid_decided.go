@@ -4,12 +4,13 @@ import (
 	"crypto/sha256"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // PostInvalidDecided tests starting a new duty after prev was decided with an invalid decided value
-func PostInvalidDecided() *MultiStartNewRunnerDutySpecTest {
+func PostInvalidDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	consensusDataByts := func(role types.BeaconRole) []byte {

@@ -8,7 +8,7 @@ import (
 )
 
 // TooFewRoots tests a valid SignedPartialSignatureMessage with too few roots
-func TooFewRoots() *tests.MultiMsgProcessingSpecTest {
+func TooFewRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: SignedPartialSignatureMessage invalid: no PartialSignatureMessages messages"
 	return &tests.MultiMsgProcessingSpecTest{

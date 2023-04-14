@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidMessageSlot tests a valid SignedPartialSignatureMessage with an invalid msg slot
-func InvalidMessageSlot() *tests.MultiMsgProcessingSpecTest {
+func InvalidMessageSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	invalidateSlot := func(msg *types.SignedPartialSignatureMessage) *types.SignedPartialSignatureMessage {

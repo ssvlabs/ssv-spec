@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidConsensusData tests consensusData.Validate() != nil
-func InvalidConsensusData() *tests.MultiMsgProcessingSpecTest {
+func InvalidConsensusData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	invalidateMsgDataF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

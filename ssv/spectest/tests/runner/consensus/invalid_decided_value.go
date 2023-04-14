@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidDecidedValue tests an invalid decided value
-func InvalidDecidedValue() *tests.MultiMsgProcessingSpecTest {
+func InvalidDecidedValue() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{

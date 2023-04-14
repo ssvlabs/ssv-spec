@@ -15,7 +15,7 @@ type MsgSpecTest struct {
 	ExpectedError   string
 }
 
-func (test *MsgSpecTest) Run(t *testing.T) {
+func (test tests.SpecTest) Run(t *testing.T) {
 	var lastErr error
 
 	for i, msg := range test.Messages {
@@ -45,6 +45,6 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 	}
 }
 
-func (test *MsgSpecTest) TestName() string {
+func (test tests.SpecTest) TestName() string {
 	return "qbft message " + test.Name
 }

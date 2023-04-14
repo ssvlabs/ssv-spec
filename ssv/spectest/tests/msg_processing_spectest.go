@@ -61,8 +61,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
-		comparable2.PrintDiff(test.Runner, ssvcomparable.RootRegister[test.PostDutyRunnerStateRoot])
-		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
+		msg := comparable2.PrintDiff(test.Runner, ssvcomparable.RootRegister[test.PostDutyRunnerStateRoot])
+		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), msg)
 	}
 }
 

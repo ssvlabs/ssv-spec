@@ -2,13 +2,14 @@ package valcheckduty
 
 import (
 	"encoding/json"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // FarFutureDutySlot tests duty.Slot higher than expected
-func FarFutureDutySlot() *valcheck.MultiSpecTest {
+func FarFutureDutySlot() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
 		cdCopy := &types.ConsensusData{}
 

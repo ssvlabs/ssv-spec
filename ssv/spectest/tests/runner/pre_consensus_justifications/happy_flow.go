@@ -15,7 +15,7 @@ func getSSZRootNoError(obj ssz.HashRoot) string {
 }
 
 // HappyFlow  tests a full flow of an already started duty with pre-consensus justifications
-func HappyFlow() *tests.MultiMsgProcessingSpecTest {
+func HappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	consensusMsgs := func(cd *types.ConsensusData, role types.BeaconRole) []*types.SSVMessage {

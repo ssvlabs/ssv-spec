@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidData tests error decoding consensusData
-func InvalidData() *tests.MultiMsgProcessingSpecTest {
+func InvalidData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	invalidateMsgDataF := func(id []byte) *qbft.SignedMessage {

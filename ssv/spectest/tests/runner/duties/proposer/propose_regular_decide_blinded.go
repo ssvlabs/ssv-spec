@@ -8,7 +8,7 @@ import (
 )
 
 // ProposeRegularBlockDecidedBlinded tests proposing a regular block but the decided block is a blinded block. Full flow
-func ProposeRegularBlockDecidedBlinded() *tests.MsgProcessingSpecTest {
+func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MsgProcessingSpecTest{
 		Name:   "propose regular decide blinded",

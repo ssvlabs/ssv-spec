@@ -8,7 +8,7 @@ import (
 )
 
 // FutureMessage tests a valid proposal future msg
-func FutureMessage() *tests.MultiMsgProcessingSpecTest {
+func FutureMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	futureMsgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
 		fullData, _ := obj.Encode()

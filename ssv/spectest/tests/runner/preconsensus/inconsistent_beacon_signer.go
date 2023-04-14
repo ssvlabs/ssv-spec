@@ -7,7 +7,7 @@ import (
 )
 
 // InconsistentBeaconSigner tests a beacon signer != SignedPartialSignatureMessage.signer
-func InconsistentBeaconSigner() *tests.MultiMsgProcessingSpecTest {
+func InconsistentBeaconSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus inconsistent beacon signer",

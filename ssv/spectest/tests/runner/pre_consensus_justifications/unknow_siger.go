@@ -8,7 +8,7 @@ import (
 )
 
 // UnknownSigner tests an invalid pre-consensus justification message signature (unknown signer)
-func UnknownSigner() *tests.MultiMsgProcessingSpecTest {
+func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

@@ -9,7 +9,7 @@ import (
 )
 
 // PastMessage tests a valid proposal past msg
-func PastMessage() *tests.MultiMsgProcessingSpecTest {
+func PastMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	bumpHeight := func(r ssv.Runner) ssv.Runner {

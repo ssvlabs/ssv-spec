@@ -8,7 +8,7 @@ import (
 )
 
 // ValidFirstHeight tests a special case for first height which didn't start
-func ValidFirstHeight() *tests.MultiMsgProcessingSpecTest {
+func ValidFirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

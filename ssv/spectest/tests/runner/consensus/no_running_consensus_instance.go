@@ -9,7 +9,7 @@ import (
 
 // NoRunningConsensusInstance tests a valid proposal msg before consensus instance starts
 // with pre-consensus justifications there will always be an instance, it's either a future msg or has pre-consensus justification (which will start an instance)
-func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
+func NoRunningConsensusInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus no running consensus instance",

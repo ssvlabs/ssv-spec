@@ -7,7 +7,7 @@ import (
 )
 
 // ValidMessage tests a valid consensus message
-func ValidMessage() *tests.MultiMsgProcessingSpecTest {
+func ValidMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid message",

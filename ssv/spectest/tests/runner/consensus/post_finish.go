@@ -10,7 +10,7 @@ import (
 )
 
 // PostFinish tests a valid commit msg after runner finished
-func PostFinish() *tests.MultiMsgProcessingSpecTest {
+func PostFinish() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error

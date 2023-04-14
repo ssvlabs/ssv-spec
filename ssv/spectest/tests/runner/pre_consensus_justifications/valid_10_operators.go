@@ -8,7 +8,7 @@ import (
 )
 
 // Valid10Operators tests a 10 operator valid pre-consensus justification
-func Valid10Operators() *tests.MultiMsgProcessingSpecTest {
+func Valid10Operators() tests.SpecTest {
 	ks := testingutils.Testing10SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

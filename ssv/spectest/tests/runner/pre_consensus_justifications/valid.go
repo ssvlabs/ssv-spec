@@ -21,7 +21,7 @@ var decideFirstHeight = func(r ssv.Runner) ssv.Runner {
 }
 
 // Valid tests a valid pre-consensus justification
-func Valid() *tests.MultiMsgProcessingSpecTest {
+func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

@@ -8,7 +8,7 @@ import (
 )
 
 // FutureHeight tests justification with height > current height + 1 (not valid)
-func FutureHeight() *tests.MultiMsgProcessingSpecTest {
+func FutureHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

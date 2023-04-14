@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidJustification tests an invalid pre-consensus justification
-func InvalidJustification() *tests.MultiMsgProcessingSpecTest {
+func InvalidJustification() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// setZeroSignerAndPrepareMsg will set justification signer to 0 to trigger msg.validate() != nil

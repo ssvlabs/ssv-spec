@@ -8,7 +8,7 @@ import (
 )
 
 // ValidNoRunningDuty tests a valid pre-consensus justification for a runner that has no running duty
-func ValidNoRunningDuty() *tests.MultiMsgProcessingSpecTest {
+func ValidNoRunningDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

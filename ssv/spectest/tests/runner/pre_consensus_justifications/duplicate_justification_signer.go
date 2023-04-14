@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateJustificationSigner tests a duplicate pre-consensus justification signer (error)
-func DuplicateJustificationSigner() *tests.MultiMsgProcessingSpecTest {
+func DuplicateJustificationSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// duplicateSignerAndPrepareMsg will duplicate a justification signer

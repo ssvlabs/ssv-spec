@@ -7,7 +7,7 @@ import (
 )
 
 // TooManyRoots tests too many expected roots
-func TooManyRoots() *tests.MultiMsgProcessingSpecTest {
+func TooManyRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus too many roots",

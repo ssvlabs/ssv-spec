@@ -2,13 +2,14 @@ package valcheckduty
 
 import (
 	"encoding/json"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // WrongValidatorIndex tests duty.ValidatorIndex wrong
-func WrongValidatorIndex() *valcheck.MultiSpecTest {
+func WrongValidatorIndex() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
 		cdCopy := &types.ConsensusData{}
 		b, _ := json.Marshal(cd)

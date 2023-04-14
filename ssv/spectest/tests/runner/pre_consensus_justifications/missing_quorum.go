@@ -8,7 +8,7 @@ import (
 )
 
 // MissingQuorum tests missing quorum pre-consensus justification for relevant duties
-func MissingQuorum() *tests.MultiMsgProcessingSpecTest {
+func MissingQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

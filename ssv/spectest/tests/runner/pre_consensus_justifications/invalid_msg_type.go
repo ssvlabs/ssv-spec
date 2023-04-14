@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidMsgType tests justification for non proposal/round change msg
-func InvalidMsgType() *tests.MultiMsgProcessingSpecTest {
+func InvalidMsgType() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

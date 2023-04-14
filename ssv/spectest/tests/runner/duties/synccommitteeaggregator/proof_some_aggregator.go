@@ -2,12 +2,13 @@ package synccommitteeaggregator
 
 import (
 	"encoding/hex"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // SomeAggregatorQuorum tests a quorum of selection proofs of which some are aggregator
-func SomeAggregatorQuorum() *SyncCommitteeAggregatorProofSpecTest {
+func SomeAggregatorQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &SyncCommitteeAggregatorProofSpecTest{
 		Name: "sync committee aggregator some are aggregators",

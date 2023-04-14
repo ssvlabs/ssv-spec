@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateRoots tests an invalid pre-consensus justification due to duplicate roots signed by same signer
-func DuplicateRoots() *tests.MultiMsgProcessingSpecTest {
+func DuplicateRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// duplicateRootsAndPrepareMsg will duplicate signing roots for justifications with more than 1 root

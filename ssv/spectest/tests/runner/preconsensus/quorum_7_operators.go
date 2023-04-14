@@ -7,7 +7,7 @@ import (
 )
 
 // Quorum7Operators  tests a quorum of valid SignedPartialSignatureMessage (7 operators)
-func Quorum7Operators() *tests.MultiMsgProcessingSpecTest {
+func Quorum7Operators() tests.SpecTest {
 	ks := testingutils.Testing7SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus quorum 7 operators",

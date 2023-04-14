@@ -8,7 +8,7 @@ import (
 )
 
 // ValidRoundChangeMsg tests a valid pre-consensus justification for a round change message
-func ValidRoundChangeMsg() *tests.MultiMsgProcessingSpecTest {
+func ValidRoundChangeMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

@@ -8,7 +8,7 @@ import (
 )
 
 // InconsistentRoots tests an invalid pre-consensus justification due to inconsistent roots
-func InconsistentRoots() *tests.MultiMsgProcessingSpecTest {
+func InconsistentRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// changeRootsAndPrepareMsg will change signing roots

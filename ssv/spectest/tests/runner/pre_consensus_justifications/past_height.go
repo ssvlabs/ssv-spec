@@ -8,7 +8,7 @@ import (
 )
 
 // PastHeight tests justification with height <= current height (not valid)
-func PastHeight() *tests.MultiMsgProcessingSpecTest {
+func PastHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

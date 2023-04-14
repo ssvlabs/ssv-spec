@@ -15,7 +15,7 @@ func getSSZRootNoError(obj ssz.HashRoot) string {
 }
 
 // FullHappyFlow  tests a full runner happy flow
-func FullHappyFlow() *tests.MultiMsgProcessingSpecTest {
+func FullHappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// register runners and return roots

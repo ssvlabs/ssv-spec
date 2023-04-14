@@ -7,7 +7,7 @@ import (
 )
 
 // UnorderedExpectedRoots tests expected roots to match but out of order, should return error
-func UnorderedExpectedRoots() *tests.MultiMsgProcessingSpecTest {
+func UnorderedExpectedRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus unordered expected roots",

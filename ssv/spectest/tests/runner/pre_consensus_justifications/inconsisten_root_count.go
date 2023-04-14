@@ -8,7 +8,7 @@ import (
 )
 
 // InconsistentRootCount tests an invalid pre-consensus justification due to inconsistent root count
-func InconsistentRootCount() *tests.MultiMsgProcessingSpecTest {
+func InconsistentRootCount() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// changeRootCountAndPrepareMsg will change signing root count

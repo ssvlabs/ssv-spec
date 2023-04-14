@@ -8,7 +8,7 @@ import (
 )
 
 // WrongBeaconRole tests wrong ConsensusData.Duty.Type != runner.BeaconRoleType
-func WrongBeaconRole() *tests.MultiMsgProcessingSpecTest {
+func WrongBeaconRole() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

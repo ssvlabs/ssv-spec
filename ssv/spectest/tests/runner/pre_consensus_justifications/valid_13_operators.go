@@ -8,7 +8,7 @@ import (
 )
 
 // Valid13Operators tests a 13 operator valid pre-consensus justification
-func Valid13Operators() *tests.MultiMsgProcessingSpecTest {
+func Valid13Operators() tests.SpecTest {
 	ks := testingutils.Testing13SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

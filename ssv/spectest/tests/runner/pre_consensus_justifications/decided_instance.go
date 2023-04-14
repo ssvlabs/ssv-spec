@@ -8,7 +8,7 @@ import (
 )
 
 // DecidedInstance tests a valid pre-consensus justification for a decided instance
-func DecidedInstance() *tests.MultiMsgProcessingSpecTest {
+func DecidedInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

@@ -9,7 +9,7 @@ import (
 )
 
 // PastSlot tests justification with highestDecidedDutySlot >= data.Duty.Slot (not valid)
-func PastSlot() *tests.MultiMsgProcessingSpecTest {
+func PastSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	bumpHighestDecidedSlot := func(r ssv.Runner) ssv.Runner {

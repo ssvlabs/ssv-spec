@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidSlot tests an invalid pre-consensus justification message slot
-func InvalidSlot() *tests.MultiMsgProcessingSpecTest {
+func InvalidSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
