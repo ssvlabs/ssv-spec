@@ -7,7 +7,7 @@ import (
 )
 
 // SingleConsensusMsg tests process msg of a single msg
-func SingleConsensusMsg() *tests.ControllerSpecTest {
+func SingleConsensusMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "single consensus msg",

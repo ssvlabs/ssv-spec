@@ -8,7 +8,7 @@ import (
 )
 
 // WrongSignature tests a single proposal received with a wrong signature
-func WrongSignature() *tests.MsgProcessingSpecTest {
+func WrongSignature() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{

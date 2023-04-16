@@ -9,7 +9,7 @@ import (
 )
 
 // DuplicateMsg tests a duplicate decided msg processing
-func DuplicateMsg() *tests.ControllerSpecTest {
+func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide duplicate msg",

@@ -8,7 +8,7 @@ import (
 )
 
 // SecondProposalForRound tests a second proposal (by same signer) for current round. state.ProposalAcceptedForCurrentRound != nil && signedProposal.Message.Round == state.Round
-func SecondProposalForRound() *tests.MsgProcessingSpecTest {
+func SecondProposalForRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{

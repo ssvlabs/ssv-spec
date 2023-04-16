@@ -9,7 +9,7 @@ import (
 )
 
 // SignedMsgDuplicateSigners tests SignedMessage with duplicate signers
-func SignedMsgDuplicateSigners() *tests.MsgSpecTest {
+func SignedMsgDuplicateSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingCommitMultiSignerMessage(

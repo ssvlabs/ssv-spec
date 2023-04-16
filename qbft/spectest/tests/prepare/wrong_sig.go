@@ -8,7 +8,7 @@ import (
 )
 
 // WrongSignature tests a single prepare received with a wrong signature
-func WrongSignature() *tests.MsgProcessingSpecTest {
+func WrongSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

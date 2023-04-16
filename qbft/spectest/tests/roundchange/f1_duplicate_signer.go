@@ -8,7 +8,7 @@ import (
 )
 
 // F1DuplicateSigner tests not accepting f+1 speed for duplicate signer
-func F1DuplicateSigner() *tests.MsgProcessingSpecTest {
+func F1DuplicateSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

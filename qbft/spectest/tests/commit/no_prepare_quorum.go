@@ -7,7 +7,7 @@ import (
 )
 
 // NoPrepareQuorum tests a commit msg received without a previous prepare quorum
-func NoPrepareQuorum() *tests.MsgProcessingSpecTest {
+func NoPrepareQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

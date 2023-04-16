@@ -5,7 +5,7 @@ import (
 )
 
 // CreateProposal tests creating a proposal msg, not previously prepared
-func CreateProposal() *tests.CreateMsgSpecTest {
+func CreateProposal() tests.SpecTest {
 	return &tests.CreateMsgSpecTest{
 		CreateType:   tests.CreateProposal,
 		Name:         "create proposal",

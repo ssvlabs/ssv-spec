@@ -2,12 +2,13 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // DuplicateSigner tests multiple future msg for the same signer (doesn't trigger futuremsg)
-func DuplicateSigner() *ControllerSyncSpecTest {
+func DuplicateSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 

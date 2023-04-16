@@ -9,7 +9,7 @@ import (
 )
 
 // BroadcastedDecided tests broadcasting decided
-func BroadcastedDecided() *tests.ControllerSpecTest {
+func BroadcastedDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "broadcast decided",

@@ -8,7 +8,7 @@ import (
 )
 
 // AfterProposal tests a round change msg after prev quorum + received proposal
-func AfterProposal() *tests.MsgProcessingSpecTest {
+func AfterProposal() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2

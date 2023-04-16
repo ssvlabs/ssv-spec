@@ -8,7 +8,7 @@ import (
 )
 
 // PreparedPreviouslyNoPrepareJustificationQuorum tests a proposal for > 1 round, prepared previously but without quorum of prepared msgs justification
-func PreparedPreviouslyNoPrepareJustificationQuorum() *tests.MsgProcessingSpecTest {
+func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

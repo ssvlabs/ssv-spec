@@ -9,7 +9,7 @@ import (
 )
 
 // FullDecided tests process msg and first time deciding
-func FullDecided() *tests.ControllerSpecTest {
+func FullDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "full decided",

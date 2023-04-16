@@ -8,7 +8,7 @@ import (
 )
 
 // SignedMessageEncoding tests encoding SignedMessage
-func SignedMessageEncoding() *tests.MsgSpecTest {
+func SignedMessageEncoding() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingProposalMessageWithParams(
 		ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingQBFTRootData,

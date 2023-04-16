@@ -7,7 +7,7 @@ import (
 )
 
 // WrongData1 tests commit msg with data != acceptedProposalData.Data
-func WrongData1() *tests.MsgProcessingSpecTest {
+func WrongData1() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

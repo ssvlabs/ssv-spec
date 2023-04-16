@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidFullData tests signed proposal with an invalid full data field (H(full data) != root)
-func InvalidFullData() *tests.MsgProcessingSpecTest {
+func InvalidFullData() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))

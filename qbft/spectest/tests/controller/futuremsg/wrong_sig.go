@@ -2,12 +2,13 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // WrongSig tests future msg with invalid sig
-func WrongSig() *ControllerSyncSpecTest {
+func WrongSig() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 

@@ -8,7 +8,7 @@ import (
 )
 
 // F1DifferentFutureRoundsNotPrepared tests f+1 speedup (not prev prepared)
-func F1DifferentFutureRoundsNotPrepared() *tests.MsgProcessingSpecTest {
+func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

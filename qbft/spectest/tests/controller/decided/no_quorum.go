@@ -9,7 +9,7 @@ import (
 )
 
 // NoQuorum tests decided msg with < unique 2f+1 signers
-func NoQuorum() *tests.ControllerSpecTest {
+func NoQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.ControllerSpecTest{

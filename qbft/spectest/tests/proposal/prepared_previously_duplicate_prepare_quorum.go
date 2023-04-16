@@ -8,7 +8,7 @@ import (
 )
 
 // PreparedPreviouslyDuplicatePrepareQuorum tests a proposal for > 1 round, prepared previously with quorum of prepared msgs (2 of which are duplicates)
-func PreparedPreviouslyDuplicatePrepareQuorum() *tests.MsgProcessingSpecTest {
+func PreparedPreviouslyDuplicatePrepareQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

@@ -8,7 +8,7 @@ import (
 )
 
 // NoPreviousProposal tests prepare msg without receiving a previous proposal state.ProposalAcceptedForCurrentRound == nil
-func NoPreviousProposal() *tests.MsgProcessingSpecTest {
+func NoPreviousProposal() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 

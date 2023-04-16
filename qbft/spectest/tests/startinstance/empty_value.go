@@ -5,7 +5,7 @@ import (
 )
 
 // EmptyValue tests a starting an instance for an empty value (not passing value check)
-func EmptyValue() *tests.ControllerSpecTest {
+func EmptyValue() tests.SpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "start instance empty value",
 		RunInstanceData: []*tests.RunInstanceData{

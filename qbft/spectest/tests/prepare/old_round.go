@@ -8,7 +8,7 @@ import (
 )
 
 // OldRound tests prepare for signedProposal.Message.Round < state.Round
-func OldRound() *tests.MsgProcessingSpecTest {
+func OldRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

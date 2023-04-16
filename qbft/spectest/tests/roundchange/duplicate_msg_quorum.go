@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateMsgQuorum tests a duplicate rc msg for signer 1, after which enough msgs for quorum
-func DuplicateMsgQuorum() *tests.MsgProcessingSpecTest {
+func DuplicateMsgQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

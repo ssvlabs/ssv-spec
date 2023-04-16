@@ -7,7 +7,7 @@ import (
 )
 
 // WrongData2 tests a single commit received with a different commit data than the prepared data
-func WrongData2() *tests.MsgProcessingSpecTest {
+func WrongData2() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

@@ -9,7 +9,7 @@ import (
 )
 
 // LateRoundChangePastInstance tests process round change msg for a previously decided instance
-func LateRoundChangePastInstance() *tests.ControllerSpecTest {
+func LateRoundChangePastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,

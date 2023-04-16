@@ -8,7 +8,7 @@ import (
 )
 
 // NoRCJustification tests a proposal for > 1 round, not prepared previously but without quorum of round change msgs justification
-func NoRCJustification() *tests.MsgProcessingSpecTest {
+func NoRCJustification() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 
 	ks := testingutils.Testing4SharesSet()

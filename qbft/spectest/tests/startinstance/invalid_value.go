@@ -6,7 +6,7 @@ import (
 )
 
 // InvalidValue tests a starting an instance for an invalid value (not passing value check)
-func InvalidValue() *tests.ControllerSpecTest {
+func InvalidValue() tests.SpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "start instance invalid value",
 		RunInstanceData: []*tests.RunInstanceData{

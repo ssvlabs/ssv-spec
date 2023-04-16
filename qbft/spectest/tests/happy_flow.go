@@ -7,10 +7,10 @@ import (
 )
 
 // HappyFlow tests a simple full happy flow until decided
-func HappyFlow() *MsgProcessingSpecTest {
+func HappyFlow() SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	
+
 	return &MsgProcessingSpecTest{
 		Name:     "happy flow",
 		Pre:      pre,

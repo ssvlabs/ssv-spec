@@ -9,7 +9,7 @@ import (
 )
 
 // CurrentInstanceFutureRound tests a decided msg received for current running instance for a future round
-func CurrentInstanceFutureRound() *tests.ControllerSpecTest {
+func CurrentInstanceFutureRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide current instance future round",

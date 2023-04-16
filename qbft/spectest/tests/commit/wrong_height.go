@@ -7,7 +7,7 @@ import (
 )
 
 // WrongHeight tests a commit msg received with the wrong height
-func WrongHeight() *tests.MsgProcessingSpecTest {
+func WrongHeight() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

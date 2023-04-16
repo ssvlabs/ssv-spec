@@ -3,7 +3,7 @@ package messages
 import "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 
 // CreateRoundChange tests creating a round change msg, not previously prepared
-func CreateRoundChange() *tests.CreateMsgSpecTest {
+func CreateRoundChange() tests.SpecTest {
 	return &tests.CreateMsgSpecTest{
 		CreateType:   tests.CreateRoundChange,
 		Name:         "create round change",

@@ -5,7 +5,7 @@ import (
 )
 
 // InvalidValueCheck tests a proposal that doesn't pass value check
-func InvalidValueCheck() *tests.MsgProcessingSpecTest {
+func InvalidValueCheck() tests.SpecTest {
 	panic("implement")
 
 	// TODO: implement passing invalid value

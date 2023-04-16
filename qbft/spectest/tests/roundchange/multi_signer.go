@@ -9,7 +9,7 @@ import (
 )
 
 // MultiSigner tests a round change msg with multiple signers
-func MultiSigner() *tests.MsgProcessingSpecTest {
+func MultiSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

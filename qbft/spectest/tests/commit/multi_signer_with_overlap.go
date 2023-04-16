@@ -9,7 +9,7 @@ import (
 )
 
 // MultiSignerWithOverlap tests a multi signer commit msg which does overlap previous valid commit signers
-func MultiSignerWithOverlap() *tests.MsgProcessingSpecTest {
+func MultiSignerWithOverlap() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

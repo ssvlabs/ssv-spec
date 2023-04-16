@@ -9,7 +9,7 @@ import (
 )
 
 // LateProposal tests process late proposal msg for an instance which just decided
-func LateProposal() *tests.ControllerSpecTest {
+func LateProposal() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,

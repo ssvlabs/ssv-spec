@@ -7,7 +7,7 @@ import (
 )
 
 // TenOperators tests a simple full happy flow until decided
-func TenOperators() *MsgProcessingSpecTest {
+func TenOperators() SpecTest {
 	pre := testingutils.TenOperatorsInstance()
 	ks := testingutils.Testing10SharesSet()
 

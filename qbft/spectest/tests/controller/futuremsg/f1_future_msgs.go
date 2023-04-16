@@ -2,12 +2,13 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // F1FutureMsgs tests a f+1 future msgs that trigger decided sync
-func F1FutureMsgs() *ControllerSyncSpecTest {
+func F1FutureMsgs() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 

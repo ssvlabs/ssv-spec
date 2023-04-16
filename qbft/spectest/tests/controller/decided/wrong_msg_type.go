@@ -9,7 +9,7 @@ import (
 )
 
 // WrongMsgType tests a non commit msg with 2f+1 signers
-func WrongMsgType() *tests.ControllerSpecTest {
+func WrongMsgType() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide wrong msg type",

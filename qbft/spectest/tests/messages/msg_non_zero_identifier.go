@@ -8,7 +8,7 @@ import (
 )
 
 // MsgNonZeroIdentifier tests Message with len(Identifier) == 0
-func MsgNonZeroIdentifier() *tests.MsgSpecTest {
+func MsgNonZeroIdentifier() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{

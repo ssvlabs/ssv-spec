@@ -8,7 +8,7 @@ import (
 )
 
 // QuorumNotPrepared tests a round change quorum for non-prepared state
-func QuorumNotPrepared() *tests.MsgProcessingSpecTest {
+func QuorumNotPrepared() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

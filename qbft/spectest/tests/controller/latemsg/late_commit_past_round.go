@@ -9,7 +9,7 @@ import (
 )
 
 // LateCommitPastRound tests process late commit msg for an instance which just decided for a round < decided round
-func LateCommitPastRound() *tests.ControllerSpecTest {
+func LateCommitPastRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	rcMsgs := []*qbft.SignedMessage{

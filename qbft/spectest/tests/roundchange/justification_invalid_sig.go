@@ -8,7 +8,7 @@ import (
 )
 
 // JustificationInvalidSig tests a single prepare justification msg with wrong signature
-func JustificationInvalidSig() *tests.MsgProcessingSpecTest {
+func JustificationInvalidSig() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

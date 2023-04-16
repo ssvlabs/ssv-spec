@@ -9,7 +9,7 @@ import (
 )
 
 // DuplicateSigners tests a decided msg with duplicate signers
-func DuplicateSigners() *tests.ControllerSpecTest {
+func DuplicateSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, 10)

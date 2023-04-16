@@ -9,7 +9,7 @@ import (
 )
 
 // LatePrepare tests process late prepare msg for an instance which just decided
-func LatePrepare() *tests.ControllerSpecTest {
+func LatePrepare() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,

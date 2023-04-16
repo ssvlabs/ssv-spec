@@ -8,7 +8,7 @@ import (
 )
 
 // JustificationNoQuorum tests justifications with no quorum
-func JustificationNoQuorum() *tests.MsgProcessingSpecTest {
+func JustificationNoQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

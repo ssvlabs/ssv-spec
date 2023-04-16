@@ -8,7 +8,7 @@ import (
 )
 
 // WrongProposer tests a proposal by the wrong proposer
-func WrongProposer() *tests.MsgProcessingSpecTest {
+func WrongProposer() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{

@@ -9,7 +9,7 @@ import (
 )
 
 // NoInstanceRunning tests a process msg for height in which there is no running instance
-func NoInstanceRunning() *tests.ControllerSpecTest {
+func NoInstanceRunning() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "no instance running",

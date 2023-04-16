@@ -9,7 +9,7 @@ import (
 )
 
 // UnknownSigner tests a decided msg with an unknown signer
-func UnknownSigner() *tests.ControllerSpecTest {
+func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide unknown signer",

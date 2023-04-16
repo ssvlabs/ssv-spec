@@ -17,7 +17,9 @@ import (
 )
 
 func TestAll(t *testing.T) {
-	for _, test := range AllTests {
+	t.Parallel()
+	for _, testF := range AllTests {
+		test := testF()
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.Run(t)
 		})
@@ -37,7 +39,7 @@ func TestJson(t *testing.T) {
 		panic(err.Error())
 	}
 
-	tests := make(map[string]SpecTest)
+	tests := make(map[string]tests2.SpecTest)
 	for name, test := range untypedTests {
 		testName := test.(map[string]interface{})["Name"].(string)
 		t.Run(testName, func(t *testing.T) {

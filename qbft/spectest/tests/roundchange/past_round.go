@@ -8,7 +8,7 @@ import (
 )
 
 // PastRound tests a round change msg with past round
-func PastRound() *tests.MsgProcessingSpecTest {
+func PastRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 50
 	ks := testingutils.Testing4SharesSet()

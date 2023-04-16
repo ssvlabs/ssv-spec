@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidIdentifier tests a process msg with the wrong identifier
-func InvalidIdentifier() *tests.ControllerSpecTest {
+func InvalidIdentifier() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	invalidPK := make([]byte, 32)

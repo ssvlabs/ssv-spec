@@ -8,7 +8,7 @@ import (
 )
 
 // FutureRound tests prepare for signedProposal.Message.Round > state.Round
-func FutureRound() *tests.MsgProcessingSpecTest {
+func FutureRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

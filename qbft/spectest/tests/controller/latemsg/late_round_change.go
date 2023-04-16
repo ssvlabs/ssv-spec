@@ -9,7 +9,7 @@ import (
 )
 
 // LateRoundChange tests process late round change msg for an instance which just decided
-func LateRoundChange() *tests.ControllerSpecTest {
+func LateRoundChange() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,

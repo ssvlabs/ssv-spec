@@ -9,7 +9,7 @@ import (
 )
 
 // DuplicateSigners tests a multi signer commit msg with duplicate signers
-func DuplicateSigners() *tests.MsgProcessingSpecTest {
+func DuplicateSigners() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

@@ -7,7 +7,7 @@ import (
 )
 
 // MsgError tests a process msg returning an error
-func MsgError() *tests.ControllerSpecTest {
+func MsgError() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.ControllerSpecTest{

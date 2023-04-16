@@ -9,7 +9,7 @@ import (
 )
 
 // SignedMessageSigner0 tests SignedMessage signer == 0
-func SignedMessageSigner0() *tests.MsgSpecTest {
+func SignedMessageSigner0() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingCommitMultiSignerMessage(

@@ -8,7 +8,7 @@ import (
 )
 
 // JustificationDuplicateMsg tests a duplicate justification msg which shouldn't result in a justification quorum
-func JustificationDuplicateMsg() *tests.MsgProcessingSpecTest {
+func JustificationDuplicateMsg() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
