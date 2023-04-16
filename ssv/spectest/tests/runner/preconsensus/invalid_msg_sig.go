@@ -7,7 +7,7 @@ import (
 )
 
 // InvalidMessageSignature tests SignedPartialSignatureMessage signature invalid
-func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
+func InvalidMessageSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus invalid msg signature",

@@ -1,13 +1,14 @@
 package valcheckduty
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // WrongDutyType tests duty.Type not attester
-func WrongDutyType() *valcheck.MultiSpecTest {
+func WrongDutyType() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
 		input, _ := cd.Encode()
 		return input

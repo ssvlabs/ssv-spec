@@ -1,11 +1,12 @@
 package messages
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
 // EncodingAndRoot tests SignedPartialSignatureMessage encoding + root
-func EncodingAndRoot() *MsgSpecTest {
+func EncodingAndRoot() tests.SpecTest {
 	msg := &types.SignedPartialSignatureMessage{
 		Signature: make([]byte, 96),
 		Signer:    12,

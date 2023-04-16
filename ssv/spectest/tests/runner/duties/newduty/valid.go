@@ -1,12 +1,13 @@
 package newduty
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // Valid tests a valid start duty
-func Valid() *MultiStartNewRunnerDutySpecTest {
+func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty valid",

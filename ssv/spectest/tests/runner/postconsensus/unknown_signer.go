@@ -8,7 +8,7 @@ import (
 )
 
 // UnknownSigner tests an unknown  signer
-func UnknownSigner() *tests.MultiMsgProcessingSpecTest {
+func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: failed to verify PartialSignature: unknown signer"
 	return &tests.MultiMsgProcessingSpecTest{

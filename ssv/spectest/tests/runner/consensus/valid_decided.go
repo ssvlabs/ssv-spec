@@ -8,7 +8,7 @@ import (
 )
 
 // ValidDecided tests a valid decided value
-func ValidDecided() *tests.MultiMsgProcessingSpecTest {
+func ValidDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid decided",

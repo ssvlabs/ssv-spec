@@ -7,7 +7,7 @@ import (
 )
 
 // PostQuorum tests a msg received post pre consensus quorum
-func PostQuorum() *tests.MultiMsgProcessingSpecTest {
+func PostQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus post quorum",

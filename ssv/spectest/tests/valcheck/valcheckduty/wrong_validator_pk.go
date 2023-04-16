@@ -2,13 +2,14 @@ package valcheckduty
 
 import (
 	"encoding/json"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // WrongValidatorPK tests duty.PubKey wrong
-func WrongValidatorPK() *valcheck.MultiSpecTest {
+func WrongValidatorPK() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
 		cdCopy := &types.ConsensusData{}
 		b, _ := json.Marshal(cd)

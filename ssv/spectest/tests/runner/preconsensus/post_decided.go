@@ -9,7 +9,7 @@ import (
 )
 
 // PostDecided tests a msg received post consensus decided (and post receiving a quorum for pre consensus)
-func PostDecided() *tests.MultiMsgProcessingSpecTest {
+func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check errors

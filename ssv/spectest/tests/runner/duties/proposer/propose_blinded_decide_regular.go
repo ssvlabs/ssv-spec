@@ -15,7 +15,7 @@ func getSSZRootNoError(obj ssz.HashRoot) string {
 }
 
 // ProposeBlindedBlockDecidedRegular tests proposing a blinded block but the decided block is a regular block. Full flow
-func ProposeBlindedBlockDecidedRegular() *tests.MsgProcessingSpecTest {
+func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MsgProcessingSpecTest{
 		Name:   "propose blinded decide regular",

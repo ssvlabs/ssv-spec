@@ -3,12 +3,6 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
-	"reflect"
-	"strings"
-	"testing"
-
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -19,14 +13,28 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"sync"
+	"testing"
 )
 
 func TestAll(t *testing.T) {
-	for _, test := range AllTests {
-		t.Run(test.TestName(), func(t *testing.T) {
-			test.Run(t)
-		})
+	t.Parallel()
+	wait := sync.WaitGroup{}
+	for _, testF := range AllTests {
+		wait.Add(1)
+		go func(f tests2.TestF) {
+			test := f()
+			t.Run(test.TestName(), func(t *testing.T) {
+				test.Run(t)
+				wait.Done()
+			})
+		}(testF)
 	}
+	wait.Wait()
 }
 
 func TestJson(t *testing.T) {

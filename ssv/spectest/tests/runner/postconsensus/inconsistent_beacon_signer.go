@@ -8,7 +8,7 @@ import (
 )
 
 // InconsistentBeaconSigner tests a beacon signer != SignedPartialSignatureMessage.signer
-func InconsistentBeaconSigner() *tests.MultiMsgProcessingSpecTest {
+func InconsistentBeaconSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: SignedPartialSignatureMessage invalid: inconsistent signers"
 	return &tests.MultiMsgProcessingSpecTest{

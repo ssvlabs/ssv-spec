@@ -7,7 +7,7 @@ import (
 )
 
 // InvalidSignedMessage tests SignedPartialSignatureMessage.Validate() != nil
-func InvalidSignedMessage() *tests.MultiMsgProcessingSpecTest {
+func InvalidSignedMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	invalidMsg := func(msg *types.SignedPartialSignatureMessage) *types.SignedPartialSignatureMessage {

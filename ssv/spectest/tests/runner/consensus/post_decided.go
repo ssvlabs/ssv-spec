@@ -8,7 +8,7 @@ import (
 )
 
 // PostDecided tests a valid commit msg after returned decided already
-func PostDecided() *tests.MultiMsgProcessingSpecTest {
+func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.MultiMsgProcessingSpecTest{

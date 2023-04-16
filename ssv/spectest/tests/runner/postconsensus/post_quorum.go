@@ -8,7 +8,7 @@ import (
 )
 
 // PostQuorum tests a msg received post pre consensus quorum
-func PostQuorum() *tests.MultiMsgProcessingSpecTest {
+func PostQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no running duty"
 	return &tests.MultiMsgProcessingSpecTest{

@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidMessageSignature tests PartialSignatureMessage signature invalid
-func InvalidMessageSignature() *tests.MultiMsgProcessingSpecTest {
+func InvalidMessageSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: failed to verify PartialSignature: failed to verify signature"
 	return &tests.MultiMsgProcessingSpecTest{

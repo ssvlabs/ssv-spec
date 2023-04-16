@@ -7,7 +7,7 @@ import (
 )
 
 // InvalidExpectedRoot tests 1 expected root which doesn't match the signed root
-func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
+func InvalidExpectedRoot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus invalid expected roots",

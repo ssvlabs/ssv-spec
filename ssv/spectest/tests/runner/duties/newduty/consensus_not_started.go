@@ -2,12 +2,13 @@ package newduty
 
 import (
 	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // ConsensusNotStarted tests starting duty after prev already started but for some duties' consensus didn't start because pre-consensus didnt get quorum (different duties will enable starting a new duty)
-func ConsensusNotStarted() *MultiStartNewRunnerDutySpecTest {
+func ConsensusNotStarted() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
