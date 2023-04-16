@@ -9,7 +9,7 @@ import (
 )
 
 // MultiSigner tests a proposal msg with > 1 signers
-func MultiSigner() *tests.MsgProcessingSpecTest {
+func MultiSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{

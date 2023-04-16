@@ -8,7 +8,7 @@ import (
 )
 
 // WrongHeight tests a round change msg with wrong height
-func WrongHeight() *tests.MsgProcessingSpecTest {
+func WrongHeight() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

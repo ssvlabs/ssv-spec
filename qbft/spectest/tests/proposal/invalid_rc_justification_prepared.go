@@ -9,7 +9,7 @@ import (
 
 // InvalidRoundChangeJustificationPrepared tests a proposal for > 1 round, prepared previously but one of the round change justifications has validRoundChange != nil
 // TODO: make sure it does what it used to do before (https://github.com/bloxapp/ssv-spec/pull/156#discussion_r1113040758)
-func InvalidRoundChangeJustificationPrepared() *tests.MsgProcessingSpecTest {
+func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

@@ -7,7 +7,7 @@ import (
 )
 
 // DuplicateMsg tests a duplicate commit msg processing
-func DuplicateMsg() *tests.MsgProcessingSpecTest {
+func DuplicateMsg() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

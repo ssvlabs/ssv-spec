@@ -8,7 +8,7 @@ import (
 )
 
 // UnknownSigner tests a signed round change msg with an unknown signer
-func UnknownSigner() *tests.MsgProcessingSpecTest {
+func UnknownSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

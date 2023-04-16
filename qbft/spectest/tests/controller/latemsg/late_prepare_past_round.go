@@ -9,7 +9,7 @@ import (
 )
 
 // LatePreparePastRound tests process late prepare msg for an instance which just decided for a round < decided round
-func LatePreparePastRound() *tests.ControllerSpecTest {
+func LatePreparePastRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	rcMsgs := []*qbft.SignedMessage{

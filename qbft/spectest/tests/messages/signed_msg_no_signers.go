@@ -8,7 +8,7 @@ import (
 )
 
 // SignedMsgNoSigners tests SignedMessage len(signers) == 0
-func SignedMsgNoSigners() *tests.MsgSpecTest {
+func SignedMsgNoSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1))
 	msg.Signers = nil

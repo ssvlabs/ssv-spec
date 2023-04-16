@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateMsg tests a duplicate proposal msg processing
-func DuplicateMsg() *tests.MsgProcessingSpecTest {
+func DuplicateMsg() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{

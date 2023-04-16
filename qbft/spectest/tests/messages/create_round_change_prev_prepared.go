@@ -8,7 +8,7 @@ import (
 )
 
 // CreateRoundChangePreviouslyPrepared tests creating a round change msg,previously prepared
-func CreateRoundChangePreviouslyPrepared() *tests.CreateMsgSpecTest {
+func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateProposal,

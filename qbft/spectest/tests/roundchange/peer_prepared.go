@@ -8,7 +8,7 @@ import (
 )
 
 // PeerPrepared tests a round change quorum where a peer is the only one prepared
-func PeerPrepared() *tests.MsgProcessingSpecTest {
+func PeerPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2

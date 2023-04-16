@@ -2,6 +2,7 @@ package tests
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/comparable"
 	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"testing"
@@ -60,9 +61,12 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	// post root
 	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
+
+	fmt.Printf("%s - %s\n", test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
+
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
-		msg := comparable2.PrintDiff(test.Runner, ssvcomparable.RootRegister[test.PostDutyRunnerStateRoot])
-		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), msg)
+		diff := comparable2.PrintDiff(test.Runner, ssvcomparable.RootRegister[test.PostDutyRunnerStateRoot])
+		require.Fail(t, "post runner state not equal", diff)
 	}
 }
 

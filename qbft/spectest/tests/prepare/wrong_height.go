@@ -8,7 +8,7 @@ import (
 )
 
 // WrongHeight tests prepare msg received with the wrong height
-func WrongHeight() *tests.MsgProcessingSpecTest {
+func WrongHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

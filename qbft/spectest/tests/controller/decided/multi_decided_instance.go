@@ -9,7 +9,7 @@ import (
 )
 
 // MultiDecidedInstances tests deciding multiple instances
-func MultiDecidedInstances() *tests.ControllerSpecTest {
+func MultiDecidedInstances() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {

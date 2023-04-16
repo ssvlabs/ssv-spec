@@ -8,7 +8,7 @@ import (
 )
 
 // CreateProposalPreviouslyPrepared tests creating a proposal msg,previously prepared
-func CreateProposalPreviouslyPrepared() *tests.CreateMsgSpecTest {
+func CreateProposalPreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateProposal,

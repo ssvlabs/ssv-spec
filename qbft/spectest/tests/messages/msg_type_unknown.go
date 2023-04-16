@@ -8,7 +8,7 @@ import (
 )
 
 // MsgTypeUnknown tests Message type > 5
-func MsgTypeUnknown() *tests.MsgSpecTest {
+func MsgTypeUnknown() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 		MsgType:    6,

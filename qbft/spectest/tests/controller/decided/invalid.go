@@ -9,7 +9,7 @@ import (
 )
 
 // Invalid tests decided msg where msg.validate() != nil
-func Invalid() *tests.ControllerSpecTest {
+func Invalid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingCommitMultiSignerMessageWithHeight(

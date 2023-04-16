@@ -7,7 +7,7 @@ import (
 )
 
 // InvalidValCheck tests a quorum of commits received with an invalid value check
-func InvalidValCheck() *tests.MsgProcessingSpecTest {
+func InvalidValCheck() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{}
 	// No need to check as a commit depends on a proposal received which validates value

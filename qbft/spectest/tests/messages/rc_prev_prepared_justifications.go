@@ -8,7 +8,7 @@ import (
 )
 
 // RoundChangePrePreparedJustifications tests valid justified change round (prev prepared)
-func RoundChangePrePreparedJustifications() *tests.MsgSpecTest {
+func RoundChangePrePreparedJustifications() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),

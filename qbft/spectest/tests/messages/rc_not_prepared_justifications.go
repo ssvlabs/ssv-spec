@@ -8,7 +8,7 @@ import (
 )
 
 // RoundChangeNotPreparedJustifications tests valid justified change round (not prev prepared)
-func RoundChangeNotPreparedJustifications() *tests.MsgSpecTest {
+func RoundChangeNotPreparedJustifications() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingRoundChangeMessageWithParams(
 		ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData, qbft.NoRound, nil)

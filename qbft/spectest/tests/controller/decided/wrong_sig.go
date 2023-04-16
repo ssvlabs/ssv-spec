@@ -9,7 +9,7 @@ import (
 )
 
 // WrongSignature tests a single decided received with a wrong signature
-func WrongSignature() *tests.ControllerSpecTest {
+func WrongSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide wrong sig",

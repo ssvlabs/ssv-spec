@@ -9,7 +9,7 @@ import (
 )
 
 // FutureInstance tests decided msg received for future (not yet started) instance
-func FutureInstance() *tests.ControllerSpecTest {
+func FutureInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide future instance",

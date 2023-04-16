@@ -8,7 +8,7 @@ import (
 )
 
 // GetRoot tests GetRoot on SignedMessage
-func GetRoot() *tests.MsgSpecTest {
+func GetRoot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingProposalMessageWithParams(
 		ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingQBFTRootData,

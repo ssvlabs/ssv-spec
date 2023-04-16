@@ -8,7 +8,7 @@ import (
 )
 
 // PastRoundProposalPrevNotPrepared tests a valid proposal for past round (not prev prepared)
-func PastRoundProposalPrevNotPrepared() *tests.MsgProcessingSpecTest {
+func PastRoundProposalPrevNotPrepared() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 10
 	ks := testingutils.Testing4SharesSet()

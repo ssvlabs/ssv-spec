@@ -9,7 +9,7 @@ import (
 )
 
 // PostFutureDecided tests starting a new instance after deciding with future decided msg
-func PostFutureDecided() *tests.ControllerSpecTest {
+func PostFutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "start instance post future decided",

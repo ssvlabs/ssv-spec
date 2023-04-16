@@ -9,7 +9,7 @@ import (
 )
 
 // MultiSignerNoOverlap tests a multi signer commit msg which doesn't overlap previous valid commits
-func MultiSignerNoOverlap() *tests.MsgProcessingSpecTest {
+func MultiSignerNoOverlap() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

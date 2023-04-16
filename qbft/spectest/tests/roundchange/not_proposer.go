@@ -8,7 +8,7 @@ import (
 )
 
 // NotProposer tests a justified round change but node is not the proposer
-func NotProposer() *tests.MsgProcessingSpecTest {
+func NotProposer() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.Height = tests.ChangeProposerFuncInstanceHeight // will change proposer default for tests

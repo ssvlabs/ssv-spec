@@ -8,7 +8,7 @@ import (
 )
 
 // PreparedPreviouslyJustification tests a proposal for > 1 round, prepared previously with quorum of round change msgs justification
-func PreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
+func PreparedPreviouslyJustification() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	ks10 := testingutils.Testing10SharesSet() // TODO: should be 4?
 	pre := testingutils.BaseInstance()

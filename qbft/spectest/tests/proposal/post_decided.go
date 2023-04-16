@@ -8,7 +8,7 @@ import (
 )
 
 // PostDecided tests processing proposal msg after instance decided
-func PostDecided() *tests.MsgProcessingSpecTest {
+func PostDecided() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks4 := testingutils.Testing4SharesSet()
 	ks10 := testingutils.Testing10SharesSet() // TODO should be 4?

@@ -8,7 +8,7 @@ import (
 )
 
 // ProposeDataEncoding tests encoding ProposalData
-func ProposeDataEncoding() *tests.MsgSpecTest {
+func ProposeDataEncoding() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingProposalMessageWithParams(
 		ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingQBFTRootData,

@@ -8,7 +8,7 @@ import (
 )
 
 // DifferentJustifications tests a proposal for > 1 round, prepared previously with rc justification prepares at different heights (tests the highest prepared calculation)
-func DifferentJustifications() *tests.MsgProcessingSpecTest {
+func DifferentJustifications() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 3
 	ks4 := testingutils.Testing4SharesSet()

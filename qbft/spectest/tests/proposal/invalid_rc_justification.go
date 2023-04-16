@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidRoundChangeJustification tests a proposal for > 1 round, not prepared previously but one of the round change justifications has validRoundChange != nil
-func InvalidRoundChangeJustification() *tests.MsgProcessingSpecTest {
+func InvalidRoundChangeJustification() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

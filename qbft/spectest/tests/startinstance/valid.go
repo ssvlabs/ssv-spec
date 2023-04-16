@@ -7,7 +7,7 @@ import (
 )
 
 // Valid tests a valid start instance
-func Valid() *tests.ControllerSpecTest {
+func Valid() tests.SpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "start instance valid",
 		RunInstanceData: []*tests.RunInstanceData{

@@ -8,7 +8,7 @@ import (
 )
 
 // CommitDataEncoding tests encoding CommitData
-func CommitDataEncoding() *tests.MsgSpecTest {
+func CommitDataEncoding() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1))
 

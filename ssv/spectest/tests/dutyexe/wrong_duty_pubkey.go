@@ -7,7 +7,7 @@ import (
 )
 
 // WrongDutyPubKey tests decided value with duty validator pubkey != the duty runner's pubkey
-func WrongDutyPubKey() *tests.MsgProcessingSpecTest {
+func WrongDutyPubKey() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	dr := testingutils.AttesterRunner(ks)
 

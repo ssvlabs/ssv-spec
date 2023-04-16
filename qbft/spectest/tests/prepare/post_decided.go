@@ -7,7 +7,7 @@ import (
 )
 
 // PostDecided tests processing prepare msg after instance decided
-func PostDecided() *tests.MsgProcessingSpecTest {
+func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	msgs := []*qbft.SignedMessage{

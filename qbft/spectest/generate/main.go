@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -15,13 +16,14 @@ import (
 //go:generate go run main.go
 
 func main() {
-	all := map[string]spectest.SpecTest{}
-	for _, t := range spectest.AllTests {
-		n := reflect.TypeOf(t).String() + "_" + t.TestName()
+	all := map[string]tests.SpecTest{}
+	for _, testF := range spectest.AllTests {
+		test := testF()
+		n := reflect.TypeOf(test).String() + "_" + test.TestName()
 		if all[n] != nil {
 			panic(fmt.Sprintf("duplicate test: %s\n", n))
 		}
-		all[n] = t
+		all[n] = test
 	}
 
 	byts, err := json.Marshal(all)

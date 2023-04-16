@@ -7,7 +7,7 @@ import (
 )
 
 // FirstHeight tests a starting the first instance
-func FirstHeight() *tests.ControllerSpecTest {
+func FirstHeight() tests.SpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "start instance first height",
 		RunInstanceData: []*tests.RunInstanceData{

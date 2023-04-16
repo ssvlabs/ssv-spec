@@ -8,7 +8,7 @@ import (
 )
 
 // JustificationsNotHeighest tests a proposal for > 1 round, prepared previously with rc justification prepares at different heights but the prepare justification is not the highest
-func JustificationsNotHeighest() *tests.MsgProcessingSpecTest {
+func JustificationsNotHeighest() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 3
 	ks := testingutils.Testing4SharesSet()

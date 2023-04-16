@@ -7,7 +7,7 @@ import (
 )
 
 // PreviousDecided tests starting an instance when the previous one decided
-func PreviousDecided() *tests.ControllerSpecTest {
+func PreviousDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.ControllerSpecTest{

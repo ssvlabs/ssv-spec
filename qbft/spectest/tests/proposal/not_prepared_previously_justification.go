@@ -8,7 +8,7 @@ import (
 )
 
 // NotPreparedPreviouslyJustification tests a proposal for > 1 round, not prepared previously
-func NotPreparedPreviouslyJustification() *tests.MsgProcessingSpecTest {
+func NotPreparedPreviouslyJustification() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 5
 	ks := testingutils.Testing4SharesSet()

@@ -9,7 +9,7 @@ import (
 )
 
 // HasQuorum tests decided msg with unique 2f+1 signers
-func HasQuorum() *tests.ControllerSpecTest {
+func HasQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide has quorum",

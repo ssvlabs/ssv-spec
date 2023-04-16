@@ -8,7 +8,7 @@ import (
 )
 
 // QuorumOrder2 tests LIVENESS where the rc quorum msgs in different order
-func QuorumOrder2() *tests.MsgProcessingSpecTest {
+func QuorumOrder2() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2

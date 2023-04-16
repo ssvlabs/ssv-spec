@@ -8,7 +8,7 @@ import (
 )
 
 // PeerPreparedDifferentHeights tests a round change quorum where peers prepared on different heights
-func PeerPreparedDifferentHeights() *tests.MsgProcessingSpecTest {
+func PeerPreparedDifferentHeights() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 3
 

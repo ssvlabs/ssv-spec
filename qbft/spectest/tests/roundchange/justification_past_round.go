@@ -8,7 +8,7 @@ import (
 )
 
 // JustificationPastRound tests a quorum of round change msgs for past round
-func JustificationPastRound() *tests.MsgProcessingSpecTest {
+func JustificationPastRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 50
 	ks := testingutils.Testing4SharesSet()

@@ -9,7 +9,7 @@ import (
 )
 
 // SignedMsgMultiSigners tests SignedMessage with multi signers
-func SignedMsgMultiSigners() *tests.MsgSpecTest {
+func SignedMsgMultiSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingCommitMultiSignerMessage(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},

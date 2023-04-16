@@ -9,7 +9,7 @@ import (
 )
 
 // LateCommitPastInstance tests process commit msg for a previously decided instance
-func LateCommitPastInstance() *tests.ControllerSpecTest {
+func LateCommitPastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
