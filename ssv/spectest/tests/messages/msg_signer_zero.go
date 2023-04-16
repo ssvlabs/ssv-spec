@@ -2,12 +2,13 @@ package messages
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // MessageSigner0 tests PartialSignatureMessage signer == 0
-func MessageSigner0() *MsgSpecTest {
+func MessageSigner0() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgPre := testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)

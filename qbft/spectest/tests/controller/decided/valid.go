@@ -9,7 +9,7 @@ import (
 )
 
 // Valid tests a valid decided msg with unique 2f+1 signers
-func Valid() *tests.ControllerSpecTest {
+func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "valid",

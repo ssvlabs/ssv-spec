@@ -7,7 +7,7 @@ import (
 )
 
 // HappyFlow tests a quorum of commits received after prepare quorum
-func HappyFlow() *tests.MsgProcessingSpecTest {
+func HappyFlow() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

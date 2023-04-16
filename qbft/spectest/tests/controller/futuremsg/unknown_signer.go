@@ -2,12 +2,13 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // UnknownSigner tests future msg signed by unknown signer
-func UnknownSigner() *ControllerSyncSpecTest {
+func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)

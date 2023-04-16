@@ -7,7 +7,7 @@ import (
 )
 
 // NoRunningConsensusInstance tests a valid proposal msg before consensus instance starts
-func NoRunningConsensusInstance() *tests.MultiMsgProcessingSpecTest {
+func NoRunningConsensusInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedErr := "failed processing consensus message: instance not found"
 	return &tests.MultiMsgProcessingSpecTest{

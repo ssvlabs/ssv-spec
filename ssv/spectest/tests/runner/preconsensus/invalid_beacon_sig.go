@@ -7,7 +7,7 @@ import (
 )
 
 // InvalidBeaconSignature tests PartialSignatureMessage signature invalid
-func InvalidBeaconSignature() *tests.MultiMsgProcessingSpecTest {
+func InvalidBeaconSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus invalid beacon signature",

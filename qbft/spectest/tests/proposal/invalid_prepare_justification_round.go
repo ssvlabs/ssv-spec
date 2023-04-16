@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidPrepareJustificationRound tests a proposal for > 1 round, prepared previously but one of the prepare justifications has round != highest prepared round
-func InvalidPrepareJustificationRound() *tests.MsgProcessingSpecTest {
+func InvalidPrepareJustificationRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

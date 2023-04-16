@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateMsg tests duplicate SignedPartialSignatureMessage
-func DuplicateMsg() *tests.MultiMsgProcessingSpecTest {
+func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus duplicate msg",

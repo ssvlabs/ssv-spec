@@ -9,7 +9,7 @@ import (
 )
 
 // CurrentInstance tests a decided msg received for current running instance
-func CurrentInstance() *tests.ControllerSpecTest {
+func CurrentInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.ControllerSpecTest{

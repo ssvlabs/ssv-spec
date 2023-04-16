@@ -7,7 +7,7 @@ import (
 )
 
 // PostDecided tests processing a commit msg after instance decided
-func PostDecided() *tests.MsgProcessingSpecTest {
+func PostDecided() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

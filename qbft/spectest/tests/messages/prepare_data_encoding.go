@@ -8,7 +8,7 @@ import (
 )
 
 // PrepareDataEncoding tests encoding PrepareData
-func PrepareDataEncoding() *tests.MsgSpecTest {
+func PrepareDataEncoding() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1))
 

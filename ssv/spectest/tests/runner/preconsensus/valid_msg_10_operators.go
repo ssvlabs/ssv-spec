@@ -7,7 +7,7 @@ import (
 )
 
 // ValidMessage10Operators tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages (10 operators)
-func ValidMessage10Operators() *tests.MultiMsgProcessingSpecTest {
+func ValidMessage10Operators() tests.SpecTest {
 	ks := testingutils.Testing10SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus valid msg 10 operators",

@@ -9,7 +9,7 @@ import (
 )
 
 // MultiSigner tests prepare msg with > 1 signers
-func MultiSigner() *tests.MsgProcessingSpecTest {
+func MultiSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

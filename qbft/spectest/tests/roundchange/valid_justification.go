@@ -8,7 +8,7 @@ import (
 )
 
 // ValidJustification tests a valid rc quorum justification
-func ValidJustification() *tests.MsgProcessingSpecTest {
+func ValidJustification() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil // proposal resets on upon timeout

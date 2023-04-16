@@ -5,7 +5,7 @@ import (
 )
 
 // PreviousNotDecided tests starting an instance when the previous one not decided
-func PreviousNotDecided() *tests.ControllerSpecTest {
+func PreviousNotDecided() tests.SpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "start instance prev not decided",
 		RunInstanceData: []*tests.RunInstanceData{

@@ -9,7 +9,7 @@ import (
 )
 
 // JustificationMultiSigners tests a single prepare justification msg with multiple signers
-func JustificationMultiSigners() *tests.MsgProcessingSpecTest {
+func JustificationMultiSigners() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

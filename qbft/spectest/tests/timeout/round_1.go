@@ -2,12 +2,13 @@ package timeout
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // Round1 tests calling UponRoundTimeout for round 1, testing state and broadcasted msgs
-func Round1() *SpecTest {
+func Round1() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

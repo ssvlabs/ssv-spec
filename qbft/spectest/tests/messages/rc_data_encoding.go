@@ -8,7 +8,7 @@ import (
 )
 
 // RoundChangeDataEncoding tests encoding RoundChangeData
-func RoundChangeDataEncoding() *tests.MsgSpecTest {
+func RoundChangeDataEncoding() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingRoundChangeMessageWithParams(

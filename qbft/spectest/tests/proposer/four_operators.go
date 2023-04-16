@@ -8,7 +8,7 @@ import (
 )
 
 // FourOperators tests round-robin proposer selection for 4 member committee
-func FourOperators() *tests.RoundRobinSpecTest {
+func FourOperators() tests.SpecTest {
 	var p types.OperatorID
 	heights := make([]qbft.Height, 0)
 	rounds := make([]qbft.Round, 0)

@@ -7,7 +7,7 @@ import (
 )
 
 // NoPrevAcceptedProposal tests a commit msg received without a previous accepted proposal
-func NoPrevAcceptedProposal() *tests.MsgProcessingSpecTest {
+func NoPrevAcceptedProposal() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

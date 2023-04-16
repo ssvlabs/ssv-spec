@@ -9,7 +9,7 @@ import (
 )
 
 // LateDecided tests processing a decided msg for a just decided instance
-func LateDecided() *tests.ControllerSpecTest {
+func LateDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)

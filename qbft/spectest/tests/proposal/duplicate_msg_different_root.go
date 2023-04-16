@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateMsgDifferentRoot tests a duplicate proposal msg processing (second one with different root)
-func DuplicateMsgDifferentRoot() *tests.MsgProcessingSpecTest {
+func DuplicateMsgDifferentRoot() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{

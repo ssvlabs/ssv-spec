@@ -2,13 +2,14 @@ package valcheckattestations
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // SourceHigherThanTarget tests AttestationData.Source.Epoch higher than target
-func SourceHigherThanTarget() *valcheck.SpecTest {
+func SourceHigherThanTarget() tests.SpecTest {
 	attestationData := &spec.AttestationData{
 		Slot:            testingutils.TestingDutySlot,
 		Index:           3,

@@ -8,7 +8,7 @@ import (
 )
 
 // UnknownSigner tests a single proposal received with an unknown signer
-func UnknownSigner() *tests.MsgProcessingSpecTest {
+func UnknownSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{

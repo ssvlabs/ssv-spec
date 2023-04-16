@@ -7,7 +7,7 @@ import (
 )
 
 // PastRound tests a commit msg with past round, should process but not decide
-func PastRound() *tests.MsgProcessingSpecTest {
+func PastRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

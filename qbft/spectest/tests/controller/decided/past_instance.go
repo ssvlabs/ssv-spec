@@ -9,7 +9,7 @@ import (
 )
 
 // PastInstance tests a decided msg received for past instance
-func PastInstance() *tests.ControllerSpecTest {
+func PastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide past instance",

@@ -2,12 +2,13 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // InvalidMsg tests future msg invalid msg
-func InvalidMsg() *ControllerSyncSpecTest {
+func InvalidMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 

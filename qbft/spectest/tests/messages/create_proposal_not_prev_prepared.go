@@ -8,7 +8,7 @@ import (
 )
 
 // CreateProposalNotPreviouslyPrepared tests creating a proposal msg, non-first round and not previously prepared
-func CreateProposalNotPreviouslyPrepared() *tests.CreateMsgSpecTest {
+func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateProposal,

@@ -7,7 +7,7 @@ import (
 )
 
 // UnknownSigner tests SignedPartialSignatureMessage unknown signer
-func UnknownSigner() *tests.MultiMsgProcessingSpecTest {
+func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus unknown msg signer",

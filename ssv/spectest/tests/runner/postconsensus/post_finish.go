@@ -8,7 +8,7 @@ import (
 )
 
 // PostFinish  tests a valid SignedPartialSignatureMessage post finished runner
-func PostFinish() *tests.MultiMsgProcessingSpecTest {
+func PostFinish() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: no running duty"
 	return &tests.MultiMsgProcessingSpecTest{

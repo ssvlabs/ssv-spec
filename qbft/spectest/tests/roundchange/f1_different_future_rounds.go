@@ -8,7 +8,7 @@ import (
 )
 
 // F1DifferentFutureRounds tests f+1 speedup with one rc prev prepared
-func F1DifferentFutureRounds() *tests.MsgProcessingSpecTest {
+func F1DifferentFutureRounds() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

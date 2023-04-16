@@ -8,7 +8,7 @@ import (
 )
 
 // RoundChangePartialQuorum tests a round change msgs with partial quorum
-func RoundChangePartialQuorum() *tests.MsgProcessingSpecTest {
+func RoundChangePartialQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

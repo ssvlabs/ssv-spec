@@ -9,7 +9,7 @@ import (
 )
 
 // NoRunningDuty tests a valid proposal msg before duty starts
-func NoRunningDuty() *tests.MultiMsgProcessingSpecTest {
+func NoRunningDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	startInstance := func(r ssv.Runner, value []byte) ssv.Runner {
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, qbft.NewInstance(

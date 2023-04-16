@@ -8,7 +8,7 @@ import (
 )
 
 // FutureRoundPrevNotPrepared tests a proposal for future round, currently not prepared
-func FutureRoundPrevNotPrepared() *tests.MsgProcessingSpecTest {
+func FutureRoundPrevNotPrepared() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = qbft.FirstRound
 	ks := testingutils.Testing4SharesSet()

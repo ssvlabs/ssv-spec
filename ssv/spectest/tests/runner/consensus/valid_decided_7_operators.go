@@ -8,7 +8,7 @@ import (
 )
 
 // ValidDecided7Operators tests a valid decided value (7 operators)
-func ValidDecided7Operators() *tests.MultiMsgProcessingSpecTest {
+func ValidDecided7Operators() tests.SpecTest {
 	ks := testingutils.Testing7SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid decided 7 operators",

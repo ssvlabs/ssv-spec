@@ -3,12 +3,13 @@ package newduty
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // NotDecided tests starting duty before finished or decided
-func NotDecided() *MultiStartNewRunnerDutySpecTest {
+func NotDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error

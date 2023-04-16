@@ -9,7 +9,7 @@ import (
 )
 
 // LateDecidedSmallerQuorum tests processing a decided msg for a just decided instance (with a smaller quorum)
-func LateDecidedSmallerQuorum() *tests.ControllerSpecTest {
+func LateDecidedSmallerQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.ControllerSpecTest{
 		Name: "decide late decided smaller quorum",

@@ -8,7 +8,7 @@ import (
 )
 
 // FirstRoundJustification tests proposal justification for first round (proposer is correct check)
-func FirstRoundJustification() *tests.MsgProcessingSpecTest {
+func FirstRoundJustification() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{

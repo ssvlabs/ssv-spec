@@ -8,7 +8,7 @@ import (
 )
 
 // WrongSig tests a signed round change msg with wrong signature
-func WrongSig() *tests.MsgProcessingSpecTest {
+func WrongSig() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

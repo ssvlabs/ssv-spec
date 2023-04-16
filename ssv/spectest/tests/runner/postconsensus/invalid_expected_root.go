@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidExpectedRoot tests 1 expected root which doesn't match the signed root
-func InvalidExpectedRoot() *tests.MultiMsgProcessingSpecTest {
+func InvalidExpectedRoot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 	return &tests.MultiMsgProcessingSpecTest{

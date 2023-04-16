@@ -8,7 +8,7 @@ import (
 )
 
 // InvalidBeaconSignature tests PartialSignatureMessage signature invalid
-func InvalidBeaconSignature() *tests.MultiMsgProcessingSpecTest {
+func InvalidBeaconSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: could not verify Beacon partial Signature: wrong signature"
 	return &tests.MultiMsgProcessingSpecTest{

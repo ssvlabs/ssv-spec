@@ -1,13 +1,14 @@
 package valcheckattestations
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // ConsensusDataNil tests consensus data != nil
-func ConsensusDataNil() *valcheck.SpecTest {
+func ConsensusDataNil() tests.SpecTest {
 	consensusData := &types.ConsensusData{
 		Duty:    testingutils.TestingAttesterDuty,
 		DataSSZ: nil,

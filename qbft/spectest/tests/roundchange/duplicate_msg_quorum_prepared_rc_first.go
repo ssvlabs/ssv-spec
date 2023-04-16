@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateMsgQuorumPreparedRCFirst tests a duplicate rc msg (the prev prepared one first)
-func DuplicateMsgQuorumPreparedRCFirst() *tests.MsgProcessingSpecTest {
+func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

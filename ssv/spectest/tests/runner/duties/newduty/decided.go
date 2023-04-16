@@ -3,12 +3,13 @@ package newduty
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // PostDecided tests a valid start duty before finished and after decided
-func PostDecided() *MultiStartNewRunnerDutySpecTest {
+func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error

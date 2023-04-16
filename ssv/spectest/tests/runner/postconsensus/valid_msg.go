@@ -37,7 +37,7 @@ func decideRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusD
 }
 
 // ValidMessage tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages
-func ValidMessage() *tests.MultiMsgProcessingSpecTest {
+func ValidMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.MultiMsgProcessingSpecTest{

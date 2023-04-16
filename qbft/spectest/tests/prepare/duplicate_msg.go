@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateMsg tests a duplicate prepare msg processing
-func DuplicateMsg() *tests.MsgProcessingSpecTest {
+func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

@@ -9,7 +9,7 @@ import (
 )
 
 // CurrentInstancePastRound tests a decided msg received for current running instance for a past round
-func CurrentInstancePastRound() *tests.ControllerSpecTest {
+func CurrentInstancePastRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	rcMsgs := []*qbft.SignedMessage{

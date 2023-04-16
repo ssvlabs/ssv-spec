@@ -7,7 +7,7 @@ import (
 )
 
 // FutureRound tests a commit msg received with a future round, should error
-func FutureRound() *tests.MsgProcessingSpecTest {
+func FutureRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], 1)

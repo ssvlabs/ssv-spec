@@ -8,7 +8,7 @@ import (
 )
 
 // DuplicateMsg tests a duplicate rc msg (first one inserted, second not)
-func DuplicateMsg() *tests.MsgProcessingSpecTest {
+func DuplicateMsg() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

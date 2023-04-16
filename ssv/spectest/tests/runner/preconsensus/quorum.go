@@ -7,7 +7,7 @@ import (
 )
 
 // Quorum  tests a quorum of valid SignedPartialSignatureMessage
-func Quorum() *tests.MultiMsgProcessingSpecTest {
+func Quorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus quorum",

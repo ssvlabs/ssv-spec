@@ -8,7 +8,7 @@ import (
 )
 
 // F1DuplicateSignerNotPrepared tests not accepting f+1 speed for duplicate signer (not prev prepared)
-func F1DuplicateSignerNotPrepared() *tests.MsgProcessingSpecTest {
+func F1DuplicateSignerNotPrepared() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

@@ -8,7 +8,7 @@ import (
 )
 
 // QuorumMsgNotPrepared tests LIVENESS where the rc msg making a quorum for round change is not prev prepared (other are) which can cause a liveness issue with isReceivedProposalJustification
-func QuorumMsgNotPrepared() *tests.MsgProcessingSpecTest {
+func QuorumMsgNotPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2

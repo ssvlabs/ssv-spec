@@ -8,7 +8,7 @@ import (
 )
 
 // UnknownSigner tests a single prepare received with an unknown signer
-func UnknownSigner() *tests.MsgProcessingSpecTest {
+func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()

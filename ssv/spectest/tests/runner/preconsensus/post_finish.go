@@ -8,7 +8,7 @@ import (
 )
 
 // PostFinish tests a msg received post runner finished
-func PostFinish() *tests.MultiMsgProcessingSpecTest {
+func PostFinish() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check errors

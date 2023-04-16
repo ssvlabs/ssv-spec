@@ -9,7 +9,7 @@ import (
 )
 
 // LateProposalPastInstance tests process proposal msg for a previously decided instance
-func LateProposalPastInstance() *tests.ControllerSpecTest {
+func LateProposalPastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,

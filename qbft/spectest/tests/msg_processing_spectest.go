@@ -77,8 +77,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot) {
-		comparable3.PrintDiff(test.Pre.State, comparable2.RootRegister[test.PostRoot])
-		require.Fail(t, "post state not equal")
+		diff := comparable3.PrintDiff(test.Pre.State, comparable2.RootRegister[test.PostRoot])
+		require.Fail(t, "post state not equal", diff)
 	}
 }
 

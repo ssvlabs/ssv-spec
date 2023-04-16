@@ -7,7 +7,7 @@ import (
 )
 
 // UnknownSigner tests a single commit received with an unknown signer
-func UnknownSigner() *tests.MsgProcessingSpecTest {
+func UnknownSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

@@ -9,7 +9,7 @@ import (
 )
 
 // FullFlowAfterDecided tests a decided msg for round 1 followed by a full proposal, prepare, commit for round 2
-func FullFlowAfterDecided() *tests.ControllerSpecTest {
+func FullFlowAfterDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	rcMsgs := []*qbft.SignedMessage{

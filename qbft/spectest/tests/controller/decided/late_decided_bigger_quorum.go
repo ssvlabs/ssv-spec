@@ -9,7 +9,7 @@ import (
 )
 
 // LateDecidedBiggerQuorum tests processing a decided msg for a just decided instance (with a bigger quorum)
-func LateDecidedBiggerQuorum() *tests.ControllerSpecTest {
+func LateDecidedBiggerQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)

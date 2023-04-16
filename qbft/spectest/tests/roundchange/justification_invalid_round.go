@@ -8,7 +8,7 @@ import (
 )
 
 // JustificationInvalidRound tests justifications with prepared round > msg round
-func JustificationInvalidRound() *tests.MsgProcessingSpecTest {
+func JustificationInvalidRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()

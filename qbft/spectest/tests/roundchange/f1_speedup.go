@@ -8,7 +8,7 @@ import (
 )
 
 // F1Speedup tests catching up to higher rounds via f+1 speedup, other peers are all at the same round
-func F1Speedup() *tests.MsgProcessingSpecTest {
+func F1Speedup() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 

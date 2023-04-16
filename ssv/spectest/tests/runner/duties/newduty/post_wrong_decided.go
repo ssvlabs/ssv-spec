@@ -3,12 +3,13 @@ package newduty
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // PostWrongDecided tests starting a new duty after prev was decided wrongly (future decided)
-func PostWrongDecided() *MultiStartNewRunnerDutySpecTest {
+func PostWrongDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	decideWrong := func(r ssv.Runner, duty *types.Duty) ssv.Runner {

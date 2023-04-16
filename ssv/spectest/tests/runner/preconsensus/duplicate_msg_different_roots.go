@@ -7,7 +7,7 @@ import (
 )
 
 // DuplicateMsgDifferentRoots tests duplicate SignedPartialSignatureMessage (from same signer) but with different roots
-func DuplicateMsgDifferentRoots() *tests.MultiMsgProcessingSpecTest {
+func DuplicateMsgDifferentRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus msg different roots",
