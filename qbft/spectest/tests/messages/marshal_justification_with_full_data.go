@@ -2,6 +2,7 @@ package messages
 
 import (
 	"encoding/hex"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -9,7 +10,7 @@ import (
 )
 
 // MarshalJustificationsWithFullData tests marshalling justifications with full data (should omit it)
-func MarshalJustificationsWithFullData() *tests.MsgSpecTest {
+func MarshalJustificationsWithFullData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	rcMsgs := []*qbft.SignedMessage{
