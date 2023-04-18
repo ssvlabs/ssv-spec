@@ -38,8 +38,8 @@ type AttesterCalls interface {
 type ProposerCalls interface {
 	// SubmitValidatorRegistration submits a validator registration
 	SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error
-	// SubmitValidatorRawRegistrations submits raw validator registrations
-	SubmitValidatorRawRegistrations(registrations []*api.VersionedSignedValidatorRegistration) error
+	// SubmitValidatorRegistrationPostponed submits a validator registration in a batch after collecting registrations
+	SubmitValidatorRegistrationPostponed(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error
 	// GetBeaconBlock returns beacon block by the given slot and committee index
 	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index

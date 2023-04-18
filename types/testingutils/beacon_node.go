@@ -519,8 +519,8 @@ func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecip
 	return nil
 }
 
-// SubmitValidatorRawRegistrations submits raw validator registrations
-func (bn *TestingBeaconNode) SubmitValidatorRawRegistrations(registrations []*api.VersionedSignedValidatorRegistration) error {
+// SubmitValidatorRegistrationPostponed submits a validator registration in a batch after collecting registrations
+func (bn *TestingBeaconNode) SubmitValidatorRegistrationPostponed(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error {
 	return nil
 }
 
