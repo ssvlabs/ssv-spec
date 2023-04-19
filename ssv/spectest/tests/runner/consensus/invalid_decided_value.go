@@ -7,7 +7,7 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// InvalidDecidedValue tests an invalid decided value
+// InvalidDecidedValue tests an invalid decided value ConsensusData.Validate() != nil
 func InvalidDecidedValue() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func(role types.BeaconRole) []byte {
