@@ -26,13 +26,13 @@ func LateDecided() tests.SpecTest {
 					DecidedVal:         testingutils.TestingQBFTFullData,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
 				},
-				ControllerPostRoot: "4c96913e87aa17c9f0d5c1b6b220cbc7a66b7b40ef55f1059f1e1fa9f59c94d9",
+				ControllerPostRoot: lateDecidedStateComparison().Register().Root(),
 			},
 		},
 	}
 }
 
-func LateDecidedStateComparison() *qbftcomparable.StateComparison {
+func lateDecidedStateComparison() *qbftcomparable.StateComparison {
 	identifier := []byte{1, 2, 3, 4}
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
@@ -40,7 +40,7 @@ func LateDecidedStateComparison() *qbftcomparable.StateComparison {
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),
 		config,
 	)
-	_ = contr.StartNewInstance([]byte{1, 2, 3, 4})
+	_ = contr.StartNewInstance(testingutils.TestingQBFTFullData)
 
 	ks := testingutils.Testing4SharesSet()
 
@@ -71,7 +71,6 @@ func LateDecidedStateComparison() *qbftcomparable.StateComparison {
 			msgs[4],
 			msgs[5],
 			msgs[6],
-			msgs[7],
 		},
 	}}
 

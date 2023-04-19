@@ -13,8 +13,7 @@ import (
 // LateDecidedBiggerQuorum tests processing a decided msg for a just decided instance (with a bigger quorum)
 func LateDecidedBiggerQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3], ks.Shares[4]}, []types.OperatorID{1, 2, 3, 4}))
 	return &tests.ControllerSpecTest{
 		Name: "decide late decided bigger quorum",
@@ -27,7 +26,7 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 					DecidedVal:         testingutils.TestingQBFTFullData,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
 				},
-				ControllerPostRoot: "b61697f2ff067f353262fec6946aaf5c0ee94fd56e98128757fe737af83b754d",
+				ControllerPostRoot: lateDecidedBiggerQuorumStateComparison().Register().Root(),
 			},
 		},
 	}
@@ -46,7 +45,7 @@ func lateDecidedBiggerQuorumStateComparison() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
-	msgs = append(msgs, testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[4]}, []types.OperatorID{1, 2, 4}))
+	msgs = append(msgs, testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3], ks.Shares[4]}, []types.OperatorID{1, 2, 3, 4}))
 
 	state := testingutils.BaseInstance().State
 	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
