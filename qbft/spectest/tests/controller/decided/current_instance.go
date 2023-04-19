@@ -81,5 +81,5 @@ func currentInstanceStateComparison() *qbftcomparable.StateComparison {
 
 	contr.StoredInstances[0].State = state
 
-	return &qbftcomparable.StateComparison{PostController: contr}
+	return &qbftcomparable.StateComparison{RootGetter: contr}
 }

@@ -37,5 +37,5 @@ func happyFlowStateComparison() *qbftcomparable.StateComparison {
 		},
 	}}
 
-	return &qbftcomparable.StateComparison{PostState: state}
+	return &qbftcomparable.StateComparison{RootGetter: state}
 }

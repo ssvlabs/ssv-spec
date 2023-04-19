@@ -6,57 +6,29 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft"
 )
 
-var RootRegister = map[string]*StateComparison{}
+var RootRegister = map[string]*qbft.RootGetter{}
 
 type StateComparison struct {
-	PostState      *qbft.State
-	PostController *qbft.Controller
+	qbft.RootGetter
 }
 
 // Register will register state roots with a global registry to be compared against
 func (stateComp *StateComparison) Register() *StateComparison {
-	var r []byte
-	var err error
-
-	if stateComp.PostState != nil {
-		r, err = stateComp.PostState.GetRoot()
-		if err != nil {
-			panic(err.Error())
-		}
+	r, err := stateComp.GetRoot()
+	if err != nil {
+		panic(err.Error())
 	}
+	RootRegister[hex.EncodeToString(r[:])] = &stateComp.RootGetter
 
-	if stateComp.PostController != nil {
-		r, err = stateComp.PostController.GetRoot()
-		if err != nil {
-			panic(err.Error())
-		}
-	}
-
-	if r == nil {
-		panic("nil root")
-	}
-
-	RootRegister[hex.EncodeToString(r[:])] = stateComp
 	return stateComp
 }
 
 // Root returns all runner roots as string
 func (stateComp *StateComparison) Root() string {
-	var r []byte
-	var err error
-
-	if stateComp.PostState == nil && stateComp.PostController == nil {
+	if stateComp.RootGetter == nil {
 		panic("state nil")
 	}
-
-	if stateComp.PostState != nil {
-		r, err = stateComp.PostState.GetRoot()
-	}
-
-	if stateComp.PostController != nil {
-		r, err = stateComp.PostController.GetRoot()
-	}
-
+	r, err := stateComp.RootGetter.GetRoot()
 	if err != nil {
 		panic(err.Error())
 	}

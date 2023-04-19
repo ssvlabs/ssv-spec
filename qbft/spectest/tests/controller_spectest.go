@@ -174,7 +174,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
 	if runData.ControllerPostRoot != hex.EncodeToString(r) {
-		diff := typescomparable.PrintDiff(contr, qbftcomparable.RootRegister[runData.ControllerPostRoot].PostController)
+		diff := typescomparable.PrintDiff(contr, qbftcomparable.RootRegister[runData.ControllerPostRoot])
 		require.Fail(t, "post state not equal", diff)
 	}
 	return lastErr
