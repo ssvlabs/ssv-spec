@@ -32,6 +32,8 @@ func (test *SSZSpecTest) Run(t *testing.T) {
 	switch vBlk.Version {
 	case spec.DataVersionCapella:
 		withdrawals = vBlk.Capella.Body.ExecutionPayload.Withdrawals
+	default:
+		require.Failf(t, "unknown block version %s", vBlk.Version.String())
 	}
 
 	root, err := withdrawals.HashTreeRoot()

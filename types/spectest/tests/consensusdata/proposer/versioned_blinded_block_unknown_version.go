@@ -9,7 +9,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// VersionedBlindedBlockUnknownVersion tests a valid consensus data with unknown block
+// VersionedBlindedBlockUnknownVersion tests a valid consensus data with unknown block version
 func VersionedBlindedBlockUnknownVersion() *ProposerSpecTest {
 	cd := &types.ConsensusData{
 		Duty:    testingutils.TestingProposerDuty,

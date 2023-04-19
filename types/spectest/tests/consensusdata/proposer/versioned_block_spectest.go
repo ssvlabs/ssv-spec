@@ -60,6 +60,8 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 			require.NotNil(t, vBlk.Capella)
 			blkSSZ, err = vBlk.Capella.MarshalSSZ()
 			require.NoError(t, err)
+		default:
+			require.Failf(t, "unknown blinded block version %s", vBlk.Version.String())
 		}
 		require.EqualValues(t, test.DataBlk, blkSSZ)
 
@@ -94,6 +96,8 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 			require.NotNil(t, vBlk.Capella)
 			blkSSZ, err = vBlk.Capella.MarshalSSZ()
 			require.NoError(t, err)
+		default:
+			require.Failf(t, "unknown block version %s", vBlk.Version.String())
 		}
 		require.EqualValues(t, test.DataBlk, blkSSZ)
 	}
