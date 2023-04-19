@@ -135,7 +135,7 @@ type SignedMessage struct {
 	Signers   []types.OperatorID `ssz-max:"13"`
 	Message   Message            // message for which this signature is for
 
-	FullData []byte `ssz-max:"1073872896"` // 2^30+2^17
+	FullData []byte `ssz-max:"4219064"` // 2^22 + 2^15 (see SSV message max size)
 }
 
 func (signedMsg *SignedMessage) GetSignature() types.Signature {

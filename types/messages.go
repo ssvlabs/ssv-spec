@@ -103,7 +103,14 @@ type MessageSignature interface {
 type SSVMessage struct {
 	MsgType MsgType
 	MsgID   MessageID `ssz-size:"56"`
-	Data    []byte    `ssz-max:"1074003968"` // 2^30+2^18
+	// Data max size as following
+	// Needs to support the largest ConsensusData possible which is
+	//		Duty(8 + 48 + 6*8 + 13*8)
+	//		Version (8)
+	// 		13*SignedPartialSignatureMessage(8 + 96 + PartialSignatureMessages(2*8 + 13*PartialSignatureMessage(96+32+8)))
+	//		DataSSZ max 2^22 = 4,194,304
+	// Max size is 4,219,064 = 2^22 + 2^15
+	Data []byte `ssz-max:"4219064"` // 2^22 + 2^15
 }
 
 func (msg *SSVMessage) GetType() MsgType {
