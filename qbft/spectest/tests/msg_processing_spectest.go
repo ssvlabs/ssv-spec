@@ -3,13 +3,15 @@ package tests
 import (
 	"encoding/hex"
 	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/qbft"
-	comparable2 "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	comparable3 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
-	"github.com/stretchr/testify/require"
-	"testing"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // ChangeProposerFuncInstanceHeight tests with this height will return proposer operator ID 2
@@ -77,7 +79,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot) {
-		diff := comparable3.PrintDiff(test.Pre.State, comparable2.RootRegister[test.PostRoot])
+		diff := typescomparable.PrintDiff(test.Pre.State, qbftcomparable.RootRegister[test.PostRoot])
 		require.Fail(t, "post state not equal", diff)
 	}
 }
