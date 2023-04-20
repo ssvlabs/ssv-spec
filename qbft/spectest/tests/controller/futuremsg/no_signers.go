@@ -2,6 +2,7 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -22,7 +23,24 @@ func NoSigners() tests.SpecTest {
 			msg,
 		},
 		SyncDecidedCalledCnt: 0,
-		ControllerPostRoot:   "3b9cd21ca426a4e9e3188e0c8d931861a8f263636c4c0369da84fe9a99fb2fa5",
+		ControllerPostRoot:   noSignersStateComparison().Register().Root(),
 		ExpectedError:        "invalid future msg: invalid decided msg: message signers is empty",
 	}
+}
+
+func noSignersStateComparison() *qbftcomparable.StateComparison {
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
+	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	contr := testingutils.NewTestingQBFTController(
+		identifier[:],
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		config,
+	)
+	_ = contr.StartNewInstance([]byte{1, 2, 3, 4})
+
+	state := testingutils.BaseInstance().State
+	state.ID = identifier[:]
+	contr.StoredInstances[0].State = state
+
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
