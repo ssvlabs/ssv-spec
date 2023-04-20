@@ -2,11 +2,15 @@ package futuremsg
 
 import (
 	"encoding/hex"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/qbft"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"testing"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 type ControllerSyncSpecTest struct {
@@ -48,7 +52,10 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
-	require.EqualValues(t, test.ControllerPostRoot, hex.EncodeToString(r))
+	if test.ControllerPostRoot != hex.EncodeToString(r) {
+		diff := typescomparable.PrintDiff(contr, qbftcomparable.RootRegister[test.ControllerPostRoot])
+		require.Fail(t, "post state not equal", diff)
+	}
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
