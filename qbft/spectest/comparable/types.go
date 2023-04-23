@@ -7,10 +7,10 @@ import (
 )
 
 // RootRegister is a global registry of expected state roots. e.g. {"0x123": &State{}}
-var RootRegister = map[string]*types.RootGetter{}
+var RootRegister = map[string]*types.Root{}
 
 type StateComparison struct {
-	ExpectedState types.RootGetter
+	ExpectedState types.Root
 }
 
 // Register will register state roots with a global registry to be compared against

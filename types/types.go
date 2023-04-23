@@ -1,5 +1,5 @@
 package types
 
-type RootGetter interface {
-	GetRoot() ([]byte, error)
+type Root interface {
+	GetRoot() ([32]byte, error)
 }

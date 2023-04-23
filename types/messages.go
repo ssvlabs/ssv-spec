@@ -87,11 +87,6 @@ const (
 	DKGMsgType
 )
 
-type Root interface {
-	// GetRoot returns the root used for signing and verification
-	GetRoot() ([32]byte, error)
-}
-
 // MessageSignature includes all functions relevant for a signed message (QBFT message, post consensus msg, etc)
 type MessageSignature interface {
 	Root
