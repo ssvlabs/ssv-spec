@@ -27,10 +27,6 @@ type Syncer interface {
 	SyncDecidedByRange(identifier types.MessageID, from, to Height)
 }
 
-type RootGetter interface {
-	GetRoot() ([]byte, error)
-}
-
 // Network is the interface for networking across QBFT components
 type Network interface {
 	Syncer
