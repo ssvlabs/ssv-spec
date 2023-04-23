@@ -1,11 +1,13 @@
 package latemsg
 
 import (
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // LatePreparePastInstance tests process prepare msg for a previously decided instance
@@ -23,7 +25,7 @@ func LatePreparePastInstance() tests.SpecTest {
 	msgPerHeight[4] = allMsgs[28:35]
 	msgPerHeight[5] = allMsgs[35:42]
 
-	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
+	instanceData := func(height qbft.Height) *tests.RunInstanceData {
 		return &tests.RunInstanceData{
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
@@ -36,30 +38,93 @@ func LatePreparePastInstance() tests.SpecTest {
 				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 			},
-			ControllerPostRoot: postRoot,
+			ControllerPostRoot: latePreparePastInstanceStateComparison(height, nil).Register().Root(),
 		}
 	}
+
+	lateMsg := testingutils.TestingPrepareMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, 4)
 
 	return &tests.ControllerSpecTest{
 		Name: "late prepare past instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97"),
-			instanceData(1, "8aa5464b119518f178d81edf4cea1f4c918f9e084e5262a0e276d3afb00ba620"),
-			instanceData(2, "1799fe0981ae08bde1eae9fef88ef8035f5952974647786287a1a8c36544a5da"),
-			instanceData(3, "2ddf2b8c2f35c8115ddd68120c71e64809bfea6b023ed13e177c2474a95d137d"),
-			instanceData(4, "318816cc8819ad062996704fb4b9990b8088ade0cb4c26816ea0965783bff12e"),
-			instanceData(5, "fd83cdee705de628cf4a9baf9e662c424bf0942c63a680266d7db872d16e9f0a"),
+			instanceData(qbft.FirstHeight),
+			instanceData(1),
+			instanceData(2),
+			instanceData(3),
+			instanceData(4),
+			instanceData(5),
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.TestingPrepareMultiSignerMessageWithHeight(
-						[]*bls.SecretKey{ks.Shares[4]},
-						[]types.OperatorID{4},
-						4,
-					),
+					lateMsg,
 				},
-				ControllerPostRoot: "f604068832f986e37b8b2725fbd426ce3f5bf7d6541d4a7296d7573f36befa27",
+				ControllerPostRoot: latePreparePastInstanceStateComparison(6, lateMsg).Register().Root(),
 			},
 		},
 	}
+}
+
+func latePreparePastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *qbftcomparable.StateComparison {
+	identifier := []byte{1, 2, 3, 4}
+	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	contr := testingutils.NewTestingQBFTController(
+		identifier[:],
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		config,
+	)
+
+	ks := testingutils.Testing4SharesSet()
+	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
+
+	for i := 0; i <= int(height); i++ {
+		contr.Height = qbft.Height(i)
+		_ = contr.StartNewInstance([]byte{1, 2, 3, 4})
+
+		offset := 7 * i
+		msgs := allMsgs[offset : offset+7]
+
+		state := testingutils.BaseInstance().State
+		state.Height = qbft.Height(i)
+
+		// last height
+		if lateMsg != nil && i == int(height) {
+			contr.StoredInstances[0].State = state
+			break
+		}
+
+		state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		state.ProposalAcceptedForCurrentRound.Message.Height = qbft.Height(i)
+		state.LastPreparedRound = 1
+		state.LastPreparedValue = testingutils.TestingQBFTFullData
+		state.Decided = true
+		state.DecidedValue = testingutils.TestingQBFTFullData
+		state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+			qbft.FirstRound: {
+				msgs[0],
+			},
+		}}
+		state.PrepareContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+			qbft.FirstRound: {
+				msgs[1],
+				msgs[2],
+				msgs[3],
+			},
+		}}
+		state.CommitContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+			qbft.FirstRound: {
+				msgs[4],
+				msgs[5],
+				msgs[6],
+			},
+		}}
+
+		if lateMsg != nil && qbft.Height(i) == lateMsg.Message.Height {
+			state.PrepareContainer.Msgs[qbft.FirstRound] = append(state.PrepareContainer.Msgs[qbft.FirstRound], lateMsg)
+		}
+
+		contr.StoredInstances[0].State = state
+	}
+
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
