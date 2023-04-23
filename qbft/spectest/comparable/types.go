@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft"
 )
 
+// RootRegister is a global registry of expected state roots. e.g. {"0x123": &State{}}
 var RootRegister = map[string]*qbft.RootGetter{}
 
 type StateComparison struct {
