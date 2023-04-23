@@ -188,7 +188,8 @@ var TestingPrepareMessageWithFullData = func(sk *bls.SecretKey, id types.Operato
 		Root:       sha256.Sum256(fullData),
 	}
 	ret := SignQBFTMsg(sk, id, msg)
-	ret.FullData = fullData
+	// In prepare messages, the full data is not included in the message. It is only used to calculate the root.
+	ret.FullData = []byte{}
 	return ret
 }
 var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id types.OperatorID, identifier []byte, root [32]byte) *qbft.SignedMessage {
@@ -222,7 +223,8 @@ var TestingPrepareMessageWithParams = func(
 		Root:       root,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
-	ret.FullData = TestingQBFTFullData
+	// In prepare messages, the full data is not included in the message. It is only used to calculate the root.
+	ret.FullData = []byte{}
 	return ret
 }
 var TestingPrepareMultiSignerMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
