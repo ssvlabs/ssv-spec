@@ -3,14 +3,14 @@ package qbftcomparable
 import (
 	"encoding/hex"
 
-	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 // RootRegister is a global registry of expected state roots. e.g. {"0x123": &State{}}
-var RootRegister = map[string]*qbft.RootGetter{}
+var RootRegister = map[string]*types.RootGetter{}
 
 type StateComparison struct {
-	ExpectedState qbft.RootGetter
+	ExpectedState types.RootGetter
 }
 
 // Register will register state roots with a global registry to be compared against
