@@ -153,7 +153,7 @@ var AllTests = []tests.TestF{
 	proposal.UnknownSigner,
 
 	//prepare.DuplicateMsg,
-	//prepare.HappyFlow,
+	prepare.HappyFlow,
 	prepare.MultiSigner,
 	prepare.NoPreviousProposal,
 	prepare.OldRound,
@@ -168,7 +168,7 @@ var AllTests = []tests.TestF{
 	commit.FutureRound,
 	commit.PastRound,
 	commit.DuplicateMsg,
-	//commit.HappyFlow,
+	commit.HappyFlow,
 	commit.PostDecided,
 	commit.WrongData1,
 	//commit.WrongData2,
@@ -182,7 +182,7 @@ var AllTests = []tests.TestF{
 	commit.InvalidValCheck,
 	//commit.NoPrepareQuorum,
 
-	//roundchange.HappyFlow,
+	roundchange.HappyFlow,
 	roundchange.WrongHeight,
 	roundchange.WrongSig,
 	roundchange.UnknownSigner,
