@@ -23,7 +23,7 @@ func WrongSignature() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong commit signature",
 		Pre:           pre,
-		PostRoot:      "976cd5cecd58bba892a38ec0ef02b3aed4656fb89fef473d8af78fedf095439d",
+		PostRoot:      "e193d669741a8555f2d29d9c0dcee3f3937d0e0b33b5872e3d76e3c7493d8205",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: msg signature invalid: failed to verify signature",
 		OutputMessages: []*qbft.SignedMessage{
