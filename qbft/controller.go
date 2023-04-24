@@ -62,15 +62,6 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
 
-	// isFutureMessage returns true if message height is from a future instance.
-	// It takes into consideration a special case where FirstHeight didn't start but  c.Height == FirstHeight (since we bump height on start instance)
-	var isFutureMessage = func(msgHeight Height) bool {
-		if c.Height == FirstHeight && c.StoredInstances.FindInstance(c.Height) == nil {
-			return true
-		}
-		return msgHeight > c.Height
-	}
-
 	/**
 	Main controller processing flow
 	_______________________________
@@ -80,7 +71,7 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	*/
 	if IsDecidedMsg(c.Share, msg) {
 		return c.UponDecided(msg)
-	} else if isFutureMessage(msg.Message.Height) {
+	} else if c.isFutureMessage(msg) {
 		return c.UponFutureMsg(msg)
 	} else {
 		return c.UponExistingInstanceMsg(msg)
@@ -138,6 +129,15 @@ func (c *Controller) bumpHeight() {
 // GetIdentifier returns QBFT Identifier, used to identify messages
 func (c *Controller) GetIdentifier() []byte {
 	return c.Identifier
+}
+
+// isFutureMessage returns true if message height is from a future instance.
+// It takes into consideration a special case where FirstHeight didn't start but  c.Height == FirstHeight (since we bump height on start instance)
+func (c *Controller) isFutureMessage(msg *SignedMessage) bool {
+	if c.Height == FirstHeight && c.StoredInstances.FindInstance(c.Height) == nil {
+		return true
+	}
+	return msg.Message.Height > c.Height
 }
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
