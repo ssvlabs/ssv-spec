@@ -48,7 +48,7 @@ func CurrentInstancePastRound() tests.SpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: "a96bbf6034a156f6a7196c255e60b5f6a592ab30130cab0d3b4ac2cbc1dd9ac4",
+				ControllerPostRoot: "04fb4fb3fa27496654d17ab8354f4560c54a61d0ba0035cfd724d76d7f0c9281",
 			},
 		},
 	}

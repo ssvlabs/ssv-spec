@@ -31,7 +31,7 @@ func LatePrepare() tests.SpecTest {
 					),
 				},
 
-				ControllerPostRoot: "bdef629f3a8234faa1111cba866b04c907b822003410ca0b067111fa0c048841",
+				ControllerPostRoot: "736893a83565dc7ffb47fcc68648ea74d7f296e8a8a276879eb6cd469074a236",
 			},
 		},
 	}

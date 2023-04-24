@@ -48,7 +48,7 @@ func FullFlowAfterDecided() tests.SpecTest {
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 				},
-				ControllerPostRoot: "ac8cbc7f074702dd643312cf277d894b35079706116237e3eb41a82914ee69e9",
+				ControllerPostRoot: "d8ad104b049b410a9c6462af1fce5ff279f04f0820ac79116d5713e3525ab3ca",
 			},
 		},
 	}

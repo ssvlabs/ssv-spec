@@ -56,7 +56,7 @@ func LateRoundChangePastRound() tests.SpecTest {
 						2,
 					),
 				},
-				ControllerPostRoot: "94ff35842a25bfb2379bb5419e83ad32f4e4cc079a2b8cfa6f6e183fd44b8f52",
+				ControllerPostRoot: "d9747bbeaf55566043b0e004c67283561ed139ccf9b393c617b28b0d58fb92be",
 			},
 		},
 	}
