@@ -115,9 +115,9 @@ var AllTests = []tests.TestF{
 	//messages.UnMarshaJustifications,  // TODO: implement
 
 	tests.HappyFlow,
-	//tests.SevenOperators,
-	//tests.TenOperators,
-	//tests.ThirteenOperators,
+	tests.SevenOperators,
+	tests.TenOperators,
+	tests.ThirteenOperators,
 
 	proposal.InvalidFullData,
 	proposal.PastRoundProposalPrevPrepared,
@@ -145,20 +145,20 @@ var AllTests = []tests.TestF{
 	//proposal.InvalidValueCheck, // TODO: implement
 	proposal.MultiSigner,
 	proposal.PostDecided,
-	//proposal.PostPrepared,
+	proposal.PostPrepared,
 	proposal.SecondProposalForRound,
 	proposal.WrongHeight,
 	proposal.WrongProposer,
 	proposal.WrongSignature,
 	proposal.UnknownSigner,
 
-	//prepare.DuplicateMsg,
+	prepare.DuplicateMsg,
 	prepare.HappyFlow,
 	prepare.MultiSigner,
 	prepare.NoPreviousProposal,
 	prepare.OldRound,
 	prepare.FutureRound,
-	//prepare.PostDecided,
+	prepare.PostDecided,
 	prepare.WrongData,
 	prepare.WrongHeight,
 	prepare.WrongSignature,
