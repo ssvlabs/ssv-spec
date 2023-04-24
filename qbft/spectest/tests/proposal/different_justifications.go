@@ -12,7 +12,6 @@ func DifferentJustifications() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 3
 	ks4 := testingutils.Testing4SharesSet()
-	ks10 := testingutils.Testing10SharesSet()
 
 	prepareMsgs1 := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks4.Shares[1], types.OperatorID(1)),
@@ -52,7 +51,7 @@ func DifferentJustifications() tests.SpecTest {
 		PostRoot:      "0ad556ecb45cf0366e4067fad721d5674fed6f75706bfb63fd6d512742fbc46c",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessageWithRound(ks10.Shares[1], types.OperatorID(1), 3),
+			testingutils.TestingPrepareMessageWithRound(ks4.Shares[1], types.OperatorID(1), 3),
 		},
 	}
 }
