@@ -103,8 +103,12 @@ func (c Contributions) SizeSSZ() int {
 
 // ConsensusData holds all relevant duty and data Decided on by consensus
 type ConsensusData struct {
-	Duty                       Duty
-	Version                    spec.DataVersion
+	// Duty max size is
+	// 			8 + 48 + 6*8 + 13*8 = 208 ~= 2^8
+	Duty    Duty
+	Version spec.DataVersion
+	// PreConsensusJustifications max size is
+	//			13*SignedPartialSignatureMessage(96 + 8 + PartialSignatureMessages(2*8 + 13*PartialSignatureMessage(96 + 32 + 8))) = 24544 ~= 2^15
 	PreConsensusJustifications []*SignedPartialSignatureMessage `ssz-max:"13"`
 	// DataSSZ has max size as following
 	// Biggest object is a full beacon block
