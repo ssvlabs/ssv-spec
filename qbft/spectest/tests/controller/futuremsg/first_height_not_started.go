@@ -6,7 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// FirstHeightNotStarted tests a future message for special case (first height not started)
+// FirstHeightNotStarted tests a future message for special case (first height, instance not started)
 func FirstHeightNotStarted() *ControllerSyncSpecTest {
 	ks := testingutils.Testing4SharesSet()
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
