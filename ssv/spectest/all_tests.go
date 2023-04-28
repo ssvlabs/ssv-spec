@@ -89,7 +89,7 @@ var AllTests = []tests.TestF{
 	pre_consensus_justifications.InvalidJustification,
 	pre_consensus_justifications.MissingQuorum,
 	pre_consensus_justifications.DecidedInstance,
-	pre_consensus_justifications.PreviousValidPreConsensus,
+	pre_consensus_justifications.ExistingValidPreConsensus,
 	pre_consensus_justifications.Valid,
 	pre_consensus_justifications.Valid7Operators,
 	pre_consensus_justifications.Valid10Operators,

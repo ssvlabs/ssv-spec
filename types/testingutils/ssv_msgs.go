@@ -57,11 +57,10 @@ var TestProposerConsensusData = &types.ConsensusData{
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
 
-// TestAttesterWithJustificationsConsensusData is an invalid msg sa attester doesn't have pre-consensus
 var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
-	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i+1], i+1))
+	for i := uint64(1); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i], i))
 	}
 
 	return &types.ConsensusData{

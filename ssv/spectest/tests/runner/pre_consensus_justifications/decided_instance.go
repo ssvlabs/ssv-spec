@@ -8,6 +8,7 @@ import (
 )
 
 // DecidedInstance tests a valid pre-consensus justification for a decided instance
+// pre-consensus will return false from shouldProcessingJustificationsForHeight as it's decided
 func DecidedInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 

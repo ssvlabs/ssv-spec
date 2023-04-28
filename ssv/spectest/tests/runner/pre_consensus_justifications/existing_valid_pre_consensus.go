@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PreviousValidPreConsensus tests pre-consensus justification after receiving a valid quorum of pre-consensus
-func PreviousValidPreConsensus() tests.SpecTest {
+// ExistingValidPreConsensus tests pre-consensus justification after receiving a valid quorum of pre-consensus
+func ExistingValidPreConsensus() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {

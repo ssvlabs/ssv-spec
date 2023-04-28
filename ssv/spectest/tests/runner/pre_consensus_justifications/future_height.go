@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// FutureHeight tests justification with height > current height + 1 (not valid)
+// FutureHeight tests justification with height > current height + 1 (will treat it as a future message, pre-consensus won't be processed)
 func FutureHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 

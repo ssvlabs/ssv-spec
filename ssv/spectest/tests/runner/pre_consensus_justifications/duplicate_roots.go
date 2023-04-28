@@ -11,8 +11,8 @@ import (
 func DuplicateRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// duplicateRootsAndPrepareMsg will duplicate signing roots for justifications with more than 1 root
-	duplicateRootsAndPrepareMsg := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
+	// duplicateRootsMsg will duplicate signing roots for justifications with more than 1 root
+	duplicateRootsMsg := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
 		if len(obj.PreConsensusJustifications) > 0 {
 			for _, m := range obj.PreConsensusJustifications {
 				m.Message.Messages = append(m.Message.Messages, m.Message.Messages[0])
@@ -44,7 +44,7 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(duplicateRootsAndPrepareMsg(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
+					testingutils.SSVMsgSyncCommitteeContribution(duplicateRootsMsg(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "2619aeecde47fe0efc36aa98fbb2df9834d9eee77f62abe0d10532dbd5215790",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -57,7 +57,7 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(duplicateRootsAndPrepareMsg(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
+					testingutils.SSVMsgAggregator(duplicateRootsMsg(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "db1b416873d19be76cddc92ded0d442ba0e642514973b5dfec45f587c6ffde15",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -70,7 +70,7 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(duplicateRootsAndPrepareMsg(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(duplicateRootsMsg(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "2754fc7ced14fb15f3f18556bb6b837620287cbbfbf908abafa5a0533fc4bc5f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -83,7 +83,7 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(duplicateRootsAndPrepareMsg(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(duplicateRootsMsg(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "6bd59da9f817b8e40112e58231e36738b9d021db4416c9eeec1dd0236a5362e2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -97,7 +97,7 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(duplicateRootsAndPrepareMsg(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
+					testingutils.SSVMsgAttester(duplicateRootsMsg(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "c913d1b6e4150231615ad2475a26b03403cc40fc7dd90c011c1c24a7bb39ae1a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -107,7 +107,7 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(duplicateRootsAndPrepareMsg(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
+					testingutils.SSVMsgSyncCommittee(duplicateRootsMsg(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "4dbe7550c9fe66953ae2f5066463e8d1288fc37a4cc031b58d4b3e1a87220dc0",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},

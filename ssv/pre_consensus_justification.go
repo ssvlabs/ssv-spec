@@ -21,12 +21,14 @@ func (b *BaseRunner) correctQBFTState(msg *qbft.SignedMessage) bool {
 	return firstHeightNotDecided || notFirstHeightDecided
 }
 
+// shouldProcessingJustificationsForHeight returns true if pre-consensus justification should be processed, false otherwise
 func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMessage) bool {
 	correctMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
 	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
 	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole
 }
 
+// validatePreConsensusJustifications returns an error if pre-consensus justification is invalid, nil otherwise
 func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData, highestDecidedDutySlot phase0.Slot) error {
 	//test invalid consensus data
 	if err := data.Validate(); err != nil {

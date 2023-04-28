@@ -8,6 +8,7 @@ import (
 )
 
 // WrongBeaconRole tests wrong ConsensusData.Duty.Type != runner.BeaconRoleType
+// (changed the consensus data object between runner types, e.g. sync committee receives contribution proof)
 func WrongBeaconRole() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
