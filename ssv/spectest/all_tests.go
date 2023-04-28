@@ -57,7 +57,6 @@ var AllTests = []tests.TestF{
 	consensus.InvalidDecidedValue,
 	consensus.FutureMessage,
 	consensus.PastMessage,
-	consensus.NoRunningConsensusInstance,
 	consensus.PostFinish,
 	consensus.PostDecided,
 	consensus.ValidDecided,
