@@ -44,7 +44,7 @@ func PastSlot() tests.SpecTest {
 		return signed
 	}
 
-	expectedErr := "failed processing consensus message: invalid pre-consensus justification: duty.slot < highest decided slot"
+	expectedErr := "failed processing consensus message: invalid pre-consensus justification: duty.slot <= highest decided slot"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus past slot",
