@@ -15,7 +15,7 @@ func InvalidMsgType() tests.SpecTest {
 		fullData, _ := obj.Encode()
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
+			MsgType:    qbft.PrepareMsgType,  //invalid, qbft.ProposeMsgType expected
 			Height:     1,
 			Round:      qbft.FirstRound,
 			Identifier: id,
