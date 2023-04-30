@@ -66,7 +66,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
 		diff := comparable2.PrintDiff(test.Runner, ssvcomparable.RootRegister[test.PostDutyRunnerStateRoot])
-		require.Fail(t, "post runner state not equal", diff)
+		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), fmt.Sprintf("post runner state not equal\n%s\n", diff))
 	}
 }
 
@@ -135,7 +135,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		}
 
 		// test that slot is correct in broadcasted msg
-		require.EqualValues(t, msg1.Message.Slot, msg2.Message.Slot)
+		require.EqualValues(t, msg1.Message.Slot, msg2.Message.Slot, "incorrect broadcasted slot")
 
 		index++
 	}

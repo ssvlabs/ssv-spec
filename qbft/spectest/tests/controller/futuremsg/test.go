@@ -15,6 +15,7 @@ type ControllerSyncSpecTest struct {
 	SyncDecidedCalledCnt int
 	ControllerPostRoot   string
 	ExpectedError        string
+	SkipInstanceStart    bool
 }
 
 func (test *ControllerSyncSpecTest) TestName() string {
@@ -30,9 +31,11 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 		config,
 	)
 
-	err := contr.StartNewInstance([]byte{1, 2, 3, 4})
-	if err != nil {
-		t.Fatalf(err.Error())
+	if !test.SkipInstanceStart {
+		err := contr.StartNewInstance([]byte{1, 2, 3, 4})
+		if err != nil {
+			t.Fatalf(err.Error())
+		}
 	}
 
 	var lastErr error
