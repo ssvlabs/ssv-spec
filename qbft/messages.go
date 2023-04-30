@@ -52,8 +52,8 @@ type Message struct {
 
 	Root                     [32]byte `ssz-size:"32"`
 	DataRound                Round
-	RoundChangeJustification [][]byte `ssz-max:"13,32768"` // 2^15
-	PrepareJustification     [][]byte `ssz-max:"13,32768"` // 2^15
+	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
+	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
 }
 
 func (msg *Message) GetRoundChangeJustifications() ([]*SignedMessage, error) {
