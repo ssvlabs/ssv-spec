@@ -12,7 +12,7 @@ func InvalidSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
-change slot
+		// change slot
 		if len(obj.PreConsensusJustifications) > 0 {
 			obj.PreConsensusJustifications[0].Message.Slot = testingutils.TestingDutySlot2
 		}
