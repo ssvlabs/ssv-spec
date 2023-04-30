@@ -39,8 +39,8 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 		return errors.New("wrong beacon role")
 	}
 
-	if highestDecidedDutySlot >= data.Duty.Slot {
-		return errors.New("duty.slot < highest decided slot")
+	if data.Duty.Slot <= highestDecidedDutySlot {
+		return errors.New("duty.slot <= highest decided slot")
 	}
 
 	// validate justification quorum
