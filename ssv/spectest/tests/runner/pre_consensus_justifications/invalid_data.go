@@ -11,6 +11,7 @@ import (
 func InvalidData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	// invalidateMsgDataF sets a non ConsensusData data in message, it will fail when decoding
 	invalidateMsgDataF := func(id []byte) *qbft.SignedMessage {
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
