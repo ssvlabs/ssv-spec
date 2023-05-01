@@ -133,9 +133,15 @@ func (msg *Message) Validate() error {
 type SignedMessage struct {
 	Signature types.Signature    `ssz-size:"96"`
 	Signers   []types.OperatorID `ssz-max:"13"`
-	Message   Message            // message for which this signature is for
+	// Message max size is
+	//			3*8 + 56 + 32 + 8
+	//			13*SignedMessage(Nested types, estimated at 2^15)
+	//			13*SignedMessage(Nested types, estimated at 2^15)
+	//			= 852088 ~= 2^20
+	Message Message // message for which this signature is for
 
-	FullData []byte `ssz-max:"1073872896"` // 2^30+2^17
+	// Full data max value is ConsensusData max value ~= 2^22 + 2^16
+	FullData []byte `ssz-max:"4259840"`
 }
 
 func (signedMsg *SignedMessage) GetSignature() types.Signature {

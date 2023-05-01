@@ -243,6 +243,7 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 
 func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller, ks *testingutils.TestKeySet) *qbft.Controller {
 	config := testingutils.TestingConfig(ks)
+	config.ValueCheckF = runner.GetValCheckF()
 	newContr := qbft.NewController(
 		contr.Identifier,
 		contr.Share,

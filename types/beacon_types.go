@@ -34,6 +34,17 @@ const BLSWithdrawalPrefixByte = byte(0)
 // BeaconRole type of the validator role for a specific duty
 type BeaconRole uint64
 
+// List of roles
+const (
+	BNRoleAttester BeaconRole = iota
+	BNRoleAggregator
+	BNRoleProposer
+	BNRoleSyncCommittee
+	BNRoleSyncCommitteeContribution
+
+	BNRoleValidatorRegistration
+)
+
 // String returns name of the role
 func (r BeaconRole) String() string {
 	switch r {
@@ -51,17 +62,6 @@ func (r BeaconRole) String() string {
 		return "UNDEFINED"
 	}
 }
-
-// List of roles
-const (
-	BNRoleAttester BeaconRole = iota
-	BNRoleAggregator
-	BNRoleProposer
-	BNRoleSyncCommittee
-	BNRoleSyncCommitteeContribution
-
-	BNRoleValidatorRegistration
-)
 
 // Duty represent data regarding the duty type with the duty data
 type Duty struct {
