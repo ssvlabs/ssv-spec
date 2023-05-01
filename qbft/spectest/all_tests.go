@@ -32,7 +32,7 @@ var AllTests = []tests.TestF{
 	decided.DuplicateMsg,
 	decided.DuplicateSigners,
 	decided.Invalid,
-	//decided.InvalidFullData, // TODO: implement
+	decided.InvalidFullData,
 	decided.InvalidValCheckData,
 	decided.PastInstance,
 	decided.UnknownSigner,
@@ -110,9 +110,9 @@ var AllTests = []tests.TestF{
 	messages.CreateRoundChangePreviouslyPrepared,
 	messages.RoundChangeDataEncoding,
 	messages.SignedMessageSigner0,
-	//messages.MarshaJustifications,  // TODO: implement
-	//messages.MarshaJustificationsWithFullData,  // TODO: implement
-	//messages.UnMarshaJustifications,  // TODO: implement
+	messages.MarshalJustificationsWithoutFullData,
+	messages.MarshalJustificationsWithFullData,
+	messages.UnmarshalJustifications,
 
 	tests.HappyFlow,
 	tests.SevenOperators,
@@ -142,7 +142,7 @@ var AllTests = []tests.TestF{
 	proposal.DuplicateRCMsg,
 	proposal.InvalidPrepareJustificationValue,
 	proposal.InvalidPrepareJustificationRound,
-	//proposal.InvalidValueCheck, // TODO: implement
+	proposal.InvalidValueCheck,
 	proposal.MultiSigner,
 	proposal.PostDecided,
 	proposal.PostPrepared,
