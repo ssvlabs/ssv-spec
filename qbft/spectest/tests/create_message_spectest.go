@@ -17,8 +17,11 @@ const (
 )
 
 type CreateMsgSpecTest struct {
-	Name                                             string
-	Value                                            [32]byte
+	Name string
+	//TODO rename to root
+	Value [32]byte
+	//TODO rename to value
+	StateValue                                       []byte
 	Round                                            qbft.Round
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
@@ -28,29 +31,34 @@ type CreateMsgSpecTest struct {
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	var msg *qbft.SignedMessage
-	var lastErr error
+	var err error
 	switch test.CreateType {
 	case CreateProposal:
-		msg, lastErr = test.createProposal()
+		msg, err = test.createProposal()
 	case CreatePrepare:
-		msg, lastErr = test.createPrepare()
+		msg, err = test.createPrepare()
 	case CreateCommit:
-		msg, lastErr = test.createCommit()
+		msg, err = test.createCommit()
 	case CreateRoundChange:
-		msg, lastErr = test.createRoundChange()
+		msg, err = test.createRoundChange()
 	default:
 		t.Fail()
 	}
 
-	r, err := msg.GetRoot()
-	if err != nil {
-		lastErr = err
+	if err != nil && len(test.ExpectedError) != 0 {
+		require.EqualError(t, err, test.ExpectedError)
+		return
+	} else {
+		require.NoError(t, err)
 	}
 
+	r, err2 := msg.GetRoot()
+
 	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
+		require.EqualError(t, err2, test.ExpectedError)
+		return
 	} else {
-		require.NoError(t, lastErr)
+		require.NoError(t, err2)
 	}
 
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
@@ -92,14 +100,15 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		Share:            testingutils.TestingShare(ks),
+		ID:               []byte{1, 2, 3, 4},
+		PrepareContainer: qbft.NewMsgContainer(),
 	}
 	config := testingutils.TestingConfig(ks)
 
 	if len(test.PrepareJustifications) > 0 {
 		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
-		state.LastPreparedValue = test.Value[:]
+		state.LastPreparedValue = test.StateValue
 
 		for _, msg := range test.PrepareJustifications {
 			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
