@@ -13,6 +13,8 @@ import (
 // LateDecidedBiggerQuorum tests processing a decided msg for a just decided instance (with a bigger quorum)
 func LateDecidedBiggerQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := lateDecidedBiggerQuorumStateComparison()
+
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3], ks.Shares[4]}, []types.OperatorID{1, 2, 3, 4}))
 	return &tests.ControllerSpecTest{
@@ -26,7 +28,8 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 					DecidedVal:         testingutils.TestingQBFTFullData,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
 				},
-				ControllerPostRoot: lateDecidedBiggerQuorumStateComparison().Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}
@@ -77,5 +80,5 @@ func lateDecidedBiggerQuorumStateComparison() *qbftcomparable.StateComparison {
 
 	contr.StoredInstances[0].State = state
 
-	return &qbftcomparable.StateComparison{RootGetter: contr}
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }

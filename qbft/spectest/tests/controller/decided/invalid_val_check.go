@@ -15,6 +15,8 @@ import (
 // InvalidValCheckData tests a decided message with invalid decided data (but should pass as it's decided)
 func InvalidValCheckData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := invalidValCheckDataStateComparison()
+
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid value (should pass)",
 		RunInstanceData: []*tests.RunInstanceData{
@@ -35,7 +37,8 @@ func InvalidValCheckData() tests.SpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingInvalidValueCheck,
 				},
-				ControllerPostRoot: invalidValCheckDataStateComparison().Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}
@@ -72,5 +75,5 @@ func invalidValCheckDataStateComparison() *qbftcomparable.StateComparison {
 
 	contr.StoredInstances[0].State = state
 
-	return &qbftcomparable.StateComparison{RootGetter: contr}
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }

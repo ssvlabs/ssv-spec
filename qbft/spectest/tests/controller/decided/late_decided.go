@@ -13,6 +13,8 @@ import (
 // LateDecided tests processing a decided msg for a just decided instance
 func LateDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := lateDecidedStateComparison()
+
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[4]}, []types.OperatorID{1, 2, 4}))
 	return &tests.ControllerSpecTest{
@@ -26,7 +28,8 @@ func LateDecided() tests.SpecTest {
 					DecidedVal:         testingutils.TestingQBFTFullData,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
 				},
-				ControllerPostRoot: lateDecidedStateComparison().Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}
@@ -76,5 +79,5 @@ func lateDecidedStateComparison() *qbftcomparable.StateComparison {
 
 	contr.StoredInstances[0].State = state
 
-	return &qbftcomparable.StateComparison{RootGetter: contr}
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }

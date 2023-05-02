@@ -13,6 +13,7 @@ import (
 // CurrentInstance tests a decided msg received for current running instance
 func CurrentInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := currentInstanceStateComparison()
 
 	return &tests.ControllerSpecTest{
 		Name: "decide current instance",
@@ -34,7 +35,8 @@ func CurrentInstance() tests.SpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: currentInstanceStateComparison().Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}
@@ -81,5 +83,5 @@ func currentInstanceStateComparison() *qbftcomparable.StateComparison {
 
 	contr.StoredInstances[0].State = state
 
-	return &qbftcomparable.StateComparison{RootGetter: contr}
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
