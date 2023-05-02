@@ -26,7 +26,7 @@ type RunInstanceData struct {
 	InputValue           []byte
 	InputMessages        []*qbft.SignedMessage
 	ControllerPostRoot   string
-	ControllerPostState  types.Root
+	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedTimerState   *testingutils.TimerState
 	ExpectedDecidedState DecidedState
 }
