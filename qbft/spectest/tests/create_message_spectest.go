@@ -57,10 +57,9 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, err2, test.ExpectedError)
 		return
-	} else {
-		require.NoError(t, err2)
 	}
 
+	require.NoError(t, err2)
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 }
 
