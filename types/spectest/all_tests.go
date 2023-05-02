@@ -53,12 +53,12 @@ var AllTests = []SpecTest{
 	//consensusdata.EmptySyncCommitteeAggregator(),
 	// TODO: add new consensusdata tests
 
-	//consensusdataproposer.VersionedBlockValidation(),
-	//consensusdataproposer.VersionedBlindedBlockValidation(),
+	consensusdataproposer.VersionedBlockValidation(),
+	consensusdataproposer.VersionedBlindedBlockValidation(),
 	consensusdataproposer.VersionedBlockUnknownVersion(),
 	consensusdataproposer.VersionedBlindedBlockUnknownVersion(),
-	//consensusdataproposer.VersionedBlockConsensusDataNil(),
-	//consensusdataproposer.VersionedBlindedBlockConsensusDataNil(),
+	consensusdataproposer.VersionedBlockConsensusDataNil(),
+	consensusdataproposer.VersionedBlindedBlockConsensusDataNil(),
 
 	beacon.DepositData(),
 }
