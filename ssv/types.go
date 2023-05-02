@@ -40,9 +40,9 @@ type ProposerCalls interface {
 	// GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
 	GetBlindedBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// SubmitBeaconBlock submit the block to the node
-	SubmitBeaconBlock(block *spec.VersionedSignedBeaconBlock) error
+	SubmitBeaconBlock(block *spec.VersionedBeaconBlock, sig phase0.BLSSignature) error
 	// SubmitBlindedBeaconBlock submit the blinded block to the node
-	SubmitBlindedBeaconBlock(block *api.VersionedSignedBlindedBeaconBlock) error
+	SubmitBlindedBeaconBlock(block *api.VersionedBlindedBeaconBlock, sig phase0.BLSSignature) error
 }
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls

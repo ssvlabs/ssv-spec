@@ -4,13 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 
-	"github.com/attestantio/go-eth2-client/api"
-	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
-	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -206,35 +200,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 				return errors.Wrap(err, "could not get blinded block")
 			}
 
-			var blkToSubmit *api.VersionedSignedBlindedBeaconBlock
-			switch vBlindedBlk.Version {
-			case spec.DataVersionBellatrix:
-				if vBlindedBlk.Bellatrix == nil {
-					return errors.New("bellatrix blinded block is nil")
-				}
-				blkToSubmit = &api.VersionedSignedBlindedBeaconBlock{
-					Version: spec.DataVersionBellatrix,
-					Bellatrix: &apiv1bellatrix.SignedBlindedBeaconBlock{
-						Message: vBlindedBlk.Bellatrix,
-					},
-				}
-				copy(blkToSubmit.Bellatrix.Signature[:], specSig[:])
-			case spec.DataVersionCapella:
-				if vBlindedBlk.Capella == nil {
-					return errors.New("capella blinded block is nil")
-				}
-				blkToSubmit = &api.VersionedSignedBlindedBeaconBlock{
-					Version: spec.DataVersionCapella,
-					Capella: &apiv1capella.SignedBlindedBeaconBlock{
-						Message: vBlindedBlk.Capella,
-					},
-				}
-				copy(blkToSubmit.Capella.Signature[:], specSig[:])
-			default:
-				return errors.New("unknown blinded block version")
-			}
-
-			if err := r.GetBeaconNode().SubmitBlindedBeaconBlock(blkToSubmit); err != nil {
+			if err := r.GetBeaconNode().SubmitBlindedBeaconBlock(vBlindedBlk, specSig); err != nil {
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
 			}
 		} else {
@@ -243,56 +209,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 				return errors.Wrap(err, "could not get block")
 			}
 
-			var blkToSubmit *spec.VersionedSignedBeaconBlock
-			switch vBlk.Version {
-			case spec.DataVersionPhase0:
-				if vBlk.Phase0 == nil {
-					return errors.New("phase0 block is nil")
-				}
-				blkToSubmit = &spec.VersionedSignedBeaconBlock{
-					Version: spec.DataVersionPhase0,
-					Phase0: &phase0.SignedBeaconBlock{
-						Message: vBlk.Phase0,
-					},
-				}
-				copy(blkToSubmit.Phase0.Signature[:], specSig[:])
-			case spec.DataVersionAltair:
-				if vBlk.Altair == nil {
-					return errors.New("altair block is nil")
-				}
-				blkToSubmit = &spec.VersionedSignedBeaconBlock{
-					Version: spec.DataVersionAltair,
-					Altair: &altair.SignedBeaconBlock{
-						Message: vBlk.Altair,
-					},
-				}
-				copy(blkToSubmit.Altair.Signature[:], specSig[:])
-			case spec.DataVersionBellatrix:
-				if vBlk.Bellatrix == nil {
-					return errors.New("bellatrix block is nil")
-				}
-				blkToSubmit = &spec.VersionedSignedBeaconBlock{
-					Version: spec.DataVersionBellatrix,
-					Bellatrix: &bellatrix.SignedBeaconBlock{
-						Message: vBlk.Bellatrix,
-					},
-				}
-				copy(blkToSubmit.Bellatrix.Signature[:], specSig[:])
-			case spec.DataVersionCapella:
-				if vBlk.Capella == nil {
-					return errors.New("capella block is nil")
-				}
-				blkToSubmit = &spec.VersionedSignedBeaconBlock{
-					Version: spec.DataVersionCapella,
-					Capella: &capella.SignedBeaconBlock{
-						Message: vBlk.Capella,
-					},
-				}
-				copy(blkToSubmit.Capella.Signature[:], specSig[:])
-			default:
-				return errors.New("unknown block version")
-			}
-			if err := r.GetBeaconNode().SubmitBeaconBlock(blkToSubmit); err != nil {
+			if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, specSig); err != nil {
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
 			}
 		}

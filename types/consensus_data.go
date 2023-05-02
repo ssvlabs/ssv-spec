@@ -210,7 +210,7 @@ func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, ssz.HashRoo
 		}
 		return &spec.VersionedBeaconBlock{Capella: ret, Version: spec.DataVersionCapella}, ret, nil
 	default:
-		return nil, nil, errors.New("unknown beacon block version")
+		return nil, nil, errors.Errorf("unknown block version %s", ci.Version.String())
 	}
 }
 
@@ -229,7 +229,7 @@ func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedBeaconBlock
 		}
 		return &api.VersionedBlindedBeaconBlock{Capella: ret, Version: spec.DataVersionCapella}, ret, nil
 	default:
-		return nil, nil, errors.New("unknown blinded beacon block version")
+		return nil, nil, errors.Errorf("unknown blinded block version %s", ci.Version.String())
 	}
 }
 
