@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -11,6 +12,7 @@ import (
 func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
+	sc := preparedPreviouslyNoPrepareJustificationQuorumStateComparison()
 
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
@@ -34,9 +36,16 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "no prepare quorum (prepared)",
 		Pre:            pre,
-		PostRoot:       "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
+		PostRoot:       sc.Root(),
+		PostState:      sc.ExpectedState,
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 	}
+}
+
+func preparedPreviouslyNoPrepareJustificationQuorumStateComparison() *qbftcomparable.StateComparison {
+	state := testingutils.BaseInstance().State
+
+	return &qbftcomparable.StateComparison{ExpectedState: state}
 }
