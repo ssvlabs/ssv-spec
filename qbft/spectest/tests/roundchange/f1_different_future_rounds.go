@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -11,6 +12,7 @@ import (
 func F1DifferentFutureRounds() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
+	sc := f1DifferentFutureRoundsStateComparison()
 
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
@@ -27,7 +29,8 @@ func F1DifferentFutureRounds() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change f+1 prepared",
 		Pre:           pre,
-		PostRoot:      "141d47f572e1620701feab85a1131206783f540e418693fabb80992a68ebaf16",
+		PostRoot:      sc.Root(),
+		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 5, qbft.FirstHeight,
@@ -38,4 +41,29 @@ func F1DifferentFutureRounds() tests.SpecTest {
 			Round:    qbft.Round(5),
 		},
 	}
+}
+
+func f1DifferentFutureRoundsStateComparison() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	}
+
+	state := testingutils.BaseInstance().State
+	state.Round = 5
+
+	state.RoundChangeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+		qbft.Round(5): {
+			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
+		},
+		qbft.Round(10): {
+			testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[2], types.OperatorID(2), 10,
+				testingutils.MarshalJustifications(prepareMsgs)),
+		},
+	}}
+
+	return &qbftcomparable.StateComparison{ExpectedState: state}
 }
