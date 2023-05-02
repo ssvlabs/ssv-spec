@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -12,6 +13,7 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
+	sc := duplicateMsgQuorumPreparedRCFirstStateComparison()
 
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
@@ -36,7 +38,8 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change duplicate msg quorum (prev prepared rc first)",
 		Pre:           pre,
-		PostRoot:      "ce52b74e850002c75ea9a52749285b8778c0411989e2e0547547ed26bdb31211",
+		PostRoot:      sc.Root(),
+		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
@@ -44,4 +47,27 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 				testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
+}
+
+func duplicateMsgQuorumPreparedRCFirstStateComparison() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	}
+
+	state := testingutils.BaseInstance().State
+	state.Round = 2
+	state.RoundChangeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+		qbft.Round(2): {
+			testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+				testingutils.MarshalJustifications(prepareMsgs)),
+			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		},
+	}}
+
+	return &qbftcomparable.StateComparison{ExpectedState: state}
 }
