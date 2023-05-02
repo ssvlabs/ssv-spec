@@ -7,7 +7,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// CreateRoundChangePreviouslyPrepared tests creating a round change msg,previously prepared
+// CreateRoundChangeNoJustificationQuorum tests creating a round change msg that was previouly prepared
+// but failed to extract a justification quorum (shouldn't happen).
+// The result should be an unjustified round change.
 func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.CreateMsgSpecTest{
