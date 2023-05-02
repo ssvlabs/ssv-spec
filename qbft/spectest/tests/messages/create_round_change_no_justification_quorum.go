@@ -18,6 +18,6 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 			testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
 		},
-		ExpectedError: "could not generate round change data: could not get round change justification: no quorum for round change justification",
+		ExpectedRoot: "c6e6708c8c4d562d3f1911fb409f13af60caa59e543b85f1720086956d680d29",
 	}
 }
