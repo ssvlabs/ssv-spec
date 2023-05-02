@@ -12,6 +12,7 @@ import (
 func RoundChangePartialQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
+	sc := roundChangePartialQuorumStateComparison()
 
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
@@ -22,7 +23,8 @@ func RoundChangePartialQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change partial quorum",
 		Pre:           pre,
-		PostRoot:      "a91c62dca4813bc577f3441b7ce9e221fb96af65aa14b56af88af69c784b586e",
+		PostRoot:      sc.Root(),
+		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
@@ -44,6 +46,8 @@ func roundChangePartialQuorumStateComparison() *qbftcomparable.StateComparison {
 		qbft.Round(2): {
 			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
 			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		},
+		qbft.Round(3): {
 			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
 		},
 	}}
