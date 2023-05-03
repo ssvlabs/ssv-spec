@@ -2,7 +2,9 @@ package prepare
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -10,6 +12,7 @@ import (
 func AllPreparesSent() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
+	sc := allPreparesSentStateComparison()
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessage(ks.Shares[1], 1),
 
@@ -24,11 +27,45 @@ func AllPreparesSent() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "all prepares sent",
 		Pre:           pre,
-		PostRoot:      "a3b1009cdc2ee22b439eab30cb89aa368171d1c87589c756300286393bd78631",
+		PostRoot:      sc.Root(),
+		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),
 			testingutils.TestingCommitMessage(ks.Shares[1], 1),
 		},
 	}
+}
+
+func allPreparesSentStateComparison() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	state := testingutils.BaseInstance().State
+	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
+
+	state.LastPreparedRound = 1
+	state.LastPreparedValue = testingutils.TestingQBFTFullData
+
+	state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+		qbft.FirstRound: {
+			testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+		},
+	}}
+
+	state.PrepareContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+		qbft.FirstRound: {
+			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+			testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+			testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+			testingutils.TestingPrepareMessage(ks.Shares[4], types.OperatorID(4)),
+		},
+	}}
+
+	state.CommitContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+		qbft.FirstRound: {
+			testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1)),
+		},
+	}}
+
+	return &qbftcomparable.StateComparison{ExpectedState: state}
 }
