@@ -511,7 +511,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 	switch block.Version {
 	case spec.DataVersionPhase0:
 		if block.Phase0 == nil {
-			return errors.New("phase0 block is nil")
+			return errors.Errorf("%s block is nil", block.Version.String())
 		}
 		sb := &phase0.SignedBeaconBlock{
 			Message:   block.Phase0,
@@ -520,7 +520,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 		r, _ = sb.HashTreeRoot()
 	case spec.DataVersionAltair:
 		if block.Altair == nil {
-			return errors.New("altair block is nil")
+			return errors.Errorf("%s block is nil", block.Version.String())
 		}
 		sb := &altair.SignedBeaconBlock{
 			Message:   block.Altair,
@@ -529,7 +529,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 		r, _ = sb.HashTreeRoot()
 	case spec.DataVersionBellatrix:
 		if block.Bellatrix == nil {
-			return errors.New("bellatrix block is nil")
+			return errors.Errorf("%s block is nil", block.Version.String())
 		}
 		sb := &bellatrix.SignedBeaconBlock{
 			Message:   block.Bellatrix,
@@ -538,7 +538,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 		r, _ = sb.HashTreeRoot()
 	case spec.DataVersionCapella:
 		if block.Capella == nil {
-			return errors.New("capella block is nil")
+			return errors.Errorf("%s block is nil", block.Version.String())
 		}
 		sb := &capella.SignedBeaconBlock{
 			Message:   block.Capella,
@@ -565,7 +565,7 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlinde
 	switch block.Version {
 	case spec.DataVersionBellatrix:
 		if block.Bellatrix == nil {
-			return errors.New("capella blinded block is nil")
+			return errors.Errorf("%s blinded block is nil", block.Version.String())
 		}
 		sb := &apiv1bellatrix.SignedBlindedBeaconBlock{
 			Message:   block.Bellatrix,
@@ -574,7 +574,7 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlinde
 		r, _ = sb.HashTreeRoot()
 	case spec.DataVersionCapella:
 		if block.Capella == nil {
-			return errors.New("capella blinded block is nil")
+			return errors.Errorf("%s blinded block is nil", block.Version.String())
 		}
 		sb := &apiv1capella.SignedBlindedBeaconBlock{
 			Message:   block.Capella,
