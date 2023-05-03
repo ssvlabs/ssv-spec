@@ -6,11 +6,13 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// AllPreparesSentLateCommit is a spec test that checks the case where all prepares are sent and quorum event is triggered more than once.
+// PrepareQuorumTriggeredTwiceLateCommit is a spec test that checks the case where all prepares are sent and quorum event is triggered more than once.
 // A commit message was seen only after the last prepare
-func AllPreparesSentLateCommit() tests.SpecTest {
+func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
+	sc := prepareQuorumTriggeredTwiceStateComparison()
+
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessage(ks.Shares[1], 1),
 
@@ -24,7 +26,8 @@ func AllPreparesSentLateCommit() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "all prepares sent",
 		Pre:           pre,
-		PostRoot:      "a3b1009cdc2ee22b439eab30cb89aa368171d1c87589c756300286393bd78631",
+		PostRoot:      sc.Root(),
+		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),
