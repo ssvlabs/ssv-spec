@@ -2,10 +2,12 @@ package synccommitteeaggregator
 
 import (
 	"encoding/hex"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type SyncCommitteeAggregatorProofSpecTest struct {
@@ -45,7 +47,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 	// post root
 	postRoot, err := r.GetBaseRunner().State.GetRoot()
 	require.NoError(t, err)
-	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot))
+	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
 }
 
 func keySetForShare(share *types.Share) *testingutils.TestKeySet {

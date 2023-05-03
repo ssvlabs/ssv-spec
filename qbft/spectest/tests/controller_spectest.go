@@ -3,12 +3,14 @@ package tests
 import (
 	"bytes"
 	"encoding/hex"
+	"reflect"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"reflect"
-	"testing"
 )
 
 type DecidedState struct {
@@ -169,7 +171,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	// test root
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
-	require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r))
+	require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r[:]))
 
 	return lastErr
 }
