@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
 	consensusdataproposer "github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata/proposer"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
 
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
@@ -59,6 +60,8 @@ var AllTests = []SpecTest{
 	consensusdataproposer.VersionedBlindedBlockUnknownVersion(),
 	consensusdataproposer.VersionedBlockConsensusDataNil(),
 	consensusdataproposer.VersionedBlindedBlockConsensusDataNil(),
+
+	ssz.SSZWithdrawalsMarshaling(),
 
 	beacon.DepositData(),
 }
