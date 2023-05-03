@@ -3,14 +3,15 @@ package tests
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/comparable"
-	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"testing"
+
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
 )
 
 type MsgProcessingSpecTest struct {
@@ -19,6 +20,7 @@ type MsgProcessingSpecTest struct {
 	Duty                    *types.Duty
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
+	PostDutyRunnerState     ssv.Runner
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
 	OutputMessages         []*types.SignedPartialSignatureMessage
 	BeaconBroadcastedRoots []string
@@ -65,7 +67,9 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	fmt.Printf("%s - %s\n", test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
 
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
-		diff := comparable2.PrintDiff(test.Runner, ssvcomparable.RootRegister[test.PostDutyRunnerStateRoot])
+		diff := typescomparable.PrintDiff(test.Runner, test.PostDutyRunnerState)
+		//fmt.Println(diff)
+		//require.Fail(t, "post state not equal", diff)
 		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), fmt.Sprintf("post runner state not equal\n%s\n", diff))
 	}
 }

@@ -2,6 +2,7 @@ package runner
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/ssv"
@@ -145,7 +146,7 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable2.FixIssue178(testingutils.TestProposerConsensusData, spec.DataVersionBellatrix),
+				DecidedValue: comparable2.FixIssue178(testingutils.TestProposerConsensusData, spec.DataVersionCapella),
 				StartingDuty: &testingutils.TestProposerConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
@@ -187,7 +188,7 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable2.FixIssue178(testingutils.TestProposerBlindedBlockConsensusData, spec.DataVersionBellatrix),
+				DecidedValue: comparable2.FixIssue178(testingutils.TestProposerBlindedBlockConsensusData, spec.DataVersionCapella),
 				StartingDuty: &testingutils.TestProposerConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
