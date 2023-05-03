@@ -146,7 +146,7 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable2.FixIssue178(testingutils.TestProposerConsensusData, spec.DataVersionCapella),
+				DecidedValue: comparable2.FixIssue178(testingutils.TestProposerConsensusData, spec.DataVersionBellatrix),
 				StartingDuty: &testingutils.TestProposerConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
@@ -188,7 +188,7 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable2.FixIssue178(testingutils.TestProposerBlindedBlockConsensusData, spec.DataVersionCapella),
+				DecidedValue: comparable2.FixIssue178(testingutils.TestProposerBlindedBlockConsensusData, spec.DataVersionBellatrix),
 				StartingDuty: &testingutils.TestProposerConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
