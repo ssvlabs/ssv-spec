@@ -29,6 +29,8 @@ func AllPreparesSentLateCommit() tests.SpecTest {
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),
 			testingutils.TestingCommitMessage(ks.Shares[1], 1),
+			// ISSUE 214: we should have only commit broadcasted
+			testingutils.TestingCommitMessage(ks.Shares[1], 1),
 		},
 	}
 }
