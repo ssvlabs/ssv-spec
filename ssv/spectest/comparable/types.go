@@ -17,8 +17,8 @@ type StateComparison struct {
 }
 
 // Roots returns all runner roots as string
-func (stateComp *StateComparison) Roots() []string {
-	roots := make([]string, 0)
+func (stateComp *StateComparison) Roots() map[ssv.Runner]string {
+	roots := map[ssv.Runner]string{}
 	for _, runner := range []ssv.Runner{
 		stateComp.SyncCommitteeContribution,
 		stateComp.SyncCommittee,
@@ -35,7 +35,8 @@ func (stateComp *StateComparison) Roots() []string {
 		if err != nil {
 			panic(err.Error())
 		}
-		roots = append(roots, hex.EncodeToString(r[:]))
+
+		roots[runner] = hex.EncodeToString(r[:])
 	}
 	return roots
 }
