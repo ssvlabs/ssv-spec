@@ -68,8 +68,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
 		diff := typescomparable.PrintDiff(test.Runner, test.PostDutyRunnerState)
-		//fmt.Println(diff)
-		//require.Fail(t, "post state not equal", diff)
 		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), fmt.Sprintf("post runner state not equal\n%s\n", diff))
 	}
 }
