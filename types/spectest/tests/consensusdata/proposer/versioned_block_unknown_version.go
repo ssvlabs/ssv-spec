@@ -24,11 +24,8 @@ func VersionedBlockUnknownVersion() *ProposerSpecTest {
 	}
 
 	return &ProposerSpecTest{
-		Name:            "consensus data versioned block unknown version",
-		DataCd:          cdSSZ,
-		DataBlk:         nil,
-		ExpectedCdRoot:  [32]byte{},
-		ExpectedBlkRoot: [32]byte{},
-		ExpectedError:   fmt.Sprintf("unknown block version %s", unknownDataVersion.String()),
+		Name:          "consensus data versioned block unknown version",
+		DataCd:        cdSSZ,
+		ExpectedError: fmt.Sprintf("unknown block version %s", unknownDataVersion.String()),
 	}
 }
