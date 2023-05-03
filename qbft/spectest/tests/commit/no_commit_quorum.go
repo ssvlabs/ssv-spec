@@ -2,7 +2,9 @@ package commit
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -10,6 +12,7 @@ import (
 func NoCommitQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
+	sc := NoCommitQuorumStateComparison()
 
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessage(ks.Shares[1], 1),
@@ -24,11 +27,45 @@ func NoCommitQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "no commit quorum",
 		Pre:           pre,
-		PostRoot:      "0a940d3ffeb4d28f3ef9de1f119aeade7ad6ec9b998548b24bd00b79739e3e0f",
+		PostRoot:      sc.Root(),
+		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),
 			testingutils.TestingCommitMessage(ks.Shares[1], 1),
 		},
 	}
+}
+
+func NoCommitQuorumStateComparison() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	state := testingutils.BaseInstance().State
+	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
+
+	state.LastPreparedRound = 1
+	state.LastPreparedValue = testingutils.TestingQBFTFullData
+
+	state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+		qbft.FirstRound: {
+			testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+		},
+	}}
+
+	state.PrepareContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+		qbft.FirstRound: {
+			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+			testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+			testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+		},
+	}}
+
+	state.CommitContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+		qbft.FirstRound: {
+			testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1)),
+			testingutils.TestingCommitMessage(ks.Shares[2], types.OperatorID(2)),
+		},
+	}}
+
+	return &qbftcomparable.StateComparison{ExpectedState: state}
 }
