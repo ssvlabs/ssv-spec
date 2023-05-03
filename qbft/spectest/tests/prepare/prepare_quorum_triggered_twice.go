@@ -8,11 +8,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// AllPreparesSent is a spec test that checks the case where all prepares are sent and quorum event is triggered more than once.
-func AllPreparesSent() tests.SpecTest {
+// PrepareQuorumTriggeredTwice is a spec test that checks the case where all prepares are sent and quorum event is triggered more than once.
+func PrepareQuorumTriggeredTwice() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
-	sc := allPreparesSentStateComparison()
+	sc := prepareQuorumTriggeredTwiceStateComparison()
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessage(ks.Shares[1], 1),
 
@@ -37,7 +37,7 @@ func AllPreparesSent() tests.SpecTest {
 	}
 }
 
-func allPreparesSentStateComparison() *qbftcomparable.StateComparison {
+func prepareQuorumTriggeredTwiceStateComparison() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	state := testingutils.BaseInstance().State
