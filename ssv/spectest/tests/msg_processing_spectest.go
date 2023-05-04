@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"testing"
 
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 type MsgProcessingSpecTest struct {
@@ -20,7 +19,7 @@ type MsgProcessingSpecTest struct {
 	Duty                    *types.Duty
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
-	PostDutyRunnerState     ssv.Runner
+	PostDutyRunnerState     types.Root
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
 	OutputMessages         []*types.SignedPartialSignatureMessage
 	BeaconBroadcastedRoots []string
@@ -63,8 +62,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	// post root
 	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
-
-	fmt.Printf("%s - %s\n", test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
 
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
 		diff := typescomparable.PrintDiff(test.Runner, test.PostDutyRunnerState)

@@ -12,11 +12,11 @@ import (
 	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// fullHappyFlowStateComparison returns state comparison object for the FullHappyFlow spec test
-func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
+// fullHappyFlowSyncCommitteeContributionSC returns state comparison object for the FullHappyFlow SyncCommitteeContribution spec test
+func fullHappyFlowSyncCommitteeContributionSC() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	return &ssvcomparable.StateComparison{
-		SyncCommitteeContribution: func() ssv.Runner {
+	return &qbftcomparable.StateComparison{
+		ExpectedState: func() types.Root {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
@@ -58,7 +58,14 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
 		}(),
-		SyncCommittee: func() ssv.Runner {
+	}
+}
+
+// fullHappyFlowSyncCommitteeSC returns state comparison object for the FullHappyFlow SyncCommittee spec test
+func fullHappyFlowSyncCommitteeSC() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	return &qbftcomparable.StateComparison{
+		ExpectedState: func() types.Root {
 			ret := testingutils.SyncCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
@@ -100,7 +107,14 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
 		}(),
-		Aggregator: func() ssv.Runner {
+	}
+}
+
+// fullHappyFlowAggregatorSC returns state comparison object for the FullHappyFlow Aggregator spec test
+func fullHappyFlowAggregatorSC() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	return &qbftcomparable.StateComparison{
+		ExpectedState: func() types.Root {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
@@ -142,7 +156,14 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
 		}(),
-		Proposer: func() ssv.Runner {
+	}
+}
+
+// fullHappyFlowProposerSC returns state comparison object for the FullHappyFlow Proposer spec test
+func fullHappyFlowProposerSC() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	return &qbftcomparable.StateComparison{
+		ExpectedState: func() types.Root {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
@@ -184,7 +205,14 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
 		}(),
-		BlindedProposer: func() ssv.Runner {
+	}
+}
+
+// fullHappyFlowBlindedProposerSC returns state comparison object for the FullHappyFlow BlindedProposer spec test
+func fullHappyFlowBlindedProposerSC() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	return &qbftcomparable.StateComparison{
+		ExpectedState: func() types.Root {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
@@ -226,7 +254,14 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
 		}(),
-		Attester: func() ssv.Runner {
+	}
+}
+
+// fullHappyFlowAttesterSC returns state comparison object for the FullHappyFlow Attester spec test
+func fullHappyFlowAttesterSC() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	return &qbftcomparable.StateComparison{
+		ExpectedState: func() types.Root {
 			ret := testingutils.AttesterRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
@@ -268,7 +303,14 @@ func fullHappyFlowStateComparison() *ssvcomparable.StateComparison {
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
 		}(),
-		ValidatorRegistration: func() ssv.Runner {
+	}
+}
+
+// fullHappyFlowValidatorRegistrationSC returns state comparison object for the FullHappyFlow ValidatorRegistration spec test
+func fullHappyFlowValidatorRegistrationSC() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	return &qbftcomparable.StateComparison{
+		ExpectedState: func() types.Root {
 			ret := testingutils.ValidatorRegistrationRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
