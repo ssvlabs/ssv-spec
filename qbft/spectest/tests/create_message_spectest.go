@@ -28,7 +28,7 @@ type CreateMsgSpecTest struct {
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
 	ExpectedRoot                                     string
-	ExpectedState                                    types.Root
+	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
 	ExpectedError                                    string
 }
 
