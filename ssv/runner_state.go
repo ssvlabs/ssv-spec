@@ -3,9 +3,11 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
+	"github.com/pkg/errors"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/pkg/errors"
 )
 
 // State holds all the relevant progress the duty execution progress
@@ -41,13 +43,13 @@ func (pcs *State) ReconstructBeaconSig(container *PartialSigContainer, root [32]
 }
 
 // GetRoot returns the root used for signing and verification
-func (pcs *State) GetRoot() ([]byte, error) {
+func (pcs *State) GetRoot() ([32]byte, error) {
 	marshaledRoot, err := pcs.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode State")
+		return [32]byte{}, errors.Wrap(err, "could not encode State")
 	}
 	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+	return ret, nil
 }
 
 // Encode returns the encoded struct in bytes or error
