@@ -24,7 +24,7 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.Shares[1], 1),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "all prepares sent",
+		Name:          "prepared quorum committed twice late commit",
 		Pre:           pre,
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,

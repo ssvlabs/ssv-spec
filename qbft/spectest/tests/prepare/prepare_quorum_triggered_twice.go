@@ -25,7 +25,7 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.Shares[4], 4),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:          "all prepares sent",
+		Name:          "prepared quorum committed twice",
 		Pre:           pre,
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,
