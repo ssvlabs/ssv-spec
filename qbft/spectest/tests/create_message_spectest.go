@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -26,6 +27,7 @@ type CreateMsgSpecTest struct {
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
 	ExpectedRoot                                     string
+	ExpectedMsg                                      *qbft.SignedMessage
 	ExpectedError                                    string
 }
 
@@ -58,8 +60,12 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 		require.EqualError(t, err2, test.ExpectedError)
 		return
 	}
-
 	require.NoError(t, err2)
+
+	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
+		diff := typescomparable.PrintDiff(test.ExpectedMsg, msg)
+		require.Fail(t, "post state not equal", diff)
+	}
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 }
 
