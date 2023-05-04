@@ -26,6 +26,7 @@ func LateCommitPastInstance() tests.SpecTest {
 	msgPerHeight[5] = allMsgs[35:42]
 
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
+		sc := lateCommitPastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
@@ -38,11 +39,13 @@ func LateCommitPastInstance() tests.SpecTest {
 				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 			},
-			ControllerPostRoot: lateCommitPastInstanceStateComparison(height, nil).Register().Root(),
+			ControllerPostRoot:  sc.Root(),
+			ControllerPostState: sc.ExpectedState,
 		}
 	}
 
 	lateMsg := testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, 4)
+	sc := lateCommitPastInstanceStateComparison(6, lateMsg)
 
 	return &tests.ControllerSpecTest{
 		Name: "late commit past instance",
@@ -58,7 +61,8 @@ func LateCommitPastInstance() tests.SpecTest {
 				InputMessages: []*qbft.SignedMessage{
 					lateMsg,
 				},
-				ControllerPostRoot: lateCommitPastInstanceStateComparison(6, lateMsg).Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}

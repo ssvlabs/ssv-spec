@@ -11,6 +11,7 @@ import (
 // NoSigners tests future msg with no signers
 func NoSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := noSignersStateComparison()
 
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	msg := testingutils.TestingPrepareMessageWithParams(
@@ -23,7 +24,8 @@ func NoSigners() tests.SpecTest {
 			msg,
 		},
 		SyncDecidedCalledCnt: 0,
-		ControllerPostRoot:   noSignersStateComparison().Register().Root(),
+		ControllerPostRoot:   sc.Root(),
+		ControllerPostState:  sc.ExpectedState,
 		ExpectedError:        "invalid future msg: invalid decided msg: message signers is empty",
 	}
 }

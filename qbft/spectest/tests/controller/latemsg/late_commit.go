@@ -13,6 +13,7 @@ import (
 // LateCommit tests process late commit msg for an instance which just decided
 func LateCommit() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := lateCommitStateComparison()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
@@ -32,7 +33,8 @@ func LateCommit() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: lateCommitStateComparison().Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}

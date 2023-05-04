@@ -11,6 +11,7 @@ import (
 // WrongSig tests future msg with invalid sig
 func WrongSig() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := wrongSigStateComparison()
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 
 	return &ControllerSyncSpecTest{
@@ -20,7 +21,8 @@ func WrongSig() tests.SpecTest {
 				identifier[:], testingutils.TestingQBFTRootData),
 		},
 		SyncDecidedCalledCnt: 0,
-		ControllerPostRoot:   wrongSigStateComparison().Register().Root(),
+		ControllerPostRoot:   sc.Root(),
+		ControllerPostState:  sc.ExpectedState,
 		ExpectedError:        "invalid future msg: msg signature invalid: failed to verify signature",
 	}
 }

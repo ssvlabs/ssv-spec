@@ -13,6 +13,7 @@ import (
 // LatePrepare tests process late prepare msg for an instance which just decided
 func LatePrepare() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := latePrepareStateComparison()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
@@ -33,7 +34,8 @@ func LatePrepare() tests.SpecTest {
 					),
 				},
 
-				ControllerPostRoot: latePrepareStateComparison().Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}

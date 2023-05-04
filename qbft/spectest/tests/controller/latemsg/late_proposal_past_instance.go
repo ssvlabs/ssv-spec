@@ -26,6 +26,7 @@ func LateProposalPastInstance() tests.SpecTest {
 	msgPerHeight[5] = allMsgs[35:42]
 
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
+		sc := lateProposalPastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
@@ -38,12 +39,13 @@ func LateProposalPastInstance() tests.SpecTest {
 					height,
 				),
 			},
-
-			ControllerPostRoot: lateProposalPastInstanceStateComparison(height, nil).Register().Root(),
+			ControllerPostRoot:  sc.Root(),
+			ControllerPostState: sc.ExpectedState,
 		}
 	}
 
 	lateMsg := testingutils.TestingMultiSignerProposalMessageWithHeight([]*bls.SecretKey{ks.Shares[1]}, []types.OperatorID{1}, 2)
+	sc := lateProposalPastInstanceStateComparison(6, lateMsg)
 
 	return &tests.ControllerSpecTest{
 		Name: "late proposal past instance",
@@ -59,7 +61,8 @@ func LateProposalPastInstance() tests.SpecTest {
 				InputMessages: []*qbft.SignedMessage{
 					lateMsg,
 				},
-				ControllerPostRoot: lateProposalPastInstanceStateComparison(6, lateMsg).Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: proposal is not valid with current state",

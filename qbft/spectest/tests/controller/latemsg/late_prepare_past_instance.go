@@ -26,6 +26,7 @@ func LatePreparePastInstance() tests.SpecTest {
 	msgPerHeight[5] = allMsgs[35:42]
 
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
+		sc := latePreparePastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
@@ -38,11 +39,13 @@ func LatePreparePastInstance() tests.SpecTest {
 				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 			},
-			ControllerPostRoot: latePreparePastInstanceStateComparison(height, nil).Register().Root(),
+			ControllerPostRoot:  sc.Root(),
+			ControllerPostState: sc.ExpectedState,
 		}
 	}
 
 	lateMsg := testingutils.TestingPrepareMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, 4)
+	sc := latePreparePastInstanceStateComparison(6, lateMsg)
 
 	return &tests.ControllerSpecTest{
 		Name: "late prepare past instance",
@@ -58,7 +61,8 @@ func LatePreparePastInstance() tests.SpecTest {
 				InputMessages: []*qbft.SignedMessage{
 					lateMsg,
 				},
-				ControllerPostRoot: latePreparePastInstanceStateComparison(6, lateMsg).Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}

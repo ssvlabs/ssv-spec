@@ -13,6 +13,7 @@ import (
 // LateProposal tests process late proposal msg for an instance which just decided
 func LateProposal() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := lateProposalStateComparison()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
@@ -32,7 +33,8 @@ func LateProposal() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: lateProposalStateComparison().Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: proposal is not valid with current state",

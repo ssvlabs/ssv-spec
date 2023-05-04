@@ -13,6 +13,7 @@ import (
 // LateRoundChange tests process late round change msg for an instance which just decided
 func LateRoundChange() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := lateRoundChangeStateComparison()
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
@@ -32,8 +33,8 @@ func LateRoundChange() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-
-				ControllerPostRoot: lateRoundChangeStateComparison().Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}

@@ -26,6 +26,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 	msgPerHeight[5] = allMsgs[35:42]
 
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
+		sc := lateRoundChangePastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
@@ -38,12 +39,13 @@ func LateRoundChangePastInstance() tests.SpecTest {
 				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 			},
-
-			ControllerPostRoot: lateRoundChangePastInstanceStateComparison(height, nil).Register().Root(),
+			ControllerPostRoot:  sc.Root(),
+			ControllerPostState: sc.ExpectedState,
 		}
 	}
 
 	lateMsg := testingutils.TestingMultiSignerRoundChangeMessageWithHeight([]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, 4)
+	sc := lateRoundChangePastInstanceStateComparison(6, lateMsg)
 
 	return &tests.ControllerSpecTest{
 		Name: "late round change past instance",
@@ -63,7 +65,8 @@ func LateRoundChangePastInstance() tests.SpecTest {
 						4,
 					),
 				},
-				ControllerPostRoot: lateRoundChangePastInstanceStateComparison(6, lateMsg).Register().Root(),
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}

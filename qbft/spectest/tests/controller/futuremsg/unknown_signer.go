@@ -11,6 +11,7 @@ import (
 // UnknownSigner tests future msg signed by unknown signer
 func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := unknownSignerStateComparison()
 
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	msg := testingutils.TestingPrepareMessageWithParams(ks.Shares[3], 3, 3, 10,
@@ -23,7 +24,8 @@ func UnknownSigner() tests.SpecTest {
 			msg,
 		},
 		SyncDecidedCalledCnt: 0,
-		ControllerPostRoot:   unknownSignerStateComparison().Register().Root(),
+		ControllerPostRoot:   sc.Root(),
+		ControllerPostState:  sc.ExpectedState,
 		ExpectedError:        "invalid future msg: msg signature invalid: unknown signer",
 	}
 }
