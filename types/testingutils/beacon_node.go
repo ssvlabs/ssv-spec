@@ -519,11 +519,6 @@ func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecip
 	return nil
 }
 
-// SubmitValidatorRegistrationPostponed submits a validator registration in a batch after collecting registrations
-func (bn *TestingBeaconNode) SubmitValidatorRegistrationPostponed(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error {
-	return nil
-}
-
 // GetBeaconBlock returns beacon block by the given slot and committee index
 func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	return TestingBeaconBlock, spec.DataVersionCapella, nil
