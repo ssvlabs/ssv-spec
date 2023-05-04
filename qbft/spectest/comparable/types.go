@@ -3,35 +3,21 @@ package qbftcomparable
 import (
 	"encoding/hex"
 
-	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 )
 
-var RootRegister = map[string]*qbft.RootGetter{}
-
 type StateComparison struct {
-	qbft.RootGetter
-}
-
-// Register will register state roots with a global registry to be compared against
-func (stateComp *StateComparison) Register() *StateComparison {
-	r, err := stateComp.GetRoot()
-	if err != nil {
-		panic(err.Error())
-	}
-	RootRegister[hex.EncodeToString(r[:])] = &stateComp.RootGetter
-
-	return stateComp
+	ExpectedState types.Root
 }
 
 // Root returns all runner roots as string
 func (stateComp *StateComparison) Root() string {
-	if stateComp.RootGetter == nil {
+	if stateComp.ExpectedState == nil {
 		panic("state nil")
 	}
-	r, err := stateComp.RootGetter.GetRoot()
+	r, err := stateComp.ExpectedState.GetRoot()
 	if err != nil {
 		panic(err.Error())
 	}
-
 	return hex.EncodeToString(r[:])
 }

@@ -2,7 +2,6 @@ package consensus
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -13,127 +12,114 @@ import (
 func PostFinish() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// TODO: check error
-	// nolint
-	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
-		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
-		// *qbft.Instance cannot be shared between StoredInstances and RunningInstance
-		// because JSON decoder creates a new *qbft.Instance for each of them
-		newInstance := func() *qbft.Instance {
-			return qbft.NewInstance(
-				r.GetBaseRunner().QBFTController.GetConfig(),
-				r.GetBaseRunner().Share,
-				r.GetBaseRunner().QBFTController.Identifier,
-				qbft.FirstHeight)
-		}
-		r.GetBaseRunner().State.RunningInstance = newInstance()
-		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, newInstance())
-		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
-		r.GetBaseRunner().State.Finished = true
-		return r
-	}
-
-	err := "failed processing consensus message: no running duty"
-
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid post finish",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: finishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
+				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
+				Messages: append(
+					testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
 					testingutils.SSVMsgSyncCommitteeContribution(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.SyncCommitteeContributionMsgID,
+							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.SyncCommitteeContributionMsgID,
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil),
+				),
+				PostDutyRunnerStateRoot: "5448f47bb76e4639629e146c242cb27a4a265fae9d871f0fc0f3c66aeea60eb0",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
-				PostDutyRunnerStateRoot: "d93e23f373bb3f5787755d7490193341bdd20c7f77a231dab1c979b95e66e416",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "sync committee",
-				Runner: finishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
+				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
+				Messages: append(
+					testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
 					testingutils.SSVMsgSyncCommittee(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.SyncCommitteeMsgID,
+							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.SyncCommitteeMsgID,
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil),
+				),
+				PostDutyRunnerStateRoot: "8097eefe5cbd4590de980ac66db0f033552f608fef580d1b9c452bcf2f1513fd",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
-				PostDutyRunnerStateRoot: "01372c8c81c57fefd98e7c5a2c8ca2b3a6c2ce4043fe4fc226e8cd4b06358158",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "aggregator",
-				Runner: finishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
+				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
+				Messages: append(
+					testingutils.SSVDecidingMsgs(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
 					testingutils.SSVMsgAggregator(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.AggregatorMsgID,
+							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.AggregatorMsgID,
 							testingutils.TestAggregatorConsensusDataByts,
 						), nil),
+				),
+				PostDutyRunnerStateRoot: "99ddd0aadc2708e0a33f9dd979fd45af9bf71d8d85fc1b04cbb0e418e909bcd4",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
-				PostDutyRunnerStateRoot: "dc23550fb81816c01ca495936ead9b98469d27b9f6f3a1edd871b11934724ad3",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "proposer",
-				Runner: finishRunner(testingutils.ProposerRunner(ks), &testingutils.TestingProposerDuty),
+				Runner: testingutils.ProposerRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
+				Messages: append(
+					testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer),
 					testingutils.SSVMsgProposer(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.ProposerMsgID,
+							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
 							testingutils.TestProposerConsensusDataByts,
 						), nil),
+				),
+				PostDutyRunnerStateRoot: "7bafe77f6aa303e2cd38f741ebd366d68b4ced79ffbd224b98904bb22a58d010",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
 				},
-				PostDutyRunnerStateRoot: "b165432cb8ec536de81e16cc2de5ae621c787931530f26fee235a9f2bc368cfb",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "proposer (blinded block)",
-				Runner: finishRunner(testingutils.ProposerBlindedBlockRunner(ks), &testingutils.TestingProposerDuty),
+				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   &testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
+				Messages: append(
+					testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer),
 					testingutils.SSVMsgProposer(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.ProposerMsgID,
+							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
 							testingutils.TestProposerBlindedBlockConsensusDataByts,
 						), nil),
+				),
+				PostDutyRunnerStateRoot: "d2d3d97a0bb878594c5b5319cbf1a1a6afe2467ef26fb2e47eb6d075b3c90428",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
 				},
-				PostDutyRunnerStateRoot: "0d55336a5a0f0f2624d0396b3b4f1f5509ff69fe0e14708d18c69c92190a6966",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 			{
 				Name:   "attester",
-				Runner: finishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
+				Messages: append(
+					testingutils.SSVDecidingMsgs(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
 					testingutils.SSVMsgAttester(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, testingutils.AttesterMsgID,
+							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.AttesterMsgID,
 							testingutils.TestAttesterConsensusDataByts,
 						), nil),
+				),
+				PostDutyRunnerStateRoot: "4016e9bc1405a443f4a2755f5927d9017c66dd1f5246d03c9bcf7b353649a460",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},
-				PostDutyRunnerStateRoot: "c9b543054dd8a3a051ae68599171c4e7dc926f9ba0862d4d75aa90da248c5956",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
 			},
 		},
 	}
