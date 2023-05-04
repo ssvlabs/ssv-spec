@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
@@ -18,6 +17,7 @@ type ControllerSyncSpecTest struct {
 	InputMessages        []*qbft.SignedMessage
 	SyncDecidedCalledCnt int
 	ControllerPostRoot   string
+	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedError        string
 	SkipInstanceStart    bool
 }
@@ -56,7 +56,7 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
 	if test.ControllerPostRoot != hex.EncodeToString(r[:]) {
-		diff := typescomparable.PrintDiff(contr, qbftcomparable.RootRegister[test.ControllerPostRoot])
+		diff := typescomparable.PrintDiff(contr, test.ControllerPostState)
 		require.Fail(t, "post state not equal", diff)
 	}
 
