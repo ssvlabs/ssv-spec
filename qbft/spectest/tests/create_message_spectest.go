@@ -20,9 +20,9 @@ const (
 
 type CreateMsgSpecTest struct {
 	Name string
-	//TODO rename to root
+	// ISSUE 217: rename to root
 	Value [32]byte
-	//TODO rename to value
+	// ISSUE 217: rename to value
 	StateValue                                       []byte
 	Round                                            qbft.Round
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
@@ -51,12 +51,10 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	if err != nil && len(test.ExpectedError) != 0 {
 		require.EqualError(t, err, test.ExpectedError)
 		return
-	} else {
-		require.NoError(t, err)
 	}
+	require.NoError(t, err)
 
 	r, err2 := msg.GetRoot()
-
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, err2, test.ExpectedError)
 		return
