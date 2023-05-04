@@ -72,7 +72,7 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	}
 
 	if !HasQuorum(state.Share, ret) {
-		return []*SignedMessage{}, nil
+		return nil, nil
 	}
 	return ret, nil
 }
