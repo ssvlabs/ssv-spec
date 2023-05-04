@@ -19,6 +19,7 @@ type ControllerSyncSpecTest struct {
 	SyncDecidedCalledCnt int
 	ControllerPostRoot   string
 	ExpectedError        string
+	SkipInstanceStart    bool
 }
 
 func (test *ControllerSyncSpecTest) TestName() string {
@@ -34,9 +35,11 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 		config,
 	)
 
-	err := contr.StartNewInstance([]byte{1, 2, 3, 4})
-	if err != nil {
-		t.Fatalf(err.Error())
+	if !test.SkipInstanceStart {
+		err := contr.StartNewInstance([]byte{1, 2, 3, 4})
+		if err != nil {
+			t.Fatalf(err.Error())
+		}
 	}
 
 	var lastErr error
@@ -52,7 +55,7 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
-	if test.ControllerPostRoot != hex.EncodeToString(r) {
+	if test.ControllerPostRoot != hex.EncodeToString(r[:]) {
 		diff := typescomparable.PrintDiff(contr, qbftcomparable.RootRegister[test.ControllerPostRoot])
 		require.Fail(t, "post state not equal", diff)
 	}

@@ -78,6 +78,12 @@ Proposal messages
 var TestingProposalMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
 }
+var TestingProposalMessageWithID = func(sk *bls.SecretKey, id types.OperatorID, msgID types.MessageID) *qbft.SignedMessage {
+	ret := TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
+	ret.Message.Identifier = msgID[:]
+	ret.Signature = SignQBFTMsg(sk, id, &ret.Message).Signature
+	return ret
+}
 var TestingProposalMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, nil, nil)
 }
@@ -204,6 +210,23 @@ var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id type
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = []byte{}
+	return ret
+}
+var TestingPrepareMessageWithRoundAndFullData = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	round qbft.Round,
+	fullData []byte,
+) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.PrepareMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      round,
+		Identifier: TestingIdentifier,
+		Root:       sha256.Sum256(fullData),
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = fullData
 	return ret
 }
 var TestingPrepareMessageWithParams = func(
@@ -376,6 +399,23 @@ var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *bls.SecretKey, i
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = TestingQBFTFullData
+	return ret
+}
+var TestingRoundChangeMessageWithRoundAndFullData = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	round qbft.Round,
+	fullData []byte,
+) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:    qbft.RoundChangeMsgType,
+		Height:     qbft.FirstHeight,
+		Round:      round,
+		Identifier: TestingIdentifier,
+		Root:       sha256.Sum256(fullData),
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = fullData
 	return ret
 }
 var TestingRoundChangeMessageWithParams = func(

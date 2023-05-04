@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
@@ -21,6 +20,7 @@ type MsgProcessingSpecTest struct {
 	Name               string
 	Pre                *qbft.Instance
 	PostRoot           string
+	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
 	InputMessages      []*qbft.SignedMessage
 	OutputMessages     []*qbft.SignedMessage
 	ExpectedError      string
@@ -78,8 +78,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 
 	// test root
-	if test.PostRoot != hex.EncodeToString(postRoot) {
-		diff := typescomparable.PrintDiff(test.Pre.State, qbftcomparable.RootRegister[test.PostRoot])
+	if test.PostRoot != hex.EncodeToString(postRoot[:]) {
+		diff := typescomparable.PrintDiff(test.Pre.State, test.PostState)
 		require.Fail(t, "post state not equal", diff)
 	}
 }

@@ -3,8 +3,10 @@ package qbft
 import (
 	"crypto/sha256"
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 type signing interface {
@@ -89,13 +91,13 @@ type State struct {
 }
 
 // GetRoot returns the state's deterministic root
-func (s *State) GetRoot() ([]byte, error) {
+func (s *State) GetRoot() ([32]byte, error) {
 	marshaledRoot, err := s.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode state")
+		return [32]byte{}, errors.Wrap(err, "could not encode state")
 	}
 	ret := sha256.Sum256(marshaledRoot)
-	return ret[:], nil
+	return ret, nil
 }
 
 // Encode returns a msg encoded bytes or error
