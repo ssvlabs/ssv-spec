@@ -2,11 +2,13 @@ package futuremsg
 
 import (
 	"encoding/hex"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type ControllerSyncSpecTest struct {
@@ -51,7 +53,7 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
-	require.EqualValues(t, test.ControllerPostRoot, hex.EncodeToString(r))
+	require.EqualValues(t, test.ControllerPostRoot, hex.EncodeToString(r[:]))
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)

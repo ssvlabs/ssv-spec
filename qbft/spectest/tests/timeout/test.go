@@ -3,10 +3,12 @@ package timeout
 import (
 	"encoding/hex"
 	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type SpecTest struct {
@@ -55,5 +57,5 @@ func (test *SpecTest) Run(t *testing.T) {
 
 	postRoot, err := test.Pre.State.GetRoot()
 	require.NoError(t, err)
-	require.EqualValuesf(t, test.PostRoot, hex.EncodeToString(postRoot), "post root not valid")
+	require.EqualValuesf(t, test.PostRoot, hex.EncodeToString(postRoot[:]), "post root not valid")
 }

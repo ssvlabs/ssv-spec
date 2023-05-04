@@ -189,7 +189,7 @@ func (i *Instance) GetHeight() Height {
 }
 
 // GetRoot returns the state's deterministic root
-func (i *Instance) GetRoot() ([]byte, error) {
+func (i *Instance) GetRoot() ([32]byte, error) {
 	return i.State.GetRoot()
 }
 
