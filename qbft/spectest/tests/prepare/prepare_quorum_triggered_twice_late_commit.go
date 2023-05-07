@@ -6,8 +6,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PrepareQuorumTriggeredTwiceLateCommit is a spec test that checks the case where all prepares are sent and quorum event is triggered more than once.
-// A commit message was seen only after the last prepare
+// PrepareQuorumTriggeredTwiceLateCommit tests triggering prepare quorum twice by sending > 2f+1 prepare messages.
+// The commit message is processed after the second prepare quorum is triggered.
 func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()

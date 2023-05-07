@@ -8,7 +8,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PrepareQuorumTriggeredTwice is a spec test that checks the case where all prepares are sent and quorum event is triggered more than once.
+// PrepareQuorumTriggeredTwice tests triggering prepare quorum twice by sending > 2f+1 prepare messages
 func PrepareQuorumTriggeredTwice() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
