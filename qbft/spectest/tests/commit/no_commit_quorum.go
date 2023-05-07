@@ -45,6 +45,7 @@ func NoCommitQuorumStateComparison() *qbftcomparable.StateComparison {
 
 	state.LastPreparedRound = 1
 	state.LastPreparedValue = testingutils.TestingQBFTFullData
+	state.Decided = false
 
 	state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
 		qbft.FirstRound: {
