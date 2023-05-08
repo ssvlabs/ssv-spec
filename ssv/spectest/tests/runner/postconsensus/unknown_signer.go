@@ -1,6 +1,8 @@
 package postconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -66,6 +68,23 @@ func UnknownSigner() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 			{
+				Name: "proposer (versioned)",
+				Runner: decideRunner(
+					testingutils.ProposerRunner(ks),
+					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+					testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix),
+				),
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, spec.DataVersionBellatrix)),
+				},
+				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+				ExpectedError:           expectedError,
+			},
+			{
 				Name: "proposer (blinded block)",
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
@@ -75,6 +94,23 @@ func UnknownSigner() tests.SpecTest {
 				Duty: &testingutils.TestingProposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsg(ks.Shares[1], 5, 5)),
+				},
+				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+				ExpectedError:           expectedError,
+			},
+			{
+				Name: "proposer (blinded block)",
+				Runner: decideRunner(
+					testingutils.ProposerBlindedBlockRunner(ks),
+					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix),
+				),
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
