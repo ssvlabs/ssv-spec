@@ -230,3 +230,42 @@ var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier 
 	}
 	return msgs
 }
+
+var ExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	msgs := make([]*qbft.SignedMessage, 0)
+
+	for h := qbft.FirstHeight; h <= height; h++ {
+		// proposal
+		s := SignQBFTMsg(keySet.Shares[1], 1, &qbft.Message{
+			MsgType:    qbft.ProposalMsgType,
+			Height:     h,
+			Round:      qbft.FirstRound,
+			Identifier: msgIdentifier,
+			Root:       root,
+		})
+		s.FullData = fullData
+		msgs = append(msgs, s)
+
+		// prepare
+		for i := uint64(1); i <= keySet.Threshold; i++ {
+			msgs = append(msgs, SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+				MsgType:    qbft.PrepareMsgType,
+				Height:     h,
+				Round:      qbft.FirstRound,
+				Identifier: msgIdentifier,
+				Root:       root,
+			}))
+		}
+		// commit
+		for i := uint64(1); i <= keySet.Threshold; i++ {
+			msgs = append(msgs, SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     h,
+				Round:      qbft.FirstRound,
+				Identifier: msgIdentifier,
+				Root:       root,
+			}))
+		}
+	}
+	return msgs
+}
