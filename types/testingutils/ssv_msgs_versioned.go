@@ -69,7 +69,7 @@ var PostConsensusProposerTooManyRootsMsgV = func(sk *bls.SecretKey, id types.Ope
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     TestingDutySlot,
+		Slot:     TestingProposerDutyV(version).Slot,
 		Messages: ret.Message.Messages,
 	}
 
@@ -129,7 +129,7 @@ var postConsensusBeaconBlockMsgV = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
-		Slot: TestingDutySlot,
+		Slot: TestingProposerDutyV(version).Slot,
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: blsSig[:],
