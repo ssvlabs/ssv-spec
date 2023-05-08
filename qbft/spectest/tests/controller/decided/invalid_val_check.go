@@ -45,35 +45,37 @@ func InvalidValCheckData() tests.SpecTest {
 }
 
 func invalidValCheckDataStateComparison() *qbftcomparable.StateComparison {
-	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
-	contr := testingutils.NewTestingQBFTController(
-		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		config,
-	)
-	_ = contr.StartNewInstance([]byte{1, 2, 3, 4})
-
 	ks := testingutils.Testing4SharesSet()
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingCommitMultiSignerMessageWithParams(
+			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+			[]types.OperatorID{1, 2, 3},
+			qbft.FirstRound,
+			qbft.FirstHeight,
+			testingutils.TestingIdentifier,
+			sha256.Sum256(testingutils.TestingInvalidValueCheck),
+			testingutils.TestingInvalidValueCheck,
+		),
+	}
 
-	state := testingutils.BaseInstance().State
-	state.Decided = true
-	state.DecidedValue = testingutils.TestingInvalidValueCheck
-	state.CommitContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-		qbft.FirstRound: {
-			testingutils.TestingCommitMultiSignerMessageWithParams(
-				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-				[]types.OperatorID{1, 2, 3},
-				qbft.FirstRound,
-				qbft.FirstHeight,
-				testingutils.TestingIdentifier,
-				sha256.Sum256(testingutils.TestingInvalidValueCheck),
-				testingutils.TestingInvalidValueCheck,
-			),
+	contr := testingutils.NewTestingQBFTController(
+		testingutils.TestingIdentifier,
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+	)
+
+	instance := &qbft.Instance{
+		StartValue: []byte{1, 2, 3, 4},
+		State: &qbft.State{
+			Share:        testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ID:           testingutils.TestingIdentifier,
+			Decided:      true,
+			DecidedValue: testingutils.TestingInvalidValueCheck,
+			Round:        qbft.FirstRound,
 		},
-	}}
-
-	contr.StoredInstances[0].State = state
+	}
+	qbftcomparable.SetSignedMessages(instance, msgs)
+	contr.StoredInstances = append(contr.StoredInstances, instance)
 
 	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
