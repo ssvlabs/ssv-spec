@@ -32,25 +32,18 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 
 	if test.Blinded {
 		// blk data
-		vBlk, hashRoot, err := cd.GetBlindedBlockData()
+		vBlk, err := cd.GetBlindedBlockData()
 		if len(test.ExpectedError) != 0 {
 			require.EqualError(t, err, test.ExpectedError)
 			return
 		}
 		require.NoError(t, err)
-		require.NotNil(t, hashRoot)
 		require.NotNil(t, vBlk)
 
 		// compare block roots
 		blkRoot, err := vBlk.Root()
 		require.NoError(t, err)
 		require.NotNil(t, blkRoot)
-
-		root, err := hashRoot.HashTreeRoot()
-		require.NoError(t, err)
-		require.NotNil(t, root)
-
-		require.EqualValues(t, blkRoot, root)
 		require.EqualValues(t, test.ExpectedBlkRoot, blkRoot)
 
 		// compare blk data
@@ -67,26 +60,18 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 
 	} else {
 		// blk data
-		vBlk, hashRoot, err := cd.GetBlockData()
+		vBlk, err := cd.GetBlockData()
 		if len(test.ExpectedError) != 0 {
 			require.EqualError(t, err, test.ExpectedError)
 			return
 		}
-
 		require.NoError(t, err)
-		require.NotNil(t, hashRoot)
 		require.NotNil(t, vBlk)
 
 		// compare block roots
 		blkRoot, err := vBlk.Root()
 		require.NoError(t, err)
 		require.NotNil(t, blkRoot)
-
-		root, err := hashRoot.HashTreeRoot()
-		require.NoError(t, err)
-		require.NotNil(t, root)
-
-		require.EqualValues(t, blkRoot, root)
 		require.EqualValues(t, test.ExpectedBlkRoot, blkRoot)
 
 		// compare blk data

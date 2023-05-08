@@ -126,22 +126,30 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	}
 
 	// specific duty sig
-	var blkToSign ssz.HashRoot
+	var root phase0.Root
 	if r.decidedBlindedBlock() {
-		_, blkToSign, err = decidedValue.GetBlindedBlockData()
+		vBlk, err := decidedValue.GetBlindedBlockData()
 		if err != nil {
 			return errors.Wrap(err, "could not get blinded block data")
 		}
+		root, err = vBlk.Root()
+		if err != nil {
+			return errors.Wrap(err, "could not get blinded block root")
+		}
 	} else {
-		_, blkToSign, err = decidedValue.GetBlockData()
+		vBlk, err := decidedValue.GetBlockData()
 		if err != nil {
 			return errors.Wrap(err, "could not get block data")
+		}
+		root, err = vBlk.Root()
+		if err != nil {
+			return errors.Wrap(err, "could not get block root")
 		}
 	}
 
 	msg, err := r.BaseRunner.signBeaconObject(
 		r,
-		blkToSign,
+		types.SSZ32Bytes(root),
 		decidedValue.Duty.Slot,
 		types.DomainProposer,
 	)
@@ -195,7 +203,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 		copy(specSig[:], sig)
 
 		if r.decidedBlindedBlock() {
-			vBlindedBlk, _, err := r.GetState().DecidedValue.GetBlindedBlockData()
+			vBlindedBlk, err := r.GetState().DecidedValue.GetBlindedBlockData()
 			if err != nil {
 				return errors.Wrap(err, "could not get blinded block")
 			}
@@ -204,7 +212,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
 			}
 		} else {
-			vBlk, _, err := r.GetState().DecidedValue.GetBlockData()
+			vBlk, err := r.GetState().DecidedValue.GetBlockData()
 			if err != nil {
 				return errors.Wrap(err, "could not get block")
 			}
@@ -221,7 +229,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 // decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (r *ProposerRunner) decidedBlindedBlock() bool {
-	_, _, err := r.BaseRunner.State.DecidedValue.GetBlindedBlockData()
+	_, err := r.BaseRunner.State.DecidedValue.GetBlindedBlockData()
 	return err == nil
 }
 
@@ -232,19 +240,29 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	var root phase0.Root
 	if r.decidedBlindedBlock() {
-		_, data, err := r.GetState().DecidedValue.GetBlindedBlockData()
+		vBlk, err := r.GetState().DecidedValue.GetBlindedBlockData()
 		if err != nil {
 			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block data")
 		}
-		return []ssz.HashRoot{data}, types.DomainProposer, nil
+		root, err = vBlk.Root()
+		if err != nil {
+			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block root")
+		}
+	} else {
+		vBlk, err := r.GetState().DecidedValue.GetBlockData()
+		if err != nil {
+			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
+		}
+		root, err = vBlk.Root()
+		if err != nil {
+			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block root")
+		}
 	}
 
-	_, data, err := r.GetState().DecidedValue.GetBlockData()
-	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
-	}
-	return []ssz.HashRoot{data}, types.DomainProposer, nil
+	hashRoot := types.SSZ32Bytes(root)
+	return []ssz.HashRoot{hashRoot}, types.DomainProposer, nil
 }
 
 // executeDuty steps:

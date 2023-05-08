@@ -144,8 +144,8 @@ func (cid *ConsensusData) Validate() error {
 		}
 	case BNRoleProposer:
 		var err1, err2 error
-		_, _, err1 = cid.GetBlockData()
-		_, _, err2 = cid.GetBlindedBlockData()
+		_, err1 = cid.GetBlockData()
+		_, err2 = cid.GetBlindedBlockData()
 
 		if err1 != nil && err2 != nil {
 			return err1
@@ -181,31 +181,29 @@ func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 	return ret, nil
 }
 
-// GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, ssz.HashRoot, error) {
+func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, error) {
 	switch ci.Version {
 	case spec.DataVersionBellatrix:
 		ret := &bellatrix.BeaconBlock{}
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
-		return &spec.VersionedBeaconBlock{Bellatrix: ret, Version: spec.DataVersionBellatrix}, ret, nil
+		return &spec.VersionedBeaconBlock{Bellatrix: ret, Version: spec.DataVersionBellatrix}, nil
 	default:
-		return nil, nil, errors.Errorf("unknown block version %s", ci.Version.String())
+		return nil, errors.Errorf("unknown block version %s", ci.Version.String())
 	}
 }
 
-// GetBlindedBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedBeaconBlock, ssz.HashRoot, error) {
+func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedBeaconBlock, error) {
 	switch ci.Version {
 	case spec.DataVersionBellatrix:
 		ret := &apiv1bellatrix.BlindedBeaconBlock{}
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
-		return &api.VersionedBlindedBeaconBlock{Bellatrix: ret, Version: spec.DataVersionBellatrix}, ret, nil
+		return &api.VersionedBlindedBeaconBlock{Bellatrix: ret, Version: spec.DataVersionBellatrix}, nil
 	default:
-		return nil, nil, errors.Errorf("unknown blinded block version %s", ci.Version.String())
+		return nil, errors.Errorf("unknown blinded block version %s", ci.Version.String())
 	}
 }
 
