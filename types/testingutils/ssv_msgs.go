@@ -2,13 +2,15 @@ package testingutils
 
 import (
 	"crypto/sha256"
-	spec2 "github.com/attestantio/go-eth2-client/spec"
+
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 var TestingSSVDomainType = types.V3Testnet
@@ -52,7 +54,7 @@ var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
 var TestProposerConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
-	Version: spec2.DataVersionBellatrix,
+	Version: spec.DataVersionBellatrix,
 	DataSSZ: TestingBeaconBlockBytes,
 }
 var TestProposerConsensusDataByts, _ = TestProposerConsensusData.Encode()
@@ -65,7 +67,7 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 
 	return &types.ConsensusData{
 		Duty:                       TestingAttesterDuty,
-		Version:                    spec2.DataVersionBellatrix,
+		Version:                    spec.DataVersionBellatrix,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAttestationDataBytes,
 	}
@@ -80,7 +82,7 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 
 	return &types.ConsensusData{
 		Duty:                       TestingSyncCommitteeDuty,
-		Version:                    spec2.DataVersionBellatrix,
+		Version:                    spec.DataVersionBellatrix,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingSyncCommitteeBlockRoot[:],
 	}
@@ -94,7 +96,7 @@ var TestProposerWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 
 	return &types.ConsensusData{
 		Duty:                       TestingProposerDuty,
-		Version:                    spec2.DataVersionBellatrix,
+		Version:                    spec.DataVersionBellatrix,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingBeaconBlockBytes,
 	}
@@ -108,7 +110,7 @@ var TestProposerBlindedWithJustificationsConsensusData = func(ks *TestKeySet) *t
 
 	return &types.ConsensusData{
 		Duty:                       TestingProposerDuty,
-		Version:                    spec2.DataVersionBellatrix,
+		Version:                    spec.DataVersionBellatrix,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingBlindedBeaconBlockBytes,
 	}
@@ -116,9 +118,10 @@ var TestProposerBlindedWithJustificationsConsensusData = func(ks *TestKeySet) *t
 
 var TestProposerBlindedBlockConsensusData = &types.ConsensusData{
 	Duty:    TestingProposerDuty,
-	Version: spec2.DataVersionBellatrix,
+	Version: spec.DataVersionBellatrix,
 	DataSSZ: TestingBlindedBeaconBlockBytes,
 }
+
 var TestProposerBlindedBlockConsensusDataByts, _ = TestProposerBlindedBlockConsensusData.Encode()
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
@@ -365,7 +368,7 @@ var postConsensusBeaconBlockMsg = func(
 	if wrongBeaconSig {
 		sig, root, _ = signer.SignBeaconObject(block, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainProposer)
 	}
-	blsSig := spec.BLSSignature{}
+	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], sig)
 
 	signed := bellatrix.SignedBeaconBlock{
@@ -479,7 +482,7 @@ var randaoMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
 	wrongRoot bool,
-	epoch spec.Epoch,
+	epoch phase0.Epoch,
 	msgCnt int,
 	wrongBeaconSig bool,
 ) *types.SignedPartialSignatureMessage {
@@ -536,7 +539,7 @@ var PreConsensusSelectionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.SecretK
 	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, 0, false)
 }
 
-var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot spec.Slot) *types.SignedPartialSignatureMessage {
+var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.SignedPartialSignatureMessage {
 	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, 1, false)
 }
 
@@ -552,7 +555,7 @@ var TestSelectionProofWithJustificationsConsensusData = func(ks *TestKeySet) *ty
 
 	return &types.ConsensusData{
 		Duty:                       TestingAggregatorDuty,
-		Version:                    spec2.DataVersionBellatrix,
+		Version:                    spec.DataVersionBellatrix,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAggregateAndProofBytes,
 	}
@@ -563,8 +566,8 @@ var selectionProofMsg = func(
 	beaconsk *bls.SecretKey,
 	id types.OperatorID,
 	beaconid types.OperatorID,
-	slot spec.Slot,
-	msgSlot spec.Slot,
+	slot phase0.Slot,
+	msgSlot phase0.Slot,
 	msgCnt int,
 	wrongBeaconSig bool,
 ) *types.SignedPartialSignatureMessage {
@@ -619,7 +622,7 @@ var validatorRegistrationMsg = func(
 	id, beaconID types.OperatorID,
 	msgCnt int,
 	wrongRoot bool,
-	epoch spec.Epoch,
+	epoch phase0.Epoch,
 	wrongBeaconSig bool,
 ) *types.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
@@ -856,7 +859,7 @@ var PreConsensusContributionProofNextEpochMsg = func(msgSK, beaconSK *bls.Secret
 	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot2, TestingDutySlot2, false, false)
 }
 
-var PreConsensusCustomSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot spec.Slot) *types.SignedPartialSignatureMessage {
+var PreConsensusCustomSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.SignedPartialSignatureMessage {
 	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, false, false)
 }
 
@@ -875,7 +878,7 @@ var TestContributionProofWithJustificationsConsensusData = func(ks *TestKeySet) 
 
 	return &types.ConsensusData{
 		Duty:                       TestingSyncCommitteeContributionDuty,
-		Version:                    spec2.DataVersionBellatrix,
+		Version:                    spec.DataVersionBellatrix,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingContributionsDataBytes,
 	}
@@ -916,8 +919,8 @@ var PreConsensusContributionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.Secr
 var contributionProofMsg = func(
 	sk, beaconsk *bls.SecretKey,
 	id, beaconid types.OperatorID,
-	slot spec.Slot,
-	msgSlot spec.Slot,
+	slot phase0.Slot,
+	msgSlot phase0.Slot,
 	wrongMsgOrder bool,
 	wrongBeaconSig bool,
 ) *types.SignedPartialSignatureMessage {
@@ -927,7 +930,7 @@ var contributionProofMsg = func(
 
 	msgs := make([]*types.PartialSignatureMessage, 0)
 	for index := range TestingContributionProofIndexes {
-		subnet, _ := beacon.SyncCommitteeSubnetID(spec.CommitteeIndex(index))
+		subnet, _ := beacon.SyncCommitteeSubnetID(phase0.CommitteeIndex(index))
 		data := &altair.SyncAggregatorSelectionData{
 			Slot:              slot,
 			SubcommitteeIndex: subnet,
@@ -1025,7 +1028,7 @@ var PostConsensusSigSyncCommitteeContributionWrongSignerMsg = func(sk *bls.Secre
 var postConsensusSyncCommitteeContributionMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
-	validatorIndex spec.ValidatorIndex,
+	validatorIndex phase0.ValidatorIndex,
 	keySet *TestKeySet,
 	wrongRoot bool,
 	wrongBeaconSig bool,
