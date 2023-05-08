@@ -181,6 +181,7 @@ func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 	return ret, nil
 }
 
+// GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
 func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, ssz.HashRoot, error) {
 	switch ci.Version {
 	case spec.DataVersionBellatrix:
@@ -194,6 +195,7 @@ func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, ssz.HashRoo
 	}
 }
 
+// GetBlindedBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
 func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedBeaconBlock, ssz.HashRoot, error) {
 	switch ci.Version {
 	case spec.DataVersionBellatrix:
