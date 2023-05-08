@@ -105,15 +105,24 @@ var postConsensusBeaconBlockMsgV = func(
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 
-	block := TestingBeaconBlockV(version)
+	var root phase0.Root
+	var err error
 	if wrongRoot {
-		block = TestingWrongBeaconBlockV(version)
+		blk := TestingWrongBeaconBlockV(version)
+		root, err = blk.Root()
+	} else {
+		blk := TestingBeaconBlockV(version)
+		root, err = blk.Root()
 	}
+	if err != nil {
+		panic(err)
+	}
+	hashRoot := types.SSZ32Bytes(root)
 
 	d, _ := beacon.DomainData(1, types.DomainProposer) // epoch doesn't matter here, hard coded
-	sig, root, _ := signer.SignBeaconObject(block, d, sk.GetPublicKey().Serialize(), types.DomainProposer)
+	sig, root, _ := signer.SignBeaconObject(hashRoot, d, sk.GetPublicKey().Serialize(), types.DomainProposer)
 	if wrongBeaconSig {
-		sig, root, _ = signer.SignBeaconObject(block, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainProposer)
+		sig, root, _ = signer.SignBeaconObject(hashRoot, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainProposer)
 	}
 	blsSig := phase0.BLSSignature{}
 	copy(blsSig[:], sig)

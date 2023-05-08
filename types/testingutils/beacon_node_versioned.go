@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"github.com/attestantio/go-eth2-client/api"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	ssz "github.com/ferranbt/fastssz"
@@ -8,26 +9,28 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-var TestingBeaconBlockV = func(version spec.DataVersion) ssz.HashRoot {
+var TestingBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
 	switch version {
 	case spec.DataVersionBellatrix:
-		return TestingBeaconBlock
+		return &spec.VersionedBeaconBlock{
+			Version:   version,
+			Bellatrix: TestingBeaconBlock,
+		}
 	default:
 		panic("unsupported version")
 	}
 }
 
 var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
-	tBlk := TestingBeaconBlockV(version)
 	var ret []byte
+	vBlk := TestingBeaconBlockV(version)
+	if vBlk.IsEmpty() {
+		panic("empty block")
+	}
 
 	switch version {
 	case spec.DataVersionBellatrix:
-		blk, ok := tBlk.(*bellatrix.BeaconBlock)
-		if !ok {
-			panic("failed to cast")
-		}
-		ret, _ = blk.MarshalSSZ()
+		ret, _ = vBlk.Bellatrix.MarshalSSZ()
 
 	default:
 		panic("unsupported version")
@@ -36,18 +39,37 @@ var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 	return ret
 }
 
-var TestingBlindedBeaconBlockBytesV = func(version spec.DataVersion) []byte {
+var TestingBlindedBeaconBlockV = func(version spec.DataVersion) *api.VersionedBlindedBeaconBlock {
 	switch version {
 	case spec.DataVersionBellatrix:
-		ret, _ := TestingBlindedBeaconBlock.MarshalSSZ()
-		return ret
-
+		return &api.VersionedBlindedBeaconBlock{
+			Version:   version,
+			Bellatrix: TestingBlindedBeaconBlock,
+		}
 	default:
 		panic("unsupported version")
 	}
 }
 
-var TestingWrongBeaconBlockV = func(version spec.DataVersion) ssz.HashRoot {
+var TestingBlindedBeaconBlockBytesV = func(version spec.DataVersion) []byte {
+	var ret []byte
+	vBlk := TestingBlindedBeaconBlockV(version)
+	if vBlk.IsEmpty() {
+		panic("empty block")
+	}
+
+	switch version {
+	case spec.DataVersionBellatrix:
+		ret, _ = vBlk.Bellatrix.MarshalSSZ()
+
+	default:
+		panic("unsupported version")
+	}
+
+	return ret
+}
+
+var TestingWrongBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
 	blkByts := TestingBeaconBlockBytesV(version)
 
 	switch version {
@@ -57,7 +79,10 @@ var TestingWrongBeaconBlockV = func(version spec.DataVersion) ssz.HashRoot {
 			panic(err.Error())
 		}
 		ret.Slot = 100
-		return ret
+		return &spec.VersionedBeaconBlock{
+			Version:   version,
+			Bellatrix: ret,
+		}
 
 	default:
 		panic("unsupported version")
@@ -65,17 +90,16 @@ var TestingWrongBeaconBlockV = func(version spec.DataVersion) ssz.HashRoot {
 }
 
 var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
-	tBlk := TestingBeaconBlockV(version)
+	vBlk := TestingBeaconBlockV(version)
+	if vBlk.IsEmpty() {
+		panic("empty block")
+	}
 
 	switch version {
 	case spec.DataVersionBellatrix:
-		blk, ok := tBlk.(*bellatrix.BeaconBlock)
-		if !ok {
-			panic("failed to cast")
-		}
 		return &bellatrix.SignedBeaconBlock{
-			Message:   blk,
-			Signature: signBeaconObject(blk, types.DomainProposer, ks),
+			Message:   vBlk.Bellatrix,
+			Signature: signBeaconObject(vBlk.Bellatrix, types.DomainProposer, ks),
 		}
 
 	default:
