@@ -47,7 +47,7 @@ var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, v
 
 var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ConsensusData {
 	return &types.ConsensusData{
-		Duty:    TestingProposerDuty,
+		Duty:    *TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: TestingBlindedBeaconBlockBytesV(version),
 	}
