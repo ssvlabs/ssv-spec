@@ -50,7 +50,7 @@ func (r *ValidatorRegistrationRunner) HasRunningDuty() bool {
 }
 
 func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, _, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing validator registration message")
 	}
@@ -58,6 +58,20 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Signe
 	// quorum returns true only once (first time quorum achieved)
 	if !quorum {
 		return nil
+	}
+
+	// only 1 root, verified in basePreConsensusMsgProcessing
+	root := roots[0]
+	// randao is relevant only for block proposals, no need to check type
+	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
+	if err != nil {
+		return errors.Wrap(err, "could not reconstruct randao sig")
+	}
+	specSig := phase0.BLSSignature{}
+	copy(specSig[:], fullSig)
+
+	if err := r.beacon.SubmitValidatorRegistration(r.BaseRunner.Share.ValidatorPubKey, r.BaseRunner.Share.FeeRecipientAddress, specSig); err != nil {
+		return errors.Wrap(err, "could not submit validator registration")
 	}
 
 	r.GetState().Finished = true
