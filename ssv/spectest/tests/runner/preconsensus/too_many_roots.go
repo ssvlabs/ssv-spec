@@ -41,7 +41,7 @@ func TooManyRoots() tests.SpecTest {
 				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: wrong expected roots count",
 			},
 			{
-				Name:   "randao (versioned)",
+				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
@@ -54,7 +54,7 @@ func TooManyRoots() tests.SpecTest {
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: wrong expected roots count",
 			},
 			{
-				Name:   "randao (blinded block) (versioned)",
+				Name:   "randao (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{

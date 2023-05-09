@@ -51,7 +51,7 @@ func TooFewRoots() tests.SpecTest {
 				ExpectedError:           err,
 			},
 			{
-				Name: "proposer (versioned)",
+				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
@@ -68,7 +68,7 @@ func TooFewRoots() tests.SpecTest {
 				ExpectedError:           err,
 			},
 			{
-				Name: "proposer (blinded block) (versioned)",
+				Name: "proposer (blinded block)",
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),

@@ -51,7 +51,7 @@ func InvalidBeaconSignature() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 			{
-				Name: "proposer (versioned)",
+				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
@@ -68,7 +68,7 @@ func InvalidBeaconSignature() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 			{
-				Name: "proposer (blinded block) (versioned)",
+				Name: "proposer (blinded block)",
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),

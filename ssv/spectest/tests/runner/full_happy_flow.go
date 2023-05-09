@@ -100,7 +100,7 @@ func FullHappyFlow() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "proposer (versioned)",
+				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
@@ -122,7 +122,7 @@ func FullHappyFlow() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "proposer blinded block (versioned)",
+				Name:   "proposer blinded block",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(

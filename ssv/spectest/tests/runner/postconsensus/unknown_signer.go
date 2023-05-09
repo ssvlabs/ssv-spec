@@ -51,7 +51,7 @@ func UnknownSigner() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 			{
-				Name: "proposer (versioned)",
+				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
