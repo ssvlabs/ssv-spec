@@ -70,61 +70,45 @@ func LateProposalPastInstance() tests.SpecTest {
 }
 
 func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *qbftcomparable.StateComparison {
-	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
-	contr := testingutils.NewTestingQBFTController(
-		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		config,
-	)
-
 	ks := testingutils.Testing4SharesSet()
-	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
+	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
+	offset := 7 // 7 messages per height (1 propose + 3 prepare + 3 commit)
+
+	contr := testingutils.NewTestingQBFTController(
+		testingutils.TestingIdentifier,
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+	)
 
 	for i := 0; i <= int(height); i++ {
 		contr.Height = qbft.Height(i)
-		_ = contr.StartNewInstance([]byte{1, 2, 3, 4})
+		msgs := allMsgs[offset*i : offset*(i+1)]
 
-		offset := 7 * i
-		msgs := allMsgs[offset : offset+7]
-
-		state := testingutils.BaseInstance().State
-		state.Height = qbft.Height(i)
+		instance := &qbft.Instance{
+			StartValue: []byte{1, 2, 3, 4},
+			State: &qbft.State{
+				Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
+				ID:     testingutils.TestingIdentifier,
+				Round:  qbft.FirstRound,
+				Height: qbft.Height(i),
+			},
+		}
 
 		// last height
-		if lateMsg != nil && i == int(height) {
-			contr.StoredInstances[0].State = state
+		if lateMsg != nil && qbft.Height(i) == height {
+			qbftcomparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
 
-		state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
-		state.ProposalAcceptedForCurrentRound.Message.Height = qbft.Height(i)
-		state.LastPreparedRound = 1
-		state.LastPreparedValue = testingutils.TestingQBFTFullData
-		state.Decided = true
-		state.DecidedValue = testingutils.TestingQBFTFullData
-		state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-			qbft.FirstRound: {
-				msgs[0],
-			},
-		}}
-		state.PrepareContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-			qbft.FirstRound: {
-				msgs[1],
-				msgs[2],
-				msgs[3],
-			},
-		}}
-		state.CommitContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-			qbft.FirstRound: {
-				msgs[4],
-				msgs[5],
-				msgs[6],
-			},
-		}}
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.LastPreparedRound = qbft.FirstRound
+		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
+		instance.State.Decided = true
+		instance.State.DecidedValue = testingutils.TestingQBFTFullData
 
-		contr.StoredInstances[0].State = state
+		qbftcomparable.SetSignedMessages(instance, msgs)
+		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 	}
 
 	return &qbftcomparable.StateComparison{ExpectedState: contr}
