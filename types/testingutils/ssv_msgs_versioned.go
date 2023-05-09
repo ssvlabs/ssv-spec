@@ -81,6 +81,21 @@ var PostConsensusProposerTooManyRootsMsgV = func(sk *bls.SecretKey, id types.Ope
 	}
 }
 
+var PostConsensusProposerTooFewRootsMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
+	msg := &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingProposerDutyV(version).Slot,
+		Messages: []*types.PartialSignatureMessage{},
+	}
+
+	sig, _ := NewTestingKeyManager().SignRoot(msg, types.PartialSignatureType, sk.GetPublicKey().Serialize())
+	return &types.SignedPartialSignatureMessage{
+		Message:   *msg,
+		Signature: sig,
+		Signer:    id,
+	}
+}
+
 var PostConsensusWrongProposerMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
 	return postConsensusBeaconBlockMsgV(sk, id, true, false, version)
 }
