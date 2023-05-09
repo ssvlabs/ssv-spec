@@ -159,56 +159,6 @@ func fullHappyFlowAggregatorSC() *qbftcomparable.StateComparison {
 	}
 }
 
-// fullHappyFlowProposerSC returns state comparison object for the FullHappyFlow Proposer spec test
-func fullHappyFlowProposerSC() *qbftcomparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
-		ExpectedState: func() types.Root {
-			ret := testingutils.ProposerRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				Finished:     true,
-				DecidedValue: typescomparable.FixIssue178(testingutils.TestProposerConsensusData, spec.DataVersionBellatrix),
-				StartingDuty: &testingutils.TestProposerConsensusData.Duty,
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer)[0:3]),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{
-						// TODO(oleg): describe change in github pr
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
-					}),
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				StartValue: typescomparable.NoErrorEncoding(testingutils.TestProposerConsensusData),
-				State: &qbft.State{
-					Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
-					ID:     ret.GetBaseRunner().QBFTController.Identifier,
-					Round:  qbft.FirstRound,
-					Height: qbft.FirstHeight,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.Shares[1], types.OperatorID(1),
-						ret.GetBaseRunner().QBFTController.Identifier,
-						testingutils.TestProposerConsensusDataByts,
-					),
-					LastPreparedRound: 1,
-					LastPreparedValue: testingutils.TestProposerConsensusDataByts,
-					Decided:           true,
-					DecidedValue:      testingutils.TestProposerConsensusDataByts,
-				},
-			}
-			qbftcomparable.SetMessages(
-				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer)[3:10],
-			)
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			return ret
-		}(),
-	}
-}
-
 // fullHappyFlowProposerSCV returns state comparison object for the FullHappyFlow Proposer versioned spec test
 func fullHappyFlowProposerSCV(version spec.DataVersion) *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
@@ -254,55 +204,6 @@ func fullHappyFlowProposerSCV(version spec.DataVersion) *qbftcomparable.StateCom
 			qbftcomparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
 				testingutils.SSVDecidingMsgs(cd, ks, types.BNRoleProposer)[3:10],
-			)
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			return ret
-		}(),
-	}
-}
-
-// fullHappyFlowBlindedProposerSC returns state comparison object for the FullHappyFlow BlindedProposer spec test
-func fullHappyFlowBlindedProposerSC() *qbftcomparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
-		ExpectedState: func() types.Root {
-			ret := testingutils.ProposerBlindedBlockRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				Finished:     true,
-				DecidedValue: typescomparable.FixIssue178(testingutils.TestProposerBlindedBlockConsensusData, spec.DataVersionBellatrix),
-				StartingDuty: &testingutils.TestProposerConsensusData.Duty,
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer)[0:3]),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
-					}),
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				StartValue: typescomparable.NoErrorEncoding(testingutils.TestProposerBlindedBlockConsensusData),
-				State: &qbft.State{
-					Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
-					ID:     ret.GetBaseRunner().QBFTController.Identifier,
-					Round:  qbft.FirstRound,
-					Height: qbft.FirstHeight,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.Shares[1], types.OperatorID(1),
-						ret.GetBaseRunner().QBFTController.Identifier,
-						testingutils.TestProposerBlindedBlockConsensusDataByts,
-					),
-					LastPreparedRound: 1,
-					LastPreparedValue: testingutils.TestProposerBlindedBlockConsensusDataByts,
-					Decided:           true,
-					DecidedValue:      testingutils.TestProposerBlindedBlockConsensusDataByts,
-				},
-			}
-			qbftcomparable.SetMessages(
-				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer)[3:10],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
