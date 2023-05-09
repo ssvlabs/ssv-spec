@@ -32,17 +32,22 @@ func UnknownSigner() tests.SpecTest {
 
 func unknownSignerStateComparison() *qbftcomparable.StateComparison {
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		config,
+		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
 	)
-	_ = contr.StartNewInstance([]byte{1, 2, 3, 4})
 
-	state := testingutils.BaseInstance().State
-	state.ID = identifier[:]
-	contr.StoredInstances[0].State = state
+	instance := &qbft.Instance{
+		StartValue: []byte{1, 2, 3, 4},
+		State: &qbft.State{
+			Share: testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ID:    identifier[:],
+			Round: qbft.FirstRound,
+		},
+	}
+	qbftcomparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+	contr.StoredInstances = append(contr.StoredInstances, instance)
 
 	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
