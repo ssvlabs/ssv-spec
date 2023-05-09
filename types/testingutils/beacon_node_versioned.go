@@ -4,9 +4,17 @@ import (
 	"github.com/attestantio/go-eth2-client/api"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/bloxapp/ssv-spec/types"
+)
+
+const (
+	// ForkSlotCapella taken from https://github.com/ethereum/consensus-specs/blob/1c424d76eddbacae3cbffed8276264b46951456b/specs/capella/fork.md?plain=1#L30
+	ForkSlotCapella = 6209536 // Epoch(194048)
+	// TestingDutySlotBellatrix keeping this value to not break the test roots
+	TestingDutySlotBellatrix = 12
 )
 
 var TestingBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
@@ -107,6 +115,13 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 	}
 }
 
+var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
+	if slot < ForkSlotCapella {
+		return spec.DataVersionBellatrix
+	}
+	return spec.DataVersionCapella
+}
+
 var TestingProposerDutyV = func(version spec.DataVersion) *types.Duty {
 	duty := &types.Duty{
 		Type:                    types.BNRoleProposer,
@@ -120,7 +135,7 @@ var TestingProposerDutyV = func(version spec.DataVersion) *types.Duty {
 
 	switch version {
 	case spec.DataVersionBellatrix:
-		duty.Slot = TestingDutySlot
+		duty.Slot = TestingDutySlotBellatrix
 
 	default:
 		panic("unsupported version")
