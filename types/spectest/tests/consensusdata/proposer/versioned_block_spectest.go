@@ -23,8 +23,7 @@ func (test *ProposerSpecTest) TestName() string {
 	return test.Name
 }
 
-// TODO: make multi proposer spec test for all (upcoming) versions
-// https://github.com/bloxapp/ssv-spec/issues/219
+// ISSUE 219: make multi proposer spec test for all (upcoming) versions
 
 func (test *ProposerSpecTest) Run(t *testing.T) {
 	// decode cd
