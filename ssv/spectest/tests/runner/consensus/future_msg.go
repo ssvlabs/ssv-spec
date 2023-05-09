@@ -71,19 +71,6 @@ func FutureMessage() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 			{
-				Name:   "proposer",
-				Runner: testingutils.ProposerRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(
-						futureMsgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID),
-						nil),
-				},
-				PostDutyRunnerStateRoot: "32dd1d1d7a4c34bb7dafc0866f69eb49f6a0a23755b135f83ad14d12e39fff82",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-			},
-			{
 				Name:   "proposer (versioned)",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
@@ -93,19 +80,6 @@ func FutureMessage() tests.SpecTest {
 						nil),
 				},
 				PostDutyRunnerStateRoot: "32dd1d1d7a4c34bb7dafc0866f69eb49f6a0a23755b135f83ad14d12e39fff82",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-			},
-			{
-				Name:   "proposer (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(
-						futureMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID),
-						nil),
-				},
-				PostDutyRunnerStateRoot: "58b946451dc5ccbd52fbc9e6bbe0ac888253d1708be018a3ff0b07762dd28891",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 			},

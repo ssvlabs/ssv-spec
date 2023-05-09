@@ -58,15 +58,6 @@ func PostDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "proposer",
-				Runner:                  finishRunner(testingutils.ProposerRunner(ks), &testingutils.TestingProposerDutyNextEpoch),
-				Duty:                    &testingutils.TestingProposerDutyNextEpoch,
-				PostDutyRunnerStateRoot: "8bb7114ca6cb9d4247a2fc955e9c881f9c1909752a0f330270251dfaa52adcc3",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-			},
-			{
 				Name:                    "proposer (versioned)",
 				Runner:                  finishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix)),
 				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
