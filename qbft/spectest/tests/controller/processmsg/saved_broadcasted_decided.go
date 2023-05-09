@@ -37,47 +37,30 @@ func BroadcastedDecided() tests.SpecTest {
 }
 
 func broadcastedDecidedStateComparison() *qbftcomparable.StateComparison {
-	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
-	contr := testingutils.NewTestingQBFTController(
-		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		config,
-	)
-	_ = contr.StartNewInstance([]byte{1, 2, 3, 4})
-
 	ks := testingutils.Testing4SharesSet()
-	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 
-	state := testingutils.BaseInstance().State
-	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
-	state.LastPreparedRound = 1
-	state.LastPreparedValue = testingutils.TestingQBFTFullData
-	state.Decided = true
-	state.DecidedValue = testingutils.TestingQBFTFullData
+	contr := testingutils.NewTestingQBFTController(
+		testingutils.TestingIdentifier,
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+	)
 
-	state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-		qbft.FirstRound: {
-			msgs[0],
+	instance := &qbft.Instance{
+		StartValue: []byte{1, 2, 3, 4},
+		State: &qbft.State{
+			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ID:                              testingutils.TestingIdentifier,
+			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+			LastPreparedRound:               qbft.FirstRound,
+			LastPreparedValue:               testingutils.TestingQBFTFullData,
+			Decided:                         true,
+			DecidedValue:                    testingutils.TestingQBFTFullData,
+			Round:                           qbft.FirstRound,
 		},
-	}}
-	state.PrepareContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-		qbft.FirstRound: {
-			msgs[1],
-			msgs[2],
-			msgs[3],
-		},
-	}}
-	state.CommitContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-		qbft.FirstRound: {
-			msgs[4],
-			msgs[5],
-			msgs[6],
-		},
-	}}
-
-	contr.StoredInstances[0].State = state
+	}
+	qbftcomparable.SetSignedMessages(instance, msgs)
+	contr.StoredInstances = append(contr.StoredInstances, instance)
 
 	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
