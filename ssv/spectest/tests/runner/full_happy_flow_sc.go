@@ -4,7 +4,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/ssv"
 	ssvcomparable "github.com/bloxapp/ssv-spec/ssv/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/types"
@@ -13,9 +12,9 @@ import (
 )
 
 // fullHappyFlowSyncCommitteeContributionSC returns state comparison object for the FullHappyFlow SyncCommitteeContribution spec test
-func fullHappyFlowSyncCommitteeContributionSC() *qbftcomparable.StateComparison {
+func fullHappyFlowSyncCommitteeContributionSC() *typescomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
+	return &typescomparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
@@ -51,7 +50,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *qbftcomparable.StateComparison 
 					DecidedValue:      testingutils.TestSyncCommitteeContributionConsensusDataByts,
 				},
 			}
-			qbftcomparable.SetMessages(
+			typescomparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
 				testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)[3:10],
 			)
@@ -62,9 +61,9 @@ func fullHappyFlowSyncCommitteeContributionSC() *qbftcomparable.StateComparison 
 }
 
 // fullHappyFlowSyncCommitteeSC returns state comparison object for the FullHappyFlow SyncCommittee spec test
-func fullHappyFlowSyncCommitteeSC() *qbftcomparable.StateComparison {
+func fullHappyFlowSyncCommitteeSC() *typescomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
+	return &typescomparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.SyncCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
@@ -100,7 +99,7 @@ func fullHappyFlowSyncCommitteeSC() *qbftcomparable.StateComparison {
 					DecidedValue:      testingutils.TestSyncCommitteeConsensusDataByts,
 				},
 			}
-			qbftcomparable.SetMessages(
+			typescomparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
 				testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee)[0:7],
 			)
@@ -111,9 +110,9 @@ func fullHappyFlowSyncCommitteeSC() *qbftcomparable.StateComparison {
 }
 
 // fullHappyFlowAggregatorSC returns state comparison object for the FullHappyFlow Aggregator spec test
-func fullHappyFlowAggregatorSC() *qbftcomparable.StateComparison {
+func fullHappyFlowAggregatorSC() *typescomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
+	return &typescomparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
@@ -149,7 +148,7 @@ func fullHappyFlowAggregatorSC() *qbftcomparable.StateComparison {
 					DecidedValue:      testingutils.TestAggregatorConsensusDataByts,
 				},
 			}
-			qbftcomparable.SetMessages(
+			typescomparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
 				testingutils.SSVDecidingMsgs(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)[3:10],
 			)
@@ -160,9 +159,9 @@ func fullHappyFlowAggregatorSC() *qbftcomparable.StateComparison {
 }
 
 // fullHappyFlowProposerSC returns state comparison object for the FullHappyFlow Proposer spec test
-func fullHappyFlowProposerSC() *qbftcomparable.StateComparison {
+func fullHappyFlowProposerSC() *typescomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
+	return &typescomparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
@@ -198,7 +197,7 @@ func fullHappyFlowProposerSC() *qbftcomparable.StateComparison {
 					DecidedValue:      testingutils.TestProposerConsensusDataByts,
 				},
 			}
-			qbftcomparable.SetMessages(
+			typescomparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
 				testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer)[3:10],
 			)
@@ -209,9 +208,9 @@ func fullHappyFlowProposerSC() *qbftcomparable.StateComparison {
 }
 
 // fullHappyFlowBlindedProposerSC returns state comparison object for the FullHappyFlow BlindedProposer spec test
-func fullHappyFlowBlindedProposerSC() *qbftcomparable.StateComparison {
+func fullHappyFlowBlindedProposerSC() *typescomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
+	return &typescomparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
@@ -247,7 +246,7 @@ func fullHappyFlowBlindedProposerSC() *qbftcomparable.StateComparison {
 					DecidedValue:      testingutils.TestProposerBlindedBlockConsensusDataByts,
 				},
 			}
-			qbftcomparable.SetMessages(
+			typescomparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
 				testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer)[3:10],
 			)
@@ -258,9 +257,9 @@ func fullHappyFlowBlindedProposerSC() *qbftcomparable.StateComparison {
 }
 
 // fullHappyFlowAttesterSC returns state comparison object for the FullHappyFlow Attester spec test
-func fullHappyFlowAttesterSC() *qbftcomparable.StateComparison {
+func fullHappyFlowAttesterSC() *typescomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
+	return &typescomparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.AttesterRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
@@ -296,7 +295,7 @@ func fullHappyFlowAttesterSC() *qbftcomparable.StateComparison {
 					DecidedValue:      testingutils.TestAttesterConsensusDataByts,
 				},
 			}
-			qbftcomparable.SetMessages(
+			typescomparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
 				testingutils.SSVDecidingMsgs(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester)[0:7],
 			)
@@ -307,9 +306,9 @@ func fullHappyFlowAttesterSC() *qbftcomparable.StateComparison {
 }
 
 // fullHappyFlowValidatorRegistrationSC returns state comparison object for the FullHappyFlow ValidatorRegistration spec test
-func fullHappyFlowValidatorRegistrationSC() *qbftcomparable.StateComparison {
+func fullHappyFlowValidatorRegistrationSC() *typescomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	return &qbftcomparable.StateComparison{
+	return &typescomparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.ValidatorRegistrationRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{

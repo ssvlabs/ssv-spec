@@ -1,4 +1,4 @@
-package qbftcomparable
+package comparable
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
