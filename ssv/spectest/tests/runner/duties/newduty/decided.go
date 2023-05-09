@@ -72,7 +72,7 @@ func PostDecided() tests.SpecTest {
 				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
 				PostDutyRunnerStateRoot: "8bb7114ca6cb9d4247a2fc955e9c881f9c1909752a0f330270251dfaa52adcc3",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 			},
 			{
