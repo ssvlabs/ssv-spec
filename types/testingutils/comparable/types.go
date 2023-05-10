@@ -1,4 +1,4 @@
-package qbftcomparable
+package comparable
 
 import (
 	"encoding/hex"
