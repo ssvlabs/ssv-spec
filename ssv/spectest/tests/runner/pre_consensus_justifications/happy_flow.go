@@ -2,11 +2,14 @@ package pre_consensus_justifications
 
 import (
 	"encoding/hex"
+
+	"github.com/attestantio/go-eth2-client/spec"
+	ssz "github.com/ferranbt/fastssz"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	ssz "github.com/ferranbt/fastssz"
 )
 
 func getSSZRootNoError(obj ssz.HashRoot) string {
@@ -172,89 +175,89 @@ func HappyFlow() tests.SpecTest {
 			{
 				Name:   "proposer first height",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusData(ks), types.BNRoleProposer)[:7],
+					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), types.BNRoleProposer)[:7],
 					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
 				PostDutyRunnerStateRoot: "020e7b6eb0853ffab8dab87cc6ff2ed66d7c5d2da0280288775bb040c3bec524",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 				},
 			},
 			{
 				Name:   "proposer > first height",
 				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusData(ks), types.BNRoleProposer)[7:14],
+					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), types.BNRoleProposer)[7:14],
 					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
 				PostDutyRunnerStateRoot: "cecd64906415910e86f27bc94a827972f83f2d7f4518d36fd5919ac26fe53151",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 				},
 			},
 			{
 				Name:   "proposer blinded block first height",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), types.BNRoleProposer)[:7],
+					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), types.BNRoleProposer)[:7],
 					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
 				PostDutyRunnerStateRoot: "f6ee425da198f20ec945c1764e20a7c9f5b48815482add50a64b3287e700216b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 				},
 			},
 			{
 				Name:   "proposer blinded block > first height",
 				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), types.BNRoleProposer)[7:14],
+					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), types.BNRoleProposer)[7:14],
 					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
 				PostDutyRunnerStateRoot: "c7dfee8db272e47d0436b315404f010289304aff3630459fccbb5e4aca709c1e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 				},
 			},
 			{
