@@ -2,10 +2,10 @@ package proposal
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // PreparedPreviouslyNoPrepareJustificationQuorum tests a proposal for > 1 round, prepared previously but without quorum of prepared msgs justification
@@ -44,8 +44,8 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 	}
 }
 
-func preparedPreviouslyNoPrepareJustificationQuorumStateComparison() *qbftcomparable.StateComparison {
+func preparedPreviouslyNoPrepareJustificationQuorumStateComparison() *comparable.StateComparison {
 	state := testingutils.BaseInstance().State
 
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	return &comparable.StateComparison{ExpectedState: state}
 }

@@ -2,10 +2,10 @@ package proposal
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // InvalidPrepareJustificationValue tests a proposal for > 1 round, prepared previously but one of the prepare justifications has value != highest prepared
@@ -46,8 +46,8 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 	}
 }
 
-func invalidPrepareJustificationValueStateComparison() *qbftcomparable.StateComparison {
+func invalidPrepareJustificationValueStateComparison() *comparable.StateComparison {
 	state := testingutils.BaseInstance().State
 
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	return &comparable.StateComparison{ExpectedState: state}
 }
