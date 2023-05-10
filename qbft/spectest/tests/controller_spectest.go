@@ -11,6 +11,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 type DecidedState struct {
@@ -25,6 +26,7 @@ type RunInstanceData struct {
 	InputValue           []byte
 	InputMessages        []*qbft.SignedMessage
 	ControllerPostRoot   string
+	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedTimerState   *testingutils.TimerState
 	ExpectedDecidedState DecidedState
 }
@@ -171,7 +173,10 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	// test root
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
-	require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r[:]))
+	if runData.ControllerPostRoot != hex.EncodeToString(r[:]) {
+		diff := typescomparable.PrintDiff(contr, runData.ControllerPostState)
+		require.Fail(t, "post state not equal", diff)
+	}
 
 	return lastErr
 }
