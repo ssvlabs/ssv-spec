@@ -2,10 +2,10 @@ package startinstance
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // PreviousDecided tests starting an instance when the previous one decided
@@ -35,7 +35,7 @@ func PreviousDecided() tests.SpecTest {
 	}
 }
 
-func previousDecidedStateComparison(height qbft.Height, decidedState bool) *qbftcomparable.StateComparison {
+func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 
@@ -60,7 +60,7 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *qbft
 
 		// last height
 		if !decidedState && qbft.Height(i) == height {
-			qbftcomparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
@@ -71,9 +71,9 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *qbft
 		instance.State.Decided = true
 		instance.State.DecidedValue = testingutils.TestingQBFTFullData
 
-		qbftcomparable.SetSignedMessages(instance, msgs)
+		comparable.SetSignedMessages(instance, msgs)
 		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 	}
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }

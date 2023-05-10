@@ -2,10 +2,10 @@ package timeout
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // Round20 tests calling UponRoundTimeout for round 20, testing state and broadcasted msgs
@@ -40,9 +40,9 @@ func Round20() tests.SpecTest {
 	}
 }
 
-func round20StateComparison() *qbftcomparable.StateComparison {
+func round20StateComparison() *comparable.StateComparison {
 	state := testingutils.BaseInstance().State
 	state.Round = 21
 
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	return &comparable.StateComparison{ExpectedState: state}
 }
