@@ -50,16 +50,20 @@ func quorumOrder1StateComparison() *qbftcomparable.StateComparison {
 		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
 	}
 
-	state := testingutils.BaseInstance().State
-	state.Round = 2
-	state.RoundChangeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-		qbft.Round(2): {
-			testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
-				testingutils.MarshalJustifications(prepareMsgs)),
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
-		},
-	}}
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+			testingutils.MarshalJustifications(prepareMsgs)),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+	}
 
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	instance := &qbft.Instance{
+		State: &qbft.State{
+			Share: testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ID:    testingutils.TestingIdentifier,
+			Round: 2,
+		},
+	}
+	qbftcomparable.SetSignedMessages(instance, msgs)
+	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
 }

@@ -40,17 +40,19 @@ func RoundChangePartialQuorum() tests.SpecTest {
 func roundChangePartialQuorumStateComparison() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
-	state := testingutils.BaseInstance().State
-	state.Round = 2
-	state.RoundChangeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-		qbft.Round(2): {
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
-		},
-		qbft.Round(3): {
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
-		},
-	}}
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
+	}
 
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	instance := &qbft.Instance{
+		State: &qbft.State{
+			Share: testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ID:    testingutils.TestingIdentifier,
+			Round: 2,
+		},
+	}
+	qbftcomparable.SetSignedMessages(instance, msgs)
+	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
 }

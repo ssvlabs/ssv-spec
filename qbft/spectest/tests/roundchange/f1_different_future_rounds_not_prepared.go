@@ -35,17 +35,18 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 func f1DifferentFutureRoundsNotPreparedStateComparison() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
-	state := testingutils.BaseInstance().State
-	state.Round = 5
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
+	}
 
-	state.RoundChangeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-		qbft.Round(5): {
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
+	instance := &qbft.Instance{
+		State: &qbft.State{
+			Share: testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ID:    testingutils.TestingIdentifier,
+			Round: 5,
 		},
-		qbft.Round(10): {
-			testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
-		},
-	}}
-
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	}
+	qbftcomparable.SetSignedMessages(instance, msgs)
+	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
 }
