@@ -2,9 +2,9 @@ package tests
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	qbftcomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // HappyFlow tests a simple full happy flow until decided
