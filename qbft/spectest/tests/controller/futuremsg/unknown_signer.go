@@ -2,10 +2,10 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // UnknownSigner tests future msg signed by unknown signer
@@ -30,7 +30,7 @@ func UnknownSigner() tests.SpecTest {
 	}
 }
 
-func unknownSignerStateComparison() *qbftcomparable.StateComparison {
+func unknownSignerStateComparison() *comparable.StateComparison {
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
@@ -46,8 +46,8 @@ func unknownSignerStateComparison() *qbftcomparable.StateComparison {
 			Round: qbft.FirstRound,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+	comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }

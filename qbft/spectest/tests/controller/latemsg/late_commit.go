@@ -4,10 +4,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // LateCommit tests process late commit msg for an instance which just decided
@@ -40,7 +40,7 @@ func LateCommit() tests.SpecTest {
 	}
 }
 
-func lateCommitStateComparison() *qbftcomparable.StateComparison {
+func lateCommitStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingCommitMessage(ks.Shares[4], types.OperatorID(4)))
@@ -64,8 +64,8 @@ func lateCommitStateComparison() *qbftcomparable.StateComparison {
 			Round:                           qbft.FirstRound,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
+	comparable.SetSignedMessages(instance, msgs)
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }

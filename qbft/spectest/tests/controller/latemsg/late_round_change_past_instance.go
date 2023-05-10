@@ -4,10 +4,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // LateRoundChangePastInstance tests process round change msg for a previously decided instance
@@ -72,7 +72,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 	}
 }
 
-func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *qbftcomparable.StateComparison {
+func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
 	offset := 7 // 7 messages per height (1 propose + 3 prepare + 3 commit)
@@ -99,7 +99,7 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbf
 
 		// last height
 		if lateMsg != nil && qbft.Height(i) == height {
-			qbftcomparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
@@ -110,7 +110,7 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbf
 		instance.State.Decided = true
 		instance.State.DecidedValue = testingutils.TestingQBFTFullData
 
-		qbftcomparable.SetSignedMessages(instance, msgs)
+		comparable.SetSignedMessages(instance, msgs)
 
 		if lateMsg != nil && qbft.Height(i) == lateMsg.Message.Height {
 			instance.State.RoundChangeContainer.Msgs[qbft.FirstRound] = append(instance.State.RoundChangeContainer.Msgs[qbft.FirstRound], lateMsg)
@@ -119,5 +119,5 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbf
 		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 	}
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }

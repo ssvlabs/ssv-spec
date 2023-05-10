@@ -2,10 +2,10 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // NoSigners tests future msg with no signers
@@ -30,7 +30,7 @@ func NoSigners() tests.SpecTest {
 	}
 }
 
-func noSignersStateComparison() *qbftcomparable.StateComparison {
+func noSignersStateComparison() *comparable.StateComparison {
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
@@ -46,8 +46,8 @@ func noSignersStateComparison() *qbftcomparable.StateComparison {
 			Round: qbft.FirstRound,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+	comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }

@@ -4,10 +4,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // LatePrepare tests process late prepare msg for an instance which just decided
@@ -41,7 +41,7 @@ func LatePrepare() tests.SpecTest {
 	}
 }
 
-func latePrepareStateComparison() *qbftcomparable.StateComparison {
+func latePrepareStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 	msgs = append(msgs, testingutils.TestingPrepareMessage(ks.Shares[4], types.OperatorID(4)))
@@ -66,9 +66,9 @@ func latePrepareStateComparison() *qbftcomparable.StateComparison {
 			Round:                           qbft.FirstRound,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
+	comparable.SetSignedMessages(instance, msgs)
 	//instance.State.PrepareContainer.Msgs[qbft.FirstRound] = append(instance.State.PrepareContainer.Msgs[qbft.FirstRound], latePrepare)
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }

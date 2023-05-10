@@ -4,10 +4,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // LateProposalPastInstance tests process proposal msg for a previously decided instance
@@ -69,7 +69,7 @@ func LateProposalPastInstance() tests.SpecTest {
 	}
 }
 
-func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *qbftcomparable.StateComparison {
+func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
 	offset := 7 // 7 messages per height (1 propose + 3 prepare + 3 commit)
@@ -96,7 +96,7 @@ func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.S
 
 		// last height
 		if lateMsg != nil && qbft.Height(i) == height {
-			qbftcomparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
@@ -107,9 +107,9 @@ func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.S
 		instance.State.Decided = true
 		instance.State.DecidedValue = testingutils.TestingQBFTFullData
 
-		qbftcomparable.SetSignedMessages(instance, msgs)
+		comparable.SetSignedMessages(instance, msgs)
 		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 	}
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }

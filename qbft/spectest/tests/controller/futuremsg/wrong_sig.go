@@ -2,10 +2,10 @@ package futuremsg
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // WrongSig tests future msg with invalid sig
@@ -27,7 +27,7 @@ func WrongSig() tests.SpecTest {
 	}
 }
 
-func wrongSigStateComparison() *qbftcomparable.StateComparison {
+func wrongSigStateComparison() *comparable.StateComparison {
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
@@ -43,8 +43,8 @@ func wrongSigStateComparison() *qbftcomparable.StateComparison {
 			Round: qbft.FirstRound,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+	comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }
