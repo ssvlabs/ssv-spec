@@ -1,6 +1,8 @@
 package newduty
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -60,11 +62,11 @@ func NotDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  startRunner(testingutils.ProposerRunner(ks), &testingutils.TestingProposerDutyNextEpoch),
-				Duty:                    &testingutils.TestingProposerDutyNextEpoch,
+				Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix)),
+				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
 				PostDutyRunnerStateRoot: "6e99d5781382b89366d4c1869d31f44528d225c4d8cada3534d4d2464e2701bf",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedErr,
 			},
