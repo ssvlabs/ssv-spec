@@ -4,10 +4,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	qbftcomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // FullDecided tests process msg and first time deciding
