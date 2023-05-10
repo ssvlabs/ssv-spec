@@ -14,7 +14,8 @@ const (
 	// ForkSlotCapella taken from https://github.com/ethereum/consensus-specs/blob/1c424d76eddbacae3cbffed8276264b46951456b/specs/capella/fork.md?plain=1#L30
 	ForkSlotCapella = 6209536 // Epoch(194048)
 	// TestingDutySlotBellatrix keeping this value to not break the test roots
-	TestingDutySlotBellatrix = 12
+	TestingDutySlotBellatrix          = 12
+	TestingDutySlotBellatrixNextEpoch = 50
 )
 
 var TestingBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
@@ -157,7 +158,7 @@ var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.Duty {
 
 	switch version {
 	case spec.DataVersionBellatrix:
-		duty.Slot = TestingDutySlot2
+		duty.Slot = TestingDutySlotBellatrixNextEpoch
 
 	default:
 		panic("unsupported version")
