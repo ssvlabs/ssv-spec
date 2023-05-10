@@ -16,6 +16,7 @@ const (
 	// TestingDutySlotBellatrix keeping this value to not break the test roots
 	TestingDutySlotBellatrix          = 12
 	TestingDutySlotBellatrixNextEpoch = 50
+	TestingDutySlotBellatrixInvalid   = 50
 )
 
 var TestingBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
@@ -165,4 +166,14 @@ var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.Duty {
 	}
 
 	return duty
+}
+
+var TestingInvalidDutySlotV = func(version spec.DataVersion) phase0.Slot {
+	switch version {
+	case spec.DataVersionBellatrix:
+		return TestingDutySlotBellatrixInvalid
+
+	default:
+		panic("unsupported version")
+	}
 }
