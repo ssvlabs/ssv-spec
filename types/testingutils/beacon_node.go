@@ -121,10 +121,6 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 		},
 	},
 }
-var TestingBeaconBlockBytes = func() []byte {
-	ret, _ := TestingBeaconBlock.MarshalSSZ()
-	return ret
-}()
 
 var TestingBlindedBeaconBlock = func() *apiv1bellatrix.BlindedBeaconBlock {
 	fullBlk := TestingBeaconBlock
@@ -165,30 +161,6 @@ var TestingBlindedBeaconBlock = func() *apiv1bellatrix.BlindedBeaconBlock {
 
 	return ret
 }()
-var TestingBlindedBeaconBlockBytes = func() []byte {
-	ret, _ := TestingBlindedBeaconBlock.MarshalSSZ()
-	return ret
-}()
-
-var TestingWrongBeaconBlock = func() *bellatrix.BeaconBlock {
-	byts, err := TestingBeaconBlock.MarshalSSZ()
-	if err != nil {
-		panic(err.Error())
-	}
-	ret := &bellatrix.BeaconBlock{}
-	if err := ret.UnmarshalSSZ(byts); err != nil {
-		panic(err.Error())
-	}
-	ret.Slot = 100
-	return ret
-}()
-
-var TestingSignedBeaconBlock = func(ks *TestKeySet) *bellatrix.SignedBeaconBlock {
-	return &bellatrix.SignedBeaconBlock{
-		Message:   TestingBeaconBlock,
-		Signature: signBeaconObject(TestingBeaconBlock, types.DomainProposer, ks),
-	}
-}
 
 var TestingAggregateAndProof = &phase0.AggregateAndProof{
 	AggregatorIndex: 1,
@@ -338,29 +310,6 @@ var TestingAttesterDuty = types.Duty{
 	Type:                    types.BNRoleAttester,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
-}
-
-var TestingProposerDuty = types.Duty{
-	Type:                    types.BNRoleProposer,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
-}
-
-// TestingProposerDutyNextEpoch testing for a second duty start
-var TestingProposerDutyNextEpoch = types.Duty{
-	Type:                    types.BNRoleProposer,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot2,
 	ValidatorIndex:          TestingValidatorIndex,
 	CommitteeIndex:          3,
 	CommitteesAtSlot:        36,
