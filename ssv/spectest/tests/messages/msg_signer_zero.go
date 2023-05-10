@@ -1,6 +1,8 @@
 package messages
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -11,7 +13,7 @@ import (
 func MessageSigner0() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgPre := testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)
+	msgPre := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)
 	msgPre.Message.Messages[0].Signer = 0
 	msgPre.Signer = 0
 	msgPost := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
