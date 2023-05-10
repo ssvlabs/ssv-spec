@@ -51,7 +51,6 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 
 func duplicateMsgQuorumPreparedRCFirstStateComparison() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
