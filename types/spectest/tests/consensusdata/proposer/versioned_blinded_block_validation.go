@@ -1,15 +1,19 @@
 package consensusdataproposer
 
-import "github.com/bloxapp/ssv-spec/types/testingutils"
+import (
+	"github.com/attestantio/go-eth2-client/spec"
+
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+)
 
 // VersionedBlindedBlockValidation tests a valid consensus data with bellatrix blinded block
 func VersionedBlindedBlockValidation() *ProposerSpecTest {
-	expectedCdRoot, err := testingutils.TestProposerBlindedBlockConsensusData.HashTreeRoot()
+	expectedCdRoot, err := testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix).HashTreeRoot()
 	if err != nil {
 		panic(err.Error())
 	}
 
-	expectedBlkRoot, err := testingutils.TestingBlindedBeaconBlock.HashTreeRoot()
+	expectedBlkRoot, err := testingutils.TestingBlindedBeaconBlockV(spec.DataVersionBellatrix).Root()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -17,8 +21,8 @@ func VersionedBlindedBlockValidation() *ProposerSpecTest {
 	return &ProposerSpecTest{
 		Name:            "consensus data versioned blinded block validation",
 		Blinded:         true,
-		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataByts,
-		DataBlk:         testingutils.TestingBlindedBeaconBlockBytes,
+		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+		DataBlk:         testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionBellatrix),
 		ExpectedCdRoot:  expectedCdRoot,
 		ExpectedBlkRoot: expectedBlkRoot,
 	}
