@@ -44,7 +44,9 @@ var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
 }
 
 var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleValidatorRegistration, nil, keySet)
+	ret := baseRunner(types.BNRoleValidatorRegistration, nil, keySet)
+	ret.(*ssv.ValidatorRegistrationRunner).GasLimit = 1
+	return ret
 }
 
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
