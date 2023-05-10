@@ -1,6 +1,8 @@
 package preconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -78,17 +80,17 @@ func PostDecided() tests.SpecTest {
 				Name: "randao",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
-					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerConsensusData,
+					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+					testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix),
 					[]*types.SignedPartialSignatureMessage{
-						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2),
-						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3),
+						testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix),
+						testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionBellatrix),
+						testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionBellatrix),
 					},
 				),
-				Duty: &testingutils.TestingProposerDuty,
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "b750ef28800c3403698472e04d98848e16cead7b51b797bad4ed8bdf51e9323c",
 				DontStartDuty:           true,
@@ -98,17 +100,17 @@ func PostDecided() tests.SpecTest {
 				Name: "randao (blinded block)",
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerBlindedBlockConsensusData,
+					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix),
 					[]*types.SignedPartialSignatureMessage{
-						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2),
-						testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3),
+						testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix),
+						testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionBellatrix),
+						testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionBellatrix),
 					},
 				),
-				Duty: &testingutils.TestingProposerDuty,
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "5c632900f8e59809f3a366a0cdbd71d2f4598e39100e7bccca4d1a18130fb7cf",
 				DontStartDuty:           true,
