@@ -19,7 +19,7 @@ type MsgProcessingSpecTest struct {
 	Duty                    *types.Duty
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
-	PostDutyRunnerState     types.Root
+	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
 	OutputMessages         []*types.SignedPartialSignatureMessage
 	BeaconBroadcastedRoots []string
