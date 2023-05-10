@@ -2,11 +2,14 @@ package proposer
 
 import (
 	"encoding/hex"
+
+	"github.com/attestantio/go-eth2-client/spec"
+	ssz "github.com/ferranbt/fastssz"
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	ssz "github.com/ferranbt/fastssz"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 func getSSZRootNoError(obj ssz.HashRoot) string {
@@ -20,31 +23,31 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:   "propose blinded decide regular",
 		Runner: testingutils.ProposerBlindedBlockRunner(ks),
-		Duty:   &testingutils.TestingProposerDuty,
+		Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 		Messages: []*types.SSVMessage{
-			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix)),
+			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionBellatrix)),
+			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionBellatrix)),
 
 			testingutils.SSVMsgProposer(
 				testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
 					testingutils.ProposerMsgID,
-					testingutils.TestProposerConsensusDataByts,
+					testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
 				), nil),
 
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 		},
 		PostDutyRunnerStateRoot: "f3d290c9921e630b8911b5b6b6e1fdf249b9c7bd222020ff603cef3bfb1e0e25",
 		OutputMessages: []*types.SignedPartialSignatureMessage{
-			testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-			testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+			testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 		},
 		BeaconBroadcastedRoots: []string{
-			getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+			getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 		},
 	}
 }
