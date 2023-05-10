@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/binary"
 	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	ssz "github.com/ferranbt/fastssz"
 )
