@@ -4,10 +4,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // CurrentInstance tests a decided msg received for current running instance
@@ -42,7 +42,7 @@ func CurrentInstance() tests.SpecTest {
 	}
 }
 
-func currentInstanceStateComparison() *qbftcomparable.StateComparison {
+func currentInstanceStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
@@ -73,8 +73,8 @@ func currentInstanceStateComparison() *qbftcomparable.StateComparison {
 			Round:                           qbft.FirstRound,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
+	comparable.SetSignedMessages(instance, msgs)
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }

@@ -6,10 +6,10 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // InvalidValCheckData tests a decided message with invalid decided data (but should pass as it's decided)
@@ -44,7 +44,7 @@ func InvalidValCheckData() tests.SpecTest {
 	}
 }
 
-func invalidValCheckDataStateComparison() *qbftcomparable.StateComparison {
+func invalidValCheckDataStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingCommitMultiSignerMessageWithParams(
@@ -74,8 +74,8 @@ func invalidValCheckDataStateComparison() *qbftcomparable.StateComparison {
 			Round:        qbft.FirstRound,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
+	comparable.SetSignedMessages(instance, msgs)
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
+	return &comparable.StateComparison{ExpectedState: contr}
 }
