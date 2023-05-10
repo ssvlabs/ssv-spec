@@ -32,15 +32,18 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 
 func duplicateMsgDifferentRootStateComparison() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+	}
 
-	state := testingutils.BaseInstance().State
-	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
-
-	state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
-		qbft.FirstRound: {
-			testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+	instance := &qbft.Instance{
+		State: &qbft.State{
+			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+			ID:                              testingutils.TestingIdentifier,
+			Round:                           qbft.FirstRound,
 		},
-	}}
-
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	}
+	qbftcomparable.SetSignedMessages(instance, msgs)
+	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
 }
