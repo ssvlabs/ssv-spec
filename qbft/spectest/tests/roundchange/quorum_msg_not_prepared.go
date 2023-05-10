@@ -2,10 +2,10 @@ package roundchange
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // QuorumMsgNotPrepared tests LIVENESS where the rc msg making a quorum for round change is not prev prepared (other are) which can cause a liveness issue with isReceivedProposalJustification
@@ -41,7 +41,7 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 	}
 }
 
-func quorumMsgNotPreparedStateComparison() *qbftcomparable.StateComparison {
+func quorumMsgNotPreparedStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	prepareMsgs := []*qbft.SignedMessage{
@@ -64,6 +64,6 @@ func quorumMsgNotPreparedStateComparison() *qbftcomparable.StateComparison {
 			Round: 2,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
-	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
+	comparable.SetSignedMessages(instance, msgs)
+	return &comparable.StateComparison{ExpectedState: instance.State}
 }

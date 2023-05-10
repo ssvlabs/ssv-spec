@@ -2,10 +2,10 @@ package roundchange
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // F1DifferentFutureRoundsNotPrepared tests f+1 speedup (not prev prepared)
@@ -32,7 +32,7 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 	}
 }
 
-func f1DifferentFutureRoundsNotPreparedStateComparison() *qbftcomparable.StateComparison {
+func f1DifferentFutureRoundsNotPreparedStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*qbft.SignedMessage{
@@ -47,6 +47,6 @@ func f1DifferentFutureRoundsNotPreparedStateComparison() *qbftcomparable.StateCo
 			Round: 5,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
-	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
+	comparable.SetSignedMessages(instance, msgs)
+	return &comparable.StateComparison{ExpectedState: instance.State}
 }

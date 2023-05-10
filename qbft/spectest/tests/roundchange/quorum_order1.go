@@ -2,10 +2,10 @@ package roundchange
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // QuorumOrder1 tests LIVENESS where the rc quorum msgs in different order
@@ -41,7 +41,7 @@ func QuorumOrder1() tests.SpecTest {
 	}
 }
 
-func quorumOrder1StateComparison() *qbftcomparable.StateComparison {
+func quorumOrder1StateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	prepareMsgs := []*qbft.SignedMessage{
@@ -64,6 +64,6 @@ func quorumOrder1StateComparison() *qbftcomparable.StateComparison {
 			Round: 2,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
-	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
+	comparable.SetSignedMessages(instance, msgs)
+	return &comparable.StateComparison{ExpectedState: instance.State}
 }

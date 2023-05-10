@@ -2,10 +2,10 @@ package roundchange
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // RoundChangePartialQuorum tests a round change msgs with partial quorum
@@ -37,7 +37,7 @@ func RoundChangePartialQuorum() tests.SpecTest {
 	}
 }
 
-func roundChangePartialQuorumStateComparison() *qbftcomparable.StateComparison {
+func roundChangePartialQuorumStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*qbft.SignedMessage{
@@ -53,6 +53,6 @@ func roundChangePartialQuorumStateComparison() *qbftcomparable.StateComparison {
 			Round: 2,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
-	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
+	comparable.SetSignedMessages(instance, msgs)
+	return &comparable.StateComparison{ExpectedState: instance.State}
 }

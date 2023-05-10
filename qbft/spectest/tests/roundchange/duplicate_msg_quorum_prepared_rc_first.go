@@ -2,10 +2,10 @@ package roundchange
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // DuplicateMsgQuorumPreparedRCFirst tests a duplicate rc msg (the prev prepared one first)
@@ -49,7 +49,7 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 	}
 }
 
-func duplicateMsgQuorumPreparedRCFirstStateComparison() *qbftcomparable.StateComparison {
+func duplicateMsgQuorumPreparedRCFirstStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
@@ -71,6 +71,6 @@ func duplicateMsgQuorumPreparedRCFirstStateComparison() *qbftcomparable.StateCom
 			Round: 2,
 		},
 	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
-	return &qbftcomparable.StateComparison{ExpectedState: instance.State}
+	comparable.SetSignedMessages(instance, msgs)
+	return &comparable.StateComparison{ExpectedState: instance.State}
 }
