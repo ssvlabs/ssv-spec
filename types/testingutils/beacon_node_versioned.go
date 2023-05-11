@@ -90,9 +90,6 @@ var TestingBlindedBeaconBlockV = func(version spec.DataVersion) *api.VersionedBl
 var TestingBlindedBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 	var ret []byte
 	vBlk := TestingBlindedBeaconBlockV(version)
-	if vBlk.IsEmpty() {
-		panic("empty block")
-	}
 
 	switch version {
 	case spec.DataVersionBellatrix:
