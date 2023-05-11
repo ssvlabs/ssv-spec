@@ -126,9 +126,10 @@ var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
 
 var TestingProposerDutyV = func(version spec.DataVersion) *types.Duty {
 	duty := &types.Duty{
-		Type:                    types.BNRoleProposer,
-		PubKey:                  TestingValidatorPubKey,
-		ValidatorIndex:          TestingValidatorIndex,
+		Type:           types.BNRoleProposer,
+		PubKey:         TestingValidatorPubKey,
+		ValidatorIndex: TestingValidatorIndex,
+		// ISSUE 233: We are initializing unused struct fields here
 		CommitteeIndex:          3,
 		CommitteesAtSlot:        36,
 		CommitteeLength:         128,
@@ -148,9 +149,10 @@ var TestingProposerDutyV = func(version spec.DataVersion) *types.Duty {
 
 var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.Duty {
 	duty := &types.Duty{
-		Type:                    types.BNRoleProposer,
-		PubKey:                  TestingValidatorPubKey,
-		ValidatorIndex:          TestingValidatorIndex,
+		Type:           types.BNRoleProposer,
+		PubKey:         TestingValidatorPubKey,
+		ValidatorIndex: TestingValidatorIndex,
+		// ISSUE 233: We are initializing unused struct fields here
 		CommitteeIndex:          3,
 		CommitteesAtSlot:        36,
 		CommitteeLength:         128,
