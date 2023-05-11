@@ -499,7 +499,15 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) 
 
 // GetBeaconBlock returns beacon block by the given slot and committee index
 func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
-	return TestingBeaconBlock, spec.DataVersionBellatrix, nil
+	version := VersionBySlot(slot)
+
+	switch version {
+	case spec.DataVersionBellatrix:
+		vBlk := TestingBeaconBlockV(version)
+		return vBlk.Bellatrix, version, nil
+	default:
+		panic("unsupported version")
+	}
 }
 
 // SubmitBeaconBlock submit the block to the node
@@ -544,7 +552,15 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 
 // GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
 func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
-	return TestingBlindedBeaconBlock, spec.DataVersionBellatrix, nil
+	version := VersionBySlot(slot)
+
+	switch version {
+	case spec.DataVersionBellatrix:
+		vBlk := TestingBlindedBeaconBlockV(version)
+		return vBlk.Bellatrix, version, nil
+	default:
+		panic("unsupported version")
+	}
 }
 
 // SubmitBlindedBeaconBlock submit the blinded block to the node

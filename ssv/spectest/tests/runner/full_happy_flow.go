@@ -3,6 +3,7 @@ package runner
 import (
 	"encoding/hex"
 
+	"github.com/attestantio/go-eth2-client/spec"
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -101,42 +102,42 @@ func FullHappyFlow() tests.SpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
-					testingutils.SSVDecidingMsgs(testingutils.TestProposerConsensusData, ks, types.BNRoleProposer), // consensus
+					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer), // consensus
 					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: fullHappyFlowProposerSC().Root(), // "76812c0f14ff09067547e9528730749b0c0090d1a4872689a0b8480d7b538884",
-				PostDutyRunnerState:     fullHappyFlowProposerSC().ExpectedState,
+				PostDutyRunnerStateRoot: fullHappyFlowProposerSCV(spec.DataVersionBellatrix).Root(), // "76812c0f14ff09067547e9528730749b0c0090d1a4872689a0b8480d7b538884",
+				PostDutyRunnerState:     fullHappyFlowProposerSCV(spec.DataVersionBellatrix).ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 				},
 			},
 			{
 				Name:   "proposer blinded block",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
-					testingutils.SSVDecidingMsgs(testingutils.TestProposerBlindedBlockConsensusData, ks, types.BNRoleProposer), // consensus
+					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer), // consensus
 					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: fullHappyFlowBlindedProposerSC().Root(), // "90755cc41b814519fd9fdd14bc82d239997ba51340c297f25f5f1552f27f66c7",
-				PostDutyRunnerState:     fullHappyFlowBlindedProposerSC().ExpectedState,
+				PostDutyRunnerStateRoot: fullHappyFlowBlindedProposerSCV(spec.DataVersionBellatrix).Root(), // "90755cc41b814519fd9fdd14bc82d239997ba51340c297f25f5f1552f27f66c7",
+				PostDutyRunnerState:     fullHappyFlowBlindedProposerSCV(spec.DataVersionBellatrix).ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-					testingutils.PostConsensusProposerMsg(ks.Shares[1], 1),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
