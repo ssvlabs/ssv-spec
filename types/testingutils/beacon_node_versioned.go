@@ -15,15 +15,19 @@ import (
 )
 
 const (
-	// ForkSlotCapella taken from https://github.com/ethereum/consensus-specs/blob/1c424d76eddbacae3cbffed8276264b46951456b/specs/capella/fork.md?plain=1#L30
-	ForkSlotCapella = 6209536 // Epoch(194048)
+	// ForkEpochCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
+	ForkEpochCapella = 162304
+
 	// TestingDutySlotBellatrix keeping this value to not break the test roots
 	TestingDutySlotBellatrix          = 12
 	TestingDutySlotBellatrixNextEpoch = 50
 	TestingDutySlotBellatrixInvalid   = 50
-	TestingDutySlotCapella            = ForkSlotCapella
-	TestingDutySlotCapellaNextEpoch   = ForkSlotCapella + 32
-	TestingDutySlotCapellaInvalid     = ForkSlotCapella + 50
+	TestingDutyEpochBellatrix         = 0
+
+	TestingDutyEpochCapella         = ForkEpochCapella
+	TestingDutySlotCapella          = ForkEpochCapella * 32
+	TestingDutySlotCapellaNextEpoch = TestingDutySlotCapella + 32
+	TestingDutySlotCapellaInvalid   = TestingDutySlotCapella + 50
 )
 
 var TestingBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
@@ -165,8 +169,20 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 	}
 }
 
+var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
+	switch version {
+	case spec.DataVersionBellatrix:
+		return TestingDutyEpochBellatrix
+	case spec.DataVersionCapella:
+		return TestingDutyEpochCapella
+
+	default:
+		panic("unsupported version")
+	}
+}
+
 var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < ForkSlotCapella {
+	if slot < ForkEpochCapella*32 {
 		return spec.DataVersionBellatrix
 	}
 	return spec.DataVersionCapella
