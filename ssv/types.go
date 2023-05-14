@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/api"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
@@ -35,10 +36,12 @@ type AttesterCalls interface {
 
 // ProposerCalls interface has all block proposer duty specific calls
 type ProposerCalls interface {
+	// SubmitValidatorRegistration submits a validator registration
+	SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error
 	// GetBeaconBlock returns beacon block by the given slot and committee index
-	GetBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
+	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
-	GetBlindedBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
+	GetBlindedBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// SubmitBeaconBlock submit the block to the node
 	SubmitBeaconBlock(block *spec.VersionedBeaconBlock, sig phase0.BLSSignature) error
 	// SubmitBlindedBeaconBlock submit the blinded block to the node

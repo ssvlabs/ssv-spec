@@ -229,6 +229,10 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 		ret.(*ssv.ProposerRunner).ProducesBlindedBlocks = blindedBlocks.(bool)
 	}
 
+	if gasLimit, ok := runnerMap["GasLimit"]; ok {
+		ret.(*ssv.ValidatorRegistrationRunner).GasLimit = uint64(gasLimit.(float64))
+	}
+
 	if ret.GetBaseRunner().QBFTController != nil {
 		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
 		if ret.GetBaseRunner().State != nil {

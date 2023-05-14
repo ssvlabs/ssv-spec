@@ -69,7 +69,7 @@ func NoRunningDuty() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "194ee4fd2a60a8c1f4d4d51f4445e4176e199ac075d06614a121c0d13fc63e0b",
+				PostDutyRunnerStateRoot: "59e2ce3856e1baf798bd4de7309205875bac70981b55832bcd24178c1ac17f75",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",
