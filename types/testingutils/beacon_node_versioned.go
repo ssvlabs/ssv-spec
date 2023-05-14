@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	// ForkEpochCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
-	ForkEpochCapella = 162304
+	// ForkEpochPraterCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
+	ForkEpochPraterCapella = 162304
 
 	// TestingDutySlotBellatrix keeping this value to not break the test roots
 	TestingDutySlotBellatrix          = 12
@@ -24,8 +24,8 @@ const (
 	TestingDutySlotBellatrixInvalid   = 50
 	TestingDutyEpochBellatrix         = 0
 
-	TestingDutyEpochCapella         = ForkEpochCapella
-	TestingDutySlotCapella          = ForkEpochCapella * 32
+	TestingDutyEpochCapella         = ForkEpochPraterCapella
+	TestingDutySlotCapella          = ForkEpochPraterCapella * 32
 	TestingDutySlotCapellaNextEpoch = TestingDutySlotCapella + 32
 	TestingDutySlotCapellaInvalid   = TestingDutySlotCapella + 50
 )
@@ -129,7 +129,7 @@ var TestingWrongBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBea
 		if err := ret.UnmarshalSSZ(blkByts); err != nil {
 			panic(err.Error())
 		}
-		ret.Slot = 100
+		ret.Slot = TestingDutySlotCapella + 100
 		return &spec.VersionedBeaconBlock{
 			Version: version,
 			Capella: ret,
@@ -179,7 +179,7 @@ var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 }
 
 var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < ForkEpochCapella*32 {
+	if slot < ForkEpochPraterCapella*32 {
 		return spec.DataVersionBellatrix
 	}
 	return spec.DataVersionCapella
