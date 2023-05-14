@@ -30,7 +30,7 @@ func FullHappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
 					// consensus
-					testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
+					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
@@ -54,7 +54,7 @@ func FullHappyFlow() tests.SpecTest {
 				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgs(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee), // consensus
+					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee), // consensus
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
@@ -81,7 +81,7 @@ func FullHappyFlow() tests.SpecTest {
 						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					},
 					append(
-						testingutils.SSVDecidingMsgs(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator), // consensus
+						testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator), // consensus
 						[]*types.SSVMessage{ // post consensus
 							testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 							testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
@@ -111,8 +111,8 @@ func FullHappyFlow() tests.SpecTest {
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: fullHappyFlowProposerSCV(spec.DataVersionBellatrix).Root(), // "76812c0f14ff09067547e9528730749b0c0090d1a4872689a0b8480d7b538884",
-				PostDutyRunnerState:     fullHappyFlowProposerSCV(spec.DataVersionBellatrix).ExpectedState,
+				PostDutyRunnerStateRoot: fullHappyFlowProposerSC(spec.DataVersionBellatrix).Root(), // "76812c0f14ff09067547e9528730749b0c0090d1a4872689a0b8480d7b538884",
+				PostDutyRunnerState:     fullHappyFlowProposerSC(spec.DataVersionBellatrix).ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
@@ -133,14 +133,14 @@ func FullHappyFlow() tests.SpecTest {
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: fullHappyFlowBlindedProposerSCV(spec.DataVersionBellatrix).Root(), // "90755cc41b814519fd9fdd14bc82d239997ba51340c297f25f5f1552f27f66c7",
-				PostDutyRunnerState:     fullHappyFlowBlindedProposerSCV(spec.DataVersionBellatrix).ExpectedState,
+				PostDutyRunnerStateRoot: fullHappyFlowBlindedProposerSC(spec.DataVersionBellatrix).Root(), // "90755cc41b814519fd9fdd14bc82d239997ba51340c297f25f5f1552f27f66c7",
+				PostDutyRunnerState:     fullHappyFlowBlindedProposerSC(spec.DataVersionBellatrix).ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedBeaconBlock(ks)),
+					getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 				},
 			},
 			{
@@ -148,7 +148,7 @@ func FullHappyFlow() tests.SpecTest {
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgs(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester), // consensus
+					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester), // consensus
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
