@@ -126,7 +126,9 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 
 	// if no duty is running start one
 	if !b.hasRunningDuty() {
-		b.baseSetupForNewDuty(&cd.Duty)
+		if err := b.baseSetupForNewDuty(&cd.Duty); err != nil {
+			return errors.Wrap(err, "could not setup new duty")
+		}
 	}
 
 	// add pre-consensus sigs to state container

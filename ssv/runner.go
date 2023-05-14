@@ -75,8 +75,19 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 }
 
 // setupForNewDuty is sets the runner for a new duty
-func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
+func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) error {
+	// handle fork change
+	currentFork, err := b.forkBasedOnLatestDecided()
+	if err != nil {
+		return errors.Wrap(err, "could not calculate current fork")
+	}
+	b.Share.DomainType = currentFork
+	b.QBFTController.SetDomainType(currentFork)
+
+	// start new state
 	b.State = NewRunnerState(b.Share.Quorum, duty)
+
+	return nil
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
@@ -84,7 +95,11 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 	if err := b.canStartNewDuty(); err != nil {
 		return err
 	}
-	b.baseSetupForNewDuty(duty)
+
+	if err := b.baseSetupForNewDuty(duty); err != nil {
+		return errors.Wrap(err, "could not setup new duty")
+	}
+
 	return runner.executeDuty(duty)
 }
 

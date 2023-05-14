@@ -225,3 +225,9 @@ func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
 func (c *Controller) GetConfig() IConfig {
 	return c.config
 }
+
+// SetDomainType will set a new domain type for controller
+func (c *Controller) SetDomainType(newDomain types.DomainType) {
+	c.Domain = newDomain
+	c.config.SetSignatureDomainType(newDomain)
+}
