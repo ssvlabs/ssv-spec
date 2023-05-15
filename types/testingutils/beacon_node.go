@@ -501,7 +501,7 @@ func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecip
 	return nil
 }
 
-// GetBeaconBlock returns beacon block by the given slot and committee index
+// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
 func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
 
@@ -554,7 +554,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 	return nil
 }
 
-// GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
+// GetBlindedBeaconBlock returns blinded beacon block by the given slot, graffiti, and randao.
 func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
 
