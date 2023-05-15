@@ -30,6 +30,9 @@ const (
 	TestingDutySlotCapellaInvalid   = TestingDutySlotCapella + 50
 )
 
+// SupportedBlockVersions is a list of supported regular/blinded beacon block versions by spec.
+var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionBellatrix, spec.DataVersionCapella}
+
 var TestingBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
 	switch version {
 	case spec.DataVersionBellatrix:
