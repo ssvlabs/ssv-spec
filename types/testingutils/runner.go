@@ -192,6 +192,14 @@ var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifi
 	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
+var ExpectedDecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	byts, _ := consensusData.Encode()
+	r, _ := qbft.HashDataRoot(byts)
+	fullData, _ := consensusData.MarshalSSZ()
+
+	return ExpectedDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
+}
+
 var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
 	msgs := make([]*qbft.SignedMessage, 0)
 
