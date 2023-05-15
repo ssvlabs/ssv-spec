@@ -27,6 +27,11 @@ var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *
 	return blsSig
 }
 
+func GetSSZRootNoError(obj ssz.HashRoot) string {
+	r, _ := obj.HashTreeRoot()
+	return hex.EncodeToString(r[:])
+}
+
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            12,
 	Index:           3,
@@ -466,26 +471,11 @@ var TestingWrongDutyPK = types.Duty{
 type TestingBeaconNode struct {
 	BroadcastedRoots             []phase0.Root
 	syncCommitteeAggregatorRoots map[string]bool
-	gasLimit                     uint64
 }
 
-func NewTestingBeaconNode(opts ...Option) *TestingBeaconNode {
-	n := &TestingBeaconNode{
+func NewTestingBeaconNode() *TestingBeaconNode {
+	return &TestingBeaconNode{
 		BroadcastedRoots: []phase0.Root{},
-	}
-
-	for _, opt := range opts {
-		opt(n)
-	}
-
-	return n
-}
-
-type Option func(*TestingBeaconNode)
-
-func WithGasLimit(gasLimit uint64) func(node *TestingBeaconNode) {
-	return func(s *TestingBeaconNode) {
-		s.gasLimit = gasLimit
 	}
 }
 
@@ -517,8 +507,8 @@ func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecip
 
 	vr := v1.ValidatorRegistration{
 		FeeRecipient: feeRecipient,
-		GasLimit:     bn.gasLimit,
-		Timestamp:    types.PraterNetwork.EpochStartTime(types.PraterNetwork.EstimatedCurrentEpoch()),
+		GasLimit:     TestingValidatorRegistration.GasLimit,
+		Timestamp:    TestingValidatorRegistration.Timestamp,
 		Pubkey:       pk,
 	}
 

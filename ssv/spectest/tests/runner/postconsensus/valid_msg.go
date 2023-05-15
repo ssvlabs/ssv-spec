@@ -1,22 +1,13 @@
 package postconsensus
 
 import (
-	"encoding/hex"
-
 	"github.com/attestantio/go-eth2-client/spec"
-	ssz "github.com/ferranbt/fastssz"
-
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
-
-func getSSZRootNoError(obj ssz.HashRoot) string {
-	r, _ := obj.HashTreeRoot()
-	return hex.EncodeToString(r[:])
-}
 
 func finishRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
 	ret := decideRunner(r, duty, decidedValue)
@@ -155,6 +146,9 @@ func ValidMessage() tests.SpecTest {
 				PostDutyRunnerStateRoot: "8feb32436d4da834046965c40c2b4e527461589349bd3556494f65d644ce3584",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingValidatorRegistration),
 				},
 				ExpectedError: "no post consensus phase for validator registration",
 			},
