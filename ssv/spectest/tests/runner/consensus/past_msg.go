@@ -1,6 +1,8 @@
 package consensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -84,10 +86,10 @@ func PastMessage() tests.SpecTest {
 			{
 				Name:   "proposer",
 				Runner: bumpHeight(testingutils.ProposerRunner(ks)),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						pastMsgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID),
+						pastMsgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID),
 						nil),
 				},
 				PostDutyRunnerStateRoot: "1c939726a237c02013fab61901e819e34ec99e2ef62dadb6c847e5ad118fc4e7",
@@ -97,10 +99,10 @@ func PastMessage() tests.SpecTest {
 			{
 				Name:   "proposer (blinded block)",
 				Runner: bumpHeight(testingutils.ProposerBlindedBlockRunner(ks)),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(
-						pastMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID),
+						pastMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID),
 						nil),
 				},
 				PostDutyRunnerStateRoot: "49edaab0d759ba8a35a37ab26416ae04962d77ec088b87c4f1e65f781c1ed96f",

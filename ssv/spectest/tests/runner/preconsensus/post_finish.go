@@ -1,6 +1,8 @@
 package preconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -56,11 +58,11 @@ func PostFinish() tests.SpecTest {
 				Name: "randao",
 				Runner: finishRunner(
 					testingutils.ProposerRunner(ks),
-					&testingutils.TestingProposerDuty,
+					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				),
-				Duty: &testingutils.TestingProposerDuty,
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "5c4290ac10b5f034fecf758d00ecfaf6ae5f2ecfec581a795fb34955c295ede3",
 				DontStartDuty:           true,
@@ -71,11 +73,11 @@ func PostFinish() tests.SpecTest {
 				Name: "randao (blinded block)",
 				Runner: finishRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					&testingutils.TestingProposerDuty,
+					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				),
-				Duty: &testingutils.TestingProposerDuty,
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "d92199d2138197f5cc50c3ae6614a493f96e8c4639313632d6675f7092a5d9c4",
 				DontStartDuty:           true,

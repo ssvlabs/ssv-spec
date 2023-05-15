@@ -10,7 +10,7 @@ import (
 // VersionedBlockConsensusDataNil tests an invalid consensus data with bellatrix block
 func VersionedBlockConsensusDataNil() *ProposerSpecTest {
 	cd := &types.ConsensusData{
-		Duty:    testingutils.TestingProposerDuty,
+		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 		Version: spec.DataVersionBellatrix,
 		DataSSZ: nil,
 	}
