@@ -2,7 +2,6 @@ package testingutils
 
 import (
 	"encoding/hex"
-
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
@@ -467,11 +466,26 @@ var TestingWrongDutyPK = types.Duty{
 type TestingBeaconNode struct {
 	BroadcastedRoots             []phase0.Root
 	syncCommitteeAggregatorRoots map[string]bool
+	gasLimit                     uint64
 }
 
-func NewTestingBeaconNode() *TestingBeaconNode {
-	return &TestingBeaconNode{
+func NewTestingBeaconNode(opts ...Option) *TestingBeaconNode {
+	n := &TestingBeaconNode{
 		BroadcastedRoots: []phase0.Root{},
+	}
+
+	for _, opt := range opts {
+		opt(n)
+	}
+
+	return n
+}
+
+type Option func(*TestingBeaconNode)
+
+func WithGasLimit(gasLimit uint64) func(node *TestingBeaconNode) {
+	return func(s *TestingBeaconNode) {
+		s.gasLimit = gasLimit
 	}
 }
 
@@ -498,6 +512,18 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) 
 }
 
 func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error {
+	pk := phase0.BLSPubKey{}
+	copy(pk[:], pubkey)
+
+	vr := v1.ValidatorRegistration{
+		FeeRecipient: feeRecipient,
+		GasLimit:     bn.gasLimit,
+		Timestamp:    types.PraterNetwork.EpochStartTime(types.PraterNetwork.EstimatedCurrentEpoch()),
+		Pubkey:       pk,
+	}
+
+	r, _ := vr.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
