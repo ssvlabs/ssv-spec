@@ -1,6 +1,8 @@
 package consensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -12,7 +14,8 @@ import (
 // ValidDecided tests a valid decided value
 func ValidDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.MultiMsgProcessingSpecTest{
+
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid decided",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -48,28 +51,6 @@ func ValidDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "proposer",
-				Runner:                  testingutils.ProposerRunner(ks),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
-				PostDutyRunnerStateRoot: "62b2dd10ed329c8ffeb4ba4a4fd3597f9746d8cd03ea8a7907ac0e6c5638b1b3",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-				},
-			},
-			{
-				Name:                    "proposer (blinded block)",
-				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
-				PostDutyRunnerStateRoot: "2d8b29b5bf69b642910a9caa8a9662c2e71e5e13f19a5d0b52cc932eb29f3969",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-				},
-			},
-			{
 				Name:                    "attester",
 				Runner:                  testingutils.AttesterRunner(ks),
 				Duty:                    &testingutils.TestingAttesterDuty,
@@ -81,4 +62,42 @@ func ValidDecided() tests.SpecTest {
 			},
 		},
 	}
+
+	// proposerV creates a test specification for versioned proposer.
+	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
+			Runner:                  testingutils.ProposerRunner(ks),
+			Duty:                    testingutils.TestingProposerDutyV(version),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
+			PostDutyRunnerStateRoot: validDecidedProposerSC(version).Root(),
+			PostDutyRunnerState:     validDecidedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
+			},
+		}
+	}
+
+	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
+	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
+			Duty:                    testingutils.TestingProposerDutyV(version),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
+			PostDutyRunnerStateRoot: validDecidedBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     validDecidedBlindedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
+			},
+		}
+	}
+
+	for _, v := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+	}
+
+	return multiSpecTest
 }
