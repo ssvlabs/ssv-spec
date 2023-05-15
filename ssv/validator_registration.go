@@ -63,7 +63,6 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Signe
 
 	// only 1 root, verified in basePreConsensusMsgProcessing
 	root := roots[0]
-	// randao is relevant only for block proposals, no need to check type
 	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
 	if err != nil {
 		return errors.Wrap(err, "could not reconstruct randao sig")
