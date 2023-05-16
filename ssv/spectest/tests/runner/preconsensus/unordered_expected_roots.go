@@ -63,7 +63,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "832ba2576c53e28588914b4694e4b92345262ffdee4970e9656768c3d1dfa7ed",
+				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

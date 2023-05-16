@@ -327,7 +327,7 @@ var TestingSignedSyncCommitteeContributions = func(
 var TestingFeeRecipient = bellatrix.ExecutionAddress(ethAddressFromHex("535953b5a6040074948cf185eaa7d2abbd66808f"))
 var TestingValidatorRegistration = &v1.ValidatorRegistration{
 	FeeRecipient: TestingFeeRecipient,
-	GasLimit:     1,
+	GasLimit:     types.DefaultGasLimit,
 	Timestamp:    types.PraterNetwork.EpochStartTime(TestingDutyEpoch),
 	Pubkey:       TestingValidatorPubKey,
 }

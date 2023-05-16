@@ -101,7 +101,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, invalidateSlot(testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "c18dd94eb6d9e94f93746320cf7eaba8ceb4ede53b81d865f0a78d310e1adde0",
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

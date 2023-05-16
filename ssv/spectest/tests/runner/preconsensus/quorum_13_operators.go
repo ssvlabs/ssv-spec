@@ -109,7 +109,7 @@ func Quorum13Operators() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[8], 8)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[9], 9)),
 				},
-				PostDutyRunnerStateRoot: "1f65b4da7fcead48dd4038a9ff5adc8aab5f96ec0a145a5a643ad38ea4dc2fb1",
+				PostDutyRunnerStateRoot: "530111e289234d0c522eee11f16287de385592c2677f0acb18ba6435544738aa",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

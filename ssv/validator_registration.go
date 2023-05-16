@@ -13,7 +13,6 @@ import (
 
 type ValidatorRegistrationRunner struct {
 	BaseRunner *BaseRunner
-	GasLimit   uint64
 
 	beacon   BeaconNode
 	network  Network
@@ -151,7 +150,7 @@ func (r *ValidatorRegistrationRunner) calculateValidatorRegistration() (*v1.Vali
 
 	return &v1.ValidatorRegistration{
 		FeeRecipient: r.BaseRunner.Share.FeeRecipientAddress,
-		GasLimit:     r.GasLimit,
+		GasLimit:     types.DefaultGasLimit,
 		Timestamp:    r.BaseRunner.BeaconNetwork.EpochStartTime(epoch),
 		Pubkey:       pk,
 	}, nil
