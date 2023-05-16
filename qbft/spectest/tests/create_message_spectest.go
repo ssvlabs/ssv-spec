@@ -18,11 +18,11 @@ const (
 
 type CreateMsgSpecTest struct {
 	Name                                             string
-	Value                                            [32]byte
+	Value                                            []byte
 	Round                                            qbft.Round
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
-	ExpectedRoot                                     string
+	ExpectedSSZRoot                                  string
 	ExpectedError                                    string
 }
 
@@ -31,18 +31,18 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	var lastErr error
 	switch test.CreateType {
 	case CreateProposal:
-		msg, lastErr = test.createProposal()
+		msg, lastErr = test.createProposal(t)
 	case CreatePrepare:
-		msg, lastErr = test.createPrepare()
+		msg, lastErr = test.createPrepare(t)
 	case CreateCommit:
-		msg, lastErr = test.createCommit()
+		msg, lastErr = test.createCommit(t)
 	case CreateRoundChange:
-		msg, lastErr = test.createRoundChange()
+		msg, lastErr = test.createRoundChange(t)
 	default:
 		t.Fail()
 	}
 
-	r, err := msg.GetRoot()
+	r, err := msg.HashTreeRoot()
 	if err != nil {
 		lastErr = err
 	}
@@ -53,10 +53,10 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 
-	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
+	require.EqualValues(t, test.ExpectedSSZRoot, hex.EncodeToString(r[:]))
 }
 
-func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createCommit(t *testing.T) (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -64,10 +64,13 @@ func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateCommit(state, config, test.Value)
+	r, err := qbft.HashDataRoot(test.Value)
+	require.NoError(t, err)
+
+	return qbft.CreateCommit(state, config, r)
 }
 
-func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createPrepare(t *testing.T) (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -75,10 +78,13 @@ func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreatePrepare(state, config, test.Round, test.Value)
+	r, err := qbft.HashDataRoot(test.Value)
+	require.NoError(t, err)
+
+	return qbft.CreatePrepare(state, config, test.Round, r)
 }
 
-func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createProposal(t *testing.T) (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -86,14 +92,15 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
+	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, test.PrepareJustifications)
 }
 
-func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createRoundChange(t *testing.T) (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		Share:            testingutils.TestingShare(ks),
+		PrepareContainer: qbft.NewMsgContainer(),
+		ID:               []byte{1, 2, 3, 4},
 	}
 	config := testingutils.TestingConfig(ks)
 
@@ -109,7 +116,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 		}
 	}
 
-	return qbft.CreateRoundChange(state, config, 1, test.Value[:])
+	return qbft.CreateRoundChange(state, config, 1, test.Value)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {
