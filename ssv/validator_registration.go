@@ -65,7 +65,7 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Signe
 	root := roots[0]
 	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
 	if err != nil {
-		return errors.Wrap(err, "could not reconstruct randao sig")
+		return errors.Wrap(err, "could not reconstruct validator registration sig")
 	}
 	specSig := phase0.BLSSignature{}
 	copy(specSig[:], fullSig)
