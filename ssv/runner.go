@@ -48,6 +48,7 @@ type BaseRunner struct {
 	BeaconRoleType types.BeaconRole
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
+	// used to validate pre-consensus justification which can not have any lower duty slot than highestDecidedSlot
 	highestDecidedSlot spec.Slot
 }
 
