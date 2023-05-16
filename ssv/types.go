@@ -36,8 +36,6 @@ type AttesterCalls interface {
 
 // ProposerCalls interface has all block proposer duty specific calls
 type ProposerCalls interface {
-	// SubmitValidatorRegistration submits a validator registration
-	SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error
 	// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
 	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// GetBlindedBeaconBlock returns blinded beacon block by the given slot, graffiti, and randao.
@@ -76,6 +74,12 @@ type SyncCommitteeContributionCalls interface {
 	SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error
 }
 
+// ValidatorRegistrationCalls interface has all validator registration duty specific calls
+type ValidatorRegistrationCalls interface {
+	// SubmitValidatorRegistration submits a validator registration
+	SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error
+}
+
 type DomainCalls interface {
 	DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error)
 }
@@ -88,5 +92,6 @@ type BeaconNode interface {
 	AggregatorCalls
 	SyncCommitteeCalls
 	SyncCommitteeContributionCalls
+	ValidatorRegistrationCalls
 	DomainCalls
 }
