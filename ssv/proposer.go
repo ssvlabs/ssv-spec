@@ -102,10 +102,10 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 	}
 
 	input := &types.ConsensusData{
-		Duty: *duty,
-		//PreConsensusJustifications: r.BaseRunner.State.GetPreConsensusJustification(),
-		Version: ver,
-		DataSSZ: byts,
+		Duty:                       *duty,
+		PreConsensusJustifications: r.BaseRunner.State.GetPreConsensusJustification(),
+		Version:                    ver,
+		DataSSZ:                    byts,
 	}
 
 	if err := r.BaseRunner.decide(r, input); err != nil {

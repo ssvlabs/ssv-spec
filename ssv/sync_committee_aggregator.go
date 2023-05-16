@@ -115,9 +115,10 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 
 	// create consensus object
 	input := &types.ConsensusData{
-		Duty:    *duty,
-		Version: ver,
-		DataSSZ: byts,
+		Duty:                       *duty,
+		PreConsensusJustifications: r.BaseRunner.State.GetPreConsensusJustification(),
+		Version:                    ver,
+		DataSSZ:                    byts,
 	}
 
 	if anyIsAggregator {
