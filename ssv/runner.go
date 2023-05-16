@@ -184,6 +184,9 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 		}
 	}
 
+	// added to pre-consensus justification container
+	b.State.preConsensusJustificationContainer = append(b.State.preConsensusJustificationContainer, signedMsg)
+
 	return anyQuorum, roots, nil
 }
 
