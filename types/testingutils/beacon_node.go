@@ -301,13 +301,13 @@ var TestingFeeRecipient = bellatrix.ExecutionAddress(ethAddressFromHex("535953b5
 var TestingValidatorRegistration = &v1.ValidatorRegistration{
 	FeeRecipient: TestingFeeRecipient,
 	GasLimit:     types.DefaultGasLimit,
-	Timestamp:    types.BeaconTestNetwork.EpochStartTime(TestingDutyEpoch),
+	Timestamp:    types.GetTestNetwork().EpochStartTime(TestingDutyEpoch),
 	Pubkey:       TestingValidatorPubKey,
 }
 var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 	FeeRecipient: TestingFeeRecipient,
 	GasLimit:     5,
-	Timestamp:    types.BeaconTestNetwork.EpochStartTime(TestingDutyEpoch),
+	Timestamp:    types.GetTestNetwork().EpochStartTime(TestingDutyEpoch),
 	Pubkey:       TestingValidatorPubKey,
 }
 
@@ -436,7 +436,7 @@ func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[strin
 
 // GetBeaconNetwork returns the beacon network the node is on
 func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
-	return types.BeaconTestNetwork
+	return types.GetTestNetwork()
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
