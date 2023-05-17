@@ -133,7 +133,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		)
 	case types.BNRoleValidatorRegistration:
 		return ssv.NewValidatorRegistrationRunner(
-			types.PraterNetwork,
+			types.BeaconTestNetwork,
 			share,
 			NewTestingBeaconNode(),
 			net,

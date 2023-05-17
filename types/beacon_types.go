@@ -87,71 +87,66 @@ type Duty struct {
 	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
 }
 
+// BeaconNetwork represents the network.
+type BeaconNetwork string
+
 // Available networks.
-const (
-	// PraterNetwork represents the Prater test network.
-	PraterNetwork BeaconNetwork = "prater"
-
-	// MainNetwork represents the main network.
-	MainNetwork BeaconNetwork = "mainnet"
-
+var (
 	// BeaconTestNetwork is a simple test network with a custom genesis time
 	BeaconTestNetwork BeaconNetwork = "now_test_network"
 )
 
-// BeaconNetwork represents the network.
-type BeaconNetwork string
+// BeaconNetworkDescriptor describes a network.
+type BeaconNetworkDescriptor struct {
+	Name              BeaconNetwork
+	DefaultSyncOffset string // prod contract genesis block, *big.Int encoded as string
+	ForkVersion       [4]byte
+	MinGenesisTime    uint64
+	SlotDuration      time.Duration
+	SlotsPerEpoch     uint64
+}
+
+// AvailableBeaconNetworks contains all available beacon networks.
+var AvailableBeaconNetworks = map[string]BeaconNetworkDescriptor{
+	string(BeaconTestNetwork): {
+		Name:              BeaconTestNetwork,
+		DefaultSyncOffset: "8661727",
+		ForkVersion:       [4]byte{0x99, 0x99, 0x99, 0x99},
+		MinGenesisTime:    1616508000,
+		SlotDuration:      12 * time.Second,
+		SlotsPerEpoch:     32,
+	},
+}
+
+// RegisterBeaconNetwork registers a network.
+func RegisterBeaconNetwork(descriptor BeaconNetworkDescriptor) {
+	AvailableBeaconNetworks[string(descriptor.Name)] = descriptor
+}
 
 // NetworkFromString returns network from the given string value
-func NetworkFromString(n string) BeaconNetwork {
-	switch n {
-	case string(PraterNetwork):
-		return PraterNetwork
-	case string(MainNetwork):
-		return MainNetwork
-	case string(BeaconTestNetwork):
-		return BeaconTestNetwork
-	default:
-		return ""
-	}
+func NetworkFromString(n string) (BeaconNetwork, bool) {
+	network, ok := AvailableBeaconNetworks[n]
+	return network.Name, ok
 }
 
 // ForkVersion returns the fork version of the network.
 func (n BeaconNetwork) ForkVersion() [4]byte {
-	switch n {
-	case PraterNetwork:
-		return [4]byte{0x00, 0x00, 0x10, 0x20}
-	case MainNetwork:
-		return [4]byte{0, 0, 0, 0}
-	case BeaconTestNetwork:
-		return [4]byte{0x99, 0x99, 0x99, 0x99}
-	default:
-		return [4]byte{0x98, 0x98, 0x98, 0x98}
-	}
+	return AvailableBeaconNetworks[string(n)].ForkVersion
 }
 
 // MinGenesisTime returns min genesis time value
 func (n BeaconNetwork) MinGenesisTime() uint64 {
-	switch n {
-	case PraterNetwork:
-		return 1616508000
-	case MainNetwork:
-		return 1606824023
-	case BeaconTestNetwork:
-		return 1616508000
-	default:
-		return 0
-	}
+	return AvailableBeaconNetworks[string(n)].MinGenesisTime
 }
 
-// SlotDurationSec returns slot duration
-func (n BeaconNetwork) SlotDurationSec() time.Duration {
-	return 12 * time.Second
+// SlotDuration returns slot duration
+func (n BeaconNetwork) SlotDuration() time.Duration {
+	return AvailableBeaconNetworks[string(n)].SlotDuration
 }
 
 // SlotsPerEpoch returns number of slots per one epoch
 func (n BeaconNetwork) SlotsPerEpoch() uint64 {
-	return 32
+	return AvailableBeaconNetworks[string(n)].SlotsPerEpoch
 }
 
 // EstimatedCurrentSlot returns the estimation of the current slot
@@ -165,11 +160,11 @@ func (n BeaconNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
 	if time < genesis {
 		return 0
 	}
-	return spec.Slot(uint64(time-genesis) / uint64(n.SlotDurationSec().Seconds()))
+	return spec.Slot(uint64(time-genesis) / uint64(n.SlotDuration().Seconds()))
 }
 
 func (n BeaconNetwork) EstimatedTimeAtSlot(slot spec.Slot) int64 {
-	d := int64(slot) * int64(n.SlotDurationSec().Seconds())
+	d := int64(slot) * int64(n.SlotDuration().Seconds())
 	return int64(n.MinGenesisTime()) + d
 }
 
