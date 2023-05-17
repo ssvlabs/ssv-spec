@@ -3,7 +3,6 @@ package types
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
-	"time"
 )
 
 var GenesisValidatorsRoot = spec.Root{}
@@ -85,108 +84,6 @@ type Duty struct {
 	ValidatorCommitteeIndex uint64
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
 	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
-}
-
-// BeaconNetwork represents the network.
-type BeaconNetwork string
-
-// Available networks.
-var (
-	// BeaconTestNetwork is a simple test network with a custom genesis time
-	BeaconTestNetwork BeaconNetwork = "now_test_network"
-)
-
-// BeaconNetworkDescriptor describes a network.
-type BeaconNetworkDescriptor struct {
-	Name              BeaconNetwork
-	DefaultSyncOffset string // prod contract genesis block, *big.Int encoded as string
-	ForkVersion       [4]byte
-	MinGenesisTime    uint64
-	SlotDuration      time.Duration
-	SlotsPerEpoch     uint64
-}
-
-// AvailableBeaconNetworks contains all available beacon networks.
-var AvailableBeaconNetworks = map[string]BeaconNetworkDescriptor{
-	string(BeaconTestNetwork): {
-		Name:              BeaconTestNetwork,
-		DefaultSyncOffset: "8661727",
-		ForkVersion:       [4]byte{0x99, 0x99, 0x99, 0x99},
-		MinGenesisTime:    1616508000,
-		SlotDuration:      12 * time.Second,
-		SlotsPerEpoch:     32,
-	},
-}
-
-// RegisterBeaconNetwork registers a network.
-func RegisterBeaconNetwork(descriptor BeaconNetworkDescriptor) {
-	AvailableBeaconNetworks[string(descriptor.Name)] = descriptor
-}
-
-// NetworkFromString returns network from the given string value
-func NetworkFromString(n string) (BeaconNetwork, bool) {
-	network, ok := AvailableBeaconNetworks[n]
-	return network.Name, ok
-}
-
-// ForkVersion returns the fork version of the network.
-func (n BeaconNetwork) ForkVersion() [4]byte {
-	return AvailableBeaconNetworks[string(n)].ForkVersion
-}
-
-// MinGenesisTime returns min genesis time value
-func (n BeaconNetwork) MinGenesisTime() uint64 {
-	return AvailableBeaconNetworks[string(n)].MinGenesisTime
-}
-
-// SlotDuration returns slot duration
-func (n BeaconNetwork) SlotDuration() time.Duration {
-	return AvailableBeaconNetworks[string(n)].SlotDuration
-}
-
-// SlotsPerEpoch returns number of slots per one epoch
-func (n BeaconNetwork) SlotsPerEpoch() uint64 {
-	return AvailableBeaconNetworks[string(n)].SlotsPerEpoch
-}
-
-// EstimatedCurrentSlot returns the estimation of the current slot
-func (n BeaconNetwork) EstimatedCurrentSlot() spec.Slot {
-	return n.EstimatedSlotAtTime(time.Now().Unix())
-}
-
-// EstimatedSlotAtTime estimates slot at the given time
-func (n BeaconNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
-	genesis := int64(n.MinGenesisTime())
-	if time < genesis {
-		return 0
-	}
-	return spec.Slot(uint64(time-genesis) / uint64(n.SlotDuration().Seconds()))
-}
-
-func (n BeaconNetwork) EstimatedTimeAtSlot(slot spec.Slot) int64 {
-	d := int64(slot) * int64(n.SlotDuration().Seconds())
-	return int64(n.MinGenesisTime()) + d
-}
-
-// EstimatedCurrentEpoch estimates the current epoch
-// https://github.com/ethereum/eth2.0-specs/blob/dev/specs/phase0/beacon-chain.md#compute_start_slot_at_epoch
-func (n BeaconNetwork) EstimatedCurrentEpoch() spec.Epoch {
-	return n.EstimatedEpochAtSlot(n.EstimatedCurrentSlot())
-}
-
-// EstimatedEpochAtSlot estimates epoch at the given slot
-func (n BeaconNetwork) EstimatedEpochAtSlot(slot spec.Slot) spec.Epoch {
-	return spec.Epoch(slot / spec.Slot(n.SlotsPerEpoch()))
-}
-
-func (n BeaconNetwork) FirstSlotAtEpoch(epoch spec.Epoch) spec.Slot {
-	return spec.Slot(uint64(epoch) * n.SlotsPerEpoch())
-}
-
-func (n BeaconNetwork) EpochStartTime(epoch spec.Epoch) time.Time {
-	firstSlot := n.FirstSlotAtEpoch(epoch)
-	t := n.EstimatedTimeAtSlot(firstSlot)
-	return time.Unix(t, 0)
 }
 
 // ComputeETHDomain returns computed domain

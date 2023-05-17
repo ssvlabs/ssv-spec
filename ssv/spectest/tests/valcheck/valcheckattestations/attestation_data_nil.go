@@ -17,7 +17,7 @@ func ConsensusDataNil() tests.SpecTest {
 
 	return &valcheck.SpecTest{
 		Name:          "consensus data value check nil",
-		Network:       types.BeaconTestNetwork,
+		Network:       types.GetTestNetwork(),
 		BeaconRole:    types.BNRoleAttester,
 		Input:         input,
 		ExpectedError: "invalid value: could not unmarshal ssz: incorrect size",
