@@ -165,30 +165,37 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *ty
 // basePartialSigMsgProcessing adds an already validated partial msg to the container, checks for quorum and returns true (and roots) if quorum exists
 func (b *BaseRunner) basePartialSigMsgProcessing(
 	signedMsg *types.SignedPartialSignatureMessage,
-	container *PartialSigContainer,
+	container PartialSignatureContainer,
 ) (bool, [][32]byte, error) {
-	roots := make([][32]byte, 0)
-	anyQuorum := false
-	for _, msg := range signedMsg.Message.Messages {
-		prevQuorum := container.HasQuorum(msg.SigningRoot)
+	container[signedMsg.Signer] = signedMsg
 
-		container.AddSignature(msg)
-
-		if prevQuorum {
-			continue
-		}
-
-		quorum := container.HasQuorum(msg.SigningRoot)
-		if quorum {
-			roots = append(roots, msg.SigningRoot)
-			anyQuorum = true
-		}
+	if b.Share.HasQuorum(len(container)) {
+		return true, container.Roots(), nil
 	}
+	return false, [][32]byte{}, nil
 
-	// added to pre-consensus justification container
-	b.State.preConsensusJustificationContainer = append(b.State.preConsensusJustificationContainer, signedMsg)
-
-	return anyQuorum, roots, nil
+	//roots := make([][32]byte, 0)
+	//anyQuorum := false
+	//for _, msg := range signedMsg.Message.Messages {
+	//	prevQuorum := container.HasQuorum(msg.SigningRoot)
+	//
+	//	container.AddSignature(msg)
+	//
+	//	if prevQuorum {
+	//		continue
+	//	}
+	//
+	//	quorum := container.HasQuorum(msg.SigningRoot)
+	//	if quorum {
+	//		roots = append(roots, msg.SigningRoot)
+	//		anyQuorum = true
+	//	}
+	//}
+	//
+	//// added to pre-consensus justification container
+	//b.State.preConsensusJustificationContainer = append(b.State.preConsensusJustificationContainer, signedMsg)
+	//
+	//return anyQuorum, roots, nil
 }
 
 // didDecideCorrectly returns true if the expected consensus instance decided correctly

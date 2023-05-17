@@ -12,8 +12,8 @@ import (
 
 // State holds all the relevant progress the duty execution progress
 type State struct {
-	PreConsensusContainer  *PartialSigContainer
-	PostConsensusContainer *PartialSigContainer
+	PreConsensusContainer  PartialSignatureContainer
+	PostConsensusContainer PartialSignatureContainer
 	RunningInstance        *qbft.Instance
 	DecidedValue           *types.ConsensusData
 	// CurrentDuty is the duty the node pulled locally from the beacon node, might be different from decided duty
@@ -27,8 +27,8 @@ type State struct {
 
 func NewRunnerState(quorum uint64, duty *types.Duty) *State {
 	return &State{
-		PreConsensusContainer:  NewPartialSigContainer(quorum),
-		PostConsensusContainer: NewPartialSigContainer(quorum),
+		PreConsensusContainer:  make(PartialSignatureContainer),
+		PostConsensusContainer: make(PartialSignatureContainer),
 
 		StartingDuty: duty,
 		Finished:     false,
@@ -42,7 +42,7 @@ func (pcs *State) GetPreConsensusJustification() []*types.SignedPartialSignature
 }
 
 // ReconstructBeaconSig aggregates collected partial beacon sigs
-func (pcs *State) ReconstructBeaconSig(container *PartialSigContainer, root [32]byte, validatorPubKey []byte) ([]byte, error) {
+func (pcs *State) ReconstructBeaconSig(container PartialSignatureContainer, root [32]byte, validatorPubKey []byte) ([]byte, error) {
 	// Reconstruct signatures
 	signature, err := container.ReconstructSignature(root, validatorPubKey)
 	if err != nil {
