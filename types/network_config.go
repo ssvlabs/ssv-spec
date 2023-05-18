@@ -1,14 +1,16 @@
 package types
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"math/big"
 	"time"
+
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
 // BeaconNetwork describes a network.
 type BeaconNetwork struct {
 	Name              string
-	DefaultSyncOffset string // prod contract genesis block, *big.Int encoded as string
+	DefaultSyncOffset *big.Int // prod contract genesis block
 	ForkVersion       [4]byte
 	MinGenesisTime    uint64
 	SlotDuration      time.Duration
@@ -18,7 +20,7 @@ type BeaconNetwork struct {
 
 var BeaconTestNetwork = BeaconNetwork{
 	Name:              "now_test_network",
-	DefaultSyncOffset: "8661727",
+	DefaultSyncOffset: new(big.Int).SetInt64(8661727),
 	ForkVersion:       [4]byte{0x99, 0x99, 0x99, 0x99},
 	MinGenesisTime:    1616508000,
 	SlotDuration:      12 * time.Second,
