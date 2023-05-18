@@ -7,13 +7,14 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// SinglePreConsensusMsg tests adding a single pre consensus message to container
-func SinglePreConsensusMsg() tests.SpecTest {
+// DuplicateMsg tests adding a duplicate msg (same signer)
+func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	return &SpecTest{
 		Name: "single pre consensus message",
 		MsgsToAdd: []*types.SignedPartialSignatureMessage{
+			testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix),
 			testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix),
 		},
 		PostMsgCount:               1,
