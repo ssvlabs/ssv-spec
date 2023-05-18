@@ -26,7 +26,7 @@ var BeaconTestNetwork = BeaconNetwork{
 	CapellaForkEpoch:  162304,
 }
 
-func GetTestNetwork() BeaconNetwork {
+func GetBeaconTestNetwork() BeaconNetwork {
 	return BeaconTestNetwork
 }
 
