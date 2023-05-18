@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
@@ -183,53 +184,6 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	return v.DutyRunners[types.BNRoleAttester]
 }
 
-var SSVDecidingMsgs = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
-	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
-
-	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-		var byts []byte
-		var msgType types.MsgType
-		if partialSigMsg != nil {
-			msgType = types.SSVPartialSignatureMsgType
-			byts, _ = partialSigMsg.Encode()
-		} else {
-			msgType = types.SSVConsensusMsgType
-			byts, _ = qbftMsg.Encode()
-		}
-
-		return &types.SSVMessage{
-			MsgType: msgType,
-			MsgID:   id,
-			Data:    byts,
-		}
-	}
-
-	// pre consensus msgs
-	base := make([]*types.SSVMessage, 0)
-	if role == types.BNRoleProposer {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusRandaoMsg(ks.Shares[types.OperatorID(i)], types.OperatorID(i))))
-		}
-	}
-	if role == types.BNRoleAggregator {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
-		}
-	}
-	if role == types.BNRoleSyncCommitteeContribution {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
-		}
-	}
-
-	// consensus and post consensus
-	qbftMsgs := DecidingMsgsForHeight(consensusData, id[:], qbft.FirstHeight, ks)
-	for _, msg := range qbftMsgs {
-		base = append(base, ssvMsgF(msg, nil))
-	}
-	return base
-}
-
 var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
@@ -238,7 +192,54 @@ var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifi
 	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
+var ExpectedDecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	byts, _ := consensusData.Encode()
+	r, _ := qbft.HashDataRoot(byts)
+	fullData, _ := consensusData.MarshalSSZ()
+
+	return ExpectedDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
+}
+
 var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	msgs := make([]*qbft.SignedMessage, 0)
+
+	for h := qbft.FirstHeight; h <= height; h++ {
+		// proposal
+		s := SignQBFTMsg(keySet.Shares[1], 1, &qbft.Message{
+			MsgType:    qbft.ProposalMsgType,
+			Height:     h,
+			Round:      qbft.FirstRound,
+			Identifier: msgIdentifier,
+			Root:       root,
+		})
+		s.FullData = fullData
+		msgs = append(msgs, s)
+
+		// prepare
+		for i := uint64(1); i <= keySet.Threshold; i++ {
+			msgs = append(msgs, SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+				MsgType:    qbft.PrepareMsgType,
+				Height:     h,
+				Round:      qbft.FirstRound,
+				Identifier: msgIdentifier,
+				Root:       root,
+			}))
+		}
+		// commit
+		for i := uint64(1); i <= keySet.Threshold; i++ {
+			msgs = append(msgs, SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     h,
+				Round:      qbft.FirstRound,
+				Identifier: msgIdentifier,
+				Root:       root,
+			}))
+		}
+	}
+	return msgs
+}
+
+var ExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
 	msgs := make([]*qbft.SignedMessage, 0)
 
 	for h := qbft.FirstHeight; h <= height; h++ {

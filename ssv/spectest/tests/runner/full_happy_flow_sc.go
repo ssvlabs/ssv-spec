@@ -23,7 +23,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 				StartingDuty: &testingutils.TestSyncCommitteeContributionConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)[:3]),
+					testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)[:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{
@@ -52,7 +52,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)[3:10],
+				testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)[3:10],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
@@ -101,7 +101,7 @@ func fullHappyFlowSyncCommitteeSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee)[0:7],
+				testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee)[0:7],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
@@ -121,7 +121,7 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 				StartingDuty: &testingutils.TestAggregatorConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)[0:3]),
+					testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{
@@ -150,7 +150,7 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)[3:10],
+				testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)[3:10],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
@@ -173,7 +173,7 @@ func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparis
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					testingutils.SSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
+					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{
@@ -202,7 +202,7 @@ func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparis
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.SSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[3:10],
+				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[3:10],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
@@ -225,7 +225,7 @@ func fullHappyFlowBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 				StartingDuty: &testingutils.TestProposerConsensusDataV(version).Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					testingutils.SSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
+					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{
@@ -254,7 +254,7 @@ func fullHappyFlowBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.SSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[3:10],
+				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[3:10],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
@@ -303,7 +303,7 @@ func fullHappyFlowAttesterSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester)[0:7],
+				testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester)[0:7],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
