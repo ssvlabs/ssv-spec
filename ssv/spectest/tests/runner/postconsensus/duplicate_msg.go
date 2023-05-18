@@ -105,6 +105,8 @@ func DuplicateMsg() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: duplicateMsgProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgProposerSC(version).ExpectedState,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 		}
 	}
@@ -125,6 +127,8 @@ func DuplicateMsg() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: duplicateMsgBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgBlindedProposerSC(version).ExpectedState,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 		}
 	}

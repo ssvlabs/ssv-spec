@@ -110,6 +110,8 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsProposerSC(version).ExpectedState,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 			ExpectedError:           expectedError,
 		}
