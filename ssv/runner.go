@@ -173,29 +173,6 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 		return true, container.Roots(), nil
 	}
 	return false, [][32]byte{}, nil
-
-	//roots := make([][32]byte, 0)
-	//anyQuorum := false
-	//for _, msg := range signedMsg.Message.Messages {
-	//	prevQuorum := container.HasQuorum(msg.SigningRoot)
-	//
-	//	container.AddSignature(msg)
-	//
-	//	if prevQuorum {
-	//		continue
-	//	}
-	//
-	//	quorum := container.HasQuorum(msg.SigningRoot)
-	//	if quorum {
-	//		roots = append(roots, msg.SigningRoot)
-	//		anyQuorum = true
-	//	}
-	//}
-	//
-	//// added to pre-consensus justification container
-	//b.State.preConsensusJustificationContainer = append(b.State.preConsensusJustificationContainer, signedMsg)
-	//
-	//return anyQuorum, roots, nil
 }
 
 // didDecideCorrectly returns true if the expected consensus instance decided correctly

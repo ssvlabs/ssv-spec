@@ -20,9 +20,6 @@ type State struct {
 	StartingDuty *types.Duty
 	// flags
 	Finished bool // Finished marked true when there is a full successful cycle (pre, consensus and post) with quorum
-
-	// preConsensusJustificationContainer holds signed partial signature messages for pre-consensus
-	preConsensusJustificationContainer []*types.SignedPartialSignatureMessage
 }
 
 func NewRunnerState(quorum uint64, duty *types.Duty) *State {
@@ -32,13 +29,11 @@ func NewRunnerState(quorum uint64, duty *types.Duty) *State {
 
 		StartingDuty: duty,
 		Finished:     false,
-
-		preConsensusJustificationContainer: []*types.SignedPartialSignatureMessage{},
 	}
 }
 
 func (pcs *State) GetPreConsensusJustification() []*types.SignedPartialSignatureMessage {
-	return pcs.preConsensusJustificationContainer
+	return pcs.PreConsensusContainer.All()
 }
 
 // ReconstructBeaconSig aggregates collected partial beacon sigs
