@@ -39,7 +39,7 @@ func MissingQuorum() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID), nil),
+					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestSyncCommitteeContributionConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "2619aeecde47fe0efc36aa98fbb2df9834d9eee77f62abe0d10532dbd5215790",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -52,7 +52,7 @@ func MissingQuorum() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(msgF(testingutils.TestAggregatorConsensusData, testingutils.AggregatorMsgID), nil),
+					testingutils.SSVMsgAggregator(msgF(testingutils.TestAggregatorConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "db1b416873d19be76cddc92ded0d442ba0e642514973b5dfec45f587c6ffde15",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

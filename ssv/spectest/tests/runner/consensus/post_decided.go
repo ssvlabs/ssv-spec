@@ -21,11 +21,11 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
+					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData(ks), ks, types.BNRoleSyncCommitteeContribution),
 					testingutils.SSVMsgSyncCommitteeContribution(
 						testingutils.TestingCommitMessageWithIdentifierAndFullData(
 							ks.Shares[4], types.OperatorID(4), testingutils.SyncCommitteeContributionMsgID,
-							testingutils.TestSyncCommitteeContributionConsensusDataByts,
+							testingutils.TestSyncCommitteeContributionConsensusDataByts(ks),
 						), nil)),
 				PostDutyRunnerStateRoot: "5448f47bb76e4639629e146c242cb27a4a265fae9d871f0fc0f3c66aeea60eb0",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -54,11 +54,11 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
+					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(ks), ks, types.BNRoleAggregator),
 					testingutils.SSVMsgAggregator(
 						testingutils.TestingCommitMessageWithIdentifierAndFullData(
 							ks.Shares[4], types.OperatorID(4), testingutils.AggregatorMsgID,
-							testingutils.TestAggregatorConsensusDataByts,
+							testingutils.TestAggregatorConsensusDataByts(ks),
 						), nil)),
 				PostDutyRunnerStateRoot: "99ddd0aadc2708e0a33f9dd979fd45af9bf71d8d85fc1b04cbb0e418e909bcd4",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

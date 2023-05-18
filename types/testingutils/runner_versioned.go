@@ -55,8 +55,6 @@ var PreConsensusQuorumV = func(ks *TestKeySet, role types.BeaconRole, version sp
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			ret = append(ret, PreConsensusContributionProofMsg(ks.Shares[i], ks.Shares[i], i, i))
 		}
-	} else {
-		panic("unknown role")
 	}
 	return ret
 }

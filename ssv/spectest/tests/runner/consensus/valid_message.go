@@ -25,7 +25,7 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID,
-							testingutils.TestSyncCommitteeContributionConsensusDataByts,
+							testingutils.TestSyncCommitteeContributionConsensusDataByts(ks),
 						), nil),
 				},
 				PostDutyRunnerStateRoot: "d9143e97c89f1c837df975f9d73b37e38e70963092ff0a3b84b4c0342aa50c7e",
@@ -58,7 +58,7 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SSVMsgAggregator(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID,
-							testingutils.TestAggregatorConsensusDataByts,
+							testingutils.TestAggregatorConsensusDataByts(ks),
 						), nil),
 				},
 				PostDutyRunnerStateRoot: "4132ed5cdaf315342f3b411e9a1d136aafac743c75741617dc646a347ba279f3",

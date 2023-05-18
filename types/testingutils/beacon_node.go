@@ -28,6 +28,8 @@ var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *
 	return blsSig
 }
 
+const TestingAttestationDataVersion = spec.DataVersionPhase0
+
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            12,
 	Index:           3,
@@ -190,6 +192,8 @@ var TestingSignedBeaconBlock = func(ks *TestKeySet) *bellatrix.SignedBeaconBlock
 	}
 }
 
+const TestingAggregateAndProofVersion = spec.DataVersionPhase0
+
 var TestingAggregateAndProof = &phase0.AggregateAndProof{
 	AggregatorIndex: 1,
 	SelectionProof:  phase0.BLSSignature{},
@@ -233,6 +237,8 @@ const (
 
 	UnknownDutyType = 100
 )
+
+const TestingSyncCommitteeBlockRootVersion = spec.DataVersionPhase0
 
 var TestingSyncCommitteeBlockRoot = phase0.Root{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
 var TestingSyncCommitteeWrongBlockRoot = phase0.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -283,6 +289,9 @@ var TestingSyncCommitteeContributions = []*altair.SyncCommitteeContribution{
 		Signature:         phase0.BLSSignature{},
 	},
 }
+
+const TestingContributionDataVersion = spec.DataVersionBellatrix
+
 var TestingContributionsData = func() types.Contributions {
 	d := types.Contributions{}
 	d = append(d, &types.Contribution{
@@ -487,7 +496,7 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 
 // GetAttestationData returns attestation data by the given slot and committee index
 func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, spec.DataVersion, error) {
-	return TestingAttestationData, spec.DataVersionPhase0, nil
+	return TestingAttestationData, TestingAttestationDataVersion, nil
 }
 
 // SubmitAttestation submit the attestation to the node
@@ -587,7 +596,7 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlinde
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
 func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error) {
-	return TestingAggregateAndProof, spec.DataVersionPhase0, nil
+	return TestingAggregateAndProof, TestingAggregateAndProofVersion, nil
 }
 
 // SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
@@ -599,7 +608,7 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *phase0.Sig
 
 // GetSyncMessageBlockRoot returns beacon block root for sync committee
 func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.Root, spec.DataVersion, error) {
-	return TestingSyncCommitteeBlockRoot, spec.DataVersionPhase0, nil
+	return TestingSyncCommitteeBlockRoot, TestingSyncCommitteeBlockRootVersion, nil
 }
 
 // SubmitSyncMessage submits a signed sync committee msg
@@ -628,7 +637,7 @@ func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) 
 
 // GetSyncCommitteeContribution returns
 func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot phase0.Slot, selectionProofs []phase0.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec.DataVersion, error) {
-	return &TestingContributionsData, spec.DataVersionBellatrix, nil
+	return &TestingContributionsData, TestingContributionDataVersion, nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network
