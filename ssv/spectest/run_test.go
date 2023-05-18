@@ -3,6 +3,15 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"sync"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -12,13 +21,6 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"os"
-	"path/filepath"
-	"reflect"
-	"strings"
-	"sync"
-	"testing"
 )
 
 func TestAll(t *testing.T) {
@@ -57,15 +59,16 @@ func TestJson(t *testing.T) {
 	for name, test := range untypedTests {
 		wait.Add(1)
 		go func(t *testing.T, wait *sync.WaitGroup, name string, test interface{}) {
-			parseAndTest(t, wait, name, test)
+			defer wait.Done()
+			parseAndTest(t, name, test)
 		}(t, wait, name, test)
 	}
 
 	wait.Wait()
 }
 
-// parseAndTest will parse and test the spec test. Will handle wait group done call as well
-func parseAndTest(t *testing.T, wait *sync.WaitGroup, name string, test interface{}) {
+// parseAndTest will parse and test the spec test.
+func parseAndTest(t *testing.T, name string, test interface{}) {
 	testName := test.(map[string]interface{})["Name"].(string)
 	t.Run(testName, func(t *testing.T) {
 		testType := strings.Split(name, "_")[0]
@@ -130,8 +133,6 @@ func parseAndTest(t *testing.T, wait *sync.WaitGroup, name string, test interfac
 		default:
 			panic("unsupported test type " + testType)
 		}
-
-		wait.Done()
 	})
 }
 
