@@ -51,7 +51,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Name:                    "proposer",
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
+				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 				PostDutyRunnerStateRoot: "3df1cfe5434fbf28fe803fb986898830d536f60447a1d68a8ae36ad7d9b4a905",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),

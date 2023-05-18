@@ -25,6 +25,8 @@ func WrongValidatorPK() tests.SpecTest {
 		return ret
 	}
 
+	ks := testingutils.Testing4SharesSet()
+
 	expectedErr := "duty invalid: wrong validator pk"
 	return &valcheck.MultiSpecTest{
 		Name: "wrong validator PK",
@@ -54,7 +56,7 @@ func WrongValidatorPK() tests.SpecTest {
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix)),
 				ExpectedError: expectedErr,
 			},
 			{

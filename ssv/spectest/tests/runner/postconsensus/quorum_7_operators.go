@@ -66,7 +66,7 @@ func Quorum7Operators() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix),
+					testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix),
 				),
 				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{

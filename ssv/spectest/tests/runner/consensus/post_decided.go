@@ -71,11 +71,11 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
+					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 					testingutils.SSVMsgProposer(
 						testingutils.TestingCommitMessageWithIdentifierAndFullData(
 							ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
-							testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
+							testingutils.TestProposerConsensusDataBytsV(ks, spec.DataVersionBellatrix),
 						), nil)),
 				PostDutyRunnerStateRoot: "7bafe77f6aa303e2cd38f741ebd366d68b4ced79ffbd224b98904bb22a58d010",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

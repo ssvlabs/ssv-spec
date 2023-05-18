@@ -8,6 +8,10 @@ import (
 
 type PartialSignatureContainer map[types.OperatorID]*types.SignedPartialSignatureMessage
 
+func NewPartialSignatureContainer() PartialSignatureContainer {
+	return make(PartialSignatureContainer)
+}
+
 func (ps PartialSignatureContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte) ([]byte, error) {
 	// collect signatures
 	sigs := ps.SignatureForRoot(root)

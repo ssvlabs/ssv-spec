@@ -77,7 +77,7 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SSVMsgProposer(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
-							testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
+							testingutils.TestProposerConsensusDataBytsV(ks, spec.DataVersionBellatrix),
 						), nil),
 				},
 				PostDutyRunnerStateRoot: "6c08d5ea9d4ca4a67897ab9a1612dd31c8066cfaa67d7c811478d19d9ab2ff3d",

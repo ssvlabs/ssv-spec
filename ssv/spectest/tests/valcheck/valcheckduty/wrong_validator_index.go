@@ -25,6 +25,8 @@ func WrongValidatorIndex() tests.SpecTest {
 		return ret
 	}
 
+	ks := testingutils.Testing4SharesSet()
+
 	expectedErr := "duty invalid: wrong validator index"
 	return &valcheck.MultiSpecTest{
 		Name: "wrong validator index",
@@ -54,7 +56,7 @@ func WrongValidatorIndex() tests.SpecTest {
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix)),
 				ExpectedError: expectedErr,
 			},
 			{

@@ -26,6 +26,8 @@ func FarFutureDutySlot() tests.SpecTest {
 		return ret
 	}
 
+	ks := testingutils.Testing4SharesSet()
+
 	return &valcheck.MultiSpecTest{
 		Name: "far future duty slot",
 		Tests: []*valcheck.SpecTest{
@@ -54,7 +56,7 @@ func FarFutureDutySlot() tests.SpecTest {
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix)),
 				ExpectedError: "duty invalid: duty epoch is into far future",
 			},
 			{

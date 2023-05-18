@@ -24,8 +24,8 @@ type State struct {
 
 func NewRunnerState(quorum uint64, duty *types.Duty) *State {
 	return &State{
-		PreConsensusContainer:  make(PartialSignatureContainer),
-		PostConsensusContainer: make(PartialSignatureContainer),
+		PreConsensusContainer:  NewPartialSignatureContainer(),
+		PostConsensusContainer: NewPartialSignatureContainer(),
 
 		StartingDuty: duty,
 		Finished:     false,

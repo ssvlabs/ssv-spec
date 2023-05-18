@@ -8,17 +8,18 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-var TestProposerConsensusDataV = func(version spec.DataVersion) *types.ConsensusData {
+var TestProposerConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
 	duty := TestingProposerDutyV(version)
 	return &types.ConsensusData{
-		Duty:    *duty,
-		Version: version,
-		DataSSZ: TestingBeaconBlockBytesV(version),
+		Duty:                       *duty,
+		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
+		Version:                    version,
+		DataSSZ:                    TestingBeaconBlockBytesV(version),
 	}
 }
 
-var TestProposerConsensusDataBytsV = func(version spec.DataVersion) []byte {
-	cd := TestProposerConsensusDataV(version)
+var TestProposerConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {
+	cd := TestProposerConsensusDataV(ks, version)
 	byts, _ := cd.Encode()
 	return byts
 }
@@ -29,7 +30,7 @@ var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version 
 		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
 	}
 
-	cd := TestProposerConsensusDataV(version)
+	cd := TestProposerConsensusDataV(ks, version)
 	cd.PreConsensusJustifications = justif
 	return cd
 }

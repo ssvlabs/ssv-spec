@@ -312,7 +312,7 @@ func getRoundChangeData(state *State, config IConfig, instanceStartValue []byte)
 		return state.LastPreparedRound, r, state.LastPreparedValue, justifications, nil
 	}
 
-	// not prepared, return start value as full value for pre-consensus justification
+	// If not previously prepared, return start value as full value for pre-consensus justification
 	return NoRound, [32]byte{}, instanceStartValue, nil, nil
 }
 
