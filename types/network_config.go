@@ -20,6 +20,7 @@ type BeaconNetwork struct {
 	BootNodes              []string
 	DepositContractAddress string
 	GenesisValidatorsRoot  string
+	GenesisEpoch           spec.Epoch
 }
 
 var BeaconTestNetwork = BeaconNetwork{
@@ -33,6 +34,7 @@ var BeaconTestNetwork = BeaconNetwork{
 	Domain:                 V3Testnet,
 	DepositContractAddress: "0xff50ed3d0ec03ac01d4c79aad74928bff48a7b2b",
 	GenesisValidatorsRoot:  "043db0d9a83813551ee2f33450d23797757d430911a9320530ad8a0eabc43efb",
+	GenesisEpoch:           152834, // TODO: another value?
 }
 
 func GetBeaconTestNetwork() BeaconNetwork {
