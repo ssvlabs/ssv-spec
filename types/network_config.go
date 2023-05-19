@@ -9,23 +9,30 @@ import (
 
 // BeaconNetwork describes a network.
 type BeaconNetwork struct {
-	Name              string
-	DefaultSyncOffset *big.Int // prod contract genesis block
-	ForkVersion       [4]byte
-	MinGenesisTime    uint64
-	SlotDuration      time.Duration
-	SlotsPerEpoch     uint64
-	CapellaForkEpoch  uint64
+	Name                   string
+	DefaultSyncOffset      *big.Int // prod contract genesis block
+	ForkVersion            [4]byte
+	MinGenesisTime         uint64
+	SlotDuration           time.Duration
+	SlotsPerEpoch          uint64
+	CapellaForkEpoch       spec.Epoch
+	Domain                 DomainType
+	BootNodes              []string
+	DepositContractAddress string
+	GenesisValidatorsRoot  string
 }
 
 var BeaconTestNetwork = BeaconNetwork{
-	Name:              "now_test_network",
-	DefaultSyncOffset: new(big.Int).SetInt64(8661727),
-	ForkVersion:       [4]byte{0x99, 0x99, 0x99, 0x99},
-	MinGenesisTime:    1616508000,
-	SlotDuration:      12 * time.Second,
-	SlotsPerEpoch:     32,
-	CapellaForkEpoch:  162304,
+	Name:                   "now_test_network",
+	DefaultSyncOffset:      new(big.Int).SetInt64(8661727),
+	ForkVersion:            [4]byte{0x99, 0x99, 0x99, 0x99},
+	MinGenesisTime:         1616508000,
+	SlotDuration:           12 * time.Second,
+	SlotsPerEpoch:          32,
+	CapellaForkEpoch:       162304, // Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
+	Domain:                 V3Testnet,
+	DepositContractAddress: "0xff50ed3d0ec03ac01d4c79aad74928bff48a7b2b",
+	GenesisValidatorsRoot:  "043db0d9a83813551ee2f33450d23797757d430911a9320530ad8a0eabc43efb",
 }
 
 func GetBeaconTestNetwork() BeaconNetwork {
