@@ -15,18 +15,19 @@ import (
 )
 
 const (
-	// ForkEpochPraterCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
-	ForkEpochPraterCapella = 162304
-
 	// TestingDutySlotBellatrix keeping this value to not break the test roots
 	TestingDutySlotBellatrix          = 12
 	TestingDutySlotBellatrixNextEpoch = 50
 	TestingDutySlotBellatrixInvalid   = 50
 	TestingDutyEpochBellatrix         = 0
+)
 
-	TestingDutyEpochCapella         = ForkEpochPraterCapella
-	TestingDutySlotCapella          = ForkEpochPraterCapella * 32
-	TestingDutySlotCapellaNextEpoch = TestingDutySlotCapella + 32
+var (
+	TestingCapellaForkEpoch = types.GetBeaconTestNetwork().CapellaForkEpoch
+
+	TestingDutyEpochCapella         = TestingCapellaForkEpoch
+	TestingDutySlotCapella          = types.GetBeaconTestNetwork().FirstSlotAtEpoch(TestingCapellaForkEpoch)
+	TestingDutySlotCapellaNextEpoch = types.GetBeaconTestNetwork().FirstSlotAtEpoch(TestingCapellaForkEpoch + 1)
 	TestingDutySlotCapellaInvalid   = TestingDutySlotCapella + 50
 )
 
@@ -179,7 +180,7 @@ var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 }
 
 var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < ForkEpochPraterCapella*32 {
+	if slot < types.GetBeaconTestNetwork().FirstSlotAtEpoch(TestingCapellaForkEpoch) {
 		return spec.DataVersionBellatrix
 	}
 	return spec.DataVersionCapella
