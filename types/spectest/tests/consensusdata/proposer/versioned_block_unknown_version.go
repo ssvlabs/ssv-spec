@@ -5,18 +5,15 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // VersionedBlockUnknownVersion tests a valid consensus data with unknown block
 func VersionedBlockUnknownVersion() *ProposerSpecTest {
 	unknownDataVersion := spec.DataVersion(100)
-	cd := &types.ConsensusData{
-		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-		Version: unknownDataVersion,
-		DataSSZ: testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
-	}
+	ks := testingutils.Testing4SharesSet()
+	cd := testingutils.TestProposerConsensusDataV(ks, spec.DataVersionCapella)
+	cd.Version = unknownDataVersion
 
 	cdSSZ, err := cd.MarshalSSZ()
 	if err != nil {

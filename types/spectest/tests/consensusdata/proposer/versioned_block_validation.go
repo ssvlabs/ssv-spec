@@ -8,6 +8,8 @@ import (
 
 // VersionedBlockValidation tests a valid consensus data with bellatrix block
 func VersionedBlockValidation() *ProposerSpecTest {
+	ks := testingutils.Testing4SharesSet()
+
 	expectedCdRoot, err := testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix).HashTreeRoot()
 	if err != nil {
 		panic(err.Error())
@@ -20,7 +22,7 @@ func VersionedBlockValidation() *ProposerSpecTest {
 
 	return &ProposerSpecTest{
 		Name:            "consensus data versioned block validation",
-		DataCd:          testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
+		DataCd:          testingutils.TestProposerConsensusDataBytsV(ks, spec.DataVersionBellatrix),
 		DataBlk:         testingutils.TestingBeaconBlockBytesV(spec.DataVersionBellatrix),
 		ExpectedCdRoot:  expectedCdRoot,
 		ExpectedBlkRoot: expectedBlkRoot,

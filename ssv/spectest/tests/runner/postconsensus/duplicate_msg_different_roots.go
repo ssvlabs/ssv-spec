@@ -75,7 +75,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix),
+					testingutils.TestProposerBlindedBlockConsensusDataV(ks, spec.DataVersionBellatrix),
 				),
 				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{

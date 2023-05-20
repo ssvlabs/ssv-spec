@@ -61,6 +61,7 @@ var TestAggregatorConsensusDataByts = func(ks *TestKeySet) []byte {
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeDuty,
+	Version: TestingSyncCommitteeBlockRootVersion,
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()

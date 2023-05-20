@@ -88,11 +88,11 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
+					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(ks, spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 					testingutils.SSVMsgProposer(
 						testingutils.TestingCommitMessageWithIdentifierAndFullData(
 							ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
-							testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+							testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
 						), nil)),
 				PostDutyRunnerStateRoot: "d2d3d97a0bb878594c5b5319cbf1a1a6afe2467ef26fb2e47eb6d075b3c90428",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

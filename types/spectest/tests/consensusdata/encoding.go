@@ -6,7 +6,8 @@ import (
 
 // Encoding tests encoding of a ssv message
 func Encoding() *EncodingTest {
-	msg := testingutils.TestSyncCommitteeContributionConsensusData
+	ks := testingutils.Testing4SharesSet()
+	msg := testingutils.TestSyncCommitteeContributionConsensusData(ks)
 
 	byts, err := msg.Encode()
 	if err != nil {

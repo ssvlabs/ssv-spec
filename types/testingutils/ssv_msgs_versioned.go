@@ -41,21 +41,22 @@ var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, v
 		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
 	}
 
-	cd := TestProposerBlindedBlockConsensusDataV(version)
+	cd := TestProposerBlindedBlockConsensusDataV(ks, version)
 	cd.PreConsensusJustifications = justif
 	return cd
 }
 
-var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ConsensusData {
+var TestProposerBlindedBlockConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
 	return &types.ConsensusData{
-		Duty:    *TestingProposerDutyV(version),
-		Version: version,
-		DataSSZ: TestingBlindedBeaconBlockBytesV(version),
+		Duty:                       *TestingProposerDutyV(version),
+		Version:                    version,
+		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
+		DataSSZ:                    TestingBlindedBeaconBlockBytesV(version),
 	}
 }
 
-var TestProposerBlindedBlockConsensusDataBytsV = func(version spec.DataVersion) []byte {
-	cd := TestProposerBlindedBlockConsensusDataV(version)
+var TestProposerBlindedBlockConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {
+	cd := TestProposerBlindedBlockConsensusDataV(ks, version)
 	byts, _ := cd.Encode()
 	return byts
 }

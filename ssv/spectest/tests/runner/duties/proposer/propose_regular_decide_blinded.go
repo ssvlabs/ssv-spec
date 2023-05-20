@@ -26,7 +26,7 @@ func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
 					testingutils.ProposerMsgID,
-					testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+					testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
 				), nil),
 
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),

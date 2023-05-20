@@ -11,11 +11,13 @@ import (
 
 // VersionedBlindedBlockUnknownVersion tests a valid consensus data with unknown block version
 func VersionedBlindedBlockUnknownVersion() *ProposerSpecTest {
+	ks := testingutils.Testing4SharesSet()
+
 	unknownDataVersion := spec.DataVersion(100)
 	cd := &types.ConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 		Version: unknownDataVersion,
-		DataSSZ: testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+		DataSSZ: testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
 	}
 
 	dataCd, err := cd.MarshalSSZ()
