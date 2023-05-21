@@ -28,7 +28,8 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 				},
-				PostDutyRunnerStateRoot: "5bb9211032fb87653bc653ad072cc5bc44184cc7f42968157f3ff9d377d03580",
+				PostDutyRunnerStateRoot: quorum7OperatorsSyncCommitteeContributionSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -44,7 +45,8 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 				},
-				PostDutyRunnerStateRoot: "472f24eb363ce2b486fc7e7257030203ad3ebee900bbd03c0061b8063cc2d6eb",
+				PostDutyRunnerStateRoot: quorum7OperatorsAggregatorSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsAggregatorSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -60,7 +62,8 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[4], 4)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[5], 5)),
 				},
-				PostDutyRunnerStateRoot: "25bd711b1c901dcc6d1fb292949980c56363957a02bb99133702e1daa38d757e",
+				PostDutyRunnerStateRoot: quorum7OperatorsValidatorRegistrationSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsValidatorRegistrationSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
