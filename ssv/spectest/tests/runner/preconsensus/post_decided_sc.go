@@ -11,6 +11,94 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
+// postDecidedSyncCommitteeContributionSC returns state comparison object for the DuplicateMsg SyncCommitteeContribution versioned spec test
+func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	cd := testingutils.TestSyncCommitteeContributionConsensusData
+
+	return &comparable.StateComparison{
+		ExpectedState: func() types.Root {
+			ret := testingutils.SyncCommitteeContributionRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SSVMessage{
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+					},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SSVMessage{},
+				),
+				DecidedValue: cd,
+				StartingDuty: &cd.Duty,
+				Finished:     false,
+			}
+			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
+				State: &qbft.State{
+					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet()),
+					ID:                ret.GetBaseRunner().QBFTController.Identifier,
+					Round:             qbft.FirstRound,
+					Height:            qbft.FirstHeight,
+					LastPreparedRound: qbft.NoRound,
+					Decided:           true,
+				},
+			}
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+
+			return ret
+		}(),
+	}
+}
+
+// postDecidedAggregatorSC returns state comparison object for the DuplicateMsg Aggregator versioned spec test
+func postDecidedAggregatorSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	cd := testingutils.TestAggregatorConsensusData
+
+	return &comparable.StateComparison{
+		ExpectedState: func() types.Root {
+			ret := testingutils.AggregatorRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SSVMessage{
+						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
+						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
+						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[4], 4, 4)),
+					},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SSVMessage{},
+				),
+				DecidedValue: cd,
+				StartingDuty: &cd.Duty,
+				Finished:     false,
+			}
+			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
+				State: &qbft.State{
+					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet()),
+					ID:                ret.GetBaseRunner().QBFTController.Identifier,
+					Round:             qbft.FirstRound,
+					Height:            qbft.FirstHeight,
+					LastPreparedRound: qbft.NoRound,
+					Decided:           true,
+				},
+			}
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+
+			return ret
+		}(),
+	}
+}
+
 // postDecidedProposerSC returns state comparison object for the PostDecided Proposer versioned spec test
 func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
@@ -20,7 +108,6 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 		ExpectedState: func() types.Root {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
-				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{
@@ -35,21 +122,22 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 					[]*types.SSVMessage{},
 				),
 				DecidedValue: cd,
+				StartingDuty: &cd.Duty,
+				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:   testingutils.TestingShare(testingutils.Testing4SharesSet()),
-					ID:      ret.GetBaseRunner().QBFTController.Identifier,
-					Round:   qbft.FirstRound,
-					Height:  qbft.FirstHeight,
-					Decided: true,
+					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet()),
+					ID:                ret.GetBaseRunner().QBFTController.Identifier,
+					Round:             qbft.FirstRound,
+					Height:            qbft.FirstHeight,
+					LastPreparedRound: qbft.NoRound,
+					Decided:           true,
 				},
 			}
-			comparable.SetMessages(
-				ret.GetBaseRunner().State.RunningInstance,
-				[]*types.SSVMessage{},
-			)
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+
 			return ret
 		}(),
 	}
@@ -64,7 +152,6 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 		ExpectedState: func() types.Root {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
-				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{
@@ -79,21 +166,22 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 					[]*types.SSVMessage{},
 				),
 				DecidedValue: cd,
+				StartingDuty: &cd.Duty,
+				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:   testingutils.TestingShare(testingutils.Testing4SharesSet()),
-					ID:      ret.GetBaseRunner().QBFTController.Identifier,
-					Round:   qbft.FirstRound,
-					Height:  qbft.FirstHeight,
-					Decided: true,
+					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet()),
+					ID:                ret.GetBaseRunner().QBFTController.Identifier,
+					Round:             qbft.FirstRound,
+					Height:            qbft.FirstHeight,
+					LastPreparedRound: qbft.NoRound,
+					Decided:           true,
 				},
 			}
-			comparable.SetMessages(
-				ret.GetBaseRunner().State.RunningInstance,
-				[]*types.SSVMessage{},
-			)
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+
 			return ret
 		}(),
 	}
