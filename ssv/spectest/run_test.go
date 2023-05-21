@@ -42,29 +42,34 @@ func TestAll(t *testing.T) {
 func TestJson(t *testing.T) {
 	t.Parallel()
 
-	basedir, _ := os.Getwd()
+	basedir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get working directory: %v", err)
+	}
+
 	path := filepath.Join(basedir, "generate", "tests.json")
 	untypedTests := map[string]interface{}{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
-		panic(err.Error())
+		t.Fatalf("Failed to read file: %v", err)
 	}
 
 	if err := json.Unmarshal(byteValue, &untypedTests); err != nil {
-		panic(err.Error())
+		t.Fatalf("Failed to unmarshal JSON: %v", err)
 	}
 
 	fmt.Printf("running %d tests\n", len(untypedTests))
-	wait := &sync.WaitGroup{}
+
+	var wg sync.WaitGroup
 	for name, test := range untypedTests {
-		wait.Add(1)
-		go func(t *testing.T, wait *sync.WaitGroup, name string, test interface{}) {
-			defer wait.Done()
+		wg.Add(1)
+		go func(name string, test interface{}) {
+			defer wg.Done()
 			parseAndTest(t, name, test)
-		}(t, wait, name, test)
+		}(name, test)
 	}
 
-	wait.Wait()
+	wg.Wait()
 }
 
 // parseAndTest will parse and test the spec test.
