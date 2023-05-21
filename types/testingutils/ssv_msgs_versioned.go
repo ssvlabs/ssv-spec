@@ -3,6 +3,7 @@ package testingutils
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/types"
@@ -10,12 +11,12 @@ import (
 
 var TestProposerConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
 	duty := TestingProposerDutyV(version)
-	return &types.ConsensusData{
+	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       *duty,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
 		Version:                    version,
 		DataSSZ:                    TestingBeaconBlockBytesV(version),
-	}
+	})
 }
 
 var TestProposerConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {
@@ -47,12 +48,12 @@ var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, v
 }
 
 var TestProposerBlindedBlockConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
-	return &types.ConsensusData{
+	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       *TestingProposerDutyV(version),
 		Version:                    version,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
 		DataSSZ:                    TestingBlindedBeaconBlockBytesV(version),
-	}
+	})
 }
 
 var TestProposerBlindedBlockConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {

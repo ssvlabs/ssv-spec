@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"crypto/sha256"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
@@ -39,40 +40,40 @@ var ValidatorRegistrationMsgID = func() []byte {
 	return ret[:]
 }()
 
-var TestAttesterConsensusData = &types.ConsensusData{
+var TestAttesterConsensusData = comparable2.FixIssue178(&types.ConsensusData{
 	Duty:    TestingAttesterDuty,
 	Version: TestingAttestationDataVersion,
 	DataSSZ: TestingAttestationDataBytes,
-}
+})
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAggregatorConsensusData = func(ks *TestKeySet) *types.ConsensusData {
-	return &types.ConsensusData{
+	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       TestingAggregatorDuty,
 		Version:                    TestingAggregateAndProofVersion,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleAggregator, TestingAggregateAndProofVersion),
 		DataSSZ:                    TestingAggregateAndProofBytes,
-	}
+	})
 }
 var TestAggregatorConsensusDataByts = func(ks *TestKeySet) []byte {
 	byts, _ := TestAggregatorConsensusData(ks).Encode()
 	return byts
 }
 
-var TestSyncCommitteeConsensusData = &types.ConsensusData{
+var TestSyncCommitteeConsensusData = comparable2.FixIssue178(&types.ConsensusData{
 	Duty:    TestingSyncCommitteeDuty,
 	Version: TestingSyncCommitteeBlockRootVersion,
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
-}
+})
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
 var TestSyncCommitteeContributionConsensusData = func(ks *TestKeySet) *types.ConsensusData {
-	return &types.ConsensusData{
+	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       TestingSyncCommitteeContributionDuty,
 		Version:                    TestingContributionDataVersion,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleSyncCommitteeContribution, TestingContributionDataVersion),
 		DataSSZ:                    TestingContributionsDataBytes,
-	}
+	})
 }
 var TestSyncCommitteeContributionConsensusDataByts = func(ks *TestKeySet) []byte {
 	byts, _ := TestSyncCommitteeContributionConsensusData(ks).Encode()

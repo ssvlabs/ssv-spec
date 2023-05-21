@@ -344,60 +344,65 @@ var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 }
 
 var TestingAttesterDuty = types.Duty{
-	Type:                    types.BNRoleAttester,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleAttester,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
 var TestingProposerDuty = types.Duty{
-	Type:                    types.BNRoleProposer,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleProposer,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
 // TestingProposerDutyNextEpoch testing for a second duty start
 var TestingProposerDutyNextEpoch = types.Duty{
-	Type:                    types.BNRoleProposer,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot2,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleProposer,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot2,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
 var TestingAggregatorDuty = types.Duty{
-	Type:                    types.BNRoleAggregator,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          22,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleAggregator,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                22,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
 // TestingAggregatorDutyNextEpoch testing for a second duty start
 var TestingAggregatorDutyNextEpoch = types.Duty{
-	Type:                    types.BNRoleAggregator,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot2,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          22,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleAggregator,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot2,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                22,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
 var TestingSyncCommitteeDuty = types.Duty{

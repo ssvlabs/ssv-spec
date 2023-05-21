@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"sort"
 )
 
 type PartialSignatureContainer map[types.OperatorID]*types.SignedPartialSignatureMessage
@@ -12,6 +13,7 @@ func NewPartialSignatureContainer() PartialSignatureContainer {
 	return make(PartialSignatureContainer)
 }
 
+// ReconstructSignature return reconstructed signature for a root
 func (ps PartialSignatureContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte) ([]byte, error) {
 	// collect signatures
 	sigs := ps.SignatureForRoot(root)
@@ -27,6 +29,7 @@ func (ps PartialSignatureContainer) ReconstructSignature(root [32]byte, validato
 	return signature.Serialize(), nil
 }
 
+// SignatureForRoot returns a map of signer and signature for a specific root
 func (ps PartialSignatureContainer) SignatureForRoot(root [32]byte) map[types.OperatorID][]byte {
 	sigs := make(map[types.OperatorID][]byte, 0)
 	for operatorID, sigMsg := range ps {
@@ -39,6 +42,7 @@ func (ps PartialSignatureContainer) SignatureForRoot(root [32]byte) map[types.Op
 	return sigs
 }
 
+// Roots returns roots for the partial sigs
 func (ps PartialSignatureContainer) Roots() [][32]byte {
 	if len(ps) > 0 {
 		ret := make([][32]byte, 0)
@@ -54,10 +58,14 @@ func (ps PartialSignatureContainer) Roots() [][32]byte {
 	return [][32]byte{}
 }
 
-func (ps PartialSignatureContainer) All() []*types.SignedPartialSignatureMessage {
+// AllSorted returns ordered by signer array of signed messages
+func (ps PartialSignatureContainer) AllSorted() []*types.SignedPartialSignatureMessage {
 	ret := make([]*types.SignedPartialSignatureMessage, 0)
 	for _, m := range ps {
 		ret = append(ret, m)
 	}
+	sort.Slice(ret, func(i, j int) bool {
+		return ret[i].Signer < ret[j].Signer
+	})
 	return ret
 }

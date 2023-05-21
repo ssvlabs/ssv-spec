@@ -19,7 +19,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestSyncCommitteeContributionConsensusData(ks), spec.DataVersionPhase0),
+				DecidedValue: testingutils.TestSyncCommitteeContributionConsensusData(ks),
 				StartingDuty: &testingutils.TestSyncCommitteeContributionConsensusData(ks).Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),
@@ -33,7 +33,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 					}),
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(testingutils.TestSyncCommitteeContributionConsensusData(ks), spec.DataVersionBellatrix)),
+				StartValue: comparable.NoErrorEncoding(testingutils.TestSyncCommitteeContributionConsensusData(ks)),
 				State: &qbft.State{
 					Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
 					ID:     ret.GetBaseRunner().QBFTController.Identifier,
@@ -68,7 +68,7 @@ func fullHappyFlowSyncCommitteeSC() *comparable.StateComparison {
 			ret := testingutils.SyncCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestSyncCommitteeConsensusData, spec.DataVersionPhase0),
+				DecidedValue: testingutils.TestSyncCommitteeConsensusData,
 				StartingDuty: &testingutils.TestSyncCommitteeConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),
@@ -117,7 +117,7 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestAggregatorConsensusData(ks), spec.DataVersionPhase0),
+				DecidedValue: testingutils.TestAggregatorConsensusData(ks),
 				StartingDuty: &testingutils.TestAggregatorConsensusData(ks).Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),
@@ -169,7 +169,7 @@ func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparis
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),
@@ -183,7 +183,7 @@ func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparis
 					}),
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				StartValue: comparable.NoErrorEncoding(cd),
+				StartValue: cdBytes,
 				State: &qbft.State{
 					Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
 					ID:     ret.GetBaseRunner().QBFTController.Identifier,
@@ -221,7 +221,7 @@ func fullHappyFlowBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: cd,
 				StartingDuty: &testingutils.TestProposerConsensusDataV(ks, version).Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),
@@ -270,7 +270,7 @@ func fullHappyFlowAttesterSC() *comparable.StateComparison {
 			ret := testingutils.AttesterRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestAttesterConsensusData, spec.DataVersionPhase0),
+				DecidedValue: testingutils.TestAttesterConsensusData,
 				StartingDuty: &testingutils.TestAttesterConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),

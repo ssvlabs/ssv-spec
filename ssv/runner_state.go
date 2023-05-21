@@ -33,7 +33,7 @@ func NewRunnerState(quorum uint64, duty *types.Duty) *State {
 }
 
 func (pcs *State) GetPreConsensusJustification() []*types.SignedPartialSignatureMessage {
-	return pcs.PreConsensusContainer.All()
+	return pcs.PreConsensusContainer.AllSorted()
 }
 
 // ReconstructBeaconSig aggregates collected partial beacon sigs
