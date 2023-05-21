@@ -33,7 +33,8 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4, ks)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[5], 5, ks)),
 				},
-				PostDutyRunnerStateRoot: "60de71615d1617b35107dfbb072492c3482fcbf1e4d49124eda8f79a8e4eb044",
+				PostDutyRunnerStateRoot: quorum7OperatorsSyncCommitteeContributionSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
@@ -57,7 +58,8 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4)),
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[5], 5)),
 				},
-				PostDutyRunnerStateRoot: "03642a68e7d645b2e2aabb98254a1c32e520f4618efce66d3e5cbb764985a06e",
+				PostDutyRunnerStateRoot: quorum7OperatorsSyncCommitteeSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsSyncCommitteeSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
@@ -79,7 +81,8 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[5], 5)),
 				},
-				PostDutyRunnerStateRoot: "307c328fa6f4ad4c7ebe9ec322ec1c7e82ee3aad2330bf69d9c543988da81ec2",
+				PostDutyRunnerStateRoot: quorum7OperatorsAggregatorSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsAggregatorSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
@@ -101,7 +104,8 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight)),
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[5], 5, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "8be811662d169b992a91e5a1c1bf7efcf80d085197ee8c2d983c7d8a0ed3e857",
+				PostDutyRunnerStateRoot: quorum7OperatorsAttesterSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsAttesterSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					getSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
