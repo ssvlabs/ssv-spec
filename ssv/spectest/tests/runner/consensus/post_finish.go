@@ -1,9 +1,11 @@
 package consensus
 
 import (
+	"encoding/hex"
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -99,17 +101,26 @@ func PostFinish() tests.SpecTest {
 			Runner: testingutils.ProposerRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
-				testingutils.SSVMsgProposer(
-					testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-						[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
-						testingutils.TestProposerConsensusDataBytsV(version),
-					), nil)),
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer), // consensus
+				[]*types.SSVMessage{ // post consensus
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+					testingutils.SSVMsgProposer(
+						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
+							testingutils.TestProposerConsensusDataBytsV(version),
+						), nil),
+				}...,
+			),
 			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
+			},
+			BeaconBroadcastedRoots: []string{
+				getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
 		}
 	}
@@ -121,17 +132,26 @@ func PostFinish() tests.SpecTest {
 			Runner: testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
-				testingutils.SSVMsgProposer(
-					testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-						[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
-						testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
-					), nil)),
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer), // consensus
+				[]*types.SSVMessage{ // post consensus
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+					testingutils.SSVMsgProposer(
+						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
+							testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
+						), nil),
+				}...,
+			),
 			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
+			},
+			BeaconBroadcastedRoots: []string{
+				getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
 		}
 	}
@@ -141,4 +161,9 @@ func PostFinish() tests.SpecTest {
 	}
 
 	return multiSpecTest
+}
+
+func getSSZRootNoError(obj ssz.HashRoot) string {
+	r, _ := obj.HashTreeRoot()
+	return hex.EncodeToString(r[:])
 }
