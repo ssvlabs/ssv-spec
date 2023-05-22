@@ -3,10 +3,9 @@ package runner
 import (
 	"encoding/hex"
 	"fmt"
-
-	"github.com/attestantio/go-eth2-client/spec"
 	ssz "github.com/ferranbt/fastssz"
 
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -45,9 +44,9 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
-					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
-					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
 			},
 			{
@@ -68,7 +67,7 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 			},
 			{
@@ -97,7 +96,7 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
 			},
 			{
@@ -118,7 +117,7 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
 			},
 			{
@@ -130,10 +129,13 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 				},
-				PostDutyRunnerStateRoot: fullHappyFlowValidatorRegistrationSC().Root(), // "f36c8b537afaba0894dbc8c87cb94466d8ac2623e9283f1c584e3d544b5f2b88",
+				PostDutyRunnerStateRoot: fullHappyFlowValidatorRegistrationSC().Root(), // "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
 				PostDutyRunnerState:     fullHappyFlowValidatorRegistrationSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingValidatorRegistration),
 				},
 			},
 		},
