@@ -30,8 +30,8 @@ func TestAll(t *testing.T) {
 			test := f()
 			t.Run(test.TestName(), func(t *testing.T) {
 				test.Run(t)
-				wait.Done()
 			})
+			wait.Done()
 		}(testF)
 	}
 	wait.Wait()

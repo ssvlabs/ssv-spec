@@ -91,7 +91,7 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 			return nil, errors.Wrap(err, "could not sign root")
 		}
 
-		return k.SignByte(computedRoot).Serialize(), nil
+		return k.SignByte(computedRoot[:]).Serialize(), nil
 	}
 	return nil, errors.New("pk not found")
 }
