@@ -12,7 +12,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-var TestingSSVDomainType = types.GetBeaconTestNetwork().Domain
+var TestingSSVDomainType = types.BeaconTestNetwork.Domain
 var AttesterMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
 	return ret[:]

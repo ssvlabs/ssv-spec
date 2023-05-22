@@ -37,10 +37,6 @@ var BeaconTestNetwork = BeaconNetwork{
 	GenesisEpoch:           152834, // TODO: another value?
 }
 
-func GetBeaconTestNetwork() BeaconNetwork {
-	return BeaconTestNetwork
-}
-
 // EstimatedCurrentSlot returns the estimation of the current slot
 func (n BeaconNetwork) EstimatedCurrentSlot() spec.Slot {
 	return n.EstimatedSlotAtTime(time.Now().Unix())
