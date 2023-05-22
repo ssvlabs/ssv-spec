@@ -23,11 +23,11 @@ const (
 )
 
 var (
-	TestingCapellaForkEpoch = types.BeaconTestNetwork.CapellaForkEpoch
+	TestingCapellaForkEpoch = types.TestNetwork.ETH.CapellaForkEpoch
 
 	TestingDutyEpochCapella         = TestingCapellaForkEpoch
-	TestingDutySlotCapella          = types.BeaconTestNetwork.FirstSlotAtEpoch(TestingCapellaForkEpoch)
-	TestingDutySlotCapellaNextEpoch = types.BeaconTestNetwork.FirstSlotAtEpoch(TestingCapellaForkEpoch + 1)
+	TestingDutySlotCapella          = types.TestNetwork.FirstSlotAtEpoch(TestingCapellaForkEpoch)
+	TestingDutySlotCapellaNextEpoch = types.TestNetwork.FirstSlotAtEpoch(TestingCapellaForkEpoch + 1)
 	TestingDutySlotCapellaInvalid   = TestingDutySlotCapella + 50
 )
 
@@ -183,7 +183,7 @@ var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 }
 
 var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < types.BeaconTestNetwork.FirstSlotAtEpoch(TestingCapellaForkEpoch) {
+	if slot < types.TestNetwork.FirstSlotAtEpoch(TestingCapellaForkEpoch) {
 		return spec.DataVersionBellatrix
 	}
 	return spec.DataVersionCapella

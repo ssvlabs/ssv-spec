@@ -46,7 +46,7 @@ func Slashable() tests.SpecTest {
 
 	return &valcheck.SpecTest{
 		Name:       "attestation value check slashable",
-		Network:    types.BeaconTestNetwork,
+		Network:    types.TestNetwork,
 		BeaconRole: types.BNRoleAttester,
 		Input:      input,
 		AnyError:   true,
