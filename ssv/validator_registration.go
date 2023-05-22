@@ -22,7 +22,7 @@ type ValidatorRegistrationRunner struct {
 }
 
 func NewValidatorRegistrationRunner(
-	beaconNetwork types.BeaconNetwork,
+	beaconNetwork types.SSVNetwork,
 	share *types.Share,
 	beacon BeaconNode,
 	network Network,
