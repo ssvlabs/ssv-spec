@@ -44,7 +44,7 @@ func CommitteeIndexMismatch() tests.SpecTest {
 
 	return &valcheck.SpecTest{
 		Name:          "attestation value check committee index mismatch",
-		Network:       types.GetBeaconTestNetwork(),
+		Network:       types.BeaconTestNetwork,
 		BeaconRole:    types.BNRoleAttester,
 		Input:         input,
 		ExpectedError: "attestation data CommitteeIndex != duty CommitteeIndex",
