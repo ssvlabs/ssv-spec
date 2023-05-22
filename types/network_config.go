@@ -10,6 +10,7 @@ import (
 // BeaconNetwork describes a network.
 type BeaconNetwork struct {
 	Name                   string
+	ETHNetworkName         string
 	DefaultSyncOffset      *big.Int // prod contract genesis block
 	ForkVersion            [4]byte
 	MinGenesisTime         uint64
@@ -25,6 +26,7 @@ type BeaconNetwork struct {
 
 var BeaconTestNetwork = BeaconNetwork{
 	Name:                   "now_test_network",
+	ETHNetworkName:         "prater",
 	DefaultSyncOffset:      new(big.Int).SetInt64(8661727),
 	ForkVersion:            [4]byte{0x99, 0x99, 0x99, 0x99},
 	MinGenesisTime:         1616508000,
