@@ -31,7 +31,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    &testingutils.TestingAggregatorDuty,
 				Messages:                []*types.SSVMessage{},
-				PostDutyRunnerStateRoot: "c54e71de23c3957b73abbb0e7b9e195b3f8f6370d62fbec256224faecf177fee",
+				PostDutyRunnerStateRoot: "2cd233471a84bafb89874eb1a748fa45fb45ff04fed0dc289f74e94064382119",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -41,7 +41,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages:                []*types.SSVMessage{},
-				PostDutyRunnerStateRoot: "56eafcb33392ded888a0fefe30ba49e52aa00ab36841cb10c9dc1aa2935af347",
+				PostDutyRunnerStateRoot: "d26401598d1cb75f9c1d50ba0ff7ed28d124f4df4c456059ef1563132b4c8274",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
