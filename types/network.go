@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"math/big"
 	"time"
 
@@ -109,4 +110,13 @@ func (n BeaconNetwork) EpochStartTime(epoch spec.Epoch) time.Time {
 	firstSlot := n.FirstSlotAtEpoch(epoch)
 	t := n.EstimatedTimeAtSlot(firstSlot)
 	return time.Unix(t, 0)
+}
+
+func (n BeaconNetwork) String() string {
+	b, err := json.MarshalIndent(n, "", "\t")
+	if err != nil {
+		return "<malformed>"
+	}
+
+	return string(b)
 }
