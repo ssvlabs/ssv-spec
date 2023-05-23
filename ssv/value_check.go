@@ -2,10 +2,13 @@ package ssv
 
 import (
 	"bytes"
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/pkg/errors"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/pkg/errors"
 )
 
 func dutyValueCheck(
@@ -82,6 +85,7 @@ func ProposerValueCheckF(
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 	sharePublicKey []byte,
+	supportsBlinded bool,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
@@ -96,11 +100,22 @@ func ProposerValueCheckF(
 			return errors.Wrap(err, "duty invalid")
 		}
 
-		if blockData, err := cd.GetBellatrixBlindedBlockData(); err == nil {
-			return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
+		if blockData, _, err := cd.GetBlindedBlockData(); err == nil {
+			if !supportsBlinded {
+				return fmt.Errorf("blinded blocks are not supported")
+			}
+			slot, err := blockData.Slot()
+			if err != nil {
+				return errors.Wrap(err, "failed to get slot from blinded block data")
+			}
+			return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 		}
-		if blockData, err := cd.GetBellatrixBlockData(); err == nil {
-			return signer.IsBeaconBlockSlashable(sharePublicKey, blockData.Slot)
+		if blockData, _, err := cd.GetBlockData(); err == nil {
+			slot, err := blockData.Slot()
+			if err != nil {
+				return errors.Wrap(err, "failed to get slot from block data")
+			}
+			return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 		}
 
 		return errors.New("no block data")

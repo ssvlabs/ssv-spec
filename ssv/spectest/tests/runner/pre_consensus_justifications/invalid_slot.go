@@ -1,6 +1,8 @@
 package pre_consensus_justifications
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -11,12 +13,7 @@ import (
 func InvalidSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
-		// change slot
-		if len(obj.PreConsensusJustifications) > 0 {
-			obj.PreConsensusJustifications[0].Message.Slot = testingutils.TestingDutySlot2
-		}
-
+	signedMsg := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
 		fullData, _ := obj.Encode()
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
@@ -30,6 +27,22 @@ func InvalidSlot() tests.SpecTest {
 		signed.FullData = fullData
 
 		return signed
+	}
+
+	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
+		// change slot
+		if len(obj.PreConsensusJustifications) > 0 {
+			obj.PreConsensusJustifications[0].Message.Slot = testingutils.TestingDutySlot2
+		}
+		return signedMsg(obj, id)
+	}
+
+	msgFV := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
+		// change slot
+		if len(obj.PreConsensusJustifications) > 0 {
+			obj.PreConsensusJustifications[0].Message.Slot = testingutils.TestingInvalidDutySlotV(obj.Version)
+		}
+		return signedMsg(obj, id)
 	}
 
 	expectedErr := "failed processing consensus message: invalid pre-consensus justification: invalid partial sig slot"
@@ -66,26 +79,26 @@ func InvalidSlot() tests.SpecTest {
 			{
 				Name:   "randao",
 				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(msgFV(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "2754fc7ced14fb15f3f18556bb6b837620287cbbfbf908abafa5a0533fc4bc5f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao (blinded block)",
 				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "6bd59da9f817b8e40112e58231e36738b9d021db4416c9eeec1dd0236a5362e2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedErr,
 			},
