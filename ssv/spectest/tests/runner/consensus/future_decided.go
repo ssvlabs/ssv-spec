@@ -43,7 +43,7 @@ func FutureDecided() tests.SpecTest {
 						nil,
 					),
 				},
-				PostDutyRunnerStateRoot: "6e003cd912d95b73c177f276929f03180b02dc77fec38720d718f8361b53d2b8",
+				PostDutyRunnerStateRoot: "4ff8bd9e5baa573a3c3b5260958d3491e1c028bc5690a12bb595815c5d6a6a25",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -64,7 +64,7 @@ func FutureDecided() tests.SpecTest {
 						nil,
 					),
 				},
-				PostDutyRunnerStateRoot: "ef4080c54e4d1cad83e02388ce61ce499c93628a5176d5defb12c97856dcb4ee",
+				PostDutyRunnerStateRoot: "94086aa83fb8be5ed379c7dd39d96b2d60b142dbd73eaf31f6ded7ec8ec6ef8a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           errStr,
 			},
@@ -86,7 +86,7 @@ func FutureDecided() tests.SpecTest {
 						nil,
 					),
 				},
-				PostDutyRunnerStateRoot: "96cb700dbfff1b478bb550f6b76e66e9837b05e78b77692ca9acc4bebb1845d7",
+				PostDutyRunnerStateRoot: "dc206ddd20542758e43c9c4f92e37914bedb5bcae32bd8ea89310f62702ed968",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},

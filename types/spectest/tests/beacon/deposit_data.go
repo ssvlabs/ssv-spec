@@ -40,6 +40,6 @@ func DepositData() *DepositDataSpecTest {
 		ValidatorPK:           "b3d50de8d77299da8d830de1edfb34d3ce03c1941846e73870bb33f6de7b8a01383f6b32f55a1d038a4ddcb21a765194",
 		WithdrawalCredentials: "005b55a6c968852666b132a80f53712e5097b0fca86301a16992e695a8e86f16",
 		ForkVersion:           types.TestNetwork.ForkVersion(),
-		ExpectedSigningRoot:   "69d2af2fd5870077e45f574087a38f476ac3b0f680a511767fb1b0f17f8c4cbd",
+		ExpectedSigningRoot:   "500a3fd02057c19ec5e1e785d8cec46d0f3ee21185167a8c18996b91aed886b7",
 	}
 }

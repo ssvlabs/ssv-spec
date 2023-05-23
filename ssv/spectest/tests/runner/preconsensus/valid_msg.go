@@ -69,7 +69,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "1d42abde3ed6e27699960aa7476bb672a5c9f74f466896560f35597b56083853",
+				PostDutyRunnerStateRoot: "c436ad18c21070a5568113152041648bf182dfb58d648beda72a27895cc0a0f8",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "no pre consensus sigs required for attester role",
 			},
@@ -80,7 +80,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "5b941fd17da3e3dc11003611dedc70f6ecb4f647f2951a47ed11990bcd1f5afc",
+				PostDutyRunnerStateRoot: "c7788153d9bdc3ce50157abb77a89e79884b34832bfb875337ddfa3fa6c6b7d3",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "no pre consensus sigs required for sync committee role",
 			},

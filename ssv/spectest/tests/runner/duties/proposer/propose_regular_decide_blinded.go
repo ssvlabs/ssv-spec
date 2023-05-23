@@ -33,7 +33,7 @@ func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 		},
-		PostDutyRunnerStateRoot: "d3a677e479864a7ec27e9315cc62fde5eb7f4081b47461b4670a497a91ecce7f",
+		PostDutyRunnerStateRoot: "1389e3900a93a48a2fe4776695dd3eedad51750c41857b8ddc7aadac1c2e0d16",
 		OutputMessages: []*types.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 			testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
