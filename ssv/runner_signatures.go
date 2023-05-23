@@ -14,7 +14,7 @@ func (b *BaseRunner) signBeaconObject(
 	slot spec.Slot,
 	domainType spec.DomainType,
 ) (*types.PartialSignatureMessage, error) {
-	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
+	epoch := runner.GetBaseRunner().SSVNetwork.EstimatedEpochAtSlot(slot)
 	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get beacon domain")

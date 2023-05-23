@@ -21,7 +21,7 @@ type ValidatorRegistrationRunner struct {
 }
 
 func NewValidatorRegistrationRunner(
-	beaconNetwork types.SSVNetwork,
+	ssvNetwork types.SSVNetwork,
 	share *types.Share,
 	beacon BeaconNode,
 	network Network,
@@ -30,7 +30,7 @@ func NewValidatorRegistrationRunner(
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType: types.BNRoleValidatorRegistration,
-			BeaconNetwork:  beaconNetwork,
+			SSVNetwork:     ssvNetwork,
 			Share:          share,
 		},
 
@@ -146,12 +146,12 @@ func (r *ValidatorRegistrationRunner) calculateValidatorRegistration() (*v1.Vali
 	pk := phase0.BLSPubKey{}
 	copy(pk[:], r.BaseRunner.Share.ValidatorPubKey)
 
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.Slot)
+	epoch := r.BaseRunner.SSVNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.Slot)
 
 	return &v1.ValidatorRegistration{
 		FeeRecipient: r.BaseRunner.Share.FeeRecipientAddress,
 		GasLimit:     types.DefaultGasLimit,
-		Timestamp:    r.BaseRunner.BeaconNetwork.EpochStartTime(epoch),
+		Timestamp:    r.BaseRunner.SSVNetwork.EpochStartTime(epoch),
 		Pubkey:       pk,
 	}, nil
 }
