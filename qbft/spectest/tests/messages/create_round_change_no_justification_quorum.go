@@ -2,10 +2,10 @@ package messages
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 )
 
@@ -28,7 +28,7 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	}
 }
 
-func CreateRoundChangeNoJustificationQuorumSC() *qbftcomparable.StateComparison {
+func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 	expectedMsg := qbft.Message{
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   0,
@@ -53,5 +53,5 @@ func CreateRoundChangeNoJustificationQuorumSC() *qbftcomparable.StateComparison 
 
 		FullData: testingutils.TestingQBFTFullData,
 	}
-	return &qbftcomparable.StateComparison{ExpectedState: signedMsg}
+	return &comparable.StateComparison{ExpectedState: signedMsg}
 }
