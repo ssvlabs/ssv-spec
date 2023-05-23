@@ -80,7 +80,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPa
 
 	// convert expected roots to map and mark unique roots when verified
 	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][32]byte, error) {
-		epoch := b.SSVNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.Slot)
+		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.Slot)
 		d, err := runner.GetBeaconNode().DomainData(epoch, domain)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get pre consensus root domain")
