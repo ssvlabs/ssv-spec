@@ -21,7 +21,7 @@ type SyncCommitteeRunner struct {
 }
 
 func NewSyncCommitteeRunner(
-	beaconNetwork types.SSVNetwork,
+	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,

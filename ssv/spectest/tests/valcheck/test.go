@@ -11,7 +11,7 @@ import (
 
 type SpecTest struct {
 	Name               string
-	Network            types.SSVNetwork
+	Network            types.BeaconNetwork
 	BeaconRole         types.BeaconRole
 	Input              []byte
 	SlashableDataRoots [][]byte

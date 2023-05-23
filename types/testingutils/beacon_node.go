@@ -435,7 +435,7 @@ func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[strin
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
-func (bn *TestingBeaconNode) GetBeaconNetwork() types.SSVNetwork {
+func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 	return types.TestNetwork
 }
 
