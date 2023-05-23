@@ -21,7 +21,7 @@ type SSVParams struct {
 	DefaultSyncOffset      *big.Int // prod contract genesis block
 	DepositContractAddress string
 	GenesisValidatorsRoot  string
-	BootNodes              []string
+	Bootnodes              []string
 }
 
 type ETHParams struct {
