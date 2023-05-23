@@ -44,7 +44,7 @@ type BaseRunner struct {
 	State          *State
 	Share          *types.Share
 	QBFTController *qbft.Controller
-	SSVNetwork     types.SSVNetwork
+	BeaconNetwork  types.SSVNetwork
 	BeaconRoleType types.BeaconRole
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
@@ -55,7 +55,7 @@ func NewBaseRunner(
 	state *State,
 	share *types.Share,
 	controller *qbft.Controller,
-	ssvNetwork types.SSVNetwork,
+	beaconNetwork types.SSVNetwork,
 	beaconRoleType types.BeaconRole,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
@@ -63,7 +63,7 @@ func NewBaseRunner(
 		State:              state,
 		Share:              share,
 		QBFTController:     controller,
-		SSVNetwork:         ssvNetwork,
+		BeaconNetwork:      beaconNetwork,
 		BeaconRoleType:     beaconRoleType,
 		highestDecidedSlot: highestDecidedSlot,
 	}

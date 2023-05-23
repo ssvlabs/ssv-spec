@@ -21,7 +21,7 @@ type SyncCommitteeRunner struct {
 }
 
 func NewSyncCommitteeRunner(
-	ssvNetwork types.SSVNetwork,
+	beaconNetwork types.SSVNetwork,
 	share *types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
@@ -33,7 +33,7 @@ func NewSyncCommitteeRunner(
 	return &SyncCommitteeRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType:     types.BNRoleSyncCommittee,
-			SSVNetwork:         ssvNetwork,
+			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,

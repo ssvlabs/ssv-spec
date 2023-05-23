@@ -22,7 +22,7 @@ type SyncCommitteeAggregatorRunner struct {
 }
 
 func NewSyncCommitteeAggregatorRunner(
-	ssvNetwork types.SSVNetwork,
+	beaconNetwork types.SSVNetwork,
 	share *types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
@@ -34,7 +34,7 @@ func NewSyncCommitteeAggregatorRunner(
 	return &SyncCommitteeAggregatorRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType:     types.BNRoleSyncCommitteeContribution,
-			SSVNetwork:         ssvNetwork,
+			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,
@@ -252,7 +252,7 @@ func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib alt
 		SelectionProof:  proof,
 	}
 
-	epoch := r.BaseRunner.SSVNetwork.EstimatedEpochAtSlot(r.GetState().DecidedValue.Duty.Slot)
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().DecidedValue.Duty.Slot)
 	dContribAndProof, err := r.GetBeaconNode().DomainData(epoch, types.DomainContributionAndProof)
 	if err != nil {
 		return nil, phase0.Root{}, errors.Wrap(err, "could not get domain data")

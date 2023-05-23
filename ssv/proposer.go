@@ -25,7 +25,7 @@ type ProposerRunner struct {
 }
 
 func NewProposerRunner(
-	ssvNetwork types.SSVNetwork,
+	beaconNetwork types.SSVNetwork,
 	share *types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
@@ -37,7 +37,7 @@ func NewProposerRunner(
 	return &ProposerRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType:     types.BNRoleProposer,
-			SSVNetwork:         ssvNetwork,
+			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,
@@ -226,7 +226,7 @@ func (r *ProposerRunner) decidedBlindedBlock() bool {
 }
 
 func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	epoch := r.BaseRunner.SSVNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.Slot)
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.Slot)
 	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
 }
 
@@ -255,7 +255,7 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid block sig to the BN
 func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 	// sign partial randao
-	epoch := r.GetBeaconNode().GetSSVNetwork().EstimatedEpochAtSlot(duty.Slot)
+	epoch := r.GetBeaconNode().GetBeaconNetwork().EstimatedEpochAtSlot(duty.Slot)
 	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZUint64(epoch), duty.Slot, types.DomainRandao)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")
