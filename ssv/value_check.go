@@ -13,7 +13,7 @@ import (
 
 func dutyValueCheck(
 	duty *types.Duty,
-	network types.SSVNetwork,
+	network types.BeaconNetwork,
 	expectedType types.BeaconRole,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
@@ -39,7 +39,7 @@ func dutyValueCheck(
 
 func AttesterValueCheckF(
 	signer types.BeaconSigner,
-	network types.SSVNetwork,
+	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 	sharePublicKey []byte,
@@ -81,7 +81,7 @@ func AttesterValueCheckF(
 
 func ProposerValueCheckF(
 	signer types.BeaconSigner,
-	network types.SSVNetwork,
+	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 	sharePublicKey []byte,
@@ -124,7 +124,7 @@ func ProposerValueCheckF(
 
 func AggregatorValueCheckF(
 	signer types.BeaconSigner,
-	network types.SSVNetwork,
+	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
@@ -146,7 +146,7 @@ func AggregatorValueCheckF(
 
 func SyncCommitteeValueCheckF(
 	signer types.BeaconSigner,
-	network types.SSVNetwork,
+	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
@@ -168,7 +168,7 @@ func SyncCommitteeValueCheckF(
 
 func SyncCommitteeContributionValueCheckF(
 	signer types.BeaconSigner,
-	network types.SSVNetwork,
+	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
