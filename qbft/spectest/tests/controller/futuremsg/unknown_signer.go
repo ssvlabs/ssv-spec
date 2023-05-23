@@ -41,9 +41,11 @@ func unknownSignerStateComparison() *comparable.StateComparison {
 	instance := &qbft.Instance{
 		StartValue: []byte{1, 2, 3, 4},
 		State: &qbft.State{
-			Share: testingutils.TestingShare(testingutils.Testing4SharesSet()),
-			ID:    identifier[:],
-			Round: qbft.FirstRound,
+			Share:   testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ID:      identifier[:],
+			Round:   qbft.FirstRound,
+			Height:  qbft.FirstHeight,
+			Decided: false,
 		},
 	}
 	comparable.InitContainers(instance)
