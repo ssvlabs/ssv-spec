@@ -7,8 +7,8 @@ import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
-// SSVNetwork describes an SSV network.
-type SSVNetwork struct {
+// BeaconNetwork describes a network.
+type BeaconNetwork struct {
 	Name string
 	SSV  SSVParams
 	ETH  ETHParams
@@ -32,7 +32,7 @@ type ETHParams struct {
 	CapellaForkEpoch spec.Epoch
 }
 
-var TestNetwork = SSVNetwork{
+var TestNetwork = BeaconNetwork{
 	Name: "now_test_network",
 	SSV: SSVParams{
 		DefaultSyncOffset:      new(big.Int).SetInt64(8661727),
@@ -52,32 +52,32 @@ var TestNetwork = SSVNetwork{
 }
 
 // ForkVersion returns the fork version of the network.
-func (n SSVNetwork) ForkVersion() [4]byte {
+func (n BeaconNetwork) ForkVersion() [4]byte {
 	return n.SSV.ForkVersion
 }
 
 // MinGenesisTime returns min genesis time value
-func (n SSVNetwork) MinGenesisTime() uint64 {
+func (n BeaconNetwork) MinGenesisTime() uint64 {
 	return n.ETH.MinGenesisTime
 }
 
 // SlotDuration returns slot duration
-func (n SSVNetwork) SlotDuration() time.Duration {
+func (n BeaconNetwork) SlotDuration() time.Duration {
 	return n.ETH.SlotDuration
 }
 
 // SlotsPerEpoch returns number of slots per one epoch
-func (n SSVNetwork) SlotsPerEpoch() uint64 {
+func (n BeaconNetwork) SlotsPerEpoch() uint64 {
 	return n.ETH.SlotsPerEpoch
 }
 
 // EstimatedCurrentSlot returns the estimation of the current slot
-func (n SSVNetwork) EstimatedCurrentSlot() spec.Slot {
+func (n BeaconNetwork) EstimatedCurrentSlot() spec.Slot {
 	return n.EstimatedSlotAtTime(time.Now().Unix())
 }
 
 // EstimatedSlotAtTime estimates slot at the given time
-func (n SSVNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
+func (n BeaconNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
 	genesis := int64(n.MinGenesisTime())
 	if time < genesis {
 		return 0
@@ -85,27 +85,27 @@ func (n SSVNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
 	return spec.Slot(uint64(time-genesis) / uint64(n.SlotDuration().Seconds()))
 }
 
-func (n SSVNetwork) EstimatedTimeAtSlot(slot spec.Slot) int64 {
+func (n BeaconNetwork) EstimatedTimeAtSlot(slot spec.Slot) int64 {
 	d := int64(slot) * int64(n.SlotDuration().Seconds())
 	return int64(n.MinGenesisTime()) + d
 }
 
 // EstimatedCurrentEpoch estimates the current epoch
 // https://github.com/ethereum/eth2.0-specs/blob/dev/specs/phase0/beacon-chain.md#compute_start_slot_at_epoch
-func (n SSVNetwork) EstimatedCurrentEpoch() spec.Epoch {
+func (n BeaconNetwork) EstimatedCurrentEpoch() spec.Epoch {
 	return n.EstimatedEpochAtSlot(n.EstimatedCurrentSlot())
 }
 
 // EstimatedEpochAtSlot estimates epoch at the given slot
-func (n SSVNetwork) EstimatedEpochAtSlot(slot spec.Slot) spec.Epoch {
+func (n BeaconNetwork) EstimatedEpochAtSlot(slot spec.Slot) spec.Epoch {
 	return spec.Epoch(slot / spec.Slot(n.SlotsPerEpoch()))
 }
 
-func (n SSVNetwork) FirstSlotAtEpoch(epoch spec.Epoch) spec.Slot {
+func (n BeaconNetwork) FirstSlotAtEpoch(epoch spec.Epoch) spec.Slot {
 	return spec.Slot(uint64(epoch) * n.SlotsPerEpoch())
 }
 
-func (n SSVNetwork) EpochStartTime(epoch spec.Epoch) time.Time {
+func (n BeaconNetwork) EpochStartTime(epoch spec.Epoch) time.Time {
 	firstSlot := n.FirstSlotAtEpoch(epoch)
 	t := n.EstimatedTimeAtSlot(firstSlot)
 	return time.Unix(t, 0)

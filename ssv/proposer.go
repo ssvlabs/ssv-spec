@@ -25,7 +25,7 @@ type ProposerRunner struct {
 }
 
 func NewProposerRunner(
-	beaconNetwork types.SSVNetwork,
+	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
