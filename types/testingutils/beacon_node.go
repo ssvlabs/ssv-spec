@@ -430,8 +430,8 @@ func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[strin
 	bn.syncCommitteeAggregatorRoots = roots
 }
 
-// GetBeaconNetwork returns the beacon network the node is on
-func (bn *TestingBeaconNode) GetBeaconNetwork() types.SSVNetwork {
+// GetSSVNetwork returns the SSV network the node is on.
+func (bn *TestingBeaconNode) GetSSVNetwork() types.SSVNetwork {
 	return types.TestNetwork
 }
 
