@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -84,6 +85,7 @@ func ProposerValueCheckF(
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 	sharePublicKey []byte,
+	supportsBlinded bool,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ConsensusData{}
@@ -99,6 +101,9 @@ func ProposerValueCheckF(
 		}
 
 		if blockData, _, err := cd.GetBlindedBlockData(); err == nil {
+			if !supportsBlinded {
+				return fmt.Errorf("blinded blocks are not supported")
+			}
 			slot, err := blockData.Slot()
 			if err != nil {
 				return errors.Wrap(err, "failed to get slot from blinded block data")
