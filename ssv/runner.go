@@ -114,11 +114,12 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 
-	// TODO: uncomment after pre-consensus justification is fixed.
-	//
-	// if err := b.processPreConsensusJustification(runner, b.highestDecidedSlot, msg); err != nil {
-	// 	return false, nil, errors.Wrap(err, "invalid pre-consensus justification")
-	// }
+	// TODO: revert `if false` after pre-consensus justification is fixed.
+	if false {
+		if err := b.processPreConsensusJustification(runner, b.highestDecidedSlot, msg); err != nil {
+			return false, nil, errors.Wrap(err, "invalid pre-consensus justification")
+		}
+	}
 
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
