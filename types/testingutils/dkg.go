@@ -166,7 +166,7 @@ func (ks *TestKeySet) SignedOutputObject(requestID dkg.RequestID, opId types.Ope
 	share := ks.Shares[opId]
 	o := &dkg.Output{
 		RequestID:       requestID,
-		EncryptedShare:  TestingEncryption(&ks.DKGOperators[opId].EncryptionKey.PublicKey, share.Serialize()),
+		EncryptedShare:  TestingEncryption(&ks.DKGOperators[opId].EncryptionKey.PublicKey, []byte("0x"+share.SerializeToHexStr())),
 		SharePubKey:     share.GetPublicKey().Serialize(),
 		ValidatorPubKey: ks.ValidatorPK.Serialize(),
 	}

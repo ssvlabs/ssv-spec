@@ -178,7 +178,10 @@ func (r *runner) prepareAndBroadcastOutput() error {
 	}
 
 	// encrypt Operator's share
-	encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, r.KeygenOutcome.ProtocolOutput.Share.Serialize())
+	// TODO: this is encryped in such manner so that cli can generate a compatible
+	// keyshares file
+	// https://docs.ssv.network/developers/tools/ssv-key-distributor/ssv-keys-cli
+	encryptedShare, err := r.config.Signer.Encrypt(r.Operator.EncryptionPubKey, []byte("0x"+r.KeygenOutcome.ProtocolOutput.Share.SerializeToHexStr()))
 	if err != nil {
 		return errors.Wrap(err, "could not encrypt share")
 	}
