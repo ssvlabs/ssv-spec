@@ -66,7 +66,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, invalidateSlot(testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix))),
 				},
-				PostDutyRunnerStateRoot: "2ce3241658f324f352c77909f4043934eedf38e939ae638c5ce6acf28e965646",
+				PostDutyRunnerStateRoot: "18be1b6b3b7443bd803421a6a7fe66161a5d34556515353b1b477907cbefd627",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -101,7 +101,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, invalidateSlot(testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				PostDutyRunnerStateRoot: "05f3c31130addde465eeacd0d1f65b6dd4e7524b7187cc9584e8d37251841f16",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

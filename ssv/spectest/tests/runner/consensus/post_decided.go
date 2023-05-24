@@ -29,7 +29,7 @@ func PostDecided() tests.SpecTest {
 							ks.Shares[4], types.OperatorID(4), testingutils.SyncCommitteeContributionMsgID,
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil)),
-				PostDutyRunnerStateRoot: "5448f47bb76e4639629e146c242cb27a4a265fae9d871f0fc0f3c66aeea60eb0",
+				PostDutyRunnerStateRoot: "fad43e18e8df967df0cffc06f4947951ccce347704db52577cbdfb17a6d87f50",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -46,7 +46,7 @@ func PostDecided() tests.SpecTest {
 							ks.Shares[4], types.OperatorID(4), testingutils.SyncCommitteeMsgID,
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil)),
-				PostDutyRunnerStateRoot: "8097eefe5cbd4590de980ac66db0f033552f608fef580d1b9c452bcf2f1513fd",
+				PostDutyRunnerStateRoot: "664957056215c863ed63cc9879bab9358b210a3fd96032e51a6cf16c6f4deeab",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
@@ -62,7 +62,7 @@ func PostDecided() tests.SpecTest {
 							ks.Shares[4], types.OperatorID(4), testingutils.AggregatorMsgID,
 							testingutils.TestAggregatorConsensusDataByts,
 						), nil)),
-				PostDutyRunnerStateRoot: "99ddd0aadc2708e0a33f9dd979fd45af9bf71d8d85fc1b04cbb0e418e909bcd4",
+				PostDutyRunnerStateRoot: "cbf71df66ebbaa94209a0f0d8ddfc326bf10395c331e238ad8aba20b5c0762ef",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
@@ -79,7 +79,7 @@ func PostDecided() tests.SpecTest {
 							ks.Shares[4], types.OperatorID(4), testingutils.AttesterMsgID,
 							testingutils.TestAttesterConsensusDataByts,
 						), nil)),
-				PostDutyRunnerStateRoot: "4016e9bc1405a443f4a2755f5927d9017c66dd1f5246d03c9bcf7b353649a460",
+				PostDutyRunnerStateRoot: "bce6c4862a058b963f30a5c2eebefcd244bc156cc21a8bf84970cc38f703673d",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},

@@ -121,7 +121,7 @@ func FutureMessage() tests.SpecTest {
 						),
 						nil),
 				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				PostDutyRunnerStateRoot: "05f3c31130addde465eeacd0d1f65b6dd4e7524b7187cc9584e8d37251841f16",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

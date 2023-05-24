@@ -107,7 +107,7 @@ func FutureDecided() tests.SpecTest {
 						nil,
 					),
 				},
-				PostDutyRunnerStateRoot: "fdc2d5c52ee8e5dc1a33219579aa820b2e8a22d75bf159cbd68f6299af546e26",
+				PostDutyRunnerStateRoot: "20fd4902d6c57fef3482da681e107bf8a9a59127e9fd66107608fdf5acb0335e",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           errStr,
 			},

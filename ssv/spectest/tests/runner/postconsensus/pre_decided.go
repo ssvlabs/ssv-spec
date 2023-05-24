@@ -30,7 +30,7 @@ func PreDecided() tests.SpecTest {
 
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 				},
-				PostDutyRunnerStateRoot: "79b26cb78d0e60ec0a20e796880a8b49549413c6a5c2d7be3c670d3215a7e686",
+				PostDutyRunnerStateRoot: "1488c9f95b97bb5b997a1bfdf70cb82b2f2ba12d5a1a81627a4d9e56398e057b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -44,7 +44,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "5b941fd17da3e3dc11003611dedc70f6ecb4f647f2951a47ed11990bcd1f5afc",
+				PostDutyRunnerStateRoot: "c7788153d9bdc3ce50157abb77a89e79884b34832bfb875337ddfa3fa6c6b7d3",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				ExpectedError:           err,
@@ -60,7 +60,7 @@ func PreDecided() tests.SpecTest {
 
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "1d5d82620ea3ee1ba9dd64c60c1e09cccc2404881b4303348581fac5d2d2f647",
+				PostDutyRunnerStateRoot: "08055057d854560a02f177ffbd023cd2913dab942a5aa66851fcb99f0e569e54",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -74,7 +74,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "1d42abde3ed6e27699960aa7476bb672a5c9f74f466896560f35597b56083853",
+				PostDutyRunnerStateRoot: "c436ad18c21070a5568113152041648bf182dfb58d648beda72a27895cc0a0f8",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				ExpectedError:           err,
