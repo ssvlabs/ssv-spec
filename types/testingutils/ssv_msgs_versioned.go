@@ -162,32 +162,32 @@ var postConsensusBeaconBlockMsgV = func(
 }
 
 var PreConsensusRandaoMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
-	return randaoMsgV(sk, id, false, TestingDutyEpoch, 1, false, version)
+	return randaoMsgV(sk, id, false, TestingDutyEpochV(version), 1, false, version)
 }
 
 // PreConsensusRandaoNextEpochMsgV testing for a second duty start
 var PreConsensusRandaoNextEpochMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
-	return randaoMsgV(sk, id, false, TestingDutyEpoch2, 1, false, version)
+	return randaoMsgV(sk, id, false, TestingDutyEpochV(version)+1, 1, false, version)
 }
 
 var PreConsensusRandaoDifferentEpochMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
-	return randaoMsgV(sk, id, false, TestingDutyEpoch+1, 1, false, version)
+	return randaoMsgV(sk, id, false, TestingDutyEpochV(version)+1, 1, false, version)
 }
 
 var PreConsensusRandaoTooManyRootsMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
-	return randaoMsgV(sk, id, false, TestingDutyEpoch, 2, false, version)
+	return randaoMsgV(sk, id, false, TestingDutyEpochV(version), 2, false, version)
 }
 
 var PreConsensusRandaoTooFewRootsMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
-	return randaoMsgV(sk, id, false, TestingDutyEpoch, 0, false, version)
+	return randaoMsgV(sk, id, false, TestingDutyEpochV(version), 0, false, version)
 }
 
 var PreConsensusRandaoNoMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
-	return randaoMsgV(sk, id, false, TestingDutyEpoch, 0, false, version)
+	return randaoMsgV(sk, id, false, TestingDutyEpochV(version), 0, false, version)
 }
 
 var PreConsensusRandaoWrongBeaconSigMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
-	return randaoMsgV(sk, id, false, TestingDutyEpoch, 1, true, version)
+	return randaoMsgV(sk, id, false, TestingDutyEpochV(version), 1, true, version)
 }
 
 var PreConsensusRandaoDifferentSignerMsgV = func(
@@ -198,8 +198,9 @@ var PreConsensusRandaoDifferentSignerMsgV = func(
 ) *types.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
-	d, _ := beacon.DomainData(TestingDutyEpoch, types.DomainRandao)
-	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(TestingDutyEpoch), d, randaoSigner.GetPublicKey().Serialize(), types.DomainRandao)
+	epoch := TestingDutyEpochV(version)
+	d, _ := beacon.DomainData(epoch, types.DomainRandao)
+	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(epoch), d, randaoSigner.GetPublicKey().Serialize(), types.DomainRandao)
 
 	msg := types.PartialSignatureMessages{
 		Type: types.RandaoPartialSig,
@@ -234,7 +235,7 @@ var randaoMsgV = func(
 	d, _ := beacon.DomainData(epoch, types.DomainRandao)
 	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(epoch), d, sk.GetPublicKey().Serialize(), types.DomainRandao)
 	if wrongBeaconSig {
-		signed, root, _ = signer.SignBeaconObject(types.SSZUint64(TestingDutyEpoch), d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainRandao)
+		signed, root, _ = signer.SignBeaconObject(types.SSZUint64(TestingDutyEpochV(version)), d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainRandao)
 	}
 
 	msgs := types.PartialSignatureMessages{
