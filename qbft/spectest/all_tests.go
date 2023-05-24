@@ -164,6 +164,8 @@ var AllTests = []tests.TestF{
 	prepare.WrongHeight,
 	prepare.WrongSignature,
 	prepare.UnknownSigner,
+	prepare.PrepareQuorumTriggeredTwice,
+	prepare.PrepareQuorumTriggeredTwiceLateCommit,
 
 	commit.CurrentRound,
 	commit.FutureRound,
@@ -182,6 +184,7 @@ var AllTests = []tests.TestF{
 	commit.UnknownSigner,
 	commit.InvalidValCheck,
 	commit.NoPrepareQuorum,
+	commit.NoCommitQuorum,
 
 	roundchange.HappyFlow,
 	roundchange.WrongHeight,
