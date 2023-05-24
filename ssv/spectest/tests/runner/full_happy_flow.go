@@ -1,6 +1,10 @@
 package runner
 
 import (
+	"encoding/hex"
+	"fmt"
+	ssz "github.com/ferranbt/fastssz"
+
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -8,11 +12,16 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// FullHappyFlow  tests a full runner happy flow
+func getSSZRootNoError(obj ssz.HashRoot) string {
+	r, _ := obj.HashTreeRoot()
+	return hex.EncodeToString(r[:])
+}
+
+// FullHappyFlow tests a full runner happy flow
 func FullHappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "full happy flow",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -91,50 +100,6 @@ func FullHappyFlow() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "proposer",
-				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer), // consensus
-					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
-					}...,
-				),
-				PostDutyRunnerStateRoot: fullHappyFlowProposerSC(spec.DataVersionBellatrix).Root(), // "76812c0f14ff09067547e9528730749b0c0090d1a4872689a0b8480d7b538884",
-				PostDutyRunnerState:     fullHappyFlowProposerSC(spec.DataVersionBellatrix).ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
-				},
-			},
-			{
-				Name:   "proposer blinded block",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer), // consensus
-					[]*types.SSVMessage{ // post consensus
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
-					}...,
-				),
-				PostDutyRunnerStateRoot: fullHappyFlowBlindedProposerSC(spec.DataVersionBellatrix).Root(), // "90755cc41b814519fd9fdd14bc82d239997ba51340c297f25f5f1552f27f66c7",
-				PostDutyRunnerState:     fullHappyFlowBlindedProposerSC(spec.DataVersionBellatrix).ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
-				},
-			},
-			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
@@ -175,4 +140,62 @@ func FullHappyFlow() tests.SpecTest {
 			},
 		},
 	}
+
+	// proposerV creates a test specification for versioned proposer.
+	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("proposer (%s)", version.String()),
+			Runner: testingutils.ProposerRunner(ks),
+			Duty:   testingutils.TestingProposerDutyV(version),
+			Messages: append(
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer), // consensus
+				[]*types.SSVMessage{ // post consensus
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+				}...,
+			),
+			PostDutyRunnerStateRoot: fullHappyFlowProposerSC(version).Root(),
+			PostDutyRunnerState:     fullHappyFlowProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
+			},
+			BeaconBroadcastedRoots: []string{
+				getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+			},
+		}
+	}
+
+	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
+	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner: testingutils.ProposerBlindedBlockRunner(ks),
+			Duty:   testingutils.TestingProposerDutyV(version),
+			Messages: append(
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer), // consensus
+				[]*types.SSVMessage{ // post consensus
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+				}...,
+			),
+			PostDutyRunnerStateRoot: fullHappyFlowBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     fullHappyFlowBlindedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
+			},
+			BeaconBroadcastedRoots: []string{
+				getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+			},
+		}
+	}
+
+	for _, v := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+	}
+
+	return multiSpecTest
 }

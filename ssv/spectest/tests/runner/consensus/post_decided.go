@@ -1,6 +1,8 @@
 package consensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -13,7 +15,7 @@ import (
 func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid post decided",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -67,40 +69,6 @@ func PostDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "proposer",
-				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
-					testingutils.SSVMsgProposer(
-						testingutils.TestingCommitMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
-							testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
-						), nil)),
-				PostDutyRunnerStateRoot: "7bafe77f6aa303e2cd38f741ebd366d68b4ced79ffbd224b98904bb22a58d010",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-				},
-			},
-			{
-				Name:   "proposer (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
-					testingutils.SSVMsgProposer(
-						testingutils.TestingCommitMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
-							testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
-						), nil)),
-				PostDutyRunnerStateRoot: "d2d3d97a0bb878594c5b5319cbf1a1a6afe2467ef26fb2e47eb6d075b3c90428",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-				},
-			},
-			{
 				Name:   "attester",
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
@@ -118,4 +86,54 @@ func PostDecided() tests.SpecTest {
 			},
 		},
 	}
+
+	// proposerV creates a test specification for versioned proposer.
+	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("proposer (%s)", version.String()),
+			Runner: testingutils.ProposerRunner(ks),
+			Duty:   testingutils.TestingProposerDutyV(version),
+			Messages: append(
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
+				testingutils.SSVMsgProposer(
+					testingutils.TestingCommitMessageWithIdentifierAndFullData(
+						ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
+						testingutils.TestProposerConsensusDataBytsV(version),
+					), nil)),
+			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
+			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
+			},
+		}
+	}
+
+	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
+	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner: testingutils.ProposerBlindedBlockRunner(ks),
+			Duty:   testingutils.TestingProposerDutyV(version),
+			Messages: append(
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
+				testingutils.SSVMsgProposer(
+					testingutils.TestingCommitMessageWithIdentifierAndFullData(
+						ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
+						testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
+					), nil)),
+			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
+			},
+		}
+	}
+
+	for _, v := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+	}
+
+	return multiSpecTest
 }
