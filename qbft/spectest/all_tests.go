@@ -108,6 +108,7 @@ var AllTests = []tests.TestF{
 	messages.CreateCommit,
 	messages.CreateRoundChange,
 	messages.CreateRoundChangePreviouslyPrepared,
+	messages.CreateRoundChangeNoJustificationQuorum,
 	messages.RoundChangeDataEncoding,
 	messages.SignedMessageSigner0,
 	messages.MarshalJustificationsWithoutFullData,
