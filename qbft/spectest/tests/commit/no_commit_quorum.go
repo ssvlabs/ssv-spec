@@ -2,10 +2,10 @@ package commit
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // NoCommitQuorum tests the state of the QBFT instance when received commit messages don't create a quorum
@@ -37,7 +37,7 @@ func NoCommitQuorum() tests.SpecTest {
 	}
 }
 
-func NoCommitQuorumStateComparison() *qbftcomparable.StateComparison {
+func NoCommitQuorumStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	state := testingutils.BaseInstance().State
@@ -68,5 +68,5 @@ func NoCommitQuorumStateComparison() *qbftcomparable.StateComparison {
 		},
 	}}
 
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	return &comparable.StateComparison{ExpectedState: state}
 }

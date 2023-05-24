@@ -2,10 +2,10 @@ package prepare
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	qbftcomparable "github.com/bloxapp/ssv-spec/qbft/spectest/comparable"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // PrepareQuorumTriggeredTwice tests triggering prepare quorum twice by sending > 2f+1 prepare messages
@@ -37,7 +37,7 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 	}
 }
 
-func prepareQuorumTriggeredTwiceStateComparison() *qbftcomparable.StateComparison {
+func prepareQuorumTriggeredTwiceStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	state := testingutils.BaseInstance().State
@@ -67,5 +67,5 @@ func prepareQuorumTriggeredTwiceStateComparison() *qbftcomparable.StateCompariso
 		},
 	}}
 
-	return &qbftcomparable.StateComparison{ExpectedState: state}
+	return &comparable.StateComparison{ExpectedState: state}
 }
