@@ -2,11 +2,15 @@ package newduty
 
 import (
 	"encoding/hex"
+	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"testing"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 type StartNewRunnerDutySpecTest struct {
@@ -14,6 +18,7 @@ type StartNewRunnerDutySpecTest struct {
 	Runner                  ssv.Runner
 	Duty                    *types.Duty
 	PostDutyRunnerStateRoot string
+	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages          []*types.SignedPartialSignatureMessage
 	ExpectedError           string
 }
@@ -78,7 +83,11 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 	// post root
 	postRoot, err := test.Runner.GetRoot()
 	require.NoError(t, err)
-	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
+
+	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
+		diff := comparable.PrintDiff(test.Runner, test.PostDutyRunnerState)
+		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), fmt.Sprintf("post runner state not equal\n%s\n", diff))
+	}
 }
 
 type MultiStartNewRunnerDutySpecTest struct {

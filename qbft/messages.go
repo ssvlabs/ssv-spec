@@ -124,7 +124,7 @@ func (msg *Message) Validate() error {
 	if _, err := msg.GetPrepareJustifications(); err != nil {
 		return err
 	}
-	if msg.MsgType > 5 {
+	if msg.MsgType > RoundChangeMsgType {
 		return errors.New("message type is invalid")
 	}
 	return nil

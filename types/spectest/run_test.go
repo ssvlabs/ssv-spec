@@ -3,18 +3,22 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
-	"github.com/stretchr/testify/require"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
+	consensusdataproposer "github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata/proposer"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
 )
 
 func TestAll(t *testing.T) {
@@ -44,6 +48,18 @@ func TestJson(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			testType := strings.Split(name, "_")[0]
 			switch testType {
+			case reflect.TypeOf(&ssz.SSZSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &ssz.SSZSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&consensusdataproposer.ProposerSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &consensusdataproposer.ProposerSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
 			case reflect.TypeOf(&consensusdata.EncodingTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)

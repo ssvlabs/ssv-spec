@@ -3,7 +3,7 @@ module github.com/bloxapp/ssv-spec
 go 1.19
 
 require (
-	github.com/attestantio/go-eth2-client v0.15.1
+	github.com/attestantio/go-eth2-client v0.15.8
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0
 	github.com/ethereum/go-ethereum v1.10.18
 	github.com/ferranbt/fastssz v0.1.2
@@ -14,7 +14,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prysmaticlabs/go-bitfield v0.0.0-20210809151128-385d8c5e3fb7
 	github.com/stretchr/testify v1.8.0
-	golang.org/x/exp v0.0.0-20220426173459-3bcf042a4bf5
 )
 
 require (

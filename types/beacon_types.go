@@ -31,6 +31,9 @@ const MaxEffectiveBalanceInGwei uint64 = 32000000000
 // BLSWithdrawalPrefixByte is the BLS withdrawal prefix
 const BLSWithdrawalPrefixByte = byte(0)
 
+// DefaultGasLimit sets gas limit used in validator registrations.
+const DefaultGasLimit = 30_000_000
+
 // BeaconRole type of the validator role for a specific duty
 type BeaconRole uint64
 
@@ -58,6 +61,8 @@ func (r BeaconRole) String() string {
 		return "SYNC_COMMITTEE"
 	case BNRoleSyncCommitteeContribution:
 		return "SYNC_COMMITTEE_CONTRIBUTION"
+	case BNRoleValidatorRegistration:
+		return "VALIDATOR_REGISTRATION"
 	default:
 		return "UNDEFINED"
 	}
@@ -167,7 +172,7 @@ func (n BeaconNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
 }
 
 func (n BeaconNetwork) EstimatedTimeAtSlot(slot spec.Slot) int64 {
-	d := int64(slot) * int64(n.SlotsPerEpoch())
+	d := int64(slot) * int64(n.SlotDurationSec().Seconds())
 	return int64(n.MinGenesisTime()) + d
 }
 

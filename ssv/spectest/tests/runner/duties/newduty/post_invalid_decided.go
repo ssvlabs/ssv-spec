@@ -2,6 +2,9 @@ package newduty
 
 import (
 	"crypto/sha256"
+
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -77,11 +80,11 @@ func PostInvalidDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  decideWrong(testingutils.ProposerRunner(ks), &testingutils.TestingProposerDuty),
-				Duty:                    &testingutils.TestingProposerDuty,
+				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				PostDutyRunnerStateRoot: "238450e7c9d6faf88e3f150007d192fd0ed9277fc830c32d0ea53af7e683c374",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 			},
 			{
