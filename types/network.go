@@ -16,13 +16,12 @@ type BeaconNetwork struct {
 }
 
 type SSVParams struct {
-	Domain                DomainType
-	ForkVersion           [4]byte
-	GenesisEpoch          spec.Epoch
-	ETH1SyncOffset        *big.Int
-	RegistryContractAddr  string
-	GenesisValidatorsRoot string
-	Bootnodes             []string
+	Domain               DomainType
+	ForkVersion          [4]byte
+	GenesisEpoch         spec.Epoch
+	ETH1SyncOffset       *big.Int
+	RegistryContractAddr string
+	Bootnodes            []string
 }
 
 type ETHParams struct {
@@ -36,12 +35,11 @@ type ETHParams struct {
 var TestNetwork = BeaconNetwork{
 	Name: "now_test_network",
 	SSV: SSVParams{
-		ETH1SyncOffset:        new(big.Int).SetInt64(8661727),
-		ForkVersion:           [4]byte{0x99, 0x99, 0x99, 0x99},
-		Domain:                V3Testnet,
-		RegistryContractAddr:  "0x4B133c68A084B8A88f72eDCd7944B69c8D545f03",
-		GenesisValidatorsRoot: "043db0d9a83813551ee2f33450d23797757d430911a9320530ad8a0eabc43efb",
-		GenesisEpoch:          152834, // TODO: another value?
+		ETH1SyncOffset:       new(big.Int).SetInt64(8661727),
+		ForkVersion:          [4]byte{0x99, 0x99, 0x99, 0x99},
+		Domain:               V3Testnet,
+		RegistryContractAddr: "0x4B133c68A084B8A88f72eDCd7944B69c8D545f03",
+		GenesisEpoch:         152834,
 	},
 	ETH: ETHParams{
 		NetworkName:      "prater",
