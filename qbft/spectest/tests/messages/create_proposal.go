@@ -7,9 +7,9 @@ import (
 // CreateProposal tests creating a proposal msg, not previously prepared
 func CreateProposal() tests.SpecTest {
 	return &tests.CreateMsgSpecTest{
-		CreateType:      tests.CreateProposal,
-		Name:            "create proposal",
-		Value:           []byte{1, 2, 3, 4},
-		ExpectedSSZRoot: "443161d9ea4f2e4abd4c0545aeb4aa99bf40e8a22f59d9917c2dcb7f2f04c9f1",
+		CreateType:   tests.CreateProposal,
+		Name:         "create proposal",
+		Value:        [32]byte{1, 2, 3, 4},
+		ExpectedRoot: "dfb0a692281b916b1d037df44f5c742f13ac3ee207ea0082cc3ca2afff34e178",
 	}
 }
