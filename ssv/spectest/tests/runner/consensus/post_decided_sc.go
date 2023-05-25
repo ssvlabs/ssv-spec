@@ -14,8 +14,8 @@ import (
 // postDecidedProposerSC returns state comparison object for the PostDecided Proposer versioned spec test
 func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -23,13 +23,13 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: comparable.FixIssue178(cd),
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				StartValue: comparable.NoErrorEncoding(cd),
@@ -55,7 +55,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[3:10],
 					testingutils.SSVMsgProposer(testingutils.TestingCommitMessageWithIdentifierAndFullData(
 						ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
-						testingutils.TestProposerConsensusDataBytsV(version)),
+						testingutils.TestProposerConsensusDataBytsV(ks, version)),
 						nil,
 					),
 				),
@@ -69,8 +69,8 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 // postDecidedBlindedProposerSC returns state comparison object for the PostDecided Blinded Proposer versioned spec test
 func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -78,13 +78,13 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: comparable.FixIssue178(cd),
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				StartValue: comparable.NoErrorEncoding(cd),
@@ -110,7 +110,7 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[3:10],
 					testingutils.SSVMsgProposer(testingutils.TestingCommitMessageWithIdentifierAndFullData(
 						ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID,
-						testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)),
+						testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)),
 						nil,
 					),
 				),

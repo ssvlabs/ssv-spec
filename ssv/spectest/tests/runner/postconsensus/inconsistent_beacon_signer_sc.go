@@ -14,8 +14,8 @@ import (
 // inconsistentBeaconSignerProposerSC returns state comparison object for the InconsistentBeaconSigner Proposer versioned spec test
 func inconsistentBeaconSignerProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -23,11 +23,11 @@ func inconsistentBeaconSignerProposerSC(version spec.DataVersion) *comparable.St
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				DecidedValue: cd,
@@ -53,8 +53,8 @@ func inconsistentBeaconSignerProposerSC(version spec.DataVersion) *comparable.St
 // inconsistentBeaconSignerBlindedProposerSC returns state comparison object for the InconsistentBeaconSigner Blinded Proposer versioned spec test
 func inconsistentBeaconSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -62,11 +62,11 @@ func inconsistentBeaconSignerBlindedProposerSC(version spec.DataVersion) *compar
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				DecidedValue: cd,

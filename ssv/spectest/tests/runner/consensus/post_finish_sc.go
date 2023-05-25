@@ -15,8 +15,8 @@ import (
 // postFinishProposerSC returns state comparison object for the PostFinish Proposer versioned spec test
 func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -24,17 +24,17 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: comparable.FixIssue178(cd),
 				Finished:     true,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
@@ -62,7 +62,7 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 					testingutils.SSVMsgProposer(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
 							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
-							testingutils.TestProposerConsensusDataBytsV(version),
+							testingutils.TestProposerConsensusDataBytsV(ks, version),
 						), nil),
 				),
 			)
@@ -75,8 +75,8 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 // postFinishBlindedProposerSC returns state comparison object for the PostFinish Blinded Proposer versioned spec test
 func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -84,17 +84,17 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: comparable.FixIssue178(cd),
 				Finished:     true,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
@@ -122,7 +122,7 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 					testingutils.SSVMsgProposer(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
 							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
-							testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
+							testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version),
 						), nil,
 					),
 				),

@@ -24,7 +24,7 @@ func UnknownSigner() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
 					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
+					testingutils.TestSyncCommitteeContributionConsensusData(ks),
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
@@ -58,7 +58,7 @@ func UnknownSigner() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),
 					&testingutils.TestingAggregatorDuty,
-					testingutils.TestAggregatorConsensusData,
+					testingutils.TestAggregatorConsensusData(ks),
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
@@ -97,7 +97,7 @@ func UnknownSigner() tests.SpecTest {
 			Runner: decideRunner(
 				testingutils.ProposerRunner(ks),
 				testingutils.TestingProposerDutyV(version),
-				testingutils.TestProposerConsensusDataV(version),
+				testingutils.TestProposerConsensusDataV(ks, version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SSVMessage{
@@ -119,7 +119,7 @@ func UnknownSigner() tests.SpecTest {
 			Runner: decideRunner(
 				testingutils.ProposerBlindedBlockRunner(ks),
 				testingutils.TestingProposerDutyV(version),
-				testingutils.TestProposerBlindedBlockConsensusDataV(version),
+				testingutils.TestProposerBlindedBlockConsensusDataV(ks, version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SSVMessage{

@@ -15,8 +15,8 @@ import (
 // futureDecidedProposerSC returns state comparison object for the FutureDecided Proposer versioned spec test
 func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -24,14 +24,14 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version)),
 					}),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 			}
@@ -83,8 +83,8 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 // futureDecidedBlindedProposerSC returns state comparison object for the FutureDecided BlindedProposer versioned spec test
 func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -92,14 +92,14 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version)),
 					}),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 			}

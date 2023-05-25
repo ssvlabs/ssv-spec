@@ -101,7 +101,7 @@ func PostFinish() tests.SpecTest {
 			Runner: testingutils.ProposerRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer), // consensus
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(ks, version), ks, types.BNRoleProposer), // consensus
 				[]*types.SSVMessage{ // post consensus
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
@@ -109,7 +109,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.SSVMsgProposer(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
 							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
-							testingutils.TestProposerConsensusDataBytsV(version),
+							testingutils.TestProposerConsensusDataBytsV(ks, version),
 						), nil),
 				}...,
 			),
@@ -132,7 +132,7 @@ func PostFinish() tests.SpecTest {
 			Runner: testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer), // consensus
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(ks, version), ks, types.BNRoleProposer), // consensus
 				[]*types.SSVMessage{ // post consensus
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
 					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
@@ -140,7 +140,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.SSVMsgProposer(
 						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
 							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
-							testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
+							testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version),
 						), nil),
 				}...,
 			),

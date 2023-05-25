@@ -14,7 +14,7 @@ import (
 // postDecidedProposerSC returns state comparison object for the PostDecided Proposer versioned spec test
 func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(version)
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -22,7 +22,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version)),
@@ -31,7 +31,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 					},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				DecidedValue: cd,
@@ -58,7 +58,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 // postDecidedBlindedProposerSC returns state comparison object for the PostDecided Blinded Proposer versioned spec test
 func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -66,7 +66,7 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version)),
@@ -75,7 +75,7 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 					},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				DecidedValue: cd,

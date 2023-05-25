@@ -22,7 +22,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
+				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData(ks), ks, types.BNRoleSyncCommitteeContribution),
 				PostDutyRunnerStateRoot: "65a399a1b4007a556d95d64b33aad781d11c57cb5e300705226c417efdad9ce1",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -43,7 +43,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    &testingutils.TestingAggregatorDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
+				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(ks), ks, types.BNRoleAggregator),
 				PostDutyRunnerStateRoot: "c9b5e6f77e8b99716d0bc000429a25372be2ef258845b1a23db456235888792b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -69,7 +69,7 @@ func ValidDecided7Operators() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  testingutils.ProposerRunner(ks),
 			Duty:                    testingutils.TestingProposerDutyV(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(ks, version), ks, types.BNRoleProposer),
 			PostDutyRunnerStateRoot: validDecided7OperatorsProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecided7OperatorsProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -85,7 +85,7 @@ func ValidDecided7Operators() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:                    testingutils.TestingProposerDutyV(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(ks, version), ks, types.BNRoleProposer),
 			PostDutyRunnerStateRoot: validDecided7OperatorsBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecided7OperatorsBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{

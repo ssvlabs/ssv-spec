@@ -13,7 +13,7 @@ import (
 // postFinishProposerSC returns state comparison object for the PostFinish Proposer versioned spec test
 func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(version)
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -21,11 +21,11 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				Finished: true,
@@ -38,7 +38,7 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 // postFinishBlindedProposerSC returns state comparison object for the PostFinish Blinded Proposer versioned spec test
 func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -46,11 +46,11 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 				Finished: true,

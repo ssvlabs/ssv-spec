@@ -14,8 +14,8 @@ import (
 // quorum7OperatorsProposerSC returns state comparison object for the Quorum7Operators Proposer versioned spec test
 func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -23,7 +23,7 @@ func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateCompa
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version)),
@@ -33,7 +33,7 @@ func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateCompa
 					},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 			}
@@ -57,8 +57,8 @@ func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateCompa
 // quorum7OperatorsBlindedProposerSC returns state comparison object for the Quorum7Operators Blinded Proposer versioned spec test
 func quorum7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
@@ -66,7 +66,7 @@ func quorum7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.Sta
 			ret.GetBaseRunner().State = &ssv.State{
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version)),
@@ -76,7 +76,7 @@ func quorum7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.Sta
 					},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
 			}

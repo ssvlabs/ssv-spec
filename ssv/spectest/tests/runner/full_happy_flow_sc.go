@@ -19,13 +19,13 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestSyncCommitteeContributionConsensusData, spec.DataVersionPhase0),
-				StartingDuty: &testingutils.TestSyncCommitteeContributionConsensusData.Duty,
+				DecidedValue: comparable.FixIssue178(testingutils.TestSyncCommitteeContributionConsensusData(ks)),
+				StartingDuty: &testingutils.TestSyncCommitteeContributionConsensusData(ks).Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)[:3]),
+					ssv.NewPartialSignatureContainer(),
+					testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData(ks), ks, types.BNRoleSyncCommitteeContribution)[:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
@@ -33,7 +33,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 					}),
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(testingutils.TestSyncCommitteeContributionConsensusData, spec.DataVersionBellatrix)),
+				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(testingutils.TestSyncCommitteeContributionConsensusData(ks))),
 				State: &qbft.State{
 					Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
 					ID:     ret.GetBaseRunner().QBFTController.Identifier,
@@ -42,17 +42,17 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.Shares[1], types.OperatorID(1),
 						ret.GetBaseRunner().QBFTController.Identifier,
-						testingutils.TestSyncCommitteeContributionConsensusDataByts,
+						testingutils.TestSyncCommitteeContributionConsensusDataByts(ks),
 					),
 					LastPreparedRound: 1,
-					LastPreparedValue: testingutils.TestSyncCommitteeContributionConsensusDataByts,
+					LastPreparedValue: testingutils.TestSyncCommitteeContributionConsensusDataByts(ks),
 					Decided:           true,
-					DecidedValue:      testingutils.TestSyncCommitteeContributionConsensusDataByts,
+					DecidedValue:      testingutils.TestSyncCommitteeContributionConsensusDataByts(ks),
 				},
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)[3:10],
+				testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData(ks), ks, types.BNRoleSyncCommitteeContribution)[3:10],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
@@ -68,13 +68,13 @@ func fullHappyFlowSyncCommitteeSC() *comparable.StateComparison {
 			ret := testingutils.SyncCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestSyncCommitteeConsensusData, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(testingutils.TestSyncCommitteeConsensusData),
 				StartingDuty: &testingutils.TestSyncCommitteeConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{}),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
@@ -117,13 +117,13 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestAggregatorConsensusData, spec.DataVersionPhase0),
-				StartingDuty: &testingutils.TestAggregatorConsensusData.Duty,
+				DecidedValue: comparable.FixIssue178(testingutils.TestAggregatorConsensusData(ks)),
+				StartingDuty: &testingutils.TestAggregatorConsensusData(ks).Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)[0:3]),
+					ssv.NewPartialSignatureContainer(),
+					testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(ks), ks, types.BNRoleAggregator)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
@@ -131,7 +131,7 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 					}),
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				StartValue: comparable.NoErrorEncoding(testingutils.TestAggregatorConsensusData),
+				StartValue: comparable.NoErrorEncoding(testingutils.TestAggregatorConsensusData(ks)),
 				State: &qbft.State{
 					Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
 					ID:     ret.GetBaseRunner().QBFTController.Identifier,
@@ -140,17 +140,17 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.Shares[1], types.OperatorID(1),
 						ret.GetBaseRunner().QBFTController.Identifier,
-						testingutils.TestAggregatorConsensusDataByts,
+						testingutils.TestAggregatorConsensusDataByts(ks),
 					),
 					LastPreparedRound: 1,
-					LastPreparedValue: testingutils.TestAggregatorConsensusDataByts,
+					LastPreparedValue: testingutils.TestAggregatorConsensusDataByts(ks),
 					Decided:           true,
-					DecidedValue:      testingutils.TestAggregatorConsensusDataByts,
+					DecidedValue:      testingutils.TestAggregatorConsensusDataByts(ks),
 				},
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)[3:10],
+				testingutils.ExpectedSSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(ks), ks, types.BNRoleAggregator)[3:10],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			return ret
@@ -161,21 +161,21 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 // fullHappyFlowProposerSC returns state comparison object for the FullHappyFlow Proposer versioned spec test
 func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: comparable.FixIssue178(cd),
 				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
@@ -213,21 +213,21 @@ func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparis
 // fullHappyFlowBlindedProposerSC returns state comparison object for the FullHappyFlow BlindedProposer versioned spec test
 func fullHappyFlowBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() types.Root {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(cd, version),
-				StartingDuty: &testingutils.TestProposerConsensusDataV(version).Duty,
+				DecidedValue: comparable.FixIssue178(cd),
+				StartingDuty: &testingutils.TestProposerConsensusDataV(ks, version).Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[0:3]),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
@@ -270,13 +270,13 @@ func fullHappyFlowAttesterSC() *comparable.StateComparison {
 			ret := testingutils.AttesterRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestAttesterConsensusData, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(testingutils.TestAttesterConsensusData),
 				StartingDuty: &testingutils.TestAttesterConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{}),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
@@ -321,14 +321,14 @@ func fullHappyFlowValidatorRegistrationSC() *comparable.StateComparison {
 				Finished:     true,
 				StartingDuty: &testingutils.TestingValidatorRegistrationDuty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{
 						testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 						testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 					}),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
+					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{}),
 			}
 			return ret

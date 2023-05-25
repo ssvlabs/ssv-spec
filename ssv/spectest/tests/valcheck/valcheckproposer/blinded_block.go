@@ -10,6 +10,7 @@ import (
 
 // BlindedBlock tests if blinded blocks pass validation according to configuration
 func BlindedBlock() tests.SpecTest {
+	ks := testingutils.Testing4SharesSet()
 	return &valcheck.MultiSpecTest{
 		Name: "blinded blocks",
 		Tests: []*valcheck.SpecTest{
@@ -17,7 +18,7 @@ func BlindedBlock() tests.SpecTest {
 				Name:            "blinded blocks not allowed",
 				Network:         types.BeaconTestNetwork,
 				BeaconRole:      types.BNRoleProposer,
-				Input:           testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+				Input:           testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
 				SupportsBlinded: false,
 				ExpectedError:   "blinded blocks are not supported",
 			},
@@ -25,7 +26,7 @@ func BlindedBlock() tests.SpecTest {
 				Name:            "blinded blocks allowed",
 				Network:         types.BeaconTestNetwork,
 				BeaconRole:      types.BNRoleProposer,
-				Input:           testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+				Input:           testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
 				SupportsBlinded: true,
 				AnyError:        false,
 			},

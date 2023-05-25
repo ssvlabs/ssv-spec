@@ -147,7 +147,7 @@ var AllTests = []tests.TestF{
 	valcheckattestations.SlotMismatch,
 	valcheckattestations.ConsensusDataNil,
 	valcheckattestations.Valid,
-valcheckproposer.BlindedBlock,
+	valcheckproposer.BlindedBlock,
 
 	msgcontainer.QuorumPreConsensusMsg,
 	msgcontainer.SinglePreConsensusMsg,
