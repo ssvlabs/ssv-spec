@@ -15,7 +15,7 @@ func BlindedBlock() tests.SpecTest {
 		Tests: []*valcheck.SpecTest{
 			{
 				Name:            "blinded blocks not allowed",
-				Network:         types.BeaconTestNetwork,
+				Network:         types.TestNetwork,
 				BeaconRole:      types.BNRoleProposer,
 				Input:           testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
 				SupportsBlinded: false,
@@ -23,7 +23,7 @@ func BlindedBlock() tests.SpecTest {
 			},
 			{
 				Name:            "blinded blocks allowed",
-				Network:         types.BeaconTestNetwork,
+				Network:         types.TestNetwork,
 				BeaconRole:      types.BNRoleProposer,
 				Input:           testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
 				SupportsBlinded: true,
