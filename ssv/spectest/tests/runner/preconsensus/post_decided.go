@@ -54,7 +54,7 @@ func PostDecided() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "533e3658a1d795719d201b58ae518576fa999cf4dbd0c72fa65565a13802cd54",
+				PostDutyRunnerStateRoot: "d16e892ec3c091046be61758bab2f82a2397656fa94db4525b517cdf0cd25f3f",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
@@ -74,7 +74,7 @@ func PostDecided() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "cba0b3f9f2ae87d3d314832d680582bbe3e6b7b0a905ac9fb5608be9afc939d0",
+				PostDutyRunnerStateRoot: "87198c43ce7c06f573bc34d20296fb7724761fa9e3aedb6c64c6202936afa590",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},

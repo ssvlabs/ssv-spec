@@ -24,7 +24,7 @@ func UnknownSigner() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 5, 5)),
 				},
-				PostDutyRunnerStateRoot: "62937b3db74cecb23f9d5e850c4ad83594b9846db8d022b94a0ba92ca2391a12",
+				PostDutyRunnerStateRoot: "eece7b3ec4c7e2c5576a8c28bba3e8ff816c8f84b769aac74dfd244de010e61a",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -37,7 +37,7 @@ func UnknownSigner() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 5, 5)),
 				},
-				PostDutyRunnerStateRoot: "2cd233471a84bafb89874eb1a748fa45fb45ff04fed0dc289f74e94064382119",
+				PostDutyRunnerStateRoot: "be39d691ce8f6c800779bac909316a2bc869bd05cda24306a368bac9bf301678",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},

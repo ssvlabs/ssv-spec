@@ -27,7 +27,7 @@ func PostQuorum() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "27864756dc1c66fe2928d772fb1ddc15550cbb0b88169b5d42cedac50bd8dd26",
+				PostDutyRunnerStateRoot: "800e9bc2b030541e4f5ce8e372151d60557a83fbf4ea213d48e7269f18de7b55",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -42,7 +42,7 @@ func PostQuorum() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "7f96b5398bcdcc59c4437cdf3d0db7e19e00b68e47d62673d634449b1ee6d76a",
+				PostDutyRunnerStateRoot: "4bd736bfb9ebad38ba20b08b44cea7bb2717d8f790dafb94d9003137fcd3f38e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -57,7 +57,7 @@ func PostQuorum() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[4], 4)),
 				},
-				PostDutyRunnerStateRoot: "5522b61988ab5f9ce6486621b78b211d8b0ed3b151b0b5b17b6c8c43fd8d3329",
+				PostDutyRunnerStateRoot: "9032230825fc686ed30e8f7d79763597dce7357c08482c018f39f2dbbc95e677",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

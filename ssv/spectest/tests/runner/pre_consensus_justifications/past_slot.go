@@ -59,7 +59,7 @@ func PastSlot() tests.SpecTest {
 					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				),
-				PostDutyRunnerStateRoot: "25ea3d6735cf6d8f7c41fdb223f32b0ac005b14f9e4a0894d6267fb624c2da27",
+				PostDutyRunnerStateRoot: "39a66c68b7b2f00825031c47cf1ba15a717b199630454255b889f22be4fc42ec",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -74,7 +74,7 @@ func PastSlot() tests.SpecTest {
 					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
 					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				),
-				PostDutyRunnerStateRoot: "7682b2a965db2a22ea2710aa8d1454f6dfa32ab00b55f7d8df2bf62877429304",
+				PostDutyRunnerStateRoot: "235d9aa053fa93a4545080fc9affab3e187a9eb9c889eb5dfba21a9ddd14d758",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),

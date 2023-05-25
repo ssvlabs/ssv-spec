@@ -30,7 +30,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongSignerMsg(ks.Shares[1], 1, 5, ks)),
 				},
-				PostDutyRunnerStateRoot: "5cfbb232547e630d3b293543d83730b4c6a3f28e51b42c86a730875de2903259",
+				PostDutyRunnerStateRoot: "9d89b3d221a775f2d34fa3c51328538b57b725d742acb9db9414639d009a5cc8",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -47,7 +47,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSigSyncCommitteeWrongBeaconSignerMsg(ks.Shares[1], 1, 5)),
 				},
-				PostDutyRunnerStateRoot: "547f70ddf97fe30830513d655e3446ea5e6dd414498e16fa4c1039bd58d5bef9",
+				PostDutyRunnerStateRoot: "e00c04a2ecbde40cd0f16a591785b1f08dcdfe67ad2b33cdf9fff55a032ac923",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -64,7 +64,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusSigAggregatorWrongBeaconSignerMsg(ks.Shares[1], 1, 5)),
 				},
-				PostDutyRunnerStateRoot: "55ab9040e690b441c218934d9a2ec3c2fae91107c020e769dc2f85130a59f595",
+				PostDutyRunnerStateRoot: "481a66a2f0011690dbde0367a270eece998b37cafc8abb3afde0e39efb07a138",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -81,7 +81,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusSigAttestationWrongBeaconSignerMsg(ks.Shares[1], 1, 5, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "11bcf29afa4d32c81018b38a0c63712b4f417101c6592b24d32ae6fbd7bdaded",
+				PostDutyRunnerStateRoot: "6f8091745142148ebef73467f73f130e158bc578b50db113b34f8a48ed1f7a50",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,

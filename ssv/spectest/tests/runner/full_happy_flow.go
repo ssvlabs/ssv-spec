@@ -129,7 +129,7 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 				},
-				PostDutyRunnerStateRoot: fullHappyFlowValidatorRegistrationSC().Root(), // "5522b61988ab5f9ce6486621b78b211d8b0ed3b151b0b5b17b6c8c43fd8d3329",
+				PostDutyRunnerStateRoot: fullHappyFlowValidatorRegistrationSC().Root(), // "9032230825fc686ed30e8f7d79763597dce7357c08482c018f39f2dbbc95e677",
 				PostDutyRunnerState:     fullHappyFlowValidatorRegistrationSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty

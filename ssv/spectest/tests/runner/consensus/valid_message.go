@@ -28,7 +28,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "3a6ce5903a776d4b1c8cbb22df6a5b525bdb4f06cc35a845dbbf275080e9b22e",
+				PostDutyRunnerStateRoot: "d798704876fe8ef5e3e3c4ca000e0874cc975d05ecfb4bdd8dbd12342edaae02",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -44,7 +44,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "5672d92cd4a8b6da6f22d3a21812688b1a1410b8a070268b2bac00a2a2885254",
+				PostDutyRunnerStateRoot: "3241b70a1095a344694c201b65c41ee18fe263d39c72ee4e6a01b9117410d5ea",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -61,7 +61,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestAggregatorConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "3c6857e76c6aa8140890ae84c498c9262eb003f24275571c076f450b874dff42",
+				PostDutyRunnerStateRoot: "89125ce89c1fa4c4950e51170a3272e80c97c73101b4daa8d0fdd2c01b9de32f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -80,7 +80,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "9f00cecfecc202a0d3fd5c121675fd1b16e9dc656b31b083ec4501cf5b89f37d",
+				PostDutyRunnerStateRoot: "3fce9b813af7fa6432b1fa74d4615652d04aa86fe28bbe84a12c91636602d73a",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
@@ -99,7 +99,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "63fcc50d9a655b5c04fea0cb5f18184dd2d20431b7e9f782e55716a24d3c0f0c",
+				PostDutyRunnerStateRoot: "10ea1fcb06c93f00dd75db76293908c302f12ebe51a87aa162dc8dd81b1ef3fb",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
@@ -115,7 +115,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestAttesterConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "18f16523efa7045740736732ebc2c21536e04415b772f14451079e503a4ca53f",
+				PostDutyRunnerStateRoot: "204118a5557da81877aadf690e51f98b8b05ab5d7fbcf628ad45a8e2e081b863",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -132,7 +132,7 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestAttesterConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "5522b61988ab5f9ce6486621b78b211d8b0ed3b151b0b5b17b6c8c43fd8d3329",
+				PostDutyRunnerStateRoot: "9032230825fc686ed30e8f7d79763597dce7357c08482c018f39f2dbbc95e677",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

@@ -25,7 +25,7 @@ func DuplicateMsg() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "74e565a73ff1b70810dd7307195b5a7e58f2bcc4e9a7bd16526e859d04f269ec",
+				PostDutyRunnerStateRoot: "b28e60a6a8543c93e48d1e1ac3afb3d619d3d10f7a6cc05a37e759f57ca0ddb6",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -38,7 +38,7 @@ func DuplicateMsg() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "8448b822742c96b50049afa90a3b5cce71007056e358d32967ae4da024b9a4ab",
+				PostDutyRunnerStateRoot: "fafbe6756277f4985bce2e7459d94ea994bfe27f61cb405103cc2a4e1c130611",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -51,7 +51,7 @@ func DuplicateMsg() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "4491e7a4f491b4116f93ccbad24cc834abb377278febf5dad1232ea86fcd9b64",
+				PostDutyRunnerStateRoot: "00d8aa8753f000b5adea2aba89efb1120104de80160eb187233a76f25139ae38",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

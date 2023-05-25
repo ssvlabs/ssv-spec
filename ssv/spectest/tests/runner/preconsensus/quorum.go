@@ -26,7 +26,7 @@ func Quorum() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 				},
-				PostDutyRunnerStateRoot: "1488c9f95b97bb5b997a1bfdf70cb82b2f2ba12d5a1a81627a4d9e56398e057b",
+				PostDutyRunnerStateRoot: "167a08a26c6d6526decf371e58d5bc928d84788d21c62520ae33c7a14cf12a94",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -40,7 +40,7 @@ func Quorum() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 				},
-				PostDutyRunnerStateRoot: "08055057d854560a02f177ffbd023cd2913dab942a5aa66851fcb99f0e569e54",
+				PostDutyRunnerStateRoot: "082d861ed87f5f56a228a314a2d1564384cde1072a60b3ccddeaea9afb257720",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -54,7 +54,7 @@ func Quorum() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 				},
-				PostDutyRunnerStateRoot: "5522b61988ab5f9ce6486621b78b211d8b0ed3b151b0b5b17b6c8c43fd8d3329",
+				PostDutyRunnerStateRoot: "9032230825fc686ed30e8f7d79763597dce7357c08482c018f39f2dbbc95e677",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

@@ -33,7 +33,7 @@ func PostFinish() tests.SpecTest {
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil),
 				),
-				PostDutyRunnerStateRoot: "fad43e18e8df967df0cffc06f4947951ccce347704db52577cbdfb17a6d87f50",
+				PostDutyRunnerStateRoot: "48a0be142a16ee4b590471b19a6dfa672bf585d6a4b9c57f86e7c08dc2c3aa06",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -51,7 +51,7 @@ func PostFinish() tests.SpecTest {
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil),
 				),
-				PostDutyRunnerStateRoot: "664957056215c863ed63cc9879bab9358b210a3fd96032e51a6cf16c6f4deeab",
+				PostDutyRunnerStateRoot: "eef629034491056d5c9a68ec639fb1f34d910cc29625404021d986bf99f8219b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
@@ -68,7 +68,7 @@ func PostFinish() tests.SpecTest {
 							testingutils.TestAggregatorConsensusDataByts,
 						), nil),
 				),
-				PostDutyRunnerStateRoot: "cbf71df66ebbaa94209a0f0d8ddfc326bf10395c331e238ad8aba20b5c0762ef",
+				PostDutyRunnerStateRoot: "f4df6aba78e7fc5c166cd6c24c07a8d1e2c70bf0c9083cefa05ef1cd83d90219",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
@@ -86,7 +86,7 @@ func PostFinish() tests.SpecTest {
 							testingutils.TestAttesterConsensusDataByts,
 						), nil),
 				),
-				PostDutyRunnerStateRoot: "bce6c4862a058b963f30a5c2eebefcd244bc156cc21a8bf84970cc38f703673d",
+				PostDutyRunnerStateRoot: "595550fe64efa425f1df4acb56f927c28cca13439e2237570d40abb27808f952",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},

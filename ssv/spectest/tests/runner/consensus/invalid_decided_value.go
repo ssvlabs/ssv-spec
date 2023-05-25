@@ -51,7 +51,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							consensusDataByts(types.BNRoleSyncCommitteeContribution),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "e01aa8d1195422844062b9256a5fb7f99e4a1024127018c79ccbb00a9ff5f12b",
+				PostDutyRunnerStateRoot: "fe42bb70ee0dc9b3abfc76685586af68ce40398d7b7af0cc0ec0f95b0ca1fc48",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -70,7 +70,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							consensusDataByts(types.BNRoleSyncCommittee),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "4fcbd3e33b2496dbca4dfc67b7e4d749a246dd38544aa6cd885832b2ef42315c",
+				PostDutyRunnerStateRoot: "b6bea4d2567c0013e1822e16fd3eb3a05d79e8b5ddaa8e795342a8b6b812318d",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedErr,
 			},
@@ -91,7 +91,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							consensusDataByts(types.BNRoleAggregator),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "3b98dffac89555ad0af00400bf99e92341ff12a6558c03c3e3d7dd660d199ba1",
+				PostDutyRunnerStateRoot: "bf4882ad7bfa9f2f0a594e7a2cfaee43e71ead90b74b674efd172a5b5ffc690a",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -114,7 +114,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							consensusDataByts(types.BNRoleProposer),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "147f1cbced9dbba228474be766713d039622d7be3e6642de5fb1d4c5e1384058",
+				PostDutyRunnerStateRoot: "a2a9d4b3aa3a9f5df7f7e4b63eb6f72ae70b8e0e5cbd657f6430b34762b560c7",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
@@ -137,7 +137,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							consensusDataByts(types.BNRoleProposer),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "817614189d31eb4520675772b066b117b76292f77adf4d19b6f12c9bb509ac9f",
+				PostDutyRunnerStateRoot: "a7bc392df4e27136155309e4aa2d7cfb1edf5da898b9aeac39baa4003cdf75a9",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
@@ -156,7 +156,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							consensusDataByts(types.BNRoleAttester),
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "f17fe042f9a06f36ec2287af804311e1e9d86ce9b1c5b1c71f3628ca6f3502e0",
+				PostDutyRunnerStateRoot: "0544a088d3598722ca06bdc6b07a603e0e37677c01c184bf49560268b444927b",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedErr,
 			},

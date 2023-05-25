@@ -23,7 +23,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
-				PostDutyRunnerStateRoot: "9763f791628e1ab21e552bfe4318894107c652dfd828a5c4835229d0c66b9e10",
+				PostDutyRunnerStateRoot: "c118584f1020e62179864d4503285c283b6683165cfa299a971e2c399899228d",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -34,7 +34,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Runner:                  testingutils.SyncCommitteeRunner(ks),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
-				PostDutyRunnerStateRoot: "7fdaa561577b340c77992782daf1e6027a6f5189d6893df6f54e309b40786f34",
+				PostDutyRunnerStateRoot: "14b83d28d62c779c8858494db3735a6a4ccffa8c266badffefd7e2b7b2d26145",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
@@ -44,7 +44,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    &testingutils.TestingAggregatorDuty,
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
-				PostDutyRunnerStateRoot: "95af8710bbbb71504b710e3789ed748029e484060ce94264e270527d47321e25",
+				PostDutyRunnerStateRoot: "c081ed180c13eca5a88d908679a3b9a258971e2adb527f9aab466f824ee57f1b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
@@ -55,7 +55,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Runner:                  testingutils.AttesterRunner(ks),
 				Duty:                    &testingutils.TestingAttesterDuty,
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
-				PostDutyRunnerStateRoot: "a7a60cd390981f8d41ce41cc671edd29a9aeee1a1a8c3403f3e956e1854f26dc",
+				PostDutyRunnerStateRoot: "a1e36f1d3669f4b13dc249f3f0db30bde7f7a94813644d15a22b73ead59242f7",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},

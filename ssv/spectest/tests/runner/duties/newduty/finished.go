@@ -37,7 +37,7 @@ func Finished() tests.SpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  finishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionNexEpochDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
-				PostDutyRunnerStateRoot: "cbb0ce082e86ba5526eb33a8b4c7f6f1e59d520f7b304beb894631e7d86a4765",
+				PostDutyRunnerStateRoot: "f3892fb09dc2b77ac08cd12859855f54ae38a99e1f0bb83572f41c353ca38837",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -46,14 +46,14 @@ func Finished() tests.SpecTest {
 				Name:                    "sync committee",
 				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "0e6005bad8a43f831437f40a385926f2707cfd151ce239d995fc1c96b2a3c4e8",
+				PostDutyRunnerStateRoot: "2cb9e40ecfccc8ac351ab209a3a8bd9dbb03f4c393f8e8b3de72ade2fe85c276",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "aggregator",
 				Runner:                  finishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDutyNextEpoch),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
-				PostDutyRunnerStateRoot: "3b44e308331e22a88023ab437cf15ff64a6fa000be46703d27642529fb0acfec",
+				PostDutyRunnerStateRoot: "d027a4fb2f586aba299928d92830391d6a73b0cabe09898c1fb4f04c47a9b47b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -62,7 +62,7 @@ func Finished() tests.SpecTest {
 				Name:                    "proposer",
 				Runner:                  finishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix)),
 				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
-				PostDutyRunnerStateRoot: "15b272fc48b4432c15a1520c9f1a6db42b5d642b60b4777a53f4ddbab48bed37",
+				PostDutyRunnerStateRoot: "d0a7da850bcde53e28969e6fe3f474c85e40e81e519946b231cba3914614ea90",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -71,7 +71,7 @@ func Finished() tests.SpecTest {
 				Name:                    "attester",
 				Runner:                  finishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "326a86dd6ad7016e640f9f3418499552c8fac2691029a3812370017924c0bb0c",
+				PostDutyRunnerStateRoot: "406cbbd01729274e6ac4a899098c9601070a7a77f347566474eedeb2e23cfa27",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
