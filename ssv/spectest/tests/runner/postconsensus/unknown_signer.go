@@ -1,6 +1,8 @@
 package postconsensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -13,7 +15,8 @@ import (
 func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: failed to verify PartialSignature: unknown signer"
-	return &tests.MultiMsgProcessingSpecTest{
+
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus unknown signer",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -21,7 +24,7 @@ func UnknownSigner() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
 					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData(ks),
+					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
@@ -51,45 +54,11 @@ func UnknownSigner() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 			{
-				Name: "proposer",
-				Runner: decideRunner(
-					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix),
-				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, spec.DataVersionBellatrix)),
-				},
-				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
-				Name: "proposer (blinded block)",
-				Runner: decideRunner(
-					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerBlindedBlockConsensusDataV(ks, spec.DataVersionBellatrix),
-				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, spec.DataVersionBellatrix)),
-				},
-				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
 				Name: "aggregator",
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),
 					&testingutils.TestingAggregatorDuty,
-					testingutils.TestAggregatorConsensusData(ks),
+					testingutils.TestAggregatorConsensusData,
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
@@ -108,7 +77,7 @@ func UnknownSigner() tests.SpecTest {
 					&testingutils.TestingAttesterDuty,
 					testingutils.TestAttesterConsensusData,
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty: &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusSigAttestationWrongBeaconSignerMsg(ks.Shares[1], 5, 5, qbft.FirstHeight)),
 				},
@@ -120,4 +89,54 @@ func UnknownSigner() tests.SpecTest {
 			},
 		},
 	}
+
+	// proposerV creates a test specification for versioned proposer.
+	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("proposer (%s)", version.String()),
+			Runner: decideRunner(
+				testingutils.ProposerRunner(ks),
+				testingutils.TestingProposerDutyV(version),
+				testingutils.TestProposerConsensusDataV(version),
+			),
+			Duty: testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SSVMessage{
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, version)),
+			},
+			PostDutyRunnerStateRoot: unknownSignerProposerSC(version).Root(),
+			PostDutyRunnerState:     unknownSignerProposerSC(version).ExpectedState,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			BeaconBroadcastedRoots:  []string{},
+			DontStartDuty:           true,
+			ExpectedError:           expectedError,
+		}
+	}
+
+	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
+	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner: decideRunner(
+				testingutils.ProposerBlindedBlockRunner(ks),
+				testingutils.TestingProposerDutyV(version),
+				testingutils.TestProposerBlindedBlockConsensusDataV(version),
+			),
+			Duty: testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SSVMessage{
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, version)),
+			},
+			PostDutyRunnerStateRoot: unknownSignerBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     unknownSignerBlindedProposerSC(version).ExpectedState,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			BeaconBroadcastedRoots:  []string{},
+			DontStartDuty:           true,
+			ExpectedError:           expectedError,
+		}
+	}
+
+	for _, v := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+	}
+
+	return multiSpecTest
 }

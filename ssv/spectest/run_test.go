@@ -3,6 +3,15 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"sync"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -12,13 +21,6 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
-	"os"
-	"path/filepath"
-	"reflect"
-	"strings"
-	"sync"
-	"testing"
 )
 
 func TestAll(t *testing.T) {
@@ -40,32 +42,38 @@ func TestAll(t *testing.T) {
 func TestJson(t *testing.T) {
 	t.Parallel()
 
-	basedir, _ := os.Getwd()
+	basedir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get working directory: %v", err)
+	}
+
 	path := filepath.Join(basedir, "generate", "tests.json")
 	untypedTests := map[string]interface{}{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
-		panic(err.Error())
+		t.Fatalf("Failed to read file: %v", err)
 	}
 
 	if err := json.Unmarshal(byteValue, &untypedTests); err != nil {
-		panic(err.Error())
+		t.Fatalf("Failed to unmarshal JSON: %v", err)
 	}
 
 	fmt.Printf("running %d tests\n", len(untypedTests))
-	wait := &sync.WaitGroup{}
+
+	var wg sync.WaitGroup
 	for name, test := range untypedTests {
-		wait.Add(1)
-		go func(t *testing.T, wait *sync.WaitGroup, name string, test interface{}) {
-			parseAndTest(t, wait, name, test)
-		}(t, wait, name, test)
+		wg.Add(1)
+		go func(name string, test interface{}) {
+			defer wg.Done()
+			parseAndTest(t, name, test)
+		}(name, test)
 	}
 
-	wait.Wait()
+	wg.Wait()
 }
 
-// parseAndTest will parse and test the spec test. Will handle wait group done call as well
-func parseAndTest(t *testing.T, wait *sync.WaitGroup, name string, test interface{}) {
+// parseAndTest will parse and test the spec test.
+func parseAndTest(t *testing.T, name string, test interface{}) {
 	testName := test.(map[string]interface{})["Name"].(string)
 	t.Run(testName, func(t *testing.T) {
 		testType := strings.Split(name, "_")[0]
@@ -130,8 +138,6 @@ func parseAndTest(t *testing.T, wait *sync.WaitGroup, name string, test interfac
 		default:
 			panic("unsupported test type " + testType)
 		}
-
-		wait.Done()
 	})
 }
 

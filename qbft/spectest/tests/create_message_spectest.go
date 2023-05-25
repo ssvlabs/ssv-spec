@@ -3,7 +3,9 @@ package tests
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -17,46 +19,56 @@ const (
 )
 
 type CreateMsgSpecTest struct {
-	Name                                             string
-	Value                                            []byte
+	Name string
+	// ISSUE 217: rename to root
+	Value [32]byte
+	// ISSUE 217: rename to value
+	StateValue                                       []byte
 	Round                                            qbft.Round
 	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
-	ExpectedSSZRoot                                  string
+	ExpectedRoot                                     string
+	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
 	ExpectedError                                    string
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	var msg *qbft.SignedMessage
-	var lastErr error
+	var err error
 	switch test.CreateType {
 	case CreateProposal:
-		msg, lastErr = test.createProposal(t)
+		msg, err = test.createProposal()
 	case CreatePrepare:
-		msg, lastErr = test.createPrepare(t)
+		msg, err = test.createPrepare()
 	case CreateCommit:
-		msg, lastErr = test.createCommit(t)
+		msg, err = test.createCommit()
 	case CreateRoundChange:
-		msg, lastErr = test.createRoundChange(t)
+		msg, err = test.createRoundChange()
 	default:
 		t.Fail()
 	}
 
-	r, err := msg.HashTreeRoot()
-	if err != nil {
-		lastErr = err
+	if err != nil && len(test.ExpectedError) != 0 {
+		require.EqualError(t, err, test.ExpectedError)
+		return
 	}
+	require.NoError(t, err)
 
+	r, err2 := msg.GetRoot()
 	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
+		require.EqualError(t, err2, test.ExpectedError)
+		return
 	}
+	require.NoError(t, err2)
 
-	require.EqualValues(t, test.ExpectedSSZRoot, hex.EncodeToString(r[:]))
+	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
+		diff := typescomparable.PrintDiff(test.ExpectedState, msg)
+		require.Fail(t, "post state not equal", diff)
+	}
+	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 }
 
-func (test *CreateMsgSpecTest) createCommit(t *testing.T) (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -64,13 +76,10 @@ func (test *CreateMsgSpecTest) createCommit(t *testing.T) (*qbft.SignedMessage, 
 	}
 	config := testingutils.TestingConfig(ks)
 
-	r, err := qbft.HashDataRoot(test.Value)
-	require.NoError(t, err)
-
-	return qbft.CreateCommit(state, config, r)
+	return qbft.CreateCommit(state, config, test.Value)
 }
 
-func (test *CreateMsgSpecTest) createPrepare(t *testing.T) (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -78,13 +87,10 @@ func (test *CreateMsgSpecTest) createPrepare(t *testing.T) (*qbft.SignedMessage,
 	}
 	config := testingutils.TestingConfig(ks)
 
-	r, err := qbft.HashDataRoot(test.Value)
-	require.NoError(t, err)
-
-	return qbft.CreatePrepare(state, config, test.Round, r)
+	return qbft.CreatePrepare(state, config, test.Round, test.Value)
 }
 
-func (test *CreateMsgSpecTest) createProposal(t *testing.T) (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -92,21 +98,21 @@ func (test *CreateMsgSpecTest) createProposal(t *testing.T) (*qbft.SignedMessage
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, test.Value, test.RoundChangeJustifications, test.PrepareJustifications)
+	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
 }
 
-func (test *CreateMsgSpecTest) createRoundChange(t *testing.T) (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share:            testingutils.TestingShare(ks),
-		PrepareContainer: qbft.NewMsgContainer(),
 		ID:               []byte{1, 2, 3, 4},
+		PrepareContainer: qbft.NewMsgContainer(),
 	}
 	config := testingutils.TestingConfig(ks)
 
 	if len(test.PrepareJustifications) > 0 {
 		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
-		state.LastPreparedValue = test.Value[:]
+		state.LastPreparedValue = test.StateValue
 
 		for _, msg := range test.PrepareJustifications {
 			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
@@ -116,7 +122,7 @@ func (test *CreateMsgSpecTest) createRoundChange(t *testing.T) (*qbft.SignedMess
 		}
 	}
 
-	return qbft.CreateRoundChange(state, config, 1, test.Value)
+	return qbft.CreateRoundChange(state, config, 1, test.Value[:])
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

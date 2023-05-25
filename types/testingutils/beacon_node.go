@@ -2,13 +2,14 @@ package testingutils
 
 import (
 	"encoding/hex"
-
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
+	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
+	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/goccy/go-yaml"
@@ -28,8 +29,12 @@ var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *
 	return blsSig
 }
 
-const TestingAttestationDataVersion = spec.DataVersionPhase0
+func GetSSZRootNoError(obj ssz.HashRoot) string {
+	r, _ := obj.HashTreeRoot()
+	return hex.EncodeToString(r[:])
+}
 
+const TestingAttestationDataVersion = spec.DataVersionPhase0
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            12,
 	Index:           3,
@@ -123,10 +128,6 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 		},
 	},
 }
-var TestingBeaconBlockBytes = func() []byte {
-	ret, _ := TestingBeaconBlock.MarshalSSZ()
-	return ret
-}()
 
 var TestingBlindedBeaconBlock = func() *apiv1bellatrix.BlindedBeaconBlock {
 	fullBlk := TestingBeaconBlock
@@ -167,30 +168,6 @@ var TestingBlindedBeaconBlock = func() *apiv1bellatrix.BlindedBeaconBlock {
 
 	return ret
 }()
-var TestingBlindedBeaconBlockBytes = func() []byte {
-	ret, _ := TestingBlindedBeaconBlock.MarshalSSZ()
-	return ret
-}()
-
-var TestingWrongBeaconBlock = func() *bellatrix.BeaconBlock {
-	byts, err := TestingBeaconBlock.MarshalSSZ()
-	if err != nil {
-		panic(err.Error())
-	}
-	ret := &bellatrix.BeaconBlock{}
-	if err := ret.UnmarshalSSZ(byts); err != nil {
-		panic(err.Error())
-	}
-	ret.Slot = 100
-	return ret
-}()
-
-var TestingSignedBeaconBlock = func(ks *TestKeySet) *bellatrix.SignedBeaconBlock {
-	return &bellatrix.SignedBeaconBlock{
-		Message:   TestingBeaconBlock,
-		Signature: signBeaconObject(TestingBeaconBlock, types.DomainProposer, ks),
-	}
-}
 
 const TestingAggregateAndProofVersion = spec.DataVersionPhase0
 
@@ -232,7 +209,6 @@ const (
 	TestingDutySlot       = 12
 	TestingDutySlot2      = 50
 	TestingDutyEpoch      = 0
-	TestingDutyEpoch2     = 1
 	TestingValidatorIndex = 1
 
 	UnknownDutyType = 100
@@ -332,7 +308,7 @@ var TestingSignedSyncCommitteeContributions = func(
 var TestingFeeRecipient = bellatrix.ExecutionAddress(ethAddressFromHex("535953b5a6040074948cf185eaa7d2abbd66808f"))
 var TestingValidatorRegistration = &v1.ValidatorRegistration{
 	FeeRecipient: TestingFeeRecipient,
-	GasLimit:     1,
+	GasLimit:     types.DefaultGasLimit,
 	Timestamp:    types.PraterNetwork.EpochStartTime(TestingDutyEpoch),
 	Pubkey:       TestingValidatorPubKey,
 }
@@ -347,31 +323,6 @@ var TestingAttesterDuty = types.Duty{
 	Type:                          types.BNRoleAttester,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          TestingDutySlot,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: []uint64{},
-}
-
-var TestingProposerDuty = types.Duty{
-	Type:                          types.BNRoleProposer,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          TestingDutySlot,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: []uint64{},
-}
-
-// TestingProposerDutyNextEpoch testing for a second duty start
-var TestingProposerDutyNextEpoch = types.Duty{
-	Type:                          types.BNRoleProposer,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          TestingDutySlot2,
 	ValidatorIndex:                TestingValidatorIndex,
 	CommitteeIndex:                3,
 	CommitteesAtSlot:              36,
@@ -511,14 +462,32 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) 
 	return nil
 }
 
-// GetBeaconBlock returns beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
+func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error {
+	pk := phase0.BLSPubKey{}
+	copy(pk[:], pubkey)
+
+	vr := v1.ValidatorRegistration{
+		FeeRecipient: feeRecipient,
+		GasLimit:     TestingValidatorRegistration.GasLimit,
+		Timestamp:    TestingValidatorRegistration.Timestamp,
+		Pubkey:       pk,
+	}
+
+	r, _ := vr.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
+// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
+func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
+	vBlk := TestingBeaconBlockV(version)
 
 	switch version {
 	case spec.DataVersionBellatrix:
-		vBlk := TestingBeaconBlockV(version)
 		return vBlk.Bellatrix, version, nil
+	case spec.DataVersionCapella:
+		return vBlk.Capella, version, nil
 	default:
 		panic("unsupported version")
 	}
@@ -529,30 +498,21 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 	var r [32]byte
 
 	switch block.Version {
-	case spec.DataVersionPhase0:
-		if block.Phase0 == nil {
-			return errors.Errorf("%s block is nil", block.Version.String())
-		}
-		sb := &phase0.SignedBeaconBlock{
-			Message:   block.Phase0,
-			Signature: sig,
-		}
-		r, _ = sb.HashTreeRoot()
-	case spec.DataVersionAltair:
-		if block.Altair == nil {
-			return errors.Errorf("%s block is nil", block.Version.String())
-		}
-		sb := &altair.SignedBeaconBlock{
-			Message:   block.Altair,
-			Signature: sig,
-		}
-		r, _ = sb.HashTreeRoot()
 	case spec.DataVersionBellatrix:
 		if block.Bellatrix == nil {
 			return errors.Errorf("%s block is nil", block.Version.String())
 		}
 		sb := &bellatrix.SignedBeaconBlock{
 			Message:   block.Bellatrix,
+			Signature: sig,
+		}
+		r, _ = sb.HashTreeRoot()
+	case spec.DataVersionCapella:
+		if block.Capella == nil {
+			return errors.Errorf("%s block is nil", block.Version.String())
+		}
+		sb := &capella.SignedBeaconBlock{
+			Message:   block.Capella,
 			Signature: sig,
 		}
 		r, _ = sb.HashTreeRoot()
@@ -564,14 +524,16 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 	return nil
 }
 
-// GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
+// GetBlindedBeaconBlock returns blinded beacon block by the given slot, graffiti, and randao.
+func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
+	vBlk := TestingBlindedBeaconBlockV(version)
 
 	switch version {
 	case spec.DataVersionBellatrix:
-		vBlk := TestingBlindedBeaconBlockV(version)
 		return vBlk.Bellatrix, version, nil
+	case spec.DataVersionCapella:
+		return vBlk.Capella, version, nil
 	default:
 		panic("unsupported version")
 	}
@@ -588,6 +550,15 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlinde
 		}
 		sb := &apiv1bellatrix.SignedBlindedBeaconBlock{
 			Message:   block.Bellatrix,
+			Signature: sig,
+		}
+		r, _ = sb.HashTreeRoot()
+	case spec.DataVersionCapella:
+		if block.Capella == nil {
+			return errors.Errorf("%s blinded block is nil", block.Version.String())
+		}
+		sb := &apiv1capella.SignedBlindedBeaconBlock{
+			Message:   block.Capella,
 			Signature: sig,
 		}
 		r, _ = sb.HashTreeRoot()

@@ -1,21 +1,13 @@
 package proposer
 
 import (
-	"encoding/hex"
-
 	"github.com/attestantio/go-eth2-client/spec"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
-
-func getSSZRootNoError(obj ssz.HashRoot) string {
-	r, _ := obj.HashTreeRoot()
-	return hex.EncodeToString(r[:])
-}
 
 // ProposeBlindedBlockDecidedRegular tests proposing a blinded block but the decided block is a regular block. Full flow
 func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
@@ -47,7 +39,7 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 			testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 		},
 		BeaconBroadcastedRoots: []string{
-			getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
+			testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 		},
 	}
 }

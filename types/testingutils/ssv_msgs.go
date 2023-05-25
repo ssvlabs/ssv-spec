@@ -5,7 +5,6 @@ import (
 	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
@@ -242,103 +241,6 @@ var postConsensusAttestationMsg = func(
 	}
 }
 
-var PostConsensusProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return postConsensusBeaconBlockMsg(sk, id, false, false)
-}
-
-var PostConsensusProposerTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	ret := postConsensusBeaconBlockMsg(sk, id, false, false)
-	ret.Message.Messages = append(ret.Message.Messages, ret.Message.Messages[0])
-
-	msg := &types.PartialSignatureMessages{
-		Type:     types.PostConsensusPartialSig,
-		Slot:     TestingDutySlot,
-		Messages: ret.Message.Messages,
-	}
-
-	sig, _ := NewTestingKeyManager().SignRoot(msg, types.PartialSignatureType, sk.GetPublicKey().Serialize())
-	return &types.SignedPartialSignatureMessage{
-		Message:   *msg,
-		Signature: sig,
-		Signer:    id,
-	}
-}
-
-var PostConsensusProposerTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	msg := &types.PartialSignatureMessages{
-		Type:     types.PostConsensusPartialSig,
-		Slot:     TestingDutySlot,
-		Messages: []*types.PartialSignatureMessage{},
-	}
-
-	sig, _ := NewTestingKeyManager().SignRoot(msg, types.PartialSignatureType, sk.GetPublicKey().Serialize())
-	return &types.SignedPartialSignatureMessage{
-		Message:   *msg,
-		Signature: sig,
-		Signer:    id,
-	}
-}
-
-var PostConsensusWrongProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return postConsensusBeaconBlockMsg(sk, id, true, false)
-}
-
-var PostConsensusWrongSigProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return postConsensusBeaconBlockMsg(sk, id, false, true)
-}
-
-var PostConsensusSigProposerWrongBeaconSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID) *types.SignedPartialSignatureMessage {
-	ret := postConsensusBeaconBlockMsg(sk, beaconSigner, false, true)
-	ret.Signer = id
-	return ret
-}
-
-var postConsensusBeaconBlockMsg = func(
-	sk *bls.SecretKey,
-	id types.OperatorID,
-	wrongRoot bool,
-	wrongBeaconSig bool,
-) *types.SignedPartialSignatureMessage {
-	signer := NewTestingKeyManager()
-	beacon := NewTestingBeaconNode()
-
-	block := TestingBeaconBlock
-	if wrongRoot {
-		block = TestingWrongBeaconBlock
-	}
-
-	d, _ := beacon.DomainData(1, types.DomainProposer) // epoch doesn't matter here, hard coded
-	sig, root, _ := signer.SignBeaconObject(block, d, sk.GetPublicKey().Serialize(), types.DomainProposer)
-	if wrongBeaconSig {
-		sig, root, _ = signer.SignBeaconObject(block, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainProposer)
-	}
-	blsSig := phase0.BLSSignature{}
-	copy(blsSig[:], sig)
-
-	signed := bellatrix.SignedBeaconBlock{
-		Message:   TestingBeaconBlock,
-		Signature: blsSig,
-	}
-
-	msgs := types.PartialSignatureMessages{
-		Type: types.PostConsensusPartialSig,
-		Slot: TestingDutySlot,
-		Messages: []*types.PartialSignatureMessage{
-			{
-				PartialSignature: signed.Signature[:],
-				SigningRoot:      root,
-				Signer:           id,
-			},
-		},
-	}
-	msgSig, _ := signer.SignRoot(msgs, types.PartialSignatureType, sk.GetPublicKey().Serialize())
-	return &types.SignedPartialSignatureMessage{
-		Message:   msgs,
-		Signature: msgSig,
-		Signer:    id,
-	}
-}
-
 var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.OperatorID) *types.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -366,60 +268,6 @@ var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.Ope
 
 var PreConsensusRandaoMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
 	return randaoMsg(sk, id, false, TestingDutyEpoch, 1, false)
-}
-
-// PreConsensusRandaoNextEpochMsg testing for a second duty start
-var PreConsensusRandaoNextEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch2, 1, false)
-}
-
-var PreConsensusRandaoDifferentEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch+1, 1, false)
-}
-
-var PreConsensusRandaoTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, 2, false)
-}
-
-var PreConsensusRandaoTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, 0, false)
-}
-
-var PreConsensusRandaoNoMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, 0, false)
-}
-
-var PreConsensusRandaoWrongBeaconSigMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.SignedPartialSignatureMessage {
-	return randaoMsg(sk, id, false, TestingDutyEpoch, 1, true)
-}
-
-var PreConsensusRandaoDifferentSignerMsg = func(
-	msgSigner, randaoSigner *bls.SecretKey,
-	msgSignerID,
-	randaoSignerID types.OperatorID,
-) *types.SignedPartialSignatureMessage {
-	signer := NewTestingKeyManager()
-	beacon := NewTestingBeaconNode()
-	d, _ := beacon.DomainData(TestingDutyEpoch, types.DomainRandao)
-	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(TestingDutyEpoch), d, randaoSigner.GetPublicKey().Serialize(), types.DomainRandao)
-
-	msg := types.PartialSignatureMessages{
-		Type: types.RandaoPartialSig,
-		Slot: TestingDutySlot,
-		Messages: []*types.PartialSignatureMessage{
-			{
-				PartialSignature: signed[:],
-				SigningRoot:      root,
-				Signer:           randaoSignerID,
-			},
-		},
-	}
-	sig, _ := signer.SignRoot(msg, types.PartialSignatureType, msgSigner.GetPublicKey().Serialize())
-	return &types.SignedPartialSignatureMessage{
-		Message:   msg,
-		Signature: sig,
-		Signer:    msgSignerID,
-	}
 }
 
 var randaoMsg = func(
@@ -557,7 +405,7 @@ var PreConsensusValidatorRegistrationTooManyRootsMsg = func(msgSK *bls.SecretKey
 	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutyEpoch, false)
 }
 
-var PreConsensusValidatorRegistrationDifferentEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
+var PreConsensusValidatorRegistrationWrongRootMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
 	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutyEpoch, false)
 }
 

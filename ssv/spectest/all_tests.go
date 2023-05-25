@@ -14,6 +14,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
 )
 
 var AllTests = []tests.TestF{
@@ -146,6 +147,7 @@ var AllTests = []tests.TestF{
 	valcheckattestations.SlotMismatch,
 	valcheckattestations.ConsensusDataNil,
 	valcheckattestations.Valid,
+valcheckproposer.BlindedBlock,
 
 	msgcontainer.QuorumPreConsensusMsg,
 	msgcontainer.SinglePreConsensusMsg,
