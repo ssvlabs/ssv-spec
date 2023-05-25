@@ -21,7 +21,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "b28e60a6a8543c93e48d1e1ac3afb3d619d3d10f7a6cc05a37e759f57ca0ddb6",
+				PostDutyRunnerStateRoot: "296ffc80bcff6c6a89fac1151eb4f7fe8598aeb91c2065847b5916168645c11c",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -33,7 +33,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
-				PostDutyRunnerStateRoot: "fafbe6756277f4985bce2e7459d94ea994bfe27f61cb405103cc2a4e1c130611",
+				PostDutyRunnerStateRoot: "08ac53541754af0dc48813035e1a8a5c854bcb9ef536e9fb2d1365ef6701bb3c",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -45,7 +45,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix)),
 				},
-				PostDutyRunnerStateRoot: "de43a5615083cc96c1a875739821592be66e66a488d435403f3dcd4004e1482d",
+				PostDutyRunnerStateRoot: "0d2598276551bdf31e86fc0befff303cc6115c3644c12d6c58b47dd6391dba58",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -57,7 +57,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix)),
 				},
-				PostDutyRunnerStateRoot: "ba4621bf88af6d1a3a7b15da17d4b2ba6676f703e0ac9e3e6ac94d6295fe0ff9",
+				PostDutyRunnerStateRoot: "57ac0bdc002a46495b7e23f57a1006de36fb191d68ad20063ebd70d44b00e179",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -69,7 +69,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "c72a6b7ad407e14ce1ba92b2608aebfb5dc7126688830d3a0cb80a92154397e9",
+				PostDutyRunnerStateRoot: "1116d498c93294fc5b828450f1dd2f20409395fc0dd0ace9b22bf1ef61dff82a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "no pre consensus sigs required for attester role",
 			},
@@ -80,7 +80,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "2a98693189ec66ffdd2041d07a1ee13938ad6703a2d7635cb8fa52bb4a4f707d",
+				PostDutyRunnerStateRoot: "5f169237efd54ad718c306a184ddf79e26e781cb18345c8128653fd591b2d0f0",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "no pre consensus sigs required for sync committee role",
 			},
@@ -91,7 +91,7 @@ func ValidMessage() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "00d8aa8753f000b5adea2aba89efb1120104de80160eb187233a76f25139ae38",
+				PostDutyRunnerStateRoot: "ec4c741b6a1a1fec1b0e3f14a8cdf9b0a7fde95c524e624249b2d9a3d65db53e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

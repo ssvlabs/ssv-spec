@@ -28,7 +28,7 @@ func ValidMessage13Operators() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[7], ks.Shares[7], 7, 7)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[8], ks.Shares[8], 8, 8)),
 				},
-				PostDutyRunnerStateRoot: "8f7d4ee51d9fb8b737bda34b53a65f20f923a55683c1f9aeb3efd51f65009d28",
+				PostDutyRunnerStateRoot: "a59e3fe6c43736ad898d200dea23b56bbe49813d25eab7540fbfbf6258d75e91",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -47,7 +47,7 @@ func ValidMessage13Operators() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[7], ks.Shares[7], 7, 7)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[8], ks.Shares[8], 8, 8)),
 				},
-				PostDutyRunnerStateRoot: "3c088a3666a327f0debe4cd3a97fbf5a17f21af26ff46eb432cf0c55f309e68c",
+				PostDutyRunnerStateRoot: "a3fb52c82d3936b59fb0758b3d75a4c8e92a3b434f22881261917d4e2ea0667f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -66,7 +66,7 @@ func ValidMessage13Operators() tests.SpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[7], ks.Shares[7], 7, 7, spec.DataVersionBellatrix)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[8], ks.Shares[8], 8, 8, spec.DataVersionBellatrix)),
 				},
-				PostDutyRunnerStateRoot: "9d1a52ec986ba1827f65f38d482d644c3e68b6e5b94fee5d4840bb8ff8643800",
+				PostDutyRunnerStateRoot: "7d6a510132ac595e24e720a5b74d46e0a7db63b0db01640e597f3aeb9c7fef67",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -85,7 +85,7 @@ func ValidMessage13Operators() tests.SpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[7], ks.Shares[7], 7, 7, spec.DataVersionBellatrix)),
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[8], ks.Shares[8], 8, 8, spec.DataVersionBellatrix)),
 				},
-				PostDutyRunnerStateRoot: "53024a4d23a333a6f1a7d4792cbbf12019a51f674a06ba15073b650f8c3be915",
+				PostDutyRunnerStateRoot: "b6944fa28ecef36305d0905d75780336da1b4976d810122ba5dadd7bb5692038",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},

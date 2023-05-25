@@ -88,7 +88,7 @@ func ValidFirstHeight() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "204118a5557da81877aadf690e51f98b8b05ab5d7fbcf628ad45a8e2e081b863",
+				PostDutyRunnerStateRoot: "32bc54704e1f964b7955344e0b99e94bff710535e5b2a6d5c526f1a782380f71",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -98,7 +98,7 @@ func ValidFirstHeight() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "3241b70a1095a344694c201b65c41ee18fe263d39c72ee4e6a01b9117410d5ea",
+				PostDutyRunnerStateRoot: "e1363105beeaa8c80a7c94d8a90ce1a96bbb6b265e0a696a79382158d3321939",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
