@@ -61,7 +61,7 @@ func FullHappyFlow() tests.SpecTest {
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: fullHappyFlowSyncCommitteeSC().Root(), //"48c73f57659b69131467ef133ccb35d7de2fe96438d30bfa2b5ea63b19ead011",
+				PostDutyRunnerStateRoot: fullHappyFlowSyncCommitteeSC().Root(), //"5f62ff884e26a66adb7e445af678acbbc3e0bd9cbc196a797f2bb909249d8b62",
 				PostDutyRunnerState:     fullHappyFlowSyncCommitteeSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
@@ -111,7 +111,7 @@ func FullHappyFlow() tests.SpecTest {
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
 					}...,
 				),
-				PostDutyRunnerStateRoot: fullHappyFlowAttesterSC().Root(), // "9d55ff5721b21c5b99dd4b4bacb0acda0b674112fe3cec55cc6aeb04ad5dc2fc",
+				PostDutyRunnerStateRoot: fullHappyFlowAttesterSC().Root(), // "87391e795c99e34b0087eeb63ea8c1f5f5b620b26496ae33212055280bd80c9a",
 				PostDutyRunnerState:     fullHappyFlowAttesterSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
@@ -129,7 +129,7 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 				},
-				PostDutyRunnerStateRoot: fullHappyFlowValidatorRegistrationSC().Root(), // "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
+				PostDutyRunnerStateRoot: fullHappyFlowValidatorRegistrationSC().Root(), // "a1983907ca7f4e90eb87260757e5b98a3cd6bb953b8b108364ef60f41280717a",
 				PostDutyRunnerState:     fullHappyFlowValidatorRegistrationSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty

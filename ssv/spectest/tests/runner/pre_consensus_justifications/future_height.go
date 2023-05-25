@@ -39,7 +39,7 @@ func FutureHeight() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "7e913e610cc49333cda60bd2751e2fe5f3d88e386afc69305e0bf8401b24ef3b",
+				PostDutyRunnerStateRoot: "fda9a9e83761cb6ac4c019d9d83531b83576d57ecce46a5546bba771cdba5de5",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -51,7 +51,7 @@ func FutureHeight() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "1536276c955938e8bbfb14d31ae6f2eec88482adaf4ffafb0d0b5d93c56c1505",
+				PostDutyRunnerStateRoot: "11daa6d3e55633ead9fa39e4b9e8281efb4fbe60bbf16fb3ac05cb2190c86d85",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -63,7 +63,7 @@ func FutureHeight() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "d712f00f26a13dc8de7065ec1aa37b47d7f42366fd5e0c7c4780b1dfd44b35e6",
+				PostDutyRunnerStateRoot: "408da8b5c29375c69ee69877890447fd6c3439111c2c0fc0d03fda2edc858ca5",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -75,7 +75,7 @@ func FutureHeight() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "542f180ed88550cc4e2f11906b14587c88cd3c978b130f84851822623894ec4f",
+				PostDutyRunnerStateRoot: "fc86cfcad849a2b876ab2a5b46819099f2a2106d69a66295d17f5d193ddbb252",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -88,7 +88,7 @@ func FutureHeight() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "524da86407c014569a653ab7eae46c918128415baeba783642d8f056a41de70e",
+				PostDutyRunnerStateRoot: "d150200d21d2eb46aaa8ff959c0bb3b88af4523866390e4d2404673763533e4b",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -98,7 +98,7 @@ func FutureHeight() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "97eac1fc93863db42c5394c5341b2b5b45b020a47ef7300aa370c3672654d32a",
+				PostDutyRunnerStateRoot: "84ae95d379af739356dbbf4042a387ccd724f0edbb89a7ac447e4343c35a3ea0",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},

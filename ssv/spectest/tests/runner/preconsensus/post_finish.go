@@ -36,7 +36,7 @@ func PostFinish() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "d71b446e2adf2b6c0110bf01ec758b1935efe78f307d1fbd89e8b7256a491a31",
+				PostDutyRunnerStateRoot: "2fffcc6a543d6ca5b0494d23ad93796644bdd187c305a142a9ceb79c97d27f47",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
@@ -51,7 +51,7 @@ func PostFinish() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 				},
-				PostDutyRunnerStateRoot: "6500d89cbf4029a7d67923a08eb1a00fe3937c667be050a0e203522c539e9e5f",
+				PostDutyRunnerStateRoot: "97065891fead99b39d84552b4e9b81d39c18fe01d68b96aea0721293b7a22666",
 				DontStartDuty:           true,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing selection proof message: invalid pre-consensus message: no running duty",
@@ -66,7 +66,7 @@ func PostFinish() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "9d16135b4803b1004ed761e0cc22d4321f5b1597870a64b116a1ec67af138ef9",
+				PostDutyRunnerStateRoot: "938470200d1efab449ec1a481408e0209fa4984751e9261daa6d9005f44dc2ec",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",

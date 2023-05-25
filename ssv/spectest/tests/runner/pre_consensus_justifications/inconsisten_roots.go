@@ -46,7 +46,7 @@ func InconsistentRoots() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(changeRootsAndPrepareMsg(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "2619aeecde47fe0efc36aa98fbb2df9834d9eee77f62abe0d10532dbd5215790",
+				PostDutyRunnerStateRoot: "2e0d0c26372ecd5d3ff786bd28581b624fb2f30c84821b23bb15a61faf377d3e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -59,7 +59,7 @@ func InconsistentRoots() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(changeRootsAndPrepareMsg(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "db1b416873d19be76cddc92ded0d442ba0e642514973b5dfec45f587c6ffde15",
+				PostDutyRunnerStateRoot: "c2433300980af6fae62151b9fc6bda67842e019205b5a31660692ab8e99ddbb2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -72,7 +72,7 @@ func InconsistentRoots() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(changeRootsAndPrepareMsg(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "2754fc7ced14fb15f3f18556bb6b837620287cbbfbf908abafa5a0533fc4bc5f",
+				PostDutyRunnerStateRoot: "3544989d49ef3071258fd72b2befa80366afafcb788914a17f6226ad957eb980",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -85,7 +85,7 @@ func InconsistentRoots() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(changeRootsAndPrepareMsg(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "6bd59da9f817b8e40112e58231e36738b9d021db4416c9eeec1dd0236a5362e2",
+				PostDutyRunnerStateRoot: "35fce5d0dc47c393efcdaf98168a6b00e931695c73f6cc47f90d7d6b706ca089",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -99,7 +99,7 @@ func InconsistentRoots() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(changeRootsAndPrepareMsg(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "c913d1b6e4150231615ad2475a26b03403cc40fc7dd90c011c1c24a7bb39ae1a",
+				PostDutyRunnerStateRoot: "863e4147a71bcffc479bce197ef78d675271aad4702fdae08162fe3147340205",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -109,7 +109,7 @@ func InconsistentRoots() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(changeRootsAndPrepareMsg(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "4dbe7550c9fe66953ae2f5066463e8d1288fc37a4cc031b58d4b3e1a87220dc0",
+				PostDutyRunnerStateRoot: "840de1bdaa22e3bf373cdaa0f3a56871170c0ba04fd637b3640ce4ff348b3c46",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},

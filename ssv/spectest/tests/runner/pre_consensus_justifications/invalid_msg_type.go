@@ -39,7 +39,7 @@ func InvalidMsgType() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "c0e63310aabe41ad45f3b7be207d7730bdfe75e09250a8a5a1b45fbae18d2fb1",
+				PostDutyRunnerStateRoot: "903ffa733f8ac0b521808b52e74cf66028d55f6c238d2b5f80c9c37554d92b02",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -51,7 +51,7 @@ func InvalidMsgType() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "8a927dc90b92d67ac9ccf883678edd6a9520b0201e8abea7a500399e63622760",
+				PostDutyRunnerStateRoot: "7c32685bdc20b5577bb8e46b28ad7a178c5d56b8a18042036de31f01159a6532",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -63,7 +63,7 @@ func InvalidMsgType() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "3c3d52885dafd999639514fd813a69cb6eda5d80054d22826ef696d99139f6a2",
+				PostDutyRunnerStateRoot: "01cb6274517b1a3d14223410cb7541496a1174ba14d150b9245f0000710e2a96",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -75,7 +75,7 @@ func InvalidMsgType() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "c7d354b01cd11ce7a0277c5bd2493c4112422a827eedad8dc38d5e8d58d5f842",
+				PostDutyRunnerStateRoot: "7dc421dacd9fdb81e8887c4942529edb91f1346fb2ce7ec6bb9ba554a85499a3",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -88,7 +88,7 @@ func InvalidMsgType() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "81cb7b1d3ea3087d49f9773b3a2b75a87b901e50427d237f2a10c0e1904e7684",
+				PostDutyRunnerStateRoot: "127cb9d3d0f38967765066de4a2512e2dc1f12f501b395afb0b6b697316e021c",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: did not receive proposal for this round",
 			},
@@ -99,7 +99,7 @@ func InvalidMsgType() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "38592232077cd45709a7c6cfdd20c9d899af9d79bc750add3c4b8f2b6794cb34",
+				PostDutyRunnerStateRoot: "d9ccbe17862d695e9bceff0a9489c8fc81abc434d619a8efa97408b7e27ed4f9",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: did not receive proposal for this round",
 			},

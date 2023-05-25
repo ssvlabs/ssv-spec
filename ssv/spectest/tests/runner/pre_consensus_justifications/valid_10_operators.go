@@ -39,7 +39,7 @@ func Valid10Operators() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "c88dd6ccbe3f4b06362bc71140bb7e9093e10a2f1a95af3e85cc2ca0041b940e",
+				PostDutyRunnerStateRoot: "a8617bc88bbecef6dc2436d85da50b57330a113f901ff17add3d841a0017be2b",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -51,7 +51,7 @@ func Valid10Operators() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "fadc6797ece68b5f08a36f8a25d3bef60703a1aff4de243be09db4c54f83ba49",
+				PostDutyRunnerStateRoot: "7c37101b0f8bdbc8455e55ee6c3f0453bbdddf65cf61b2affff35e1029992759",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -63,7 +63,7 @@ func Valid10Operators() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "c8214801c1f1e98e7e4c08e7c99fd390190b4560ab8d99b2bc509fb36bc7454a",
+				PostDutyRunnerStateRoot: "d24029268cb60f37b2ebdcb4dcda6f6d7ac34d18acfbfb7ccc6f560b4454db2c",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -75,7 +75,7 @@ func Valid10Operators() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "fae92f70101bcc0a8a82db7f1ae373854de99153d62fd7ae2964dbf693b83740",
+				PostDutyRunnerStateRoot: "3df6c06d4613f4d4dd5d7150fa1472d07b55106a7a98cb8dcdefdf8ba2c3974e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -88,7 +88,7 @@ func Valid10Operators() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "72c88e9d829d4228aedb5273ef6f655c5a59db80ebc30f1ac3484d7afee4d362",
+				PostDutyRunnerStateRoot: "e79d50e36a2300e5d71d610d233262ff76625e3849ef4d1fa25998b06aedc2c2",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -98,7 +98,7 @@ func Valid10Operators() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
-				PostDutyRunnerStateRoot: "10d1db825f5874a956788c749a5a66e7564d9392cd88b913db0e4e64661efd62",
+				PostDutyRunnerStateRoot: "70b645de99c19e1926694d59e8fe1264b43bc13629c3fa96cf201f93c4d35048",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
