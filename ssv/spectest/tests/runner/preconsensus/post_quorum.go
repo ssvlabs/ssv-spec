@@ -64,6 +64,9 @@ func PostQuorum() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingValidatorRegistration),
+				},
 				ExpectedError: "failed processing validator registration message: invalid pre-consensus message: no running duty",
 			},
 		},
