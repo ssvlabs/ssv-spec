@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/attestantio/go-eth2-client v0.15.8
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0
-	github.com/ethereum/go-ethereum v1.10.18
+	github.com/ethereum/go-ethereum v1.10.22
 	github.com/ferranbt/fastssz v0.1.2
 	github.com/goccy/go-yaml v1.9.5
 	github.com/herumi/bls-eth-go-binary v0.0.0-20220509081320-2d8ab06de53c
