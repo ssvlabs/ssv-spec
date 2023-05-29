@@ -37,9 +37,9 @@ func PostQuorum() tests.SpecTest {
 				PostDutyRunnerState:     postQuorumSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
-					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
-					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
 				DontStartDuty: true,
 				ExpectedError: expectedErr,
@@ -62,7 +62,7 @@ func PostQuorum() tests.SpecTest {
 				PostDutyRunnerState:     postQuorumSyncCommitteeSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 				DontStartDuty: true,
 				ExpectedError: expectedErr,
@@ -85,7 +85,7 @@ func PostQuorum() tests.SpecTest {
 				PostDutyRunnerState:     postQuorumAggregatorSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
 				DontStartDuty: true,
 				ExpectedError: expectedErr,
@@ -108,7 +108,7 @@ func PostQuorum() tests.SpecTest {
 				PostDutyRunnerState:     postQuorumAttesterSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
-					getSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
 				DontStartDuty: true,
 				ExpectedError: expectedErr,
@@ -136,7 +136,7 @@ func PostQuorum() tests.SpecTest {
 			PostDutyRunnerState:     postQuorumProposerSC(version).ExpectedState,
 			OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			BeaconBroadcastedRoots: []string{
-				getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
 			DontStartDuty: true,
 			ExpectedError: expectedErr,
@@ -163,7 +163,7 @@ func PostQuorum() tests.SpecTest {
 			PostDutyRunnerState:     postQuorumBlindedProposerSC(version).ExpectedState,
 			OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			BeaconBroadcastedRoots: []string{
-				getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
 			DontStartDuty: true,
 			ExpectedError: expectedErr,

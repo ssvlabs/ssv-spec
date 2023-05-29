@@ -418,7 +418,7 @@ var PreConsensusValidatorRegistrationTooManyRootsMsg = func(msgSK *bls.SecretKey
 	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutyEpoch, false)
 }
 
-var PreConsensusValidatorRegistrationDifferentEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
+var PreConsensusValidatorRegistrationWrongRootMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
 	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutyEpoch, false)
 }
 

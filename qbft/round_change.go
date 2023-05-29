@@ -30,7 +30,7 @@ func (i *Instance) uponRoundChange(
 		roundChangeMsgContainer,
 		valCheck)
 	if err != nil {
-		return errors.Wrap(err, "could not get proposal justification for leading ronud")
+		return errors.Wrap(err, "could not get proposal justification for leading round")
 	}
 	if justifiedRoundChangeMsg != nil {
 		roundChangeJustification, _ := justifiedRoundChangeMsg.Message.GetRoundChangeJustifications() // no need to check error, check on isValidRoundChange
