@@ -2,7 +2,6 @@ package testingutils
 
 import (
 	"encoding/hex"
-
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
@@ -28,6 +27,11 @@ var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *
 	copy(blsSig[:], ret)
 
 	return blsSig
+}
+
+func GetSSZRootNoError(obj ssz.HashRoot) string {
+	r, _ := obj.HashTreeRoot()
+	return hex.EncodeToString(r[:])
 }
 
 var TestingAttestationData = &phase0.AttestationData{
@@ -296,7 +300,7 @@ var TestingSignedSyncCommitteeContributions = func(
 var TestingFeeRecipient = bellatrix.ExecutionAddress(ethAddressFromHex("535953b5a6040074948cf185eaa7d2abbd66808f"))
 var TestingValidatorRegistration = &v1.ValidatorRegistration{
 	FeeRecipient: TestingFeeRecipient,
-	GasLimit:     1,
+	GasLimit:     types.DefaultGasLimit,
 	Timestamp:    types.PraterNetwork.EpochStartTime(TestingDutyEpoch),
 	Pubkey:       TestingValidatorPubKey,
 }
@@ -447,8 +451,24 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) 
 	return nil
 }
 
-// GetBeaconBlock returns beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
+func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error {
+	pk := phase0.BLSPubKey{}
+	copy(pk[:], pubkey)
+
+	vr := v1.ValidatorRegistration{
+		FeeRecipient: feeRecipient,
+		GasLimit:     TestingValidatorRegistration.GasLimit,
+		Timestamp:    TestingValidatorRegistration.Timestamp,
+		Pubkey:       pk,
+	}
+
+	r, _ := vr.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
+// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
+func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
 	vBlk := TestingBeaconBlockV(version)
 
@@ -493,8 +513,8 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 	return nil
 }
 
-// GetBlindedBeaconBlock returns blinded beacon block by the given slot and committee index
-func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
+// GetBlindedBeaconBlock returns blinded beacon block by the given slot, graffiti, and randao.
+func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
 	vBlk := TestingBlindedBeaconBlockV(version)
 

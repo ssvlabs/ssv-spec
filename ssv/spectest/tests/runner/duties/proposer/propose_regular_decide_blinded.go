@@ -39,7 +39,7 @@ func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 			testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 		},
 		BeaconBroadcastedRoots: []string{
-			getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
+			testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
 		},
 	}
 }
