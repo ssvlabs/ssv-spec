@@ -44,8 +44,8 @@ func LatePrepare() tests.SpecTest {
 func latePrepareStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+	// append late prepare msg
 	msgs = append(msgs, testingutils.TestingPrepareMessage(ks.Shares[4], types.OperatorID(4)))
-	//latePrepare := testingutils.TestingPrepareMessage(ks.Shares[4], 4)
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
@@ -67,7 +67,6 @@ func latePrepareStateComparison() *comparable.StateComparison {
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)
-	//instance.State.PrepareContainer.Msgs[qbft.FirstRound] = append(instance.State.PrepareContainer.Msgs[qbft.FirstRound], latePrepare)
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
 	return &comparable.StateComparison{ExpectedState: contr}

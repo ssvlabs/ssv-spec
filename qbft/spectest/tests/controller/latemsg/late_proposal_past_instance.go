@@ -15,15 +15,11 @@ func LateProposalPastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
 
 	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
-	msgPerHeight[2] = allMsgs[14:21]
-	msgPerHeight[3] = allMsgs[21:28]
-	msgPerHeight[4] = allMsgs[28:35]
-	msgPerHeight[5] = allMsgs[35:42]
 
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
 		sc := lateProposalPastInstanceStateComparison(height, nil)
@@ -44,18 +40,14 @@ func LateProposalPastInstance() tests.SpecTest {
 		}
 	}
 
-	lateMsg := testingutils.TestingMultiSignerProposalMessageWithHeight([]*bls.SecretKey{ks.Shares[1]}, []types.OperatorID{1}, 2)
-	sc := lateProposalPastInstanceStateComparison(6, lateMsg)
+	lateMsg := testingutils.TestingMultiSignerProposalMessageWithHeight([]*bls.SecretKey{ks.Shares[1]}, []types.OperatorID{1}, qbft.FirstHeight)
+	sc := lateProposalPastInstanceStateComparison(2, lateMsg)
 
 	return &tests.ControllerSpecTest{
 		Name: "late proposal past instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight),
 			instanceData(1),
-			instanceData(2),
-			instanceData(3),
-			instanceData(4),
-			instanceData(5),
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
