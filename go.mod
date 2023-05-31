@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/attestantio/go-eth2-client v0.15.8
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0
-	github.com/ethereum/go-ethereum v1.10.22
+	github.com/ethereum/go-ethereum v1.12.0
 	github.com/ferranbt/fastssz v0.1.2
 	github.com/goccy/go-yaml v1.9.5
 	github.com/herumi/bls-eth-go-binary v0.0.0-20220509081320-2d8ab06de53c
@@ -13,7 +13,7 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.7.1
 	github.com/pkg/errors v0.9.1
 	github.com/prysmaticlabs/go-bitfield v0.0.0-20210809151128-385d8c5e3fb7
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 )
 
 require (
@@ -26,10 +26,10 @@ require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
+	github.com/holiman/uint256 v1.2.2-0.20230321075855-87b91420868c // indirect
 	github.com/ipfs/go-cid v0.2.0 // indirect
 	github.com/ipfs/go-log v1.0.5 // indirect
 	github.com/ipfs/go-log/v2 v2.5.1 // indirect
-	github.com/klauspost/compress v1.15.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.1.2 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect
 	github.com/libp2p/go-libp2p-discovery v0.6.0 // indirect
@@ -63,8 +63,8 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.22.0 // indirect
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
-	golang.org/x/sys v0.2.0 // indirect
+	golang.org/x/crypto v0.1.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
