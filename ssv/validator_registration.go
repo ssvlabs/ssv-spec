@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -23,6 +24,7 @@ type ValidatorRegistrationRunner struct {
 func NewValidatorRegistrationRunner(
 	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
+	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
@@ -32,6 +34,7 @@ func NewValidatorRegistrationRunner(
 			BeaconRoleType: types.BNRoleValidatorRegistration,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
+			QBFTController: qbftController,
 		},
 
 		beacon:  beacon,

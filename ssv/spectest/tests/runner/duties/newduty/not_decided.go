@@ -80,6 +80,14 @@ func NotDecided() tests.SpecTest {
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedErr,
 			},
+			{
+				Name:                    "validator registration",
+				Runner:                  startRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty),
+				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
+				PostDutyRunnerStateRoot: "f2385e5e764e83af908ce5f06801c499252e7a2f934620051b9b98e726e1edcd",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedErr,
+			},
 		},
 	}
 
