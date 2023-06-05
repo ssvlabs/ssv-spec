@@ -18,7 +18,7 @@ func validDecided7OperatorsSyncCommitteeContributionSC() *comparable.StateCompar
 	cdBytes := testingutils.TestSyncCommitteeContributionConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -68,7 +68,7 @@ func validDecided7OperatorsSyncCommitteeSC() *comparable.StateComparison {
 	cdBytes := testingutils.TestSyncCommitteeConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.SyncCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -118,7 +118,7 @@ func validDecided7OperatorsAggregatorSC() *comparable.StateComparison {
 	cdBytes := testingutils.TestAggregatorConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -168,7 +168,7 @@ func validDecided7OperatorsAttesterSC() *comparable.StateComparison {
 	cdBytes := testingutils.TestAttesterConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.AttesterRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -218,7 +218,7 @@ func validDecided7OperatorsProposerSC(version spec.DataVersion) *comparable.Stat
 	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -268,7 +268,7 @@ func validDecided7OperatorsBlindedProposerSC(version spec.DataVersion) *comparab
 	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
