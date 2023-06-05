@@ -11,7 +11,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PostQuorum tests a msg received post pre consensus quorum
+// PostQuorum tests a msg received post post-consensus quorum
 func PostQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no running duty"
