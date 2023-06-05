@@ -12,13 +12,16 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PostDecided tests a valid start duty before finished and after decided
+// PostDecided tests a valid start duty before finished and after decided of another duty.
+// Duties that have a preconsensus phase won't update the `currentRunningInstance`.
 func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
 	// nolint
 	decidedRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+		// baseStartNewDuty(r, duty) will override this state.
+		// We set it here to correctly mimic the state of the runner after the duty is started.
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
