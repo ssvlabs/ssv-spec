@@ -18,7 +18,7 @@ func duplicateMsgDifferentRootsSyncCommitteeContributionSC() *comparable.StateCo
 	cdBytes := testingutils.TestSyncCommitteeContributionConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -61,7 +61,7 @@ func duplicateMsgDifferentRootsSyncCommitteeSC() *comparable.StateComparison {
 	cdBytes := testingutils.TestSyncCommitteeConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.SyncCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -104,7 +104,7 @@ func duplicateMsgDifferentRootsAggregatorSC() *comparable.StateComparison {
 	cdBytes := testingutils.TestAggregatorConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -147,7 +147,7 @@ func duplicateMsgDifferentRootsAttesterSC() *comparable.StateComparison {
 	cdBytes := testingutils.TestAttesterConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.AttesterRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -190,7 +190,7 @@ func duplicateMsgDifferentRootsProposerSC(version spec.DataVersion) *comparable.
 	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -233,7 +233,7 @@ func duplicateMsgDifferentRootsBlindedProposerSC(version spec.DataVersion) *comp
 	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
