@@ -17,7 +17,7 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -61,7 +61,7 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 	cd := testingutils.TestAggregatorConsensusData
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -105,7 +105,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 	cd := testingutils.TestProposerConsensusDataV(version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -149,7 +149,7 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(

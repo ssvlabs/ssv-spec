@@ -2,8 +2,8 @@ package preconsensus
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/bloxapp/ssv-spec/ssv"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
@@ -13,7 +13,7 @@ func noRunningDutySyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			return testingutils.SyncCommitteeContributionRunner(ks)
 		}(),
 	}
@@ -24,7 +24,7 @@ func noRunningDutyAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			return testingutils.AggregatorRunner(ks)
 		}(),
 	}
@@ -35,7 +35,7 @@ func noRunningDutyValidatorRegistrationSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			return testingutils.ValidatorRegistrationRunner(ks)
 		}(),
 	}
@@ -46,7 +46,7 @@ func noRunningDutyProposerSC(version spec.DataVersion) *comparable.StateComparis
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			return testingutils.ProposerRunner(ks)
 		}(),
 	}
@@ -57,7 +57,7 @@ func noRunningDutyBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			return testingutils.ProposerBlindedBlockRunner(ks)
 		}(),
 	}

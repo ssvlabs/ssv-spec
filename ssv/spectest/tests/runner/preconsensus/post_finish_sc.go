@@ -16,7 +16,7 @@ func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -41,7 +41,7 @@ func postFinishAggregatorSC() *comparable.StateComparison {
 	cd := testingutils.TestAggregatorConsensusData
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -65,7 +65,7 @@ func postFinishValidatorRegistrationSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ValidatorRegistrationRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -90,7 +90,7 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 	cd := testingutils.TestProposerConsensusDataV(version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -115,7 +115,7 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
