@@ -17,8 +17,6 @@ import (
 func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// TODO: check error
-	// nolint
 	decidedRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		// baseStartNewDuty(r, duty) will override this state.
 		// We set it here to correctly mimic the state of the runner after the duty is started.
