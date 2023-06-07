@@ -67,11 +67,11 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 		return nil
 	}
 
-	anyIsAggregator := false
-
-	// get subnets
-	subnets := make([]uint64, 0)
-	selectionProofs := make([]phase0.BLSSignature, 0)
+	// collect selection proofs and subnets
+	var (
+		selectionProofs []phase0.BLSSignature
+		subnets         []uint64
+	)
 	for i, root := range roots {
 		// reconstruct selection proof sig
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
@@ -80,7 +80,6 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 		}
 		blsSigSelectionProof := phase0.BLSSignature{}
 		copy(blsSigSelectionProof[:], sig)
-		selectionProofs = append(selectionProofs, blsSigSelectionProof)
 
 		aggregator, err := r.GetBeaconNode().IsSyncCommitteeAggregator(sig)
 		if err != nil {
@@ -90,15 +89,19 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 			continue
 		}
 
-		anyIsAggregator = true
-
 		// fetch sync committee contribution
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(r.GetState().StartingDuty.ValidatorSyncCommitteeIndices[i]))
 		if err != nil {
 			return errors.Wrap(err, "could not get sync committee subnet ID")
 		}
 
+		selectionProofs = append(selectionProofs, blsSigSelectionProof)
 		subnets = append(subnets, subnet)
+	}
+	if len(selectionProofs) == 0 {
+		// there aren't any aggregators
+		r.GetState().Finished = true
+		return nil
 	}
 
 	duty := r.GetState().StartingDuty
@@ -120,14 +123,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 		DataSSZ: byts,
 	}
 
-	if anyIsAggregator {
-		if err := r.BaseRunner.decide(r, input); err != nil {
-			return errors.Wrap(err, "can't start new duty runner instance for duty")
-		}
-	} else {
-		r.BaseRunner.State.Finished = true
+	if err := r.BaseRunner.decide(r, input); err != nil {
+		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
-
 	return nil
 }
 

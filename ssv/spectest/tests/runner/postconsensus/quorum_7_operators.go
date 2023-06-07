@@ -1,6 +1,8 @@
 package postconsensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -12,7 +14,8 @@ import (
 // Quorum7Operators  tests a quorum of valid SignedPartialSignatureMessage 7 operators
 func Quorum7Operators() tests.SpecTest {
 	ks := testingutils.Testing7SharesSet()
-	return &tests.MultiMsgProcessingSpecTest{
+
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus quorum 7 operators",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -62,50 +65,6 @@ func Quorum7Operators() tests.SpecTest {
 				DontStartDuty: true,
 			},
 			{
-				Name: "proposer",
-				Runner: decideRunner(
-					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix),
-				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, spec.DataVersionBellatrix)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[5], 5, spec.DataVersionBellatrix)),
-				},
-				PostDutyRunnerStateRoot: "5d711ad6d69a6efbde6015a46462fd3883c3cb60c5984a5711b69dcb20281135",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
-				},
-				DontStartDuty: true,
-			},
-			{
-				Name: "proposer (blinded block)",
-				Runner: decideRunner(
-					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix),
-				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, spec.DataVersionBellatrix)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[5], 5, spec.DataVersionBellatrix)),
-				},
-				PostDutyRunnerStateRoot: "0e93f23e9179e9eb6031e7ac1ff4af1d11fc48f4dc0a09b94dccfea414e983ca",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionBellatrix)),
-				},
-				DontStartDuty: true,
-			},
-			{
 				Name: "aggregator",
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),
@@ -134,7 +93,7 @@ func Quorum7Operators() tests.SpecTest {
 					&testingutils.TestingAttesterDuty,
 					testingutils.TestAttesterConsensusData,
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty: &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
@@ -151,4 +110,64 @@ func Quorum7Operators() tests.SpecTest {
 			},
 		},
 	}
+
+	// proposerV creates a test specification for versioned proposer.
+	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("proposer (%s)", version.String()),
+			Runner: decideRunner(
+				testingutils.ProposerRunner(ks),
+				testingutils.TestingProposerDutyV(version),
+				testingutils.TestProposerConsensusDataV(version),
+			),
+			Duty: testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SSVMessage{
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[5], 5, version)),
+			},
+			PostDutyRunnerStateRoot: quorum7OperatorsProposerSC(version).Root(),
+			PostDutyRunnerState:     quorum7OperatorsProposerSC(version).ExpectedState,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			BeaconBroadcastedRoots: []string{
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+			},
+			DontStartDuty: true,
+		}
+	}
+
+	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
+	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner: decideRunner(
+				testingutils.ProposerBlindedBlockRunner(ks),
+				testingutils.TestingProposerDutyV(version),
+				testingutils.TestProposerBlindedBlockConsensusDataV(version),
+			),
+			Duty: testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SSVMessage{
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[5], 5, version)),
+			},
+			PostDutyRunnerStateRoot: quorum7OperatorsBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     quorum7OperatorsBlindedProposerSC(version).ExpectedState,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			BeaconBroadcastedRoots: []string{
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+			},
+			DontStartDuty: true,
+		}
+	}
+
+	for _, v := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+	}
+
+	return multiSpecTest
 }
