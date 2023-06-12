@@ -11,7 +11,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// validDecidedSyncCommitteeContributionSC returns state comparison object for the ValidDecided SyncCommitteeContribution versioned spec test
+// validDecidedSyncCommitteeContributionSC returns a non-finished decided runner upon a valid quorum decided on a value.
+// There are pre-consensus messages in the container that start the consensus instance.
 func validDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -61,7 +62,7 @@ func validDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// validDecidedSyncCommitteeSC returns state comparison object for the ValidDecided SyncCommittee versioned spec test
+// validDecidedSyncCommitteeSC returns a non-finished decided runner upon a valid quorum decided on a value.
 func validDecidedSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -111,7 +112,8 @@ func validDecidedSyncCommitteeSC() *comparable.StateComparison {
 	}
 }
 
-// validDecidedAggregatorSC returns state comparison object for the ValidDecided Aggregator versioned spec test
+// validDecidedAggregatorSC returns a non-finished decided runner upon a valid quorum decided on a value.
+// There are pre-consensus messages in the container that start the consensus instance.
 func validDecidedAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -161,7 +163,7 @@ func validDecidedAggregatorSC() *comparable.StateComparison {
 	}
 }
 
-// validDecidedAttesterSC returns state comparison object for the ValidDecided Attester versioned spec test
+// validDecidedAttesterSC returns a non-finished decided runner upon a valid quorum decided on a value.
 func validDecidedAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -211,7 +213,8 @@ func validDecidedAttesterSC() *comparable.StateComparison {
 	}
 }
 
-// validDecidedProposerSC returns state comparison object for the ValidDecided Proposer versioned spec test
+// validDecidedProposerSC returns a non-finished decided runner upon a valid quorum decided on a value.
+// There are pre-consensus messages in the container that start the consensus instance.
 func validDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -261,7 +264,8 @@ func validDecidedProposerSC(version spec.DataVersion) *comparable.StateCompariso
 	}
 }
 
-// validDecidedBlindedProposerSC returns state comparison object for the ValidDecided Blinded Proposer versioned spec test
+// validDecidedBlindedProposerSC returns a non-finished decided runner upon a valid quorum decided on a value.
+// There are pre-consensus messages in the container that start the consensus instance.
 func validDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

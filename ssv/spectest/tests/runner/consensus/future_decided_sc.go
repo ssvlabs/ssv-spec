@@ -12,7 +12,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// futureDecidedSyncCommitteeContributionSC returns state comparison object for the FutureDecided SyncCommitteeContribution versioned spec test
+// futureDecidedSyncCommitteeContributionSC returns runner with 2 stored instances. One undecided and one decided for height 2.
+// This is because we are processing messages for height 2 while height 0 is still running.
+// There are also pre consensus messages that start the new instance.
 func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -84,7 +86,9 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// futureDecidedSyncCommitteeSC returns state comparison object for the FutureDecided SyncCommittee versioned spec test
+// futureDecidedSyncCommitteeSC returns runner with 2 stored instances. One undecided and one decided for height 2.
+// // This is because we are processing messages for height 2 while height 0 is still running.
+// // There are no pre consensus messages for this duty.
 func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -153,7 +157,9 @@ func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 	}
 }
 
-// futureDecidedAggregatorSC returns state comparison object for the FutureDecided Aggregator versioned spec test
+// futureDecidedAggregatorSC returns runner with 2 stored instances. One undecided and one decided for height 2.
+// This is because we are processing messages for height 2 while height 0 is still running.
+// There are also pre consensus messages that start the new instance.
 func futureDecidedAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -226,7 +232,9 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 	}
 }
 
-// futureDecidedAttesterSC returns state comparison object for the FutureDecided Attester versioned spec test
+// futureDecidedAttesterSC returns runner with 2 stored instances. One undecided and one decided for height 2.
+// This is because we are processing messages for height 2 while height 0 is still running.
+// There are no pre consensus messages for this duty.
 func futureDecidedAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -295,7 +303,9 @@ func futureDecidedAttesterSC() *comparable.StateComparison {
 	}
 }
 
-// futureDecidedProposerSC returns state comparison object for the FutureDecided Proposer versioned spec test
+// futureDecidedProposerSC returns runner with 2 stored instances. One undecided and one decided for height 2.
+// This is because we are processing messages for height 2 while height 0 is still running.
+// There are also pre consensus messages that start the new instance.
 func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -368,7 +378,9 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 	}
 }
 
-// futureDecidedBlindedProposerSC returns state comparison object for the FutureDecided BlindedProposer versioned spec test
+// futureDecidedBlindedProposerSC returns runner with 2 stored instances. One undecided and one decided for height 2.
+// This is because we are processing messages for height 2 while height 0 is still running.
+// There are also pre consensus messages that start the new instance.
 func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

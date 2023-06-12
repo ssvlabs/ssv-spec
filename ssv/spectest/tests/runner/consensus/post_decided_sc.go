@@ -11,14 +11,15 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// postDecidedSyncCommitteeContributionSC returns state comparison object for the PostDecided SyncCommitteeContribution versioned spec test
+// postDecidedSyncCommitteeContributionSC returns runner with decided instance and an extra commit message.
+// There are pre-consensus messages in the container but no post-consensus messages.
 func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
 	cdBytes := testingutils.TestSyncCommitteeContributionConsensusDataByts
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -69,7 +70,8 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// postDecidedSyncCommitteeSC returns state comparison object for the PostDecided SyncCommittee versioned spec test
+// postDecidedSyncCommitteeSC returns runner with decided instance and an extra commit message.
+// There are no pre-consensus or post-consensus messages in the container.
 func postDecidedSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -127,7 +129,8 @@ func postDecidedSyncCommitteeSC() *comparable.StateComparison {
 	}
 }
 
-// postDecidedAggregatorSC returns state comparison object for the PostDecided Aggregator versioned spec test
+// postDecidedAggregatorSC returns runner with decided instance and an extra commit message.
+// There are pre-consensus messages in the container but no post-consensus messages.
 func postDecidedAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -185,7 +188,8 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 	}
 }
 
-// postDecidedAttesterSC returns state comparison object for the PostDecided Attester versioned spec test
+// postDecidedAttesterSC returns runner with decided instance and an extra commit message.
+// There are no pre-consensus or post-consensus messages in the container.
 func postDecidedAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -243,7 +247,8 @@ func postDecidedAttesterSC() *comparable.StateComparison {
 	}
 }
 
-// postDecidedProposerSC returns state comparison object for the PostDecided Proposer versioned spec test
+// postDecidedProposerSC returns runner with decided instance and an extra commit message.
+// There are pre-consensus messages in the container but no post-consensus messages.
 func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -301,7 +306,8 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 	}
 }
 
-// postDecidedBlindedProposerSC returns state comparison object for the PostDecided Blinded Proposer versioned spec test
+// postDecidedBlindedProposerSC  returns runner with decided instance and an extra commit message.
+// // There are pre-consensus messages in the container but no post-consensus messages.
 func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

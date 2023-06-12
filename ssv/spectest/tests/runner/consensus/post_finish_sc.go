@@ -11,7 +11,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// postFinishSyncCommitteeContributionSC returns state comparison object for the PostFinish SyncCommitteeContribution versioned spec test
+// postFinishSyncCommitteeContributionSC returns finished runner with an extra commit message.
+// There are pre-consensus messages from 3 validators, and post-consensus messages from 3 validators.
 func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -73,7 +74,8 @@ func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// postFinishSyncCommitteeSC returns state comparison object for the PostFinish SyncCommittee versioned spec test
+// postFinishSyncCommitteeSC returns finished runner with an extra commit message.
+// There are post-consensus messages from 3 validators.
 func postFinishSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -135,7 +137,8 @@ func postFinishSyncCommitteeSC() *comparable.StateComparison {
 	}
 }
 
-// postFinishAggregatorSC returns state comparison object for the PostFinish Aggregator versioned spec test
+// postFinishAggregatorSC returns finished runner with an extra commit message.
+// There are pre-consensus messages from 3 validators, and post-consensus messages from 3 validators.
 func postFinishAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -197,7 +200,8 @@ func postFinishAggregatorSC() *comparable.StateComparison {
 	}
 }
 
-// postFinishAttesterSC returns state comparison object for the PostFinish Attester versioned spec test
+// postFinishAttesterSC returns finished runner with an extra commit message.
+// There are post-consensus messages from 3 validators.
 func postFinishAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -259,7 +263,8 @@ func postFinishAttesterSC() *comparable.StateComparison {
 	}
 }
 
-// postFinishProposerSC returns state comparison object for the PostFinish Proposer versioned spec test
+// postFinishProposerSC returns finished runner with an extra commit message.
+// There are pre-consensus messages from 3 validators, and post-consensus messages from 3 validators.
 func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -321,7 +326,8 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 	}
 }
 
-// postFinishBlindedProposerSC returns state comparison object for the PostFinish Blinded Proposer versioned spec test
+// postFinishBlindedProposerSC returns finished runner with an extra commit message.
+// There are pre-consensus messages from 3 validators, and post-consensus messages from 3 validators.
 func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
