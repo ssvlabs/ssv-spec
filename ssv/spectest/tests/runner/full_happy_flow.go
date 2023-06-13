@@ -1,21 +1,15 @@
 package runner
 
 import (
-	"encoding/hex"
 	"fmt"
-	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
-
-func getSSZRootNoError(obj ssz.HashRoot) string {
-	r, _ := obj.HashTreeRoot()
-	return hex.EncodeToString(r[:])
-}
 
 // FullHappyFlow tests a full runner happy flow
 func FullHappyFlow() tests.SpecTest {
@@ -162,7 +156,7 @@ func FullHappyFlow() tests.SpecTest {
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 			BeaconBroadcastedRoots: []string{
-				getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
 		}
 	}
@@ -188,7 +182,7 @@ func FullHappyFlow() tests.SpecTest {
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 			BeaconBroadcastedRoots: []string{
-				getSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
 		}
 	}

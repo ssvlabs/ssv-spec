@@ -1,16 +1,19 @@
 package processmsg
 
 import (
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
+	qbftcomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // FullDecided tests process msg and first time deciding
 func FullDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := fullDecidedStateComparison()
 	return &tests.ControllerSpecTest{
 		Name: "full decided",
 		RunInstanceData: []*tests.RunInstanceData{
@@ -26,8 +29,38 @@ func FullDecided() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
-				ControllerPostRoot: "4c96913e87aa17c9f0d5c1b6b220cbc7a66b7b40ef55f1059f1e1fa9f59c94d9",
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
 	}
+}
+
+func fullDecidedStateComparison() *qbftcomparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+
+	contr := testingutils.NewTestingQBFTController(
+		testingutils.TestingIdentifier,
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+	)
+
+	instance := &qbft.Instance{
+		StartValue: testingutils.TestingQBFTFullData,
+		State: &qbft.State{
+			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			ID:                              testingutils.TestingIdentifier,
+			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+			LastPreparedRound:               qbft.FirstRound,
+			LastPreparedValue:               testingutils.TestingQBFTFullData,
+			Decided:                         true,
+			DecidedValue:                    testingutils.TestingQBFTFullData,
+			Round:                           qbft.FirstRound,
+		},
+	}
+	qbftcomparable.SetSignedMessages(instance, msgs)
+	contr.StoredInstances = append(contr.StoredInstances, instance)
+
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }

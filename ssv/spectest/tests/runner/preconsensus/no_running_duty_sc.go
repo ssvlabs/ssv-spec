@@ -2,18 +2,51 @@ package preconsensus
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/bloxapp/ssv-spec/ssv"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
+
+// noRunningDutySyncCommitteeContributionSC returns state comparison object for the NoRunningDuty SyncCommitteeContribution versioned spec test
+func noRunningDutySyncCommitteeContributionSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			return testingutils.SyncCommitteeContributionRunner(ks)
+		}(),
+	}
+}
+
+// noRunningDutyAggregatorSC returns state comparison object for the NoRunningDuty Aggregator versioned spec test
+func noRunningDutyAggregatorSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			return testingutils.AggregatorRunner(ks)
+		}(),
+	}
+}
+
+// noRunningDutyValidatorRegistrationSC returns state comparison object for the NoRunningDuty ValidatorRegistration versioned spec test
+func noRunningDutyValidatorRegistrationSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			return testingutils.ValidatorRegistrationRunner(ks)
+		}(),
+	}
+}
 
 // noRunningDutyProposerSC returns state comparison object for the NoRunningDuty Proposer versioned spec test
 func noRunningDutyProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			return testingutils.ProposerRunner(ks)
 		}(),
 	}
@@ -24,7 +57,7 @@ func noRunningDutyBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			return testingutils.ProposerBlindedBlockRunner(ks)
 		}(),
 	}

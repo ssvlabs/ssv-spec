@@ -5,12 +5,14 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // InvalidPrepareJustificationValue tests a proposal for > 1 round, prepared previously but one of the prepare justifications has value != highest prepared
 func InvalidPrepareJustificationValue() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
+	sc := invalidPrepareJustificationValueStateComparison()
 
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
@@ -36,9 +38,16 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "invalid prepare justification value",
 		Pre:            pre,
-		PostRoot:       "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
+		PostRoot:       sc.Root(),
+		PostState:      sc.ExpectedState,
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: proposed data mistmatch",
 	}
+}
+
+func invalidPrepareJustificationValueStateComparison() *comparable.StateComparison {
+	state := testingutils.BaseInstance().State
+
+	return &comparable.StateComparison{ExpectedState: state}
 }
