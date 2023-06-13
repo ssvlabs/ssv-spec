@@ -43,7 +43,7 @@ func wrongSigStateComparison() *comparable.StateComparison {
 			Round: qbft.FirstRound,
 		},
 	}
-	comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+	comparable.InitContainers(instance)
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 
 	return &comparable.StateComparison{ExpectedState: contr}

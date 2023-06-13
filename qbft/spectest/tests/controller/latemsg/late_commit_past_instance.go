@@ -86,7 +86,7 @@ func lateCommitPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.Sig
 
 		// last height
 		if lateMsg != nil && qbft.Height(i) == height {
-			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			comparable.InitContainers(instance)
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
