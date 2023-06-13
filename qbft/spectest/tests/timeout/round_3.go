@@ -5,19 +5,23 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // Round3 tests calling UponRoundTimeout for round 3, testing state and broadcasted msgs
 func Round3() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	sc := round3StateComparison()
+
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 3
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 3)
 
 	return &SpecTest{
-		Name:     "round 3",
-		Pre:      pre,
-		PostRoot: "71f78b5d9365cb66875cc81bc984a0d0a8fd9c683243a981de397adabd238f7f",
+		Name:      "round 3",
+		Pre:       pre,
+		PostRoot:  sc.Root(),
+		PostState: sc.ExpectedState,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
 				MsgType:                  qbft.RoundChangeMsgType,
@@ -34,4 +38,11 @@ func Round3() tests.SpecTest {
 			Round:    4,
 		},
 	}
+}
+
+func round3StateComparison() *comparable.StateComparison {
+	state := testingutils.BaseInstance().State
+	state.Round = 4
+
+	return &comparable.StateComparison{ExpectedState: state}
 }
