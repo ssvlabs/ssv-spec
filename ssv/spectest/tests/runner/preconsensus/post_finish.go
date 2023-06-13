@@ -1,6 +1,10 @@
 package preconsensus
 
 import (
+	"fmt"
+
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -19,7 +23,7 @@ func PostFinish() tests.SpecTest {
 		return runner
 	}
 
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus post finish",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -53,36 +57,6 @@ func PostFinish() tests.SpecTest {
 				ExpectedError:           "failed processing selection proof message: invalid pre-consensus message: no running duty",
 			},
 			{
-				Name: "randao",
-				Runner: finishRunner(
-					testingutils.ProposerRunner(ks),
-					&testingutils.TestingProposerDuty,
-				),
-				Duty: &testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
-				},
-				PostDutyRunnerStateRoot: "5c4290ac10b5f034fecf758d00ecfaf6ae5f2ecfec581a795fb34955c295ede3",
-				DontStartDuty:           true,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
-			},
-			{
-				Name: "randao (blinded block)",
-				Runner: finishRunner(
-					testingutils.ProposerBlindedBlockRunner(ks),
-					&testingutils.TestingProposerDuty,
-				),
-				Duty: &testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
-				},
-				PostDutyRunnerStateRoot: "d92199d2138197f5cc50c3ae6614a493f96e8c4639313632d6675f7092a5d9c4",
-				DontStartDuty:           true,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
-			},
-			{
 				Name: "validator registration",
 				Runner: finishRunner(
 					testingutils.ValidatorRegistrationRunner(ks),
@@ -99,4 +73,50 @@ func PostFinish() tests.SpecTest {
 			},
 		},
 	}
+
+	// proposerV creates a test specification for versioned proposer.
+	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("randao (%s)", version.String()),
+			Runner: finishRunner(
+				testingutils.ProposerRunner(ks),
+				testingutils.TestingProposerDutyV(version),
+			),
+			Duty: testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SSVMessage{
+				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version)),
+			},
+			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
+			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
+			DontStartDuty:           true,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+		}
+	}
+
+	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
+	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("randao blinded block (%s)", version.String()),
+			Runner: finishRunner(
+				testingutils.ProposerBlindedBlockRunner(ks),
+				testingutils.TestingProposerDutyV(version),
+			),
+			Duty: testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SSVMessage{
+				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version)),
+			},
+			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,
+			DontStartDuty:           true,
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+		}
+	}
+
+	for _, v := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+	}
+
+	return multiSpecTest
 }

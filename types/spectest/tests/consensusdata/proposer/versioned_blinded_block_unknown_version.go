@@ -13,9 +13,9 @@ import (
 func VersionedBlindedBlockUnknownVersion() *ProposerSpecTest {
 	unknownDataVersion := spec.DataVersion(100)
 	cd := &types.ConsensusData{
-		Duty:    testingutils.TestingProposerDuty,
+		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 		Version: unknownDataVersion,
-		DataSSZ: testingutils.TestProposerBlindedBlockConsensusDataByts,
+		DataSSZ: testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
 	}
 
 	dataCd, err := cd.MarshalSSZ()

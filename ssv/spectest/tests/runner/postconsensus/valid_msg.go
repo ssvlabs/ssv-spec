@@ -1,19 +1,13 @@
 package postconsensus
 
 import (
-	"encoding/hex"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	ssz "github.com/ferranbt/fastssz"
 )
-
-func getSSZRootNoError(obj ssz.HashRoot) string {
-	r, _ := obj.HashTreeRoot()
-	return hex.EncodeToString(r[:])
-}
 
 func finishRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
 	ret := decideRunner(r, duty, decidedValue)
@@ -79,12 +73,12 @@ func ValidMessage() tests.SpecTest {
 				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
-					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerConsensusData,
+					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+					testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix),
 				),
-				Duty: &testingutils.TestingProposerDuty,
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "79dea0905cae233ecfaabdf8468351ea1c88d2684009176eb4a4d3e91823e74c",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -95,12 +89,12 @@ func ValidMessage() tests.SpecTest {
 				Name: "proposer (blinded block)",
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					&testingutils.TestingProposerDuty,
-					testingutils.TestProposerBlindedBlockConsensusData,
+					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix),
 				),
-				Duty: &testingutils.TestingProposerDuty,
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "b57fb84140f2785ed05295d294271ab6636116f8cd013d8e9a060f47976dfe3d",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -149,9 +143,12 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: "f36c8b537afaba0894dbc8c87cb94466d8ac2623e9283f1c584e3d544b5f2b88",
+				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingValidatorRegistration),
 				},
 				ExpectedError: "no post consensus phase for validator registration",
 			},

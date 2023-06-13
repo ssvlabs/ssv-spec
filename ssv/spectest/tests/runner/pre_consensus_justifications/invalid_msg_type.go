@@ -1,6 +1,8 @@
 package pre_consensus_justifications
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -15,7 +17,7 @@ func InvalidMsgType() tests.SpecTest {
 		fullData, _ := obj.Encode()
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,  //invalid, qbft.ProposeMsgType expected
+			MsgType:    qbft.PrepareMsgType, //invalid, qbft.ProposeMsgType expected
 			Height:     1,
 			Round:      qbft.FirstRound,
 			Identifier: id,
@@ -57,25 +59,25 @@ func InvalidMsgType() tests.SpecTest {
 			{
 				Name:   "randao",
 				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "3c3d52885dafd999639514fd813a69cb6eda5d80054d22826ef696d99139f6a2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:   "randao (blinded block)",
 				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusData(ks), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "c7d354b01cd11ce7a0277c5bd2493c4112422a827eedad8dc38d5e8d58d5f842",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 			},
 			{

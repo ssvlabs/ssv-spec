@@ -1,6 +1,8 @@
 package consensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -67,39 +69,39 @@ func ValidMessage() tests.SpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					testingutils.SSVMsgProposer(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
-							testingutils.TestProposerConsensusDataByts,
+							testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
 						), nil),
 				},
 				PostDutyRunnerStateRoot: "6c08d5ea9d4ca4a67897ab9a1612dd31c8066cfaa67d7c811478d19d9ab2ff3d",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 			},
 			{
 				Name:   "proposer (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					testingutils.SSVMsgProposer(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
-							testingutils.TestProposerBlindedBlockConsensusDataByts,
+							testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
 						), nil),
 				},
 				PostDutyRunnerStateRoot: "de242932fd91d9f6c8fc0abb005fcd254de7d7c05822495077658baf13b64de2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 				},
 			},
 			{
@@ -130,9 +132,12 @@ func ValidMessage() tests.SpecTest {
 							testingutils.TestAttesterConsensusDataByts,
 						), nil),
 				},
-				PostDutyRunnerStateRoot: "f36c8b537afaba0894dbc8c87cb94466d8ac2623e9283f1c584e3d544b5f2b88",
+				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingValidatorRegistration),
 				},
 				ExpectedError: "no consensus phase for validator registration",
 			},

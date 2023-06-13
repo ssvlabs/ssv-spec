@@ -2,6 +2,9 @@ package valcheckduty
 
 import (
 	"encoding/json"
+
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
@@ -51,7 +54,7 @@ func WrongValidatorIndex() tests.SpecTest {
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
 				ExpectedError: expectedErr,
 			},
 			{

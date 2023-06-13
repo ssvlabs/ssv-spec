@@ -1,6 +1,8 @@
 package preconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -37,21 +39,21 @@ func UnorderedExpectedRoots() tests.SpecTest {
 			{
 				Name:                    "randao",
 				Runner:                  testingutils.ProposerRunner(ks),
-				Duty:                    &testingutils.TestingProposerDuty,
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages:                []*types.SSVMessage{},
 				PostDutyRunnerStateRoot: "56eafcb33392ded888a0fefe30ba49e52aa00ab36841cb10c9dc1aa2935af347",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:                    "randao (blinded block)",
 				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:                    &testingutils.TestingProposerDuty,
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages:                []*types.SSVMessage{},
 				PostDutyRunnerStateRoot: "2ce3241658f324f352c77909f4043934eedf38e939ae638c5ce6acf28e965646",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 			},
 			{
@@ -61,7 +63,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 				},
-				PostDutyRunnerStateRoot: "6258dff05d5c0d040ce20933dd433073ac5badd1deb9f277097c0ce9bc92a57f",
+				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},

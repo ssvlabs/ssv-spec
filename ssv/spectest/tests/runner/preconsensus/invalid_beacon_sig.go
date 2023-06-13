@@ -1,6 +1,8 @@
 package preconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -41,26 +43,26 @@ func InvalidBeaconSignature() tests.SpecTest {
 			{
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongBeaconSigMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongBeaconSigMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "56eafcb33392ded888a0fefe30ba49e52aa00ab36841cb10c9dc1aa2935af347",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
 			},
 			{
 				Name:   "randao (blinded block)",
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongBeaconSigMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongBeaconSigMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 				},
 				PostDutyRunnerStateRoot: "2ce3241658f324f352c77909f4043934eedf38e939ae638c5ce6acf28e965646",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
 			},

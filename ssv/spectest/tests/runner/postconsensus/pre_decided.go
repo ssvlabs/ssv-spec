@@ -1,6 +1,10 @@
 package postconsensus
 
 import (
+	"fmt"
+
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -10,9 +14,9 @@ import (
 // PreDecided tests a valid SignedPartialSignatureMessage sent before decided reached, should error
 func PreDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-
 	err := "failed processing post consensus message: invalid post-consensus message: no decided value"
-	return &tests.MultiMsgProcessingSpecTest{
+
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus before decided",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -46,42 +50,6 @@ func PreDecided() tests.SpecTest {
 				ExpectedError:           err,
 			},
 			{
-				Name:   "proposer",
-				Runner: testingutils.ProposerRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
-
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-				},
-				PostDutyRunnerStateRoot: "cca1d29c91112c5d12668e452fadc7796faa51576246b58157d19cc4b35726d6",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-				},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
-			},
-			{
-				Name:   "proposer (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   &testingutils.TestingProposerDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[2], ks.Shares[2], 2, 2)),
-					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
-
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsg(ks.Shares[1], 1)),
-				},
-				PostDutyRunnerStateRoot: "89e04234b29e1e83598fa8103479dc3bb04946e14fea14101bcbb68820b2a895",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
-				},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
-			},
-			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
@@ -113,4 +81,56 @@ func PreDecided() tests.SpecTest {
 			},
 		},
 	}
+
+	// proposerV creates a test specification for versioned proposer.
+	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("proposer (%s)", version.String()),
+			Runner: testingutils.ProposerRunner(ks),
+			Duty:   testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SSVMessage{
+				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, version)),
+
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+			},
+			PostDutyRunnerStateRoot: preDecidedProposerSC(version).Root(),
+			PostDutyRunnerState:     preDecidedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+			},
+			BeaconBroadcastedRoots: []string{},
+			ExpectedError:          err,
+		}
+	}
+
+	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
+	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
+		return &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner: testingutils.ProposerBlindedBlockRunner(ks),
+			Duty:   testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SSVMessage{
+				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version)),
+				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, version)),
+
+				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+			},
+			PostDutyRunnerStateRoot: preDecidedBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     preDecidedBlindedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+			},
+			BeaconBroadcastedRoots: []string{},
+			ExpectedError:          err,
+		}
+	}
+
+	for _, v := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+	}
+
+	return multiSpecTest
 }

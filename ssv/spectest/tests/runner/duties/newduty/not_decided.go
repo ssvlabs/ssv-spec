@@ -1,6 +1,10 @@
 package newduty
 
 import (
+	"fmt"
+
+	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -27,7 +31,7 @@ func NotDecided() tests.SpecTest {
 	}
 
 	expectedErr := "previous instance hasn't Decided"
-	return &MultiStartNewRunnerDutySpecTest{
+	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty not decided",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
@@ -60,11 +64,11 @@ func NotDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  startRunner(testingutils.ProposerRunner(ks), &testingutils.TestingProposerDutyNextEpoch),
-				Duty:                    &testingutils.TestingProposerDutyNextEpoch,
+				Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix)),
+				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
 				PostDutyRunnerStateRoot: "6e99d5781382b89366d4c1869d31f44528d225c4d8cada3534d4d2464e2701bf",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedErr,
 			},
@@ -78,4 +82,40 @@ func NotDecided() tests.SpecTest {
 			},
 		},
 	}
+
+	// proposerV creates a test specification for versioned proposer.
+	proposerV := func(version spec.DataVersion) *StartNewRunnerDutySpecTest {
+		return &StartNewRunnerDutySpecTest{
+			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
+			Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpochV(version)),
+			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			PostDutyRunnerStateRoot: notDecidedProposerSC(version).Root(),
+			PostDutyRunnerState:     notDecidedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
+			},
+			ExpectedError: expectedErr,
+		}
+	}
+
+	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
+	proposerBlindedV := func(version spec.DataVersion) *StartNewRunnerDutySpecTest {
+		return &StartNewRunnerDutySpecTest{
+			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner:                  startRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyNextEpochV(version)),
+			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			PostDutyRunnerStateRoot: notDecidedBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     notDecidedBlindedProposerSC(version).ExpectedState,
+			OutputMessages: []*types.SignedPartialSignatureMessage{
+				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
+			},
+			ExpectedError: expectedErr,
+		}
+	}
+
+	for _, v := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{proposerV(v), proposerBlindedV(v)}...)
+	}
+
+	return multiSpecTest
 }

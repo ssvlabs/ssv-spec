@@ -19,13 +19,13 @@ var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
 }
 
 var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleProposer, ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil), keySet)
+	return baseRunner(types.BNRoleProposer, ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil, true), keySet)
 }
 
 var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
 	ret := baseRunner(
 		types.BNRoleProposer,
-		ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil),
+		ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil, true),
 		keySet,
 	)
 	ret.(*ssv.ProposerRunner).ProducesBlindedBlocks = true
@@ -184,59 +184,20 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	return v.DutyRunners[types.BNRoleAttester]
 }
 
-var SSVDecidingMsgs = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
-	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
-
-	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-		var byts []byte
-		var msgType types.MsgType
-		if partialSigMsg != nil {
-			msgType = types.SSVPartialSignatureMsgType
-			byts, _ = partialSigMsg.Encode()
-		} else {
-			msgType = types.SSVConsensusMsgType
-			byts, _ = qbftMsg.Encode()
-		}
-
-		return &types.SSVMessage{
-			MsgType: msgType,
-			MsgID:   id,
-			Data:    byts,
-		}
-	}
-
-	// pre consensus msgs
-	base := make([]*types.SSVMessage, 0)
-	if role == types.BNRoleProposer {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusRandaoMsg(ks.Shares[types.OperatorID(i)], types.OperatorID(i))))
-		}
-	}
-	if role == types.BNRoleAggregator {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
-		}
-	}
-	if role == types.BNRoleSyncCommitteeContribution {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
-		}
-	}
-
-	// consensus and post consensus
-	qbftMsgs := DecidingMsgsForHeight(consensusData, id[:], qbft.FirstHeight, ks)
-	for _, msg := range qbftMsgs {
-		base = append(base, ssvMsgF(msg, nil))
-	}
-	return base
-}
-
 var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
 
 	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
+}
+
+var ExpectedDecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	byts, _ := consensusData.Encode()
+	r, _ := qbft.HashDataRoot(byts)
+	fullData, _ := consensusData.MarshalSSZ()
+
+	return ExpectedDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
 var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
