@@ -12,6 +12,8 @@ import (
 )
 
 // postQuorumSyncCommitteeContributionSC returns state comparison object for the PostQuorum SyncCommitteeContribution versioned spec test
+// post-consensus container shouldn't include the 4th message
+// runner should finish since quorum was achieved
 func postQuorumSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -57,6 +59,8 @@ func postQuorumSyncCommitteeContributionSC() *comparable.StateComparison {
 }
 
 // postQuorumSyncCommitteeSC returns state comparison object for the PostQuorum SyncCommittee versioned spec test
+// post-consensus container shouldn't include the 4th message
+// runner should finish since quorum was achieved
 func postQuorumSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -102,6 +106,8 @@ func postQuorumSyncCommitteeSC() *comparable.StateComparison {
 }
 
 // postQuorumAggregatorSC returns state comparison object for the PostQuorum Aggregator versioned spec test
+// post-consensus container shouldn't include the 4th message
+// runner should finish since quorum was achieved
 func postQuorumAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -147,6 +153,8 @@ func postQuorumAggregatorSC() *comparable.StateComparison {
 }
 
 // postQuorumAttesterSC returns state comparison object for the PostQuorum Attester versioned spec test
+// post-consensus container shouldn't include the 4th message
+// runner should finish since quorum was achieved
 func postQuorumAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -192,6 +200,8 @@ func postQuorumAttesterSC() *comparable.StateComparison {
 }
 
 // postQuorumProposerSC returns state comparison object for the PostQuorum Proposer versioned spec test
+// post-consensus container shouldn't include the 4th message
+// runner should finish since quorum was achieved
 func postQuorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -237,6 +247,8 @@ func postQuorumProposerSC(version spec.DataVersion) *comparable.StateComparison 
 }
 
 // postQuorumBlindedProposerSC returns state comparison object for the PostQuorum Blinded Proposer versioned spec test
+// post-consensus container shouldn't include the 4th message
+// runner should finish since quorum was achieved
 func postQuorumBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

@@ -12,6 +12,7 @@ import (
 )
 
 // duplicateMsgDifferentRootsSyncCommitteeContributionSC returns state comparison object for the DuplicateMsgDifferentRoots SyncCommitteeContribution versioned spec test
+// it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -55,6 +56,7 @@ func duplicateMsgDifferentRootsSyncCommitteeContributionSC() *comparable.StateCo
 }
 
 // duplicateMsgDifferentRootsSyncCommitteeSC returns state comparison object for the DuplicateMsgDifferentRoots SyncCommittee versioned spec test
+// it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -98,6 +100,7 @@ func duplicateMsgDifferentRootsSyncCommitteeSC() *comparable.StateComparison {
 }
 
 // duplicateMsgDifferentRootsAggregatorSC returns state comparison object for the DuplicateMsgDifferentRoots Aggregator versioned spec test
+// it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -141,6 +144,7 @@ func duplicateMsgDifferentRootsAggregatorSC() *comparable.StateComparison {
 }
 
 // duplicateMsgDifferentRootsAttesterSC returns state comparison object for the DuplicateMsgDifferentRoots Attester versioned spec test
+// it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -184,6 +188,7 @@ func duplicateMsgDifferentRootsAttesterSC() *comparable.StateComparison {
 }
 
 // duplicateMsgDifferentRootsProposerSC returns state comparison object for the DuplicateMsgDifferentRoots Proposer versioned spec test
+// it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -227,6 +232,7 @@ func duplicateMsgDifferentRootsProposerSC(version spec.DataVersion) *comparable.
 }
 
 // duplicateMsgDifferentRootsBlindedProposerSC returns state comparison object for the DuplicateMsgDifferentRoots Blinded Proposer versioned spec test
+// it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

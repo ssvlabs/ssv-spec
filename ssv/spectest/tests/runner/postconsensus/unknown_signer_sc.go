@@ -12,6 +12,7 @@ import (
 )
 
 // unknownSignerSyncCommitteeContributionSC returns state comparison object for the UnknownSigner SyncCommitteeContribution versioned spec test
+// The unknown signer is ignored and not added to the post-consensus container
 func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -53,6 +54,7 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 }
 
 // unknownSignerSyncCommitteeSC returns state comparison object for the UnknownSigner SyncCommittee versioned spec test
+// The unknown signer is ignored and not added to the post-consensus container
 func unknownSignerSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -94,6 +96,7 @@ func unknownSignerSyncCommitteeSC() *comparable.StateComparison {
 }
 
 // unknownSignerAggregatorSC returns state comparison object for the UnknownSigner Aggregator versioned spec test
+// The unknown signer is ignored and not added to the post-consensus container
 func unknownSignerAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -135,6 +138,7 @@ func unknownSignerAggregatorSC() *comparable.StateComparison {
 }
 
 // unknownSignerAttesterSC returns state comparison object for the UnknownSigner Attester versioned spec test
+// The unknown signer is ignored and not added to the post-consensus container
 func unknownSignerAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -176,6 +180,7 @@ func unknownSignerAttesterSC() *comparable.StateComparison {
 }
 
 // unknownSignerProposerSC returns state comparison object for the UnknownSigner Proposer versioned spec test
+// The unknown signer is ignored and not added to the post-consensus container
 func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -217,6 +222,7 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 }
 
 // unknownSignerBlindedProposerSC returns state comparison object for the UnknownSigner Blinded Proposer versioned spec test
+// The unknown signer is ignored and not added to the post-consensus container
 func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

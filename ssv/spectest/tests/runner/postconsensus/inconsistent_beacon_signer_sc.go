@@ -12,6 +12,7 @@ import (
 )
 
 // inconsistentBeaconSignerSyncCommitteeContributionSC returns state comparison object for the InconsistentBeaconSigner SyncCommitteeContribution versioned spec test
+// post-consensus container should be empty
 func inconsistentBeaconSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -53,6 +54,7 @@ func inconsistentBeaconSignerSyncCommitteeContributionSC() *comparable.StateComp
 }
 
 // inconsistentBeaconSignerSyncCommitteeSC returns state comparison object for the InconsistentBeaconSigner SyncCommittee versioned spec test
+// post-consensus container should be empty
 func inconsistentBeaconSignerSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -94,6 +96,7 @@ func inconsistentBeaconSignerSyncCommitteeSC() *comparable.StateComparison {
 }
 
 // inconsistentBeaconSignerAggregatorSC returns state comparison object for the InconsistentBeaconSigner Aggregator versioned spec test
+// post-consensus container should be empty
 func inconsistentBeaconSignerAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -135,6 +138,7 @@ func inconsistentBeaconSignerAggregatorSC() *comparable.StateComparison {
 }
 
 // inconsistentBeaconSignerAttesterSC returns state comparison object for the InconsistentBeaconSigner Attester versioned spec test
+// post-consensus container should be empty
 func inconsistentBeaconSignerAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -176,6 +180,7 @@ func inconsistentBeaconSignerAttesterSC() *comparable.StateComparison {
 }
 
 // inconsistentBeaconSignerProposerSC returns state comparison object for the InconsistentBeaconSigner Proposer versioned spec test
+// post-consensus container should be empty
 func inconsistentBeaconSignerProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -217,6 +222,7 @@ func inconsistentBeaconSignerProposerSC(version spec.DataVersion) *comparable.St
 }
 
 // inconsistentBeaconSignerBlindedProposerSC returns state comparison object for the InconsistentBeaconSigner Blinded Proposer versioned spec test
+// post-consensus container should be empty
 func inconsistentBeaconSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

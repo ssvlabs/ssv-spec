@@ -12,6 +12,7 @@ import (
 )
 
 // quorumSyncCommitteeContributionSC returns state comparison object for the Quorum SyncCommitteeContribution versioned spec test
+// runner should finish since quorum is achieved
 func quorumSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -57,6 +58,7 @@ func quorumSyncCommitteeContributionSC() *comparable.StateComparison {
 }
 
 // quorumSyncCommitteeSC returns state comparison object for the Quorum SyncCommittee versioned spec test
+// runner should finish since quorum was achieved
 func quorumSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -102,6 +104,7 @@ func quorumSyncCommitteeSC() *comparable.StateComparison {
 }
 
 // quorumAggregatorSC returns state comparison object for the Quorum Aggregator versioned spec test
+// runner should finish since quorum was achieved
 func quorumAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -147,6 +150,7 @@ func quorumAggregatorSC() *comparable.StateComparison {
 }
 
 // quorumAttesterSC returns state comparison object for the Quorum Attester versioned spec test
+// runner should finish since quorum was achieved
 func quorumAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -192,6 +196,7 @@ func quorumAttesterSC() *comparable.StateComparison {
 }
 
 // quorumProposerSC returns state comparison object for the Quorum Proposer versioned spec test
+// runner should finish since quorum was achieved
 func quorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -237,6 +242,7 @@ func quorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
 }
 
 // quorumBlindedProposerSC returns state comparison object for the Quorum Blinded Proposer versioned spec test
+// runner should finish since quorum was achieved
 func quorumBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

@@ -12,6 +12,7 @@ import (
 )
 
 // duplicateMsgSyncCommitteeContributionSC returns state comparison object for the DuplicateMsg SyncCommitteeContribution versioned spec test
+// it knows to ignore the duplicate message, and it doesn't enter the post consensus container
 func duplicateMsgSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -55,6 +56,7 @@ func duplicateMsgSyncCommitteeContributionSC() *comparable.StateComparison {
 }
 
 // duplicateMsgSyncCommitteeSC returns state comparison object for the DuplicateMsg SyncCommittee versioned spec test
+// it knows to ignore the duplicate message, and it doesn't enter the post consensus container
 func duplicateMsgSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -98,6 +100,7 @@ func duplicateMsgSyncCommitteeSC() *comparable.StateComparison {
 }
 
 // duplicateMsgAggregatorSC returns state comparison object for the DuplicateMsg Aggregator versioned spec test
+// it knows to ignore the duplicate message, and it doesn't enter the post consensus container
 func duplicateMsgAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -141,6 +144,7 @@ func duplicateMsgAggregatorSC() *comparable.StateComparison {
 }
 
 // duplicateMsgAttesterSC returns state comparison object for the DuplicateMsg Attester versioned spec test
+// it knows to ignore the duplicate message and it doesn't enter the post consensus container
 func duplicateMsgAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -184,6 +188,7 @@ func duplicateMsgAttesterSC() *comparable.StateComparison {
 }
 
 // duplicateMsgProposerSC returns state comparison object for the DuplicateMsg Proposer versioned spec test
+// it knows to ignore the duplicate message and it doesn't enter the post consensus container
 func duplicateMsgProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -227,6 +232,7 @@ func duplicateMsgProposerSC(version spec.DataVersion) *comparable.StateCompariso
 }
 
 // duplicateMsgBlindedProposerSC returns state comparison object for the DuplicateMsg Blinded Proposer versioned spec test
+// it knows to ignore the duplicate message, and it doesn't enter the post consensus container
 func duplicateMsgBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

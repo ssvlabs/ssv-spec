@@ -12,6 +12,7 @@ import (
 )
 
 // preDecidedSyncCommitteeContributionSC returns state comparison object for the PreDecided SyncCommitteeContribution versioned spec test
+// post-consensus container should be empty, since we don't process such messages if the instance is not decided.
 func preDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
@@ -55,6 +56,7 @@ func preDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 }
 
 // preDecidedSyncCommitteeSC returns state comparison object for the PreDecided SyncCommittee versioned spec test
+// post-consensus container should be empty, since we don't process such messages if the instance is not decided.
 func preDecidedSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
@@ -95,6 +97,7 @@ func preDecidedSyncCommitteeSC() *comparable.StateComparison {
 }
 
 // preDecidedAggregatorSC returns state comparison object for the PreDecided Aggregator versioned spec test
+// post-consensus container should be empty, since we don't process such messages if the instance is not decided
 func preDecidedAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
@@ -139,6 +142,7 @@ func preDecidedAggregatorSC() *comparable.StateComparison {
 }
 
 // preDecidedAttesterSC returns state comparison object for the PreDecided Attester versioned spec test
+// post-consensus container should be empty, since we don't process such messages if the instance is not decided.
 func preDecidedAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
@@ -179,6 +183,7 @@ func preDecidedAttesterSC() *comparable.StateComparison {
 }
 
 // preDecidedProposerSC returns state comparison object for the PreDecided Proposer versioned spec test
+// post-consensus container should be empty, since we don't process such messages if the instance is not decided.
 func preDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
@@ -223,6 +228,7 @@ func preDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison 
 }
 
 // preDecidedBlindedProposerSC returns state comparison object for the PreDecided Blinded Proposer versioned spec test
+// post-consensus container should be empty, since we don't process such messages if the instance is not decided.
 func preDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
