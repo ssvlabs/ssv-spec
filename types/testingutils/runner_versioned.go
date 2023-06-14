@@ -44,7 +44,6 @@ var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, 
 		}
 	}
 
-	// consensus and post consensus
 	qbftMsgs := DecidingMsgsForHeight(consensusData, id[:], qbft.FirstHeight, ks)
 	for _, msg := range qbftMsgs {
 		base = append(base, ssvMsgF(msg, nil))
