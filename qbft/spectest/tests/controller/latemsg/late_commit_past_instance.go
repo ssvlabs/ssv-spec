@@ -60,6 +60,8 @@ func LateCommitPastInstance() tests.SpecTest {
 	}
 }
 
+// lateCommitPastInstanceStateComparison returns a comparable.StateComparison for controller running up until the given height.
+// lateMsg will be added to the commit container of the instance at the proper height.
 func lateCommitPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
@@ -84,7 +86,7 @@ func lateCommitPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.Sig
 			},
 		}
 
-		// last height
+		// last height should be just initialized, since no messages were processed for it
 		if lateMsg != nil && qbft.Height(i) == height {
 			comparable.InitContainers(instance)
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)

@@ -27,6 +27,8 @@ func WrongSig() tests.SpecTest {
 	}
 }
 
+// WrongSigStateComparison returns the expected state comparison for WrongSig test.
+// The controller is initialized with 4 shares and no messages in its container since the given msg is invalid.
 func wrongSigStateComparison() *comparable.StateComparison {
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	contr := testingutils.NewTestingQBFTController(

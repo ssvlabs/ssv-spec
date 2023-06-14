@@ -30,6 +30,8 @@ func NoSigners() tests.SpecTest {
 	}
 }
 
+// NoSignersStateComparison returns the expected state comparison for NoSigners test.
+// The controller is initialized with 4 shares and no messages in its container since the given msg is invalid.
 func noSignersStateComparison() *comparable.StateComparison {
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	contr := testingutils.NewTestingQBFTController(

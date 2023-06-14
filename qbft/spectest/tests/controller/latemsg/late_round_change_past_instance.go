@@ -64,6 +64,8 @@ func LateRoundChangePastInstance() tests.SpecTest {
 	}
 }
 
+// lateRoundChangePastInstanceStateComparison returns a comparable.StateComparison for controller running up to the given height.
+// lateMsg will be added to the rc container of the instance at the proper height.
 func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)

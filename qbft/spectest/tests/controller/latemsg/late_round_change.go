@@ -40,6 +40,9 @@ func LateRoundChange() tests.SpecTest {
 	}
 }
 
+// lateRoundChangeStateComparison returns the expected state for the late round change test
+// The controller is initialized with 4 shares and all deciding messages from 3 nodes and a 4th rc msg from a 4th node.
+// The instance is decided.
 func lateRoundChangeStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)

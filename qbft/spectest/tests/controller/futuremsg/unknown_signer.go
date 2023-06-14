@@ -30,6 +30,8 @@ func UnknownSigner() tests.SpecTest {
 	}
 }
 
+// UnknownSignerStateComparison returns the expected state comparison for UnknownSigner test.
+// The controller is initialized with 4 shares and no messages in its container since the given msg is invalid.
 func unknownSignerStateComparison() *comparable.StateComparison {
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	contr := testingutils.NewTestingQBFTController(

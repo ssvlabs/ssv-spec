@@ -61,6 +61,8 @@ func LateProposalPastInstance() tests.SpecTest {
 	}
 }
 
+// lateProposalPastInstanceStateComparison returns a comparable.StateComparison for controller running up until the given height.
+// latemsg is never added because it is invalid
 func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
@@ -86,7 +88,7 @@ func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.S
 			},
 		}
 
-		// last height
+		// last height should be just initialized, since no messages were processed for it
 		if lateMsg != nil && qbft.Height(i) == height {
 			comparable.InitContainers(instance)
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)

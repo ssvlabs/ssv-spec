@@ -41,6 +41,10 @@ func LatePrepare() tests.SpecTest {
 	}
 }
 
+// LatePrepareStateComparison returns the expected state comparison for LatePrepare test.
+// The controller is initialized with 4 shares and all expected messages in its container from 3 nodes,
+// in addition to the late prepare msg from the 4th node.
+// The instance is decided.
 func latePrepareStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)

@@ -41,6 +41,9 @@ func LateProposal() tests.SpecTest {
 	}
 }
 
+// LateProposalStateComparison returns the expected state comparison for LateProposal test.
+// The controller is initialized with 4 shares and deciding messages for the first height from 3 nodes.
+// The late msg is invalid since it is a proposal for the first height and the instance already decided, so it is ignored.
 func lateProposalStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
