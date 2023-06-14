@@ -1,6 +1,7 @@
 package startinstance
 
 import (
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	qbftcomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
@@ -31,7 +32,7 @@ func previousNotDecided1SC() *qbftcomparable.StateComparison {
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),
 		config,
 	)
-	contr.StartNewInstance([]byte{1, 2, 3, 4})
+	contr.StartNewInstance(qbft.FirstHeight, []byte{1, 2, 3, 4})
 	return &qbftcomparable.StateComparison{ExpectedState: contr.StoredInstances[0].State}
 }
 
@@ -43,7 +44,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 		testingutils.TestingShare(testingutils.Testing4SharesSet()),
 		config,
 	)
-	contr.StartNewInstance([]byte{1, 2, 3, 4})
-	contr.StartNewInstance([]byte{1, 2, 3, 4})
+	contr.StartNewInstance(qbft.FirstHeight, []byte{1, 2, 3, 4})
+	contr.StartNewInstance(1, []byte{1, 2, 3, 4})
 	return &qbftcomparable.StateComparison{ExpectedState: contr.StoredInstances[1].State}
 }

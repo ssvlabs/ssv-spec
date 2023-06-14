@@ -52,8 +52,8 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 	)
 
 	var lastErr error
-	for _, runData := range test.RunInstanceData {
-		if err := test.runInstanceWithData(t, contr, config, identifier, runData); err != nil {
+	for i, runData := range test.RunInstanceData {
+		if err := test.runInstanceWithData(t, qbft.Height(i), contr, config, identifier, runData); err != nil {
 			lastErr = err
 		}
 	}
@@ -151,12 +151,13 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 
 func (test *ControllerSpecTest) runInstanceWithData(
 	t *testing.T,
+	height qbft.Height,
 	contr *qbft.Controller,
 	config *qbft.Config,
 	identifier []byte,
 	runData *RunInstanceData,
 ) error {
-	err := contr.StartNewInstance(runData.InputValue)
+	err := contr.StartNewInstance(height, runData.InputValue)
 	var lastErr error
 	if err != nil {
 		lastErr = err

@@ -4,7 +4,14 @@ import (
 	"github.com/pkg/errors"
 )
 
+// CutoffRound which round the instance should stop its timer and progress no further
+const CutoffRound = 20
+
 func (i *Instance) UponRoundTimeout() error {
+	if i.State.Round == CutoffRound {
+		return errors.New("round > cutoff round")
+	}
+
 	newRound := i.State.Round + 1
 	defer func() {
 		i.State.Round = newRound
