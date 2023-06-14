@@ -2,6 +2,8 @@ package startinstance
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+	qbftcomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // PreviousNotDecided tests starting an instance when the previous one not decided
@@ -11,13 +13,37 @@ func PreviousNotDecided() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
+				ControllerPostRoot: previousNotDecided1SC().Root(),
 			},
 			{
 				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
+				ControllerPostRoot: previousNotDecided2SC().Root(),
 			},
 		},
-		ExpectedError: "can't start new QBFT instance: previous instance hasn't Decided",
 	}
+}
+
+func previousNotDecided1SC() *qbftcomparable.StateComparison {
+	identifier := []byte{1, 2, 3, 4}
+	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	contr := testingutils.NewTestingQBFTController(
+		identifier[:],
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		config,
+	)
+	contr.StartNewInstance([]byte{1, 2, 3, 4})
+	return &qbftcomparable.StateComparison{ExpectedState: contr.StoredInstances[0].State}
+}
+
+func previousNotDecided2SC() *qbftcomparable.StateComparison {
+	identifier := []byte{1, 2, 3, 4}
+	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	contr := testingutils.NewTestingQBFTController(
+		identifier[:],
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		config,
+	)
+	contr.StartNewInstance([]byte{1, 2, 3, 4})
+	contr.StartNewInstance([]byte{1, 2, 3, 4})
+	return &qbftcomparable.StateComparison{ExpectedState: contr.StoredInstances[1].State}
 }
