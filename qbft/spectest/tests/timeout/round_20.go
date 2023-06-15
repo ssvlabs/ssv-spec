@@ -1,7 +1,6 @@
 package timeout
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -22,27 +21,20 @@ func Round20() tests.SpecTest {
 		Pre:       pre,
 		PostRoot:  sc.Root(),
 		PostState: sc.ExpectedState,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:                  qbft.RoundChangeMsgType,
-				Height:                   qbft.FirstHeight,
-				Round:                    21,
-				Identifier:               testingutils.TestingIdentifier,
-				Root:                     [32]byte{},
-				RoundChangeJustification: [][]byte{},
-				PrepareJustification:     [][]byte{},
-			}),
-		},
+
 		ExpectedTimerState: &testingutils.TimerState{
-			Timeouts: 1,
-			Round:    21,
+			Timeouts: 0,
+			Round:    0,
 		},
+		ExpectedError: "round > cutoff round",
 	}
 }
 
 func round20StateComparison() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
 	state := testingutils.BaseInstance().State
-	state.Round = 21
+	state.Round = 20
+	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 20)
 
 	return &comparable.StateComparison{ExpectedState: state}
 }

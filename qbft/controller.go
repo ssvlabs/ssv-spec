@@ -53,7 +53,7 @@ func (c *Controller) StartNewInstance(height Height, value []byte) error {
 	}
 
 	newInstance := c.addAndStoreNewInstance()
-	newInstance.Start(value, c.Height)
+	newInstance.Start(value, height)
 
 	c.Height = height
 

@@ -44,11 +44,11 @@ func LatePreparePastInstance() tests.SpecTest {
 		Name: "late prepare past instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight, "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97"),
-			instanceData(1, "8aa5464b119518f178d81edf4cea1f4c918f9e084e5262a0e276d3afb00ba620"),
-			instanceData(2, "1799fe0981ae08bde1eae9fef88ef8035f5952974647786287a1a8c36544a5da"),
-			instanceData(3, "2ddf2b8c2f35c8115ddd68120c71e64809bfea6b023ed13e177c2474a95d137d"),
-			instanceData(4, "318816cc8819ad062996704fb4b9990b8088ade0cb4c26816ea0965783bff12e"),
-			instanceData(5, "fd83cdee705de628cf4a9baf9e662c424bf0942c63a680266d7db872d16e9f0a"),
+			instanceData(1, "676a681d7e66740832676ed2a7a34d153a64ae06d39872acef4bf0730464da4b"),
+			instanceData(2, "20ec3a034efa8b7cebe91e40f56038bb5756750ae619ee090da563ac5049c829"),
+			instanceData(3, "ea9ba94292a0ad2a60a4e57ce5c358cdd4ea27c4352eb98e1f6c9205043c3891"),
+			instanceData(4, "70e9293510baa12e4861c6557d43d6b1f06c69cc3cc6b9fc7bb610e26de92575"),
+			instanceData(5, "8144eb206920903da31bd7a0231cc4a5d93d195669e91deccc96123cfd04e0d5"),
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
@@ -58,7 +58,7 @@ func LatePreparePastInstance() tests.SpecTest {
 						4,
 					),
 				},
-				ControllerPostRoot: "f604068832f986e37b8b2725fbd426ce3f5bf7d6541d4a7296d7573f36befa27",
+				ControllerPostRoot: "49347722798a798de5088297e0600ca1a2b577e3a5f52a5ea05fb701b9deb0f4",
 			},
 		},
 	}

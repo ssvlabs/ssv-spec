@@ -13,12 +13,14 @@ func PreviousNotDecided() tests.SpecTest {
 		Name: "start instance prev not decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: previousNotDecided1SC().Root(),
+				InputValue:          []byte{1, 2, 3, 4},
+				ControllerPostRoot:  previousNotDecided1SC().Root(),
+				ControllerPostState: previousNotDecided1SC().ExpectedState,
 			},
 			{
-				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: previousNotDecided2SC().Root(),
+				InputValue:          []byte{1, 2, 3, 4},
+				ControllerPostRoot:  previousNotDecided2SC().Root(),
+				ControllerPostState: previousNotDecided2SC().ExpectedState,
 			},
 		},
 	}
@@ -33,7 +35,7 @@ func previousNotDecided1SC() *qbftcomparable.StateComparison {
 		config,
 	)
 	contr.StartNewInstance(qbft.FirstHeight, []byte{1, 2, 3, 4})
-	return &qbftcomparable.StateComparison{ExpectedState: contr.StoredInstances[0].State}
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
 
 func previousNotDecided2SC() *qbftcomparable.StateComparison {
@@ -46,5 +48,5 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 	)
 	contr.StartNewInstance(qbft.FirstHeight, []byte{1, 2, 3, 4})
 	contr.StartNewInstance(1, []byte{1, 2, 3, 4})
-	return &qbftcomparable.StateComparison{ExpectedState: contr.StoredInstances[1].State}
+	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }

@@ -3,6 +3,7 @@ package tests
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -176,7 +177,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	require.NoError(t, err)
 	if runData.ControllerPostRoot != hex.EncodeToString(r[:]) {
 		diff := typescomparable.PrintDiff(contr, runData.ControllerPostState)
-		require.Fail(t, "post state not equal", diff)
+		require.Fail(t, fmt.Sprintf("post state not equal\nexpected: %s\nreceived: %s", runData.ControllerPostRoot, hex.EncodeToString(r[:])), diff)
 	}
 
 	return lastErr
