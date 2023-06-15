@@ -81,16 +81,8 @@ func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
 func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
-	if err := b.canStartNewDuty(); err != nil {
-		return err
-	}
 	b.baseSetupForNewDuty(duty)
 	return runner.executeDuty(duty)
-}
-
-// canStartNewDuty always returns nil, can always start a new duty
-func (b *BaseRunner) canStartNewDuty() error {
-	return nil
 }
 
 // basePreConsensusMsgProcessing is a base func that all runner implementation can call for processing a pre-consensus msg
