@@ -17,11 +17,9 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	// FutureMsgsContainer holds all msgs from a higher height
-	FutureMsgsContainer map[types.OperatorID]Height // maps msg signer to height of higher height received msgs
-	Domain              types.DomainType
-	Share               *types.Share
-	config              IConfig
+	Domain          types.DomainType
+	Share           *types.Share
+	config          IConfig
 }
 
 func NewController(
@@ -31,13 +29,12 @@ func NewController(
 	config IConfig,
 ) *Controller {
 	return &Controller{
-		Identifier:          identifier,
-		Height:              FirstHeight,
-		Domain:              domain,
-		Share:               share,
-		StoredInstances:     InstanceContainer{},
-		FutureMsgsContainer: make(map[types.OperatorID]Height),
-		config:              config,
+		Identifier:      identifier,
+		Height:          FirstHeight,
+		Domain:          domain,
+		Share:           share,
+		StoredInstances: InstanceContainer{},
+		config:          config,
 	}
 }
 
@@ -77,8 +74,6 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	*/
 	if IsDecidedMsg(c.Share, msg) {
 		return c.UponDecided(msg)
-	} else if c.isFutureMessage(msg) {
-		return c.UponFutureMsg(msg)
 	} else {
 		return c.UponExistingInstanceMsg(msg)
 	}
@@ -131,15 +126,6 @@ func (c *Controller) InstanceForHeight(height Height) *Instance {
 // GetIdentifier returns QBFT Identifier, used to identify messages
 func (c *Controller) GetIdentifier() []byte {
 	return c.Identifier
-}
-
-// isFutureMessage returns true if message height is from a future instance.
-// It takes into consideration a special case where FirstHeight didn't start but  c.Height == FirstHeight (since we bump height on start instance)
-func (c *Controller) isFutureMessage(msg *SignedMessage) bool {
-	if c.Height == FirstHeight && c.StoredInstances.FindInstance(c.Height) == nil {
-		return true
-	}
-	return msg.Message.Height > c.Height
 }
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
