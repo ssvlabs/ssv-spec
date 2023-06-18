@@ -208,7 +208,7 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 	}
 
 	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(
-		qbft.Height(b.BeaconNetwork.EstimatedEpochAtSlot(input.Duty.Slot)),
+		qbft.Height(input.Duty.Slot),
 		byts,
 	); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")

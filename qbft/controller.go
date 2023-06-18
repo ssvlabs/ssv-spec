@@ -57,6 +57,8 @@ func (c *Controller) StartNewInstance(height Height, value []byte) error {
 
 	c.Height = height
 
+	c.forceStopAllInstanceExceptCurrent()
+
 	return nil
 }
 
@@ -145,6 +147,14 @@ func (c *Controller) addAndStoreNewInstance() *Instance {
 	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
 	c.StoredInstances.addNewInstance(i)
 	return i
+}
+
+func (c *Controller) forceStopAllInstanceExceptCurrent() {
+	for _, i := range c.StoredInstances {
+		if i.State.Height != c.Height {
+			i.ForceStop()
+		}
+	}
 }
 
 // GetRoot returns the state's deterministic root

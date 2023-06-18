@@ -8,8 +8,8 @@ import (
 const CutoffRound = 20
 
 func (i *Instance) UponRoundTimeout() error {
-	if i.State.Round == CutoffRound {
-		return errors.New("round > cutoff round")
+	if i.CanProcessMessages() {
+		return errors.New("instance stopped processing timeouts")
 	}
 
 	newRound := i.State.Round + 1
