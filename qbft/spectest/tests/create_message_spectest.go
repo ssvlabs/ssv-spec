@@ -129,6 +129,6 @@ func (test *CreateMsgSpecTest) TestName() string {
 	return "qbft create message " + test.Name
 }
 
-func (test *CreateMsgSpecTest) GetPostState() (types.Encoder, error) {
+func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }

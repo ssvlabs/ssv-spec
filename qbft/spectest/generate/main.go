@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -17,6 +16,8 @@ import (
 //go:generate go run main.go
 
 func main() {
+	clearStateComparisonFolder()
+
 	all := map[string]tests.SpecTest{}
 	for _, testF := range spectest.AllTests {
 		test := testF()
@@ -46,7 +47,23 @@ func main() {
 	writeJson(byts)
 }
 
-func writeJsonStateComparison(name, testType string, post types.Encoder) {
+func clearStateComparisonFolder() {
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("no caller info")
+	}
+	dir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison")
+
+	if err := os.RemoveAll(dir); err != nil {
+		panic(err.Error())
+	}
+
+	if err := os.Mkdir(dir, 0700); err != nil {
+		panic(err.Error())
+	}
+}
+
+func writeJsonStateComparison(name, testType string, post interface{}) {
 	if post == nil { // If nil, test not supporting post state comparison yet
 		fmt.Printf("skipping state comparison json, not supported: %s\n", name)
 		return

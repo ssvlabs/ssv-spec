@@ -66,6 +66,6 @@ func (test *SpecTest) Run(t *testing.T) {
 	}
 }
 
-func (test *SpecTest) GetPostState() (types.Encoder, error) {
+func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }

@@ -32,7 +32,7 @@ type MsgProcessingSpecTest struct {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	// temporary to upload state comparisons from file not inputted one
+	// temporary to override state comparisons from file not inputted one
 	test.overrideStateComparison(t)
 
 	lastErr := test.runPreTesting()
@@ -116,7 +116,7 @@ func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 	test.PostRoot = hex.EncodeToString(r[:])
 }
 
-func (test *MsgProcessingSpecTest) GetPostState() (types.Encoder, error) {
+func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	err := test.runPreTesting()
 	if err != nil && len(test.ExpectedError) == 0 { // only non expected errors should return error
 		return nil, err

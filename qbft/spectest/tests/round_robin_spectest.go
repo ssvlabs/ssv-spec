@@ -33,6 +33,6 @@ func (test *RoundRobinSpecTest) TestName() string {
 	return "qbft round robin " + test.Name
 }
 
-func (test *RoundRobinSpecTest) GetPostState() (types.Encoder, error) {
+func (test *RoundRobinSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }

@@ -67,6 +67,6 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 	}
 }
 
-func (test *ControllerSyncSpecTest) GetPostState() (types.Encoder, error) {
+func (test *ControllerSyncSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
