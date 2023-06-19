@@ -23,7 +23,23 @@
 										"Quorum": 3
 								},
 								"PostConsensusContainer": {
-										"Signatures": {},
+										"Signatures": {
+												"9f4156be6449811e4e6dfc7dc6c3f0adc0b3d8d4cb1cb1aa15925631ef77ea59": {
+														"1": "gc5NQBbhoppv4OdiKlzogMcOOVmJIZA7mN6QJt50yKchbbs1ChaoK8/gzVDRB1IyFo8yvYEfnzdHx8gG4VEdJEZettVAZEwluHLHDTnWkBsOj23oi2WQ0QrpUwIcVihr",
+														"2": "qd3+R6m7CPzTwEDcM4a5o9/YOzwrfYsM02k3KFySCBc4gQr6Znbb+05ZPN+oM14OD61DQTBrgr4SRTQeVw3+iiRyf3YeF5mkT9eb+FzCIDubwVyrURHrnEWpQZ/kj/Mb",
+														"3": "kaDVLHMXe0xrBPMC+qEx9DMv8pE/yd4xJ8vH+2NLBfKKBsimJB6Sq4Daa8nQMAJhCKm4FEETf4ni1bBRXNOFYiHIfJzPQ88f7pF8L3BsU3GOggSQUXBeuc+yhxaD+NvG"
+												},
+												"a735f2e95e050090b43cf6c67c10645104eaf42285f9443ed5b9961d208e041f": {
+														"1": "geoGNlGGzJ2/2j3YX1mLxd7YTzHU/2WIEPnvvwKTf4sYe8gG3KqJT8r+3Uph/mKVANj69KcWGetrcmwC3gZmDnC8JMcXhNKHsoao1LlNW1rzmU9b3FOWkVb0VJQXRith",
+														"2": "hmjyn+a/oTf6MiJGeBmDlL7IHp5GRpwvCasMO0PLYtCqRk9Kcw+G551L4pRUruRdDfVFd8J8D085TxnNoAxML3YcGTBrBEiW2WveSEdDAIV72phKwbEJ+El4biA2Hg2t",
+														"3": "g/uf6JZAgxifn0HAkC3ngpZ7inGBvxTiH8TFw3cEJdVypM+u7iKA2mJgbJkMrt3zFIz2W7hK0aCHgcniU1VHUJ/tw9Yp40jpjA+9LbFBRr3kGhrTIu0FKfXy2OkqBHsb"
+												},
+												"f48022de4342f2bea21fce105bae2e7563f7f1f11b709fb0a0ffbf252a96390c": {
+														"1": "hSN9A9fN0IrF82SnnxT1gtcCnS1R3SfH7GG3yMzU8FjD11QMQQ3koVWBj8r+Mp3gC4Srxj1lxbJMcgZOo2gxSvfYw+bVFujgmAKxEsHC/Ngs9jqVd8jmU3SqM/kS0Sqa",
+														"2": "iSQv0Ned/BXrZB2xtDRovDY2S5c6o37uBW4BWl6sPeqNBVIzzEMZa55PnSqhkOxJAMQ6MCEHAa+E4OKv8yIXgOli/nVmjQTWki93JUldoABY4EhVXX02Tkk99APLcer/",
+														"3": "kKZWen0u7OgK/n9Cw83mxRn1taYYcPnIga7FFlMUUCsBuSXSZfMrs3IuaZnMEki5E1LrZH+j5mnwC2SKUx57Vype7KxwsNi6YgKZ+hFUWmeU+7ITSIXTTX+2NhQS33RJ"
+												}
+										},
 										"Quorum": 3
 								},
 								"RunningInstance": {
@@ -696,7 +712,7 @@
 												2
 										]
 								},
-								"Finished": false
+								"Finished": true
 						},
 						"Share": {
 								"OperatorID": 1,
@@ -1368,7 +1384,13 @@
 										"Quorum": 3
 								},
 								"PostConsensusContainer": {
-										"Signatures": {},
+										"Signatures": {
+												"c85bf5f6a171a5a82623d185b2f30eab08827957059e9ef1c24af14bfe2ea193": {
+														"1": "kdxaYDRcRG0OxgQdByIPIM983Ea81AY4/S4dGZK+2cwV6FG/HF9D8289lIfY8jg1BEEZ5dVoXquOqV+lstPRAzoGyYDzzaVeFerwaUoKbSZbx5uFeOIPq9PH2CuP49ON",
+														"2": "mU845ZHNU7x2ODeRSzMmnqMgqGPZZ98glMpXSaYoGLmwRZvyaz913F7lKrc7OEFiArKvbRC5igY4F1exqx78JT19KzltY2+BVFSXLF8A92q+NUpYKhS7X6K2i0gcQwzH",
+														"3": "reY5OR9WSQ1yQGPrzs3wFH6bbAbS8jDK/OE6meuBCvkLqNAkKRyhP8w8QIH3Mr4LEag0P0r+yhHd4QcmYuWcA65U0XEA1NmnJlqKGiWxXkcq12smZtLhIZXKLhK9BQC1"
+												}
+										},
 										"Quorum": 3
 								},
 								"RunningInstance": {
@@ -2041,7 +2063,7 @@
 												2
 										]
 								},
-								"Finished": false
+								"Finished": true
 						},
 						"Share": {
 								"OperatorID": 1,
@@ -2719,7 +2741,13 @@
 										"Quorum": 3
 								},
 								"PostConsensusContainer": {
-										"Signatures": {},
+										"Signatures": {
+												"c4551c9873f0588b4a13819ed39bde8c5cb6838b52e18d7b1807f02208c5b515": {
+														"1": "iGl6ZXMgVK2sVRM82h6J+2tRxDtnbe6iC1XL7auRM9U4LnfvirxqQHiWJNCw8WRKFmYj1HnKxS3O0WDTxyh50Gaaw5Z6znGbHkt/rdXLu7OUzmpen/rIVP9Avyx2mY8s",
+														"2": "tVOROqJaP6C4g7uajgC44qC1QJ505Ol2tNefLK9jHg5AH0TCzsEnVIMbWRbYkZchALink2Clu63xVq79esPDOJ3u0sT5DkKAOCC2GebeKpQBZWxXVaMf3/QtNxs52ZBR",
+														"3": "p4mJsTHfJ9m/maFmyKe6pmptN6IMZMTD6pek2OhyB7k/9gc9iFNrnh/g7ZlxPMgJEs4RyEPe6RPBw5R2ldz9GECRUuE+so0uURYzfZtbDeC31xHu8QAwAdXAmFyA0x9t"
+												}
+										},
 										"Quorum": 3
 								},
 								"RunningInstance": {
@@ -3384,7 +3412,7 @@
 										"ValidatorCommitteeIndex": 11,
 										"ValidatorSyncCommitteeIndices": null
 								},
-								"Finished": false
+								"Finished": true
 						},
 						"Share": {
 								"OperatorID": 1,
@@ -4056,7 +4084,13 @@
 										"Quorum": 3
 								},
 								"PostConsensusContainer": {
-										"Signatures": {},
+										"Signatures": {
+												"4ae32f48079745930bc24da670a6fe72052e13e3832728c6aa2580adc0307b83": {
+														"1": "iU3PPG+KB+22Rz9ypL5hfg0kr6EuyvsUfyT4yiA5GaQmSuT2Q8z+NSRY8HljYoz2GFhYqJef2QekHSie73s4Ygn6jPp2Rf5ISQ/JHpbUTORk/oOdEPZPGBUc/yCeNTrt",
+														"2": "gMXzIoe/QJBrH+ntuAoJ+kvr4qhj4VUmWphfsoLyOQ2VYjwvIOqDtLlXstFKbKXSCqNmxYecfX8xts3jWxcfHILOEgavz6rA8kiThsqlCSHWx3yDbjuBrISi9kU2a0a4",
+														"3": "ixo9S76Aot/jH4xVSQ+mWM9hXw0sU7YjMC0Q2dvgW38fhLN3fnXQs0mlzz6PNZwBD8isC5LcqhkTs5UKdCJNs0lEVEi5h4cG3I5+rd1SIzj/ZT9wrrutZjvnRkUF6Nxs"
+												}
+										},
 										"Quorum": 3
 								},
 								"RunningInstance": {
@@ -4721,7 +4755,7 @@
 										"ValidatorCommitteeIndex": 11,
 										"ValidatorSyncCommitteeIndices": null
 								},
-								"Finished": false
+								"Finished": true
 						},
 						"Share": {
 								"OperatorID": 1,
