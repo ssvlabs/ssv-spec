@@ -180,3 +180,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 
 	return lastErr
 }
+
+func (test *ControllerSpecTest) GetPostState() (types.Encoder, error) {
+	return nil, nil
+}

@@ -66,3 +66,7 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 }
+
+func (test *ControllerSyncSpecTest) GetPostState() (types.Encoder, error) {
+	return nil, nil
+}

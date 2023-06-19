@@ -2,7 +2,10 @@ package tests
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -28,20 +31,10 @@ type MsgProcessingSpecTest struct {
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	// a simple hack to change the proposer func
-	if test.Pre.State.Height == ChangeProposerFuncInstanceHeight {
-		test.Pre.GetConfig().(*qbft.Config).ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
-			return 2
-		}
-	}
+	// temporary to upload state comparisons from file not inputted one
+	test.overrideStateComparison(t)
 
-	var lastErr error
-	for _, msg := range test.InputMessages {
-		_, _, _, err := test.Pre.ProcessMsg(msg)
-		if err != nil {
-			lastErr = err
-		}
-	}
+	lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
@@ -77,6 +70,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		}
 	}
 
+	//test.outputSCJson(t)
+
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot[:]) {
 		diff := typescomparable.PrintDiff(test.Pre.State, test.PostState)
@@ -84,6 +79,46 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	}
 }
 
+func (test *MsgProcessingSpecTest) runPreTesting() error {
+	// a simple hack to change the proposer func
+	if test.Pre.State.Height == ChangeProposerFuncInstanceHeight {
+		test.Pre.GetConfig().(*qbft.Config).ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
+			return 2
+		}
+	}
+
+	var lastErr error
+	for _, msg := range test.InputMessages {
+		_, _, _, err := test.Pre.ProcessMsg(msg)
+		if err != nil {
+			lastErr = err
+		}
+	}
+	return lastErr
+}
+
 func (test *MsgProcessingSpecTest) TestName() string {
 	return "qbft message processing " + test.Name
+}
+
+func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
+	basedir, _ := os.Getwd()
+	path := filepath.Join(basedir, "generate", "state_comparison", fmt.Sprintf("%s.json", test.TestName()))
+	byteValue, err := os.ReadFile(path)
+	require.NoError(t, err)
+
+	test.PostState = &qbft.State{}
+	require.NoError(t, json.Unmarshal(byteValue, &test.PostState))
+
+	r, err := test.PostState.GetRoot()
+	require.NoError(t, err)
+	test.PostRoot = hex.EncodeToString(r[:])
+}
+
+func (test *MsgProcessingSpecTest) GetPostState() (types.Encoder, error) {
+	err := test.runPreTesting()
+	if err != nil && len(test.ExpectedError) == 0 { // only non expected errors should return error
+		return nil, err
+	}
+	return test.Pre.State, nil
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -19,6 +20,12 @@ func main() {
 	all := map[string]tests.SpecTest{}
 	for _, testF := range spectest.AllTests {
 		test := testF()
+		post, err := test.GetPostState()
+		if err != nil {
+			panic(err.Error())
+		}
+		writeJsonStateComparison(test.TestName(), post)
+
 		n := reflect.TypeOf(test).String() + "_" + test.TestName()
 		if all[n] != nil {
 			panic(fmt.Sprintf("duplicate test: %s\n", n))
@@ -37,6 +44,34 @@ func main() {
 
 	fmt.Printf("found %d tests\n", len(all))
 	writeJson(byts)
+}
+
+func writeJsonStateComparison(name string, post types.Encoder) {
+	if post != nil { // If nil, test not supporting post state comparison yet
+		fmt.Printf("skipping state comparison json, not supported: %s\n", name)
+		return
+	}
+	fmt.Printf("writing state comparison json: %s\n", name)
+
+	byts, err := json.MarshalIndent(post, "", "		")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("no caller info")
+	}
+	basedir = strings.TrimSuffix(basedir, "main.go")
+
+	// try to create directory if it doesn't exist
+	_ = os.Mkdir(basedir, os.ModeDir)
+
+	file := filepath.Join(basedir, "state_comparison", fmt.Sprintf("%s.json", name))
+
+	if err := os.WriteFile(file, byts, 0644); err != nil {
+		panic(err.Error())
+	}
 }
 
 func writeJson(data []byte) {

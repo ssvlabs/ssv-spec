@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -47,4 +48,8 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 
 func (test *MsgSpecTest) TestName() string {
 	return "qbft message " + test.Name
+}
+
+func (test *MsgSpecTest) GetPostState() (types.Encoder, error) {
+	return nil, nil
 }

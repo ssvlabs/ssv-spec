@@ -128,3 +128,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 func (test *CreateMsgSpecTest) TestName() string {
 	return "qbft create message " + test.Name
 }
+
+func (test *CreateMsgSpecTest) GetPostState() (types.Encoder, error) {
+	return nil, nil
+}
