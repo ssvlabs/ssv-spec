@@ -24,7 +24,7 @@ func main() {
 		if err != nil {
 			panic(err.Error())
 		}
-		writeJsonStateComparison(test.TestName(), post)
+		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)
 
 		n := reflect.TypeOf(test).String() + "_" + test.TestName()
 		if all[n] != nil {
@@ -46,8 +46,8 @@ func main() {
 	writeJson(byts)
 }
 
-func writeJsonStateComparison(name string, post types.Encoder) {
-	if post != nil { // If nil, test not supporting post state comparison yet
+func writeJsonStateComparison(name, testType string, post types.Encoder) {
+	if post == nil { // If nil, test not supporting post state comparison yet
 		fmt.Printf("skipping state comparison json, not supported: %s\n", name)
 		return
 	}
@@ -62,12 +62,11 @@ func writeJsonStateComparison(name string, post types.Encoder) {
 	if !ok {
 		panic("no caller info")
 	}
-	basedir = strings.TrimSuffix(basedir, "main.go")
+	basedir = filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison", testType)
 
 	// try to create directory if it doesn't exist
-	_ = os.Mkdir(basedir, os.ModeDir)
-
-	file := filepath.Join(basedir, "state_comparison", fmt.Sprintf("%s.json", name))
+	_ = os.Mkdir(basedir, 0700)
+	file := filepath.Join(basedir, fmt.Sprintf("%s.json", name))
 
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())

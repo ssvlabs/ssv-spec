@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -103,7 +104,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "state_comparison", fmt.Sprintf("%s.json", test.TestName()))
+	path := filepath.Join(basedir, "generate", "state_comparison", reflect.TypeOf(test).String(), fmt.Sprintf("%s.json", test.TestName()))
 	byteValue, err := os.ReadFile(path)
 	require.NoError(t, err)
 
