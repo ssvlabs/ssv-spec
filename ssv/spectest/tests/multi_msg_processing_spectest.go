@@ -20,3 +20,7 @@ func (tests *MultiMsgProcessingSpecTest) Run(t *testing.T) {
 		})
 	}
 }
+
+func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}

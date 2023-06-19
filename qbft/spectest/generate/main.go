@@ -21,12 +21,15 @@ func main() {
 	all := map[string]tests.SpecTest{}
 	for _, testF := range spectest.AllTests {
 		test := testF()
+
+		// generate post state comparison
 		post, err := test.GetPostState()
 		if err != nil {
 			panic(err.Error())
 		}
 		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)
 
+		// write json test
 		n := reflect.TypeOf(test).String() + "_" + test.TestName()
 		if all[n] != nil {
 			panic(fmt.Sprintf("duplicate test: %s\n", n))

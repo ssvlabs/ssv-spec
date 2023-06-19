@@ -62,3 +62,7 @@ func keySetForShare(share *types.Share) *testingutils.TestKeySet {
 	}
 	return testingutils.Testing4SharesSet()
 }
+
+func (tests *SyncCommitteeAggregatorProofSpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}

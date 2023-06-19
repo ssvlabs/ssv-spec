@@ -139,3 +139,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		index++
 	}
 }
+
+func (tests *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}
