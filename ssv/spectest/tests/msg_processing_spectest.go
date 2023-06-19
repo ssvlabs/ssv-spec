@@ -2,7 +2,12 @@ package tests
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"os"
+	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -10,7 +15,6 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 type MsgProcessingSpecTest struct {
@@ -31,21 +35,9 @@ func (test *MsgProcessingSpecTest) TestName() string {
 	return test.Name
 }
 
-func (test *MsgProcessingSpecTest) Run(t *testing.T) {
-	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetBaseRunner().Share))
-	v.DutyRunners[test.Runner.GetBaseRunner().BeaconRoleType] = test.Runner
-	v.Network = test.Runner.GetNetwork()
-
-	var lastErr error
-	if !test.DontStartDuty {
-		lastErr = v.StartDuty(test.Duty)
-	}
-	for _, msg := range test.Messages {
-		err := v.ProcessMessage(msg)
-		if err != nil {
-			lastErr = err
-		}
-	}
+// RunAsMultiTest runs the test as part of a MultiMsgProcessingSpecTest
+func (test *MsgProcessingSpecTest) RunAsMultiTest(t *testing.T) {
+	v, lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
@@ -67,6 +59,30 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		diff := typescomparable.PrintDiff(test.Runner, test.PostDutyRunnerState)
 		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), fmt.Sprintf("post runner state not equal\n%s\n", diff))
 	}
+}
+
+func (test *MsgProcessingSpecTest) Run(t *testing.T) {
+	test.overrideStateComparison(t)
+	test.RunAsMultiTest(t)
+}
+
+func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
+	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetBaseRunner().Share))
+	v.DutyRunners[test.Runner.GetBaseRunner().BeaconRoleType] = test.Runner
+	v.Network = test.Runner.GetNetwork()
+
+	var lastErr error
+	if !test.DontStartDuty {
+		lastErr = v.StartDuty(test.Duty)
+	}
+	for _, msg := range test.Messages {
+		err := v.ProcessMessage(msg)
+		if err != nil {
+			lastErr = err
+		}
+	}
+
+	return v, lastErr
 }
 
 func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
@@ -140,6 +156,40 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 	}
 }
 
-func (tests *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
-	return nil, nil
+func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
+	basedir, _ := os.Getwd()
+	path := filepath.Join(basedir, "generate", "state_comparison", reflect.TypeOf(test).String(), fmt.Sprintf("%s.json", test.TestName()))
+	byteValue, err := os.ReadFile(path)
+	require.NoError(t, err)
+
+	switch test.Runner.(type) {
+	case *ssv.AttesterRunner:
+		test.PostDutyRunnerState = &ssv.AttesterRunner{}
+	case *ssv.AggregatorRunner:
+		test.PostDutyRunnerState = &ssv.AggregatorRunner{}
+	case *ssv.ProposerRunner:
+		test.PostDutyRunnerState = &ssv.ProposerRunner{}
+	case *ssv.SyncCommitteeRunner:
+		test.PostDutyRunnerState = &ssv.SyncCommitteeRunner{}
+	case *ssv.SyncCommitteeAggregatorRunner:
+		test.PostDutyRunnerState = &ssv.SyncCommitteeAggregatorRunner{}
+	case *ssv.ValidatorRegistrationRunner:
+		test.PostDutyRunnerState = &ssv.ValidatorRegistrationRunner{}
+	default:
+		t.Fatalf("unknown runner type")
+	}
+	require.NoError(t, json.Unmarshal(byteValue, &test.PostDutyRunnerState))
+
+	r, err := test.PostDutyRunnerState.GetRoot()
+	require.NoError(t, err)
+	test.PostDutyRunnerStateRoot = hex.EncodeToString(r[:])
+}
+
+func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
+	_, lastErr := test.runPreTesting()
+	if lastErr != nil && len(test.ExpectedError) == 0 {
+		return nil, lastErr
+	}
+
+	return test.Runner, nil
 }
