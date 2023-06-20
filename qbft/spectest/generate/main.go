@@ -23,14 +23,11 @@ func main() {
 
 	all := map[string]tests.SpecTest{}
 	for _, testF := range spectest.AllTests {
-		t := &testing.T{}
 		test := testF()
-		postStates := test.Run(t)
 		n := reflect.TypeOf(test).String() + "_" + test.TestName()
 		if all[n] != nil {
 			panic(fmt.Sprintf("duplicate test: %s\n", n))
 		}
-		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), postStates)
 		all[n] = test
 	}
 
@@ -45,7 +42,16 @@ func main() {
 
 	log.Printf("found %d tests\n", len(all))
 	writeJson(byts)
+
+	for _, testF := range spectest.AllTests {
+		t := &testing.T{}
+		test := testF()
+		// generate post state comparison
+		postStates := test.Run(t)
+		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), postStates)
+	}
 }
+
 func clearStateComparisonFolder() {
 	_, basedir, _, ok := runtime.Caller(0)
 	if !ok {
