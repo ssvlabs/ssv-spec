@@ -70,7 +70,14 @@ func writeJsonStateComparison(name, testType string, postStates []types.Encoder)
 	}
 	log.Printf("writing state comparison json: %s\n", name)
 
-	byts, err := json.MarshalIndent(postStates, "", "		")
+	var post any
+	if len(postStates) == 1 {
+		post = postStates[0]
+	} else {
+		post = postStates
+	}
+
+	byts, err := json.MarshalIndent(post, "", "		")
 	if err != nil {
 		panic(err.Error())
 	}

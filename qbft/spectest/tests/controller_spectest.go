@@ -53,12 +53,12 @@ func (test *ControllerSpecTest) Run(t *testing.T) []types.Encoder {
 
 	controllers := make([]types.Encoder, len(test.RunInstanceData))
 	var lastErr error
-	for _, runData := range test.RunInstanceData {
+	for i, runData := range test.RunInstanceData {
 		if err := test.runInstanceWithData(t, contr, config, identifier, runData); err != nil {
 			lastErr = err
 		}
 		//copies contr into Controllers
-		copyAndAdd(controllers, contr)
+		controllers = copyAndAdd(controllers, contr, i)
 	}
 
 	if len(test.ExpectedError) != 0 {
@@ -70,7 +70,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) []types.Encoder {
 	return controllers
 }
 
-func copyAndAdd(controllers []types.Encoder, contr *qbft.Controller) []types.Encoder {
+func copyAndAdd(controllers []types.Encoder, contr *qbft.Controller, i int) []types.Encoder {
 	byts, err := contr.Encode()
 	if err != nil {
 		return nil
@@ -79,7 +79,8 @@ func copyAndAdd(controllers []types.Encoder, contr *qbft.Controller) []types.Enc
 	if err := copied.Decode(byts); err != nil {
 		return nil
 	}
-	return append(controllers, copied)
+	controllers[i] = copied
+	return controllers
 }
 
 func (test *ControllerSpecTest) testTimer(
