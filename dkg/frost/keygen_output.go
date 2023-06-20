@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/bloxapp/ssv-spec/types"
 
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -20,7 +21,7 @@ func (fr *Instance) processKeygenOutput() (finished bool, protocolOutcome *dkg.P
 	if !fr.canProceedThisRound() {
 		return false, nil, nil
 	}
-	fr.state.SetCurrentRound(KeygenOutput)
+	fr.state.SetCurrentRound(common.KeygenOutput)
 	fr.state.roundTimer.StartRoundTimeoutTimer(fr.state.GetCurrentRound())
 
 	if !fr.needToRunCurrentRound() {
@@ -42,7 +43,7 @@ func (fr *Instance) processKeygenOutput() (finished bool, protocolOutcome *dkg.P
 
 	operatorPubKeys := make(map[types.OperatorID]*bls.PublicKey)
 	for _, operatorID := range fr.instanceParams.operators {
-		msg, err := fr.state.msgContainer.GetRound2Msg(operatorID)
+		msg, err := GetRound2Msg(fr.state.msgContainer, operatorID)
 		if err != nil {
 			return false, nil, errors.Wrap(err, "failed to retrieve round2 msg")
 		}
@@ -131,7 +132,7 @@ func (fr *Instance) getXVec(operators []uint32) ([]bls.Fr, error) {
 func (fr *Instance) getYVec(operators []uint32) ([]bls.G1, error) {
 	yVec := make([]bls.G1, 0)
 	for _, operatorID := range operators {
-		msg, err := fr.state.msgContainer.GetRound2Msg(operatorID)
+		msg, err := GetRound2Msg(fr.state.msgContainer, operatorID)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to retrieve round2 msg")
 		}

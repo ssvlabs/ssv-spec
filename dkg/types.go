@@ -47,6 +47,7 @@ type Config struct {
 	// Protocol the DKG protocol implementation
 	KeygenProtocol      func(RequestID, types.OperatorID, IConfig, *Init) Protocol
 	ReshareProtocol     func(RequestID, types.OperatorID, IConfig, *Reshare, *ReshareParams) Protocol
+	KeySign             func(RequestID, types.OperatorID, IConfig, *KeySign) Protocol
 	Network             Network
 	Storage             Storage
 	SignatureDomainType types.DomainType

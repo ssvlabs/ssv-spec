@@ -90,6 +90,27 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 	return r, nil
 }
 
+func (n *Node) newSignatureRunner(id RequestID, vExitMsg *KeySign) (Runner, error) {
+
+	r := &runner{
+		Operator:              n.operator,
+		KeySign:               vExitMsg,
+		Identifier:            id,
+		KeygenOutcome:         nil,
+		DepositDataRoot:       nil,
+		DepositDataSignatures: map[types.OperatorID]*PartialDepositData{},
+		OutputMsgs:            map[types.OperatorID]*SignedOutput{},
+		protocol:              n.config.KeySign(id, n.operator.OperatorID, n.config, vExitMsg),
+		config:                n.config,
+	}
+
+	if err := r.protocol.Start(); err != nil {
+		return nil, errors.Wrap(err, "could not start keysign protocol")
+	}
+
+	return r, nil
+}
+
 // ProcessMessage processes network Messages of all types
 func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 	if msg.MsgType != types.DKGMsgType {
@@ -109,6 +130,8 @@ func (n *Node) ProcessMessage(msg *types.SSVMessage) error {
 		return n.startNewDKGMsg(signedMsg)
 	case ReshareMsgType:
 		return n.startResharing(signedMsg)
+	case PreSignedVoluntaryExitMsgType:
+		return n.startExitMsgSigning(signedMsg)
 	case ProtocolMsgType:
 		return n.processDKGMsg(signedMsg)
 	case DepositDataMsgType:
@@ -152,6 +175,23 @@ func (n *Node) startResharing(message *SignedMessage) error {
 	}
 
 	r, err := n.newResharingRunner(message.Message.Identifier, reshareMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not start resharing")
+	}
+
+	// add runner to runners
+	n.runners.AddRunner(message.Message.Identifier, r)
+
+	return nil
+}
+
+func (n *Node) startExitMsgSigning(message *SignedMessage) error {
+	vExitMsg, err := n.validateExitMsg(message)
+	if err != nil {
+		return errors.Wrap(err, "could not start resharing")
+	}
+
+	r, err := n.newSignatureRunner(message.Message.Identifier, vExitMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not start resharing")
 	}
@@ -206,6 +246,29 @@ func (n *Node) validateReshareMsg(message *SignedMessage) (*Reshare, error) {
 	}
 
 	return reshareMsg, nil
+}
+
+func (n *Node) validateExitMsg(message *SignedMessage) (*KeySign, error) {
+	// validate identifier.GetEthAddress is the signer for message
+	if err := message.Signature.ECRecover(message, n.config.SignatureDomainType, types.DKGSignatureType, message.Message.Identifier.GetETHAddress()); err != nil {
+		return nil, errors.Wrap(err, "signed message invalid")
+	}
+
+	vExitMsg := &KeySign{}
+	if err := vExitMsg.Decode(message.Message.Data); err != nil {
+		return nil, errors.Wrap(err, "could not get validator exit msg params from signed message")
+	}
+
+	if err := vExitMsg.Validate(); err != nil {
+		return nil, errors.Wrap(err, "reshare message invalid")
+	}
+
+	// check instance not running already
+	if n.runners.RunnerForID(message.Message.Identifier) != nil {
+		return nil, errors.New("signature protocol started already")
+	}
+
+	return vExitMsg, nil
 }
 
 func (n *Node) processDKGMsg(message *SignedMessage) error {

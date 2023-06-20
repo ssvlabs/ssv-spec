@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -79,7 +80,7 @@ func Timeout_Preparation() *tests.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frost.Testing_TimeoutMessageBytes(frost.Preparation),
+				Data:       frost.Testing_TimeoutMessageBytes(common.Preparation),
 			}),
 		},
 		Output:        map[types.OperatorID]*dkg.SignedOutput{},

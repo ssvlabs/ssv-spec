@@ -2,6 +2,7 @@ package frost
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/coinbase/kryptology/pkg/dkg/frost"
 	"github.com/coinbase/kryptology/pkg/sharing"
 	ecies "github.com/ecies/go/v2"
@@ -19,7 +20,7 @@ func (fr *Instance) processRound2() (finished bool, protocolOutcome *dkg.Protoco
 	if !fr.canProceedThisRound() {
 		return false, nil, nil
 	}
-	fr.state.SetCurrentRound(Round2)
+	fr.state.SetCurrentRound(common.Round2)
 	fr.state.roundTimer.StartRoundTimeoutTimer(fr.state.GetCurrentRound())
 
 	if !fr.needToRunCurrentRound() {
@@ -29,7 +30,7 @@ func (fr *Instance) processRound2() (finished bool, protocolOutcome *dkg.Protoco
 	bcast := make(map[uint32]*frost.Round1Bcast)
 	p2psend := make(map[uint32]*sharing.ShamirShare)
 
-	for peerOpID, dkgMessage := range fr.state.msgContainer.AllMessagesForRound(Round1) {
+	for peerOpID, dkgMessage := range fr.state.msgContainer.AllMessagesForRound(common.Round1) {
 		protocolMessage := &ProtocolMsg{}
 		if err := protocolMessage.Decode(dkgMessage.Message.Data); err != nil {
 			return false, nil, errors.Wrap(err, "failed to decode protocol msg")
@@ -86,7 +87,7 @@ func (fr *Instance) processRound2() (finished bool, protocolOutcome *dkg.Protoco
 	}
 
 	msg := &ProtocolMsg{
-		Round: Round2,
+		Round: common.Round2,
 		Round2Message: &Round2Message{
 			Vk:      bCastMessage.VerificationKey.ToAffineCompressed(),
 			VkShare: bCastMessage.VkShare.ToAffineCompressed(),

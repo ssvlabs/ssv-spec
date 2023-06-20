@@ -21,6 +21,8 @@ type runner struct {
 	InitMsg *Init
 	// ReshareMsg holds the reshare method which started this runner
 	ReshareMsg *Reshare
+	// KeySign holds the signature method which started this runner
+	KeySign *KeySign
 	// Identifier unique for DKG session
 	Identifier RequestID
 	// KeygenOutcome holds the protocol outcome once it finishes

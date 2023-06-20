@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/coinbase/kryptology/pkg/sharing"
 	ecies "github.com/ecies/go/v2"
 	"github.com/pkg/errors"
@@ -13,7 +14,7 @@ import (
 // Message to blame an inconsistent message, including the existing message and
 // the new message as blame data.
 func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage, newMessage *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
-	fr.state.SetCurrentRound(Blame)
+	fr.state.SetCurrentRound(common.Blame)
 
 	existingMessageBytes, err := existingMessage.Encode()
 	if err != nil {
@@ -25,7 +26,7 @@ func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage
 	}
 
 	msg := &ProtocolMsg{
-		Round: Blame,
+		Round: common.Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InconsistentMessage,
 			TargetOperatorID: uint32(newMessage.Signer),
@@ -54,9 +55,9 @@ func (fr *Instance) createAndBroadcastBlameOfInconsistentMessage(existingMessage
 // Message to blame an invalid share, including the round 1 message from culprit
 // operator
 func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bool, *dkg.ProtocolOutcome, error) {
-	fr.state.SetCurrentRound(Blame)
+	fr.state.SetCurrentRound(common.Blame)
 
-	round1Msg, err := fr.state.msgContainer.GetSignedMsg(Round1, culpritOID)
+	round1Msg, err := fr.state.msgContainer.GetSignedMsg(common.Round1, culpritOID)
 	if err != nil {
 		return false, nil, err
 	}
@@ -66,7 +67,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bo
 	}
 
 	msg := &ProtocolMsg{
-		Round: Blame,
+		Round: common.Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InvalidShare,
 			TargetOperatorID: culpritOID,
@@ -95,7 +96,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidShare(culpritOID uint32) (bo
 // blame an invalid message, including the operatorID of the culprit and the
 // received signed message.
 func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, message *dkg.SignedMessage) (bool, *dkg.ProtocolOutcome, error) {
-	fr.state.SetCurrentRound(Blame)
+	fr.state.SetCurrentRound(common.Blame)
 
 	bytes, err := message.Encode()
 	if err != nil {
@@ -103,7 +104,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, m
 	}
 
 	msg := &ProtocolMsg{
-		Round: Blame,
+		Round: common.Blame,
 		BlameMessage: &BlameMessage{
 			Type:             InvalidMessage,
 			TargetOperatorID: culpritOID,
@@ -130,7 +131,7 @@ func (fr *Instance) createAndBroadcastBlameOfInvalidMessage(culpritOID uint32, m
 
 // checkBlame checks validity of the blame message as per its blame type
 func (fr *Instance) checkBlame(blamerOID uint32, protocolMessage *ProtocolMsg, signedMessage *dkg.SignedMessage) (finished bool, protocolOutcome *dkg.ProtocolOutcome, err error) {
-	fr.state.SetCurrentRound(Blame)
+	fr.state.SetCurrentRound(common.Blame)
 
 	var valid bool
 	switch protocolMessage.BlameMessage.Type {
@@ -167,7 +168,7 @@ func (fr *Instance) processBlameTypeInvalidShare(blamerOID uint32, blameMessage 
 		return false, errors.Wrap(err, "failed to Validate signature for blame data")
 	}
 
-	blamerPrepMsg, err := fr.state.msgContainer.GetPreparationMsg(blamerOID)
+	blamerPrepMsg, err := GetPreparationMsg(fr.state.msgContainer, blamerOID)
 	if err != nil {
 		return false, errors.New("unable to retrieve blamer's PreparationMessage")
 	}

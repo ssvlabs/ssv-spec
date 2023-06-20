@@ -2,6 +2,7 @@ package timeout
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/bloxapp/ssv-spec/dkg/frost"
 	"github.com/bloxapp/ssv-spec/dkg/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -113,7 +114,7 @@ func Timeout_Round2() *tests.MsgProcessingSpecTest {
 			testingutils.SignDKGMsg(ks.DKGOperators[1].SK, 1, &dkg.Message{
 				MsgType:    dkg.ProtocolMsgType,
 				Identifier: identifier,
-				Data:       frost.Testing_TimeoutMessageBytes(frost.Round2),
+				Data:       frost.Testing_TimeoutMessageBytes(common.Round2),
 			}),
 		},
 		Output:        map[types.OperatorID]*dkg.SignedOutput{},

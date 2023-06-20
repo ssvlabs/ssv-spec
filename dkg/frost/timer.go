@@ -4,15 +4,17 @@ import (
 	"context"
 	"sync/atomic"
 	"time"
+
+	"github.com/bloxapp/ssv-spec/dkg/common"
 )
 
-type RoundTimeoutFunc func(ProtocolRound) time.Duration
+type RoundTimeoutFunc func(common.ProtocolRound) time.Duration
 type OnTimeoutFn func() error
 
 var DefaultTimeoutDuration = 10 * time.Minute
 
 // RoundTimeout returns the number of seconds until next timeout for a give round
-func RoundTimeout(ProtocolRound) time.Duration {
+func RoundTimeout(common.ProtocolRound) time.Duration {
 	return DefaultTimeoutDuration
 }
 
@@ -48,12 +50,12 @@ func (t *RoundTimer) OnTimeout(done OnTimeoutFn) {
 }
 
 // Round returns a round.
-func (t *RoundTimer) Round() ProtocolRound {
-	return ProtocolRound(atomic.LoadInt64(&t.round))
+func (t *RoundTimer) Round() common.ProtocolRound {
+	return common.ProtocolRound(atomic.LoadInt64(&t.round))
 }
 
 // StartRoundTimeoutTimer times out for a given round.
-func (t *RoundTimer) StartRoundTimeoutTimer(round ProtocolRound) {
+func (t *RoundTimer) StartRoundTimeoutTimer(round common.ProtocolRound) {
 	atomic.StoreInt64(&t.round, int64(round))
 	timeout := t.roundTimeout(round)
 	// preparing the underlying timer
@@ -73,7 +75,7 @@ func (t *RoundTimer) StartRoundTimeoutTimer(round ProtocolRound) {
 	go t.waitForRound(round, timer.C)
 }
 
-func (t *RoundTimer) waitForRound(round ProtocolRound, timeout <-chan time.Time) {
+func (t *RoundTimer) waitForRound(round common.ProtocolRound, timeout <-chan time.Time) {
 	ctx, cancel := context.WithCancel(t.ctx)
 	defer cancel()
 	done := t.done

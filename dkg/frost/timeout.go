@@ -2,6 +2,7 @@ package frost
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 )
 
 func (fr *Instance) UponRoundTimeout() error {
@@ -9,10 +10,10 @@ func (fr *Instance) UponRoundTimeout() error {
 		return nil
 	}
 	prevRound := fr.state.GetCurrentRound()
-	fr.state.SetCurrentRound(Timeout)
+	fr.state.SetCurrentRound(common.Timeout)
 
 	msg := &ProtocolMsg{
-		Round: Timeout,
+		Round: common.Timeout,
 		TimeoutMessage: &TimeoutMessage{
 			Round: prevRound,
 		},

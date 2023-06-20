@@ -4,18 +4,19 @@ import (
 	"encoding/json"
 
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/bloxapp/ssv-spec/types"
 	ecies "github.com/ecies/go/v2"
 	"github.com/pkg/errors"
 )
 
 type ProtocolMsg struct {
-	Round              ProtocolRound       `json:"round,omitempty"`
-	PreparationMessage *PreparationMessage `json:"preparation,omitempty"`
-	Round1Message      *Round1Message      `json:"round1,omitempty"`
-	Round2Message      *Round2Message      `json:"round2,omitempty"`
-	BlameMessage       *BlameMessage       `json:"blame,omitempty"`
-	TimeoutMessage     *TimeoutMessage     `json:"timeout,omitempty"`
+	Round              common.ProtocolRound `json:"round,omitempty"`
+	PreparationMessage *PreparationMessage  `json:"preparation,omitempty"`
+	Round1Message      *Round1Message       `json:"round1,omitempty"`
+	Round2Message      *Round2Message       `json:"round2,omitempty"`
+	BlameMessage       *BlameMessage        `json:"blame,omitempty"`
+	TimeoutMessage     *TimeoutMessage      `json:"timeout,omitempty"`
 }
 
 func (msg *ProtocolMsg) hasOnlyOneMsg() bool {
@@ -37,13 +38,13 @@ func (msg *ProtocolMsg) hasOnlyOneMsg() bool {
 
 func (msg *ProtocolMsg) msgMatchesRound() bool {
 	switch msg.Round {
-	case Preparation:
+	case common.Preparation:
 		return msg.PreparationMessage != nil
-	case Round1:
+	case common.Round1:
 		return msg.Round1Message != nil
-	case Round2:
+	case common.Round2:
 		return msg.Round2Message != nil
-	case Blame:
+	case common.Blame:
 		return msg.BlameMessage != nil
 	default:
 		return false
@@ -58,11 +59,11 @@ func (msg *ProtocolMsg) Validate() error {
 		return errors.New("")
 	}
 	switch msg.Round {
-	case Preparation:
+	case common.Preparation:
 		return msg.PreparationMessage.Validate()
-	case Round1:
+	case common.Round1:
 		return msg.Round1Message.Validate()
-	case Round2:
+	case common.Round2:
 		return msg.Round2Message.Validate()
 	}
 	return nil
@@ -97,6 +98,80 @@ func (msg *ProtocolMsg) ToSignedMessage(id dkg.RequestID, operatorID types.Opera
 	}
 	bcastMessage.Signature = sig
 	return bcastMessage, nil
+}
+
+func (msg *ProtocolMsg) GetMessage(msgContainer common.IMsgContainer, round common.ProtocolRound, operatorID uint32) (interface{}, error) {
+	signedMsg, err := msgContainer.GetSignedMsg(round, operatorID)
+	if err != nil {
+		return nil, err
+	}
+	if err := msg.Decode(signedMsg.Message.Data); err != nil {
+		return nil, err
+	}
+	switch round {
+	case common.Preparation:
+		return msg.PreparationMessage, nil
+	case common.Round1:
+		return msg.Round1Message, nil
+	case common.Round2:
+		return msg.Round2Message, nil
+	case common.Blame:
+		return msg.BlameMessage, nil
+	default:
+		return nil, dkg.ErrInvalidRound{}
+	}
+}
+
+func GetPreparationMsg(msgContainer common.IMsgContainer, operatorID uint32) (*PreparationMessage, error) {
+	protocolMsg := new(ProtocolMsg)
+	msg, err := protocolMsg.GetMessage(msgContainer, common.Preparation, operatorID)
+	if err != nil {
+		return nil, err
+	}
+	parsedMsg, _ := msg.(*PreparationMessage)
+	if parsedMsg == nil {
+		return nil, common.ErrMsgNil{Round: common.Preparation, OperatorID: operatorID}
+	}
+	return parsedMsg, nil
+}
+
+func GetRound1Msg(msgContainer common.IMsgContainer, operatorID uint32) (*Round1Message, error) {
+	protocolMsg := new(ProtocolMsg)
+	msg, err := protocolMsg.GetMessage(msgContainer, common.Round1, operatorID)
+	if err != nil {
+		return nil, err
+	}
+	parsedMsg, _ := msg.(*Round1Message)
+	if parsedMsg == nil {
+		return nil, common.ErrMsgNil{Round: common.Round1, OperatorID: operatorID}
+	}
+	return parsedMsg, nil
+}
+
+func GetRound2Msg(msgContainer common.IMsgContainer, operatorID uint32) (*Round2Message, error) {
+	protocolMsg := new(ProtocolMsg)
+	msg, err := protocolMsg.GetMessage(msgContainer, common.Round2, operatorID)
+	if err != nil {
+		return nil, err
+	}
+	parsedMsg, _ := msg.(*Round2Message)
+	if parsedMsg == nil {
+		return nil, common.ErrMsgNil{Round: common.Round2, OperatorID: operatorID}
+	}
+	return parsedMsg, nil
+}
+
+func GetBlameMsg(msgContainer common.IMsgContainer, operatorID uint32) (*BlameMessage, error) {
+	protocolMsg := new(ProtocolMsg)
+	msg, err := protocolMsg.GetMessage(msgContainer, common.Blame, operatorID)
+	if err != nil {
+		return nil, err
+	}
+	parsedMsg, _ := msg.(*BlameMessage)
+	if parsedMsg == nil {
+		return nil, common.ErrMsgNil{Round: common.Blame, OperatorID: operatorID}
+	}
+	return parsedMsg, nil
 }
 
 // Encode returns a msg encoded bytes or error
@@ -240,5 +315,5 @@ func (t BlameType) ToString() string {
 }
 
 type TimeoutMessage struct {
-	Round ProtocolRound
+	Round common.ProtocolRound
 }

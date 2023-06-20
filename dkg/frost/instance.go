@@ -4,11 +4,12 @@ import (
 	"math/rand"
 
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/coinbase/kryptology/pkg/core/curves"
 	"github.com/coinbase/kryptology/pkg/dkg/frost"
 	ecies "github.com/ecies/go/v2"
-	"github.com/ethereum/go-ethereum/common"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/pkg/errors"
 )
@@ -87,7 +88,7 @@ func newProtocol(config dkg.IConfig, instanceParams InstanceParams) dkg.Protocol
 // starting this process.
 func (fr *Instance) Start() error {
 	fr.state.roundTimer.OnTimeout(fr.UponRoundTimeout)
-	fr.state.SetCurrentRound(Preparation)
+	fr.state.SetCurrentRound(common.Preparation)
 	fr.state.roundTimer.StartRoundTimeoutTimer(fr.state.GetCurrentRound())
 
 	// create a new dkg participant
@@ -114,7 +115,7 @@ func (fr *Instance) Start() error {
 
 	// create and broadcast PreparationMessage
 	msg := &ProtocolMsg{
-		Round: Preparation,
+		Round: common.Preparation,
 		PreparationMessage: &PreparationMessage{
 			SessionPk: k.PublicKey.Bytes(true),
 		},
@@ -153,17 +154,17 @@ func (fr *Instance) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolO
 
 	// process message based on their round
 	switch protocolMessage.Round {
-	case Preparation:
+	case common.Preparation:
 		return fr.processRound1()
-	case Round1:
+	case common.Round1:
 		return fr.processRound2()
-	case Round2:
+	case common.Round2:
 		return fr.processKeygenOutput()
-	case Blame:
+	case common.Blame:
 		// here we are checking blame right away unlike other rounds where
 		// we wait to receive messages from all the operators in the protocol
 		return fr.checkBlame(uint32(msg.Signer), protocolMessage, msg)
-	case Timeout:
+	case common.Timeout:
 		return fr.ProcessTimeoutMessage()
 	default:
 		return true, nil, dkg.ErrInvalidRound{}
@@ -172,8 +173,8 @@ func (fr *Instance) ProcessMsg(msg *dkg.SignedMessage) (finished bool, protocolO
 
 func (fr *Instance) canProceedThisRound() bool {
 	// Note: for Resharing, Preparation (New Committee) -> Round1 (Old Committee) -> Round2 (New Committee)
-	if fr.instanceParams.isResharing() && fr.state.GetCurrentRound() == Round1 {
-		return fr.state.msgContainer.AllMessagesReceivedFor(Round1, fr.instanceParams.operatorsOld)
+	if fr.instanceParams.isResharing() && fr.state.GetCurrentRound() == common.Round1 {
+		return fr.state.msgContainer.AllMessagesReceivedFor(common.Round1, fr.instanceParams.operatorsOld)
 	}
 	return fr.state.msgContainer.AllMessagesReceivedFor(fr.state.GetCurrentRound(), fr.instanceParams.operators)
 }
@@ -183,9 +184,9 @@ func (fr *Instance) needToRunCurrentRound() bool {
 		return true // always run for new keygen
 	}
 	switch fr.state.GetCurrentRound() {
-	case Preparation, Round2, KeygenOutput:
+	case common.Preparation, common.Round2, common.KeygenOutput:
 		return fr.instanceParams.inNewCommittee()
-	case Round1:
+	case common.Round1:
 		return fr.instanceParams.inOldCommittee()
 	default:
 		return false
@@ -215,7 +216,7 @@ func (fr *Instance) validateSignedMessage(msg *dkg.SignedMessage) error {
 		return errors.Wrap(err, "unable to recover public key")
 	}
 
-	addr := common.BytesToAddress(crypto.Keccak256(pk[1:])[12:])
+	addr := ethcommon.BytesToAddress(crypto.Keccak256(pk[1:])[12:])
 	if addr != operator.ETHAddress {
 		return errors.New("invalid signature")
 	}

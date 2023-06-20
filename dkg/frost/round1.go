@@ -2,6 +2,7 @@ package frost
 
 import (
 	"github.com/bloxapp/ssv-spec/dkg"
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
@@ -18,7 +19,7 @@ func (fr *Instance) processRound1() (finished bool, protocolOutcome *dkg.Protoco
 	if !fr.canProceedThisRound() {
 		return false, nil, nil
 	}
-	fr.state.SetCurrentRound(Round1)
+	fr.state.SetCurrentRound(common.Round1)
 	fr.state.roundTimer.StartRoundTimeoutTimer(fr.state.GetCurrentRound())
 
 	if !fr.needToRunCurrentRound() {
@@ -65,7 +66,7 @@ func (fr *Instance) processRound1() (finished bool, protocolOutcome *dkg.Protoco
 	}
 
 	msg := &ProtocolMsg{
-		Round: Round1,
+		Round: common.Round1,
 		Round1Message: &Round1Message{
 			Commitment: commitments,
 			ProofS:     bCastMessage.Wi.Bytes(),

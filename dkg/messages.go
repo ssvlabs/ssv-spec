@@ -58,6 +58,8 @@ const (
 	OutputMsgType
 	// ReshareMsgType sent when Resharing is requested
 	ReshareMsgType
+	// PreSignedVoluntaryExitMsgType sent when Presigned Voluntary Exit Message is Requested
+	PreSignedVoluntaryExitMsgType
 )
 
 type Message struct {
@@ -355,5 +357,25 @@ func (msg *PartialDepositData) Encode() ([]byte, error) {
 
 // Decode returns error if decoding failed
 func (msg *PartialDepositData) Decode(data []byte) error {
+	return json.Unmarshal(data, msg)
+}
+
+// KeySign triggers the signature protocol for signing validator exit message
+type KeySign struct {
+	ValidatorPK types.ValidatorPK
+	SigningRoot []byte
+}
+
+func (msg *KeySign) Validate() error {
+	return nil
+}
+
+// Encode returns a msg encoded bytes or error
+func (msg *KeySign) Encode() ([]byte, error) {
+	return json.Marshal(msg)
+}
+
+// Decode returns error if decoding failed
+func (msg *KeySign) Decode(data []byte) error {
 	return json.Unmarshal(data, msg)
 }

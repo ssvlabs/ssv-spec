@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bloxapp/ssv-spec/dkg/common"
 	"github.com/stretchr/testify/require"
 )
 
@@ -17,12 +18,12 @@ func TestRoundTimer_TimeoutForRound(t *testing.T) {
 			return nil
 		}
 		timer := NewRoundTimer(context.Background(), onTimeout)
-		timer.roundTimeout = func(round ProtocolRound) time.Duration {
+		timer.roundTimeout = func(round common.ProtocolRound) time.Duration {
 			return 1100 * time.Millisecond
 		}
-		timer.StartRoundTimeoutTimer(ProtocolRound(1))
+		timer.StartRoundTimeoutTimer(common.ProtocolRound(1))
 		require.Equal(t, int32(0), atomic.LoadInt32(&count))
-		<-time.After(timer.roundTimeout(ProtocolRound(1)) + time.Millisecond*10)
+		<-time.After(timer.roundTimeout(common.ProtocolRound(1)) + time.Millisecond*10)
 		require.Equal(t, int32(1), atomic.LoadInt32(&count))
 	})
 
@@ -33,15 +34,15 @@ func TestRoundTimer_TimeoutForRound(t *testing.T) {
 			return nil
 		}
 		timer := NewRoundTimer(context.Background(), onTimeout)
-		timer.roundTimeout = func(round ProtocolRound) time.Duration {
+		timer.roundTimeout = func(round common.ProtocolRound) time.Duration {
 			return 1100 * time.Millisecond
 		}
 
-		timer.StartRoundTimeoutTimer(ProtocolRound(1))
-		<-time.After(timer.roundTimeout(ProtocolRound(1)) / 2)
-		timer.StartRoundTimeoutTimer(ProtocolRound(2)) // reset before elapsed
+		timer.StartRoundTimeoutTimer(common.ProtocolRound(1))
+		<-time.After(timer.roundTimeout(common.ProtocolRound(1)) / 2)
+		timer.StartRoundTimeoutTimer(common.ProtocolRound(2)) // reset before elapsed
 		require.Equal(t, int32(0), atomic.LoadInt32(&count))
-		<-time.After(timer.roundTimeout(ProtocolRound(2)) + time.Millisecond*10)
+		<-time.After(timer.roundTimeout(common.ProtocolRound(2)) + time.Millisecond*10)
 		require.Equal(t, int32(1), atomic.LoadInt32(&count))
 	})
 }
