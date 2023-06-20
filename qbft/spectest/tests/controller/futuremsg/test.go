@@ -26,7 +26,7 @@ func (test *ControllerSyncSpecTest) TestName() string {
 	return "qbft controller sync " + test.Name
 }
 
-func (test *ControllerSyncSpecTest) Run(t *testing.T) {
+func (test *ControllerSyncSpecTest) Run(t *testing.T) []types.Encoder {
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.BNRoleAttester)
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
@@ -65,4 +65,6 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, lastErr)
 	}
+
+	return []types.Encoder{contr}
 }

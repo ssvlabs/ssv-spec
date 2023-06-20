@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -15,7 +16,7 @@ type MsgSpecTest struct {
 	ExpectedError   string
 }
 
-func (test *MsgSpecTest) Run(t *testing.T) {
+func (test *MsgSpecTest) Run(t *testing.T) []types.Encoder {
 	var lastErr error
 
 	for i, msg := range test.Messages {
@@ -43,6 +44,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, lastErr)
 	}
+	return nil
 }
 
 func (test *MsgSpecTest) TestName() string {

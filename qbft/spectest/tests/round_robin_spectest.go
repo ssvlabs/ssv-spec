@@ -15,7 +15,7 @@ type RoundRobinSpecTest struct {
 	Proposers []types.OperatorID
 }
 
-func (test *RoundRobinSpecTest) Run(t *testing.T) {
+func (test *RoundRobinSpecTest) Run(t *testing.T) []types.Encoder {
 	require.True(t, len(test.Heights) > 0)
 	for i, h := range test.Heights {
 		r := test.Rounds[i]
@@ -27,6 +27,8 @@ func (test *RoundRobinSpecTest) Run(t *testing.T) {
 
 		require.EqualValues(t, test.Proposers[i], qbft.RoundRobinProposer(s, r))
 	}
+
+	return nil
 }
 
 func (test *RoundRobinSpecTest) TestName() string {

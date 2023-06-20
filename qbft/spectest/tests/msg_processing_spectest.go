@@ -27,7 +27,7 @@ type MsgProcessingSpecTest struct {
 	ExpectedTimerState *testingutils.TimerState
 }
 
-func (test *MsgProcessingSpecTest) Run(t *testing.T) {
+func (test *MsgProcessingSpecTest) Run(t *testing.T) []types.Encoder {
 	// a simple hack to change the proposer func
 	if test.Pre.State.Height == ChangeProposerFuncInstanceHeight {
 		test.Pre.GetConfig().(*qbft.Config).ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
@@ -82,6 +82,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		diff := typescomparable.PrintDiff(test.Pre.State, test.PostState)
 		require.Fail(t, "post state not equal", diff)
 	}
+
+	return []types.Encoder{test.Pre.State}
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {

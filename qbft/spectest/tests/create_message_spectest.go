@@ -32,7 +32,7 @@ type CreateMsgSpecTest struct {
 	ExpectedError                                    string
 }
 
-func (test *CreateMsgSpecTest) Run(t *testing.T) {
+func (test *CreateMsgSpecTest) Run(t *testing.T) []types.Encoder {
 	var msg *qbft.SignedMessage
 	var err error
 	switch test.CreateType {
@@ -50,14 +50,14 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 
 	if err != nil && len(test.ExpectedError) != 0 {
 		require.EqualError(t, err, test.ExpectedError)
-		return
+		return nil
 	}
 	require.NoError(t, err)
 
 	r, err2 := msg.GetRoot()
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, err2, test.ExpectedError)
-		return
+		return nil
 	}
 	require.NoError(t, err2)
 
@@ -66,6 +66,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 		require.Fail(t, "post state not equal", diff)
 	}
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
+	return nil
 }
 
 func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {

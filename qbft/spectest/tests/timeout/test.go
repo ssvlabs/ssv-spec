@@ -27,7 +27,7 @@ func (test *SpecTest) TestName() string {
 	return "qbft timeout " + test.Name
 }
 
-func (test *SpecTest) Run(t *testing.T) {
+func (test *SpecTest) Run(t *testing.T) []types.Encoder {
 	err := test.Pre.UponRoundTimeout()
 
 	if len(test.ExpectedError) != 0 {
@@ -64,4 +64,6 @@ func (test *SpecTest) Run(t *testing.T) {
 		diff := typescomparable.PrintDiff(test.Pre.State, test.PostState)
 		require.Fail(t, "post state not equal", diff)
 	}
+
+	return []types.Encoder{test.Pre.State}
 }
