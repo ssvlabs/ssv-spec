@@ -42,7 +42,7 @@ func (test *ControllerSpecTest) TestName() string {
 	return "qbft controller " + test.Name
 }
 
-func (test *ControllerSpecTest) Run(t *testing.T) {
+func (test *ControllerSpecTest) Run(t *testing.T) []types.Encoder {
 	identifier := []byte{1, 2, 3, 4}
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
@@ -51,11 +51,14 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		config,
 	)
 
+	controllers := make([]types.Encoder, len(test.RunInstanceData))
 	var lastErr error
 	for _, runData := range test.RunInstanceData {
 		if err := test.runInstanceWithData(t, contr, config, identifier, runData); err != nil {
 			lastErr = err
 		}
+		//copies contr into Controllers
+		copyAndAdd(controllers, contr)
 	}
 
 	if len(test.ExpectedError) != 0 {
@@ -63,6 +66,20 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, lastErr)
 	}
+
+	return controllers
+}
+
+func copyAndAdd(controllers []types.Encoder, contr *qbft.Controller) []types.Encoder {
+	byts, err := contr.Encode()
+	if err != nil {
+		return nil
+	}
+	copied := &qbft.Controller{}
+	if err := copied.Decode(byts); err != nil {
+		return nil
+	}
+	return append(controllers, copied)
 }
 
 func (test *ControllerSpecTest) testTimer(
