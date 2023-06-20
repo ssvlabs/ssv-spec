@@ -22,13 +22,6 @@ func main() {
 	for _, testF := range spectest.AllTests {
 		test := testF()
 
-		// generate post state comparison
-		post, err := test.GetPostState()
-		if err != nil {
-			panic(err.Error())
-		}
-		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)
-
 		// write json test
 		n := reflect.TypeOf(test).String() + "_" + test.TestName()
 		if all[n] != nil {
@@ -48,6 +41,16 @@ func main() {
 
 	fmt.Printf("found %d tests\n", len(all))
 	writeJson(byts)
+
+	for _, testF := range spectest.AllTests {
+		test := testF()
+		// generate post state comparison
+		post, err := test.GetPostState()
+		if err != nil {
+			panic(err.Error())
+		}
+		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)
+	}
 }
 
 func clearStateComparisonFolder() {

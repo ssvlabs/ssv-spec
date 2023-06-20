@@ -71,8 +71,6 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		}
 	}
 
-	//test.outputSCJson(t)
-
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot[:]) {
 		diff := typescomparable.PrintDiff(test.Pre.State, test.PostState)
