@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"log"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -39,7 +40,7 @@ func main() {
 		panic("did not generate all tests\n")
 	}
 
-	fmt.Printf("found %d tests\n", len(all))
+	log.Printf("found %d tests\n", len(all))
 	writeJson(byts)
 
 	for _, testF := range spectest.AllTests {
@@ -71,10 +72,10 @@ func clearStateComparisonFolder() {
 
 func writeJsonStateComparison(name, testType string, post interface{}) {
 	if post == nil { // If nil, test not supporting post state comparison yet
-		fmt.Printf("skipping state comparison json, not supported: %s\n", name)
+		log.Printf("skipping state comparison json, not supported: %s\n", name)
 		return
 	}
-	fmt.Printf("writing state comparison json: %s\n", name)
+	log.Printf("writing state comparison json: %s\n", name)
 
 	byts, err := json.MarshalIndent(post, "", "		")
 	if err != nil {
@@ -107,7 +108,7 @@ func writeJson(data []byte) {
 	_ = os.Mkdir(basedir, os.ModeDir)
 
 	file := filepath.Join(basedir, "tests.json")
-	fmt.Printf("writing spec tests json to: %s\n", file)
+	log.Printf("writing spec tests json to: %s\n", file)
 	if err := os.WriteFile(file, data, 0644); err != nil {
 		panic(err.Error())
 	}
