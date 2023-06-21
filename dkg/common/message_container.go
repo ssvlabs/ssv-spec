@@ -13,6 +13,7 @@ type IMsgContainer interface {
 	GetSignedMsg(round ProtocolRound, operatorID uint32) (*dkg.SignedMessage, error)
 	AllMessagesForRound(round ProtocolRound) map[uint32]*dkg.SignedMessage
 	AllMessagesReceivedFor(round ProtocolRound, operators []uint32) bool
+	AllMessagesReceivedUpto(round ProtocolRound, operators []uint32, threshold uint64) bool
 }
 
 type MsgContainer struct {
@@ -63,11 +64,24 @@ func (msgContainer *MsgContainer) AllMessagesReceivedFor(round ProtocolRound, op
 	defer msgContainer.mu.Unlock()
 
 	for _, operatorID := range operators {
-		if _, ok := msgContainer.msgs[round][operatorID]; !ok {
+		if _, ok := msgContainer.msgs[round][uint32(operatorID)]; !ok {
 			return false
 		}
 	}
 	return true
+}
+
+func (msgContainer *MsgContainer) AllMessagesReceivedUpto(round ProtocolRound, operators []uint32, threshold uint64) bool {
+	msgContainer.mu.Lock()
+	defer msgContainer.mu.Unlock()
+
+	totalMsgsRecieved := uint64(0)
+	for _, operatorID := range operators {
+		if _, ok := msgContainer.msgs[round][uint32(operatorID)]; ok {
+			totalMsgsRecieved += 1
+		}
+	}
+	return totalMsgsRecieved >= threshold
 }
 
 type ErrMsgNotFound struct {
