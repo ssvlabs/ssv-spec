@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -41,6 +42,8 @@ func NewValidatorRegistrationRunner(
 }
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty *types.Duty) error {
+	// Note: Unlike the other runners, this doesn't call BaseRunner.baseStartNewDuty because
+	// that requires a QBFTController which ValidatorRegistrationRunner doesn't have.
 	r.BaseRunner.baseSetupForNewDuty(duty)
 	return r.executeDuty(duty)
 }
