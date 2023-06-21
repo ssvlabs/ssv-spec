@@ -58,8 +58,8 @@ const (
 	OutputMsgType
 	// ReshareMsgType sent when Resharing is requested
 	ReshareMsgType
-	// PreSignedVoluntaryExitMsgType sent when Presigned Voluntary Exit Message is Requested
-	PreSignedVoluntaryExitMsgType
+	// KeySignMsgType sent when Presigned Voluntary Exit Message is Requested
+	KeySignMsgType
 )
 
 type Message struct {

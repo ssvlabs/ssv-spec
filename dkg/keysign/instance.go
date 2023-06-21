@@ -27,8 +27,9 @@ type InstanceParams struct {
 	operatorID types.OperatorID
 	identifier dkg.RequestID
 
-	threshold uint64
-	operators []uint32
+	validatorPK types.ValidatorPK
+	threshold   uint64
+	operators   []uint32
 
 	Key                     *bls.SecretKey
 	OperatorPublicKeyshares map[types.OperatorID]*bls.PublicKey
@@ -63,8 +64,9 @@ func NewSignature(
 		identifier: requestID,
 		operatorID: operatorID,
 
-		threshold: keygenOutput.Threshold,
-		operators: operators,
+		validatorPK: init.ValidatorPK,
+		threshold:   keygenOutput.Threshold,
+		operators:   operators,
 
 		Key:                     keygenOutput.Share,
 		OperatorPublicKeyshares: keygenOutput.OperatorPubKeys,
@@ -129,8 +131,6 @@ func (instance *Instance) ProcessMsg(msg *dkg.SignedMessage) (finished bool, pro
 		return true, nil, dkg.ErrInvalidRound{}
 	}
 }
-
-func (instance *Instance) processKeysignOutput() (bool, *dkg.ProtocolOutcome, error)
 
 func (instance *Instance) canProceedThisRound() bool {
 	switch instance.state.GetCurrentRound() {

@@ -8,6 +8,7 @@ import (
 
 type ProtocolOutcome struct {
 	ProtocolOutput *KeyGenOutput
+	KeySignOutput  *KeySignOutput
 	BlameOutput    *BlameOutput
 }
 
@@ -27,6 +28,12 @@ type KeyGenOutput struct {
 	OperatorPubKeys map[types.OperatorID]*bls.PublicKey
 	ValidatorPK     types.ValidatorPK
 	Threshold       uint64
+}
+
+// KeySignOutput is the output of signature protocol
+type KeySignOutput struct {
+	Signature   []byte
+	ValidatorPK types.ValidatorPK
 }
 
 // BlameOutput is the output of blame round
