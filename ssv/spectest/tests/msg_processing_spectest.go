@@ -35,8 +35,8 @@ func (test *MsgProcessingSpecTest) TestName() string {
 	return test.Name
 }
 
-// RunAsMultiTest runs the test as part of a MultiMsgProcessingSpecTest
-func (test *MsgProcessingSpecTest) RunAsMultiTest(t *testing.T) {
+// RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest
+func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	v, lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
@@ -61,9 +61,10 @@ func (test *MsgProcessingSpecTest) RunAsMultiTest(t *testing.T) {
 	}
 }
 
+// Run as an individual test
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	test.overrideStateComparison(t)
-	test.RunAsMultiTest(t)
+	test.RunAsPartOfMultiTest(t)
 }
 
 func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
