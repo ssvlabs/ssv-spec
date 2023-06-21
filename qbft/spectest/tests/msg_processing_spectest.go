@@ -111,6 +111,12 @@ func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 
 	r, err := test.PostState.GetRoot()
 	require.NoError(t, err)
+
+	// backwards compatability test, hard coded post root must be equal to the one loaded from file
+	if len(test.PostRoot) > 0 {
+		require.EqualValues(t, test.PostRoot, hex.EncodeToString(r[:]))
+	}
+
 	test.PostRoot = hex.EncodeToString(r[:])
 }
 
