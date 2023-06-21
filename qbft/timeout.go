@@ -2,10 +2,16 @@ package qbft
 
 import (
 	"github.com/pkg/errors"
+	"time"
 )
 
-// CutoffRound which round the instance should stop its timer and progress no further
-const CutoffRound = 20
+var (
+	quickTimeoutThreshold = Round(8)
+	quickTimeout          = 2 * time.Second
+	slowTimeout           = 2 * time.Minute
+	// CutoffRound which round the instance should stop its timer and progress no further
+	CutoffRound = 15 // stop processing instances after 8*2+120*6 = 14.2 min (~ 2 epochs)
+)
 
 func (i *Instance) UponRoundTimeout() error {
 	if i.CanProcessMessages() {
