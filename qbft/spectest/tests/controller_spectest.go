@@ -220,7 +220,7 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 
 	ret := make([]*qbft.Controller, len(test.RunInstanceData))
 	for i, runData := range test.RunInstanceData {
-		err := contr.StartNewInstance(contr.Height, runData.InputValue)
+		err := contr.StartNewInstance(qbft.Height(i), runData.InputValue)
 		if err != nil && len(test.ExpectedError) == 0 {
 			return nil, err
 		}
