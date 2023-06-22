@@ -90,6 +90,10 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 	}
 }
 
+func (tests *StartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}
+
 type MultiStartNewRunnerDutySpecTest struct {
 	Name  string
 	Tests []*StartNewRunnerDutySpecTest
@@ -105,4 +109,8 @@ func (tests *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
 			test.Run(t)
 		})
 	}
+}
+
+func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
 }

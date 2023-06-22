@@ -6,7 +6,7 @@ import (
 )
 
 func SetMessages(instance *qbft.Instance, messages []*types.SSVMessage) {
-	initContainers(instance)
+	InitContainers(instance)
 
 	for _, ssvMsg := range messages {
 		if ssvMsg.MsgType != types.SSVConsensusMsgType {
@@ -22,14 +22,15 @@ func SetMessages(instance *qbft.Instance, messages []*types.SSVMessage) {
 }
 
 func SetSignedMessages(instance *qbft.Instance, messages []*qbft.SignedMessage) {
-	initContainers(instance)
+	InitContainers(instance)
 
 	for _, msg := range messages {
 		setMessage(instance, msg)
 	}
 }
 
-func initContainers(instance *qbft.Instance) {
+// InitContainers initializes empty containers for Propose, Prepare, Commit and RoundChange messages
+func InitContainers(instance *qbft.Instance) {
 	instance.State.ProposeContainer = qbft.NewMsgContainer()
 	instance.State.PrepareContainer = qbft.NewMsgContainer()
 	instance.State.CommitContainer = qbft.NewMsgContainer()
