@@ -2646,60 +2646,7 @@
 												}
 										},
 										"RoundChangeContainer": {
-												"Msgs": {
-														"1": [
-																{
-																		"Signature": "o6otXDxvOgJvzh1Q/A5LfoZYdegkhqe6rRbZgh/NfljBP1tqgROM4ZXjwJ/E+jeiAVUzOQaMkDB20wYzPTVSdgrdkhxsMugYk+HH8LA5H3h5P0RtIMXbuqZWtJVZiC6T",
-																		"Signers": [
-																				4
-																		],
-																		"Message": {
-																				"MsgType": 3,
-																				"Height": 0,
-																				"Round": 1,
-																				"Identifier": "AQIDBA==",
-																				"Root": [
-																						190,
-																						149,
-																						111,
-																						183,
-																						223,
-																						78,
-																						243,
-																						117,
-																						49,
-																						104,
-																						45,
-																						88,
-																						131,
-																						32,
-																						8,
-																						79,
-																						201,
-																						20,
-																						195,
-																						240,
-																						254,
-																						211,
-																						53,
-																						38,
-																						62,
-																						91,
-																						68,
-																						6,
-																						46,
-																						108,
-																						41,
-																						180
-																				],
-																				"DataRound": 0,
-																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
-																		},
-																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-																}
-														]
-												}
+												"Msgs": {}
 										}
 								},
 								"StartValue": "AQIDBA=="
