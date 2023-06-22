@@ -53,10 +53,13 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 	)
 
 	var lastErr error
-	for i, runData := range test.RunInstanceData {
-		if err := test.runInstanceWithData(t, qbft.Height(i), contr, config, identifier, runData); err != nil {
+	height := qbft.FirstHeight
+	for _, runData := range test.RunInstanceData {
+		if err := test.runInstanceWithData(t, height, contr, config, identifier, runData); err != nil {
 			lastErr = err
 		}
+
+		height = contr.Height + 1
 	}
 
 	if len(test.ExpectedError) != 0 {

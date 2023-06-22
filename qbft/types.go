@@ -21,6 +21,8 @@ type Timer interface {
 }
 
 type Syncer interface {
+	// SyncHighestDecided tries to fetch the highest decided from peers (not blocking)
+	SyncHighestDecided(identifier types.MessageID) error
 	// SyncDecidedByRange will trigger sync from-to heights (including)
 	SyncDecidedByRange(identifier types.MessageID, from, to Height)
 }

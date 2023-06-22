@@ -58,8 +58,9 @@ func LatePreparePastInstance() tests.SpecTest {
 						4,
 					),
 				},
-				ControllerPostRoot: "49347722798a798de5088297e0600ca1a2b577e3a5f52a5ea05fb701b9deb0f4",
+				ControllerPostRoot: "d8ea8eb87db672b88dc42cee7795b91bb7d01d4106324b7db318e8c24cc9f4ef",
 			},
 		},
+		ExpectedError: "could not process msg: instance stopped processing messages",
 	}
 }

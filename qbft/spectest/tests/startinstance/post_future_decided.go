@@ -37,7 +37,7 @@ func PostFutureDecided() tests.SpecTest {
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
 				},
-				ControllerPostRoot: "fc106e7aa098a5de39f9773aa3397059340db760d14313e0b0f945790a81e12b",
+				ControllerPostRoot: "8bbb730b52e2e902a0439137f9ea8e02219ece615b8eb3ca6ca075d85120bc3a",
 			},
 		},
 	}

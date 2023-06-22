@@ -96,7 +96,7 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
 func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
-	if i.CanProcessMessages() {
+	if !i.CanProcessMessages() {
 		return false, nil, nil, errors.New("instance stopped processing messages")
 	}
 
@@ -215,5 +215,5 @@ func (i *Instance) Decode(data []byte) error {
 
 // CanProcessMessages will return true if instance can process messages
 func (i *Instance) CanProcessMessages() bool {
-	return i.State.Round < CutoffRound && !i.forceStop
+	return int(i.State.Round) < CutoffRound && !i.forceStop
 }

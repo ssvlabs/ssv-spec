@@ -14,7 +14,7 @@ var (
 )
 
 func (i *Instance) UponRoundTimeout() error {
-	if i.CanProcessMessages() {
+	if !i.CanProcessMessages() {
 		return errors.New("instance stopped processing timeouts")
 	}
 

@@ -60,8 +60,9 @@ func LateRoundChangePastInstance() tests.SpecTest {
 						4,
 					),
 				},
-				ControllerPostRoot: "dd1c400c0261e95881d7bcc2ec2f0951ac6ced3700c7b2a35a0e7664955f5652",
+				ControllerPostRoot: "d8ea8eb87db672b88dc42cee7795b91bb7d01d4106324b7db318e8c24cc9f4ef",
 			},
 		},
+		ExpectedError: "could not process msg: instance stopped processing messages",
 	}
 }

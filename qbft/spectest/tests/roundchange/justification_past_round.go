@@ -10,7 +10,7 @@ import (
 // JustificationPastRound tests a quorum of round change msgs for past round
 func JustificationPastRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
-	pre.State.Round = 50
+	pre.State.Round = 10
 	ks := testingutils.Testing4SharesSet()
 
 	prepareMsgs := []*qbft.SignedMessage{
@@ -36,7 +36,7 @@ func JustificationPastRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change past round quorum",
 		Pre:            pre,
-		PostRoot:       "92fa15d04e03ed9821c8a6f28089a5b3df80394f5ce908f9f5dfb6ba3db796fa",
+		PostRoot:       "336925d19fb329f8364ceb23bdb9fda9d2b37de916ea4d9f36254f7b0fc77173",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: past round",

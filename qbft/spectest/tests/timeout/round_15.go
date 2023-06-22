@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// Round20 tests calling UponRoundTimeout for round 20, testing state and broadcasted msgs
-func Round20() tests.SpecTest {
+// Round15 tests calling UponRoundTimeout for round 15, testing state and broadcasted msgs
+func Round15() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := round20StateComparison()
 
@@ -17,7 +17,7 @@ func Round20() tests.SpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 20)
 
 	return &SpecTest{
-		Name:      "round 20",
+		Name:      "round 15",
 		Pre:       pre,
 		PostRoot:  sc.Root(),
 		PostState: sc.ExpectedState,
@@ -26,7 +26,7 @@ func Round20() tests.SpecTest {
 			Timeouts: 0,
 			Round:    0,
 		},
-		ExpectedError: "round > cutoff round",
+		ExpectedError: "instance stopped processing timeouts",
 	}
 }
 
