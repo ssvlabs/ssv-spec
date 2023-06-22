@@ -48,18 +48,15 @@ func (test *ControllerSpecTest) TestName() string {
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
 	// temporary to override state comparisons from file not inputted one
-	test.overrideStateComparison(t)
+	//test.overrideStateComparison(t)
 
 	contr := test.generateController()
 
 	var lastErr error
-	height := qbft.FirstHeight
-	for _, runData := range test.RunInstanceData {
-		if err := test.runInstanceWithData(t, height, contr, runData); err != nil {
+	for i, runData := range test.RunInstanceData {
+		if err := test.runInstanceWithData(t, qbft.Height(i), contr, runData); err != nil {
 			lastErr = err
 		}
-
-		height = contr.Height + 1
 	}
 
 	if len(test.ExpectedError) != 0 {
