@@ -19,6 +19,7 @@ func (instance *Instance) processKeysignOutput() (bool, *dkg.ProtocolOutcome, er
 
 	output := &dkg.ProtocolOutcome{
 		KeySignOutput: &dkg.KeySignOutput{
+			RequestID:   instance.instanceParams.identifier,
 			ValidatorPK: instance.instanceParams.validatorPK,
 		},
 	}
@@ -48,6 +49,8 @@ func (instance *Instance) processKeysignOutput() (bool, *dkg.ProtocolOutcome, er
 		if prevSignature != nil && !bytes.Equal(protocolMessage.Round1Message.ReconstructedSignature, prevSignature) {
 			return false, nil, fmt.Errorf("inconsistent signatures between operators")
 		}
+
+		prevSignature = protocolMessage.Round1Message.ReconstructedSignature
 	}
 
 	output.KeySignOutput.Signature = prevSignature

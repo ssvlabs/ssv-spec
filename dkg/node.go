@@ -2,6 +2,7 @@ package dkg
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -91,6 +92,20 @@ func (n *Node) newResharingRunner(id RequestID, reshareMsg *Reshare) (Runner, er
 }
 
 func (n *Node) newSignatureRunner(id RequestID, keySign *KeySign) (Runner, error) {
+	keygenOutput, err := n.config.GetStorage().GetKeyGenOutput(keySign.ValidatorPK)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve secret keyshare for given validator pk: %s", err.Error())
+	}
+
+	operators := make([]uint32, 0)
+	for operatorID := range keygenOutput.OperatorPubKeys {
+		operators = append(operators, uint32(operatorID))
+	}
+
+	keySign.Operators = operators
+	keySign.Threshold = keygenOutput.Threshold
+	keySign.SecretShare = keygenOutput.Share
+	keySign.OperatorPublicKeyshares = keygenOutput.OperatorPubKeys
 
 	r := &runner{
 		Operator:              n.operator,

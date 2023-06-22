@@ -48,35 +48,25 @@ func NewSignature(
 	operatorID types.OperatorID,
 	config dkg.IConfig,
 	init *dkg.KeySign,
-) (dkg.Protocol, error) {
-
-	keygenOutput, err := config.GetStorage().GetKeyGenOutput(init.ValidatorPK)
-	if err != nil {
-		return nil, fmt.Errorf("failed to retrieve secret keyshare for given validator pk: %s", err.Error())
-	}
-
-	operators := make([]uint32, 0)
-	for operatorID, _ := range keygenOutput.OperatorPubKeys {
-		operators = append(operators, uint32(operatorID))
-	}
+) dkg.Protocol {
 
 	instanceParams := InstanceParams{
 		identifier: requestID,
 		operatorID: operatorID,
 
-		validatorPK: init.ValidatorPK,
-		threshold:   keygenOutput.Threshold,
-		operators:   operators,
-
-		Key:                     keygenOutput.Share,
-		OperatorPublicKeyshares: keygenOutput.OperatorPubKeys,
+		validatorPK:             init.ValidatorPK,
 		SigningRoot:             init.SigningRoot,
+		threshold:               init.Threshold,
+		operators:               init.Operators,
+		Key:                     init.SecretShare,
+		OperatorPublicKeyshares: init.OperatorPublicKeyshares,
 	}
+
 	return &Instance{
 		config:         config,
 		state:          initState(),
 		instanceParams: instanceParams,
-	}, nil
+	}
 }
 
 // Start ...
@@ -135,9 +125,9 @@ func (instance *Instance) ProcessMsg(msg *dkg.SignedMessage) (finished bool, pro
 func (instance *Instance) canProceedThisRound() bool {
 	switch instance.state.GetCurrentRound() {
 	case common.Preparation:
-		instance.state.msgContainer.AllMessagesReceivedUpto(instance.state.GetCurrentRound(), instance.instanceParams.operators, instance.instanceParams.threshold)
+		return instance.state.msgContainer.AllMessagesReceivedUpto(instance.state.GetCurrentRound(), instance.instanceParams.operators, instance.instanceParams.threshold)
 	case common.Round1:
-		instance.state.msgContainer.AllMessagesReceivedFor(instance.state.GetCurrentRound(), instance.instanceParams.operators)
+		return instance.state.msgContainer.AllMessagesReceivedFor(instance.state.GetCurrentRound(), instance.instanceParams.operators)
 	}
 	return false
 }

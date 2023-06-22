@@ -55,6 +55,15 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 
 		if finished {
 			r.KeygenOutcome = o
+		}
+
+		if finished && o.KeySignOutput != nil {
+			if err := r.prepareAndBroadcastOutput(); err != nil {
+				return false, err
+			}
+		}
+
+		if finished && o.KeySignOutput == nil {
 			isBlame, err := r.KeygenOutcome.IsFailedWithBlame()
 			if err != nil {
 				return true, errors.Wrap(err, "invalid KeygenOutcome")
@@ -80,7 +89,6 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 					return false, err
 				}
 			}
-
 		}
 		return false, nil
 	case DepositDataMsgType:
@@ -118,11 +126,14 @@ func (r *runner) ProcessMsg(msg *SignedMessage) (bool, error) {
 		r.OutputMsgs[msg.Signer] = output
 		// GLNOTE: Actually we need every operator to sign instead only the quorum!
 		finished := false
-		if !r.isResharing() {
+		if r.isKeySign() {
+			finished = len(r.OutputMsgs) == len(r.KeySign.Operators)
+		} else if !r.isResharing() {
 			finished = len(r.OutputMsgs) == len(r.InitMsg.OperatorIDs)
 		} else {
 			finished = len(r.OutputMsgs) == len(r.ReshareMsg.OperatorIDs)
 		}
+
 		if finished {
 			err := r.config.Network.StreamDKGOutput(r.OutputMsgs)
 			return true, errors.Wrap(err, "failed to stream dkg output")
@@ -164,7 +175,33 @@ func (r *runner) prepareAndBroadcastDepositData() error {
 	return nil
 }
 
+func (r *runner) prepareAndBroadcastKeySignOutput() error {
+	o := r.KeygenOutcome.KeySignOutput
+	sig, err := r.config.Signer.SignDKGOutput(o, r.Operator.ETHAddress)
+	if err != nil {
+		return errors.Wrap(err, "could not sign output")
+	}
+	signedOuput := &SignedOutput{
+		KeySignData: o,
+		Signer:      r.Operator.OperatorID,
+		Signature:   sig,
+	}
+	if err != nil {
+		return errors.Wrap(err, "could not generate dkg SignedOutput")
+	}
+
+	r.OutputMsgs[r.Operator.OperatorID] = signedOuput
+	if err := r.signAndBroadcastMsg(signedOuput, OutputMsgType); err != nil {
+		return errors.Wrap(err, "could not broadcast Signed Keysign Output")
+	}
+	return nil
+}
+
 func (r *runner) prepareAndBroadcastOutput() error {
+	if r.KeygenOutcome.KeySignOutput != nil {
+		return r.prepareAndBroadcastKeySignOutput()
+	}
+
 	var (
 		depositSig types.Signature
 		err        error
@@ -252,15 +289,19 @@ func (r *runner) validateSignedOutput(msg *SignedOutput) error {
 	// TODO: Separate fields match and signature validation
 	output := r.ownOutput()
 	if output != nil {
-		if output.BlameData == nil {
+		if output.Data != nil {
 			if output.Data.RequestID != msg.Data.RequestID {
 				return errors.New("got mismatching RequestID")
 			}
 			if !bytes.Equal(output.Data.ValidatorPubKey, msg.Data.ValidatorPubKey) {
 				return errors.New("got mismatching ValidatorPubKey")
 			}
-		} else {
+		} else if output.BlameData != nil {
 			if output.BlameData.RequestID != msg.BlameData.RequestID {
+				return errors.New("got mismatching RequestID")
+			}
+		} else {
+			if output.KeySignData.RequestID != msg.KeySignData.RequestID {
 				return errors.New("got mismatching RequestID")
 			}
 		}
@@ -279,11 +320,14 @@ func (r *runner) validateSignedOutput(msg *SignedOutput) error {
 		data types.Root
 	)
 
-	if msg.BlameData == nil {
+	if msg.Data != nil {
 		data = msg.Data
-	} else {
+	} else if msg.BlameData != nil {
 		data = msg.BlameData
+	} else {
+		data = msg.KeySignData
 	}
+
 	root, err = types.ComputeSigningRoot(data, types.ComputeSignatureDomain(r.config.SignatureDomainType, types.DKGSignatureType))
 	if err != nil {
 		return errors.Wrap(err, "fail to get root")
@@ -351,4 +395,8 @@ func (r *runner) ownOutput() *SignedOutput {
 
 func (r *runner) isResharing() bool {
 	return r.ReshareMsg != nil
+}
+
+func (r *runner) isKeySign() bool {
+	return r.KeySign != nil
 }

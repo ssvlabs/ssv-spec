@@ -78,17 +78,25 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 				o2 := &dkg.SignedOutput{}
 				require.NoError(t, o2.Decode(sMsg.Message.Data))
 
-				es1 := o1.Data.EncryptedShare
-				o1.Data.EncryptedShare = nil
-				es2 := o2.Data.EncryptedShare
-				o2.Data.EncryptedShare = nil
+				if o1.Data != nil && o2.Data != nil {
+					es1 := o1.Data.EncryptedShare
+					o1.Data.EncryptedShare = nil
+					es2 := o2.Data.EncryptedShare
+					o2.Data.EncryptedShare = nil
 
-				s1, _ := types.Decrypt(test.KeySet.DKGOperators[msg.Signer].EncryptionKey, es1)
-				s2, _ := types.Decrypt(test.KeySet.DKGOperators[msg.Signer].EncryptionKey, es2)
-				require.Equal(t, s1, s2, "shares don't match")
-				r1, _ := o1.Data.GetRoot()
-				r2, _ := o2.Data.GetRoot()
-				require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+					s1, _ := types.Decrypt(test.KeySet.DKGOperators[msg.Signer].EncryptionKey, es1)
+					s2, _ := types.Decrypt(test.KeySet.DKGOperators[msg.Signer].EncryptionKey, es2)
+					require.Equal(t, s1, s2, "shares don't match")
+					r1, _ := o1.Data.GetRoot()
+					r2, _ := o2.Data.GetRoot()
+					require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+				}
+
+				if o1.KeySignData != nil && o2.KeySignData != nil {
+					r1, _ := o1.KeySignData.GetRoot()
+					r2, _ := o2.KeySignData.GetRoot()
+					require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
+				}
 			} else {
 				r1, _ := msg.GetRoot()
 				r2, _ := sMsg.GetRoot()
@@ -104,8 +112,15 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		for id, output := range test.Output {
 			s := streamed[id]
 			require.NotNilf(t, s, "output for operator %d not found", id)
-			r1, _ := output.Data.GetRoot()
-			r2, _ := s.Data.GetRoot()
+
+			var r1, r2 []byte
+			if output.KeySignData != nil && s.KeySignData != nil {
+				r1, _ = output.KeySignData.GetRoot()
+				r2, _ = s.KeySignData.GetRoot()
+			} else {
+				r1, _ = output.Data.GetRoot()
+				r2, _ = s.Data.GetRoot()
+			}
 			require.EqualValues(t, r1, r2, fmt.Sprintf("output for operator %d roots not equal", id))
 		}
 	}

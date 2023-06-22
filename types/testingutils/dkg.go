@@ -192,3 +192,34 @@ func (ks *TestKeySet) SignedOutputBytes(requestID dkg.RequestID, opId types.Oper
 	ret, _ := d.Encode()
 	return ret
 }
+
+func (ks *TestKeySet) SignedKeySignOutputObject(requestID dkg.RequestID, opID types.OperatorID, signingRoot []byte) *dkg.SignedOutput {
+	id := hex.EncodeToString(requestID[:]) + strconv.FormatUint(uint64(opID), 10) + hex.EncodeToString(signingRoot)
+	if found := signedOutputCache[id]; found != nil {
+		return found
+	}
+
+	sk := ks.ValidatorSK
+	o := &dkg.KeySignOutput{
+		RequestID:   requestID,
+		Signature:   sk.SignByte(signingRoot).Serialize(),
+		ValidatorPK: ks.ValidatorPK.Serialize(),
+	}
+
+	root, _ := types.ComputeSigningRoot(o, types.ComputeSignatureDomain(types.PrimusTestnet, types.DKGSignatureType))
+	sig, _ := crypto.Sign(root, ks.DKGOperators[opID].SK)
+
+	ret := &dkg.SignedOutput{
+		KeySignData: o,
+		Signer:      opID,
+		Signature:   sig,
+	}
+	signedOutputCache[id] = ret
+	return ret
+}
+
+func (ks *TestKeySet) SignedKeySignOutputBytes(requestID dkg.RequestID, opID types.OperatorID, signingRoot []byte) []byte {
+	d := ks.SignedKeySignOutputObject(requestID, opID, signingRoot)
+	ret, _ := d.Encode()
+	return ret
+}
