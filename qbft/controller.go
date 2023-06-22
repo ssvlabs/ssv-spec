@@ -56,10 +56,10 @@ func (c *Controller) StartNewInstance(height Height, value []byte) error {
 		return errors.New("instance already running")
 	}
 
+	// TODO maybe add height param to add and stpre new instance and update controller later
+	c.Height = height
 	newInstance := c.addAndStoreNewInstance()
 	newInstance.Start(value, height)
-
-	c.Height = height
 
 	c.forceStopAllInstanceExceptCurrent()
 
