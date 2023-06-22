@@ -5,40 +5,75 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// PostFutureDecided tests starting a new instance after deciding with future decided msg
-func PostFutureDecided() tests.SpecTest {
+// PreviousDecided tests starting an instance when the previous one decided
+func PreviousDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+
 	return &tests.ControllerSpecTest{
-		Name: "start instance post future decided",
+		Name: "start instance prev decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeight(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, 10,
-					),
-				},
+				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
+					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks),
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal:               testingutils.TestingQBFTFullData,
-					DecidedCnt:               1,
-					CalledSyncDecidedByRange: true,
-					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
+					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedCnt: 1,
 				},
-				ControllerPostRoot: "589b0c0352f1c22875246f2e66530d5fda62f646434b250ade128c61c16f47bd",
+				ControllerPostRoot:  previousDecidedStateComparison(qbft.FirstHeight, true).Root(),
+				ControllerPostState: previousDecidedStateComparison(qbft.FirstHeight, true).ExpectedState,
 			},
 			{
-				InputValue: []byte{1, 2, 3, 4},
-				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal:               testingutils.TestingQBFTFullData,
-					DecidedCnt:               0,
-					CalledSyncDecidedByRange: true,
-					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
-				},
-				ControllerPostRoot: "fc106e7aa098a5de39f9773aa3397059340db760d14313e0b0f945790a81e12b",
+				InputValue:          []byte{1, 2, 3, 4},
+				ControllerPostRoot:  previousDecidedStateComparison(1, false).Root(),
+				ControllerPostState: previousDecidedStateComparison(1, false).ExpectedState,
 			},
 		},
 	}
+}
+
+func previousDecidedStateComparison(height qbft.Height, decideLast bool) *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+
+	contr := testingutils.NewTestingQBFTController(
+		testingutils.TestingIdentifier,
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+	)
+
+	for i := 0; i <= int(height); i++ {
+		contr.Height = qbft.Height(i)
+
+		instance := &qbft.Instance{
+			StartValue: []byte{1, 2, 3, 4},
+			State: &qbft.State{
+				Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
+				ID:     testingutils.TestingIdentifier,
+				Round:  qbft.FirstRound,
+				Height: qbft.Height(i),
+			},
+		}
+
+		// last height
+		if qbft.Height(i) == height && !decideLast {
+			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			contr.StoredInstances = append(contr.StoredInstances, instance)
+			break
+		}
+
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.LastPreparedRound = qbft.FirstRound
+		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
+		instance.State.Decided = true
+		instance.State.DecidedValue = testingutils.TestingQBFTFullData
+
+		comparable.SetSignedMessages(instance, msgs)
+		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
+	}
+
+	return &comparable.StateComparison{ExpectedState: contr}
 }
