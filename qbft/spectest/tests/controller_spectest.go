@@ -47,8 +47,8 @@ func (test *ControllerSpecTest) TestName() string {
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
-	// temporary to override state comparisons from file not inputted one
-	//test.overrideStateComparison(t)
+	//temporary to override state comparisons from file not inputted one
+	test.overrideStateComparison(t)
 
 	contr := test.generateController()
 
