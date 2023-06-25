@@ -35,7 +35,7 @@ func PreviousDecided() tests.SpecTest {
 	}
 }
 
-func previousDecidedStateComparison(height qbft.Height, decideLast bool) *comparable.StateComparison {
+func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
 
@@ -59,9 +59,9 @@ func previousDecidedStateComparison(height qbft.Height, decideLast bool) *compar
 		}
 
 		// last height
-		if qbft.Height(i) == height && !decideLast {
+		if !decidedState && qbft.Height(i) == height {
 			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
-			contr.StoredInstances = append(contr.StoredInstances, instance)
+			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
 
