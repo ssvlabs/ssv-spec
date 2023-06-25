@@ -103,10 +103,6 @@ func latePreparePastInstanceStateComparison(height qbft.Height, lateMsg *qbft.Si
 		msgs := allMsgs[offset*i : offset*(i+1)]
 		comparable.SetSignedMessages(instance, msgs)
 
-		if lateMsg != nil && qbft.Height(i) == lateMsg.Message.Height {
-			instance.State.PrepareContainer.Msgs[qbft.FirstRound] = append(instance.State.PrepareContainer.Msgs[qbft.FirstRound], lateMsg)
-		}
-
 		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 	}
 
