@@ -37,8 +37,10 @@ func PostFutureDecided() tests.SpecTest {
 					CalledSyncDecidedByRange: true,
 					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
 				},
-				ControllerPostRoot: "8bbb730b52e2e902a0439137f9ea8e02219ece615b8eb3ca6ca075d85120bc3a",
+
+				ControllerPostRoot: "589b0c0352f1c22875246f2e66530d5fda62f646434b250ade128c61c16f47bd",
 			},
 		},
+		ExpectedError: "invalid instance height",
 	}
 }
