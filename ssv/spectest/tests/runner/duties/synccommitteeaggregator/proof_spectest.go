@@ -2,6 +2,7 @@ package synccommitteeaggregator
 
 import (
 	"encoding/hex"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -23,6 +24,21 @@ func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
+	r, lastErr := test.preRun()
+
+	if len(test.ExpectedError) != 0 {
+		require.EqualError(t, lastErr, test.ExpectedError)
+	} else {
+		require.NoError(t, lastErr)
+	}
+
+	// post root
+	postRoot, err := r.GetBaseRunner().State.GetRoot()
+	require.NoError(t, err)
+	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
+}
+
+func (test *SyncCommitteeAggregatorProofSpecTest) preRun() (ssv.Runner, error) {
 	ks := testingutils.Testing4SharesSet()
 	share := testingutils.TestingShare(ks)
 	v := testingutils.BaseValidator(keySetForShare(share))
@@ -37,17 +53,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 			lastErr = err
 		}
 	}
-
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
-
-	// post root
-	postRoot, err := r.GetBaseRunner().State.GetRoot()
-	require.NoError(t, err)
-	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
+	return r, lastErr
 }
 
 func keySetForShare(share *types.Share) *testingutils.TestKeySet {
@@ -64,5 +70,6 @@ func keySetForShare(share *types.Share) *testingutils.TestKeySet {
 }
 
 func (tests *SyncCommitteeAggregatorProofSpecTest) GetPostState() (interface{}, error) {
-	return nil, nil
+	runner, err := tests.preRun()
+	return runner.GetBaseRunner().State, err
 }
