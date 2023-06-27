@@ -3,6 +3,7 @@ package synccommitteeaggregator
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -15,6 +16,7 @@ type SyncCommitteeAggregatorProofSpecTest struct {
 	Name                    string
 	Messages                []*types.SSVMessage
 	PostDutyRunnerStateRoot string
+	PostDutyRunnerState     string
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator
 	ExpectedError           string
 }
@@ -24,6 +26,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
+	test.overrideStateComparison(t)
 	r, lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
@@ -72,4 +75,20 @@ func keySetForShare(share *types.Share) *testingutils.TestKeySet {
 func (test *SyncCommitteeAggregatorProofSpecTest) GetPostState() (interface{}, error) {
 	runner, err := test.runPreTesting()
 	return runner.GetBaseRunner().State, err
+}
+
+func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *testing.T) {
+	// override state comparison
+	postState, err := comparable.UnmarshalSSVStateComparison(test, &ssv.SyncCommitteeAggregatorRunner{})
+	require.NoError(t, err)
+
+	r, err2 := postState.GetRoot()
+	require.NoError(t, err2)
+
+	// backwards compatability test, hard coded post root must be equal to the one loaded from file
+	if len(test.PostDutyRunnerStateRoot) > 0 {
+		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(r[:]))
+	}
+
+	test.PostDutyRunnerStateRoot = hex.EncodeToString(r[:])
 }
