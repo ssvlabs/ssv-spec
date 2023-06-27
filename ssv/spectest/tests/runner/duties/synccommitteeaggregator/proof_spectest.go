@@ -24,7 +24,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
-	r, lastErr := test.preRun()
+	r, lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
@@ -38,7 +38,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
 }
 
-func (test *SyncCommitteeAggregatorProofSpecTest) preRun() (ssv.Runner, error) {
+func (test *SyncCommitteeAggregatorProofSpecTest) runPreTesting() (ssv.Runner, error) {
 	ks := testingutils.Testing4SharesSet()
 	share := testingutils.TestingShare(ks)
 	v := testingutils.BaseValidator(keySetForShare(share))
@@ -70,6 +70,6 @@ func keySetForShare(share *types.Share) *testingutils.TestKeySet {
 }
 
 func (tests *SyncCommitteeAggregatorProofSpecTest) GetPostState() (interface{}, error) {
-	runner, err := tests.preRun()
+	runner, err := tests.runPreTesting()
 	return runner.GetBaseRunner().State, err
 }
