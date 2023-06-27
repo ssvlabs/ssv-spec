@@ -69,7 +69,7 @@ func keySetForShare(share *types.Share) *testingutils.TestKeySet {
 	return testingutils.Testing4SharesSet()
 }
 
-func (tests *SyncCommitteeAggregatorProofSpecTest) GetPostState() (interface{}, error) {
-	runner, err := tests.runPreTesting()
+func (test *SyncCommitteeAggregatorProofSpecTest) GetPostState() (interface{}, error) {
+	runner, err := test.runPreTesting()
 	return runner.GetBaseRunner().State, err
 }
