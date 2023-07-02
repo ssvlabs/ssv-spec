@@ -100,6 +100,7 @@ func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 }
 
 func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
+	test.overrideStateComparison(t)
 	test.RunAsPartOfMultiTest(t)
 }
 
