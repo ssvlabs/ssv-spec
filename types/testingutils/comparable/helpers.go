@@ -38,7 +38,7 @@ func FixIssue178(input *types.ConsensusData, version spec2.DataVersion) *types.C
 	return ret
 }
 
-// UnmarshalSSVStateComparison unmarshals the json rperesenting the test's post state to the targetState struct
+// UnmarshalSSVStateComparison reads a json derived from 'test' and unmarshals it into 'targetState'
 func UnmarshalSSVStateComparison(test tests.SpecTest, targetState types.Root) (types.Root, error) {
 	basedir, _ := os.Getwd()
 	path := filepath.Join(basedir, "generate", "state_comparison", reflect.TypeOf(test).String(),
