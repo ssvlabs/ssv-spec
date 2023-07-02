@@ -4,12 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	spec2 "github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"os"
 	"path/filepath"
-	"reflect"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -39,10 +37,10 @@ func FixIssue178(input *types.ConsensusData, version spec2.DataVersion) *types.C
 }
 
 // UnmarshalSSVStateComparison reads a json derived from 'test' and unmarshals it into 'targetState'
-func UnmarshalSSVStateComparison(test tests.SpecTest, targetState types.Root) (types.Root, error) {
+func UnmarshalSSVStateComparison(testName string, folderName string, targetState types.Root) (types.Root, error) {
 	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "state_comparison", reflect.TypeOf(test).String(),
-		fmt.Sprintf("%s.json", test.TestName()))
+	path := filepath.Join(basedir, "generate", "state_comparison", folderName,
+		fmt.Sprintf("%s.json", testName))
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err

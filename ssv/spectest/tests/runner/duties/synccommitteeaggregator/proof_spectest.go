@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -79,7 +80,8 @@ func (test *SyncCommitteeAggregatorProofSpecTest) GetPostState() (interface{}, e
 
 func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *testing.T) {
 	// override state comparison
-	postState, err := comparable.UnmarshalSSVStateComparison(test, &ssv.SyncCommitteeAggregatorRunner{})
+	postState, err := comparable.UnmarshalSSVStateComparison(test.Name,
+		reflect.TypeOf(test).String(), &ssv.SyncCommitteeAggregatorRunner{})
 	require.NoError(t, err)
 
 	r, err2 := postState.GetRoot()
