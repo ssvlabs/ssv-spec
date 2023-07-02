@@ -2,7 +2,9 @@ package newduty
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
 	"reflect"
 	"testing"
@@ -130,7 +132,7 @@ func (tests *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
 
 	for _, test := range tests.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
-			test.Run(t)
+			test.RunAsPartOfMultiTest(t)
 		})
 	}
 }
@@ -156,18 +158,40 @@ func (tests *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing
 }
 
 func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, name string, folder string) {
-	stateType := reflect.TypeOf(test.Runner)
-	postState := reflect.New(stateType).Interface().(types.Root)
-	postState, err := comparable.UnmarshalSSVStateComparison(name, folder, postState)
+	basedir, _ := os.Getwd()
+	path := filepath.Join(basedir, "generate", "state_comparison", folder, fmt.Sprintf("%s.json", name))
+	byteValue, err := os.ReadFile(path)
 	require.NoError(t, err)
 
-	test.PostDutyRunnerState = postState
-	root, err := postState.GetRoot()
+	var runner ssv.Runner
+	switch test.Runner.(type) {
+	case *ssv.AttesterRunner:
+		runner = &ssv.AttesterRunner{}
+	case *ssv.AggregatorRunner:
+		runner = &ssv.AggregatorRunner{}
+	case *ssv.ProposerRunner:
+		runner = &ssv.ProposerRunner{}
+	case *ssv.SyncCommitteeRunner:
+		runner = &ssv.SyncCommitteeRunner{}
+	case *ssv.SyncCommitteeAggregatorRunner:
+		runner = &ssv.SyncCommitteeAggregatorRunner{}
+	case *ssv.ValidatorRegistrationRunner:
+		runner = &ssv.ValidatorRegistrationRunner{}
+	default:
+		t.Fatalf("unknown runner type")
+	}
+	require.NoError(t, json.Unmarshal(byteValue, runner))
+
+	// override
+	test.PostDutyRunnerState = runner
+
+	root, err := runner.GetRoot()
 	require.NoError(t, err)
 
 	// backwards compatability test, hard coded post root must be equal to the one loaded from file
 	if len(test.PostDutyRunnerStateRoot) > 0 {
-		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(root[:]))
+		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(root[:]), "post runner state not equal")
 	}
+
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(root[:])
 }
