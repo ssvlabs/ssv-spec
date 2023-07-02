@@ -102,7 +102,10 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 	basedir = filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison", testType)
 	file := filepath.Join(basedir, fmt.Sprintf("%s.json", path))
 	// try to create directory if it doesn't exist
-	os.MkdirAll(filepath.Dir(file), 0700)
+	if err := os.MkdirAll(filepath.Dir(file), 0700); err != nil {
+		panic(err.Error())
+	}
+
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())
 	}
