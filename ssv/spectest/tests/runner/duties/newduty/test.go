@@ -28,7 +28,7 @@ func (test *StartNewRunnerDutySpecTest) TestName() string {
 }
 
 func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
-	err := test.Runner.StartNewDuty(test.Duty)
+	err := test.runPreTesting()
 	if len(test.ExpectedError) > 0 {
 		require.EqualError(t, err, test.ExpectedError)
 	} else {
@@ -90,8 +90,16 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 	}
 }
 
-func (tests *StartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
-	return nil, nil
+// runPreTesting runs the spec logic before testing the output
+// It simply starts a new duty
+func (test *StartNewRunnerDutySpecTest) runPreTesting() error {
+	err := test.Runner.StartNewDuty(test.Duty)
+	return err
+}
+
+func (test *StartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
+	err := test.runPreTesting()
+	return test.Runner, err
 }
 
 type MultiStartNewRunnerDutySpecTest struct {
@@ -112,5 +120,13 @@ func (tests *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
 }
 
 func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
-	return nil, nil
+	ret := make(map[string]types.Root, len(tests.Tests))
+	for _, test := range tests.Tests {
+		err := test.runPreTesting()
+		if err != nil && test.ExpectedError != err.Error() {
+			return nil, err
+		}
+		ret[test.Name] = test.Runner
+	}
+	return ret, nil
 }

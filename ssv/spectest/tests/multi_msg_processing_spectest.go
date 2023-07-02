@@ -80,7 +80,7 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	ret := make([]ssv.Runner, len(tests.Tests))
 	for i, test := range tests.Tests {
 		_, err := test.runPreTesting()
-		if err != nil && len(test.ExpectedError) == 0 {
+		if err != nil && test.ExpectedError != err.Error() {
 			return nil, err
 		}
 		ret[i] = test.Runner
