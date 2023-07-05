@@ -75,12 +75,12 @@ func clearStateComparisonFolder() {
 func writeJsonStateComparison(name, testType string, post interface{}) {
 	postMap, ok := post.(map[string]types.Root)
 
-	if ok {
-		for subTestName, postState := range postMap {
-			writeSingleSCJson(filepath.Join(name, subTestName), testType, postState)
-		}
-	} else {
-		writeSingleSCJson(name, testType, post)
+	if !ok {
+	    writeSingleSCJson(name, testType, post)
+	    return
+	}
+        for subTestName, postState := range postMap {
+	    writeSingleSCJson(filepath.Join(name, subTestName), testType, postState)
 	}
 }
 
