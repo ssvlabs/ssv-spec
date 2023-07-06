@@ -215,5 +215,5 @@ func (i *Instance) Decode(data []byte) error {
 
 // CanProcessMessages will return true if instance can process messages
 func (i *Instance) CanProcessMessages() bool {
-	return int(i.State.Round) < CutoffRound && !i.forceStop
+	return !i.forceStop && int(i.State.Round) < CutoffRound
 }
