@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"log"
 	"os"
 	"path/filepath"
@@ -72,12 +73,23 @@ func clearStateComparisonFolder() {
 }
 
 func writeJsonStateComparison(name, testType string, post interface{}) {
+	postMap, ok := post.(map[string]types.Root)
+
+	if !ok {
+	    writeSingleSCJson(name, testType, post)
+	    return
+	}
+        for subTestName, postState := range postMap {
+	    writeSingleSCJson(filepath.Join(name, subTestName), testType, postState)
+	}
+}
+
+func writeSingleSCJson(path string, testType string, post interface{}) {
 	if post == nil { // If nil, test not supporting post state comparison yet
-		log.Printf("skipping state comparison json, not supported: %s\n", name)
+		log.Printf("skipping state comparison json, not supported: %s\n", path)
 		return
 	}
-	log.Printf("writing state comparison json: %s\n", name)
-
+	log.Printf("writing state comparison json: %s\n", path)
 	byts, err := json.MarshalIndent(post, "", "		")
 	if err != nil {
 		panic(err.Error())
@@ -88,10 +100,11 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 		panic("no caller info")
 	}
 	basedir = filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison", testType)
-
+	file := filepath.Join(basedir, fmt.Sprintf("%s.json", path))
 	// try to create directory if it doesn't exist
-	_ = os.Mkdir(basedir, 0700)
-	file := filepath.Join(basedir, fmt.Sprintf("%s.json", name))
+	if err := os.MkdirAll(filepath.Dir(file), 0700); err != nil {
+		panic(err.Error())
+	}
 
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())

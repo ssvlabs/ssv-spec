@@ -2,7 +2,11 @@ package newduty
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -27,8 +31,15 @@ func (test *StartNewRunnerDutySpecTest) TestName() string {
 	return test.Name
 }
 
-func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
-	err := test.Runner.StartNewDuty(test.Duty)
+// overrideStateComparison overrides the state comparison to compare the runner state
+func (test *StartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
+	overrideStateComparison(t, test, test.Name, reflect.TypeOf(test).String())
+}
+
+// RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest.
+// It simply runs without calling oveerideStateComparison
+func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
+	err := test.runPreTesting()
 	if len(test.ExpectedError) > 0 {
 		require.EqualError(t, err, test.ExpectedError)
 	} else {
@@ -90,8 +101,21 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 	}
 }
 
-func (tests *StartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
-	return nil, nil
+func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
+	test.overrideStateComparison(t)
+	test.RunAsPartOfMultiTest(t)
+}
+
+// runPreTesting runs the spec logic before testing the output
+// It simply starts a new duty
+func (test *StartNewRunnerDutySpecTest) runPreTesting() error {
+	err := test.Runner.StartNewDuty(test.Duty)
+	return err
+}
+
+func (test *StartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
+	err := test.runPreTesting()
+	return test.Runner, err
 }
 
 type MultiStartNewRunnerDutySpecTest struct {
@@ -104,13 +128,70 @@ func (tests *MultiStartNewRunnerDutySpecTest) TestName() string {
 }
 
 func (tests *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
+	tests.overrideStateComparison(t)
+
 	for _, test := range tests.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
-			test.Run(t)
+			test.RunAsPartOfMultiTest(t)
 		})
 	}
 }
 
 func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
-	return nil, nil
+	ret := make(map[string]types.Root, len(tests.Tests))
+	for _, test := range tests.Tests {
+		err := test.runPreTesting()
+		if err != nil && test.ExpectedError != err.Error() {
+			return nil, err
+		}
+		ret[test.Name] = test.Runner
+	}
+	return ret, nil
+}
+
+// overrideStateComparison overrides the post state comparison for all tests in the multi test
+func (tests *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
+	for _, test := range tests.Tests {
+		path := filepath.Join(tests.TestName(), test.TestName())
+		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
+	}
+}
+
+func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, name string, folder string) {
+	basedir, _ := os.Getwd()
+	path := filepath.Join(basedir, "generate", "state_comparison", folder, fmt.Sprintf("%s.json", name))
+	byteValue, err := os.ReadFile(path)
+	require.NoError(t, err)
+
+	var runner ssv.Runner
+	switch test.Runner.(type) {
+	case *ssv.AttesterRunner:
+		runner = &ssv.AttesterRunner{}
+	case *ssv.AggregatorRunner:
+		runner = &ssv.AggregatorRunner{}
+	case *ssv.ProposerRunner:
+		runner = &ssv.ProposerRunner{}
+	case *ssv.SyncCommitteeRunner:
+		runner = &ssv.SyncCommitteeRunner{}
+	case *ssv.SyncCommitteeAggregatorRunner:
+		runner = &ssv.SyncCommitteeAggregatorRunner{}
+	case *ssv.ValidatorRegistrationRunner:
+		runner = &ssv.ValidatorRegistrationRunner{}
+	default:
+		t.Fatalf("unknown runner type")
+	}
+	require.NoError(t, json.Unmarshal(byteValue, runner))
+
+	// override
+	test.PostDutyRunnerState = runner
+
+	root, err := runner.GetRoot()
+	require.NoError(t, err)
+
+	// backwards compatability test, hard coded post root must be equal to the one loaded from file
+	if len(test.PostDutyRunnerStateRoot) > 0 {
+		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(root[:]), "post runner state not equal")
+	}
+
+	test.PostDutyRunnerStateRoot = hex.EncodeToString(root[:])
 }
