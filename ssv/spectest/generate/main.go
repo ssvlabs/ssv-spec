@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"log"
 	"os"
 	"path/filepath"
@@ -76,11 +77,11 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	postMap, ok := post.(map[string]types.Root)
 
 	if !ok {
-	    writeSingleSCJson(name, testType, post)
-	    return
+		writeSingleSCJson(name, testType, post)
+		return
 	}
-        for subTestName, postState := range postMap {
-	    writeSingleSCJson(filepath.Join(name, subTestName), testType, postState)
+	for subTestName, postState := range postMap {
+		writeSingleSCJson(filepath.Join(name, subTestName), testType, postState)
 	}
 }
 
@@ -95,12 +96,8 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 		panic(err.Error())
 	}
 
-	_, basedir, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("no caller info")
-	}
-	basedir = filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison", testType)
-	file := filepath.Join(basedir, fmt.Sprintf("%s.json", path))
+	scDir, err := comparable2.GetSCDir(testType)
+	file := filepath.Join(scDir, fmt.Sprintf("%s.json", path))
 	// try to create directory if it doesn't exist
 	if err := os.MkdirAll(filepath.Dir(file), 0700); err != nil {
 		panic(err.Error())

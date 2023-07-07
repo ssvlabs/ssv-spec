@@ -6,8 +6,10 @@ import (
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
+	"github.com/pkg/errors"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -37,10 +39,12 @@ func FixIssue178(input *types.ConsensusData, version spec2.DataVersion) *types.C
 }
 
 // UnmarshalSSVStateComparison reads a json derived from 'test' and unmarshals it into 'targetState'
-func UnmarshalSSVStateComparison(testName string, folderName string, targetState types.Root) (types.Root, error) {
-	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "state_comparison", folderName,
-		fmt.Sprintf("%s.json", testName))
+func UnmarshalSSVStateComparison(testName string, testType string, targetState types.Root) (types.Root, error) {
+	scDir, err := GetSCDir(testType)
+	if err != nil {
+		return nil, err
+	}
+	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -52,4 +56,18 @@ func UnmarshalSSVStateComparison(testName string, folderName string, targetState
 	}
 
 	return targetState, nil
+}
+
+// GetSCDir returns the path to the state comparison folder for the given test type
+func GetSCDir(testType string) (string, error) {
+	basedir, err := os.Getwd()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get working directory for SC dir")
+	}
+	basedir = filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison", testType)
+	scDir := strings.NewReplacer(
+		"*", "",
+		".", "_").
+		Replace(basedir)
+	return scDir, nil
 }

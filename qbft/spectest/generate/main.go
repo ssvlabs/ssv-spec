@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"log"
 	"os"
 	"path/filepath"
@@ -82,15 +83,11 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 		panic(err.Error())
 	}
 
-	_, basedir, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("no caller info")
-	}
-	basedir = filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison", testType)
+	scDir, err := comparable2.GetSCDir(testType)
 
 	// try to create directory if it doesn't exist
-	_ = os.Mkdir(basedir, 0700)
-	file := filepath.Join(basedir, fmt.Sprintf("%s.json", name))
+	err = os.Mkdir(scDir, 0700)
+	file := filepath.Join(scDir, fmt.Sprintf("%s.json", name))
 
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())
