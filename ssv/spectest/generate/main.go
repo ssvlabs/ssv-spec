@@ -97,6 +97,10 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 	}
 
 	scDir, err := comparable2.GetSCDir(testType)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	file := filepath.Join(scDir, fmt.Sprintf("%s.json", path))
 	// try to create directory if it doesn't exist
 	if err := os.MkdirAll(filepath.Dir(file), 0700); err != nil {

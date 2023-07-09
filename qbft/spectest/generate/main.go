@@ -84,9 +84,15 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	}
 
 	scDir, err := comparable2.GetSCDir(testType)
+	if err != nil {
+		panic(err.Error())
+	}
 
 	// try to create directory if it doesn't exist
 	err = os.Mkdir(scDir, 0700)
+	if err != nil {
+		panic(err.Error())
+	}
 	file := filepath.Join(scDir, fmt.Sprintf("%s.json", name))
 
 	if err := os.WriteFile(file, byts, 0644); err != nil {
