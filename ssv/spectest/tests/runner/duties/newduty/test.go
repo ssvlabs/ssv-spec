@@ -2,9 +2,7 @@ package newduty
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	"os"
 	"path/filepath"
 	"reflect"
 	"testing"
@@ -157,12 +155,7 @@ func (tests *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing
 	}
 }
 
-func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, name string, folder string) {
-	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "state_comparison", folder, fmt.Sprintf("%s.json", name))
-	byteValue, err := os.ReadFile(path)
-	require.NoError(t, err)
-
+func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, name string, testType string) {
 	var runner ssv.Runner
 	switch test.Runner.(type) {
 	case *ssv.AttesterRunner:
@@ -180,7 +173,8 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 	default:
 		t.Fatalf("unknown runner type")
 	}
-	require.NoError(t, json.Unmarshal(byteValue, runner))
+	runner, err := comparable.UnmarshalSSVStateComparison(name, testType, runner)
+	require.NoError(t, err)
 
 	// override
 	test.PostDutyRunnerState = runner
