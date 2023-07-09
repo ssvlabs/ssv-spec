@@ -39,20 +39,21 @@ func FixIssue178(input *types.ConsensusData, version spec2.DataVersion) *types.C
 }
 
 // UnmarshalSSVStateComparison reads a json derived from 'test' and unmarshals it into 'targetState'
-func UnmarshalSSVStateComparison(testName string, testType string, targetState types.Root) (types.Root, error) {
+func UnmarshalSSVStateComparison[T types.Root](testName string, testType string, targetState T) (T, error) {
+	var nilT T
 	scDir, err := GetSCDir(testType)
 	if err != nil {
-		return nil, err
+		return nilT, err
 	}
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return nilT, err
 	}
 
 	err = json.Unmarshal(byteValue, targetState)
 	if err != nil {
-		return nil, err
+		return nilT, err
 	}
 
 	return targetState, nil
