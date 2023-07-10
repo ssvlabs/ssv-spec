@@ -97,7 +97,7 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 		panic(err.Error())
 	}
 
-	scDir, err := comparable2.GetSCDir(testType)
+	scDir := scDir(testType)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -111,6 +111,16 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())
 	}
+}
+
+func scDir(testType string) string {
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("no caller info")
+	}
+	basedir = strings.TrimSuffix(basedir, "main.go")
+	scDir := comparable2.GetSCDir(basedir, testType)
+	return scDir
 }
 
 func writeJson(data []byte) {

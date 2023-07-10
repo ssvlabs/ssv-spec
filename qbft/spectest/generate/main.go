@@ -82,11 +82,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	if err != nil {
 		panic(err.Error())
 	}
-
-	scDir, err := comparable2.GetSCDir(testType)
-	if err != nil {
-		panic(err.Error())
-	}
+	scDir := scDir(testType)
 
 	// try to create directory if it doesn't exist
 	if err := os.MkdirAll(scDir, 0700); err != nil && !os.IsExist(err) {
@@ -97,6 +93,16 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())
 	}
+}
+
+func scDir(testType string) string {
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("no caller info")
+	}
+	basedir = strings.TrimSuffix(basedir, "main.go")
+	scDir := comparable2.GetSCDir(basedir, testType)
+	return scDir
 }
 
 func writeJson(data []byte) {

@@ -3,6 +3,7 @@ package newduty
 import (
 	"encoding/hex"
 	"fmt"
+	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -174,7 +175,10 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 	default:
 		t.Fatalf("unknown runner type")
 	}
-	runner, err := comparable.UnmarshalSSVStateComparison(name, testType, runner)
+	basedir, err := os.Getwd()
+	require.NoError(t, err)
+	basedir = filepath.Join(basedir, "generate")
+	runner, err = comparable.UnmarshalSSVStateComparison(basedir, name, testType, runner)
 	require.NoError(t, err)
 
 	// override
