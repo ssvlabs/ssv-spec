@@ -2,8 +2,8 @@ package consensus
 
 import (
 	"fmt"
-
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -11,7 +11,12 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// FutureDecided tests a running instance at FirstHeight, then processing a decided msg from height 2 and returning decided but doesn't move to post consensus as it's not the same instance decided
+// https://github.com/bloxapp/ssv-spec/issues/280.
+// should a future decided message stop previous instances? currently we return an error but should we?
+// A future decided means that no one will process our old instance messages...
+
+// FutureDecided tests a running instance at a certain height, then processing a decided msg from a larger height.
+// then returning an error and don't move to post consensus as it's not the same instance decided
 func FutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -37,7 +42,7 @@ func FutureDecided() tests.SpecTest {
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							2,
+							testingutils.TestingDutySlot+1,
 							getID(types.BNRoleSyncCommitteeContribution),
 						),
 						nil,
@@ -59,7 +64,7 @@ func FutureDecided() tests.SpecTest {
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							2,
+							testingutils.TestingDutySlot+1,
 							getID(types.BNRoleSyncCommittee),
 						),
 						nil,
@@ -82,7 +87,7 @@ func FutureDecided() tests.SpecTest {
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							2,
+							testingutils.TestingDutySlot+1,
 							getID(types.BNRoleAggregator),
 						),
 						nil,
@@ -104,7 +109,7 @@ func FutureDecided() tests.SpecTest {
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							2,
+							testingutils.TestingDutySlot+1,
 							getID(types.BNRoleAttester),
 						),
 						nil,
@@ -132,7 +137,7 @@ func FutureDecided() tests.SpecTest {
 					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
-						2,
+						qbft.Height(testingutils.TestingDutySlotV(version)+1),
 						getID(types.BNRoleProposer),
 					),
 					nil,
@@ -161,7 +166,7 @@ func FutureDecided() tests.SpecTest {
 					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
-						2,
+						qbft.Height(testingutils.TestingDutySlotV(version)+1),
 						getID(types.BNRoleProposer),
 					),
 					nil,

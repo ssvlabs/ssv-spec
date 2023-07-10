@@ -120,7 +120,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -288,7 +288,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -372,7 +372,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -587,7 +587,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -751,7 +751,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -835,7 +835,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -1050,7 +1050,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -1214,7 +1214,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -1298,7 +1298,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -1514,7 +1514,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -1678,7 +1678,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -1762,7 +1762,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,

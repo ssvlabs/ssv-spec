@@ -45,6 +45,13 @@ var TestAttesterConsensusData = &types.ConsensusData{
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
+var TestAttesterNextEpochConsensusData = &types.ConsensusData{
+	Duty:    TestingAttesterDutyNextEpoch,
+	DataSSZ: TestingAttestationNextEpochDataBytes,
+}
+
+var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensusData.Encode()
+
 var TestAggregatorConsensusData = &types.ConsensusData{
 	Duty:    TestingAggregatorDuty,
 	DataSSZ: TestingAggregateAndProofBytes,
@@ -85,6 +92,13 @@ var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
+
+var TestSyncCommitteeNextEpochConsensusData = &types.ConsensusData{
+	Duty:    TestingSyncCommitteeDutyNextEpoch,
+	DataSSZ: TestingSyncCommitteeBlockRoot[:],
+}
+
+var TestSyncCommitteeNextEpochConsensusDataByts, _ = TestSyncCommitteeNextEpochConsensusData.Encode()
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeContributionDuty,

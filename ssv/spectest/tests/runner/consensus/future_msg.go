@@ -115,10 +115,9 @@ func FutureMessage() tests.SpecTest {
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgValidatorRegistration(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID,
-							testingutils.TestAttesterConsensusDataByts,
-						),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.Shares[1], types.OperatorID(1),
+							testingutils.ValidatorRegistrationMsgID, testingutils.TestAttesterConsensusDataByts,
+							qbft.Height(testingutils.TestingDutySlot)),
 						nil),
 				},
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
