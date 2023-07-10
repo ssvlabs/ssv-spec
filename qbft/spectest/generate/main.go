@@ -89,12 +89,11 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	}
 
 	// try to create directory if it doesn't exist
-	err = os.Mkdir(scDir, 0700)
-	if err != nil {
+	if err := os.MkdirAll(scDir, 0700); err != nil && !os.IsExist(err) {
 		panic(err.Error())
 	}
-	file := filepath.Join(scDir, fmt.Sprintf("%s.json", name))
 
+	file := filepath.Join(scDir, fmt.Sprintf("%s.json", name))
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())
 	}
