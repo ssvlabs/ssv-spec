@@ -151,8 +151,9 @@ func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
 func (tests *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(tests.TestName(), " ", "_")
 	for _, test := range tests.Tests {
-		path := filepath.Join(tests.TestName(), strings.ReplaceAll(test.TestName(), " ", "_"))
+		path := filepath.Join(testsName, test.TestName())
 		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
 	}
 }

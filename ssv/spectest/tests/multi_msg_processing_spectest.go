@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -28,20 +29,21 @@ func (tests *MultiMsgProcessingSpecTest) Run(t *testing.T) {
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
 func (tests *MultiMsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(tests.TestName(), " ", "_")
 	for _, test := range tests.Tests {
-		path := filepath.Join(tests.TestName(), test.TestName())
+		path := filepath.Join(testsName, test.TestName())
 		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
 	}
 }
 
 func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
-	ret := make([]ssv.Runner, len(tests.Tests))
-	for i, test := range tests.Tests {
+	ret := make(map[string]types.Root, len(tests.Tests))
+	for _, test := range tests.Tests {
 		_, err := test.runPreTesting()
 		if err != nil && test.ExpectedError != err.Error() {
 			return nil, err
 		}
-		ret[i] = test.Runner
+		ret[test.Name] = test.Runner
 	}
 	return ret, nil
 }

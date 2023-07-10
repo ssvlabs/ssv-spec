@@ -91,7 +91,6 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 		log.Printf("skipping state comparison json, not supported: %s\n", path)
 		return
 	}
-	log.Printf("writing state comparison json: %s\n", path)
 	byts, err := json.MarshalIndent(post, "", "		")
 	if err != nil {
 		panic(err.Error())
@@ -108,6 +107,7 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 		panic(err.Error())
 	}
 
+	log.Printf("writing state comparison json: %s\n", path)
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())
 	}
