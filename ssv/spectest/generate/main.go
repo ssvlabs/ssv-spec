@@ -82,7 +82,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	}
 	name = strings.ReplaceAll(name, " ", "_")
 	for subTestName, postState := range postMap {
-		writeSingleSCJson(filepath.Join(name, subTestName), testType, postState)
+		writeSingleSCJson(subTestName, filepath.Join(testType, name), postState)
 	}
 }
 
@@ -102,12 +102,12 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 		panic(err.Error())
 	}
 
+	file := filepath.Join(scDir, fmt.Sprintf("%s.json", path))
 	// try to create directory if it doesn't exist
 	if err := os.MkdirAll(scDir, 0700); err != nil && !os.IsExist(err) {
 		panic(err.Error())
 	}
 
-	file := filepath.Join(scDir, fmt.Sprintf("%s.json", path))
 	if err := os.WriteFile(file, byts, 0644); err != nil {
 		panic(err.Error())
 	}
