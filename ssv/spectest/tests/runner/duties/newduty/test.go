@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -150,7 +151,7 @@ func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
 func (tests *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
 	for _, test := range tests.Tests {
-		path := filepath.Join(tests.TestName(), test.TestName())
+		path := filepath.Join(tests.TestName(), strings.ReplaceAll(test.TestName(), " ", "_"))
 		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
 	}
 }

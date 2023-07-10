@@ -80,6 +80,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 		writeSingleSCJson(name, testType, post)
 		return
 	}
+	name = strings.ReplaceAll(name, " ", "_")
 	for subTestName, postState := range postMap {
 		writeSingleSCJson(filepath.Join(name, subTestName), testType, postState)
 	}
