@@ -62,10 +62,11 @@ func UnmarshalSSVStateComparison[T types.Root](testName string, testType string,
 // GetSCDir returns the path to the state comparison folder for the given test type
 func GetSCDir(testType string) (string, error) {
 	basedir, err := os.Getwd()
+	basedir = filepath.Join(basedir, "spectest", "generate", "state_comparison", testType)
+
 	if err != nil {
 		return "", errors.Wrap(err, "failed to get working directory for SC dir")
 	}
-	basedir = filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison", testType)
 	scDir := strings.NewReplacer(
 		"*", "",
 		".", "_").
