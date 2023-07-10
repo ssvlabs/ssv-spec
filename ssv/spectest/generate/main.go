@@ -102,7 +102,7 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 	}
 
 	// try to create directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(scDir), 0700); err != nil && !os.IsExist(err) {
+	if err := os.MkdirAll(scDir, 0700); err != nil && !os.IsExist(err) {
 		panic(err.Error())
 	}
 
