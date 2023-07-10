@@ -195,6 +195,7 @@ func (test *ControllerSpecTest) overrideStateComparison(t *testing.T) {
 	require.NoError(t, err)
 	path := filepath.Join(dir, fmt.Sprintf("%s.json", test.TestName()))
 	byteValue, err := os.ReadFile(path)
+	require.NoError(t, err)
 	sc := make([]*qbft.Controller, len(test.RunInstanceData))
 	require.NoError(t, json.Unmarshal(byteValue, &sc))
 
