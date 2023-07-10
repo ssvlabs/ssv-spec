@@ -40,6 +40,7 @@ func FixIssue178(input *types.ConsensusData, version spec2.DataVersion) *types.C
 func UnmarshalSSVStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T,
 	error) {
 	var nilT T
+	basedir = filepath.Join(basedir, "generate")
 	scDir := GetSCDir(basedir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
 	byteValue, err := os.ReadFile(path)

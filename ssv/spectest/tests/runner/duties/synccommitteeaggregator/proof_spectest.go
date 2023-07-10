@@ -5,7 +5,6 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"os"
-	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -84,7 +83,6 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 	// override state comparison
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	basedir = filepath.Join(basedir, "generate")
 	postState, err := comparable.UnmarshalSSVStateComparison(basedir, test.Name,
 		reflect.TypeOf(test).String(), &ssv.State{})
 	require.NoError(t, err)

@@ -2,10 +2,8 @@ package tests
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -101,13 +99,12 @@ func (test *MsgProcessingSpecTest) TestName() string {
 }
 
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
-	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "state_comparison", reflect.TypeOf(test).String(), fmt.Sprintf("%s.json", test.TestName()))
-	byteValue, err := os.ReadFile(path)
+	basedir, err := os.Getwd()
 	require.NoError(t, err)
-
-	test.PostState = &qbft.State{}
-	require.NoError(t, json.Unmarshal(byteValue, &test.PostState))
+	test.PostState, err = typescomparable.UnmarshalSSVStateComparison(basedir, test.TestName(),
+		reflect.TypeOf(test).String(),
+		&qbft.State{})
+	require.NoError(t, err)
 
 	r, err := test.PostState.GetRoot()
 	require.NoError(t, err)

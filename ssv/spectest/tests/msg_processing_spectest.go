@@ -5,7 +5,6 @@ import (
 	"fmt"
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"os"
-	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -180,7 +179,6 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 	}
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	basedir = filepath.Join(basedir, "generate")
 	runner, err = typescomparable.UnmarshalSSVStateComparison(basedir, name, testType, runner)
 	require.NoError(t, err)
 
