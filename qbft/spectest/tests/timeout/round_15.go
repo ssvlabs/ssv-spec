@@ -10,11 +10,12 @@ import (
 // Round15 tests calling UponRoundTimeout for round 15, testing state and broadcasted msgs
 func Round15() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	sc := round20StateComparison()
+	sc := round15StateComparison()
 
 	pre := testingutils.BaseInstance()
-	pre.State.Round = 20
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 20)
+	pre.State.Round = 15
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1],
+		types.OperatorID(1), 15)
 
 	return &SpecTest{
 		Name:      "round 15",
@@ -30,11 +31,12 @@ func Round15() tests.SpecTest {
 	}
 }
 
-func round20StateComparison() *comparable.StateComparison {
+func round15StateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	state := testingutils.BaseInstance().State
-	state.Round = 20
-	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 20)
+	state.Round = 15
+	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1],
+		types.OperatorID(1), 15)
 
 	return &comparable.StateComparison{ExpectedState: state}
 }
