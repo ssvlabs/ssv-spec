@@ -2,7 +2,7 @@ package tests
 
 import (
 	"encoding/hex"
-	"fmt"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/google/go-cmp/cmp"
 	"os"
 	"reflect"
