@@ -3,6 +3,7 @@
 **Important note (!)**: The paper's *pre-preapre* message was renamed as *proposal* message.
 
 ![IBFT_proposal](images/IBFT_preprepare.png)
+
 *Moniz, H. The Istanbul BFT Consensus Algorithm. Algorithm 2. 2020*
 
 ## Validation

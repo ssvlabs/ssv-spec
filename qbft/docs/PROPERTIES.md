@@ -3,6 +3,7 @@
 The *Validity* property described in the paper is:
 
 ![IBFT_validity](images/IBFT_validity.png)
+
 *Moniz, H. The Istanbul BFT Consensus Algorithm. Preliminaries. 2020*
 
 <!--
@@ -20,6 +21,7 @@ or as the *Predicate-based validity* used in the paper.
 Nonetheless, the predicate isn't explicited in the pseudo-code algorithm. On "Validation", on the other hand, is said:
 
 ![IBFT_validation](images/IBFT_validation.png)
+
 *Moniz, H. The Istanbul BFT Consensus Algorithm. Validation. 2020*
 <!--
 > A correct process only accepts a message if it considers it to be valid. To be valid, a message must carry some proof of integrity and authentication of its sender such as a digital signature. The external validity predicate $\beta$ must also be true for the value carried by the message.

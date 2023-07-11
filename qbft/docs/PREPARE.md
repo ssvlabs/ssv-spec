@@ -2,6 +2,7 @@
 
 
 ![IBFT_prepare](images/IBFT_prepare.png)
+
 *Moniz, H. The Istanbul BFT Consensus Algorithm. Algorithm 2. 2020*
 
 
