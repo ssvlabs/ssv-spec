@@ -63,7 +63,7 @@
 										11,
 										192
 								],
-								"Slot": 12,
+								"Slot": 50,
 								"ValidatorIndex": 1,
 								"CommitteeIndex": 3,
 								"CommitteeLength": 128,
@@ -129,7 +129,7 @@
 				},
 				"QBFTController": {
 						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-						"Height": 0,
+						"Height": 12,
 						"StoredInstances": [
 								{
 										"State": {
@@ -189,7 +189,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,

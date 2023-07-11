@@ -41,13 +41,15 @@ func preDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
 				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(cd, spec.DataVersionBellatrix)),
 			}
+
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -82,13 +84,14 @@ func preDecidedSyncCommitteeSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
 				StartValue: cdBytes,
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -127,13 +130,14 @@ func preDecidedAggregatorSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
 				StartValue: cdBytes,
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -168,13 +172,14 @@ func preDecidedAttesterSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
 				StartValue: cdBytes,
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -213,13 +218,14 @@ func preDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison 
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
 				StartValue: cdBytes,
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -258,13 +264,14 @@ func preDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
 				StartValue: cdBytes,
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret

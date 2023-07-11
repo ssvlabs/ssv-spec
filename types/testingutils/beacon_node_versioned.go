@@ -181,6 +181,18 @@ var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 	}
 }
 
+var TestingDutySlotV = func(version spec.DataVersion) phase0.Slot {
+	switch version {
+	case spec.DataVersionBellatrix:
+		return TestingDutySlotBellatrix
+	case spec.DataVersionCapella:
+		return TestingDutySlotCapella
+
+	default:
+		panic("unsupported version")
+	}
+}
+
 var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
 	if slot < ForkEpochPraterCapella*32 {
 		return spec.DataVersionBellatrix
@@ -192,22 +204,13 @@ var TestingProposerDutyV = func(version spec.DataVersion) *types.Duty {
 	duty := &types.Duty{
 		Type:           types.BNRoleProposer,
 		PubKey:         TestingValidatorPubKey,
+		Slot:           TestingDutySlotV(version),
 		ValidatorIndex: TestingValidatorIndex,
 		// ISSUE 233: We are initializing unused struct fields here
 		CommitteeIndex:          3,
 		CommitteesAtSlot:        36,
 		CommitteeLength:         128,
 		ValidatorCommitteeIndex: 11,
-	}
-
-	switch version {
-	case spec.DataVersionBellatrix:
-		duty.Slot = TestingDutySlotBellatrix
-	case spec.DataVersionCapella:
-		duty.Slot = TestingDutySlotCapella
-
-	default:
-		panic("unsupported version")
 	}
 
 	return duty

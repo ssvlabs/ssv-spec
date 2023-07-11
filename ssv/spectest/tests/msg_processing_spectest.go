@@ -3,7 +3,7 @@ package tests
 import (
 	"encoding/hex"
 	"fmt"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/google/go-cmp/cmp"
 	"os"
 	"reflect"
 	"testing"
@@ -54,8 +54,7 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	require.NoError(t, err)
 
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
-		diff := typescomparable.PrintDiff(test.Runner, test.PostDutyRunnerState)
-		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), fmt.Sprintf("post runner state not equal\n%s\n", diff))
+		t.Errorf("post runner state not equal: %v", cmp.Diff(test.Runner, test.PostDutyRunnerState, cmp.Exporter(func(p reflect.Type) bool { return true })))
 	}
 }
 

@@ -25,10 +25,10 @@ func PostDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
+			qbft.Height(duty.Slot))
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
 		return r
 	}
 
@@ -37,7 +37,7 @@ func PostDecided() tests.SpecTest {
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  decidedRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionNexEpochDuty),
+				Runner:                  decidedRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
@@ -48,14 +48,14 @@ func PostDecided() tests.SpecTest {
 			{
 				Name:                    "sync committee",
 				Runner:                  decidedRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
+				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "aggregator",
-				Runner:                  decidedRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDutyNextEpoch),
+				Runner:                  decidedRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     postDecidedAggregatorSC().ExpectedState,
@@ -66,7 +66,7 @@ func PostDecided() tests.SpecTest {
 			{
 				Name:                    "attester",
 				Runner:                  decidedRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDuty,
+				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -78,7 +78,7 @@ func PostDecided() tests.SpecTest {
 	proposerV := func(version spec.DataVersion) *StartNewRunnerDutySpecTest {
 		return &StartNewRunnerDutySpecTest{
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
-			Runner:                  decidedRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpochV(version)),
+			Runner:                  decidedRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
 			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
@@ -92,7 +92,7 @@ func PostDecided() tests.SpecTest {
 	proposerBlindedV := func(version spec.DataVersion) *StartNewRunnerDutySpecTest {
 		return &StartNewRunnerDutySpecTest{
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner:                  decidedRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyNextEpochV(version)),
+			Runner:                  decidedRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
 			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,

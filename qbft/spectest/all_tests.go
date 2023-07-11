@@ -21,7 +21,7 @@ var AllTests = []tests.TestF{
 	timeout.Round2,
 	timeout.Round3,
 	timeout.Round5,
-	timeout.Round20,
+	timeout.Round15,
 
 	decided.Valid,
 	decided.HasQuorum,

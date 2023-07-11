@@ -31,8 +31,11 @@ func PostFinish() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
 					// commit msg
 					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.SyncCommitteeContributionMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[4]},
+							[]types.OperatorID{4},
+							qbft.Height(testingutils.TestingDutySlot),
+							testingutils.SyncCommitteeContributionMsgID,
 							testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						), nil),
 				),
@@ -60,8 +63,11 @@ func PostFinish() tests.SpecTest {
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
 					// commit msg
 					testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.SyncCommitteeMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[4]},
+							[]types.OperatorID{4},
+							qbft.Height(testingutils.TestingDutySlot),
+							testingutils.SyncCommitteeMsgID,
 							testingutils.TestSyncCommitteeConsensusDataByts,
 						), nil),
 				),
@@ -86,8 +92,11 @@ func PostFinish() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
 					// commit msg
 					testingutils.SSVMsgAggregator(
-						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.AggregatorMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[4]},
+							[]types.OperatorID{4},
+							qbft.Height(testingutils.TestingDutySlot),
+							testingutils.AggregatorMsgID,
 							testingutils.TestAggregatorConsensusDataByts,
 						), nil),
 				),
@@ -108,20 +117,23 @@ func PostFinish() tests.SpecTest {
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
 					// post consensus
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot)),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot)),
 					// commit msg
 					testingutils.SSVMsgAttester(
-						testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.AttesterMsgID,
+						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+							[]*bls.SecretKey{ks.Shares[4]},
+							[]types.OperatorID{4},
+							qbft.Height(testingutils.TestingDutySlot),
+							testingutils.AttesterMsgID,
 							testingutils.TestAttesterConsensusDataByts,
 						), nil),
 				),
 				PostDutyRunnerStateRoot: postFinishAttesterSC().Root(),
 				PostDutyRunnerState:     postFinishAttesterSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
+					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
 				},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
@@ -137,15 +149,22 @@ func PostFinish() tests.SpecTest {
 			Runner: testingutils.ProposerRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer), // consensus
+				testingutils.SSVDecidingMsgsV(
+					testingutils.TestProposerConsensusDataV(version),
+					ks,
+					types.BNRoleProposer,
+				), // consensus
 				// post consensus
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 				// commit msg
 				testingutils.SSVMsgProposer(
-					testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-						[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*bls.SecretKey{ks.Shares[4]},
+						[]types.OperatorID{4},
+						qbft.Height(testingutils.TestingDutySlotV(version)),
+						testingutils.ProposerMsgID,
 						testingutils.TestProposerConsensusDataBytsV(version),
 					), nil),
 			),
@@ -175,8 +194,11 @@ func PostFinish() tests.SpecTest {
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 				// commit msg
 				testingutils.SSVMsgProposer(
-					testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-						[]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, testingutils.ProposerMsgID,
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*bls.SecretKey{ks.Shares[4]},
+						[]types.OperatorID{4},
+						qbft.Height(testingutils.TestingDutySlotV(version)),
+						testingutils.ProposerMsgID,
 						testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
 					), nil),
 			),

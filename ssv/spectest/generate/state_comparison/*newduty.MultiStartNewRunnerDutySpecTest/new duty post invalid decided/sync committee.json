@@ -67,7 +67,7 @@
 										},
 										"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 										"Round": 1,
-										"Height": 1,
+										"Height": 50,
 										"LastPreparedRound": 0,
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": null,
@@ -86,7 +86,7 @@
 												"Msgs": {}
 										}
 								},
-								"StartValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+								"StartValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwDIAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
 						},
 						"DecidedValue": null,
 						"StartingDuty": {
@@ -141,7 +141,7 @@
 										11,
 										192
 								],
-								"Slot": 12,
+								"Slot": 50,
 								"ValidatorIndex": 1,
 								"CommitteeIndex": 3,
 								"CommitteeLength": 128,
@@ -211,7 +211,7 @@
 				},
 				"QBFTController": {
 						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
-						"Height": 1,
+						"Height": 50,
 						"StoredInstances": [
 								{
 										"State": {
@@ -271,7 +271,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 												"Round": 1,
-												"Height": 1,
+												"Height": 50,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -290,7 +290,7 @@
 														"Msgs": {}
 												}
 										},
-										"StartValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+										"StartValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwDIAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
 								},
 								{
 										"State": {
@@ -350,7 +350,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
