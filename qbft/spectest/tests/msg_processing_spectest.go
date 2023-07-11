@@ -74,7 +74,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot[:]) {
 		diff := typescomparable.PrintDiff(test.Pre.State, test.PostState)
-		require.Fail(t, "post state not equal", diff)
+		require.Fail(t, fmt.Sprintf("expected root: %s\nactual root: %s\n\n", test.PostRoot, hex.EncodeToString(postRoot[:])), "post state not equal", diff)
 	}
 }
 

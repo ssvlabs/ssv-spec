@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/pkg/errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -48,7 +49,7 @@ func main() {
 		// generate post state comparison
 		post, err := test.GetPostState()
 		if err != nil {
-			panic(err.Error())
+			panic(errors.Wrapf(err, "failed to get post state for test: %s", test.TestName()).Error())
 		}
 		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)
 	}

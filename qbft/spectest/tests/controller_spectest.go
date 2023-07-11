@@ -47,14 +47,14 @@ func (test *ControllerSpecTest) TestName() string {
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
-	// temporary to override state comparisons from file not inputted one
+	//temporary to override state comparisons from file not inputted one
 	test.overrideStateComparison(t)
 
 	contr := test.generateController()
 
 	var lastErr error
-	for _, runData := range test.RunInstanceData {
-		if err := test.runInstanceWithData(t, contr, runData); err != nil {
+	for i, runData := range test.RunInstanceData {
+		if err := test.runInstanceWithData(t, qbft.Height(i), contr, runData); err != nil {
 			lastErr = err
 		}
 	}
@@ -162,10 +162,11 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 
 func (test *ControllerSpecTest) runInstanceWithData(
 	t *testing.T,
+	height qbft.Height,
 	contr *qbft.Controller,
 	runData *RunInstanceData,
 ) error {
-	err := contr.StartNewInstance(runData.InputValue)
+	err := contr.StartNewInstance(height, runData.InputValue)
 	var lastErr error
 	if err != nil {
 		lastErr = err
@@ -184,7 +185,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	require.NoError(t, err)
 	if runData.ControllerPostRoot != hex.EncodeToString(r[:]) {
 		diff := typescomparable.PrintDiff(contr, runData.ControllerPostState)
-		require.Fail(t, "post state not equal", diff)
+		require.Fail(t, fmt.Sprintf("post state not equal\nexpected: %s\nreceived: %s", runData.ControllerPostRoot, hex.EncodeToString(r[:])), diff)
 	}
 
 	return lastErr
@@ -219,7 +220,7 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 
 	ret := make([]*qbft.Controller, len(test.RunInstanceData))
 	for i, runData := range test.RunInstanceData {
-		err := contr.StartNewInstance(runData.InputValue)
+		err := contr.StartNewInstance(qbft.Height(i), runData.InputValue)
 		if err != nil && len(test.ExpectedError) == 0 {
 			return nil, err
 		}

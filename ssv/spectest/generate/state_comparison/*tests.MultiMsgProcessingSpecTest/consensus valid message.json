@@ -84,17 +84,17 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": "l37/9WTOY8PlUrkzBxzZk68tEQ0ewdf/b+k+JzDwJyuZasPQUzvIxK7r16528/1xEIbUqL6SeBf7yQ4hiaZk0xIUgQHHwN6wt6ndwXqwIgEQy8+CsT6hYH4HPF/0WhTH",
+														"Signature": "uc/CUpwm9MBlAzG4KXQ+VtksPZoaljD3lnUq+8eQz05fqH6Qe6b9njnoWN2hLyCJDZyiDxfU5n5y4nfAVCWicnSOFs1bP+5GgprD/yIQA0d8Bxvm9p3SAfb1MQ34n0RY",
 														"Signers": [
 																1
 														],
 														"Message": {
 																"MsgType": 0,
-																"Height": 0,
+																"Height": 12,
 																"Round": 1,
 																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 																"Root": [
@@ -143,13 +143,13 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "l37/9WTOY8PlUrkzBxzZk68tEQ0ewdf/b+k+JzDwJyuZasPQUzvIxK7r16528/1xEIbUqL6SeBf7yQ4hiaZk0xIUgQHHwN6wt6ndwXqwIgEQy8+CsT6hYH4HPF/0WhTH",
+																				"Signature": "uc/CUpwm9MBlAzG4KXQ+VtksPZoaljD3lnUq+8eQz05fqH6Qe6b9njnoWN2hLyCJDZyiDxfU5n5y4nfAVCWicnSOFs1bP+5GgprD/yIQA0d8Bxvm9p3SAfb1MQ34n0RY",
 																				"Signers": [
 																						1
 																				],
 																				"Message": {
 																						"MsgType": 0,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 																						"Root": [
@@ -330,7 +330,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -390,17 +390,17 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": {
-																"Signature": "l37/9WTOY8PlUrkzBxzZk68tEQ0ewdf/b+k+JzDwJyuZasPQUzvIxK7r16528/1xEIbUqL6SeBf7yQ4hiaZk0xIUgQHHwN6wt6ndwXqwIgEQy8+CsT6hYH4HPF/0WhTH",
+																"Signature": "uc/CUpwm9MBlAzG4KXQ+VtksPZoaljD3lnUq+8eQz05fqH6Qe6b9njnoWN2hLyCJDZyiDxfU5n5y4nfAVCWicnSOFs1bP+5GgprD/yIQA0d8Bxvm9p3SAfb1MQ34n0RY",
 																"Signers": [
 																		1
 																],
 																"Message": {
 																		"MsgType": 0,
-																		"Height": 0,
+																		"Height": 12,
 																		"Round": 1,
 																		"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 																		"Root": [
@@ -449,13 +449,13 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "l37/9WTOY8PlUrkzBxzZk68tEQ0ewdf/b+k+JzDwJyuZasPQUzvIxK7r16528/1xEIbUqL6SeBf7yQ4hiaZk0xIUgQHHwN6wt6ndwXqwIgEQy8+CsT6hYH4HPF/0WhTH",
+																						"Signature": "uc/CUpwm9MBlAzG4KXQ+VtksPZoaljD3lnUq+8eQz05fqH6Qe6b9njnoWN2hLyCJDZyiDxfU5n5y4nfAVCWicnSOFs1bP+5GgprD/yIQA0d8Bxvm9p3SAfb1MQ34n0RY",
 																						"Signers": [
 																								1
 																						],
 																						"Message": {
 																								"MsgType": 0,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 																								"Root": [
@@ -649,17 +649,17 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": "iTMFKxXbk+M2ECRstGuTPDrO61FUAQCAIhPuwQn25KJhgxXKMdnjR7pYtQB7nEwBAYJZHsXLmMaaVAqLNNQF0YdJuKxWT/App8h0Ruan+Hn3BbChp9SoR5wdYteojOFu",
+														"Signature": "hZQJOdn3bLmyZFlxSQpfP165tpiXyUzvzfbSrBEyEi564Wvfb0XmRYWktTZL3b6AFau0KfHqc/c2oa4ozyZiPb0Q2HEf++/yBZd4p05I0KkNfnPBo3g6puluRkkGw3Ra",
 														"Signers": [
 																1
 														],
 														"Message": {
 																"MsgType": 0,
-																"Height": 0,
+																"Height": 12,
 																"Round": 1,
 																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 																"Root": [
@@ -708,13 +708,13 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "iTMFKxXbk+M2ECRstGuTPDrO61FUAQCAIhPuwQn25KJhgxXKMdnjR7pYtQB7nEwBAYJZHsXLmMaaVAqLNNQF0YdJuKxWT/App8h0Ruan+Hn3BbChp9SoR5wdYteojOFu",
+																				"Signature": "hZQJOdn3bLmyZFlxSQpfP165tpiXyUzvzfbSrBEyEi564Wvfb0XmRYWktTZL3b6AFau0KfHqc/c2oa4ozyZiPb0Q2HEf++/yBZd4p05I0KkNfnPBo3g6puluRkkGw3Ra",
 																				"Signers": [
 																						1
 																				],
 																				"Message": {
 																						"MsgType": 0,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 																						"Root": [
@@ -895,7 +895,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -955,17 +955,17 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": {
-																"Signature": "iTMFKxXbk+M2ECRstGuTPDrO61FUAQCAIhPuwQn25KJhgxXKMdnjR7pYtQB7nEwBAYJZHsXLmMaaVAqLNNQF0YdJuKxWT/App8h0Ruan+Hn3BbChp9SoR5wdYteojOFu",
+																"Signature": "hZQJOdn3bLmyZFlxSQpfP165tpiXyUzvzfbSrBEyEi564Wvfb0XmRYWktTZL3b6AFau0KfHqc/c2oa4ozyZiPb0Q2HEf++/yBZd4p05I0KkNfnPBo3g6puluRkkGw3Ra",
 																"Signers": [
 																		1
 																],
 																"Message": {
 																		"MsgType": 0,
-																		"Height": 0,
+																		"Height": 12,
 																		"Round": 1,
 																		"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 																		"Root": [
@@ -1014,13 +1014,13 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "iTMFKxXbk+M2ECRstGuTPDrO61FUAQCAIhPuwQn25KJhgxXKMdnjR7pYtQB7nEwBAYJZHsXLmMaaVAqLNNQF0YdJuKxWT/App8h0Ruan+Hn3BbChp9SoR5wdYteojOFu",
+																						"Signature": "hZQJOdn3bLmyZFlxSQpfP165tpiXyUzvzfbSrBEyEi564Wvfb0XmRYWktTZL3b6AFau0KfHqc/c2oa4ozyZiPb0Q2HEf++/yBZd4p05I0KkNfnPBo3g6puluRkkGw3Ra",
 																						"Signers": [
 																								1
 																						],
 																						"Message": {
 																								"MsgType": 0,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 																								"Root": [
@@ -1220,17 +1220,17 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": "sRh+djPdLApSb2hXp0obm8EGIH2ewwBj6Ce9tZ4/CD33cJxQkHYyF7+9EJH5fThxAUe71VVdwwGjyHhqhZcJI4kvj0Qljho7+BpANOg3zkaA4iIYAn/paUwmld+wW9cp",
+														"Signature": "j5YhpkZimjftK2CmOw05/sZ1UKH2IGjcEu8kVSdgrlj3dC5KwWttR+fw/80hFSBlAGQigtueX55Ssk3sGK/UWUXOakrmOMGKASMSTc90kZxrcZ8aq/uarDsPaTdY4n1G",
 														"Signers": [
 																1
 														],
 														"Message": {
 																"MsgType": 0,
-																"Height": 0,
+																"Height": 12,
 																"Round": 1,
 																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 																"Root": [
@@ -1279,13 +1279,13 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "sRh+djPdLApSb2hXp0obm8EGIH2ewwBj6Ce9tZ4/CD33cJxQkHYyF7+9EJH5fThxAUe71VVdwwGjyHhqhZcJI4kvj0Qljho7+BpANOg3zkaA4iIYAn/paUwmld+wW9cp",
+																				"Signature": "j5YhpkZimjftK2CmOw05/sZ1UKH2IGjcEu8kVSdgrlj3dC5KwWttR+fw/80hFSBlAGQigtueX55Ssk3sGK/UWUXOakrmOMGKASMSTc90kZxrcZ8aq/uarDsPaTdY4n1G",
 																				"Signers": [
 																						1
 																				],
 																				"Message": {
 																						"MsgType": 0,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 																						"Root": [
@@ -1462,7 +1462,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -1522,17 +1522,17 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": {
-																"Signature": "sRh+djPdLApSb2hXp0obm8EGIH2ewwBj6Ce9tZ4/CD33cJxQkHYyF7+9EJH5fThxAUe71VVdwwGjyHhqhZcJI4kvj0Qljho7+BpANOg3zkaA4iIYAn/paUwmld+wW9cp",
+																"Signature": "j5YhpkZimjftK2CmOw05/sZ1UKH2IGjcEu8kVSdgrlj3dC5KwWttR+fw/80hFSBlAGQigtueX55Ssk3sGK/UWUXOakrmOMGKASMSTc90kZxrcZ8aq/uarDsPaTdY4n1G",
 																"Signers": [
 																		1
 																],
 																"Message": {
 																		"MsgType": 0,
-																		"Height": 0,
+																		"Height": 12,
 																		"Round": 1,
 																		"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 																		"Root": [
@@ -1581,13 +1581,13 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "sRh+djPdLApSb2hXp0obm8EGIH2ewwBj6Ce9tZ4/CD33cJxQkHYyF7+9EJH5fThxAUe71VVdwwGjyHhqhZcJI4kvj0Qljho7+BpANOg3zkaA4iIYAn/paUwmld+wW9cp",
+																						"Signature": "j5YhpkZimjftK2CmOw05/sZ1UKH2IGjcEu8kVSdgrlj3dC5KwWttR+fw/80hFSBlAGQigtueX55Ssk3sGK/UWUXOakrmOMGKASMSTc90kZxrcZ8aq/uarDsPaTdY4n1G",
 																						"Signers": [
 																								1
 																						],
 																						"Message": {
 																								"MsgType": 0,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 																								"Root": [
@@ -1787,17 +1787,17 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": "pGfsHcCapFqGsTCfEhtssNFm8o9VC4usKgFAF3wbRXEgwT7GiDQv4BixsriZ1hWkBNVIB62W/ZRyBlGp7lY+zM/ibQGgzIJomZP+vfkSC+ddXYNK/XLGll3yFq70QuPU",
+														"Signature": "kblCDbPM7lhMK2+wNJ07TLacSjEZQngbnrvEbvC1OKsrAfYHFpl8kV2KwC+GxCfuCfAM/mebs7wSSXdnxQJPzsgqSJubGjP+3iz1qfznuljIoZR7V2DY741F/a7hpSNK",
 														"Signers": [
 																1
 														],
 														"Message": {
 																"MsgType": 0,
-																"Height": 0,
+																"Height": 12,
 																"Round": 1,
 																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																"Root": [
@@ -1846,13 +1846,13 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "pGfsHcCapFqGsTCfEhtssNFm8o9VC4usKgFAF3wbRXEgwT7GiDQv4BixsriZ1hWkBNVIB62W/ZRyBlGp7lY+zM/ibQGgzIJomZP+vfkSC+ddXYNK/XLGll3yFq70QuPU",
+																				"Signature": "kblCDbPM7lhMK2+wNJ07TLacSjEZQngbnrvEbvC1OKsrAfYHFpl8kV2KwC+GxCfuCfAM/mebs7wSSXdnxQJPzsgqSJubGjP+3iz1qfznuljIoZR7V2DY741F/a7hpSNK",
 																				"Signers": [
 																						1
 																				],
 																				"Message": {
 																						"MsgType": 0,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																						"Root": [
@@ -2029,7 +2029,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -2089,17 +2089,17 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": {
-																"Signature": "pGfsHcCapFqGsTCfEhtssNFm8o9VC4usKgFAF3wbRXEgwT7GiDQv4BixsriZ1hWkBNVIB62W/ZRyBlGp7lY+zM/ibQGgzIJomZP+vfkSC+ddXYNK/XLGll3yFq70QuPU",
+																"Signature": "kblCDbPM7lhMK2+wNJ07TLacSjEZQngbnrvEbvC1OKsrAfYHFpl8kV2KwC+GxCfuCfAM/mebs7wSSXdnxQJPzsgqSJubGjP+3iz1qfznuljIoZR7V2DY741F/a7hpSNK",
 																"Signers": [
 																		1
 																],
 																"Message": {
 																		"MsgType": 0,
-																		"Height": 0,
+																		"Height": 12,
 																		"Round": 1,
 																		"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																		"Root": [
@@ -2148,13 +2148,13 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "pGfsHcCapFqGsTCfEhtssNFm8o9VC4usKgFAF3wbRXEgwT7GiDQv4BixsriZ1hWkBNVIB62W/ZRyBlGp7lY+zM/ibQGgzIJomZP+vfkSC+ddXYNK/XLGll3yFq70QuPU",
+																						"Signature": "kblCDbPM7lhMK2+wNJ07TLacSjEZQngbnrvEbvC1OKsrAfYHFpl8kV2KwC+GxCfuCfAM/mebs7wSSXdnxQJPzsgqSJubGjP+3iz1qfznuljIoZR7V2DY741F/a7hpSNK",
 																						"Signers": [
 																								1
 																						],
 																						"Message": {
 																								"MsgType": 0,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																								"Root": [
@@ -2355,17 +2355,17 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": "grP82hBixGDoEV8DzyC+kqncJFXL8zhK32EVUjgPLsAYNSf7p/j9HpKAGjgzb1wwCaStSqDBISq4akAjDh+5A4cCMa/UBanrQWQwen3LUuDIQEhdi0rZOM6IVFQu6lyb",
+														"Signature": "leJNcnFNXcLJ8ITV5nOfSicfhCvZ9U/7BxIPxRhEdLorTqcxTnwsJQWgewqRWq9wAd0r/c9DByLxmVZou0g0+qz/fumoChb6aqIGY1rLargINncAQDohIgPcEhl2y69O",
 														"Signers": [
 																1
 														],
 														"Message": {
 																"MsgType": 0,
-																"Height": 0,
+																"Height": 12,
 																"Round": 1,
 																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																"Root": [
@@ -2414,13 +2414,13 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "grP82hBixGDoEV8DzyC+kqncJFXL8zhK32EVUjgPLsAYNSf7p/j9HpKAGjgzb1wwCaStSqDBISq4akAjDh+5A4cCMa/UBanrQWQwen3LUuDIQEhdi0rZOM6IVFQu6lyb",
+																				"Signature": "leJNcnFNXcLJ8ITV5nOfSicfhCvZ9U/7BxIPxRhEdLorTqcxTnwsJQWgewqRWq9wAd0r/c9DByLxmVZou0g0+qz/fumoChb6aqIGY1rLargINncAQDohIgPcEhl2y69O",
 																				"Signers": [
 																						1
 																				],
 																				"Message": {
 																						"MsgType": 0,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																						"Root": [
@@ -2597,7 +2597,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -2657,17 +2657,17 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": {
-																"Signature": "grP82hBixGDoEV8DzyC+kqncJFXL8zhK32EVUjgPLsAYNSf7p/j9HpKAGjgzb1wwCaStSqDBISq4akAjDh+5A4cCMa/UBanrQWQwen3LUuDIQEhdi0rZOM6IVFQu6lyb",
+																"Signature": "leJNcnFNXcLJ8ITV5nOfSicfhCvZ9U/7BxIPxRhEdLorTqcxTnwsJQWgewqRWq9wAd0r/c9DByLxmVZou0g0+qz/fumoChb6aqIGY1rLargINncAQDohIgPcEhl2y69O",
 																"Signers": [
 																		1
 																],
 																"Message": {
 																		"MsgType": 0,
-																		"Height": 0,
+																		"Height": 12,
 																		"Round": 1,
 																		"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																		"Root": [
@@ -2716,13 +2716,13 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "grP82hBixGDoEV8DzyC+kqncJFXL8zhK32EVUjgPLsAYNSf7p/j9HpKAGjgzb1wwCaStSqDBISq4akAjDh+5A4cCMa/UBanrQWQwen3LUuDIQEhdi0rZOM6IVFQu6lyb",
+																						"Signature": "leJNcnFNXcLJ8ITV5nOfSicfhCvZ9U/7BxIPxRhEdLorTqcxTnwsJQWgewqRWq9wAd0r/c9DByLxmVZou0g0+qz/fumoChb6aqIGY1rLargINncAQDohIgPcEhl2y69O",
 																						"Signers": [
 																								1
 																						],
 																						"Message": {
 																								"MsgType": 0,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																								"Root": [
@@ -2917,17 +2917,17 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": "iNoTmK1dV43RICH1D+cU8FMooZAX4UifHyfWO2oVdu+h5c2nx38sodrlaCMlr5u0CmnPaVVU87XJwPZaftkQB5dY/dEZIZRUqJthri5HpUYj/zOPN3mq8kepwIAfsXpH",
+														"Signature": "qoVKyE1JO9LEVSk6Jak4Di3BzeOxP90WF2T2bBFgVznfyBBv4/III8InjSL7Er1ODcN+UdPsMyUGxAF5LRpXrFo8MQzzXj0sO2D5w4hTCQmTcZByKCMLDBSWKTBAVR2O",
 														"Signers": [
 																1
 														],
 														"Message": {
 																"MsgType": 0,
-																"Height": 0,
+																"Height": 12,
 																"Round": 1,
 																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																"Root": [
@@ -2976,13 +2976,13 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "iNoTmK1dV43RICH1D+cU8FMooZAX4UifHyfWO2oVdu+h5c2nx38sodrlaCMlr5u0CmnPaVVU87XJwPZaftkQB5dY/dEZIZRUqJthri5HpUYj/zOPN3mq8kepwIAfsXpH",
+																				"Signature": "qoVKyE1JO9LEVSk6Jak4Di3BzeOxP90WF2T2bBFgVznfyBBv4/III8InjSL7Er1ODcN+UdPsMyUGxAF5LRpXrFo8MQzzXj0sO2D5w4hTCQmTcZByKCMLDBSWKTBAVR2O",
 																				"Signers": [
 																						1
 																				],
 																				"Message": {
 																						"MsgType": 0,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																						"Root": [
@@ -3159,7 +3159,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -3219,17 +3219,17 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": {
-																"Signature": "iNoTmK1dV43RICH1D+cU8FMooZAX4UifHyfWO2oVdu+h5c2nx38sodrlaCMlr5u0CmnPaVVU87XJwPZaftkQB5dY/dEZIZRUqJthri5HpUYj/zOPN3mq8kepwIAfsXpH",
+																"Signature": "qoVKyE1JO9LEVSk6Jak4Di3BzeOxP90WF2T2bBFgVznfyBBv4/III8InjSL7Er1ODcN+UdPsMyUGxAF5LRpXrFo8MQzzXj0sO2D5w4hTCQmTcZByKCMLDBSWKTBAVR2O",
 																"Signers": [
 																		1
 																],
 																"Message": {
 																		"MsgType": 0,
-																		"Height": 0,
+																		"Height": 12,
 																		"Round": 1,
 																		"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																		"Root": [
@@ -3278,13 +3278,13 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "iNoTmK1dV43RICH1D+cU8FMooZAX4UifHyfWO2oVdu+h5c2nx38sodrlaCMlr5u0CmnPaVVU87XJwPZaftkQB5dY/dEZIZRUqJthri5HpUYj/zOPN3mq8kepwIAfsXpH",
+																						"Signature": "qoVKyE1JO9LEVSk6Jak4Di3BzeOxP90WF2T2bBFgVznfyBBv4/III8InjSL7Er1ODcN+UdPsMyUGxAF5LRpXrFo8MQzzXj0sO2D5w4hTCQmTcZByKCMLDBSWKTBAVR2O",
 																						"Signers": [
 																								1
 																						],
 																						"Message": {
 																								"MsgType": 0,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																								"Root": [

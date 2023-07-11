@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
+	"github.com/pkg/errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -50,6 +51,7 @@ func main() {
 		// generate post state comparison
 		post, err := test.GetPostState()
 		if err != nil {
+			err = errors.Wrapf(err, "failed to get post state for test: %s", test.TestName())
 			panic(err.Error())
 		}
 		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)

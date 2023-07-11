@@ -57,7 +57,7 @@ func LateProposalPastInstance() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "could not process msg: invalid signed message: proposal is not valid with current state",
+		ExpectedError: "could not process msg: instance stopped processing messages",
 	}
 }
 

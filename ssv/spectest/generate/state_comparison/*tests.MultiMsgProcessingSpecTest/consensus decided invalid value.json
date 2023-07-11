@@ -84,7 +84,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -100,7 +100,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "ok7Z/HWbdMEizLdbpFhqLtLpf6cAJWQdJuDTRh/ptZ0Rkl0ipxcdlRa91ayGx3w4FP4u4BReT/GeInZ2SpjvGvh3UzAoYu0NUyqFrPtA61ZhVuYS57kYEd43XRN+5l9r",
+																				"Signature": "izH22SV1/Bgan6VJHV9jKQi35PAjrysWsHGEG2zuCSwimJCqD9ThO5JzL22sl57mGbqLOqRQ6nXFaRKKBtjji1Drw5KcZbp0NOl3Dygfkyl1IPXVgTF9iGzMkcqW6UnM",
 																				"Signers": [
 																						1,
 																						2,
@@ -108,7 +108,7 @@
 																				],
 																				"Message": {
 																						"MsgType": 2,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 																						"Root": [
@@ -283,7 +283,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -343,7 +343,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -359,7 +359,7 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "ok7Z/HWbdMEizLdbpFhqLtLpf6cAJWQdJuDTRh/ptZ0Rkl0ipxcdlRa91ayGx3w4FP4u4BReT/GeInZ2SpjvGvh3UzAoYu0NUyqFrPtA61ZhVuYS57kYEd43XRN+5l9r",
+																						"Signature": "izH22SV1/Bgan6VJHV9jKQi35PAjrysWsHGEG2zuCSwimJCqD9ThO5JzL22sl57mGbqLOqRQ6nXFaRKKBtjji1Drw5KcZbp0NOl3Dygfkyl1IPXVgTF9iGzMkcqW6UnM",
 																						"Signers": [
 																								1,
 																								2,
@@ -367,7 +367,7 @@
 																						],
 																						"Message": {
 																								"MsgType": 2,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAQAAAA=",
 																								"Root": [
@@ -555,7 +555,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -571,7 +571,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "gelLXCAYfoW+nWD7yw+JyN7p93WjhnvozFKOmZpYQ30NX5VnUeWjx9Gy4BQN1vBnCGN/Z4E8Y7Ua0QyPqA9nuQe0hBAaqizz92Lm25uI6NFsOuIbT15mFujSxf1k7TLM",
+																				"Signature": "qEFQ7Z395xvhnVqWXkbJCEqDKM88+Fh1BraeKSc/bqSsUbbMNdr2Mb+TQATw1ii8A3TfMvdymEnuPwe9qP11n7Ks4S6XfDzbtA1GKtqt3Q3AurAE4JENHrlW3yhWAzHZ",
 																				"Signers": [
 																						1,
 																						2,
@@ -579,7 +579,7 @@
 																				],
 																				"Message": {
 																						"MsgType": 2,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 																						"Root": [
@@ -754,7 +754,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -814,7 +814,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -830,7 +830,7 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "gelLXCAYfoW+nWD7yw+JyN7p93WjhnvozFKOmZpYQ30NX5VnUeWjx9Gy4BQN1vBnCGN/Z4E8Y7Ua0QyPqA9nuQe0hBAaqizz92Lm25uI6NFsOuIbT15mFujSxf1k7TLM",
+																						"Signature": "qEFQ7Z395xvhnVqWXkbJCEqDKM88+Fh1BraeKSc/bqSsUbbMNdr2Mb+TQATw1ii8A3TfMvdymEnuPwe9qP11n7Ks4S6XfDzbtA1GKtqt3Q3AurAE4JENHrlW3yhWAzHZ",
 																						"Signers": [
 																								1,
 																								2,
@@ -838,7 +838,7 @@
 																						],
 																						"Message": {
 																								"MsgType": 2,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
 																								"Root": [
@@ -1032,7 +1032,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -1048,7 +1048,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "uLjNA3uF+Xbrqhj0W+wOoR6jCcN5Tz3N5ryJnNZjsa8XzPOGISMLyKGjmSMYsKSjAj7AkIehhJ+H7mZ7D2UHp6BH9Vi846LTLBY0fU1nPcAXYVrxRneSjJ9s2UC302oC",
+																				"Signature": "r72F8FIqMMJa609oRzjWOeNPITf7xhSzgc3meelOUHYFnnuWZ+ksn8KQ0/MsLj5IEEZ/WQ35roqGiqd6cs8KjUdzxRh+OJI6rN51WEcFvA12RPxZ2zx0T9z8nGA2BjI7",
 																				"Signers": [
 																						1,
 																						2,
@@ -1056,7 +1056,7 @@
 																				],
 																				"Message": {
 																						"MsgType": 2,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 																						"Root": [
@@ -1227,7 +1227,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -1287,7 +1287,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -1303,7 +1303,7 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "uLjNA3uF+Xbrqhj0W+wOoR6jCcN5Tz3N5ryJnNZjsa8XzPOGISMLyKGjmSMYsKSjAj7AkIehhJ+H7mZ7D2UHp6BH9Vi846LTLBY0fU1nPcAXYVrxRneSjJ9s2UC302oC",
+																						"Signature": "r72F8FIqMMJa609oRzjWOeNPITf7xhSzgc3meelOUHYFnnuWZ+ksn8KQ0/MsLj5IEEZ/WQ35roqGiqd6cs8KjUdzxRh+OJI6rN51WEcFvA12RPxZ2zx0T9z8nGA2BjI7",
 																						"Signers": [
 																								1,
 																								2,
@@ -1311,7 +1311,7 @@
 																						],
 																						"Message": {
 																								"MsgType": 2,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 																								"Root": [
@@ -1505,7 +1505,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -1521,7 +1521,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "kK/HkuX7QjOloxm75yvZ7wErUP6K9FcVBiRi0yFZcfJSJazUUAiQFWzRhr8byCrwE8gbg1tAOG+TVyRwCIPBkwsoqL97S9JEXmLFmy6/FM6h0QfF+6h9fYFcJHF6A/VN",
+																				"Signature": "q4Azv3WYKzYHvxrstuCFPC0RaS/hPmRhft+L54l112SIRmTzw4XwYW+yWRki86+gEcGXlPIaItccB7K46eU/Z/DIT2YWaTitC3m7xEUEQQbENhN9ommdMkGTFBRdgWzJ",
 																				"Signers": [
 																						1,
 																						2,
@@ -1529,7 +1529,7 @@
 																				],
 																				"Message": {
 																						"MsgType": 2,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																						"Root": [
@@ -1700,7 +1700,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -1760,7 +1760,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -1776,7 +1776,7 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "kK/HkuX7QjOloxm75yvZ7wErUP6K9FcVBiRi0yFZcfJSJazUUAiQFWzRhr8byCrwE8gbg1tAOG+TVyRwCIPBkwsoqL97S9JEXmLFmy6/FM6h0QfF+6h9fYFcJHF6A/VN",
+																						"Signature": "q4Azv3WYKzYHvxrstuCFPC0RaS/hPmRhft+L54l112SIRmTzw4XwYW+yWRki86+gEcGXlPIaItccB7K46eU/Z/DIT2YWaTitC3m7xEUEQQbENhN9ommdMkGTFBRdgWzJ",
 																						"Signers": [
 																								1,
 																								2,
@@ -1784,7 +1784,7 @@
 																						],
 																						"Message": {
 																								"MsgType": 2,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																								"Root": [
@@ -1979,7 +1979,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -1995,7 +1995,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "kK/HkuX7QjOloxm75yvZ7wErUP6K9FcVBiRi0yFZcfJSJazUUAiQFWzRhr8byCrwE8gbg1tAOG+TVyRwCIPBkwsoqL97S9JEXmLFmy6/FM6h0QfF+6h9fYFcJHF6A/VN",
+																				"Signature": "q4Azv3WYKzYHvxrstuCFPC0RaS/hPmRhft+L54l112SIRmTzw4XwYW+yWRki86+gEcGXlPIaItccB7K46eU/Z/DIT2YWaTitC3m7xEUEQQbENhN9ommdMkGTFBRdgWzJ",
 																				"Signers": [
 																						1,
 																						2,
@@ -2003,7 +2003,7 @@
 																				],
 																				"Message": {
 																						"MsgType": 2,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																						"Root": [
@@ -2174,7 +2174,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -2234,7 +2234,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -2250,7 +2250,7 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "kK/HkuX7QjOloxm75yvZ7wErUP6K9FcVBiRi0yFZcfJSJazUUAiQFWzRhr8byCrwE8gbg1tAOG+TVyRwCIPBkwsoqL97S9JEXmLFmy6/FM6h0QfF+6h9fYFcJHF6A/VN",
+																						"Signature": "q4Azv3WYKzYHvxrstuCFPC0RaS/hPmRhft+L54l112SIRmTzw4XwYW+yWRki86+gEcGXlPIaItccB7K46eU/Z/DIT2YWaTitC3m7xEUEQQbENhN9ommdMkGTFBRdgWzJ",
 																						"Signers": [
 																								1,
 																								2,
@@ -2258,7 +2258,7 @@
 																						],
 																						"Message": {
 																								"MsgType": 2,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																								"Root": [
@@ -2447,7 +2447,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -2463,7 +2463,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "oL2gp4AQ66aQUDKOVKS5hROGCnfViNDrTVvOhNrIodtlF426H7O30i+HGaIxU8plDVfnc8ObgLTZMRAuZGNuasX2p4gH0n3waOJLdNSG6MldjKwvWiL3O6RsJrn9WIEg",
+																				"Signature": "uW7fIr5lwl+5NIBqGZFrDpcd3LFoQwpgTd9gv6jQJCS6Nno6qtgX0KeWHe6Oa1klE3OexbJZxhviustbUFRRoAf0QIDpYKXQkG4HWykupohUuDY6M2AXAzRrhEqeVEQQ",
 																				"Signers": [
 																						1,
 																						2,
@@ -2471,7 +2471,7 @@
 																				],
 																				"Message": {
 																						"MsgType": 2,
-																						"Height": 0,
+																						"Height": 12,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																						"Root": [
@@ -2642,7 +2642,7 @@
 						},
 						"QBFTController": {
 								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
-								"Height": 0,
+								"Height": 12,
 								"StoredInstances": [
 										{
 												"State": {
@@ -2702,7 +2702,7 @@
 														},
 														"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 														"Round": 1,
-														"Height": 0,
+														"Height": 12,
 														"LastPreparedRound": 0,
 														"LastPreparedValue": null,
 														"ProposalAcceptedForCurrentRound": null,
@@ -2718,7 +2718,7 @@
 																"Msgs": {
 																		"1": [
 																				{
-																						"Signature": "oL2gp4AQ66aQUDKOVKS5hROGCnfViNDrTVvOhNrIodtlF426H7O30i+HGaIxU8plDVfnc8ObgLTZMRAuZGNuasX2p4gH0n3waOJLdNSG6MldjKwvWiL3O6RsJrn9WIEg",
+																						"Signature": "uW7fIr5lwl+5NIBqGZFrDpcd3LFoQwpgTd9gv6jQJCS6Nno6qtgX0KeWHe6Oa1klE3OexbJZxhviustbUFRRoAf0QIDpYKXQkG4HWykupohUuDY6M2AXAzRrhEqeVEQQ",
 																						"Signers": [
 																								1,
 																								2,
@@ -2726,7 +2726,7 @@
 																						],
 																						"Message": {
 																								"MsgType": 2,
-																								"Height": 0,
+																								"Height": 12,
 																								"Round": 1,
 																								"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																								"Root": [

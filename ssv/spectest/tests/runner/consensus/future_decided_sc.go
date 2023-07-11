@@ -12,8 +12,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// futureDecidedSyncCommitteeContributionSC returns runner with 2 stored instances. One undecided and one decided for height 2.
-// This is because we are processing messages for height 2 while height 0 is still running.
+// futureDecidedSyncCommitteeContributionSC returns runner with 2 stored instances.
+// One undecided and one decided for height 13.
+// This is because we are processing messages for height 13 while height 12 is still running.
 // There are also pre consensus messages that start the new instance.
 func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
@@ -43,7 +44,7 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
@@ -56,7 +57,7 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.Height(2),
+					Height:            testingutils.TestingDutySlot + 1,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           true,
 					DecidedValue:      testingutils.TestingQBFTFullData,
@@ -69,7 +70,7 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							qbft.Height(2),
+							qbft.Height(testingutils.TestingDutySlot+1),
 							ret.GetBaseRunner().QBFTController.Identifier,
 						),
 						nil,
@@ -79,15 +80,15 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, decidedInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.Height = qbft.Height(2)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot + 1
 
 			return ret
 		}(),
 	}
 }
 
-// futureDecidedSyncCommitteeSC returns runner with 2 stored instances. One undecided and one decided for height 2.
-// // This is because we are processing messages for height 2 while height 0 is still running.
+// futureDecidedSyncCommitteeSC returns runner with 2 stored instances. One undecided and one decided for height 13.
+// // This is because we are processing messages for height 13 while height 12 is still running.
 // // There are no pre consensus messages for this duty.
 func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
@@ -114,7 +115,7 @@ func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
@@ -127,7 +128,7 @@ func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.Height(2),
+					Height:            testingutils.TestingDutySlot + 1,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           true,
 					DecidedValue:      testingutils.TestingQBFTFullData,
@@ -140,7 +141,7 @@ func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							qbft.Height(2),
+							testingutils.TestingDutySlot+1,
 							ret.GetBaseRunner().QBFTController.Identifier,
 						),
 						nil,
@@ -150,15 +151,15 @@ func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, decidedInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.Height = qbft.Height(2)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot + 1
 
 			return ret
 		}(),
 	}
 }
 
-// futureDecidedAggregatorSC returns runner with 2 stored instances. One undecided and one decided for height 2.
-// This is because we are processing messages for height 2 while height 0 is still running.
+// futureDecidedAggregatorSC returns runner with 2 stored instances. One undecided and one decided for height 13.
+// This is because we are processing messages for height 13 while height 12 is still running.
 // There are also pre consensus messages that start the new instance.
 func futureDecidedAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
@@ -189,7 +190,7 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
@@ -202,7 +203,7 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.Height(2),
+					Height:            testingutils.TestingDutySlot + 1,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           true,
 					DecidedValue:      testingutils.TestingQBFTFullData,
@@ -215,7 +216,7 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							qbft.Height(2),
+							testingutils.TestingDutySlot+1,
 							ret.GetBaseRunner().QBFTController.Identifier,
 						),
 						nil,
@@ -225,15 +226,15 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, decidedInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.Height = qbft.Height(2)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot + 1
 
 			return ret
 		}(),
 	}
 }
 
-// futureDecidedAttesterSC returns runner with 2 stored instances. One undecided and one decided for height 2.
-// This is because we are processing messages for height 2 while height 0 is still running.
+// futureDecidedAttesterSC returns runner with 2 stored instances. One undecided and one decided for height 13.
+// This is because we are processing messages for height 13 while height 12 is still running.
 // There are no pre consensus messages for this duty.
 func futureDecidedAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
@@ -260,7 +261,7 @@ func futureDecidedAttesterSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
@@ -273,7 +274,7 @@ func futureDecidedAttesterSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.Height(2),
+					Height:            testingutils.TestingDutySlot + 1,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           true,
 					DecidedValue:      testingutils.TestingQBFTFullData,
@@ -286,7 +287,7 @@ func futureDecidedAttesterSC() *comparable.StateComparison {
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							qbft.Height(2),
+							testingutils.TestingDutySlot+1,
 							ret.GetBaseRunner().QBFTController.Identifier,
 						),
 						nil,
@@ -296,15 +297,15 @@ func futureDecidedAttesterSC() *comparable.StateComparison {
 
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, decidedInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.Height = qbft.Height(2)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot + 1
 
 			return ret
 		}(),
 	}
 }
 
-// futureDecidedProposerSC returns runner with 2 stored instances. One undecided and one decided for height 2.
-// This is because we are processing messages for height 2 while height 0 is still running.
+// futureDecidedProposerSC returns runner with 2 stored instances. One undecided and one decided for height 13.
+// This is because we are processing messages for height 13 while height 12 is still running.
 // There are also pre consensus messages that start the new instance.
 func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
@@ -335,7 +336,7 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
@@ -348,7 +349,7 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.Height(2),
+					Height:            qbft.Height(testingutils.TestingDutySlotV(version) + 1),
 					LastPreparedRound: qbft.NoRound,
 					Decided:           true,
 					DecidedValue:      testingutils.TestingQBFTFullData,
@@ -361,7 +362,7 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							qbft.Height(2),
+							qbft.Height(testingutils.TestingDutySlotV(version)+1),
 							ret.GetBaseRunner().QBFTController.Identifier,
 						),
 						nil,
@@ -371,15 +372,15 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, decidedInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.Height = qbft.Height(2)
+			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version) + 1)
 
 			return ret
 		}(),
 	}
 }
 
-// futureDecidedBlindedProposerSC returns runner with 2 stored instances. One undecided and one decided for height 2.
-// This is because we are processing messages for height 2 while height 0 is still running.
+// futureDecidedBlindedProposerSC returns runner with 2 stored instances. One undecided and one decided for height 13.
+// This is because we are processing messages for height 13 while height 12 is still running.
 // There are also pre consensus messages that start the new instance.
 func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
@@ -409,7 +410,7 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
@@ -422,7 +423,7 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.Height(2),
+					Height:            qbft.Height(testingutils.TestingDutySlotV(version) + 1),
 					LastPreparedRound: qbft.NoRound,
 					Decided:           true,
 					DecidedValue:      testingutils.TestingQBFTFullData,
@@ -435,7 +436,7 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 							[]types.OperatorID{1, 2, 3},
-							qbft.Height(2),
+							qbft.Height(testingutils.TestingDutySlotV(version)+1),
 							ret.GetBaseRunner().QBFTController.Identifier,
 						),
 						nil,
@@ -445,7 +446,7 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, decidedInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.Height = qbft.Height(2)
+			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version) + 1)
 
 			return ret
 		}(),

@@ -2485,56 +2485,6 @@
 																				"PrepareJustification": null
 																		},
 																		"FullData": null
-																},
-																{
-																		"Signature": "oBCGUs0KByzDk/HXikTym24T9pSNbwTwNUB6D13bcfec+gBWx5PHkGtJ3tqvDwD6DWINpQ+L4WazwDXLLLIV9QipQzlKZfFirNC/abOufNz5NIjqxYNwQoS5OWsycScV",
-																		"Signers": [
-																				4
-																		],
-																		"Message": {
-																				"MsgType": 1,
-																				"Height": 0,
-																				"Round": 1,
-																				"Identifier": "AQIDBA==",
-																				"Root": [
-																						190,
-																						149,
-																						111,
-																						183,
-																						223,
-																						78,
-																						243,
-																						117,
-																						49,
-																						104,
-																						45,
-																						88,
-																						131,
-																						32,
-																						8,
-																						79,
-																						201,
-																						20,
-																						195,
-																						240,
-																						254,
-																						211,
-																						53,
-																						38,
-																						62,
-																						91,
-																						68,
-																						6,
-																						46,
-																						108,
-																						41,
-																						180
-																				],
-																				"DataRound": 0,
-																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
-																		},
-																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																}
 														]
 												}
