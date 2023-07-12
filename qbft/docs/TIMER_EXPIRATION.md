@@ -1,6 +1,6 @@
 # Timer expiration
 
-![IBFT_prepare](images/IBFT_timer.png)
+![IBFT_timer](images/IBFT_timer.png)
 
 *Moniz, H. The Istanbul BFT Consensus Algorithm. Algorithm 3. 2020*
 

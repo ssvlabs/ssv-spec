@@ -1,6 +1,6 @@
 # Commit
 
-![IBFT_prepare](images/IBFT_commit.png)
+![IBFT_commit](images/IBFT_commit.png)
 
 *Moniz, H. The Istanbul BFT Consensus Algorithm. Algorithm 2. 2020*
 
