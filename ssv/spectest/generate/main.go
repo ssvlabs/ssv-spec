@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 	"log"
 	"os"
@@ -78,11 +79,12 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	postMap, ok := post.(map[string]types.Root)
 
 	if !ok {
-	    writeSingleSCJson(name, testType, post)
-	    return
+		writeSingleSCJson(name, testType, post)
+		return
 	}
-        for subTestName, postState := range postMap {
-	    writeSingleSCJson(filepath.Join(name, subTestName), testType, postState)
+	name = strings.ReplaceAll(name, " ", "_")
+	for subTestName, postState := range postMap {
+		writeSingleSCJson(subTestName, filepath.Join(testType, name), postState)
 	}
 }
 
@@ -91,26 +93,36 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 		log.Printf("skipping state comparison json, not supported: %s\n", path)
 		return
 	}
-	log.Printf("writing state comparison json: %s\n", path)
 	byts, err := json.MarshalIndent(post, "", "		")
 	if err != nil {
 		panic(err.Error())
 	}
 
+	scDir := scDir(testType)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	file := filepath.Join(scDir, fmt.Sprintf("%s.json", path))
+	// try to create directory if it doesn't exist
+	if err := os.MkdirAll(scDir, 0700); err != nil && !os.IsExist(err) {
+		panic(err.Error())
+	}
+
+	log.Printf("writing state comparison json: %s\n", file)
+	if err := os.WriteFile(file, byts, 0644); err != nil {
+		panic(err.Error())
+	}
+}
+
+func scDir(testType string) string {
 	_, basedir, _, ok := runtime.Caller(0)
 	if !ok {
 		panic("no caller info")
 	}
-	basedir = filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison", testType)
-	file := filepath.Join(basedir, fmt.Sprintf("%s.json", path))
-	// try to create directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(file), 0700); err != nil {
-		panic(err.Error())
-	}
-
-	if err := os.WriteFile(file, byts, 0644); err != nil {
-		panic(err.Error())
-	}
+	basedir = strings.TrimSuffix(basedir, "main.go")
+	scDir := comparable2.GetSCDir(basedir, testType)
+	return scDir
 }
 
 func writeJson(data []byte) {

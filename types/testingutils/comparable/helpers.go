@@ -8,6 +8,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -32,24 +33,35 @@ func FixIssue178(input *types.ConsensusData, version spec2.DataVersion) *types.C
 		panic(err.Error())
 	}
 	ret.Version = version
-
 	return ret
 }
 
-// UnmarshalSSVStateComparison reads a json derived from 'test' and unmarshals it into 'targetState'
-func UnmarshalSSVStateComparison(testName string, folderName string, targetState types.Root) (types.Root, error) {
-	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "state_comparison", folderName,
-		fmt.Sprintf("%s.json", testName))
+// UnmarshalStateComparison reads a json derived from 'testName' and unmarshals it into 'targetState'
+func UnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T,
+	error) {
+	var nilT T
+	basedir = filepath.Join(basedir, "generate")
+	scDir := GetSCDir(basedir, testType)
+	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return nilT, err
 	}
 
 	err = json.Unmarshal(byteValue, targetState)
 	if err != nil {
-		return nil, err
+		return nilT, err
 	}
 
 	return targetState, nil
+}
+
+// GetSCDir returns the path to the state comparison folder for the given test type
+func GetSCDir(basedir string, testType string) string {
+	basedir = filepath.Join(basedir, "state_comparison", testType)
+	scDir := strings.NewReplacer(
+		"*", "",
+		".", "_").
+		Replace(basedir)
+	return scDir
 }

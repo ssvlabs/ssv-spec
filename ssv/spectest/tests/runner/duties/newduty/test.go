@@ -2,11 +2,11 @@ package newduty
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -151,18 +151,14 @@ func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
 func (tests *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(tests.TestName(), " ", "_")
 	for _, test := range tests.Tests {
-		path := filepath.Join(tests.TestName(), test.TestName())
+		path := filepath.Join(testsName, test.TestName())
 		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
 	}
 }
 
-func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, name string, folder string) {
-	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "state_comparison", folder, fmt.Sprintf("%s.json", name))
-	byteValue, err := os.ReadFile(path)
-	require.NoError(t, err)
-
+func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, name string, testType string) {
 	var runner ssv.Runner
 	switch test.Runner.(type) {
 	case *ssv.AttesterRunner:
@@ -180,7 +176,10 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 	default:
 		t.Fatalf("unknown runner type")
 	}
-	require.NoError(t, json.Unmarshal(byteValue, runner))
+	basedir, err := os.Getwd()
+	require.NoError(t, err)
+	runner, err = comparable.UnmarshalStateComparison(basedir, name, testType, runner)
+	require.NoError(t, err)
 
 	// override
 	test.PostDutyRunnerState = runner

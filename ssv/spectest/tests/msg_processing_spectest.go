@@ -2,11 +2,9 @@ package tests
 
 import (
 	"encoding/hex"
-	"encoding/json"
-	"fmt"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/google/go-cmp/cmp"
 	"os"
-	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -157,38 +155,44 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 }
 
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
-	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "state_comparison", reflect.TypeOf(test).String(), fmt.Sprintf("%s.json", test.TestName()))
-	byteValue, err := os.ReadFile(path)
-	require.NoError(t, err)
+	overrideStateComparison(t, test, test.Name, reflect.TypeOf(test).String())
+}
 
+func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name string, testType string) {
+	var runner ssv.Runner
 	switch test.Runner.(type) {
 	case *ssv.AttesterRunner:
-		test.PostDutyRunnerState = &ssv.AttesterRunner{}
+		runner = &ssv.AttesterRunner{}
 	case *ssv.AggregatorRunner:
-		test.PostDutyRunnerState = &ssv.AggregatorRunner{}
+		runner = &ssv.AggregatorRunner{}
 	case *ssv.ProposerRunner:
-		test.PostDutyRunnerState = &ssv.ProposerRunner{}
+		runner = &ssv.ProposerRunner{}
 	case *ssv.SyncCommitteeRunner:
-		test.PostDutyRunnerState = &ssv.SyncCommitteeRunner{}
+		runner = &ssv.SyncCommitteeRunner{}
 	case *ssv.SyncCommitteeAggregatorRunner:
-		test.PostDutyRunnerState = &ssv.SyncCommitteeAggregatorRunner{}
+		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:
-		test.PostDutyRunnerState = &ssv.ValidatorRegistrationRunner{}
+		runner = &ssv.ValidatorRegistrationRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}
-	require.NoError(t, json.Unmarshal(byteValue, &test.PostDutyRunnerState))
+	basedir, err := os.Getwd()
+	require.NoError(t, err)
+	runner, err = typescomparable.UnmarshalStateComparison(basedir, name, testType, runner)
+	require.NoError(t, err)
 
-	r, err := test.PostDutyRunnerState.GetRoot()
+	// override
+	test.PostDutyRunnerState = runner
+
+	root, err := runner.GetRoot()
 	require.NoError(t, err)
 
 	// backwards compatability test, hard coded post root must be equal to the one loaded from file
 	if len(test.PostDutyRunnerStateRoot) > 0 {
-		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(r[:]))
+		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(root[:]), "post runner state not equal")
 	}
 
-	test.PostDutyRunnerStateRoot = hex.EncodeToString(r[:])
+	test.PostDutyRunnerStateRoot = hex.EncodeToString(root[:])
 }
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
