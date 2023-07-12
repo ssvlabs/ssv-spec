@@ -83,7 +83,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 	// override state comparison
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	postState, err := comparable.UnmarshalSSVStateComparison(basedir, test.Name,
+	postState, err := comparable.UnmarshalStateComparison(basedir, test.Name,
 		reflect.TypeOf(test).String(), &ssv.State{})
 	require.NoError(t, err)
 

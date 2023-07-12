@@ -101,7 +101,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	test.PostState, err = typescomparable.UnmarshalSSVStateComparison(basedir, test.TestName(),
+	test.PostState, err = typescomparable.UnmarshalStateComparison(basedir, test.TestName(),
 		reflect.TypeOf(test).String(),
 		&qbft.State{})
 	require.NoError(t, err)
