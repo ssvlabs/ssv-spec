@@ -44,15 +44,13 @@ const (
 	RoundChangeMsgType
 )
 
-type root types.HexBytes32
-
 type Message struct {
 	MsgType    MessageType
 	Height     Height // QBFT instance Height
 	Round      Round  // QBFT round for which the msg is for
 	Identifier []byte `ssz-max:"56"` // instance Identifier this msg belongs to
 
-	Root                     root `ssz-size:"32"`
+	Root                     types.HexBytes32 `ssz-size:"32"`
 	DataRound                Round
 	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
 	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16

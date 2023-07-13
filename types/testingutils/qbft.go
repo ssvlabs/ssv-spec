@@ -48,7 +48,7 @@ var TestingShare = func(keysSet *TestKeySet) *types.Share {
 		Quorum:              keysSet.Threshold,
 		PartialQuorum:       keysSet.PartialThreshold,
 		Committee:           keysSet.Committee(),
-		FeeRecipientAddress: TestingFeeRecipient,
+		FeeRecipientAddress: types.HexExecutionAddress(TestingFeeRecipient),
 	}
 }
 

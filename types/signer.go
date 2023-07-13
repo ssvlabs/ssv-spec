@@ -9,9 +9,19 @@ import (
 )
 
 // DomainType is a unique identifier for signatures, 2 identical pieces of data signed with different domains will result in different sigs
-type DomainType HexBytes4
+type DomainType [4]byte
 type SignatureDomain []byte
 type Signature []byte
+
+// MarshalJSON implements the json.Marshaler interface
+func (h DomainType) MarshalJSON() ([]byte, error) {
+	return marshalJson(h[:])
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface
+func (h DomainType) UnmarshalJSON(b []byte) error {
+	return unmarshalJson(b, h[:])
+}
 
 var (
 	GenesisMainnet = DomainType{0x0, 0x0, 0x0, 0x0}

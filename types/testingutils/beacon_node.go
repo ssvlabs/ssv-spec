@@ -320,13 +320,13 @@ var TestingValidatorRegistration = &v1.ValidatorRegistration{
 	FeeRecipient: TestingFeeRecipient,
 	GasLimit:     types.DefaultGasLimit,
 	Timestamp:    types.PraterNetwork.EpochStartTime(TestingDutyEpoch),
-	Pubkey:       TestingValidatorPubKey,
+	Pubkey:       phase0.BLSPubKey(TestingValidatorPubKey),
 }
 var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 	FeeRecipient: TestingFeeRecipient,
 	GasLimit:     5,
 	Timestamp:    types.PraterNetwork.EpochStartTime(TestingDutyEpoch),
-	Pubkey:       TestingValidatorPubKey,
+	Pubkey:       phase0.BLSPubKey(TestingValidatorPubKey),
 }
 
 var TestingAttesterDuty = types.Duty{
@@ -494,12 +494,12 @@ func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) 
 	return nil
 }
 
-func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error {
+func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecipient types.HexExecutionAddress, sig phase0.BLSSignature) error {
 	pk := phase0.BLSPubKey{}
 	copy(pk[:], pubkey)
 
 	vr := v1.ValidatorRegistration{
-		FeeRecipient: feeRecipient,
+		FeeRecipient: bellatrix.ExecutionAddress(feeRecipient),
 		GasLimit:     TestingValidatorRegistration.GasLimit,
 		Timestamp:    TestingValidatorRegistration.Timestamp,
 		Pubkey:       pk,

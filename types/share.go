@@ -1,7 +1,5 @@
 package types
 
-type feeRecipientAddress HexBytes20
-
 // Share holds all info about the QBFT/ SSV Committee for msg signing and verification
 type Share struct {
 	OperatorID            OperatorID
@@ -10,7 +8,7 @@ type Share struct {
 	Committee             []*Operator `ssz-max:"13"`
 	Quorum, PartialQuorum uint64
 	DomainType            DomainType          `ssz-size:"4"`
-	FeeRecipientAddress   feeRecipientAddress `ssz-size:"20"`
+	FeeRecipientAddress   HexExecutionAddress `ssz-size:"20"`
 	Graffiti              []byte              `ssz-size:"32"`
 }
 
