@@ -73,7 +73,7 @@ type Duty struct {
 	// Type is the duty type (attest, propose)
 	Type BeaconRole
 	// PubKey is the public key of the validator that should attest.
-	PubKey spec.BLSPubKey `ssz-size:"48"`
+	PubKey HexBLSPubKey `ssz-size:"48"`
 	// Slot is the slot in which the validator should attest.
 	Slot spec.Slot
 	// ValidatorIndex is the index of the validator that should attest.
