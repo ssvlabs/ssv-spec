@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/hex"
 	"encoding/json"
+	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
@@ -12,46 +13,35 @@ type Root interface {
 
 type HexBLSPubKey spec.BLSPubKey
 type HexBytes32 [32]byte
-type HexBytes20 [20]byte
-type HexBytes4 [4]byte
+type HexExecutionAddress bellatrix.ExecutionAddress
 
 // MarshalJSON implements the json.Marshaler interface
-func (h *HexBLSPubKey) MarshalJSON() ([]byte, error) {
+func (h HexBLSPubKey) MarshalJSON() ([]byte, error) {
 	return marshalJson(h[:])
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
-func (h *HexBLSPubKey) UnmarshalJSON(b []byte) error {
+func (h HexBLSPubKey) UnmarshalJSON(b []byte) error {
 	return unmarshalJson(b, h[:])
 }
 
 // MarshalJSON implements the json.Marshaler interface
-func (h *HexBytes32) MarshalJSON() ([]byte, error) {
+func (h HexBytes32) MarshalJSON() ([]byte, error) {
 	return marshalJson(h[:])
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
-func (h *HexBytes32) UnmarshalJSON(b []byte) error {
+func (h HexBytes32) UnmarshalJSON(b []byte) error {
 	return unmarshalJson(b, h[:])
 }
 
 // MarshalJSON implements the json.Marshaler interface
-func (h *HexBytes20) MarshalJSON() ([]byte, error) {
+func (h *HexExecutionAddress) MarshalJSON() ([]byte, error) {
 	return marshalJson(h[:])
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
-func (h *HexBytes20) UnmarshalJSON(b []byte) error {
-	return unmarshalJson(b, h[:])
-}
-
-// MarshalJSON implements the json.Marshaler interface
-func (h *HexBytes4) MarshalJSON() ([]byte, error) {
-	return marshalJson(h[:])
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface
-func (h *HexBytes4) UnmarshalJSON(b []byte) error {
+func (h *HexExecutionAddress) UnmarshalJSON(b []byte) error {
 	return unmarshalJson(b, h[:])
 }
 

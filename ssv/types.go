@@ -4,7 +4,6 @@ import (
 	"github.com/attestantio/go-eth2-client/api"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
@@ -77,7 +76,7 @@ type SyncCommitteeContributionCalls interface {
 // ValidatorRegistrationCalls interface has all validator registration duty specific calls
 type ValidatorRegistrationCalls interface {
 	// SubmitValidatorRegistration submits a validator registration
-	SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error
+	SubmitValidatorRegistration(pubkey []byte, feeRecipient types.HexExecutionAddress, sig phase0.BLSSignature) error
 }
 
 type DomainCalls interface {
