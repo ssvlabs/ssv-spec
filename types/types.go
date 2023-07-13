@@ -16,22 +16,22 @@ type HexBytes32 [32]byte
 type HexExecutionAddress bellatrix.ExecutionAddress
 
 // MarshalJSON implements the json.Marshaler interface
-func (h HexBLSPubKey) MarshalJSON() ([]byte, error) {
+func (h *HexBLSPubKey) MarshalJSON() ([]byte, error) {
 	return marshalJson(h[:])
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
-func (h HexBLSPubKey) UnmarshalJSON(b []byte) error {
+func (h *HexBLSPubKey) UnmarshalJSON(b []byte) error {
 	return unmarshalJson(b, h[:])
 }
 
 // MarshalJSON implements the json.Marshaler interface
-func (h HexBytes32) MarshalJSON() ([]byte, error) {
+func (h *HexBytes32) MarshalJSON() ([]byte, error) {
 	return marshalJson(h[:])
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
-func (h HexBytes32) UnmarshalJSON(b []byte) error {
+func (h *HexBytes32) UnmarshalJSON(b []byte) error {
 	return unmarshalJson(b, h[:])
 }
 

@@ -14,12 +14,12 @@ type SignatureDomain []byte
 type Signature []byte
 
 // MarshalJSON implements the json.Marshaler interface
-func (h DomainType) MarshalJSON() ([]byte, error) {
+func (h *DomainType) MarshalJSON() ([]byte, error) {
 	return marshalJson(h[:])
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
-func (h DomainType) UnmarshalJSON(b []byte) error {
+func (h *DomainType) UnmarshalJSON(b []byte) error {
 	return unmarshalJson(b, h[:])
 }
 
