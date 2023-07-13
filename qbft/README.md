@@ -8,7 +8,7 @@ To understand the implementation and its comparison to the H. Moniz [IBFT paper]
 
 ## Important note on message processing
 The spec only deals with message process logic but it's also very important the way `controller.ProcessMsg` is called.
-Message queueing and retry are important as there is no guarantee as to when a message is delivered.
+Message queueing and retry are important as there is no guarantee as to when a message is received.
 Examples:
 * A proposal message can be delivered after its respective prepare
 * A next round message can be delivered before the timer hits timeout

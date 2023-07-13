@@ -12,5 +12,6 @@ The paper doesn't include any extra validation for the commit rule. But, as it w
 ## Body (UponCommit)
 
 The differences in the rule's implementation are:
-- upon recieving a quorum of *Commit* messages, an aggregated BLS signature is created. This is used as return value to the object using the QBFT instance (QBFT controller) and serves as proof of termination.
-- The timer is not set to stop. However, after the instance is decided no *Round-Changes* are processed.
+- Upon recieving a quorum of *Commit* messages, an aggregated BLS signature is created. This is used as return value to the object using the QBFT instance (QBFT controller) and serves as proof of termination.
+- In the paper specification, the process can decide and terminate after receiving a quorum, $2f+1$, of *Commit* messages. In the implementation, even after the process has decided, it shall still process new *Commit* messages in order to aggregate their signatures in the threshold signature. That way, it can update information regarding the decided set of nodes.
+- The timer is not set to stop.

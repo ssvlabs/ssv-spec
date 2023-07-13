@@ -25,5 +25,5 @@ The same logic is applied in the implementation. The only difference is that the
 *Moniz, H. The Istanbul BFT Consensus Algorithm. Algorithm 4. 2020*
 
 The implementation follows the same logic as the paper's specification. However, there are two observations:
-- firslty, the $\beta$ predicate verification is included in the function implementation. This is done since such verification is implicit in the validation of *Pre-Prepare* messages.
-- secondly, the quorum of *Round-Change* and *Prepare* messages are obtained by the *Proposal* message itself. Look [here](PROPOSAL.md) to remember its structure. Therefore, the node doesn't have to look for any message that it has received.
+- The $\beta$ predicate verification is included in the function implementation. This is done since such verification is implicit in the validation of *Pre-Prepare* messages.
+- The quorum of *Round-Change* and *Prepare* messages are contained in the *Proposal* message itself. Look [here](PROPOSAL.md) for reference. Therefore, the node doesn't have to look for any message that it has received.
