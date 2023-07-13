@@ -29,7 +29,7 @@
 												],
 												"Quorum": 3,
 												"PartialQuorum": 2,
-												"DomainType": "00000000",
+												"DomainType": "00000301",
 												"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 												"Graffiti": null
 										},
@@ -48,7 +48,7 @@
 														"Height": 0,
 														"Round": 1,
 														"Identifier": "AQIDBA==",
-														"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+														"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 														"DataRound": 0,
 														"RoundChangeJustification": null,
 														"PrepareJustification": null
@@ -70,7 +70,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -93,7 +93,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -110,7 +110,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -127,7 +127,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -150,7 +150,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -167,7 +167,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -184,7 +184,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -202,7 +202,7 @@
 						}
 				],
 				"FutureMsgsContainer": {},
-				"Domain": "00000000",
+				"Domain": "00000301",
 				"Share": {
 						"OperatorID": 1,
 						"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
@@ -227,7 +227,7 @@
 						],
 						"Quorum": 3,
 						"PartialQuorum": 2,
-						"DomainType": "00000000",
+						"DomainType": "00000301",
 						"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 						"Graffiti": null
 				}
@@ -262,7 +262,7 @@
 												],
 												"Quorum": 3,
 												"PartialQuorum": 2,
-												"DomainType": "00000000",
+												"DomainType": "00000301",
 												"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 												"Graffiti": null
 										},
@@ -281,7 +281,7 @@
 														"Height": 1,
 														"Round": 1,
 														"Identifier": "AQIDBA==",
-														"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+														"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 														"DataRound": 0,
 														"RoundChangeJustification": null,
 														"PrepareJustification": null
@@ -303,7 +303,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -326,7 +326,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -343,7 +343,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -360,7 +360,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -383,7 +383,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -400,7 +400,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -417,7 +417,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -459,7 +459,7 @@
 												],
 												"Quorum": 3,
 												"PartialQuorum": 2,
-												"DomainType": "00000000",
+												"DomainType": "00000301",
 												"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 												"Graffiti": null
 										},
@@ -478,7 +478,7 @@
 														"Height": 0,
 														"Round": 1,
 														"Identifier": "AQIDBA==",
-														"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+														"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 														"DataRound": 0,
 														"RoundChangeJustification": null,
 														"PrepareJustification": null
@@ -500,7 +500,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -523,7 +523,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -540,7 +540,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -557,7 +557,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -580,7 +580,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -597,7 +597,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -614,7 +614,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -632,7 +632,7 @@
 						}
 				],
 				"FutureMsgsContainer": {},
-				"Domain": "00000000",
+				"Domain": "00000301",
 				"Share": {
 						"OperatorID": 1,
 						"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
@@ -657,7 +657,7 @@
 						],
 						"Quorum": 3,
 						"PartialQuorum": 2,
-						"DomainType": "00000000",
+						"DomainType": "00000301",
 						"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 						"Graffiti": null
 				}
@@ -692,7 +692,7 @@
 												],
 												"Quorum": 3,
 												"PartialQuorum": 2,
-												"DomainType": "00000000",
+												"DomainType": "00000301",
 												"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 												"Graffiti": null
 										},
@@ -745,7 +745,7 @@
 												],
 												"Quorum": 3,
 												"PartialQuorum": 2,
-												"DomainType": "00000000",
+												"DomainType": "00000301",
 												"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 												"Graffiti": null
 										},
@@ -764,7 +764,7 @@
 														"Height": 1,
 														"Round": 1,
 														"Identifier": "AQIDBA==",
-														"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+														"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 														"DataRound": 0,
 														"RoundChangeJustification": null,
 														"PrepareJustification": null
@@ -786,7 +786,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -809,7 +809,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -826,7 +826,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -843,7 +843,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -866,7 +866,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -883,7 +883,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -900,7 +900,7 @@
 																				"Height": 1,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -942,7 +942,7 @@
 												],
 												"Quorum": 3,
 												"PartialQuorum": 2,
-												"DomainType": "00000000",
+												"DomainType": "00000301",
 												"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 												"Graffiti": null
 										},
@@ -961,7 +961,7 @@
 														"Height": 0,
 														"Round": 1,
 														"Identifier": "AQIDBA==",
-														"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+														"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 														"DataRound": 0,
 														"RoundChangeJustification": null,
 														"PrepareJustification": null
@@ -983,7 +983,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -1006,7 +1006,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -1023,7 +1023,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -1040,7 +1040,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -1063,7 +1063,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -1080,7 +1080,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -1097,7 +1097,7 @@
 																				"Height": 0,
 																				"Round": 1,
 																				"Identifier": "AQIDBA==",
-																				"Root": "0000000000000000000000000000000000000000000000000000000000000000",
+																				"Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
 																				"PrepareJustification": null
@@ -1115,7 +1115,7 @@
 						}
 				],
 				"FutureMsgsContainer": {},
-				"Domain": "00000000",
+				"Domain": "00000301",
 				"Share": {
 						"OperatorID": 1,
 						"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
@@ -1140,7 +1140,7 @@
 						],
 						"Quorum": 3,
 						"PartialQuorum": 2,
-						"DomainType": "00000000",
+						"DomainType": "00000301",
 						"FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
 						"Graffiti": null
 				}
