@@ -33,7 +33,7 @@ func TestState_Decoding(t *testing.T) {
 				Height:     1,
 				Round:      2,
 				Identifier: []byte{1, 2, 3, 4},
-				Root:       testingutils.TestingSyncCommitteeBlockRoot,
+				Root:       types.HexBytes32(testingutils.TestingSyncCommitteeBlockRoot),
 			},
 			Signature: []byte{1, 2, 3, 4},
 			Signers:   []types.OperatorID{1},
