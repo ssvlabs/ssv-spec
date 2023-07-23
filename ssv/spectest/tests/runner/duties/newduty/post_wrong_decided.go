@@ -1,6 +1,7 @@
 package newduty
 
 import (
+	"fmt"
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -47,7 +48,8 @@ func PostWrongDecided() tests.SpecTest {
 		return r
 	}
 
-	expectedError := "can't start new duty runner instance for duty: could not start new QBFT instance: attempting to start an instance with a past height"
+	expectedError := fmt.Sprintf("duty for slot %d already passed. Current height is %d",
+		testingutils.TestingDutySlot, 50)
 
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty post wrong decided",
@@ -60,6 +62,7 @@ func PostWrongDecided() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "sync committee",
@@ -77,6 +80,7 @@ func PostWrongDecided() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "proposer",
@@ -86,6 +90,7 @@ func PostWrongDecided() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "attester",
