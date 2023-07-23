@@ -1,6 +1,7 @@
 package newduty
 
 import (
+	"fmt"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
@@ -32,8 +33,8 @@ func DuplicateDutyFinished() tests.SpecTest {
 		return r
 	}
 
-	expectedError := "can't start new duty runner instance for duty: could not start new QBFT instance: instance already running"
-
+	expectedError := fmt.Sprintf("duty for slot %d already passed. Current height is %d", testingutils.TestingDutySlot2,
+		testingutils.TestingDutySlot2)
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "duplicate duty finished",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -45,6 +46,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "sync committee",
@@ -62,6 +64,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "proposer",
@@ -71,6 +74,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "attester",
