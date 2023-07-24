@@ -37,51 +37,54 @@ func PostFutureDecided() tests.SpecTest {
 		return r
 	}
 
-	expectedError := "can't start new duty runner instance for duty: could not start new QBFT instance: attempting to start an instance with a past height"
+	expectedError := "can't start duty: duty for slot 12 already passed. Current height is 62"
 
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty post future decided",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  futureDecide(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionNexEpochDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
-				PostDutyRunnerStateRoot: "b4713150d68451ce58ffb8399509a7ebb674d80c88885898e364acac9dee287c",
+				Runner:                  futureDecide(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				PostDutyRunnerStateRoot: "0c2bf5b2570aad7da85cfe5aa81361524a727265c22b41e72e7e9ff2f9b2c215",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "sync committee",
 				Runner:                  futureDecide(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "046ff8dbd9cbdf54cd8ce1356230f30deff71e47283275d01817e2d317b84194",
+				PostDutyRunnerStateRoot: "89edc9d9c28654a0113c3003c1538aaae36fe14490992dbf057b9f5e5d492e33",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedError,
 			},
 			{
 				Name:                    "aggregator",
-				Runner:                  futureDecide(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDutyNextEpoch),
-				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
-				PostDutyRunnerStateRoot: "c29585575507df93cbdbb0a6afcdeb541101c02fbb6aee346b5e48b29fcf9107",
+				Runner:                  futureDecide(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
+				Duty:                    &testingutils.TestingAggregatorDuty,
+				PostDutyRunnerStateRoot: "892d0c2842a81d163c59e53302085f7bb2753cc4fcb46593bfeb569ec39e8928",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix)),
-				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
-				PostDutyRunnerStateRoot: "6d54dde37b0658f7d4447302e980ed505b063b23a87517014eada4646e126ffc",
+				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				PostDutyRunnerStateRoot: "fdaaa35d42c3001cd891209a44b921fa64320be238794e01633661e16c4f5e02",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "attester",
 				Runner:                  futureDecide(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "02bfc445dc650412518fb44d8a3a191ae8e180bcc4c2a4ac56e37485f4737d8f",
+				PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedError,
 			},
