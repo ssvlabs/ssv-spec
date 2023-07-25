@@ -56,3 +56,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 }
+
+func (tests *MsgSpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}

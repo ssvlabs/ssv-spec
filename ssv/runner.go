@@ -81,20 +81,8 @@ func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
 func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
-	if err := b.canStartNewDuty(); err != nil {
-		return err
-	}
 	b.baseSetupForNewDuty(duty)
 	return runner.executeDuty(duty)
-}
-
-// canStartNewDuty is a base func that all runner implementation can call to decide if a new duty can start
-func (b *BaseRunner) canStartNewDuty() error {
-	if b.State == nil {
-		return nil
-	}
-
-	return b.QBFTController.CanStartInstance()
 }
 
 // basePreConsensusMsgProcessing is a base func that all runner implementation can call for processing a pre-consensus msg
@@ -219,7 +207,10 @@ func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
 		return errors.Wrap(err, "input data invalid")
 	}
 
-	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(byts); err != nil {
+	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(
+		qbft.Height(input.Duty.Slot),
+		byts,
+	); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")
 	}
 	newInstance := runner.GetBaseRunner().QBFTController.InstanceForHeight(runner.GetBaseRunner().QBFTController.Height)

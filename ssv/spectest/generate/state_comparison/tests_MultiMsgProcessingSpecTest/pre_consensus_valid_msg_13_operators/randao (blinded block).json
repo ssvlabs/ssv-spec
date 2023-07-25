@@ -1,0 +1,283 @@
+{
+		"BaseRunner": {
+				"State": {
+						"PreConsensusContainer": {
+								"Signatures": {
+										"e48ae6ae7037605000abcd09bfcfd6e20c9d4451a2300c446bfb82debad21fbd": {
+												"1": "jeWeTkr0bwY+M0rqS9J+O+BVSgAchNO9CLAgRpokAAZBTEFMSbd1ImaZATHiSxglEaaBRTlbB5sGxVBdW/903r2ArVbI3hTdJ3gQIzWy2+oy6w+jzgGKEYshj2gYZxU+",
+												"2": "oKp7HnxO2YKk1cgNrFkMVTCdUpQgEv/PX5IR2sPcIYNr5EqO5P5Zo/KWhPjCPd5wC/5vAc4E1Yyt/I32PDxPJKk/UTxNzik+qtF5k6dRBWreRSJwAYvWWRNnLyeDsQQp",
+												"3": "pdZ4l/pm8YjdxEAgl5chigDQKT9SFyFCKqAtmHJTD50CuqdMhwy1Q11+kDjCIH7pDwVKNyqXbEyUwdHd9yyvMZgT7xKeLoOA0u4b7sAsfRJ7ZuFKXyhNa7mtjrr+E5S8",
+												"4": "rqHHZqLFG756qxV1B3xU5mV7DxLLdxJ5zfT8n/mQ5Nlvdd0fh1lqYDfX+XZ5WgO3A7FIwnsa7CkPUWVsAFtPy8ayuOE9zLKTUTwd6WlQsUlxOJnEKq3t8Tzs7LNZ9mkY",
+												"5": "pEgcgeRyWPwpItvtKOMta9SqRz6g411sK/JM6R2n0vQt7/jORqUjKte7lT+TCxIWC9Awei1eB/Ns9QbrZmZn+rbpqKIpMMx8ggMH+C5J5XY1YqwgOs5svr9EZqP8ILhZ",
+												"6": "hUzPMs7CrP8ln4RWGQZXe1EKbeGj3ZzyoqjFJR3ujWUlZn1vqLR3yuMCun+XEd8OFZTQuH8UidIXIXkXyOJGhwubNGir4migczDMiTakAEeNdpxgGxAzqNE9kIG2bhJw",
+												"7": "hWKAJYSkPX1U2mXc5QWcIM6CCFcSjsc/WadYvXJQbBAFpe8WhWKj5j2fyKVQKZYTFK8R2WstbhkRj/7Uste9wyCoXGTtL9iXv+8gThvwwYpjXmlR4AyK2yzpu63hNuAt",
+												"8": "g+JBQqq2ZU+OqSvXbTCt+XWNq8tMaX2JGARLtbSuY/Z8x1Ot/dBkL3GcflexPA0jDwrVHZKnSg48/+MZ7UYv+svIbeHuAn+BtTybJf7WSuklqExXy/Qm7v/NtUUIEXdQ"
+										}
+								},
+								"Quorum": 9
+						},
+						"PostConsensusContainer": {
+								"Signatures": {},
+								"Quorum": 9
+						},
+						"RunningInstance": null,
+						"DecidedValue": null,
+						"StartingDuty": {
+								"Type": 2,
+								"PubKey": [
+										142,
+										128,
+										6,
+										101,
+										81,
+										168,
+										27,
+										49,
+										130,
+										88,
+										112,
+										158,
+										218,
+										247,
+										221,
+										31,
+										99,
+										205,
+										104,
+										106,
+										14,
+										77,
+										184,
+										178,
+										155,
+										187,
+										122,
+										207,
+										230,
+										86,
+										8,
+										103,
+										122,
+										245,
+										165,
+										39,
+										217,
+										68,
+										142,
+										228,
+										120,
+										53,
+										72,
+										94,
+										2,
+										181,
+										11,
+										192
+								],
+								"Slot": 12,
+								"ValidatorIndex": 1,
+								"CommitteeIndex": 3,
+								"CommitteeLength": 128,
+								"CommitteesAtSlot": 36,
+								"ValidatorCommitteeIndex": 11,
+								"ValidatorSyncCommitteeIndices": null
+						},
+						"Finished": false
+				},
+				"Share": {
+						"OperatorID": 1,
+						"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+						"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+						"Committee": [
+								{
+										"OperatorID": 1,
+										"PubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt"
+								},
+								{
+										"OperatorID": 2,
+										"PubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z"
+								},
+								{
+										"OperatorID": 3,
+										"PubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ"
+								},
+								{
+										"OperatorID": 4,
+										"PubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz"
+								},
+								{
+										"OperatorID": 5,
+										"PubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb"
+								},
+								{
+										"OperatorID": 6,
+										"PubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3"
+								},
+								{
+										"OperatorID": 7,
+										"PubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j"
+								},
+								{
+										"OperatorID": 8,
+										"PubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo"
+								},
+								{
+										"OperatorID": 9,
+										"PubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP"
+								},
+								{
+										"OperatorID": 10,
+										"PubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj"
+								},
+								{
+										"OperatorID": 11,
+										"PubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq"
+								},
+								{
+										"OperatorID": 12,
+										"PubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3"
+								},
+								{
+										"OperatorID": 13,
+										"PubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim"
+								}
+						],
+						"Quorum": 9,
+						"PartialQuorum": 5,
+						"DomainType": [
+								0,
+								0,
+								3,
+								1
+						],
+						"FeeRecipientAddress": [
+								83,
+								89,
+								83,
+								181,
+								166,
+								4,
+								0,
+								116,
+								148,
+								140,
+								241,
+								133,
+								234,
+								167,
+								210,
+								171,
+								189,
+								102,
+								128,
+								143
+						],
+						"Graffiti": null
+				},
+				"QBFTController": {
+						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
+						"Height": 0,
+						"StoredInstances": [],
+						"FutureMsgsContainer": {},
+						"Domain": [
+								0,
+								0,
+								3,
+								1
+						],
+						"Share": {
+								"OperatorID": 1,
+								"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+								"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+								"Committee": [
+										{
+												"OperatorID": 1,
+												"PubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt"
+										},
+										{
+												"OperatorID": 2,
+												"PubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z"
+										},
+										{
+												"OperatorID": 3,
+												"PubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ"
+										},
+										{
+												"OperatorID": 4,
+												"PubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz"
+										},
+										{
+												"OperatorID": 5,
+												"PubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb"
+										},
+										{
+												"OperatorID": 6,
+												"PubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3"
+										},
+										{
+												"OperatorID": 7,
+												"PubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j"
+										},
+										{
+												"OperatorID": 8,
+												"PubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo"
+										},
+										{
+												"OperatorID": 9,
+												"PubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP"
+										},
+										{
+												"OperatorID": 10,
+												"PubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj"
+										},
+										{
+												"OperatorID": 11,
+												"PubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq"
+										},
+										{
+												"OperatorID": 12,
+												"PubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3"
+										},
+										{
+												"OperatorID": 13,
+												"PubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim"
+										}
+								],
+								"Quorum": 9,
+								"PartialQuorum": 5,
+								"DomainType": [
+										0,
+										0,
+										3,
+										1
+								],
+								"FeeRecipientAddress": [
+										83,
+										89,
+										83,
+										181,
+										166,
+										4,
+										0,
+										116,
+										148,
+										140,
+										241,
+										133,
+										234,
+										167,
+										210,
+										171,
+										189,
+										102,
+										128,
+										143
+								],
+								"Graffiti": null
+						}
+				},
+				"BeaconNetwork": "now_test_network",
+				"BeaconRoleType": 2
+		},
+		"ProducesBlindedBlocks": true
+}

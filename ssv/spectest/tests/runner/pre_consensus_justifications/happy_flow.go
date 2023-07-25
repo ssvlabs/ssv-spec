@@ -14,7 +14,7 @@ func HappyFlow() tests.SpecTest {
 
 	consensusMsgs := func(cd *types.ConsensusData, role types.BeaconRole) []*types.SSVMessage {
 		id := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
-		qbftMsgs := testingutils.DecidingMsgsForHeight(cd, id[:], 2, ks)
+		qbftMsgs := testingutils.SSVDecidingMsgsForHeight(cd, id[:], 2, ks)
 
 		ret := make([]*types.SSVMessage, 0)
 		for _, msg := range qbftMsgs {

@@ -36,7 +36,7 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 	)
 
 	if !test.SkipInstanceStart {
-		err := contr.StartNewInstance([]byte{1, 2, 3, 4})
+		err := contr.StartNewInstance(qbft.FirstHeight, []byte{1, 2, 3, 4})
 		if err != nil {
 			t.Fatalf(err.Error())
 		}
@@ -65,4 +65,8 @@ func (test *ControllerSyncSpecTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, lastErr)
 	}
+}
+
+func (test *ControllerSyncSpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
 }

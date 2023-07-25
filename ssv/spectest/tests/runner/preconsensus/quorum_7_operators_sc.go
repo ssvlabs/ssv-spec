@@ -42,7 +42,7 @@ func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
@@ -50,6 +50,7 @@ func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 
 			return ret
 		}(),
@@ -88,7 +89,7 @@ func quorum7OperatorsAggregatorSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
@@ -96,6 +97,7 @@ func quorum7OperatorsAggregatorSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 
 			return ret
 		}(),
@@ -165,11 +167,12 @@ func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateCompa
 					Share:  testingutils.TestingShare(ks),
 					ID:     ret.GetBaseRunner().QBFTController.Identifier,
 					Round:  qbft.FirstRound,
-					Height: qbft.FirstHeight,
+					Height: qbft.Height(testingutils.TestingDutySlotV(version)),
 				},
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
 
 			return ret
 		}(),
@@ -208,11 +211,12 @@ func quorum7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.Sta
 					Share:  testingutils.TestingShare(ks),
 					ID:     ret.GetBaseRunner().QBFTController.Identifier,
 					Round:  qbft.FirstRound,
-					Height: qbft.FirstHeight,
+					Height: qbft.Height(testingutils.TestingDutySlotV(version)),
 				},
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
 
 			return ret
 		}(),
