@@ -44,6 +44,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 	expectedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
 		testingutils.TestingDutySlot,
 		testingutils.TestingDutySlot)
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "duplicate duty finished",
 		Tests: []*StartNewRunnerDutySpecTest{
