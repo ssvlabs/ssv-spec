@@ -1,7 +1,6 @@
 package newduty
 
 import (
-	"fmt"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
@@ -33,6 +32,8 @@ func DuplicateDutyFinished() tests.SpecTest {
 		return r
 	}
 
+	expectedError := "can't start new duty runner instance for duty: could not start new QBFT instance: instance already running"
+
 	// finishTaskRunner is a helper function that finishes a task runner and returns it
 	// task is an operation that isn't a beacon duty, e.g. validator registration
 	finishTaskRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
@@ -41,36 +42,31 @@ func DuplicateDutyFinished() tests.SpecTest {
 		return r
 	}
 
-	expectedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-		testingutils.TestingDutySlot,
-		testingutils.TestingDutySlot)
-
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "duplicate duty finished",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  finishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
-				PostDutyRunnerStateRoot: "c8ce3cec33a9e557f52c1392f96b613ed2d37b24b54a1c9429a7dbff91f212eb",
+				Runner:                  finishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionNexEpochDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				PostDutyRunnerStateRoot: "a91a90cd4033996ef7ccfccd36dcc2306e56c0b42ab51e6bb97fd88e7d3b6e35",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "sync committee",
 				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				PostDutyRunnerStateRoot: "9ed70d234980d27628811e78f59b0a723ae2bd768ad9ce02943aa3fdf737e2c5",
+				PostDutyRunnerStateRoot: "07b3b82b83ed99a1bb474dacdb65d26866e1ed9aac13f805849e76133bdb0e2d",
 				ExpectedError:           expectedError,
 			},
 			{
 				Name:                    "aggregator",
-				Runner:                  finishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
-				Duty:                    &testingutils.TestingAggregatorDuty,
-				PostDutyRunnerStateRoot: "3674c8986f519e022f76377d00c5d27ef2e53faaf6bffce4eb692bf5d387d6b2",
+				Runner:                  finishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDutyNextEpoch),
+				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
+				PostDutyRunnerStateRoot: "f58c8a5d953658339cbac025bb1f3d563eaad8693c9af8c780c95d808732e464",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
