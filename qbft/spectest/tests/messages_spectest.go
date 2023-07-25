@@ -48,3 +48,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 func (test *MsgSpecTest) TestName() string {
 	return "qbft message " + test.Name
 }
+
+func (test *MsgSpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}

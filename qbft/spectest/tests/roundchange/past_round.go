@@ -10,7 +10,7 @@ import (
 // PastRound tests a round change msg with past round
 func PastRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
-	pre.State.Round = 50
+	pre.State.Round = 12
 	ks := testingutils.Testing4SharesSet()
 
 	prepareMsgs := []*qbft.SignedMessage{
@@ -29,7 +29,7 @@ func PastRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change past round",
 		Pre:            pre,
-		PostRoot:       "92fa15d04e03ed9821c8a6f28089a5b3df80394f5ce908f9f5dfb6ba3db796fa",
+		PostRoot:       "708abf25fd6ea204c0b177e1b28fe0a6a0da3fb69da87181f73399ddde1a30b0",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: past round",

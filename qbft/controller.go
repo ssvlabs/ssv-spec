@@ -42,18 +42,25 @@ func NewController(
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
-func (c *Controller) StartNewInstance(value []byte) error {
-	if err := c.canStartInstanceForValue(value); err != nil {
-		return errors.Wrap(err, "can't start new QBFT instance")
+func (c *Controller) StartNewInstance(height Height, value []byte) error {
+	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
+		return errors.Wrap(err, "value invalid")
+	}
+
+	if height < c.Height {
+		return errors.New("attempting to start an instance with a past height")
 	}
 
 	// only if current height's instance exists (and decided since passed can start instance) bump
-	if c.StoredInstances.FindInstance(c.Height) != nil {
-		c.bumpHeight()
+	if c.StoredInstances.FindInstance(height) != nil {
+		return errors.New("instance already running")
 	}
 
+	c.Height = height
 	newInstance := c.addAndStoreNewInstance()
-	newInstance.Start(value, c.Height)
+	newInstance.Start(value, height)
+
+	c.forceStopAllInstanceExceptCurrent()
 
 	return nil
 }
@@ -124,10 +131,6 @@ func (c *Controller) InstanceForHeight(height Height) *Instance {
 	return c.StoredInstances.FindInstance(height)
 }
 
-func (c *Controller) bumpHeight() {
-	c.Height++
-}
-
 // GetIdentifier returns QBFT Identifier, used to identify messages
 func (c *Controller) GetIdentifier() []byte {
 	return c.Identifier
@@ -149,27 +152,12 @@ func (c *Controller) addAndStoreNewInstance() *Instance {
 	return i
 }
 
-func (c *Controller) canStartInstanceForValue(value []byte) error {
-	// check value
-	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
-		return errors.Wrap(err, "value invalid")
+func (c *Controller) forceStopAllInstanceExceptCurrent() {
+	for _, i := range c.StoredInstances {
+		if i.State.Height != c.Height {
+			i.ForceStop()
+		}
 	}
-
-	return c.CanStartInstance()
-}
-
-// CanStartInstance returns nil if controller can start a new instance
-func (c *Controller) CanStartInstance() error {
-	// check prev instance if prev instance is not the first instance
-	inst := c.StoredInstances.FindInstance(c.Height)
-	if inst == nil {
-		return nil
-	}
-	if decided, _ := inst.IsDecided(); !decided {
-		return errors.New("previous instance hasn't Decided")
-	}
-
-	return nil
 }
 
 // GetRoot returns the state's deterministic root

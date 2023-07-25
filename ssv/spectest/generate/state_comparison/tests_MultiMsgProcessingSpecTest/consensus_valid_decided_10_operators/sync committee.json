@@ -1,0 +1,2141 @@
+{
+		"BaseRunner": {
+				"State": {
+						"PreConsensusContainer": {
+								"Signatures": {},
+								"Quorum": 7
+						},
+						"PostConsensusContainer": {
+								"Signatures": {},
+								"Quorum": 7
+						},
+						"RunningInstance": {
+								"State": {
+										"Share": {
+												"OperatorID": 1,
+												"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+												"SharePubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx",
+												"Committee": [
+														{
+																"OperatorID": 1,
+																"PubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx"
+														},
+														{
+																"OperatorID": 2,
+																"PubKey": "kz1pTGkkb5iqKz1t524qR2rdHuj5H6A5SbEVvHoPZ3u5ZGIgBH/krSlDVUVCQlID"
+														},
+														{
+																"OperatorID": 3,
+																"PubKey": "oa8IOuuo3GEYpGecefYZvvNk1VYbI8fxLPDSfgQIMZu+/rxyyutWy8+21ul3ilKG"
+														},
+														{
+																"OperatorID": 4,
+																"PubKey": "rbbPE1h+tjwTMBvXBq0uQeiY7zjgW8F3SHU/GbiTh6NSfksUWkw4+ePzXeQF/QdH"
+														},
+														{
+																"OperatorID": 5,
+																"PubKey": "ovesq67A79GGQk7tkM5WjCDtuuuf9+xT9fGA5wk3pppddGByCSve0md4ED5rGJNo"
+														},
+														{
+																"OperatorID": 6,
+																"PubKey": "k0G6HgfsQWNlvKiso3P/s80hTVrPnkjyTPrc0+2uB+PaplJffnFvSdmjkBNW4Mye"
+														},
+														{
+																"OperatorID": 7,
+																"PubKey": "jKJiWGQ9GMT6EaPHMt+EWZKfacZB1sXPUXgWYugOJa3hMm1CbTGoRXXnYRS8yz/R"
+														},
+														{
+																"OperatorID": 8,
+																"PubKey": "q0rU1AgNbIxwQ0gfqb5DpEbdriONEftFDWGhOesWB/KjAmm7SijrQkMfybi/qNAt"
+														},
+														{
+																"OperatorID": 9,
+																"PubKey": "obBtOlWzBdTeziCtVY5FteuDACOmXzBRXfZONryRSaDgvfQlc01s+Qewj67gYRtH"
+														},
+														{
+																"OperatorID": 10,
+																"PubKey": "tJ7NtDheMBJsjieXeanh6kC+9ONNv116vN0v2xyqUfEqqfST3Ku/Vx3rhBvtAidF"
+														}
+												],
+												"Quorum": 7,
+												"PartialQuorum": 4,
+												"DomainType": [
+														0,
+														0,
+														3,
+														1
+												],
+												"FeeRecipientAddress": [
+														83,
+														89,
+														83,
+														181,
+														166,
+														4,
+														0,
+														116,
+														148,
+														140,
+														241,
+														133,
+														234,
+														167,
+														210,
+														171,
+														189,
+														102,
+														128,
+														143
+												],
+												"Graffiti": null
+										},
+										"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+										"Round": 1,
+										"Height": 12,
+										"LastPreparedRound": 1,
+										"LastPreparedValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
+										"ProposalAcceptedForCurrentRound": {
+												"Signature": "hYlBxsAJv8v28ecX5OH7MPLuDzqOijJMRWq0JLl/ZN4RlJbTLX4zUT2PocrU8++EEjfD1+DjTW4PpUxCjGo+fMlmpmvlh7SpeSjxX48hbhn9ApbVbqNe4zFTvpfKwSSP",
+												"Signers": [
+														1
+												],
+												"Message": {
+														"MsgType": 0,
+														"Height": 12,
+														"Round": 1,
+														"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+														"Root": [
+																117,
+																196,
+																241,
+																35,
+																30,
+																78,
+																66,
+																219,
+																175,
+																45,
+																228,
+																61,
+																145,
+																99,
+																50,
+																174,
+																33,
+																16,
+																235,
+																160,
+																137,
+																68,
+																168,
+																2,
+																110,
+																60,
+																121,
+																97,
+																214,
+																68,
+																240,
+																242
+														],
+														"DataRound": 0,
+														"RoundChangeJustification": [],
+														"PrepareJustification": []
+												},
+												"FullData": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+										},
+										"Decided": true,
+										"DecidedValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
+										"ProposeContainer": {
+												"Msgs": {
+														"1": [
+																{
+																		"Signature": "hYlBxsAJv8v28ecX5OH7MPLuDzqOijJMRWq0JLl/ZN4RlJbTLX4zUT2PocrU8++EEjfD1+DjTW4PpUxCjGo+fMlmpmvlh7SpeSjxX48hbhn9ApbVbqNe4zFTvpfKwSSP",
+																		"Signers": [
+																				1
+																		],
+																		"Message": {
+																				"MsgType": 0,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+																}
+														]
+												}
+										},
+										"PrepareContainer": {
+												"Msgs": {
+														"1": [
+																{
+																		"Signature": "iEQSOPZbF9AlqVTd8stW0RQbC/DvvRPhVe17JXXJmHR0JBfm1miOkW2NoUZUqWqbBedXgiLxUA08n6wrvVmDTSRwvtjzhXp8Ci0FgLneaFST9ZC4Pwi8PoOZ6o+wgd5d",
+																		"Signers": [
+																				1
+																		],
+																		"Message": {
+																				"MsgType": 1,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "sL4lpb2fvjIyoZYijv7AKiTXTh4LRXv4ylieRaznMopv1vRkmB+TdTqQh0++2atbDtS4kb93VNX0of/ZLmUxhBBV8yNOWKB7MC07c2aqTBlwwvcM354XqjVWusK//RzI",
+																		"Signers": [
+																				2
+																		],
+																		"Message": {
+																				"MsgType": 1,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "uR8JJjImXFz8TXZhoP40qTUdjZ8eZXkZ/flqbFeUMwkO9VTcKDJhTtMIeVCBOOcjBXVPnAhS1vAGkOFtTE6U/EODR67gNhIMJJlsT/7Z4xAEm7TqlZJJXl3gKOemfHAy",
+																		"Signers": [
+																				3
+																		],
+																		"Message": {
+																				"MsgType": 1,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "lUjo5k4oaf+kgIs9FMcnU99OKwYNsYqGqXH5VM7U4cUVetEqHYxKdPWRMX7DgVFSFJc6ac01UvU8orrPPvmJmoYWx5pXaqMGb+CPkRKUTiZMkzyLiRELQqJvyYyb6/GT",
+																		"Signers": [
+																				4
+																		],
+																		"Message": {
+																				"MsgType": 1,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "pnNOxIsWKdwh36oRwAJy1Db2lYWXfdKiGYxFc5P3DMadpaxyKJo36t+k8kL4oKf+AiZ5ZfXVx0ba2cWp38wlRXXkbDXek7KBxW3bS2cfIcKeji+cj/gQWiTwWsUg7Bzk",
+																		"Signers": [
+																				5
+																		],
+																		"Message": {
+																				"MsgType": 1,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "l+tpCP5xe4zArPBLw2s0v/xt36m1mIQ/z2HTp5D+WFXbU1pDaFyYnLyqNGB39pqkDqTzMzXTN8XtK3oF5DdqcKMc4fq2mczh71M7ta5RVb94vzneV50JjVvjfS9/KJg5",
+																		"Signers": [
+																				6
+																		],
+																		"Message": {
+																				"MsgType": 1,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "pYQd7MNEyvrEHqgxPGKB8SHAykm8hOAts7l7tPou1P9jJUdsLqnrxM3JqNR0ClQzBI81UcjmDx8oUKbp3dr7tKAEIzzxbOHrxkvAMS4YpD2z7GMMa6mqG8pdwbIG86M/",
+																		"Signers": [
+																				7
+																		],
+																		"Message": {
+																				"MsgType": 1,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																}
+														]
+												}
+										},
+										"CommitContainer": {
+												"Msgs": {
+														"1": [
+																{
+																		"Signature": "uaR9+GZDwcqWqQsFhktSmtAegKu0DzuOrsa3YEuXbo2FmztZGk64WiXVrUft99NZABlF7T2THyAnPmR1IbXbO2GnFxbIgiNHoipN88MIKiuiYe7pU69I76NYFZfkMtwm",
+																		"Signers": [
+																				1
+																		],
+																		"Message": {
+																				"MsgType": 2,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "hgPsbHHy1JwmGO7ectbvlyJkWXPD4P4b2cOryy/ZfzqcxH2JEBenYOAbp3lde+DNGgAdUJqpALw99RYSVSgfhpSlBFlgTD7kSm7hGwJ7Di6OSIPrD9Q3Ub/z7sdFe1E9",
+																		"Signers": [
+																				2
+																		],
+																		"Message": {
+																				"MsgType": 2,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "ovG97EHe9likYTvvzQeqXiM0gkp6En81aO2be+dQno08Acf37FBNmyPA35740OkYC/g1Ya4xTONx1pL6gdt/7PUlo7b2FGzae5xjdrZ3UMULeROppLnH+tFOWXaFFQ7N",
+																		"Signers": [
+																				3
+																		],
+																		"Message": {
+																				"MsgType": 2,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "jwlHdG4MGbQoYplC5dPcafWkjzq9mYha5+tHw07wxqbMj9V8vQtQxOyhVD85o3MRGSCD7CU6qifylbCbkly30m5DS1xxOZPeDOv+dGmFyiERDbE1A7sbwAT1wIgyod3t",
+																		"Signers": [
+																				4
+																		],
+																		"Message": {
+																				"MsgType": 2,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "gCIi4yoJBNs3zr9/+dE85xzsis3aN2U10tY4qZBAhTkixznYh0dlXuF6DNK5xjtHFle7B5grW01O52wd4agAn+etMAWa+30V4VB3cTm1U7g95HTxoRteD8R4YLNS/qfF",
+																		"Signers": [
+																				5
+																		],
+																		"Message": {
+																				"MsgType": 2,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "s0OmnbBId9CdhmmKdlTg+wVcvL2kEPFS71pjg5c9Y6a7waUyT8C45gcQXMPCLSBpGEhgiNE3zc5mT6F424uXBG6g1lhqKVi7Tc/kjsmc99s8XXvG24AnTLj7DgRUj7Go",
+																		"Signers": [
+																				6
+																		],
+																		"Message": {
+																				"MsgType": 2,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																},
+																{
+																		"Signature": "rxmlobHNwA1n0ptKvypinA3OA8dk7Hodc6ks3oFJF0rb0ZlHZqWKSb+qPbE00jNOAgfxh5vhFJxQM1IUmuuT9PG2yZMwfjCJsL+wSoc50wByjwK0lB2jxzll0fXiknPM",
+																		"Signers": [
+																				7
+																		],
+																		"Message": {
+																				"MsgType": 2,
+																				"Height": 12,
+																				"Round": 1,
+																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																				"Root": [
+																						117,
+																						196,
+																						241,
+																						35,
+																						30,
+																						78,
+																						66,
+																						219,
+																						175,
+																						45,
+																						228,
+																						61,
+																						145,
+																						99,
+																						50,
+																						174,
+																						33,
+																						16,
+																						235,
+																						160,
+																						137,
+																						68,
+																						168,
+																						2,
+																						110,
+																						60,
+																						121,
+																						97,
+																						214,
+																						68,
+																						240,
+																						242
+																				],
+																				"DataRound": 0,
+																				"RoundChangeJustification": [],
+																				"PrepareJustification": []
+																		},
+																		"FullData": ""
+																}
+														]
+												}
+										},
+										"RoundChangeContainer": {
+												"Msgs": {}
+										}
+								},
+								"StartValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+						},
+						"DecidedValue": {
+								"Duty": {
+										"Type": 3,
+										"PubKey": [
+												142,
+												128,
+												6,
+												101,
+												81,
+												168,
+												27,
+												49,
+												130,
+												88,
+												112,
+												158,
+												218,
+												247,
+												221,
+												31,
+												99,
+												205,
+												104,
+												106,
+												14,
+												77,
+												184,
+												178,
+												155,
+												187,
+												122,
+												207,
+												230,
+												86,
+												8,
+												103,
+												122,
+												245,
+												165,
+												39,
+												217,
+												68,
+												142,
+												228,
+												120,
+												53,
+												72,
+												94,
+												2,
+												181,
+												11,
+												192
+										],
+										"Slot": 12,
+										"ValidatorIndex": 1,
+										"CommitteeIndex": 3,
+										"CommitteeLength": 128,
+										"CommitteesAtSlot": 36,
+										"ValidatorCommitteeIndex": 11,
+										"ValidatorSyncCommitteeIndices": [
+												0,
+												1,
+												2
+										]
+								},
+								"Version": "phase0",
+								"PreConsensusJustifications": [],
+								"DataSSZ": "AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI="
+						},
+						"StartingDuty": {
+								"Type": 3,
+								"PubKey": [
+										142,
+										128,
+										6,
+										101,
+										81,
+										168,
+										27,
+										49,
+										130,
+										88,
+										112,
+										158,
+										218,
+										247,
+										221,
+										31,
+										99,
+										205,
+										104,
+										106,
+										14,
+										77,
+										184,
+										178,
+										155,
+										187,
+										122,
+										207,
+										230,
+										86,
+										8,
+										103,
+										122,
+										245,
+										165,
+										39,
+										217,
+										68,
+										142,
+										228,
+										120,
+										53,
+										72,
+										94,
+										2,
+										181,
+										11,
+										192
+								],
+								"Slot": 12,
+								"ValidatorIndex": 1,
+								"CommitteeIndex": 3,
+								"CommitteeLength": 128,
+								"CommitteesAtSlot": 36,
+								"ValidatorCommitteeIndex": 11,
+								"ValidatorSyncCommitteeIndices": [
+										0,
+										1,
+										2
+								]
+						},
+						"Finished": false
+				},
+				"Share": {
+						"OperatorID": 1,
+						"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+						"SharePubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx",
+						"Committee": [
+								{
+										"OperatorID": 1,
+										"PubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx"
+								},
+								{
+										"OperatorID": 2,
+										"PubKey": "kz1pTGkkb5iqKz1t524qR2rdHuj5H6A5SbEVvHoPZ3u5ZGIgBH/krSlDVUVCQlID"
+								},
+								{
+										"OperatorID": 3,
+										"PubKey": "oa8IOuuo3GEYpGecefYZvvNk1VYbI8fxLPDSfgQIMZu+/rxyyutWy8+21ul3ilKG"
+								},
+								{
+										"OperatorID": 4,
+										"PubKey": "rbbPE1h+tjwTMBvXBq0uQeiY7zjgW8F3SHU/GbiTh6NSfksUWkw4+ePzXeQF/QdH"
+								},
+								{
+										"OperatorID": 5,
+										"PubKey": "ovesq67A79GGQk7tkM5WjCDtuuuf9+xT9fGA5wk3pppddGByCSve0md4ED5rGJNo"
+								},
+								{
+										"OperatorID": 6,
+										"PubKey": "k0G6HgfsQWNlvKiso3P/s80hTVrPnkjyTPrc0+2uB+PaplJffnFvSdmjkBNW4Mye"
+								},
+								{
+										"OperatorID": 7,
+										"PubKey": "jKJiWGQ9GMT6EaPHMt+EWZKfacZB1sXPUXgWYugOJa3hMm1CbTGoRXXnYRS8yz/R"
+								},
+								{
+										"OperatorID": 8,
+										"PubKey": "q0rU1AgNbIxwQ0gfqb5DpEbdriONEftFDWGhOesWB/KjAmm7SijrQkMfybi/qNAt"
+								},
+								{
+										"OperatorID": 9,
+										"PubKey": "obBtOlWzBdTeziCtVY5FteuDACOmXzBRXfZONryRSaDgvfQlc01s+Qewj67gYRtH"
+								},
+								{
+										"OperatorID": 10,
+										"PubKey": "tJ7NtDheMBJsjieXeanh6kC+9ONNv116vN0v2xyqUfEqqfST3Ku/Vx3rhBvtAidF"
+								}
+						],
+						"Quorum": 7,
+						"PartialQuorum": 4,
+						"DomainType": [
+								0,
+								0,
+								3,
+								1
+						],
+						"FeeRecipientAddress": [
+								83,
+								89,
+								83,
+								181,
+								166,
+								4,
+								0,
+								116,
+								148,
+								140,
+								241,
+								133,
+								234,
+								167,
+								210,
+								171,
+								189,
+								102,
+								128,
+								143
+						],
+						"Graffiti": null
+				},
+				"QBFTController": {
+						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+						"Height": 12,
+						"StoredInstances": [
+								{
+										"State": {
+												"Share": {
+														"OperatorID": 1,
+														"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+														"SharePubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx",
+														"Committee": [
+																{
+																		"OperatorID": 1,
+																		"PubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx"
+																},
+																{
+																		"OperatorID": 2,
+																		"PubKey": "kz1pTGkkb5iqKz1t524qR2rdHuj5H6A5SbEVvHoPZ3u5ZGIgBH/krSlDVUVCQlID"
+																},
+																{
+																		"OperatorID": 3,
+																		"PubKey": "oa8IOuuo3GEYpGecefYZvvNk1VYbI8fxLPDSfgQIMZu+/rxyyutWy8+21ul3ilKG"
+																},
+																{
+																		"OperatorID": 4,
+																		"PubKey": "rbbPE1h+tjwTMBvXBq0uQeiY7zjgW8F3SHU/GbiTh6NSfksUWkw4+ePzXeQF/QdH"
+																},
+																{
+																		"OperatorID": 5,
+																		"PubKey": "ovesq67A79GGQk7tkM5WjCDtuuuf9+xT9fGA5wk3pppddGByCSve0md4ED5rGJNo"
+																},
+																{
+																		"OperatorID": 6,
+																		"PubKey": "k0G6HgfsQWNlvKiso3P/s80hTVrPnkjyTPrc0+2uB+PaplJffnFvSdmjkBNW4Mye"
+																},
+																{
+																		"OperatorID": 7,
+																		"PubKey": "jKJiWGQ9GMT6EaPHMt+EWZKfacZB1sXPUXgWYugOJa3hMm1CbTGoRXXnYRS8yz/R"
+																},
+																{
+																		"OperatorID": 8,
+																		"PubKey": "q0rU1AgNbIxwQ0gfqb5DpEbdriONEftFDWGhOesWB/KjAmm7SijrQkMfybi/qNAt"
+																},
+																{
+																		"OperatorID": 9,
+																		"PubKey": "obBtOlWzBdTeziCtVY5FteuDACOmXzBRXfZONryRSaDgvfQlc01s+Qewj67gYRtH"
+																},
+																{
+																		"OperatorID": 10,
+																		"PubKey": "tJ7NtDheMBJsjieXeanh6kC+9ONNv116vN0v2xyqUfEqqfST3Ku/Vx3rhBvtAidF"
+																}
+														],
+														"Quorum": 7,
+														"PartialQuorum": 4,
+														"DomainType": [
+																0,
+																0,
+																3,
+																1
+														],
+														"FeeRecipientAddress": [
+																83,
+																89,
+																83,
+																181,
+																166,
+																4,
+																0,
+																116,
+																148,
+																140,
+																241,
+																133,
+																234,
+																167,
+																210,
+																171,
+																189,
+																102,
+																128,
+																143
+														],
+														"Graffiti": null
+												},
+												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+												"Round": 1,
+												"Height": 12,
+												"LastPreparedRound": 1,
+												"LastPreparedValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
+												"ProposalAcceptedForCurrentRound": {
+														"Signature": "hYlBxsAJv8v28ecX5OH7MPLuDzqOijJMRWq0JLl/ZN4RlJbTLX4zUT2PocrU8++EEjfD1+DjTW4PpUxCjGo+fMlmpmvlh7SpeSjxX48hbhn9ApbVbqNe4zFTvpfKwSSP",
+														"Signers": [
+																1
+														],
+														"Message": {
+																"MsgType": 0,
+																"Height": 12,
+																"Round": 1,
+																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																"Root": [
+																		117,
+																		196,
+																		241,
+																		35,
+																		30,
+																		78,
+																		66,
+																		219,
+																		175,
+																		45,
+																		228,
+																		61,
+																		145,
+																		99,
+																		50,
+																		174,
+																		33,
+																		16,
+																		235,
+																		160,
+																		137,
+																		68,
+																		168,
+																		2,
+																		110,
+																		60,
+																		121,
+																		97,
+																		214,
+																		68,
+																		240,
+																		242
+																],
+																"DataRound": 0,
+																"RoundChangeJustification": [],
+																"PrepareJustification": []
+														},
+														"FullData": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+												},
+												"Decided": true,
+												"DecidedValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
+												"ProposeContainer": {
+														"Msgs": {
+																"1": [
+																		{
+																				"Signature": "hYlBxsAJv8v28ecX5OH7MPLuDzqOijJMRWq0JLl/ZN4RlJbTLX4zUT2PocrU8++EEjfD1+DjTW4PpUxCjGo+fMlmpmvlh7SpeSjxX48hbhn9ApbVbqNe4zFTvpfKwSSP",
+																				"Signers": [
+																						1
+																				],
+																				"Message": {
+																						"MsgType": 0,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+																		}
+																]
+														}
+												},
+												"PrepareContainer": {
+														"Msgs": {
+																"1": [
+																		{
+																				"Signature": "iEQSOPZbF9AlqVTd8stW0RQbC/DvvRPhVe17JXXJmHR0JBfm1miOkW2NoUZUqWqbBedXgiLxUA08n6wrvVmDTSRwvtjzhXp8Ci0FgLneaFST9ZC4Pwi8PoOZ6o+wgd5d",
+																				"Signers": [
+																						1
+																				],
+																				"Message": {
+																						"MsgType": 1,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "sL4lpb2fvjIyoZYijv7AKiTXTh4LRXv4ylieRaznMopv1vRkmB+TdTqQh0++2atbDtS4kb93VNX0of/ZLmUxhBBV8yNOWKB7MC07c2aqTBlwwvcM354XqjVWusK//RzI",
+																				"Signers": [
+																						2
+																				],
+																				"Message": {
+																						"MsgType": 1,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "uR8JJjImXFz8TXZhoP40qTUdjZ8eZXkZ/flqbFeUMwkO9VTcKDJhTtMIeVCBOOcjBXVPnAhS1vAGkOFtTE6U/EODR67gNhIMJJlsT/7Z4xAEm7TqlZJJXl3gKOemfHAy",
+																				"Signers": [
+																						3
+																				],
+																				"Message": {
+																						"MsgType": 1,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "lUjo5k4oaf+kgIs9FMcnU99OKwYNsYqGqXH5VM7U4cUVetEqHYxKdPWRMX7DgVFSFJc6ac01UvU8orrPPvmJmoYWx5pXaqMGb+CPkRKUTiZMkzyLiRELQqJvyYyb6/GT",
+																				"Signers": [
+																						4
+																				],
+																				"Message": {
+																						"MsgType": 1,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "pnNOxIsWKdwh36oRwAJy1Db2lYWXfdKiGYxFc5P3DMadpaxyKJo36t+k8kL4oKf+AiZ5ZfXVx0ba2cWp38wlRXXkbDXek7KBxW3bS2cfIcKeji+cj/gQWiTwWsUg7Bzk",
+																				"Signers": [
+																						5
+																				],
+																				"Message": {
+																						"MsgType": 1,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "l+tpCP5xe4zArPBLw2s0v/xt36m1mIQ/z2HTp5D+WFXbU1pDaFyYnLyqNGB39pqkDqTzMzXTN8XtK3oF5DdqcKMc4fq2mczh71M7ta5RVb94vzneV50JjVvjfS9/KJg5",
+																				"Signers": [
+																						6
+																				],
+																				"Message": {
+																						"MsgType": 1,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "pYQd7MNEyvrEHqgxPGKB8SHAykm8hOAts7l7tPou1P9jJUdsLqnrxM3JqNR0ClQzBI81UcjmDx8oUKbp3dr7tKAEIzzxbOHrxkvAMS4YpD2z7GMMa6mqG8pdwbIG86M/",
+																				"Signers": [
+																						7
+																				],
+																				"Message": {
+																						"MsgType": 1,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		}
+																]
+														}
+												},
+												"CommitContainer": {
+														"Msgs": {
+																"1": [
+																		{
+																				"Signature": "uaR9+GZDwcqWqQsFhktSmtAegKu0DzuOrsa3YEuXbo2FmztZGk64WiXVrUft99NZABlF7T2THyAnPmR1IbXbO2GnFxbIgiNHoipN88MIKiuiYe7pU69I76NYFZfkMtwm",
+																				"Signers": [
+																						1
+																				],
+																				"Message": {
+																						"MsgType": 2,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "hgPsbHHy1JwmGO7ectbvlyJkWXPD4P4b2cOryy/ZfzqcxH2JEBenYOAbp3lde+DNGgAdUJqpALw99RYSVSgfhpSlBFlgTD7kSm7hGwJ7Di6OSIPrD9Q3Ub/z7sdFe1E9",
+																				"Signers": [
+																						2
+																				],
+																				"Message": {
+																						"MsgType": 2,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "ovG97EHe9likYTvvzQeqXiM0gkp6En81aO2be+dQno08Acf37FBNmyPA35740OkYC/g1Ya4xTONx1pL6gdt/7PUlo7b2FGzae5xjdrZ3UMULeROppLnH+tFOWXaFFQ7N",
+																				"Signers": [
+																						3
+																				],
+																				"Message": {
+																						"MsgType": 2,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "jwlHdG4MGbQoYplC5dPcafWkjzq9mYha5+tHw07wxqbMj9V8vQtQxOyhVD85o3MRGSCD7CU6qifylbCbkly30m5DS1xxOZPeDOv+dGmFyiERDbE1A7sbwAT1wIgyod3t",
+																				"Signers": [
+																						4
+																				],
+																				"Message": {
+																						"MsgType": 2,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "gCIi4yoJBNs3zr9/+dE85xzsis3aN2U10tY4qZBAhTkixznYh0dlXuF6DNK5xjtHFle7B5grW01O52wd4agAn+etMAWa+30V4VB3cTm1U7g95HTxoRteD8R4YLNS/qfF",
+																				"Signers": [
+																						5
+																				],
+																				"Message": {
+																						"MsgType": 2,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "s0OmnbBId9CdhmmKdlTg+wVcvL2kEPFS71pjg5c9Y6a7waUyT8C45gcQXMPCLSBpGEhgiNE3zc5mT6F424uXBG6g1lhqKVi7Tc/kjsmc99s8XXvG24AnTLj7DgRUj7Go",
+																				"Signers": [
+																						6
+																				],
+																				"Message": {
+																						"MsgType": 2,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		},
+																		{
+																				"Signature": "rxmlobHNwA1n0ptKvypinA3OA8dk7Hodc6ks3oFJF0rb0ZlHZqWKSb+qPbE00jNOAgfxh5vhFJxQM1IUmuuT9PG2yZMwfjCJsL+wSoc50wByjwK0lB2jxzll0fXiknPM",
+																				"Signers": [
+																						7
+																				],
+																				"Message": {
+																						"MsgType": 2,
+																						"Height": 12,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+																						"Root": [
+																								117,
+																								196,
+																								241,
+																								35,
+																								30,
+																								78,
+																								66,
+																								219,
+																								175,
+																								45,
+																								228,
+																								61,
+																								145,
+																								99,
+																								50,
+																								174,
+																								33,
+																								16,
+																								235,
+																								160,
+																								137,
+																								68,
+																								168,
+																								2,
+																								110,
+																								60,
+																								121,
+																								97,
+																								214,
+																								68,
+																								240,
+																								242
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": ""
+																		}
+																]
+														}
+												},
+												"RoundChangeContainer": {
+														"Msgs": {}
+												}
+										},
+										"StartValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+								}
+						],
+						"FutureMsgsContainer": {},
+						"Domain": [
+								0,
+								0,
+								3,
+								1
+						],
+						"Share": {
+								"OperatorID": 1,
+								"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+								"SharePubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx",
+								"Committee": [
+										{
+												"OperatorID": 1,
+												"PubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx"
+										},
+										{
+												"OperatorID": 2,
+												"PubKey": "kz1pTGkkb5iqKz1t524qR2rdHuj5H6A5SbEVvHoPZ3u5ZGIgBH/krSlDVUVCQlID"
+										},
+										{
+												"OperatorID": 3,
+												"PubKey": "oa8IOuuo3GEYpGecefYZvvNk1VYbI8fxLPDSfgQIMZu+/rxyyutWy8+21ul3ilKG"
+										},
+										{
+												"OperatorID": 4,
+												"PubKey": "rbbPE1h+tjwTMBvXBq0uQeiY7zjgW8F3SHU/GbiTh6NSfksUWkw4+ePzXeQF/QdH"
+										},
+										{
+												"OperatorID": 5,
+												"PubKey": "ovesq67A79GGQk7tkM5WjCDtuuuf9+xT9fGA5wk3pppddGByCSve0md4ED5rGJNo"
+										},
+										{
+												"OperatorID": 6,
+												"PubKey": "k0G6HgfsQWNlvKiso3P/s80hTVrPnkjyTPrc0+2uB+PaplJffnFvSdmjkBNW4Mye"
+										},
+										{
+												"OperatorID": 7,
+												"PubKey": "jKJiWGQ9GMT6EaPHMt+EWZKfacZB1sXPUXgWYugOJa3hMm1CbTGoRXXnYRS8yz/R"
+										},
+										{
+												"OperatorID": 8,
+												"PubKey": "q0rU1AgNbIxwQ0gfqb5DpEbdriONEftFDWGhOesWB/KjAmm7SijrQkMfybi/qNAt"
+										},
+										{
+												"OperatorID": 9,
+												"PubKey": "obBtOlWzBdTeziCtVY5FteuDACOmXzBRXfZONryRSaDgvfQlc01s+Qewj67gYRtH"
+										},
+										{
+												"OperatorID": 10,
+												"PubKey": "tJ7NtDheMBJsjieXeanh6kC+9ONNv116vN0v2xyqUfEqqfST3Ku/Vx3rhBvtAidF"
+										}
+								],
+								"Quorum": 7,
+								"PartialQuorum": 4,
+								"DomainType": [
+										0,
+										0,
+										3,
+										1
+								],
+								"FeeRecipientAddress": [
+										83,
+										89,
+										83,
+										181,
+										166,
+										4,
+										0,
+										116,
+										148,
+										140,
+										241,
+										133,
+										234,
+										167,
+										210,
+										171,
+										189,
+										102,
+										128,
+										143
+								],
+								"Graffiti": null
+						}
+				},
+				"BeaconNetwork": "now_test_network",
+				"BeaconRoleType": 3
+		}
+}

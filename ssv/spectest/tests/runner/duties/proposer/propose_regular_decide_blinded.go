@@ -2,6 +2,7 @@ package proposer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -22,9 +23,12 @@ func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 			testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionBellatrix)),
 
 			testingutils.SSVMsgProposer(
-				testingutils.TestingCommitMultiSignerMessageWithIdentifierAndFullData(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+				testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+					[]*bls.SecretKey{
+						ks.Shares[1], ks.Shares[2], ks.Shares[3],
+					},
 					[]types.OperatorID{1, 2, 3},
+					qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionBellatrix)),
 					testingutils.ProposerMsgID,
 					testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
 				), nil),
@@ -33,7 +37,7 @@ func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 		},
-		PostDutyRunnerStateRoot: "d3a677e479864a7ec27e9315cc62fde5eb7f4081b47461b4670a497a91ecce7f",
+		PostDutyRunnerStateRoot: "97b5fd3d786658f67d9d39df63a7a73b690e7873f9bdc107f6fcd401a42d98fc",
 		OutputMessages: []*types.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 			testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),

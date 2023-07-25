@@ -43,14 +43,12 @@ func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
 					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.Shares[1], types.OperatorID(1),
-						ret.GetBaseRunner().QBFTController.Identifier,
-						cdBytes,
-					),
+						ks.Shares[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
+						qbft.Height(testingutils.TestingDutySlot)),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -61,14 +59,13 @@ func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleSyncCommitteeContribution)[3:10],
 					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.TestingCommitMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.SyncCommitteeContributionMsgID, cdBytes,
-						),
+						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeContributionMsgID, cdBytes),
 						nil,
 					),
 				),
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 			return ret
 		}(),
 	}
@@ -106,14 +103,12 @@ func postFinishSyncCommitteeSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
 					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.Shares[1], types.OperatorID(1),
-						ret.GetBaseRunner().QBFTController.Identifier,
-						cdBytes,
-					),
+						ks.Shares[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
+						qbft.Height(testingutils.TestingDutySlot)),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -124,14 +119,13 @@ func postFinishSyncCommitteeSC() *comparable.StateComparison {
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleSyncCommittee)[:7],
 					testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingCommitMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.SyncCommitteeMsgID, cdBytes,
-						),
+						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeMsgID, cdBytes),
 						nil,
 					),
 				),
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 			return ret
 		}(),
 	}
@@ -169,14 +163,12 @@ func postFinishAggregatorSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
 					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.Shares[1], types.OperatorID(1),
-						ret.GetBaseRunner().QBFTController.Identifier,
-						cdBytes,
-					),
+						ks.Shares[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
+						qbft.Height(testingutils.TestingDutySlot)),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -187,14 +179,13 @@ func postFinishAggregatorSC() *comparable.StateComparison {
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleAggregator)[3:10],
 					testingutils.SSVMsgAggregator(
-						testingutils.TestingCommitMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.AggregatorMsgID, cdBytes,
-						),
+						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.AggregatorMsgID, cdBytes),
 						nil,
 					),
 				),
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 			return ret
 		}(),
 	}
@@ -218,9 +209,9 @@ func postFinishAttesterSC() *comparable.StateComparison {
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
+						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)),
+						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot)),
+						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot)),
 					},
 				),
 				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
@@ -232,14 +223,12 @@ func postFinishAttesterSC() *comparable.StateComparison {
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
 					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.Shares[1], types.OperatorID(1),
-						ret.GetBaseRunner().QBFTController.Identifier,
-						cdBytes,
-					),
+						ks.Shares[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
+						qbft.Height(testingutils.TestingDutySlot)),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -250,14 +239,13 @@ func postFinishAttesterSC() *comparable.StateComparison {
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleAttester)[:7],
 					testingutils.SSVMsgAttester(
-						testingutils.TestingCommitMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.AttesterMsgID, cdBytes,
-						),
+						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.AttesterMsgID, cdBytes),
 						nil,
 					),
 				),
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 			return ret
 		}(),
 	}
@@ -295,14 +283,12 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
 					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.Shares[1], types.OperatorID(1),
-						ret.GetBaseRunner().QBFTController.Identifier,
-						cdBytes,
-					),
+						ks.Shares[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
+						qbft.Height(testingutils.TestingDutySlotV(version))),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -313,14 +299,14 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[3:10],
 					testingutils.SSVMsgProposer(
-						testingutils.TestingCommitMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID, cdBytes,
-						),
+						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4),
+							qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID, cdBytes),
 						nil,
 					),
 				),
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
 			return ret
 		}(),
 	}
@@ -358,14 +344,12 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 					Share:             testingutils.TestingShare(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
+					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
 					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.Shares[1], types.OperatorID(1),
-						ret.GetBaseRunner().QBFTController.Identifier,
-						cdBytes,
-					),
+						ks.Shares[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
+						qbft.Height(testingutils.TestingDutySlotV(version))),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -376,14 +360,15 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[3:10],
 					testingutils.SSVMsgProposer(
-						testingutils.TestingCommitMessageWithIdentifierAndFullData(
-							ks.Shares[4], types.OperatorID(4), testingutils.ProposerMsgID, cdBytes,
-						),
+						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4],
+							types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
+							cdBytes),
 						nil,
 					),
 				),
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
+			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
 			return ret
 		}(),
 	}

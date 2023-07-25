@@ -65,3 +65,7 @@ func (test *SpecTest) Run(t *testing.T) {
 		require.Fail(t, "post state not equal", diff)
 	}
 }
+
+func (test *SpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}

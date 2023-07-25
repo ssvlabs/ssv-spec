@@ -3,6 +3,10 @@ package tests
 import (
 	"bytes"
 	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -43,17 +47,14 @@ func (test *ControllerSpecTest) TestName() string {
 }
 
 func (test *ControllerSpecTest) Run(t *testing.T) {
-	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
-	contr := testingutils.NewTestingQBFTController(
-		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		config,
-	)
+	//temporary to override state comparisons from file not inputted one
+	test.overrideStateComparison(t)
+
+	contr := test.generateController()
 
 	var lastErr error
-	for _, runData := range test.RunInstanceData {
-		if err := test.runInstanceWithData(t, contr, config, identifier, runData); err != nil {
+	for i, runData := range test.RunInstanceData {
+		if err := test.runInstanceWithData(t, qbft.Height(i), contr, runData); err != nil {
 			lastErr = err
 		}
 	}
@@ -65,9 +66,19 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 	}
 }
 
+func (test *ControllerSpecTest) generateController() *qbft.Controller {
+	identifier := []byte{1, 2, 3, 4}
+	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	return testingutils.NewTestingQBFTController(
+		identifier[:],
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		config,
+	)
+}
+
 func (test *ControllerSpecTest) testTimer(
 	t *testing.T,
-	config *qbft.Config,
+	config qbft.IConfig,
 	runData *RunInstanceData,
 ) {
 	if runData.ExpectedTimerState != nil {
@@ -81,7 +92,7 @@ func (test *ControllerSpecTest) testTimer(
 func (test *ControllerSpecTest) testProcessMsg(
 	t *testing.T,
 	contr *qbft.Controller,
-	config *qbft.Config,
+	config qbft.IConfig,
 	runData *RunInstanceData,
 ) error {
 	decidedCnt := 0
@@ -111,7 +122,7 @@ func (test *ControllerSpecTest) testProcessMsg(
 
 func (test *ControllerSpecTest) testBroadcastedDecided(
 	t *testing.T,
-	config *qbft.Config,
+	config qbft.IConfig,
 	identifier []byte,
 	runData *RunInstanceData,
 ) {
@@ -151,32 +162,88 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 
 func (test *ControllerSpecTest) runInstanceWithData(
 	t *testing.T,
+	height qbft.Height,
 	contr *qbft.Controller,
-	config *qbft.Config,
-	identifier []byte,
 	runData *RunInstanceData,
 ) error {
-	err := contr.StartNewInstance(runData.InputValue)
+	err := contr.StartNewInstance(height, runData.InputValue)
 	var lastErr error
 	if err != nil {
 		lastErr = err
 	}
 
-	test.testTimer(t, config, runData)
+	test.testTimer(t, contr.GetConfig(), runData)
 
-	if err := test.testProcessMsg(t, contr, config, runData); err != nil {
+	if err := test.testProcessMsg(t, contr, contr.GetConfig(), runData); err != nil {
 		lastErr = err
 	}
 
-	test.testBroadcastedDecided(t, config, identifier, runData)
+	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData)
 
 	// test root
 	r, err := contr.GetRoot()
 	require.NoError(t, err)
 	if runData.ControllerPostRoot != hex.EncodeToString(r[:]) {
 		diff := typescomparable.PrintDiff(contr, runData.ControllerPostState)
-		require.Fail(t, "post state not equal", diff)
+		require.Fail(t, fmt.Sprintf("post state not equal\nexpected: %s\nreceived: %s", runData.ControllerPostRoot, hex.EncodeToString(r[:])), diff)
 	}
 
 	return lastErr
+}
+
+func (test *ControllerSpecTest) overrideStateComparison(t *testing.T) {
+	basedir, err := os.Getwd()
+	require.NoError(t, err)
+	basedir = filepath.Join(basedir, "generate")
+	dir := typescomparable.GetSCDir(basedir, reflect.TypeOf(test).String())
+	path := filepath.Join(dir, fmt.Sprintf("%s.json", test.TestName()))
+	byteValue, err := os.ReadFile(path)
+	require.NoError(t, err)
+	sc := make([]*qbft.Controller, len(test.RunInstanceData))
+	require.NoError(t, json.Unmarshal(byteValue, &sc))
+
+	for i, runData := range test.RunInstanceData {
+		runData.ControllerPostState = sc[i]
+
+		r, err := sc[i].GetRoot()
+		require.NoError(t, err)
+
+		// backwards compatability test, hard coded post root must be equal to the one loaded from file
+		if len(runData.ControllerPostRoot) > 0 {
+			require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r[:]))
+		}
+
+		runData.ControllerPostRoot = hex.EncodeToString(r[:])
+	}
+}
+
+func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
+	contr := test.generateController()
+
+	ret := make([]*qbft.Controller, len(test.RunInstanceData))
+	for i, runData := range test.RunInstanceData {
+		err := contr.StartNewInstance(qbft.Height(i), runData.InputValue)
+		if err != nil && len(test.ExpectedError) == 0 {
+			return nil, err
+		}
+
+		for _, msg := range runData.InputMessages {
+			_, err := contr.ProcessMsg(msg)
+			if err != nil && len(test.ExpectedError) == 0 {
+				return nil, err
+			}
+		}
+
+		// copy controller
+		byts, err := contr.Encode()
+		if err != nil {
+			return nil, err
+		}
+		copied := &qbft.Controller{}
+		if err := copied.Decode(byts); err != nil {
+			return nil, err
+		}
+		ret[i] = copied
+	}
+	return ret, nil
 }

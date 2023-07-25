@@ -11,9 +11,12 @@ import (
 )
 
 // PostWrongDecided tests starting a new duty after prev was decided wrongly (future decided)
+// This can happen if we receive a future decided message from the network.
 func PostWrongDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	// https://github.com/bloxapp/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
+	// Maybe we should ensure that `ValidateDecided()` doesn't let the runner enter this state and delete the test?
 	decideWrong := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
 		storedInstances := r.GetBaseRunner().QBFTController.StoredInstances
 		storedInstances = append(storedInstances, nil)
@@ -32,13 +35,19 @@ func PostWrongDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			10)
+			50)
 		higherDecided.State.Decided = true
 		higherDecided.State.DecidedValue = []byte{1, 2, 3, 4}
 		storedInstances[0] = higherDecided
-		r.GetBaseRunner().QBFTController.Height = 10
+		r.GetBaseRunner().QBFTController.Height = 50
+		// TODO: hacky fix to a bug in the test.
+		// You can't append a copied slice and expect the original to change in go. Since maybe we want to delete
+		// the test I didn't do it nicer.
+		r.GetBaseRunner().QBFTController.StoredInstances = storedInstances
 		return r
 	}
+
+	expectedError := "can't start new duty runner instance for duty: could not start new QBFT instance: attempting to start an instance with a past height"
 
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty post wrong decided",
@@ -47,7 +56,7 @@ func PostWrongDecided() tests.SpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  decideWrong(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
-				PostDutyRunnerStateRoot: "9b1cf6ce4dd1e000e3e207075e48ed2b4be2b0f220d1319f1479e033102fdbeb",
+				PostDutyRunnerStateRoot: "1755f6cbd21dd492f8398bc09909d2f5509d11c9018d6582fe4d94c4fd1473a4",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -56,14 +65,15 @@ func PostWrongDecided() tests.SpecTest {
 				Name:                    "sync committee",
 				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "5c7c43eb3fee08a3d72522cf71143f5024dcd5d8eb6aea081ff140114ee52c67",
+				PostDutyRunnerStateRoot: "037414235648efdf794077306b597690be309e4baba7cfd687d6e90b1bbe2402",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedError,
 			},
 			{
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDuty,
-				PostDutyRunnerStateRoot: "b53f4d55438b384ad12304e5717152eb686549ed48dcf2ef731238a87049ca66",
+				PostDutyRunnerStateRoot: "441378c466c16e0b59be45dbaaa7321990a8a8df1bfc8d4cba0b4dac0efe76fc",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -72,7 +82,7 @@ func PostWrongDecided() tests.SpecTest {
 				Name:                    "proposer",
 				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				PostDutyRunnerStateRoot: "e8fa1b19f1f72ef177e24b1c876c4177d88b04d5542b91411b30fd10ec2f9a66",
+				PostDutyRunnerStateRoot: "f1f8ef52d758ac2bd1222943dad8c7a3aaf8bfd54255a65f192cc36791b8e862",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
@@ -81,8 +91,9 @@ func PostWrongDecided() tests.SpecTest {
 				Name:                    "attester",
 				Runner:                  decideWrong(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "082ef9f22c2a640518d0b19dffb23efa2acbf1a568b772d68eb470cef39bbb7c",
+				PostDutyRunnerStateRoot: "43819363c8d1080883c8d4ecb2b25fc1cde06facb14825c533a891f0be6f539a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedError,
 			},
 		},
 	}

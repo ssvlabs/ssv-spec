@@ -61,6 +61,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
+		ExpectedError: "could not process msg: instance stopped processing messages",
 	}
 }
 
@@ -105,10 +106,6 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbf
 
 		msgs := allMsgs[offset*i : offset*(i+1)]
 		comparable.SetSignedMessages(instance, msgs)
-
-		if lateMsg != nil && qbft.Height(i) == lateMsg.Message.Height {
-			instance.State.RoundChangeContainer.Msgs[qbft.FirstRound] = append(instance.State.RoundChangeContainer.Msgs[qbft.FirstRound], lateMsg)
-		}
 
 		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 	}
