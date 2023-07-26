@@ -36,6 +36,15 @@ func DuplicateDutyFinished() tests.SpecTest {
 	expectedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
 		testingutils.TestingDutySlot,
 		testingutils.TestingDutySlot)
+
+	// finishTaskRunner is a helper function that finishes a task runner and returns it
+	// task is an operation that isn't a beacon duty, e.g. validator registration
+	finishTaskRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
+		r.GetBaseRunner().State.Finished = true
+		return r
+	}
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "duplicate duty finished",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -84,6 +93,16 @@ func DuplicateDutyFinished() tests.SpecTest {
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedError,
+			},
+			{
+				Name: "validator registration",
+				Runner: finishTaskRunner(testingutils.ValidatorRegistrationRunner(ks),
+					&testingutils.TestingValidatorRegistrationDuty),
+				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
 			},
 		},
 	}

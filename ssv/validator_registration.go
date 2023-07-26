@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -41,7 +42,13 @@ func NewValidatorRegistrationRunner(
 }
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty *types.Duty) error {
-	return r.BaseRunner.baseStartNewDuty(r, duty)
+	// Note: Unlike the other runners, this doesn't call BaseRunner.baseStartNewDuty because
+	// that requires a QBFTController which ValidatorRegistrationRunner doesn't have.
+	if r.HasRunningDuty() {
+		return errors.New("already running duty")
+	}
+	r.BaseRunner.baseSetupForNewDuty(duty)
+	return r.executeDuty(duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
