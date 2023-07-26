@@ -14,8 +14,6 @@ import (
 //   - Runner is assigned a duty
 //   - Runner finishes the duty
 //   - Runner is assigned the same duty again
-//     https://github.com/bloxapp/ssv-spec/issues/282.
-//     Does it make sense that the runner starts? Does it make sense that duties with precon phase don't return an error?
 func DuplicateDutyFinished() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
