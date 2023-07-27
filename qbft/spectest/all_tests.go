@@ -152,6 +152,7 @@ var AllTests = []tests.TestF{
 	proposal.WrongProposer,
 	proposal.WrongSignature,
 	proposal.UnknownSigner,
+	proposal.ForceStop,
 
 	prepare.DuplicateMsg,
 	prepare.HappyFlow,
