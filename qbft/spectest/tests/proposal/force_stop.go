@@ -21,7 +21,7 @@ func ForceStop() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "force stop proposal message",
 		Pre:           pre,
-		PostRoot:      "b61f5233721865ca43afc68f4ad5045eeb123f6e8f095ce76ecf956dabc74713",
+		PostRoot:      "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
 		InputMessages: msgs,
 		ExpectedError: "instance stopped processing messages",
 	}
