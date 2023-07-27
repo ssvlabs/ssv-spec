@@ -15,7 +15,7 @@ func PostCutoff() tests.SpecTest {
 	pre.State.Round = 15
 
 	msgs := []*qbft.SignedMessage{
-		testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessageWithRound(ks.Shares[1], types.OperatorID(1), 15),
 	}
 
 	return &tests.MsgProcessingSpecTest{
