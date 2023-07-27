@@ -221,4 +221,5 @@ var AllTests = []tests.TestF{
 	roundchange.QuorumOrder1,
 	roundchange.QuorumMsgNotPrepared,
 	roundchange.JustificationPastRound,
+	roundchange.ForceStop,
 }
