@@ -153,6 +153,7 @@ var AllTests = []tests.TestF{
 	proposal.WrongSignature,
 	proposal.UnknownSigner,
 	proposal.ForceStop,
+	proposal.PostCutoff,
 
 	prepare.DuplicateMsg,
 	prepare.HappyFlow,
@@ -168,6 +169,7 @@ var AllTests = []tests.TestF{
 	prepare.PrepareQuorumTriggeredTwice,
 	prepare.PrepareQuorumTriggeredTwiceLateCommit,
 	prepare.ForceStop,
+	prepare.PostCutoff,
 
 	commit.CurrentRound,
 	commit.FutureRound,
@@ -188,6 +190,7 @@ var AllTests = []tests.TestF{
 	commit.NoPrepareQuorum,
 	commit.NoCommitQuorum,
 	commit.ForceStop,
+	commit.PostCutoff,
 
 	roundchange.HappyFlow,
 	roundchange.WrongHeight,
@@ -223,4 +226,5 @@ var AllTests = []tests.TestF{
 	roundchange.QuorumMsgNotPrepared,
 	roundchange.JustificationPastRound,
 	roundchange.ForceStop,
+	roundchange.PostCutoff,
 }
