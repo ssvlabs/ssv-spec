@@ -223,7 +223,7 @@ func (i *Instance) CanProcessMessages() bool {
 
 /////////////////////// JSON Marshalling for Tests ///////////////////////
 
-func (i Instance) MarshalJSON() ([]byte, error) {
+func (i *Instance) MarshalJSON() ([]byte, error) {
 	type Alias Instance
 	if i.forceStop {
 		return json.Marshal(&struct {
@@ -231,13 +231,13 @@ func (i Instance) MarshalJSON() ([]byte, error) {
 			*Alias
 		}{
 			ForceStop: i.forceStop,
-			Alias:     (*Alias)(&i),
+			Alias:     (*Alias)(i),
 		})
 	} else {
 		return json.Marshal(&struct {
 			*Alias
 		}{
-			Alias: (*Alias)(&i),
+			Alias: (*Alias)(i),
 		})
 	}
 }
