@@ -82,6 +82,8 @@ var AllTests = []tests.TestF{
 	startinstance.PreviousDecided,
 	startinstance.PreviousNotDecided,
 	startinstance.InvalidValue,
+	startinstance.EqualHeightRunningInstance,
+	startinstance.LowerHeight,
 
 	proposer.FourOperators,
 	proposer.SevenOperators,
