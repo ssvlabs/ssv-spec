@@ -839,7 +839,7 @@ var PostConsensusWrongSigSyncCommitteeContributionMsg = func(sk *bls.SecretKey, 
 }
 
 var PostConsensusSigSyncCommitteeContributionWrongSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID, keySet *TestKeySet) *types.SignedPartialSignatureMessage {
-	ret := postConsensusSyncCommitteeContributionMsg(sk, beaconSigner, TestingValidatorIndex, keySet, false, true, false)
+	ret := postConsensusSyncCommitteeContributionMsg(sk, beaconSigner, TestingValidatorIndex, keySet, false, false, false)
 	ret.Signer = id
 	return ret
 }
