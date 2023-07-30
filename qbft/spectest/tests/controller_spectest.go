@@ -33,6 +33,7 @@ type RunInstanceData struct {
 	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedTimerState   *testingutils.TimerState
 	ExpectedDecidedState DecidedState
+	Height               *qbft.Height `json:"omitempty"`
 }
 
 type ControllerSpecTest struct {
@@ -54,7 +55,11 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 	var lastErr error
 	for i, runData := range test.RunInstanceData {
-		if err := test.runInstanceWithData(t, qbft.Height(i), contr, runData); err != nil {
+		height := qbft.Height(i)
+		if runData.Height != nil {
+			height = *runData.Height
+		}
+		if err := test.runInstanceWithData(t, height, contr, runData); err != nil {
 			lastErr = err
 		}
 	}
@@ -222,7 +227,11 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 
 	ret := make([]*qbft.Controller, len(test.RunInstanceData))
 	for i, runData := range test.RunInstanceData {
-		err := contr.StartNewInstance(qbft.Height(i), runData.InputValue)
+		height := qbft.Height(i)
+		if runData.Height != nil {
+			height = *runData.Height
+		}
+		err := contr.StartNewInstance(height, runData.InputValue)
 		if err != nil && len(test.ExpectedError) == 0 {
 			return nil, err
 		}
