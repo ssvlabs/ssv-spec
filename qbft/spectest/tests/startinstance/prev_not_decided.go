@@ -69,6 +69,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 		StartValue: []byte{1, 2, 3, 4},
 	}
 	qbftcomparable.SetMessages(instance1, []*types.SSVMessage{})
+	instance1.ForceStop()
 
 	instance2 := &qbft.Instance{
 		State: &qbft.State{
