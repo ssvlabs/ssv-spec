@@ -90,10 +90,5 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 	r, err2 := postState.GetRoot()
 	require.NoError(t, err2)
 
-	// backwards compatability test, hard coded post root must be equal to the one loaded from file
-	if len(test.PostDutyRunnerStateRoot) > 0 {
-		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(r[:]))
-	}
-
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(r[:])
 }

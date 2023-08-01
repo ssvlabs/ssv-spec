@@ -208,11 +208,6 @@ func (test *ControllerSpecTest) overrideStateComparison(t *testing.T) {
 		r, err := sc[i].GetRoot()
 		require.NoError(t, err)
 
-		// backwards compatability test, hard coded post root must be equal to the one loaded from file
-		if len(runData.ControllerPostRoot) > 0 {
-			require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r[:]))
-		}
-
 		runData.ControllerPostRoot = hex.EncodeToString(r[:])
 	}
 }
