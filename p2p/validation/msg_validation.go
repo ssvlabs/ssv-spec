@@ -25,9 +25,9 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 
 		switch ssvMsg.GetType() {
 		case types.SSVConsensusMsgType:
-			//if validateConsensusMsg(runner, ssvMsg.Data) != nil {
-			//	return pubsub.ValidationReject
-			//}
+			if validateConsensusMsg(runner, ssvMsg.Data) != nil {
+				return pubsub.ValidationReject
+			}
 		case types.SSVPartialSignatureMsgType:
 			if validatePartialSigMsg(runner, ssvMsg.Data) != nil {
 				return pubsub.ValidationReject
