@@ -65,14 +65,7 @@ var AllTests = []tests.TestF{
 	latemsg.LateRoundChangePastRound,
 	latemsg.FullFlowAfterDecided,
 
-	futuremsg.NoSigners,
-	futuremsg.MultiSigners,
-	futuremsg.Cleanup,
-	futuremsg.DuplicateSigner,
-	futuremsg.F1FutureMsgs,
-	futuremsg.InvalidMsg,
-	futuremsg.UnknownSigner,
-	futuremsg.WrongSig,
+	futuremsg.ValidMsg,
 
 	startinstance.Valid,
 	startinstance.EmptyValue,
