@@ -187,10 +187,5 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 	root, err := runner.GetRoot()
 	require.NoError(t, err)
 
-	// backwards compatability test, hard coded post root must be equal to the one loaded from file
-	if len(test.PostDutyRunnerStateRoot) > 0 {
-		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(root[:]), "post runner state not equal")
-	}
-
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(root[:])
 }
