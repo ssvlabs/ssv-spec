@@ -53,6 +53,7 @@ var AllTests = []tests.TestF{
 	newduty.PostInvalidDecided,
 	newduty.PostFutureDecided,
 	newduty.DuplicateDutyFinished,
+	newduty.DuplicateDutyNotFinished,
 
 	consensus.FutureDecided,
 	consensus.InvalidDecidedValue,
