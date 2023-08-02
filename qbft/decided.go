@@ -41,8 +41,6 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	}
 
 	if isFutureDecided {
-		// sync gap
-		c.GetConfig().GetNetwork().SyncDecidedByRange(types.MessageIDFromBytes(c.Identifier), c.Height, msg.Message.Height)
 		// bump height
 		c.Height = msg.Message.Height
 	}
