@@ -2,6 +2,7 @@ package spectest
 
 import (
 	"encoding/json"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
 	"os"
 	"path/filepath"
@@ -11,7 +12,6 @@ import (
 
 	"github.com/bloxapp/ssv-spec/qbft"
 	tests2 "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
@@ -24,6 +24,15 @@ func TestAll(t *testing.T) {
 			test.Run(t)
 		})
 	}
+}
+
+// TestOne tests a single test
+func TestOne(t *testing.T) {
+	t.Parallel()
+	test := latemsg.FullFlowAfterDecided()
+	t.Run(test.TestName(), func(t *testing.T) {
+		test.Run(t)
+	})
 }
 
 func TestJson(t *testing.T) {
@@ -93,14 +102,6 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &tests2.RoundRobinSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-				tests[testName] = typedTest
-				typedTest.Run(t)
-			case reflect.TypeOf(&futuremsg.ControllerSyncSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &futuremsg.ControllerSyncSpecTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				tests[testName] = typedTest

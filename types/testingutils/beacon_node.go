@@ -35,8 +35,9 @@ func GetSSZRootNoError(obj ssz.HashRoot) string {
 }
 
 const TestingAttestationDataVersion = spec.DataVersionPhase0
+
 var TestingAttestationData = &phase0.AttestationData{
-	Slot:            12,
+	Slot:            TestingDutySlot,
 	Index:           3,
 	BeaconBlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	Source: &phase0.Checkpoint{
@@ -50,6 +51,24 @@ var TestingAttestationData = &phase0.AttestationData{
 }
 var TestingAttestationDataBytes = func() []byte {
 	ret, _ := TestingAttestationData.MarshalSSZ()
+	return ret
+}()
+
+var TestingAttestationNextEpochData = &phase0.AttestationData{
+	Slot:            TestingDutySlot2,
+	Index:           3,
+	BeaconBlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	Source: &phase0.Checkpoint{
+		Epoch: 0,
+		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	},
+	Target: &phase0.Checkpoint{
+		Epoch: 1,
+		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	},
+}
+var TestingAttestationNextEpochDataBytes = func() []byte {
+	ret, _ := TestingAttestationNextEpochData.MarshalSSZ()
 	return ret
 }()
 
@@ -331,6 +350,17 @@ var TestingAttesterDuty = types.Duty{
 	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
+var TestingAttesterDutyNextEpoch = types.Duty{
+	Type:                    types.BNRoleAttester,
+	PubKey:                  TestingValidatorPubKey,
+	Slot:                    TestingDutySlot2,
+	ValidatorIndex:          TestingValidatorIndex,
+	CommitteeIndex:          3,
+	CommitteesAtSlot:        36,
+	CommitteeLength:         128,
+	ValidatorCommitteeIndex: 11,
+}
+
 var TestingAggregatorDuty = types.Duty{
 	Type:                          types.BNRoleAggregator,
 	PubKey:                        TestingValidatorPubKey,
@@ -360,6 +390,18 @@ var TestingSyncCommitteeDuty = types.Duty{
 	Type:                          types.BNRoleSyncCommittee,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          TestingDutySlot,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+}
+
+var TestingSyncCommitteeDutyNextEpoch = types.Duty{
+	Type:                          types.BNRoleSyncCommittee,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot2,
 	ValidatorIndex:                TestingValidatorIndex,
 	CommitteeIndex:                3,
 	CommitteesAtSlot:              36,
@@ -452,7 +494,9 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 
 // GetAttestationData returns attestation data by the given slot and committee index
 func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, spec.DataVersion, error) {
-	return TestingAttestationData, TestingAttestationDataVersion, nil
+	data := *TestingAttestationData
+	data.Slot = slot
+	return &data, TestingAttestationDataVersion, nil
 }
 
 // SubmitAttestation submit the attestation to the node

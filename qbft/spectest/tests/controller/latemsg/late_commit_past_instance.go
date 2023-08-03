@@ -1,11 +1,13 @@
 package latemsg
 
 import (
+	"github.com/herumi/bls-eth-go-binary/bls"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // LateCommitPastInstance tests process commit msg for a previously decided instance
@@ -13,17 +15,14 @@ func LateCommitPastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
 
 	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
-	msgPerHeight[2] = allMsgs[14:21]
-	msgPerHeight[3] = allMsgs[21:28]
-	msgPerHeight[4] = allMsgs[28:35]
-	msgPerHeight[5] = allMsgs[35:42]
 
-	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
+	instanceData := func(height qbft.Height) *tests.RunInstanceData {
+		sc := lateCommitPastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
@@ -36,30 +35,76 @@ func LateCommitPastInstance() tests.SpecTest {
 				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 			},
-			ControllerPostRoot: postRoot,
+			ControllerPostRoot:  sc.Root(),
+			ControllerPostState: sc.ExpectedState,
 		}
 	}
+
+	lateMsg := testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, qbft.FirstHeight)
+	sc := lateCommitPastInstanceStateComparison(2, lateMsg)
 
 	return &tests.ControllerSpecTest{
 		Name: "late commit past instance",
 		RunInstanceData: []*tests.RunInstanceData{
-			instanceData(qbft.FirstHeight, "24cf697092529cfab3ab06b969d8696692c8bcbb9f41a954f71dc74c3b1d7e97"),
-			instanceData(1, "8aa5464b119518f178d81edf4cea1f4c918f9e084e5262a0e276d3afb00ba620"),
-			instanceData(2, "1799fe0981ae08bde1eae9fef88ef8035f5952974647786287a1a8c36544a5da"),
-			instanceData(3, "2ddf2b8c2f35c8115ddd68120c71e64809bfea6b023ed13e177c2474a95d137d"),
-			instanceData(4, "318816cc8819ad062996704fb4b9990b8088ade0cb4c26816ea0965783bff12e"),
-			instanceData(5, "fd83cdee705de628cf4a9baf9e662c424bf0942c63a680266d7db872d16e9f0a"),
+			instanceData(qbft.FirstHeight),
+			instanceData(1),
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*qbft.SignedMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeight(
-						[]*bls.SecretKey{ks.Shares[4]},
-						[]types.OperatorID{4},
-						4,
-					),
+					lateMsg,
 				},
-				ControllerPostRoot: "691ac09194b0f6c67e85de702293f19863b0f5ee19e17c3764e411cee253f8b7",
+				ControllerPostRoot:  sc.Root(),
+				ControllerPostState: sc.ExpectedState,
 			},
 		},
+		ExpectedError: "could not process msg: instance stopped processing messages",
 	}
+}
+
+// lateCommitPastInstanceStateComparison returns a comparable.StateComparison for controller running up until the given height.
+// lateMsg will be added to the commit container of the instance at the proper height.
+func lateCommitPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
+	offset := 7 // 7 messages per height (1 propose + 3 prepare + 3 commit)
+
+	contr := testingutils.NewTestingQBFTController(
+		testingutils.TestingIdentifier,
+		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+	)
+
+	for i := 0; i <= int(height); i++ {
+		contr.Height = qbft.Height(i)
+
+		instance := &qbft.Instance{
+			StartValue: []byte{1, 2, 3, 4},
+			State: &qbft.State{
+				Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
+				ID:     testingutils.TestingIdentifier,
+				Round:  qbft.FirstRound,
+				Height: qbft.Height(i),
+			},
+		}
+
+		// last height should be just initialized, since no messages were processed for it
+		if lateMsg != nil && qbft.Height(i) == height {
+			comparable.InitContainers(instance)
+			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
+			break
+		}
+
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.LastPreparedRound = qbft.FirstRound
+		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
+		instance.State.Decided = true
+		instance.State.DecidedValue = testingutils.TestingQBFTFullData
+
+		msgs := allMsgs[offset*i : offset*(i+1)]
+		comparable.SetSignedMessages(instance, msgs)
+
+		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
+	}
+
+	return &comparable.StateComparison{ExpectedState: contr}
 }

@@ -21,7 +21,7 @@ var AllTests = []tests.TestF{
 	timeout.Round2,
 	timeout.Round3,
 	timeout.Round5,
-	timeout.Round20,
+	timeout.Round15,
 
 	decided.Valid,
 	decided.HasQuorum,
@@ -65,14 +65,7 @@ var AllTests = []tests.TestF{
 	latemsg.LateRoundChangePastRound,
 	latemsg.FullFlowAfterDecided,
 
-	futuremsg.NoSigners,
-	futuremsg.MultiSigners,
-	futuremsg.Cleanup,
-	futuremsg.DuplicateSigner,
-	futuremsg.F1FutureMsgs,
-	futuremsg.InvalidMsg,
-	futuremsg.UnknownSigner,
-	futuremsg.WrongSig,
+	futuremsg.ValidMsg,
 
 	startinstance.Valid,
 	startinstance.EmptyValue,

@@ -41,19 +41,25 @@ var ValidatorRegistrationMsgID = func() []byte {
 
 var TestAttesterConsensusData = comparable2.FixIssue178(&types.ConsensusData{
 	Duty:    TestingAttesterDuty,
-	Version: TestingAttestationDataVersion,
 	DataSSZ: TestingAttestationDataBytes,
-})
+}, TestingAttestationDataVersion)
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAggregatorConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       TestingAggregatorDuty,
-		Version:                    TestingAggregateAndProofVersion,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleAggregator, TestingAggregateAndProofVersion),
 		DataSSZ:                    TestingAggregateAndProofBytes,
-	})
+	}, TestingAggregateAndProofVersion)
 }
+
+var TestAttesterNextEpochConsensusData = &types.ConsensusData{
+	Duty:    TestingAttesterDutyNextEpoch,
+	DataSSZ: TestingAttestationNextEpochDataBytes,
+}
+
+var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensusData.Encode()
+
 var TestAggregatorConsensusDataByts = func(ks *TestKeySet) []byte {
 	byts, _ := TestAggregatorConsensusData(ks).Encode()
 	return byts
@@ -61,18 +67,17 @@ var TestAggregatorConsensusDataByts = func(ks *TestKeySet) []byte {
 
 var TestSyncCommitteeConsensusData = comparable2.FixIssue178(&types.ConsensusData{
 	Duty:    TestingSyncCommitteeDuty,
-	Version: TestingSyncCommitteeBlockRootVersion,
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
-})
+}, TestingSyncCommitteeBlockRootVersion)
+
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
 var TestSyncCommitteeContributionConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       TestingSyncCommitteeContributionDuty,
-		Version:                    TestingContributionDataVersion,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleSyncCommitteeContribution, TestingContributionDataVersion),
 		DataSSZ:                    TestingContributionsDataBytes,
-	})
+	}, TestingContributionDataVersion)
 }
 var TestSyncCommitteeContributionConsensusDataByts = func(ks *TestKeySet) []byte {
 	byts, _ := TestSyncCommitteeContributionConsensusData(ks).Encode()
@@ -81,6 +86,13 @@ var TestSyncCommitteeContributionConsensusDataByts = func(ks *TestKeySet) []byte
 var TestSyncCommitteeContributionConsensusDataRoot = func(ks *TestKeySet) [32]byte {
 	return sha256.Sum256(TestSyncCommitteeContributionConsensusDataByts(ks))
 }
+
+var TestSyncCommitteeNextEpochConsensusData = &types.ConsensusData{
+	Duty:    TestingSyncCommitteeDutyNextEpoch,
+	DataSSZ: TestingSyncCommitteeBlockRoot[:],
+}
+
+var TestSyncCommitteeNextEpochConsensusDataByts, _ = TestSyncCommitteeNextEpochConsensusData.Encode()
 
 var TestConsensusUnkownDutyTypeData = &types.ConsensusData{
 	Duty:    TestingUnknownDutyType,
@@ -812,7 +824,7 @@ var PostConsensusWrongSigSyncCommitteeContributionMsg = func(sk *bls.SecretKey, 
 }
 
 var PostConsensusSigSyncCommitteeContributionWrongSignerMsg = func(sk *bls.SecretKey, id, beaconSigner types.OperatorID, keySet *TestKeySet) *types.SignedPartialSignatureMessage {
-	ret := postConsensusSyncCommitteeContributionMsg(sk, beaconSigner, TestingValidatorIndex, keySet, false, true, false)
+	ret := postConsensusSyncCommitteeContributionMsg(sk, beaconSigner, TestingValidatorIndex, keySet, false, false, false)
 	ret.Signer = id
 	return ret
 }

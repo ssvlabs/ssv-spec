@@ -10,16 +10,15 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// postFinishProposerSC returns state comparison object for the PostFinish Proposer versioned spec test
-func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison {
+// postFinishSyncCommitteeContributionSC returns state comparison object for the PostFinish SyncCommitteeContribution versioned spec test
+func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cd := testingutils.TestSyncCommitteeContributionConsensusData(ks)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
-			ret := testingutils.ProposerRunner(ks)
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.SyncCommitteeContributionRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
-				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
@@ -28,7 +27,82 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
-				Finished: true,
+				StartingDuty: &cd.Duty,
+				Finished:     true,
+			}
+			return ret
+		}(),
+	}
+}
+
+// postFinishAggregatorSC returns state comparison object for the PostFinish Aggregator versioned spec test
+func postFinishAggregatorSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	cd := testingutils.TestAggregatorConsensusData(ks)
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.AggregatorRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSignatureContainer(),
+					[]*types.SSVMessage{},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSignatureContainer(),
+					[]*types.SSVMessage{},
+				),
+				StartingDuty: &cd.Duty,
+				Finished:     true,
+			}
+			return ret
+		}(),
+	}
+}
+
+// postFinishValidatorRegistrationSC returns state comparison object for the PostFinish ValidatorRegistration versioned spec test
+func postFinishValidatorRegistrationSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.ValidatorRegistrationRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSignatureContainer(),
+					[]*types.SSVMessage{},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSignatureContainer(),
+					[]*types.SSVMessage{},
+				),
+				StartingDuty: &testingutils.TestingValidatorRegistrationDuty,
+				Finished:     true,
+			}
+			return ret
+		}(),
+	}
+}
+
+// postFinishProposerSC returns state comparison object for the PostFinish Proposer versioned spec test
+func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+	cd := testingutils.TestProposerConsensusDataV(ks, version)
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.ProposerRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSignatureContainer(),
+					[]*types.SSVMessage{},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSignatureContainer(),
+					[]*types.SSVMessage{},
+				),
+				StartingDuty: &cd.Duty,
+				Finished:     true,
 			}
 			return ret
 		}(),
@@ -41,10 +115,9 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
 
 	return &comparable.StateComparison{
-		ExpectedState: func() types.Root {
+		ExpectedState: func() ssv.Runner {
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
-				StartingDuty: &cd.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
@@ -53,7 +126,8 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
-				Finished: true,
+				StartingDuty: &cd.Duty,
+				Finished:     true,
 			}
 			return ret
 		}(),

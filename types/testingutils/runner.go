@@ -169,7 +169,7 @@ var DecidedRunnerUnknownDutyType = func(keySet *TestKeySet) ssv.Runner {
 
 var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height, keySet *TestKeySet) ssv.Runner {
 	v := BaseValidator(keySet)
-	msgs := DecidingMsgsForHeight(consensusInput, []byte{1, 2, 3, 4}, height, keySet)
+	msgs := SSVDecidingMsgsForHeight(consensusInput, []byte{1, 2, 3, 4}, height, keySet)
 
 	if err := v.DutyRunners[types.BNRoleAttester].StartNewDuty(&consensusInput.Duty); err != nil {
 		panic(err.Error())
@@ -184,6 +184,98 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	return v.DutyRunners[types.BNRoleAttester]
 }
 
+// //////////////////////////////// For SSV Tests ////////////////////////////////////////////////////////////////
+var SSVDecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	byts, _ := consensusData.Encode()
+	r, _ := qbft.HashDataRoot(byts)
+	fullData, _ := consensusData.MarshalSSZ()
+
+	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
+}
+
+var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	byts, _ := consensusData.Encode()
+	r, _ := qbft.HashDataRoot(byts)
+	fullData, _ := consensusData.MarshalSSZ()
+
+	return SSVExpectedDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
+}
+
+var SSVDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	msgs := make([]*qbft.SignedMessage, 0)
+
+	// proposal
+	s := SignQBFTMsg(keySet.Shares[1], 1, &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     height,
+		Round:      qbft.FirstRound,
+		Identifier: msgIdentifier,
+		Root:       root,
+	})
+	s.FullData = fullData
+	msgs = append(msgs, s)
+
+	// prepare
+	for i := uint64(1); i <= keySet.Threshold; i++ {
+		msgs = append(msgs, SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+			MsgType:    qbft.PrepareMsgType,
+			Height:     height,
+			Round:      qbft.FirstRound,
+			Identifier: msgIdentifier,
+			Root:       root,
+		}))
+	}
+	// commit
+	for i := uint64(1); i <= keySet.Threshold; i++ {
+		msgs = append(msgs, SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+			MsgType:    qbft.CommitMsgType,
+			Height:     height,
+			Round:      qbft.FirstRound,
+			Identifier: msgIdentifier,
+			Root:       root,
+		}))
+	}
+	return msgs
+}
+
+var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
+	msgs := make([]*qbft.SignedMessage, 0)
+
+	// proposal
+	s := SignQBFTMsg(keySet.Shares[1], 1, &qbft.Message{
+		MsgType:    qbft.ProposalMsgType,
+		Height:     height,
+		Round:      qbft.FirstRound,
+		Identifier: msgIdentifier,
+		Root:       root,
+	})
+	s.FullData = fullData
+	msgs = append(msgs, s)
+
+	// prepare
+	for i := uint64(1); i <= keySet.Threshold; i++ {
+		msgs = append(msgs, SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+			MsgType:    qbft.PrepareMsgType,
+			Height:     height,
+			Round:      qbft.FirstRound,
+			Identifier: msgIdentifier,
+			Root:       root,
+		}))
+	}
+	// commit
+	for i := uint64(1); i <= keySet.Threshold; i++ {
+		msgs = append(msgs, SignQBFTMsg(keySet.Shares[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+			MsgType:    qbft.CommitMsgType,
+			Height:     height,
+			Round:      qbft.FirstRound,
+			Identifier: msgIdentifier,
+			Root:       root,
+		}))
+	}
+	return msgs
+}
+
+// //////////////////// For QBFT TESTS /////////////////////////////////////////////////////////////////////////
 var DecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)

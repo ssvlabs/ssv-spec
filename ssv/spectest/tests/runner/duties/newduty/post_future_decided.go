@@ -11,6 +11,7 @@ import (
 )
 
 // PostFutureDecided tests starting duty after a future decided
+// This can happen if we receive a future decided message from the network and we are behind.
 func PostFutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -22,63 +23,70 @@ func PostFutureDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
+			qbft.Height(duty.Slot))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 
 		futureDecidedInstance := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			50)
+			qbft.Height(duty.Slot+50))
 		futureDecidedInstance.State.Decided = true
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, futureDecidedInstance)
-		r.GetBaseRunner().QBFTController.Height = 50
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot + 50)
 		return r
 	}
+
+	expectedError := "can't start duty: duty for slot 12 already passed. Current height is 62"
 
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty post future decided",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  futureDecide(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionNexEpochDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
-				PostDutyRunnerStateRoot: "7f03ca55debd0d503e62817ea81f23f3b01b77b10881c26ba087e5d34b2b5a12",
+				Runner:                  futureDecide(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				PostDutyRunnerStateRoot: "0c2bf5b2570aad7da85cfe5aa81361524a727265c22b41e72e7e9ff2f9b2c215",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "sync committee",
 				Runner:                  futureDecide(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "d39238cb763ef4e6a49544657c8ae160822f85fb14a6e1769ce7c0a387156694",
+				PostDutyRunnerStateRoot: "89edc9d9c28654a0113c3003c1538aaae36fe14490992dbf057b9f5e5d492e33",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedError,
 			},
 			{
 				Name:                    "aggregator",
-				Runner:                  futureDecide(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDutyNextEpoch),
-				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
-				PostDutyRunnerStateRoot: "c16ced021b484d7951b2aeb1e4baf7bcf9363816e21750b514cbc4306b2e053f",
+				Runner:                  futureDecide(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
+				Duty:                    &testingutils.TestingAggregatorDuty,
+				PostDutyRunnerStateRoot: "892d0c2842a81d163c59e53302085f7bb2753cc4fcb46593bfeb569ec39e8928",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix)),
-				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
-				PostDutyRunnerStateRoot: "173941649af8d38d55ed1ce3fdd81f003d80784ea500bd23aa740f876a787c9e",
+				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				PostDutyRunnerStateRoot: "fdaaa35d42c3001cd891209a44b921fa64320be238794e01633661e16c4f5e02",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:                    "attester",
 				Runner:                  futureDecide(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "d4e685006411ee23178051e0a534df7482edd3bd5a04c36f12f44cf408290989",
+				PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedError,
 			},
 		},
 	}

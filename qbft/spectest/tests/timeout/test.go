@@ -8,13 +8,16 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 type SpecTest struct {
 	Name               string
 	Pre                *qbft.Instance
 	PostRoot           string
+	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages     []*qbft.SignedMessage
 	ExpectedTimerState *testingutils.TimerState
 	ExpectedError      string
@@ -57,5 +60,12 @@ func (test *SpecTest) Run(t *testing.T) {
 
 	postRoot, err := test.Pre.State.GetRoot()
 	require.NoError(t, err)
-	require.EqualValuesf(t, test.PostRoot, hex.EncodeToString(postRoot[:]), "post root not valid")
+	if test.PostRoot != hex.EncodeToString(postRoot[:]) {
+		diff := typescomparable.PrintDiff(test.Pre.State, test.PostState)
+		require.Fail(t, "post state not equal", diff)
+	}
+}
+
+func (test *SpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
 }

@@ -13,7 +13,8 @@ func InvalidValueCheck() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessageWithIdentifierAndFullData(
-			ks.Shares[1], types.OperatorID(1), []byte{1, 2, 3, 4}, testingutils.TestingInvalidValueCheck),
+			ks.Shares[1], types.OperatorID(1), []byte{1, 2, 3, 4}, testingutils.TestingInvalidValueCheck,
+			qbft.FirstHeight),
 	}
 
 	return &tests.MsgProcessingSpecTest{

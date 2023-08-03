@@ -14,9 +14,8 @@ var TestProposerConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) 
 	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       *duty,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
-		Version:                    version,
 		DataSSZ:                    TestingBeaconBlockBytesV(version),
-	})
+	}, version)
 }
 
 var TestProposerConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {
@@ -50,10 +49,9 @@ var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, v
 var TestProposerBlindedBlockConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       *TestingProposerDutyV(version),
-		Version:                    version,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
 		DataSSZ:                    TestingBlindedBeaconBlockBytesV(version),
-	})
+	}, version)
 }
 
 var TestProposerBlindedBlockConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {

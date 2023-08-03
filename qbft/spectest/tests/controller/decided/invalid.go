@@ -15,7 +15,7 @@ func Invalid() tests.SpecTest {
 	msg := testingutils.TestingCommitMultiSignerMessageWithHeight(
 		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 		[]types.OperatorID{1, 2, 3},
-		10,
+		qbft.FirstHeight,
 	)
 	msg.Signers = []types.OperatorID{}
 	return &tests.ControllerSpecTest{
@@ -29,6 +29,6 @@ func Invalid() tests.SpecTest {
 				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
-		ExpectedError: "invalid future msg: invalid decided msg: message signers is empty",
+		ExpectedError: "could not process msg: invalid signed message: invalid signed message: message signers is empty",
 	}
 }

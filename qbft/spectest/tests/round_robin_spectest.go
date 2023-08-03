@@ -32,3 +32,7 @@ func (test *RoundRobinSpecTest) Run(t *testing.T) {
 func (test *RoundRobinSpecTest) TestName() string {
 	return "qbft round robin " + test.Name
 }
+
+func (test *RoundRobinSpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}

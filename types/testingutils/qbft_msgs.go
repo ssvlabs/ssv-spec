@@ -105,10 +105,11 @@ var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.Opera
 var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, roundChangeJustification, nil)
 }
-var TestingProposalMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
+
+func TestingProposalMessageWithIdentifierAndFullData(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte, height qbft.Height) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.ProposalMsgType,
-		Height:     qbft.FirstHeight,
+		Height:     height,
 		Round:      qbft.FirstRound,
 		Identifier: identifier,
 		Root:       sha256.Sum256(fullData),
@@ -120,6 +121,7 @@ var TestingProposalMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id
 	ret.FullData = fullData
 	return ret
 }
+
 var TestingProposalMessageWithParams = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
@@ -292,10 +294,11 @@ var TestingCommitMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID)
 var TestingCommitMessageWrongHeight = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, TestingIdentifier, DifferentRoot)
 }
-var TestingCommitMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
+
+func TestingCommitMessageWithHeightIdentifierAndFullData(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, identifier, fullData []byte) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
-		Height:     qbft.FirstHeight,
+		Height:     height,
 		Round:      qbft.FirstRound,
 		Identifier: identifier,
 		Root:       sha256.Sum256(fullData),
@@ -304,6 +307,7 @@ var TestingCommitMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id t
 	ret.FullData = fullData
 	return ret
 }
+
 var TestingCommitMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id types.OperatorID, identifier []byte, root [32]byte) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
@@ -346,9 +350,16 @@ var TestingCommitMultiSignerMessageWithHeight = func(sks []*bls.SecretKey, ids [
 var TestingCommitMultiSignerMessageWithHeightAndIdentifier = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height, identifier []byte) *qbft.SignedMessage {
 	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, identifier, TestingQBFTRootData, TestingQBFTFullData)
 }
-var TestingCommitMultiSignerMessageWithIdentifierAndFullData = func(sks []*bls.SecretKey, ids []types.OperatorID, identifier, fullData []byte) *qbft.SignedMessage {
-	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, qbft.FirstHeight, identifier, sha256.Sum256(fullData), fullData)
+
+func TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+	sks []*bls.SecretKey,
+	ids []types.OperatorID,
+	height qbft.Height,
+	identifier, fullData []byte,
+) *qbft.SignedMessage {
+	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, identifier, sha256.Sum256(fullData), fullData)
 }
+
 var TestingCommitMultiSignerMessageWithParams = func(
 	sks []*bls.SecretKey,
 	ids []types.OperatorID,

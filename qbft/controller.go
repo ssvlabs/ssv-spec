@@ -17,11 +17,9 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	// FutureMsgsContainer holds all msgs from a higher height
-	FutureMsgsContainer map[types.OperatorID]Height // maps msg signer to height of higher height received msgs
-	Domain              types.DomainType
-	Share               *types.Share
-	config              IConfig
+	Domain          types.DomainType
+	Share           *types.Share
+	config          IConfig
 }
 
 func NewController(
@@ -31,29 +29,36 @@ func NewController(
 	config IConfig,
 ) *Controller {
 	return &Controller{
-		Identifier:          identifier,
-		Height:              FirstHeight,
-		Domain:              domain,
-		Share:               share,
-		StoredInstances:     InstanceContainer{},
-		FutureMsgsContainer: make(map[types.OperatorID]Height),
-		config:              config,
+		Identifier:      identifier,
+		Height:          FirstHeight,
+		Domain:          domain,
+		Share:           share,
+		StoredInstances: InstanceContainer{},
+		config:          config,
 	}
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
-func (c *Controller) StartNewInstance(value []byte) error {
-	if err := c.canStartInstanceForValue(value); err != nil {
-		return errors.Wrap(err, "can't start new QBFT instance")
+func (c *Controller) StartNewInstance(height Height, value []byte) error {
+	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
+		return errors.Wrap(err, "value invalid")
 	}
 
-	// only if current height's instance exists (and decided since passed can start instance) bump
-	if c.StoredInstances.FindInstance(c.Height) != nil {
-		c.bumpHeight()
+	// can't use <= because of height == 0 case
+	if height < c.Height {
+		return errors.New("attempting to start an instance with a past height")
 	}
 
+	// covers height == 0 case
+	if c.StoredInstances.FindInstance(height) != nil {
+		return errors.New("instance already running")
+	}
+
+	c.Height = height
 	newInstance := c.addAndStoreNewInstance()
-	newInstance.Start(value, c.Height)
+	newInstance.Start(value, height)
+
+	c.forceStopAllInstanceExceptCurrent()
 
 	return nil
 }
@@ -74,10 +79,12 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	if IsDecidedMsg(c.Share, msg) {
 		return c.UponDecided(msg)
 	} else if c.isFutureMessage(msg) {
-		return c.UponFutureMsg(msg)
-	} else {
-		return c.UponExistingInstanceMsg(msg)
+		// No error is returned if msg is future because it is a valid case.
+		// The implementation may choose to create optimizations for this case.
+		return nil, nil
 	}
+	return c.UponExistingInstanceMsg(msg)
+
 }
 
 func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage, error) {
@@ -124,10 +131,6 @@ func (c *Controller) InstanceForHeight(height Height) *Instance {
 	return c.StoredInstances.FindInstance(height)
 }
 
-func (c *Controller) bumpHeight() {
-	c.Height++
-}
-
 // GetIdentifier returns QBFT Identifier, used to identify messages
 func (c *Controller) GetIdentifier() []byte {
 	return c.Identifier
@@ -149,27 +152,12 @@ func (c *Controller) addAndStoreNewInstance() *Instance {
 	return i
 }
 
-func (c *Controller) canStartInstanceForValue(value []byte) error {
-	// check value
-	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
-		return errors.Wrap(err, "value invalid")
+func (c *Controller) forceStopAllInstanceExceptCurrent() {
+	for _, i := range c.StoredInstances {
+		if i.State.Height != c.Height {
+			i.ForceStop()
+		}
 	}
-
-	return c.CanStartInstance()
-}
-
-// CanStartInstance returns nil if controller can start a new instance
-func (c *Controller) CanStartInstance() error {
-	// check prev instance if prev instance is not the first instance
-	inst := c.StoredInstances.FindInstance(c.Height)
-	if inst == nil {
-		return nil
-	}
-	if decided, _ := inst.IsDecided(); !decided {
-		return errors.New("previous instance hasn't Decided")
-	}
-
-	return nil
 }
 
 // GetRoot returns the state's deterministic root

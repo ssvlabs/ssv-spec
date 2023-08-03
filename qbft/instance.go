@@ -21,7 +21,9 @@ type Instance struct {
 
 	processMsgF *types.ThreadSafeF
 	startOnce   sync.Once
-	StartValue  []byte
+	// forceStop will force stop the instance if set to true
+	forceStop  bool
+	StartValue []byte
 }
 
 func NewInstance(
@@ -45,6 +47,10 @@ func NewInstance(
 		config:      config,
 		processMsgF: types.NewThreadSafeF(),
 	}
+}
+
+func (i *Instance) ForceStop() {
+	i.forceStop = true
 }
 
 // Start is an interface implementation
@@ -90,6 +96,10 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
 func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
+	if !i.CanProcessMessages() {
+		return false, nil, nil, errors.New("instance stopped processing messages")
+	}
+
 	if err := i.BaseMsgValidation(msg); err != nil {
 		return false, nil, nil, errors.Wrap(err, "invalid signed message")
 	}
@@ -201,4 +211,9 @@ func (i *Instance) Encode() ([]byte, error) {
 // Decode implementation
 func (i *Instance) Decode(data []byte) error {
 	return json.Unmarshal(data, &i)
+}
+
+// CanProcessMessages will return true if instance can process messages
+func (i *Instance) CanProcessMessages() bool {
+	return !i.forceStop && int(i.State.Round) < CutoffRound
 }
