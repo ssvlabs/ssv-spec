@@ -26,10 +26,8 @@ func NoInstanceRunning() tests.SpecTest {
 				},
 
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal:               testingutils.TestingQBFTFullData,
-					DecidedCnt:               1,
-					CalledSyncDecidedByRange: true,
-					DecidedByRangeValues:     [2]qbft.Height{0, 50},
+					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedCnt: 1,
 				},
 				ControllerPostRoot: "e8da00ea07e1e5098026373c51e38a681215e12ca4bdeb1f1efbb9d4f3325a92",
 			},
