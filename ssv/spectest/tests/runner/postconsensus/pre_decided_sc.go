@@ -103,7 +103,7 @@ func preDecidedSyncCommitteeSC() *comparable.StateComparison {
 // post-consensus container should be empty, since we don't process such messages if the instance is not decided
 func preDecidedAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
+	cd := testingutils.TestAggregatorConsensusData(ks)
 	cdBytes := testingutils.TestAggregatorConsensusDataByts
 
 	return &comparable.StateComparison{

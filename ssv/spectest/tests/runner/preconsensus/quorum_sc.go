@@ -58,7 +58,7 @@ func quorumSyncCommitteeContributionSC() *comparable.StateComparison {
 // quorumAggregatorSC returns state comparison object for the Quorum Aggregator versioned spec test
 func quorumAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
+	cd := testingutils.TestAggregatorConsensusData(ks)
 	cdBytes := testingutils.TestAggregatorConsensusDataByts
 
 	return &comparable.StateComparison{

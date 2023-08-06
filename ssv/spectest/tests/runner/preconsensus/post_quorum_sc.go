@@ -59,7 +59,7 @@ func postQuorumSyncCommitteeContributionSC() *comparable.StateComparison {
 // postQuorumAggregatorSC returns state comparison object for the PostQuorum Aggregator versioned spec test
 func postQuorumAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
+	cd := testingutils.TestAggregatorConsensusData(ks)
 	cdBytes := testingutils.TestAggregatorConsensusDataByts
 
 	return &comparable.StateComparison{

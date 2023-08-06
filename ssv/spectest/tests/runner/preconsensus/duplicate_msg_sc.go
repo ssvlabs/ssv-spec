@@ -41,7 +41,7 @@ func duplicateMsgSyncCommitteeContributionSC() *comparable.StateComparison {
 // duplicateMsgAggregatorSC returns state comparison object for the DuplicateMsg Aggregator versioned spec test
 func duplicateMsgAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
+	cd := testingutils.TestAggregatorConsensusData(ks)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

@@ -103,7 +103,7 @@ func duplicateMsgSyncCommitteeSC() *comparable.StateComparison {
 // it knows to ignore the duplicate message, and it doesn't enter the post consensus container
 func duplicateMsgAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
+	cd := testingutils.TestAggregatorConsensusData(ks)
 	cdBytes := testingutils.TestAggregatorConsensusDataByts
 
 	return &comparable.StateComparison{

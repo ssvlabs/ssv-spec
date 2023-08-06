@@ -110,7 +110,7 @@ func postQuorumSyncCommitteeSC() *comparable.StateComparison {
 // runner should finish since quorum was achieved
 func postQuorumAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
+	cd := testingutils.TestAggregatorConsensusData(ks)
 	cdBytes := testingutils.TestAggregatorConsensusDataByts
 
 	return &comparable.StateComparison{
