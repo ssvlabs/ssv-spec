@@ -16,7 +16,7 @@ import (
 func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData(ks)
-	cdBytes := testingutils.TestSyncCommitteeContributionConsensusDataByts
+	cdBytes := testingutils.TestSyncCommitteeContributionConsensusDataByts(ks)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
