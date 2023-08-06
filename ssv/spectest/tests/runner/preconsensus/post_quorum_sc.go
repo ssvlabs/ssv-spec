@@ -60,7 +60,7 @@ func postQuorumSyncCommitteeContributionSC() *comparable.StateComparison {
 func postQuorumAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData(ks)
-	cdBytes := testingutils.TestAggregatorConsensusDataByts
+	cdBytes := testingutils.TestAggregatorConsensusDataByts(ks)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

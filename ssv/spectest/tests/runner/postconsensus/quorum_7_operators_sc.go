@@ -112,7 +112,7 @@ func quorum7OperatorsSyncCommitteeSC() *comparable.StateComparison {
 func quorum7OperatorsAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()
 	cd := testingutils.TestAggregatorConsensusData(ks)
-	cdBytes := testingutils.TestAggregatorConsensusDataByts
+	cdBytes := testingutils.TestAggregatorConsensusDataByts(ks)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
