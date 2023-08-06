@@ -95,8 +95,8 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *typ
 		return false, nil, errors.Wrap(err, "invalid pre-consensus message")
 	}
 
-	hasQuorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PreConsensusContainer)
-	return hasQuorum, roots, errors.Wrap(err, "could not process pre-consensus partial signature msg")
+	shouldProcess, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PreConsensusContainer)
+	return shouldProcess, roots, errors.Wrap(err, "could not process pre-consensus partial signature msg")
 }
 
 // baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
@@ -156,13 +156,20 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *ty
 	return hasQuorum, roots, errors.Wrap(err, "could not process post-consensus partial signature msg")
 }
 
-// basePartialSigMsgProcessing adds an already validated partial msg to the container, checks for quorum and returns true (and roots) if quorum exists
+// basePartialSigMsgProcessing adds an already validated partial msg to the container,
+// checks for quorum and returns true (and roots) if we should process the msg
 func (b *BaseRunner) basePartialSigMsgProcessing(
 	signedMsg *types.SignedPartialSignatureMessage,
 	container PartialSignatureContainer,
 ) (bool, [][32]byte, error) {
-	container[signedMsg.Signer] = signedMsg
 
+	if b.Share.HasQuorum(len(container)) {
+		container[signedMsg.Signer] = signedMsg
+		// return false if we already have quorum
+		return false, container.Roots(), nil
+	}
+
+	container[signedMsg.Signer] = signedMsg
 	if b.Share.HasQuorum(len(container)) {
 		return true, container.Roots(), nil
 	}
