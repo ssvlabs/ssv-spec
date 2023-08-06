@@ -20,16 +20,8 @@ type Timer interface {
 	TimeoutForRound(round Round)
 }
 
-type Syncer interface {
-	// SyncHighestDecided tries to fetch the highest decided from peers (not blocking)
-	SyncHighestDecided(identifier types.MessageID) error
-	// SyncDecidedByRange will trigger sync from-to heights (including)
-	SyncDecidedByRange(identifier types.MessageID, from, to Height)
-}
-
 // Network is the interface for networking across QBFT components
 type Network interface {
-	Syncer
 	p2p.Broadcaster
 }
 

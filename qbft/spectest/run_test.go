@@ -2,7 +2,6 @@ package spectest
 
 import (
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
 	"os"
 	"path/filepath"
@@ -24,15 +23,6 @@ func TestAll(t *testing.T) {
 			test.Run(t)
 		})
 	}
-}
-
-// TestOne tests a single test
-func TestOne(t *testing.T) {
-	t.Parallel()
-	test := latemsg.FullFlowAfterDecided()
-	t.Run(test.TestName(), func(t *testing.T) {
-		test.Run(t)
-	})
 }
 
 func TestJson(t *testing.T) {
