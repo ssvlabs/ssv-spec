@@ -17,6 +17,11 @@ type SpecTest struct {
 	ExpectedErr                string
 }
 
+func (test *SpecTest) GetPostState() (interface{}, error) {
+	// Unneeded for this test
+	return nil, nil
+}
+
 func (test *SpecTest) TestName() string {
 	return test.Name
 }
