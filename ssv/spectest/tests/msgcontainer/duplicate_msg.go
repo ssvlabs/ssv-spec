@@ -12,7 +12,7 @@ func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	return &SpecTest{
-		Name: "single pre consensus message",
+		Name: "duplicate msg",
 		MsgsToAdd: []*types.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix),
 			testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix),
