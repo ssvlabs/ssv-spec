@@ -32,7 +32,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionBellatrix),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -88,7 +88,7 @@ func fullHappyFlowSyncCommitteeSC() *comparable.StateComparison {
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionBellatrix),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -142,7 +142,7 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionBellatrix),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -284,7 +284,7 @@ func fullHappyFlowAttesterSC() *comparable.StateComparison {
 			ret := testingutils.AttesterRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				Finished:     true,
-				DecidedValue: comparable.FixIssue178(testingutils.TestAttesterConsensusData, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(testingutils.TestAttesterConsensusData, spec.DataVersionBellatrix),
 				StartingDuty: &testingutils.TestAttesterConsensusData.Duty,
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSignatureContainer(),
@@ -308,7 +308,7 @@ func fullHappyFlowAttesterSC() *comparable.StateComparison {
 						ks.Shares[1], types.OperatorID(1),
 						ret.GetBaseRunner().QBFTController.Identifier,
 						testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionPhase0)),
+						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionBellatrix)),
 					),
 					LastPreparedRound: 1,
 					LastPreparedValue: testingutils.TestAttesterConsensusDataByts,

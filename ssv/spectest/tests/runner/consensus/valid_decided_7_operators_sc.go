@@ -30,7 +30,7 @@ func validDecided7OperatorsSyncCommitteeContributionSC() *comparable.StateCompar
 					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionBellatrix),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -79,7 +79,7 @@ func validDecided7OperatorsSyncCommitteeSC() *comparable.StateComparison {
 					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionBellatrix),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -129,7 +129,7 @@ func validDecided7OperatorsAggregatorSC() *comparable.StateComparison {
 					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionBellatrix),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -179,7 +179,7 @@ func validDecided7OperatorsAttesterSC() *comparable.StateComparison {
 					ssv.NewPartialSignatureContainer(),
 					[]*types.SSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionBellatrix),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}

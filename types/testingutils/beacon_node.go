@@ -34,7 +34,7 @@ func GetSSZRootNoError(obj ssz.HashRoot) string {
 	return hex.EncodeToString(r[:])
 }
 
-const TestingAttestationDataVersion = spec.DataVersionPhase0
+const TestingAttestationDataVersion = spec.DataVersionBellatrix
 
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            TestingDutySlot,
@@ -188,7 +188,7 @@ var TestingBlindedBeaconBlock = func() *apiv1bellatrix.BlindedBeaconBlock {
 	return ret
 }()
 
-const TestingAggregateAndProofVersion = spec.DataVersionPhase0
+const TestingAggregateAndProofVersion = spec.DataVersionBellatrix
 
 var TestingAggregateAndProof = &phase0.AggregateAndProof{
 	AggregatorIndex: 1,
@@ -233,7 +233,7 @@ const (
 	UnknownDutyType = 100
 )
 
-const TestingSyncCommitteeBlockRootVersion = spec.DataVersionPhase0
+const TestingSyncCommitteeBlockRootVersion = spec.DataVersionBellatrix
 
 var TestingSyncCommitteeBlockRoot = phase0.Root{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
 var TestingSyncCommitteeWrongBlockRoot = phase0.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
