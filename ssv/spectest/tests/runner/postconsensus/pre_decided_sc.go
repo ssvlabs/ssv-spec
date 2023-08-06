@@ -15,7 +15,7 @@ import (
 // post-consensus container should be empty, since we don't process such messages if the instance is not decided.
 func preDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestSyncCommitteeContributionConsensusData
+	cd := testingutils.TestSyncCommitteeContributionConsensusData(ks)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

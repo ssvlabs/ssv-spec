@@ -15,7 +15,7 @@ import (
 // runner should finish since quorum was achieved
 func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()
-	cd := testingutils.TestSyncCommitteeContributionConsensusData
+	cd := testingutils.TestSyncCommitteeContributionConsensusData(ks)
 	cdBytes := testingutils.TestSyncCommitteeContributionConsensusDataByts
 
 	return &comparable.StateComparison{

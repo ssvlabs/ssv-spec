@@ -14,7 +14,7 @@ import (
 // postDecidedSyncCommitteeContributionSC returns state comparison object for the DuplicateMsg SyncCommitteeContribution versioned spec test
 func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestSyncCommitteeContributionConsensusData
+	cd := testingutils.TestSyncCommitteeContributionConsensusData(ks)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

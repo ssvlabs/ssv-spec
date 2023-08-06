@@ -14,7 +14,7 @@ import (
 // quorumSyncCommitteeContributionSC returns state comparison object for the Quorum SyncCommitteeContribution versioned spec test
 func quorumSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestSyncCommitteeContributionConsensusData
+	cd := testingutils.TestSyncCommitteeContributionConsensusData(ks)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
