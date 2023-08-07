@@ -1,17 +1,56 @@
 {
 		"BaseRunner": {
 				"State": {
-						"PreConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 3
-						},
+						"PreConsensusContainer": {},
 						"PostConsensusContainer": {
-								"Signatures": {
-										"c85bf5f6a171a5a82623d185b2f30eab08827957059e9ef1c24af14bfe2ea193": {
-												"1": "kdxaYDRcRG0OxgQdByIPIM983Ea81AY4/S4dGZK+2cwV6FG/HF9D8289lIfY8jg1BEEZ5dVoXquOqV+lstPRAzoGyYDzzaVeFerwaUoKbSZbx5uFeOIPq9PH2CuP49ON"
-										}
-								},
-								"Quorum": 3
+								"1": {
+										"Message": {
+												"Type": 0,
+												"Slot": 12,
+												"Messages": [
+														{
+																"PartialSignature": "kdxaYDRcRG0OxgQdByIPIM983Ea81AY4/S4dGZK+2cwV6FG/HF9D8289lIfY8jg1BEEZ5dVoXquOqV+lstPRAzoGyYDzzaVeFerwaUoKbSZbx5uFeOIPq9PH2CuP49ON",
+																"SigningRoot": [
+																		200,
+																		91,
+																		245,
+																		246,
+																		161,
+																		113,
+																		165,
+																		168,
+																		38,
+																		35,
+																		209,
+																		133,
+																		178,
+																		243,
+																		14,
+																		171,
+																		8,
+																		130,
+																		121,
+																		87,
+																		5,
+																		158,
+																		158,
+																		241,
+																		194,
+																		74,
+																		241,
+																		75,
+																		254,
+																		46,
+																		161,
+																		147
+																],
+																"Signer": 1
+														}
+												]
+										},
+										"Signature": "h/YzqX1MhgQu04j9vbVJRfbQf+RnSdQE/4NLJszJwu853UEIph2Ix7uCHc+8mn2QB24Pc0Ym7sUUCbB5I3yBQ5q64u+bUGFcErjLIQT8avkiMW01MluxASGxVT3yeIAH",
+										"Signer": 1
+								}
 						},
 						"RunningInstance": {
 								"State": {
@@ -76,7 +115,7 @@
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": null,
 										"Decided": true,
-										"DecidedValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
+										"DecidedValue": "FAAAAAIAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
 										"ProposeContainer": {
 												"Msgs": {}
 										},
@@ -157,8 +196,8 @@
 												2
 										]
 								},
-								"Version": "phase0",
-								"PreConsensusJustifications": null,
+								"Version": "bellatrix",
+								"PreConsensusJustifications": [],
 								"DataSSZ": "AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI="
 						},
 						"StartingDuty": {
@@ -348,7 +387,7 @@
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
 												"Decided": true,
-												"DecidedValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
+												"DecidedValue": "FAAAAAIAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
 												"ProposeContainer": {
 														"Msgs": {}
 												},

@@ -1,14 +1,8 @@
 {
 		"BaseRunner": {
 				"State": {
-						"PreConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 3
-						},
-						"PostConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 3
-						},
+						"PreConsensusContainer": {},
+						"PostConsensusContainer": {},
 						"RunningInstance": {
 								"State": {
 										"Share": {
@@ -71,7 +65,7 @@
 										"LastPreparedRound": 0,
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": {
-												"Signature": "qoVKyE1JO9LEVSk6Jak4Di3BzeOxP90WF2T2bBFgVznfyBBv4/III8InjSL7Er1ODcN+UdPsMyUGxAF5LRpXrFo8MQzzXj0sO2D5w4hTCQmTcZByKCMLDBSWKTBAVR2O",
+												"Signature": "seCbC2ijeer5IItnUybCIsGfiOuAw8MnYJKN0clUUTAVixrlyzI8DTy0T65nbi1sEu3jOim4qumu0pJkl5cS8edL4dpS8PJEqAkXotwriWRpukb9RH0ZDZtIjj1Ffq3m",
 												"Signers": [
 														1
 												],
@@ -81,44 +75,44 @@
 														"Round": 1,
 														"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 														"Root": [
-																251,
-																196,
-																151,
-																49,
-																88,
-																154,
-																4,
-																120,
-																172,
-																102,
+																235,
+																136,
+																50,
+																156,
+																217,
+																203,
+																155,
+																130,
+																205,
+																203,
+																168,
+																244,
+																244,
+																18,
+																43,
+																133,
+																22,
 																192,
-																211,
-																225,
-																98,
-																53,
-																149,
-																164,
-																181,
-																251,
-																102,
-																149,
-																186,
-																56,
-																30,
-																184,
-																150,
-																228,
-																206,
 																119,
-																41,
-																120,
-																31
+																129,
+																34,
+																63,
+																148,
+																130,
+																137,
+																51,
+																36,
+																116,
+																252,
+																46,
+																232,
+																83
 														],
 														"DataRound": 0,
 														"RoundChangeJustification": [],
 														"PrepareJustification": []
 												},
-												"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+												"FullData": "FAAAAAIAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 										},
 										"Decided": false,
 										"DecidedValue": null,
@@ -126,7 +120,7 @@
 												"Msgs": {
 														"1": [
 																{
-																		"Signature": "qoVKyE1JO9LEVSk6Jak4Di3BzeOxP90WF2T2bBFgVznfyBBv4/III8InjSL7Er1ODcN+UdPsMyUGxAF5LRpXrFo8MQzzXj0sO2D5w4hTCQmTcZByKCMLDBSWKTBAVR2O",
+																		"Signature": "seCbC2ijeer5IItnUybCIsGfiOuAw8MnYJKN0clUUTAVixrlyzI8DTy0T65nbi1sEu3jOim4qumu0pJkl5cS8edL4dpS8PJEqAkXotwriWRpukb9RH0ZDZtIjj1Ffq3m",
 																		"Signers": [
 																				1
 																		],
@@ -136,44 +130,44 @@
 																				"Round": 1,
 																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																				"Root": [
-																						251,
-																						196,
-																						151,
-																						49,
-																						88,
-																						154,
-																						4,
-																						120,
-																						172,
-																						102,
+																						235,
+																						136,
+																						50,
+																						156,
+																						217,
+																						203,
+																						155,
+																						130,
+																						205,
+																						203,
+																						168,
+																						244,
+																						244,
+																						18,
+																						43,
+																						133,
+																						22,
 																						192,
-																						211,
-																						225,
-																						98,
-																						53,
-																						149,
-																						164,
-																						181,
-																						251,
-																						102,
-																						149,
-																						186,
-																						56,
-																						30,
-																						184,
-																						150,
-																						228,
-																						206,
 																						119,
-																						41,
-																						120,
-																						31
+																						129,
+																						34,
+																						63,
+																						148,
+																						130,
+																						137,
+																						51,
+																						36,
+																						116,
+																						252,
+																						46,
+																						232,
+																						83
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
 																				"PrepareJustification": []
 																		},
-																		"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+																		"FullData": "FAAAAAIAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 																}
 														]
 												}
@@ -188,7 +182,7 @@
 												"Msgs": {}
 										}
 								},
-								"StartValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+								"StartValue": "FAAAAAIAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 						},
 						"DecidedValue": null,
 						"StartingDuty": {
@@ -249,7 +243,7 @@
 								"CommitteeLength": 128,
 								"CommitteesAtSlot": 36,
 								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": null
+								"ValidatorSyncCommitteeIndices": []
 						},
 						"Finished": false
 				},
@@ -373,7 +367,7 @@
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": "qoVKyE1JO9LEVSk6Jak4Di3BzeOxP90WF2T2bBFgVznfyBBv4/III8InjSL7Er1ODcN+UdPsMyUGxAF5LRpXrFo8MQzzXj0sO2D5w4hTCQmTcZByKCMLDBSWKTBAVR2O",
+														"Signature": "seCbC2ijeer5IItnUybCIsGfiOuAw8MnYJKN0clUUTAVixrlyzI8DTy0T65nbi1sEu3jOim4qumu0pJkl5cS8edL4dpS8PJEqAkXotwriWRpukb9RH0ZDZtIjj1Ffq3m",
 														"Signers": [
 																1
 														],
@@ -383,44 +377,44 @@
 																"Round": 1,
 																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																"Root": [
-																		251,
-																		196,
-																		151,
-																		49,
-																		88,
-																		154,
-																		4,
-																		120,
-																		172,
-																		102,
+																		235,
+																		136,
+																		50,
+																		156,
+																		217,
+																		203,
+																		155,
+																		130,
+																		205,
+																		203,
+																		168,
+																		244,
+																		244,
+																		18,
+																		43,
+																		133,
+																		22,
 																		192,
-																		211,
-																		225,
-																		98,
-																		53,
-																		149,
-																		164,
-																		181,
-																		251,
-																		102,
-																		149,
-																		186,
-																		56,
-																		30,
-																		184,
-																		150,
-																		228,
-																		206,
 																		119,
-																		41,
-																		120,
-																		31
+																		129,
+																		34,
+																		63,
+																		148,
+																		130,
+																		137,
+																		51,
+																		36,
+																		116,
+																		252,
+																		46,
+																		232,
+																		83
 																],
 																"DataRound": 0,
 																"RoundChangeJustification": [],
 																"PrepareJustification": []
 														},
-														"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+														"FullData": "FAAAAAIAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 												},
 												"Decided": false,
 												"DecidedValue": null,
@@ -428,7 +422,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "qoVKyE1JO9LEVSk6Jak4Di3BzeOxP90WF2T2bBFgVznfyBBv4/III8InjSL7Er1ODcN+UdPsMyUGxAF5LRpXrFo8MQzzXj0sO2D5w4hTCQmTcZByKCMLDBSWKTBAVR2O",
+																				"Signature": "seCbC2ijeer5IItnUybCIsGfiOuAw8MnYJKN0clUUTAVixrlyzI8DTy0T65nbi1sEu3jOim4qumu0pJkl5cS8edL4dpS8PJEqAkXotwriWRpukb9RH0ZDZtIjj1Ffq3m",
 																				"Signers": [
 																						1
 																				],
@@ -438,44 +432,44 @@
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
 																						"Root": [
-																								251,
-																								196,
-																								151,
-																								49,
-																								88,
-																								154,
-																								4,
-																								120,
-																								172,
-																								102,
+																								235,
+																								136,
+																								50,
+																								156,
+																								217,
+																								203,
+																								155,
+																								130,
+																								205,
+																								203,
+																								168,
+																								244,
+																								244,
+																								18,
+																								43,
+																								133,
+																								22,
 																								192,
-																								211,
-																								225,
-																								98,
-																								53,
-																								149,
-																								164,
-																								181,
-																								251,
-																								102,
-																								149,
-																								186,
-																								56,
-																								30,
-																								184,
-																								150,
-																								228,
-																								206,
 																								119,
-																								41,
-																								120,
-																								31
+																								129,
+																								34,
+																								63,
+																								148,
+																								130,
+																								137,
+																								51,
+																								36,
+																								116,
+																								252,
+																								46,
+																								232,
+																								83
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
 																						"PrepareJustification": []
 																				},
-																				"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+																				"FullData": "FAAAAAIAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 																		}
 																]
 														}
@@ -490,7 +484,7 @@
 														"Msgs": {}
 												}
 										},
-										"StartValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+										"StartValue": "FAAAAAIAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 								}
 						],
 						"Domain": [
