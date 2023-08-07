@@ -3,6 +3,7 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/msgcontainer"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -133,6 +134,13 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				Name:  test.(map[string]interface{})["Name"].(string),
 				Tests: typedTests,
 			}
+
+			typedTest.Run(t)
+		case reflect.TypeOf(&msgcontainer.SpecTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &msgcontainer.SpecTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 			typedTest.Run(t)
 		default:
