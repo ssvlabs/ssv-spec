@@ -43,6 +43,7 @@ func FutureMessage() tests.SpecTest {
 				PostDutyRunnerStateRoot: "68fd25b1cb30902e7b7b3e7ff674c3862ff956954a06fac0df485961b8bb3934",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: future msg from height 10, could not process",
 			},
 			{
 				Name:   "sync committee",
@@ -56,6 +57,7 @@ func FutureMessage() tests.SpecTest {
 				PostDutyRunnerStateRoot: "022d7b2bbb97b88684ae317f5c2aaa46a56d1d272a65ffcbeb935d0511bbe7e0",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: future msg from height 10, could not process",
 			},
 			{
 				Name:   "aggregator",
@@ -69,6 +71,7 @@ func FutureMessage() tests.SpecTest {
 				PostDutyRunnerStateRoot: "bdc7c2150e0f2d4669e112848f5140b52aba0367b60ff2b594d5a5bef3587834",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: future msg from height 10, could not process",
 			},
 			{
 				Name:   "proposer",
@@ -82,6 +85,7 @@ func FutureMessage() tests.SpecTest {
 				PostDutyRunnerStateRoot: "32dd1d1d7a4c34bb7dafc0866f69eb49f6a0a23755b135f83ad14d12e39fff82",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: future msg from height 10, could not process",
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -95,6 +99,7 @@ func FutureMessage() tests.SpecTest {
 				PostDutyRunnerStateRoot: "58b946451dc5ccbd52fbc9e6bbe0ac888253d1708be018a3ff0b07762dd28891",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: future msg from height 10, could not process",
 			},
 			{
 				Name:   "attester",
@@ -108,6 +113,7 @@ func FutureMessage() tests.SpecTest {
 				PostDutyRunnerStateRoot: "8ccbad4587df73b4a94e4c5d1c47c7ebfbc8e4e949518443a56f0f11d3ab70cd",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           "failed processing consensus message: future msg from height 10, could not process",
 			},
 			{
 				Name:   "validator registration",
