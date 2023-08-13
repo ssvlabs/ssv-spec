@@ -26,7 +26,7 @@ func ValidMsg() tests.SpecTest {
 				ControllerPostState: contr,
 			},
 		},
-		ExpectedError: "future msg from height 10, could not process",
+		ExpectedError: "future msg from height, could not process",
 	}
 }
 

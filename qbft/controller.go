@@ -79,7 +79,7 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	if IsDecidedMsg(c.Share, msg) {
 		return c.UponDecided(msg)
 	} else if c.isFutureMessage(msg) {
-		return nil, fmt.Errorf("future msg from height %d, could not process", msg.Message.Height)
+		return nil, fmt.Errorf("future msg from height, could not process")
 	}
 	return c.UponExistingInstanceMsg(msg)
 
