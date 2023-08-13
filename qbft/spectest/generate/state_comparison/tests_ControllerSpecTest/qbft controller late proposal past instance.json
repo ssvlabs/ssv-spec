@@ -1044,6 +1044,7 @@
 								"StartValue": "AQIDBA=="
 						},
 						{
+								"forceStop": true,
 								"State": {
 										"Share": {
 												"OperatorID": 1,
@@ -1676,6 +1677,7 @@
 								"StartValue": "AQIDBA=="
 						},
 						{
+								"forceStop": true,
 								"State": {
 										"Share": {
 												"OperatorID": 1,
@@ -2163,6 +2165,7 @@
 								"StartValue": "AQIDBA=="
 						},
 						{
+								"forceStop": true,
 								"State": {
 										"Share": {
 												"OperatorID": 1,
