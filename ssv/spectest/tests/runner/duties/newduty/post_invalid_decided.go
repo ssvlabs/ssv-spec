@@ -70,7 +70,7 @@ func PostInvalidDecided() tests.SpecTest {
 				Name:                    "sync committee",
 				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: "0dbeb5af7dd60a40b058657aaf3c3437a57d62ac970d0c92faef9b0e484bb554",
+				PostDutyRunnerStateRoot: "b3a2925d737a16363053e430c3ce317232fdff0a951e51bdf37cf593bfee0ae7",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -96,7 +96,7 @@ func PostInvalidDecided() tests.SpecTest {
 				Name:                    "attester",
 				Runner:                  decideWrong(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: "c6b403e35dbb1177d7e210e68e1bbf153deed34e6e676f15a9f3ffc65fdc2295",
+				PostDutyRunnerStateRoot: "679d7b60bd8bd84697331c6c872658a0cc8e3371156c7511be403d42abe18620",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},

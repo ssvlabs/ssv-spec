@@ -78,6 +78,9 @@ func (i *Instance) Start(value []byte, height Height) {
 }
 
 func (i *Instance) Broadcast(msg *SignedMessage) error {
+	if !i.CanProcessMessages() {
+		return errors.New("instance stopped processing messages")
+	}
 	byts, err := msg.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode message")

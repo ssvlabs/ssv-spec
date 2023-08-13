@@ -229,6 +229,7 @@
 								"StartValue": "AQIDBA=="
 						},
 						{
+								"forceStop": true,
 								"State": {
 										"Share": {
 												"OperatorID": 1,
