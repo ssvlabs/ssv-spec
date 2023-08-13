@@ -32,11 +32,10 @@ func NewAttesterRunnner(
 ) Runner {
 	return &AttesterRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType:     types.BNRoleAttester,
-			BeaconNetwork:      beaconNetwork,
-			Share:              share,
-			QBFTController:     qbftController,
-			highestDecidedSlot: highestDecidedSlot,
+			BeaconRoleType: types.BNRoleAttester,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
 		},
 
 		beacon:   beacon,

@@ -46,10 +46,6 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	BeaconRoleType types.BeaconRole
-
-	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
-	// used to validate pre-consensus justification which can not have any lower duty slot than highestDecidedSlot
-	highestDecidedSlot spec.Slot
 }
 
 func NewBaseRunner(
@@ -58,21 +54,14 @@ func NewBaseRunner(
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
 	beaconRoleType types.BeaconRole,
-	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
 	return &BaseRunner{
-		State:              state,
-		Share:              share,
-		QBFTController:     controller,
-		BeaconNetwork:      beaconNetwork,
-		BeaconRoleType:     beaconRoleType,
-		highestDecidedSlot: highestDecidedSlot,
+		State:          state,
+		Share:          share,
+		QBFTController: controller,
+		BeaconNetwork:  beaconNetwork,
+		BeaconRoleType: beaconRoleType,
 	}
-}
-
-// SetHighestDecidedSlot set highestDecidedSlot for base runner
-func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
-	b.highestDecidedSlot = slot
 }
 
 // setupForNewDuty is sets the runner for a new duty
@@ -106,7 +95,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 
-	if err := b.processPreConsensusJustification(runner, b.highestDecidedSlot, msg); err != nil {
+	if err := b.processPreConsensusJustification(runner, msg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid pre-consensus justification")
 	}
 
@@ -130,9 +119,6 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	if err := decidedValue.Decode(decidedMsg.FullData); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
-
-	// update the highest decided slot
-	b.highestDecidedSlot = decidedValue.Duty.Slot
 
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")

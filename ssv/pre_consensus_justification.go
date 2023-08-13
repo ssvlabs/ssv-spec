@@ -1,7 +1,6 @@
 package ssv
 
 import (
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -16,7 +15,7 @@ func (b *BaseRunner) shouldProcessJustifications(msg *qbft.SignedMessage) bool {
 }
 
 // validatePreConsensusJustifications returns an error if pre-consensus justification is invalid, nil otherwise
-func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData, highestDecidedDutySlot phase0.Slot) error {
+func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData) error {
 	//test invalid consensus data
 	if err := data.Validate(); err != nil {
 		return err
@@ -26,8 +25,8 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 		return errors.New("wrong beacon role")
 	}
 
-	if data.Duty.Slot <= highestDecidedDutySlot {
-		return errors.New("duty.slot <= highest decided slot")
+	if qbft.Height(data.Duty.Slot) <= b.QBFTController.Height {
+		return errors.New("duty.slot <= highest known slot")
 	}
 
 	// validate justification quorum
@@ -97,7 +96,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 5) add pre-consensus sigs to container
 6) decided on duty
 */
-func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDecidedDutySlot phase0.Slot, msg *qbft.SignedMessage) error {
+func (b *BaseRunner) processPreConsensusJustification(runner Runner, msg *qbft.SignedMessage) error {
 	if !b.shouldProcessJustifications(msg) {
 		return nil
 	}
@@ -107,7 +106,7 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 		return errors.Wrap(err, "could not decoded ConsensusData")
 	}
 
-	if err := b.validatePreConsensusJustifications(cd, highestDecidedDutySlot); err != nil {
+	if err := b.validatePreConsensusJustifications(cd); err != nil {
 		return err
 	}
 

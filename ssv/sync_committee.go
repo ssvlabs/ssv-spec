@@ -32,11 +32,10 @@ func NewSyncCommitteeRunner(
 ) Runner {
 	return &SyncCommitteeRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType:     types.BNRoleSyncCommittee,
-			BeaconNetwork:      beaconNetwork,
-			Share:              share,
-			QBFTController:     qbftController,
-			highestDecidedSlot: highestDecidedSlot,
+			BeaconRoleType: types.BNRoleSyncCommittee,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
 		},
 
 		beacon:   beacon,
