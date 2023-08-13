@@ -12,9 +12,9 @@ import (
 func HappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	consensusMsgs := func(cd *types.ConsensusData, role types.BeaconRole) []*types.SSVMessage {
+	consensusMsgs := func(cd *types.ConsensusData, role types.BeaconRole, height qbft.Height) []*types.SSVMessage {
 		id := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
-		qbftMsgs := testingutils.SSVDecidingMsgsForHeight(cd, id[:], 2, ks)
+		qbftMsgs := testingutils.SSVDecidingMsgsForHeight(cd, id[:], height, ks)
 
 		ret := make([]*types.SSVMessage, 0)
 		for _, msg := range qbftMsgs {
@@ -37,7 +37,8 @@ func HappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), types.BNRoleSyncCommitteeContribution)[:7],
+					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks),
+						types.BNRoleSyncCommitteeContribution, qbft.FirstHeight),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
@@ -61,7 +62,8 @@ func HappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), types.BNRoleSyncCommitteeContribution)[7:14],
+					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks),
+						types.BNRoleSyncCommitteeContribution, 2),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
@@ -84,7 +86,8 @@ func HappyFlow() tests.SpecTest {
 				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
-					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.BNRoleSyncCommittee)[:7], // consensus
+					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.BNRoleSyncCommittee, qbft.FirstHeight),
+					// consensus
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
@@ -104,7 +107,8 @@ func HappyFlow() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
-					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.BNRoleSyncCommittee)[7:14], // consensus
+					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.BNRoleSyncCommittee, 2),
+					// consensus
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
@@ -125,7 +129,8 @@ func HappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), types.BNRoleAggregator)[:7],
+					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks),
+						types.BNRoleAggregator, qbft.FirstHeight),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
@@ -147,7 +152,8 @@ func HappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), types.BNRoleAggregator)[7:14],
+					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks),
+						types.BNRoleAggregator, 2),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
@@ -169,7 +175,8 @@ func HappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), types.BNRoleProposer)[:7],
+					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks,
+						spec.DataVersionBellatrix), types.BNRoleProposer, qbft.FirstHeight),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
@@ -191,7 +198,8 @@ func HappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), types.BNRoleProposer)[7:14],
+					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks,
+						spec.DataVersionBellatrix), types.BNRoleProposer, 2),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
@@ -213,7 +221,8 @@ func HappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), types.BNRoleProposer)[:7],
+					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks,
+						spec.DataVersionBellatrix), types.BNRoleProposer, qbft.FirstHeight),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
@@ -235,7 +244,8 @@ func HappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), types.BNRoleProposer)[7:14],
+					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks,
+						spec.DataVersionBellatrix), types.BNRoleProposer, 2),
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),
 						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionBellatrix)),
@@ -256,7 +266,7 @@ func HappyFlow() tests.SpecTest {
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
-					consensusMsgs(testingutils.TestAttesterConsensusData, types.BNRoleAttester)[:7], // consensus
+					consensusMsgs(testingutils.TestAttesterConsensusData, types.BNRoleAttester, qbft.FirstHeight), // consensus
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
