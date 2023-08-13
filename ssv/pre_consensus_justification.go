@@ -7,17 +7,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-// correctQBFTState returns true if QBFT controller state requires pre-consensus justification
-func (b *BaseRunner) correctQBFTState(msg *qbft.SignedMessage) bool {
-	// mind race conditions
-	return b.QBFTController.Height < msg.Message.Height
-}
-
-// shouldProcessingJustifications returns true if pre-consensus justification should be processed, false otherwise
-func (b *BaseRunner) shouldProcessingJustifications(msg *qbft.SignedMessage) bool {
+// shouldProcessJustifications returns true if pre-consensus justification should be processed, false otherwise
+func (b *BaseRunner) shouldProcessJustifications(msg *qbft.SignedMessage) bool {
 	correctMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
 	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
-	return correctMsgTYpe && correctBeaconRole && b.correctQBFTState(msg)
+	correctQBFTHeight := b.QBFTController.Height < msg.Message.Height
+	return correctMsgTYpe && correctBeaconRole && correctQBFTHeight
 }
 
 // validatePreConsensusJustifications returns an error if pre-consensus justification is invalid, nil otherwise
@@ -103,7 +98,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 6) decided on duty
 */
 func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDecidedDutySlot phase0.Slot, msg *qbft.SignedMessage) error {
-	if !b.shouldProcessingJustifications(msg) {
+	if !b.shouldProcessJustifications(msg) {
 		return nil
 	}
 
