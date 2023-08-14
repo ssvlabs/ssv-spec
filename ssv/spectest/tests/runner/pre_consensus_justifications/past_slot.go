@@ -148,6 +148,7 @@ func PastSlot() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "sync committee",
@@ -161,6 +162,7 @@ func PastSlot() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
+				ExpectedError: expectedErr,
 			},
 		},
 	}
