@@ -51,18 +51,20 @@ func PastSlot() tests.SpecTest {
 
 	// inject a past instance to the controller
 	injectPastInstance := func(runner ssv.Runner) ssv.Runner {
-		runner.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
+		runner.GetBaseRunner().QBFTController.Height = 5
 		storedInstances := runner.GetBaseRunner().QBFTController.StoredInstances
 		runner.GetBaseRunner().QBFTController.StoredInstances = append(storedInstances, qbft.NewInstance(
 			runner.GetBaseRunner().QBFTController.GetConfig(),
 			runner.GetBaseRunner().Share,
 			runner.GetBaseRunner().QBFTController.Identifier,
-			testingutils.TestingDutySlot,
+			5,
 		))
 		return runner
 	}
+	expectedErr := "failed processing consensus message: invalid pre-consensus justification: duty." +
+		"slot <= highest known slot"
 
-	expectedErr := "failed processing consensus message: invalid pre-consensus justification: duty.slot <= highest decided slot"
+	expectedErrNoPreconsensus := "failed processing consensus message: future msg from height, could not process"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus past slot",
@@ -146,9 +148,9 @@ func PastSlot() tests.SpecTest {
 				),
 				PostDutyRunnerStateRoot: "16c1db7c756f2e7dfff270c3ce0f9b1ee321b28bc57b9394cf030d99d29f25a1",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
+					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
 				},
-				ExpectedError: expectedErr,
+				ExpectedError: expectedErrNoPreconsensus,
 			},
 			{
 				Name:   "sync committee",
@@ -162,7 +164,7 @@ func PastSlot() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
-				ExpectedError: expectedErr,
+				ExpectedError: expectedErrNoPreconsensus,
 			},
 		},
 	}
