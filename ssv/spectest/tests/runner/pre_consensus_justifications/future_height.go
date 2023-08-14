@@ -18,7 +18,7 @@ func FutureHeight() tests.SpecTest {
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
-			Height:     5,
+			Height:     testingutils.TestingDutySlot2,
 			Round:      qbft.FirstRound,
 			Identifier: id,
 			Root:       root,
@@ -29,12 +29,14 @@ func FutureHeight() tests.SpecTest {
 		return signed
 	}
 
+	expectedErr := "failed processing consensus message: future msg from height, could not process"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus future height",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
-				Runner: decideFirstHeight(testingutils.SyncCommitteeContributionRunner(ks)),
+				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
@@ -43,10 +45,11 @@ func FutureHeight() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "aggregator selection proof",
-				Runner: decideFirstHeight(testingutils.AggregatorRunner(ks)),
+				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
@@ -55,10 +58,11 @@ func FutureHeight() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao",
-				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
+				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
@@ -67,10 +71,11 @@ func FutureHeight() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao (blinded block)",
-				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
+				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
@@ -79,27 +84,30 @@ func FutureHeight() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 
 				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
+				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "524da86407c014569a653ab7eae46c918128415baeba783642d8f056a41de70e",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name:   "sync committee",
-				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
+				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "97eac1fc93863db42c5394c5341b2b5b45b020a47ef7300aa370c3672654d32a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedErr,
 			},
 		},
 	}
