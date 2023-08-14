@@ -28,7 +28,6 @@ func NewAttesterRunnner(
 	network Network,
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot,
 ) Runner {
 	return &AttesterRunner{
 		BaseRunner: &BaseRunner{

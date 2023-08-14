@@ -1,14 +1,10 @@
 package testingutils
 
 import (
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 )
-
-var TestingHighestDecidedSlot = phase0.Slot(0)
 
 var AttesterRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil), keySet)
@@ -83,7 +79,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleAggregator:
 		return ssv.NewAggregatorRunner(
@@ -94,7 +89,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleProposer:
 		return ssv.NewProposerRunner(
@@ -105,7 +99,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleSyncCommittee:
 		return ssv.NewSyncCommitteeRunner(
@@ -116,7 +109,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleSyncCommitteeContribution:
 		return ssv.NewSyncCommitteeAggregatorRunner(
@@ -127,7 +119,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleValidatorRegistration:
 		return ssv.NewValidatorRegistrationRunner(
@@ -146,7 +137,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 		ret.(*ssv.AttesterRunner).BaseRunner.BeaconRoleType = UnknownDutyType
 		return ret
