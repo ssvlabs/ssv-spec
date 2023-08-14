@@ -17,7 +17,7 @@ func FutureMessage() tests.SpecTest {
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
-			Height:     10,
+			Height:     testingutils.TestingDutySlot2,
 			Round:      qbft.FirstRound,
 			Identifier: id,
 			Root:       root,
