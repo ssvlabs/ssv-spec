@@ -2,6 +2,7 @@ package pre_consensus_justifications
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/bloxapp/ssv-spec/ssv"
 
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -12,6 +13,7 @@ import (
 // PastSlot tests justification with highestDecidedDutySlot >= data.Duty.Slot (not valid)
 func PastSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+
 	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
 
 		// copy duty to isolate this change from all other spec tests
@@ -24,6 +26,7 @@ func PastSlot() tests.SpecTest {
 			panic(err.Error())
 		}
 		copyDuty.Slot = 5
+
 		data := &types.ConsensusData{
 			Duty:                       copyDuty,
 			Version:                    obj.Version,
@@ -35,7 +38,7 @@ func PastSlot() tests.SpecTest {
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
-			Height:     1,
+			Height:     testingutils.TestingDutySlot2,
 			Round:      qbft.FirstRound,
 			Identifier: id,
 			Root:       root,
@@ -46,6 +49,19 @@ func PastSlot() tests.SpecTest {
 		return signed
 	}
 
+	// inject a past instance to the controller
+	injectPastInstance := func(runner ssv.Runner) ssv.Runner {
+		runner.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
+		storedInstances := runner.GetBaseRunner().QBFTController.StoredInstances
+		runner.GetBaseRunner().QBFTController.StoredInstances = append(storedInstances, qbft.NewInstance(
+			runner.GetBaseRunner().QBFTController.GetConfig(),
+			runner.GetBaseRunner().Share,
+			runner.GetBaseRunner().QBFTController.Identifier,
+			testingutils.TestingDutySlot,
+		))
+		return runner
+	}
+
 	expectedErr := "failed processing consensus message: invalid pre-consensus justification: duty.slot <= highest decided slot"
 
 	return &tests.MultiMsgProcessingSpecTest{
@@ -53,11 +69,14 @@ func PastSlot() tests.SpecTest {
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
+				Runner: injectPastInstance(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData(ks), ks, types.BNRoleSyncCommitteeContribution),
-					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
+					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData(ks),
+						ks,
+						types.BNRoleSyncCommitteeContribution),
+					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks),
+						testingutils.SyncCommitteeContributionMsgID), nil),
 				),
 				PostDutyRunnerStateRoot: "bcaaa6fda6ec6e09f355371b391499ef38c4cf0e19f2ee00560906a8cd65fc94",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -68,11 +87,13 @@ func PastSlot() tests.SpecTest {
 			},
 			{
 				Name:   "aggregator selection proof",
-				Runner: testingutils.AggregatorRunner(ks),
+				Runner: injectPastInstance(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(ks), ks, types.BNRoleAggregator),
-					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
+					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(ks), ks,
+						types.BNRoleAggregator),
+					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks),
+						testingutils.AggregatorMsgID), nil),
 				),
 				PostDutyRunnerStateRoot: "21ec7a48e5132e13de7499e7d44e4d7665287106433fd32dfba016b1a1afd02e",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -83,11 +104,13 @@ func PastSlot() tests.SpecTest {
 			},
 			{
 				Name:   "randao",
-				Runner: testingutils.ProposerRunner(ks),
+				Runner: injectPastInstance(testingutils.ProposerRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix), ks, types.BNRoleProposer),
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
+					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(ks,
+						spec.DataVersionBellatrix), ks, types.BNRoleProposer),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix),
+						testingutils.ProposerMsgID), nil),
 				),
 				PostDutyRunnerStateRoot: "62b2dd10ed329c8ffeb4ba4a4fd3597f9746d8cd03ea8a7907ac0e6c5638b1b3",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -98,10 +121,11 @@ func PastSlot() tests.SpecTest {
 			},
 			{
 				Name:   "randao (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
+				Runner: injectPastInstance(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(ks, spec.DataVersionBellatrix), ks, types.BNRoleProposer),
+					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(ks,
+						spec.DataVersionBellatrix), ks, types.BNRoleProposer),
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				),
 				PostDutyRunnerStateRoot: "2d8b29b5bf69b642910a9caa8a9662c2e71e5e13f19a5d0b52cc932eb29f3969",
@@ -114,7 +138,7 @@ func PastSlot() tests.SpecTest {
 			{
 
 				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
+				Runner: injectPastInstance(testingutils.AttesterRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
@@ -127,7 +151,7 @@ func PastSlot() tests.SpecTest {
 			},
 			{
 				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
+				Runner: injectPastInstance(testingutils.SyncCommitteeRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
