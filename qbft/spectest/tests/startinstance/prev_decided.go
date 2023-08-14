@@ -70,6 +70,9 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
 		instance.State.Decided = true
 		instance.State.DecidedValue = testingutils.TestingQBFTFullData
+		if qbft.Height(i) != height {
+			instance.ForceStop()
+		}
 
 		comparable.SetSignedMessages(instance, msgs)
 		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)

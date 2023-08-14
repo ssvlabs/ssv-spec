@@ -287,6 +287,7 @@
 										"StartValue": "FAAAAAIAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwDIAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
 								},
 								{
+										"forceStop": true,
 										"State": {
 												"Share": {
 														"OperatorID": 1,

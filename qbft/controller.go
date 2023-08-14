@@ -79,9 +79,7 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	if IsDecidedMsg(c.Share, msg) {
 		return c.UponDecided(msg)
 	} else if c.isFutureMessage(msg) {
-		// No error is returned if msg is future because it is a valid case.
-		// The implementation may choose to create optimizations for this case.
-		return nil, nil
+		return nil, fmt.Errorf("future msg from height, could not process")
 	}
 	return c.UponExistingInstanceMsg(msg)
 

@@ -92,6 +92,7 @@ func postDecidedSyncCommitteeSC() *comparable.StateComparison {
 					Decided:           true,
 				},
 			}
+			instance.ForceStop()
 			comparable.SetMessages(instance, []*types.SSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, instance)
@@ -183,6 +184,7 @@ func postDecidedAttesterSC() *comparable.StateComparison {
 					Decided:           true,
 				},
 			}
+			instance.ForceStop()
 			comparable.SetMessages(instance, []*types.SSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, instance)
