@@ -18,7 +18,7 @@ func ValidRoundChangeMsg() tests.SpecTest {
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.RoundChangeMsgType,
-			Height:     1,
+			Height:     testingutils.TestingDutySlot,
 			Round:      qbft.FirstRound,
 			Identifier: id,
 			Root:       root,
