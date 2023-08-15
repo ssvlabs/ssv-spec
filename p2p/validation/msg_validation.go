@@ -83,7 +83,7 @@ func validateConsensusMsg(runner ssv.Runner, data []byte) error {
 	if qbft.IsDecidedMsg(contr.Share, signedMsg) {
 		return qbft.ValidateDecided(contr.GetConfig(), signedMsg, contr.Share)
 	} else if signedMsg.Message.Height > contr.Height {
-		return qbft.ValidateFutureMsg(contr.GetConfig(), signedMsg, contr.Share.Committee)
+		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.Share.Committee)
 	} else {
 		if inst := contr.StoredInstances.FindInstance(signedMsg.Message.Height); inst != nil {
 			return inst.BaseMsgValidation(signedMsg)
@@ -102,4 +102,25 @@ func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
 		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, signedMsg)
 	}
 	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, signedMsg)
+}
+
+func validateFutureMsg(
+	config qbft.IConfig,
+	msg *qbft.SignedMessage,
+	operators []*types.Operator,
+) error {
+	if err := msg.Validate(); err != nil {
+		return errors.Wrap(err, "invalid decided msg")
+	}
+
+	if len(msg.GetSigners()) != 1 {
+		return errors.New("allows 1 signer")
+	}
+
+	// verify signature
+	if err := msg.Signature.VerifyByOperators(msg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	return nil
 }
