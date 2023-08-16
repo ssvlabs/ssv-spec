@@ -344,7 +344,7 @@ var PreConsensusSelectionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.SecretK
 }
 
 var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.SignedPartialSignatureMessage {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, 1, false)
+	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, slot, 1, false)
 }
 
 var PreConsensusWrongMsgSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.SignedPartialSignatureMessage {
@@ -410,7 +410,7 @@ var selectionProofMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type:     types.SelectionProofPartialSig,
-		Slot:     TestingDutySlot,
+		Slot:     msgSlot,
 		Messages: _msgs,
 	}
 	msgSig, _ := signer.SignRoot(msgs, types.PartialSignatureType, sk.GetPublicKey().Serialize())
@@ -680,7 +680,7 @@ var PreConsensusContributionProofNextEpochMsg = func(msgSK, beaconSK *bls.Secret
 }
 
 var PreConsensusCustomSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.SignedPartialSignatureMessage {
-	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, TestingDutySlot, false, false)
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, slot, false, false)
 }
 
 var PreConsensusWrongMsgSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.SignedPartialSignatureMessage {
@@ -792,7 +792,7 @@ var contributionProofMsg = func(
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,
-		Slot:     TestingDutySlot,
+		Slot:     msgSlot,
 		Messages: msgs,
 	}
 

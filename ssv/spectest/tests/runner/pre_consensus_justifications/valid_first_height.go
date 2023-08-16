@@ -35,13 +35,6 @@ func ValidFirstHeight() tests.SpecTest {
 		return &duty
 	}
 
-	firstSlotCd := func(cd *types.ConsensusData) *types.ConsensusData {
-		cd.Duty.Slot = 0
-		return cd
-	}
-
-	//expectedError := "failed processing consensus message: future msg from height, could not process"
-
 	syncContributionDuty := firstHeightDuty(testingutils.TestingSyncCommitteeContributionDuty)
 	aggregatorDuty := firstHeightDuty(testingutils.TestingAggregatorDuty)
 	proposerDuty := firstHeightDuty(*testingutils.TestingProposerDutyV(spec.DataVersionBellatrix))
@@ -55,8 +48,8 @@ func ValidFirstHeight() tests.SpecTest {
 				Duty:   syncContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(
-						firstSlotCd(testingutils.TestContributionProofWithJustificationsConsensusDataCustomDuty(ks,
-							syncContributionDuty)),
+						testingutils.TestContributionProofWithJustificationsConsensusDataCustomDuty(ks,
+							syncContributionDuty),
 						testingutils.SyncCommitteeContributionMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "1c71e2154b44d39541e65319701ce50b3e2d39fab616d2eb06fd72a67bff5793",
@@ -70,7 +63,7 @@ func ValidFirstHeight() tests.SpecTest {
 				Duty:   aggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(msgF(
-						firstSlotCd(testingutils.TestSelectionProofWithJustificationsConsensusDataCustomDuty(ks, aggregatorDuty)),
+						testingutils.TestSelectionProofWithJustificationsConsensusDataCustomDuty(ks, aggregatorDuty),
 						testingutils.AggregatorMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "3b9877067deef7be6916fd4879878e51b5047a39d57a804a69589e113c4a893a",
@@ -84,8 +77,8 @@ func ValidFirstHeight() tests.SpecTest {
 				Duty:   proposerDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(
-						firstSlotCd(testingutils.TestProposerWithJustificationsConsensusDataCustomDutyV(ks, proposerDuty,
-							spec.DataVersionBellatrix)),
+						testingutils.TestProposerWithJustificationsConsensusDataCustomDutyV(ks, proposerDuty,
+							spec.DataVersionBellatrix),
 						testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "f7a63280b5e1ccfd430fd6ab9eaf4c7f0bf50b1b03f8d6c2dfdcfe89471d072a",
@@ -99,8 +92,8 @@ func ValidFirstHeight() tests.SpecTest {
 				Duty:   firstHeightDuty(*testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(
-						firstSlotCd(testingutils.TestProposerBlindedWithJustificationsConsensusDataCustomDutyV(ks, proposerDuty,
-							spec.DataVersionBellatrix)),
+						testingutils.TestProposerBlindedWithJustificationsConsensusDataCustomDutyV(ks, proposerDuty,
+							spec.DataVersionBellatrix),
 						testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "ef8bcdcf507151f25f8247b408e0ad47730c298b62068fff97b3fa8e3b6076c3",
