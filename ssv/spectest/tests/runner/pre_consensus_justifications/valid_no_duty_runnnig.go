@@ -29,6 +29,8 @@ func ValidNoRunningDuty() tests.SpecTest {
 		return signed
 	}
 
+	expectedErrorNoPrecon := "failed processing consensus message: future msg from height, could not process"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus justification valid no running duty",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -87,6 +89,7 @@ func ValidNoRunningDuty() tests.SpecTest {
 				PostDutyRunnerStateRoot: "97ba097765d1b3e9e1b0dde97723d5ec3100e12ed197d567cdba32315409d20b",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           expectedErrorNoPrecon,
 			},
 			{
 				Name:   "sync committee",
@@ -98,6 +101,7 @@ func ValidNoRunningDuty() tests.SpecTest {
 				PostDutyRunnerStateRoot: "631bde3df3e21a17dac94c01623d58cc02b1c99f52120e85f0592c3d2626dddd",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
+				ExpectedError:           expectedErrorNoPrecon,
 			},
 		},
 	}
