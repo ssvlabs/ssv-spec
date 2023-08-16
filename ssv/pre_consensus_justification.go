@@ -9,8 +9,10 @@ import (
 // shouldProcessJustifications returns true if pre-consensus justification should be processed, false otherwise
 func (b *BaseRunner) shouldProcessJustifications(msg *qbft.SignedMessage) bool {
 	correctMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
-	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
-	correctQBFTHeight := b.QBFTController.Height < msg.Message.Height
+	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator ||
+		b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
+	correctQBFTHeight := b.QBFTController.Height < msg.Message.Height ||
+		(b.QBFTController.Height == msg.Message.Height && b.QBFTController.Height == qbft.FirstHeight)
 	return correctMsgTYpe && correctBeaconRole && correctQBFTHeight
 }
 
@@ -25,7 +27,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 		return errors.New("wrong beacon role")
 	}
 
-	if qbft.Height(data.Duty.Slot) <= b.QBFTController.Height {
+	if qbft.Height(data.Duty.Slot) <= b.QBFTController.Height && b.QBFTController.Height != qbft.FirstHeight {
 		return errors.New("duty.slot <= highest known slot")
 	}
 
