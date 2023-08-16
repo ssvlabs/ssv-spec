@@ -39,6 +39,17 @@ var ValidatorRegistrationMsgID = func() []byte {
 	return ret[:]
 }()
 
+var TestAttesterConsensusDataWithPreconJust = func(ks *TestKeySet) *types.ConsensusData {
+	cd := comparable2.FixIssue178(&types.ConsensusData{
+		Duty:    TestingAttesterDuty,
+		DataSSZ: TestingAttestationDataBytes,
+		// random justifications for testing. We jus need to have some data here
+		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleSyncCommitteeContribution, TestingSyncCommitteeBlockRootVersion),
+	},
+		TestingAttestationDataVersion)
+	return cd
+}
+
 var TestAttesterConsensusData = comparable2.FixIssue178(&types.ConsensusData{
 	Duty:    TestingAttesterDuty,
 	DataSSZ: TestingAttestationDataBytes,
@@ -63,6 +74,17 @@ var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensu
 var TestAggregatorConsensusDataByts = func(ks *TestKeySet) []byte {
 	byts, _ := TestAggregatorConsensusData(ks).Encode()
 	return byts
+}
+
+var TestSyncCommitteeConsensusDataWithPreconJust = func(ks *TestKeySet) *types.ConsensusData {
+	cd := comparable2.FixIssue178(&types.ConsensusData{
+		Duty:    TestingSyncCommitteeDuty,
+		DataSSZ: TestingSyncCommitteeBlockRoot[:],
+		// random justifications for testing. We jus need to have some data here
+		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleSyncCommitteeContribution, TestingSyncCommitteeBlockRootVersion),
+	},
+		TestingSyncCommitteeBlockRootVersion)
+	return cd
 }
 
 var TestSyncCommitteeConsensusData = comparable2.FixIssue178(&types.ConsensusData{

@@ -101,6 +101,7 @@ var AllTests = []tests.TestF{
 	pre_consensus_justifications.ValidFirstHeight,
 	pre_consensus_justifications.ValidNoRunningDuty,
 	pre_consensus_justifications.ValidRoundChangeMsg,
+	pre_consensus_justifications.JustificationsWithNoPrecon,
 	pre_consensus_justifications.HappyFlow,
 
 	preconsensus.NoRunningDuty,
