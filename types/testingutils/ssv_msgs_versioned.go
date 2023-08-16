@@ -71,7 +71,7 @@ var TestProposerBlindedWithJustificationsConsensusDataCustomDutyV = func(ks *Tes
 		justif = append(justif, PreConsensusRandaoMsgSlotV(ks.Shares[i+1], i+1, duty.Slot, version))
 	}
 
-	cd := TestProposerBlindedBlockConsensusDataV(ks, version)
+	cd := TestProposerBlindedBlockConsensusDataCustomDutyV(ks, duty, version)
 	cd.PreConsensusJustifications = justif
 	return cd
 }
