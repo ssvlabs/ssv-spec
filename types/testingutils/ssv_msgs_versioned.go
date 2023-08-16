@@ -9,13 +9,19 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-var TestProposerConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
-	duty := TestingProposerDutyV(version)
+var TestProposerConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty, version spec.DataVersion) *types.
+	ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:                       *duty,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
 		DataSSZ:                    TestingBeaconBlockBytesV(version),
 	}, version)
+
+}
+
+var TestProposerConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
+	duty := TestingProposerDutyV(version)
+	return TestProposerConsensusDataCustomDutyV(ks, duty, version)
 }
 
 var TestProposerConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {
@@ -35,6 +41,18 @@ var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version 
 	return cd
 }
 
+var TestProposerWithJustificationsConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty,
+	version spec.DataVersion) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusRandaoMsgSlotV(ks.Shares[i+1], i+1, duty.Slot, version))
+	}
+
+	cd := TestProposerConsensusDataCustomDutyV(ks, duty, version)
+	cd.PreConsensusJustifications = justif
+	return cd
+}
+
 var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
@@ -46,9 +64,26 @@ var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, v
 	return cd
 }
 
+var TestProposerBlindedWithJustificationsConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty,
+	version spec.DataVersion) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusRandaoMsgSlotV(ks.Shares[i+1], i+1, duty.Slot, version))
+	}
+
+	cd := TestProposerBlindedBlockConsensusDataV(ks, version)
+	cd.PreConsensusJustifications = justif
+	return cd
+}
+
 var TestProposerBlindedBlockConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
+	return TestProposerConsensusDataCustomDutyV(ks, TestingProposerDutyV(version), version)
+}
+
+var TestProposerBlindedBlockConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty,
+	version spec.DataVersion) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
-		Duty:                       *TestingProposerDutyV(version),
+		Duty:                       *duty,
 		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
 		DataSSZ:                    TestingBlindedBeaconBlockBytesV(version),
 	}, version)
@@ -166,6 +201,11 @@ var PreConsensusRandaoMsgV = func(sk *bls.SecretKey, id types.OperatorID, versio
 	return randaoMsgV(sk, id, false, TestingDutyEpochV(version), 1, false, version)
 }
 
+var PreConsensusRandaoMsgSlotV = func(sk *bls.SecretKey, id types.OperatorID, slot phase0.Slot,
+	version spec.DataVersion) *types.SignedPartialSignatureMessage {
+	return randaoMsgSlotV(sk, id, false, TestingDutyEpochV(version), 1, slot, false, version)
+}
+
 // PreConsensusRandaoNextEpochMsgV testing for a second duty start
 var PreConsensusRandaoNextEpochMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.SignedPartialSignatureMessage {
 	return randaoMsgV(sk, id, false, TestingDutyEpochV(version)+1, 1, false, version)
@@ -242,6 +282,49 @@ var randaoMsgV = func(
 	msgs := types.PartialSignatureMessages{
 		Type:     types.RandaoPartialSig,
 		Slot:     TestingProposerDutyV(version).Slot,
+		Messages: []*types.PartialSignatureMessage{},
+	}
+	for i := 0; i < msgCnt; i++ {
+		msg := &types.PartialSignatureMessage{
+			PartialSignature: signed[:],
+			SigningRoot:      root,
+			Signer:           id,
+		}
+		if wrongRoot {
+			msg.SigningRoot = [32]byte{}
+		}
+		msgs.Messages = append(msgs.Messages, msg)
+	}
+
+	sig, _ := signer.SignRoot(msgs, types.PartialSignatureType, sk.GetPublicKey().Serialize())
+	return &types.SignedPartialSignatureMessage{
+		Message:   msgs,
+		Signature: sig,
+		Signer:    id,
+	}
+}
+
+var randaoMsgSlotV = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	wrongRoot bool,
+	epoch phase0.Epoch,
+	msgCnt int,
+	slot phase0.Slot,
+	wrongBeaconSig bool,
+	version spec.DataVersion,
+) *types.SignedPartialSignatureMessage {
+	signer := NewTestingKeyManager()
+	beacon := NewTestingBeaconNode()
+	d, _ := beacon.DomainData(epoch, types.DomainRandao)
+	signed, root, _ := signer.SignBeaconObject(types.SSZUint64(epoch), d, sk.GetPublicKey().Serialize(), types.DomainRandao)
+	if wrongBeaconSig {
+		signed, root, _ = signer.SignBeaconObject(types.SSZUint64(TestingDutyEpochV(version)), d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainRandao)
+	}
+
+	msgs := types.PartialSignatureMessages{
+		Type:     types.RandaoPartialSig,
+		Slot:     slot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 	for i := 0; i < msgCnt; i++ {

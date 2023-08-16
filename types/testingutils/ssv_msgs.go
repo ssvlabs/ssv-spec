@@ -365,6 +365,22 @@ var TestSelectionProofWithJustificationsConsensusData = func(ks *TestKeySet) *ty
 	}
 }
 
+var TestSelectionProofWithJustificationsConsensusDataCustomDuty = func(ks *TestKeySet,
+	duty *types.Duty) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusCustomSlotSelectionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1,
+			duty.Slot))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       *duty,
+		Version:                    TestingAggregateAndProofVersion,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingAggregateAndProofBytes,
+	}
+}
+
 var selectionProofMsg = func(
 	sk *bls.SecretKey,
 	beaconsk *bls.SecretKey,
@@ -682,6 +698,21 @@ var TestContributionProofWithJustificationsConsensusData = func(ks *TestKeySet) 
 
 	return &types.ConsensusData{
 		Duty:                       TestingSyncCommitteeContributionDuty,
+		Version:                    TestingContributionDataVersion,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingContributionsDataBytes,
+	}
+}
+
+var TestContributionProofWithJustificationsConsensusDataCustomDuty = func(ks *TestKeySet, duty *types.Duty) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusCustomSlotContributionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1,
+			duty.Slot))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       *duty,
 		Version:                    TestingContributionDataVersion,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingContributionsDataBytes,
