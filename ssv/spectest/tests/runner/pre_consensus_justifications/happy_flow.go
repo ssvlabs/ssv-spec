@@ -133,7 +133,7 @@ func HappyFlow() tests.SpecTest {
 				// this is not a valid scenario, but we want to test that the runner will ignore them.
 				// This is to confirm consistent behaviors across nodes.
 				Messages: append(
-					consensusMsgs(testingutils.TestSyncCommitteeConsensusData,
+					consensusMsgs(testingutils.TestSyncCommitteeConsensusDataWithPreconJust(ks),
 						types.BNRoleSyncCommittee,
 						testingutils.TestingDutySlot),
 					// consensus
@@ -156,7 +156,7 @@ func HappyFlow() tests.SpecTest {
 				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
-					consensusMsgs(testingutils.TestAttesterConsensusData, types.BNRoleAttester,
+					consensusMsgs(testingutils.TestAttesterConsensusDataWithPreconJust(ks), types.BNRoleAttester,
 						testingutils.TestingDutySlot), // consensus
 					[]*types.SSVMessage{ // post consensus
 						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)),
