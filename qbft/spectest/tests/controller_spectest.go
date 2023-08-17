@@ -19,11 +19,9 @@ import (
 )
 
 type DecidedState struct {
-	DecidedVal               []byte
-	DecidedCnt               uint
-	BroadcastedDecided       *qbft.SignedMessage
-	CalledSyncDecidedByRange bool
-	DecidedByRangeValues     [2]qbft.Height
+	DecidedVal         []byte
+	DecidedCnt         uint
+	BroadcastedDecided *qbft.SignedMessage
 }
 
 type RunInstanceData struct {
@@ -114,13 +112,6 @@ func (test *ControllerSpecTest) testProcessMsg(
 		}
 	}
 	require.EqualValues(t, runData.ExpectedDecidedState.DecidedCnt, decidedCnt)
-
-	// verify sync decided by range calls
-	if runData.ExpectedDecidedState.CalledSyncDecidedByRange {
-		require.EqualValues(t, runData.ExpectedDecidedState.DecidedByRangeValues, config.GetNetwork().(*testingutils.TestingNetwork).DecidedByRange)
-	} else {
-		require.EqualValues(t, [2]qbft.Height{0, 0}, config.GetNetwork().(*testingutils.TestingNetwork).DecidedByRange)
-	}
 
 	return lastErr
 }

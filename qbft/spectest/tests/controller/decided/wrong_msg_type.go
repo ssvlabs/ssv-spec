@@ -20,12 +20,12 @@ func WrongMsgType() tests.SpecTest {
 					testingutils.TestingMultiSignerProposalMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
-						10,
+						qbft.FirstHeight,
 					),
 				},
 				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
-		ExpectedError: "invalid future msg: allows 1 signer",
+		ExpectedError: "could not process msg: invalid signed message: msg allows 1 signer",
 	}
 }

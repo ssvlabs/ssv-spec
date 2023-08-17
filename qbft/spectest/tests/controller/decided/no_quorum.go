@@ -21,12 +21,12 @@ func NoQuorum() tests.SpecTest {
 					testingutils.TestingCommitMultiSignerMessageWithHeight(
 						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2]},
 						[]types.OperatorID{1, 2},
-						10,
+						qbft.FirstHeight,
 					),
 				},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
-		ExpectedError: "invalid future msg: allows 1 signer",
+		// TODO: before merge ask engineering how often they see such message in production
+		ExpectedError: "could not process msg: invalid signed message: did not receive proposal for this round",
 	}
 }
