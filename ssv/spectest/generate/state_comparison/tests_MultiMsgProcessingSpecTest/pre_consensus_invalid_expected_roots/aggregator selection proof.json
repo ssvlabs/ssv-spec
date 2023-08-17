@@ -1,7 +1,56 @@
 {
 		"BaseRunner": {
 				"State": {
-						"PreConsensusContainer": {},
+						"PreConsensusContainer": {
+								"1": {
+										"Message": {
+												"Type": 2,
+												"Slot": 12,
+												"Messages": [
+														{
+																"PartialSignature": "pHmwI9nyjrnM3TW7lg+1wmVTDf8Xiufkqbd/AX91nKWiEl5ya94M2SozMAlUlMjAB4Kif6iQfowarePazbjgYUaGxn4fYoMEYF14YeDtmAPGriFrSq5VqP+0nu0ZPL6n",
+																"SigningRoot": [
+																		70,
+																		38,
+																		17,
+																		210,
+																		197,
+																		146,
+																		189,
+																		245,
+																		33,
+																		79,
+																		18,
+																		79,
+																		231,
+																		165,
+																		38,
+																		154,
+																		183,
+																		61,
+																		68,
+																		239,
+																		201,
+																		230,
+																		206,
+																		26,
+																		190,
+																		50,
+																		248,
+																		25,
+																		106,
+																		229,
+																		38,
+																		222
+																],
+																"Signer": 1
+														}
+												]
+										},
+										"Signature": "uB7NIuSqVa3qapPfXDoJ0cBZJV5Nc/oi0roc+5AzKRpSkdxXH/g5yW/x5fj0j8BXAEWNOI8+J1aPDXYE1HbqOxjlJvlosWppJyrS7ib+W6M/xAU5iiomJSLWY4keM7Ug",
+										"Signer": 1
+								}
+						},
 						"PostConsensusContainer": {},
 						"RunningInstance": null,
 						"DecidedValue": null,
