@@ -73,7 +73,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
 	if !test.DontStartDuty {
 		lastErr = v.StartDuty(test.Duty)
 	}
-	for i, _ := range test.Messages {
+	for i := range test.Messages {
 		err := v.ProcessMessage(test.Messages[i])
 		if err != nil {
 			lastErr = err
