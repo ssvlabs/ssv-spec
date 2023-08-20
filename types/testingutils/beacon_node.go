@@ -330,6 +330,15 @@ var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 	Pubkey:       TestingValidatorPubKey,
 }
 
+var TestingVoluntaryExit = &phase0.VoluntaryExit{
+	Epoch:          0,
+	ValidatorIndex: TestingValidatorIndex,
+}
+var TestingVoluntaryExitWrong = &phase0.VoluntaryExit{
+	Epoch:          1,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
 var TestingAttesterDuty = types.Duty{
 	Type:                    types.BNRoleAttester,
 	PubKey:                  TestingValidatorPubKey,
@@ -432,7 +441,7 @@ var TestingValidatorRegistrationDuty = types.Duty{
 }
 
 var TestingVoluntaryExitDuty = types.Duty{
-	Type:           types.BNRoleValidatorVoluntaryExit,
+	Type:           types.BNRoleVoluntaryExit,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot,
 	ValidatorIndex: TestingValidatorIndex,
