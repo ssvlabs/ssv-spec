@@ -47,7 +47,7 @@ const (
 	BNRoleSyncCommitteeContribution
 
 	BNRoleValidatorRegistration
-	BNRoleValidatorVoluntaryExit
+	BNRoleVoluntaryExit
 )
 
 // String returns name of the role
@@ -65,6 +65,8 @@ func (r BeaconRole) String() string {
 		return "SYNC_COMMITTEE_CONTRIBUTION"
 	case BNRoleValidatorRegistration:
 		return "VALIDATOR_REGISTRATION"
+	case BNRoleVoluntaryExit:
+		return "VOLUNTARY_EXIT"
 	default:
 		return "UNDEFINED"
 	}

@@ -32,7 +32,7 @@ func NewVoluntaryExitRunner(
 ) Runner {
 	return &ValidatorVoluntaryExitRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType: types.BNRoleValidatorRegistration,
+			BeaconRoleType: types.BNRoleVoluntaryExit,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},
@@ -116,7 +116,7 @@ func (r *ValidatorVoluntaryExitRunner) expectedPostConsensusRootsAndDomain() ([]
 }
 
 // Validator voluntary exit duty doesn't need consensus nor post-consensus.
-// It just performs pre-consensus with ValidatorVoluntaryExitPartialSig over
+// It just performs pre-consensus with VoluntaryExitPartialSig over
 // a VoluntaryExit object to create a SignedVoluntaryExit
 func (r *ValidatorVoluntaryExitRunner) executeDuty(duty *types.Duty) error {
 	voluntaryExit, err := r.calculateVoluntaryExit()
@@ -131,7 +131,7 @@ func (r *ValidatorVoluntaryExitRunner) executeDuty(duty *types.Duty) error {
 	}
 
 	msgs := types.PartialSignatureMessages{
-		Type:     types.ValidatorVoluntaryExitPartialSig,
+		Type:     types.VoluntaryExitPartialSig,
 		Slot:     duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
