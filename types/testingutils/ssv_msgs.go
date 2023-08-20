@@ -522,14 +522,14 @@ var VoluntaryExitMsg = func(
 ) *types.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
-	d, _ := beacon.DomainData(epoch, types.DomainApplicationBuilder)
+	d, _ := beacon.DomainData(epoch, types.DomainVoluntaryExit)
 
-	signed, root, _ := signer.SignBeaconObject(TestingVoluntaryExit, d, beaconSK.GetPublicKey().Serialize(), types.DomainApplicationBuilder)
+	signed, root, _ := signer.SignBeaconObject(TestingVoluntaryExit, d, beaconSK.GetPublicKey().Serialize(), types.DomainVoluntaryExit)
 	if wrongRoot {
-		signed, root, _ = signer.SignBeaconObject(TestingVoluntaryExitWrong, d, beaconSK.GetPublicKey().Serialize(), types.DomainApplicationBuilder)
+		signed, root, _ = signer.SignBeaconObject(TestingVoluntaryExitWrong, d, beaconSK.GetPublicKey().Serialize(), types.DomainVoluntaryExit)
 	}
 	if wrongBeaconSig {
-		signed, root, _ = signer.SignBeaconObject(TestingVoluntaryExit, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainApplicationBuilder)
+		signed, root, _ = signer.SignBeaconObject(TestingVoluntaryExit, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainVoluntaryExit)
 	}
 
 	msgs := types.PartialSignatureMessages{
