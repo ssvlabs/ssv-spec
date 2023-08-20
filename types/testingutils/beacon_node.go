@@ -338,6 +338,12 @@ var TestingVoluntaryExitWrong = &phase0.VoluntaryExit{
 	Epoch:          1,
 	ValidatorIndex: TestingValidatorIndex,
 }
+var TestingSignedVoluntaryExit = func(ks *TestKeySet) *phase0.SignedVoluntaryExit {
+	return &phase0.SignedVoluntaryExit{
+		Message:   TestingVoluntaryExit,
+		Signature: signBeaconObject(TestingVoluntaryExit, types.DomainVoluntaryExit, ks),
+	}
+}
 
 var TestingAttesterDuty = types.Duty{
 	Type:                    types.BNRoleAttester,
