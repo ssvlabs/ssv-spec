@@ -80,8 +80,8 @@ type ValidatorRegistrationCalls interface {
 	SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error
 }
 
-// ValidatorVoluntaryExitCalls interface has all validator voluntary exit duty specific calls
-type ValidatorVoluntaryExitCalls interface {
+// VoluntaryExitCalls interface has all validator voluntary exit duty specific calls
+type VoluntaryExitCalls interface {
 	// SubmitVoluntaryExit submits a validator voluntary exit
 	SubmitVoluntaryExit(voluntaryExit *phase0.SignedVoluntaryExit, sig phase0.BLSSignature) error
 }
@@ -99,6 +99,6 @@ type BeaconNode interface {
 	SyncCommitteeCalls
 	SyncCommitteeContributionCalls
 	ValidatorRegistrationCalls
-	ValidatorVoluntaryExitCalls
+	VoluntaryExitCalls
 	DomainCalls
 }
