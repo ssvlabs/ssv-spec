@@ -107,6 +107,19 @@ func InvalidMessageSlot() tests.SpecTest {
 				},
 				ExpectedError: "failed processing validator registration message: invalid pre-consensus message: invalid partial sig slot",
 			},
+			{
+				Name:   "voluntary exit",
+				Runner: testingutils.VoluntaryExitRunner(ks),
+				Duty:   &testingutils.TestingVoluntaryExitDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgVoluntaryExit(nil, invalidateSlot(testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1))),
+				},
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: invalid partial sig slot",
+			},
 		},
 	}
 }
