@@ -1,9 +1,10 @@
 package types
 
 import (
+	"time"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
-	"time"
 )
 
 var GenesisValidatorsRoot = spec.Root{}
@@ -46,6 +47,7 @@ const (
 	BNRoleSyncCommitteeContribution
 
 	BNRoleValidatorRegistration
+	BNRoleVoluntaryExit
 )
 
 // String returns name of the role
@@ -63,6 +65,8 @@ func (r BeaconRole) String() string {
 		return "SYNC_COMMITTEE_CONTRIBUTION"
 	case BNRoleValidatorRegistration:
 		return "VALIDATOR_REGISTRATION"
+	case BNRoleVoluntaryExit:
+		return "VOLUNTARY_EXIT"
 	default:
 		return "UNDEFINED"
 	}

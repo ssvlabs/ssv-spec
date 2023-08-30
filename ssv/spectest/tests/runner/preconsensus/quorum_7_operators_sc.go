@@ -135,6 +135,37 @@ func quorum7OperatorsValidatorRegistrationSC() *comparable.StateComparison {
 	}
 }
 
+// quorum7OperatorsVoluntaryExitSC returns state comparison object for the Quorum7Operators VoluntaryExit versioned spec test
+func quorum7OperatorsVoluntaryExitSC() *comparable.StateComparison {
+	ks := testingutils.Testing7SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.VoluntaryExitRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(5),
+					[]*types.SSVMessage{
+						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[4], 4)),
+						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[5], 5)),
+					},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(5),
+					[]*types.SSVMessage{},
+				),
+				StartingDuty: &testingutils.TestingVoluntaryExitDuty,
+				Finished:     true,
+			}
+
+			return ret
+		}(),
+	}
+}
+
 // quorum7OperatorsProposerSC returns state comparison object for the Quorum7Operators Proposer versioned spec test
 func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()

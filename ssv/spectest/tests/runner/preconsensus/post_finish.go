@@ -74,6 +74,22 @@ func PostFinish() tests.SpecTest {
 				DontStartDuty:           true,
 				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",
 			},
+			{
+				Name: "voluntary exit",
+				Runner: finishRunner(
+					testingutils.VoluntaryExitRunner(ks),
+					&testingutils.TestingVoluntaryExitDuty,
+				),
+				Duty: &testingutils.TestingVoluntaryExitDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+				},
+				PostDutyRunnerStateRoot: postFinishVoluntaryExitSC().Root(),
+				PostDutyRunnerState:     postFinishVoluntaryExitSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				DontStartDuty:           true,
+				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
+			},
 		},
 	}
 

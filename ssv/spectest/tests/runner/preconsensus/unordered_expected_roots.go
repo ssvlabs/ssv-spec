@@ -68,6 +68,18 @@ func UnorderedExpectedRoots() tests.SpecTest {
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
+			{
+				Name:   "voluntary exit",
+				Runner: testingutils.VoluntaryExitRunner(ks),
+				Duty:   &testingutils.TestingVoluntaryExitDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+				},
+				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
 		},
 	}
 }

@@ -348,3 +348,31 @@ func fullHappyFlowValidatorRegistrationSC() *comparable.StateComparison {
 		}(),
 	}
 }
+
+// fullHappyFlowVoluntaryExitSC returns state comparison object for the FullHappyFlow VoluntaryExit spec test
+func fullHappyFlowVoluntaryExitSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.VoluntaryExitRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SSVMessage{
+						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3)),
+					},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SSVMessage{},
+				),
+				StartingDuty: &testingutils.TestingVoluntaryExitDuty,
+				Finished:     true,
+			}
+			return ret
+		}(),
+	}
+}

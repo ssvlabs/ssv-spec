@@ -117,6 +117,29 @@ func Quorum13Operators() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingValidatorRegistration),
 				},
 			},
+			{
+				Name:   "voluntary exit",
+				Runner: testingutils.VoluntaryExitRunner(ks),
+				Duty:   &testingutils.TestingVoluntaryExitDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[4], 4)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[5], 5)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[6], 6)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[7], 7)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[8], 8)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[9], 9)),
+				},
+				PostDutyRunnerStateRoot: "530111e289234d0c522eee11f16287de385592c2677f0acb18ba6435544738aa",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedVoluntaryExit(ks)),
+				},
+			},
 		},
 	}
 }
