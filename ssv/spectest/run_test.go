@@ -318,6 +318,10 @@ func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingu
 		ret := testingutils.ValidatorRegistrationRunner(ks)
 		ret.(*ssv.ValidatorRegistrationRunner).BaseRunner = base
 		return ret
+	case types.BNRoleVoluntaryExit:
+		ret := testingutils.VoluntaryExitRunner(ks)
+		ret.(*ssv.VoluntaryExitRunner).BaseRunner = base
+		return ret
 	case testingutils.UnknownDutyType:
 		ret := testingutils.UnknownDutyTypeRunner(ks)
 		ret.(*ssv.AttesterRunner).BaseRunner = base

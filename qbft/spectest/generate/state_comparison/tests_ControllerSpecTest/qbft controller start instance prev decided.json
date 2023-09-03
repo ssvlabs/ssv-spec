@@ -491,7 +491,6 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"FutureMsgsContainer": {},
 				"Domain": [
 						0,
 						0,
@@ -637,6 +636,7 @@
 								"StartValue": "AQIDBA=="
 						},
 						{
+								"forceStop": true,
 								"State": {
 										"Share": {
 												"OperatorID": 1,
@@ -1124,7 +1124,6 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"FutureMsgsContainer": {},
 				"Domain": [
 						0,
 						0,

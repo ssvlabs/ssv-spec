@@ -65,14 +65,7 @@ var AllTests = []tests.TestF{
 	latemsg.LateRoundChangePastRound,
 	latemsg.FullFlowAfterDecided,
 
-	futuremsg.NoSigners,
-	futuremsg.MultiSigners,
-	futuremsg.Cleanup,
-	futuremsg.DuplicateSigner,
-	futuremsg.F1FutureMsgs,
-	futuremsg.InvalidMsg,
-	futuremsg.UnknownSigner,
-	futuremsg.WrongSig,
+	futuremsg.ValidMsg,
 
 	startinstance.Valid,
 	startinstance.EmptyValue,
@@ -82,6 +75,8 @@ var AllTests = []tests.TestF{
 	startinstance.PreviousDecided,
 	startinstance.PreviousNotDecided,
 	startinstance.InvalidValue,
+	startinstance.EqualHeightRunningInstance,
+	startinstance.LowerHeight,
 
 	proposer.FourOperators,
 	proposer.SevenOperators,
@@ -152,6 +147,8 @@ var AllTests = []tests.TestF{
 	proposal.WrongProposer,
 	proposal.WrongSignature,
 	proposal.UnknownSigner,
+	proposal.ForceStop,
+	proposal.PostCutoff,
 
 	prepare.DuplicateMsg,
 	prepare.HappyFlow,
@@ -166,6 +163,8 @@ var AllTests = []tests.TestF{
 	prepare.UnknownSigner,
 	prepare.PrepareQuorumTriggeredTwice,
 	prepare.PrepareQuorumTriggeredTwiceLateCommit,
+	prepare.ForceStop,
+	prepare.PostCutoff,
 
 	commit.CurrentRound,
 	commit.FutureRound,
@@ -185,6 +184,8 @@ var AllTests = []tests.TestF{
 	commit.InvalidValCheck,
 	commit.NoPrepareQuorum,
 	commit.NoCommitQuorum,
+	commit.ForceStop,
+	commit.PostCutoff,
 
 	roundchange.HappyFlow,
 	roundchange.WrongHeight,
@@ -219,4 +220,6 @@ var AllTests = []tests.TestF{
 	roundchange.QuorumOrder1,
 	roundchange.QuorumMsgNotPrepared,
 	roundchange.JustificationPastRound,
+	roundchange.ForceStop,
+	roundchange.PostCutoff,
 }

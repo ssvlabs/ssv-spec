@@ -293,6 +293,7 @@
 										"StartValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwDIAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
 								},
 								{
+										"forceStop": true,
 										"State": {
 												"Share": {
 														"OperatorID": 1,
@@ -372,7 +373,6 @@
 										"StartValue": null
 								}
 						],
-						"FutureMsgsContainer": {},
 						"Domain": [
 								0,
 								0,

@@ -22,20 +22,16 @@ func PostFutureDecided() tests.SpecTest {
 					),
 				},
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal:               testingutils.TestingQBFTFullData,
-					DecidedCnt:               1,
-					CalledSyncDecidedByRange: true,
-					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
+					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedCnt: 1,
 				},
 				ControllerPostRoot: "589b0c0352f1c22875246f2e66530d5fda62f646434b250ade128c61c16f47bd",
 			},
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				ExpectedDecidedState: tests.DecidedState{
-					DecidedVal:               testingutils.TestingQBFTFullData,
-					DecidedCnt:               0,
-					CalledSyncDecidedByRange: true,
-					DecidedByRangeValues:     [2]qbft.Height{qbft.FirstHeight, 10},
+					DecidedVal: testingutils.TestingQBFTFullData,
+					DecidedCnt: 0,
 				},
 
 				ControllerPostRoot: "589b0c0352f1c22875246f2e66530d5fda62f646434b250ade128c61c16f47bd",

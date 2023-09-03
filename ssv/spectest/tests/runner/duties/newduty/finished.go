@@ -47,7 +47,7 @@ func Finished() tests.SpecTest {
 				Name:                    "sync committee",
 				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: "18ea2f75970c973438ef99448ff6c64777b3e08a048cfc81d665bffe06411965",
+				PostDutyRunnerStateRoot: "b160f3edf371d390ac09b99f01ae283ffc6339649ca0352f3bd974ab2d6458b3",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
@@ -73,7 +73,7 @@ func Finished() tests.SpecTest {
 				Name:                    "attester",
 				Runner:                  finishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: "ca06be0c57b0ac0be499fadc8b404acebaa8aa62be1f9ff93400a0513d4fed8e",
+				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},

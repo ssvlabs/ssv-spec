@@ -19,11 +19,9 @@ import (
 )
 
 type DecidedState struct {
-	DecidedVal               []byte
-	DecidedCnt               uint
-	BroadcastedDecided       *qbft.SignedMessage
-	CalledSyncDecidedByRange bool
-	DecidedByRangeValues     [2]qbft.Height
+	DecidedVal         []byte
+	DecidedCnt         uint
+	BroadcastedDecided *qbft.SignedMessage
 }
 
 type RunInstanceData struct {
@@ -33,6 +31,7 @@ type RunInstanceData struct {
 	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedTimerState   *testingutils.TimerState
 	ExpectedDecidedState DecidedState
+	Height               *qbft.Height `json:"omitempty"`
 }
 
 type ControllerSpecTest struct {
@@ -54,7 +53,11 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 	var lastErr error
 	for i, runData := range test.RunInstanceData {
-		if err := test.runInstanceWithData(t, qbft.Height(i), contr, runData); err != nil {
+		height := qbft.Height(i)
+		if runData.Height != nil {
+			height = *runData.Height
+		}
+		if err := test.runInstanceWithData(t, height, contr, runData); err != nil {
 			lastErr = err
 		}
 	}
@@ -109,13 +112,6 @@ func (test *ControllerSpecTest) testProcessMsg(
 		}
 	}
 	require.EqualValues(t, runData.ExpectedDecidedState.DecidedCnt, decidedCnt)
-
-	// verify sync decided by range calls
-	if runData.ExpectedDecidedState.CalledSyncDecidedByRange {
-		require.EqualValues(t, runData.ExpectedDecidedState.DecidedByRangeValues, config.GetNetwork().(*testingutils.TestingNetwork).DecidedByRange)
-	} else {
-		require.EqualValues(t, [2]qbft.Height{0, 0}, config.GetNetwork().(*testingutils.TestingNetwork).DecidedByRange)
-	}
 
 	return lastErr
 }
@@ -208,11 +204,6 @@ func (test *ControllerSpecTest) overrideStateComparison(t *testing.T) {
 		r, err := sc[i].GetRoot()
 		require.NoError(t, err)
 
-		// backwards compatability test, hard coded post root must be equal to the one loaded from file
-		if len(runData.ControllerPostRoot) > 0 {
-			require.EqualValues(t, runData.ControllerPostRoot, hex.EncodeToString(r[:]))
-		}
-
 		runData.ControllerPostRoot = hex.EncodeToString(r[:])
 	}
 }
@@ -222,7 +213,11 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 
 	ret := make([]*qbft.Controller, len(test.RunInstanceData))
 	for i, runData := range test.RunInstanceData {
-		err := contr.StartNewInstance(qbft.Height(i), runData.InputValue)
+		height := qbft.Height(i)
+		if runData.Height != nil {
+			height = *runData.Height
+		}
+		err := contr.StartNewInstance(height, runData.InputValue)
 		if err != nil && len(test.ExpectedError) == 0 {
 			return nil, err
 		}

@@ -2,11 +2,12 @@ package tests
 
 import (
 	"encoding/hex"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
-	"github.com/google/go-cmp/cmp"
 	"os"
 	"reflect"
 	"testing"
+
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/stretchr/testify/require"
 
@@ -173,6 +174,8 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:
 		runner = &ssv.ValidatorRegistrationRunner{}
+	case *ssv.VoluntaryExitRunner:
+		runner = &ssv.VoluntaryExitRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}
@@ -186,11 +189,6 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 
 	root, err := runner.GetRoot()
 	require.NoError(t, err)
-
-	// backwards compatability test, hard coded post root must be equal to the one loaded from file
-	if len(test.PostDutyRunnerStateRoot) > 0 {
-		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(root[:]), "post runner state not equal")
-	}
 
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(root[:])
 }
