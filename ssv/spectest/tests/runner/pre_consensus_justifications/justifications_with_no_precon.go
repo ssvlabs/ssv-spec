@@ -40,12 +40,6 @@ func JustificationsWithNoPrecon() tests.SpecTest {
 					testingutils.TestingDutySlot)[:1], //proposal message
 
 				PostDutyRunnerStateRoot: "48c73f57659b69131467ef133ccb35d7de2fe96438d30bfa2b5ea63b19ead011",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
-				},
 				ExpectedError: "failed processing consensus message: could not process msg: invalid signed message" +
 					": proposal not justified: proposal fullData invalid: invalid value: sync committee invalid justifications",
 			},
@@ -56,13 +50,7 @@ func JustificationsWithNoPrecon() tests.SpecTest {
 				Messages: consensusMsgs(testingutils.TestAttesterConsensusDataWithPreconJust(ks), types.BNRoleAttester,
 					testingutils.TestingDutySlot)[:1], //proposal message
 				PostDutyRunnerStateRoot: "9d55ff5721b21c5b99dd4b4bacb0acda0b674112fe3cec55cc6aeb04ad5dc2fc",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
-				},
-				ExpectedError: "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: invalid value: attester invalid justifications",
+				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: invalid value: attester invalid justifications",
 			},
 		},
 	}

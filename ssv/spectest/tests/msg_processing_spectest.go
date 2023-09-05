@@ -85,7 +85,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
 
 func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
 	broadcastedRoots := test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).BroadcastedRoots
-	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots))
+	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots), "incorrect number of broadcasted beacon roots")
 	for _, r1 := range test.BeaconBroadcastedRoots {
 		found := false
 		for _, r2 := range broadcastedRoots {
@@ -110,7 +110,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		return ret
 	}
 	broadcastedMsgs := filterPartialSigs(v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs)
-	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
+	require.Len(t, broadcastedMsgs, len(test.OutputMessages), "incorrect number of broadcasted msgs")
 	index := 0
 	for _, msg := range broadcastedMsgs {
 		if msg.MsgType != types.SSVPartialSignatureMsgType {
