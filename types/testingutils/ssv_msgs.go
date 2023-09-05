@@ -698,7 +698,7 @@ var PreConsensusContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgI
 }
 
 var PreConsensusContributionProofWrongBeaconSigMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, false, true)
+	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, false, true)
 }
 
 var PreConsensusContributionProofNextEpochMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.SignedPartialSignatureMessage {
