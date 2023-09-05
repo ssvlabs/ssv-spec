@@ -4,7 +4,7 @@ package types
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path operator.go --exclude-objs OperatorID
 
 //go:generate rm -f ./share_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path share.go --include ./operator.go,./messages.go,./signer.go,./chains.go
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path share.go --include ./operator.go,./messages.go,./signer.go,./domain_type.go
 
 //go:generate rm -f ./messages_encoding.go
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path messages.go --exclude-objs ValidatorPK,MessageID,MsgType
