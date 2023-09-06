@@ -9,14 +9,14 @@ import (
 )
 
 // NetworkID are intended to separate different SSV networks. A network can have many forks in it.
-type NetworkID byte
+type NetworkID [1]byte
 
-const (
-	MainnetNetworkID = NetworkID(0x0)
-	PrimusNetworkID  = NetworkID(0x1)
-	ShifuNetworkID   = NetworkID(0x2)
-	JatoNetworkID    = NetworkID(0x3)
-	JatoV2NetworkID  = NetworkID(0x4)
+var (
+	MainnetNetworkID = NetworkID{0x0}
+	PrimusNetworkID  = NetworkID{0x1}
+	ShifuNetworkID   = NetworkID{0x2}
+	JatoNetworkID    = NetworkID{0x3}
+	JatoV2NetworkID  = NetworkID{0x4}
 )
 
 // DomainType is a unique identifier for signatures, 2 identical pieces of data signed with different domains will result in different sigs
@@ -24,12 +24,12 @@ type DomainType [4]byte
 
 // DomainTypes represent specific forks for specific chains, messages are signed with the domain type making 2 messages from different domains incompatible
 var (
-	GenesisMainnet = DomainType{0x0, 0x0, byte(MainnetNetworkID), 0x0}
-	PrimusTestnet  = DomainType{0x0, 0x0, byte(PrimusNetworkID), 0x0}
-	ShifuTestnet   = DomainType{0x0, 0x0, byte(ShifuNetworkID), 0x0}
-	ShifuV2Testnet = DomainType{0x0, 0x0, byte(ShifuNetworkID), 0x1}
-	JatoTestnet    = DomainType{0x0, 0x0, byte(JatoNetworkID), 0x1}
-	JatoV2Testnet  = DomainType{0x0, 0x0, byte(JatoV2NetworkID), 0x1}
+	GenesisMainnet = DomainType{0x0, 0x0, MainnetNetworkID[0], 0x0}
+	PrimusTestnet  = DomainType{0x0, 0x0, PrimusNetworkID[0], 0x0}
+	ShifuTestnet   = DomainType{0x0, 0x0, ShifuNetworkID[0], 0x0}
+	ShifuV2Testnet = DomainType{0x0, 0x0, ShifuNetworkID[0], 0x1}
+	JatoTestnet    = DomainType{0x0, 0x0, JatoNetworkID[0], 0x1}
+	JatoV2Testnet  = DomainType{0x0, 0x0, JatoV2NetworkID[0], 0x1}
 )
 
 // ForkData is a simple structure holding fork information for a specific chain (and its fork)
@@ -41,7 +41,7 @@ type ForkData struct {
 }
 
 func (domainType DomainType) GetNetworkID() NetworkID {
-	return NetworkID(domainType[2])
+	return NetworkID{domainType[2]}
 }
 
 func (networkID NetworkID) GetForksData() []*ForkData {

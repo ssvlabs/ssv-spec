@@ -13,6 +13,7 @@ import (
 )
 
 var TestingSSVDomainType = types.JatoTestnet
+var TestingSSVNetworkID = types.JatoNetworkID
 var AttesterMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
 	return ret[:]

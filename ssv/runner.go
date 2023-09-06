@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -242,4 +243,14 @@ func (b *BaseRunner) ShouldProcessDuty(duty *types.Duty) error {
 			b.QBFTController.Height)
 	}
 	return nil
+}
+
+// GetDomainTypeAtSlot returns the domain type for a given slot using the its BeaconNetwork and Share's NetworkID
+func (b *BaseRunner) GetDomainTypeAtSlot(slot phase0.Slot) (types.DomainType, error) {
+	epoch := b.BeaconNetwork.EstimatedEpochAtSlot(slot)
+	fork, err := b.Share.NetworkID.ForkAtEpoch(epoch)
+	if err != nil {
+		return b.Share.NetworkID.DefaultFork().Domain, errors.Wrap(err, "Could not get fork for epoch.")
+	}
+	return fork.Domain, nil
 }

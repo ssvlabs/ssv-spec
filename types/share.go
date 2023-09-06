@@ -7,9 +7,9 @@ type Share struct {
 	SharePubKey           []byte      `ssz-size:"48"`
 	Committee             []*Operator `ssz-max:"13"`
 	Quorum, PartialQuorum uint64
-	DomainType            DomainType `ssz-size:"4"`
-	FeeRecipientAddress   [20]byte   `ssz-size:"20"`
-	Graffiti              []byte     `ssz-size:"32"`
+	NetworkID             NetworkID `ssz-size:"1"`
+	FeeRecipientAddress   [20]byte  `ssz-size:"20"`
+	Graffiti              []byte    `ssz-size:"32"`
 }
 
 // HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure

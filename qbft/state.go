@@ -14,6 +14,8 @@ type signing interface {
 	GetSigner() types.SSVSigner
 	// GetSignatureDomainType returns the Domain type used for signatures
 	GetSignatureDomainType() types.DomainType
+	// SetSignatureDomainType sets the Domain type used for signatures
+	SetSignatureDomainType(domainType types.DomainType)
 }
 
 type IConfig interface {
@@ -51,6 +53,11 @@ func (c *Config) GetSigningPubKey() []byte {
 // GetSignatureDomainType returns the Domain type used for signatures
 func (c *Config) GetSignatureDomainType() types.DomainType {
 	return c.Domain
+}
+
+// SetSignatureDomainType sets the Domain type used for signatures
+func (c *Config) SetSignatureDomainType(domainType types.DomainType) {
+	c.Domain = domainType
 }
 
 // GetValueCheckF returns value check instance

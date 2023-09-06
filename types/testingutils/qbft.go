@@ -3,6 +3,7 @@ package testingutils
 import (
 	"bytes"
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -44,7 +45,7 @@ var TestingShare = func(keysSet *TestKeySet) *types.Share {
 		OperatorID:          1,
 		ValidatorPubKey:     keysSet.ValidatorPK.Serialize(),
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
-		DomainType:          TestingSSVDomainType,
+		NetworkID:           TestingSSVNetworkID,
 		Quorum:              keysSet.Threshold,
 		PartialQuorum:       keysSet.PartialThreshold,
 		Committee:           keysSet.Committee(),
