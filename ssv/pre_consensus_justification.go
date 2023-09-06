@@ -8,12 +8,12 @@ import (
 
 // shouldProcessJustifications returns true if pre-consensus justification should be processed, false otherwise
 func (b *BaseRunner) shouldProcessJustifications(msg *qbft.SignedMessage) bool {
-	correctMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
+	correctMsgType := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
 	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator ||
 		b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
 	correctQBFTHeight := b.QBFTController.Height < msg.Message.Height ||
 		(b.QBFTController.Height == msg.Message.Height && b.QBFTController.Height == qbft.FirstHeight)
-	return correctMsgTYpe && correctBeaconRole && correctQBFTHeight
+	return correctMsgType && correctBeaconRole && correctQBFTHeight
 }
 
 // validatePreConsensusJustifications returns an error if pre-consensus justification is invalid, nil otherwise
