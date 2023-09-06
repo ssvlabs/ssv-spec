@@ -10,7 +10,7 @@ import (
 )
 
 // ValidFirstHeight tests a special case for first height which didn't start the instance for duties that require
-// preconsesus
+// pre-consensus
 func ValidFirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -54,7 +54,8 @@ func ValidFirstHeight() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "1c71e2154b44d39541e65319701ce50b3e2d39fab616d2eb06fd72a67bff5793",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusCustomSlotContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, 0),
+					// broadcasts when starting a new duty
 				},
 			},
 			{
@@ -68,7 +69,8 @@ func ValidFirstHeight() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "3b9877067deef7be6916fd4879878e51b5047a39d57a804a69589e113c4a893a",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusCustomSlotSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, 0),
+					// broadcasts when starting a new duty
 				},
 			},
 			{
@@ -83,7 +85,8 @@ func ValidFirstHeight() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "f7a63280b5e1ccfd430fd6ab9eaf4c7f0bf50b1b03f8d6c2dfdcfe89471d072a",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgSlotV(ks.Shares[1], 1, 0, spec.DataVersionBellatrix),
+					// broadcasts when starting a new duty
 				},
 			},
 			{
@@ -98,7 +101,8 @@ func ValidFirstHeight() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "ef8bcdcf507151f25f8247b408e0ad47730c298b62068fff97b3fa8e3b6076c3",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgSlotV(ks.Shares[1], 1, 0, spec.DataVersionBellatrix),
+					// broadcasts when starting a new duty
 				},
 			},
 		},

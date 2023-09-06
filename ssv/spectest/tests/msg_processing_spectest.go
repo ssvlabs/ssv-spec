@@ -98,7 +98,7 @@ func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
 	}
 }
 
-func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Validator) {
+func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, validator *ssv.Validator) {
 	filterPartialSigs := func(messages []*types.SSVMessage) []*types.SSVMessage {
 		ret := make([]*types.SSVMessage, 0)
 		for _, msg := range messages {
@@ -109,7 +109,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		}
 		return ret
 	}
-	broadcastedMsgs := filterPartialSigs(v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs)
+	broadcastedMsgs := filterPartialSigs(validator.Network.(*testingutils.TestingNetwork).BroadcastedMsgs)
 	require.Len(t, broadcastedMsgs, len(test.OutputMessages), "incorrect number of broadcasted msgs")
 	index := 0
 	for _, msg := range broadcastedMsgs {
