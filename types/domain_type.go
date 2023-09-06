@@ -48,6 +48,8 @@ func (networkID NetworkID) GetForksData() []*ForkData {
 	switch networkID {
 	case MainnetNetworkID:
 		return mainnetForks()
+	case PrimusNetworkID:
+		return []*ForkData{{Epoch: 0, Domain: PrimusTestnet}}
 	case JatoNetworkID:
 		return []*ForkData{{Epoch: 0, Domain: JatoTestnet}}
 	case JatoV2NetworkID:
