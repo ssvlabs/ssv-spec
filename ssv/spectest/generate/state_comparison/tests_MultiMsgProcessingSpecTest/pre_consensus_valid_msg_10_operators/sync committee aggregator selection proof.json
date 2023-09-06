@@ -150,11 +150,8 @@
 						],
 						"Quorum": 7,
 						"PartialQuorum": 4,
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
+						"NetworkID": [
+								3
 						],
 						"FeeRecipientAddress": [
 								83,
@@ -238,11 +235,8 @@
 								],
 								"Quorum": 7,
 								"PartialQuorum": 4,
-								"DomainType": [
-										0,
-										0,
-										3,
-										1
+								"NetworkID": [
+										3
 								],
 								"FeeRecipientAddress": [
 										83,

@@ -23,7 +23,7 @@ func PostDecided() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "post decided",
 		Pre:            pre,
-		PostRoot:       "b778306f5782f6df3bc1aadd173f2e5dc41fcec00fee887a59c372bc94be91c2",
+		PostRoot:       "f5070e7ec0a67adf40ef267c3bc7d0b1bd55ce3409d7849798a8c0e5d1286d19",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

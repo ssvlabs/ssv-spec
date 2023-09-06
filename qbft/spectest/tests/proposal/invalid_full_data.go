@@ -17,7 +17,7 @@ func InvalidFullData() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "invalid full data",
 		Pre:           pre,
-		PostRoot:      "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
+		PostRoot:      "1256adaeaaec7689542238eb7fb94c96bcf430f3b0231be2779755d1fb7f43ab",
 		InputMessages: []*qbft.SignedMessage{msg},
 		ExpectedError: "invalid signed message: H(data) != root",
 	}

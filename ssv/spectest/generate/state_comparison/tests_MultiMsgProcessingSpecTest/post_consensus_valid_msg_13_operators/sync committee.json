@@ -75,11 +75,8 @@
 												],
 												"Quorum": 9,
 												"PartialQuorum": 5,
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
+												"NetworkID": [
+														3
 												],
 												"FeeRecipientAddress": [
 														83,
@@ -323,11 +320,8 @@
 						],
 						"Quorum": 9,
 						"PartialQuorum": 5,
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
+						"NetworkID": [
+								3
 						],
 						"FeeRecipientAddress": [
 								83,
@@ -419,11 +413,8 @@
 														],
 														"Quorum": 9,
 														"PartialQuorum": 5,
-														"DomainType": [
-																0,
-																0,
-																3,
-																1
+														"NetworkID": [
+																3
 														],
 														"FeeRecipientAddress": [
 																83,
@@ -539,11 +530,8 @@
 								],
 								"Quorum": 9,
 								"PartialQuorum": 5,
-								"DomainType": [
-										0,
-										0,
-										3,
-										1
+								"NetworkID": [
+										3
 								],
 								"FeeRecipientAddress": [
 										83,

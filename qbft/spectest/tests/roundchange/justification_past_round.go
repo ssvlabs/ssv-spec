@@ -36,7 +36,7 @@ func JustificationPastRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change past round quorum",
 		Pre:            pre,
-		PostRoot:       "b3866ec2adb9149b65012cf4eb40a3fb9deaf0f350f92d508818ba3d6e051091",
+		PostRoot:       "27c81cbf267141e93aa164409ec452136a20a6f5204ce1c7e52dd10764bdb092",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: past round",

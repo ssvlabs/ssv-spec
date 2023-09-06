@@ -28,7 +28,7 @@ func FutureRoundPrevNotPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal future round prev not prepared",
 		Pre:           pre,
-		PostRoot:      "5901c834260f6533c0c480ee669d45a2d552dcf289c64d0a00f8ebfc38d4f604",
+		PostRoot:      "54113d3b612a56e59406a1ae1204759c28b19e6d28313a5427ebc7d8f8203d8f",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),

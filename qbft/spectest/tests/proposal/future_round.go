@@ -36,7 +36,7 @@ func FutureRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal future round prev prepared",
 		Pre:           pre,
-		PostRoot:      "1d6b7cd0d77efabb5755072f2b502baa33759c2d5ce8df098294bfeec231a560",
+		PostRoot:      "718a55473e8afb1a29cf0653523f435c15b1d42cfee1a65d5a385053b7dddd2a",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),

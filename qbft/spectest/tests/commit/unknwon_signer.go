@@ -23,7 +23,7 @@ func UnknownSigner() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "unknown commit signer",
 		Pre:           pre,
-		PostRoot:      "976cd5cecd58bba892a38ec0ef02b3aed4656fb89fef473d8af78fedf095439d",
+		PostRoot:      "f05189a449b7d19d5dea063b6b80a583e37986309a628bce47af368d015186c4",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: msg signature invalid: unknown signer",
 		OutputMessages: []*qbft.SignedMessage{
