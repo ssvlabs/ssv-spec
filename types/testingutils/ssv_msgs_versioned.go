@@ -12,9 +12,8 @@ import (
 var TestProposerConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty, version spec.DataVersion) *types.
 	ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
-		Duty:                       *duty,
-		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
-		DataSSZ:                    TestingBeaconBlockBytesV(version),
+		Duty:    *duty,
+		DataSSZ: TestingBeaconBlockBytesV(version),
 	}, version)
 
 }

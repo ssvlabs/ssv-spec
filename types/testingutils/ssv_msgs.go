@@ -58,9 +58,8 @@ var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAggregatorConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
-		Duty:                       TestingAggregatorDuty,
-		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleAggregator, TestingAggregateAndProofVersion),
-		DataSSZ:                    TestingAggregateAndProofBytes,
+		Duty:    TestingAggregatorDuty,
+		DataSSZ: TestingAggregateAndProofBytes,
 	}, TestingAggregateAndProofVersion)
 }
 
