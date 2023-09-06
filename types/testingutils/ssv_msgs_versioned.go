@@ -77,7 +77,7 @@ var TestProposerBlindedWithJustificationsConsensusDataCustomDutyV = func(ks *Tes
 }
 
 var TestProposerBlindedBlockConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
-	return TestProposerConsensusDataCustomDutyV(ks, TestingProposerDutyV(version), version)
+	return TestProposerBlindedBlockConsensusDataCustomDutyV(ks, TestingProposerDutyV(version), version)
 }
 
 var TestProposerBlindedBlockConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty,
