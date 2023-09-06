@@ -96,9 +96,8 @@ var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encod
 
 var TestSyncCommitteeContributionConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
-		Duty:                       TestingSyncCommitteeContributionDuty,
-		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleSyncCommitteeContribution, TestingContributionDataVersion),
-		DataSSZ:                    TestingContributionsDataBytes,
+		Duty:    TestingSyncCommitteeContributionDuty,
+		DataSSZ: TestingContributionsDataBytes,
 	}, TestingContributionDataVersion)
 }
 var TestSyncCommitteeContributionConsensusDataByts = func(ks *TestKeySet) []byte {
