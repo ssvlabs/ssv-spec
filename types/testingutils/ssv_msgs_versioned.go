@@ -82,9 +82,8 @@ var TestProposerBlindedBlockConsensusDataV = func(ks *TestKeySet, version spec.D
 var TestProposerBlindedBlockConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty,
 	version spec.DataVersion) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
-		Duty:                       *duty,
-		PreConsensusJustifications: PreConsensusQuorumV(ks, types.BNRoleProposer, version),
-		DataSSZ:                    TestingBlindedBeaconBlockBytesV(version),
+		Duty:    *duty,
+		DataSSZ: TestingBlindedBeaconBlockBytesV(version),
 	}, version)
 }
 
