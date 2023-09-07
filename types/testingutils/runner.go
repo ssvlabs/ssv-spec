@@ -227,15 +227,15 @@ var SSVDecideBlindedProposerRunnerV = func(ks *TestKeySet, version spec.DataVers
 var SSVDecideRunner = func(r ssv.Runner, duty *types.Duty, height qbft.Height,
 	decidedValue *types.ConsensusData) ssv.Runner {
 	r.GetBaseRunner().State = ssv.NewRunnerState(r.GetBaseRunner().Share.Quorum, duty)
-	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
+	instance := qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
 		r.GetBaseRunner().Share,
 		r.GetBaseRunner().QBFTController.Identifier,
 		height)
-	r.GetBaseRunner().State.RunningInstance.State.Decided = true
-	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, _ = decidedValue.Encode()
+	instance.State.Decided = true
+	instance.State.DecidedValue, _ = decidedValue.Encode()
 	r.GetBaseRunner().State.DecidedValue = decidedValue
-	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
+	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, instance)
 	r.GetBaseRunner().QBFTController.Height = height
 	return r
 }
