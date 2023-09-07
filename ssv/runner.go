@@ -89,22 +89,6 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 
 	b.baseSetupForNewDuty(duty)
 
-	// Computes new domain type based on the Duty
-	epoch := b.BeaconNetwork.EstimatedEpochAtSlot(duty.Slot)
-	forkData, err := b.Share.NetworkID.ForkAtEpoch(epoch)
-	if err != nil {
-		return errors.Wrap(err, "Could not get Fork for duty's slot")
-	}
-	newDomainType := forkData.Domain
-
-	// Computes new identifier
-	identifier := types.NewMsgID(newDomainType, b.Share.ValidatorPubKey[:], b.BeaconRoleType)
-
-	// Updates controller
-	b.QBFTController.SetDomainType(newDomainType)
-	b.QBFTController.GetConfig().SetSignatureDomainType(newDomainType)
-	b.QBFTController.SetIdentifier(identifier[:])
-
 	return runner.executeDuty(duty)
 }
 
