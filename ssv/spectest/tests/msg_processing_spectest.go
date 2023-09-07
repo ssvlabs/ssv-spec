@@ -2,11 +2,12 @@ package tests
 
 import (
 	"encoding/hex"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
-	"github.com/google/go-cmp/cmp"
 	"os"
 	"reflect"
 	"testing"
+
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/stretchr/testify/require"
 
@@ -173,6 +174,8 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:
 		runner = &ssv.ValidatorRegistrationRunner{}
+	case *ssv.VoluntaryExitRunner:
+		runner = &ssv.VoluntaryExitRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}

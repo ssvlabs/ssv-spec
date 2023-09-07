@@ -84,6 +84,30 @@ func postFinishValidatorRegistrationSC() *comparable.StateComparison {
 	}
 }
 
+// postFinishVoluntaryExitSC returns state comparison object for the PostFinish VoluntaryExit versioned spec test
+func postFinishVoluntaryExitSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.VoluntaryExitRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SSVMessage{},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SSVMessage{},
+				),
+				StartingDuty: &testingutils.TestingVoluntaryExitDuty,
+				Finished:     true,
+			}
+			return ret
+		}(),
+	}
+}
+
 // postFinishProposerSC returns state comparison object for the PostFinish Proposer versioned spec test
 func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()

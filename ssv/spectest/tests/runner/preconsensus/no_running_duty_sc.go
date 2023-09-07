@@ -41,6 +41,17 @@ func noRunningDutyValidatorRegistrationSC() *comparable.StateComparison {
 	}
 }
 
+// noRunningDutyVoluntaryExitSC returns state comparison object for the NoRunningDuty VoluntaryExit versioned spec test
+func noRunningDutyVoluntaryExitSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			return testingutils.VoluntaryExitRunner(ks)
+		}(),
+	}
+}
+
 // noRunningDutyProposerSC returns state comparison object for the NoRunningDuty Proposer versioned spec test
 func noRunningDutyProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()

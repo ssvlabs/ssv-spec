@@ -173,6 +173,8 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:
 		runner = &ssv.ValidatorRegistrationRunner{}
+	case *ssv.VoluntaryExitRunner:
+		runner = &ssv.VoluntaryExitRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}

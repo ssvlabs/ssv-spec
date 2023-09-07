@@ -2,6 +2,7 @@ package newduty
 
 import (
 	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
@@ -99,6 +100,17 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: expectedTaskError,
+			},
+			{
+				Name: "voluntary exit",
+				Runner: notFinishTaskRunner(testingutils.VoluntaryExitRunner(ks),
+					&testingutils.TestingVoluntaryExitDuty),
+				Duty:                    &testingutils.TestingVoluntaryExitDuty,
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedTaskError,
 			},

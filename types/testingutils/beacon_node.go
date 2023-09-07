@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"encoding/hex"
+
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
@@ -338,6 +339,21 @@ var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 	Pubkey:       TestingValidatorPubKey,
 }
 
+var TestingVoluntaryExit = &phase0.VoluntaryExit{
+	Epoch:          0,
+	ValidatorIndex: TestingValidatorIndex,
+}
+var TestingVoluntaryExitWrong = &phase0.VoluntaryExit{
+	Epoch:          1,
+	ValidatorIndex: TestingValidatorIndex,
+}
+var TestingSignedVoluntaryExit = func(ks *TestKeySet) *phase0.SignedVoluntaryExit {
+	return &phase0.SignedVoluntaryExit{
+		Message:   TestingVoluntaryExit,
+		Signature: signBeaconObject(TestingVoluntaryExit, types.DomainVoluntaryExit, ks),
+	}
+}
+
 var TestingAttesterDuty = types.Duty{
 	Type:                          types.BNRoleAttester,
 	PubKey:                        TestingValidatorPubKey,
@@ -442,6 +458,13 @@ var TestingValidatorRegistrationDuty = types.Duty{
 	ValidatorIndex: TestingValidatorIndex,
 }
 
+var TestingVoluntaryExitDuty = types.Duty{
+	Type:           types.BNRoleVoluntaryExit,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           TestingDutySlot,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
 var TestingUnknownDutyType = types.Duty{
 	Type:                    UnknownDutyType,
 	PubKey:                  TestingValidatorPubKey,
@@ -518,6 +541,13 @@ func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecip
 	}
 
 	r, _ := vr.HashTreeRoot()
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
+// SubmitVoluntaryExit submit the VoluntaryExit object to the node
+func (bn *TestingBeaconNode) SubmitVoluntaryExit(voluntaryExit *phase0.SignedVoluntaryExit, sig phase0.BLSSignature) error {
+	r, _ := voluntaryExit.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }

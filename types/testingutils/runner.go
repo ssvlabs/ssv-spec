@@ -45,6 +45,10 @@ var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.BNRoleValidatorRegistration, nil, keySet)
 }
 
+var VoluntaryExitRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.BNRoleVoluntaryExit, nil, keySet)
+}
+
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
 }
@@ -123,6 +127,14 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		)
 	case types.BNRoleValidatorRegistration:
 		return ssv.NewValidatorRegistrationRunner(
+			types.PraterNetwork,
+			share,
+			NewTestingBeaconNode(),
+			net,
+			km,
+		)
+	case types.BNRoleVoluntaryExit:
+		return ssv.NewVoluntaryExitRunner(
 			types.PraterNetwork,
 			share,
 			NewTestingBeaconNode(),

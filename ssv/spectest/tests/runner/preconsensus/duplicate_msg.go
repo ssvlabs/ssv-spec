@@ -59,6 +59,20 @@ func DuplicateMsg() tests.SpecTest {
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
+			{
+				Name:   "voluntary exit",
+				Runner: testingutils.VoluntaryExitRunner(ks),
+				Duty:   &testingutils.TestingVoluntaryExitDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+				},
+				PostDutyRunnerStateRoot: duplicateMsgVoluntaryExitSC().Root(),
+				PostDutyRunnerState:     duplicateMsgVoluntaryExitSC().ExpectedState,
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
 		},
 	}
 
