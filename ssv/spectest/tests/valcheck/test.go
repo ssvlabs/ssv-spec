@@ -15,7 +15,6 @@ type SpecTest struct {
 	BeaconRole         types.BeaconRole
 	Input              []byte
 	SlashableDataRoots [][]byte
-	SupportsBlinded    bool
 	ExpectedError      string
 	AnyError           bool
 }
@@ -50,7 +49,7 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	case types.BNRoleAttester:
 		return ssv.AttesterValueCheckF(signer, test.Network, testingutils.TestingValidatorPubKey[:], testingutils.TestingValidatorIndex, nil)
 	case types.BNRoleProposer:
-		return ssv.ProposerValueCheckF(signer, test.Network, testingutils.TestingValidatorPubKey[:], testingutils.TestingValidatorIndex, nil, test.SupportsBlinded)
+		return ssv.ProposerValueCheckF(signer, test.Network, testingutils.TestingValidatorPubKey[:], testingutils.TestingValidatorIndex, nil)
 	case types.BNRoleAggregator:
 		return ssv.AggregatorValueCheckF(signer, test.Network, testingutils.TestingValidatorPubKey[:], testingutils.TestingValidatorIndex)
 	case types.BNRoleSyncCommittee:
