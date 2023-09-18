@@ -75,6 +75,8 @@ var AllTests = []tests.TestF{
 
 	proposer.ProposeBlindedBlockDecidedRegular,
 	proposer.ProposeRegularBlockDecidedBlinded,
+	proposer.BlindedRunnerAcceptsNormalBlock,
+	proposer.NormalProposerAcceptsBlindedBlock,
 
 	pre_consensus_justifications.PastSlot,
 	pre_consensus_justifications.InvalidData,

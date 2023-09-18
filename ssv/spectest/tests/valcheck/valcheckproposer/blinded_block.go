@@ -15,20 +15,11 @@ func BlindedBlock() tests.SpecTest {
 		Name: "blinded blocks",
 		Tests: []*valcheck.SpecTest{
 			{
-				Name:            "blinded blocks not allowed",
-				Network:         types.BeaconTestNetwork,
-				BeaconRole:      types.BNRoleProposer,
-				Input:           testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
-				SupportsBlinded: false,
-				ExpectedError:   "blinded blocks are not supported",
-			},
-			{
-				Name:            "blinded blocks allowed",
-				Network:         types.BeaconTestNetwork,
-				BeaconRole:      types.BNRoleProposer,
-				Input:           testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
-				SupportsBlinded: true,
-				AnyError:        false,
+				Name:       "blinded blocks accepted",
+				Network:    types.BeaconTestNetwork,
+				BeaconRole: types.BNRoleProposer,
+				Input:      testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
+				AnyError:   false,
 			},
 		},
 	}
