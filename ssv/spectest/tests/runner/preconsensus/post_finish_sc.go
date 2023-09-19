@@ -111,7 +111,7 @@ func postFinishVoluntaryExitSC() *comparable.StateComparison {
 // postFinishProposerSC returns state comparison object for the PostFinish Proposer versioned spec test
 func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -136,7 +136,7 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 // postFinishBlindedProposerSC returns state comparison object for the PostFinish Blinded Proposer versioned spec test
 func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

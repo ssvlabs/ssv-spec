@@ -191,8 +191,8 @@ func duplicateMsgDifferentRootsAttesterSC() *comparable.StateComparison {
 // it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -235,8 +235,8 @@ func duplicateMsgDifferentRootsProposerSC(version spec.DataVersion) *comparable.
 // it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

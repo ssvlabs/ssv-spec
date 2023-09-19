@@ -56,7 +56,7 @@ func FarFutureDutySlot() tests.SpecTest {
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix)),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
 				ExpectedError: "duty invalid: duty epoch is into far future",
 			},
 			{

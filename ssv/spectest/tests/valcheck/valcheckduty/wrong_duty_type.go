@@ -16,8 +16,6 @@ func WrongDutyType() tests.SpecTest {
 		return input
 	}
 
-	ks := testingutils.Testing4SharesSet()
-
 	return &valcheck.MultiSpecTest{
 		Name: "wrong duty type",
 		Tests: []*valcheck.SpecTest{
@@ -25,21 +23,21 @@ func WrongDutyType() tests.SpecTest {
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix)),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
 				Name:          "sync committee",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix)),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
 				ExpectedError: "duty invalid: wrong beacon role type", // it passes ConsensusData validation since  SyncCommitteeBlockRoot can't be nil, it's [32]byte
 			},
 			{
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix)),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
@@ -53,7 +51,7 @@ func WrongDutyType() tests.SpecTest {
 				Name:          "attester",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix)),
+				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix)),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 		},

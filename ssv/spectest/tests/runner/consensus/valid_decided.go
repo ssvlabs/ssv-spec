@@ -73,7 +73,7 @@ func ValidDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  testingutils.ProposerRunner(ks),
 			Duty:                    testingutils.TestingProposerDutyV(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(ks, version), ks, types.BNRoleProposer),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
 			PostDutyRunnerStateRoot: validDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecidedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -89,7 +89,7 @@ func ValidDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:                    testingutils.TestingProposerDutyV(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(ks, version), ks, types.BNRoleProposer),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
 			PostDutyRunnerStateRoot: validDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecidedBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{

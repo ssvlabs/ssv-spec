@@ -73,7 +73,7 @@ func ValidDecided7Operators() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  testingutils.ProposerRunner(ks),
 			Duty:                    testingutils.TestingProposerDutyV(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(ks, version), ks, types.BNRoleProposer),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
 			PostDutyRunnerStateRoot: validDecided7OperatorsProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecided7OperatorsProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -89,7 +89,7 @@ func ValidDecided7Operators() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:                    testingutils.TestingProposerDutyV(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(ks, version), ks, types.BNRoleProposer),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
 			PostDutyRunnerStateRoot: validDecided7OperatorsBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecided7OperatorsBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{

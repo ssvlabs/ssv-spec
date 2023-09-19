@@ -123,7 +123,7 @@ func duplicateMsgVoluntaryExitSC() *comparable.StateComparison {
 // duplicateMsgProposerSC returns state comparison object for the DuplicateMsg Proposer versioned spec test
 func duplicateMsgProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -151,7 +151,7 @@ func duplicateMsgProposerSC(version spec.DataVersion) *comparable.StateCompariso
 // duplicateMsgBlindedProposerSC returns state comparison object for the DuplicateMsg Blinded Proposer versioned spec test
 func duplicateMsgBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

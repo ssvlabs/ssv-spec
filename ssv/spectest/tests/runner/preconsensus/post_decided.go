@@ -90,7 +90,7 @@ func PostDecided() tests.SpecTest {
 			Runner: decideRunner(
 				testingutils.ProposerRunner(ks),
 				testingutils.TestingProposerDutyV(version),
-				testingutils.TestProposerConsensusDataV(ks, version),
+				testingutils.TestProposerConsensusDataV(version),
 				[]*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version),
 					testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version),
@@ -115,7 +115,7 @@ func PostDecided() tests.SpecTest {
 			Runner: decideRunner(
 				testingutils.ProposerBlindedBlockRunner(ks),
 				testingutils.TestingProposerDutyV(version),
-				testingutils.TestProposerBlindedBlockConsensusDataV(ks, version),
+				testingutils.TestProposerBlindedBlockConsensusDataV(version),
 				[]*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version),
 					testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version),

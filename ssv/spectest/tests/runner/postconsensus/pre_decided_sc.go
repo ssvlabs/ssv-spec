@@ -191,8 +191,8 @@ func preDecidedAttesterSC() *comparable.StateComparison {
 // post-consensus container should be empty, since we don't process such messages if the instance is not decided.
 func preDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -237,8 +237,8 @@ func preDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison 
 // post-consensus container should be empty, since we don't process such messages if the instance is not decided.
 func preDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

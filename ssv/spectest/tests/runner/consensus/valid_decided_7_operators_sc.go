@@ -214,8 +214,8 @@ func validDecided7OperatorsAttesterSC() *comparable.StateComparison {
 // There are pre-consensus messages in the container that start the consensus instance.
 func validDecided7OperatorsProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -264,8 +264,8 @@ func validDecided7OperatorsProposerSC(version spec.DataVersion) *comparable.Stat
 // There are pre-consensus messages in the container that start the consensus instance.
 func validDecided7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

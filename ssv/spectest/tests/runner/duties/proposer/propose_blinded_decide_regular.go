@@ -28,7 +28,7 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 					[]types.OperatorID{1, 2, 3},
 					qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionBellatrix)),
 					testingutils.ProposerMsgID,
-					testingutils.TestProposerConsensusDataBytsV(ks, spec.DataVersionBellatrix),
+					testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
 				), nil),
 
 			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)),

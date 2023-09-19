@@ -215,13 +215,13 @@ var SSVDecideAttesterRunner = func(ks *TestKeySet) ssv.Runner {
 var SSVDecideProposerRunnerV = func(ks *TestKeySet, version spec.DataVersion) ssv.Runner {
 	return SSVDecideRunner(ProposerRunner(ks),
 		TestingProposerDutyV(version), qbft.Height(TestingDutySlotV(version)),
-		TestProposerConsensusDataV(ks, version))
+		TestProposerConsensusDataV(version))
 }
 
 var SSVDecideBlindedProposerRunnerV = func(ks *TestKeySet, version spec.DataVersion) ssv.Runner {
 	return SSVDecideRunner(ProposerBlindedBlockRunner(ks),
 		TestingProposerDutyV(version), qbft.Height(TestingDutySlotV(version)),
-		TestProposerBlindedBlockConsensusDataV(ks, version))
+		TestProposerBlindedBlockConsensusDataV(version))
 }
 
 var SSVDecideRunner = func(r ssv.Runner, duty *types.Duty, height qbft.Height,

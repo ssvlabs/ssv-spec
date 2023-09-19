@@ -11,8 +11,7 @@ import (
 // VersionedBlockUnknownVersion tests a valid consensus data with unknown block
 func VersionedBlockUnknownVersion() *ProposerSpecTest {
 	unknownDataVersion := spec.DataVersion(100)
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, spec.DataVersionCapella)
+	cd := testingutils.TestProposerConsensusDataV(spec.DataVersionCapella)
 	cd.Version = unknownDataVersion
 
 	cdSSZ, err := cd.MarshalSSZ()

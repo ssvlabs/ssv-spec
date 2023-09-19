@@ -65,7 +65,7 @@ func MissingQuorum() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "2754fc7ced14fb15f3f18556bb6b837620287cbbfbf908abafa5a0533fc4bc5f",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -78,7 +78,7 @@ func MissingQuorum() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedBlockConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "6bd59da9f817b8e40112e58231e36738b9d021db4416c9eeec1dd0236a5362e2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

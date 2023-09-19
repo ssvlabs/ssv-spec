@@ -122,7 +122,7 @@ func Quorum7Operators() tests.SpecTest {
 			Runner: decideRunner(
 				testingutils.ProposerRunner(ks),
 				testingutils.TestingProposerDutyV(version),
-				testingutils.TestProposerConsensusDataV(ks, version),
+				testingutils.TestProposerConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SSVMessage{
@@ -149,7 +149,7 @@ func Quorum7Operators() tests.SpecTest {
 			Runner: decideRunner(
 				testingutils.ProposerBlindedBlockRunner(ks),
 				testingutils.TestingProposerDutyV(version),
-				testingutils.TestProposerBlindedBlockConsensusDataV(ks, version),
+				testingutils.TestProposerBlindedBlockConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SSVMessage{

@@ -191,8 +191,8 @@ func duplicateMsgAttesterSC() *comparable.StateComparison {
 // it knows to ignore the duplicate message and it doesn't enter the post consensus container
 func duplicateMsgProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -235,8 +235,8 @@ func duplicateMsgProposerSC(version spec.DataVersion) *comparable.StateCompariso
 // it knows to ignore the duplicate message, and it doesn't enter the post consensus container
 func duplicateMsgBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

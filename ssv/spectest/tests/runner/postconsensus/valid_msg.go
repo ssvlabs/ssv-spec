@@ -74,7 +74,7 @@ func ValidMessage() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerConsensusDataV(ks, spec.DataVersionBellatrix),
+					testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix),
 				),
 				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
@@ -90,7 +90,7 @@ func ValidMessage() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerBlindedBlockConsensusDataV(ks, spec.DataVersionBellatrix),
+					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix),
 				),
 				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{

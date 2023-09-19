@@ -204,8 +204,8 @@ func postQuorumAttesterSC() *comparable.StateComparison {
 // runner should finish since quorum was achieved
 func postQuorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -251,8 +251,8 @@ func postQuorumProposerSC(version spec.DataVersion) *comparable.StateComparison 
 // runner should finish since quorum was achieved
 func postQuorumBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

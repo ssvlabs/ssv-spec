@@ -15,11 +15,11 @@ import (
 func fullHappyFlowProposerReceivingBlindedBlockSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	// consensus data used for message creation
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
 	// encoded consensus data relative to messages
-	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
+	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 	// encoded consensus data that the runner set as StartValue
-	startedCdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
+	startedCdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -38,7 +38,7 @@ func fullHappyFlowProposerReceivingBlindedBlockSC(version spec.DataVersion) *com
 					},
 				),
 				DecidedValue: comparable.FixIssue178(cd, version),
-				StartingDuty: &testingutils.TestProposerConsensusDataV(ks, version).Duty,
+				StartingDuty: &testingutils.TestProposerConsensusDataV(version).Duty,
 				Finished:     true,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
@@ -71,11 +71,11 @@ func fullHappyFlowProposerReceivingBlindedBlockSC(version spec.DataVersion) *com
 func fullHappyFlowBlindedProposerReceivingNormalBlockSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	// consensus data used for message creation
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
 	// encoded consensus data relative to messages
-	cdBytes := testingutils.TestProposerConsensusDataBytsV(ks, version)
+	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
 	// encoded consensus data that the runner set as StartValue
-	startedCdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version)
+	startedCdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -94,7 +94,7 @@ func fullHappyFlowBlindedProposerReceivingNormalBlockSC(version spec.DataVersion
 					},
 				),
 				DecidedValue: comparable.FixIssue178(cd, version),
-				StartingDuty: &testingutils.TestProposerConsensusDataV(ks, version).Duty,
+				StartingDuty: &testingutils.TestProposerConsensusDataV(version).Duty,
 				Finished:     true,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{

@@ -102,7 +102,7 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 // postDecidedProposerSC returns state comparison object for the PostDecided Proposer versioned spec test
 func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -146,7 +146,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 // postDecidedBlindedProposerSC returns state comparison object for the PostDecided Blinded Proposer versioned spec test
 func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

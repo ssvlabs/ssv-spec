@@ -151,7 +151,7 @@ func PostFinish() tests.SpecTest {
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
 				testingutils.SSVDecidingMsgsV(
-					testingutils.TestProposerConsensusDataV(ks, version),
+					testingutils.TestProposerConsensusDataV(version),
 					ks,
 					types.BNRoleProposer,
 				), // consensus
@@ -166,7 +166,7 @@ func PostFinish() tests.SpecTest {
 						[]types.OperatorID{4},
 						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.ProposerMsgID,
-						testingutils.TestProposerConsensusDataBytsV(ks, version),
+						testingutils.TestProposerConsensusDataBytsV(version),
 					), nil),
 			),
 			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
@@ -188,7 +188,7 @@ func PostFinish() tests.SpecTest {
 			Runner: testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(ks, version), ks,
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks,
 					types.BNRoleProposer), // consensus
 				// post consensus
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
@@ -201,7 +201,7 @@ func PostFinish() tests.SpecTest {
 						[]types.OperatorID{4},
 						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.ProposerMsgID,
-						testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, version),
+						testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
 					), nil),
 			),
 			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),

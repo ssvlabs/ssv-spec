@@ -65,7 +65,7 @@ func unknownSignerAggregatorSC() *comparable.StateComparison {
 // unknownSignerProposerSC returns state comparison object for the UnknownSigner Proposer versioned spec test
 func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerConsensusDataV(ks, version)
+	cd := testingutils.TestProposerConsensusDataV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
@@ -91,7 +91,7 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 // unknownSignerBlindedProposerSC returns state comparison object for the UnknownSigner Blinded Proposer versioned spec test
 func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestProposerBlindedBlockConsensusDataV(ks, version)
+	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {

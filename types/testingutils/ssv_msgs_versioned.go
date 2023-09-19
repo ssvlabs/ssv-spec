@@ -9,8 +9,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-var TestProposerConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty, version spec.DataVersion) *types.
-	ConsensusData {
+func TestProposerConsensusDataCustomDutyV(duty *types.Duty, version spec.DataVersion) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:    *duty,
 		DataSSZ: TestingBeaconBlockBytesV(version),
@@ -18,77 +17,78 @@ var TestProposerConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty
 
 }
 
-var TestProposerConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
+func TestProposerConsensusDataV(version spec.DataVersion) *types.ConsensusData {
 	duty := TestingProposerDutyV(version)
-	return TestProposerConsensusDataCustomDutyV(ks, duty, version)
+	return TestProposerConsensusDataCustomDutyV(duty, version)
 }
 
-var TestProposerConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {
-	cd := TestProposerConsensusDataV(ks, version)
+func TestProposerConsensusDataBytsV(version spec.DataVersion) []byte {
+	cd := TestProposerConsensusDataV(version)
 	byts, _ := cd.Encode()
 	return byts
 }
 
-var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
+func TestProposerWithJustificationsConsensusDataV(ks *TestKeySet,
+	version spec.DataVersion) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
 		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
 	}
 
-	cd := TestProposerConsensusDataV(ks, version)
+	cd := TestProposerConsensusDataV(version)
 	cd.PreConsensusJustifications = justif
 	return cd
 }
 
-var TestProposerWithJustificationsConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty,
+func TestProposerWithJustificationsConsensusDataCustomDutyV(ks *TestKeySet, duty *types.Duty,
 	version spec.DataVersion) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
 		justif = append(justif, PreConsensusRandaoMsgSlotV(ks.Shares[i+1], i+1, duty.Slot, version))
 	}
 
-	cd := TestProposerConsensusDataCustomDutyV(ks, duty, version)
+	cd := TestProposerConsensusDataCustomDutyV(duty, version)
 	cd.PreConsensusJustifications = justif
 	return cd
 }
 
-var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
+func TestProposerBlindedWithJustificationsConsensusDataV(ks *TestKeySet,
+	version spec.DataVersion) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
 		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
 	}
 
-	cd := TestProposerBlindedBlockConsensusDataV(ks, version)
+	cd := TestProposerBlindedBlockConsensusDataV(version)
 	cd.PreConsensusJustifications = justif
 	return cd
 }
 
-var TestProposerBlindedWithJustificationsConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty,
+func TestProposerBlindedWithJustificationsConsensusDataCustomDutyV(ks *TestKeySet, duty *types.Duty,
 	version spec.DataVersion) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
 		justif = append(justif, PreConsensusRandaoMsgSlotV(ks.Shares[i+1], i+1, duty.Slot, version))
 	}
 
-	cd := TestProposerBlindedBlockConsensusDataCustomDutyV(ks, duty, version)
+	cd := TestProposerBlindedBlockConsensusDataCustomDutyV(duty, version)
 	cd.PreConsensusJustifications = justif
 	return cd
 }
 
-var TestProposerBlindedBlockConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
-	return TestProposerBlindedBlockConsensusDataCustomDutyV(ks, TestingProposerDutyV(version), version)
+func TestProposerBlindedBlockConsensusDataV(version spec.DataVersion) *types.ConsensusData {
+	return TestProposerBlindedBlockConsensusDataCustomDutyV(TestingProposerDutyV(version), version)
 }
 
-var TestProposerBlindedBlockConsensusDataCustomDutyV = func(ks *TestKeySet, duty *types.Duty,
-	version spec.DataVersion) *types.ConsensusData {
+func TestProposerBlindedBlockConsensusDataCustomDutyV(duty *types.Duty, version spec.DataVersion) *types.ConsensusData {
 	return comparable2.FixIssue178(&types.ConsensusData{
 		Duty:    *duty,
 		DataSSZ: TestingBlindedBeaconBlockBytesV(version),
 	}, version)
 }
 
-var TestProposerBlindedBlockConsensusDataBytsV = func(ks *TestKeySet, version spec.DataVersion) []byte {
-	cd := TestProposerBlindedBlockConsensusDataV(ks, version)
+func TestProposerBlindedBlockConsensusDataBytsV(version spec.DataVersion) []byte {
+	cd := TestProposerBlindedBlockConsensusDataV(version)
 	byts, _ := cd.Encode()
 	return byts
 }

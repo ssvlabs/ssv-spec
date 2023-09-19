@@ -8,9 +8,7 @@ import (
 
 // VersionedBlindedBlockValidation tests a valid consensus data with bellatrix blinded block
 func VersionedBlindedBlockValidation() *ProposerSpecTest {
-	ks := testingutils.Testing4SharesSet()
-
-	expectedCdRoot, err := testingutils.TestProposerBlindedBlockConsensusDataV(ks, spec.DataVersionBellatrix).HashTreeRoot()
+	expectedCdRoot, err := testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix).HashTreeRoot()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -23,7 +21,7 @@ func VersionedBlindedBlockValidation() *ProposerSpecTest {
 	return &ProposerSpecTest{
 		Name:            "consensus data versioned blinded block validation",
 		Blinded:         true,
-		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataBytsV(ks, spec.DataVersionBellatrix),
+		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
 		DataBlk:         testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionBellatrix),
 		ExpectedCdRoot:  expectedCdRoot,
 		ExpectedBlkRoot: expectedBlkRoot,
