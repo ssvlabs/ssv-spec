@@ -14,8 +14,8 @@ func DuplicateMsg() tests.SpecTest {
 	return &SpecTest{
 		Name: "duplicate msg",
 		MsgsToAdd: []*types.SignedPartialSignatureMessage{
-			testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix),
-			testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionBellatrix),
+			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
 		},
 		PostMsgCount:               1,
 		PostReconstructedSignature: []string{},
