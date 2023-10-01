@@ -24,7 +24,6 @@ type Controller struct {
 func NewController(
 	identifier []byte,
 	share *types.Share,
-	domain types.DomainType,
 	config IConfig,
 ) *Controller {
 	return &Controller{
