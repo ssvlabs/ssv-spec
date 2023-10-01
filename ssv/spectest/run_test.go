@@ -253,7 +253,6 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 	newContr := qbft.NewController(
 		contr.Identifier,
 		contr.Share,
-		testingutils.TestingConfig(ks).Domain,
 		config,
 	)
 	newContr.Height = contr.Height
