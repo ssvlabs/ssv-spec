@@ -13,6 +13,7 @@ import (
 )
 
 var TestingSSVDomainType = types.JatoTestnet
+var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSVDomainType}
 var AttesterMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
 	return ret[:]

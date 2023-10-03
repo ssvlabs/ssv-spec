@@ -2,7 +2,6 @@ package types
 
 import (
 	"crypto/sha256"
-	"encoding/json"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -37,7 +36,7 @@ type ForkData struct {
 	// Epoch in which the fork happened
 	Epoch phase0.Epoch
 	// Domain for the new fork
-	Domain DomainType
+	Domain DomainType `ssz-size:"4"`
 }
 
 func (n NetworkID) Byte() byte {
@@ -87,12 +86,20 @@ func (d DomainType) GetNetworkID() NetworkID {
 }
 
 func (f ForkData) GetRoot() ([]byte, error) {
-	byts, err := json.Marshal(f)
+	byts, err := f.MarshalSSZ()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not marshal ForkData")
 	}
 	ret := sha256.Sum256(byts)
 	return ret[:], nil
+}
+
+func (f *ForkData) Encode() ([]byte, error) {
+	return f.MarshalSSZ()
+}
+
+func (f *ForkData) Decode(data []byte) error {
+	return f.UnmarshalSSZ(data)
 }
 
 // mainnetForks returns all forks for the mainnet chain

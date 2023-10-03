@@ -208,7 +208,3 @@ func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
 func (c *Controller) GetConfig() IConfig {
 	return c.config
 }
-
-func (c *Controller) SetIdentifier(identifier []byte) {
-	c.Identifier = identifier
-}
