@@ -22,13 +22,19 @@ var (
 type DomainType [4]byte
 
 // DomainTypes represent specific forks for specific chains, messages are signed with the domain type making 2 messages from different domains incompatible
+// Historical Note:
+// The fork version values for JatoTestnet and JatoV2Testnet are both set to 0x1 due to an error
+// when these networks were initially introduced. This inconsistency does not align with the sequential
+// versioning observed in other network and fork definitions. It's retained to maintain historical accuracy
+// and to avoid any unforeseen issues that might arise from changing these established values.
+// Future references and modifications should acknowledge this historical inconsistency.
 var (
 	GenesisMainnet = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x0}
 	PrimusTestnet  = DomainType{0x0, 0x0, PrimusNetworkID.Byte(), 0x0}
 	ShifuTestnet   = DomainType{0x0, 0x0, ShifuNetworkID.Byte(), 0x0}
 	ShifuV2Testnet = DomainType{0x0, 0x0, ShifuNetworkID.Byte(), 0x1}
-	JatoTestnet    = DomainType{0x0, 0x0, JatoNetworkID.Byte(), 0x1}
-	JatoV2Testnet  = DomainType{0x0, 0x0, JatoV2NetworkID.Byte(), 0x1}
+	JatoTestnet    = DomainType{0x0, 0x0, JatoNetworkID.Byte(), 0x1}   // Note the fork version value
+	JatoV2Testnet  = DomainType{0x0, 0x0, JatoV2NetworkID.Byte(), 0x1} // Note the fork version value
 )
 
 // ForkData is a simple structure holding fork information for a specific chain (and its fork)
@@ -43,6 +49,7 @@ func (n NetworkID) Byte() byte {
 	return n[0]
 }
 
+// GetForksData return a sorted list of the forks of the network
 func (n NetworkID) GetForksData() []*ForkData {
 	switch n {
 	case MainnetNetworkID:
@@ -56,10 +63,6 @@ func (n NetworkID) GetForksData() []*ForkData {
 	default:
 		return []*ForkData{}
 	}
-}
-
-func (n NetworkID) DefaultFork() *ForkData {
-	return n.GetForksData()[0]
 }
 
 // GetCurrentFork returns the ForkData with highest Epoch smaller or equal to "epoch"
