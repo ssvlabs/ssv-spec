@@ -6,7 +6,6 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
 	consensusdataproposer "github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata/proposer"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/forkdata"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
 
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
@@ -65,6 +64,4 @@ var AllTests = []SpecTest{
 	ssz.SSZWithdrawalsMarshaling(),
 
 	beacon.DepositData(),
-
-	forkdata.Encoding(),
 }
