@@ -58,10 +58,9 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 
 // GetSCDir returns the path to the state comparison folder for the given test type
 func GetSCDir(basedir string, testType string) string {
-	basedir = filepath.Join(basedir, "state_comparison", testType)
-	scDir := strings.NewReplacer(
+	testType = strings.NewReplacer(
 		"*", "",
 		".", "_").
-		Replace(basedir)
-	return scDir
+		Replace(testType)
+	return filepath.Join(basedir, "state_comparison", testType)
 }
