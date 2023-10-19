@@ -3,12 +3,13 @@ package comparable
 import (
 	"encoding/json"
 	"fmt"
-	spec2 "github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/types"
-	ssz "github.com/ferranbt/fastssz"
 	"os"
 	"path/filepath"
 	"strings"
+
+	spec2 "github.com/attestantio/go-eth2-client/spec"
+	"github.com/bloxapp/ssv-spec/types"
+	ssz "github.com/ferranbt/fastssz"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -58,10 +59,14 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 
 // GetSCDir returns the path to the state comparison folder for the given test type
 func GetSCDir(basedir string, testType string) string {
-	basedir = filepath.Join(basedir, "state_comparison", testType)
-	scDir := strings.NewReplacer(
+	testType = strings.NewReplacer(
 		"*", "",
 		".", "_").
-		Replace(basedir)
-	return scDir
+		Replace(testType)
+
+	return filepath.Join(
+		basedir,
+		"state_comparison",
+		testType,
+	)
 }
