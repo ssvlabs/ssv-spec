@@ -41,8 +41,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		testingutils.TestingDutySlot,
 		testingutils.TestingDutySlot)
 
-	const expectedTaskError = "already running duty"
-
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "duplicate duty not finished",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -101,7 +99,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedTaskError,
+				ExpectedError: expectedError,
 			},
 			{
 				Name: "voluntary exit",
@@ -112,7 +110,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedTaskError,
+				ExpectedError: expectedError,
 			},
 		},
 	}
