@@ -3,37 +3,20 @@ package newduty
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PostFutureDecided tests starting duty after a future decided
+// OldSlotDuty tests starting duty after a future decided
 // This can happen if we receive a future decided message from the network and we are behind.
-func PostFutureDecided() tests.SpecTest {
+func OldSlotDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// TODO: check error
-	// nolint
 	futureDecide := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+		duty.Slot += 50
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
-		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
-			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
-		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-
-		futureDecidedInstance := qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
-			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot+50))
-		futureDecidedInstance.State.Decided = true
-		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, futureDecidedInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot + 50)
 		return r
 	}
 
