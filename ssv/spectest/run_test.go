@@ -24,16 +24,24 @@ import (
 )
 
 func TestAll(t *testing.T) {
+	t.Parallel()
+	wait := sync.WaitGroup{}
 	for _, testF := range AllTests {
-		t.Run(testF().TestName(), func(t *testing.T) {
-			testF().Run(t)
-		})
+		wait.Add(1)
+		go func(f tests2.TestF) {
+			test := f()
+			t.Run(test.TestName(), func(t *testing.T) {
+				test.Run(t)
+			})
+			wait.Done()
+		}(testF)
 	}
+	wait.Wait()
 }
 
 // TestOne will run a single test.
 func TestOne(t *testing.T) {
-	test := newduty.OldSlotDuty()
+	test := newduty.FirstHeight()
 	test.Run(t)
 }
 
