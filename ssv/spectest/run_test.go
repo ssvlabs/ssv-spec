@@ -39,6 +39,12 @@ func TestAll(t *testing.T) {
 	wait.Wait()
 }
 
+// TestOne will run a single test.
+func TestOne(t *testing.T) {
+	test := newduty.FirstHeight()
+	test.Run(t)
+}
+
 func TestJson(t *testing.T) {
 	t.Parallel()
 
