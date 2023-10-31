@@ -429,23 +429,23 @@ var selectionProofMsg = func(
 }
 
 var PreConsensusValidatorRegistrationMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutySlot, false)
 }
 
 var PreConsensusValidatorRegistrationTooFewRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 0, false, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 0, false, TestingDutySlot, false)
 }
 
 var PreConsensusValidatorRegistrationTooManyRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutySlot, false)
 }
 
 var PreConsensusValidatorRegistrationWrongRootMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutySlot, false)
 }
 
 var PreConsensusValidatorRegistrationNextEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch2, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutySlot2, false)
 }
 
 var validatorRegistrationMsg = func(
@@ -453,12 +453,12 @@ var validatorRegistrationMsg = func(
 	id, beaconID types.OperatorID,
 	msgCnt int,
 	wrongRoot bool,
-	epoch phase0.Epoch,
+	slot phase0.Slot,
 	wrongBeaconSig bool,
 ) *types.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
-	d, _ := beacon.DomainData(epoch, types.DomainApplicationBuilder)
+	d, _ := beacon.DomainData(TestingDutyEpoch, types.DomainApplicationBuilder)
 
 	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistration, d, beaconSK.GetPublicKey().Serialize(), types.DomainApplicationBuilder)
 	if wrongRoot {
@@ -470,7 +470,7 @@ var validatorRegistrationMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type:     types.ValidatorRegistrationPartialSig,
-		Slot:     TestingDutySlot,
+		Slot:     slot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
