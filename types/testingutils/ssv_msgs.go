@@ -444,6 +444,10 @@ var PreConsensusValidatorRegistrationWrongRootMsg = func(msgSK *bls.SecretKey, m
 	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutyEpoch, false)
 }
 
+var PreConsensusValidatorRegistrationNextEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch2, false)
+}
+
 var validatorRegistrationMsg = func(
 	sk, beaconSK *bls.SecretKey,
 	id, beaconID types.OperatorID,
@@ -498,6 +502,10 @@ var validatorRegistrationMsg = func(
 
 var PreConsensusVoluntaryExitMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
 	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch, false)
+}
+
+var PreConsensusVoluntaryExitNextEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
+	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch2, false)
 }
 
 var PreConsensusVoluntaryExitTooFewRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {

@@ -225,6 +225,7 @@ const (
 	TestingDutySlot       = 12
 	TestingDutySlot2      = 50
 	TestingDutyEpoch      = 0
+	TestingDutyEpoch2     = 1
 	TestingValidatorIndex = 1
 
 	UnknownDutyType = 100
@@ -504,10 +505,24 @@ var TestingValidatorRegistrationDuty = types.Duty{
 	ValidatorIndex: TestingValidatorIndex,
 }
 
+var TestingValidatorRegistrationDutyNextEpoch = types.Duty{
+	Type:           types.BNRoleValidatorRegistration,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           TestingDutySlot2,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
 var TestingVoluntaryExitDuty = types.Duty{
 	Type:           types.BNRoleVoluntaryExit,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
+var TestingVoluntaryExitDutyNextEpoch = types.Duty{
+	Type:           types.BNRoleVoluntaryExit,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           TestingDutySlot2,
 	ValidatorIndex: TestingValidatorIndex,
 }
 

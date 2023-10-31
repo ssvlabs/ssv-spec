@@ -30,6 +30,12 @@ func Finished() tests.SpecTest {
 		return r
 	}
 
+	finishTaskRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
+		r.GetBaseRunner().State.Finished = true
+		return r
+	}
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty finished",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -75,6 +81,19 @@ func Finished() tests.SpecTest {
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			},
+			{
+				Name:           "validator registration",
+				Runner:         finishTaskRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty),
+				Duty:           &testingutils.TestingValidatorRegistrationDutyNextEpoch,
+				OutputMessages: []*types.SignedPartialSignatureMessage{testingutils.PreConsensusValidatorRegistrationNextEpochMsg(ks.Shares[1], 1)},
+			},
+			{
+				Name:   "voluntary exit",
+				Runner: finishTaskRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty),
+				Duty:   &testingutils.TestingVoluntaryExitDutyNextEpoch,
+				OutputMessages: []*types.SignedPartialSignatureMessage{testingutils.
+					PreConsensusVoluntaryExitNextEpochMsg(ks.Shares[1], 1)},
 			},
 		},
 	}
