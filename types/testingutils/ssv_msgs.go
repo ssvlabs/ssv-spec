@@ -460,7 +460,9 @@ var validatorRegistrationMsg = func(
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(TestingDutyEpoch, types.DomainApplicationBuilder)
 
-	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistration, d, beaconSK.GetPublicKey().Serialize(), types.DomainApplicationBuilder)
+	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistrationBySlot(slot), d,
+		beaconSK.GetPublicKey().Serialize(),
+		types.DomainApplicationBuilder)
 	if wrongRoot {
 		signed, root, _ = signer.SignBeaconObject(TestingValidatorRegistrationWrong, d, beaconSK.GetPublicKey().Serialize(), types.DomainApplicationBuilder)
 	}
