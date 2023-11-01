@@ -67,6 +67,21 @@ func ConsensusNotStarted() tests.SpecTest {
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
+			{
+
+				Name: "validator registration",
+				Runner: startRunner(testingutils.ValidatorRegistrationRunner(ks),
+					&testingutils.TestingValidatorRegistrationDuty),
+				Duty:           &testingutils.TestingValidatorRegistrationDutyNextEpoch,
+				OutputMessages: []*types.SignedPartialSignatureMessage{testingutils.PreConsensusValidatorRegistrationNextEpochMsg(ks.Shares[1], 1)},
+			},
+			{
+				Name:   "voluntary exit",
+				Runner: startRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty),
+				Duty:   &testingutils.TestingVoluntaryExitDutyNextEpoch,
+				OutputMessages: []*types.SignedPartialSignatureMessage{testingutils.
+					PreConsensusVoluntaryExitNextEpochMsg(ks.Shares[1], 1)},
+			},
 		},
 	}
 }
