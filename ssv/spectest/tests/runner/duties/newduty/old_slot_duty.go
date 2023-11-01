@@ -9,8 +9,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// OldSlotDuty tests starting duty after a future decided
-// This can happen if we receive a future decided message from the network and we are behind.
+// OldSlotDuty tests starting duty from an old slot after we ran a duty from a higher slot.
+// This shouldn't happen, and we should return an error.
 func OldSlotDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
