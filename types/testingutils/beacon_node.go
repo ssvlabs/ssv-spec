@@ -331,6 +331,17 @@ var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 	Pubkey:       TestingValidatorPubKey,
 }
 
+// TestingValidatorRegistrationBySlot receives a slot and calculates the correct timestamp
+func TestingValidatorRegistrationBySlot(slot phase0.Slot) *v1.ValidatorRegistration {
+	epoch := types.PraterNetwork.EstimatedEpochAtSlot(slot)
+	return &v1.ValidatorRegistration{
+		FeeRecipient: TestingFeeRecipient,
+		GasLimit:     types.DefaultGasLimit,
+		Timestamp:    types.PraterNetwork.EpochStartTime(epoch),
+		Pubkey:       TestingValidatorPubKey,
+	}
+}
+
 var TestingVoluntaryExit = &phase0.VoluntaryExit{
 	Epoch:          0,
 	ValidatorIndex: TestingValidatorIndex,
