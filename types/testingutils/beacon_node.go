@@ -357,6 +357,15 @@ var TestingSignedVoluntaryExit = func(ks *TestKeySet) *phase0.SignedVoluntaryExi
 	}
 }
 
+// TestingVoluntaryExitBySlot receives a slot and calculates the correct epoch
+func TestingVoluntaryExitBySlot(slot phase0.Slot) *phase0.VoluntaryExit {
+	epoch := types.PraterNetwork.EstimatedEpochAtSlot(slot)
+	return &phase0.VoluntaryExit{
+		Epoch:          epoch,
+		ValidatorIndex: TestingValidatorIndex,
+	}
+}
+
 // TestingProposerDutyFirstSlot
 var TestingProposerDutyFirstSlot = types.Duty{
 	Type:           types.BNRoleProposer,
