@@ -225,7 +225,6 @@ const (
 	TestingDutySlot       = 12
 	TestingDutySlot2      = 50
 	TestingDutyEpoch      = 0
-	TestingDutyEpoch2     = 1
 	TestingValidatorIndex = 1
 
 	UnknownDutyType = 100
