@@ -235,9 +235,13 @@ func (b *BaseRunner) hasRunningDuty() bool {
 
 func (b *BaseRunner) ShouldProcessDuty(duty *types.Duty) error {
 	// assume StartingDuty is not nil if state is not nil
-	if b.State != nil && b.State.StartingDuty.Slot >= duty.Slot {
+	if b.QBFTController == nil && b.State != nil && b.State.StartingDuty.Slot >= duty.Slot {
 		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.Slot,
 			b.State.StartingDuty.Slot)
+	}
+	if b.QBFTController != nil && b.QBFTController.Height >= qbft.Height(duty.Slot) && b.QBFTController.Height != 0 {
+		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.Slot,
+			b.QBFTController.Height)
 	}
 	return nil
 }
