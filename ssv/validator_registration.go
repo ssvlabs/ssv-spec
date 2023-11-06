@@ -42,7 +42,7 @@ func NewValidatorRegistrationRunner(
 }
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty *types.Duty) error {
-	// Note: Validator registration doesn't require any consensus, it can always start a new duty even if previous one didn't finish
+	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
 }
 

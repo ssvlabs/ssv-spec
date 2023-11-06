@@ -44,7 +44,7 @@ func NewVoluntaryExitRunner(
 }
 
 func (r *VoluntaryExitRunner) StartNewDuty(duty *types.Duty) error {
-	// Note: Voluntary exit doesn't require any consensus, it can always start a new duty even if previous one didn't finish
+	// Note: Voluntary exit doesn't require any consensus, it can start a new duty even if previous one didn't finish
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
 }
 
