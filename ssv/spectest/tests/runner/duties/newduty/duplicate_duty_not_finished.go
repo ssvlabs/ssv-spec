@@ -101,7 +101,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedTaskError,
 			},
 			{
 				Name: "voluntary exit",
@@ -112,7 +111,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedTaskError,
 			},
 		},
 	}

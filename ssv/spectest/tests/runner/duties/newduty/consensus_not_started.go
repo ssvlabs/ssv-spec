@@ -2,7 +2,6 @@ package newduty
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -66,6 +65,24 @@ func ConsensusNotStarted() tests.SpecTest {
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			},
+			{
+				Name:                    "voluntary exit",
+				Runner:                  startRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty),
+				Duty:                    &testingutils.TestingVoluntaryExitDuty,
+				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
+				Name:                    "validator registration",
+				Runner:                  startRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty),
+				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
+				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
+				OutputMessages: []*types.SignedPartialSignatureMessage{
+					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
 			},
 		},
 	}
