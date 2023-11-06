@@ -42,7 +42,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		testingutils.TestingDutySlot)
 
 	expectedTaskError := fmt.Sprintf("can't start non-beacon duty: duty for slot %d already passed. "+
-		"Current height is %d",
+		"Current slot is %d",
 		testingutils.TestingDutySlot,
 		testingutils.TestingDutySlot)
 
