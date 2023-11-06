@@ -69,19 +69,19 @@ func ConsensusNotStarted() tests.SpecTest {
 			{
 				Name:                    "voluntary exit",
 				Runner:                  startRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty),
-				Duty:                    &testingutils.TestingVoluntaryExitDuty,
+				Duty:                    &testingutils.TestingVoluntaryExitDutyNextEpoch,
 				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusVoluntaryExitNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:                    "validator registration",
 				Runner:                  startRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty),
-				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
+				Duty:                    &testingutils.TestingValidatorRegistrationDutyNextEpoch,
 				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusValidatorRegistrationNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 		},
