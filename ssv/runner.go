@@ -253,7 +253,8 @@ func (b *BaseRunner) ShouldProcessDuty(duty *types.Duty) error {
 func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty *types.Duty) error {
 	// assume StartingDuty is not nil if state is not nil
 	if b.State != nil && b.State.StartingDuty.Slot >= duty.Slot {
-		return errors.Errorf("duty for slot %d already passed. Current duty is %d", duty.Slot, b.State.StartingDuty.Slot)
+		return errors.Errorf("duty for slot %d already passed. Current slot is %d", duty.Slot,
+			b.State.StartingDuty.Slot)
 	}
 	return nil
 }
