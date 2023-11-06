@@ -44,6 +44,11 @@ func DuplicateDutyFinished() tests.SpecTest {
 		return r
 	}
 
+	expectedTaskError := fmt.Sprintf("can't start non-beacon duty: duty for slot %d already passed. "+
+		"Current height is %d",
+		testingutils.TestingDutySlot,
+		testingutils.TestingDutySlot)
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "duplicate duty finished",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -99,9 +104,8 @@ func DuplicateDutyFinished() tests.SpecTest {
 					&testingutils.TestingValidatorRegistrationDuty),
 				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedTaskError,
 			},
 			{
 				Name: "voluntary exit",
@@ -109,9 +113,8 @@ func DuplicateDutyFinished() tests.SpecTest {
 					&testingutils.TestingVoluntaryExitDuty),
 				Duty:                    &testingutils.TestingVoluntaryExitDuty,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedTaskError,
 			},
 		},
 	}
