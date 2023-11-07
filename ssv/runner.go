@@ -91,6 +91,15 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 	return runner.executeDuty(duty)
 }
 
+// baseStartNewBeaconDuty is a base func that all runner implementation can call to start a non-beacon duty
+func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.Duty) error {
+	if err := b.ShouldProcessNonBeaconDuty(duty); err != nil {
+		return errors.Wrap(err, "can't start non-beacon duty")
+	}
+	b.baseSetupForNewDuty(duty)
+	return runner.executeDuty(duty)
+}
+
 // basePreConsensusMsgProcessing is a base func that all runner implementation can call for processing a pre-consensus msg
 func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *types.SignedPartialSignatureMessage) (bool, [][32]byte, error) {
 	if err := b.ValidatePreConsensusMsg(runner, signedMsg); err != nil {
@@ -240,6 +249,15 @@ func (b *BaseRunner) ShouldProcessDuty(duty *types.Duty) error {
 	if b.QBFTController.Height >= qbft.Height(duty.Slot) && b.QBFTController.Height != 0 {
 		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.Slot,
 			b.QBFTController.Height)
+	}
+	return nil
+}
+
+func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty *types.Duty) error {
+	// assume StartingDuty is not nil if state is not nil
+	if b.State != nil && b.State.StartingDuty.Slot >= duty.Slot {
+		return errors.Errorf("duty for slot %d already passed. Current slot is %d", duty.Slot,
+			b.State.StartingDuty.Slot)
 	}
 	return nil
 }

@@ -330,6 +330,17 @@ var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 	Pubkey:       TestingValidatorPubKey,
 }
 
+// TestingValidatorRegistrationBySlot receives a slot and calculates the correct timestamp
+func TestingValidatorRegistrationBySlot(slot phase0.Slot) *v1.ValidatorRegistration {
+	epoch := types.PraterNetwork.EstimatedEpochAtSlot(slot)
+	return &v1.ValidatorRegistration{
+		FeeRecipient: TestingFeeRecipient,
+		GasLimit:     types.DefaultGasLimit,
+		Timestamp:    types.PraterNetwork.EpochStartTime(epoch),
+		Pubkey:       TestingValidatorPubKey,
+	}
+}
+
 var TestingVoluntaryExit = &phase0.VoluntaryExit{
 	Epoch:          0,
 	ValidatorIndex: TestingValidatorIndex,
@@ -342,6 +353,15 @@ var TestingSignedVoluntaryExit = func(ks *TestKeySet) *phase0.SignedVoluntaryExi
 	return &phase0.SignedVoluntaryExit{
 		Message:   TestingVoluntaryExit,
 		Signature: signBeaconObject(TestingVoluntaryExit, types.DomainVoluntaryExit, ks),
+	}
+}
+
+// TestingVoluntaryExitBySlot receives a slot and calculates the correct epoch
+func TestingVoluntaryExitBySlot(slot phase0.Slot) *phase0.VoluntaryExit {
+	epoch := types.PraterNetwork.EstimatedEpochAtSlot(slot)
+	return &phase0.VoluntaryExit{
+		Epoch:          epoch,
+		ValidatorIndex: TestingValidatorIndex,
 	}
 }
 
@@ -504,10 +524,24 @@ var TestingValidatorRegistrationDuty = types.Duty{
 	ValidatorIndex: TestingValidatorIndex,
 }
 
+var TestingValidatorRegistrationDutyNextEpoch = types.Duty{
+	Type:           types.BNRoleValidatorRegistration,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           TestingDutySlot2,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
 var TestingVoluntaryExitDuty = types.Duty{
 	Type:           types.BNRoleVoluntaryExit,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
+var TestingVoluntaryExitDutyNextEpoch = types.Duty{
+	Type:           types.BNRoleVoluntaryExit,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           TestingDutySlot2,
 	ValidatorIndex: TestingValidatorIndex,
 }
 

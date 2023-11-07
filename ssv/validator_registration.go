@@ -42,13 +42,8 @@ func NewValidatorRegistrationRunner(
 }
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty *types.Duty) error {
-	// Note: Unlike the other runners, this doesn't call BaseRunner.baseStartNewDuty because
-	// that requires a QBFTController which ValidatorRegistrationRunner doesn't have.
-	if r.HasRunningDuty() {
-		return errors.New("already running duty")
-	}
-	r.BaseRunner.baseSetupForNewDuty(duty)
-	return r.executeDuty(duty)
+	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
+	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
