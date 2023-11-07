@@ -63,7 +63,7 @@
 										11,
 										192
 								],
-								"Slot": 12,
+								"Slot": 50,
 								"ValidatorIndex": 1,
 								"CommitteeIndex": 0,
 								"CommitteeLength": 0,
@@ -71,7 +71,7 @@
 								"ValidatorCommitteeIndex": 0,
 								"ValidatorSyncCommitteeIndices": null
 						},
-						"Finished": true
+						"Finished": false
 				},
 				"Share": {
 						"OperatorID": 1,

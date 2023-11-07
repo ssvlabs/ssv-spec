@@ -429,19 +429,23 @@ var selectionProofMsg = func(
 }
 
 var PreConsensusValidatorRegistrationMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutySlot, false)
 }
 
 var PreConsensusValidatorRegistrationTooFewRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 0, false, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 0, false, TestingDutySlot, false)
 }
 
 var PreConsensusValidatorRegistrationTooManyRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutySlot, false)
 }
 
 var PreConsensusValidatorRegistrationWrongRootMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutyEpoch, false)
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutySlot, false)
+}
+
+var PreConsensusValidatorRegistrationNextEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
+	return validatorRegistrationMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutySlot2, false)
 }
 
 var validatorRegistrationMsg = func(
@@ -449,14 +453,16 @@ var validatorRegistrationMsg = func(
 	id, beaconID types.OperatorID,
 	msgCnt int,
 	wrongRoot bool,
-	epoch phase0.Epoch,
+	slot phase0.Slot,
 	wrongBeaconSig bool,
 ) *types.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
-	d, _ := beacon.DomainData(epoch, types.DomainApplicationBuilder)
+	d, _ := beacon.DomainData(TestingDutyEpoch, types.DomainApplicationBuilder)
 
-	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistration, d, beaconSK.GetPublicKey().Serialize(), types.DomainApplicationBuilder)
+	signed, root, _ := signer.SignBeaconObject(TestingValidatorRegistrationBySlot(slot), d,
+		beaconSK.GetPublicKey().Serialize(),
+		types.DomainApplicationBuilder)
 	if wrongRoot {
 		signed, root, _ = signer.SignBeaconObject(TestingValidatorRegistrationWrong, d, beaconSK.GetPublicKey().Serialize(), types.DomainApplicationBuilder)
 	}
@@ -466,7 +472,7 @@ var validatorRegistrationMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type:     types.ValidatorRegistrationPartialSig,
-		Slot:     TestingDutySlot,
+		Slot:     slot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
@@ -497,19 +503,23 @@ var validatorRegistrationMsg = func(
 }
 
 var PreConsensusVoluntaryExitMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutyEpoch, false)
+	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutySlot, false)
+}
+
+var PreConsensusVoluntaryExitNextEpochMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
+	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 1, false, TestingDutySlot2, false)
 }
 
 var PreConsensusVoluntaryExitTooFewRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 0, false, TestingDutyEpoch, false)
+	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 0, false, TestingDutySlot, false)
 }
 
 var PreConsensusVoluntaryExitTooManyRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutyEpoch, false)
+	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 2, false, TestingDutySlot, false)
 }
 
 var PreConsensusVoluntaryExitWrongRootMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.SignedPartialSignatureMessage {
-	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutyEpoch, false)
+	return VoluntaryExitMsg(msgSK, msgSK, msgID, msgID, 1, true, TestingDutySlot, false)
 }
 
 var VoluntaryExitMsg = func(
@@ -517,14 +527,16 @@ var VoluntaryExitMsg = func(
 	id, beaconID types.OperatorID,
 	msgCnt int,
 	wrongRoot bool,
-	epoch phase0.Epoch,
+	slot phase0.Slot,
 	wrongBeaconSig bool,
 ) *types.SignedPartialSignatureMessage {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
-	d, _ := beacon.DomainData(epoch, types.DomainVoluntaryExit)
+	d, _ := beacon.DomainData(TestingDutyEpoch, types.DomainVoluntaryExit)
 
-	signed, root, _ := signer.SignBeaconObject(TestingVoluntaryExit, d, beaconSK.GetPublicKey().Serialize(), types.DomainVoluntaryExit)
+	signed, root, _ := signer.SignBeaconObject(TestingVoluntaryExitBySlot(slot), d,
+		beaconSK.GetPublicKey().Serialize(),
+		types.DomainVoluntaryExit)
 	if wrongRoot {
 		signed, root, _ = signer.SignBeaconObject(TestingVoluntaryExitWrong, d, beaconSK.GetPublicKey().Serialize(), types.DomainVoluntaryExit)
 	}
@@ -534,7 +546,7 @@ var VoluntaryExitMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type:     types.VoluntaryExitPartialSig,
-		Slot:     TestingDutySlot,
+		Slot:     slot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 

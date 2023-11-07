@@ -44,13 +44,8 @@ func NewVoluntaryExitRunner(
 }
 
 func (r *VoluntaryExitRunner) StartNewDuty(duty *types.Duty) error {
-	// Note: Unlike the other runners, this doesn't call BaseRunner.baseStartNewDuty because
-	// that requires a QBFTController which VoluntaryExitRunner doesn't have.
-	if r.HasRunningDuty() {
-		return errors.New("already running duty")
-	}
-	r.BaseRunner.baseSetupForNewDuty(duty)
-	return r.executeDuty(duty)
+	// Note: Voluntary exit doesn't require any consensus, it can start a new duty even if previous one didn't finish
+	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -58,7 +53,7 @@ func (r *VoluntaryExitRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-// Check for quorum of partial signatures over VoluntaryExit and,
+// ProcessPreConsensus Check for quorum of partial signatures over VoluntaryExit and,
 // if has quorum, constructs SignedVoluntaryExit and submits to BeaconNode
 func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
