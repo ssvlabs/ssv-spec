@@ -138,12 +138,6 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
-				],
 				"Share": {
 						"OperatorID": 1,
 						"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
@@ -472,12 +466,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -942,12 +930,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -1547,12 +1529,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -2287,12 +2263,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -3162,12 +3132,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -4172,12 +4136,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -5317,12 +5275,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -6597,12 +6549,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -8012,12 +7958,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,
@@ -9562,12 +9502,6 @@
 								},
 								"StartValue": "AQIDBA=="
 						}
-				],
-				"Domain": [
-						0,
-						0,
-						3,
-						1
 				],
 				"Share": {
 						"OperatorID": 1,

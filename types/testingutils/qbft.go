@@ -3,6 +3,7 @@ package testingutils
 import (
 	"bytes"
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -82,7 +83,6 @@ func NewTestingQBFTController(
 	return qbft.NewController(
 		identifier,
 		share,
-		TestingSSVDomainType,
 		config,
 	)
 }

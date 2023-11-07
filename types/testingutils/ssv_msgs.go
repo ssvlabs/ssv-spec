@@ -12,7 +12,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-var TestingSSVDomainType = types.V3Testnet
+var TestingSSVDomainType = types.JatoTestnet
+var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSVDomainType}
 var AttesterMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
 	return ret[:]
