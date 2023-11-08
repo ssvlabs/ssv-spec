@@ -66,6 +66,7 @@ func NewBaseRunner(
 
 // setupForNewDuty is sets the runner for a new duty
 func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
+	// start new state
 	b.State = NewRunnerState(b.Share.Quorum, duty)
 }
 
@@ -73,6 +74,17 @@ func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
 func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 	if err := b.ShouldProcessDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start duty")
+	}
+
+	b.baseSetupForNewDuty(duty)
+
+	return runner.executeDuty(duty)
+}
+
+// baseStartNewBeaconDuty is a base func that all runner implementation can call to start a non-beacon duty
+func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.Duty) error {
+	if err := b.ShouldProcessNonBeaconDuty(duty); err != nil {
+		return errors.Wrap(err, "can't start non-beacon duty")
 	}
 	b.baseSetupForNewDuty(duty)
 	return runner.executeDuty(duty)
@@ -212,14 +224,18 @@ func (b *BaseRunner) hasRunningDuty() bool {
 }
 
 func (b *BaseRunner) ShouldProcessDuty(duty *types.Duty) error {
-	// first height special case
-	if b.QBFTController.Height == 0 && duty.Slot == 0 && b.QBFTController.InstanceForHeight(0) == nil {
-		return nil
-	}
-
-	if b.QBFTController.Height >= qbft.Height(duty.Slot) {
+	if b.QBFTController.Height >= qbft.Height(duty.Slot) && b.QBFTController.Height != 0 {
 		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.Slot,
 			b.QBFTController.Height)
+	}
+	return nil
+}
+
+func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty *types.Duty) error {
+	// assume StartingDuty is not nil if state is not nil
+	if b.State != nil && b.State.StartingDuty.Slot >= duty.Slot {
+		return errors.Errorf("duty for slot %d already passed. Current slot is %d", duty.Slot,
+			b.State.StartingDuty.Slot)
 	}
 	return nil
 }

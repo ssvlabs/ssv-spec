@@ -339,6 +339,17 @@ var TestingValidatorRegistrationWrong = &v1.ValidatorRegistration{
 	Pubkey:       TestingValidatorPubKey,
 }
 
+// TestingValidatorRegistrationBySlot receives a slot and calculates the correct timestamp
+func TestingValidatorRegistrationBySlot(slot phase0.Slot) *v1.ValidatorRegistration {
+	epoch := types.PraterNetwork.EstimatedEpochAtSlot(slot)
+	return &v1.ValidatorRegistration{
+		FeeRecipient: TestingFeeRecipient,
+		GasLimit:     types.DefaultGasLimit,
+		Timestamp:    types.PraterNetwork.EpochStartTime(epoch),
+		Pubkey:       TestingValidatorPubKey,
+	}
+}
+
 var TestingVoluntaryExit = &phase0.VoluntaryExit{
 	Epoch:          0,
 	ValidatorIndex: TestingValidatorIndex,
@@ -352,6 +363,35 @@ var TestingSignedVoluntaryExit = func(ks *TestKeySet) *phase0.SignedVoluntaryExi
 		Message:   TestingVoluntaryExit,
 		Signature: signBeaconObject(TestingVoluntaryExit, types.DomainVoluntaryExit, ks),
 	}
+}
+
+// TestingVoluntaryExitBySlot receives a slot and calculates the correct epoch
+func TestingVoluntaryExitBySlot(slot phase0.Slot) *phase0.VoluntaryExit {
+	epoch := types.PraterNetwork.EstimatedEpochAtSlot(slot)
+	return &phase0.VoluntaryExit{
+		Epoch:          epoch,
+		ValidatorIndex: TestingValidatorIndex,
+	}
+}
+
+// TestingProposerDutyFirstSlot
+var TestingProposerDutyFirstSlot = types.Duty{
+	Type:           types.BNRoleProposer,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           0,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
+// TestingAttesterDutyFirstSlot
+var TestingAttesterDutyFirstSlot = types.Duty{
+	Type:                    types.BNRoleAttester,
+	PubKey:                  TestingValidatorPubKey,
+	Slot:                    0,
+	ValidatorIndex:          TestingValidatorIndex,
+	CommitteeIndex:          3,
+	CommitteesAtSlot:        36,
+	CommitteeLength:         128,
+	ValidatorCommitteeIndex: 11,
 }
 
 var TestingAttesterDuty = types.Duty{
@@ -372,6 +412,18 @@ var TestingAttesterDutyNextEpoch = types.Duty{
 	Slot:                    TestingDutySlot2,
 	ValidatorIndex:          TestingValidatorIndex,
 	CommitteeIndex:          3,
+	CommitteesAtSlot:        36,
+	CommitteeLength:         128,
+	ValidatorCommitteeIndex: 11,
+}
+
+// TestingAggregatorDutyFirstSlot
+var TestingAggregatorDutyFirstSlot = types.Duty{
+	Type:                    types.BNRoleAggregator,
+	PubKey:                  TestingValidatorPubKey,
+	Slot:                    0,
+	ValidatorIndex:          TestingValidatorIndex,
+	CommitteeIndex:          22,
 	CommitteesAtSlot:        36,
 	CommitteeLength:         128,
 	ValidatorCommitteeIndex: 11,
@@ -402,6 +454,19 @@ var TestingAggregatorDutyNextEpoch = types.Duty{
 	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
+// TestingSyncCommitteeDutyFirstSlot
+var TestingSyncCommitteeDutyFirstSlot = types.Duty{
+	Type:                          types.BNRoleSyncCommittee,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          0,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+}
+
 var TestingSyncCommitteeDuty = types.Duty{
 	Type:                          types.BNRoleSyncCommittee,
 	PubKey:                        TestingValidatorPubKey,
@@ -418,6 +483,19 @@ var TestingSyncCommitteeDutyNextEpoch = types.Duty{
 	Type:                          types.BNRoleSyncCommittee,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          TestingDutySlot2,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+}
+
+// TestingSyncCommitteeContributionDutyFirstSlot
+var TestingSyncCommitteeContributionDutyFirstSlot = types.Duty{
+	Type:                          types.BNRoleSyncCommitteeContribution,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          0,
 	ValidatorIndex:                TestingValidatorIndex,
 	CommitteeIndex:                3,
 	CommitteesAtSlot:              36,
@@ -458,10 +536,24 @@ var TestingValidatorRegistrationDuty = types.Duty{
 	ValidatorIndex: TestingValidatorIndex,
 }
 
+var TestingValidatorRegistrationDutyNextEpoch = types.Duty{
+	Type:           types.BNRoleValidatorRegistration,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           TestingDutySlot2,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
 var TestingVoluntaryExitDuty = types.Duty{
 	Type:           types.BNRoleVoluntaryExit,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
+var TestingVoluntaryExitDutyNextEpoch = types.Duty{
+	Type:           types.BNRoleVoluntaryExit,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           TestingDutySlot2,
 	ValidatorIndex: TestingValidatorIndex,
 }
 

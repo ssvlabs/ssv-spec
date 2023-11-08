@@ -17,7 +17,6 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	Domain          types.DomainType
 	Share           *types.Share
 	config          IConfig
 }
@@ -25,13 +24,11 @@ type Controller struct {
 func NewController(
 	identifier []byte,
 	share *types.Share,
-	domain types.DomainType,
 	config IConfig,
 ) *Controller {
 	return &Controller{
 		Identifier:      identifier,
 		Height:          FirstHeight,
-		Domain:          domain,
 		Share:           share,
 		StoredInstances: InstanceContainer{},
 		config:          config,

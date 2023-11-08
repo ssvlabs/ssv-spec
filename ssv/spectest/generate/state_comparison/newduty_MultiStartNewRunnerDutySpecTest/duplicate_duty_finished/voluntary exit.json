@@ -65,7 +65,7 @@
 								"ValidatorCommitteeIndex": 0,
 								"ValidatorSyncCommitteeIndices": null
 						},
-						"Finished": false
+						"Finished": true
 				},
 				"Share": {
 						"OperatorID": 1,

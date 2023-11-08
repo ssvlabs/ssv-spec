@@ -96,11 +96,14 @@ type Duty struct {
 
 // Available networks.
 const (
-	// PraterNetwork represents the Prater test network.
-	PraterNetwork BeaconNetwork = "prater"
-
 	// MainNetwork represents the main network.
 	MainNetwork BeaconNetwork = "mainnet"
+
+	// HoleskyNetwork represents the Holesky test network.
+	HoleskyNetwork BeaconNetwork = "holesky"
+
+	// PraterNetwork represents the Prater test network.
+	PraterNetwork BeaconNetwork = "prater"
 
 	// BeaconTestNetwork is a simple test network with a custom genesis time
 	BeaconTestNetwork BeaconNetwork = "now_test_network"
@@ -112,10 +115,12 @@ type BeaconNetwork string
 // NetworkFromString returns network from the given string value
 func NetworkFromString(n string) BeaconNetwork {
 	switch n {
-	case string(PraterNetwork):
-		return PraterNetwork
 	case string(MainNetwork):
 		return MainNetwork
+	case string(HoleskyNetwork):
+		return HoleskyNetwork
+	case string(PraterNetwork):
+		return PraterNetwork
 	case string(BeaconTestNetwork):
 		return BeaconTestNetwork
 	default:
@@ -126,10 +131,12 @@ func NetworkFromString(n string) BeaconNetwork {
 // ForkVersion returns the fork version of the network.
 func (n BeaconNetwork) ForkVersion() [4]byte {
 	switch n {
-	case PraterNetwork:
-		return [4]byte{0x00, 0x00, 0x10, 0x20}
 	case MainNetwork:
 		return [4]byte{0, 0, 0, 0}
+	case HoleskyNetwork:
+		return [4]byte{0x01, 0x01, 0x70, 0x00}
+	case PraterNetwork:
+		return [4]byte{0x00, 0x00, 0x10, 0x20}
 	case BeaconTestNetwork:
 		return [4]byte{0x99, 0x99, 0x99, 0x99}
 	default:
@@ -140,15 +147,18 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 // MinGenesisTime returns min genesis time value
 func (n BeaconNetwork) MinGenesisTime() uint64 {
 	switch n {
-	case PraterNetwork:
-		return 1616508000
 	case MainNetwork:
 		return 1606824023
+	case HoleskyNetwork:
+		return 1695902400
+	case PraterNetwork:
+		return 1616508000
 	case BeaconTestNetwork:
 		return 1616508000
 	default:
 		return 0
 	}
+
 }
 
 // SlotDurationSec returns slot duration
