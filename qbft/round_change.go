@@ -22,6 +22,10 @@ func (i *Instance) uponRoundChange(
 		return nil // UponCommit was already called
 	}
 
+	if hasSentProposalForRound(i.State.ProposeContainer, signedRoundChange.Message.Round) {
+		return nil // already moved to proposal stage
+	}
+
 	justifiedRoundChangeMsg, valueToPropose, err := hasReceivedProposalJustificationForLeadingRound(
 		i.State,
 		i.config,
@@ -61,6 +65,12 @@ func (i *Instance) uponRoundChange(
 		}
 	}
 	return nil
+}
+
+// hasSentProposalForRound returns if the instance has sent a proposal for the given round
+func hasSentProposalForRound(container *MsgContainer, round Round) bool {
+	// no need to check whether we created the proposal, since it must be valid
+	return container.MessagesForRound(round) != nil && len(container.MessagesForRound(round)) > 0
 }
 
 func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartValue []byte) error {
