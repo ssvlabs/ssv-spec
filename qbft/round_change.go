@@ -14,16 +14,19 @@ func (i *Instance) uponRoundChange(
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
 ) error {
+	hasQuorum := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(signedRoundChange.Message.
+		Round))
+	// Currently, even if we have a quorum of round change messages, we update the container
 	addedMsg, err := roundChangeMsgContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
 	if err != nil {
 		return errors.Wrap(err, "could not add round change msg to container")
 	}
 	if !addedMsg {
-		return nil // UponCommit was already called
+		return nil // message was already added from signer
 	}
 
-	if hasSentProposalForRound(i.State.ProposeContainer, signedRoundChange.Message.Round) {
-		return nil // already moved to proposal stage
+	if hasQuorum {
+		return nil // already changed round
 	}
 
 	justifiedRoundChangeMsg, valueToPropose, err := hasReceivedProposalJustificationForLeadingRound(
@@ -65,12 +68,6 @@ func (i *Instance) uponRoundChange(
 		}
 	}
 	return nil
-}
-
-// hasSentProposalForRound returns if the instance has sent a proposal for the given round
-func hasSentProposalForRound(container *MsgContainer, round Round) bool {
-	// no need to check whether we created the proposal, since it must be valid
-	return container.MessagesForRound(round) != nil && len(container.MessagesForRound(round)) > 0
 }
 
 func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartValue []byte) error {
