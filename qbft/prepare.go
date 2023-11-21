@@ -8,10 +8,8 @@ import (
 
 // uponPrepare process prepare message
 // Assumes prepare message is valid!
-func (i *Instance) uponPrepare(
-	signedPrepare *SignedMessage,
-	prepareMsgContainer,
-	commitMsgContainer *MsgContainer) error {
+func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer *MsgContainer) error {
+	hasQuorumBefore := HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round))
 
 	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
 	if err != nil {
@@ -21,12 +19,12 @@ func (i *Instance) uponPrepare(
 		return nil // uponPrepare was already called
 	}
 
-	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
-		return nil // no quorum yet
+	if hasQuorumBefore {
+		return nil // already moved to commit stage
 	}
 
-	if didSendCommitForHeightAndRound(i.State, commitMsgContainer) {
-		return nil // already moved to commit stage
+	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
+		return nil // no quorum yet
 	}
 
 	proposedRoot := i.State.ProposalAcceptedForCurrentRound.Message.Root
