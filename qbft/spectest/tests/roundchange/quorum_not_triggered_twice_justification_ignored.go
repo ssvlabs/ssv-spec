@@ -8,8 +8,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ValidJustificationLateCD tests a valid rc quorum justification that comes in late that has different consensus data
-func ValidJustificationLateDifferentCD() tests.SpecTest {
+// QuorumNotTriggeredTwiceJustificationIgnored tests that the fourth round change message does not trigger a quorum and
+// no proposal is sent. Also, the justification is ignored.
+func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil // proposal resets on upon timeout
@@ -31,7 +32,7 @@ func ValidJustificationLateDifferentCD() tests.SpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "valid justification late different cd",
+		Name:          "quorum not triggered twice justification ignored",
 		Pre:           pre,
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{

@@ -7,8 +7,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ValidJustificationLate tests a valid rc quorum justification
-func ValidJustificationLate() tests.SpecTest {
+// QuorumNotTriggeredTwice tests that the fourth round change message does not trigger a quorum and no proposal is sent
+func QuorumNotTriggeredTwice() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil // proposal resets on upon timeout
@@ -30,7 +30,7 @@ func ValidJustificationLate() tests.SpecTest {
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "valid justification late",
+		Name:          "quorum not triggered twice",
 		Pre:           pre,
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
