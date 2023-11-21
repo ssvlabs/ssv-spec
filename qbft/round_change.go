@@ -14,7 +14,7 @@ func (i *Instance) uponRoundChange(
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
 ) error {
-	hasQuorum := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(signedRoundChange.Message.
+	hasQuorumBefore := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(signedRoundChange.Message.
 		Round))
 	// Currently, even if we have a quorum of round change messages, we update the container
 	addedMsg, err := roundChangeMsgContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
@@ -25,7 +25,7 @@ func (i *Instance) uponRoundChange(
 		return nil // message was already added from signer
 	}
 
-	if hasQuorum {
+	if hasQuorumBefore {
 		return nil // already changed round
 	}
 
