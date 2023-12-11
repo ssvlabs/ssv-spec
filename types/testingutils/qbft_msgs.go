@@ -451,6 +451,31 @@ var TestingRoundChangeMessageWithParams = func(
 	ret.FullData = TestingQBFTFullData
 	return ret
 }
+
+var TestingRoundChangeMessageWithParamsAndFullData = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	round qbft.Round,
+	height qbft.Height,
+	root [32]byte,
+	dataRound qbft.Round,
+	fullData []byte,
+	roundChangeJustification [][]byte,
+) *qbft.SignedMessage {
+	msg := &qbft.Message{
+		MsgType:                  qbft.RoundChangeMsgType,
+		Height:                   height,
+		Round:                    round,
+		Identifier:               TestingIdentifier,
+		Root:                     root,
+		DataRound:                dataRound,
+		RoundChangeJustification: roundChangeJustification,
+	}
+	ret := SignQBFTMsg(sk, id, msg)
+	ret.FullData = fullData
+	return ret
+}
+
 var TestingMultiSignerRoundChangeMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
 	return TestingMultiSignerRoundChangeMessageWithParams(sks, ids, qbft.FirstRound, qbft.FirstHeight, TestingQBFTRootData)
 }
