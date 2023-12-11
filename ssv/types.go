@@ -83,7 +83,7 @@ type ValidatorRegistrationCalls interface {
 // VoluntaryExitCalls interface has all validator voluntary exit duty specific calls
 type VoluntaryExitCalls interface {
 	// SubmitVoluntaryExit submits a validator voluntary exit
-	SubmitVoluntaryExit(voluntaryExit *phase0.SignedVoluntaryExit, sig phase0.BLSSignature) error
+	SubmitVoluntaryExit(voluntaryExit *phase0.SignedVoluntaryExit) error
 }
 
 type DomainCalls interface {

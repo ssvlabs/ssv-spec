@@ -202,6 +202,8 @@ var AllTests = []tests.TestF{
 	roundchange.JustificationInvalidSig,
 	roundchange.JustificationInvalidRound,
 	roundchange.JustificationDuplicateMsg,
+	roundchange.QuorumNotTriggeredTwice,
+	roundchange.QuorumNotTriggeredTwiceJustificationIgnored,
 	roundchange.F1DifferentFutureRounds,
 	roundchange.F1DifferentFutureRoundsNotPrepared,
 	roundchange.PastRound,
