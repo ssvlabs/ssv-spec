@@ -59,24 +59,6 @@ func aggregateCommitMsgs(msgs []*SignedMessage, fullData []byte) (*SignedMessage
 	return ret, nil
 }
 
-// didSendCommitForHeightAndRound returns true if sent commit msg for specific Height and round
-/**
-!exists m :: && m in current.messagesReceived
-                            && m.Commit?
-                            && var uPayload := m.commitPayload.unsignedPayload;
-                            && uPayload.Height == |current.blockchain|
-                            && uPayload.round == current.round
-                            && recoverSignedCommitAuthor(m.commitPayload) == current.id
-*/
-func didSendCommitForHeightAndRound(state *State, commitMsgContainer *MsgContainer) bool {
-	for _, msg := range commitMsgContainer.MessagesForRound(state.Round) {
-		if msg.MatchedSigners([]types.OperatorID{state.Share.OperatorID}) {
-			return true
-		}
-	}
-	return false
-}
-
 // CreateCommit
 /**
 Commit(
