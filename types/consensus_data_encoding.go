@@ -5,6 +5,7 @@ package types
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/altair"
 	ssz "github.com/ferranbt/fastssz"
 )
 
