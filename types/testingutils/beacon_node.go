@@ -7,10 +7,12 @@ import (
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
+	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
+	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/goccy/go-yaml"
@@ -642,6 +644,8 @@ func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao [
 		return vBlk.Bellatrix, version, nil
 	case spec.DataVersionCapella:
 		return vBlk.Capella, version, nil
+	case spec.DataVersionDeneb:
+		return vBlk.Deneb, version, nil
 	default:
 		panic("unsupported version")
 	}
@@ -670,6 +674,15 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 			Signature: sig,
 		}
 		r, _ = sb.HashTreeRoot()
+	case spec.DataVersionDeneb:
+		if block.Deneb == nil {
+			return errors.Errorf("%s block is nil", block.Version.String())
+		}
+		sb := &deneb.SignedBeaconBlock{
+			Message:   block.Deneb,
+			Signature: sig,
+		}
+		r, _ = sb.HashTreeRoot()
 	default:
 		return errors.Errorf("unknown block version %d", block.Version)
 	}
@@ -688,6 +701,8 @@ func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, graffiti, r
 		return vBlk.Bellatrix, version, nil
 	case spec.DataVersionCapella:
 		return vBlk.Capella, version, nil
+	case spec.DataVersionDeneb:
+		return vBlk.Deneb, version, nil
 	default:
 		panic("unsupported version")
 	}
@@ -713,6 +728,15 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlinde
 		}
 		sb := &apiv1capella.SignedBlindedBeaconBlock{
 			Message:   block.Capella,
+			Signature: sig,
+		}
+		r, _ = sb.HashTreeRoot()
+	case spec.DataVersionDeneb:
+		if block.Deneb == nil {
+			return errors.Errorf("%s blinded block is nil", block.Version.String())
+		}
+		sb := &apiv1deneb.SignedBlindedBeaconBlock{
+			Message:   block.Deneb,
 			Signature: sig,
 		}
 		r, _ = sb.HashTreeRoot()
