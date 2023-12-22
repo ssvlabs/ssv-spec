@@ -64,6 +64,10 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 			require.NotNil(t, vBlk.Capella)
 			blkSSZ, err = vBlk.Capella.MarshalSSZ()
 			require.NoError(t, err)
+		case spec.DataVersionDeneb:
+			require.NotNil(t, vBlk.Deneb)
+			blkSSZ, err = vBlk.Deneb.MarshalSSZ()
+			require.NoError(t, err)
 		default:
 			require.Failf(t, "unknown blinded block version %s", vBlk.Version.String())
 		}
@@ -103,6 +107,10 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 		case spec.DataVersionCapella:
 			require.NotNil(t, vBlk.Capella)
 			blkSSZ, err = vBlk.Capella.MarshalSSZ()
+			require.NoError(t, err)
+		case spec.DataVersionDeneb:
+			require.NotNil(t, vBlk.Deneb)
+			blkSSZ, err = vBlk.Deneb.MarshalSSZ()
 			require.NoError(t, err)
 		default:
 			require.Failf(t, "unknown block version %s", vBlk.Version.String())

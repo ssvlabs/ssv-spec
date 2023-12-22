@@ -155,7 +155,7 @@ func (b SSZ32Bytes) SizeSSZ() int {
 }
 
 // SSZBlobZGCommitments --
-type SSZBlobZGCommitments []*deneb.KZGCommitment
+type SSZBlobZGCommitments []deneb.KZGCommitment
 
 func (b SSZBlobZGCommitments) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(b)
