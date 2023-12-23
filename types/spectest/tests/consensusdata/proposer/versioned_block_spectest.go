@@ -56,10 +56,6 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 		// compare blk data
 		var blkSSZ []byte
 		switch vBlk.Version {
-		case spec.DataVersionBellatrix:
-			require.NotNil(t, vBlk.Bellatrix)
-			blkSSZ, err = vBlk.Bellatrix.MarshalSSZ()
-			require.NoError(t, err)
 		case spec.DataVersionCapella:
 			require.NotNil(t, vBlk.Capella)
 			blkSSZ, err = vBlk.Capella.MarshalSSZ()
@@ -100,10 +96,6 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 		// compare blk data
 		var blkSSZ []byte
 		switch vBlk.Version {
-		case spec.DataVersionBellatrix:
-			require.NotNil(t, vBlk.Bellatrix)
-			blkSSZ, err = vBlk.Bellatrix.MarshalSSZ()
-			require.NoError(t, err)
 		case spec.DataVersionCapella:
 			require.NotNil(t, vBlk.Capella)
 			blkSSZ, err = vBlk.Capella.MarshalSSZ()

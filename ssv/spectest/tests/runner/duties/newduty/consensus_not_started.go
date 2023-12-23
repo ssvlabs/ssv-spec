@@ -51,11 +51,11 @@ func ConsensusNotStarted() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
-				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
+				Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
+				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
 				PostDutyRunnerStateRoot: "b2ae77c8491e702c0fd87114560cb447808406fa43afc72c163c533227d771c2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 					// broadcasts when starting a new duty
 				},
 			},

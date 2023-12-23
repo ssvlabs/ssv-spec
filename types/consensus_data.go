@@ -2,12 +2,10 @@ package types
 
 import (
 	"github.com/attestantio/go-eth2-client/api"
-	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -190,12 +188,6 @@ func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 // GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
 func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, ssz.HashRoot, error) {
 	switch ci.Version {
-	case spec.DataVersionBellatrix:
-		ret := &bellatrix.BeaconBlock{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
-		}
-		return &spec.VersionedBeaconBlock{Bellatrix: ret, Version: ci.Version}, ret, nil
 	case spec.DataVersionCapella:
 		ret := &capella.BeaconBlock{}
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
@@ -216,12 +208,6 @@ func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, ssz.HashRoo
 // GetBlindedBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
 func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedBeaconBlock, ssz.HashRoot, error) {
 	switch ci.Version {
-	case spec.DataVersionBellatrix:
-		ret := &apiv1bellatrix.BlindedBeaconBlock{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
-		}
-		return &api.VersionedBlindedBeaconBlock{Bellatrix: ret, Version: ci.Version}, ret, nil
 	case spec.DataVersionCapella:
 		ret := &apiv1capella.BlindedBeaconBlock{}
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {

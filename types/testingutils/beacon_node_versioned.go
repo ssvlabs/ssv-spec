@@ -7,7 +7,6 @@ import (
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -24,12 +23,6 @@ const (
 	// ForkEpochPraterCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
 	ForkEpochPraterCapella = 162304
 
-	// TestingDutySlotBellatrix keeping this value to not break the test roots
-	TestingDutySlotBellatrix          = 12
-	TestingDutySlotBellatrixNextEpoch = 50
-	TestingDutySlotBellatrixInvalid   = 50
-	TestingDutyEpochBellatrix         = 0
-
 	TestingDutyEpochCapella         = ForkEpochPraterCapella
 	TestingDutySlotCapella          = ForkEpochPraterCapella * 32
 	TestingDutySlotCapellaNextEpoch = TestingDutySlotCapella + 32
@@ -42,15 +35,10 @@ const (
 )
 
 // SupportedBlockVersions is a list of supported regular/blinded beacon block versions by spec.
-var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb}
+var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionCapella, spec.DataVersionDeneb}
 
 var TestingBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
 	switch version {
-	case spec.DataVersionBellatrix:
-		return &spec.VersionedBeaconBlock{
-			Version:   version,
-			Bellatrix: TestingBeaconBlock,
-		}
 	case spec.DataVersionCapella:
 		return &spec.VersionedBeaconBlock{
 			Version: version,
@@ -71,11 +59,6 @@ var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 	vBlk := TestingBeaconBlockV(version)
 
 	switch version {
-	case spec.DataVersionBellatrix:
-		if vBlk.Bellatrix == nil {
-			panic("empty block")
-		}
-		ret, _ = vBlk.Bellatrix.MarshalSSZ()
 	case spec.DataVersionCapella:
 		if vBlk.Capella == nil {
 			panic("empty block")
@@ -96,11 +79,6 @@ var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 
 var TestingBlindedBeaconBlockV = func(version spec.DataVersion) *api.VersionedBlindedBeaconBlock {
 	switch version {
-	case spec.DataVersionBellatrix:
-		return &api.VersionedBlindedBeaconBlock{
-			Version:   version,
-			Bellatrix: TestingBlindedBeaconBlock,
-		}
 	case spec.DataVersionCapella:
 		return &api.VersionedBlindedBeaconBlock{
 			Version: version,
@@ -121,11 +99,6 @@ var TestingBlindedBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 	vBlk := TestingBlindedBeaconBlockV(version)
 
 	switch version {
-	case spec.DataVersionBellatrix:
-		if vBlk.Bellatrix == nil {
-			panic("empty block")
-		}
-		ret, _ = vBlk.Bellatrix.MarshalSSZ()
 	case spec.DataVersionCapella:
 		if vBlk.Capella == nil {
 			panic("empty block")
@@ -148,16 +121,6 @@ var TestingWrongBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBea
 	blkByts := TestingBeaconBlockBytesV(version)
 
 	switch version {
-	case spec.DataVersionBellatrix:
-		ret := &bellatrix.BeaconBlock{}
-		if err := ret.UnmarshalSSZ(blkByts); err != nil {
-			panic(err.Error())
-		}
-		ret.Slot = 100
-		return &spec.VersionedBeaconBlock{
-			Version:   version,
-			Bellatrix: ret,
-		}
 	case spec.DataVersionCapella:
 		ret := &capella.BeaconBlock{}
 		if err := ret.UnmarshalSSZ(blkByts); err != nil {
@@ -188,14 +151,6 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 	vBlk := TestingBeaconBlockV(version)
 
 	switch version {
-	case spec.DataVersionBellatrix:
-		if vBlk.Bellatrix == nil {
-			panic("empty block")
-		}
-		return &bellatrix.SignedBeaconBlock{
-			Message:   vBlk.Bellatrix,
-			Signature: signBeaconObject(vBlk.Bellatrix, types.DomainProposer, ks),
-		}
 	case spec.DataVersionCapella:
 		if vBlk.Capella == nil {
 			panic("empty block")
@@ -220,8 +175,6 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 
 var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 	switch version {
-	case spec.DataVersionBellatrix:
-		return TestingDutyEpochBellatrix
 	case spec.DataVersionCapella:
 		return TestingDutyEpochCapella
 	case spec.DataVersionDeneb:
@@ -234,8 +187,6 @@ var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 
 var TestingDutySlotV = func(version spec.DataVersion) phase0.Slot {
 	switch version {
-	case spec.DataVersionBellatrix:
-		return TestingDutySlotBellatrix
 	case spec.DataVersionCapella:
 		return TestingDutySlotCapella
 	case spec.DataVersionDeneb:
@@ -247,9 +198,6 @@ var TestingDutySlotV = func(version spec.DataVersion) phase0.Slot {
 }
 
 var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < ForkEpochPraterCapella*32 {
-		return spec.DataVersionBellatrix
-	}
 	if slot < ForkEpochPraterDeneb*32 {
 		return spec.DataVersionCapella
 	}
@@ -285,8 +233,6 @@ var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.Duty {
 	}
 
 	switch version {
-	case spec.DataVersionBellatrix:
-		duty.Slot = TestingDutySlotBellatrixNextEpoch
 	case spec.DataVersionCapella:
 		duty.Slot = TestingDutySlotCapellaNextEpoch
 	case spec.DataVersionDeneb:
@@ -301,8 +247,6 @@ var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.Duty {
 
 var TestingInvalidDutySlotV = func(version spec.DataVersion) phase0.Slot {
 	switch version {
-	case spec.DataVersionBellatrix:
-		return TestingDutySlotBellatrixInvalid
 	case spec.DataVersionCapella:
 		return TestingDutySlotCapellaInvalid
 	case spec.DataVersionDeneb:

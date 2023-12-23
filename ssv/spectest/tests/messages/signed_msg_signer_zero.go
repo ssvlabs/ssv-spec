@@ -13,7 +13,7 @@ import (
 func SignedMsgSigner0() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgPre := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)
+	msgPre := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)
 	msgPre.Signer = 0
 	msgPost := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
 	msgPost.Signer = 0

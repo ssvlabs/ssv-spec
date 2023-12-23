@@ -54,12 +54,12 @@ func PostFinish() tests.SpecTest {
 				Name: "proposer",
 				Runner: finishRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix),
+					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+					testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, spec.DataVersionDeneb)),
 				},
 				PostDutyRunnerStateRoot: "cef894bfee42ce998eeccd3bfbb21caebbe6226384466e66ee296d8c5d0e4521",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -71,12 +71,12 @@ func PostFinish() tests.SpecTest {
 				Name: "proposer (blinded block)",
 				Runner: finishRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix),
+					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, spec.DataVersionBellatrix)),
+					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, spec.DataVersionDeneb)),
 				},
 				PostDutyRunnerStateRoot: "68050789dfbfaa7d82d7ce6ed910be9580c61b4de8c8b72e9258efc9580b5e04",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -108,7 +108,7 @@ func PostFinish() tests.SpecTest {
 					&testingutils.TestingAttesterDuty,
 					testingutils.TestAttesterConsensusData,
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight)),
 				},

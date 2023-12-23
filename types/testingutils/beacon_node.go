@@ -5,7 +5,6 @@ import (
 
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
-	apiv1bellatrix "github.com/attestantio/go-eth2-client/api/v1/bellatrix"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
 	"github.com/attestantio/go-eth2-client/spec"
@@ -16,6 +15,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/goccy/go-yaml"
+	"github.com/holiman/uint256"
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
 
@@ -103,12 +103,12 @@ var Transactions = func() []bellatrix.Transaction {
 	return res.Transactions
 }()
 
-var TestingBeaconBlock = &bellatrix.BeaconBlock{
+var TestingBeaconBlock = &deneb.BeaconBlock{
 	Slot:          12,
 	ProposerIndex: 10,
 	ParentRoot:    phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	StateRoot:     phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-	Body: &bellatrix.BeaconBlockBody{
+	Body: &deneb.BeaconBlockBody{
 		RANDAOReveal: phase0.BLSSignature{},
 		ETH1Data: &phase0.ETH1Data{
 			DepositRoot:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
@@ -131,33 +131,33 @@ var TestingBeaconBlock = &bellatrix.BeaconBlock{
 			SyncCommitteeBits:      bitfield.NewBitvector512(),
 			SyncCommitteeSignature: phase0.BLSSignature{},
 		},
-		ExecutionPayload: &bellatrix.ExecutionPayload{
+		ExecutionPayload: &deneb.ExecutionPayload{
 			ParentHash:    phase0.Hash32{},
 			FeeRecipient:  bellatrix.ExecutionAddress{},
-			StateRoot:     phase0.Hash32{},
-			ReceiptsRoot:  phase0.Hash32{},
+			StateRoot:     phase0.Root{},
+			ReceiptsRoot:  phase0.Root{},
 			LogsBloom:     [256]byte{},
 			PrevRandao:    [32]byte{},
 			BlockNumber:   100,
 			GasLimit:      1000000,
 			GasUsed:       800000,
 			Timestamp:     123456789,
-			BaseFeePerGas: [32]byte{},
+			BaseFeePerGas: &uint256.Int{37},
 			BlockHash:     phase0.Hash32{},
 			Transactions:  Transactions,
 		},
 	},
 }
 
-var TestingBlindedBeaconBlock = func() *apiv1bellatrix.BlindedBeaconBlock {
+var TestingBlindedBeaconBlock = func() *apiv1deneb.BlindedBeaconBlock {
 	fullBlk := TestingBeaconBlock
 	txRoot, _ := types.SSZTransactions(fullBlk.Body.ExecutionPayload.Transactions).HashTreeRoot()
-	ret := &apiv1bellatrix.BlindedBeaconBlock{
+	ret := &apiv1deneb.BlindedBeaconBlock{
 		Slot:          fullBlk.Slot,
 		ProposerIndex: fullBlk.ProposerIndex,
 		ParentRoot:    fullBlk.ParentRoot,
 		StateRoot:     fullBlk.StateRoot,
-		Body: &apiv1bellatrix.BlindedBeaconBlockBody{
+		Body: &apiv1deneb.BlindedBeaconBlockBody{
 			RANDAOReveal:      fullBlk.Body.RANDAOReveal,
 			ETH1Data:          fullBlk.Body.ETH1Data,
 			Graffiti:          fullBlk.Body.Graffiti,
@@ -167,7 +167,7 @@ var TestingBlindedBeaconBlock = func() *apiv1bellatrix.BlindedBeaconBlock {
 			Deposits:          fullBlk.Body.Deposits,
 			VoluntaryExits:    fullBlk.Body.VoluntaryExits,
 			SyncAggregate:     fullBlk.Body.SyncAggregate,
-			ExecutionPayloadHeader: &bellatrix.ExecutionPayloadHeader{
+			ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
 				ParentHash:       fullBlk.Body.ExecutionPayload.ParentHash,
 				FeeRecipient:     fullBlk.Body.ExecutionPayload.FeeRecipient,
 				StateRoot:        fullBlk.Body.ExecutionPayload.StateRoot,
@@ -640,8 +640,6 @@ func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao [
 	vBlk := TestingBeaconBlockV(version)
 
 	switch version {
-	case spec.DataVersionBellatrix:
-		return vBlk.Bellatrix, version, nil
 	case spec.DataVersionCapella:
 		return vBlk.Capella, version, nil
 	case spec.DataVersionDeneb:
@@ -656,15 +654,6 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 	var r [32]byte
 
 	switch block.Version {
-	case spec.DataVersionBellatrix:
-		if block.Bellatrix == nil {
-			return errors.Errorf("%s block is nil", block.Version.String())
-		}
-		sb := &bellatrix.SignedBeaconBlock{
-			Message:   block.Bellatrix,
-			Signature: sig,
-		}
-		r, _ = sb.HashTreeRoot()
 	case spec.DataVersionCapella:
 		if block.Capella == nil {
 			return errors.Errorf("%s block is nil", block.Version.String())
@@ -697,8 +686,6 @@ func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, graffiti, r
 	vBlk := TestingBlindedBeaconBlockV(version)
 
 	switch version {
-	case spec.DataVersionBellatrix:
-		return vBlk.Bellatrix, version, nil
 	case spec.DataVersionCapella:
 		return vBlk.Capella, version, nil
 	case spec.DataVersionDeneb:
@@ -713,15 +700,6 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlinde
 	var r [32]byte
 
 	switch block.Version {
-	case spec.DataVersionBellatrix:
-		if block.Bellatrix == nil {
-			return errors.Errorf("%s blinded block is nil", block.Version.String())
-		}
-		sb := &apiv1bellatrix.SignedBlindedBeaconBlock{
-			Message:   block.Bellatrix,
-			Signature: sig,
-		}
-		r, _ = sb.HashTreeRoot()
 	case spec.DataVersionCapella:
 		if block.Capella == nil {
 			return errors.Errorf("%s blinded block is nil", block.Version.String())
@@ -791,7 +769,7 @@ func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) 
 
 // GetSyncCommitteeContribution returns
 func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot phase0.Slot, selectionProofs []phase0.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec.DataVersion, error) {
-	return &TestingContributionsData, spec.DataVersionBellatrix, nil
+	return &TestingContributionsData, spec.DataVersionDeneb, nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network

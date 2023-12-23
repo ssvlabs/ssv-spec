@@ -74,7 +74,7 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 
 	return &types.ConsensusData{
 		Duty:                       TestingAttesterDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAttestationDataBytes,
 	}
@@ -89,7 +89,7 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 
 	return &types.ConsensusData{
 		Duty:                       TestingSyncCommitteeDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingSyncCommitteeBlockRoot[:],
 	}
@@ -391,7 +391,7 @@ var TestSelectionProofWithJustificationsConsensusData = func(ks *TestKeySet) *ty
 
 	return &types.ConsensusData{
 		Duty:                       TestingAggregatorDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAggregateAndProofBytes,
 	}
@@ -794,7 +794,7 @@ var TestContributionProofWithJustificationsConsensusData = func(ks *TestKeySet) 
 
 	return &types.ConsensusData{
 		Duty:                       TestingSyncCommitteeContributionDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingContributionsDataBytes,
 	}
