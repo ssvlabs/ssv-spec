@@ -638,7 +638,7 @@ func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecip
 }
 
 // SubmitVoluntaryExit submit the VoluntaryExit object to the node
-func (bn *TestingBeaconNode) SubmitVoluntaryExit(voluntaryExit *phase0.SignedVoluntaryExit, sig phase0.BLSSignature) error {
+func (bn *TestingBeaconNode) SubmitVoluntaryExit(voluntaryExit *phase0.SignedVoluntaryExit) error {
 	r, _ := voluntaryExit.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
