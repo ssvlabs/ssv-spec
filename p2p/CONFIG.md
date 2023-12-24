@@ -222,6 +222,8 @@ Sets the number of outbound peers we keep in a GossipSub topic mesh.
 |-------------------------|---------------------|----------------------|
 | `2`                     | `4`                 | `2`                  |
 
+The value was increased to provide better eclipse protection.
+
 
 ### Gossipsub: HeartbeatInterval
 
