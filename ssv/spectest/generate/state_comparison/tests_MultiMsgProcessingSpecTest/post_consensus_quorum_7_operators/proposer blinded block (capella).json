@@ -1,21 +1,248 @@
 {
 		"BaseRunner": {
 				"State": {
-						"PreConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 5
-						},
+						"PreConsensusContainer": {},
 						"PostConsensusContainer": {
-								"Signatures": {
-										"6151734b80affaf369de883d756fb22033126abcbed411e5c4d813057bd4ca6f": {
-												"1": "k9hTd03aOdoi1SsT0yXL2vsxptxbihfjTo4wtdicVoEgKdvMupbxpt2XcQLZBZOfA1sveRIRDq8sR5qF4JBUe8+13C1xH0mBMRQzRv+eHU/1EM0+kjJhgSfeRl/yc1+J",
-												"2": "hbqPkzzSUq+j3CJsEVRFRlBik/oE4t6SPRCOS1XzatjpB12ZM7XqzIzJ7k7IWcSEEUcGpEWj5NKBQxGGHrwAPaxieIvZFr4j3E/vjCMc02R1skI90R1H6LE3klhwX8p5",
-												"3": "jy2guAgNMiEL1JTLUFG0HLGJ2kRKNDUUC9vTdnGMnR+Pi01I5sXj1+53RfzgTbbaArRpwklBSzi+LHfMIF4kbEbHIt7D2cKDgSO3aNJr/sZiQ2UGuQW3GDJfbMv8BENy",
-												"4": "ikGzJcp2nlOaARu8LiQBOq6vgUNZQ5EmwEixEWnr76a+6bryPAms7j/8WsLQIl7gCYHsxrBEraoJCHkfA7ZcAIpK14FLlkVLrE0rRnbcJwjrP3hEU93VwI0IcnerF6xJ",
-												"5": "qv9W/L0VWaPPT1lmVulSTkiwmbjfd19QpnlxApYBGSKr3RuH3uWUCSxffoAFoLOBCXLFyX5HlpmBVhAMdg6VL5RBS45sf64gXj5bJ3SLmW9zK4P/ngNMhRZ2ldgwzKGt"
-										}
+								"1": {
+										"Message": {
+												"Type": 0,
+												"Slot": 5193728,
+												"Messages": [
+														{
+																"PartialSignature": "k9hTd03aOdoi1SsT0yXL2vsxptxbihfjTo4wtdicVoEgKdvMupbxpt2XcQLZBZOfA1sveRIRDq8sR5qF4JBUe8+13C1xH0mBMRQzRv+eHU/1EM0+kjJhgSfeRl/yc1+J",
+																"SigningRoot": [
+																		97,
+																		81,
+																		115,
+																		75,
+																		128,
+																		175,
+																		250,
+																		243,
+																		105,
+																		222,
+																		136,
+																		61,
+																		117,
+																		111,
+																		178,
+																		32,
+																		51,
+																		18,
+																		106,
+																		188,
+																		190,
+																		212,
+																		17,
+																		229,
+																		196,
+																		216,
+																		19,
+																		5,
+																		123,
+																		212,
+																		202,
+																		111
+																],
+																"Signer": 1
+														}
+												]
+										},
+										"Signature": "sU0XzbPJDI3Q0C0vmmprIDbI0g8/MLqos904uMhcgaYvKJjYnG7B4rykuNYgv5i9CTKIysdMra0TxTD/uo/MQRDLwxtrA+onx+0g8UyooRnPlG7ReM4LNxx2rNDRzezt",
+										"Signer": 1
 								},
-								"Quorum": 5
+								"2": {
+										"Message": {
+												"Type": 0,
+												"Slot": 5193728,
+												"Messages": [
+														{
+																"PartialSignature": "hbqPkzzSUq+j3CJsEVRFRlBik/oE4t6SPRCOS1XzatjpB12ZM7XqzIzJ7k7IWcSEEUcGpEWj5NKBQxGGHrwAPaxieIvZFr4j3E/vjCMc02R1skI90R1H6LE3klhwX8p5",
+																"SigningRoot": [
+																		97,
+																		81,
+																		115,
+																		75,
+																		128,
+																		175,
+																		250,
+																		243,
+																		105,
+																		222,
+																		136,
+																		61,
+																		117,
+																		111,
+																		178,
+																		32,
+																		51,
+																		18,
+																		106,
+																		188,
+																		190,
+																		212,
+																		17,
+																		229,
+																		196,
+																		216,
+																		19,
+																		5,
+																		123,
+																		212,
+																		202,
+																		111
+																],
+																"Signer": 2
+														}
+												]
+										},
+										"Signature": "k46ZH0mVXKibm2VF+stQvJzC1QQ9f6Llxl0CQM3G7kQqH4uhK8pFoeGr1Dc9Nve+BGL4M1cfSjjNxDwBrno+NUoLEcFBhEDs5JPW3n8BA9PT76q/GDqiBe3U/1iJfmU+",
+										"Signer": 2
+								},
+								"3": {
+										"Message": {
+												"Type": 0,
+												"Slot": 5193728,
+												"Messages": [
+														{
+																"PartialSignature": "jy2guAgNMiEL1JTLUFG0HLGJ2kRKNDUUC9vTdnGMnR+Pi01I5sXj1+53RfzgTbbaArRpwklBSzi+LHfMIF4kbEbHIt7D2cKDgSO3aNJr/sZiQ2UGuQW3GDJfbMv8BENy",
+																"SigningRoot": [
+																		97,
+																		81,
+																		115,
+																		75,
+																		128,
+																		175,
+																		250,
+																		243,
+																		105,
+																		222,
+																		136,
+																		61,
+																		117,
+																		111,
+																		178,
+																		32,
+																		51,
+																		18,
+																		106,
+																		188,
+																		190,
+																		212,
+																		17,
+																		229,
+																		196,
+																		216,
+																		19,
+																		5,
+																		123,
+																		212,
+																		202,
+																		111
+																],
+																"Signer": 3
+														}
+												]
+										},
+										"Signature": "kPUh3vQ16htzImpxIr1qgql08bnUs6mS0fzgVRdHIQonQOBWsBZTFyQVWbZbpMw2FDPZFKCbdY6xWB8u4OgetoLzeCI/6eaRUShDvqrfhixAaKAIlAYHoKqtp6KmqVKr",
+										"Signer": 3
+								},
+								"4": {
+										"Message": {
+												"Type": 0,
+												"Slot": 5193728,
+												"Messages": [
+														{
+																"PartialSignature": "ikGzJcp2nlOaARu8LiQBOq6vgUNZQ5EmwEixEWnr76a+6bryPAms7j/8WsLQIl7gCYHsxrBEraoJCHkfA7ZcAIpK14FLlkVLrE0rRnbcJwjrP3hEU93VwI0IcnerF6xJ",
+																"SigningRoot": [
+																		97,
+																		81,
+																		115,
+																		75,
+																		128,
+																		175,
+																		250,
+																		243,
+																		105,
+																		222,
+																		136,
+																		61,
+																		117,
+																		111,
+																		178,
+																		32,
+																		51,
+																		18,
+																		106,
+																		188,
+																		190,
+																		212,
+																		17,
+																		229,
+																		196,
+																		216,
+																		19,
+																		5,
+																		123,
+																		212,
+																		202,
+																		111
+																],
+																"Signer": 4
+														}
+												]
+										},
+										"Signature": "hCH3jT0GNpP5S/QGRKyXi4I+lZsnlbB0dKnNaep+ZuogJze0b5/AxyXWY+I4UTqkGA14X1xLFlzcnGWHjGxkWjFcPLEHlUNOZc+Eb3t0vEge504zrfIdF9vRD60c/Zdo",
+										"Signer": 4
+								},
+								"5": {
+										"Message": {
+												"Type": 0,
+												"Slot": 5193728,
+												"Messages": [
+														{
+																"PartialSignature": "qv9W/L0VWaPPT1lmVulSTkiwmbjfd19QpnlxApYBGSKr3RuH3uWUCSxffoAFoLOBCXLFyX5HlpmBVhAMdg6VL5RBS45sf64gXj5bJ3SLmW9zK4P/ngNMhRZ2ldgwzKGt",
+																"SigningRoot": [
+																		97,
+																		81,
+																		115,
+																		75,
+																		128,
+																		175,
+																		250,
+																		243,
+																		105,
+																		222,
+																		136,
+																		61,
+																		117,
+																		111,
+																		178,
+																		32,
+																		51,
+																		18,
+																		106,
+																		188,
+																		190,
+																		212,
+																		17,
+																		229,
+																		196,
+																		216,
+																		19,
+																		5,
+																		123,
+																		212,
+																		202,
+																		111
+																],
+																"Signer": 5
+														}
+												]
+										},
+										"Signature": "oDwvwfTS617W4/PAbxQkBIs59SfWEFJUmM1/LX4P6tTe39hk/oBj/PKmh+COEhP/FCinT0MSQ10aBXW3rWVaUf5ilhrzu84ES114YaESjY3nPz3Dc2ein9TS0LjckRum",
+										"Signer": 5
+								}
 						},
 						"RunningInstance": {
 								"State": {
@@ -167,10 +394,10 @@
 										"CommitteeLength": 128,
 										"CommitteesAtSlot": 36,
 										"ValidatorCommitteeIndex": 11,
-										"ValidatorSyncCommitteeIndices": null
+										"ValidatorSyncCommitteeIndices": []
 								},
 								"Version": "capella",
-								"PreConsensusJustifications": null,
+								"PreConsensusJustifications": [],
 								"DataSSZ": "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"
 						},
 						"StartingDuty": {
@@ -231,7 +458,7 @@
 								"CommitteeLength": 128,
 								"CommitteesAtSlot": 36,
 								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": null
+								"ValidatorSyncCommitteeIndices": []
 						},
 						"Finished": true
 				},

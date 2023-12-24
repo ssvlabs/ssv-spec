@@ -1,17 +1,56 @@
 {
 		"BaseRunner": {
 				"State": {
-						"PreConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 7
-						},
+						"PreConsensusContainer": {},
 						"PostConsensusContainer": {
-								"Signatures": {
-										"4ae32f48079745930bc24da670a6fe72052e13e3832728c6aa2580adc0307b83": {
-												"1": "sWykfppUWWuTlUbcglq6H1u1I3gaEHrUzOtKfIQvDCVHsdcMYyeQo2PB1z7bg5LUAIrBFR1OtqZWSIl1svuubyTLGXS1auUje/cByuf3QjAHWIOnEbG3ZwP4YbYdJtoV"
-										}
-								},
-								"Quorum": 7
+								"1": {
+										"Message": {
+												"Type": 0,
+												"Slot": 12,
+												"Messages": [
+														{
+																"PartialSignature": "sWykfppUWWuTlUbcglq6H1u1I3gaEHrUzOtKfIQvDCVHsdcMYyeQo2PB1z7bg5LUAIrBFR1OtqZWSIl1svuubyTLGXS1auUje/cByuf3QjAHWIOnEbG3ZwP4YbYdJtoV",
+																"SigningRoot": [
+																		74,
+																		227,
+																		47,
+																		72,
+																		7,
+																		151,
+																		69,
+																		147,
+																		11,
+																		194,
+																		77,
+																		166,
+																		112,
+																		166,
+																		254,
+																		114,
+																		5,
+																		46,
+																		19,
+																		227,
+																		131,
+																		39,
+																		40,
+																		198,
+																		170,
+																		37,
+																		128,
+																		173,
+																		192,
+																		48,
+																		123,
+																		131
+																],
+																"Signer": 1
+														}
+												]
+										},
+										"Signature": "i0fRvUnsn+SK56F3oIaaGHqDqnlg7a0TIvDdFRlo4TT8r9B6Y1H323n4FZAOJ03eD4u01gNvLDTykCXcUrkAdw/lsBamFhdheEilUherlyNXL4pRa/3lO6TGZSJyQ6Pc",
+										"Signer": 1
+								}
 						},
 						"RunningInstance": {
 								"State": {
@@ -100,7 +139,7 @@
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": null,
 										"Decided": true,
-										"DecidedValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+										"DecidedValue": "FAAAAAIAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 										"ProposeContainer": {
 												"Msgs": {}
 										},
@@ -175,10 +214,10 @@
 										"CommitteeLength": 128,
 										"CommitteesAtSlot": 36,
 										"ValidatorCommitteeIndex": 11,
-										"ValidatorSyncCommitteeIndices": null
+										"ValidatorSyncCommitteeIndices": []
 								},
-								"Version": "phase0",
-								"PreConsensusJustifications": null,
+								"Version": "bellatrix",
+								"PreConsensusJustifications": [],
 								"DataSSZ": "DAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQI="
 						},
 						"StartingDuty": {
@@ -239,7 +278,7 @@
 								"CommitteeLength": 128,
 								"CommitteesAtSlot": 36,
 								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": null
+								"ValidatorSyncCommitteeIndices": []
 						},
 						"Finished": false
 				},
@@ -412,7 +451,7 @@
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
 												"Decided": true,
-												"DecidedValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+												"DecidedValue": "FAAAAAIAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 												"ProposeContainer": {
 														"Msgs": {}
 												},

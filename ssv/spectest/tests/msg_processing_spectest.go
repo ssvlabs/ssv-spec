@@ -74,8 +74,8 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
 	if !test.DontStartDuty {
 		lastErr = v.StartDuty(test.Duty)
 	}
-	for _, msg := range test.Messages {
-		err := v.ProcessMessage(msg)
+	for i := range test.Messages {
+		err := v.ProcessMessage(test.Messages[i])
 		if err != nil {
 			lastErr = err
 		}
@@ -86,7 +86,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
 
 func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
 	broadcastedRoots := test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).BroadcastedRoots
-	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots))
+	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots), "incorrect number of broadcasted beacon roots")
 	for _, r1 := range test.BeaconBroadcastedRoots {
 		found := false
 		for _, r2 := range broadcastedRoots {
@@ -99,7 +99,7 @@ func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
 	}
 }
 
-func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Validator) {
+func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, validator *ssv.Validator) {
 	filterPartialSigs := func(messages []*types.SSVMessage) []*types.SSVMessage {
 		ret := make([]*types.SSVMessage, 0)
 		for _, msg := range messages {
@@ -110,8 +110,8 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		}
 		return ret
 	}
-	broadcastedMsgs := filterPartialSigs(v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs)
-	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
+	broadcastedMsgs := filterPartialSigs(validator.Network.(*testingutils.TestingNetwork).BroadcastedMsgs)
+	require.Len(t, broadcastedMsgs, len(test.OutputMessages), "incorrect number of broadcasted msgs")
 	index := 0
 	for _, msg := range broadcastedMsgs {
 		if msg.MsgType != types.SSVPartialSignatureMsgType {

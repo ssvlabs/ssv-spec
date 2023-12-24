@@ -31,7 +31,7 @@ func Valid() tests.SpecTest {
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
-			Height:     1,
+			Height:     testingutils.TestingDutySlot,
 			Round:      qbft.FirstRound,
 			Identifier: id,
 			Root:       root,

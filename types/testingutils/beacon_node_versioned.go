@@ -207,10 +207,11 @@ var TestingProposerDutyV = func(version spec.DataVersion) *types.Duty {
 		Slot:           TestingDutySlotV(version),
 		ValidatorIndex: TestingValidatorIndex,
 		// ISSUE 233: We are initializing unused struct fields here
-		CommitteeIndex:          3,
-		CommitteesAtSlot:        36,
-		CommitteeLength:         128,
-		ValidatorCommitteeIndex: 11,
+		CommitteeIndex:                3,
+		CommitteesAtSlot:              36,
+		CommitteeLength:               128,
+		ValidatorCommitteeIndex:       11,
+		ValidatorSyncCommitteeIndices: []uint64{},
 	}
 
 	return duty

@@ -25,6 +25,8 @@ func WrongValidatorIndex() tests.SpecTest {
 		return ret
 	}
 
+	ks := testingutils.Testing4SharesSet()
+
 	expectedErr := "duty invalid: wrong validator index"
 	return &valcheck.MultiSpecTest{
 		Name: "wrong validator index",
@@ -33,7 +35,7 @@ func WrongValidatorIndex() tests.SpecTest {
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData(ks)),
 				ExpectedError: expectedErr,
 			},
 			{
@@ -47,7 +49,7 @@ func WrongValidatorIndex() tests.SpecTest {
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
 				BeaconRole:    types.BNRoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(ks)),
 				ExpectedError: expectedErr,
 			},
 			{

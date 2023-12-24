@@ -1,17 +1,56 @@
 {
 		"BaseRunner": {
 				"State": {
-						"PreConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 3
-						},
+						"PreConsensusContainer": {},
 						"PostConsensusContainer": {
-								"Signatures": {
-										"25658f4ed28013e83d6221ad067adabb6bc78e6540901d90a35997eff7ad0ad1": {
-												"1": "l2bMWB9wEym2r9EJdi8bApB/qTQK9JTc5C20iMVj6e5vXHt46rzJQtob5QB8ARCKGcr3LcqZW87BqDp3MBoaxkYIH2DxFf+yxTmSJz/Hg+tn0J15h2VGlTrrCxLN0dua"
-										}
-								},
-								"Quorum": 3
+								"1": {
+										"Message": {
+												"Type": 0,
+												"Slot": 12,
+												"Messages": [
+														{
+																"PartialSignature": "l2bMWB9wEym2r9EJdi8bApB/qTQK9JTc5C20iMVj6e5vXHt46rzJQtob5QB8ARCKGcr3LcqZW87BqDp3MBoaxkYIH2DxFf+yxTmSJz/Hg+tn0J15h2VGlTrrCxLN0dua",
+																"SigningRoot": [
+																		37,
+																		101,
+																		143,
+																		78,
+																		210,
+																		128,
+																		19,
+																		232,
+																		61,
+																		98,
+																		33,
+																		173,
+																		6,
+																		122,
+																		218,
+																		187,
+																		107,
+																		199,
+																		142,
+																		101,
+																		64,
+																		144,
+																		29,
+																		144,
+																		163,
+																		89,
+																		151,
+																		239,
+																		247,
+																		173,
+																		10,
+																		209
+																],
+																"Signer": 1
+														}
+												]
+										},
+										"Signature": "twkkZMHKJp+EWzn4o1A86hrdOMUDpamU/ydfZI/cEn150DP8hQN2QobYx+D5iO/dDvZj3HsS9HMClFk3iNELMjhhtnyADOz/lUfJflt7BgLtIw0VlR1xm7LI7kJNR/OS",
+										"Signer": 1
+								}
 						},
 						"RunningInstance": {
 								"State": {
@@ -151,10 +190,10 @@
 										"CommitteeLength": 128,
 										"CommitteesAtSlot": 36,
 										"ValidatorCommitteeIndex": 11,
-										"ValidatorSyncCommitteeIndices": null
+										"ValidatorSyncCommitteeIndices": []
 								},
 								"Version": "bellatrix",
-								"PreConsensusJustifications": null,
+								"PreConsensusJustifications": [],
 								"DataSSZ": "DAAAAAAAAAAKAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQJUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQJkAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQKAAQAAgAEAAIABAAB4AgAAeAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4AgAABAAAAOQAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGQAAAAAAAAAQEIPAAAAAAAANQwAAAAAABXNWwcAAAAAGAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBxR3ZQbqqWe8m9xQdxvG4jmww45yBkYn8tRXovLQXMw=="
 						},
 						"StartingDuty": {
@@ -215,7 +254,7 @@
 								"CommitteeLength": 128,
 								"CommitteesAtSlot": 36,
 								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": null
+								"ValidatorSyncCommitteeIndices": []
 						},
 						"Finished": false
 				},

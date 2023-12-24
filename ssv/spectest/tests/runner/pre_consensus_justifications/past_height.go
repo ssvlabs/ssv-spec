@@ -29,6 +29,8 @@ func PastHeight() tests.SpecTest {
 		return signed
 	}
 
+	expectedErr := "failed processing consensus message: could not process msg: instance stopped processing messages"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus past height",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -43,6 +45,7 @@ func PastHeight() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "aggregator selection proof",
@@ -55,6 +58,7 @@ func PastHeight() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao",
@@ -67,6 +71,7 @@ func PastHeight() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -79,6 +84,7 @@ func PastHeight() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 
@@ -90,6 +96,7 @@ func PastHeight() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "a60c5cb9e8c0189086ae447ee5d1f5477a0be3eb3af4fb15f17679e930f52538",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name:   "sync committee",
@@ -100,6 +107,7 @@ func PastHeight() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "81118c674d65bddd1c468e4ec6bb34d2d9355e2008083f3fed315e7af9061fd5",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				ExpectedError:           expectedErr,
 			},
 		},
 	}

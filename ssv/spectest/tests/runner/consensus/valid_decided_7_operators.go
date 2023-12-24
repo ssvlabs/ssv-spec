@@ -22,7 +22,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
+				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData(ks), ks, types.BNRoleSyncCommitteeContribution),
 				PostDutyRunnerStateRoot: validDecided7OperatorsSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -45,7 +45,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    &testingutils.TestingAggregatorDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
+				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(ks), ks, types.BNRoleAggregator),
 				PostDutyRunnerStateRoot: validDecided7OperatorsAggregatorSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsAggregatorSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{

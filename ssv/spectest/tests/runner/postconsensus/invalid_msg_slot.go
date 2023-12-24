@@ -31,7 +31,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
 					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
+					testingutils.TestSyncCommitteeContributionConsensusData(ks),
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
@@ -99,7 +99,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),
 					&testingutils.TestingAggregatorDuty,
-					testingutils.TestAggregatorConsensusData,
+					testingutils.TestAggregatorConsensusData(ks),
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{

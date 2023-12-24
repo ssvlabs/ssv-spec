@@ -10,6 +10,8 @@ import (
 )
 
 // InvalidMsgType tests justification for non proposal/round change msg
+// This will be treated as a future message,
+// pre-consensus won't be processed thus the controller's height won't be updated
 func InvalidMsgType() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -18,7 +20,7 @@ func InvalidMsgType() tests.SpecTest {
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.PrepareMsgType, //invalid, qbft.ProposeMsgType expected
-			Height:     1,
+			Height:     testingutils.TestingDutySlot,
 			Round:      qbft.FirstRound,
 			Identifier: id,
 			Root:       root,
@@ -29,12 +31,16 @@ func InvalidMsgType() tests.SpecTest {
 		return signed
 	}
 
+	expectedError := "failed processing consensus message: future msg from height, could not process"
+	expectedErrNoPrecon := "failed processing consensus message: could not process msg: invalid signed message: did" +
+		" not receive proposal for this round"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus invalid msg type",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
-				Runner: decideFirstHeight(testingutils.SyncCommitteeContributionRunner(ks)),
+				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil),
@@ -43,10 +49,11 @@ func InvalidMsgType() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:   "aggregator selection proof",
-				Runner: decideFirstHeight(testingutils.AggregatorRunner(ks)),
+				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil),
@@ -55,10 +62,11 @@ func InvalidMsgType() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:   "randao",
-				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
+				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
@@ -67,10 +75,11 @@ func InvalidMsgType() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 				Name:   "randao (blinded block)",
-				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
+				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
@@ -79,29 +88,30 @@ func InvalidMsgType() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
 				},
+				ExpectedError: expectedError,
 			},
 			{
 
 				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
+				Runner: testingutils.AttesterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "81cb7b1d3ea3087d49f9773b3a2b75a87b901e50427d237f2a10c0e1904e7684",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: did not receive proposal for this round",
+				ExpectedError:           expectedErrNoPrecon,
 			},
 			{
 				Name:   "sync committee",
-				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
+				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SSVMessage{
 					testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "38592232077cd45709a7c6cfdd20c9d899af9d79bc750add3c4b8f2b6794cb34",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: did not receive proposal for this round",
+				ExpectedError:           expectedErrNoPrecon,
 			},
 		},
 	}

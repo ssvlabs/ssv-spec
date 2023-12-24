@@ -1,14 +1,11 @@
 package testingutils
 
 import (
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 )
-
-var TestingHighestDecidedSlot = phase0.Slot(0)
 
 var AttesterRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil), keySet)
@@ -86,7 +83,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleAggregator:
 		return ssv.NewAggregatorRunner(
@@ -97,7 +93,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleProposer:
 		return ssv.NewProposerRunner(
@@ -108,7 +103,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleSyncCommittee:
 		return ssv.NewSyncCommitteeRunner(
@@ -119,7 +113,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleSyncCommitteeContribution:
 		return ssv.NewSyncCommitteeAggregatorRunner(
@@ -130,7 +123,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.BNRoleValidatorRegistration:
 		return ssv.NewValidatorRegistrationRunner(
@@ -157,7 +149,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			net,
 			km,
 			valCheck,
-			TestingHighestDecidedSlot,
 		)
 		ret.(*ssv.AttesterRunner).BaseRunner.BeaconRoleType = UnknownDutyType
 		return ret
@@ -196,6 +187,58 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 }
 
 // //////////////////////////////// For SSV Tests ////////////////////////////////////////////////////////////////
+var SSVDecideSyncCommiteeContributionRunner = func(ks *TestKeySet) ssv.Runner {
+	return SSVDecideRunner(SyncCommitteeContributionRunner(ks),
+		&TestingSyncCommitteeContributionDuty, TestingDutySlot,
+		TestSyncCommitteeContributionConsensusData(ks))
+}
+
+var SSVDecideAggregatorRunner = func(ks *TestKeySet) ssv.Runner {
+	return SSVDecideRunner(AggregatorRunner(ks),
+		&TestingAggregatorDuty, TestingDutySlot,
+		TestAggregatorConsensusData(ks))
+}
+
+var SSVDecideSyncCommitteeRunner = func(ks *TestKeySet) ssv.Runner {
+	return SSVDecideRunner(SyncCommitteeRunner(ks),
+		&TestingSyncCommitteeDuty, TestingDutySlot,
+		TestSyncCommitteeConsensusData)
+}
+
+var SSVDecideAttesterRunner = func(ks *TestKeySet) ssv.Runner {
+	return SSVDecideRunner(AttesterRunner(ks),
+		&TestingAttesterDuty, TestingDutySlot,
+		TestAttesterConsensusData)
+}
+
+var SSVDecideProposerRunnerV = func(ks *TestKeySet, version spec.DataVersion) ssv.Runner {
+	return SSVDecideRunner(ProposerRunner(ks),
+		TestingProposerDutyV(version), qbft.Height(TestingDutySlotV(version)),
+		TestProposerConsensusDataV(version))
+}
+
+var SSVDecideBlindedProposerRunnerV = func(ks *TestKeySet, version spec.DataVersion) ssv.Runner {
+	return SSVDecideRunner(ProposerBlindedBlockRunner(ks),
+		TestingProposerDutyV(version), qbft.Height(TestingDutySlotV(version)),
+		TestProposerBlindedBlockConsensusDataV(version))
+}
+
+var SSVDecideRunner = func(r ssv.Runner, duty *types.Duty, height qbft.Height,
+	decidedValue *types.ConsensusData) ssv.Runner {
+	r.GetBaseRunner().State = ssv.NewRunnerState(r.GetBaseRunner().Share.Quorum, duty)
+	instance := qbft.NewInstance(
+		r.GetBaseRunner().QBFTController.GetConfig(),
+		r.GetBaseRunner().Share,
+		r.GetBaseRunner().QBFTController.Identifier,
+		height)
+	instance.State.Decided = true
+	instance.State.DecidedValue, _ = decidedValue.Encode()
+	r.GetBaseRunner().State.DecidedValue = decidedValue
+	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, instance)
+	r.GetBaseRunner().QBFTController.Height = height
+	return r
+}
+
 var SSVDecidingMsgsForHeight = func(consensusData *types.ConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*qbft.SignedMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)

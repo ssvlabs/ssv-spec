@@ -19,7 +19,8 @@ func InvalidExpectedRoot() tests.SpecTest {
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusCustomSlotContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, testingutils.TestingDutySlot+1)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil,
+						testingutils.PreConsensusWrongSlotContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 				},
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -32,7 +33,8 @@ func InvalidExpectedRoot() tests.SpecTest {
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusCustomSlotSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, testingutils.TestingDutySlot+1)),
+					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusWrongSlotSelectionProofMsg(ks.
+						Shares[1], ks.Shares[1], 1, 1)),
 				},
 				PostDutyRunnerStateRoot: "c54e71de23c3957b73abbb0e7b9e195b3f8f6370d62fbec256224faecf177fee",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

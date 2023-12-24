@@ -17,7 +17,7 @@ func InvalidData() tests.SpecTest {
 	invalidateMsgDataF := func(id []byte) *qbft.SignedMessage {
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
-			Height:     1,
+			Height:     testingutils.TestingDutySlot,
 			Round:      qbft.FirstRound,
 			Identifier: id,
 			Root:       testingutils.TestingQBFTRootData,
@@ -31,7 +31,7 @@ func InvalidData() tests.SpecTest {
 	expectedErr := "failed processing consensus message: invalid pre-consensus justification: could not decoded ConsensusData: incorrect offset"
 
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus invalid data",
+		Name: "pre consensus justifications invalid data",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

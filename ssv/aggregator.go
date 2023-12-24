@@ -27,15 +27,13 @@ func NewAggregatorRunner(
 	network Network,
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot,
 ) Runner {
 	return &AggregatorRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType:     types.BNRoleAggregator,
-			BeaconNetwork:      beaconNetwork,
-			Share:              share,
-			QBFTController:     qbftController,
-			highestDecidedSlot: highestDecidedSlot,
+			BeaconRoleType: types.BNRoleAggregator,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
 		},
 
 		beacon:   beacon,
@@ -88,9 +86,10 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSig
 		return errors.Wrap(err, "could not marshal aggregate and proof")
 	}
 	input := &types.ConsensusData{
-		Duty:    *duty,
-		Version: ver,
-		DataSSZ: byts,
+		Duty:                       *duty,
+		PreConsensusJustifications: r.BaseRunner.State.GetPreConsensusJustification(),
+		Version:                    ver,
+		DataSSZ:                    byts,
 	}
 
 	if err := r.BaseRunner.decide(r, input); err != nil {

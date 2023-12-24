@@ -2,17 +2,56 @@
 		"BaseRunner": {
 				"State": {
 						"PreConsensusContainer": {
-								"Signatures": {
-										"614710073b626a56b407f238887212626104b4c38e5627d787a284b310952f46": {
-												"1": "kWhY/O9DHfzFcmcMO2w3o7nZsFdalrrPT9/bcCI+5hDfzuxIDU0JXE1Q+gwTTmv6A1QkH5Dag0EzpMzDR63x98ePVJi1cU3dWYMvFduydaZrXUzSpM9bIVgEA397fA4d"
-										}
-								},
-								"Quorum": 3
+								"1": {
+										"Message": {
+												"Type": 4,
+												"Slot": 12,
+												"Messages": [
+														{
+																"PartialSignature": "kWhY/O9DHfzFcmcMO2w3o7nZsFdalrrPT9/bcCI+5hDfzuxIDU0JXE1Q+gwTTmv6A1QkH5Dag0EzpMzDR63x98ePVJi1cU3dWYMvFduydaZrXUzSpM9bIVgEA397fA4d",
+																"SigningRoot": [
+																		97,
+																		71,
+																		16,
+																		7,
+																		59,
+																		98,
+																		106,
+																		86,
+																		180,
+																		7,
+																		242,
+																		56,
+																		136,
+																		114,
+																		18,
+																		98,
+																		97,
+																		4,
+																		180,
+																		195,
+																		142,
+																		86,
+																		39,
+																		215,
+																		135,
+																		162,
+																		132,
+																		179,
+																		16,
+																		149,
+																		47,
+																		70
+																],
+																"Signer": 1
+														}
+												]
+										},
+										"Signature": "iED3WB1brw4WwlAOqK1YP9Ar4DibRZAdR8acuIRXZkuKM6I32SuPIEw66FBnnwoNGdYWnZUTq9wXTDjahnrWxqUIqcKmYjJ21g8l3lyta1P2wTeAjTGWFWCXi8TZlkps",
+										"Signer": 1
+								}
 						},
-						"PostConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 3
-						},
+						"PostConsensusContainer": {},
 						"RunningInstance": null,
 						"DecidedValue": null,
 						"StartingDuty": {

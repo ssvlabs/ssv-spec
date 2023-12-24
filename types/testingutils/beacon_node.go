@@ -35,6 +35,8 @@ func GetSSZRootNoError(obj ssz.HashRoot) string {
 	return hex.EncodeToString(r[:])
 }
 
+const TestingAttestationDataVersion = spec.DataVersionBellatrix
+
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            TestingDutySlot,
 	Index:           3,
@@ -187,6 +189,8 @@ var TestingBlindedBeaconBlock = func() *apiv1bellatrix.BlindedBeaconBlock {
 	return ret
 }()
 
+const TestingAggregateAndProofVersion = spec.DataVersionBellatrix
+
 var TestingAggregateAndProof = &phase0.AggregateAndProof{
 	AggregatorIndex: 1,
 	SelectionProof:  phase0.BLSSignature{},
@@ -229,6 +233,8 @@ const (
 
 	UnknownDutyType = 100
 )
+
+const TestingSyncCommitteeBlockRootVersion = spec.DataVersionBellatrix
 
 var TestingSyncCommitteeBlockRoot = phase0.Root{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
 var TestingSyncCommitteeWrongBlockRoot = phase0.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -279,6 +285,9 @@ var TestingSyncCommitteeContributions = []*altair.SyncCommitteeContribution{
 		Signature:         phase0.BLSSignature{},
 	},
 }
+
+const TestingContributionDataVersion = spec.DataVersionBellatrix
+
 var TestingContributionsData = func() types.Contributions {
 	d := types.Contributions{}
 	d = append(d, &types.Contribution{
@@ -386,14 +395,15 @@ var TestingAttesterDutyFirstSlot = types.Duty{
 }
 
 var TestingAttesterDuty = types.Duty{
-	Type:                    types.BNRoleAttester,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleAttester,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                3,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
 var TestingAttesterDutyNextEpoch = types.Duty{
@@ -420,26 +430,28 @@ var TestingAggregatorDutyFirstSlot = types.Duty{
 }
 
 var TestingAggregatorDuty = types.Duty{
-	Type:                    types.BNRoleAggregator,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          22,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleAggregator,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                22,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
 // TestingAggregatorDutyNextEpoch testing for a second duty start
 var TestingAggregatorDutyNextEpoch = types.Duty{
-	Type:                    types.BNRoleAggregator,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot2,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          22,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+	Type:                          types.BNRoleAggregator,
+	PubKey:                        TestingValidatorPubKey,
+	Slot:                          TestingDutySlot2,
+	ValidatorIndex:                TestingValidatorIndex,
+	CommitteeIndex:                22,
+	CommitteesAtSlot:              36,
+	CommitteeLength:               128,
+	ValidatorCommitteeIndex:       11,
+	ValidatorSyncCommitteeIndices: []uint64{},
 }
 
 // TestingSyncCommitteeDutyFirstSlot
@@ -599,7 +611,7 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, spec.DataVersion, error) {
 	data := *TestingAttestationData
 	data.Slot = slot
-	return &data, spec.DataVersionPhase0, nil
+	return &data, TestingAttestationDataVersion, nil
 }
 
 // SubmitAttestation submit the attestation to the node
@@ -726,7 +738,7 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlinde
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
 func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error) {
-	return TestingAggregateAndProof, spec.DataVersionPhase0, nil
+	return TestingAggregateAndProof, TestingAggregateAndProofVersion, nil
 }
 
 // SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
@@ -738,7 +750,7 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *phase0.Sig
 
 // GetSyncMessageBlockRoot returns beacon block root for sync committee
 func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.Root, spec.DataVersion, error) {
-	return TestingSyncCommitteeBlockRoot, spec.DataVersionPhase0, nil
+	return TestingSyncCommitteeBlockRoot, TestingSyncCommitteeBlockRootVersion, nil
 }
 
 // SubmitSyncMessage submits a signed sync committee msg
@@ -767,7 +779,7 @@ func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) 
 
 // GetSyncCommitteeContribution returns
 func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot phase0.Slot, selectionProofs []phase0.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec.DataVersion, error) {
-	return &TestingContributionsData, spec.DataVersionBellatrix, nil
+	return &TestingContributionsData, TestingContributionDataVersion, nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network

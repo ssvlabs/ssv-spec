@@ -43,7 +43,7 @@ func PostDecided() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
 					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
+					testingutils.TestSyncCommitteeContributionConsensusData(ks),
 					[]*types.SignedPartialSignatureMessage{
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
@@ -64,7 +64,7 @@ func PostDecided() tests.SpecTest {
 				Runner: decideRunner(
 					testingutils.AggregatorRunner(ks),
 					&testingutils.TestingAggregatorDuty,
-					testingutils.TestAggregatorConsensusData,
+					testingutils.TestAggregatorConsensusData(ks),
 					[]*types.SignedPartialSignatureMessage{
 						testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 						testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),

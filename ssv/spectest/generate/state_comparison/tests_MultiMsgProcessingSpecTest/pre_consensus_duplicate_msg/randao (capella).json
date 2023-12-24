@@ -2,17 +2,56 @@
 		"BaseRunner": {
 				"State": {
 						"PreConsensusContainer": {
-								"Signatures": {
-										"35f2cc4ab8c7b2db07738165f6cbc9d889eb11e6d14fc2e363bd90c100b5fcc2": {
-												"1": "tKX7MJ92Bpe2AzyeLAScuclhcC9BKdorEt0NyHQkOk5AiM1KoVbO2LTgLefQTSmeCsJOJT2QDzyuk2BdNywrePSLPzI9rp+YuvjKgW2YbTg37Lv4TnqUZbaBPJdGt3sp"
-										}
-								},
-								"Quorum": 3
+								"1": {
+										"Message": {
+												"Type": 1,
+												"Slot": 5193728,
+												"Messages": [
+														{
+																"PartialSignature": "tKX7MJ92Bpe2AzyeLAScuclhcC9BKdorEt0NyHQkOk5AiM1KoVbO2LTgLefQTSmeCsJOJT2QDzyuk2BdNywrePSLPzI9rp+YuvjKgW2YbTg37Lv4TnqUZbaBPJdGt3sp",
+																"SigningRoot": [
+																		53,
+																		242,
+																		204,
+																		74,
+																		184,
+																		199,
+																		178,
+																		219,
+																		7,
+																		115,
+																		129,
+																		101,
+																		246,
+																		203,
+																		201,
+																		216,
+																		137,
+																		235,
+																		17,
+																		230,
+																		209,
+																		79,
+																		194,
+																		227,
+																		99,
+																		189,
+																		144,
+																		193,
+																		0,
+																		181,
+																		252,
+																		194
+																],
+																"Signer": 1
+														}
+												]
+										},
+										"Signature": "uHOXmfcybjJ+2dvuB2rAfq5p4J4x/QXjeQxnAhZ68esOu6wYUFdQf4B+kjQpGgilADG/fGiy7UC+vFm0QfB4kyflp+4Dm/p15Gr9DM8Lm7zG7kRFIbXu9NcYis3zkgjL",
+										"Signer": 1
+								}
 						},
-						"PostConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 3
-						},
+						"PostConsensusContainer": {},
 						"RunningInstance": null,
 						"DecidedValue": null,
 						"StartingDuty": {
@@ -73,7 +112,7 @@
 								"CommitteeLength": 128,
 								"CommitteesAtSlot": 36,
 								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": null
+								"ValidatorSyncCommitteeIndices": []
 						},
 						"Finished": false
 				},

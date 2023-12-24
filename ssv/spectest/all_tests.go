@@ -3,12 +3,14 @@ package spectest
 import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/msgcontainer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/pre_consensus_justifications"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
@@ -77,32 +79,33 @@ var AllTests = []tests.TestF{
 	proposer.BlindedRunnerAcceptsNormalBlock,
 	proposer.NormalProposerAcceptsBlindedBlock,
 
-	// pre_consensus_justifications.PastSlot,
-	// pre_consensus_justifications.InvalidData,
-	// pre_consensus_justifications.FutureHeight,
-	// pre_consensus_justifications.PastHeight,
-	// pre_consensus_justifications.InvalidMsgType,
-	// pre_consensus_justifications.WrongBeaconRole,
-	// pre_consensus_justifications.InvalidConsensusData,
-	// pre_consensus_justifications.InvalidSlot,
-	// pre_consensus_justifications.UnknownSigner,
-	// pre_consensus_justifications.InvalidJustificationSignature,
-	// pre_consensus_justifications.DuplicateJustificationSigner,
-	// pre_consensus_justifications.DuplicateRoots,
-	// pre_consensus_justifications.InconsistentRootCount,
-	// pre_consensus_justifications.InconsistentRoots,
-	// pre_consensus_justifications.InvalidJustification,
-	// pre_consensus_justifications.MissingQuorum,
-	// pre_consensus_justifications.DecidedInstance,
-	// pre_consensus_justifications.ExistingValidPreConsensus,
-	// pre_consensus_justifications.Valid,
-	// pre_consensus_justifications.Valid7Operators,
-	// pre_consensus_justifications.Valid10Operators,
-	// pre_consensus_justifications.Valid13Operators,
-	// pre_consensus_justifications.ValidFirstHeight,
-	// pre_consensus_justifications.ValidNoRunningDuty,
-	// pre_consensus_justifications.ValidRoundChangeMsg,
-	// pre_consensus_justifications.HappyFlow,
+	pre_consensus_justifications.PastSlot,
+	pre_consensus_justifications.InvalidData,
+	pre_consensus_justifications.FutureHeight,
+	pre_consensus_justifications.PastHeight,
+	pre_consensus_justifications.InvalidMsgType,
+	pre_consensus_justifications.WrongBeaconRole,
+	pre_consensus_justifications.InvalidConsensusData,
+	pre_consensus_justifications.InvalidSlot,
+	pre_consensus_justifications.UnknownSigner,
+	pre_consensus_justifications.InvalidJustificationSignature,
+	pre_consensus_justifications.DuplicateJustificationSigner,
+	pre_consensus_justifications.DuplicateRoots,
+	pre_consensus_justifications.InconsistentRootCount,
+	pre_consensus_justifications.InconsistentRoots,
+	pre_consensus_justifications.InvalidJustification,
+	pre_consensus_justifications.MissingQuorum,
+	pre_consensus_justifications.DecidedInstance,
+	pre_consensus_justifications.ExistingValidPreConsensus,
+	pre_consensus_justifications.Valid,
+	pre_consensus_justifications.Valid7Operators,
+	pre_consensus_justifications.Valid10Operators,
+	pre_consensus_justifications.Valid13Operators,
+	pre_consensus_justifications.ValidFirstHeight,
+	pre_consensus_justifications.ValidNoRunningDuty,
+	pre_consensus_justifications.ValidRoundChangeMsg,
+	pre_consensus_justifications.JustificationsWithNoPrecon,
+	pre_consensus_justifications.HappyFlow,
 
 	preconsensus.NoRunningDuty,
 	preconsensus.TooFewRoots,
@@ -151,4 +154,12 @@ var AllTests = []tests.TestF{
 	valcheckattestations.ConsensusDataNil,
 	valcheckattestations.Valid,
 	valcheckproposer.BlindedBlock,
+
+	msgcontainer.QuorumPreConsensusMsg,
+	msgcontainer.SinglePreConsensusMsg,
+	msgcontainer.PreConsensusInvalidReconstruction,
+	msgcontainer.QuorumPostConsensusMsg,
+	msgcontainer.SinglePostConsensusMsg,
+	msgcontainer.PostConsensusInvalidReconstruction,
+	msgcontainer.DuplicateMsg,
 }

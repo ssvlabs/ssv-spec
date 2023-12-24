@@ -32,15 +32,13 @@ func NewProposerRunner(
 	network Network,
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot,
 ) Runner {
 	return &ProposerRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType:     types.BNRoleProposer,
-			BeaconNetwork:      beaconNetwork,
-			Share:              share,
-			QBFTController:     qbftController,
-			highestDecidedSlot: highestDecidedSlot,
+			BeaconRoleType: types.BNRoleProposer,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
 		},
 
 		beacon:   beacon,
@@ -102,9 +100,10 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 	}
 
 	input := &types.ConsensusData{
-		Duty:    *duty,
-		Version: ver,
-		DataSSZ: byts,
+		Duty:                       *duty,
+		PreConsensusJustifications: r.BaseRunner.State.GetPreConsensusJustification(),
+		Version:                    ver,
+		DataSSZ:                    byts,
 	}
 
 	if err := r.BaseRunner.decide(r, input); err != nil {

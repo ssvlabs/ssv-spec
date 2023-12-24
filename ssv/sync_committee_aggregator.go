@@ -29,15 +29,13 @@ func NewSyncCommitteeAggregatorRunner(
 	network Network,
 	signer types.KeyManager,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot,
 ) Runner {
 	return &SyncCommitteeAggregatorRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType:     types.BNRoleSyncCommitteeContribution,
-			BeaconNetwork:      beaconNetwork,
-			Share:              share,
-			QBFTController:     qbftController,
-			highestDecidedSlot: highestDecidedSlot,
+			BeaconRoleType: types.BNRoleSyncCommitteeContribution,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
 		},
 
 		beacon:   beacon,
@@ -57,13 +55,13 @@ func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+	shouldProcess, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing sync committee selection proof message")
 	}
 
-	// quorum returns true only once (first time quorum achieved)
-	if !quorum {
+	// shouldProcess returns true only once (first time quorum achieved)
+	if !shouldProcess {
 		return nil
 	}
 
@@ -118,9 +116,10 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 
 	// create consensus object
 	input := &types.ConsensusData{
-		Duty:    *duty,
-		Version: ver,
-		DataSSZ: byts,
+		Duty:                       *duty,
+		PreConsensusJustifications: r.BaseRunner.State.GetPreConsensusJustification(),
+		Version:                    ver,
+		DataSSZ:                    byts,
 	}
 
 	if err := r.BaseRunner.decide(r, input); err != nil {

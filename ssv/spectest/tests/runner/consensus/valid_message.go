@@ -25,7 +25,8 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					testingutils.SSVMsgSyncCommitteeContribution(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID, testingutils.TestSyncCommitteeContributionConsensusDataByts,
+							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID,
+							testingutils.TestSyncCommitteeContributionConsensusDataByts(ks),
 							qbft.Height(testingutils.TestingDutySlot)), nil),
 				},
 				PostDutyRunnerStateRoot: "3430b48cc4265a27d9f99e03355810b09c129b9e3c6cc83b4e7916777d595b2f",
@@ -56,7 +57,8 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					testingutils.SSVMsgAggregator(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID, testingutils.TestAggregatorConsensusDataByts,
+							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID,
+							testingutils.TestAggregatorConsensusDataByts(ks),
 							qbft.Height(testingutils.TestingDutySlot)), nil),
 				},
 				PostDutyRunnerStateRoot: "7134f3bfe0c675263254aadb1f73e452454418290f411b891090b2c76c5ae428",
@@ -74,7 +76,8 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					testingutils.SSVMsgProposer(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
+							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+							testingutils.TestProposerConsensusDataBytsV(spec.DataVersionBellatrix),
 							qbft.Height(testingutils.TestingDutySlot)), nil),
 				},
 				PostDutyRunnerStateRoot: "01694261367dff43d4e85ebbfb1dd5d5081c78832ff693d77f300e0f8ffee071",
@@ -92,7 +95,8 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionBellatrix)),
 					testingutils.SSVMsgProposer(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID,
+							testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
 							qbft.Height(testingutils.TestingDutySlot)), nil),
 				},
 				PostDutyRunnerStateRoot: "755134a5855f13a1e4a15b4b2a034a172c21f88a2af99e247d2cf4818aea30fe",

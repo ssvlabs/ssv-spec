@@ -46,9 +46,6 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	BeaconRoleType types.BeaconRole
-
-	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
-	highestDecidedSlot spec.Slot
 }
 
 func NewBaseRunner(
@@ -57,21 +54,14 @@ func NewBaseRunner(
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
 	beaconRoleType types.BeaconRole,
-	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
 	return &BaseRunner{
-		State:              state,
-		Share:              share,
-		QBFTController:     controller,
-		BeaconNetwork:      beaconNetwork,
-		BeaconRoleType:     beaconRoleType,
-		highestDecidedSlot: highestDecidedSlot,
+		State:          state,
+		Share:          share,
+		QBFTController: controller,
+		BeaconNetwork:  beaconNetwork,
+		BeaconRoleType: beaconRoleType,
 	}
-}
-
-// SetHighestDecidedSlot set highestDecidedSlot for base runner
-func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
-	b.highestDecidedSlot = slot
 }
 
 // setupForNewDuty is sets the runner for a new duty
@@ -106,8 +96,8 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *typ
 		return false, nil, errors.Wrap(err, "invalid pre-consensus message")
 	}
 
-	hasQuorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PreConsensusContainer)
-	return hasQuorum, roots, errors.Wrap(err, "could not process pre-consensus partial signature msg")
+	shouldProcess, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PreConsensusContainer)
+	return shouldProcess, roots, errors.Wrap(err, "could not process pre-consensus partial signature msg")
 }
 
 // baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
@@ -117,11 +107,8 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 
-	// TODO: revert `if false` after pre-consensus justification is fixed.
-	if false {
-		if err := b.processPreConsensusJustification(runner, b.highestDecidedSlot, msg); err != nil {
-			return false, nil, errors.Wrap(err, "invalid pre-consensus justification")
-		}
+	if err := b.processPreConsensusJustification(runner, msg); err != nil {
+		return false, nil, errors.Wrap(err, "invalid pre-consensus justification")
 	}
 
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
@@ -145,9 +132,6 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
-	// update the highest decided slot
-	b.highestDecidedSlot = decidedValue.Duty.Slot
-
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
 	}
@@ -167,30 +151,24 @@ func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *ty
 	return hasQuorum, roots, errors.Wrap(err, "could not process post-consensus partial signature msg")
 }
 
-// basePartialSigMsgProcessing adds an already validated partial msg to the container, checks for quorum and returns true (and roots) if quorum exists
+// basePartialSigMsgProcessing adds an already validated partial msg to the container,
+// checks for quorum and returns true (and roots) if we should process the msg
 func (b *BaseRunner) basePartialSigMsgProcessing(
 	signedMsg *types.SignedPartialSignatureMessage,
-	container *PartialSigContainer,
+	container PartialSignatureContainer,
 ) (bool, [][32]byte, error) {
-	roots := make([][32]byte, 0)
-	anyQuorum := false
-	for _, msg := range signedMsg.Message.Messages {
-		prevQuorum := container.HasQuorum(msg.SigningRoot)
 
-		container.AddSignature(msg)
-
-		if prevQuorum {
-			continue
-		}
-
-		quorum := container.HasQuorum(msg.SigningRoot)
-		if quorum {
-			roots = append(roots, msg.SigningRoot)
-			anyQuorum = true
-		}
+	if b.Share.HasQuorum(len(container)) {
+		container[signedMsg.Signer] = signedMsg
+		// return false if we already have quorum
+		return false, container.Roots(), nil
 	}
 
-	return anyQuorum, roots, nil
+	container[signedMsg.Signer] = signedMsg
+	if b.Share.HasQuorum(len(container)) {
+		return true, container.Roots(), nil
+	}
+	return false, [][32]byte{}, nil
 }
 
 // didDecideCorrectly returns true if the expected consensus instance decided correctly
