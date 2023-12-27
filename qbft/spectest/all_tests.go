@@ -163,6 +163,7 @@ var AllTests = []tests.TestF{
 	prepare.WrongHeight,
 	prepare.WrongSignature,
 	prepare.UnknownSigner,
+	prepare.SetPreparedFullData,
 	prepare.PrepareQuorumTriggeredTwice,
 	prepare.PrepareQuorumTriggeredTwiceLateCommit,
 	prepare.ForceStop,
