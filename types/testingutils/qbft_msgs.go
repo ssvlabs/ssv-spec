@@ -292,6 +292,11 @@ var TestingCommitMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID
 var TestingCommitMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, DifferentRoot)
 }
+var TestingCommitMessageWithFullData = func(sk *bls.SecretKey, id types.OperatorID, fullData []byte) *qbft.SignedMessage {
+	msg := TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData)
+	msg.FullData = fullData
+	return msg
+}
 var TestingCommitMessageWrongHeight = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, TestingIdentifier, DifferentRoot)
 }

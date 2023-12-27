@@ -171,6 +171,7 @@ var AllTests = []tests.TestF{
 	prepare.PostCutoff,
 
 	commit.CurrentRound,
+	commit.DecidedFullData,
 	commit.FutureRound,
 	commit.PastRound,
 	commit.DuplicateMsg,
@@ -190,6 +191,8 @@ var AllTests = []tests.TestF{
 	commit.NoCommitQuorum,
 	commit.ForceStop,
 	commit.PostCutoff,
+	commit.ValidFullData,
+	commit.InvalidFullData,
 
 	roundchange.HappyFlow,
 	roundchange.WrongHeight,
