@@ -196,6 +196,7 @@ var AllTests = []tests.TestF{
 	roundchange.QuorumPrepared,
 	roundchange.PeerPrepared,
 	roundchange.PeerPreparedDifferentHeights,
+	roundchange.InvalidJustificationFullData,
 	roundchange.JustificationWrongRound,
 	roundchange.JustificationNoQuorum,
 	roundchange.JustificationMultiSigners,
