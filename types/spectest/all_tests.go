@@ -61,8 +61,7 @@ var AllTests = []SpecTest{
 	consensusdataproposer.VersionedBlockConsensusDataNil(),
 	consensusdataproposer.VersionedBlindedBlockConsensusDataNil(),
 
-	ssz.CapellaBeaconBlockMarshalling(),
-	ssz.DenebBeaconBlockMarshalling(),
+	ssz.SSZWithdrawalsMarshaling(),
 
 	beacon.DepositData(),
 }

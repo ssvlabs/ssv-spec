@@ -6,7 +6,6 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
-	"github.com/attestantio/go-eth2-client/spec/deneb"
 	ssz "github.com/ferranbt/fastssz"
 )
 
@@ -133,7 +132,7 @@ func (b SSZ32Bytes) HashTreeRootWith(hh ssz.HashWalker) error {
 // UnmarshalSSZ --
 func (b *SSZ32Bytes) UnmarshalSSZ(buf []byte) error {
 	if len(buf) != b.SizeSSZ() {
-		return fmt.Errorf("expected buffer of length %d receiced %d", b.SizeSSZ(), len(buf))
+		return fmt.Errorf("expected buffer of length %d received %d", b.SizeSSZ(), len(buf))
 	}
 	copy(b[:], buf[:])
 	return nil
@@ -152,31 +151,4 @@ func (b SSZ32Bytes) MarshalSSZ() ([]byte, error) {
 // SizeSSZ returns the size of the serialized object.
 func (b SSZ32Bytes) SizeSSZ() int {
 	return 32
-}
-
-// SSZBlobZGCommitments --
-type SSZBlobZGCommitments []deneb.KZGCommitment
-
-func (b SSZBlobZGCommitments) GetTree() (*ssz.Node, error) {
-	return ssz.ProofTree(b)
-}
-
-func (b SSZBlobZGCommitments) HashTreeRootWith(hh ssz.HashWalker) error {
-	// taken from https://github.com/attestantio/go-eth2-client/blob/a05485e0e75749f2b6912db2972a35ec2ec37c3b/spec/deneb/beaconblockbody_ssz.go#L577C3-L586C49
-	if size := len(b); size > 4096 {
-		err := ssz.ErrListTooBigFn("BeaconBlockBody.BlobKZGCommitments", size, 4096)
-		return err
-	}
-	subIndx := hh.Index()
-	for _, i := range b {
-		hh.PutBytes(i[:])
-	}
-	numItems := uint64(len(b))
-	hh.MerkleizeWithMixin(subIndx, numItems, 4096)
-	return nil
-}
-
-// HashTreeRoot --
-func (b SSZBlobZGCommitments) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(b)
 }
