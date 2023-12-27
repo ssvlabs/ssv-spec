@@ -36,6 +36,7 @@ var AllTests = []tests.TestF{
 	decided.InvalidValCheckData,
 	decided.PastInstance,
 	decided.UnknownSigner,
+	decided.ValidFullData,
 	decided.WrongMsgType,
 	decided.WrongSignature,
 	decided.MultiDecidedInstances,
