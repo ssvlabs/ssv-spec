@@ -147,6 +147,7 @@ var AllTests = []tests.TestF{
 	proposal.WrongProposer,
 	proposal.WrongSignature,
 	proposal.UnknownSigner,
+	proposal.ValidFullData,
 	proposal.ForceStop,
 	proposal.PostCutoff,
 
