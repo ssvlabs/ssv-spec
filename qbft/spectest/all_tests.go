@@ -151,6 +151,7 @@ var AllTests = []tests.TestF{
 	proposal.ForceStop,
 	proposal.PostCutoff,
 
+	prepare.DuplicateMsgQuorum,
 	prepare.DuplicateMsg,
 	prepare.HappyFlow,
 	prepare.MultiSigner,
