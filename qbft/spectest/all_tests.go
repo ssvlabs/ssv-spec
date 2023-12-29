@@ -111,6 +111,7 @@ var AllTests = []tests.TestF{
 	messages.SignedMessageSigner0,
 	messages.MarshalJustificationsWithoutFullData,
 	messages.MarshalJustificationsWithFullData,
+	messages.MarshalJustifications,
 	messages.UnmarshalJustifications,
 
 	tests.HappyFlow,
