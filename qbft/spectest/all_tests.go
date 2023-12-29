@@ -102,6 +102,7 @@ var AllTests = []tests.TestF{
 	messages.CreatePrepare,
 	messages.CreateCommit,
 	messages.CreateRoundChange,
+	messages.InvalidHashDataRoot,
 	messages.CreateRoundChangePreviouslyPrepared,
 	messages.CreateRoundChangeNoJustificationQuorum,
 	messages.RoundChangeDataEncoding,
