@@ -39,7 +39,10 @@ func SSZMarshaling() tests.SpecTest {
 	}
 
 	unmarshalledMsg := &qbft.SignedMessage{}
-	unmarshalledMsg.UnmarshalSSZ(b)
+	err = unmarshalledMsg.UnmarshalSSZ(b)
+	if err != nil {
+		panic(err.Error())
+	}
 
 	root1, err := msg.GetRoot()
 	if err != nil {
