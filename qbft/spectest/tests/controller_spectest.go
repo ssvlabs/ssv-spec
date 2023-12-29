@@ -39,6 +39,7 @@ type ControllerSpecTest struct {
 	RunInstanceData []*RunInstanceData
 	OutputMessages  []*qbft.SignedMessage
 	ExpectedError   string
+	StartHeight     *qbft.Height `json:"omitempty"`
 }
 
 func (test *ControllerSpecTest) TestName() string {
@@ -50,6 +51,10 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 	test.overrideStateComparison(t)
 
 	contr := test.generateController()
+
+	if test.StartHeight != nil {
+		contr.Height = *test.StartHeight
+	}
 
 	var lastErr error
 	for i, runData := range test.RunInstanceData {
