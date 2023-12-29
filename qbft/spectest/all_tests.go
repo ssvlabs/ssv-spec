@@ -111,6 +111,7 @@ var AllTests = []tests.TestF{
 	messages.CreateRoundChangeNoJustificationQuorum,
 	messages.RoundChangeDataEncoding,
 	messages.SignedMessageSigner0,
+	messages.SSZMarshaling,
 	messages.MarshalJustificationsWithoutFullData,
 	messages.MarshalJustificationsWithFullData,
 	messages.MarshalJustifications,
