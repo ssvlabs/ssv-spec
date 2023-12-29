@@ -115,6 +115,7 @@ var AllTests = []tests.TestF{
 	messages.MarshalJustificationsWithFullData,
 	messages.MarshalJustifications,
 	messages.UnmarshalJustifications,
+	messages.ValidHashDataRoot,
 
 	tests.HappyFlow,
 	tests.SevenOperators,
