@@ -90,6 +90,7 @@ var AllTests = []tests.TestF{
 	messages.MsgNonZeroIdentifier,
 	messages.MsgTypeUnknown,
 	messages.PrepareDataEncoding,
+	messages.PrepareJustificationsUnmarshalling,
 	messages.ProposeDataEncoding,
 	messages.SignedMsgNoSigners,
 	messages.SignedMsgDuplicateSigners,

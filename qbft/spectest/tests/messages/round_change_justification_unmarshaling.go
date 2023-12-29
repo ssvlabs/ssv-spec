@@ -26,11 +26,13 @@ func RoundChangeJustificationsUnmarshalling() tests.SpecTest {
 		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		rcMarshalled, nil)
 
+	// Assert unmarshalling is correct
 	rcUnmarshalled, err := msg.Message.GetRoundChangeJustifications()
 	if err != nil {
 		panic(err)
 	}
 
+	// Compare messages
 	for idx, rcMsg := range rcUnmarshalled {
 		root1, err := rcMsg.GetRoot()
 		if err != nil {
