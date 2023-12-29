@@ -95,6 +95,7 @@ var AllTests = []tests.TestF{
 	messages.SignedMsgDuplicateSigners,
 	messages.SignedMsgMultiSigners,
 	messages.GetRoot,
+	messages.RoundChangeJustificationsUnmarshalling,
 	messages.SignedMessageEncoding,
 	messages.CreateProposal,
 	messages.CreateProposalPreviouslyPrepared,
