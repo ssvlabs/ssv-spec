@@ -51,7 +51,7 @@ type Message struct {
 	Identifier []byte `ssz-max:"56"` // instance Identifier this msg belongs to
 
 	Root                     [32]byte `ssz-size:"32"`
-	DataRound                Round
+	DataRound                Round    // The last round that obtained a Prepare quorum
 	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
 	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
 }
