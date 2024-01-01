@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bloxapp/ssv-spec/types/spectest"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -14,7 +15,7 @@ import (
 //go:generate go run main.go
 
 func main() {
-	all := map[string]spectest.SpecTest{}
+	all := map[string]tests.SpecTest{}
 	for _, t := range spectest.AllTests {
 		n := reflect.TypeOf(t).String() + "_" + t.TestName()
 		if all[n] != nil {
