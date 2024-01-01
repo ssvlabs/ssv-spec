@@ -1,8 +1,7 @@
 package spectest
 
 import (
-	"testing"
-
+	"github.com/bloxapp/ssv-spec/types/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
 	consensusdataproposer "github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata/proposer"
@@ -14,12 +13,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
 )
 
-type SpecTest interface {
-	TestName() string
-	Run(t *testing.T)
-}
-
-var AllTests = []SpecTest{
+var AllTests = []tests.SpecTest{
 	ssvmsg.Encoding(),
 
 	partialsigmessage.Encoding(),
