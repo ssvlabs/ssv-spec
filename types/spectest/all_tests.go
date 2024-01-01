@@ -46,6 +46,7 @@ var AllTests = []tests.SpecTest{
 	//consensusdata.BlockAndBlindedBlock(),
 	//consensusdata.ValidSyncCommitteeAggregator(),
 	//consensusdata.EmptySyncCommitteeAggregator(),
+	consensusdata.AggregatorNoJustifications(),
 	// TODO: add new consensusdata tests
 
 	consensusdataproposer.VersionedBlockValidation(),

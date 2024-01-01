@@ -57,12 +57,6 @@ var TestAttesterNextEpochConsensusData = &types.ConsensusData{
 
 var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensusData.Encode()
 
-var TestAggregatorConsensusData = &types.ConsensusData{
-	Duty:    TestingAggregatorDuty,
-	DataSSZ: TestingAggregateAndProofBytes,
-}
-var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
-
 var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
 	for i := uint64(1); i <= ks.Threshold; i++ {
@@ -76,6 +70,13 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 		DataSSZ:                    TestingAttestationDataBytes,
 	}
 }
+
+var TestAggregatorConsensusData = &types.ConsensusData{
+	Duty:    TestingAggregatorDuty,
+	DataSSZ: TestingAggregateAndProofBytes,
+}
+
+var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
 // TestSyncCommitteeWithJustificationsConsensusData is an invalid sync committee msg (doesn't have pre-consensus)
 var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
