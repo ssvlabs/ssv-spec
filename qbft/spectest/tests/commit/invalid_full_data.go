@@ -6,6 +6,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// ISSUE 329: fullData field should be forced to be empty for Prepare and Commit messages
+
 // InvalidFullData tests signed commit with an invalid full data field (H(full data) != root)
 func InvalidFullData() tests.SpecTest {
 	pre := testingutils.BaseInstance()
