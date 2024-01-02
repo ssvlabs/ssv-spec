@@ -50,6 +50,7 @@ var AllTests = []tests.TestF{
 	processmsg.FullDecided,
 	processmsg.InvalidIdentifier,
 	processmsg.NoInstanceRunning,
+	processmsg.OutOfOrderFlow,
 
 	latemsg.LateCommit,
 	latemsg.LateCommitPastRound,
