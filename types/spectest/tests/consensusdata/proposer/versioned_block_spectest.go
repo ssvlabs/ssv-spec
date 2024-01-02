@@ -23,8 +23,6 @@ func (test *ProposerSpecTest) TestName() string {
 	return test.Name
 }
 
-// ISSUE 219: make multi proposer spec test for all (upcoming) versions
-
 func (test *ProposerSpecTest) Run(t *testing.T) {
 	// decode cd
 	cd := &types.ConsensusData{}
