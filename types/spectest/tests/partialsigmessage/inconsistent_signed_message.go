@@ -17,7 +17,7 @@ func InconsistentSignedMessage() *MsgSpecTest {
 	msg.Message.Messages = append(msg.Message.Messages, msgWithDifferentSigner.Message.Messages...)
 
 	return &MsgSpecTest{
-		Name: "message signer 0",
+		Name: "inconsistent signed message",
 		Messages: []*types.SignedPartialSignatureMessage{
 			msg,
 		},
