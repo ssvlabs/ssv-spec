@@ -96,6 +96,12 @@ func TestJson(t *testing.T) {
 				typedTest := &beacon.DepositDataSpecTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
+			case reflect.TypeOf(&partialsigmessage.MsgSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &partialsigmessage.MsgSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
 			default:
 				t.Fatalf("unknown test")
 			}
