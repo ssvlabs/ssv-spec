@@ -130,7 +130,6 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidMessageSignature,
 
 	messages.EncodingAndRoot,
-	messages.NoMsgs,
 	messages.ValidContributionProofMetaData,
 	messages.SigValid,
 	messages.PartialSigValid,
