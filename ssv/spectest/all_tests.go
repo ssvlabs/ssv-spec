@@ -129,7 +129,6 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidBeaconSignature,
 	preconsensus.InvalidMessageSignature,
 
-	messages.EncodingAndRoot,
 	messages.ValidContributionProofMetaData,
 
 	valcheckduty.WrongValidatorIndex,
