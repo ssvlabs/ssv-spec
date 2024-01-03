@@ -131,7 +131,6 @@ var AllTests = []tests.TestF{
 
 	messages.EncodingAndRoot,
 	messages.NoMsgs,
-	messages.InvalidMsg,
 	messages.ValidContributionProofMetaData,
 	messages.SigValid,
 	messages.PartialSigValid,

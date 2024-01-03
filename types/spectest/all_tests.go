@@ -23,6 +23,7 @@ var AllTests = []SpecTest{
 	ssvmsg.Encoding(),
 
 	partialsigmessage.Encoding(),
+	partialsigmessage.InvalidMsg(),
 
 	share.Encoding(),
 	//share.HasQuorum(),
