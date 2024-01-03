@@ -1,6 +1,6 @@
 package partialsigmessage
 
 // PartialSigSignerZero tests signer ID 0
-func PartialSigSignerZero() SpecTest {
+func PartialSigSignerZero() *MsgSpecTest {
 	panic("implement")
 }
