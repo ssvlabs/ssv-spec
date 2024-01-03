@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func Valid() tests.SpecTest {
+func ValidConsensus() tests.SpecTest {
 	// KeySet
 	ks := testingutils.Testing4SharesSet()
 
@@ -67,7 +67,7 @@ func Valid() tests.SpecTest {
 	}
 
 	return &ValidatorTest{
-		Name:                   "valid",
+		Name:                   "valid consensus",
 		KeySet:                 ks,
 		Duties:                 []*types.Duty{&duty},
 		Messages:               msgs,
