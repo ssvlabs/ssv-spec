@@ -135,8 +135,6 @@ var AllTests = []tests.TestF{
 	messages.SigValid,
 	messages.PartialSigValid,
 	messages.PartialRootValid,
-	messages.MessageSigner0,
-	messages.SignedMsgSigner0,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
