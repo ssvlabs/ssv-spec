@@ -2,7 +2,6 @@ package spectest
 
 import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
@@ -128,8 +127,6 @@ var AllTests = []tests.TestF{
 	preconsensus.UnknownSigner,
 	preconsensus.InvalidBeaconSignature,
 	preconsensus.InvalidMessageSignature,
-
-	messages.ValidContributionProofMetaData,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,

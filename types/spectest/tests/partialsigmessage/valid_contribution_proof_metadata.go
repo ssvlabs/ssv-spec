@@ -1,4 +1,4 @@
-package messages
+package partialsigmessage
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
