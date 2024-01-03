@@ -31,6 +31,7 @@ var AllTests = []SpecTest{
 	partialsigmessage.PartialSigValid(),
 	partialsigmessage.PartialRootValid(),
 	partialsigmessage.ValidContributionProofMetaData(),
+	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
 	//share.HasQuorum(),
