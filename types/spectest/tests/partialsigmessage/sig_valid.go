@@ -1,4 +1,4 @@
-package messages
+package partialsigmessage
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -7,14 +7,14 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// PartialSigValid tests PostConsensusMessage sig == 96 bytes
-func PartialSigValid() tests.SpecTest {
+// SigValid tests SignedPostConsensusMessage sig == 96 bytes
+func SigValid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
 
 	return &MsgSpecTest{
-		Name: "partial sig valid",
+		Name: "sig valid",
 		Messages: []*types.SignedPartialSignatureMessage{
 			msg,
 		},

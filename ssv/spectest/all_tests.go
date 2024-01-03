@@ -131,9 +131,6 @@ var AllTests = []tests.TestF{
 
 	messages.EncodingAndRoot,
 	messages.ValidContributionProofMetaData,
-	messages.SigValid,
-	messages.PartialSigValid,
-	messages.PartialRootValid,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,

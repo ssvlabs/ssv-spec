@@ -27,6 +27,9 @@ var AllTests = []SpecTest{
 	partialsigmessage.MessageSigner0(),
 	partialsigmessage.SignedMsgSigner0(),
 	partialsigmessage.NoMsgs(),
+	partialsigmessage.SigValid(),
+	partialsigmessage.PartialSigValid(),
+	partialsigmessage.PartialRootValid(),
 
 	share.Encoding(),
 	//share.HasQuorum(),
