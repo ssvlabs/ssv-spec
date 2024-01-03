@@ -16,6 +16,7 @@ import (
 type ValidatorTest struct {
 	Name                   string
 	KeySet                 *testingutils.TestKeySet
+	Duties                 []*types.Duty
 	Messages               []*types.SSVMessage
 	OutputMessages         []*types.SSVMessage
 	BeaconBroadcastedRoots []string
@@ -47,6 +48,10 @@ func (test *ValidatorTest) Run(t *testing.T) {
 	v.Network = v.DutyRunners[types.BNRoleAttester].GetNetwork()
 
 	var lastErr error
+
+	for _, duty := range test.Duties {
+		lastErr = v.StartDuty(duty)
+	}
 
 	for _, msg := range test.Messages {
 		err := v.ProcessMessage(msg)
