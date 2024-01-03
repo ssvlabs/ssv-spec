@@ -1,14 +1,13 @@
-package messages
+package partialsigmessage
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // NoMsgs tests a signed msg with no msgs
-func NoMsgs() tests.SpecTest {
+func NoMsgs() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
