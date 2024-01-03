@@ -2,6 +2,7 @@ package spectest
 
 import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/dutyexe"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
@@ -151,4 +152,7 @@ var AllTests = []tests.TestF{
 	valcheckattestations.ConsensusDataNil,
 	valcheckattestations.Valid,
 	valcheckproposer.BlindedBlock,
+
+	dutyexe.WrongDutyRole,
+	dutyexe.WrongDutyPubKey,
 }
