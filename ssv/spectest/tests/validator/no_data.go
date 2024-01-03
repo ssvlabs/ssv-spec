@@ -7,7 +7,6 @@ import (
 )
 
 func NoData() tests.SpecTest {
-	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*types.SSVMessage{
 		{
@@ -18,9 +17,7 @@ func NoData() tests.SpecTest {
 	}
 
 	return &ValidatorTest{
-		Name: "no data",
-
-		KeySet:                 ks,
+		Name:                   "no data",
 		Messages:               msgs,
 		OutputMessages:         []*types.SSVMessage{},
 		BeaconBroadcastedRoots: []string{},

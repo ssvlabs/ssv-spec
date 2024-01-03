@@ -35,7 +35,6 @@ func ValidPartialSig() tests.SpecTest {
 
 	return &ValidatorTest{
 		Name:                   "valid partial sig",
-		KeySet:                 ks,
 		Duties:                 []*types.Duty{duty},
 		Messages:               msgs,
 		OutputMessages:         []*types.SSVMessage{},

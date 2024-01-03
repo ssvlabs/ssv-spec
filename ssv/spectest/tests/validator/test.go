@@ -15,7 +15,6 @@ import (
 
 type ValidatorTest struct {
 	Name                   string
-	KeySet                 *testingutils.TestKeySet
 	Duties                 []*types.Duty
 	Messages               []*types.SSVMessage
 	OutputMessages         []*types.SSVMessage
@@ -35,15 +34,17 @@ func (test *ValidatorTest) RunAsPartOfMultiTest(t *testing.T) {
 // Run as an individual test
 func (test *ValidatorTest) Run(t *testing.T) {
 
-	v := testingutils.BaseValidator(test.KeySet)
+	ks := testingutils.Testing4SharesSet()
 
-	v.DutyRunners[types.BNRoleAttester] = testingutils.AttesterRunner(test.KeySet)
-	v.DutyRunners[types.BNRoleAggregator] = testingutils.AggregatorRunner(test.KeySet)
-	v.DutyRunners[types.BNRoleProposer] = testingutils.ProposerRunner(test.KeySet)
-	v.DutyRunners[types.BNRoleSyncCommittee] = testingutils.SyncCommitteeRunner(test.KeySet)
-	v.DutyRunners[types.BNRoleSyncCommitteeContribution] = testingutils.SyncCommitteeContributionRunner(test.KeySet)
-	v.DutyRunners[types.BNRoleValidatorRegistration] = testingutils.ValidatorRegistrationRunner(test.KeySet)
-	v.DutyRunners[types.BNRoleVoluntaryExit] = testingutils.VoluntaryExitRunner(test.KeySet)
+	v := testingutils.BaseValidator(ks)
+
+	v.DutyRunners[types.BNRoleAttester] = testingutils.AttesterRunner(ks)
+	v.DutyRunners[types.BNRoleAggregator] = testingutils.AggregatorRunner(ks)
+	v.DutyRunners[types.BNRoleProposer] = testingutils.ProposerRunner(ks)
+	v.DutyRunners[types.BNRoleSyncCommittee] = testingutils.SyncCommitteeRunner(ks)
+	v.DutyRunners[types.BNRoleSyncCommitteeContribution] = testingutils.SyncCommitteeContributionRunner(ks)
+	v.DutyRunners[types.BNRoleValidatorRegistration] = testingutils.ValidatorRegistrationRunner(ks)
+	v.DutyRunners[types.BNRoleVoluntaryExit] = testingutils.VoluntaryExitRunner(ks)
 
 	v.Network = v.DutyRunners[types.BNRoleAttester].GetNetwork()
 

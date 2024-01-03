@@ -7,7 +7,6 @@ import (
 )
 
 func InvalidID() tests.SpecTest {
-	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*types.SSVMessage{
 		{
@@ -18,9 +17,7 @@ func InvalidID() tests.SpecTest {
 	}
 
 	return &ValidatorTest{
-		Name: "invalid id",
-
-		KeySet:                 ks,
+		Name:                   "invalid id",
 		Messages:               msgs,
 		OutputMessages:         []*types.SSVMessage{},
 		BeaconBroadcastedRoots: []string{},

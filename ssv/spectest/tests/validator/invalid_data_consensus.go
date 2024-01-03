@@ -7,7 +7,6 @@ import (
 )
 
 func InvalidDataConsensus() tests.SpecTest {
-	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*types.SSVMessage{
 		{
@@ -18,9 +17,7 @@ func InvalidDataConsensus() tests.SpecTest {
 	}
 
 	return &ValidatorTest{
-		Name: "invalid data consensus",
-
-		KeySet:                 ks,
+		Name:                   "invalid data consensus",
 		Messages:               msgs,
 		OutputMessages:         []*types.SSVMessage{},
 		BeaconBroadcastedRoots: []string{},

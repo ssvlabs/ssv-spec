@@ -7,7 +7,6 @@ import (
 )
 
 func InvalidType() tests.SpecTest {
-	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*types.SSVMessage{
 		{
@@ -18,9 +17,7 @@ func InvalidType() tests.SpecTest {
 	}
 
 	return &ValidatorTest{
-		Name: "invalid type",
-
-		KeySet:                 ks,
+		Name:                   "invalid type",
 		Messages:               msgs,
 		OutputMessages:         []*types.SSVMessage{},
 		BeaconBroadcastedRoots: []string{},

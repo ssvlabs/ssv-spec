@@ -7,15 +7,12 @@ import (
 )
 
 func InvalidDuty() tests.SpecTest {
-	ks := testingutils.Testing4SharesSet()
 
 	duty := testingutils.TestingAttesterDuty
 	duty.Type = types.BeaconRole(100)
 
 	return &ValidatorTest{
-		Name: "invalid duty",
-
-		KeySet:                 ks,
+		Name:                   "invalid duty",
 		Duties:                 []*types.Duty{&duty},
 		Messages:               []*types.SSVMessage{},
 		OutputMessages:         []*types.SSVMessage{},

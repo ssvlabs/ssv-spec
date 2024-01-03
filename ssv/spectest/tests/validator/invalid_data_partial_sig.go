@@ -7,7 +7,6 @@ import (
 )
 
 func InvalidDataPartialSig() tests.SpecTest {
-	ks := testingutils.Testing4SharesSet()
 
 	msgs := []*types.SSVMessage{
 		{
@@ -18,9 +17,7 @@ func InvalidDataPartialSig() tests.SpecTest {
 	}
 
 	return &ValidatorTest{
-		Name: "invalid data partial sig",
-
-		KeySet:                 ks,
+		Name:                   "invalid data partial sig",
 		Messages:               msgs,
 		OutputMessages:         []*types.SSVMessage{},
 		BeaconBroadcastedRoots: []string{},

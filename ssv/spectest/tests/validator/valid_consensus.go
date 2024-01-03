@@ -68,7 +68,6 @@ func ValidConsensus() tests.SpecTest {
 
 	return &ValidatorTest{
 		Name:                   "valid consensus",
-		KeySet:                 ks,
 		Duties:                 []*types.Duty{&duty},
 		Messages:               msgs,
 		OutputMessages:         outMsgs,
