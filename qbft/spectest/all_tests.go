@@ -170,7 +170,6 @@ var AllTests = []tests.TestF{
 	prepare.PostCutoff,
 
 	commit.CurrentRound,
-	commit.DecidedFullData,
 	commit.FutureRound,
 	commit.PastRound,
 	commit.DuplicateMsg,

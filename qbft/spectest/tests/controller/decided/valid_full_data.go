@@ -8,7 +8,7 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// ValidFullData tests signed decided with a valid full data field
+// ValidFullData tests signed decided with a valid full data field and the aggregated commit returned when decided
 func ValidFullData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
