@@ -57,6 +57,7 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
 
+	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
 	consensus.InvalidDecidedValue,
 	consensus.FutureMessage,
