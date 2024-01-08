@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// InvalidType tests a validator that raises an error due to a message with invalid type
 func InvalidType() tests.SpecTest {
 
 	msgs := []*types.SSVMessage{

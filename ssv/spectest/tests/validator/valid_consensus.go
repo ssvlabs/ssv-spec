@@ -7,6 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// ValidConsensus tests a validator that process a valid consensus message
 func ValidConsensus() tests.SpecTest {
 	// KeySet
 	ks := testingutils.Testing4SharesSet()

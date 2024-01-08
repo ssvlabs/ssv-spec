@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// InvalidDataConsensus tests a validator that raises an error due to a consensus message with invalid data
 func InvalidDataConsensus() tests.SpecTest {
 
 	msgs := []*types.SSVMessage{

@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// InvalidDataPartialSig tests a validator that raises an error due to a partial signature message with invalid data
 func InvalidDataPartialSig() tests.SpecTest {
 
 	msgs := []*types.SSVMessage{

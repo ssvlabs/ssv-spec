@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// InvalidID tests a validator that raises an error due to a message with invalid message ID
 func InvalidID() tests.SpecTest {
 
 	msgs := []*types.SSVMessage{

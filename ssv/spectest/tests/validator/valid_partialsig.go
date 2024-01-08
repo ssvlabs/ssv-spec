@@ -7,6 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// ValidPartialSig tests a validator that process a valid partial signature message
 func ValidPartialSig() tests.SpecTest {
 	// KeySet
 	ks := testingutils.Testing4SharesSet()

@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// InvalidDuty tests a validator that raises an error after requested to start an invalid duty
 func InvalidDuty() tests.SpecTest {
 
 	duty := testingutils.TestingAttesterDuty

@@ -38,6 +38,7 @@ func (test *ValidatorTest) Run(t *testing.T) {
 
 	v := testingutils.BaseValidator(ks)
 
+	// Init all duty runners
 	v.DutyRunners[types.BNRoleAttester] = testingutils.AttesterRunner(ks)
 	v.DutyRunners[types.BNRoleAggregator] = testingutils.AggregatorRunner(ks)
 	v.DutyRunners[types.BNRoleProposer] = testingutils.ProposerRunner(ks)
@@ -50,10 +51,12 @@ func (test *ValidatorTest) Run(t *testing.T) {
 
 	var lastErr error
 
+	// Start each requested duty
 	for _, duty := range test.Duties {
 		lastErr = v.StartDuty(duty)
 	}
 
+	// process each message and store the last error
 	for _, msg := range test.Messages {
 		err := v.ProcessMessage(msg)
 		if err != nil {
@@ -61,6 +64,7 @@ func (test *ValidatorTest) Run(t *testing.T) {
 		}
 	}
 
+	// Check error
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
 	} else {

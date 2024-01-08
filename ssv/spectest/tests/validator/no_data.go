@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+// NoData tests a validator that raises an error due to a message with no data
 func NoData() tests.SpecTest {
 
 	msgs := []*types.SSVMessage{
