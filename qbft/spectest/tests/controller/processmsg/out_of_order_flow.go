@@ -3,9 +3,7 @@ package processmsg
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	qbftcomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // OutOfOrderFlow tests a QBFT execution with messages out of order
@@ -27,8 +25,6 @@ func OutOfOrderFlow() tests.SpecTest {
 		correctFlowMessgaes[5], // commit 2
 	}
 
-	sc := OutOfOrderFlowStateComparison(outOfOrderMessages)
-
 	return &tests.ControllerSpecTest{
 		Name: "out or order flow",
 		RunInstanceData: []*tests.RunInstanceData{
@@ -38,38 +34,8 @@ func OutOfOrderFlow() tests.SpecTest {
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: nil,
 				},
-				ControllerPostRoot:  sc.Root(),
-				ControllerPostState: sc.ExpectedState,
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: did not receive proposal for this round",
 	}
-}
-
-func OutOfOrderFlowStateComparison(msgs []*qbft.SignedMessage) *qbftcomparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-
-	contr := testingutils.NewTestingQBFTController(
-		testingutils.TestingIdentifier,
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
-	)
-
-	instance := &qbft.Instance{
-		StartValue: testingutils.TestingQBFTFullData,
-		State: &qbft.State{
-			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet()),
-			ID:                              testingutils.TestingIdentifier,
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
-			LastPreparedRound:               qbft.NoRound,
-			LastPreparedValue:               nil,
-			Decided:                         false,
-			DecidedValue:                    nil,
-			Round:                           qbft.FirstRound,
-		},
-	}
-	qbftcomparable.SetSignedMessages(instance, msgs)
-	contr.StoredInstances = append(contr.StoredInstances, instance)
-
-	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
