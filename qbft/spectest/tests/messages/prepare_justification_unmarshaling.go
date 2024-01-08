@@ -1,8 +1,6 @@
 package messages
 
 import (
-	"bytes"
-
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -33,31 +31,25 @@ func PrepareJustificationsUnmarshalling() tests.SpecTest {
 		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		rcMarshalled, prepareMarshalled)
 
-	// Assert unmarshalling is correct
-	prepareUnmarshalled, err := msg.Message.GetPrepareJustifications()
+	msgRoot, err := msg.GetRoot()
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
-
-	// Compare messages
-	for idx, prepareMsg := range prepareUnmarshalled {
-		root1, err := prepareMsg.GetRoot()
-		if err != nil {
-			panic(err)
-		}
-		root2, err := prepareMsgs[idx].GetRoot()
-		if err != nil {
-			panic(err)
-		}
-		if !bytes.Equal(root1[:], root2[:]) {
-			panic("Unmarshalled message is different")
-		}
+	encodedMsg, err := msg.Encode()
+	if err != nil {
+		panic(err.Error())
 	}
 
 	return &tests.MsgSpecTest{
 		Name: "prepare justification unmarshalling",
 		Messages: []*qbft.SignedMessage{
 			msg,
+		},
+		EncodedMessages: [][]byte{
+			encodedMsg,
+		},
+		ExpectedRoots: [][32]byte{
+			msgRoot,
 		},
 	}
 }

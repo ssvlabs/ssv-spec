@@ -31,10 +31,25 @@ func MarshalJustifications() tests.SpecTest {
 		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		rcMarshalled, prepareMarshalled)
 
+	msgRoot, err := msg.GetRoot()
+	if err != nil {
+		panic(err.Error())
+	}
+	encodedMsg, err := msg.Encode()
+	if err != nil {
+		panic(err.Error())
+	}
+
 	return &tests.MsgSpecTest{
 		Name: "marshal RC and Prepare justifications",
 		Messages: []*qbft.SignedMessage{
 			msg,
+		},
+		EncodedMessages: [][]byte{
+			encodedMsg,
+		},
+		ExpectedRoots: [][32]byte{
+			msgRoot,
 		},
 	}
 }

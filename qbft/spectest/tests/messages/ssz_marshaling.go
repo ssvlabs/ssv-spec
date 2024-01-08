@@ -1,8 +1,6 @@
 package messages
 
 import (
-	"bytes"
-
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -33,34 +31,25 @@ func SSZMarshaling() tests.SpecTest {
 		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		rcMarshalled, prepareMarshalled)
 
-	b, err := msg.MarshalSSZ()
+	msgRoot, err := msg.GetRoot()
 	if err != nil {
 		panic(err.Error())
 	}
-
-	unmarshalledMsg := &qbft.SignedMessage{}
-	err = unmarshalledMsg.UnmarshalSSZ(b)
+	encodedMsg, err := msg.Encode()
 	if err != nil {
 		panic(err.Error())
-	}
-
-	root1, err := msg.GetRoot()
-	if err != nil {
-		panic(err.Error())
-	}
-	root2, err := unmarshalledMsg.GetRoot()
-	if err != nil {
-		panic(err.Error())
-	}
-
-	if !bytes.Equal(root1[:], root2[:]) {
-		panic("Unmarshalled message is different.")
 	}
 
 	return &tests.MsgSpecTest{
 		Name: "SSZ marshalling of signed messaged",
 		Messages: []*qbft.SignedMessage{
 			msg,
+		},
+		EncodedMessages: [][]byte{
+			encodedMsg,
+		},
+		ExpectedRoots: [][32]byte{
+			msgRoot,
 		},
 	}
 }

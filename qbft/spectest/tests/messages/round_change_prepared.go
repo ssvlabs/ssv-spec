@@ -22,10 +22,25 @@ func RoundChangePrepared() tests.SpecTest {
 	msg := testingutils.TestingRoundChangeMessageWithParams(
 		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData, 1, prepareMarshalled)
 
+	msgRoot, err := msg.GetRoot()
+	if err != nil {
+		panic(err.Error())
+	}
+	encodedMsg, err := msg.Encode()
+	if err != nil {
+		panic(err.Error())
+	}
+
 	return &tests.MsgSpecTest{
 		Name: "round change prepared",
 		Messages: []*qbft.SignedMessage{
 			msg,
+		},
+		EncodedMessages: [][]byte{
+			encodedMsg,
+		},
+		ExpectedRoots: [][32]byte{
+			msgRoot,
 		},
 	}
 }
