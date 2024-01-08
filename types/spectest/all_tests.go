@@ -64,13 +64,12 @@ var AllTests = []SpecTest{
 
 	beacon.DepositData(),
 
-	share.HasPartialQuorum(),
+	share.HasPartialQuorumButNoQuorum(),
 	share.HasQuorum(),
 	share.HasQuorum3f1(),
 	share.NoPartialQuorumDuplicate(),
 	share.NoPartialQuorum(),
 	share.NoQuorumDuplicate(),
-	share.NoQuorum(),
 	share.PartialQuorumWithDuplicate(),
 	share.QuorumWithDuplicate(),
 }
