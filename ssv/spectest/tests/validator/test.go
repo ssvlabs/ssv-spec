@@ -26,11 +26,6 @@ func (test *ValidatorTest) TestName() string {
 	return "validator " + test.Name
 }
 
-// RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest
-func (test *ValidatorTest) RunAsPartOfMultiTest(t *testing.T) {
-
-}
-
 // Run as an individual test
 func (test *ValidatorTest) Run(t *testing.T) {
 
