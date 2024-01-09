@@ -216,6 +216,10 @@ func (test *ControllerSpecTest) overrideStateComparison(t *testing.T) {
 func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 	contr := test.generateController()
 
+	if test.StartHeight != nil {
+		contr.Height = *test.StartHeight
+	}
+
 	ret := make([]*qbft.Controller, len(test.RunInstanceData))
 	for i, runData := range test.RunInstanceData {
 		height := qbft.Height(i)
