@@ -16,6 +16,6 @@ func WrongData() *SignedSSVMessageTest {
 				Data:       []byte{1, 2, 3, 4},
 			},
 		},
-		ExpectedError: "incorrect size",
+		ExpectedError: "could not decode SSVMessage from data in SignedSSVMessage: incorrect size",
 	}
 }
