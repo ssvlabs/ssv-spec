@@ -7,7 +7,7 @@ package types
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path share.go --include ./operator.go,./messages.go,./signer.go,./domain_type.go
 
 //go:generate rm -f ./messages_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path messages.go --exclude-objs ValidatorPK,MessageID,MsgType
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path messages.go --include ./operator.go --exclude-objs ValidatorPK,MessageID,MsgType
 
 //go:generate rm -f ./beacon_types_encoding.go
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.16.3/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole
