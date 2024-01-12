@@ -15,7 +15,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/goccy/go-yaml"
-	"github.com/holiman/uint256"
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
 
@@ -101,92 +100,6 @@ var Transactions = func() []bellatrix.Transaction {
 		panic(err.Error())
 	}
 	return res.Transactions
-}()
-
-var TestingBeaconBlock = &deneb.BeaconBlock{
-	Slot:          12,
-	ProposerIndex: 10,
-	ParentRoot:    phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-	StateRoot:     phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-	Body: &deneb.BeaconBlockBody{
-		RANDAOReveal: phase0.BLSSignature{},
-		ETH1Data: &phase0.ETH1Data{
-			DepositRoot:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-			DepositCount: 100,
-			BlockHash:    []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-		},
-		Graffiti:          [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-		ProposerSlashings: []*phase0.ProposerSlashing{},
-		AttesterSlashings: []*phase0.AttesterSlashing{},
-		Attestations: []*phase0.Attestation{
-			{
-				AggregationBits: bitfield.NewBitlist(122),
-				Data:            TestingAttestationData,
-				Signature:       phase0.BLSSignature{},
-			},
-		},
-		Deposits:       []*phase0.Deposit{},
-		VoluntaryExits: []*phase0.SignedVoluntaryExit{},
-		SyncAggregate: &altair.SyncAggregate{
-			SyncCommitteeBits:      bitfield.NewBitvector512(),
-			SyncCommitteeSignature: phase0.BLSSignature{},
-		},
-		ExecutionPayload: &deneb.ExecutionPayload{
-			ParentHash:    phase0.Hash32{},
-			FeeRecipient:  bellatrix.ExecutionAddress{},
-			StateRoot:     phase0.Root{},
-			ReceiptsRoot:  phase0.Root{},
-			LogsBloom:     [256]byte{},
-			PrevRandao:    [32]byte{},
-			BlockNumber:   100,
-			GasLimit:      1000000,
-			GasUsed:       800000,
-			Timestamp:     123456789,
-			BaseFeePerGas: &uint256.Int{37},
-			BlockHash:     phase0.Hash32{},
-			Transactions:  Transactions,
-		},
-	},
-}
-
-var TestingBlindedBeaconBlock = func() *apiv1deneb.BlindedBeaconBlock {
-	fullBlk := TestingBeaconBlock
-	txRoot, _ := types.SSZTransactions(fullBlk.Body.ExecutionPayload.Transactions).HashTreeRoot()
-	ret := &apiv1deneb.BlindedBeaconBlock{
-		Slot:          fullBlk.Slot,
-		ProposerIndex: fullBlk.ProposerIndex,
-		ParentRoot:    fullBlk.ParentRoot,
-		StateRoot:     fullBlk.StateRoot,
-		Body: &apiv1deneb.BlindedBeaconBlockBody{
-			RANDAOReveal:      fullBlk.Body.RANDAOReveal,
-			ETH1Data:          fullBlk.Body.ETH1Data,
-			Graffiti:          fullBlk.Body.Graffiti,
-			ProposerSlashings: fullBlk.Body.ProposerSlashings,
-			AttesterSlashings: fullBlk.Body.AttesterSlashings,
-			Attestations:      fullBlk.Body.Attestations,
-			Deposits:          fullBlk.Body.Deposits,
-			VoluntaryExits:    fullBlk.Body.VoluntaryExits,
-			SyncAggregate:     fullBlk.Body.SyncAggregate,
-			ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
-				ParentHash:       fullBlk.Body.ExecutionPayload.ParentHash,
-				FeeRecipient:     fullBlk.Body.ExecutionPayload.FeeRecipient,
-				StateRoot:        fullBlk.Body.ExecutionPayload.StateRoot,
-				ReceiptsRoot:     fullBlk.Body.ExecutionPayload.ReceiptsRoot,
-				LogsBloom:        fullBlk.Body.ExecutionPayload.LogsBloom,
-				PrevRandao:       fullBlk.Body.ExecutionPayload.PrevRandao,
-				BlockNumber:      fullBlk.Body.ExecutionPayload.BlockNumber,
-				GasLimit:         fullBlk.Body.ExecutionPayload.GasLimit,
-				GasUsed:          fullBlk.Body.ExecutionPayload.GasUsed,
-				Timestamp:        fullBlk.Body.ExecutionPayload.Timestamp,
-				ExtraData:        fullBlk.Body.ExecutionPayload.ExtraData,
-				BaseFeePerGas:    fullBlk.Body.ExecutionPayload.BaseFeePerGas,
-				BlockHash:        fullBlk.Body.ExecutionPayload.BlockHash,
-				TransactionsRoot: txRoot,
-			},
-		},
-	}
-
-	return ret
 }()
 
 var TestingAggregateAndProof = &phase0.AggregateAndProof{
