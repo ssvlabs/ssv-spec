@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -97,11 +98,13 @@ func isValidProposal(
 		return errors.Wrap(err, "proposal not justified")
 	}
 
-	if (state.ProposalAcceptedForCurrentRound == nil && signedProposal.Message.Round == state.Round) ||
-		signedProposal.Message.Round > state.Round {
-		return nil
+	if signedProposal.Message.Round < state.Round {
+		return errors.New("proposal for old round")
 	}
-	return errors.New("proposal is not valid with current state")
+	if signedProposal.Message.Round == state.Round && state.ProposalAcceptedForCurrentRound != nil {
+		return errors.New("proposal already accepted for current round")
+	}
+	return nil
 }
 
 // isProposalJustification returns nil if the proposal and round change messages are valid and justify a proposal message for the provided round, value and leader
