@@ -30,6 +30,6 @@ func PostPrepared() tests.SpecTest {
 			testingutils.TestingPrepareMessage(ks10.Shares[1], types.OperatorID(1)),
 			testingutils.TestingCommitMessage(ks10.Shares[1], types.OperatorID(1)),
 		},
-		ExpectedError: "invalid signed message: proposal is not valid with current state",
+		ExpectedError: "invalid signed message: proposal already accepted for current round",
 	}
 }

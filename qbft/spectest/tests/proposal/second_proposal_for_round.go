@@ -24,6 +24,6 @@ func SecondProposalForRound() tests.SpecTest {
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 		},
-		ExpectedError: "invalid signed message: proposal is not valid with current state",
+		ExpectedError: "invalid signed message: proposal already accepted for current round",
 	}
 }
