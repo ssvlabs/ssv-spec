@@ -8,11 +8,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// InvalidPrepareJustificationRound tests a proposal for > 1 round, prepared previously but one of the prepare justifications has round != highest prepared round
-func InvalidPrepareJustificationRound() tests.SpecTest {
+// InvalidProposalJustificationRound tests a proposal for > 1 round, prepared previously but one of the prepare justifications has round != highest prepared round
+func InvalidProposalJustificationRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	sc := invalidPrepareJustificationRoundStateComparison()
+	sc := invalidProposalJustificationRoundStateComparison()
 
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
@@ -44,7 +44,7 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 	}
 }
 
-func invalidPrepareJustificationRoundStateComparison() *comparable.StateComparison {
+func invalidProposalJustificationRoundStateComparison() *comparable.StateComparison {
 	state := testingutils.BaseInstance().State
 
 	return &comparable.StateComparison{ExpectedState: state}

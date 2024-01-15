@@ -30,7 +30,7 @@ func Round3() tests.SpecTest {
 				Identifier:               testingutils.TestingIdentifier,
 				Root:                     [32]byte{},
 				RoundChangeJustification: [][]byte{},
-				PrepareJustification:     [][]byte{},
+				ProposalJustification:    [][]byte{},
 			}),
 		},
 		ExpectedTimerState: &testingutils.TimerState{

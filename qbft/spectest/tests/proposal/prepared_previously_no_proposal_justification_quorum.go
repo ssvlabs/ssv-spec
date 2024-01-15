@@ -8,18 +8,15 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// InvalidPrepareJustificationValue tests a proposal for > 1 round, prepared previously but one of the prepare justifications has value != highest prepared
-func InvalidPrepareJustificationValue() tests.SpecTest {
+// PreparedPreviouslyNoProposalJustificationQuorum tests a proposal for > 1 round, prepared previously but without quorum of prepared msgs justification
+func PreparedPreviouslyNoProposalJustificationQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	sc := invalidPrepareJustificationValueStateComparison()
+	sc := preparedPreviouslyNoProposalJustificationQuorumStateComparison()
 
 	prepareMsgs := []*qbft.SignedMessage{
 		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessageWithParams(
-			// TODO: different value instead of wrong root
-			ks.Shares[3], types.OperatorID(3), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingIdentifier, testingutils.DifferentRoot),
 	}
 	rcMsgs := []*qbft.SignedMessage{
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
@@ -29,6 +26,7 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[3], types.OperatorID(3), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
+
 	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
@@ -36,17 +34,17 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 		),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "invalid prepare justification value",
+		Name:           "no prepare quorum (prepared)",
 		Pre:            pre,
 		PostRoot:       sc.Root(),
 		PostState:      sc.ExpectedState,
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: proposed data mistmatch",
+		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 	}
 }
 
-func invalidPrepareJustificationValueStateComparison() *comparable.StateComparison {
+func preparedPreviouslyNoProposalJustificationQuorumStateComparison() *comparable.StateComparison {
 	state := testingutils.BaseInstance().State
 
 	return &comparable.StateComparison{ExpectedState: state}

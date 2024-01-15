@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -115,7 +116,7 @@ func TestingProposalMessageWithIdentifierAndFullData(sk *bls.SecretKey, id types
 		Root:       sha256.Sum256(fullData),
 
 		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
+		ProposalJustification:    [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = fullData
@@ -138,7 +139,7 @@ var TestingProposalMessageWithParams = func(
 		Identifier:               TestingIdentifier,
 		Root:                     root,
 		RoundChangeJustification: roundChangeJustification,
-		PrepareJustification:     prepareJustification,
+		ProposalJustification:    prepareJustification,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = TestingQBFTFullData
@@ -208,7 +209,7 @@ var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id type
 		Root:       root,
 
 		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
+		ProposalJustification:    [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = []byte{}

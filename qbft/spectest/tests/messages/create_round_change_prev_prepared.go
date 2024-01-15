@@ -14,7 +14,7 @@ func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 		CreateType: tests.CreateProposal,
 		Name:       "create round change previously prepared",
 		Value:      [32]byte{1, 2, 3, 4},
-		PrepareJustifications: []*qbft.SignedMessage{
+		ProposalJustifications: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 			testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
 			testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
