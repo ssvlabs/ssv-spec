@@ -552,7 +552,7 @@ func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao [
 }
 
 // SubmitBeaconBlock submit the block to the node
-func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock, sig phase0.BLSSignature) error {
+func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error {
 	var r [32]byte
 
 	switch block.Version {
@@ -567,11 +567,18 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *spec.VersionedBeaconBlock,
 		r, _ = sb.HashTreeRoot()
 	case spec.DataVersionDeneb:
 		if block.Deneb == nil {
+			return errors.Errorf("%s block contents is nil", block.Version.String())
+		}
+		if block.Deneb.Block == nil {
 			return errors.Errorf("%s block is nil", block.Version.String())
 		}
-		sb := &deneb.SignedBeaconBlock{
-			Message:   block.Deneb,
-			Signature: sig,
+		sb := &apiv1deneb.SignedBlockContents{
+			SignedBlock: &deneb.SignedBeaconBlock{
+				Message:   block.Deneb.Block,
+				Signature: sig,
+			},
+			KZGProofs: block.Deneb.KZGProofs,
+			Blobs:     block.Deneb.Blobs,
 		}
 		r, _ = sb.HashTreeRoot()
 	default:
@@ -598,7 +605,7 @@ func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, graffiti, r
 }
 
 // SubmitBlindedBeaconBlock submit the blinded block to the node
-func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlindedBeaconBlock, sig phase0.BLSSignature) error {
+func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlindedProposal, sig phase0.BLSSignature) error {
 	var r [32]byte
 
 	switch block.Version {

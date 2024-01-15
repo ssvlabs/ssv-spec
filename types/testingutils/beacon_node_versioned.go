@@ -37,17 +37,17 @@ const (
 // SupportedBlockVersions is a list of supported regular/blinded beacon block versions by spec.
 var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionCapella, spec.DataVersionDeneb}
 
-var TestingBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
+var TestingBeaconBlockV = func(version spec.DataVersion) *api.VersionedProposal {
 	switch version {
 	case spec.DataVersionCapella:
-		return &spec.VersionedBeaconBlock{
+		return &api.VersionedProposal{
 			Version: version,
 			Capella: TestingBeaconBlockCapella,
 		}
 	case spec.DataVersionDeneb:
-		return &spec.VersionedBeaconBlock{
+		return &api.VersionedProposal{
 			Version: version,
-			Deneb:   TestingBeaconBlockDeneb,
+			Deneb:   TestingBlockContentsDeneb,
 		}
 	default:
 		panic("unsupported version")
@@ -77,15 +77,15 @@ var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 	return ret
 }
 
-var TestingBlindedBeaconBlockV = func(version spec.DataVersion) *api.VersionedBlindedBeaconBlock {
+var TestingBlindedBeaconBlockV = func(version spec.DataVersion) *api.VersionedBlindedProposal {
 	switch version {
 	case spec.DataVersionCapella:
-		return &api.VersionedBlindedBeaconBlock{
+		return &api.VersionedBlindedProposal{
 			Version: version,
 			Capella: TestingBlindedBeaconBlockCapella,
 		}
 	case spec.DataVersionDeneb:
-		return &api.VersionedBlindedBeaconBlock{
+		return &api.VersionedBlindedProposal{
 			Version: version,
 			Deneb:   TestingBlindedBeaconBlockDeneb,
 		}
@@ -117,7 +117,7 @@ var TestingBlindedBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 	return ret
 }
 
-var TestingWrongBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBeaconBlock {
+var TestingWrongBeaconBlockV = func(version spec.DataVersion) *api.VersionedProposal {
 	blkByts := TestingBeaconBlockBytesV(version)
 
 	switch version {
@@ -127,17 +127,17 @@ var TestingWrongBeaconBlockV = func(version spec.DataVersion) *spec.VersionedBea
 			panic(err.Error())
 		}
 		ret.Slot = TestingDutySlotCapella + 100
-		return &spec.VersionedBeaconBlock{
+		return &api.VersionedProposal{
 			Version: version,
 			Capella: ret,
 		}
 	case spec.DataVersionDeneb:
-		ret := &deneb.BeaconBlock{}
+		ret := &apiv1deneb.BlockContents{}
 		if err := ret.UnmarshalSSZ(blkByts); err != nil {
 			panic(err.Error())
 		}
-		ret.Slot = TestingDutySlotDeneb + 100
-		return &spec.VersionedBeaconBlock{
+		ret.Block.Slot = TestingDutySlotDeneb + 100
+		return &api.VersionedProposal{
 			Version: version,
 			Deneb:   ret,
 		}
@@ -161,13 +161,19 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 		}
 	case spec.DataVersionDeneb:
 		if vBlk.Deneb == nil {
+			panic("empty block contents")
+		}
+		if vBlk.Deneb.Block == nil {
 			panic("empty block")
 		}
-		return &deneb.SignedBeaconBlock{
-			Message:   vBlk.Deneb,
-			Signature: signBeaconObject(vBlk.Deneb, types.DomainProposer, ks),
+		return &apiv1deneb.SignedBlockContents{
+			SignedBlock: &deneb.SignedBeaconBlock{
+				Message:   vBlk.Deneb.Block,
+				Signature: signBeaconObject(vBlk.Deneb, types.DomainProposer, ks),
+			},
+			KZGProofs: vBlk.Deneb.KZGProofs,
+			Blobs:     vBlk.Deneb.Blobs,
 		}
-
 	default:
 		panic("unsupported version")
 	}
@@ -311,57 +317,56 @@ var TestingBlindedBeaconBlockCapella = func() *apiv1capella.BlindedBeaconBlock {
 	return ret
 }()
 
-var TestingBeaconBlockDeneb = func() *deneb.BeaconBlock {
-	var res deneb.BeaconBlock
-	err := json.Unmarshal(denebBlock, &res)
-	if err != nil {
+var TestingBlockContentsDeneb = func() *apiv1deneb.BlockContents {
+	var res apiv1deneb.BlockContents
+	if err := json.Unmarshal(denebBlockContents, &res); err != nil {
 		panic(err)
 	}
 	// using ForkEpochPraterDeneb to keep the consistency with TestingProposerDutyV Deneb slot
-	res.Slot = ForkEpochPraterDeneb
+	res.Block.Slot = ForkEpochPraterDeneb
 	return &res
 }()
 
 var TestingBlindedBeaconBlockDeneb = func() *apiv1deneb.BlindedBeaconBlock {
-	fullBlk := TestingBeaconBlockDeneb
-	txRoot, _ := types.SSZTransactions(fullBlk.Body.ExecutionPayload.Transactions).HashTreeRoot()
-	withdrawalsRoot, _ := types.SSZWithdrawals(fullBlk.Body.ExecutionPayload.Withdrawals).HashTreeRoot()
+	blockContents := TestingBlockContentsDeneb
+	txRoot, _ := types.SSZTransactions(blockContents.Block.Body.ExecutionPayload.Transactions).HashTreeRoot()
+	withdrawalsRoot, _ := types.SSZWithdrawals(blockContents.Block.Body.ExecutionPayload.Withdrawals).HashTreeRoot()
 	ret := &apiv1deneb.BlindedBeaconBlock{
-		Slot:          fullBlk.Slot,
-		ProposerIndex: fullBlk.ProposerIndex,
-		ParentRoot:    fullBlk.ParentRoot,
-		StateRoot:     fullBlk.StateRoot,
+		Slot:          blockContents.Block.Slot,
+		ProposerIndex: blockContents.Block.ProposerIndex,
+		ParentRoot:    blockContents.Block.ParentRoot,
+		StateRoot:     blockContents.Block.StateRoot,
 		Body: &apiv1deneb.BlindedBeaconBlockBody{
-			RANDAOReveal:      fullBlk.Body.RANDAOReveal,
-			ETH1Data:          fullBlk.Body.ETH1Data,
-			Graffiti:          fullBlk.Body.Graffiti,
-			ProposerSlashings: fullBlk.Body.ProposerSlashings,
-			AttesterSlashings: fullBlk.Body.AttesterSlashings,
-			Attestations:      fullBlk.Body.Attestations,
-			Deposits:          fullBlk.Body.Deposits,
-			VoluntaryExits:    fullBlk.Body.VoluntaryExits,
-			SyncAggregate:     fullBlk.Body.SyncAggregate,
+			RANDAOReveal:      blockContents.Block.Body.RANDAOReveal,
+			ETH1Data:          blockContents.Block.Body.ETH1Data,
+			Graffiti:          blockContents.Block.Body.Graffiti,
+			ProposerSlashings: blockContents.Block.Body.ProposerSlashings,
+			AttesterSlashings: blockContents.Block.Body.AttesterSlashings,
+			Attestations:      blockContents.Block.Body.Attestations,
+			Deposits:          blockContents.Block.Body.Deposits,
+			VoluntaryExits:    blockContents.Block.Body.VoluntaryExits,
+			SyncAggregate:     blockContents.Block.Body.SyncAggregate,
 			ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
-				ParentHash:       fullBlk.Body.ExecutionPayload.ParentHash,
-				FeeRecipient:     fullBlk.Body.ExecutionPayload.FeeRecipient,
-				StateRoot:        fullBlk.Body.ExecutionPayload.StateRoot,
-				ReceiptsRoot:     fullBlk.Body.ExecutionPayload.ReceiptsRoot,
-				LogsBloom:        fullBlk.Body.ExecutionPayload.LogsBloom,
-				PrevRandao:       fullBlk.Body.ExecutionPayload.PrevRandao,
-				BlockNumber:      fullBlk.Body.ExecutionPayload.BlockNumber,
-				GasLimit:         fullBlk.Body.ExecutionPayload.GasLimit,
-				GasUsed:          fullBlk.Body.ExecutionPayload.GasUsed,
-				Timestamp:        fullBlk.Body.ExecutionPayload.Timestamp,
-				ExtraData:        fullBlk.Body.ExecutionPayload.ExtraData,
-				BaseFeePerGas:    fullBlk.Body.ExecutionPayload.BaseFeePerGas,
-				BlockHash:        fullBlk.Body.ExecutionPayload.BlockHash,
+				ParentHash:       blockContents.Block.Body.ExecutionPayload.ParentHash,
+				FeeRecipient:     blockContents.Block.Body.ExecutionPayload.FeeRecipient,
+				StateRoot:        blockContents.Block.Body.ExecutionPayload.StateRoot,
+				ReceiptsRoot:     blockContents.Block.Body.ExecutionPayload.ReceiptsRoot,
+				LogsBloom:        blockContents.Block.Body.ExecutionPayload.LogsBloom,
+				PrevRandao:       blockContents.Block.Body.ExecutionPayload.PrevRandao,
+				BlockNumber:      blockContents.Block.Body.ExecutionPayload.BlockNumber,
+				GasLimit:         blockContents.Block.Body.ExecutionPayload.GasLimit,
+				GasUsed:          blockContents.Block.Body.ExecutionPayload.GasUsed,
+				Timestamp:        blockContents.Block.Body.ExecutionPayload.Timestamp,
+				ExtraData:        blockContents.Block.Body.ExecutionPayload.ExtraData,
+				BaseFeePerGas:    blockContents.Block.Body.ExecutionPayload.BaseFeePerGas,
+				BlockHash:        blockContents.Block.Body.ExecutionPayload.BlockHash,
 				TransactionsRoot: txRoot,
 				WithdrawalsRoot:  withdrawalsRoot,
-				BlobGasUsed:      fullBlk.Body.ExecutionPayload.BlobGasUsed,
-				ExcessBlobGas:    fullBlk.Body.ExecutionPayload.ExcessBlobGas,
+				BlobGasUsed:      blockContents.Block.Body.ExecutionPayload.BlobGasUsed,
+				ExcessBlobGas:    blockContents.Block.Body.ExecutionPayload.ExcessBlobGas,
 			},
-			BLSToExecutionChanges: fullBlk.Body.BLSToExecutionChanges,
-			BlobKZGCommitments:    fullBlk.Body.BlobKZGCommitments,
+			BLSToExecutionChanges: blockContents.Block.Body.BLSToExecutionChanges,
+			BlobKZGCommitments:    blockContents.Block.Body.BlobKZGCommitments,
 		},
 	}
 

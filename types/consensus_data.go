@@ -7,7 +7,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
-	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -186,40 +185,40 @@ func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 }
 
 // GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlockData() (*spec.VersionedBeaconBlock, ssz.HashRoot, error) {
+func (ci *ConsensusData) GetBlockData() (*api.VersionedProposal, ssz.HashRoot, error) {
 	switch ci.Version {
 	case spec.DataVersionCapella:
 		ret := &capella.BeaconBlock{}
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
-		return &spec.VersionedBeaconBlock{Capella: ret, Version: ci.Version}, ret, nil
+		return &api.VersionedProposal{Capella: ret, Version: ci.Version}, ret, nil
 	case spec.DataVersionDeneb:
-		ret := &deneb.BeaconBlock{}
+		ret := &apiv1deneb.BlockContents{}
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
-		return &spec.VersionedBeaconBlock{Deneb: ret, Version: ci.Version}, ret, nil
+		return &api.VersionedProposal{Deneb: ret, Version: ci.Version}, ret, nil
 	default:
 		return nil, nil, errors.Errorf("unknown block version %s", ci.Version.String())
 	}
 }
 
 // GetBlindedBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedBeaconBlock, ssz.HashRoot, error) {
+func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedProposal, ssz.HashRoot, error) {
 	switch ci.Version {
 	case spec.DataVersionCapella:
 		ret := &apiv1capella.BlindedBeaconBlock{}
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
-		return &api.VersionedBlindedBeaconBlock{Capella: ret, Version: ci.Version}, ret, nil
+		return &api.VersionedBlindedProposal{Capella: ret, Version: ci.Version}, ret, nil
 	case spec.DataVersionDeneb:
 		ret := &apiv1deneb.BlindedBeaconBlock{}
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
-		return &api.VersionedBlindedBeaconBlock{Deneb: ret, Version: ci.Version}, ret, nil
+		return &api.VersionedBlindedProposal{Deneb: ret, Version: ci.Version}, ret, nil
 	default:
 		return nil, nil, errors.Errorf("unknown blinded block version %s", ci.Version.String())
 	}
