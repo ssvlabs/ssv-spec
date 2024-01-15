@@ -102,6 +102,18 @@ func TestJson(t *testing.T) {
 				typedTest := &partialsigmessage.MsgSpecTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
+			case reflect.TypeOf(&share.ShareTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &share.ShareTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&ssvmsg.SSVMessageTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &ssvmsg.SSVMessageTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
 			default:
 				t.Fatalf("unknown test")
 			}
