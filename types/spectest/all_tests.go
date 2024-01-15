@@ -24,6 +24,15 @@ var AllTests = []SpecTest{
 	ssvmsg.MsgIDDoesntBelongs(),
 
 	partialsigmessage.Encoding(),
+	partialsigmessage.InvalidMsg(),
+	partialsigmessage.MessageSigner0(),
+	partialsigmessage.SignedMsgSigner0(),
+	partialsigmessage.NoMsgs(),
+	partialsigmessage.SigValid(),
+	partialsigmessage.PartialSigValid(),
+	partialsigmessage.PartialRootValid(),
+	partialsigmessage.ValidContributionProofMetaData(),
+	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
 	//share.HasQuorum(),
