@@ -130,7 +130,7 @@ var TestingProposalMessageWithParams = func(
 	height qbft.Height,
 	root [32]byte,
 	roundChangeJustification [][]byte,
-	prepareJustification [][]byte,
+	proposalJustification [][]byte,
 ) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:                  qbft.ProposalMsgType,
@@ -139,7 +139,7 @@ var TestingProposalMessageWithParams = func(
 		Identifier:               TestingIdentifier,
 		Root:                     root,
 		RoundChangeJustification: roundChangeJustification,
-		ProposalJustification:    prepareJustification,
+		ProposalJustification:    proposalJustification,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = TestingQBFTFullData

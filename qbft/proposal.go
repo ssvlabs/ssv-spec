@@ -83,13 +83,13 @@ func isValidProposal(
 
 	// get justifications
 	roundChangeJustification, _ := signedProposal.Message.GetRoundChangeJustifications() // no need to check error, checked on signedProposal.Validate()
-	prepareJustification, _ := signedProposal.Message.GetProposalJustifications()        // no need to check error, checked on signedProposal.Validate()
+	proposalJustification, _ := signedProposal.Message.GetProposalJustifications()       // no need to check error, checked on signedProposal.Validate()
 
 	if err := isProposalJustification(
 		state,
 		config,
 		roundChangeJustification,
-		prepareJustification,
+		proposalJustification,
 		state.Height,
 		signedProposal.Message.Round,
 		signedProposal.FullData,
