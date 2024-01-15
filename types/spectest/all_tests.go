@@ -21,6 +21,8 @@ type SpecTest interface {
 
 var AllTests = []SpecTest{
 	ssvmsg.Encoding(),
+	ssvmsg.MsgIDBelongs(),
+	ssvmsg.MsgIDDoesntBelongs(),
 
 	partialsigmessage.Encoding(),
 
