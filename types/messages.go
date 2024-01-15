@@ -131,7 +131,7 @@ func (msg *SSVMessage) Decode(data []byte) error {
 // SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
 	OperatorID OperatorID
-	Signature  []byte `ssz-max:"512"`     // Current signature max size allow keys up to 512*8 = 4096 bits
+	Signature  []byte `ssz-max:"512"`     // Created by the operator's private key. Max size allow keys up to 512*8 = 4096 bits
 	Data       []byte `ssz-max:"8388672"` // Max size extracted from SSVMessage
 }
 
