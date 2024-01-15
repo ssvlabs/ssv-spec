@@ -111,8 +111,10 @@ type ConsensusData struct {
 	//			13*SignedPartialSignatureMessage(2^16) ~= 2^20
 	PreConsensusJustifications []*SignedPartialSignatureMessage `ssz-max:"13"`
 	// DataSSZ has max size as following
-	// Biggest object is a full beacon block
-	// BeaconBlock is 2*32+2*8 + BeaconBlockBody
+	// Biggest object is a Deneb.BlockContents with:
+	// - KZGProofs: 6 * 48 = 288
+	// - Blobs: 6 * 131072 = 786432
+	// - A BeaconBlock: 2*32+2*8 + BeaconBlockBody
 	// BeaconBlockBody is
 	//			96 + ETH1Data(2*32+8) + 32 +
 	//			16*ProposerSlashing(2*SignedBeaconBlockHeader(96 + 3*32 + 2*8)) +
@@ -127,7 +129,7 @@ type ConsensusData struct {
 	// Current 30M gas limit produces 30M / 16 (call data cost) = 1,875,000 bytes (https://eips.ethereum.org/EIPS/eip-4488)
 	// we can upper limit transactions to 2^21, together with the rest of the data 2*2^21 = 2^22 = 4,194,304 bytes
 	// Exmplanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
-	DataSSZ []byte `ssz-max:"4194304"` // 2^22
+	DataSSZ []byte `ssz-max:"4981024"` // 2^22 + 288 + 786432
 }
 
 func (cid *ConsensusData) Validate() error {
