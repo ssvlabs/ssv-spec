@@ -163,7 +163,7 @@ func Quorum7Operators() tests.SpecTest {
 			PostDutyRunnerState:     quorum7OperatorsBlindedProposerSC(version).ExpectedState,
 			OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			BeaconBroadcastedRoots: []string{
-				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
 			DontStartDuty: true,
 		}
