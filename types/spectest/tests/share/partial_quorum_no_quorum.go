@@ -6,19 +6,19 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-// HasQuorum tests msg with unique 2f+1 signers
-func HasQuorum() *ShareTest {
+// HasPartialQuorumButNoQuorum tests  msg with unique f+1 signers
+func HasPartialQuorumButNoQuorum() *ShareTest {
 	ks := testingutils.Testing4SharesSet()
 	share := testingutils.TestingShare(ks)
 
-	msg := testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3})
+	msg := testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2]}, []types.OperatorID{1, 2})
 
 	return &ShareTest{
-		Name:                     "has quorum",
+		Name:                     "has partial quorum but no quorum",
 		Share:                    *share,
 		Message:                  *msg,
 		ExpectedHasPartialQuorum: true,
-		ExpectedHasQuorum:        true,
+		ExpectedHasQuorum:        false,
 		ExpectedFullCommittee:    false,
 	}
 }

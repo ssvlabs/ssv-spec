@@ -1,14 +1,13 @@
-package messages
+package partialsigmessage
 
 import (
 	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // InvalidMsg tests a signed msg with 1 invalid message
-func InvalidMsg() tests.SpecTest {
+func InvalidMsg() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
