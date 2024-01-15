@@ -185,7 +185,7 @@ func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 }
 
 // GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlockData() (*api.VersionedProposal, ssz.HashRoot, error) {
+func (ci *ConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
 	switch ci.Version {
 	case spec.DataVersionCapella:
 		ret := &capella.BeaconBlock{}
@@ -198,7 +198,7 @@ func (ci *ConsensusData) GetBlockData() (*api.VersionedProposal, ssz.HashRoot, e
 		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
-		return &api.VersionedProposal{Deneb: ret, Version: ci.Version}, ret, nil
+		return &api.VersionedProposal{Deneb: ret, Version: ci.Version}, ret.Block, nil
 	default:
 		return nil, nil, errors.Errorf("unknown block version %s", ci.Version.String())
 	}
