@@ -169,10 +169,38 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 		return &apiv1deneb.SignedBlockContents{
 			SignedBlock: &deneb.SignedBeaconBlock{
 				Message:   vBlk.Deneb.Block,
-				Signature: signBeaconObject(vBlk.Deneb, types.DomainProposer, ks),
+				Signature: signBeaconObject(vBlk.Deneb.Block, types.DomainProposer, ks),
 			},
 			KZGProofs: vBlk.Deneb.KZGProofs,
 			Blobs:     vBlk.Deneb.Blobs,
+		}
+	default:
+		panic("unsupported version")
+	}
+}
+
+var TestingSignedBlindedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+	vBlk := TestingBeaconBlockV(version)
+
+	switch version {
+	case spec.DataVersionCapella:
+		if vBlk.Capella == nil {
+			panic("empty block")
+		}
+		return &capella.SignedBeaconBlock{
+			Message:   vBlk.Capella,
+			Signature: signBeaconObject(vBlk.Capella, types.DomainProposer, ks),
+		}
+	case spec.DataVersionDeneb:
+		if vBlk.Deneb == nil {
+			panic("empty block contents")
+		}
+		if vBlk.Deneb.Block == nil {
+			panic("empty block")
+		}
+		return &deneb.SignedBeaconBlock{
+			Message:   vBlk.Deneb.Block,
+			Signature: signBeaconObject(vBlk.Deneb.Block, types.DomainProposer, ks),
 		}
 	default:
 		panic("unsupported version")
