@@ -3,6 +3,7 @@ package qbft
 import (
 	"bytes"
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -53,15 +54,15 @@ type Message struct {
 	Root                     [32]byte `ssz-size:"32"`
 	DataRound                Round
 	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
-	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
+	ProposalJustification    [][]byte `ssz-max:"13,65536"` // 2^16
 }
 
 func (msg *Message) GetRoundChangeJustifications() ([]*SignedMessage, error) {
 	return unmarshalJustifications(msg.RoundChangeJustification)
 }
 
-func (msg *Message) GetPrepareJustifications() ([]*SignedMessage, error) {
-	return unmarshalJustifications(msg.PrepareJustification)
+func (msg *Message) GetProposalJustifications() ([]*SignedMessage, error) {
+	return unmarshalJustifications(msg.ProposalJustification)
 }
 
 func unmarshalJustifications(data [][]byte) ([]*SignedMessage, error) {
@@ -121,7 +122,7 @@ func (msg *Message) Validate() error {
 	if _, err := msg.GetRoundChangeJustifications(); err != nil {
 		return err
 	}
-	if _, err := msg.GetPrepareJustifications(); err != nil {
+	if _, err := msg.GetProposalJustifications(); err != nil {
 		return err
 	}
 	if msg.MsgType > RoundChangeMsgType {
@@ -245,7 +246,7 @@ func (signedMsg *SignedMessage) DeepCopy() *SignedMessage {
 
 		Root:                     signedMsg.Message.Root,
 		DataRound:                signedMsg.Message.DataRound,
-		PrepareJustification:     signedMsg.Message.PrepareJustification,
+		ProposalJustification:    signedMsg.Message.ProposalJustification,
 		RoundChangeJustification: signedMsg.Message.RoundChangeJustification,
 	}
 	copy(ret.Message.Identifier, signedMsg.Message.Identifier)
