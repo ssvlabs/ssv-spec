@@ -48,7 +48,7 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					LastPreparedRound: qbft.NoRound,
 					Decided:           false,
 				},
-				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(cd, spec.DataVersionDeneb)),
+				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(cd, spec.DataVersionBellatrix)),
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
 

@@ -48,7 +48,7 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
-				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(cd, spec.DataVersionDeneb)),
+				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(cd, spec.DataVersionBellatrix)),
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,

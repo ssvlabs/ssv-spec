@@ -49,7 +49,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 					Decided:                         true,
 					DecidedValue:                    cdBytes,
 				},
-				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(cd, spec.DataVersionDeneb)),
+				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(cd, spec.DataVersionBellatrix)),
 			}
 			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlot)
 			comparable.SetMessages(
