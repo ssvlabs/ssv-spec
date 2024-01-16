@@ -6,7 +6,6 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
 	consensusdataproposer "github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata/proposer"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
@@ -45,9 +44,6 @@ var AllTests = []SpecTest{
 	//share.HasPartialQuorum2f1(),
 	//share.NoPartialQuorum(),
 	//share.NoPartialQuorumDuplicate(),
-
-	encryption.SimpleEncrypt(),
-	encryption.EncryptBLSSK(),
 
 	consensusdata.InvalidDuty(),
 
