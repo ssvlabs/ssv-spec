@@ -18,6 +18,6 @@ func InvalidSyncCommitteeBlockValidation() *ConsensusDataTest {
 	return &ConsensusDataTest{
 		Name:          "invalid sync committee",
 		ConsensusData: cd,
-		ExpectedError: "could not unmarshal ssz: expected buffer of length 32 receiced 1",
+		ExpectedError: "could not unmarshal ssz: expected buffer of length 32 received 1",
 	}
 }
