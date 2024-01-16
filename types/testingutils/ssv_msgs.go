@@ -88,7 +88,7 @@ var TestAggregatorWithJustificationsConsensusData = func(ks *TestKeySet) *types.
 
 	return &types.ConsensusData{
 		Duty:                       TestingAggregatorDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAggregateAndProofBytes,
 	}
