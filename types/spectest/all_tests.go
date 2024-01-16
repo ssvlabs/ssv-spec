@@ -49,20 +49,38 @@ var AllTests = []SpecTest{
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
 
-	// TODO: consider removing tests below
-	consensusdata.Encoding(),
-	//consensusdata.DutyNil(),
-	//consensusdata.ValidAttester(),
-	//consensusdata.NoAttestationData(),
-	//consensusdata.ValidAggregator(),
-	//consensusdata.NoAggregatorData(),
-	//consensusdata.ValidProposer(),
-	//consensusdata.ValidBlindedProposer(),
-	//consensusdata.NilBlock(),
-	//consensusdata.BlockAndBlindedBlock(),
-	//consensusdata.ValidSyncCommitteeAggregator(),
-	//consensusdata.EmptySyncCommitteeAggregator(),
-	// TODO: add new consensusdata tests
+	consensusdata.InvalidDuty(),
+
+	consensusdata.ProposerConsensusDataEncoding(),
+	consensusdata.BlindedProposerConsensusDataEncoding(),
+	consensusdata.CapellaBlockValidation(),
+	consensusdata.CapellaBlindedBlockValidation(),
+	consensusdata.ProposerNoJustifications(),
+	consensusdata.InvalidCapellaBlindedBlockValidation(),
+	consensusdata.InvalidCapellaBlockValidation(),
+
+	consensusdata.AttestationConsensusDataEncoding(),
+	consensusdata.AttestationValidation(),
+	consensusdata.AttesterJustifications(),
+	consensusdata.InvalidAttestationValidation(),
+
+	consensusdata.AggregatorConsensusDataEncoding(),
+	consensusdata.AggregatorValidation(),
+	consensusdata.AggregatorNoJustifications(),
+	consensusdata.InvalidAggregatorValidation(),
+
+	consensusdata.SyncCommitteeConsensusDataEncoding(),
+	consensusdata.SyncCommitteeJustifications(),
+	consensusdata.SyncCommitteeNoJustifications(),
+	consensusdata.InvalidSyncCommitteeBlockValidation(),
+
+	consensusdata.SyncCommitteeContributionConsensusDataEncoding(),
+	consensusdata.SyncCommitteeContributionValidation(),
+	consensusdata.SyncCommitteeContributionNoJustifications(),
+	consensusdata.InvalidSyncCommitteeContributionValidation(),
+
+	consensusdata.ValidatorRegistration(),
+	consensusdata.VoluntaryExit(),
 
 	consensusdataproposer.VersionedBlockValidation(),
 	consensusdataproposer.VersionedBlindedBlockValidation(),

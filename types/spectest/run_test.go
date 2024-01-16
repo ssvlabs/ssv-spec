@@ -96,6 +96,12 @@ func TestJson(t *testing.T) {
 				typedTest := &beacon.DepositDataSpecTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
+			case reflect.TypeOf(&consensusdata.ConsensusDataTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &consensusdata.ConsensusDataTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
 			case reflect.TypeOf(&partialsigmessage.MsgSpecTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
