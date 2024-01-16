@@ -572,9 +572,13 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 		if block.Deneb.Block == nil {
 			return errors.Errorf("%s block is nil", block.Version.String())
 		}
-		sb := &deneb.SignedBeaconBlock{
-			Message:   block.Deneb.Block,
-			Signature: sig,
+		sb := &apiv1deneb.SignedBlockContents{
+			SignedBlock: &deneb.SignedBeaconBlock{
+				Message:   block.Deneb.Block,
+				Signature: sig,
+			},
+			KZGProofs: block.Deneb.KZGProofs,
+			Blobs:     block.Deneb.Blobs,
 		}
 		r, _ = sb.HashTreeRoot()
 	default:
