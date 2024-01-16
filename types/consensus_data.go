@@ -123,13 +123,15 @@ type ConsensusData struct {
 	//			16*Deposit(33*32 + 48 + 32 + 8 + 96) +
 	//			16*SignedVoluntaryExit(96 + 2*8) +
 	//			SyncAggregate(64 + 96) +
-	//			ExecutionPayload(32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 1048576*1073741824)
-	// = 2^21(everything but transactions) + 2^50 (transaction list)
+	//			ExecutionPayload(32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 1048576*1073741824 + 16 * (2*8 + 20 + 8) + 8 + 8) +
+	//			BLSToExecutionChanges 16 * (96 + (8 + 48 + 20)) +
+	//			KZGCommitment 4096 * 48
+	// = 5305388 (everything but transactions) + 2^50 (transaction list)
 	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
 	// Current 30M gas limit produces 30M / 16 (call data cost) = 1,875,000 bytes (https://eips.ethereum.org/EIPS/eip-4488)
-	// we can upper limit transactions to 2^21, together with the rest of the data 2*2^21 = 2^22 = 4,194,304 bytes
+	// we can upper limit transactions to 2^21, together with the rest of the data 3208236 + 2^21  = 5,305,388 bytes
 	// Exmplanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
-	DataSSZ []byte `ssz-max:"4981024"` // 2^22 + 288 + 786432
+	DataSSZ []byte `ssz-max:"5305388"` // 3208236 + 2^21 = 5,305,388
 }
 
 func (cid *ConsensusData) Validate() error {
