@@ -80,6 +80,21 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 	}
 }
 
+var TestAggregatorWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(1); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusSelectionProofMsg(ks.Shares[i], ks.Shares[i], i, i))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       TestingAggregatorDuty,
+		Version:                    spec.DataVersionBellatrix,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingAggregateAndProofBytes,
+	}
+
+}
+
 // TestSyncCommitteeWithJustificationsConsensusData is an invalid sync committee msg (doesn't have pre-consensus)
 var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	justif := make([]*types.SignedPartialSignatureMessage, 0)
