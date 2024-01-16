@@ -678,7 +678,7 @@ func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) 
 
 // GetSyncCommitteeContribution returns
 func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot phase0.Slot, selectionProofs []phase0.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec.DataVersion, error) {
-	return &TestingContributionsData, spec.DataVersionDeneb, nil
+	return &TestingContributionsData, spec.DataVersionBellatrix, nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network
