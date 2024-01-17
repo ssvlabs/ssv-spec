@@ -7,7 +7,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// JustificationWrongRound tests a single prepare justification with round != prepared round
+// JustificationWrongRound tests a single round change justification with round != prepared round
 func JustificationWrongRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 5

@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -98,8 +99,8 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 }
 
 // hasReceivedProposalJustificationForLeadingRound returns
-// if first round or not received round change msgs with prepare justification - returns first rc msg in container and value to propose
-// if received round change msgs with prepare justification - returns the highest prepare justification round change msg and value to propose
+// if first round or not received round change msgs with prepare msgs justification - returns first rc msg in container and value to propose
+// if received round change msgs with prepare msgs justification - returns the highest prepared round change msg and value to propose
 // (all the above considering the operator is a leader for the round
 func hasReceivedProposalJustificationForLeadingRound(
 	state *State,

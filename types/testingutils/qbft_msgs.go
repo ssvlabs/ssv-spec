@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -102,8 +103,8 @@ var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.Opera
 	ret.FullData = DifferentFullData
 	return ret
 }
-var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
-	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, roundChangeJustification, nil)
+var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, proposalJustification [][]byte) *qbft.SignedMessage {
+	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, proposalJustification, nil)
 }
 
 func TestingProposalMessageWithIdentifierAndFullData(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte, height qbft.Height) *qbft.SignedMessage {
@@ -115,7 +116,7 @@ func TestingProposalMessageWithIdentifierAndFullData(sk *bls.SecretKey, id types
 		Root:       sha256.Sum256(fullData),
 
 		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
+		ProposalJustification:    [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = fullData
@@ -128,8 +129,8 @@ var TestingProposalMessageWithParams = func(
 	round qbft.Round,
 	height qbft.Height,
 	root [32]byte,
+	proposalJustification [][]byte,
 	roundChangeJustification [][]byte,
-	prepareJustification [][]byte,
 ) *qbft.SignedMessage {
 	msg := &qbft.Message{
 		MsgType:                  qbft.ProposalMsgType,
@@ -138,7 +139,7 @@ var TestingProposalMessageWithParams = func(
 		Identifier:               TestingIdentifier,
 		Root:                     root,
 		RoundChangeJustification: roundChangeJustification,
-		PrepareJustification:     prepareJustification,
+		ProposalJustification:    proposalJustification,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = TestingQBFTFullData
@@ -208,7 +209,7 @@ var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id type
 		Root:       root,
 
 		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
+		ProposalJustification:    [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = []byte{}

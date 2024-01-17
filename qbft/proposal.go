@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -82,13 +83,13 @@ func isValidProposal(
 
 	// get justifications
 	roundChangeJustification, _ := signedProposal.Message.GetRoundChangeJustifications() // no need to check error, checked on signedProposal.Validate()
-	prepareJustification, _ := signedProposal.Message.GetPrepareJustifications()         // no need to check error, checked on signedProposal.Validate()
+	proposalJustification, _ := signedProposal.Message.GetProposalJustifications()       // no need to check error, checked on signedProposal.Validate()
 
 	if err := isProposalJustification(
 		state,
 		config,
+		proposalJustification,
 		roundChangeJustification,
-		prepareJustification,
 		state.Height,
 		signedProposal.Message.Round,
 		signedProposal.FullData,
@@ -234,8 +235,8 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		Identifier: state.ID,
 
 		Root:                     r,
-		RoundChangeJustification: roundChangesData,
-		PrepareJustification:     preparesData,
+		RoundChangeJustification: preparesData,
+		ProposalJustification:    roundChangesData,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {

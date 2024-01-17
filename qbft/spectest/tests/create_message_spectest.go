@@ -2,13 +2,14 @@ package tests
 
 import (
 	"encoding/hex"
+	"testing"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 const (
@@ -23,13 +24,13 @@ type CreateMsgSpecTest struct {
 	// ISSUE 217: rename to root
 	Value [32]byte
 	// ISSUE 217: rename to value
-	StateValue                                       []byte
-	Round                                            qbft.Round
-	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
-	CreateType                                       string
-	ExpectedRoot                                     string
-	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
-	ExpectedError                                    string
+	StateValue                                        []byte
+	Round                                             qbft.Round
+	RoundChangeJustifications, ProposalJustifications []*qbft.SignedMessage
+	CreateType                                        string
+	ExpectedRoot                                      string
+	ExpectedState                                     types.Root `json:"-"` // Field is ignored by encoding/json"
+	ExpectedError                                     string
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
@@ -98,7 +99,7 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
+	return qbft.CreateProposal(state, config, test.Value[:], test.ProposalJustifications, test.RoundChangeJustifications)
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
@@ -110,11 +111,11 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 	}
 	config := testingutils.TestingConfig(ks)
 
-	if len(test.PrepareJustifications) > 0 {
-		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
+	if len(test.RoundChangeJustifications) > 0 {
+		state.LastPreparedRound = test.RoundChangeJustifications[0].Message.Round
 		state.LastPreparedValue = test.StateValue
 
-		for _, msg := range test.PrepareJustifications {
+		for _, msg := range test.RoundChangeJustifications {
 			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
 			if err != nil {
 				return nil, errors.Wrap(err, "could not add first message for signer")
