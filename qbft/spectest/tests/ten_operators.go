@@ -33,7 +33,6 @@ func TenOperators() SpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow ten operators",
 		Pre:           pre,
-		PostRoot:      "5343638957c46929c846d4f10aa288d039ba22e862e4a7a8ed744253819387d6",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),

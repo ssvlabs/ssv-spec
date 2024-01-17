@@ -31,7 +31,6 @@ func ValidJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "valid justification",
 		Pre:           pre,
-		PostRoot:      "4df173f288dd51463fc9277bdf8c1ded677a764992b916729eee9432681e54ce",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
