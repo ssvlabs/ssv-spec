@@ -180,27 +180,24 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 }
 
 var TestingSignedBlindedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
-	vBlk := TestingBeaconBlockV(version)
+	vBlk := TestingBlindedBeaconBlockV(version)
 
 	switch version {
 	case spec.DataVersionCapella:
 		if vBlk.Capella == nil {
 			panic("empty block")
 		}
-		return &capella.SignedBeaconBlock{
+		return &apiv1capella.SignedBlindedBeaconBlock{
 			Message:   vBlk.Capella,
 			Signature: signBeaconObject(vBlk.Capella, types.DomainProposer, ks),
 		}
 	case spec.DataVersionDeneb:
 		if vBlk.Deneb == nil {
-			panic("empty block contents")
-		}
-		if vBlk.Deneb.Block == nil {
 			panic("empty block")
 		}
-		return &deneb.SignedBeaconBlock{
-			Message:   vBlk.Deneb.Block,
-			Signature: signBeaconObject(vBlk.Deneb.Block, types.DomainProposer, ks),
+		return &apiv1deneb.SignedBlindedBeaconBlock{
+			Message:   vBlk.Deneb,
+			Signature: signBeaconObject(vBlk.Deneb, types.DomainProposer, ks),
 		}
 	default:
 		panic("unsupported version")
