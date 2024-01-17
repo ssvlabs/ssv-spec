@@ -3,15 +3,15 @@
 				"State": {
 						"PreConsensusContainer": {
 								"Signatures": {
-										"e8282e6cbe655fbbdd4e29be274fed8405525fa71a392e9505145a4a3b5a335d": {
-												"1": "jUzL5L5y3tbCgva/65SAPRav05CDaIPMAau7aY5bquikpMVhF4vgVNraWpyMfuCZAG3RyOJlpkkbeGLwbWxQNB8G1BymNq9VgCL4n4AsoYHQ+Ir6kBv/WJYpIw9hfb0P",
-												"2": "jfuO+OPEXlmKxwqUg7DBk3D011VXWJReBJcdjDoHZDnsH1o3JCbBewGG8zNQYEppAsop7oJzFb9i+BpYvAf/6ImcQaAPIxAmhLNt3gzgdhjiVOW3A3GXej7MdlTwYUet",
-												"3": "jWbIQMrYXB1jvxStkQLz+/7cZ9EaeJmHNrQrf9eK+OrxRRgv4CMAOYSnyqydyGTGFU8cit/jRHw6Zw2NG9Rw+hqcDYiW65noONDcM0iJ7CmuTgfTydIih41TlEksApgt",
-												"4": "hNISby70pHXRmKsGkZ38jmokPWYg7VH7oDYbR+yQ31Tinm7q7TRc2XBiC9aJCCmGE+uz8AMjvuUZiqkyEujZmzkGDuJcd42OCkFkPVA2hw6D839fwWi/uAj330cqkCH1",
-												"5": "raGt9LABtn9qSz0JJhZyvvZoWaN0PwleDPnoL1sxD64uxpJd1I9iWp8bmOkq05ZlAHc3Ppvupow/yVhNo3pz3e5Zv5GjdN1zwkNv6yuVGSXuaOCiJUc5BrNb1c8jUIKW",
-												"6": "k1Gk3Hmer5b4JNuEn+6YUrG7h/w9YaMK08oJKSeVGc7FvCyLKBgnBGluRMLWQ/wEAf2nyiACFVaP8gswXxvfnrh3N946ZAa9PKf/jzXKLgqvhVrioYjqoDIygMkz2oEI",
-												"7": "j6492j7mUnVXcvOcAJcSzmg3dQ3O7A2jhXtuBGzkaX3gBB4fWKlXfMdw6h8hkuNuDUahzo+yPZxenuj8voUVjLCLLDH5DgC2mFCT7a4uYYOO1gowufHc473lLVHJuPF7",
-												"8": "oycXXvbx+HhmJgAaTZXjrwB5k29j3PI+0630Aipnh5dDDiurrx0Q4Wct6HWIE/sIA4Na2lS3vm6j4HfMQ+i4ZJN/7/WCCp1Grgzp1lTTP5oe3O3agfqmVjD1rZdul4Sl"
+										"51c8dccedd34f6d37b3794a58fe6d9d966767797418dc2fd26dad30d1f550bfc": {
+												"1": "hXIT9CXrXnWRSMiU91DlnYqVe08lDBlEp+LG584uBH5pOLA104UvJnx/+XECLB5qDnnt+2xP1GrRVkiclFiYmYYPXau5GRfBmOzedWk96buyEFwBXwEbSBr4i0Cl2WC5",
+												"2": "rjnpdP9rxGQjdYJYV6qCh6vKjmujVnURzY/BH/wDIWVL74JedcBlOd47yRaYbCBRCbPiJHvbUBuex1Ted9GDy1ulHpt7Q+5nwyoUhz4l4aSkRnTX3hHaDTR47Rid8Plf",
+												"3": "s6ms7AR9om0RYYnJ7UCYxwW4rUA9Sc6yfBCiQIkjnCW88iQzg38RvLQX1FlO27quAaOVo+f+a6IWN+uMG9GWYvkiQ33hmjUn3hhIjmxeUk9orF8UVFvIoqx6gJxgaGn/",
+												"4": "sd6Iqff+GqpJi3Bc70a4ZzcinnJ7lQM9g8GXbHNIn4MIfeuHdnEp4DAsV5pMPZf3BZQofSIFofcuITOF32NYn28uvddKg3bkeFmzm3EGsPe7C1W9G5Ugo49i0XInDblp",
+												"5": "pt1IgpIRgw8+jHerTZqS5vv9//YN8iVPRLrJnlgadVrhakipZQ+JNLRRIIdkJ2umAUf538i9whwgAeEyXywB8afYqrb/unb2qiUZGY1Rh81AqqZsZfmcTZIc4+S3pZyo",
+												"6": "k0r1cUrQnKQmvajxRWcbpyKGRYQ67LVuKxkEg93ZNNUvuzGk4BdBv/c7nZoELE6iEcogKgZZvkPw92DiIzOWbUbS+PfcOt3Lte8fjSGk3cND0YwfNiKIrAen962Y/xWc",
+												"7": "iliBegobpmsZfSrs7QwXdwi/N2A0w8nMJs9OjJH0vLpJtJLy3SOhENmjCaH0922EFfFK0Hcr0AbRQaZqrFizbWlc035PHvQ5bRIhJaUkF7TCBKqIx9nJWsWBrwVe9lH9",
+												"8": "kb8tia8cVN7kpQMXuD0PA1CDJIr2eFHJ/r1/AaQLFt0Ucpjhr9KwYHqt9zBFTH0KFAHKxa+wUlvP4AXL0Zz6T8dDLkxMdzIun/tYJVHTSRx5dpyswypluPmUWuP/DTK8"
 										}
 								},
 								"Quorum": 9
@@ -25,7 +25,7 @@
 						"StartingDuty": {
 								"Type": 2,
 								"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-								"Slot": "7213792",
+								"Slot": "7413760",
 								"ValidatorIndex": "1",
 								"CommitteeIndex": 3,
 								"CommitteeLength": 128,

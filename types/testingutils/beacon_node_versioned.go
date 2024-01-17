@@ -17,8 +17,8 @@ import (
 
 const (
 
-	//TO-DO: Define Deneb Fork Epoch
-	ForkEpochPraterDeneb = 225431
+	//Deneb Fork Epoch
+	ForkEpochPraterDeneb = 231680
 
 	// ForkEpochPraterCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
 	ForkEpochPraterCapella = 162304

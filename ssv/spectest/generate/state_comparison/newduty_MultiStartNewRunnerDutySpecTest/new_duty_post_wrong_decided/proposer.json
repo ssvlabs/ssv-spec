@@ -92,7 +92,7 @@
 						"StartingDuty": {
 								"Type": 2,
 								"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-								"Slot": "7213792",
+								"Slot": "7413760",
 								"ValidatorIndex": "1",
 								"CommitteeIndex": 3,
 								"CommitteeLength": 128,
@@ -158,7 +158,7 @@
 				},
 				"QBFTController": {
 						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-						"Height": 7213842,
+						"Height": 7413810,
 						"StoredInstances": [
 								{
 										"State": {
@@ -218,7 +218,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 7213842,
+												"Height": 7413810,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,

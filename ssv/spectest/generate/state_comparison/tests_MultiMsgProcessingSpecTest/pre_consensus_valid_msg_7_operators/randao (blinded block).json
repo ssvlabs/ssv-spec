@@ -3,11 +3,11 @@
 				"State": {
 						"PreConsensusContainer": {
 								"Signatures": {
-										"e8282e6cbe655fbbdd4e29be274fed8405525fa71a392e9505145a4a3b5a335d": {
-												"1": "lOz/dm90cufIJiT2hSPas38pCQShOxHKw9T25CguR3gtm2YGex/fCf0wLo6ikUs3CGb2ETE2dDITsSCSRYdOmDzEtQEkQJpu/nOFWdSU6XoxPm96bNtKLOkyGP8oazyt",
-												"2": "uOCK7OwC0MoQhKS9ZDkR0oonO4/khTtVS6FEWRveNYLmIfljVwNk0IqxLaH9yI6UBjKeQ9ILBAtluPzel/kblxANvPs2ASKku16xhzI/6NlmuUz9zFAxPDAX8UeenTT9",
-												"3": "gfUBh+rC4on1+xZdmZ3qJhO4yD71yqsfoGe8+sj6FUhjpF2yygNpAf9BhCFs6lUkAj6DXoaePqsBGptQPuEH86XY1JXWlmNp3UTVtoEQAI3sebzAPzikoJfwXlfwG6+W",
-												"4": "jb4xaljIdl3R86aLMjj/9DWHTwRDxlOy+E/3VBR8Gt67kwCLBBYvwiNuX0Bu1wWpEk6HYuSftrtx7ucsojqQfravKLP3iADoWKsb/yuoe61VzJ6l6WbtJfOUTsfMroYN"
+										"51c8dccedd34f6d37b3794a58fe6d9d966767797418dc2fd26dad30d1f550bfc": {
+												"1": "rHjTH7l7ASgV86iBFAAJRtWER97JKQkSwEVS4VjHW6mQFf4zJ4TClfwrdNpznXp0APsfAclPXQ83mbDAtRzNdWS4l3tmw+Q+7A6MCU6oRzasq30zoFNY/9QSoD1Uwt9b",
+												"2": "h6HW6XY2A0xR30ysZjy+TxYTxkm60+vOe9IjJd7drauyifcOlBgTuF87LzBZ9PuBAyH1qeqox1F548QMw5RlQFsDJ9WxA3xBNQUBdGdOQzoeC+t9szsJ2DJQ6vkFmrEQ",
+												"3": "i/q8j4WqKxE3rLh345fY09YoQklJzWVo19R3CXnoeHoBFOP4nW88nU6NhdZF+L0cAXKZsqLMI995IGZZ2uCpO/VUcSTZCU0BRryFWJB+WWwM1As9eQ72xwHX2nWjZhI5",
+												"4": "pGt4LPJ7D8n7xVXSk/jNwd79bLZg2Hq44wB375iHh2CxNJ3dr5kpzBn9L8RtnJTqDhmwPYw4e7hWOvZ40htYpUKc+qwJoICzZcjtiOgc1/C49QLJBUTjN+oDVAYBIDF4"
 										}
 								},
 								"Quorum": 5
@@ -21,7 +21,7 @@
 						"StartingDuty": {
 								"Type": 2,
 								"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-								"Slot": "7213792",
+								"Slot": "7413760",
 								"ValidatorIndex": "1",
 								"CommitteeIndex": 3,
 								"CommitteeLength": 128,

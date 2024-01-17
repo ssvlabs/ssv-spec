@@ -3,8 +3,8 @@
 				"State": {
 						"PreConsensusContainer": {
 								"Signatures": {
-										"e8282e6cbe655fbbdd4e29be274fed8405525fa71a392e9505145a4a3b5a335d": {
-												"1": "kIKbKzpVno2eoFaeMyVBnvLPSw1aoOLq5Mc65Iji148VVvFGkuDk5s79TWJxIIR0CQhJ5lUQBizjFU4VI7GBAYNG5sZo5uCcDJxkPPejDLw0divySE8GEK52dCkp3pnR"
+										"51c8dccedd34f6d37b3794a58fe6d9d966767797418dc2fd26dad30d1f550bfc": {
+												"1": "sn94MvbFCTZWoHaRRmtYb6BIHLk/hkVbeAVG9wuMFXt+fuYpDmotwO7pxw4/LgevCTrPabxzWuJkqR+2O356H9vxrfYZq5eE1buGbMHq8TTS724HjjKXfBl+olpomHXh"
 										}
 								},
 								"Quorum": 3
@@ -18,7 +18,7 @@
 						"StartingDuty": {
 								"Type": 2,
 								"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-								"Slot": "7213792",
+								"Slot": "7413760",
 								"ValidatorIndex": "1",
 								"CommitteeIndex": 3,
 								"CommitteeLength": 128,
