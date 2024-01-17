@@ -141,8 +141,8 @@ type SignedMessage struct {
 	//			= 852088 ~= 2^20
 	Message Message // message for which this signature is for
 
-	// Full data max value is ConsensusData max value ~= 2^8 + 8 + 2^20 + 5305388 = 6354228 ~= 2^23
-	FullData []byte `ssz-max:"6354228"`
+	// Full data max value is ConsensusData max value ~= 2^8 + 8 + 2^20 + 3413116 = 4461956 ~= 2^22
+	FullData []byte `ssz-max:"4461956"`
 }
 
 func (signedMsg *SignedMessage) GetSignature() types.Signature {

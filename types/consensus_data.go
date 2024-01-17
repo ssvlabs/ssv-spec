@@ -118,20 +118,44 @@ type ConsensusData struct {
 	// BeaconBlockBody is
 	//			96 + ETH1Data(2*32+8) + 32 +
 	//			16*ProposerSlashing(2*SignedBeaconBlockHeader(96 + 3*32 + 2*8)) +
-	//			2*AttesterSlashing(2*IndexedAttestation(2048*8 + 96 + AttestationData(2*8 + 32 + 2*(8+32)))) +
-	//			128*Attestation(2048*8 + 96 + AttestationData(2*8 + 32 + 2*(8+32))) +
+	//			2*AttesterSlashing(2*IndexedAttestation(2048 + 96 + AttestationData(2*8 + 32 + 2*(8+32)))) +
+	//			128*Attestation(2048 + 96 + AttestationData(2*8 + 32 + 2*(8+32))) +
 	//			16*Deposit(33*32 + 48 + 32 + 8 + 96) +
 	//			16*SignedVoluntaryExit(96 + 2*8) +
 	//			SyncAggregate(64 + 96) +
 	//			ExecutionPayload(32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 1048576*1073741824 + 16 * (2*8 + 20 + 8) + 8 + 8) +
 	//			BLSToExecutionChanges 16 * (96 + (8 + 48 + 20)) +
 	//			KZGCommitment 4096 * 48
-	// = 5305388 (everything but transactions) + 2^50 (transaction list)
+	// = 1315964 (everything but transactions) + 2^50 (transaction list)
 	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
 	// Current 30M gas limit produces 30M / 16 (call data cost) = 1,875,000 bytes (https://eips.ethereum.org/EIPS/eip-4488)
-	// we can upper limit transactions to 2^21, together with the rest of the data 3208236 + 2^21  = 5,305,388 bytes
-	// Exmplanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
-	DataSSZ []byte `ssz-max:"5305388"` // 3208236 + 2^21 = 5,305,388
+	// we can upper limit transactions to 2^21, together with the rest of the data 1315964 + 2^21  = 3,413,116 bytes
+	// Explanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
+	// Python script for Deneb.BlockContents without transactions:
+	// 		# Constants
+	// 		KZG_PROOFS_SIZE = 6 * 48  # KZGProofs size
+	// 		BLOBS_SIZE = 6 * 131072  # Blobs size
+	// 		BEACON_BLOCK_OVERHEAD = 2 * 32 + 2 * 8  # Additional overhead for BeaconBlock
+	// 		# Components of BeaconBlockBody
+	// 		ETH1_DATA_SIZE = 96 + 2 * 32 + 8 + 32  # ETH1Data
+	// 		PROPOSER_SLASHING_SIZE = 16 * (2 * (96 + 3 * 32 + 2 * 8))  # ProposerSlashing
+	// 		ATTESTER_SLASHING_SIZE = 2 * (2 * (2048 + 96 + (2 * 8 + 32 + 2 * (8 + 32))))  # AttesterSlashing
+	// 		ATTESTATION_SIZE = 128 * (2048 + 96 + (2 * 8 + 32 + 2 * (8 + 32)))  # Attestation
+	// 		DEPOSIT_SIZE = 16 * (33 * 32 + 48 + 32 + 8 + 96)  # Deposit
+	// 		SIGNED_VOLUNTARY_EXIT_SIZE = 16 * (96 + 2 * 8)  # SignedVoluntaryExit
+	// 		SYNC_AGGREGATE_SIZE = 64 + 96  # SyncAggregate
+	// 		EXECUTION_PAYLOAD_NO_TRANSACTIONS = 32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 16 * (2*8 + 20 + 8) + 8 + 8
+	// 		BLS_TO_EXECUTION_CHANGES_SIZE = 16 * (96 + (8 + 48 + 20))  # BLSToExecutionChanges
+	// 		KZG_COMMITMENT_SIZE = 4096 * 48  # KZGCommitment
+	// 		# BeaconBlockBody total size without transactions
+	// 		beacon_block_body_size_without_execution_payload = (
+	// 		    ETH1_DATA_SIZE + PROPOSER_SLASHING_SIZE + ATTESTER_SLASHING_SIZE +
+	// 		    ATTESTATION_SIZE + DEPOSIT_SIZE + SIGNED_VOLUNTARY_EXIT_SIZE +
+	// 		    SYNC_AGGREGATE_SIZE + EXECUTION_PAYLOAD_NO_TRANSACTIONS + BLS_TO_EXECUTION_CHANGES_SIZE + KZG_COMMITMENT_SIZE
+	// 		)
+	// 		# Total size of Deneb.BlockContents and BeaconBlock without transactions
+	// 		total_size_without_execution_payload = KZG_PROOFS_SIZE + BLOBS_SIZE + BEACON_BLOCK_OVERHEAD + beacon_block_body_size_without_execution_payload
+	DataSSZ []byte `ssz-max:"3413116"` // 1315964 + 2^21 = 3,413,116
 }
 
 func (cid *ConsensusData) Validate() error {
