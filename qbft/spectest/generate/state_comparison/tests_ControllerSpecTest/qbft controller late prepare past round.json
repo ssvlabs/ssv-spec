@@ -65,7 +65,7 @@
 										"LastPreparedRound": 2,
 										"LastPreparedValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
 										"ProposalAcceptedForCurrentRound": {
-												"Signature": "qV5LdutK2zk8Xbqu+xKdm1T33abJK26BV1I8cmor0GIZQdtFEJh4KP/6KMA1IZRSAH7cSAX9fvXO4/r4cVjuCRIFcdRL/cpnvfcAoTu0T8FBW1XqybwpwJcqglpkSvPk",
+												"Signature": "lTVuw5lMv7yfutYfgc67pA0R7I7muEgqb9WvVEtI9oe9TlmIWnrwRdHDh4aQTT+WBKwuYVgpTAhLvqqP1JbQFjM1KWiEf+UocrX8aJP2dtaMbP4plTc1ovvorYo1NWAj",
 												"Signers": [
 														1
 												],
@@ -109,12 +109,12 @@
 																180
 														],
 														"DataRound": 0,
-														"RoundChangeJustification": [
+														"RoundChangeJustification": null,
+														"ProposalJustification": [
 																"t3wDXB0dnGx8wigQxQqFyeVgrXkVCQVQYd/gfUA+2qEwQWFGbUn2SES25c9LCXCfBp3r/ZFDj5fUFKT2TNy0+M8elwP42hQb6fdFCQh+L4RJIxSwNBlmxLj8Ftkx9roIbAAAAHQAAADEAAAAAQAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA==",
 																"mMq307rvpww3BxdPm0KCuat1CPoddAl9w/tnc524RivFpWby1PNqd9ymZl6/aFkOGOkeJoqoIZJgn22ff+c9UplIJTKxcIGm5d70ocze3Sx7TCq+A2xixwEsOb/A0831bAAAAHQAAADEAAAAAgAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA==",
 																"lLT5TkZ3/7MmNTrG07fwT6CwDZ4una1ok5q6S7EHMBfoBJSNN5XOl3X1Hir/GbWLDs+i2Xrwlu+WjIqNYsaICol14dSQYu1LErxRH0dre4CUBLD7uPMIRUej/0GNt2S8bAAAAHQAAADEAAAAAwAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA=="
-														],
-														"PrepareJustification": null
+														]
 												},
 												"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 										},
@@ -169,14 +169,14 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																}
 														],
 														"2": [
 																{
-																		"Signature": "qV5LdutK2zk8Xbqu+xKdm1T33abJK26BV1I8cmor0GIZQdtFEJh4KP/6KMA1IZRSAH7cSAX9fvXO4/r4cVjuCRIFcdRL/cpnvfcAoTu0T8FBW1XqybwpwJcqglpkSvPk",
+																		"Signature": "lTVuw5lMv7yfutYfgc67pA0R7I7muEgqb9WvVEtI9oe9TlmIWnrwRdHDh4aQTT+WBKwuYVgpTAhLvqqP1JbQFjM1KWiEf+UocrX8aJP2dtaMbP4plTc1ovvorYo1NWAj",
 																		"Signers": [
 																				1
 																		],
@@ -220,12 +220,12 @@
 																						180
 																				],
 																				"DataRound": 0,
-																				"RoundChangeJustification": [
+																				"RoundChangeJustification": null,
+																				"ProposalJustification": [
 																						"t3wDXB0dnGx8wigQxQqFyeVgrXkVCQVQYd/gfUA+2qEwQWFGbUn2SES25c9LCXCfBp3r/ZFDj5fUFKT2TNy0+M8elwP42hQb6fdFCQh+L4RJIxSwNBlmxLj8Ftkx9roIbAAAAHQAAADEAAAAAQAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA==",
 																						"mMq307rvpww3BxdPm0KCuat1CPoddAl9w/tnc524RivFpWby1PNqd9ymZl6/aFkOGOkeJoqoIZJgn22ff+c9UplIJTKxcIGm5d70ocze3Sx7TCq+A2xixwEsOb/A0831bAAAAHQAAADEAAAAAgAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA==",
 																						"lLT5TkZ3/7MmNTrG07fwT6CwDZ4una1ok5q6S7EHMBfoBJSNN5XOl3X1Hir/GbWLDs+i2Xrwlu+WjIqNYsaICol14dSQYu1LErxRH0dre4CUBLD7uPMIRUej/0GNt2S8bAAAAHQAAADEAAAAAwAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA=="
-																				],
-																				"PrepareJustification": null
+																				]
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																}
@@ -281,7 +281,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																},
@@ -331,7 +331,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																}
@@ -383,7 +383,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																},
@@ -433,7 +433,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																},
@@ -483,7 +483,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																}
@@ -539,7 +539,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": null
 																},
@@ -589,7 +589,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": null
 																},
@@ -639,7 +639,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": null
 																}
@@ -695,7 +695,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																},
@@ -745,7 +745,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																},
@@ -795,7 +795,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": null,
-																				"PrepareJustification": null
+																				"ProposalJustification": null
 																		},
 																		"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																}

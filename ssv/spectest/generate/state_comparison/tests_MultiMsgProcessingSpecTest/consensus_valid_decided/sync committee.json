@@ -116,7 +116,7 @@
 														],
 														"DataRound": 0,
 														"RoundChangeJustification": [],
-														"PrepareJustification": []
+														"ProposalJustification": []
 												},
 												"FullData": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
 										},
@@ -171,7 +171,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
-																				"PrepareJustification": []
+																				"ProposalJustification": []
 																		},
 																		"FullData": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
 																}
@@ -227,7 +227,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
-																				"PrepareJustification": []
+																				"ProposalJustification": []
 																		},
 																		"FullData": ""
 																},
@@ -277,7 +277,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
-																				"PrepareJustification": []
+																				"ProposalJustification": []
 																		},
 																		"FullData": ""
 																},
@@ -327,7 +327,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
-																				"PrepareJustification": []
+																				"ProposalJustification": []
 																		},
 																		"FullData": ""
 																}
@@ -383,7 +383,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
-																				"PrepareJustification": []
+																				"ProposalJustification": []
 																		},
 																		"FullData": ""
 																},
@@ -433,7 +433,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
-																				"PrepareJustification": []
+																				"ProposalJustification": []
 																		},
 																		"FullData": ""
 																},
@@ -483,7 +483,7 @@
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
-																				"PrepareJustification": []
+																				"ProposalJustification": []
 																		},
 																		"FullData": ""
 																}
@@ -796,7 +796,7 @@
 																],
 																"DataRound": 0,
 																"RoundChangeJustification": [],
-																"PrepareJustification": []
+																"ProposalJustification": []
 														},
 														"FullData": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
 												},
@@ -851,7 +851,7 @@
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"ProposalJustification": []
 																				},
 																				"FullData": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
 																		}
@@ -907,7 +907,7 @@
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"ProposalJustification": []
 																				},
 																				"FullData": ""
 																		},
@@ -957,7 +957,7 @@
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"ProposalJustification": []
 																				},
 																				"FullData": ""
 																		},
@@ -1007,7 +1007,7 @@
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"ProposalJustification": []
 																				},
 																				"FullData": ""
 																		}
@@ -1063,7 +1063,7 @@
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"ProposalJustification": []
 																				},
 																				"FullData": ""
 																		},
@@ -1113,7 +1113,7 @@
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"ProposalJustification": []
 																				},
 																				"FullData": ""
 																		},
@@ -1163,7 +1163,7 @@
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"ProposalJustification": []
 																				},
 																				"FullData": ""
 																		}

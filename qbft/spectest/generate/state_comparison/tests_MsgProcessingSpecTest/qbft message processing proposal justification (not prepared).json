@@ -59,7 +59,7 @@
 		"LastPreparedRound": 0,
 		"LastPreparedValue": null,
 		"ProposalAcceptedForCurrentRound": {
-				"Signature": "hRyVCNR8uvSvhzAyQN7zOOc4HQSsi64uPUL3kYrv3hXEvdRHmH5p6x6qe8tJoRI+BxGNdX+gXLRuxW8O0FV18IJZ50wkj0IeO56sllG47V6voSrnkiUaVhNBeL8JAKO1",
+				"Signature": "g7f3CGHvfqAUtlFSfxw0pASdlMv763q8zkbYEEfdHrvXnhSJi9v1F4YU76PpLluHD8XMaUa/1xKUFB++PUUuH4yRQzmowhAgpOrmybuJOvbpmUmIMbIZa89Z52nCd8K2",
 				"Signers": [
 						1
 				],
@@ -103,12 +103,12 @@
 								180
 						],
 						"DataRound": 0,
-						"RoundChangeJustification": [
+						"RoundChangeJustification": null,
+						"ProposalJustification": [
 								"kW6iUpA50GpFa+2t6ePDCat26YdRRXfmNIPLmBXU42mlTfVo/nDtIGEQ0fmzz0XnAF+EdvbEjMMUN+k5YHIOHtEYIMeLZB44oCDSTOY7ECawp907ZQrHB5iOHnXGbd14bAAAAHQAAADEAAAAAQAAAAAAAAADAAAAAAAAAAAAAAAAAAAABQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA==",
 								"shil9Fx1Hzw+uDNtKQbohi14+Gz1Elz76l1XRZXHh7NH1vKk/0n54T3EdhuKV1SJEt2YzCWViMOcGIAGtGyqk7+4HU1TcwvWmlhpbLAttCUPgXk2aJzAzZbaPsZn6UK8bAAAAHQAAADEAAAAAgAAAAAAAAADAAAAAAAAAAAAAAAAAAAABQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA==",
 								"kaQq8woHMXCJYNwszLvuFvZGpP1IqFyNGBdPz9a1Vf2KdEl2ecJjJ1t9jv+4+airEvRm8HvMVX6Pz8vw1LTkhQZyifwyrR/mH9ng0Gudv5QW/Ty8MCMrlN6eVOooLRn8bAAAAHQAAADEAAAAAwAAAAAAAAADAAAAAAAAAAAAAAAAAAAABQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA=="
-						],
-						"PrepareJustification": null
+						]
 				},
 				"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 		},
@@ -118,7 +118,7 @@
 				"Msgs": {
 						"5": [
 								{
-										"Signature": "hRyVCNR8uvSvhzAyQN7zOOc4HQSsi64uPUL3kYrv3hXEvdRHmH5p6x6qe8tJoRI+BxGNdX+gXLRuxW8O0FV18IJZ50wkj0IeO56sllG47V6voSrnkiUaVhNBeL8JAKO1",
+										"Signature": "g7f3CGHvfqAUtlFSfxw0pASdlMv763q8zkbYEEfdHrvXnhSJi9v1F4YU76PpLluHD8XMaUa/1xKUFB++PUUuH4yRQzmowhAgpOrmybuJOvbpmUmIMbIZa89Z52nCd8K2",
 										"Signers": [
 												1
 										],
@@ -162,12 +162,12 @@
 														180
 												],
 												"DataRound": 0,
-												"RoundChangeJustification": [
+												"RoundChangeJustification": null,
+												"ProposalJustification": [
 														"kW6iUpA50GpFa+2t6ePDCat26YdRRXfmNIPLmBXU42mlTfVo/nDtIGEQ0fmzz0XnAF+EdvbEjMMUN+k5YHIOHtEYIMeLZB44oCDSTOY7ECawp907ZQrHB5iOHnXGbd14bAAAAHQAAADEAAAAAQAAAAAAAAADAAAAAAAAAAAAAAAAAAAABQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA==",
 														"shil9Fx1Hzw+uDNtKQbohi14+Gz1Elz76l1XRZXHh7NH1vKk/0n54T3EdhuKV1SJEt2YzCWViMOcGIAGtGyqk7+4HU1TcwvWmlhpbLAttCUPgXk2aJzAzZbaPsZn6UK8bAAAAHQAAADEAAAAAgAAAAAAAAADAAAAAAAAAAAAAAAAAAAABQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA==",
 														"kaQq8woHMXCJYNwszLvuFvZGpP1IqFyNGBdPz9a1Vf2KdEl2ecJjJ1t9jv+4+airEvRm8HvMVX6Pz8vw1LTkhQZyifwyrR/mH9ng0Gudv5QW/Ty8MCMrlN6eVOooLRn8bAAAAHQAAADEAAAAAwAAAAAAAAADAAAAAAAAAAAAAAAAAAAABQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA=="
-												],
-												"PrepareJustification": null
+												]
 										},
 										"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 								}
