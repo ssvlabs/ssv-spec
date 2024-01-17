@@ -88,8 +88,8 @@ func isValidProposal(
 	if err := isProposalJustification(
 		state,
 		config,
-		roundChangeJustification,
 		proposalJustification,
+		roundChangeJustification,
 		state.Height,
 		signedProposal.Message.Round,
 		signedProposal.FullData,
@@ -235,8 +235,8 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		Identifier: state.ID,
 
 		Root:                     r,
-		RoundChangeJustification: roundChangesData,
-		ProposalJustification:    preparesData,
+		RoundChangeJustification: preparesData,
+		ProposalJustification:    roundChangesData,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {

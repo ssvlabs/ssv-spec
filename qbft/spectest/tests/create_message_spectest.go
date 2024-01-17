@@ -99,7 +99,7 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.ProposalJustifications)
+	return qbft.CreateProposal(state, config, test.Value[:], test.ProposalJustifications, test.RoundChangeJustifications)
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
@@ -111,11 +111,11 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 	}
 	config := testingutils.TestingConfig(ks)
 
-	if len(test.ProposalJustifications) > 0 {
-		state.LastPreparedRound = test.ProposalJustifications[0].Message.Round
+	if len(test.RoundChangeJustifications) > 0 {
+		state.LastPreparedRound = test.RoundChangeJustifications[0].Message.Round
 		state.LastPreparedValue = test.StateValue
 
-		for _, msg := range test.ProposalJustifications {
+		for _, msg := range test.RoundChangeJustifications {
 			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
 			if err != nil {
 				return nil, errors.Wrap(err, "could not add first message for signer")

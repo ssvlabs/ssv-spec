@@ -7,15 +7,14 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidRoundChangeJustification tests a proposal for > 1 round, not prepared previously but one of the round change justifications has validRoundChange != nil
-func InvalidRoundChangeJustification() tests.SpecTest {
+// NoProposalJustification tests a proposal for > 1 round, not prepared previously but without quorum of round change msgs justification
+func NoProposalJustification() tests.SpecTest {
 	pre := testingutils.BaseInstance()
-	ks := testingutils.Testing4SharesSet()
 
+	ks := testingutils.Testing4SharesSet()
 	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
 		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
 	}
 
 	msgs := []*qbft.SignedMessage{
@@ -25,11 +24,11 @@ func InvalidRoundChangeJustification() tests.SpecTest {
 		),
 	}
 	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal rc msg invalid",
+		Name:           "no rc quorum",
 		Pre:            pre,
 		PostRoot:       "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: failed to verify signature",
+		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
 	}
 }
