@@ -4,7 +4,9 @@ import "github.com/bloxapp/ssv-spec/qbft"
 
 type TimerState struct {
 	Timeouts int
-	Round    qbft.Round
+	// number of seconds until next timeout
+	NextTimeout int
+	Round       qbft.Round
 }
 
 type TestQBFTTimer struct {

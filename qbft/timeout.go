@@ -16,6 +16,28 @@ var (
 	CutoffRound = 15 // stop processing instances after 8*2+120*6 = 14.2 min (~ 2 epochs)
 )
 
+type RoundTimer struct {
+	// role is the role of the QBFT instance
+	role types.BeaconRole
+	// height is the current height of the instance
+	Height Height
+	// network is the beacon network
+	network types.BeaconNetwork
+	//current unix epoch time in seconds
+	currentTime uint64
+}
+
+func (t *RoundTimer) TimeoutForRound(round Round) uint64 {
+	switch t.role {
+	case types.BNRoleAttester | types.BNRoleSyncCommittee:
+		return AttestationOrSyncCommitteeTimeout(round, t.Height, t.network) - t.currentTime
+	case types.BNRoleAggregator | types.BNRoleSyncCommitteeContribution:
+		return AggregationOrContributionTimeout(round, t.Height, t.network) - t.currentTime
+	default:
+		return DefaultTimeout(round)
+	}
+}
+
 // RoundTimeout returns the unix epoch time (seconds) in which we should send a RC message
 // Called for all beacon duties other than proposals
 func RoundTimeout(round Round, height Height, baseDuration uint64, network types.BeaconNetwork) uint64 {
@@ -45,6 +67,15 @@ func AttestationOrSyncCommitteeTimeout(round Round, height Height, network types
 // AggregationOrContributionTimeout returns the unix epoch time (seconds) in which we should send a RC message
 func AggregationOrContributionTimeout(r Round, height Height, network types.BeaconNetwork) uint64 {
 	return RoundTimeout(r, height, 8, network)
+}
+
+// DefaultTimeout returns the duration in seconds in which we should send a RC message
+func DefaultTimeout(round Round) uint64 {
+	if round <= quickTimeoutThreshold {
+		return quickTimeout
+	} else {
+		return slowTimeout
+	}
 }
 
 func (i *Instance) UponRoundTimeout() error {
