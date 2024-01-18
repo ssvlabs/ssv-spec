@@ -17,7 +17,7 @@ func Round5() tests.SpecTest {
 	pre.State.Round = 5
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 5)
 
-	return &SpecTest{
+	return &TimeoutTest{
 		Name:      "round 5",
 		Pre:       pre,
 		PostRoot:  sc.Root(),

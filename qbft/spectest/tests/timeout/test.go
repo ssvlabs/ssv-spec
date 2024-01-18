@@ -13,7 +13,7 @@ import (
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-type SpecTest struct {
+type TimeoutTest struct {
 	Name               string
 	Pre                *qbft.Instance
 	PostRoot           string
@@ -23,11 +23,11 @@ type SpecTest struct {
 	ExpectedError      string
 }
 
-func (test *SpecTest) TestName() string {
+func (test *TimeoutTest) TestName() string {
 	return "qbft timeout " + test.Name
 }
 
-func (test *SpecTest) Run(t *testing.T) {
+func (test *TimeoutTest) Run(t *testing.T) {
 	err := test.Pre.UponRoundTimeout()
 
 	if len(test.ExpectedError) != 0 {
@@ -66,6 +66,6 @@ func (test *SpecTest) Run(t *testing.T) {
 	}
 }
 
-func (test *SpecTest) GetPostState() (interface{}, error) {
+func (test *TimeoutTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }

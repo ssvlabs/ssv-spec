@@ -96,10 +96,10 @@ func TestJson(t *testing.T) {
 
 				tests[testName] = typedTest
 				typedTest.Run(t)
-			case reflect.TypeOf(&timeout.SpecTest{}).String():
+			case reflect.TypeOf(&timeout.TimeoutTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
-				typedTest := &timeout.SpecTest{}
+				typedTest := &timeout.TimeoutTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				// a little trick we do to instantiate all the internal instance params
