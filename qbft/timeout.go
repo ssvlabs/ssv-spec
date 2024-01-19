@@ -18,21 +18,21 @@ var (
 
 type RoundTimer struct {
 	// role is the role of the QBFT instance
-	role types.BeaconRole
+	Role types.BeaconRole
 	// height is the current height of the instance
 	Height Height
 	// network is the beacon network
-	network types.BeaconNetwork
+	Network types.BeaconNetwork
 	//current unix epoch time in seconds
-	currentTime uint64
+	CurrentTime uint64
 }
 
 func (t *RoundTimer) TimeoutForRound(round Round) uint64 {
-	switch t.role {
+	switch t.Role {
 	case types.BNRoleAttester | types.BNRoleSyncCommittee:
-		return AttestationOrSyncCommitteeTimeout(round, t.Height, t.network) - t.currentTime
+		return AttestationOrSyncCommitteeTimeout(round, t.Height, t.Network) - t.CurrentTime
 	case types.BNRoleAggregator | types.BNRoleSyncCommitteeContribution:
-		return AggregationOrContributionTimeout(round, t.Height, t.network) - t.currentTime
+		return AggregationOrContributionTimeout(round, t.Height, t.Network) - t.CurrentTime
 	default:
 		return DefaultTimeout(round)
 	}
