@@ -13,7 +13,38 @@ import (
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-type TimeoutTest struct {
+// TimeoutDurationTest tests the expected duration of the timer
+type TimeoutDurationTest struct {
+	Name             string
+	Role             types.BeaconRole
+	Height           qbft.Height
+	Round            qbft.Round
+	Network          types.BeaconNetwork
+	CurrentTime      uint64
+	ExpectedDuration uint64
+}
+
+func (test *TimeoutDurationTest) GetPostState() (interface{}, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (test *TimeoutDurationTest) TestName() string {
+	return "qbft timeout duration " + test.Name
+}
+
+func (test *TimeoutDurationTest) Run(t *testing.T) {
+	timer := qbft.RoundTimer{
+		Role:        test.Role,
+		Height:      test.Height,
+		Network:     test.Network,
+		CurrentTime: test.CurrentTime,
+	}
+
+	require.Equal(t, test.ExpectedDuration, timer.TimeoutForRound(test.Round), "timeout duration is not as expected")
+}
+
+type UponTimeoutTest struct {
 	Name               string
 	Pre                *qbft.Instance
 	PostRoot           string
@@ -23,11 +54,11 @@ type TimeoutTest struct {
 	ExpectedError      string
 }
 
-func (test *TimeoutTest) TestName() string {
-	return "qbft timeout " + test.Name
+func (test *UponTimeoutTest) TestName() string {
+	return "qbft upon timeout " + test.Name
 }
 
-func (test *TimeoutTest) Run(t *testing.T) {
+func (test *UponTimeoutTest) Run(t *testing.T) {
 	err := test.Pre.UponRoundTimeout()
 
 	if len(test.ExpectedError) != 0 {
@@ -66,6 +97,6 @@ func (test *TimeoutTest) Run(t *testing.T) {
 	}
 }
 
-func (test *TimeoutTest) GetPostState() (interface{}, error) {
+func (test *UponTimeoutTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
