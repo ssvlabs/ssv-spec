@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"golang.org/x/exp/constraints"
 )
 
 var (
@@ -43,7 +44,7 @@ func (t *RoundTimer) TimeoutForRound(round Round) uint64 {
 func RoundTimeout(round Round, height Height, baseDuration uint64, network types.BeaconNetwork) uint64 {
 	// Calculate additional timeout in seconds based on round
 	var additionalTimeout uint64
-	additionalTimeout = uint64(round) * quickTimeout
+	additionalTimeout = uint64(min(round, quickTimeoutThreshold)) * quickTimeout
 	if round > quickTimeoutThreshold {
 		slowPortion := uint64(round-quickTimeoutThreshold) * slowTimeout
 		additionalTimeout += slowPortion
@@ -100,4 +101,12 @@ func (i *Instance) UponRoundTimeout() error {
 	}
 
 	return nil
+}
+
+// min returns the minimum of two values
+func min[T constraints.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
 }
