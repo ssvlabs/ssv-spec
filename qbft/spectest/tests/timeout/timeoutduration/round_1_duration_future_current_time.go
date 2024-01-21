@@ -8,15 +8,16 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-// Round9Duration tests timeout duration for round 9 where the current time is the expected start of the round
-func Round9Duration() *tests.MultiSpecTest {
-	testingNetwork := types.HoleskyNetwork
-	height := qbft.Height(40)
-	var round qbft.Round = 9
+// Round1DurationFutureCurrentTime tests timeout duration for round 1 where the current time is after the expected
+// start of the round
+func Round1DurationFutureCurrentTime() *tests.MultiSpecTest {
+	var testingNetwork = types.HoleskyNetwork
+	height := qbft.FirstHeight
+	round := qbft.FirstRound
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
 	return &tests.MultiSpecTest{
-		Name: "round 9 duration",
+		Name: "round 1 duration future current time",
 		Tests: []tests.SpecTest{
 			&timeout.TimeoutDurationTest{
 				Name:             "sync committee",
@@ -24,8 +25,8 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
-				ExpectedDuration: 120,
+				CurrentTime:      dutyStartTime + 12,
+				ExpectedDuration: 0,
 			},
 			&timeout.TimeoutDurationTest{
 				Name:             "sync committee contribution",
@@ -33,8 +34,8 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24,
-				ExpectedDuration: 120,
+				CurrentTime:      dutyStartTime + 12,
+				ExpectedDuration: 0,
 			},
 			&timeout.TimeoutDurationTest{
 				Name:             "attester",
@@ -42,8 +43,8 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
-				ExpectedDuration: 120,
+				CurrentTime:      dutyStartTime + 12,
+				ExpectedDuration: 0,
 			},
 			&timeout.TimeoutDurationTest{
 				Name:             "aggregator",
@@ -51,8 +52,8 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24,
-				ExpectedDuration: 120,
+				CurrentTime:      dutyStartTime + 12,
+				ExpectedDuration: 0,
 			},
 			&timeout.TimeoutDurationTest{
 				Name:             "block proposer",
@@ -60,8 +61,8 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
-				ExpectedDuration: 120,
+				CurrentTime:      dutyStartTime + 12,
+				ExpectedDuration: 2,
 			},
 		},
 	}

@@ -20,8 +20,8 @@ type TimeoutDurationTest struct {
 	Height           qbft.Height
 	Round            qbft.Round
 	Network          types.BeaconNetwork
-	CurrentTime      uint64
-	ExpectedDuration uint64
+	CurrentTime      int64
+	ExpectedDuration int64
 }
 
 func (test *TimeoutDurationTest) GetPostState() (interface{}, error) {

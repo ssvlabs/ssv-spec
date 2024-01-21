@@ -1,6 +1,7 @@
 package timeoutduration
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
@@ -10,7 +11,8 @@ import (
 // Round1Duration tests timeout duration for round 1
 func Round1Duration() *tests.MultiSpecTest {
 	var testingNetwork = types.HoleskyNetwork
-	var currentTime = testingNetwork.MinGenesisTime()
+	height := qbft.FirstHeight
+	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
 	return &tests.MultiSpecTest{
 		Name: "round 1",
@@ -21,7 +23,7 @@ func Round1Duration() *tests.MultiSpecTest {
 				Height:           0,
 				Round:            qbft.FirstRound,
 				Network:          testingNetwork,
-				CurrentTime:      currentTime,
+				CurrentTime:      dutyStartTime,
 				ExpectedDuration: 6,
 			},
 			&timeout.TimeoutDurationTest{
@@ -30,7 +32,7 @@ func Round1Duration() *tests.MultiSpecTest {
 				Height:           0,
 				Round:            qbft.FirstRound,
 				Network:          testingNetwork,
-				CurrentTime:      currentTime,
+				CurrentTime:      dutyStartTime,
 				ExpectedDuration: 10,
 			},
 			&timeout.TimeoutDurationTest{
@@ -39,7 +41,7 @@ func Round1Duration() *tests.MultiSpecTest {
 				Height:           0,
 				Round:            qbft.FirstRound,
 				Network:          testingNetwork,
-				CurrentTime:      currentTime,
+				CurrentTime:      dutyStartTime,
 				ExpectedDuration: 6,
 			},
 			&timeout.TimeoutDurationTest{
@@ -48,7 +50,7 @@ func Round1Duration() *tests.MultiSpecTest {
 				Height:           0,
 				Round:            qbft.FirstRound,
 				Network:          testingNetwork,
-				CurrentTime:      currentTime,
+				CurrentTime:      dutyStartTime,
 				ExpectedDuration: 10,
 			},
 			&timeout.TimeoutDurationTest{
@@ -57,7 +59,7 @@ func Round1Duration() *tests.MultiSpecTest {
 				Height:           0,
 				Round:            qbft.FirstRound,
 				Network:          testingNetwork,
-				CurrentTime:      currentTime,
+				CurrentTime:      dutyStartTime,
 				ExpectedDuration: 2,
 			},
 		},

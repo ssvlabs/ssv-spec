@@ -13,7 +13,7 @@ func Round9DurationOnDutyStartTime() *tests.MultiSpecTest {
 	testingNetwork := types.HoleskyNetwork
 	height := qbft.Height(40)
 	var round qbft.Round = 9
-	dutyStartTime := uint64(testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height)))
+	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
 	return &tests.MultiSpecTest{
 		Name: "round 9 duration duty start time",
