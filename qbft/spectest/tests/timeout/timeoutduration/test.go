@@ -19,8 +19,7 @@ type TimeoutDurationTest struct {
 }
 
 func (test *TimeoutDurationTest) GetPostState() (interface{}, error) {
-	//TODO implement me
-	panic("implement me")
+	return nil, nil
 }
 
 func (test *TimeoutDurationTest) TestName() string {

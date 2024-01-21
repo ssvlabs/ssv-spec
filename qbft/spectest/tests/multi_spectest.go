@@ -8,8 +8,7 @@ type MultiSpecTest struct {
 }
 
 func (test *MultiSpecTest) GetPostState() (interface{}, error) {
-	//TODO implement me
-	panic("implement me")
+	return nil, nil
 }
 
 func (test *MultiSpecTest) TestName() string {
