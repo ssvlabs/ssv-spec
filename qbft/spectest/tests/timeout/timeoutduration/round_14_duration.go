@@ -8,15 +8,15 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-// Round9Duration tests timeout duration for round 9 where the current time is the expected start of the round
-func Round9Duration() *tests.MultiSpecTest {
+// Round14Duration tests timeout duration for round 14 where the current time is the expected start of the round
+func Round14Duration() *tests.MultiSpecTest {
 	testingNetwork := types.HoleskyNetwork
 	height := qbft.Height(40)
-	var round qbft.Round = 9
+	var round qbft.Round = 14
 	dutyStartTime := uint64(testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height)))
 
 	return &tests.MultiSpecTest{
-		Name: "round 9 duration",
+		Name: "round 14 duration",
 		Tests: []tests.SpecTest{
 			&timeout.TimeoutDurationTest{
 				Name:             "sync committee",
@@ -24,7 +24,7 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
+				CurrentTime:      dutyStartTime + 20 + 5*120,
 				ExpectedDuration: 120,
 			},
 			&timeout.TimeoutDurationTest{
@@ -33,7 +33,7 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24,
+				CurrentTime:      dutyStartTime + 24 + 5*120,
 				ExpectedDuration: 120,
 			},
 			&timeout.TimeoutDurationTest{
@@ -42,7 +42,7 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
+				CurrentTime:      dutyStartTime + 20 + 5*120,
 				ExpectedDuration: 120,
 			},
 			&timeout.TimeoutDurationTest{
@@ -51,7 +51,7 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24,
+				CurrentTime:      dutyStartTime + 24 + 5*120,
 				ExpectedDuration: 120,
 			},
 			&timeout.TimeoutDurationTest{
@@ -60,7 +60,7 @@ func Round9Duration() *tests.MultiSpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
+				CurrentTime:      dutyStartTime + 20 + 5*120,
 				ExpectedDuration: 120,
 			},
 		},
