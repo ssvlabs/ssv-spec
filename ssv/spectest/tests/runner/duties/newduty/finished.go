@@ -67,11 +67,11 @@ func Finished() tests.SpecTest {
 			{
 				Name: "proposer",
 				Runner: finishRunner(testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix), true),
-				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
+					testingutils.TestingProposerDutyV(spec.DataVersionDeneb), true),
+				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
 				PostDutyRunnerStateRoot: "78a040ec69b6932809c8b582999277d3e9766d564eacde7eeb029f0749460f39",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
 			{
