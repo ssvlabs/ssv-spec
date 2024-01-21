@@ -97,6 +97,13 @@ func TestJson(t *testing.T) {
 
 				tests[testName] = typedTest
 				typedTest.Run(t)
+			case reflect.TypeOf(&timeoutduration.MultiSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := timeoutduration.MultiSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
 			case reflect.TypeOf(timeoutduration.TimeoutDurationTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)

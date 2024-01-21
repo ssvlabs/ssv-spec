@@ -15,9 +15,9 @@ func Round1DurationFutureCurrentTime() tests.SpecTest {
 	round := qbft.FirstRound
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
-	return &tests.MultiSpecTest{
+	return &MultiSpecTest{
 		Name: "round 1 duration future current time",
-		Tests: []tests.SpecTest{
+		Tests: []*TimeoutDurationTest{
 			&TimeoutDurationTest{
 				Name:             "sync committee",
 				Role:             types.BNRoleSyncCommittee,

@@ -1,10 +1,12 @@
-package tests
+package timeoutduration
 
-import "testing"
+import (
+	"testing"
+)
 
 type MultiSpecTest struct {
 	Name  string
-	Tests []SpecTest
+	Tests []*TimeoutDurationTest
 }
 
 func (test *MultiSpecTest) GetPostState() (interface{}, error) {

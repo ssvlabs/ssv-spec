@@ -14,9 +14,9 @@ func Round9DurationOnDutyStartTime() tests.SpecTest {
 	var round qbft.Round = 9
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
-	return &tests.MultiSpecTest{
+	return &MultiSpecTest{
 		Name: "round 9 duration duty start time",
-		Tests: []tests.SpecTest{
+		Tests: []*TimeoutDurationTest{
 			&TimeoutDurationTest{
 				Name:             "sync committee",
 				Role:             types.BNRoleSyncCommittee,

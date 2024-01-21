@@ -14,9 +14,9 @@ func Round1Duration() tests.SpecTest {
 	height := qbft.FirstHeight
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
-	return &tests.MultiSpecTest{
+	return &MultiSpecTest{
 		Name: "round 1",
-		Tests: []tests.SpecTest{
+		Tests: []*TimeoutDurationTest{
 			&TimeoutDurationTest{
 				Name:             "sync committee",
 				Role:             types.BNRoleSyncCommittee,

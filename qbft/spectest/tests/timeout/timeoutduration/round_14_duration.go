@@ -14,10 +14,10 @@ func Round14Duration() tests.SpecTest {
 	var round qbft.Round = 14
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
-	return &tests.MultiSpecTest{
+	return &MultiSpecTest{
 		Name: "round 14 duration",
-		Tests: []tests.SpecTest{
-			&TimeoutDurationTest{
+		Tests: []*TimeoutDurationTest{
+			{
 				Name:             "sync committee",
 				Role:             types.BNRoleSyncCommittee,
 				Height:           height,
