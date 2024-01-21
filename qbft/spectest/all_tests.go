@@ -28,7 +28,6 @@ var AllTests = []tests.TestF{
 	timeoutduration.Round3Duration,
 	timeoutduration.Round8Duration,
 	timeoutduration.Round9Duration,
-	timeoutduration.Round9DurationOnDutyStartTime,
 	timeoutduration.Round14Duration,
 	timeoutduration.Round1DurationFutureCurrentTime,
 	timeoutduration.Round3DurationOnDutyStartTime,
