@@ -18,7 +18,7 @@ func Round3Duration() *tests.MultiSpecTest {
 	return &tests.MultiSpecTest{
 		Name: "round 3 duration",
 		Tests: []tests.SpecTest{
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "sync committee",
 				Role:             types.BNRoleSyncCommittee,
 				Height:           height,
@@ -27,7 +27,7 @@ func Round3Duration() *tests.MultiSpecTest {
 				CurrentTime:      dutyStartTime + 8,
 				ExpectedDuration: 2,
 			},
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "sync committee contribution",
 				Role:             types.BNRoleSyncCommitteeContribution,
 				Height:           height,
@@ -36,7 +36,7 @@ func Round3Duration() *tests.MultiSpecTest {
 				CurrentTime:      dutyStartTime + 12,
 				ExpectedDuration: 2,
 			},
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "attester",
 				Role:             types.BNRoleAttester,
 				Height:           height,
@@ -45,7 +45,7 @@ func Round3Duration() *tests.MultiSpecTest {
 				CurrentTime:      dutyStartTime + 8,
 				ExpectedDuration: 2,
 			},
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "aggregator",
 				Role:             types.BNRoleAggregator,
 				Height:           height,
@@ -54,7 +54,7 @@ func Round3Duration() *tests.MultiSpecTest {
 				CurrentTime:      dutyStartTime + 12,
 				ExpectedDuration: 2,
 			},
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "block proposer",
 				Role:             types.BNRoleProposer,
 				Height:           height,

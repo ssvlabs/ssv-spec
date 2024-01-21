@@ -4,7 +4,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
@@ -18,7 +17,7 @@ func Round5DurationOnRound3Time() *tests.MultiSpecTest {
 	return &tests.MultiSpecTest{
 		Name: "round 5 duration on round 3 time",
 		Tests: []tests.SpecTest{
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "sync committee",
 				Role:             types.BNRoleSyncCommittee,
 				Height:           height,
@@ -27,7 +26,7 @@ func Round5DurationOnRound3Time() *tests.MultiSpecTest {
 				CurrentTime:      dutyStartTime + 8,
 				ExpectedDuration: 6,
 			},
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "sync committee contribution",
 				Role:             types.BNRoleSyncCommitteeContribution,
 				Height:           height,
@@ -36,7 +35,7 @@ func Round5DurationOnRound3Time() *tests.MultiSpecTest {
 				CurrentTime:      dutyStartTime + 12,
 				ExpectedDuration: 6,
 			},
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "attester",
 				Role:             types.BNRoleAttester,
 				Height:           height,
@@ -45,7 +44,7 @@ func Round5DurationOnRound3Time() *tests.MultiSpecTest {
 				CurrentTime:      dutyStartTime + 8,
 				ExpectedDuration: 6,
 			},
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "aggregator",
 				Role:             types.BNRoleAggregator,
 				Height:           height,
@@ -54,7 +53,7 @@ func Round5DurationOnRound3Time() *tests.MultiSpecTest {
 				CurrentTime:      dutyStartTime + 12,
 				ExpectedDuration: 6,
 			},
-			&timeout.TimeoutDurationTest{
+			&TimeoutDurationTest{
 				Name:             "block proposer",
 				Role:             types.BNRoleProposer,
 				Height:           height,
