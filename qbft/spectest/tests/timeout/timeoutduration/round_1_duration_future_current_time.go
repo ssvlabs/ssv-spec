@@ -9,7 +9,7 @@ import (
 
 // Round1DurationFutureCurrentTime tests timeout duration for round 1 where the current time is after the expected
 // start of the round
-func Round1DurationFutureCurrentTime() *tests.MultiSpecTest {
+func Round1DurationFutureCurrentTime() tests.SpecTest {
 	var testingNetwork = types.HoleskyNetwork
 	height := qbft.FirstHeight
 	round := qbft.FirstRound

@@ -9,7 +9,7 @@ import (
 )
 
 // Round1Duration tests timeout duration for round 1
-func Round1Duration() *tests.MultiSpecTest {
+func Round1Duration() tests.SpecTest {
 	var testingNetwork = types.HoleskyNetwork
 	height := qbft.FirstHeight
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))

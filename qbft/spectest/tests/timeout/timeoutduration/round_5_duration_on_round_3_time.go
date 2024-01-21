@@ -8,7 +8,7 @@ import (
 )
 
 // Round5DurationOnRound3Time tests timeout duration for round 5 where the current time is the expected start of round 3
-func Round5DurationOnRound3Time() *tests.MultiSpecTest {
+func Round5DurationOnRound3Time() tests.SpecTest {
 	testingNetwork := types.HoleskyNetwork
 	height := qbft.Height(10)
 	var round qbft.Round = 5

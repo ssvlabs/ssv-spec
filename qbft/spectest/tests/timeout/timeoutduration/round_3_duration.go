@@ -4,12 +4,11 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
 	"github.com/bloxapp/ssv-spec/types"
 )
 
 // Round3Duration tests timeout duration for round 3 where the current time is the expected start of the round
-func Round3Duration() *tests.MultiSpecTest {
+func Round3Duration() tests.SpecTest {
 	testingNetwork := types.HoleskyNetwork
 	height := qbft.FirstHeight
 	var round qbft.Round = 3
