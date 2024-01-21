@@ -26,7 +26,7 @@ func Round14Duration() tests.SpecTest {
 				CurrentTime:      dutyStartTime + 20 + 5*120,
 				ExpectedDuration: 120,
 			},
-			&TimeoutDurationTest{
+			{
 				Name:             "sync committee contribution",
 				Role:             types.BNRoleSyncCommitteeContribution,
 				Height:           height,
@@ -35,7 +35,7 @@ func Round14Duration() tests.SpecTest {
 				CurrentTime:      dutyStartTime + 24 + 5*120,
 				ExpectedDuration: 120,
 			},
-			&TimeoutDurationTest{
+			{
 				Name:             "attester",
 				Role:             types.BNRoleAttester,
 				Height:           height,
@@ -44,7 +44,7 @@ func Round14Duration() tests.SpecTest {
 				CurrentTime:      dutyStartTime + 20 + 5*120,
 				ExpectedDuration: 120,
 			},
-			&TimeoutDurationTest{
+			{
 				Name:             "aggregator",
 				Role:             types.BNRoleAggregator,
 				Height:           height,
@@ -53,7 +53,7 @@ func Round14Duration() tests.SpecTest {
 				CurrentTime:      dutyStartTime + 24 + 5*120,
 				ExpectedDuration: 120,
 			},
-			&TimeoutDurationTest{
+			{
 				Name:             "block proposer",
 				Role:             types.BNRoleProposer,
 				Height:           height,
