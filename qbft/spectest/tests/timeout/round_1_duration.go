@@ -6,10 +6,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-var testingNetwork = types.HoleskyNetwork
-var currentTime = testingNetwork.MinGenesisTime()
-
+// Round1Duration tests timeout duration for round 1
 func Round1Duration() *tests.MultiSpecTest {
+	var testingNetwork = types.HoleskyNetwork
+	var currentTime = testingNetwork.MinGenesisTime()
+
 	return &tests.MultiSpecTest{
 		Name: "round 1",
 		Tests: []tests.SpecTest{
