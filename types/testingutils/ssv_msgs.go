@@ -47,12 +47,14 @@ var VoluntaryExitMsgID = func() []byte {
 var TestAttesterConsensusData = &types.ConsensusData{
 	Duty:    TestingAttesterDuty,
 	DataSSZ: TestingAttestationDataBytes,
+	Version: spec.DataVersionPhase0,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAttesterNextEpochConsensusData = &types.ConsensusData{
 	Duty:    TestingAttesterDutyNextEpoch,
 	DataSSZ: TestingAttestationNextEpochDataBytes,
+	Version: spec.DataVersionPhase0,
 }
 
 var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensusData.Encode()
@@ -60,6 +62,7 @@ var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensu
 var TestAggregatorConsensusData = &types.ConsensusData{
 	Duty:    TestingAggregatorDuty,
 	DataSSZ: TestingAggregateAndProofBytes,
+	Version: spec.DataVersionPhase0,
 }
 var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
@@ -71,7 +74,7 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 
 	return &types.ConsensusData{
 		Duty:                       TestingAttesterDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAttestationDataBytes,
 	}
@@ -101,7 +104,7 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 
 	return &types.ConsensusData{
 		Duty:                       TestingSyncCommitteeDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingSyncCommitteeBlockRoot[:],
 	}
@@ -110,12 +113,14 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeDuty,
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
+	Version: spec.DataVersionPhase0,
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
 var TestSyncCommitteeNextEpochConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeDutyNextEpoch,
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
+	Version: spec.DataVersionPhase0,
 }
 
 var TestSyncCommitteeNextEpochConsensusDataByts, _ = TestSyncCommitteeNextEpochConsensusData.Encode()
@@ -123,6 +128,7 @@ var TestSyncCommitteeNextEpochConsensusDataByts, _ = TestSyncCommitteeNextEpochC
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeContributionDuty,
 	DataSSZ: TestingContributionsDataBytes,
+	Version: spec.DataVersionPhase0,
 }
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()
 var TestSyncCommitteeContributionConsensusDataRoot = func() [32]byte {
@@ -132,12 +138,14 @@ var TestSyncCommitteeContributionConsensusDataRoot = func() [32]byte {
 var TestConsensusUnkownDutyTypeData = &types.ConsensusData{
 	Duty:    TestingUnknownDutyType,
 	DataSSZ: TestingAttestationDataBytes,
+	Version: spec.DataVersionPhase0,
 }
 var TestConsensusUnkownDutyTypeDataByts, _ = TestConsensusUnkownDutyTypeData.Encode()
 
 var TestConsensusWrongDutyPKData = &types.ConsensusData{
 	Duty:    TestingWrongDutyPK,
 	DataSSZ: TestingAttestationDataBytes,
+	Version: spec.DataVersionPhase0,
 }
 var TestConsensusWrongDutyPKDataByts, _ = TestConsensusWrongDutyPKData.Encode()
 
@@ -398,7 +406,7 @@ var TestSelectionProofWithJustificationsConsensusData = func(ks *TestKeySet) *ty
 
 	return &types.ConsensusData{
 		Duty:                       TestingAggregatorDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAggregateAndProofBytes,
 	}
@@ -801,7 +809,7 @@ var TestContributionProofWithJustificationsConsensusData = func(ks *TestKeySet) 
 
 	return &types.ConsensusData{
 		Duty:                       TestingSyncCommitteeContributionDuty,
-		Version:                    spec.DataVersionBellatrix,
+		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingContributionsDataBytes,
 	}

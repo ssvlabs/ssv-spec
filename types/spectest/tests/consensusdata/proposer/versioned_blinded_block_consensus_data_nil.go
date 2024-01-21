@@ -7,11 +7,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// VersionedBlindedBlockConsensusDataNil tests an invalid consensus data with bellatrix block
+// VersionedBlindedBlockConsensusDataNil tests an invalid consensus data with deneb block
 func VersionedBlindedBlockConsensusDataNil() *ProposerSpecTest {
 	cd := &types.ConsensusData{
-		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-		Version: spec.DataVersionBellatrix,
+		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+		Version: spec.DataVersionDeneb,
 		DataSSZ: nil,
 	}
 
