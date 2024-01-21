@@ -14,6 +14,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/startinstance"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout/timeoutduration"
 )
 
 var AllTests = []tests.TestF{
@@ -22,6 +23,18 @@ var AllTests = []tests.TestF{
 	timeout.Round3,
 	timeout.Round5,
 	timeout.Round15,
+
+	timeoutduration.Round1Duration,
+	timeoutduration.Round3Duration,
+	timeoutduration.Round8Duration,
+	timeoutduration.Round9Duration,
+	timeoutduration.Round9DurationOnDutyStartTime,
+	timeoutduration.Round14Duration,
+	timeoutduration.Round1DurationFutureCurrentTime,
+	timeoutduration.Round3DurationOnDutyStartTime,
+	timeoutduration.Round5DurationOnRound3Time,
+	timeoutduration.Round9DurationOnDutyStartTime,
+	timeoutduration.Round14DurationOnRound13Time,
 
 	decided.Valid,
 	decided.HasQuorum,

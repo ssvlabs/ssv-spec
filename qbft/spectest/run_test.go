@@ -3,6 +3,7 @@ package spectest
 import (
 	"encoding/json"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout/timeoutduration"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -96,10 +97,18 @@ func TestJson(t *testing.T) {
 
 				tests[testName] = typedTest
 				typedTest.Run(t)
-			case reflect.TypeOf(&timeout.TimeoutTest{}).String():
+			case reflect.TypeOf(timeoutduration.TimeoutDurationTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
-				typedTest := &timeout.TimeoutTest{}
+				typedTest := &timeoutduration.TimeoutDurationTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				tests[testName] = typedTest
+				typedTest.Run(t)
+			case reflect.TypeOf(&timeout.UponTimeoutTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &timeout.UponTimeoutTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				// a little trick we do to instantiate all the internal instance params
