@@ -54,7 +54,7 @@ func RoundTimeout(round Round, height Height, baseDuration int64, network types.
 	timeoutDuration := baseDuration + additionalTimeout
 
 	// Get the unix epoch start time of the duty seconds
-	dutyStartTime := int64(network.EstimatedTimeAtSlot(phase0.Slot(height)))
+	dutyStartTime := network.EstimatedTimeAtSlot(phase0.Slot(height))
 
 	// Calculate the time until the duty should start plus the timeout duration
 	return dutyStartTime + timeoutDuration
