@@ -44,18 +44,19 @@ func (ps PartialSignatureContainer) SignaturesForRoot(root [32]byte) map[types.O
 
 // Roots returns roots for the partial sigs
 func (ps PartialSignatureContainer) Roots() [][32]byte {
-	if len(ps) > 0 {
-		ret := make([][32]byte, 0)
-		for _, sigMsg := range ps {
-			for _, msg := range sigMsg.Message.Messages {
-				ret = append(ret, msg.SigningRoot)
-			}
-			break // only need to iterate first msg
-		}
+	ret := make([][32]byte, 0)
+
+	if len(ps) <= 0 {
 		return ret
 	}
 
-	return [][32]byte{}
+	for _, sigMsg := range ps {
+		for _, msg := range sigMsg.Message.Messages {
+			ret = append(ret, msg.SigningRoot)
+		}
+		break // only need to iterate first msg
+	}
+	return ret
 }
 
 // AllSorted returns ordered by signer array of signed messages
