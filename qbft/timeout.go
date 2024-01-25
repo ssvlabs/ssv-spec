@@ -8,6 +8,7 @@ import (
 )
 
 var (
+	// quickTimeoutThreshold is the round after which the timeout duration increases
 	quickTimeoutThreshold = Round(8) //nolint
 	// quickTimeout is the timeout in seconds for the first 8 rounds
 	quickTimeout int64 = 2 // 2 seconds
