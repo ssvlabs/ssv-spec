@@ -37,7 +37,7 @@ func (test *SpecTest) Run(t *testing.T) {
 	msg := test.MsgsToAdd[0]
 	// test signatures per signer match
 	for _, msg := range msg.Message.Messages {
-		require.Len(t, c.SignatureForRoot(msg.SigningRoot), test.PostMsgCount)
+		require.Len(t, c.SignaturesForRoot(msg.SigningRoot), test.PostMsgCount)
 	}
 
 	var lastErr error

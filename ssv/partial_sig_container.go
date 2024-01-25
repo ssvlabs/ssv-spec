@@ -16,7 +16,7 @@ func NewPartialSignatureContainer() PartialSignatureContainer {
 // ReconstructSignature return reconstructed signature for a root
 func (ps PartialSignatureContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte) ([]byte, error) {
 	// collect signatures
-	sigs := ps.SignatureForRoot(root)
+	sigs := ps.SignaturesForRoot(root)
 
 	// reconstruct
 	signature, err := types.ReconstructSignatures(sigs)
@@ -29,8 +29,8 @@ func (ps PartialSignatureContainer) ReconstructSignature(root [32]byte, validato
 	return signature.Serialize(), nil
 }
 
-// SignatureForRoot returns a map of signer and signature for a specific root
-func (ps PartialSignatureContainer) SignatureForRoot(root [32]byte) map[types.OperatorID][]byte {
+// SignaturesForRoot returns a map of signer and signature for a specific root
+func (ps PartialSignatureContainer) SignaturesForRoot(root [32]byte) map[types.OperatorID][]byte {
 	sigs := make(map[types.OperatorID][]byte, 0)
 	for operatorID, sigMsg := range ps {
 		for _, msg := range sigMsg.Message.Messages {
