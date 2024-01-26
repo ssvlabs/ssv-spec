@@ -42,7 +42,7 @@ func PostInvalidDecided() tests.SpecTest {
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.Slot),
-			r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
+			r.GetBaseRunner().QBFTController.CommitExtraLoadManagerF())
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
 

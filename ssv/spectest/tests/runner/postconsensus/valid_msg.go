@@ -22,7 +22,7 @@ func decideRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusD
 		r.GetBaseRunner().Share,
 		r.GetBaseRunner().QBFTController.Identifier,
 		qbft.FirstHeight,
-		r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
+		r.GetBaseRunner().QBFTController.CommitExtraLoadManagerF())
 	r.GetBaseRunner().State.RunningInstance.State.Decided = true
 	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, _ = decidedValue.Encode()
 	r.GetBaseRunner().State.DecidedValue = decidedValue

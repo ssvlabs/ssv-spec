@@ -26,7 +26,7 @@ func PostFutureDecided() tests.SpecTest {
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.Slot),
-			r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
+			r.GetBaseRunner().QBFTController.CommitExtraLoadManagerF())
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 
 		futureDecidedInstance := qbft.NewInstance(
@@ -34,7 +34,7 @@ func PostFutureDecided() tests.SpecTest {
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.Slot+50),
-			r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
+			r.GetBaseRunner().QBFTController.CommitExtraLoadManagerF())
 		futureDecidedInstance.State.Decided = true
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, futureDecidedInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot + 50)

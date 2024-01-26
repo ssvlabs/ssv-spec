@@ -11,6 +11,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
+type CommitExtraLoadManagerF func() CommitExtraLoadManagerI
+
 // Controller is a QBFT coordinator responsible for starting and following the entire life cycle of multiple QBFT InstanceContainer
 type Controller struct {
 	Identifier []byte
@@ -20,7 +22,7 @@ type Controller struct {
 	Share           *types.Share
 	config          IConfig
 
-	CommitExtraLoadManager CommitExtraLoadManagerI `json:"omitempty"`
+	CommitExtraLoadManagerF CommitExtraLoadManagerF `json:"-"`
 }
 
 func NewController(
@@ -144,7 +146,7 @@ func (c *Controller) isFutureMessage(msg *SignedMessage) bool {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height, c.CommitExtraLoadManager)
+	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height, c.CommitExtraLoadManagerF())
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
@@ -211,6 +213,6 @@ func (c *Controller) GetConfig() IConfig {
 	return c.config
 }
 
-func (c *Controller) WithCommitExtraLoadManager(commitExtraLoadManager CommitExtraLoadManagerI) {
-	c.CommitExtraLoadManager = commitExtraLoadManager
+func (c *Controller) WithCommitExtraLoadManagerF(commitExtraLoadManagerF CommitExtraLoadManagerF) {
+	c.CommitExtraLoadManagerF = commitExtraLoadManagerF
 }

@@ -23,7 +23,7 @@ func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
 	isFutureDecided := msg.Message.Height > c.Height
 
 	if inst == nil {
-		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Message.Height, c.CommitExtraLoadManager)
+		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Message.Height, c.CommitExtraLoadManagerF())
 		i.State.Round = msg.Message.Round
 		i.State.Decided = true
 		i.State.DecidedValue = msg.FullData

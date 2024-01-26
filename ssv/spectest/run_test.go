@@ -265,7 +265,7 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 		share,
 		contr.Identifier,
 		contr.Height,
-		contr.CommitExtraLoadManager)
+		contr.CommitExtraLoadManagerF())
 
 	newInst.State.DecidedValue = inst.State.DecidedValue
 	newInst.State.Decided = inst.State.Decided

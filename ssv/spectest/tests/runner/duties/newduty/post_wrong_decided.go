@@ -30,7 +30,7 @@ func PostWrongDecided() tests.SpecTest {
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight,
-			r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
+			r.GetBaseRunner().QBFTController.CommitExtraLoadManagerF())
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
 		storedInstances[1] = r.GetBaseRunner().State.RunningInstance
 
@@ -39,7 +39,7 @@ func PostWrongDecided() tests.SpecTest {
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			higherDecidedSlot,
-			r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
+			r.GetBaseRunner().QBFTController.CommitExtraLoadManagerF())
 		higherDecided.State.Decided = true
 		higherDecided.State.DecidedValue = []byte{1, 2, 3, 4}
 		storedInstances[0] = higherDecided
