@@ -296,6 +296,7 @@ func (c *CommitExtraLoadManager) GetBeaconObjects(cd *types.ConsensusData) ([]ss
 			}
 			ret = append(ret, contribAndProof)
 		}
+		return ret, nil
 	}
 	return []ssz.HashRoot{}, errors.New("unexpected type")
 }
