@@ -25,7 +25,8 @@ func Finished() tests.SpecTest {
 				r.GetBaseRunner().QBFTController.GetConfig(),
 				r.GetBaseRunner().Share,
 				r.GetBaseRunner().QBFTController.Identifier,
-				qbft.Height(duty.Slot))
+				qbft.Height(duty.Slot),
+				r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
 			r.GetBaseRunner().State.RunningInstance.State.Decided = true
 			r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 			r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)

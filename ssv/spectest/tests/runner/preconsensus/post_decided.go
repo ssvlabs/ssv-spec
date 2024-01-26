@@ -30,7 +30,8 @@ func PostDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
+			qbft.FirstHeight,
+			r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
 		r.GetBaseRunner().State.DecidedValue = decidedValue
 		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance

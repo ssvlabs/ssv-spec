@@ -15,7 +15,8 @@ var decideFirstHeight = func(r ssv.Runner) ssv.Runner {
 		r.GetBaseRunner().QBFTController.GetConfig(),
 		r.GetBaseRunner().QBFTController.Share,
 		r.GetBaseRunner().QBFTController.Identifier,
-		qbft.FirstHeight)
+		qbft.FirstHeight,
+		r.GetBaseRunner().QBFTController.CommitExtraLoadManager)
 	i.State.DecidedValue = []byte{1, 2, 3, 4}
 	i.State.Decided = true
 	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, i)
