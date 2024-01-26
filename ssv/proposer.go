@@ -1,7 +1,6 @@
 package ssv
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"encoding/json"
 
@@ -51,7 +50,7 @@ func NewProposerRunner(
 		valCheck: valCheck,
 	}
 
-	qbftController.WithCommitExtraLoadManagerF(runner.NewCommitExtraLoadProposerManager)
+	qbftController.WithCommitExtraLoadManagerF(NewCommitExtraLoadManagerF(runner.BaseRunner, types.BNRoleProposer, runner.beacon, runner.signer, types.DomainProposer))
 
 	return runner
 }
@@ -345,165 +344,4 @@ func (r *ProposerRunner) GetRoot() ([32]byte, error) {
 	}
 	ret := sha256.Sum256(marshaledRoot)
 	return ret, nil
-}
-
-func (r *ProposerRunner) SignBeaconObjectFromConsensusData(cd types.ConsensusData) (types.Signature, phase0.Root, error) {
-
-	// specific duty sig
-	var blkToSign ssz.HashRoot
-	var err error
-
-	// Try to get blinded block
-	_, blkToSign, err = cd.GetBlindedBlockData()
-	// If can't get blinded block, try to get block data
-	if err != nil {
-		_, blkToSign, err = cd.GetBlockData()
-		if err != nil {
-			return nil, phase0.Root{}, errors.Wrap(err, "could not get block data or blinded block data")
-		}
-	}
-
-	sig, root, err := r.BaseRunner.GetBeaconObjectSignature(r, blkToSign, cd.Duty.Slot, types.DomainProposer)
-	if err != nil {
-		return nil, phase0.Root{}, errors.Wrap(err, "failed signing proposer beacon object")
-	}
-
-	return sig, root, nil
-}
-
-// Proposer manager for CommitExtraLoad
-type CommitExtraLoadProposerManager struct {
-	Signatures     map[types.OperatorID]types.Signature // Stores validated beacon object signatures
-	ProposerRunner *ProposerRunner
-	SigningRoot    phase0.Root // Stores signing root for comparison
-}
-
-func (r *ProposerRunner) NewCommitExtraLoadProposerManager() qbft.CommitExtraLoadManagerI {
-	return &CommitExtraLoadProposerManager{
-		ProposerRunner: r,
-		Signatures:     make(map[uint64]types.Signature),
-		SigningRoot:    phase0.Root{},
-	}
-}
-
-// Returns a CommitExtraLoad with the validator's share signature over the beacon object
-func (c *CommitExtraLoadProposerManager) Create(fullData []byte) (qbft.CommitExtraLoad, error) {
-	// Get consensus data
-	cd, err := c.GetConsensusData(fullData)
-	if err != nil {
-		return qbft.CommitExtraLoad{}, err
-	}
-
-	// Sign
-	sig, root, err := c.ProposerRunner.SignBeaconObjectFromConsensusData(*cd)
-	if err != nil {
-		return qbft.CommitExtraLoad{}, errors.Wrap(err, "could not sign becon object")
-	}
-
-	// Store root for later comparison
-	c.SigningRoot = root
-
-	// Returns object
-	return qbft.CommitExtraLoad{
-		Signatures: []types.Signature{sig},
-	}, nil
-}
-
-// Validates the CommitExtraLoad data inside a SignedMessage.
-// - Validate fields
-// - Checks the sender's validator share signature
-func (c *CommitExtraLoadProposerManager) Validate(signedMessage *qbft.SignedMessage, fullData []byte) error {
-	// Validate Signers length
-	if len(signedMessage.Signers) == 0 {
-		return errors.New("commit SignedMessage with empty signers")
-	}
-	if len(signedMessage.Signers) > 1 {
-		return errors.New("commit SignedMessage with more than one signer")
-	}
-	// Validate Signatures length
-	if len(signedMessage.Message.CommitExtraLoad.Signatures) == 0 {
-		return errors.New("CommitExtraLoad with no signatures")
-	}
-	if len(signedMessage.Message.CommitExtraLoad.Signatures) > 1 {
-		return errors.New("CommitExtraLoad with more than one signature")
-	}
-
-	signer := signedMessage.Signers[0]
-	signature := signedMessage.Message.CommitExtraLoad.Signatures[0]
-	root, err := c.GetSigningRootFromFullData(fullData)
-	if err != nil {
-		return errors.Wrap(err, "could not get ETH signing root from full data")
-	}
-
-	// Compare signing root if already instantiated
-	if c.SigningRoot != [32]byte{} {
-		if !bytes.Equal(root[:], c.SigningRoot[:]) {
-			return errors.New("wrong signing root")
-		}
-	} else {
-		c.SigningRoot = root
-	}
-
-	// Verify signature
-	return c.ProposerRunner.BaseRunner.VerifyBeaconObjectPartialSignature(signer, signature, root)
-}
-
-// Process the CommitExtraLoad from a SignedMessage by storing the signature
-func (c *CommitExtraLoadProposerManager) Process(signedMessage *qbft.SignedMessage) error {
-	c.Signatures[signedMessage.Signers[0]] = signedMessage.Message.CommitExtraLoad.Signatures[0]
-	return nil
-}
-
-// Returns the signing root of a decoded beacon object from FullData
-func (c *CommitExtraLoadProposerManager) GetSigningRootFromFullData(fullData []byte) (phase0.Root, error) {
-	cd, err := c.GetConsensusData(fullData)
-	if err != nil {
-		return phase0.Root{}, err
-	}
-	return c.GetSigningRoot(cd)
-}
-
-// Returns a ConsensusData decoded from FullData
-func (c *CommitExtraLoadProposerManager) GetConsensusData(fullData []byte) (*types.ConsensusData, error) {
-	cd := &types.ConsensusData{}
-	err := cd.Decode(fullData)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get consensus data")
-	}
-	return cd, nil
-}
-
-// Returns the proposer beacon object taken from the ConsensusData
-func (c *CommitExtraLoadProposerManager) GetBeaconObject(cd *types.ConsensusData) (ssz.HashRoot, error) {
-	// specific duty sig
-	var blkToSign ssz.HashRoot
-	var err error
-
-	// Try to get blinded block
-	_, blkToSign, err = cd.GetBlindedBlockData()
-	// If can't get blinded block, try to get block data
-	if err != nil {
-		_, blkToSign, err = cd.GetBlockData()
-		if err != nil {
-			return nil, errors.Wrap(err, "could not get block data or blinded block data")
-		}
-	}
-	return blkToSign, nil
-}
-
-// Computes the signing root of the beacon object taken from a consensus data
-func (c *CommitExtraLoadProposerManager) GetSigningRoot(cd *types.ConsensusData) (phase0.Root, error) {
-
-	obj, err := c.GetBeaconObject(cd)
-	if err != nil {
-		return phase0.Root{}, errors.Wrap(err, "could not get beacon object")
-	}
-
-	epoch := c.ProposerRunner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(cd.Duty.Slot)
-	domain, err := c.ProposerRunner.GetBeaconNode().DomainData(epoch, types.DomainProposer)
-	if err != nil {
-		return phase0.Root{}, errors.Wrap(err, "could not get beacon domain")
-	}
-
-	return c.ProposerRunner.BaseRunner.GetBeaconSigningRoot(obj, domain)
 }
