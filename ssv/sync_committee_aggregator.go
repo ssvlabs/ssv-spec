@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -31,7 +32,7 @@ func NewSyncCommitteeAggregatorRunner(
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
-	return &SyncCommitteeAggregatorRunner{
+	runner := &SyncCommitteeAggregatorRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType:     types.BNRoleSyncCommitteeContribution,
 			BeaconNetwork:      beaconNetwork,
@@ -45,6 +46,10 @@ func NewSyncCommitteeAggregatorRunner(
 		signer:   signer,
 		valCheck: valCheck,
 	}
+
+	qbftController.WithCommitExtraLoadManagerF(NewCommitExtraLoadManagerF(runner.BaseRunner, types.BNRoleSyncCommitteeContribution, runner.beacon, runner.signer, types.DomainContributionAndProof))
+
+	return runner
 }
 
 func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty *types.Duty) error {

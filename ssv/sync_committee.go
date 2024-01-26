@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -30,7 +31,7 @@ func NewSyncCommitteeRunner(
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
-	return &SyncCommitteeRunner{
+	runner := &SyncCommitteeRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType:     types.BNRoleSyncCommittee,
 			BeaconNetwork:      beaconNetwork,
@@ -44,6 +45,10 @@ func NewSyncCommitteeRunner(
 		signer:   signer,
 		valCheck: valCheck,
 	}
+
+	qbftController.WithCommitExtraLoadManagerF(NewCommitExtraLoadManagerF(runner.BaseRunner, types.BNRoleSyncCommittee, runner.beacon, runner.signer, types.DomainSyncCommittee))
+
+	return runner
 }
 
 func (r *SyncCommitteeRunner) StartNewDuty(duty *types.Duty) error {

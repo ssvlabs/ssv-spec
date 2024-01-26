@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -29,7 +30,7 @@ func NewAggregatorRunner(
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
-	return &AggregatorRunner{
+	runner := &AggregatorRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType:     types.BNRoleAggregator,
 			BeaconNetwork:      beaconNetwork,
@@ -43,6 +44,10 @@ func NewAggregatorRunner(
 		signer:   signer,
 		valCheck: valCheck,
 	}
+
+	qbftController.WithCommitExtraLoadManagerF(NewCommitExtraLoadManagerF(runner.BaseRunner, types.BNRoleAggregator, runner.beacon, runner.signer, types.DomainAggregateAndProof))
+
+	return runner
 }
 
 func (r *AggregatorRunner) StartNewDuty(duty *types.Duty) error {

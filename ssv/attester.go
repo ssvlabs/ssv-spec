@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -30,7 +31,7 @@ func NewAttesterRunnner(
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
-	return &AttesterRunner{
+	runner := &AttesterRunner{
 		BaseRunner: &BaseRunner{
 			BeaconRoleType:     types.BNRoleAttester,
 			BeaconNetwork:      beaconNetwork,
@@ -44,6 +45,10 @@ func NewAttesterRunnner(
 		signer:   signer,
 		valCheck: valCheck,
 	}
+
+	qbftController.WithCommitExtraLoadManagerF(NewCommitExtraLoadManagerF(runner.BaseRunner, types.BNRoleAttester, runner.beacon, runner.signer, types.DomainAttester))
+
+	return runner
 }
 
 func (r *AttesterRunner) StartNewDuty(duty *types.Duty) error {
