@@ -28,7 +28,7 @@ func (c *CommitExtraLoad) Decode(data []byte) error {
 // - Process()
 // To create the CommitExtraLoad object, the Instance shall call Create()
 type CommitExtraLoadManagerI interface {
-	Validate(signedMessage *SignedMessage) error
+	Validate(signedMessage *SignedMessage, fullData []byte) error
 	Process(signedMessage *SignedMessage) error
 	Create(fullData []byte) (CommitExtraLoad, error)
 }

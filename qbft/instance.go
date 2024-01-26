@@ -25,7 +25,7 @@ type Instance struct {
 	forceStop  bool
 	StartValue []byte
 
-	CommitExtraLoadManager CommitExtraLoadManagerI `json:"omitempty"`
+	CommitExtraLoadManager CommitExtraLoadManagerI `json:"-"`
 }
 
 func NewInstance(
@@ -174,6 +174,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		}
 		return validateCommit(
 			i.config,
+			i.State,
 			msg,
 			i.State.Height,
 			i.State.Round,

@@ -14,15 +14,9 @@ func (b *BaseRunner) signBeaconObject(
 	slot spec.Slot,
 	domainType spec.DomainType,
 ) (*types.PartialSignatureMessage, error) {
-	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
-	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
+	sig, r, err := b.GetBeaconObjectSignature(runner, obj, slot, domainType)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get beacon domain")
-	}
-
-	sig, r, err := runner.GetSigner().SignBeaconObject(obj, domain, runner.GetBaseRunner().Share.SharePubKey, domainType)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign beacon object")
+		return nil, err
 	}
 
 	return &types.PartialSignatureMessage{
@@ -30,6 +24,26 @@ func (b *BaseRunner) signBeaconObject(
 		SigningRoot:      r,
 		Signer:           runner.GetBaseRunner().Share.OperatorID,
 	}, nil
+}
+
+// Returns the signature and root over a beacon object
+func (b *BaseRunner) GetBeaconObjectSignature(
+	runner Runner,
+	obj ssz.HashRoot,
+	slot spec.Slot,
+	domainType spec.DomainType,
+) (types.Signature, [32]byte, error) {
+	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
+	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
+	if err != nil {
+		return nil, [32]byte{}, errors.Wrap(err, "could not get beacon domain")
+	}
+
+	sig, r, err := runner.GetSigner().SignBeaconObject(obj, domain, runner.GetBaseRunner().Share.SharePubKey, domainType)
+	if err != nil {
+		return nil, [32]byte{}, errors.Wrap(err, "could not sign beacon object")
+	}
+	return sig, r, err
 }
 
 func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSignatureMessages) (*types.SignedPartialSignatureMessage, error) {
@@ -74,6 +88,11 @@ func (b *BaseRunner) verifyBeaconPartialSignature(msg *types.PartialSignatureMes
 	signer := msg.Signer
 	signature := msg.PartialSignature
 	root := msg.SigningRoot
+
+	return b.VerifyBeaconObjectPartialSignature(signer, signature, root)
+}
+
+func (b *BaseRunner) VerifyBeaconObjectPartialSignature(signer types.OperatorID, signature types.Signature, root [32]byte) error {
 
 	for _, n := range b.Share.Committee {
 		if n.GetID() == signer {

@@ -2,11 +2,12 @@ package ssv
 
 import (
 	"bytes"
+	"sort"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
-	"sort"
 )
 
 func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
@@ -88,7 +89,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPa
 
 		ret := make([][32]byte, 0)
 		for _, rootI := range expectedRootObjs {
-			r, err := types.ComputeETHSigningRoot(rootI, d)
+			r, err := b.GetBeaconSigningRoot(rootI, d)
 			if err != nil {
 				return nil, errors.Wrap(err, "could not compute ETH signing root")
 			}
@@ -123,4 +124,8 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPa
 		}
 	}
 	return nil
+}
+
+func (b *BaseRunner) GetBeaconSigningRoot(root ssz.HashRoot, domain spec.Domain) (spec.Root, error) {
+	return types.ComputeETHSigningRoot(root, domain)
 }

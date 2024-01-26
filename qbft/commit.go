@@ -142,6 +142,7 @@ func baseCommitValidation(
 
 func validateCommit(
 	config IConfig,
+	state *State,
 	signedCommit *SignedMessage,
 	height Height,
 	round Round,
@@ -166,7 +167,7 @@ func validateCommit(
 	}
 
 	if commitExtraLoadManager != nil {
-		err := commitExtraLoadManager.Validate(signedCommit)
+		err := commitExtraLoadManager.Validate(signedCommit, state.ProposalAcceptedForCurrentRound.FullData)
 		if err != nil {
 			return errors.New("CommitExtraLoad fails validation")
 		}
