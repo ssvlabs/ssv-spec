@@ -55,6 +55,8 @@ type Message struct {
 	DataRound                Round    // The last round that obtained a Prepare quorum
 	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
 	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
+
+	CommitExtraLoad CommitExtraLoad `json:"omitempty"` // Extra data for commit messages
 }
 
 func (msg *Message) GetRoundChangeJustifications() ([]*SignedMessage, error) {
@@ -286,6 +288,8 @@ func (signedMsg *SignedMessage) WithoutFUllData() *SignedMessage {
 	}
 }
 
+// This structure is appended in commit messages carrying extra information.
+// It's useful for the underlying duty but not necessary for the consensus termination
 type CommitExtraLoad struct {
 	// List of signatures. We must use list instead of a unique element due to the sync committee aggregation duty.
 	Signatures []types.Signature `ssz-max:"4"` // Maximum number of sync committee subnets as defined in https://github.com/ethereum/consensus-specs/blob/dev/specs/altair/validator.md
