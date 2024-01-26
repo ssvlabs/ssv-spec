@@ -111,60 +111,8 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	return nil
 }
 
-func (r *AttesterRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
-	if err != nil {
-		return errors.Wrap(err, "failed processing post consensus message")
-	}
-
-	if !quorum {
-		return nil
-	}
-
-	attestationData, err := r.GetState().DecidedValue.GetAttestationData()
-	if err != nil {
-		return errors.Wrap(err, "could not get attestation data")
-	}
-
-	for _, root := range roots {
-		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
-		if err != nil {
-			return errors.Wrap(err, "could not reconstruct post consensus signature")
-		}
-		specSig := phase0.BLSSignature{}
-		copy(specSig[:], sig)
-
-		duty := r.GetState().DecidedValue.Duty
-
-		aggregationBitfield := bitfield.NewBitlist(r.GetState().DecidedValue.Duty.CommitteeLength)
-		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
-		signedAtt := &phase0.Attestation{
-			Data:            attestationData,
-			Signature:       specSig,
-			AggregationBits: aggregationBitfield,
-		}
-
-		// broadcast
-		if err := r.beacon.SubmitAttestation(signedAtt); err != nil {
-			return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
-		}
-	}
-	r.GetState().Finished = true
-	return nil
-}
-
 func (r *AttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return []ssz.HashRoot{}, types.DomainError, errors.New("no expected pre consensus roots for attester")
-}
-
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *AttesterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	attestationData, err := r.GetState().DecidedValue.GetAttestationData()
-	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get attestation data")
-	}
-
-	return []ssz.HashRoot{attestationData}, types.DomainAttester, nil
 }
 
 // executeDuty steps:

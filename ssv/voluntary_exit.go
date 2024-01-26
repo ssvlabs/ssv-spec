@@ -105,11 +105,6 @@ func (r *VoluntaryExitRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRo
 	return []ssz.HashRoot{vr}, types.DomainVoluntaryExit, nil
 }
 
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *VoluntaryExitRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, errors.New("no post consensus roots for voluntary exit")
-}
-
 // Validator voluntary exit duty doesn't need consensus nor post-consensus.
 // It just performs pre-consensus with VoluntaryExitPartialSig over
 // a VoluntaryExit object to create a SignedVoluntaryExit

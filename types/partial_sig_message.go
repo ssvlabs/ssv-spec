@@ -8,10 +8,8 @@ import (
 type PartialSigMsgType uint64
 
 const (
-	// PostConsensusPartialSig is a partial signature over a decided duty (attestation data, block, etc)
-	PostConsensusPartialSig PartialSigMsgType = iota
 	// RandaoPartialSig is a partial signature over randao reveal
-	RandaoPartialSig
+	RandaoPartialSig PartialSigMsgType = iota
 	// SelectionProofPartialSig is a partial signature for aggregator selection proof
 	SelectionProofPartialSig
 	// ContributionProofs is the partial selection proofs for sync committee contributions (it's an array of sigs)

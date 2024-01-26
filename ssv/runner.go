@@ -29,13 +29,9 @@ type Runner interface {
 	ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error
 	// ProcessConsensus processes all consensus msgs, returns error if can't process
 	ProcessConsensus(msg *qbft.SignedMessage) error
-	// ProcessPostConsensus processes all post-consensus msgs, returns error if can't process
-	ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error
 
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
-	// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-	expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
 	// executeDuty an INTERNAL function, executes a duty.
 	executeDuty(duty *types.Duty) error
 }
@@ -160,16 +156,6 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	}
 
 	return true, decidedValue, commitExtraLoadManager, nil
-}
-
-// basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg
-func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *types.SignedPartialSignatureMessage) (bool, [][32]byte, error) {
-	if err := b.ValidatePostConsensusMsg(runner, signedMsg); err != nil {
-		return false, nil, errors.Wrap(err, "invalid post-consensus message")
-	}
-
-	hasQuorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PostConsensusContainer)
-	return hasQuorum, roots, errors.Wrap(err, "could not process post-consensus partial signature msg")
 }
 
 // basePartialSigMsgProcessing adds an already validated partial msg to the container, checks for quorum and returns true (and roots) if quorum exists

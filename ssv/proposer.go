@@ -167,48 +167,6 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	return nil
 }
 
-func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
-	if err != nil {
-		return errors.Wrap(err, "failed processing post consensus message")
-	}
-
-	if !quorum {
-		return nil
-	}
-
-	for _, root := range roots {
-		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
-		if err != nil {
-			return errors.Wrap(err, "could not reconstruct post consensus signature")
-		}
-		specSig := phase0.BLSSignature{}
-		copy(specSig[:], sig)
-
-		if r.decidedBlindedBlock() {
-			vBlindedBlk, _, err := r.GetState().DecidedValue.GetBlindedBlockData()
-			if err != nil {
-				return errors.Wrap(err, "could not get blinded block")
-			}
-
-			if err := r.GetBeaconNode().SubmitBlindedBeaconBlock(vBlindedBlk, specSig); err != nil {
-				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
-			}
-		} else {
-			vBlk, _, err := r.GetState().DecidedValue.GetBlockData()
-			if err != nil {
-				return errors.Wrap(err, "could not get block")
-			}
-
-			if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, specSig); err != nil {
-				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
-			}
-		}
-	}
-	r.GetState().Finished = true
-	return nil
-}
-
 // decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (r *ProposerRunner) decidedBlindedBlock() bool {
@@ -219,23 +177,6 @@ func (r *ProposerRunner) decidedBlindedBlock() bool {
 func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.Slot)
 	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
-}
-
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	if r.decidedBlindedBlock() {
-		_, data, err := r.GetState().DecidedValue.GetBlindedBlockData()
-		if err != nil {
-			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block data")
-		}
-		return []ssz.HashRoot{data}, types.DomainProposer, nil
-	}
-
-	_, data, err := r.GetState().DecidedValue.GetBlockData()
-	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
-	}
-	return []ssz.HashRoot{data}, types.DomainProposer, nil
 }
 
 // executeDuty steps:

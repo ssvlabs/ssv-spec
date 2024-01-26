@@ -27,41 +27,6 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.Sig
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
-func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
-	if !b.hasRunningDuty() {
-		return errors.New("no running duty")
-	}
-
-	// TODO https://github.com/bloxapp/ssv-spec/issues/142 need to fix with this issue solution instead.
-	if b.State.DecidedValue == nil {
-		return errors.New("no decided value")
-	}
-
-	if b.State.RunningInstance == nil {
-		return errors.New("no running consensus instance")
-	}
-	decided, decidedValueByts := b.State.RunningInstance.IsDecided()
-	if !decided {
-		return errors.New("consensus instance not decided")
-	}
-
-	decidedValue := &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedValueByts); err != nil {
-		return errors.Wrap(err, "failed to parse decided value to ConsensusData")
-	}
-
-	if err := b.validatePartialSigMsgForSlot(signedMsg, decidedValue.Duty.Slot); err != nil {
-		return err
-	}
-
-	roots, domain, err := runner.expectedPostConsensusRootsAndDomain()
-	if err != nil {
-		return err
-	}
-
-	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
-}
-
 func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
 	byts, err := val.Encode()
 	if err != nil {

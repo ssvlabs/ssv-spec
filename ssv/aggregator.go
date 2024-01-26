@@ -145,53 +145,8 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error
 	return nil
 }
 
-func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
-	if err != nil {
-		return errors.Wrap(err, "failed processing post consensus message")
-	}
-
-	if !quorum {
-		return nil
-	}
-
-	for _, root := range roots {
-		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
-		if err != nil {
-			return errors.Wrap(err, "could not reconstruct post consensus signature")
-		}
-		specSig := phase0.BLSSignature{}
-		copy(specSig[:], sig)
-
-		aggregateAndProof, err := r.GetState().DecidedValue.GetAggregateAndProof()
-		if err != nil {
-			return errors.Wrap(err, "could not get aggregate and proof")
-		}
-
-		msg := &phase0.SignedAggregateAndProof{
-			Message:   aggregateAndProof,
-			Signature: specSig,
-		}
-		if err := r.GetBeaconNode().SubmitSignedAggregateSelectionProof(msg); err != nil {
-			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed aggregate")
-		}
-	}
-	r.GetState().Finished = true
-	return nil
-}
-
 func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return []ssz.HashRoot{types.SSZUint64(r.GetState().StartingDuty.Slot)}, types.DomainSelectionProof, nil
-}
-
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	aggregateAndProof, err := r.GetState().DecidedValue.GetAggregateAndProof()
-	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get aggregate and proof")
-	}
-
-	return []ssz.HashRoot{aggregateAndProof}, types.DomainAggregateAndProof, nil
 }
 
 // executeDuty steps:

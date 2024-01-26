@@ -2,6 +2,7 @@ package validation
 
 import (
 	"context"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
@@ -96,10 +97,6 @@ func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
 	signedMsg := &types.SignedPartialSignatureMessage{}
 	if err := signedMsg.Decode(data); err != nil {
 		return err
-	}
-
-	if signedMsg.Message.Type == types.PostConsensusPartialSig {
-		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, signedMsg)
 	}
 	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, signedMsg)
 }

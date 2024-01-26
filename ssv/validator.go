@@ -65,10 +65,6 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
-
-		if signedMsg.Message.Type == types.PostConsensusPartialSig {
-			return dutyRunner.ProcessPostConsensus(signedMsg)
-		}
 		return dutyRunner.ProcessPreConsensus(signedMsg)
 	default:
 		return errors.New("unknown msg")

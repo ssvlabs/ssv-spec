@@ -187,61 +187,6 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
-	if err != nil {
-		return errors.Wrap(err, "failed processing post consensus message")
-	}
-
-	if !quorum {
-		return nil
-	}
-
-	// get contributions
-	contributions, err := r.GetState().DecidedValue.GetSyncCommitteeContributions()
-	if err != nil {
-		return errors.Wrap(err, "could not get contributions")
-	}
-
-	for _, root := range roots {
-		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
-		if err != nil {
-			return errors.Wrap(err, "could not reconstruct post consensus signature")
-		}
-		specSig := phase0.BLSSignature{}
-		copy(specSig[:], sig)
-
-		for _, contribution := range contributions {
-			// match the right contrib and proof root to signed root
-			contribAndProof, contribAndProofRoot, err := r.generateContributionAndProof(contribution.Contribution, contribution.SelectionProofSig)
-			if err != nil {
-				return errors.Wrap(err, "could not generate contribution and proof")
-			}
-			if !bytes.Equal(root[:], contribAndProofRoot[:]) {
-				continue // not the correct root
-			}
-
-			signedContrib, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
-			if err != nil {
-				return errors.Wrap(err, "could not reconstruct contribution and proof sig")
-			}
-			blsSignedContribAndProof := phase0.BLSSignature{}
-			copy(blsSignedContribAndProof[:], signedContrib)
-			signedContribAndProof := &altair.SignedContributionAndProof{
-				Message:   contribAndProof,
-				Signature: blsSignedContribAndProof,
-			}
-
-			if err := r.GetBeaconNode().SubmitSignedContributionAndProof(signedContribAndProof); err != nil {
-				return errors.Wrap(err, "could not submit to Beacon chain reconstructed contribution and proof")
-			}
-			break
-		}
-	}
-	r.GetState().Finished = true
-	return nil
-}
-
 func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib altair.SyncCommitteeContribution, proof phase0.BLSSignature) (*altair.ContributionAndProof, phase0.Root, error) {
 	contribAndProof := &altair.ContributionAndProof{
 		AggregatorIndex: r.GetState().DecidedValue.Duty.ValidatorIndex,
@@ -275,25 +220,6 @@ func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]
 		sszIndexes = append(sszIndexes, data)
 	}
 	return sszIndexes, types.DomainSyncCommitteeSelectionProof, nil
-}
-
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	// get contributions
-	contributions, err := r.GetState().DecidedValue.GetSyncCommitteeContributions()
-	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get contributions")
-	}
-
-	ret := make([]ssz.HashRoot, 0)
-	for _, contrib := range contributions {
-		contribAndProof, _, err := r.generateContributionAndProof(contrib.Contribution, contrib.SelectionProofSig)
-		if err != nil {
-			return nil, types.DomainError, errors.Wrap(err, "could not generate contribution and proof")
-		}
-		ret = append(ret, contribAndProof)
-	}
-	return ret, types.DomainContributionAndProof, nil
 }
 
 // executeDuty steps:

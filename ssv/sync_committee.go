@@ -106,55 +106,8 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 	return nil
 }
 
-func (r *SyncCommitteeRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
-	if err != nil {
-		return errors.Wrap(err, "failed processing post consensus message")
-	}
-
-	if !quorum {
-		return nil
-	}
-
-	blockRoot, err := r.GetState().DecidedValue.GetSyncCommitteeBlockRoot()
-	if err != nil {
-		return errors.Wrap(err, "could not get sync committee block root")
-	}
-
-	for _, root := range roots {
-		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
-		if err != nil {
-			return errors.Wrap(err, "could not reconstruct post consensus signature")
-		}
-		specSig := phase0.BLSSignature{}
-		copy(specSig[:], sig)
-
-		msg := &altair.SyncCommitteeMessage{
-			Slot:            r.GetState().DecidedValue.Duty.Slot,
-			BeaconBlockRoot: blockRoot,
-			ValidatorIndex:  r.GetState().DecidedValue.Duty.ValidatorIndex,
-			Signature:       specSig,
-		}
-		if err := r.GetBeaconNode().SubmitSyncMessage(msg); err != nil {
-			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
-		}
-	}
-	r.GetState().Finished = true
-	return nil
-}
-
 func (r *SyncCommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return []ssz.HashRoot{}, types.DomainError, errors.New("no expected pre consensus roots for sync committee")
-}
-
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *SyncCommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	root, err := r.GetState().DecidedValue.GetSyncCommitteeBlockRoot()
-	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get sync committee block root")
-	}
-
-	return []ssz.HashRoot{types.SSZBytes(root[:])}, types.DomainSyncCommittee, nil
 }
 
 // executeDuty steps:
