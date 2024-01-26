@@ -285,3 +285,22 @@ func (signedMsg *SignedMessage) WithoutFUllData() *SignedMessage {
 		Message:   signedMsg.Message,
 	}
 }
+
+type CommitExtraLoad struct {
+	// List of signatures. We must use list instead of a unique element due to the sync committee aggregation duty.
+	Signatures []types.Signature `ssz-max:"4"` // Maximum number of sync committee subnets as defined in https://github.com/ethereum/consensus-specs/blob/dev/specs/altair/validator.md
+}
+
+func (c *CommitExtraLoad) GetSignatures() []types.Signature {
+	return c.Signatures
+}
+
+// Encode returns a CommitExtraLoad encoded bytes or error
+func (c *CommitExtraLoad) Encode() ([]byte, error) {
+	return c.MarshalSSZ()
+}
+
+// Decode returns error if decoding failed
+func (c *CommitExtraLoad) Decode(data []byte) error {
+	return c.UnmarshalSSZ(data)
+}
