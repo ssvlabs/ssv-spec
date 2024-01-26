@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"encoding/hex"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -20,14 +21,18 @@ func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
 }
 
 func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessage) {
-	if ps.Signatures[rootHex(sigMsg.SigningRoot)] == nil {
-		ps.Signatures[rootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID][]byte)
-	}
-	m := ps.Signatures[rootHex(sigMsg.SigningRoot)]
+	ps.AddSignatureForSignatureRootAndSigner(sigMsg.PartialSignature, sigMsg.SigningRoot, sigMsg.Signer)
+}
 
-	if m[sigMsg.Signer] == nil {
-		m[sigMsg.Signer] = make([]byte, 96)
-		copy(m[sigMsg.Signer], sigMsg.PartialSignature)
+func (ps *PartialSigContainer) AddSignatureForSignatureRootAndSigner(signature types.Signature, signingRoot [32]byte, signer types.OperatorID) {
+	if ps.Signatures[rootHex(signingRoot)] == nil {
+		ps.Signatures[rootHex(signingRoot)] = make(map[types.OperatorID][]byte)
+	}
+	m := ps.Signatures[rootHex(signingRoot)]
+
+	if m[signer] == nil {
+		m[signer] = make([]byte, 96)
+		copy(m[signer], signature)
 	}
 }
 

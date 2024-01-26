@@ -11,8 +11,8 @@ import (
 
 // Manager for CommitExtraLoad
 type CommitExtraLoadManager struct {
-	Signatures  map[phase0.Root]map[types.OperatorID]types.Signature // Stores validated beacon object signatures
-	SigningRoot []phase0.Root                                        // Stores signing root for comparison
+	PartialSigContainer *PartialSigContainer // Stores validated beacon object signatures
+	SigningRoot         []phase0.Root        // Stores signing root for comparison
 
 	// Runner-specific
 	BaseRunner *BaseRunner
@@ -31,8 +31,8 @@ func NewCommitExtraLoadManagerF(
 
 	return func() qbft.CommitExtraLoadManagerI {
 		return &CommitExtraLoadManager{
-			Signatures:  make(map[phase0.Root]map[types.OperatorID]types.Signature),
-			SigningRoot: make([]phase0.Root, 0),
+			PartialSigContainer: NewPartialSigContainer(baseRunner.Share.Quorum),
+			SigningRoot:         make([]phase0.Root, 0),
 
 			// Runner-specific
 			BaseRunner: baseRunner,
@@ -128,11 +128,7 @@ func (c *CommitExtraLoadManager) Process(signedMessage *qbft.SignedMessage) erro
 
 	// for each SigningRoot, add the respective signature
 	for _, postConsensusSignature := range signedMessage.Message.CommitExtraLoad.PostConsensusSignatures {
-		if _, ok := c.Signatures[postConsensusSignature.SigningRoot]; !ok {
-			c.Signatures[postConsensusSignature.SigningRoot] = make(map[types.OperatorID]types.Signature)
-		}
-
-		c.Signatures[postConsensusSignature.SigningRoot][signedMessage.Signers[0]] = postConsensusSignature.Signature
+		c.PartialSigContainer.AddSignatureForSignatureRootAndSigner(postConsensusSignature.Signature, postConsensusSignature.SigningRoot, signedMessage.Signers[0])
 	}
 	return nil
 }
