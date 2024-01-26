@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -32,7 +33,7 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.FullData
 	i.State.LastPreparedRound = i.State.Round
 
-	commitMsg, err := CreateCommit(i.State, i.config, proposedRoot)
+	commitMsg, err := CreateCommit(i.State, i.config, i.CommitExtraLoadManager, proposedRoot)
 	if err != nil {
 		return errors.Wrap(err, "could not create commit msg")
 	}

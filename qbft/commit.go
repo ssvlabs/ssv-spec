@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -15,6 +16,14 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 	}
 	if !addMsg {
 		return false, nil, nil, nil // UponCommit was already called
+	}
+
+	// Process CommitExtraLoad
+	if i.CommitExtraLoadManager != nil {
+		err := i.CommitExtraLoadManager.Process(signedCommit)
+		if err != nil {
+			return false, nil, nil, errors.Wrap(err, "could not process CommitExtraLoad")
+		}
 	}
 
 	// calculate commit quorum and act upon it
@@ -72,14 +81,26 @@ Commit(
                         )
                     );
 */
-func CreateCommit(state *State, config IConfig, root [32]byte) (*SignedMessage, error) {
+func CreateCommit(state *State, config IConfig, commitExtraLoadManager CommitExtraLoadManagerI, root [32]byte) (*SignedMessage, error) {
+
+	// Create CommitExtraLoad
+	var commitExtraLoad CommitExtraLoad
+	if commitExtraLoadManager != nil {
+		var err error
+		commitExtraLoad, err = commitExtraLoadManager.Create(state.ProposalAcceptedForCurrentRound.FullData)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not create CommitExtraLoad")
+		}
+	}
+
 	msg := &Message{
 		MsgType:    CommitMsgType,
 		Height:     state.Height,
 		Round:      state.Round,
 		Identifier: state.ID,
 
-		Root: root,
+		Root:            root,
+		CommitExtraLoad: commitExtraLoad,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
@@ -126,6 +147,7 @@ func validateCommit(
 	round Round,
 	proposedMsg *SignedMessage,
 	operators []*types.Operator,
+	commitExtraLoadManager CommitExtraLoadManagerI,
 ) error {
 	if err := baseCommitValidation(config, signedCommit, height, operators); err != nil {
 		return err
@@ -141,6 +163,13 @@ func validateCommit(
 
 	if !bytes.Equal(proposedMsg.Message.Root[:], signedCommit.Message.Root[:]) {
 		return errors.New("proposed data mistmatch")
+	}
+
+	if commitExtraLoadManager != nil {
+		err := commitExtraLoadManager.Validate(signedCommit)
+		if err != nil {
+			return errors.New("CommitExtraLoad fails validation")
+		}
 	}
 
 	return nil

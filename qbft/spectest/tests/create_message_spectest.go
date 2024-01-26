@@ -2,13 +2,14 @@ package tests
 
 import (
 	"encoding/hex"
+	"testing"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 const (
@@ -76,7 +77,7 @@ func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateCommit(state, config, test.Value)
+	return qbft.CreateCommit(state, config, nil, test.Value)
 }
 
 func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {

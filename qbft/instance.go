@@ -179,6 +179,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Round,
 			i.State.ProposalAcceptedForCurrentRound,
 			i.State.Share.Committee,
+			i.CommitExtraLoadManager,
 		)
 	case RoundChangeMsgType:
 		return validRoundChangeForData(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
