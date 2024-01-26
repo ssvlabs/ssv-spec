@@ -65,7 +65,7 @@ func (r *SyncCommitteeRunner) ProcessPreConsensus(signedMsg *types.SignedPartial
 }
 
 func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
+	decided, decidedValue, commitExtraLoadManagerI, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -75,40 +75,34 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 		return nil
 	}
 
-	// specific duty sig
-	root, err := decidedValue.GetSyncCommitteeBlockRoot()
-	if err != nil {
-		return errors.Wrap(err, "could not get sync committee block root")
-	}
-	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZBytes(root[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)
-	if err != nil {
-		return errors.Wrap(err, "failed signing attestation data")
-	}
-	postConsensusMsg := &types.PartialSignatureMessages{
-		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.Duty.Slot,
-		Messages: []*types.PartialSignatureMessage{msg},
-	}
+	commitExtraLoadManager := commitExtraLoadManagerI.(*CommitExtraLoadManager)
 
-	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
-	if err != nil {
-		return errors.Wrap(err, "could not sign post consensus msg")
-	}
+	roots := commitExtraLoadManager.SigningRoot
 
-	data, err := postSignedMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode post consensus signature msg")
-	}
+	for _, root := range roots {
+		sig, err := r.GetState().ReconstructBeaconSig(commitExtraLoadManager.PartialSigContainer, root, r.GetShare().ValidatorPubKey)
+		if err != nil {
+			return errors.Wrap(err, "could not reconstruct post consensus signature")
+		}
+		specSig := phase0.BLSSignature{}
+		copy(specSig[:], sig)
 
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
-	}
+		blockRoot, err := decidedValue.GetSyncCommitteeBlockRoot()
+		if err != nil {
+			return errors.Wrap(err, "could not get sync committee block root")
+		}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast partial post consensus sig")
+		msg := &altair.SyncCommitteeMessage{
+			Slot:            decidedValue.Duty.Slot,
+			BeaconBlockRoot: blockRoot,
+			ValidatorIndex:  decidedValue.Duty.ValidatorIndex,
+			Signature:       specSig,
+		}
+		if err := r.GetBeaconNode().SubmitSyncMessage(msg); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
+		}
 	}
+	r.GetState().Finished = true
 	return nil
 }
 

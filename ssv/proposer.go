@@ -120,7 +120,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 }
 
 func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
+	decided, _, commitExtraLoadManagerI, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -130,54 +130,40 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 		return nil
 	}
 
-	// specific duty sig
-	var blkToSign ssz.HashRoot
-	if r.decidedBlindedBlock() {
-		_, blkToSign, err = decidedValue.GetBlindedBlockData()
+	commitExtraLoadManager := commitExtraLoadManagerI.(*CommitExtraLoadManager)
+
+	roots := commitExtraLoadManager.SigningRoot
+
+	for _, root := range roots {
+
+		sig, err := r.GetState().ReconstructBeaconSig(commitExtraLoadManager.PartialSigContainer, root, r.GetShare().ValidatorPubKey)
 		if err != nil {
-			return errors.Wrap(err, "could not get blinded block data")
+			return errors.Wrap(err, "could not reconstruct post consensus signature")
 		}
-	} else {
-		_, blkToSign, err = decidedValue.GetBlockData()
-		if err != nil {
-			return errors.Wrap(err, "could not get block data")
+		specSig := phase0.BLSSignature{}
+		copy(specSig[:], sig)
+
+		if r.decidedBlindedBlock() {
+			vBlindedBlk, _, err := r.GetState().DecidedValue.GetBlindedBlockData()
+			if err != nil {
+				return errors.Wrap(err, "could not get blinded block")
+			}
+
+			if err := r.GetBeaconNode().SubmitBlindedBeaconBlock(vBlindedBlk, specSig); err != nil {
+				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
+			}
+		} else {
+			vBlk, _, err := r.GetState().DecidedValue.GetBlockData()
+			if err != nil {
+				return errors.Wrap(err, "could not get block")
+			}
+
+			if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, specSig); err != nil {
+				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
+			}
 		}
 	}
-
-	msg, err := r.BaseRunner.signBeaconObject(
-		r,
-		blkToSign,
-		decidedValue.Duty.Slot,
-		types.DomainProposer,
-	)
-	if err != nil {
-		return errors.Wrap(err, "failed signing attestation data")
-	}
-	postConsensusMsg := &types.PartialSignatureMessages{
-		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.Duty.Slot,
-		Messages: []*types.PartialSignatureMessage{msg},
-	}
-
-	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
-	if err != nil {
-		return errors.Wrap(err, "could not sign post consensus msg")
-	}
-
-	data, err := postSignedMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode post consensus signature msg")
-	}
-
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
-	}
-
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast partial post consensus sig")
-	}
+	r.GetState().Finished = true
 	return nil
 }
 

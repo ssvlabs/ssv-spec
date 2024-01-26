@@ -216,3 +216,13 @@ func (c *Controller) GetConfig() IConfig {
 func (c *Controller) WithCommitExtraLoadManagerF(commitExtraLoadManagerF CommitExtraLoadManagerF) {
 	c.CommitExtraLoadManagerF = commitExtraLoadManagerF
 }
+
+// Returns CommitExtraLoadManager for a certain instance height
+func (c *Controller) GetCommitExtraLoadManagerFromInstance(height Height) (CommitExtraLoadManagerI, error) {
+	inst := c.InstanceForHeight(height)
+	if inst == nil {
+		return nil, errors.New("instance not found")
+	}
+
+	return inst.CommitExtraLoadManager, nil
+}

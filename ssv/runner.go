@@ -111,7 +111,7 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *typ
 }
 
 // baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
-func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
+func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, commitExtraLoadManager qbft.CommitExtraLoadManagerI, err error) {
 	prevDecided := false
 	if b.hasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
@@ -120,41 +120,46 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 	// TODO: revert `if false` after pre-consensus justification is fixed.
 	if false {
 		if err := b.processPreConsensusJustification(runner, b.highestDecidedSlot, msg); err != nil {
-			return false, nil, errors.Wrap(err, "invalid pre-consensus justification")
+			return false, nil, nil, errors.Wrap(err, "invalid pre-consensus justification")
 		}
 	}
 
 	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
-		return false, nil, err
+		return false, nil, nil, err
 	}
 
 	// we allow all consensus msgs to be processed, once the process finishes we check if there is an actual running duty
 	// do not return error if no running duty
 	if !b.hasRunningDuty() {
-		return false, nil, nil
+		return false, nil, nil, nil
 	}
 
 	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
-		return false, nil, err
+		return false, nil, nil, err
 	}
 
 	// decode consensus data
 	decidedValue = &types.ConsensusData{}
 	if err := decidedValue.Decode(decidedMsg.FullData); err != nil {
-		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
+		return true, nil, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
 	// update the highest decided slot
 	b.highestDecidedSlot = decidedValue.Duty.Slot
 
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
-		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
+		return true, nil, nil, errors.Wrap(err, "decided ConsensusData invalid")
 	}
 
 	runner.GetBaseRunner().State.DecidedValue = decidedValue
 
-	return true, decidedValue, nil
+	commitExtraLoadManager, err = b.QBFTController.GetCommitExtraLoadManagerFromInstance(msg.Message.Height)
+	if err != nil {
+		return true, nil, nil, errors.Wrap(err, "could not get instance's CommitExtraLoadManager")
+	}
+
+	return true, decidedValue, commitExtraLoadManager, nil
 }
 
 // basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg

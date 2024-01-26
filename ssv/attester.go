@@ -65,7 +65,7 @@ func (r *AttesterRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 }
 
 func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
+	decided, decidedValue, commitExtraLoadManagerI, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -80,36 +80,34 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 		return errors.Wrap(err, "could not get attestation data")
 	}
 
-	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, attestationData, decidedValue.Duty.Slot, types.DomainAttester)
-	if err != nil {
-		return errors.Wrap(err, "failed signing attestation data")
-	}
-	postConsensusMsg := &types.PartialSignatureMessages{
-		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.Duty.Slot,
-		Messages: []*types.PartialSignatureMessage{msg},
-	}
+	commitExtraLoadManager := commitExtraLoadManagerI.(*CommitExtraLoadManager)
 
-	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
-	if err != nil {
-		return errors.Wrap(err, "could not sign post consensus msg")
-	}
+	roots := commitExtraLoadManager.SigningRoot
 
-	data, err := postSignedMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode post consensus signature msg")
-	}
+	for _, root := range roots {
+		sig, err := r.GetState().ReconstructBeaconSig(commitExtraLoadManager.PartialSigContainer, root, r.GetShare().ValidatorPubKey)
+		if err != nil {
+			return errors.Wrap(err, "could not reconstruct post consensus signature")
+		}
+		specSig := phase0.BLSSignature{}
+		copy(specSig[:], sig)
 
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
-	}
+		duty := decidedValue.Duty
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast partial post consensus sig")
+		aggregationBitfield := bitfield.NewBitlist(decidedValue.Duty.CommitteeLength)
+		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
+		signedAtt := &phase0.Attestation{
+			Data:            attestationData,
+			Signature:       specSig,
+			AggregationBits: aggregationBitfield,
+		}
+
+		// broadcast
+		if err := r.beacon.SubmitAttestation(signedAtt); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
+		}
 	}
+	r.GetState().Finished = true
 	return nil
 }
 

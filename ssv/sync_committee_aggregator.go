@@ -135,7 +135,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
+	decided, decidedValue, commitExtraLoadManagerI, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -145,51 +145,45 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 		return nil
 	}
 
+	commitExtraLoadManager := commitExtraLoadManagerI.(*CommitExtraLoadManager)
+
+	roots := commitExtraLoadManager.SigningRoot
+
+	// get contributions
 	contributions, err := decidedValue.GetSyncCommitteeContributions()
 	if err != nil {
 		return errors.Wrap(err, "could not get contributions")
 	}
 
-	// specific duty sig
-	msgs := make([]*types.PartialSignatureMessage, 0)
-	for _, c := range contributions {
-		contribAndProof, _, err := r.generateContributionAndProof(c.Contribution, c.SelectionProofSig)
-		if err != nil {
-			return errors.Wrap(err, "could not generate contribution and proof")
+	for _, root := range roots {
+		for _, contribution := range contributions {
+			// match the right contrib and proof root to signed root
+			contribAndProof, contribAndProofRoot, err := r.generateContributionAndProof(contribution.Contribution, contribution.SelectionProofSig)
+			if err != nil {
+				return errors.Wrap(err, "could not generate contribution and proof")
+			}
+			if !bytes.Equal(root[:], contribAndProofRoot[:]) {
+				continue // not the correct root
+			}
+
+			signedContrib, err := r.GetState().ReconstructBeaconSig(commitExtraLoadManager.PartialSigContainer, root, r.GetShare().ValidatorPubKey)
+			if err != nil {
+				return errors.Wrap(err, "could not reconstruct contribution and proof sig")
+			}
+			blsSignedContribAndProof := phase0.BLSSignature{}
+			copy(blsSignedContribAndProof[:], signedContrib)
+			signedContribAndProof := &altair.SignedContributionAndProof{
+				Message:   contribAndProof,
+				Signature: blsSignedContribAndProof,
+			}
+
+			if err := r.GetBeaconNode().SubmitSignedContributionAndProof(signedContribAndProof); err != nil {
+				return errors.Wrap(err, "could not submit to Beacon chain reconstructed contribution and proof")
+			}
+			break
 		}
-
-		signed, err := r.BaseRunner.signBeaconObject(r, contribAndProof, decidedValue.Duty.Slot, types.DomainContributionAndProof)
-		if err != nil {
-			return errors.Wrap(err, "failed to sign aggregate and proof")
-		}
-
-		msgs = append(msgs, signed)
 	}
-	postConsensusMsg := &types.PartialSignatureMessages{
-		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.Duty.Slot,
-		Messages: msgs,
-	}
-
-	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
-	if err != nil {
-		return errors.Wrap(err, "could not sign post consensus msg")
-	}
-
-	data, err := postSignedMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode post consensus signature msg")
-	}
-
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
-	}
-
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast partial post consensus sig")
-	}
+	r.GetState().Finished = true
 	return nil
 }
 
