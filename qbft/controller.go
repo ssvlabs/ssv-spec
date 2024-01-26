@@ -19,6 +19,8 @@ type Controller struct {
 	StoredInstances InstanceContainer
 	Share           *types.Share
 	config          IConfig
+
+	CommitExtraLoadManager CommitExtraLoadManagerI `json:"omitempty"`
 }
 
 func NewController(
@@ -142,7 +144,7 @@ func (c *Controller) isFutureMessage(msg *SignedMessage) bool {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
+	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height, c.CommitExtraLoadManager)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
@@ -207,4 +209,8 @@ func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
 
 func (c *Controller) GetConfig() IConfig {
 	return c.config
+}
+
+func (c *Controller) WithCommitExtraLoadManager(commitExtraLoadManager CommitExtraLoadManagerI) {
+	c.CommitExtraLoadManager = commitExtraLoadManager
 }

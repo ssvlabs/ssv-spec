@@ -24,6 +24,8 @@ type Instance struct {
 	// forceStop will force stop the instance if set to true
 	forceStop  bool
 	StartValue []byte
+
+	CommitExtraLoadManager CommitExtraLoadManagerI `json:"omitempty"`
 }
 
 func NewInstance(
@@ -31,6 +33,7 @@ func NewInstance(
 	share *types.Share,
 	identifier []byte,
 	height Height,
+	commitExtraLoadManager CommitExtraLoadManagerI,
 ) *Instance {
 	return &Instance{
 		State: &State{
@@ -44,8 +47,9 @@ func NewInstance(
 			CommitContainer:      NewMsgContainer(),
 			RoundChangeContainer: NewMsgContainer(),
 		},
-		config:      config,
-		processMsgF: types.NewThreadSafeF(),
+		config:                 config,
+		processMsgF:            types.NewThreadSafeF(),
+		CommitExtraLoadManager: commitExtraLoadManager,
 	}
 }
 
