@@ -59,7 +59,7 @@
 		"LastPreparedRound": 0,
 		"LastPreparedValue": null,
 		"ProposalAcceptedForCurrentRound": {
-				"Signature": "o2PMqg1gJ2/lNK/e0Q3+aEulAnVsMR5aJzlYoN3/qjWSRB6qDGguAKX0KSAzgQgdFAedi0V6Fwj+7hOd/JtK5eBmLSdGfUAzdAfpcN8MUo17YTkRoDyaOPPj+Wz9nbZ6",
+				"Signature": "snC2lnmkQj8Qb2fcDEFtLMYE3OyBM5fkrXpaRZuysCJyGR3MZlufE2muZX3z8oX/GAytMu7CrIhPUvEa22T6PRB+G9QXiow/Y9Kbb4KSdf3a6R2scx3VdmNh+AvNM4E5",
 				"Signers": [
 						1
 				],
@@ -114,7 +114,7 @@
 				"Msgs": {
 						"1": [
 								{
-										"Signature": "o2PMqg1gJ2/lNK/e0Q3+aEulAnVsMR5aJzlYoN3/qjWSRB6qDGguAKX0KSAzgQgdFAedi0V6Fwj+7hOd/JtK5eBmLSdGfUAzdAfpcN8MUo17YTkRoDyaOPPj+Wz9nbZ6",
+										"Signature": "snC2lnmkQj8Qb2fcDEFtLMYE3OyBM5fkrXpaRZuysCJyGR3MZlufE2muZX3z8oX/GAytMu7CrIhPUvEa22T6PRB+G9QXiow/Y9Kbb4KSdf3a6R2scx3VdmNh+AvNM4E5",
 										"Signers": [
 												1
 										],
