@@ -7,7 +7,8 @@ import (
 // Encoding tests encoding of a ssv message
 func Encoding() *EncodingTest {
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)
+	randaoMsg := testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)
+	msg := testingutils.SSVMsgProposer(nil, randaoMsg)
 
 	byts, err := msg.Encode()
 	if err != nil {
