@@ -2,7 +2,6 @@ package partialsigmessage
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
@@ -12,7 +11,7 @@ func InconsistentSignedMessage() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)
-	msgWithDifferentSigner := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)
+	msgWithDifferentSigner := testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2)
 
 	msg.Message.Messages = append(msg.Message.Messages, msgWithDifferentSigner.Message.Messages...)
 

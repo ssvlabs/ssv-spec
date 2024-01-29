@@ -30,7 +30,6 @@ func PostDecided() tests.SpecTest {
 				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
 			},
 			{
@@ -43,9 +42,7 @@ func PostDecided() tests.SpecTest {
 						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeMsgID, testingutils.TestSyncCommitteeConsensusDataByts), nil)),
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:   "aggregator",
@@ -59,7 +56,6 @@ func PostDecided() tests.SpecTest {
 				PostDutyRunnerState:     postDecidedAggregatorSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 			},
 			{
@@ -72,9 +68,7 @@ func PostDecided() tests.SpecTest {
 						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.AttesterMsgID, testingutils.TestAttesterConsensusDataByts), nil)),
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
 	}
@@ -95,7 +89,6 @@ func PostDecided() tests.SpecTest {
 			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 		}
 	}
@@ -116,7 +109,6 @@ func PostDecided() tests.SpecTest {
 			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 		}
 	}

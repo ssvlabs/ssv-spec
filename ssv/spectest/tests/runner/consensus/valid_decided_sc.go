@@ -26,10 +26,6 @@ func validDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleSyncCommitteeContribution)[:3],
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
@@ -74,10 +70,6 @@ func validDecidedSyncCommitteeSC() *comparable.StateComparison {
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleSyncCommittee)[:3],
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
 				),
 				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
 				StartingDuty: &cd.Duty,
@@ -125,10 +117,6 @@ func validDecidedAggregatorSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleAggregator)[:3],
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
@@ -173,10 +161,6 @@ func validDecidedAttesterSC() *comparable.StateComparison {
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleAttester)[:3],
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
 				),
 				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
 				StartingDuty: &cd.Duty,
@@ -224,10 +208,6 @@ func validDecidedProposerSC(version spec.DataVersion) *comparable.StateCompariso
 					ssv.NewPartialSigContainer(3),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[:3],
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				DecidedValue: comparable.FixIssue178(cd, version),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
@@ -273,10 +253,6 @@ func validDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCo
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[:3],
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
 				),
 				DecidedValue: comparable.FixIssue178(cd, version),
 				StartingDuty: &cd.Duty,

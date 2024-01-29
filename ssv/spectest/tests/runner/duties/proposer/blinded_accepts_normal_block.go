@@ -22,22 +22,14 @@ func BlindedRunnerAcceptsNormalBlock() tests.SpecTest {
 	// proposerBlindedReceivingNormalBlockV creates a test specification for versioned blinded proposer receiving a normal block.
 	proposerBlindedReceivingNormalBlockV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
 		return &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("blinded proposer accepts normal block proposal (%s)", version.String()),
-			Runner: testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer), // consensus
-				[]*types.SSVMessage{ // post consensus
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
-				}...,
-			),
+			Name:                    fmt.Sprintf("blinded proposer accepts normal block proposal (%s)", version.String()),
+			Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
+			Duty:                    testingutils.TestingProposerDutyV(version),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer), // consensus
 			PostDutyRunnerStateRoot: fullHappyFlowBlindedProposerReceivingNormalBlockSC(version).Root(),
 			PostDutyRunnerState:     fullHappyFlowBlindedProposerReceivingNormalBlockSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),

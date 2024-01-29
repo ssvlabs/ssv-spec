@@ -32,10 +32,6 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -100,10 +96,6 @@ func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 			ret := testingutils.SyncCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
@@ -178,10 +170,6 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -246,10 +234,6 @@ func futureDecidedAttesterSC() *comparable.StateComparison {
 			ret := testingutils.AttesterRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
@@ -324,10 +308,6 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -398,10 +378,6 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version)),
 					}),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}

@@ -23,10 +23,6 @@ func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -45,10 +41,6 @@ func postFinishAggregatorSC() *comparable.StateComparison {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
@@ -72,10 +64,6 @@ func postFinishValidatorRegistrationSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &testingutils.TestingValidatorRegistrationDuty,
 				Finished:     true,
 			}
@@ -93,10 +81,6 @@ func postFinishVoluntaryExitSC() *comparable.StateComparison {
 			ret := testingutils.VoluntaryExitRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
@@ -121,10 +105,6 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -143,10 +123,6 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),

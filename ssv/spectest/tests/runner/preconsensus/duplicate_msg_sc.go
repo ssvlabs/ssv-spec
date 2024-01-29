@@ -25,10 +25,6 @@ func duplicateMsgSyncCommitteeContributionSC() *comparable.StateComparison {
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -53,10 +49,6 @@ func duplicateMsgAggregatorSC() *comparable.StateComparison {
 						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -80,10 +72,6 @@ func duplicateMsgValidatorRegistrationSC() *comparable.StateComparison {
 						testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &testingutils.TestingValidatorRegistrationDuty,
 				Finished:     false,
 			}
@@ -106,10 +94,6 @@ func duplicateMsgVoluntaryExitSC() *comparable.StateComparison {
 					[]*types.SSVMessage{
 						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
 					},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
 				),
 				StartingDuty: &testingutils.TestingVoluntaryExitDuty,
 				Finished:     false,
@@ -135,10 +119,6 @@ func duplicateMsgProposerSC(version spec.DataVersion) *comparable.StateCompariso
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -162,10 +142,6 @@ func duplicateMsgBlindedProposerSC(version spec.DataVersion) *comparable.StateCo
 					[]*types.SSVMessage{
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
 					},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
 				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,

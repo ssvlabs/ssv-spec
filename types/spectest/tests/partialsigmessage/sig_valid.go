@@ -1,7 +1,6 @@
 package partialsigmessage
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
@@ -10,7 +9,7 @@ import (
 func SigValid() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
+	msg := testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)
 
 	return &MsgSpecTest{
 		Name: "sig valid",

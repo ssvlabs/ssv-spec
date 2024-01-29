@@ -30,10 +30,6 @@ func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -77,10 +73,6 @@ func quorum7OperatorsAggregatorSC() *comparable.StateComparison {
 						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[5], ks.Shares[5], 5, 5)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -122,10 +114,6 @@ func quorum7OperatorsValidatorRegistrationSC() *comparable.StateComparison {
 						testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[5], 5)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &testingutils.TestingValidatorRegistrationDuty,
 				Finished:     true,
 			}
@@ -152,10 +140,6 @@ func quorum7OperatorsVoluntaryExitSC() *comparable.StateComparison {
 						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[4], 4)),
 						testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[5], 5)),
 					},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
 				),
 				StartingDuty: &testingutils.TestingVoluntaryExitDuty,
 				Finished:     true,
@@ -186,10 +170,6 @@ func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateCompa
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[5], ks.Shares[5], 5, 5, version)),
 					},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
 				),
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
@@ -230,10 +210,6 @@ func quorum7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.Sta
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[5], ks.Shares[5], 5, 5, version)),
 					},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
 				),
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{

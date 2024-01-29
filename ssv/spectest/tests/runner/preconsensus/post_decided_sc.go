@@ -29,10 +29,6 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
 				Finished:     false,
@@ -72,10 +68,6 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3)),
 						testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[4], 4, 4)),
 					},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
 				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
@@ -117,10 +109,6 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version)),
 					},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
 				Finished:     false,
@@ -160,10 +148,6 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, version)),
 						testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version)),
 					},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
 				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,

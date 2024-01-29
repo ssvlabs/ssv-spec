@@ -7,7 +7,6 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
@@ -16,32 +15,6 @@ import (
 
 var AllTests = []tests.TestF{
 	runner.FullHappyFlow,
-
-	postconsensus.TooManyRoots,
-	postconsensus.TooFewRoots,
-	postconsensus.UnorderedExpectedRoots,
-	postconsensus.UnknownSigner,
-	postconsensus.InconsistentBeaconSigner,
-	postconsensus.PostFinish,
-	postconsensus.NoRunningDuty,
-	postconsensus.InvalidMessageSignature,
-	postconsensus.InvalidBeaconSignature,
-	postconsensus.DuplicateMsgDifferentRoots,
-	postconsensus.DuplicateMsg,
-	postconsensus.InvalidExpectedRoot,
-	postconsensus.PreDecided,
-	postconsensus.PostQuorum,
-	postconsensus.InvalidMessage,
-	postconsensus.InvalidMessageSlot,
-	postconsensus.ValidMessage,
-	postconsensus.ValidMessage7Operators,
-	postconsensus.ValidMessage10Operators,
-	postconsensus.ValidMessage13Operators,
-	postconsensus.Quorum,
-	postconsensus.Quorum7Operators,
-	postconsensus.Quorum10Operators,
-	postconsensus.Quorum13Operators,
-	postconsensus.InvalidDecidedValue,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,

@@ -5,7 +5,6 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -27,7 +26,6 @@ func ValidDecided7Operators() tests.SpecTest {
 				PostDutyRunnerState:     validDecided7OperatorsSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
 			},
 			{
@@ -37,9 +35,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
 				PostDutyRunnerStateRoot: validDecided7OperatorsSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "aggregator",
@@ -50,7 +46,6 @@ func ValidDecided7Operators() tests.SpecTest {
 				PostDutyRunnerState:     validDecided7OperatorsAggregatorSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 			},
 			{
@@ -60,9 +55,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
 				PostDutyRunnerStateRoot: validDecided7OperatorsAttesterSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsAttesterSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
 	}
@@ -78,7 +71,6 @@ func ValidDecided7Operators() tests.SpecTest {
 			PostDutyRunnerState:     validDecided7OperatorsProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 		}
 	}
@@ -94,7 +86,6 @@ func ValidDecided7Operators() tests.SpecTest {
 			PostDutyRunnerState:     validDecided7OperatorsBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 		}
 	}

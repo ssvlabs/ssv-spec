@@ -32,15 +32,10 @@ func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 					testingutils.ProposerMsgID,
 					testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 				), nil),
-
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)),
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionDeneb)),
-			testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, spec.DataVersionDeneb)),
 		},
 		PostDutyRunnerStateRoot: "97b5fd3d786658f67d9d39df63a7a73b690e7873f9bdc107f6fcd401a42d98fc",
 		OutputMessages: []*types.SignedPartialSignatureMessage{
 			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-			testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 		},
 		BeaconBroadcastedRoots: []string{
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, spec.DataVersionDeneb)),

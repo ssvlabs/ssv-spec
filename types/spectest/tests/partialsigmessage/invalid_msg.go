@@ -1,7 +1,6 @@
 package partialsigmessage
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
@@ -10,7 +9,7 @@ import (
 func InvalidMsg() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
+	msg := testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)
 	msg.Message.Messages = append(msg.Message.Messages, &types.PartialSignatureMessage{})
 
 	return &MsgSpecTest{

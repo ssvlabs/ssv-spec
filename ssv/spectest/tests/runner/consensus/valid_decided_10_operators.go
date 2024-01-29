@@ -3,7 +3,6 @@ package consensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -23,7 +22,6 @@ func ValidDecided10Operators() tests.SpecTest {
 				PostDutyRunnerStateRoot: "a991b6470a8c7a55f4ce89aea91925c2d80a9a8c4258545cc2fb17cabc388719",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
 			},
 			{
@@ -32,9 +30,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
 				PostDutyRunnerStateRoot: "b8f8e1c7eeca8f986ba04118ae36df3e5e70e229d490edd379393622abe8c708",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "aggregator",
@@ -44,7 +40,6 @@ func ValidDecided10Operators() tests.SpecTest {
 				PostDutyRunnerStateRoot: "691a3eac0ed3c7657cd1cfb7c17dfc472db5cd57dd5ca31f3bdde2f6d6e40b66",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 			},
 			{
@@ -55,7 +50,6 @@ func ValidDecided10Operators() tests.SpecTest {
 				PostDutyRunnerStateRoot: "59422da9c9ac14226688dc638041c830f596b4e51632685bb98fd2f3f7adaf99",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
 			},
 			{
@@ -66,7 +60,6 @@ func ValidDecided10Operators() tests.SpecTest {
 				PostDutyRunnerStateRoot: "7caaccca0c2352b6b9088ac139552a2a18e14b37e4d093cdab5a57b8348b259d",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
 			},
 			{
@@ -75,9 +68,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Duty:                    &testingutils.TestingAttesterDuty,
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
 				PostDutyRunnerStateRoot: "d88c7514e53f394e4d6ceca2f7b864c1f993f3e71b485c547640321621303e1a",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
 	}

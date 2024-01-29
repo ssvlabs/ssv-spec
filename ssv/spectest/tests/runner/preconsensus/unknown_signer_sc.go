@@ -23,10 +23,6 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -46,10 +42,6 @@ func unknownSignerAggregatorSC() *comparable.StateComparison {
 			ret := testingutils.AggregatorRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
@@ -75,10 +67,6 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -98,10 +86,6 @@ func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			ret := testingutils.ProposerBlindedBlockRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SSVMessage{},
 				),

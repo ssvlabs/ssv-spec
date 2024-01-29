@@ -25,10 +25,6 @@ func PostFinish() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
-					// post consensus
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
 					// commit msg
 					testingutils.SSVMsgSyncCommitteeContribution(
 						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
@@ -43,7 +39,6 @@ func PostFinish() tests.SpecTest {
 				PostDutyRunnerState:     postFinishSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
@@ -57,10 +52,6 @@ func PostFinish() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
-					// post consensus
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
 					// commit msg
 					testingutils.SSVMsgSyncCommittee(
 						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
@@ -73,9 +64,7 @@ func PostFinish() tests.SpecTest {
 				),
 				PostDutyRunnerStateRoot: postFinishSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     postFinishSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
@@ -86,10 +75,6 @@ func PostFinish() tests.SpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
-					// post consensus
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
 					// commit msg
 					testingutils.SSVMsgAggregator(
 						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
@@ -104,7 +89,6 @@ func PostFinish() tests.SpecTest {
 				PostDutyRunnerState:     postFinishAggregatorSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
@@ -116,10 +100,6 @@ func PostFinish() tests.SpecTest {
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
-					// post consensus
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot)),
 					// commit msg
 					testingutils.SSVMsgAttester(
 						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
@@ -132,9 +112,7 @@ func PostFinish() tests.SpecTest {
 				),
 				PostDutyRunnerStateRoot: postFinishAttesterSC().Root(),
 				PostDutyRunnerState:     postFinishAttesterSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
-				},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
@@ -154,10 +132,6 @@ func PostFinish() tests.SpecTest {
 					ks,
 					types.BNRoleProposer,
 				), // consensus
-				// post consensus
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 				// commit msg
 				testingutils.SSVMsgProposer(
 					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
@@ -172,7 +146,6 @@ func PostFinish() tests.SpecTest {
 			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
@@ -188,10 +161,6 @@ func PostFinish() tests.SpecTest {
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
 				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer), // consensus
-				// post consensus
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 				// commit msg
 				testingutils.SSVMsgProposer(
 					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
@@ -206,7 +175,6 @@ func PostFinish() tests.SpecTest {
 			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
