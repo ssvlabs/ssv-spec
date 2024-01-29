@@ -31,11 +31,12 @@ func NewController(
 	config IConfig,
 ) *Controller {
 	return &Controller{
-		Identifier:      identifier,
-		Height:          FirstHeight,
-		Share:           share,
-		StoredInstances: InstanceContainer{},
-		config:          config,
+		Identifier:              identifier,
+		Height:                  FirstHeight,
+		Share:                   share,
+		StoredInstances:         InstanceContainer{},
+		config:                  config,
+		CommitExtraLoadManagerF: func() CommitExtraLoadManagerI { return nil }, // default
 	}
 }
 
