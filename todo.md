@@ -1,0 +1,23 @@
+# Join Commit Post-Consensus
+- [x] Define CommitExtraLoad as a list of Signatures
+- [x] Add CommitExtraLoad to the message (omit JSON)
+- [x] Add CommitExtraLoadManagerI interface with: Validate(), Process(), Create()
+- [x] Add CommitExtraLoadManagerI to Instance, received in creation. (omit JSON)
+- [x] Add CommitExtraLoadManagerI to Controller, possibly set after creation. (omit JSON)
+- [x] Fix instance and controller tests
+- [x] Add Instance implementation for CommitExtraLoadManagerI
+- [x] Add controller implementation for CommitExtraLoadManagerI
+- [x] Change controller to CommitExtraLoadManagerIF
+- [x] Add signing root to CommitExtraLoad
+- [x] Add generalized CommitExtraLoadManager
+- [x] Implement CommitExtraLoadManager in each runner
+- [x] Drop Post-consensus processing
+- [x] Look for unused functions
+- [x] Fix Runner State
+- [x] Drop post-consensus tests
+- [x] Fix QBFT tests
+- [x] Fix types tests
+- [ ] Extend interface
+- [ ] Create new QBFT tests
+- [ ] Fix the SSV tests
+- [ ] Create new SSV tests
