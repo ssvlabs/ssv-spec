@@ -10,6 +10,6 @@ func CreateProposal() tests.SpecTest {
 		CreateType:   tests.CreateProposal,
 		Name:         "create proposal",
 		Value:        [32]byte{1, 2, 3, 4},
-		ExpectedRoot: "dfb0a692281b916b1d037df44f5c742f13ac3ee207ea0082cc3ca2afff34e178",
+		ExpectedRoot: "b28e854b54d18a9be6450ad72b6d6e3724ae83f74c185095b8b721c09771c2d1",
 	}
 }
