@@ -169,7 +169,7 @@ func validateCommit(
 	if commitExtraLoadManager != nil {
 		err := commitExtraLoadManager.Validate(signedCommit, state.ProposalAcceptedForCurrentRound.FullData)
 		if err != nil {
-			return errors.New("CommitExtraLoad fails validation")
+			return errors.Wrap(err, "CommitExtraLoad fails validation")
 		}
 	}
 

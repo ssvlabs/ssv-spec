@@ -20,6 +20,11 @@ func (p *PostConsensusSignature) Decode(data []byte) error {
 	return p.UnmarshalSSZ(data)
 }
 
+// GetRoot returns the root used for signing and verification
+func (p *PostConsensusSignature) GetRoot() ([32]byte, error) {
+	return p.HashTreeRoot()
+}
+
 // This structure is appended in commit messages carrying extra information.
 // It's useful for the underlying duty but not necessary for the consensus termination
 type CommitExtraLoad struct {
@@ -38,6 +43,11 @@ func (c *CommitExtraLoad) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (c *CommitExtraLoad) Decode(data []byte) error {
 	return c.UnmarshalSSZ(data)
+}
+
+// GetRoot returns the root used for signing and verification
+func (c *CommitExtraLoad) GetRoot() ([32]byte, error) {
+	return c.HashTreeRoot()
 }
 
 // Upon commit messages, the Instance shall use its CommitExtraLoadManagerI to:
