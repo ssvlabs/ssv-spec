@@ -12,10 +12,9 @@ import (
 
 // State holds all the relevant progress the duty execution progress
 type State struct {
-	PreConsensusContainer  *PartialSigContainer
-	PostConsensusContainer *PartialSigContainer
-	RunningInstance        *qbft.Instance
-	DecidedValue           *types.ConsensusData
+	PreConsensusContainer *PartialSigContainer
+	RunningInstance       *qbft.Instance
+	DecidedValue          *types.ConsensusData
 	// CurrentDuty is the duty the node pulled locally from the beacon node, might be different from decided duty
 	StartingDuty *types.Duty
 	// flags
@@ -24,8 +23,7 @@ type State struct {
 
 func NewRunnerState(quorum uint64, duty *types.Duty) *State {
 	return &State{
-		PreConsensusContainer:  NewPartialSigContainer(quorum),
-		PostConsensusContainer: NewPartialSigContainer(quorum),
+		PreConsensusContainer: NewPartialSigContainer(quorum),
 
 		StartingDuty: duty,
 		Finished:     false,

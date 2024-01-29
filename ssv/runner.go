@@ -29,7 +29,6 @@ type Runner interface {
 	ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error
 	// ProcessConsensus processes all consensus msgs, returns error if can't process
 	ProcessConsensus(msg *qbft.SignedMessage) error
-
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
 	// executeDuty an INTERNAL function, executes a duty.
