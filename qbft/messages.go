@@ -56,7 +56,7 @@ type Message struct {
 	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
 	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
 
-	CommitExtraLoad CommitExtraLoad `json:"omitempty"` // Extra data for commit messages
+	CommitExtraLoad CommitExtraLoad `json:"-"` // Extra data for commit messages
 }
 
 func (msg *Message) GetRoundChangeJustifications() ([]*SignedMessage, error) {
