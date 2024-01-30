@@ -242,14 +242,12 @@ func ConsensusForRound(ks *testingutils.TestKeySet, role types.BeaconRole,
 	// return variable
 	allMsgs := make([]*qbft.SignedMessage, 0)
 
-	// Justifications
-	preparedMsgs := make([]*qbft.SignedMessage, 0)
+	// Justification
 	preparedMsgsEncoded := make([][]byte, 0)
-	rcMsgsEncoded := make([][]byte, 0)
 
 	// Prepare messages for justification
 	if round > 1 && preparedValue {
-		preparedMsgs = loopMessages(func(opID types.OperatorID) *qbft.SignedMessage {
+		preparedMsgs := loopMessages(func(opID types.OperatorID) *qbft.SignedMessage {
 			return Prepare(ks, opID, height, round-1, msgID, root)
 		}, int(ks.Threshold))
 		preparedMsgsEncoded, err = qbft.MarshalJustifications(preparedMsgs)
@@ -265,7 +263,7 @@ func ConsensusForRound(ks *testingutils.TestKeySet, role types.BeaconRole,
 		}, int(ks.Threshold))...)
 	}
 
-	rcMsgsEncoded, err = qbft.MarshalJustifications(allMsgs)
+	rcMsgsEncoded, err := qbft.MarshalJustifications(allMsgs)
 	if err != nil {
 		panic(err.Error())
 	}
