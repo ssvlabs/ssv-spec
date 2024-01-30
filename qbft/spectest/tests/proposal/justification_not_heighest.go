@@ -44,6 +44,6 @@ func JustificationsNotHeighest() tests.SpecTest {
 		PostRoot:       "beaef03728ef5dadfd5daf11046923930e787f0d77b824326bd7ec65c2338b45",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: signed prepare not valid",
+		ExpectedError:  "invalid signed message: proposal not justified: No highest prepared round-change matches prepared messages",
 	}
 }

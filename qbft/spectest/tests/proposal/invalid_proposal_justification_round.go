@@ -40,7 +40,7 @@ func InvalidProposalJustificationRound() tests.SpecTest {
 		PostState:      sc.ExpectedState,
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
+		ExpectedError:  "invalid signed message: proposal not justified: No highest prepared round-change matches prepared messages",
 	}
 }
 

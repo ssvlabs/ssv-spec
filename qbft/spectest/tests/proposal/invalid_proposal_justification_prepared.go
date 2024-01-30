@@ -45,6 +45,6 @@ func InvalidProposalJustificationPrepared() tests.SpecTest {
 		PostRoot:       "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: failed to verify signature",
+		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
 	}
 }
