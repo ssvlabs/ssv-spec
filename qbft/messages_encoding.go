@@ -254,7 +254,7 @@ func (m *Message) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		hh.Append(m.Identifier)
+		hh.PutBytes(m.Identifier)
 		hh.MerkleizeWithMixin(elemIndx, byteLen, (56+31)/32)
 	}
 
@@ -503,7 +503,7 @@ func (s *SignedMessage) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		hh.Append(s.FullData)
+		hh.PutBytes(s.FullData)
 		hh.MerkleizeWithMixin(elemIndx, byteLen, (5243144+31)/32)
 	}
 

@@ -277,7 +277,7 @@ func (c *ConsensusData) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		hh.Append(c.DataSSZ)
+		hh.PutBytes(c.DataSSZ)
 		hh.MerkleizeWithMixin(elemIndx, byteLen, (4194304+31)/32)
 	}
 

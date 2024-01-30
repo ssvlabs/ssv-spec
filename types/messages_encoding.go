@@ -110,7 +110,7 @@ func (s *SSVMessage) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		hh.Append(s.Data)
+		hh.PutBytes(s.Data)
 		hh.MerkleizeWithMixin(elemIndx, byteLen, (6291829+31)/32)
 	}
 
