@@ -116,83 +116,90 @@ func isProposalJustification(
 	fullData []byte,
 	valCheck ProposedValueCheckF,
 ) error {
+	// Check proposed data
 	if err := valCheck(fullData); err != nil {
 		return errors.Wrap(err, "proposal fullData invalid")
 	}
 
+	// If first round -> no validation to do
 	if round == FirstRound {
 		return nil
-	} else {
-		// check all round changes are valid for height and round
-		// no quorum, duplicate signers,  invalid still has quorum, invalid no quorum
-		// prepared
-		for _, rc := range roundChangeMsgs {
-			if err := validRoundChangeForData(state, config, rc, height, round, fullData); err != nil {
-				return errors.Wrap(err, "change round msg not valid")
-			}
+	}
+
+	// Check unique signers of RC messages reach quorum
+	if !HasQuorum(state.Share, roundChangeMsgs) {
+		return errors.New("change round has no quorum")
+	}
+
+	// Validate each round change without validating the nested prepare messages
+	for _, rc := range roundChangeMsgs {
+		if err := validRoundChange(state, config, rc, height, round, fullData); err != nil {
+			return errors.Wrap(err, "change round msg not valid")
+		}
+	}
+
+	// Check if at least one RC message is prepared
+	hasPreparedRoundChange := false
+	for _, rc := range roundChangeMsgs {
+		if rc.Message.RoundChangePrepared() {
+			hasPreparedRoundChange = true
+			break
+		}
+	}
+	if !hasPreparedRoundChange {
+		return nil
+	}
+
+	// If at least one Round-Change message is prepared,
+	// we validate the proposed quorum of prepare messages against the highest prepared
+
+	// check prepare quorum
+	if !HasQuorum(state.Share, prepareMsgs) {
+		return errors.New("prepares has no quorum")
+	}
+
+	// get a round change data for which there is a justification for the highest previously prepared round
+	rcm, err := highestPrepared(roundChangeMsgs)
+	if err != nil {
+		return errors.Wrap(err, "could not get highest prepared")
+	}
+	if rcm == nil {
+		return errors.New("no highest prepared")
+	}
+
+	checkHighest := func(rcm *SignedMessage, expectedRoot [32]byte) error {
+		// proposed root must equal highest prepared root
+		if !bytes.Equal(expectedRoot[:], rcm.Message.Root[:]) {
+			return errors.New("proposed data doesn't match highest prepared")
 		}
 
-		// check there is a quorum
-		if !HasQuorum(state.Share, roundChangeMsgs) {
-			return errors.New("change round has no quorum")
+		// validate each prepare message against the highest previously prepared fullData and round
+		for _, pm := range prepareMsgs {
+			if err := validSignedPrepareForHeightRoundAndRoot(
+				config,
+				pm,
+				height,
+				rcm.Message.DataRound,
+				rcm.Message.Root,
+				state.Share.Committee,
+			); err != nil {
+				return errors.New("signed prepare not valid")
+			}
 		}
+		return nil
+	}
 
-		// previouslyPreparedF returns true if any on the round change messages have a prepared round and fullData
-		previouslyPrepared, err := func(rcMsgs []*SignedMessage) (bool, error) {
-			for _, rc := range rcMsgs {
-				if rc.Message.RoundChangePrepared() {
-					return true, nil
-				}
-			}
-			return false, nil
-		}(roundChangeMsgs)
-		if err != nil {
-			return errors.Wrap(err, "could not calculate if previously prepared")
-		}
-
-		if !previouslyPrepared {
-			return nil
-		} else {
-
-			// check prepare quorum
-			if !HasQuorum(state.Share, prepareMsgs) {
-				return errors.New("prepares has no quorum")
-			}
-
-			// get a round change data for which there is a justification for the highest previously prepared round
-			rcm, err := highestPrepared(roundChangeMsgs)
-			if err != nil {
-				return errors.Wrap(err, "could not get highest prepared")
-			}
-			if rcm == nil {
-				return errors.New("no highest prepared")
-			}
-
-			// proposed fullData must equal highest prepared fullData
-			r, err := HashDataRoot(fullData)
-			if err != nil {
-				return errors.Wrap(err, "could not hash input data")
-			}
-			if !bytes.Equal(r[:], rcm.Message.Root[:]) {
-				return errors.New("proposed data doesn't match highest prepared")
-			}
-
-			// validate each prepare message against the highest previously prepared fullData and round
-			for _, pm := range prepareMsgs {
-				if err := validSignedPrepareForHeightRoundAndRoot(
-					config,
-					pm,
-					height,
-					rcm.Message.DataRound,
-					rcm.Message.Root,
-					state.Share.Committee,
-				); err != nil {
-					return errors.New("signed prepare not valid")
-				}
-			}
+	highestPreparedRCs := highestPreparedSet(roundChangeMsgs)
+	r, err := HashDataRoot(fullData)
+	if err != nil {
+		return errors.Wrap(err, "could not hash input data")
+	}
+	for _, rcm := range highestPreparedRCs {
+		if checkHighest(rcm, r) == nil {
 			return nil
 		}
 	}
+	return errors.New("No highest prepared round-change matches prepared messages")
 }
 
 func proposer(state *State, config IConfig, round Round) types.OperatorID {

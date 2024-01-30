@@ -275,6 +275,62 @@ func validRoundChangeForData(
 	return nil
 }
 
+// Validate Round-Change message without validating each nested prepare message
+func validRoundChange(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	height Height,
+	round Round,
+	fullData []byte,
+) error {
+	if signedMsg.Message.MsgType != RoundChangeMsgType {
+		return errors.New("round change msg type is wrong")
+	}
+	if signedMsg.Message.Height != height {
+		return errors.New("wrong msg height")
+	}
+	if signedMsg.Message.Round != round {
+		return errors.New("wrong msg round")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	if err := signedMsg.Message.Validate(); err != nil {
+		return errors.Wrap(err, "roundChange invalid")
+	}
+
+	if signedMsg.Message.RoundChangePrepared() {
+
+		// Check data round
+		if signedMsg.Message.DataRound >= round {
+			return errors.New("prepared round >= round")
+		}
+
+		// Check value hash
+		r, err := HashDataRoot(fullData)
+		if err != nil {
+			return errors.Wrap(err, "could not hash input data")
+		}
+		if !bytes.Equal(r[:], signedMsg.Message.Root[:]) {
+			return errors.New("H(data) != root")
+		}
+
+		// Check quorum for prepare messages
+		prepareMsgs, _ := signedMsg.Message.GetRoundChangeJustifications() // no need to check error, checked on signedMsg.Message.Validate()
+		if !HasQuorum(state.Share, prepareMsgs) {
+			return errors.New("no justifications quorum")
+		}
+	}
+
+	return nil
+}
+
 // highestPrepared returns a round change message with the highest prepared round, returns nil if none found
 func highestPrepared(roundChanges []*SignedMessage) (*SignedMessage, error) {
 	var ret *SignedMessage
@@ -292,6 +348,43 @@ func highestPrepared(roundChanges []*SignedMessage) (*SignedMessage, error) {
 		}
 	}
 	return ret, nil
+}
+
+// highestPreparedSet returns the set of round change messages with the highest prepared round, returns nil if none found
+func highestPreparedSet(roundChanges []*SignedMessage) []*SignedMessage {
+	ret := make([]*SignedMessage, 0)
+
+	highestRound := highestPreparedRound(roundChanges)
+	if highestRound == NoRound {
+		return []*SignedMessage{}
+	}
+
+	for _, rc := range roundChanges {
+		if !rc.Message.RoundChangePrepared() {
+			continue
+		}
+
+		if rc.Message.DataRound == highestRound {
+			ret = append(ret, rc)
+		}
+	}
+	return ret
+}
+
+// highestPreparedRound returns the round of the highest prepared round change
+func highestPreparedRound(roundChanges []*SignedMessage) Round {
+	ret := NoRound
+
+	for _, rc := range roundChanges {
+		if !rc.Message.RoundChangePrepared() {
+			continue
+		}
+
+		if rc.Message.DataRound > ret {
+			ret = rc.Message.DataRound
+		}
+	}
+	return ret
 }
 
 // returns the min round number out of the signed round change messages and the current round
