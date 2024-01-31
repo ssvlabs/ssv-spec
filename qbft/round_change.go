@@ -320,12 +320,6 @@ func validRoundChange(
 		if !bytes.Equal(r[:], signedMsg.Message.Root[:]) {
 			return errors.New("H(data) != root")
 		}
-
-		// Check quorum for prepare messages
-		prepareMsgs, _ := signedMsg.Message.GetRoundChangeJustifications() // no need to check error, checked on signedMsg.Message.Validate()
-		if !HasQuorum(state.Share, prepareMsgs) {
-			return errors.New("no justifications quorum")
-		}
 	}
 
 	return nil
