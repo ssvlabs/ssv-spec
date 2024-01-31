@@ -56,6 +56,37 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 	return targetState, nil
 }
 
+// readStateComparison reads a json derived from 'testName' and unmarshals it into a json object
+func readStateComparison(basedir string, testName string, testType string) (map[string]interface{}, error) {
+	basedir = filepath.Join(basedir, "generate")
+	scDir := GetSCDir(basedir, testType)
+	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
+	byteValue, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var result map[string]interface{}
+	err = json.Unmarshal(byteValue, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func GetExpectedStateFromScFile(testName string, testType string) (map[string]interface{}, error) {
+	basedir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	expectedState, err := readStateComparison(basedir, testName, testType)
+	if err != nil {
+		return nil, err
+	}
+	return expectedState, nil
+}
+
 // GetSCDir returns the path to the state comparison folder for the given test type
 func GetSCDir(basedir string, testType string) string {
 	testType = strings.NewReplacer(
