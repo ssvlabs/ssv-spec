@@ -94,18 +94,22 @@ func ConsensusXRound(round int) {
 	msgs = append(msgs, ConsensusForRound(ks, role, height, qbft.Round(round), msgID, cd, usePreparedValue, int(ks.ShareCount), int(ks.ShareCount))...)
 
 	// Process
-	start := time.Now()
+	times := make([]int64, 0)
+	var total int64
 
 	for _, msg := range msgs {
+		start := time.Now()
 		err := validator.ProcessMessage(msg)
 		if err != nil {
 			panic(err.Error())
 		}
+		end := time.Now()
+		elapsed := end.Sub(start)
+		total += elapsed.Microseconds()
+		times = append(times, elapsed.Milliseconds())
 	}
 
-	end := time.Now()
-	elapsed := end.Sub(start).Microseconds()
-	fmt.Printf("Consensus round %v time: %v us.\n", round, elapsed)
+	fmt.Printf("Consensus round %v time: %v ms. Total: %v us\n", round, times, total)
 }
 
 func ConsensusMessageXRound(round int, msgType qbft.MessageType) {
@@ -171,6 +175,79 @@ func ConsensusMessageXRound(round int, msgType qbft.MessageType) {
 	}
 }
 
+func YConsensusMessageXRound(round int, messageNumber int, msgType qbft.MessageType) {
+	ks := testingutils.Testing4SharesSet()
+	validator := testingutils.BaseValidator(ks)
+	duty := &testingutils.TestingAggregatorDuty
+	role := duty.Type
+	cd := testingutils.TestAggregatorConsensusDataByts
+	err := validator.StartDuty(duty)
+	height := qbft.Height(duty.Slot)
+	msgID := testingutils.AggregatorMsgID
+	if err != nil {
+		panic(err.Error())
+	}
+
+	msgs := make([]*types.SSVMessage, 0)
+
+	// Pre-consensus
+	msgs = append(msgs, PreConsensusF(ks, role, false)...)
+
+	// Consensus
+	for i := 1; i <= round-1; i++ {
+		usePreparedValue := (i > 1)
+		msgs = append(msgs, ConsensusForRound(ks, role, height, qbft.Round(i), msgID, cd, usePreparedValue, int(ks.ShareCount), int(ks.ShareCount)-1)...)
+	}
+
+	// Process pre-consensus and old-consensus
+	for _, msg := range msgs {
+		err := validator.ProcessMessage(msg)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	msgs = make([]*types.SSVMessage, 0)
+
+	usePreparedValue := (round > 1)
+	msgs = append(msgs, ConsensusForRound(ks, role, height, qbft.Round(round), msgID, cd, usePreparedValue, int(ks.ShareCount), int(ks.ShareCount))...)
+
+	messageOccurrenceNumber := 0
+	for _, msg := range msgs {
+		signedMessage := &qbft.SignedMessage{}
+		err := signedMessage.Decode(msg.Data)
+		if err != nil {
+			panic(err.Error())
+		}
+		mType := signedMessage.Message.MsgType
+
+		foundMessage := false
+		if mType == msgType {
+			messageOccurrenceNumber += 1
+			if messageOccurrenceNumber == messageNumber {
+				foundMessage = true
+			}
+		}
+
+		if foundMessage {
+			start := time.Now()
+			err := validator.ProcessMessage(msg)
+			if err != nil {
+				panic(err.Error())
+			}
+			end := time.Now()
+			elapsed := end.Sub(start).Microseconds()
+			fmt.Printf("Consensus round %v msg type %v occurrence %v time: %v us.\n", round, msgType, messageNumber, elapsed)
+			return
+		} else {
+			err := validator.ProcessMessage(msg)
+			if err != nil {
+				panic(err.Error())
+			}
+		}
+	}
+}
+
 func TestFullDutyRound(t *testing.T) {
 	FullDutyXRounds(1)
 	FullDutyXRounds(2)
@@ -198,6 +275,15 @@ func TestConsensusMessage(t *testing.T) {
 	ConsensusMessageXRound(3, qbft.ProposalMsgType)
 	ConsensusMessageXRound(3, qbft.PrepareMsgType)
 	ConsensusMessageXRound(3, qbft.CommitMsgType)
+}
+
+func TestRoundChangeMessage(t *testing.T) {
+	YConsensusMessageXRound(2, 1, qbft.RoundChangeMsgType)
+	YConsensusMessageXRound(2, 2, qbft.RoundChangeMsgType)
+	YConsensusMessageXRound(2, 3, qbft.RoundChangeMsgType)
+	YConsensusMessageXRound(3, 1, qbft.RoundChangeMsgType)
+	YConsensusMessageXRound(3, 2, qbft.RoundChangeMsgType)
+	YConsensusMessageXRound(3, 3, qbft.RoundChangeMsgType)
 }
 
 func TestPreConsensus(t *testing.T) {
