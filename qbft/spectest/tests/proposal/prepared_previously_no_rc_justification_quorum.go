@@ -40,7 +40,7 @@ func PreparedPreviouslyNoRoundChangeJustificationQuorum() tests.SpecTest {
 		PostState:      sc.ExpectedState,
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
+		ExpectedError:  "invalid signed message: proposal not justified: prepares has no quorum",
 	}
 }
 
