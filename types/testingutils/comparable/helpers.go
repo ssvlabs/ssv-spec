@@ -6,9 +6,12 @@ import (
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
+	"github.com/google/go-cmp/cmp"
+	"github.com/stretchr/testify/require"
 	"os"
 	"path/filepath"
 	"strings"
+	"testing"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -94,4 +97,22 @@ func GetSCDir(basedir string, testType string) string {
 		".", "_").
 		Replace(testType)
 	return filepath.Join(basedir, "state_comparison", testType)
+}
+
+// CompareWithJson compares the given test with the expected state from the state comparison folder
+func CompareWithJson(t *testing.T, test any, testName string, testType string) {
+	// marshal test into json
+	byts, err := json.Marshal(test)
+	require.NoError(t, err)
+	//unmarshal json into map
+	var testMap map[string]interface{}
+	json.Unmarshal(byts, &testMap)
+
+	expectedTestMap, err := GetExpectedStateFromScFile(testName, testType)
+	require.NoError(t, err)
+
+	diff := cmp.Diff(testMap, expectedTestMap)
+	if diff != "" {
+		t.Errorf("%s inputs changed. %v", testName, diff)
+	}
 }

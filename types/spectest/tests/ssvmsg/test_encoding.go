@@ -2,7 +2,9 @@ package ssvmsg
 
 import (
 	"github.com/bloxapp/ssv-spec/types"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
+	reflect2 "reflect"
 	"testing"
 )
 
@@ -30,4 +32,6 @@ func (test *EncodingTest) Run(t *testing.T) {
 	r, err := decoded.HashTreeRoot()
 	require.NoError(t, err)
 	require.EqualValues(t, test.ExpectedRoot, r)
+
+	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }

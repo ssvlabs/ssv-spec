@@ -2,10 +2,8 @@ package beacon
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"github.com/bloxapp/ssv-spec/types"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
-	"github.com/google/go-cmp/cmp"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
 	"reflect"
 	"testing"
@@ -36,20 +34,7 @@ func (test *DepositDataSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 	require.EqualValues(t, test.ExpectedSigningRoot, hex.EncodeToString(r))
 
-	// marshal test into json
-	byts, err := json.Marshal(test)
-	require.NoError(t, err)
-	//unmarshal json into map
-	var testMap map[string]interface{}
-	json.Unmarshal(byts, &testMap)
-
-	expectedTestMap, err := typescomparable.GetExpectedStateFromScFile(test.TestName(), reflect.TypeOf(test).String())
-	require.NoError(t, err)
-
-	diff := cmp.Diff(testMap, expectedTestMap)
-	if diff != "" {
-		t.Errorf("Deposit data test inputs changed. %v", diff)
-	}
+	comparable2.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
 // DepositData tests structuring of encoding data

@@ -1,6 +1,8 @@
 package consensusdataproposer
 
 import (
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	reflect2 "reflect"
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec"
@@ -119,4 +121,6 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 	byts, err := cd.Encode()
 	require.NoError(t, err)
 	require.EqualValues(t, test.DataCd, byts)
+
+	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
