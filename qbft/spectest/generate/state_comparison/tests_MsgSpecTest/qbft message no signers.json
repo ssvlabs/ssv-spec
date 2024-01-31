@@ -1,0 +1,56 @@
+{
+		"Name": "no signers",
+		"Messages": [
+				{
+						"Signature": "kFGy1aK4Kychuv0xFbXRVjFgDU6hCAaltJ+Nbjsie+2yEmuFSwss4IiyekCVHu+1F9TN31CUv+uZ4FwzPQSkR5oM709TN/61iEcY4j44Zm/OXL8pnEhSipyXSSngprJ6",
+						"Signers": null,
+						"Message": {
+								"MsgType": 2,
+								"Height": 0,
+								"Round": 1,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										190,
+										149,
+										111,
+										183,
+										223,
+										78,
+										243,
+										117,
+										49,
+										104,
+										45,
+										88,
+										131,
+										32,
+										8,
+										79,
+										201,
+										20,
+										195,
+										240,
+										254,
+										211,
+										53,
+										38,
+										62,
+										91,
+										68,
+										6,
+										46,
+										108,
+										41,
+										180
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": null,
+								"PrepareJustification": null
+						},
+						"FullData": null
+				}
+		],
+		"EncodedMessages": null,
+		"ExpectedRoots": null,
+		"ExpectedError": "message signers is empty"
+}
