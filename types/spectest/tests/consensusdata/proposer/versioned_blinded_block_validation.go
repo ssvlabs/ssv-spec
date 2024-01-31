@@ -6,14 +6,14 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// VersionedBlindedBlockValidation tests a valid consensus data with Deneb blinded block
+// VersionedBlindedBlockValidation tests a valid consensus data with bellatrix blinded block
 func VersionedBlindedBlockValidation() *ProposerSpecTest {
-	expectedCdRoot, err := testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb).HashTreeRoot()
+	expectedCdRoot, err := testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix).HashTreeRoot()
 	if err != nil {
 		panic(err.Error())
 	}
 
-	expectedBlkRoot, err := testingutils.TestingBlindedBeaconBlockV(spec.DataVersionDeneb).Root()
+	expectedBlkRoot, err := testingutils.TestingBlindedBeaconBlockV(spec.DataVersionBellatrix).Root()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -21,8 +21,8 @@ func VersionedBlindedBlockValidation() *ProposerSpecTest {
 	return &ProposerSpecTest{
 		Name:            "consensus data versioned blinded block validation",
 		Blinded:         true,
-		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
-		DataBlk:         testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionDeneb),
+		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+		DataBlk:         testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionBellatrix),
 		ExpectedCdRoot:  expectedCdRoot,
 		ExpectedBlkRoot: expectedBlkRoot,
 	}

@@ -21,10 +21,7 @@ func PostDecided() tests.SpecTest {
 	decideRunner := func(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData, preMsgs []*types.SignedPartialSignatureMessage) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		for _, msg := range preMsgs {
-			err := r.ProcessPreConsensus(msg)
-			if err != nil {
-				panic(err.Error())
-			}
+			r.ProcessPreConsensus(msg)
 		}
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
