@@ -1,6 +1,7 @@
 package valcheckattestations
 
 import (
+	goEthSpec "github.com/attestantio/go-eth2-client/spec"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
@@ -37,6 +38,7 @@ func SlotMismatch() tests.SpecTest {
 			ValidatorCommitteeIndex: 11,
 		},
 		DataSSZ: attestationDataBytes,
+		Version: goEthSpec.DataVersionPhase0,
 	}
 
 	input, _ := data.Encode()

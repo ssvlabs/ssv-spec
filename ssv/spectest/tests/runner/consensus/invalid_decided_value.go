@@ -25,6 +25,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				CommitteeLength:         128,
 				ValidatorCommitteeIndex: 11,
 			},
+			Version: spec.DataVersionPhase0,
 		}
 		byts, _ := cd.Encode()
 		return byts
