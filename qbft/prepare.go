@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -46,6 +47,7 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 
 // getRoundChangeJustification returns the round change justification for the current round.
 // The justification is a quorum of signed prepare messages that agree on state.LastPreparedValue
+// It assumes that the prepareMsgContainer has only messages with valid signatures
 func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*SignedMessage, error) {
 	if state.LastPreparedValue == nil {
 		return nil, nil
@@ -59,7 +61,9 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
 	ret := make([]*SignedMessage, 0)
 	for _, msg := range prepareMsgs {
-		if err := validSignedPrepareForHeightRoundAndRoot(
+		// Calls validPrepareForHeightRoundAndRoot instead of validSignedPrepareForHeightRoundAndRoot
+		// since signatures are assumed to be valid
+		if err := validPrepareForHeightRoundAndRoot(
 			config,
 			msg,
 			state.Height,
@@ -86,6 +90,28 @@ func validSignedPrepareForHeightRoundAndRoot(
 	round Round,
 	root [32]byte,
 	operators []*types.Operator) error {
+
+	if err := validPrepareForHeightRoundAndRoot(config, signedPrepare, height, round, root, operators); err != nil {
+		return err
+	}
+
+	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
+	return nil
+}
+
+// validPrepareForHeightRoundAndRoot verifies if a Prepare message is prepared for a certain round and root
+// similar to the dafny's validSignedPrepareForHeightRoundAndDigest predicate.
+// However, it doesn't verify the message signature
+func validPrepareForHeightRoundAndRoot(
+	config IConfig,
+	signedPrepare *SignedMessage,
+	height Height,
+	round Round,
+	root [32]byte,
+	operators []*types.Operator) error {
 	if signedPrepare.Message.MsgType != PrepareMsgType {
 		return errors.New("prepare msg type is wrong")
 	}
@@ -106,10 +132,6 @@ func validSignedPrepareForHeightRoundAndRoot(
 
 	if len(signedPrepare.GetSigners()) != 1 {
 		return errors.New("msg allows 1 signer")
-	}
-
-	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
 	}
 
 	return nil
