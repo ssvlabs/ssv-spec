@@ -4,7 +4,7 @@
 				{
 						"Message": {
 								"Type": 0,
-								"Slot": 12,
+								"Slot": "12",
 								"Messages": []
 						},
 						"Signature": "g2bZEp+HMKbg4yrqupHhVCXaWWIgGllNFroXlTKJEg2xtnh32ysjNaMjzi1XZr8jEsFlkoxD33oWDoE/98VsTJwqEqd2AOeh9ZH+nHnjXWdvezTR/oiCkDXCRldxGm5l",
