@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -200,13 +201,82 @@ func isReceivedProposalJustification(
 		newRound,
 		value,
 		valCheck,
+		false,
 	); err != nil {
 		return errors.Wrap(err, "proposal not justified")
 	}
 	return nil
 }
 
+// validRoundChangeForData is similar to the validSignedRoundChangeForData function
+// However, it does not verify signatures
 func validRoundChangeForData(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	height Height,
+	round Round,
+	fullData []byte,
+) error {
+	if signedMsg.Message.MsgType != RoundChangeMsgType {
+		return errors.New("round change msg type is wrong")
+	}
+	if signedMsg.Message.Height != height {
+		return errors.New("wrong msg height")
+	}
+	if signedMsg.Message.Round != round {
+		return errors.New("wrong msg round")
+	}
+	if len(signedMsg.GetSigners()) != 1 {
+		return errors.New("msg allows 1 signer")
+	}
+
+	if err := signedMsg.Message.Validate(); err != nil {
+		return errors.Wrap(err, "roundChange invalid")
+	}
+
+	// Addition to formal spec
+	// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
+	if signedMsg.Message.RoundChangePrepared() {
+		r, err := HashDataRoot(fullData)
+		if err != nil {
+			return errors.Wrap(err, "could not hash input data")
+		}
+
+		// validate prepare message justifications
+		prepareMsgs, _ := signedMsg.Message.GetRoundChangeJustifications() // no need to check error, checked on signedMsg.Message.Validate()
+		for _, pm := range prepareMsgs {
+			if err := validPrepareForHeightRoundAndRoot(
+				config,
+				pm,
+				state.Height,
+				signedMsg.Message.DataRound,
+				signedMsg.Message.Root,
+				state.Share.Committee); err != nil {
+				return errors.Wrap(err, "round change justification invalid")
+			}
+		}
+
+		if !bytes.Equal(r[:], signedMsg.Message.Root[:]) {
+			return errors.New("H(data) != root")
+		}
+
+		if !HasQuorum(state.Share, prepareMsgs) {
+			return errors.New("no justifications quorum")
+		}
+
+		if signedMsg.Message.DataRound > round {
+			return errors.New("prepared round > round")
+		}
+
+		return nil
+	}
+	return nil
+}
+
+// validSignedRoundChangeForData is based on dafny's validRoundChange function
+// with the addition that nested Prepare messages are also validated
+func validSignedRoundChangeForData(
 	state *State,
 	config IConfig,
 	signedMsg *SignedMessage,
