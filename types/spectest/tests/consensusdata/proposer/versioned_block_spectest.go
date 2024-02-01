@@ -25,8 +25,6 @@ func (test *ProposerSpecTest) TestName() string {
 	return test.Name
 }
 
-// ISSUE 219: make multi proposer spec test for all (upcoming) versions
-
 func (test *ProposerSpecTest) Run(t *testing.T) {
 	// decode cd
 	cd := &types.ConsensusData{}
@@ -58,13 +56,13 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 		// compare blk data
 		var blkSSZ []byte
 		switch vBlk.Version {
-		case spec.DataVersionBellatrix:
-			require.NotNil(t, vBlk.Bellatrix)
-			blkSSZ, err = vBlk.Bellatrix.MarshalSSZ()
-			require.NoError(t, err)
 		case spec.DataVersionCapella:
 			require.NotNil(t, vBlk.Capella)
 			blkSSZ, err = vBlk.Capella.MarshalSSZ()
+			require.NoError(t, err)
+		case spec.DataVersionDeneb:
+			require.NotNil(t, vBlk.Deneb)
+			blkSSZ, err = vBlk.Deneb.MarshalSSZ()
 			require.NoError(t, err)
 		default:
 			require.Failf(t, "unknown blinded block version %s", vBlk.Version.String())
@@ -98,13 +96,13 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 		// compare blk data
 		var blkSSZ []byte
 		switch vBlk.Version {
-		case spec.DataVersionBellatrix:
-			require.NotNil(t, vBlk.Bellatrix)
-			blkSSZ, err = vBlk.Bellatrix.MarshalSSZ()
-			require.NoError(t, err)
 		case spec.DataVersionCapella:
 			require.NotNil(t, vBlk.Capella)
 			blkSSZ, err = vBlk.Capella.MarshalSSZ()
+			require.NoError(t, err)
+		case spec.DataVersionDeneb:
+			require.NotNil(t, vBlk.Deneb)
+			blkSSZ, err = vBlk.Deneb.MarshalSSZ()
 			require.NoError(t, err)
 		default:
 			require.Failf(t, "unknown block version %s", vBlk.Version.String())

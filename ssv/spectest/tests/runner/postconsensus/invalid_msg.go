@@ -61,12 +61,12 @@ func InvalidMessage() tests.SpecTest {
 				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix),
+					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+					testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, invalidMsg(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix))),
+					testingutils.SSVMsgProposer(nil, invalidMsg(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
 				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -78,12 +78,12 @@ func InvalidMessage() tests.SpecTest {
 				Name: "proposer (blinded block)",
 				Runner: decideRunner(
 					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix),
+					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, invalidMsg(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix))),
+					testingutils.SSVMsgProposer(nil, invalidMsg(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
 				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},

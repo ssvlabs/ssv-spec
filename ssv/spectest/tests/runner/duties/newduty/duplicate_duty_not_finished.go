@@ -79,13 +79,15 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  notFinishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Runner:                  notFinishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				PostDutyRunnerStateRoot: "914d74606f9de8a2425b875d248532564e1770a6320f923ecad1dd12998b1158",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
+					testingutils.TestingDutySlotV(spec.DataVersionDeneb),
+					testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
 			},
 			{
 				Name:                    "attester",
