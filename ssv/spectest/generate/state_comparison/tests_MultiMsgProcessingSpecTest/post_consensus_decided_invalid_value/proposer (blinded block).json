@@ -308,7 +308,7 @@
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
 												"Decided": true,
-												"DecidedValue": "FAAAAP//////////gAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA=",
+												"DecidedValue": "FAAAAAAAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA=",
 												"ProposeContainer": {
 														"Msgs": {}
 												},
@@ -319,7 +319,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "remm2XSQ8hDB2tWG0xDXCPkgOP3+9mr0wES7nlObn4GnYkwyZZCvqT9vXy8OX7LxEziVZwMwAq4Azq9M7swr8urRYgcsblBp8q6Oj5rC4xBsYdgJWDyv6Cb7eK3R5FTI",
+																				"Signature": "q4Azv3WYKzYHvxrstuCFPC0RaS/hPmRhft+L54l112SIRmTzw4XwYW+yWRki86+gEcGXlPIaItccB7K46eU/Z/DIT2YWaTitC3m7xEUEQQbENhN9ommdMkGTFBRdgWzJ",
 																				"Signers": [
 																						1,
 																						2,
@@ -331,44 +331,44 @@
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																						"Root": [
-																								128,
-																								77,
+																								97,
+																								238,
+																								197,
+																								105,
+																								132,
+																								189,
+																								191,
+																								14,
+																								40,
+																								166,
+																								138,
+																								220,
+																								105,
+																								24,
+																								54,
 																								243,
-																								187,
-																								38,
-																								222,
-																								215,
-																								33,
-																								58,
-																								78,
-																								69,
-																								186,
-																								53,
+																								81,
+																								113,
+																								114,
+																								114,
+																								75,
+																								93,
+																								195,
+																								9,
 																								214,
-																								215,
-																								60,
-																								190,
+																								56,
+																								97,
+																								249,
+																								238,
 																								31,
-																								222,
 																								174,
-																								85,
-																								70,
-																								102,
-																								70,
-																								228,
-																								245,
-																								27,
-																								175,
-																								134,
-																								60,
-																								69,
-																								51
+																								172
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
 																						"PrepareJustification": []
 																				},
-																				"FullData": "FAAAAP//////////gAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA="
+																				"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA="
 																		}
 																]
 														}
