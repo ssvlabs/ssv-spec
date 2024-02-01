@@ -1,6 +1,8 @@
 package partialsigmessage
 
 import (
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	reflect2 "reflect"
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/types"
@@ -56,6 +58,8 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, lastErr)
 	}
+
+	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
 func (tests *MsgSpecTest) GetPostState() (interface{}, error) {

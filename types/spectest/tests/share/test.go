@@ -1,6 +1,8 @@
 package share
 
 import (
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	reflect2 "reflect"
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/types"
@@ -51,4 +53,6 @@ func (test *ShareTest) Run(t *testing.T) {
 	require.Equal(t, test.ExpectedHasPartialQuorum, test.Share.HasPartialQuorum(numSigners))
 	require.Equal(t, test.ExpectedHasQuorum, test.Share.HasQuorum(numSigners))
 	require.Equal(t, test.ExpectedFullCommittee, (len(test.Share.Committee) == numSigners))
+
+	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }

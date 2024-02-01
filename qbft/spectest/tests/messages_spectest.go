@@ -50,5 +50,5 @@ func (test *MsgSpecTest) TestName() string {
 }
 
 func (test *MsgSpecTest) GetPostState() (interface{}, error) {
-	return nil, nil
+	return test, nil
 }
