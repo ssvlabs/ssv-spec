@@ -28,6 +28,7 @@ func PostInvalidDecided() tests.SpecTest {
 				CommitteeLength:         128,
 				ValidatorCommitteeIndex: 11,
 			},
+			Version: spec.DataVersionPhase0,
 		}
 		byts, _ := cd.Encode()
 		return byts
@@ -84,11 +85,11 @@ func PostInvalidDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
-				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionBellatrix),
+				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
+				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 					// broadcasts when starting a new duty
 				},
 			},

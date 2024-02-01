@@ -3,58 +3,9 @@
 		"ConsensusData": {
 				"Duty": {
 						"Type": 4,
-						"PubKey": [
-								142,
-								128,
-								6,
-								101,
-								81,
-								168,
-								27,
-								49,
-								130,
-								88,
-								112,
-								158,
-								218,
-								247,
-								221,
-								31,
-								99,
-								205,
-								104,
-								106,
-								14,
-								77,
-								184,
-								178,
-								155,
-								187,
-								122,
-								207,
-								230,
-								86,
-								8,
-								103,
-								122,
-								245,
-								165,
-								39,
-								217,
-								68,
-								142,
-								228,
-								120,
-								53,
-								72,
-								94,
-								2,
-								181,
-								11,
-								192
-						],
-						"Slot": 12,
-						"ValidatorIndex": 1,
+						"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+						"Slot": "12",
+						"ValidatorIndex": "1",
 						"CommitteeIndex": 3,
 						"CommitteeLength": 128,
 						"CommitteesAtSlot": 36,
@@ -65,12 +16,12 @@
 								2
 						]
 				},
-				"Version": "bellatrix",
+				"Version": "deneb",
 				"PreConsensusJustifications": [
 						{
 								"Message": {
 										"Type": 3,
-										"Slot": 12,
+										"Slot": "12",
 										"Messages": [
 												{
 														"PartialSignature": "gxuEN8qxE4nRnfmtt3v4r8M9nxWy2pFTOx8mXGrTxK5EDSuWQ0SkUhGs1uP1NhvED+OXWBzt4sA/lCKhfUFILLQYcnYvHA+3VMOVzThFpQQn6PoO3kuMQJEq9XzajS5n",
@@ -194,7 +145,7 @@
 						{
 								"Message": {
 										"Type": 3,
-										"Slot": 12,
+										"Slot": "12",
 										"Messages": [
 												{
 														"PartialSignature": "j6Y1TgPGCZk0KV5XW+yaGHa+DP8zSbna/9ednm58pbmXJkakQhIzbm/9CD4a4jxSFIAh5iNfK4kvYl4hDitV1kuxpkCR8dlHpH0L2B2JlJrH2rj1LqOuWtNG8hG4oQBa",
@@ -318,7 +269,7 @@
 						{
 								"Message": {
 										"Type": 3,
-										"Slot": 12,
+										"Slot": "12",
 										"Messages": [
 												{
 														"PartialSignature": "mS6mAXg/GOcEKGReCsrgmuxkD/sGRtG+QlOrfd+SeSsjUG+nQamTANiabLKA+C3pFFqqs3f6WCfTqV+3qA/Y+H79R8zXAEszwwsjA+UXxi6VJm71QAz2UO73YuYtz267",
@@ -442,7 +393,7 @@
 						{
 								"Message": {
 										"Type": 3,
-										"Slot": 12,
+										"Slot": "12",
 										"Messages": [
 												{
 														"PartialSignature": "p+1s8Gz8rWtKsv8WJJsz+vkooEMQ4CfGpxFzChWMAxsdKGo1bmoda2vonuj18uJjAYb4To1NQRVTXXZ/ETsTGVcnP0OloVPd1IhzBc+BtVFMZgXQdeUShRLeSMfc3qC6",

@@ -117,7 +117,7 @@ func (c *ConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	offset += c.Duty.SizeSSZ()
 
 	// Field (1) 'Version'
-	dst = ssz.MarshalUint64(dst, uint64(c.Version))
+	dst = ssz.MarshalUint64(dst, uint64(c.Version)-1)
 
 	// Offset (2) 'PreConsensusJustifications'
 	dst = ssz.WriteOffset(dst, offset)
@@ -184,7 +184,7 @@ func (c *ConsensusData) UnmarshalSSZ(buf []byte) error {
 	}
 
 	// Field (1) 'Version'
-	c.Version = spec.DataVersion(ssz.UnmarshallUint64(buf[4:12]))
+	c.Version = spec.DataVersion(ssz.UnmarshallUint64(buf[4:12]) + 1)
 
 	// Offset (2) 'PreConsensusJustifications'
 	if o2 = ssz.ReadOffset(buf[12:16]); o2 > size || o0 > o2 {
@@ -274,7 +274,7 @@ func (c *ConsensusData) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	}
 
 	// Field (1) 'Version'
-	hh.PutUint64(uint64(c.Version))
+	hh.PutUint64(uint64(c.Version - 1))
 
 	// Field (2) 'PreConsensusJustifications'
 	{

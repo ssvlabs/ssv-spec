@@ -3,58 +3,9 @@
 		"ConsensusData": {
 				"Duty": {
 						"Type": 2,
-						"PubKey": [
-								142,
-								128,
-								6,
-								101,
-								81,
-								168,
-								27,
-								49,
-								130,
-								88,
-								112,
-								158,
-								218,
-								247,
-								221,
-								31,
-								99,
-								205,
-								104,
-								106,
-								14,
-								77,
-								184,
-								178,
-								155,
-								187,
-								122,
-								207,
-								230,
-								86,
-								8,
-								103,
-								122,
-								245,
-								165,
-								39,
-								217,
-								68,
-								142,
-								228,
-								120,
-								53,
-								72,
-								94,
-								2,
-								181,
-								11,
-								192
-						],
-						"Slot": 5193728,
-						"ValidatorIndex": 1,
+						"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+						"Slot": "5193728",
+						"ValidatorIndex": "1",
 						"CommitteeIndex": 3,
 						"CommitteeLength": 128,
 						"CommitteesAtSlot": 36,
@@ -66,7 +17,7 @@
 						{
 								"Message": {
 										"Type": 1,
-										"Slot": 5193728,
+										"Slot": "5193728",
 										"Messages": [
 												{
 														"PartialSignature": "tKX7MJ92Bpe2AzyeLAScuclhcC9BKdorEt0NyHQkOk5AiM1KoVbO2LTgLefQTSmeCsJOJT2QDzyuk2BdNywrePSLPzI9rp+YuvjKgW2YbTg37Lv4TnqUZbaBPJdGt3sp",
@@ -114,7 +65,7 @@
 						{
 								"Message": {
 										"Type": 1,
-										"Slot": 5193728,
+										"Slot": "5193728",
 										"Messages": [
 												{
 														"PartialSignature": "tNq8cR55VPcUkGHhYTP4+GYX1trNrwmnZlkxSoCGK2kBNsMLeZ2CZvXMHTY8Cr9yDxUyp7eTBP52hfqo5ROfGK8tC9T7DviiHr9ecpnFDqpW/07TWI9iFkCQtLRbDY7b",
@@ -162,7 +113,7 @@
 						{
 								"Message": {
 										"Type": 1,
-										"Slot": 5193728,
+										"Slot": "5193728",
 										"Messages": [
 												{
 														"PartialSignature": "kxBbIc4uhv6tn706IyOjtlVcMgDO1uMaRjyL8AbvcA8BK/R8Pp5s0bQlj5YKvgevAvz4/eoy9Q+PQdDrmoPbHarHsiUIRQ/ZFpf4RWmgZC4xrhbc2IuVemBbteLB4g8v",
@@ -210,7 +161,7 @@
 						{
 								"Message": {
 										"Type": 1,
-										"Slot": 5193728,
+										"Slot": "5193728",
 										"Messages": [
 												{
 														"PartialSignature": "lLV60Z3ZIPmR1uovZ9tQVXpV5o245I1W3unPGtgJ9ZVJZA8TVVTdA7kFvOe8Lux5BTfT5O1vJ8D9Iaxj9/F+2d4+fRuRQ0S2vV7qCge7vmfVETYE6LEJ0Sux9tOfJT8K",

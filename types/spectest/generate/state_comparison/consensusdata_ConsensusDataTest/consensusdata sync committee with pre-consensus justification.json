@@ -3,58 +3,9 @@
 		"ConsensusData": {
 				"Duty": {
 						"Type": 3,
-						"PubKey": [
-								142,
-								128,
-								6,
-								101,
-								81,
-								168,
-								27,
-								49,
-								130,
-								88,
-								112,
-								158,
-								218,
-								247,
-								221,
-								31,
-								99,
-								205,
-								104,
-								106,
-								14,
-								77,
-								184,
-								178,
-								155,
-								187,
-								122,
-								207,
-								230,
-								86,
-								8,
-								103,
-								122,
-								245,
-								165,
-								39,
-								217,
-								68,
-								142,
-								228,
-								120,
-								53,
-								72,
-								94,
-								2,
-								181,
-								11,
-								192
-						],
-						"Slot": 12,
-						"ValidatorIndex": 1,
+						"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+						"Slot": "12",
+						"ValidatorIndex": "1",
 						"CommitteeIndex": 3,
 						"CommitteeLength": 128,
 						"CommitteesAtSlot": 36,
@@ -70,7 +21,7 @@
 						{
 								"Message": {
 										"Type": 1,
-										"Slot": 12,
+										"Slot": "12",
 										"Messages": [
 												{
 														"PartialSignature": "qmLVsaiUvU6bjLbsSoPLw4CTNR9leefbu7bLw4j1rYbxEM2ZnnM/iORstNrGYenoCkrSMxRJOZUBBRuZKopbWL++g717SyADz3M3F9cMjLQP8v1zvMCC0SBx/jafPpm0",
@@ -118,7 +69,7 @@
 						{
 								"Message": {
 										"Type": 1,
-										"Slot": 12,
+										"Slot": "12",
 										"Messages": [
 												{
 														"PartialSignature": "mYa/q5etbMWdnpvFoS2SSPeuwEdgBWK7UVcffDmda+NCHKm3/cmZj14Pi7doq6rUEi1UddIg0G9OMtDtOikEI0gcKtzl4yyxa1BY12YTO51kGATVsCI6fH1aPnAox/4U",
@@ -166,7 +117,7 @@
 						{
 								"Message": {
 										"Type": 1,
-										"Slot": 12,
+										"Slot": "12",
 										"Messages": [
 												{
 														"PartialSignature": "iX12XMJaUp6vo3kfrzjXElOivuLT/R2VN4uYN7Uv6PY92Lgx/qc9tXcFJqVjy2SLE8pImhwAUCUsdOjpkzP31KHxQeVzKaIQDECtbM8rXJYdS74JkVoSf9o2CvWeuNtr",
@@ -214,7 +165,7 @@
 						{
 								"Message": {
 										"Type": 1,
-										"Slot": 12,
+										"Slot": "12",
 										"Messages": [
 												{
 														"PartialSignature": "tBoAPwfYSONu4YWt1qvJtmMZvHxVz7dg2tdyroRVPDPgEvpQXG/ksbhInyRkJqPWCoMAITTw2Uy3G8j+zYHU9SgbmFFPdEY8msQQ0P0Yu9pHKgBl+ni+LK5lPlVdD4BB",

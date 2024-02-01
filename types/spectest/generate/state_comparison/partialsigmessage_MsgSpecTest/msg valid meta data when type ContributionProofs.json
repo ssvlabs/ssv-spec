@@ -4,7 +4,7 @@
 				{
 						"Message": {
 								"Type": 3,
-								"Slot": 12,
+								"Slot": "12",
 								"Messages": [
 										{
 												"PartialSignature": "iU3PPG+KB+22Rz9ypL5hfg0kr6EuyvsUfyT4yiA5GaQmSuT2Q8z+NSRY8HljYoz2GFhYqJef2QekHSie73s4Ygn6jPp2Rf5ISQ/JHpbUTORk/oOdEPZPGBUc/yCeNTrt",

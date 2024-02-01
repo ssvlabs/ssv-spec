@@ -11,7 +11,7 @@ import (
 func InconsistentSignedMessage() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msg := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix)
+	msg := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)
 	msgWithDifferentSigner := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)
 
 	msg.Message.Messages = append(msg.Message.Messages, msgWithDifferentSigner.Message.Messages...)

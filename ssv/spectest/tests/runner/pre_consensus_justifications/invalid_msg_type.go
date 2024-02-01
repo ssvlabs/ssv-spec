@@ -59,25 +59,25 @@ func InvalidMsgType() tests.SpecTest {
 			{
 				Name:   "randao",
 				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "3c3d52885dafd999639514fd813a69cb6eda5d80054d22826ef696d99139f6a2",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:   "randao (blinded block)",
 				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionBellatrix), testingutils.ProposerMsgID), nil),
+					testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID), nil),
 				},
 				PostDutyRunnerStateRoot: "c7d354b01cd11ce7a0277c5bd2493c4112422a827eedad8dc38d5e8d58d5f842",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
 			{
