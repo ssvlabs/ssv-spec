@@ -106,7 +106,8 @@ func CompareWithJson(t *testing.T, test any, testName string, testType string) {
 	require.NoError(t, err)
 	//unmarshal json into map
 	var testMap map[string]interface{}
-	json.Unmarshal(byts, &testMap)
+	err = json.Unmarshal(byts, &testMap)
+	require.NoError(t, err)
 
 	expectedTestMap, err := GetExpectedStateFromScFile(testName, testType)
 	require.NoError(t, err)
