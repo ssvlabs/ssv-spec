@@ -8,6 +8,7 @@ import (
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
+	"reflect"
 	"testing"
 )
 
@@ -67,7 +68,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 
-	typescomparable.CompareWithJson(t, test, test.Name, test.CreateType)
+	typescomparable.CompareWithJson(t, test, test.Name, reflect.TypeOf(test).String())
 }
 
 func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
