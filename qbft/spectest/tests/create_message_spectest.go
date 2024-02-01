@@ -68,7 +68,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 
-	typescomparable.CompareWithJson(t, test, test.Name, reflect.TypeOf(test).String())
+	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
 func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
