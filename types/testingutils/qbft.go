@@ -53,6 +53,19 @@ var TestingShare = func(keysSet *TestKeySet) *types.Share {
 	}
 }
 
+var TestingShareWithOperatorID = func(keysSet *TestKeySet, operatorID types.OperatorID) *types.Share {
+	return &types.Share{
+		OperatorID:          operatorID,
+		ValidatorPubKey:     keysSet.ValidatorPK.Serialize(),
+		SharePubKey:         keysSet.Shares[operatorID].GetPublicKey().Serialize(),
+		DomainType:          TestingSSVDomainType,
+		Quorum:              keysSet.Threshold,
+		PartialQuorum:       keysSet.PartialThreshold,
+		Committee:           keysSet.Committee(),
+		FeeRecipientAddress: TestingFeeRecipient,
+	}
+}
+
 var BaseInstance = func() *qbft.Instance {
 	return baseInstance(TestingShare(Testing4SharesSet()), Testing4SharesSet(), []byte{1, 2, 3, 4})
 }
@@ -73,6 +86,11 @@ var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byt
 	ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
 	ret.StartValue = TestingQBFTFullData
 	return ret
+}
+
+var BaseInstanceWithOperatorID = func(operatorID types.OperatorID) *qbft.Instance {
+	share := TestingShareWithOperatorID(Testing4SharesSet(), operatorID)
+	return baseInstance(share, Testing4SharesSet(), []byte{1, 2, 3, 4})
 }
 
 func NewTestingQBFTController(

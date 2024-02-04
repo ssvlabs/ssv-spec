@@ -27,6 +27,8 @@ type MsgProcessingSpecTest struct {
 	OutputMessages     []*qbft.SignedMessage
 	ExpectedError      string
 	ExpectedTimerState *testingutils.TimerState
+	StartInstance      bool   `json:"StartInstnace,omitempty"`
+	StartValue         []byte `json:"StartValue,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
@@ -82,6 +84,10 @@ func (test *MsgProcessingSpecTest) runPreTesting() error {
 		test.Pre.GetConfig().(*qbft.Config).ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
 			return 2
 		}
+	}
+
+	if test.StartInstance {
+		test.Pre.Start(test.StartValue, test.Pre.State.Height)
 	}
 
 	var lastErr error

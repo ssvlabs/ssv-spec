@@ -82,6 +82,8 @@ var AllTests = []tests.TestF{
 	proposer.SevenOperators,
 	proposer.TenOperators,
 	proposer.ThirteenOperators,
+	proposer.InstanceProposer,
+	proposer.InstanceNonProposer,
 
 	messages.RoundChangePrePreparedJustifications,
 	messages.RoundChangeNotPreparedJustifications,
