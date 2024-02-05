@@ -164,7 +164,7 @@ func DuplicateMsgQuorum() tests.SpecTest {
 			PostDutyRunnerState:     duplicateMsgQuorumBlindedProposerSC(version).ExpectedState,
 			OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			BeaconBroadcastedRoots: []string{
-				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
 			DontStartDuty: true,
 			ExpectedError: expectedError,
