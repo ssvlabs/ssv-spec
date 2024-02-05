@@ -46,10 +46,11 @@ func NewTestingKeyManager() *testingKeyManager {
 
 func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testingKeyManager {
 
+	hash := getHash(slashableDataRoots)
+
 	mu.Lock()
 	defer mu.Unlock()
 
-	hash := getHash(slashableDataRoots)
 	if instance, ok := instancesMap[hash]; ok {
 		return instance
 	}
