@@ -1,6 +1,16 @@
 package consensusdata
 
+import (
+	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+)
+
 // CapellaBlockValidation tests a valid consensus data with capella block
-func CapellaBlockValidation() *SpecTest {
-	panic("implement")
+func CapellaBlockValidation() *ConsensusDataTest {
+	ks := testingutils.Testing4SharesSet()
+
+	return &ConsensusDataTest{
+		Name:          "valid capella block",
+		ConsensusData: *testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionCapella),
+	}
 }

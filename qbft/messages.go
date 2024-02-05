@@ -3,6 +3,7 @@ package qbft
 import (
 	"bytes"
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -51,7 +52,7 @@ type Message struct {
 	Identifier []byte `ssz-max:"56"` // instance Identifier this msg belongs to
 
 	Root                     [32]byte `ssz-size:"32"`
-	DataRound                Round
+	DataRound                Round    // The last round that obtained a Prepare quorum
 	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
 	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
 }
@@ -140,8 +141,8 @@ type SignedMessage struct {
 	//			= 852088 ~= 2^20
 	Message Message // message for which this signature is for
 
-	// Full data max value is ConsensusData max value ~= 2^22 + 2^16
-	FullData []byte `ssz-max:"4259840"`
+	// Full data max value is ConsensusData max value ~= 2^8 + 8 + 2^20 + 2^22 = 5243144
+	FullData []byte `ssz-max:"5243144"`
 }
 
 func (signedMsg *SignedMessage) GetSignature() types.Signature {
