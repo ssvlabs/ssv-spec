@@ -11,14 +11,14 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// DuplicateMsgQuorum tests that it can successfully reach a quorum and end the duty even after receiving the following error:
+// DuplicateMsgDifferentRootsThenQuorum tests that it can successfully reach a quorum and end the duty even after receiving the following error:
 // - a duplicate SignedPartialSignatureMessage (from same signer) but with different roots
-func DuplicateMsgQuorum() tests.SpecTest {
+func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus duplicate msg then quorum",
+		Name: "post consensus duplicate msg different root then quorum",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -34,8 +34,8 @@ func DuplicateMsgQuorum() tests.SpecTest {
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
 					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
 				},
-				PostDutyRunnerStateRoot: duplicateMsgQuorumSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     duplicateMsgQuorumSyncCommitteeContributionSC().ExpectedState,
+				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC().Root(),
+				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
@@ -59,8 +59,8 @@ func DuplicateMsgQuorum() tests.SpecTest {
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
 				},
-				PostDutyRunnerStateRoot: duplicateMsgQuorumSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     duplicateMsgQuorumSyncCommitteeSC().ExpectedState,
+				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumSyncCommitteeSC().Root(),
+				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumSyncCommitteeSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
@@ -82,8 +82,8 @@ func DuplicateMsgQuorum() tests.SpecTest {
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
 					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
 				},
-				PostDutyRunnerStateRoot: duplicateMsgQuorumAggregatorSC().Root(),
-				PostDutyRunnerState:     duplicateMsgQuorumAggregatorSC().ExpectedState,
+				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumAggregatorSC().Root(),
+				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumAggregatorSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
@@ -105,8 +105,8 @@ func DuplicateMsgQuorum() tests.SpecTest {
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
 					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
 				},
-				PostDutyRunnerStateRoot: duplicateMsgQuorumAttesterSC().Root(),
-				PostDutyRunnerState:     duplicateMsgQuorumAttesterSC().ExpectedState,
+				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumAttesterSC().Root(),
+				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumAttesterSC().ExpectedState,
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
@@ -133,8 +133,8 @@ func DuplicateMsgQuorum() tests.SpecTest {
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 			},
-			PostDutyRunnerStateRoot: duplicateMsgQuorumProposerSC(version).Root(),
-			PostDutyRunnerState:     duplicateMsgQuorumProposerSC(version).ExpectedState,
+			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumProposerSC(version).Root(),
+			PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumProposerSC(version).ExpectedState,
 			OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
@@ -160,8 +160,8 @@ func DuplicateMsgQuorum() tests.SpecTest {
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
 				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 			},
-			PostDutyRunnerStateRoot: duplicateMsgQuorumBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     duplicateMsgQuorumBlindedProposerSC(version).ExpectedState,
+			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumBlindedProposerSC(version).Root(),
+			PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumBlindedProposerSC(version).ExpectedState,
 			OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),

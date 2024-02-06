@@ -11,9 +11,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
-// duplicateMsgQuorumSyncCommitteeContributionSC returns state comparison object for the duplicateMsgQuorum SyncCommitteeContribution versioned spec test
+// duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC returns state comparison object for the duplicateMsgDifferentRootsThenQuorum SyncCommitteeContribution versioned spec test
 // it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgQuorumSyncCommitteeContributionSC() *comparable.StateComparison {
+func duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
 	cdBytes := testingutils.TestSyncCommitteeContributionConsensusDataByts
@@ -57,9 +57,9 @@ func duplicateMsgQuorumSyncCommitteeContributionSC() *comparable.StateComparison
 	}
 }
 
-// duplicateMsgQuorumSyncCommitteeSC returns state comparison object for the duplicateMsgQuorum SyncCommittee versioned spec test
+// duplicateMsgDifferentRootsThenQuorumSyncCommitteeSC returns state comparison object for the duplicateMsgDifferentRootsThenQuorum SyncCommittee versioned spec test
 // it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgQuorumSyncCommitteeSC() *comparable.StateComparison {
+func duplicateMsgDifferentRootsThenQuorumSyncCommitteeSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestSyncCommitteeConsensusData
 	cdBytes := testingutils.TestSyncCommitteeConsensusDataByts
@@ -103,9 +103,9 @@ func duplicateMsgQuorumSyncCommitteeSC() *comparable.StateComparison {
 	}
 }
 
-// duplicateMsgQuorumAggregatorSC returns state comparison object for the duplicateMsgQuorum Aggregator versioned spec test
+// duplicateMsgDifferentRootsThenQuorumAggregatorSC returns state comparison object for the duplicateMsgDifferentRootsThenQuorum Aggregator versioned spec test
 // it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgQuorumAggregatorSC() *comparable.StateComparison {
+func duplicateMsgDifferentRootsThenQuorumAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAggregatorConsensusData
 	cdBytes := testingutils.TestAggregatorConsensusDataByts
@@ -149,9 +149,9 @@ func duplicateMsgQuorumAggregatorSC() *comparable.StateComparison {
 	}
 }
 
-// duplicateMsgQuorumAttesterSC returns state comparison object for the duplicateMsgQuorum Attester versioned spec test
+// duplicateMsgDifferentRootsThenQuorumAttesterSC returns state comparison object for the duplicateMsgDifferentRootsThenQuorum Attester versioned spec test
 // it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgQuorumAttesterSC() *comparable.StateComparison {
+func duplicateMsgDifferentRootsThenQuorumAttesterSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestAttesterConsensusData
 	cdBytes := testingutils.TestAttesterConsensusDataByts
@@ -195,9 +195,9 @@ func duplicateMsgQuorumAttesterSC() *comparable.StateComparison {
 	}
 }
 
-// duplicateMsgQuorumProposerSC returns state comparison object for the duplicateMsgQuorum Proposer versioned spec test
+// duplicateMsgDifferentRootsThenQuorumProposerSC returns state comparison object for the duplicateMsgDifferentRootsThenQuorum Proposer versioned spec test
 // it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgQuorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
+func duplicateMsgDifferentRootsThenQuorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerConsensusDataV(version)
 	cdBytes := testingutils.TestProposerConsensusDataBytsV(version)
@@ -241,9 +241,9 @@ func duplicateMsgQuorumProposerSC(version spec.DataVersion) *comparable.StateCom
 	}
 }
 
-// duplicateMsgQuorumBlindedProposerSC returns state comparison object for the duplicateMsgQuorum Blinded Proposer versioned spec test
+// duplicateMsgDifferentRootsThenQuorumBlindedProposerSC returns state comparison object for the duplicateMsgDifferentRootsThenQuorum Blinded Proposer versioned spec test
 // it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgQuorumBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
+func duplicateMsgDifferentRootsThenQuorumBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
 	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
