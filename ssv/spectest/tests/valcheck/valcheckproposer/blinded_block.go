@@ -17,7 +17,7 @@ func BlindedBlock() tests.SpecTest {
 				Name:       "blinded blocks accepted",
 				Network:    types.BeaconTestNetwork,
 				BeaconRole: types.BNRoleProposer,
-				Input:      testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionBellatrix),
+				Input:      testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 				AnyError:   false,
 			},
 		},

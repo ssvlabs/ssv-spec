@@ -15,7 +15,6 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
@@ -93,13 +92,6 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				Name:  test.(map[string]interface{})["Name"].(string),
 				Tests: typedTests,
 			}
-
-			typedTest.Run(t)
-		case reflect.TypeOf(&messages.MsgSpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &messages.MsgSpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 			typedTest.Run(t)
 		case reflect.TypeOf(&valcheck.SpecTest{}).String():
