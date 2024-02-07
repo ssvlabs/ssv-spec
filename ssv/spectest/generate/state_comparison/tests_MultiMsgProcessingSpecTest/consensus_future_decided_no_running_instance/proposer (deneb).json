@@ -57,7 +57,7 @@
 				},
 				"QBFTController": {
 						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
-						"Height": 13,
+						"Height": 7413761,
 						"StoredInstances": [
 								{
 										"State": {
@@ -117,7 +117,7 @@
 												},
 												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 												"Round": 1,
-												"Height": 13,
+												"Height": 7413761,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
@@ -133,7 +133,7 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "oCTHwS6bqBr/8yMTC+3Xwe/Pp5fNvMy6Oc7o5vBADRXX09UJdicVXBRMQ33NnuySDbra8q7oc13rNQ+nB64kwPd85PDNhwqUMb4+aV+WivWBGt/tMdRtvOy0enSYRQRQ",
+																				"Signature": "ljNFV6vxUXcKWBgO6iwO5b87MmbuVuzIn1u2JpZ4n21Z2EhA3HCge6Orf223e1icDA8WI/j6IRdRkTWI+2zUu0yfM2s5vDOGmH3GuTvkowrcfJV6iiNJw9Efj7JVBSpt",
 																				"Signers": [
 																						1,
 																						2,
@@ -141,7 +141,7 @@
 																				],
 																				"Message": {
 																						"MsgType": 2,
-																						"Height": 13,
+																						"Height": 7413761,
 																						"Round": 1,
 																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAIAAAA=",
 																						"Root": [
@@ -252,5 +252,5 @@
 				"BeaconNetwork": "now_test_network",
 				"BeaconRoleType": 2
 		},
-		"ProducesBlindedBlocks": true
+		"ProducesBlindedBlocks": false
 }
