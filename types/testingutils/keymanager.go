@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"crypto/ecdsa"
 	"crypto/rsa"
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"hash/fnv"
 	"sync"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -28,16 +28,16 @@ type testingKeyManager struct {
 }
 
 var (
-	instancesMap = make(map[string]*testingKeyManager)
+	instancesMap = make(map[uint64]*testingKeyManager)
 	mu           sync.Mutex
 )
 
-func getHash(data [][]byte) string {
-	hasher := sha256.New()
+func getHash(data [][]byte) uint64 {
+	h := fnv.New64a()
 	for _, d := range data {
-		hasher.Write(d)
+		h.Write(d)
 	}
-	return hex.EncodeToString(hasher.Sum(nil))
+	return h.Sum64()
 }
 
 func NewTestingKeyManager() *testingKeyManager {
