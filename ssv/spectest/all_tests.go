@@ -28,6 +28,7 @@ var AllTests = []tests.TestF{
 	postconsensus.InvalidMessageSignature,
 	postconsensus.InvalidBeaconSignature,
 	postconsensus.DuplicateMsgDifferentRoots,
+	postconsensus.DuplicateMsgDifferentRootsThenQuorum,
 	postconsensus.DuplicateMsg,
 	postconsensus.InvalidExpectedRoot,
 	postconsensus.PreDecided,
