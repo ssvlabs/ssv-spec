@@ -1,6 +1,8 @@
 package ssvmsg
 
 import (
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	reflect2 "reflect"
 	"testing"
 
 	"github.com/bloxapp/ssv-spec/types"
@@ -27,4 +29,6 @@ func (test *SSVMessageTest) Run(t *testing.T) {
 		belongs := testingutils.TestingShare(ks).ValidatorPubKey.MessageIDBelongs(msgID)
 		require.Equal(t, test.BelongsToValidator, belongs)
 	}
+
+	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }

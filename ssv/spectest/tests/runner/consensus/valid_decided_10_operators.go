@@ -50,23 +50,23 @@ func ValidDecided10Operators() tests.SpecTest {
 			{
 				Name:                    "proposer",
 				Runner:                  testingutils.ProposerRunner(ks),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), ks, types.BNRoleProposer),
 				PostDutyRunnerStateRoot: "59422da9c9ac14226688dc638041c830f596b4e51632685bb98fd2f3f7adaf99",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
 			},
 			{
 				Name:                    "proposer (blinded block)",
 				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionBellatrix), ks, types.BNRoleProposer),
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb), ks, types.BNRoleProposer),
 				PostDutyRunnerStateRoot: "7caaccca0c2352b6b9088ac139552a2a18e14b37e4d093cdab5a57b8348b259d",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
 			},
 			{

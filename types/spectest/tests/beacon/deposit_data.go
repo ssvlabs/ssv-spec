@@ -3,7 +3,9 @@ package beacon
 import (
 	"encoding/hex"
 	"github.com/bloxapp/ssv-spec/types"
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
+	"reflect"
 	"testing"
 )
 
@@ -31,6 +33,8 @@ func (test *DepositDataSpecTest) Run(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.EqualValues(t, test.ExpectedSigningRoot, hex.EncodeToString(r))
+
+	comparable2.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
 // DepositData tests structuring of encoding data

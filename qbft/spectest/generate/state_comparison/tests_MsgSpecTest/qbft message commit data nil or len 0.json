@@ -1,0 +1,95 @@
+{
+		"Name": "commit data nil or len 0",
+		"Messages": [
+				{
+						"Signature": "kFGy1aK4Kychuv0xFbXRVjFgDU6hCAaltJ+Nbjsie+2yEmuFSwss4IiyekCVHu+1F9TN31CUv+uZ4FwzPQSkR5oM709TN/61iEcY4j44Zm/OXL8pnEhSipyXSSngprJ6",
+						"Signers": [
+								1
+						],
+						"Message": {
+								"MsgType": 2,
+								"Height": 0,
+								"Round": 1,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										190,
+										149,
+										111,
+										183,
+										223,
+										78,
+										243,
+										117,
+										49,
+										104,
+										45,
+										88,
+										131,
+										32,
+										8,
+										79,
+										201,
+										20,
+										195,
+										240,
+										254,
+										211,
+										53,
+										38,
+										62,
+										91,
+										68,
+										6,
+										46,
+										108,
+										41,
+										180
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": null,
+								"PrepareJustification": null
+						},
+						"FullData": null
+				}
+		],
+		"EncodedMessages": [
+				"kFGy1aK4Kychuv0xFbXRVjFgDU6hCAaltJ+Nbjsie+2yEmuFSwss4IiyekCVHu+1F9TN31CUv+uZ4FwzPQSkR5oM709TN/61iEcY4j44Zm/OXL8pnEhSipyXSSngprJ6bAAAAHQAAADEAAAAAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA=="
+		],
+		"ExpectedRoots": [
+				[
+						136,
+						123,
+						180,
+						37,
+						172,
+						175,
+						172,
+						86,
+						125,
+						95,
+						80,
+						141,
+						218,
+						157,
+						176,
+						63,
+						209,
+						56,
+						46,
+						129,
+						222,
+						11,
+						111,
+						80,
+						221,
+						158,
+						163,
+						28,
+						53,
+						249,
+						155,
+						18
+				]
+		],
+		"ExpectedError": ""
+}

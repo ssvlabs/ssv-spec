@@ -42,10 +42,10 @@ func Valid() tests.SpecTest {
 			{
 				Name:                    "proposer",
 				Runner:                  testingutils.ProposerRunner(ks),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				PostDutyRunnerStateRoot: "56eafcb33392ded888a0fefe30ba49e52aa00ab36841cb10c9dc1aa2935af347",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
 			{

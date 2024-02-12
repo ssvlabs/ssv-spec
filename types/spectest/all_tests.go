@@ -58,6 +58,10 @@ var AllTests = []SpecTest{
 	consensusdata.ProposerNoJustifications(),
 	consensusdata.InvalidCapellaBlindedBlockValidation(),
 	consensusdata.InvalidCapellaBlockValidation(),
+	consensusdata.DenebBlockValidation(),
+	consensusdata.DenebBlindedBlockValidation(),
+	consensusdata.InvalidDenebBlockValidation(),
+	consensusdata.InvalidDenebBlindedBlockValidation(),
 
 	consensusdata.AttestationConsensusDataEncoding(),
 	consensusdata.AttestationValidation(),
