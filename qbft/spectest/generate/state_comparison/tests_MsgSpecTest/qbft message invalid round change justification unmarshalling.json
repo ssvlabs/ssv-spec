@@ -1,0 +1,60 @@
+{
+		"Name": "invalid round change justification unmarshalling",
+		"Messages": [
+				{
+						"Signature": "piDqm+s5zIKIuM7y5jzuMFTljK1ZqebdfHjav/Qthptk5dmpdx2bSs/9KMpl4AeEBzIb8t8G7x2s6QNfiX5TFg7yrY2DaFVg5vuViaTjw0dd6lT/5aL8LCsKz4Xz8DIH",
+						"Signers": [
+								1
+						],
+						"Message": {
+								"MsgType": 0,
+								"Height": 0,
+								"Round": 1,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										171,
+										223,
+										56,
+										59,
+										122,
+										252,
+										254,
+										162,
+										11,
+										93,
+										114,
+										204,
+										119,
+										150,
+										8,
+										230,
+										250,
+										112,
+										249,
+										19,
+										252,
+										223,
+										246,
+										20,
+										151,
+										76,
+										6,
+										90,
+										175,
+										133,
+										17,
+										249
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": [
+										"AQ=="
+								],
+								"PrepareJustification": null
+						},
+						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+				}
+		],
+		"EncodedMessages": null,
+		"ExpectedRoots": null,
+		"ExpectedError": "incorrect size"
+}
