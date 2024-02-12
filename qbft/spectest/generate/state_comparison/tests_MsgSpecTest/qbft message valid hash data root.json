@@ -1,0 +1,58 @@
+{
+		"Name": "valid hash data root",
+		"Messages": [
+				{
+						"Signature": "o2PMqg1gJ2/lNK/e0Q3+aEulAnVsMR5aJzlYoN3/qjWSRB6qDGguAKX0KSAzgQgdFAedi0V6Fwj+7hOd/JtK5eBmLSdGfUAzdAfpcN8MUo17YTkRoDyaOPPj+Wz9nbZ6",
+						"Signers": [
+								1
+						],
+						"Message": {
+								"MsgType": 0,
+								"Height": 0,
+								"Round": 1,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										190,
+										149,
+										111,
+										183,
+										223,
+										78,
+										243,
+										117,
+										49,
+										104,
+										45,
+										88,
+										131,
+										32,
+										8,
+										79,
+										201,
+										20,
+										195,
+										240,
+										254,
+										211,
+										53,
+										38,
+										62,
+										91,
+										68,
+										6,
+										46,
+										108,
+										41,
+										180
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": null,
+								"PrepareJustification": null
+						},
+						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+				}
+		],
+		"EncodedMessages": null,
+		"ExpectedRoots": null,
+		"ExpectedError": ""
+}
