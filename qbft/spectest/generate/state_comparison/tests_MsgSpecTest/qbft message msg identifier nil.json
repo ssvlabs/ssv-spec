@@ -1,0 +1,58 @@
+{
+		"Name": "msg identifier nil",
+		"Messages": [
+				{
+						"Signature": "tvcuAMVSIM1aAtylK5xQHpyWNqw7fwujGhp3ar1tE8doRc+J3I56+SE3GrQvS+hkEploHpIrvDh0Qy4o2rLvr7lac/DymMLh+wC+okgTPMq7OZUzHK9RQsGscBdkagmE",
+						"Signers": [
+								1
+						],
+						"Message": {
+								"MsgType": 2,
+								"Height": 0,
+								"Round": 1,
+								"Identifier": null,
+								"Root": [
+										190,
+										149,
+										111,
+										183,
+										223,
+										78,
+										243,
+										117,
+										49,
+										104,
+										45,
+										88,
+										131,
+										32,
+										8,
+										79,
+										201,
+										20,
+										195,
+										240,
+										254,
+										211,
+										53,
+										38,
+										62,
+										91,
+										68,
+										6,
+										46,
+										108,
+										41,
+										180
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": null,
+								"PrepareJustification": null
+						},
+						"FullData": null
+				}
+		],
+		"EncodedMessages": null,
+		"ExpectedRoots": null,
+		"ExpectedError": "message identifier is invalid"
+}

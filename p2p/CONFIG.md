@@ -214,6 +214,17 @@ Sets the upper bound on the number of peers we keep in a GossipSub topic mesh.
 | ---                    | ---                 | ---                  |
 | `12`                   | `12`                | `12`                 |
 
+### Gossipsub: Dout
+
+Sets the number of outbound peers we keep in a GossipSub topic mesh.
+
+| Default Value (libp2p)  | Default Value (SSV) | Default Value (ETH2) |
+|-------------------------|---------------------|----------------------|
+| `2`                     | `4`                 | `2`                  |
+
+The value was increased to provide better eclipse protection.
+
+
 ### Gossipsub: HeartbeatInterval
 
 Controls the time between heartbeats, which are used across pubsub components to align on timing.

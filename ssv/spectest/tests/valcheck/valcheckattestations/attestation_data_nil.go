@@ -1,6 +1,7 @@
 package valcheckattestations
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/bloxapp/ssv-spec/types"
@@ -12,6 +13,7 @@ func ConsensusDataNil() tests.SpecTest {
 	consensusData := &types.ConsensusData{
 		Duty:    testingutils.TestingAttesterDuty,
 		DataSSZ: nil,
+		Version: spec.DataVersionPhase0,
 	}
 	input, _ := consensusData.Encode()
 
