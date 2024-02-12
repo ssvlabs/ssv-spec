@@ -60,6 +60,7 @@ var AllTests = []tests.TestF{
 	latemsg.LateProposal,
 	latemsg.LateProposalPastInstance,
 	latemsg.LateProposalPastRound,
+	latemsg.LateProposalPastInstanceNonDuplicate,
 	latemsg.LateRoundChange,
 	latemsg.LateRoundChangePastInstance,
 	latemsg.LateRoundChangePastRound,
