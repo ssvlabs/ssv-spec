@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -291,6 +292,11 @@ var TestingCommitMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID
 var TestingCommitMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, DifferentRoot)
 }
+var TestingCommitMessageWithFullData = func(sk *bls.SecretKey, id types.OperatorID, fullData []byte) *qbft.SignedMessage {
+	msg := TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData)
+	msg.FullData = fullData
+	return msg
+}
 var TestingCommitMessageWrongHeight = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, TestingIdentifier, DifferentRoot)
 }
@@ -399,6 +405,11 @@ var TestingRoundChangeMessageWithRoundAndHeight = func(sk *bls.SecretKey, id typ
 }
 var TestingRoundChangeMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
 	return TestingRoundChangeMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, qbft.FirstRound, roundChangeJustification)
+}
+var TestingRoundChangeMessageWithRoundRCDataRoundAndFullData = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte, dataRound qbft.Round, fullData []byte) *qbft.SignedMessage {
+	msg := TestingRoundChangeMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, dataRound, roundChangeJustification)
+	msg.FullData = fullData
+	return msg
 }
 var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, identifier []byte) *qbft.SignedMessage {
 	msg := &qbft.Message{
