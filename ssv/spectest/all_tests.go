@@ -3,7 +3,7 @@ package spectest
 import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/dutyexe"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
@@ -29,6 +29,7 @@ var AllTests = []tests.TestF{
 	postconsensus.InvalidMessageSignature,
 	postconsensus.InvalidBeaconSignature,
 	postconsensus.DuplicateMsgDifferentRoots,
+	postconsensus.DuplicateMsgDifferentRootsThenQuorum,
 	postconsensus.DuplicateMsg,
 	postconsensus.InvalidExpectedRoot,
 	postconsensus.PreDecided,
@@ -44,6 +45,7 @@ var AllTests = []tests.TestF{
 	postconsensus.Quorum10Operators,
 	postconsensus.Quorum13Operators,
 	postconsensus.InvalidDecidedValue,
+	postconsensus.InvalidThenQuorum,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -57,6 +59,7 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
 
+	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
 	consensus.InvalidDecidedValue,
 	consensus.FutureMessage,
@@ -129,16 +132,7 @@ var AllTests = []tests.TestF{
 	preconsensus.UnknownSigner,
 	preconsensus.InvalidBeaconSignature,
 	preconsensus.InvalidMessageSignature,
-
-	messages.EncodingAndRoot,
-	messages.NoMsgs,
-	messages.InvalidMsg,
-	messages.ValidContributionProofMetaData,
-	messages.SigValid,
-	messages.PartialSigValid,
-	messages.PartialRootValid,
-	messages.MessageSigner0,
-	messages.SignedMsgSigner0,
+	preconsensus.InvalidThenQuorum,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
@@ -155,4 +149,9 @@ var AllTests = []tests.TestF{
 
 	dutyexe.WrongDutyRole,
 	dutyexe.WrongDutyPubKey,
+	partialsigcontainer.OneSignature,
+	partialsigcontainer.Quorum,
+	partialsigcontainer.Duplicate,
+	partialsigcontainer.DuplicateQuorum,
+	partialsigcontainer.Invalid,
 }

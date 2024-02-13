@@ -1,0 +1,58 @@
+{
+		"Name": "rc not prev prepared justifications",
+		"Messages": [
+				{
+						"Signature": "p5iorFgZ9bI9otv5TyEMkbxcQ5E8+LACHWsh3Fv54KJgoJbCxQ6v47tpF2De+WW3DvCjDTJvi/z4VSQ0H2ZYWEDOo5sfc49F7VAialmFiJ5glQh9D1hTMT2pIfLj30bt",
+						"Signers": [
+								1
+						],
+						"Message": {
+								"MsgType": 3,
+								"Height": 0,
+								"Round": 10,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										190,
+										149,
+										111,
+										183,
+										223,
+										78,
+										243,
+										117,
+										49,
+										104,
+										45,
+										88,
+										131,
+										32,
+										8,
+										79,
+										201,
+										20,
+										195,
+										240,
+										254,
+										211,
+										53,
+										38,
+										62,
+										91,
+										68,
+										6,
+										46,
+										108,
+										41,
+										180
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": null,
+								"PrepareJustification": null
+						},
+						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+				}
+		],
+		"EncodedMessages": null,
+		"ExpectedRoots": null,
+		"ExpectedError": ""
+}

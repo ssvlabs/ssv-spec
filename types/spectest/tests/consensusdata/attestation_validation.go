@@ -1,6 +1,11 @@
 package consensusdata
 
+import "github.com/bloxapp/ssv-spec/types/testingutils"
+
 // AttestationValidation tests a valid consensus data with AttestationData
-func AttestationValidation() *SpecTest {
-	panic("implement")
+func AttestationValidation() *ConsensusDataTest {
+	return &ConsensusDataTest{
+		Name:          "attestation validation",
+		ConsensusData: *testingutils.TestAttesterConsensusData,
+	}
 }

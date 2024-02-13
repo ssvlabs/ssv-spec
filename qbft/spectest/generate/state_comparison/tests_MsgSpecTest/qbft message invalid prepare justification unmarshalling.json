@@ -1,0 +1,60 @@
+{
+		"Name": "invalid prepare justification unmarshalling",
+		"Messages": [
+				{
+						"Signature": "pz1GGpXXmYDPYu5u4P1R/Vyn3/ICqe0U96wOTmdEqC4TT50FCqzwhnoBTrM+qlAEFgA9ItHVYj9oAf+0Zgwue1e4uzXxDhkkID+tE5hxp3u195oXNRBaCpVg78ZfJv9+",
+						"Signers": [
+								1
+						],
+						"Message": {
+								"MsgType": 0,
+								"Height": 0,
+								"Round": 1,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										171,
+										223,
+										56,
+										59,
+										122,
+										252,
+										254,
+										162,
+										11,
+										93,
+										114,
+										204,
+										119,
+										150,
+										8,
+										230,
+										250,
+										112,
+										249,
+										19,
+										252,
+										223,
+										246,
+										20,
+										151,
+										76,
+										6,
+										90,
+										175,
+										133,
+										17,
+										249
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": null,
+								"PrepareJustification": [
+										"AQ=="
+								]
+						},
+						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+				}
+		],
+		"EncodedMessages": null,
+		"ExpectedRoots": null,
+		"ExpectedError": "incorrect size"
+}
