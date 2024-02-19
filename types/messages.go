@@ -132,7 +132,7 @@ func (msg *SSVMessage) Decode(data []byte) error {
 type SignedSSVMessage struct {
 	OperatorID OperatorID
 	Signature  []byte `ssz-max:"512"`     // Created by the operator's private key. Max size allow keys up to 512*8 = 4096 bits
-	Data       []byte `ssz-max:"8388672"` // Max size extracted from SSVMessage
+	Data       []byte `ssz-max:"6291893"` // Max size extracted from SSVMessage
 }
 
 // GetOperatorID returns the sender operator ID
