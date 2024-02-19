@@ -26,9 +26,7 @@ func (test *ValidatorTest) TestName() string {
 	return "validator " + test.Name
 }
 
-// Run as an individual test
-func (test *ValidatorTest) Run(t *testing.T) {
-
+func (test *ValidatorTest) Prepare() (*ssv.Validator, error) {
 	ks := testingutils.Testing4SharesSet()
 
 	v := testingutils.BaseValidator(ks)
@@ -58,6 +56,13 @@ func (test *ValidatorTest) Run(t *testing.T) {
 			lastErr = err
 		}
 	}
+	return v, lastErr
+}
+
+// Run as an individual test
+func (test *ValidatorTest) Run(t *testing.T) {
+
+	v, lastErr := test.Prepare()
 
 	// Check error
 	if len(test.ExpectedError) != 0 {
@@ -86,11 +91,16 @@ func (test *ValidatorTest) compareBroadcastedBeaconMsgs(t *testing.T, v *ssv.Val
 	}
 
 	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots))
+	alreadyMatched := make([]bool, len(test.BeaconBroadcastedRoots))
 	for _, r1 := range test.BeaconBroadcastedRoots {
 		found := false
-		for _, r2 := range broadcastedRoots {
+		for r2Idx, r2 := range broadcastedRoots {
+			if alreadyMatched[r2Idx] {
+				continue
+			}
 			if r1 == hex.EncodeToString(r2[:]) {
 				found = true
+				alreadyMatched[r2Idx] = true
 				break
 			}
 		}
@@ -102,19 +112,17 @@ func (test *ValidatorTest) compareOutputMsgs(t *testing.T, v *ssv.Validator) {
 
 	broadcastedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
 	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
-	usedIndexes := make(map[int]bool)
+	alreadyMatched := make([]bool, len(test.OutputMessages))
 	for _, msg := range test.OutputMessages {
 		found := false
 		for index2, msg2 := range broadcastedMsgs {
-			if usedIndexes[index2] {
+			if alreadyMatched[index2] {
 				continue
 			}
-			if bytes.Equal(msg.GetData(), msg2.GetData()) {
-				if msg.GetType() == msg2.GetType() && msg.GetID() == msg2.GetID() {
-					found = true
-					usedIndexes[index2] = true
-					break
-				}
+			if msg.GetType() == msg2.GetType() && msg.GetID() == msg2.GetID() && bytes.Equal(msg.GetData(), msg2.GetData()) {
+				found = true
+				alreadyMatched[index2] = true
+				break
 			}
 		}
 		if !found {
@@ -124,5 +132,17 @@ func (test *ValidatorTest) compareOutputMsgs(t *testing.T, v *ssv.Validator) {
 }
 
 func (test *ValidatorTest) GetPostState() (interface{}, error) {
-	return nil, nil
+	validator, lastErr := test.Prepare()
+
+	if len(test.ExpectedError) == 0 {
+		if lastErr != nil {
+			return nil, lastErr
+		}
+		return validator, nil
+	} else {
+		if lastErr == nil || (test.ExpectedError != lastErr.Error()) {
+			return nil, lastErr
+		}
+		return validator, nil
+	}
 }
