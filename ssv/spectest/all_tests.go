@@ -161,4 +161,5 @@ var AllTests = []tests.TestF{
 	validator.InvalidDataConsensus,
 	validator.InvalidDataPartialSig,
 	validator.ValidPartialSig,
+	validator.BeaconRootBroadcasting,
 }
