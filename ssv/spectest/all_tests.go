@@ -14,6 +14,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/validator"
 )
 
 var AllTests = []tests.TestF{
@@ -147,8 +148,19 @@ var AllTests = []tests.TestF{
 	valcheckattestations.Valid,
 	valcheckproposer.BlindedBlock,
 
+	validator.NoData,
+	validator.InvalidType,
+	validator.InvalidID,
+	validator.ValidConsensus,
+	validator.InvalidDuty,
+	validator.InvalidDataConsensus,
+	validator.InvalidDataPartialSig,
+	validator.ValidPartialSig,
+	validator.BeaconRootBroadcasting,
+
 	dutyexe.WrongDutyRole,
 	dutyexe.WrongDutyPubKey,
+
 	partialsigcontainer.OneSignature,
 	partialsigcontainer.Quorum,
 	partialsigcontainer.Duplicate,

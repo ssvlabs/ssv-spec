@@ -19,6 +19,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/validator"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
@@ -126,6 +127,13 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				Name:  test.(map[string]interface{})["Name"].(string),
 				Tests: typedTests,
 			}
+
+			typedTest.Run(t)
+		case reflect.TypeOf(&validator.ValidatorTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &validator.ValidatorTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 			typedTest.Run(t)
 		case reflect.TypeOf(&partialsigcontainer.PartialSigContainerTest{}).String():
