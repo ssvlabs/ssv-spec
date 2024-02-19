@@ -1,0 +1,95 @@
+{
+		"Name": "prepare data encoding",
+		"Messages": [
+				{
+						"Signature": "gSnmhipRIL0IXhk2tO+1pV/H0ZwND9oOnsV20Yq9SherOgM/Upa3TF/a+Fy3s9oyAbY/7KdriDYT47HKE352OjQuOx3dvOAW+Mo8vOMsixJd2MJadjmBnCC1OennxsV5",
+						"Signers": [
+								1
+						],
+						"Message": {
+								"MsgType": 1,
+								"Height": 0,
+								"Round": 1,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										190,
+										149,
+										111,
+										183,
+										223,
+										78,
+										243,
+										117,
+										49,
+										104,
+										45,
+										88,
+										131,
+										32,
+										8,
+										79,
+										201,
+										20,
+										195,
+										240,
+										254,
+										211,
+										53,
+										38,
+										62,
+										91,
+										68,
+										6,
+										46,
+										108,
+										41,
+										180
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": null,
+								"PrepareJustification": null
+						},
+						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+				}
+		],
+		"EncodedMessages": [
+				"gSnmhipRIL0IXhk2tO+1pV/H0ZwND9oOnsV20Yq9SherOgM/Upa3TF/a+Fy3s9oyAbY/7KdriDYT47HKE352OjQuOx3dvOAW+Mo8vOMsixJd2MJadjmBnCC1OennxsV5bAAAAHQAAADEAAAAAQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBAECAwQFBgcICQECAwQFBgcICQECAwQFBgcICQ=="
+		],
+		"ExpectedRoots": [
+				[
+						48,
+						137,
+						31,
+						143,
+						223,
+						168,
+						186,
+						228,
+						181,
+						203,
+						132,
+						56,
+						87,
+						196,
+						24,
+						162,
+						34,
+						102,
+						222,
+						250,
+						120,
+						170,
+						94,
+						211,
+						148,
+						46,
+						216,
+						99,
+						253,
+						74,
+						116,
+						142
+				]
+		],
+		"ExpectedError": ""
+}

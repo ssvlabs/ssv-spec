@@ -15,7 +15,7 @@ import (
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/messages"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
@@ -95,13 +95,6 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 			}
 
 			typedTest.Run(t)
-		case reflect.TypeOf(&messages.MsgSpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &messages.MsgSpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			typedTest.Run(t)
 		case reflect.TypeOf(&valcheck.SpecTest{}).String():
 			byts, err := json.Marshal(test)
 			require.NoError(t, err)
@@ -140,6 +133,13 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 			byts, err := json.Marshal(test)
 			require.NoError(t, err)
 			typedTest := &validator.ValidatorTest{}
+			require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+			typedTest.Run(t)
+		case reflect.TypeOf(&partialsigcontainer.PartialSigContainerTest{}).String():
+			byts, err := json.Marshal(test)
+			require.NoError(t, err)
+			typedTest := &partialsigcontainer.PartialSigContainerTest{}
 			require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 			typedTest.Run(t)
