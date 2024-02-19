@@ -40,7 +40,7 @@ func NormalProposerAcceptsBlindedBlock() tests.SpecTest {
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
 			BeaconBroadcastedRoots: []string{
-				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
 		}
 	}

@@ -1,0 +1,11 @@
+{
+		"Name": "no data",
+		"Messages": [
+				{
+						"OperatorID": 1,
+						"Signature": "AQIDBA==",
+						"Data": ""
+				}
+		],
+		"ExpectedError": "Data has length 0 in SignedSSVMessage"
+}

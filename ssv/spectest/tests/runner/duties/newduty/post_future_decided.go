@@ -1,6 +1,8 @@
 package newduty
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -72,13 +74,15 @@ func PostFutureDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionBellatrix)),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionBellatrix),
+				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
+				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				PostDutyRunnerStateRoot: "fdaaa35d42c3001cd891209a44b921fa64320be238794e01633661e16c4f5e02",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionBellatrix), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %v already passed. Current height is %v",
+					testingutils.TestingDutySlotV(spec.DataVersionDeneb),
+					testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 			{
 				Name:                    "attester",

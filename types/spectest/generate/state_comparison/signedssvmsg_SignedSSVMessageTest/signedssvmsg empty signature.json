@@ -1,0 +1,11 @@
+{
+		"Name": "empty signature",
+		"Messages": [
+				{
+						"OperatorID": 1,
+						"Signature": "",
+						"Data": "AQIDBA=="
+				}
+		],
+		"ExpectedError": "Signature has length 0 in SignedSSVMessage"
+}

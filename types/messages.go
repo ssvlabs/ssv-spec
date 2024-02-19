@@ -100,8 +100,8 @@ type MessageSignature interface {
 type SSVMessage struct {
 	MsgType MsgType
 	MsgID   MessageID `ssz-size:"56"`
-	// Data max size is qbft SignedMessage max ~= 2^22 + 2^20 + 96 + 13 + 2^20 ~= 2^23
-	Data []byte `ssz-max:"8388608"` // 2^23
+	// Data max size is qbft SignedMessage max ~= 5243144 + 2^20 + 96 + 13 ~= 6291829
+	Data []byte `ssz-max:"6291829"`
 }
 
 func (msg *SSVMessage) GetType() MsgType {

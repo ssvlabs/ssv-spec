@@ -6,6 +6,8 @@ import (
 	"crypto/rsa"
 	"encoding/hex"
 	"fmt"
+	"hash/fnv"
+	"sync"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
@@ -25,11 +27,34 @@ type testingKeyManager struct {
 	slashableDataRoots [][]byte
 }
 
+var (
+	instancesMap = make(map[uint64]*testingKeyManager)
+	mu           sync.Mutex
+)
+
+func getHash(data [][]byte) uint64 {
+	h := fnv.New64a()
+	for _, d := range data {
+		h.Write(d)
+	}
+	return h.Sum64()
+}
+
 func NewTestingKeyManager() *testingKeyManager {
 	return NewTestingKeyManagerWithSlashableRoots([][]byte{})
 }
 
 func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testingKeyManager {
+
+	hash := getHash(slashableDataRoots)
+
+	mu.Lock()
+	defer mu.Unlock()
+
+	if instance, ok := instancesMap[hash]; ok {
+		return instance
+	}
+
 	ret := &testingKeyManager{
 		keys:           map[string]*bls.SecretKey{},
 		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
@@ -70,6 +95,9 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 	for _, o := range Testing13SharesSet().DKGOperators {
 		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
 	}
+
+	instancesMap[hash] = ret
+
 	return ret
 }
 

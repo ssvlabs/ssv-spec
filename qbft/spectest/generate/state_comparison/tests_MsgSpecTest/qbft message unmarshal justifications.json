@@ -1,0 +1,99 @@
+{
+		"Name": "unmarshal justifications",
+		"Messages": [
+				{
+						"Signature": "kBYDzR5unCpP1pADmj8HMeF6ZNGmiriD2/9haIgiBUhw4wD6nyGzD/MV8IUTdnWBAP8JGdtdbcZ0znFXdCbHJNiTWtuixiStIyP6w1EMLdEX60n2o6a0Fx+3SaZ6oHcu",
+						"Signers": [
+								1
+						],
+						"Message": {
+								"MsgType": 0,
+								"Height": 0,
+								"Round": 2,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										190,
+										149,
+										111,
+										183,
+										223,
+										78,
+										243,
+										117,
+										49,
+										104,
+										45,
+										88,
+										131,
+										32,
+										8,
+										79,
+										201,
+										20,
+										195,
+										240,
+										254,
+										211,
+										53,
+										38,
+										62,
+										91,
+										68,
+										6,
+										46,
+										108,
+										41,
+										180
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": [
+										"t3wDXB0dnGx8wigQxQqFyeVgrXkVCQVQYd/gfUA+2qEwQWFGbUn2SES25c9LCXCfBp3r/ZFDj5fUFKT2TNy0+M8elwP42hQb6fdFCQh+L4RJIxSwNBlmxLj8Ftkx9roIbAAAAHQAAADEAAAAAQAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA=="
+								],
+								"PrepareJustification": [
+										"gSnmhipRIL0IXhk2tO+1pV/H0ZwND9oOnsV20Yq9SherOgM/Upa3TF/a+Fy3s9oyAbY/7KdriDYT47HKE352OjQuOx3dvOAW+Mo8vOMsixJd2MJadjmBnCC1OennxsV5bAAAAHQAAADEAAAAAQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAABQAAAAAQIDBA=="
+								]
+						},
+						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+				}
+		],
+		"EncodedMessages": [
+				"kBYDzR5unCpP1pADmj8HMeF6ZNGmiriD2/9haIgiBUhw4wD6nyGzD/MV8IUTdnWBAP8JGdtdbcZ0znFXdCbHJNiTWtuixiStIyP6w1EMLdEX60n2o6a0Fx+3SaZ6oHcubAAAAHQAAABUAgAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABMAAAAvpVvt99O83UxaC1YgyAIT8kUw/D+0zUmPltEBi5sKbQAAAAAAAAAAFAAAAAYAQAAAQIDBAQAAAC3fANcHR2cbHzCKBDFCoXJ5WCteRUJBVBh3+B9QD7aoTBBYUZtSfZIRLblz0sJcJ8Gnev9kUOPl9QUpPZM3LT4zx6XA/jaFBvp90UJCH4vhEkjFLA0GWbEuPwW2TH2ughsAAAAdAAAAMQAAAABAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAACAAAAAAAAAEwAAAC+lW+3307zdTFoLViDIAhPyRTD8P7TNSY+W0QGLmwptAAAAAAAAAAAUAAAAFAAAAABAgMEBAAAAIEp5oYqUSC9CF4ZNrTvtaVfx9GcDQ/aDp7FdtGKvUoXqzoDP1KWt0xf2vhct7PaMgG2P+yna4g2E+OxyhN+djo0Ljsd3bzgFvjKPLzjLIsSXdjCWnY5gZwgtTnp58bFeWwAAAB0AAAAxAAAAAEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQBAgMEBQYHCAkBAgMEBQYHCAkBAgMEBQYHCAk="
+		],
+		"ExpectedRoots": [
+				[
+						253,
+						220,
+						36,
+						67,
+						43,
+						252,
+						197,
+						102,
+						149,
+						71,
+						69,
+						118,
+						177,
+						199,
+						10,
+						237,
+						1,
+						31,
+						24,
+						191,
+						161,
+						173,
+						44,
+						16,
+						200,
+						87,
+						114,
+						248,
+						197,
+						136,
+						228,
+						18
+				]
+		],
+		"ExpectedError": ""
+}
