@@ -7,5 +7,6 @@
 						"Data": "AQIDBA=="
 				}
 		],
-		"ExpectedError": "Signature has length 0 in SignedSSVMessage"
+		"ExpectedError": "Signature has length 0 in SignedSSVMessage",
+		"RSAPublicKey": null
 }
