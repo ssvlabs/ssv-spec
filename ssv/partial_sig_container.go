@@ -61,7 +61,7 @@ func (ps PartialSignatureContainer) Roots() [][32]byte {
 
 // AllSorted returns ordered by signer array of signed messages
 func (ps PartialSignatureContainer) AllSorted() []*types.SignedPartialSignatureMessage {
-	ret := make([]*types.SignedPartialSignatureMessage, 0)
+	ret := make([]*types.SignedPartialSignatureMessage, len(ps))
 	for _, m := range ps {
 		ret = append(ret, m)
 	}
