@@ -56,13 +56,13 @@ func (r *VoluntaryExitRunner) HasRunningDuty() bool {
 // ProcessPreConsensus Check for quorum of partial signatures over VoluntaryExit and,
 // if has quorum, constructs SignedVoluntaryExit and submits to BeaconNode
 func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+	shouldProcess, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing voluntary exit message")
 	}
 
-	// quorum returns true only once (first time quorum achieved)
-	if !quorum {
+	// shouldProcess returns true only once (first time shouldProcess achieved)
+	if !shouldProcess {
 		return nil
 	}
 

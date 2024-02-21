@@ -52,13 +52,13 @@ func (r *ValidatorRegistrationRunner) HasRunningDuty() bool {
 }
 
 func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+	shouldProcess, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing validator registration message")
 	}
 
-	// quorum returns true only once (first time quorum achieved)
-	if !quorum {
+	// shouldProcess returns true only once (first time shouldProcess achieved)
+	if !shouldProcess {
 		return nil
 	}
 

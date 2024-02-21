@@ -58,13 +58,13 @@ func (r *ProposerRunner) HasRunningDuty() bool {
 }
 
 func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+	shouldProcess, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing randao message")
 	}
 
-	// quorum returns true only once (first time quorum achieved)
-	if !quorum {
+	// shouldProcess returns true only once (first time shouldProcess achieved)
+	if !shouldProcess {
 		return nil
 	}
 
