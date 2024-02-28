@@ -112,6 +112,34 @@ func ConsensusXRound(round int) {
 	fmt.Printf("Consensus round %v time: %v ms. Total: %v us\n", round, times, total)
 }
 
+func SinglePartialSigMessage() {
+	ks := testingutils.Testing4SharesSet()
+	validator := testingutils.BaseValidator(ks)
+	duty := &testingutils.TestingAggregatorDuty
+	role := duty.Type
+	// cd := testingutils.TestAggregatorConsensusDataByts
+	err := validator.StartDuty(duty)
+	// height := qbft.Height(duty.Slot)
+	// msgID := testingutils.AggregatorMsgID
+	if err != nil {
+		panic(err.Error())
+	}
+
+	msgs := make([]*types.SSVMessage, 0)
+
+	// Pre-consensus
+	msgs = append(msgs, PreConsensusF(ks, role, false)...)
+
+	start := time.Now()
+	err = validator.ProcessMessage(msgs[0])
+	if err != nil {
+		panic(err.Error())
+	}
+	end := time.Now()
+	elapsed := end.Sub(start).Microseconds()
+	fmt.Printf("Single partial message time: %v us.\n", elapsed)
+}
+
 func ConsensusMessageXRound(round int, msgType qbft.MessageType) {
 	ks := testingutils.Testing4SharesSet()
 	validator := testingutils.BaseValidator(ks)
@@ -284,6 +312,10 @@ func TestRoundChangeMessage(t *testing.T) {
 	YConsensusMessageXRound(3, 1, qbft.RoundChangeMsgType)
 	YConsensusMessageXRound(3, 2, qbft.RoundChangeMsgType)
 	YConsensusMessageXRound(3, 3, qbft.RoundChangeMsgType)
+}
+
+func TestSinglePartialMessage(t *testing.T) {
+	SinglePartialSigMessage()
 }
 
 func TestPreConsensus(t *testing.T) {
