@@ -1,0 +1,60 @@
+{
+		"Name": "multi signers",
+		"Messages": [
+				{
+						"Signature": "ok+cfOp6t9/h8xvePHOpDCnIif+wMjLeYWhHv5/Csldj3S/G2PgaYaZhxpSKKURCFXRMTSP1OhfbMinxQrnxZYg7SP2C6NDOa/9vV6NLaX/eusH+W91JkAgPd+seFNhr",
+						"Signers": [
+								1,
+								2,
+								3
+						],
+						"Message": {
+								"MsgType": 2,
+								"Height": 0,
+								"Round": 1,
+								"Identifier": "AQIDBA==",
+								"Root": [
+										190,
+										149,
+										111,
+										183,
+										223,
+										78,
+										243,
+										117,
+										49,
+										104,
+										45,
+										88,
+										131,
+										32,
+										8,
+										79,
+										201,
+										20,
+										195,
+										240,
+										254,
+										211,
+										53,
+										38,
+										62,
+										91,
+										68,
+										6,
+										46,
+										108,
+										41,
+										180
+								],
+								"DataRound": 0,
+								"RoundChangeJustification": null,
+								"PrepareJustification": null
+						},
+						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+				}
+		],
+		"EncodedMessages": null,
+		"ExpectedRoots": null,
+		"ExpectedError": ""
+}
