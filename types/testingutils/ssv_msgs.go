@@ -110,6 +110,20 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 	}
 }
 
+var TestSyncCommitteeContributionWithJustificationConsensusData = func(ks *TestKeySet) *types.ConsensusData {
+	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	for i := uint64(0); i <= ks.Threshold; i++ {
+		justif = append(justif, PreConsensusContributionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1))
+	}
+
+	return &types.ConsensusData{
+		Duty:                       TestingSyncCommitteeContributionDuty,
+		Version:                    spec.DataVersionDeneb,
+		PreConsensusJustifications: justif,
+		DataSSZ:                    TestingContributionsDataBytes,
+	}
+}
+
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeDuty,
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],

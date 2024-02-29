@@ -52,7 +52,9 @@ var AllTests = []SpecTest{
 	consensusdata.InvalidDuty(),
 
 	consensusdata.ProposerConsensusDataEncoding(),
+	consensusdata.ProposerWithJustificationConsensusDataEncoding(),
 	consensusdata.BlindedProposerConsensusDataEncoding(),
+	consensusdata.BlindedProposerWithJustificationConsensusDataEncoding(),
 	consensusdata.CapellaBlockValidation(),
 	consensusdata.CapellaBlindedBlockValidation(),
 	consensusdata.ProposerNoJustifications(),
@@ -64,21 +66,25 @@ var AllTests = []SpecTest{
 	consensusdata.InvalidDenebBlindedBlockValidation(),
 
 	consensusdata.AttestationConsensusDataEncoding(),
+	consensusdata.AttestationWithJustificationConsensusDataEncoding(),
 	consensusdata.AttestationValidation(),
 	consensusdata.AttesterJustifications(),
 	consensusdata.InvalidAttestationValidation(),
 
 	consensusdata.AggregatorConsensusDataEncoding(),
+	consensusdata.AggregatorWithJustificationConsensusDataEncoding(),
 	consensusdata.AggregatorValidation(),
 	consensusdata.AggregatorNoJustifications(),
 	consensusdata.InvalidAggregatorValidation(),
 
 	consensusdata.SyncCommitteeConsensusDataEncoding(),
+	consensusdata.SyncCommitteeWithJustificationConsensusDataEncoding(),
 	consensusdata.SyncCommitteeJustifications(),
 	consensusdata.SyncCommitteeNoJustifications(),
 	consensusdata.InvalidSyncCommitteeBlockValidation(),
 
 	consensusdata.SyncCommitteeContributionConsensusDataEncoding(),
+	consensusdata.SyncCommitteeWithJustificationContributionConsensusDataEncoding(),
 	consensusdata.SyncCommitteeContributionValidation(),
 	consensusdata.SyncCommitteeContributionNoJustifications(),
 	consensusdata.InvalidSyncCommitteeContributionValidation(),
