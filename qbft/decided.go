@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -66,10 +67,6 @@ func ValidateDecided(
 
 	if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
-	}
-
-	if err := signedDecided.Validate(); err != nil {
-		return errors.Wrap(err, "invalid decided")
 	}
 
 	r, err := HashDataRoot(signedDecided.FullData)
