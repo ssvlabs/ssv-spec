@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -125,7 +126,9 @@ func (r *SyncCommitteeRunner) ProcessPostConsensus(signedMsg *types.SignedPartia
 	for _, root := range roots {
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
 		if err != nil {
-			return errors.Wrap(err, "could not reconstruct post consensus signature")
+			// If reconstructing and verification failed, fall back to verifying each partial signature
+			r.BaseRunner.VerifyEachSignatureInContainer(root)
+			return nil
 		}
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)

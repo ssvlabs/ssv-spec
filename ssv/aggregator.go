@@ -165,7 +165,9 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSi
 	for _, root := range roots {
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
 		if err != nil {
-			return errors.Wrap(err, "could not reconstruct post consensus signature")
+			// If reconstructing and verification failed, fall back to verifying each partial signature
+			r.BaseRunner.VerifyEachSignatureInContainer(root)
+			return nil
 		}
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
