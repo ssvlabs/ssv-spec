@@ -45,6 +45,7 @@ func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSigna
 	}, nil
 }
 
+// Validate message content without verifying signatures
 func (b *BaseRunner) validatePartialSigMsgForSlot(
 	signedMsg *types.SignedPartialSignatureMessage,
 	slot spec.Slot,
@@ -52,28 +53,13 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 	if err := signedMsg.Validate(); err != nil {
 		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
 	}
-
 	if signedMsg.Message.Slot != slot {
 		return errors.New("invalid partial sig slot")
 	}
-
-	if err := signedMsg.GetSignature().VerifyByOperators(signedMsg, b.Share.DomainType, types.PartialSignatureType, b.Share.Committee); err != nil {
-		return errors.Wrap(err, "failed to verify PartialSignature")
-	}
-
-	for _, msg := range signedMsg.Message.Messages {
-		if err := b.verifyBeaconPartialSignature(msg); err != nil {
-			return errors.Wrap(err, "could not verify Beacon partial Signature")
-		}
-	}
-
 	return nil
 }
 
-func (b *BaseRunner) verifyBeaconPartialSignature(msg *types.PartialSignatureMessage) error {
-	signer := msg.Signer
-	signature := msg.PartialSignature
-	root := msg.SigningRoot
+func (b *BaseRunner) verifyBeaconPartialSignature(signer uint64, signature types.Signature, root [32]byte) error {
 
 	for _, n := range b.Share.Committee {
 		if n.GetID() == signer {

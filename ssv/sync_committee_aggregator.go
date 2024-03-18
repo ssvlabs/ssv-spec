@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -76,7 +77,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Sig
 		// reconstruct selection proof sig
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
 		if err != nil {
-			return errors.Wrap(err, "could not reconstruct sync committee index root")
+			// If reconstructing and verification failed, fall back to verifying each partial signature
+			r.BaseRunner.VerifyEachSignatureInContainer(root)
+			return nil
 		}
 		blsSigSelectionProof := phase0.BLSSignature{}
 		copy(blsSigSelectionProof[:], sig)

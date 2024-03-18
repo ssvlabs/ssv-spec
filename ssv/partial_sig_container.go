@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"encoding/hex"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,22 @@ func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessag
 		m[sigMsg.Signer] = make([]byte, 96)
 		copy(m[sigMsg.Signer], sigMsg.PartialSignature)
 	}
+}
+
+// Return signature map for given root
+func (ps *PartialSigContainer) GetSignatures(signingRoot [32]byte) map[types.OperatorID][]byte {
+	return ps.Signatures[rootHex(signingRoot)]
+}
+
+// Remove signer from signature map
+func (ps *PartialSigContainer) Remove(signingRoot [32]byte, signer uint64) {
+	if ps.Signatures[rootHex(signingRoot)] == nil {
+		return
+	}
+	if ps.Signatures[rootHex(signingRoot)][signer] == nil {
+		return
+	}
+	delete(ps.Signatures[rootHex(signingRoot)], signer)
 }
 
 func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte) ([]byte, error) {

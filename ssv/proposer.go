@@ -75,7 +75,9 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 	// randao is relevant only for block proposals, no need to check type
 	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
 	if err != nil {
-		return errors.Wrap(err, "could not reconstruct randao sig")
+		// If reconstructing and verification failed, fall back to verifying each partial signature
+		r.BaseRunner.VerifyEachSignatureInContainer(root)
+		return nil
 	}
 
 	duty := r.GetState().StartingDuty
