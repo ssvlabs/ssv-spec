@@ -1,6 +1,8 @@
 package benchmark
 
 import (
+	"math"
+
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -282,4 +284,21 @@ func ConsensusForRound(ks *testingutils.TestKeySet, role types.BeaconRole,
 	}, maxCommit)...)
 
 	return QbftToSSVMessage(allMsgs, role)
+}
+
+// Returns mean and population standard deviation
+func GetMeanAndStddev(values []float64) (float64, float64) {
+	var mean, stddev float64
+
+	for _, value := range values {
+		mean += value
+	}
+	mean = mean / float64(len(values))
+
+	for _, value := range values {
+		stddev += math.Pow(mean-float64(value), 2)
+	}
+	stddev = math.Pow(stddev/float64(len(values)), 1/2)
+
+	return mean, stddev
 }

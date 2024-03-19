@@ -6,9 +6,12 @@ import (
 	"time"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 func FullDutyXRounds(numRounds int) {
@@ -393,4 +396,102 @@ func TestPostConsensus(t *testing.T) {
 	end := time.Now()
 	elapsed := end.Sub(start).Microseconds()
 	fmt.Printf("Post-consensus: %v us.\n", elapsed)
+}
+
+func TestCryptographyPrimitives(t *testing.T) {
+
+	// Init
+	ks := testingutils.Testing4SharesSet()
+	signer := testingutils.NewTestingKeyManager()
+	beacon := testingutils.NewTestingBeaconNode()
+	epoch := testingutils.TestingDutyEpoch
+	d, _ := beacon.DomainData(phase0.Epoch(epoch), types.DomainRandao)
+
+	// Result data
+	signingTimes := make([]float64, 0)
+	verifyingTimes := make([]float64, 0)
+	PartialSigContainer := ssv.NewPartialSigContainer(ks.Threshold)
+	partialSignatureMessages := make([]*types.PartialSignatureMessage, 0)
+
+	var signingRoot [32]byte
+	opID := uint64(1)
+	// Create partial signature messages, storing the signing and verification times
+	for opID <= ks.Threshold {
+
+		sk := ks.Shares[opID]
+
+		// Sign
+		start := time.Now()
+		signature, root, _ := signer.SignBeaconObject(types.SSZUint64(epoch), d, sk.GetPublicKey().Serialize(), types.DomainRandao)
+		end := time.Now()
+		signingTimes = append(signingTimes, float64(end.Sub(start).Microseconds()))
+		signingRoot = root
+
+		// Create and store message
+		msg := &types.PartialSignatureMessage{
+			PartialSignature: signature[:],
+			SigningRoot:      root,
+			Signer:           opID,
+		}
+		partialSignatureMessages = append(partialSignatureMessages, msg)
+		PartialSigContainer.AddSignature(msg)
+
+		// Verify message
+		pk := &bls.PublicKey{}
+		committee := ks.Committee()
+		for idx, op := range committee {
+			if op.OperatorID == opID {
+				start := time.Now()
+				if err := pk.Deserialize(committee[idx].GetPublicKey()); err != nil {
+					panic("Test failed to deserialize public key")
+				}
+				sig := &bls.Sign{}
+				if err := sig.Deserialize(signature); err != nil {
+					panic("Test failed to deserialize signature")
+				}
+				if !sig.VerifyByte(pk, root[:]) {
+					panic("Test failed to verify signature")
+				}
+				end := time.Now()
+				verifyingTimes = append(verifyingTimes, float64(end.Sub(start).Microseconds()))
+			}
+		}
+
+		opID += 1
+	}
+
+	// Print signing time
+	meanSign, stddevSign := GetMeanAndStddev(signingTimes)
+	fmt.Printf("BLS Signing time: %v ± %v us.\n", int(meanSign), stddevSign)
+
+	// Print verification time
+	meanVerify, stddevVerify := GetMeanAndStddev(verifyingTimes)
+	fmt.Printf("BLS Verification time: %v ± %v us.\n", int(meanVerify), stddevVerify)
+
+	// Reconstruct time
+	validatorPubKey := ks.ValidatorPK.Serialize()
+	start := time.Now()
+	PartialSigContainer.ReconstructSignature(signingRoot, validatorPubKey)
+	end := time.Now()
+	elapsed := end.Sub(start).Microseconds()
+	fmt.Printf("Reconstruct + Verify signature: %v us.\n", elapsed)
+	fmt.Printf("Reconstruct (from the above diff): %v us.\n", int(float64(elapsed)-meanVerify))
+
+	// Aggregation time
+	var aggregated types.Signature
+	var err error
+	start = time.Now()
+	for _, msg := range partialSignatureMessages {
+		if aggregated == nil {
+			aggregated = msg.PartialSignature
+		} else {
+			aggregated, err = aggregated.Aggregate(msg.PartialSignature)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+	end = time.Now()
+	elapsed = end.Sub(start).Microseconds()
+	fmt.Printf("Aggregate 3 signatures: %v us.\n", elapsed)
 }
