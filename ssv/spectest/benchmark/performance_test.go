@@ -462,24 +462,26 @@ func TestCryptographyPrimitives(t *testing.T) {
 
 	// Print signing time
 	meanSign, stddevSign := GetMeanAndStddev(signingTimes)
-	fmt.Printf("BLS Signing time: %v ± %v us.\n", int(meanSign), stddevSign)
+	fmt.Printf("BLS Signing time: %.2f ± %.2f us.\n", meanSign, stddevSign)
 
 	// Print verification time
 	meanVerify, stddevVerify := GetMeanAndStddev(verifyingTimes)
-	fmt.Printf("BLS Verification time: %v ± %v us.\n", int(meanVerify), stddevVerify)
+	fmt.Printf("BLS Verification time: %.2f ± %.2f us.\n", meanVerify, stddevVerify)
 
 	// Reconstruct time
 	validatorPubKey := ks.ValidatorPK.Serialize()
 	start := time.Now()
-	PartialSigContainer.ReconstructSignature(signingRoot, validatorPubKey)
+	_, err := PartialSigContainer.ReconstructSignature(signingRoot, validatorPubKey)
+	if err != nil {
+		panic(err)
+	}
 	end := time.Now()
 	elapsed := end.Sub(start).Microseconds()
 	fmt.Printf("Reconstruct + Verify signature: %v us.\n", elapsed)
-	fmt.Printf("Reconstruct (from the above diff): %v us.\n", int(float64(elapsed)-meanVerify))
+	fmt.Printf("Reconstruct (from the above diff): %.2f us.\n", float64(elapsed)-meanVerify)
 
 	// Aggregation time
 	var aggregated types.Signature
-	var err error
 	start = time.Now()
 	for _, msg := range partialSignatureMessages {
 		if aggregated == nil {

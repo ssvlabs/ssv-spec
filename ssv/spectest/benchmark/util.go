@@ -298,7 +298,7 @@ func GetMeanAndStddev(values []float64) (float64, float64) {
 	for _, value := range values {
 		stddev += math.Pow(mean-float64(value), 2)
 	}
-	stddev = math.Pow(stddev/float64(len(values)), 1/2)
+	stddev = math.Pow(stddev/float64(len(values)), 1.0/2)
 
 	return mean, stddev
 }
