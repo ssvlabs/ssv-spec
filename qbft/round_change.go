@@ -32,7 +32,7 @@ func (i *Instance) uponRoundChange(
 	justifiedRoundChangeMsg, valueToPropose, err := hasReceivedProposalJustificationForLeadingRound(
 		i.State,
 		i.config,
-		instanceStartValue,
+		i.cdFetcher,
 		signedRoundChange,
 		roundChangeMsgContainer,
 		valCheck)
@@ -104,7 +104,7 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 func hasReceivedProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
-	instanceStartValue []byte,
+	cdFetcher *types.DataFetcher,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
@@ -120,25 +120,17 @@ func hasReceivedProposalJustificationForLeadingRound(
 	// We iterate on all round chance msgs for liveliness in case the last round change msg is malicious.
 	for _, msg := range roundChanges {
 
-		// Chose proposal value.
-		// If justifiedRoundChangeMsg has no prepare justification chose state value
-		// If justifiedRoundChangeMsg has prepare justification chose prepared value
-		valueToPropose := instanceStartValue
-		if msg.Message.RoundChangePrepared() {
-			valueToPropose = signedRoundChange.FullData
-		}
-
 		roundChangeJustification, _ := msg.Message.GetRoundChangeJustifications() // no need to check error, checked on isValidRoundChange
-		if isProposalJustificationForLeadingRound(
+		if valueToPropose, err := isProposalJustificationForLeadingRound(
 			state,
 			config,
 			msg,
 			roundChanges,
 			roundChangeJustification,
-			valueToPropose,
+			cdFetcher,
 			valCheck,
 			signedRoundChange.Message.Round,
-		) == nil {
+		); err == nil {
 			// not returning error, no need to
 			return msg, valueToPropose, nil
 		}
@@ -146,40 +138,66 @@ func hasReceivedProposalJustificationForLeadingRound(
 	return nil, nil, nil
 }
 
-// isProposalJustificationForLeadingRound - returns nil if we have a quorum of round change msgs and highest justified value for leading round
+// isProposalJustificationForLeadingRound - returns proposal value if we have a quorum of round change msgs and
+// highest justified value for leading round
 func isProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
 	roundChangeMsg *SignedMessage,
 	roundChanges []*SignedMessage,
 	roundChangeJustifications []*SignedMessage,
-	value []byte,
+	cdFetcher *types.DataFetcher,
 	valCheck ProposedValueCheckF,
 	newRound Round,
-) error {
+) ([]byte, error) {
+	if proposer(state, config, roundChangeMsg.Message.Round) != state.Share.OperatorID {
+		return nil, errors.New("not proposer")
+	}
+
+	valueToPropose, err := chooseValueToPropose(roundChangeMsg, cdFetcher)
+	if err != nil {
+		return nil, err
+	}
+
 	if err := isReceivedProposalJustification(
 		state,
 		config,
 		roundChanges,
 		roundChangeJustifications,
 		roundChangeMsg.Message.Round,
-		value,
+		valueToPropose,
 		valCheck); err != nil {
-		return err
-	}
-
-	if proposer(state, config, roundChangeMsg.Message.Round) != state.Share.OperatorID {
-		return errors.New("not proposer")
+		return nil, err
 	}
 
 	currentRoundProposal := state.ProposalAcceptedForCurrentRound == nil && state.Round == newRound
 	futureRoundProposal := newRound > state.Round
 
 	if !currentRoundProposal && !futureRoundProposal {
-		return errors.New("proposal round mismatch")
+		return nil, errors.New("proposal round mismatch")
 	}
 
-	return nil
+	return valueToPropose, nil
+}
+
+// chooseValueToPropose
+// If justifiedRoundChangeMsg has no prepare justification choose state value
+// If justifiedRoundChangeMsg has prepare justification choose prepared value
+func chooseValueToPropose(roundChangeMsg *SignedMessage, cdFetcher *types.DataFetcher) ([]byte, error) {
+	var valueToPropose []byte = nil
+	if roundChangeMsg.Message.RoundChangePrepared() {
+		valueToPropose = roundChangeMsg.FullData
+	} else {
+		cd, err := cdFetcher.GetConsensusData()
+		if err != nil {
+			return nil, err
+		}
+		valueToPropose, err = cd.Encode()
+		if err != nil {
+			return nil, err
+		}
+	}
+	return valueToPropose, nil
 }
 
 // isReceivedProposalJustification - returns nil if we have a quorum of round change msgs and highest justified value
