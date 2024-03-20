@@ -87,8 +87,8 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 	return nil
 }
 
-func beaconBlockFetcher(r *ProposerRunner, fullSig []byte) types.DataFetcher {
-	becaonBlockFetcher := types.DataFetcher{
+func beaconBlockFetcher(r *ProposerRunner, fullSig []byte) *types.DataFetcher {
+	becaonBlockFetcher := &types.DataFetcher{
 		func() (*types.ConsensusData, error) {
 			duty := r.GetState().StartingDuty
 
