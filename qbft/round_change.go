@@ -9,7 +9,6 @@ import (
 // uponRoundChange process round change messages.
 // Assumes round change message is valid!
 func (i *Instance) uponRoundChange(
-	instanceStartValue []byte,
 	signedRoundChange *SignedMessage,
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
@@ -62,7 +61,7 @@ func (i *Instance) uponRoundChange(
 			return nil // no need to advance round
 		}
 
-		err := i.uponChangeRoundPartialQuorum(newRound, instanceStartValue)
+		err := i.uponChangeRoundPartialQuorum(newRound)
 		if err != nil {
 			return err
 		}
@@ -70,11 +69,11 @@ func (i *Instance) uponRoundChange(
 	return nil
 }
 
-func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartValue []byte) error {
+func (i *Instance) uponChangeRoundPartialQuorum(newRound Round) error {
 	i.State.Round = newRound
 	i.State.ProposalAcceptedForCurrentRound = nil
 	i.config.GetTimer().TimeoutForRound(i.State.Round)
-	roundChange, err := CreateRoundChange(i.State, i.config, newRound, instanceStartValue)
+	roundChange, err := CreateRoundChange(i.State, i.config, newRound)
 	if err != nil {
 		return errors.Wrap(err, "failed to create round change message")
 	}
@@ -322,7 +321,7 @@ func minRound(roundChangeMsgs []*SignedMessage) Round {
 	return ret
 }
 
-func getRoundChangeData(state *State, config IConfig, instanceStartValue []byte) (Round, [32]byte, []byte, []*SignedMessage, error) {
+func getRoundChangeData(state *State, config IConfig) (Round, [32]byte, []byte, []*SignedMessage, error) {
 	if state.LastPreparedRound != NoRound && state.LastPreparedValue != nil {
 		justifications, err := getRoundChangeJustification(state, config, state.PrepareContainer)
 		if err != nil {
@@ -353,8 +352,8 @@ RoundChange(
            getRoundChangeJustification(current)
        )
 */
-func CreateRoundChange(state *State, config IConfig, newRound Round, instanceStartValue []byte) (*SignedMessage, error) {
-	round, root, fullData, justifications, err := getRoundChangeData(state, config, instanceStartValue)
+func CreateRoundChange(state *State, config IConfig, newRound Round) (*SignedMessage, error) {
+	round, root, fullData, justifications, err := getRoundChangeData(state, config)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not generate round change data")
 	}
