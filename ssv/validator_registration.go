@@ -68,7 +68,7 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Signe
 	if err != nil {
 		// If reconstructing and verification failed, fall back to verifying each partial signature
 		r.BaseRunner.VerifyEachSignatureInContainer(root)
-		return nil
+		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 	specSig := phase0.BLSSignature{}
 	copy(specSig[:], fullSig)

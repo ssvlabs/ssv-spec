@@ -77,7 +77,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 	if err != nil {
 		// If reconstructing and verification failed, fall back to verifying each partial signature
 		r.BaseRunner.VerifyEachSignatureInContainer(root)
-		return nil
+		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 
 	duty := r.GetState().StartingDuty
@@ -193,7 +193,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSign
 		if err != nil {
 			// If reconstructing and verification failed, fall back to verifying each partial signature
 			r.BaseRunner.VerifyEachSignatureInContainer(root)
-			return nil
+			return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
 		}
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
