@@ -54,9 +54,8 @@ func (i *Instance) ForceStop() {
 }
 
 // Start is an interface implementation
-func (i *Instance) Start(value []byte, height Height) {
+func (i *Instance) Start(cdFetcher *types.DataFetcher, height Height, valueCheckF ProposedValueCheckF) {
 	i.startOnce.Do(func() {
-		i.StartValue = value
 		i.State.Round = FirstRound
 		i.State.Height = height
 
@@ -64,6 +63,21 @@ func (i *Instance) Start(value []byte, height Height) {
 
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
+			cd, err := cdFetcher.GetConsensusData()
+			if err != nil {
+				fmt.Printf("%s\n", err.Error())
+				return
+			}
+			value, err := cd.Encode()
+			if err != nil {
+				fmt.Printf("%s\n", err.Error())
+				return
+			}
+			if err = valueCheckF(value); err != nil {
+				fmt.Printf("%s\n", err.Error())
+				return
+			}
+			i.StartValue = value
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			// nolint
 			if err != nil {
