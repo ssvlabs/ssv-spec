@@ -127,7 +127,7 @@ func (r *SyncCommitteeRunner) ProcessPostConsensus(signedMsg *types.SignedPartia
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
 		if err != nil {
 			// If reconstructing and verification failed, fall back to verifying each partial signature
-			r.BaseRunner.VerifyEachSignatureInContainer(root)
+			r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root)
 			return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
 		}
 		specSig := phase0.BLSSignature{}
