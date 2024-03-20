@@ -172,26 +172,34 @@ func (r *AttesterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 func (r *AttesterRunner) executeDuty(duty *types.Duty) error {
 	// TODO - waitOneThirdOrValidBlock
 
-	attData, ver, err := r.GetBeaconNode().GetAttestationData(duty.Slot, duty.CommitteeIndex)
-	if err != nil {
-		return errors.Wrap(err, "failed to get attestation data")
-	}
+	attestationFetcher := attestationFetcher(r, duty)
 
-	attDataByts, err := attData.MarshalSSZ()
-	if err != nil {
-		return errors.Wrap(err, "could not marshal attestation data")
-	}
-
-	input := &types.ConsensusData{
-		Duty:    *duty,
-		Version: ver,
-		DataSSZ: attDataByts,
-	}
-
-	if err := r.BaseRunner.decide(r, input); err != nil {
+	if err := r.BaseRunner.decide(r, attestationFetcher); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
+}
+
+func attestationFetcher(r *AttesterRunner, duty *types.Duty) *types.DataFetcher {
+	return &types.DataFetcher{
+		GetConsensusData: func() (*types.ConsensusData, error) {
+			attData, ver, err := r.GetBeaconNode().GetAttestationData(duty.Slot, duty.CommitteeIndex)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to get attestation data")
+			}
+
+			attDataByts, err := attData.MarshalSSZ()
+			if err != nil {
+				return nil, errors.Wrap(err, "could not marshal attestation data")
+			}
+
+			return &types.ConsensusData{
+				Duty:    *duty,
+				Version: ver,
+				DataSSZ: attDataByts,
+			}, nil
+		},
+	}
 }
 
 func (r *AttesterRunner) GetBaseRunner() *BaseRunner {
