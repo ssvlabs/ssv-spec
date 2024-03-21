@@ -56,6 +56,19 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 	if signedMsg.Message.Slot != slot {
 		return errors.New("invalid partial sig slot")
 	}
+
+	// Check if signer is in committee
+	signerInCommittee := false
+	for _, operator := range b.Share.Committee {
+		if operator.OperatorID == signedMsg.Signer {
+			signerInCommittee = true
+			break
+		}
+	}
+	if !signerInCommittee {
+		return errors.New("unknown signer")
+	}
+
 	return nil
 }
 
