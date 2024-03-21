@@ -1,0 +1,12 @@
+{
+		"Name": "zero signer",
+		"Messages": [
+				{
+						"OperatorID": 0,
+						"Signature": "AQIDBA==",
+						"Data": "AQIDBA=="
+				}
+		],
+		"ExpectedError": "OperatorID in SignedSSVMessage is 0",
+		"RSAPublicKey": null
+}

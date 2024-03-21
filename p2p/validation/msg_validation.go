@@ -2,6 +2,7 @@ package validation
 
 import (
 	"context"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
@@ -15,11 +16,19 @@ type MsgValidatorFunc = func(ctx context.Context, p peer.ID, msg *pubsub.Message
 
 func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 	return func(ctx context.Context, p peer.ID, msg *pubsub.Message) pubsub.ValidationResult {
-		ssvMsg, err := DecodePubsubMsg(msg)
+		signedSSVMsg, err := DecodePubsubMsg(msg)
 		if err != nil {
 			return pubsub.ValidationReject
 		}
-		if validateSSVMessage(runner, ssvMsg) != nil {
+
+		// Validate SignedSSVMessage
+		if validateSignedSSVMessage(runner, signedSSVMsg) != nil {
+			return pubsub.ValidationReject
+		}
+
+		// Get SSVMessage
+		ssvMsg, err := signedSSVMsg.GetSSVMessageFromData()
+		if err != nil {
 			return pubsub.ValidationReject
 		}
 
@@ -40,13 +49,27 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 	}
 }
 
-func DecodePubsubMsg(msg *pubsub.Message) (*types.SSVMessage, error) {
+func DecodePubsubMsg(msg *pubsub.Message) (*types.SignedSSVMessage, error) {
 	byts := msg.GetData()
-	ret := &types.SSVMessage{}
+	ret := &types.SignedSSVMessage{}
 	if err := ret.Decode(byts); err != nil {
 		return nil, err
 	}
 	return ret, nil
+}
+
+func validateSignedSSVMessage(runner ssv.Runner, msg *types.SignedSSVMessage) error {
+
+	if err := msg.Validate(); err != nil {
+		return err
+	}
+
+	ssvMessage, err := msg.GetSSVMessageFromData()
+	if err != nil {
+		return err
+	}
+
+	return validateSSVMessage(runner, ssvMessage)
 }
 
 func validateSSVMessage(runner ssv.Runner, msg *types.SSVMessage) error {
