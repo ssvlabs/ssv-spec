@@ -146,5 +146,10 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 		return errors.New("invalid pre-consensus justification quorum")
 	}
 
-	return b.decide(runner, cd)
+	cdFetcher := &types.DataFetcher{
+		func() (*types.ConsensusData, error) {
+			return cd, nil
+		},
+	}
+	return b.decide(runner, cdFetcher)
 }
