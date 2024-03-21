@@ -46,6 +46,7 @@ var AllTests = []tests.TestF{
 	postconsensus.Quorum13Operators,
 	postconsensus.InvalidDecidedValue,
 	postconsensus.InvalidThenQuorum,
+	postconsensus.InvalidQuorumThenValidQuorum,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -133,6 +134,7 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidBeaconSignatureInQuorum,
 	preconsensus.InvalidMessageSignature,
 	preconsensus.InvalidThenQuorum,
+	preconsensus.InvalidQuorumThenValidQuorum,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
