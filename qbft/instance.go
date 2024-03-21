@@ -70,7 +70,7 @@ func (i *Instance) Start(cdFetcher *types.DataFetcher, height Height, valueCheck
 				fmt.Printf("%s\n", err.Error())
 				return
 			}
-			value, err := cd.Encode()
+			value := cd.DataSSZ
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())
 				return
