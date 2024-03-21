@@ -3,8 +3,6 @@ package testingutils
 import (
 	"bytes"
 	"crypto/sha256"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
@@ -88,11 +86,11 @@ func NewTestingQBFTController(
 	)
 }
 
-func CdFetcher(runData *tests.RunInstanceData) *types.DataFetcher {
+func CdFetcher(value []byte) *types.DataFetcher {
 	return &types.DataFetcher{
 		GetConsensusData: func() (*types.ConsensusData, error) {
 			cd := &types.ConsensusData{
-				DataSSZ: runData.InputValue,
+				DataSSZ: value,
 			}
 			return cd, nil
 		}}
