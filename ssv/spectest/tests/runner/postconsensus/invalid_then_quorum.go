@@ -14,7 +14,6 @@ import (
 // InvalidThenQuorum  tests a runner receiving an invalid message then a valid quorum, terminating successfully
 func InvalidThenQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "failed processing post consensus message: invalid post-consensus message: could not verify Beacon partial Signature: wrong signature"
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid then quorum",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -42,7 +41,6 @@ func InvalidThenQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
 				DontStartDuty: true,
-				ExpectedError: expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -66,7 +64,6 @@ func InvalidThenQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 				DontStartDuty: true,
-				ExpectedError: expectedError,
 			},
 			{
 				Name: "aggregator",
@@ -90,7 +87,6 @@ func InvalidThenQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
 				DontStartDuty: true,
-				ExpectedError: expectedError,
 			},
 			{
 				Name: "attester",
@@ -114,7 +110,6 @@ func InvalidThenQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
 				DontStartDuty: true,
-				ExpectedError: expectedError,
 			},
 		},
 	}
@@ -143,7 +138,6 @@ func InvalidThenQuorum() tests.SpecTest {
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
 			DontStartDuty: true,
-			ExpectedError: expectedError,
 		}
 	}
 
@@ -171,7 +165,6 @@ func InvalidThenQuorum() tests.SpecTest {
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
 			DontStartDuty: true,
-			ExpectedError: expectedError,
 		}
 	}
 
