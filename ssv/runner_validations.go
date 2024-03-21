@@ -34,7 +34,7 @@ func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContain
 
 	for operatorID, signature := range signatures {
 		if err := b.verifyBeaconPartialSignature(operatorID, signature, root); err != nil {
-			container.Remove(root, operatorID)
+			container.Remove(operatorID, root)
 		}
 	}
 }

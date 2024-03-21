@@ -81,3 +81,26 @@ func (b *BaseRunner) verifyBeaconPartialSignature(signer uint64, signature types
 	}
 	return errors.New("unknown signer")
 }
+
+// Stores the container's existing signature or the new one, depending on their validity. If both are invalid, remove the existing one
+func (b *BaseRunner) resolveDuplicateSignature(container *PartialSigContainer, msg *types.PartialSignatureMessage) {
+
+	// Check previous signature validity
+	previousSignature, err := container.GetSignature(msg.Signer, msg.SigningRoot)
+	if err == nil {
+		err = b.verifyBeaconPartialSignature(msg.Signer, previousSignature, msg.SigningRoot)
+		if err == nil {
+			// Keep the previous sigature since it's correct
+			return
+		}
+	}
+
+	// Previous signature is incorrect or doesn't exist
+	container.Remove(msg.Signer, msg.SigningRoot)
+
+	// Hold the new signature, if correct
+	err = b.verifyBeaconPartialSignature(msg.Signer, msg.PartialSignature, msg.SigningRoot)
+	if err == nil {
+		container.AddSignature(msg)
+	}
+}
