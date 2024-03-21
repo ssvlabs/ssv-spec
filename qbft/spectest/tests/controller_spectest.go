@@ -167,7 +167,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	contr *qbft.Controller,
 	runData *RunInstanceData,
 ) error {
-	err := contr.StartNewInstance(height, cdFetcher(runData))
+	err := contr.StartNewInstance(height, testingutils.CdFetcher(runData))
 	var lastErr error
 	if err != nil {
 		lastErr = err
@@ -190,16 +190,6 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	}
 
 	return lastErr
-}
-
-func cdFetcher(runData *RunInstanceData) *types.DataFetcher {
-	return &types.DataFetcher{
-		GetConsensusData: func() (*types.ConsensusData, error) {
-			cd := &types.ConsensusData{
-				DataSSZ: runData.InputValue,
-			}
-			return cd, nil
-		}}
 }
 
 func (test *ControllerSpecTest) overrideStateComparison(t *testing.T) {
@@ -236,7 +226,7 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 		if runData.Height != nil {
 			height = *runData.Height
 		}
-		err := contr.StartNewInstance(height, cdFetcher(runData))
+		err := contr.StartNewInstance(height, testingutils.CdFetcher(runData))
 		if err != nil && len(test.ExpectedError) == 0 {
 			return nil, err
 		}
