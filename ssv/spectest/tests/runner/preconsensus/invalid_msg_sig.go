@@ -8,7 +8,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidMessageSignature tests SignedPartialSignatureMessage signature invalid
+// InvalidMessageSignature tests SignedPartialSignatureMessage signature invalid. No error is generated since the SignedPartialSignatureMessage.Signature is no longer checked
 func InvalidMessageSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
@@ -25,7 +25,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: failed to verify PartialSignature: failed to verify signature",
 			},
 			{
 				Name:   "aggregator selection proof",
@@ -38,7 +37,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: failed to verify PartialSignature: failed to verify signature",
 			},
 			{
 				Name:   "randao",
@@ -51,7 +49,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: failed to verify PartialSignature: failed to verify signature",
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -64,7 +61,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: failed to verify PartialSignature: failed to verify signature",
 			},
 		},
 	}
