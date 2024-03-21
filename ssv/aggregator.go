@@ -71,7 +71,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSig
 	// reconstruct selection proof sig
 	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
 	if err != nil {
-		// If reconstructing and verification failed, fall back to verifying each partial signature
+		// If the reconstructed signature verification failed, fall back to verifying each partial signature
 		r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root)
 		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
@@ -165,8 +165,10 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSi
 	for _, root := range roots {
 		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey)
 		if err != nil {
-			// If reconstructing and verification failed, fall back to verifying each partial signature
-			r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root)
+			// If the reconstructed signature verification failed, fall back to verifying each partial signature
+			for _, root := range roots {
+				r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root)
+			}
 			return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
 		}
 		specSig := phase0.BLSSignature{}

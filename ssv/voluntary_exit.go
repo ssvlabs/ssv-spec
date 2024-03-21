@@ -70,7 +70,7 @@ func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.SignedPartial
 	root := roots[0]
 	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
 	if err != nil {
-		// If reconstructing and verification failed, fall back to verifying each partial signature
+		// If the reconstructed signature verification failed, fall back to verifying each partial signature
 		r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root)
 		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
