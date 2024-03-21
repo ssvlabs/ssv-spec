@@ -2,7 +2,12 @@
 		"BaseRunner": {
 				"State": {
 						"PreConsensusContainer": {
-								"Signatures": {},
+								"Signatures": {
+										"51c8dccedd34f6d37b3794a58fe6d9d966767797418dc2fd26dad30d1f550bfc": {
+												"2": "qOD0KGLoLQOcmogzDligwROuO43rjv6yPyjeFXkLMqc2aPEd8+tjukaZTr44bvVWAeOtZNsV0yNsMwZB6+Qd4co1PlxmWr1n+1QplvDVJJ6HvAN3n0zMmLCfi0lAZ2SA",
+												"3": "ruw19vIZn60bsy+LL9DURP3jowSvEpxSzdHLzwgXPCSkmQxlPDc4QfJ7l142xZ8lGR66nKCuJw/rqwON8+S8hi28Jk1Gt+bsHFkaw44JOqVbwM8OMrkzF887CM2WBgI+"
+										}
+								},
 								"Quorum": 3
 						},
 						"PostConsensusContainer": {
@@ -140,5 +145,5 @@
 				"BeaconNetwork": "now_test_network",
 				"BeaconRoleType": 2
 		},
-		"ProducesBlindedBlocks": true
+		"ProducesBlindedBlocks": false
 }

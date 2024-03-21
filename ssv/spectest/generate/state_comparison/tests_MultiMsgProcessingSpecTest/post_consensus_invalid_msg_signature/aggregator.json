@@ -6,7 +6,11 @@
 								"Quorum": 3
 						},
 						"PostConsensusContainer": {
-								"Signatures": {},
+								"Signatures": {
+										"c4551c9873f0588b4a13819ed39bde8c5cb6838b52e18d7b1807f02208c5b515": {
+												"2": "iGl6ZXMgVK2sVRM82h6J+2tRxDtnbe6iC1XL7auRM9U4LnfvirxqQHiWJNCw8WRKFmYj1HnKxS3O0WDTxyh50Gaaw5Z6znGbHkt/rdXLu7OUzmpen/rIVP9Avyx2mY8s"
+										}
+								},
 								"Quorum": 3
 						},
 						"RunningInstance": {

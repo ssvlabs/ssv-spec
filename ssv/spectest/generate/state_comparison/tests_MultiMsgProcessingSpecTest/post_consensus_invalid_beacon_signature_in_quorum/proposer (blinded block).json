@@ -6,7 +6,12 @@
 								"Quorum": 3
 						},
 						"PostConsensusContainer": {
-								"Signatures": {},
+								"Signatures": {
+										"734ce0b3fea9558ef2605043bbb947d7f02e9f6270ab5fc19eb4a2f6dd987976": {
+												"2": "lmjeRzuAjlk2ps3OFi3Z+d3aGKTTdnrVXLe0ZfGFhDW4HkfWYIaooo8qmSbQ/HXlCkzvIwYSwXbMUciwd/KPCeEkffUSNFpUFJQaq+Lwp5f80+Qd60+qbJuiTh8ONE7h",
+												"3": "uD3l8cu35ELGd/P94ZA43ofjo/rhX0JzKw/yYGJ+vSWFfayDsi+7XXAcnlYPr8VvCmShQ5qUKhcaIUJw7xww7Ai9rH5anamvnyVLMS8ziQ0EbPwoxQh3oRbbYT7RT0aa"
+										}
+								},
 								"Quorum": 3
 						},
 						"RunningInstance": {
