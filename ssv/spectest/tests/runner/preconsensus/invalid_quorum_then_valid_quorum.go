@@ -10,7 +10,7 @@ import (
 )
 
 // InvalidQuorumThenValid tests a runner receiving an invalid message forming an invalid quorum, then receiving a valid message forming a valid quorum, terminating successfully
-func InvalidQuorumThenValid() tests.SpecTest {
+func InvalidQuorumThenValidQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "got pre-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
 
