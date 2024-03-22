@@ -1,12 +1,12 @@
 {
-		"Name": "no data",
+		"Name": "ssvmessage nil",
 		"Messages": [
 				{
 						"OperatorID": 1,
 						"Signature": "AQIDBA==",
-						"Data": ""
+						"SSVMessage": null
 				}
 		],
-		"ExpectedError": "Data has length 0 in SignedSSVMessage",
+		"ExpectedError": "SSVMessage is nil",
 		"RSAPublicKey": null
 }

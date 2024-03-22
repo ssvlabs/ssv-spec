@@ -29,8 +29,11 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 		// test validation
 		err := msg.Validate()
 
-		// decode SSVMessage
-		data, err := msg.SSVMessage.Encode()
+		var data []byte
+		if err == nil {
+			// decode SSVMessage
+			data, err = msg.SSVMessage.Encode()
+		}
 
 		// check RSA signature
 		if err == nil {
