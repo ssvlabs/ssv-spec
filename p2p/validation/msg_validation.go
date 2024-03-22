@@ -26,19 +26,13 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 			return pubsub.ValidationReject
 		}
 
-		// Get SSVMessage
-		ssvMsg, err := signedSSVMsg.GetSSVMessageFromData()
-		if err != nil {
-			return pubsub.ValidationReject
-		}
-
-		switch ssvMsg.GetType() {
+		switch signedSSVMsg.SSVMessage.GetType() {
 		case types.SSVConsensusMsgType:
-			if validateConsensusMsg(runner, ssvMsg.Data) != nil {
+			if validateConsensusMsg(runner, signedSSVMsg.SSVMessage.Data) != nil {
 				return pubsub.ValidationReject
 			}
 		case types.SSVPartialSignatureMsgType:
-			if validatePartialSigMsg(runner, ssvMsg.Data) != nil {
+			if validatePartialSigMsg(runner, signedSSVMsg.SSVMessage.Data) != nil {
 				return pubsub.ValidationReject
 			}
 		default:
@@ -64,12 +58,7 @@ func validateSignedSSVMessage(runner ssv.Runner, msg *types.SignedSSVMessage) er
 		return err
 	}
 
-	ssvMessage, err := msg.GetSSVMessageFromData()
-	if err != nil {
-		return err
-	}
-
-	return validateSSVMessage(runner, ssvMessage)
+	return validateSSVMessage(runner, msg.SSVMessage)
 }
 
 func validateSSVMessage(runner ssv.Runner, msg *types.SSVMessage) error {

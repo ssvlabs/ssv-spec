@@ -131,8 +131,8 @@ func (msg *SSVMessage) Decode(data []byte) error {
 // SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
 	OperatorID OperatorID
-	Signature  []byte `ssz-max:"512"`     // Created by the operator's private key. Max size allow keys up to 512*8 = 4096 bits
-	Data       []byte `ssz-max:"6291893"` // Max size extracted from SSVMessage
+	Signature  []byte      `ssz-max:"512"`     // Created by the operator's private key. Max size allow keys up to 512*8 = 4096 bits
+	SSVMessage *SSVMessage `ssz-max:"6291893"` // Max size extracted from SSVMessage
 }
 
 // GetOperatorID returns the sender operator ID
@@ -146,18 +146,8 @@ func (msg *SignedSSVMessage) GetSignature() []byte {
 }
 
 // GetData returns message Data as byte slice
-func (msg *SignedSSVMessage) GetData() []byte {
-	return msg.Data
-}
-
-// GetSSVMessageFromData returns message SSVMessage decoded from data
-func (msg *SignedSSVMessage) GetSSVMessageFromData() (*SSVMessage, error) {
-	ssvMessage := &SSVMessage{}
-	err := ssvMessage.Decode(msg.Data)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not decode SSVMessage from data in SignedSSVMessage")
-	}
-	return ssvMessage, nil
+func (msg *SignedSSVMessage) GetSSVMessage() *SSVMessage {
+	return msg.SSVMessage
 }
 
 // Encode returns a msg encoded bytes or error
@@ -181,8 +171,8 @@ func (msg *SignedSSVMessage) Validate() error {
 	if len(msg.Signature) == 0 {
 		return errors.New("Signature has length 0 in SignedSSVMessage")
 	}
-	if len(msg.Data) == 0 {
-		return errors.New("Data has length 0 in SignedSSVMessage")
+	if msg.SSVMessage == nil {
+		return errors.New("SSVMessage is nil")
 	}
 	return nil
 }
