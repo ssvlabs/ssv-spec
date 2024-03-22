@@ -67,9 +67,9 @@ var TestAggregatorConsensusData = &types.ConsensusData{
 var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
 var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
-	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(1); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i], i))
+		justif = append(justif, &PreConsensusRandaoMsg(ks.Shares[i], i).Message)
 	}
 
 	return &types.ConsensusData{
@@ -81,9 +81,9 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 }
 
 var TestAggregatorWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
-	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(1); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusSelectionProofMsg(ks.Shares[i], ks.Shares[i], i, i))
+		justif = append(justif, &PreConsensusSelectionProofMsg(ks.Shares[i], ks.Shares[i], i, i).Message)
 	}
 
 	return &types.ConsensusData{
@@ -97,9 +97,9 @@ var TestAggregatorWithJustificationsConsensusData = func(ks *TestKeySet) *types.
 
 // TestSyncCommitteeWithJustificationsConsensusData is an invalid sync committee msg (doesn't have pre-consensus)
 var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
-	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i+1], i+1))
+		justif = append(justif, &PreConsensusRandaoMsg(ks.Shares[i+1], i+1).Message)
 	}
 
 	return &types.ConsensusData{
@@ -399,9 +399,9 @@ var PreConsensusWrongMsgSlotSelectionProofMsg = func(msgSK, beaconSK *bls.Secret
 }
 
 var TestSelectionProofWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
-	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusSelectionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1))
+		justif = append(justif, &PreConsensusSelectionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1).Message)
 	}
 
 	return &types.ConsensusData{
@@ -802,9 +802,9 @@ var PreConsensusWrongOrderContributionProofMsg = func(msgSK, beaconSK *bls.Secre
 	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, true, false)
 }
 var TestContributionProofWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
-	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusContributionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1))
+		justif = append(justif, &PreConsensusContributionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1).Message)
 	}
 
 	return &types.ConsensusData{

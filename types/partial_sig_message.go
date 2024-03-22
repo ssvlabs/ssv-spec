@@ -55,6 +55,13 @@ func (msgs PartialSignatureMessages) Validate() error {
 	return nil
 }
 
+func (msgs PartialSignatureMessages) GetSigner() (OperatorID, error) {
+	if len(msgs.Messages) == 0 {
+		return OperatorID(0), errors.New("Can not get signer due to no PartialSignatureMessages messages")
+	}
+	return msgs.Messages[0].Signer, nil
+}
+
 // PartialSignatureMessage is a msg for partial Beacon chain related signatures (like partial attestation, block, randao sigs)
 type PartialSignatureMessage struct {
 	PartialSignature Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty

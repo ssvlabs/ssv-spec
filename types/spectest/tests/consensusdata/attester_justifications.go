@@ -10,9 +10,9 @@ func AttesterJustifications() *ConsensusDataTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, testingutils.PreConsensusRandaoMsg(ks.Shares[i+1], i+1))
+		justif = append(justif, &testingutils.PreConsensusRandaoMsg(ks.Shares[i+1], i+1).Message)
 	}
 
 	cd := testingutils.TestAttesterConsensusData

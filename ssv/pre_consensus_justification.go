@@ -57,23 +57,27 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 		}
 
 		// check unique signers
-		if !signers[msg.Signer] {
-			signers[msg.Signer] = true
+		signer, err := msg.GetSigner()
+		if err != nil {
+			return err
+		}
+		if !signers[signer] {
+			signers[signer] = true
 		} else {
 			return errors.New("duplicate signer")
 		}
 
 		// verify all justifications have the same root count
 		if i == 0 {
-			rootCount = len(msg.Message.Messages)
+			rootCount = len(msg.Messages)
 		} else {
-			if rootCount != len(msg.Message.Messages) {
+			if rootCount != len(msg.Messages) {
 				return errors.New("inconsistent root count")
 			}
 		}
 
 		// validate roots
-		for _, msgRoot := range msg.Message.Messages {
+		for _, msgRoot := range msg.Messages {
 			// validate roots
 			if i == 0 {
 				// check signer did not sign duplicate root
@@ -131,8 +135,8 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 
 	// add pre-consensus sigs to state container
 	var r [][32]byte
-	for _, signedMsg := range cd.PreConsensusJustifications {
-		quorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PreConsensusContainer)
+	for _, partialSignatureMessages := range cd.PreConsensusJustifications {
+		quorum, roots, err := b.basePartialSigMsgProcessing(partialSignatureMessages, b.State.PreConsensusContainer)
 		if err != nil {
 			return errors.Wrap(err, "invalid partial sig processing")
 		}

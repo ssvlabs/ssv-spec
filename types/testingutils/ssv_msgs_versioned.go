@@ -24,9 +24,9 @@ var TestProposerConsensusDataBytsV = func(version spec.DataVersion) []byte {
 }
 
 var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
-	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
+		justif = append(justif, &PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version).Message)
 	}
 
 	cd := TestProposerConsensusDataV(version)
@@ -35,9 +35,9 @@ var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version 
 }
 
 var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
-	justif := make([]*types.SignedPartialSignatureMessage, 0)
+	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
+		justif = append(justif, &PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version).Message)
 	}
 
 	cd := TestProposerBlindedBlockConsensusDataV(version)

@@ -109,7 +109,7 @@ type ConsensusData struct {
 	Version spec.DataVersion
 	// PreConsensusJustifications max size is
 	//			13*SignedPartialSignatureMessage(2^16) ~= 2^20
-	PreConsensusJustifications []*SignedPartialSignatureMessage `ssz-max:"13"`
+	PreConsensusJustifications []*PartialSignatureMessages `ssz-max:"13"`
 	// DataSSZ has max size as following
 	// Biggest object is a Deneb.BlockContents with:
 	// - KZGProofs: 6 * 48 = 288
