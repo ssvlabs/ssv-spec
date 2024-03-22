@@ -5,17 +5,17 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongData tests a SignedSSVMessageTest with wrong data (can't decode to SSVMessage)
-func WrongData() *SignedSSVMessageTest {
+// SSVMessageNil tests a SignedSSVMessageTest with a nil SSVMessage
+func SSVMessageNil() *SignedSSVMessageTest {
 	return &SignedSSVMessageTest{
-		Name: "wrong data",
+		Name: "ssvmessage nil",
 		Messages: []*types.SignedSSVMessage{
 			{
 				OperatorID: 1,
 				Signature:  testingutils.TestingSignedSSVMessageSignature,
-				Data:       []byte{1, 2, 3, 4},
+				SSVMessage: nil,
 			},
 		},
-		ExpectedError: "could not decode SSVMessage from data in SignedSSVMessage: incorrect size",
+		ExpectedError: "SSVMessage is nil",
 	}
 }

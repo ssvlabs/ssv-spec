@@ -43,6 +43,6 @@ var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorI
 	return &types.SignedSSVMessage{
 		OperatorID: operatorID,
 		Signature:  signature,
-		Data:       ssvMsgByts,
+		SSVMessage: &ssvMsg,
 	}
 }

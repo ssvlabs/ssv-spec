@@ -29,10 +29,8 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 		// test validation
 		err := msg.Validate()
 
-		// decode Data if there is no error
-		if err == nil {
-			_, err = msg.GetSSVMessageFromData()
-		}
+		// decode SSVMessage
+		data, err := msg.SSVMessage.Encode()
 
 		// check RSA signature
 		if err == nil {
@@ -42,7 +40,7 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 				panic(err.Error())
 			}
 
-			messageHash := sha256.Sum256(msg.Data)
+			messageHash := sha256.Sum256(data)
 			err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, messageHash[:], msg.Signature)
 		}
 

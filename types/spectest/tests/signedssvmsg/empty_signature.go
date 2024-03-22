@@ -1,9 +1,14 @@
 package signedssvmsg
 
-import "github.com/bloxapp/ssv-spec/types"
+import (
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+)
 
 // EmptySignature tests an invalid SignedSSVMessageTest with empty signature
 func EmptySignature() *SignedSSVMessageTest {
+
+	ks := testingutils.Testing4SharesSet()
 
 	return &SignedSSVMessageTest{
 		Name: "empty signature",
@@ -11,7 +16,7 @@ func EmptySignature() *SignedSSVMessageTest {
 			{
 				OperatorID: 1,
 				Signature:  []byte{},
-				Data:       []byte{1, 2, 3, 4},
+				SSVMessage: testingutils.SSVMsgAttester(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
 		ExpectedError: "Signature has length 0 in SignedSSVMessage",

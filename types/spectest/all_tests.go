@@ -101,10 +101,9 @@ var AllTests = []SpecTest{
 
 	signedssvmsg.Encoding(),
 	signedssvmsg.Valid(),
-	signedssvmsg.NoData(),
 	signedssvmsg.EmptySignature(),
 	signedssvmsg.ZeroSigner(),
-	signedssvmsg.WrongData(),
+	signedssvmsg.SSVMessageNil(),
 
 	share.HasPartialQuorumButNoQuorum(),
 	share.HasQuorum(),
