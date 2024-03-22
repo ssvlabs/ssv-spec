@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -56,8 +57,9 @@ func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
+
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, partialSignatureMessages)
 	if err != nil {
 		return errors.Wrap(err, "failed processing sync committee selection proof message")
 	}
@@ -188,8 +190,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
+func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
+
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, partialSignatureMessages)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}

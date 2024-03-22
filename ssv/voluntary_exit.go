@@ -55,8 +55,9 @@ func (r *VoluntaryExitRunner) HasRunningDuty() bool {
 
 // ProcessPreConsensus Check for quorum of partial signatures over VoluntaryExit and,
 // if has quorum, constructs SignedVoluntaryExit and submits to BeaconNode
-func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+func (r *VoluntaryExitRunner) ProcessPreConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
+
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, partialSignatureMessages)
 	if err != nil {
 		return errors.Wrap(err, "failed processing voluntary exit message")
 	}
@@ -93,7 +94,7 @@ func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) er
 	return errors.New("no consensus phase for voluntary exit")
 }
 
-func (r *VoluntaryExitRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
+func (r *VoluntaryExitRunner) ProcessPostConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
 	return errors.New("no post consensus phase for voluntary exit")
 }
 

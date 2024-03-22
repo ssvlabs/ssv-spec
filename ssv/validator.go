@@ -43,7 +43,10 @@ func (v *Validator) StartDuty(duty *types.Duty) error {
 }
 
 // ProcessMessage processes Network Message of all types
-func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
+func (v *Validator) ProcessMessage(signedSSVMsg *types.SignedSSVMessage) error {
+
+	msg := signedSSVMsg.SSVMessage
+
 	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
 	if dutyRunner == nil {
 		return errors.Errorf("could not get duty runner for msg ID")
@@ -61,15 +64,15 @@ func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
 		}
 		return dutyRunner.ProcessConsensus(signedMsg)
 	case types.SSVPartialSignatureMsgType:
-		signedMsg := &types.SignedPartialSignatureMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		partialSignatureMessages := &types.PartialSignatureMessages{}
+		if err := partialSignatureMessages.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
-		if signedMsg.Message.Type == types.PostConsensusPartialSig {
-			return dutyRunner.ProcessPostConsensus(signedMsg)
+		if partialSignatureMessages.Type == types.PostConsensusPartialSig {
+			return dutyRunner.ProcessPostConsensus(partialSignatureMessages)
 		}
-		return dutyRunner.ProcessPreConsensus(signedMsg)
+		return dutyRunner.ProcessPreConsensus(partialSignatureMessages)
 	default:
 		return errors.New("unknown msg")
 	}

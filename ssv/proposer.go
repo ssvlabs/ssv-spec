@@ -59,8 +59,9 @@ func (r *ProposerRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+func (r *ProposerRunner) ProcessPreConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
+
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, partialSignatureMessages)
 	if err != nil {
 		return errors.Wrap(err, "failed processing randao message")
 	}
@@ -176,8 +177,9 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	return nil
 }
 
-func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
+func (r *ProposerRunner) ProcessPostConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
+
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, partialSignatureMessages)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}

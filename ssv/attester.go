@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -55,7 +56,7 @@ func (r *AttesterRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *AttesterRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
+func (r *AttesterRunner) ProcessPreConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
 	return errors.New("no pre consensus sigs required for attester role")
 }
 
@@ -108,8 +109,9 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	return nil
 }
 
-func (r *AttesterRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
+func (r *AttesterRunner) ProcessPostConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
+
+	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, partialSignatureMessages)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}

@@ -46,22 +46,18 @@ func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSigna
 }
 
 func (b *BaseRunner) validatePartialSigMsgForSlot(
-	signedMsg *types.SignedPartialSignatureMessage,
+	partialSignatureMessages *types.PartialSignatureMessages,
 	slot spec.Slot,
 ) error {
-	if err := signedMsg.Validate(); err != nil {
+	if err := partialSignatureMessages.Validate(); err != nil {
 		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
 	}
 
-	if signedMsg.Message.Slot != slot {
+	if partialSignatureMessages.Slot != slot {
 		return errors.New("invalid partial sig slot")
 	}
 
-	if err := signedMsg.GetSignature().VerifyByOperators(signedMsg, b.Share.DomainType, types.PartialSignatureType, b.Share.Committee); err != nil {
-		return errors.Wrap(err, "failed to verify PartialSignature")
-	}
-
-	for _, msg := range signedMsg.Message.Messages {
+	for _, msg := range partialSignatureMessages.Messages {
 		if err := b.verifyBeaconPartialSignature(msg); err != nil {
 			return errors.Wrap(err, "could not verify Beacon partial Signature")
 		}

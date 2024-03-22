@@ -51,8 +51,9 @@ func (r *ValidatorRegistrationRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+func (r *ValidatorRegistrationRunner) ProcessPreConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
+
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, partialSignatureMessages)
 	if err != nil {
 		return errors.Wrap(err, "failed processing validator registration message")
 	}
@@ -83,7 +84,7 @@ func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *qbft.SignedMes
 	return errors.New("no consensus phase for validator registration")
 }
 
-func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
+func (r *ValidatorRegistrationRunner) ProcessPostConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
 	return errors.New("no post consensus phase for validator registration")
 }
 

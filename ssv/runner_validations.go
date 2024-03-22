@@ -2,19 +2,20 @@ package ssv
 
 import (
 	"bytes"
+	"sort"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
-	"sort"
 )
 
-func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, partialSignatureMessages *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
-	if err := b.validatePartialSigMsgForSlot(signedMsg, b.State.StartingDuty.Slot); err != nil {
+	if err := b.validatePartialSigMsgForSlot(partialSignatureMessages, b.State.StartingDuty.Slot); err != nil {
 		return err
 	}
 
@@ -23,10 +24,10 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.Sig
 		return err
 	}
 
-	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
+	return b.verifyExpectedRoot(runner, partialSignatureMessages, roots, domain)
 }
 
-func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, partialSignatureMessages *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
@@ -49,7 +50,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.Si
 		return errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
-	if err := b.validatePartialSigMsgForSlot(signedMsg, decidedValue.Duty.Slot); err != nil {
+	if err := b.validatePartialSigMsgForSlot(partialSignatureMessages, decidedValue.Duty.Slot); err != nil {
 		return err
 	}
 
@@ -58,7 +59,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.Si
 		return err
 	}
 
-	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
+	return b.verifyExpectedRoot(runner, partialSignatureMessages, roots, domain)
 }
 
 func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
@@ -73,8 +74,8 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.Cons
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
-	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, partialSignatureMessages *types.PartialSignatureMessages, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
+	if len(expectedRootObjs) != len(partialSignatureMessages.Messages) {
 		return errors.New("wrong expected roots count")
 	}
 
@@ -104,7 +105,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPa
 		return err
 	}
 
-	sortedRoots := func(msgs types.PartialSignatureMessages) [][32]byte {
+	sortedRoots := func(msgs *types.PartialSignatureMessages) [][32]byte {
 		ret := make([][32]byte, 0)
 		for _, msg := range msgs.Messages {
 			ret = append(ret, msg.SigningRoot)
@@ -114,7 +115,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPa
 			return string(ret[i][:]) < string(ret[j][:])
 		})
 		return ret
-	}(signedMsg.Message)
+	}(partialSignatureMessages)
 
 	// verify roots
 	for i, r := range sortedRoots {
