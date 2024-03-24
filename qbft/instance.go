@@ -65,12 +65,7 @@ func (i *Instance) Start(cdFetcher *types.DataFetcher, height Height, valueCheck
 
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
-			cd, err := cdFetcher.GetConsensusData()
-			if err != nil {
-				fmt.Printf("%s\n", err.Error())
-				return
-			}
-			value, err := cd.Encode()
+			value, err := cdFetcher.GetConsensusData()
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())
 				return

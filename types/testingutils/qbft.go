@@ -89,10 +89,7 @@ func NewTestingQBFTController(
 
 func CdFetcher(value []byte) *types.DataFetcher {
 	return &types.DataFetcher{
-		GetConsensusData: func() (*types.ConsensusData, error) {
-			cd := &types.ConsensusData{
-				DataSSZ: value,
-			}
-			return cd, nil
+		GetConsensusData: func() ([]byte, error) {
+			return value, nil
 		}}
 }

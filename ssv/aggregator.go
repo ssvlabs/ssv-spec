@@ -86,7 +86,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSig
 func aggregationFetcher(r *AggregatorRunner, fullSig []byte) *types.DataFetcher {
 	duty := r.GetState().StartingDuty
 	return &types.DataFetcher{
-		GetConsensusData: func() (*types.ConsensusData, error) {
+		GetConsensusData: func() ([]byte, error) {
 			aggData, ver, err := r.GetBeaconNode().SubmitAggregateSelectionProof(duty.Slot, duty.CommitteeIndex,
 				duty.CommitteeLength, duty.ValidatorIndex, fullSig)
 
@@ -99,11 +99,12 @@ func aggregationFetcher(r *AggregatorRunner, fullSig []byte) *types.DataFetcher 
 				return nil, errors.Wrap(err, "could not marshal aggregate and proof")
 			}
 
-			return &types.ConsensusData{
+			cd := types.ConsensusData{
 				Duty:    *duty,
 				Version: ver,
 				DataSSZ: aggDataByts,
-			}, nil
+			}
+			return cd.Encode()
 		},
 	}
 }

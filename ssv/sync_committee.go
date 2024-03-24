@@ -177,17 +177,18 @@ func (r *SyncCommitteeRunner) executeDuty(duty *types.Duty) error {
 // syncCommitteeFetcher returns a data fetcher for sync committee duty
 func syncCommitteeFetcher(r *SyncCommitteeRunner, duty *types.Duty) *types.DataFetcher {
 	return &types.DataFetcher{
-		GetConsensusData: func() (*types.ConsensusData, error) {
+		GetConsensusData: func() ([]byte, error) {
 			root, ver, err := r.GetBeaconNode().GetSyncMessageBlockRoot(duty.Slot)
 			if err != nil {
 				return nil, errors.Wrap(err, "failed to get sync committee block root")
 			}
 
-			return &types.ConsensusData{
+			cd := types.ConsensusData{
 				Duty:    *duty,
 				Version: ver,
 				DataSSZ: root[:],
-			}, nil
+			}
+			return cd.Encode()
 		},
 	}
 }

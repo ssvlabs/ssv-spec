@@ -182,7 +182,7 @@ func (r *AttesterRunner) executeDuty(duty *types.Duty) error {
 
 func attestationFetcher(r *AttesterRunner, duty *types.Duty) *types.DataFetcher {
 	return &types.DataFetcher{
-		GetConsensusData: func() (*types.ConsensusData, error) {
+		GetConsensusData: func() ([]byte, error) {
 			attData, ver, err := r.GetBeaconNode().GetAttestationData(duty.Slot, duty.CommitteeIndex)
 			if err != nil {
 				return nil, errors.Wrap(err, "failed to get attestation data")
@@ -193,11 +193,12 @@ func attestationFetcher(r *AttesterRunner, duty *types.Duty) *types.DataFetcher 
 				return nil, errors.Wrap(err, "could not marshal attestation data")
 			}
 
-			return &types.ConsensusData{
+			cd := types.ConsensusData{
 				Duty:    *duty,
 				Version: ver,
 				DataSSZ: attDataByts,
-			}, nil
+			}
+			return cd.Encode()
 		},
 	}
 }

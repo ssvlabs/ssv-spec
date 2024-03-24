@@ -117,7 +117,7 @@ func syncCommitteeContributionFetcher(r *SyncCommitteeAggregatorRunner, selectio
 	duty := r.GetState().StartingDuty
 
 	return &types.DataFetcher{
-		GetConsensusData: func() (*types.ConsensusData, error) {
+		GetConsensusData: func() ([]byte, error) {
 			contributions, ver, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.Slot, selectionProofs, subnets)
 			if err != nil {
 				return nil, errors.Wrap(err, "could not get sync committee contribution")
@@ -127,11 +127,12 @@ func syncCommitteeContributionFetcher(r *SyncCommitteeAggregatorRunner, selectio
 				return nil, errors.Wrap(err, "could not marshal contributions")
 			}
 
-			return &types.ConsensusData{
+			cd := types.ConsensusData{
 				Duty:    *duty,
 				Version: ver,
 				DataSSZ: byts,
-			}, nil
+			}
+			return cd.Encode()
 		},
 	}
 }

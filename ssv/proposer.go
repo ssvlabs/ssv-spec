@@ -89,7 +89,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 
 func beaconBlockFetcher(r *ProposerRunner, fullSig []byte) *types.DataFetcher {
 	return &types.DataFetcher{
-		GetConsensusData: func() (*types.ConsensusData, error) {
+		GetConsensusData: func() ([]byte, error) {
 			duty := r.GetState().StartingDuty
 
 			var ver spec.DataVersion
@@ -115,11 +115,12 @@ func beaconBlockFetcher(r *ProposerRunner, fullSig []byte) *types.DataFetcher {
 				return nil, errors.Wrap(err, "could not marshal beacon block")
 			}
 
-			return &types.ConsensusData{
+			cd := types.ConsensusData{
 				Duty:    *duty,
 				Version: ver,
 				DataSSZ: byts,
-			}, nil
+			}
+			return cd.Encode()
 		},
 	}
 }
