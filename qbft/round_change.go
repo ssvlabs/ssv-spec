@@ -191,10 +191,7 @@ func chooseValueToPropose(roundChangeMsg *SignedMessage, cdFetcher *types.DataFe
 		if err != nil {
 			return nil, err
 		}
-		valueToPropose, err = cd.Encode()
-		if err != nil {
-			return nil, err
-		}
+		valueToPropose = cd.DataSSZ
 	}
 	return valueToPropose, nil
 }
