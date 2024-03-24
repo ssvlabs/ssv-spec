@@ -33,7 +33,7 @@ var AllTests = []tests.TestF{
 	timeoutduration.Round3DurationOnDutyStartTime,
 	timeoutduration.Round5DurationOnRound3Time,
 	timeoutduration.Round7DurationOnDutyStartTime,
-	timeoutduration.Round14DurationOnRound13Time,
+	timeoutduration.Round13DurationOnRound12Time,
 
 	decided.Valid,
 	decided.HasQuorum,

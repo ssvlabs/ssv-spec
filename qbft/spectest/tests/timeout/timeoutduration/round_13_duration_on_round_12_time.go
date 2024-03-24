@@ -7,16 +7,16 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-// Round14DurationOnRound13Time tests timeout duration for round 14 where the current time is the expected start of
-// round 13
-func Round14DurationOnRound13Time() tests.SpecTest {
+// Round13DurationOnRound12Time tests timeout duration for round 13 where the current time is the expected start of
+// round 12
+func Round13DurationOnRound12Time() tests.SpecTest {
 	testingNetwork := types.HoleskyNetwork
 	height := qbft.Height(40)
-	var round qbft.Round = 14
+	var round qbft.Round = 13
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
 	return &MultiSpecTest{
-		Name: "round 14 duration on round 13 time",
+		Name: "round 13 duration on round 12 time",
 		Tests: []*TimeoutDurationTest{
 			{
 				Name:             "sync committee",
@@ -24,7 +24,7 @@ func Round14DurationOnRound13Time() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20 + 4*120,
+				CurrentTime:      dutyStartTime + 16 + 5*120,
 				ExpectedDuration: 240,
 			},
 			{
@@ -33,7 +33,7 @@ func Round14DurationOnRound13Time() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24 + 4*120,
+				CurrentTime:      dutyStartTime + 20 + 5*120,
 				ExpectedDuration: 240,
 			},
 			{
@@ -42,7 +42,7 @@ func Round14DurationOnRound13Time() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20 + 4*120,
+				CurrentTime:      dutyStartTime + 16 + 5*120,
 				ExpectedDuration: 240,
 			},
 			{
@@ -51,7 +51,7 @@ func Round14DurationOnRound13Time() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24 + 4*120,
+				CurrentTime:      dutyStartTime + 20 + 5*120,
 				ExpectedDuration: 240,
 			},
 			{
@@ -60,7 +60,7 @@ func Round14DurationOnRound13Time() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20 + 4*120,
+				CurrentTime:      dutyStartTime + 12 + 5*120,
 				ExpectedDuration: 120,
 			},
 		},
