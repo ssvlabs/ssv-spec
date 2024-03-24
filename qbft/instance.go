@@ -79,7 +79,7 @@ func (i *Instance) Start(cdFetcher *types.DataFetcher, height Height, valueCheck
 				fmt.Printf("%s\n", err.Error())
 				return
 			}
-			i.StartValue = cd.DataSSZ
+			i.StartValue = value
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			// nolint
 			if err != nil {
