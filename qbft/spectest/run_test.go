@@ -58,6 +58,7 @@ func TestJson(t *testing.T) {
 					typedTest.Pre.State.ID,
 					typedTest.Pre.State.Height,
 				)
+				pre.CdFetcher = testingutils.CdFetcher(testingutils.TestingQBFTFullData)
 				err = pre.Decode(preByts)
 				require.NoError(t, err)
 				typedTest.Pre = pre
