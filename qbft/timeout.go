@@ -9,13 +9,13 @@ import (
 
 var (
 	// quickTimeoutThreshold is the round after which the timeout duration increases
-	quickTimeoutThreshold = Round(8) //nolint
-	// quickTimeout is the timeout in seconds for the first 8 rounds
+	quickTimeoutThreshold = Round(6) //nolint
+	// quickTimeout is the timeout in seconds for the first 6 rounds
 	quickTimeout int64 = 2 // 2 seconds
-	// slowTimeout is the timeout in seconds for rounds after the first 8
+	// slowTimeout is the timeout in seconds for rounds after the first 86
 	slowTimeout int64 = 120 // 2 minutes
 	// CutoffRound which round the instance should stop its timer and progress no further
-	CutoffRound = 15 // stop processing instances after 8*2+120*6 = 14.2 min (~ 2 epochs)
+	CutoffRound = 14 // stop processing instances after 6*2+120*7 = 14.2 min (~ 2 epochs)
 )
 
 type RoundTimer struct {
