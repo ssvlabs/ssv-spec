@@ -69,10 +69,13 @@ var AllTests = []tests.TestF{
 	futuremsg.ValidMsg,
 
 	startinstance.Valid,
+	startinstance.EmptyValue,
+	startinstance.NilValue,
 	startinstance.PostFutureDecided,
 	startinstance.FirstHeight,
 	startinstance.PreviousDecided,
 	startinstance.PreviousNotDecided,
+	startinstance.InvalidValue,
 	startinstance.EqualHeightRunningInstance,
 	startinstance.EqualHeightNoRunningInstance,
 	startinstance.LowerHeight,
