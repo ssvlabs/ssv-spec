@@ -7,15 +7,15 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-// Round14Duration tests timeout duration for round 14 where the current time is the expected start of the round
-func Round14Duration() tests.SpecTest {
+// Round13Duration tests timeout duration for round 13 where the current time is the expected start of the round
+func Round13Duration() tests.SpecTest {
 	testingNetwork := types.HoleskyNetwork
 	height := qbft.Height(40)
-	var round qbft.Round = 14
+	var round qbft.Round = 13
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
 	return &MultiSpecTest{
-		Name: "round 14 duration",
+		Name: "round 13 duration",
 		Tests: []*TimeoutDurationTest{
 			{
 				Name:             "sync committee",
@@ -23,7 +23,7 @@ func Round14Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20 + 5*120,
+				CurrentTime:      dutyStartTime + 16 + 6*120,
 				ExpectedDuration: 120,
 			},
 			{
@@ -32,7 +32,7 @@ func Round14Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24 + 5*120,
+				CurrentTime:      dutyStartTime + 20 + 6*120,
 				ExpectedDuration: 120,
 			},
 			{
@@ -41,7 +41,7 @@ func Round14Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20 + 5*120,
+				CurrentTime:      dutyStartTime + 16 + 6*120,
 				ExpectedDuration: 120,
 			},
 			{
@@ -50,7 +50,7 @@ func Round14Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24 + 5*120,
+				CurrentTime:      dutyStartTime + 20 + 6*120,
 				ExpectedDuration: 120,
 			},
 			{
@@ -59,7 +59,7 @@ func Round14Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20 + 5*120,
+				CurrentTime:      dutyStartTime + 12 + 6*120,
 				ExpectedDuration: 120,
 			},
 		},
