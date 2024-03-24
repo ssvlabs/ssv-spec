@@ -7,15 +7,15 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-// Round9Duration tests timeout duration for round 9 where the current time is the expected start of the round
-func Round9Duration() tests.SpecTest {
+// Round7Duration tests timeout duration for round 7 where the current time is the expected start of the round
+func Round7Duration() tests.SpecTest {
 	testingNetwork := types.HoleskyNetwork
 	height := qbft.Height(40)
-	var round qbft.Round = 9
+	var round qbft.Round = 7
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
 	return &MultiSpecTest{
-		Name: "round 9 duration",
+		Name: "round 7 duration",
 		Tests: []*TimeoutDurationTest{
 			{
 				Name:             "sync committee",
@@ -23,7 +23,7 @@ func Round9Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
+				CurrentTime:      dutyStartTime + 16,
 				ExpectedDuration: 120,
 			},
 			{
@@ -32,7 +32,7 @@ func Round9Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24,
+				CurrentTime:      dutyStartTime + 20,
 				ExpectedDuration: 120,
 			},
 			{
@@ -41,7 +41,7 @@ func Round9Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
+				CurrentTime:      dutyStartTime + 16,
 				ExpectedDuration: 120,
 			},
 			{
@@ -50,7 +50,7 @@ func Round9Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 24,
+				CurrentTime:      dutyStartTime + 20,
 				ExpectedDuration: 120,
 			},
 			{
@@ -59,7 +59,7 @@ func Round9Duration() tests.SpecTest {
 				Height:           height,
 				Round:            round,
 				Network:          testingNetwork,
-				CurrentTime:      dutyStartTime + 20,
+				CurrentTime:      dutyStartTime + 12,
 				ExpectedDuration: 120,
 			},
 		},

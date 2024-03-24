@@ -7,15 +7,15 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-// Round9Duration tests timeout duration for round 9 where the current time is the duty start time
-func Round9DurationOnDutyStartTime() tests.SpecTest {
+// Round7Duration tests timeout duration for round 7 where the current time is the duty start time
+func Round7DurationOnDutyStartTime() tests.SpecTest {
 	testingNetwork := types.HoleskyNetwork
 	height := qbft.Height(40)
-	var round qbft.Round = 9
+	var round qbft.Round = 7
 	dutyStartTime := testingNetwork.EstimatedTimeAtSlot(phase0.Slot(height))
 
 	return &MultiSpecTest{
-		Name: "round 9 duration duty start time",
+		Name: "round 7 duration duty start time",
 		Tests: []*TimeoutDurationTest{
 			{
 				Name:             "sync committee",
@@ -24,7 +24,7 @@ func Round9DurationOnDutyStartTime() tests.SpecTest {
 				Round:            round,
 				Network:          testingNetwork,
 				CurrentTime:      dutyStartTime,
-				ExpectedDuration: 140,
+				ExpectedDuration: 136,
 			},
 			{
 				Name:             "sync committee contribution",
@@ -33,7 +33,7 @@ func Round9DurationOnDutyStartTime() tests.SpecTest {
 				Round:            round,
 				Network:          testingNetwork,
 				CurrentTime:      dutyStartTime,
-				ExpectedDuration: 144,
+				ExpectedDuration: 140,
 			},
 			{
 				Name:             "attester",
@@ -42,7 +42,7 @@ func Round9DurationOnDutyStartTime() tests.SpecTest {
 				Round:            round,
 				Network:          testingNetwork,
 				CurrentTime:      dutyStartTime,
-				ExpectedDuration: 140,
+				ExpectedDuration: 136,
 			},
 			{
 				Name:             "aggregator",
@@ -51,7 +51,7 @@ func Round9DurationOnDutyStartTime() tests.SpecTest {
 				Round:            round,
 				Network:          testingNetwork,
 				CurrentTime:      dutyStartTime,
-				ExpectedDuration: 144,
+				ExpectedDuration: 140,
 			},
 			{
 				Name:             "block proposer",
