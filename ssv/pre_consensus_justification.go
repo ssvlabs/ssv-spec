@@ -147,7 +147,7 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 	}
 
 	cdFetcher := &types.DataFetcher{
-		func() ([]byte, error) {
+		GetConsensusData: func() ([]byte, error) {
 			return cd.Encode()
 		},
 	}

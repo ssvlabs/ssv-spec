@@ -183,7 +183,7 @@ func isProposalJustificationForLeadingRound(
 // If justifiedRoundChangeMsg has no prepare justification choose state value
 // If justifiedRoundChangeMsg has prepare justification choose prepared value
 func chooseValueToPropose(roundChangeMsg *SignedMessage, cdFetcher *types.DataFetcher) ([]byte, error) {
-	var valueToPropose []byte = nil
+	var valueToPropose []byte
 	if roundChangeMsg.Message.RoundChangePrepared() {
 		valueToPropose = roundChangeMsg.FullData
 	} else {
