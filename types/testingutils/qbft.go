@@ -71,6 +71,7 @@ var ThirteenOperatorsInstance = func() *qbft.Instance {
 var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {
 	ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
 	ret.StartValue = TestingQBFTFullData
+	ret.CdFetcher = CdFetcher(TestingQBFTFullData)
 	return ret
 }
 

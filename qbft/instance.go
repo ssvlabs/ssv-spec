@@ -24,7 +24,7 @@ type Instance struct {
 	// forceStop will force stop the instance if set to true
 	forceStop  bool
 	StartValue []byte
-	cdFetcher  *types.DataFetcher
+	CdFetcher  *types.DataFetcher `json:"-"`
 }
 
 func NewInstance(
@@ -57,7 +57,7 @@ func (i *Instance) ForceStop() {
 // Start is an interface implementation
 func (i *Instance) Start(cdFetcher *types.DataFetcher, height Height, valueCheckF ProposedValueCheckF) {
 	i.startOnce.Do(func() {
-		i.cdFetcher = cdFetcher
+		i.CdFetcher = cdFetcher
 		i.State.Round = FirstRound
 		i.State.Height = height
 

@@ -31,7 +31,7 @@ func (i *Instance) uponRoundChange(
 	justifiedRoundChangeMsg, valueToPropose, err := hasReceivedProposalJustificationForLeadingRound(
 		i.State,
 		i.config,
-		i.cdFetcher,
+		i.CdFetcher,
 		signedRoundChange,
 		roundChangeMsgContainer,
 		valCheck)
