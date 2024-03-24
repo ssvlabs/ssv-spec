@@ -91,12 +91,12 @@ func aggregationFetcher(r *AggregatorRunner, fullSig []byte) *types.DataFetcher 
 				duty.CommitteeLength, duty.ValidatorIndex, fullSig)
 
 			if err != nil {
-				return nil, errors.Wrap(err, "failed to get attestation data")
+				return nil, errors.Wrap(err, "failed to submit aggregate and proof")
 			}
 
 			aggDataByts, err := aggData.MarshalSSZ()
 			if err != nil {
-				return nil, errors.Wrap(err, "could not marshal attestation data")
+				return nil, errors.Wrap(err, "could not marshal aggregate and proof")
 			}
 
 			return &types.ConsensusData{
