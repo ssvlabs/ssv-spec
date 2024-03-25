@@ -10,9 +10,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
 
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/signedssvmsg"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
 )
 
 type SpecTest interface {
@@ -37,16 +37,16 @@ var AllTests = []SpecTest{
 	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
-	//share.HasQuorum(),
-	//share.QuorumWithDuplicate(),
-	//share.HasQuorum3f1(),
-	//share.NoQuorum(),
-	//share.NoQuorumDuplicate(),
-	//share.HasPartialQuorum(),
-	//share.PartialQuorumWithDuplicate(),
-	//share.HasPartialQuorum2f1(),
-	//share.NoPartialQuorum(),
-	//share.NoPartialQuorumDuplicate(),
+	// //share.HasQuorum(),
+	// //share.QuorumWithDuplicate(),
+	// //share.HasQuorum3f1(),
+	// //share.NoQuorum(),
+	// //share.NoQuorumDuplicate(),
+	// //share.HasPartialQuorum(),
+	// //share.PartialQuorumWithDuplicate(),
+	// //share.HasPartialQuorum2f1(),
+	// //share.NoPartialQuorum(),
+	// //share.NoPartialQuorumDuplicate(),
 
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),

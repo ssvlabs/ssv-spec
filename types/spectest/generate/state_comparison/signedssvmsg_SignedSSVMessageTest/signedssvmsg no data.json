@@ -7,6 +7,5 @@
 						"Data": ""
 				}
 		],
-		"ExpectedError": "Data has length 0 in SignedSSVMessage",
-		"RSAPublicKey": null
+		"ExpectedError": "Data has length 0 in SignedSSVMessage"
 }

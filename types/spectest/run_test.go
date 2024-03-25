@@ -17,7 +17,6 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
 )
@@ -95,18 +94,6 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &beacon.DepositDataSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&signedssvmsg.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &signedssvmsg.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&signedssvmsg.SignedSSVMessageTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &signedssvmsg.SignedSSVMessageTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&consensusdata.ConsensusDataTest{}).String():

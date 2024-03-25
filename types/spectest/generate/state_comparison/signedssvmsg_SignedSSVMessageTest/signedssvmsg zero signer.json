@@ -7,6 +7,5 @@
 						"Data": "AQIDBA=="
 				}
 		],
-		"ExpectedError": "OperatorID in SignedSSVMessage is 0",
-		"RSAPublicKey": null
+		"ExpectedError": "OperatorID in SignedSSVMessage is 0"
 }

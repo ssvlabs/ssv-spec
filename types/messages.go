@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-
-	"github.com/pkg/errors"
 )
 
 // ValidatorPK is an eth2 validator public key
@@ -126,63 +124,4 @@ func (msg *SSVMessage) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
-}
-
-// SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
-type SignedSSVMessage struct {
-	OperatorID OperatorID
-	Signature  []byte `ssz-max:"512"`     // Created by the operator's private key. Max size allow keys up to 512*8 = 4096 bits
-	Data       []byte `ssz-max:"6291893"` // Max size extracted from SSVMessage
-}
-
-// GetOperatorID returns the sender operator ID
-func (msg *SignedSSVMessage) GetOperatorID() OperatorID {
-	return msg.OperatorID
-}
-
-// GetSignature returns the signature of the OperatorID over Data
-func (msg *SignedSSVMessage) GetSignature() []byte {
-	return msg.Signature
-}
-
-// GetData returns message Data as byte slice
-func (msg *SignedSSVMessage) GetData() []byte {
-	return msg.Data
-}
-
-// GetSSVMessageFromData returns message SSVMessage decoded from data
-func (msg *SignedSSVMessage) GetSSVMessageFromData() (*SSVMessage, error) {
-	ssvMessage := &SSVMessage{}
-	err := ssvMessage.Decode(msg.Data)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not decode SSVMessage from data in SignedSSVMessage")
-	}
-	return ssvMessage, nil
-}
-
-// Encode returns a msg encoded bytes or error
-func (msg *SignedSSVMessage) Encode() ([]byte, error) {
-	return msg.MarshalSSZ()
-}
-
-// Decode returns error if decoding failed
-func (msg *SignedSSVMessage) Decode(data []byte) error {
-	return msg.UnmarshalSSZ(data)
-}
-
-// Validate checks the following rules:
-// - OperatorID should not be 0
-// - Signature length should not be 0
-// - Data length should not be 0
-func (msg *SignedSSVMessage) Validate() error {
-	if msg.OperatorID == 0 {
-		return errors.New("OperatorID in SignedSSVMessage is 0")
-	}
-	if len(msg.Signature) == 0 {
-		return errors.New("Signature has length 0 in SignedSSVMessage")
-	}
-	if len(msg.Data) == 0 {
-		return errors.New("Data has length 0 in SignedSSVMessage")
-	}
-	return nil
 }
