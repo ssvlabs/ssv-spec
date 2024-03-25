@@ -15,7 +15,7 @@ type SignedSSVMessageTest struct {
 	Name          string
 	Messages      []*types.SignedSSVMessage
 	ExpectedError string
-	RSAPublicKey  []byte
+	RSAPublicKey  [][]byte
 }
 
 func (test *SignedSSVMessageTest) TestName() string {
@@ -37,14 +37,20 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 
 		// check RSA signature
 		if err == nil {
-			var pk *rsa.PublicKey
-			pk, err = types.PemToPublicKey(test.RSAPublicKey)
-			if err != nil {
-				panic(err.Error())
-			}
+			for i, rsaPublicKey := range test.RSAPublicKey {
 
-			messageHash := sha256.Sum256(data)
-			err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, messageHash[:], msg.Signature)
+				var pk *rsa.PublicKey
+				pk, err = types.PemToPublicKey(rsaPublicKey)
+				if err != nil {
+					panic(err.Error())
+				}
+
+				messageHash := sha256.Sum256(data)
+				err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, messageHash[:], msg.Signature[i])
+				if err != nil {
+					break
+				}
+			}
 		}
 
 		if len(test.ExpectedError) != 0 {

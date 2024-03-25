@@ -130,18 +130,18 @@ func (msg *SSVMessage) Decode(data []byte) error {
 
 // SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
-	OperatorID OperatorID
-	Signature  []byte      `ssz-max:"512"`     // Created by the operator's private key. Max size allow keys up to 512*8 = 4096 bits
-	SSVMessage *SSVMessage `ssz-max:"6291893"` // Max size extracted from SSVMessage
+	OperatorID []OperatorID `ssz-max:"13"`
+	Signature  [][]byte     `ssz-max:"13,512"`  // Created by the operator's private key. Max size allow keys up to 512*8 = 4096 bits
+	SSVMessage *SSVMessage  `ssz-max:"6291893"` // Max size extracted from SSVMessage
 }
 
 // GetOperatorID returns the sender operator ID
-func (msg *SignedSSVMessage) GetOperatorID() OperatorID {
+func (msg *SignedSSVMessage) GetOperatorIDs() []OperatorID {
 	return msg.OperatorID
 }
 
 // GetSignature returns the signature of the OperatorID over Data
-func (msg *SignedSSVMessage) GetSignature() []byte {
+func (msg *SignedSSVMessage) GetSignatures() [][]byte {
 	return msg.Signature
 }
 
@@ -160,17 +160,33 @@ func (msg *SignedSSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
-// Validate checks the following rules:
-// - OperatorID should not be 0
-// - Signature length should not be 0
-// - Data length should not be 0
+// Validate
 func (msg *SignedSSVMessage) Validate() error {
-	if msg.OperatorID == 0 {
-		return errors.New("OperatorID in SignedSSVMessage is 0")
+	// There must be at least one signer
+	if len(msg.OperatorID) == 0 {
+		return errors.New("No OperatorID in SignedSSVMessage")
 	}
+	// Each signer must be different than 0
+	for _, operatorID := range msg.OperatorID {
+		if operatorID == 0 {
+			return errors.New("OperatorID in SignedSSVMessage is 0")
+		}
+	}
+	// There must be at least one signature
 	if len(msg.Signature) == 0 {
-		return errors.New("Signature has length 0 in SignedSSVMessage")
+		return errors.New("No signature in SignedSSVMessage")
 	}
+	// No signature can be empty
+	for _, signature := range msg.Signature {
+		if len(signature) == 0 {
+			return errors.New("Signature has length 0 in SignedSSVMessage")
+		}
+	}
+	// There must be an equal number of signers and signatures
+	if len(msg.OperatorID) != len(msg.Signature) {
+		return errors.New("SignedSSVMessage has a different number of operato IDs and signatures")
+	}
+	// The SSVMessage can't be nil
 	if msg.SSVMessage == nil {
 		return errors.New("SSVMessage is nil")
 	}

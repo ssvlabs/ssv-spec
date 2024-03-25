@@ -11,8 +11,8 @@ func SSVMessageNil() *SignedSSVMessageTest {
 		Name: "ssvmessage nil",
 		Messages: []*types.SignedSSVMessage{
 			{
-				OperatorID: 1,
-				Signature:  testingutils.TestingSignedSSVMessageSignature,
+				OperatorID: []types.OperatorID{1},
+				Signature:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
 				SSVMessage: nil,
 			},
 		},

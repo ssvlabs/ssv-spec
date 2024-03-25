@@ -14,8 +14,8 @@ func ZeroSigner() *SignedSSVMessageTest {
 		Name: "zero signer",
 		Messages: []*types.SignedSSVMessage{
 			{
-				OperatorID: 0,
-				Signature:  testingutils.TestingSignedSSVMessageSignature,
+				OperatorID: []types.OperatorID{0},
+				Signature:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
 				SSVMessage: testingutils.SSVMsgAttester(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
