@@ -264,3 +264,40 @@ func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty *types.Duty) error {
 	}
 	return nil
 }
+
+// Encapsulates a PartialSignatureMessages into a SignedSSVMessage and broadcast
+func (b *BaseRunner) BroadcastPartialSignatureMessages(msg types.PartialSignatureMessages, signer types.KeyManager, network Network) error {
+	// Create SSVMessage
+	data, err := msg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode PartialSignatureMessages")
+	}
+	ssvMessage := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   types.NewMsgID(b.Share.DomainType, b.Share.ValidatorPubKey, b.BeaconRoleType),
+		Data:    data,
+	}
+
+	// Sign SSVMessage
+	signingData, err := ssvMessage.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode SSVMessage for PartialSignatureMessages")
+	}
+	signature, err := signer.SignNetworkData(signingData, b.Share.NetworkPubkey)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage for PartialSignatureMessages")
+	}
+
+	// Create SignedSSVMessage
+	msgToBroadcast := &types.SignedSSVMessage{
+		OperatorID: []types.OperatorID{b.Share.OperatorID},
+		Signature:  [][]byte{signature},
+		SSVMessage: ssvMessage,
+	}
+
+	// Broadcast
+	if err := network.Broadcast(msgToBroadcast); err != nil {
+		return errors.Wrap(err, "can't broadcast SignedSSVMessage with PartialSignatureMessages")
+	}
+	return nil
+}

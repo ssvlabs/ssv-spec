@@ -47,6 +47,14 @@ func (msgs PartialSignatureMessages) Validate() error {
 	if len(msgs.Messages) == 0 {
 		return errors.New("no PartialSignatureMessages messages")
 	}
+
+	signer := msgs.Messages[0].Signer
+	for _, msg := range msgs.Messages {
+		if signer != msg.Signer {
+			return errors.New("inconsistent signers")
+		}
+	}
+
 	for _, m := range msgs.Messages {
 		if err := m.Validate(); err != nil {
 			return errors.Wrap(err, "message invalid")
@@ -88,47 +96,4 @@ func (pcsm *PartialSignatureMessage) Validate() error {
 		return errors.New("signer ID 0 not allowed")
 	}
 	return nil
-}
-
-// SignedPartialSignatureMessage is an operator's signature over PartialSignatureMessage
-type SignedPartialSignatureMessage struct {
-	Message   PartialSignatureMessages
-	Signature Signature `ssz-size:"96"`
-	Signer    OperatorID
-}
-
-// Encode returns a msg encoded bytes or error
-func (spcsm *SignedPartialSignatureMessage) Encode() ([]byte, error) {
-	return spcsm.MarshalSSZ()
-}
-
-// Decode returns error if decoding failed
-func (spcsm *SignedPartialSignatureMessage) Decode(data []byte) error {
-	return spcsm.UnmarshalSSZ(data)
-}
-
-func (spcsm *SignedPartialSignatureMessage) GetSignature() Signature {
-	return spcsm.Signature
-}
-
-func (spcsm *SignedPartialSignatureMessage) GetSigners() []OperatorID {
-	return []OperatorID{spcsm.Signer}
-}
-
-func (spcsm *SignedPartialSignatureMessage) GetRoot() ([32]byte, error) {
-	return spcsm.Message.GetRoot()
-}
-
-func (spcsm *SignedPartialSignatureMessage) Validate() error {
-	if spcsm.Signer == 0 {
-		return errors.New("signer ID 0 not allowed")
-	}
-
-	for _, msg := range spcsm.Message.Messages {
-		if spcsm.Signer != msg.Signer {
-			return errors.New("inconsistent signers")
-		}
-	}
-
-	return spcsm.Message.Validate()
 }

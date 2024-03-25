@@ -132,35 +132,7 @@ func (r *VoluntaryExitRunner) executeDuty(duty *types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	// sign PartialSignatureMessages object
-	signature, err := r.GetSigner().SignRoot(msgs, types.PartialSignatureType, r.GetShare().SharePubKey)
-	if err != nil {
-		return errors.Wrap(err, "could not sign randao msg")
-	}
-	signedPartialMsg := &types.SignedPartialSignatureMessage{
-		Message:   msgs,
-		Signature: signature,
-		Signer:    r.GetShare().OperatorID,
-	}
-
-	// broadcast
-	data, err := signedPartialMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode signedPartialMsg with VoluntaryExit")
-	}
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
-	}
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast signedPartialMsg with VoluntaryExit")
-	}
-
-	// stores value for later using in ProcessPreConsensus
-	r.voluntaryExit = voluntaryExit
-
-	return nil
+	return r.BaseRunner.BroadcastPartialSignatureMessages(msgs, r.GetSigner(), r.GetNetwork())
 }
 
 // Returns *phase0.VoluntaryExit object with current epoch and own validator index

@@ -105,15 +105,15 @@ func validateConsensusMsg(runner ssv.Runner, data []byte) error {
 }
 
 func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
-	signedMsg := &types.SignedPartialSignatureMessage{}
-	if err := signedMsg.Decode(data); err != nil {
+	partialSignatureMessages := &types.PartialSignatureMessages{}
+	if err := partialSignatureMessages.Decode(data); err != nil {
 		return err
 	}
 
-	if signedMsg.Message.Type == types.PostConsensusPartialSig {
-		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, signedMsg)
+	if partialSignatureMessages.Type == types.PostConsensusPartialSig {
+		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, partialSignatureMessages)
 	}
-	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, signedMsg)
+	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, partialSignatureMessages)
 }
 
 func validateFutureMsg(

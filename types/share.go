@@ -5,6 +5,7 @@ type Share struct {
 	OperatorID            OperatorID
 	ValidatorPubKey       ValidatorPK `ssz-size:"48"`
 	SharePubKey           []byte      `ssz-size:"48"`
+	NetworkPubkey         []byte      `ssz-size:"294"`
 	Committee             []*Operator `ssz-max:"13"`
 	Quorum, PartialQuorum uint64
 	DomainType            DomainType `ssz-size:"4"`

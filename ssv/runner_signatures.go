@@ -32,19 +32,6 @@ func (b *BaseRunner) signBeaconObject(
 	}, nil
 }
 
-func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSignatureMessages) (*types.SignedPartialSignatureMessage, error) {
-	signature, err := runner.GetSigner().SignRoot(msg, types.PartialSignatureType, b.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign PartialSignatureMessage for PostConsensusContainer")
-	}
-
-	return &types.SignedPartialSignatureMessage{
-		Message:   *msg,
-		Signature: signature,
-		Signer:    b.Share.OperatorID,
-	}, nil
-}
-
 func (b *BaseRunner) validatePartialSigMsgForSlot(
 	partialSignatureMessages *types.PartialSignatureMessages,
 	slot spec.Slot,

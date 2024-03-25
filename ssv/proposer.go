@@ -155,26 +155,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
-	if err != nil {
-		return errors.Wrap(err, "could not sign post consensus msg")
-	}
-
-	data, err := postSignedMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode post consensus signature msg")
-	}
-
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
-	}
-
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast partial post consensus sig")
-	}
-	return nil
+	return r.BaseRunner.BroadcastPartialSignatureMessages(*postConsensusMsg, r.GetSigner(), r.GetNetwork())
 }
 
 func (r *ProposerRunner) ProcessPostConsensus(partialSignatureMessages *types.PartialSignatureMessages) error {
@@ -268,31 +249,7 @@ func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	// sign msg
-	signature, err := r.GetSigner().SignRoot(msgs, types.PartialSignatureType, r.GetShare().SharePubKey)
-	if err != nil {
-		return errors.Wrap(err, "could not sign randao msg")
-	}
-	signedPartialMsg := &types.SignedPartialSignatureMessage{
-		Message:   msgs,
-		Signature: signature,
-		Signer:    r.GetShare().OperatorID,
-	}
-
-	// broadcast
-	data, err := signedPartialMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode randao pre-consensus signature msg")
-	}
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
-	}
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast partial randao sig")
-	}
-	return nil
+	return r.BaseRunner.BroadcastPartialSignatureMessages(msgs, r.GetSigner(), r.GetNetwork())
 }
 
 func (r *ProposerRunner) GetBaseRunner() *BaseRunner {
