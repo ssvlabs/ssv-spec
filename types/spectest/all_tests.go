@@ -11,8 +11,6 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
-
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/signedssvmsg"
 )
 
 type SpecTest interface {
@@ -98,13 +96,6 @@ var AllTests = []SpecTest{
 	ssz.SSZWithdrawalsMarshaling(),
 
 	beacon.DepositData(),
-
-	signedssvmsg.Encoding(),
-	signedssvmsg.Valid(),
-	signedssvmsg.NoData(),
-	signedssvmsg.EmptySignature(),
-	signedssvmsg.ZeroSigner(),
-	signedssvmsg.WrongData(),
 
 	share.HasPartialQuorumButNoQuorum(),
 	share.HasQuorum(),
