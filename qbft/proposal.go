@@ -21,7 +21,7 @@ func (i *Instance) uponProposal(signedProposal *types.SignedSSVMessage, proposeM
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedProposal.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Proposal Message")
+		return errors.Wrap(err, "could not decode Proposal Message")
 	}
 
 	newRound := message.Round
@@ -62,7 +62,7 @@ func isValidProposal(
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedProposal.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Proposal Message")
+		return errors.Wrap(err, "could not decode Proposal Message")
 	}
 
 	if message.MsgType != ProposalMsgType {
@@ -154,7 +154,7 @@ func isProposalJustification(
 				// Decode
 				message := &Message{}
 				if err := message.Decode(rc.SSVMessage.Data); err != nil {
-					return false, errors.Wrap(err, "Could not RoundChange Message")
+					return false, errors.Wrap(err, "could not RoundChange Message")
 				}
 
 				if message.RoundChangePrepared() {
@@ -188,7 +188,7 @@ func isProposalJustification(
 			// Decode
 			rcMessage := &Message{}
 			if err := rcMessage.Decode(rcm.SSVMessage.Data); err != nil {
-				return errors.Wrap(err, "Could not highest prepared RoundChange Message")
+				return errors.Wrap(err, "could not highest prepared RoundChange Message")
 			}
 
 			// proposed fullData must equal highest prepared fullData

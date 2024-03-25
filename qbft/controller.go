@@ -66,7 +66,7 @@ func (c *Controller) ProcessMsg(signedSSVMessage *types.SignedSSVMessage) (*type
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
-		return nil, errors.Wrap(err, "Could not decode Message")
+		return nil, errors.Wrap(err, "could not decode Message")
 	}
 
 	if err := c.BaseMsgValidation(message); err != nil {
@@ -94,7 +94,7 @@ func (c *Controller) UponExistingInstanceMsg(signedSSVMessage *types.SignedSSVMe
 	// Decode
 	msg := &Message{}
 	if err := msg.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
-		return nil, errors.Wrap(err, "Could not decode Message")
+		return nil, errors.Wrap(err, "could not decode Message")
 	}
 
 	inst := c.InstanceForHeight(msg.Height)

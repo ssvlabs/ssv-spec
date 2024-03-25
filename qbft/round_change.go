@@ -19,7 +19,7 @@ func (i *Instance) uponRoundChange(
 	// Decode
 	rcMessage := &Message{}
 	if err := rcMessage.Decode(signedRoundChange.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Round Change Message")
+		return errors.Wrap(err, "could not decode Round Change Message")
 	}
 
 	hasQuorumBefore := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(rcMessage.Round))
@@ -50,7 +50,7 @@ func (i *Instance) uponRoundChange(
 		// Decode
 		justifiedRCMessage := &Message{}
 		if err := justifiedRCMessage.Decode(justifiedRoundChangeMsg.SSVMessage.Data); err != nil {
-			return errors.Wrap(err, "Could not decode justified Round Change Message")
+			return errors.Wrap(err, "could not decode justified Round Change Message")
 		}
 		roundChangeJustification, _ := justifiedRCMessage.GetRoundChangeJustifications() // no need to check error, check on isValidRoundChange
 
@@ -132,7 +132,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 	// Decode
 	rcMessage := &Message{}
 	if err := rcMessage.Decode(signedRoundChange.SSVMessage.Data); err != nil {
-		return nil, nil, errors.Wrap(err, "Could not decode RoundChange Message to check if has received proposal justification")
+		return nil, nil, errors.Wrap(err, "could not decode RoundChange Message to check if has received proposal justification")
 	}
 
 	roundChanges := roundChangeMsgContainer.MessagesForRound(rcMessage.Round)
@@ -149,7 +149,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 		// Decode
 		rcMessageI := &Message{}
 		if err := rcMessageI.Decode(msg.SSVMessage.Data); err != nil {
-			return nil, nil, errors.Wrap(err, "Could not decode stored RoundChange Message to check if has received proposal justification")
+			return nil, nil, errors.Wrap(err, "could not decode stored RoundChange Message to check if has received proposal justification")
 		}
 
 		// Chose proposal value.
@@ -193,7 +193,7 @@ func isProposalJustificationForLeadingRound(
 	// Decode
 	rcMessage := &Message{}
 	if err := rcMessage.Decode(roundChangeMsg.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode RoundChange Message for proposal justification")
+		return errors.Wrap(err, "could not decode RoundChange Message for proposal justification")
 	}
 
 	if err := isReceivedProposalJustification(
@@ -258,7 +258,7 @@ func validRoundChangeForData(
 	// Decode
 	rcMessage := &Message{}
 	if err := rcMessage.Decode(signedMsg.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode RoundChange Message to validate")
+		return errors.Wrap(err, "could not decode RoundChange Message to validate")
 	}
 
 	if rcMessage.MsgType != RoundChangeMsgType {
@@ -332,7 +332,7 @@ func highestPrepared(roundChanges []*types.SignedSSVMessage) (*types.SignedSSVMe
 		// Decode
 		rcMessage := &Message{}
 		if err := rcMessage.Decode(rc.SSVMessage.Data); err != nil {
-			return nil, errors.Wrap(err, "Could not decode RoundChange Message to compute the highest prepared message")
+			return nil, errors.Wrap(err, "could not decode RoundChange Message to compute the highest prepared message")
 		}
 
 		if !rcMessage.RoundChangePrepared() {

@@ -21,7 +21,7 @@ func (i *Instance) UponCommit(signedCommit *types.SignedSSVMessage, commitMsgCon
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedCommit.SSVMessage.Data); err != nil {
-		return false, nil, nil, errors.Wrap(err, "Could not decode Commit Message")
+		return false, nil, nil, errors.Wrap(err, "could not decode Commit Message")
 	}
 
 	// calculate commit quorum and act upon it
@@ -34,7 +34,7 @@ func (i *Instance) UponCommit(signedCommit *types.SignedSSVMessage, commitMsgCon
 		// Decode
 		proposalMessage := &Message{}
 		if err := proposalMessage.Decode(i.State.ProposalAcceptedForCurrentRound.SSVMessage.Data); err != nil {
-			return false, nil, nil, errors.Wrap(err, "Could not decode ProposalAcceptedForCurrentRound Message")
+			return false, nil, nil, errors.Wrap(err, "could not decode ProposalAcceptedForCurrentRound Message")
 		}
 
 		fullData := proposalMessage.FullData /* must have value there, checked on validateCommit */
@@ -72,12 +72,12 @@ func aggregateCommitMsgs(msgs []*types.SignedSSVMessage, fullData []byte) (*type
 	sampleSSVMessage := msgs[0].SSVMessage
 	message := &Message{}
 	if err := message.Decode(sampleSSVMessage.Data); err != nil {
-		return nil, errors.Wrap(err, "Could not decode Message from SSVMessage to aggregate commits")
+		return nil, errors.Wrap(err, "could not decode Message from SSVMessage to aggregate commits")
 	}
 	message.FullData = fullData
 	data, err := message.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "Could not encode Message with FullData to aggregate commits")
+		return nil, errors.Wrap(err, "could not encode Message with FullData to aggregate commits")
 	}
 	sampleSSVMessage.Data = data
 
@@ -125,7 +125,7 @@ func baseCommitValidation(
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedCommit.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Commit Message")
+		return errors.Wrap(err, "could not decode Commit Message")
 	}
 
 	if message.MsgType != CommitMsgType {
@@ -157,7 +157,7 @@ func validateCommit(
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedCommit.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Commit Message")
+		return errors.Wrap(err, "could not decode Commit Message")
 	}
 
 	if len(signedCommit.GetOperatorIDs()) != 1 {
@@ -171,7 +171,7 @@ func validateCommit(
 	// Decode
 	proposedMessage := &Message{}
 	if err := proposedMessage.Decode(proposedSignedSSVMsg.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Proposal Message for commit validation")
+		return errors.Wrap(err, "could not decode Proposal Message for commit validation")
 	}
 
 	if !bytes.Equal(proposedMessage.Root[:], message.Root[:]) {

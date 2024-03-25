@@ -142,7 +142,7 @@ func SignedSSVMessageWithoutFullData(signedSSVMessage *types.SignedSSVMessage) (
 	// Get Message
 	message := &Message{}
 	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
-		return nil, errors.Wrap(err, "Could not decode Message")
+		return nil, errors.Wrap(err, "could not decode Message")
 	}
 	// Make FullData empty
 	message.FullData = []byte{}
@@ -150,7 +150,7 @@ func SignedSSVMessageWithoutFullData(signedSSVMessage *types.SignedSSVMessage) (
 	// Encode
 	messageBytes, err := message.Encode()
 	if err != nil {
-		return nil, errors.Wrap(err, "Could not encode Message")
+		return nil, errors.Wrap(err, "could not encode Message")
 	}
 
 	// New SSVMessage

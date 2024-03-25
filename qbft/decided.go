@@ -20,7 +20,7 @@ func (c *Controller) UponDecided(signedMessage *types.SignedSSVMessage) (*types.
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedMessage.SSVMessage.Data); err != nil {
-		return nil, errors.Wrap(err, "Could not decode decided Message")
+		return nil, errors.Wrap(err, "could not decode decided Message")
 	}
 
 	// try to find instance
@@ -67,7 +67,7 @@ func ValidateDecided(
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedDecided.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode decided Message to validate")
+		return errors.Wrap(err, "could not decode decided Message to validate")
 	}
 
 	if !IsDecidedMsg(share, signedDecided) {

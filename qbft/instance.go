@@ -128,7 +128,7 @@ func (i *Instance) ProcessMsg(signedSSVMessage *types.SignedSSVMessage) (decided
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
-		return i.State.Decided, i.State.DecidedValue, nil, errors.Wrap(err, "Could not decode Message")
+		return i.State.Decided, i.State.DecidedValue, nil, errors.Wrap(err, "could not decode Message")
 	}
 
 	res := i.processMsgF.Run(func() interface{} {
@@ -164,7 +164,7 @@ func (i *Instance) BaseMsgValidation(signedSSVMessage *types.SignedSSVMessage) e
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Message")
+		return errors.Wrap(err, "could not decode Message")
 	}
 
 	if message.Round < i.State.Round {
@@ -188,7 +188,7 @@ func (i *Instance) BaseMsgValidation(signedSSVMessage *types.SignedSSVMessage) e
 		// Decode
 		proposedMessage := &Message{}
 		if err := message.Decode(proposedSignedSSVMsg.SSVMessage.Data); err != nil {
-			return errors.Wrap(err, "Could not decode Message form ProposalAcceptedForCurrentRound")
+			return errors.Wrap(err, "could not decode Message form ProposalAcceptedForCurrentRound")
 		}
 
 		return validSignedPrepareForHeightRoundAndRoot(

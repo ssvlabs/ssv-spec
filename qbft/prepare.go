@@ -30,7 +30,7 @@ func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsg
 
 	proposalAcceptedMessage := &Message{}
 	if err := proposalAcceptedMessage.Decode(i.State.ProposalAcceptedForCurrentRound.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Message from ProposalAcceptedForCurrentRound")
+		return errors.Wrap(err, "could not decode Message from ProposalAcceptedForCurrentRound")
 	}
 
 	proposedRoot := proposalAcceptedMessage.Root
@@ -98,7 +98,7 @@ func validSignedPrepareForHeightRoundAndRoot(
 	// Decode
 	message := &Message{}
 	if err := message.Decode(signedPrepare.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Prepare Message")
+		return errors.Wrap(err, "could not decode Prepare Message")
 	}
 
 	if message.MsgType != PrepareMsgType {

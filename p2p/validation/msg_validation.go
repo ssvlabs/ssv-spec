@@ -80,7 +80,7 @@ func validateConsensusMsg(runner ssv.Runner, signedSSVMessage *types.SignedSSVMe
 	// Decode
 	message := &qbft.Message{}
 	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
-		return errors.Wrap(err, "Could not decode Message")
+		return errors.Wrap(err, "could not decode Message")
 	}
 
 	if err := contr.BaseMsgValidation(message); err != nil {

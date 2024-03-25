@@ -111,7 +111,7 @@ func (c *MsgContainer) AddFirstMsgForSignerAndRound(msg *types.SignedSSVMessage)
 	// Decode
 	message := &Message{}
 	if err := message.Decode(msg.SSVMessage.Data); err != nil {
-		return false, errors.Wrap(err, "Could not decode Message")
+		return false, errors.Wrap(err, "could not decode Message")
 	}
 
 	if c.Msgs[message.Round] == nil {
