@@ -166,11 +166,16 @@ func (msg *SignedSSVMessage) Validate() error {
 	if len(msg.OperatorID) == 0 {
 		return errors.New("No OperatorID in SignedSSVMessage")
 	}
-	// Each signer must be different than 0
+	// Each signer must be different than 0 and unique
+	operatorsSet := make(map[OperatorID]bool)
 	for _, operatorID := range msg.OperatorID {
 		if operatorID == 0 {
 			return errors.New("OperatorID in SignedSSVMessage is 0")
 		}
+		if operatorsSet[operatorID] {
+			return errors.New("Non unique OperatorID")
+		}
+		operatorsSet[operatorID] = true
 	}
 	// There must be at least one signature
 	if len(msg.Signature) == 0 {
