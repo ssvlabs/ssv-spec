@@ -2,6 +2,8 @@ package types
 
 import (
 	"bytes"
+	"crypto/rsa"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	ssz "github.com/ferranbt/fastssz"
@@ -35,6 +37,7 @@ type BeaconSigner interface {
 // SSVSigner used for all SSV specific signing
 type SSVSigner interface {
 	SignRoot(data Root, sigType SignatureType, pk []byte) (Signature, error)
+	SignNetworkData(data []byte, pk []byte) ([]byte, error)
 }
 
 type DKGSigner interface {
@@ -53,4 +56,6 @@ type KeyManager interface {
 	AddShare(shareKey *bls.SecretKey) error
 	// RemoveShare removes a share key
 	RemoveShare(pubKey string) error
+	// AddNetworkKey saves a network key
+	AddNetworkKey(sk *rsa.PrivateKey) error
 }

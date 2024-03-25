@@ -2,8 +2,11 @@ package testingutils
 
 import (
 	"bytes"
+	"crypto"
 	"crypto/ecdsa"
+	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"hash/fnv"
@@ -12,7 +15,7 @@ import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -22,6 +25,7 @@ type testingKeyManager struct {
 	keys           map[string]*bls.SecretKey
 	ecdsaKeys      map[string]*ecdsa.PrivateKey
 	encryptionKeys map[string]*rsa.PrivateKey
+	networkKeys    map[string]*rsa.PrivateKey
 	domain         types.DomainType
 
 	slashableDataRoots [][]byte
@@ -59,41 +63,25 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		keys:           map[string]*bls.SecretKey{},
 		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 		encryptionKeys: nil,
+		networkKeys:    map[string]*rsa.PrivateKey{},
 		domain:         TestingSSVDomainType,
 
 		slashableDataRoots: slashableDataRoots,
 	}
 
-	_ = ret.AddShare(Testing4SharesSet().ValidatorSK)
-	for _, s := range Testing4SharesSet().Shares {
-		_ = ret.AddShare(s)
-	}
+	testingSharesSets := []*TestKeySet{Testing4SharesSet(), Testing7SharesSet(), Testing10SharesSet(), Testing13SharesSet()}
 
-	_ = ret.AddShare(Testing7SharesSet().ValidatorSK)
-	for _, s := range Testing7SharesSet().Shares {
-		_ = ret.AddShare(s)
-	}
-
-	_ = ret.AddShare(Testing10SharesSet().ValidatorSK)
-	for _, s := range Testing10SharesSet().Shares {
-		_ = ret.AddShare(s)
-	}
-
-	_ = ret.AddShare(Testing13SharesSet().ValidatorSK)
-	for _, s := range Testing13SharesSet().Shares {
-		_ = ret.AddShare(s)
-	}
-	for _, o := range Testing4SharesSet().DKGOperators {
-		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-	}
-	for _, o := range Testing7SharesSet().DKGOperators {
-		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-	}
-	for _, o := range Testing10SharesSet().DKGOperators {
-		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-	}
-	for _, o := range Testing13SharesSet().DKGOperators {
-		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+	for _, testingShareSet := range testingSharesSets {
+		_ = ret.AddShare(testingShareSet.ValidatorSK)
+		for _, s := range testingShareSet.Shares {
+			_ = ret.AddShare(s)
+		}
+		for _, k := range testingShareSet.NetworkKeys {
+			_ = ret.AddNetworkKey(k)
+		}
+		for _, o := range testingShareSet.DKGOperators {
+			ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+		}
 	}
 
 	instancesMap[hash] = ret
@@ -155,7 +143,7 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 	if sk == nil {
 		return nil, errors.New(fmt.Sprintf("unable to find ecdsa key for address %v", address.String()))
 	}
-	sig, err := crypto.Sign(root[:], sk)
+	sig, err := ethcrypto.Sign(root[:], sk)
 	if err != nil {
 		return nil, err
 	}
@@ -166,8 +154,27 @@ func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Addr
 	panic("implement")
 }
 
+func (km *testingKeyManager) SignNetworkData(data []byte, pk []byte) ([]byte, error) {
+	hash := sha256.Sum256(data)
+	sk := km.networkKeys[hex.EncodeToString(pk)]
+	signature, err := rsa.SignPKCS1v15(rand.Reader, sk, crypto.SHA256, hash[:])
+	if err != nil {
+		return []byte{}, err
+	}
+	return signature, nil
+}
+
 func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {
 	km.keys[hex.EncodeToString(shareKey.GetPublicKey().Serialize())] = shareKey
+	return nil
+}
+
+func (km *testingKeyManager) AddNetworkKey(sk *rsa.PrivateKey) error {
+	pem, err := types.GetPublicKeyPem(sk)
+	if err != nil {
+		panic(err)
+	}
+	km.networkKeys[hex.EncodeToString(pem)] = sk
 	return nil
 }
 
