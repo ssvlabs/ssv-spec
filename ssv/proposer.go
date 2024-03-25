@@ -115,7 +115,7 @@ func (r *ProposerRunner) ProcessPreConsensus(partialSignatureMessages *types.Par
 	return nil
 }
 
-func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")

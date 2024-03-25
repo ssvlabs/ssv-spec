@@ -28,7 +28,7 @@ type Runner interface {
 	// ProcessPreConsensus processes all pre-consensus msgs, returns error if can't process
 	ProcessPreConsensus(partialSignatureMessages *types.PartialSignatureMessages) error
 	// ProcessConsensus processes all consensus msgs, returns error if can't process
-	ProcessConsensus(msg *qbft.SignedMessage) error
+	ProcessConsensus(msg *types.SignedSSVMessage) error
 	// ProcessPostConsensus processes all post-consensus msgs, returns error if can't process
 	ProcessPostConsensus(partialSignatureMessages *types.PartialSignatureMessages) error
 
@@ -111,7 +111,7 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, partialSignatu
 }
 
 // baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
-func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
+func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.SignedSSVMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
 	prevDecided := false
 	if b.hasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
@@ -124,7 +124,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		}
 	}
 
-	decidedMsg, err := b.QBFTController.ProcessMsg(msg)
+	decidedSSVSignedMessage, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
 		return false, nil, err
 	}
@@ -135,13 +135,17 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 		return false, nil, nil
 	}
 
-	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedMsg); !decideCorrectly {
+	if decideCorrectly, err := b.didDecideCorrectly(prevDecided, decidedSSVSignedMessage); !decideCorrectly {
 		return false, nil, err
 	}
 
 	// decode consensus data
+	decidedMessage := &qbft.Message{}
+	if err := decidedMessage.Decode(decidedSSVSignedMessage.SSVMessage.Data); err != nil {
+		return true, nil, errors.Wrap(err, "could not decode decided message")
+	}
 	decidedValue = &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedMsg.FullData); err != nil {
+	if err := decidedValue.Decode(decidedMessage.FullData); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
@@ -194,7 +198,7 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 }
 
 // didDecideCorrectly returns true if the expected consensus instance decided correctly
-func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.SignedMessage) (bool, error) {
+func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *types.SignedSSVMessage) (bool, error) {
 	if decidedMsg == nil {
 		return false, nil
 	}
@@ -203,7 +207,13 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, decidedMsg *qbft.Signe
 		return false, errors.New("decided wrong instance")
 	}
 
-	if decidedMsg.Message.Height != b.State.RunningInstance.GetHeight() {
+	// Decode
+	message := &qbft.Message{}
+	if err := message.Decode(decidedMsg.SSVMessage.Data); err != nil {
+		return false, errors.Wrap(err, "could not decode decided Message to check if it decided correctly")
+	}
+
+	if message.Height != b.State.RunningInstance.GetHeight() {
 		return false, errors.New("decided wrong instance")
 	}
 

@@ -28,7 +28,7 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 
 		switch signedSSVMsg.SSVMessage.GetType() {
 		case types.SSVConsensusMsgType:
-			if validateConsensusMsg(runner, signedSSVMsg.SSVMessage.Data) != nil {
+			if validateConsensusMsg(runner, signedSSVMsg) != nil {
 				return pubsub.ValidationReject
 			}
 		case types.SSVPartialSignatureMsgType:
@@ -73,15 +73,17 @@ func validateSSVMessage(runner ssv.Runner, msg *types.SSVMessage) error {
 	return nil
 }
 
-func validateConsensusMsg(runner ssv.Runner, data []byte) error {
-	signedMsg := &qbft.SignedMessage{}
-	if err := signedMsg.Decode(data); err != nil {
-		return err
-	}
+func validateConsensusMsg(runner ssv.Runner, signedSSVMessage *types.SignedSSVMessage) error {
 
 	contr := runner.GetBaseRunner().QBFTController
 
-	if err := contr.BaseMsgValidation(signedMsg); err != nil {
+	// Decode
+	message := &qbft.Message{}
+	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode Message")
+	}
+
+	if err := contr.BaseMsgValidation(message); err != nil {
 		return err
 	}
 
@@ -92,13 +94,13 @@ func validateConsensusMsg(runner ssv.Runner, data []byte) error {
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	if qbft.IsDecidedMsg(contr.Share, signedMsg) {
-		return qbft.ValidateDecided(contr.GetConfig(), signedMsg, contr.Share)
-	} else if signedMsg.Message.Height > contr.Height {
-		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.Share.Committee)
+	if qbft.IsDecidedMsg(contr.Share, signedSSVMessage) {
+		return qbft.ValidateDecided(contr.GetConfig(), signedSSVMessage, contr.Share)
+	} else if message.Height > contr.Height {
+		return validateFutureMsg(contr.GetConfig(), signedSSVMessage, contr.Share.Committee)
 	} else {
-		if inst := contr.StoredInstances.FindInstance(signedMsg.Message.Height); inst != nil {
-			return inst.BaseMsgValidation(signedMsg)
+		if inst := contr.StoredInstances.FindInstance(message.Height); inst != nil {
+			return inst.BaseMsgValidation(signedSSVMessage)
 		}
 		return errors.New("unknown instance")
 	}
@@ -118,19 +120,19 @@ func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
 
 func validateFutureMsg(
 	config qbft.IConfig,
-	msg *qbft.SignedMessage,
+	msg *types.SignedSSVMessage,
 	operators []*types.Operator,
 ) error {
 	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if len(msg.GetSigners()) != 1 {
+	if len(msg.GetOperatorIDs()) != 1 {
 		return errors.New("allows 1 signer")
 	}
 
 	// verify signature
-	if err := msg.Signature.VerifyByOperators(msg, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	if err := types.VerifySignedSSVMessage(msg, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 

@@ -90,7 +90,7 @@ func (r *VoluntaryExitRunner) ProcessPreConsensus(partialSignatureMessages *type
 	return nil
 }
 
-func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	return errors.New("no consensus phase for voluntary exit")
 }
 

@@ -1,7 +1,6 @@
 package ssv
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -58,11 +57,7 @@ func (v *Validator) ProcessMessage(signedSSVMsg *types.SignedSSVMessage) error {
 
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
-		signedMsg := &qbft.SignedMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
-			return errors.Wrap(err, "could not get consensus Message from network Message")
-		}
-		return dutyRunner.ProcessConsensus(signedMsg)
+		return dutyRunner.ProcessConsensus(signedSSVMsg)
 	case types.SSVPartialSignatureMsgType:
 		partialSignatureMessages := &types.PartialSignatureMessages{}
 		if err := partialSignatureMessages.Decode(msg.GetData()); err != nil {

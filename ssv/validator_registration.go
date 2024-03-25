@@ -80,7 +80,7 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(partialSignatureMessag
 	return nil
 }
 
-func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	return errors.New("no consensus phase for validator registration")
 }
 
