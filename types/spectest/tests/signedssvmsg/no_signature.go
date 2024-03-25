@@ -5,20 +5,20 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// EmptySignature tests an invalid SignedSSVMessageTest with empty signature
-func EmptySignature() *SignedSSVMessageTest {
+// NoSignature tests an invalid SignedSSVMessageTest with no signature
+func NoSignature() *SignedSSVMessageTest {
 
 	ks := testingutils.Testing4SharesSet()
 
 	return &SignedSSVMessageTest{
-		Name: "empty signature",
+		Name: "no signature",
 		Messages: []*types.SignedSSVMessage{
 			{
 				OperatorID: []types.OperatorID{1},
-				Signature:  [][]byte{{}},
+				Signature:  [][]byte{},
 				SSVMessage: testingutils.SSVMsgAttester(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		ExpectedError: "Signature has length 0 in SignedSSVMessage",
+		ExpectedError: "No signature in SignedSSVMessage",
 	}
 }

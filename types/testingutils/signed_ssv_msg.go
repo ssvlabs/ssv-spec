@@ -46,3 +46,35 @@ var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorI
 		SSVMessage: &ssvMsg,
 	}
 }
+
+var SignedSSVMessageF = func(ssvMessage *types.SSVMessage, operatorID []types.OperatorID, sk []*rsa.PrivateKey) *types.SignedSSVMessage {
+
+	if ssvMessage == nil {
+		panic("Can't create a SignedSSVMessage with a nil SSVMessage")
+	}
+
+	data, err := ssvMessage.Encode()
+	if err != nil {
+		panic(err)
+	}
+
+	signatures := make([][]byte, len(operatorID))
+	km := NewTestingKeyManager()
+	for i, sk_i := range sk {
+		pkByts, err := types.GetPublicKeyPem(sk_i)
+		if err != nil {
+			panic(err)
+		}
+		signature, err := km.SignNetworkData(data, pkByts)
+		if err != nil {
+			panic(err)
+		}
+		signatures[i] = signature
+	}
+
+	return &types.SignedSSVMessage{
+		OperatorID: operatorID,
+		Signature:  signatures,
+		SSVMessage: ssvMessage,
+	}
+}
