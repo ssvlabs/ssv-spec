@@ -2,13 +2,14 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
 // uponPrepare process prepare message
 // Assumes prepare message is valid!
-func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer *MsgContainer) error {
+func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsgContainer *MsgContainer) error {
 	hasQuorumBefore := HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round))
 
 	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
@@ -27,9 +28,14 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 		return nil // no quorum yet
 	}
 
-	proposedRoot := i.State.ProposalAcceptedForCurrentRound.Message.Root
+	proposalAcceptedMessage := &Message{}
+	if err := proposalAcceptedMessage.Decode(i.State.ProposalAcceptedForCurrentRound.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode Message from ProposalAcceptedForCurrentRound")
+	}
 
-	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.FullData
+	proposedRoot := proposalAcceptedMessage.Root
+
+	i.State.LastPreparedValue = proposalAcceptedMessage.FullData
 	i.State.LastPreparedRound = i.State.Round
 
 	commitMsg, err := CreateCommit(i.State, i.config, proposedRoot)
@@ -46,7 +52,7 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 
 // getRoundChangeJustification returns the round change justification for the current round.
 // The justification is a quorum of signed prepare messages that agree on state.LastPreparedValue
-func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*SignedMessage, error) {
+func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*types.SignedSSVMessage, error) {
 	if state.LastPreparedValue == nil {
 		return nil, nil
 	}
@@ -57,7 +63,7 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	}
 
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
-	ret := make([]*SignedMessage, 0)
+	ret := make([]*types.SignedSSVMessage, 0)
 	for _, msg := range prepareMsgs {
 		if err := validSignedPrepareForHeightRoundAndRoot(
 			config,
@@ -66,6 +72,7 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 			state.LastPreparedRound,
 			r,
 			state.Share.Committee,
+			true,
 		); err == nil {
 			ret = append(ret, msg)
 		}
@@ -81,18 +88,26 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
 func validSignedPrepareForHeightRoundAndRoot(
 	config IConfig,
-	signedPrepare *SignedMessage,
+	signedPrepare *types.SignedSSVMessage,
 	height Height,
 	round Round,
 	root [32]byte,
-	operators []*types.Operator) error {
-	if signedPrepare.Message.MsgType != PrepareMsgType {
+	operators []*types.Operator,
+	verifySignature bool) error {
+
+	// Decode
+	message := &Message{}
+	if err := message.Decode(signedPrepare.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode Prepare Message")
+	}
+
+	if message.MsgType != PrepareMsgType {
 		return errors.New("prepare msg type is wrong")
 	}
-	if signedPrepare.Message.Height != height {
+	if message.Height != height {
 		return errors.New("wrong msg height")
 	}
-	if signedPrepare.Message.Round != round {
+	if message.Round != round {
 		return errors.New("wrong msg round")
 	}
 
@@ -100,16 +115,17 @@ func validSignedPrepareForHeightRoundAndRoot(
 		return errors.Wrap(err, "prepareData invalid")
 	}
 
-	if !bytes.Equal(signedPrepare.Message.Root[:], root[:]) {
+	if !bytes.Equal(message.Root[:], root[:]) {
 		return errors.New("proposed data mistmatch")
 	}
 
-	if len(signedPrepare.GetSigners()) != 1 {
+	if len(signedPrepare.GetOperatorIDs()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
-
-	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+	if verifySignature {
+		if err := types.VerifySignedSSVMessage(signedPrepare, operators); err != nil {
+			return errors.Wrap(err, "msg signature invalid")
+		}
 	}
 
 	return nil
@@ -127,24 +143,13 @@ Prepare(
                         )
                 );
 */
-func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) (*SignedMessage, error) {
-	msg := &Message{
+func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) (*Message, error) {
+	return &Message{
 		MsgType:    PrepareMsgType,
 		Height:     state.Height,
 		Round:      newRound,
 		Identifier: state.ID,
 
 		Root: root,
-	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed signing prepare msg")
-	}
-
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   *msg,
-	}
-	return signedMsg, nil
+	}, nil
 }

@@ -77,7 +77,7 @@ func (i *Instance) Start(value []byte, height Height) {
 	})
 }
 
-func (i *Instance) Broadcast(msg *SignedMessage) error {
+func (i *Instance) Broadcast(msg *Message) error {
 	if !i.CanProcessMessages() {
 		return errors.New("instance stopped processing messages")
 	}
@@ -87,41 +87,65 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 	}
 
 	msgID := types.MessageID{}
-	copy(msgID[:], msg.Message.Identifier)
+	copy(msgID[:], msg.Identifier)
 
-	msgToBroadcast := &types.SSVMessage{
+	ssvMessage := &types.SSVMessage{
 		MsgType: types.SSVConsensusMsgType,
 		MsgID:   msgID,
 		Data:    byts,
 	}
+
+	// Sign SSVMessage
+	signingData, err := ssvMessage.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode SSVMessage")
+	}
+	signature, err := i.config.GetSigner().SignNetworkData(signingData, i.State.Share.NetworkPubkey)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	// Create SignedSSVMessage
+	msgToBroadcast := &types.SignedSSVMessage{
+		OperatorID: []types.OperatorID{i.State.Share.OperatorID},
+		Signature:  [][]byte{signature},
+		SSVMessage: ssvMessage,
+	}
+
 	return i.config.GetNetwork().Broadcast(msgToBroadcast)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
-func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
+func (i *Instance) ProcessMsg(signedSSVMessage *types.SignedSSVMessage) (decided bool, decidedValue []byte, aggregatedCommit *types.SignedSSVMessage, err error) {
 	if !i.CanProcessMessages() {
 		return false, nil, nil, errors.New("instance stopped processing messages")
 	}
 
-	if err := i.BaseMsgValidation(msg); err != nil {
+	if err := i.BaseMsgValidation(signedSSVMessage); err != nil {
 		return false, nil, nil, errors.Wrap(err, "invalid signed message")
 	}
 
+	// Decode
+	message := &Message{}
+	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
+		return i.State.Decided, i.State.DecidedValue, nil, errors.Wrap(err, "Could not decode Message")
+	}
+
 	res := i.processMsgF.Run(func() interface{} {
-		switch msg.Message.MsgType {
+		switch message.MsgType {
 		case ProposalMsgType:
-			return i.uponProposal(msg, i.State.ProposeContainer)
+			return i.uponProposal(signedSSVMessage, i.State.ProposeContainer)
 		case PrepareMsgType:
-			return i.uponPrepare(msg, i.State.PrepareContainer)
+			return i.uponPrepare(signedSSVMessage, i.State.PrepareContainer)
 		case CommitMsgType:
-			decided, decidedValue, aggregatedCommit, err = i.UponCommit(msg, i.State.CommitContainer)
+			decided, decidedValue, aggregatedCommit, err = i.UponCommit(signedSSVMessage, i.State.CommitContainer)
 			if decided {
 				i.State.Decided = decided
 				i.State.DecidedValue = decidedValue
 			}
 			return err
 		case RoundChangeMsgType:
-			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
+			return i.uponRoundChange(i.StartValue, signedSSVMessage, i.State.RoundChangeContainer, i.config.GetValueCheckF())
 		default:
 			return errors.New("signed message type not supported")
 		}
@@ -132,36 +156,49 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 	return i.State.Decided, i.State.DecidedValue, aggregatedCommit, nil
 }
 
-func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
-	if err := msg.Validate(); err != nil {
+func (i *Instance) BaseMsgValidation(signedSSVMessage *types.SignedSSVMessage) error {
+	if err := signedSSVMessage.Validate(); err != nil {
 		return errors.Wrap(err, "invalid signed message")
 	}
 
-	if msg.Message.Round < i.State.Round {
+	// Decode
+	message := &Message{}
+	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode Message")
+	}
+
+	if message.Round < i.State.Round {
 		return errors.New("past round")
 	}
 
-	switch msg.Message.MsgType {
+	switch message.MsgType {
 	case ProposalMsgType:
 		return isValidProposal(
 			i.State,
 			i.config,
-			msg,
+			signedSSVMessage,
 			i.config.GetValueCheckF(),
 			i.State.Share.Committee,
 		)
 	case PrepareMsgType:
-		proposedMsg := i.State.ProposalAcceptedForCurrentRound
-		if proposedMsg == nil {
+		proposedSignedSSVMsg := i.State.ProposalAcceptedForCurrentRound
+		if proposedSignedSSVMsg == nil {
 			return errors.New("did not receive proposal for this round")
 		}
+		// Decode
+		proposedMessage := &Message{}
+		if err := message.Decode(proposedSignedSSVMsg.SSVMessage.Data); err != nil {
+			return errors.Wrap(err, "Could not decode Message form ProposalAcceptedForCurrentRound")
+		}
+
 		return validSignedPrepareForHeightRoundAndRoot(
 			i.config,
-			msg,
+			signedSSVMessage,
 			i.State.Height,
 			i.State.Round,
-			proposedMsg.Message.Root,
+			proposedMessage.Root,
 			i.State.Share.Committee,
+			false,
 		)
 	case CommitMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
@@ -170,14 +207,14 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		}
 		return validateCommit(
 			i.config,
-			msg,
+			signedSSVMessage,
 			i.State.Height,
 			i.State.Round,
 			i.State.ProposalAcceptedForCurrentRound,
 			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChangeForData(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
+		return validRoundChangeForData(i.State, i.config, signedSSVMessage, i.State.Height, message.Round, message.FullData, false)
 	default:
 		return errors.New("signed message type not supported")
 	}

@@ -2,13 +2,14 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
 // uponProposal process proposal message
 // Assumes proposal message is valid!
-func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContainer *MsgContainer) error {
+func (i *Instance) uponProposal(signedProposal *types.SignedSSVMessage, proposeMsgContainer *MsgContainer) error {
 	addedMsg, err := proposeMsgContainer.AddFirstMsgForSignerAndRound(signedProposal)
 	if err != nil {
 		return errors.Wrap(err, "could not add proposal msg to container")
@@ -17,17 +18,23 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 		return nil // uponProposal was already called
 	}
 
-	newRound := signedProposal.Message.Round
+	// Decode
+	message := &Message{}
+	if err := message.Decode(signedProposal.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode Proposal Message")
+	}
+
+	newRound := message.Round
 	i.State.ProposalAcceptedForCurrentRound = signedProposal
 
 	// A future justified proposal should bump us into future round and reset timer
-	if signedProposal.Message.Round > i.State.Round {
-		i.config.GetTimer().TimeoutForRound(signedProposal.Message.Round)
+	if message.Round > i.State.Round {
+		i.config.GetTimer().TimeoutForRound(message.Round)
 	}
 	i.State.Round = newRound
 
 	// value root
-	r, err := HashDataRoot(signedProposal.FullData)
+	r, err := HashDataRoot(message.FullData)
 	if err != nil {
 		return errors.Wrap(err, "could not hash input data")
 	}
@@ -47,23 +54,27 @@ func (i *Instance) uponProposal(signedProposal *SignedMessage, proposeMsgContain
 func isValidProposal(
 	state *State,
 	config IConfig,
-	signedProposal *SignedMessage,
+	signedProposal *types.SignedSSVMessage,
 	valCheck ProposedValueCheckF,
 	operators []*types.Operator,
 ) error {
-	if signedProposal.Message.MsgType != ProposalMsgType {
+
+	// Decode
+	message := &Message{}
+	if err := message.Decode(signedProposal.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode Proposal Message")
+	}
+
+	if message.MsgType != ProposalMsgType {
 		return errors.New("msg type is not proposal")
 	}
-	if signedProposal.Message.Height != state.Height {
+	if message.Height != state.Height {
 		return errors.New("wrong msg height")
 	}
-	if len(signedProposal.GetSigners()) != 1 {
+	if len(signedProposal.GetOperatorIDs()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
-	if err := signedProposal.Signature.VerifyByOperators(signedProposal, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
-	}
-	if !signedProposal.MatchedSigners([]types.OperatorID{proposer(state, config, signedProposal.Message.Round)}) {
+	if !MatchedSigners(signedProposal, []types.OperatorID{proposer(state, config, message.Round)}) {
 		return errors.New("proposal leader invalid")
 	}
 
@@ -72,17 +83,17 @@ func isValidProposal(
 	}
 
 	// verify full data integrity
-	r, err := HashDataRoot(signedProposal.FullData)
+	r, err := HashDataRoot(message.FullData)
 	if err != nil {
 		return errors.Wrap(err, "could not hash input data")
 	}
-	if !bytes.Equal(signedProposal.Message.Root[:], r[:]) {
+	if !bytes.Equal(message.Root[:], r[:]) {
 		return errors.New("H(data) != root")
 	}
 
 	// get justifications
-	roundChangeJustification, _ := signedProposal.Message.GetRoundChangeJustifications() // no need to check error, checked on signedProposal.Validate()
-	prepareJustification, _ := signedProposal.Message.GetPrepareJustifications()         // no need to check error, checked on signedProposal.Validate()
+	roundChangeJustification, _ := message.GetRoundChangeJustifications() // no need to check error, checked on signedProposal.Validate()
+	prepareJustification, _ := message.GetPrepareJustifications()         // no need to check error, checked on signedProposal.Validate()
 
 	if err := isProposalJustification(
 		state,
@@ -90,15 +101,15 @@ func isValidProposal(
 		roundChangeJustification,
 		prepareJustification,
 		state.Height,
-		signedProposal.Message.Round,
-		signedProposal.FullData,
+		message.Round,
+		message.FullData,
 		valCheck,
 	); err != nil {
 		return errors.Wrap(err, "proposal not justified")
 	}
 
-	if (state.ProposalAcceptedForCurrentRound == nil && signedProposal.Message.Round == state.Round) ||
-		signedProposal.Message.Round > state.Round {
+	if (state.ProposalAcceptedForCurrentRound == nil && message.Round == state.Round) ||
+		message.Round > state.Round {
 		return nil
 	}
 	return errors.New("proposal is not valid with current state")
@@ -108,8 +119,8 @@ func isValidProposal(
 func isProposalJustification(
 	state *State,
 	config IConfig,
-	roundChangeMsgs []*SignedMessage,
-	prepareMsgs []*SignedMessage,
+	roundChangeMsgs []*types.SignedSSVMessage,
+	prepareMsgs []*types.SignedSSVMessage,
 	height Height,
 	round Round,
 	fullData []byte,
@@ -126,7 +137,7 @@ func isProposalJustification(
 		// no quorum, duplicate signers,  invalid still has quorum, invalid no quorum
 		// prepared
 		for _, rc := range roundChangeMsgs {
-			if err := validRoundChangeForData(state, config, rc, height, round, fullData); err != nil {
+			if err := validRoundChangeForData(state, config, rc, height, round, fullData, true); err != nil {
 				return errors.Wrap(err, "change round msg not valid")
 			}
 		}
@@ -137,9 +148,16 @@ func isProposalJustification(
 		}
 
 		// previouslyPreparedF returns true if any on the round change messages have a prepared round and fullData
-		previouslyPrepared, err := func(rcMsgs []*SignedMessage) (bool, error) {
+		previouslyPrepared, err := func(rcMsgs []*types.SignedSSVMessage) (bool, error) {
 			for _, rc := range rcMsgs {
-				if rc.Message.RoundChangePrepared() {
+
+				// Decode
+				message := &Message{}
+				if err := message.Decode(rc.SSVMessage.Data); err != nil {
+					return false, errors.Wrap(err, "Could not RoundChange Message")
+				}
+
+				if message.RoundChangePrepared() {
 					return true, nil
 				}
 			}
@@ -167,12 +185,18 @@ func isProposalJustification(
 				return errors.New("no highest prepared")
 			}
 
+			// Decode
+			rcMessage := &Message{}
+			if err := rcMessage.Decode(rcm.SSVMessage.Data); err != nil {
+				return errors.Wrap(err, "Could not highest prepared RoundChange Message")
+			}
+
 			// proposed fullData must equal highest prepared fullData
 			r, err := HashDataRoot(fullData)
 			if err != nil {
 				return errors.Wrap(err, "could not hash input data")
 			}
-			if !bytes.Equal(r[:], rcm.Message.Root[:]) {
+			if !bytes.Equal(r[:], rcMessage.Root[:]) {
 				return errors.New("proposed data doesn't match highest prepared")
 			}
 
@@ -182,9 +206,10 @@ func isProposalJustification(
 					config,
 					pm,
 					height,
-					rcm.Message.DataRound,
-					rcm.Message.Root,
+					rcMessage.DataRound,
+					rcMessage.Root,
 					state.Share.Committee,
+					true,
 				); err != nil {
 					return errors.New("signed prepare not valid")
 				}
@@ -212,7 +237,7 @@ func proposer(state *State, config IConfig, round Round) types.OperatorID {
                         extractSignedRoundChanges(roundChanges),
                         extractSignedPrepares(prepares));
 */
-func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges, prepares []*SignedMessage) (*SignedMessage, error) {
+func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges, prepares []*types.SignedSSVMessage) (*Message, error) {
 	r, err := HashDataRoot(fullData)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not hash input data")
@@ -236,18 +261,7 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		Root:                     r,
 		RoundChangeJustification: roundChangesData,
 		PrepareJustification:     preparesData,
+		FullData:                 fullData,
 	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed signing prepare msg")
-	}
-
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   *msg,
-
-		FullData: fullData,
-	}
-	return signedMsg, nil
+	return msg, nil
 }

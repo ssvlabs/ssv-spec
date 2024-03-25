@@ -80,7 +80,7 @@ type State struct {
 	Height                          Height
 	LastPreparedRound               Round
 	LastPreparedValue               []byte
-	ProposalAcceptedForCurrentRound *SignedMessage
+	ProposalAcceptedForCurrentRound *types.SignedSSVMessage
 	Decided                         bool
 	DecidedValue                    []byte
 

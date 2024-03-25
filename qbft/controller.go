@@ -61,8 +61,15 @@ func (c *Controller) StartNewInstance(height Height, value []byte) error {
 }
 
 // ProcessMsg processes a new msg, returns decided message or error
-func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
-	if err := c.BaseMsgValidation(msg); err != nil {
+func (c *Controller) ProcessMsg(signedSSVMessage *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
+
+	// Decode
+	message := &Message{}
+	if err := message.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
+		return nil, errors.Wrap(err, "Could not decode Message")
+	}
+
+	if err := c.BaseMsgValidation(message); err != nil {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
 
@@ -73,24 +80,31 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	if IsDecidedMsg(c.Share, msg) {
-		return c.UponDecided(msg)
-	} else if c.isFutureMessage(msg) {
+	if IsDecidedMsg(c.Share, signedSSVMessage) {
+		return c.UponDecided(signedSSVMessage)
+	} else if c.isFutureMessage(message) {
 		return nil, fmt.Errorf("future msg from height, could not process")
 	}
-	return c.UponExistingInstanceMsg(msg)
+	return c.UponExistingInstanceMsg(signedSSVMessage)
 
 }
 
-func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage, error) {
-	inst := c.InstanceForHeight(msg.Message.Height)
+func (c *Controller) UponExistingInstanceMsg(signedSSVMessage *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
+
+	// Decode
+	msg := &Message{}
+	if err := msg.Decode(signedSSVMessage.SSVMessage.Data); err != nil {
+		return nil, errors.Wrap(err, "Could not decode Message")
+	}
+
+	inst := c.InstanceForHeight(msg.Height)
 	if inst == nil {
 		return nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
 
-	decided, _, decidedMsg, err := inst.ProcessMsg(msg)
+	decided, _, decidedMsg, err := inst.ProcessMsg(signedSSVMessage)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not process msg")
 	}
@@ -113,9 +127,9 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 }
 
 // BaseMsgValidation returns error if msg is invalid (base validation)
-func (c *Controller) BaseMsgValidation(msg *SignedMessage) error {
+func (c *Controller) BaseMsgValidation(msg *Message) error {
 	// verify msg belongs to controller
-	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
+	if !bytes.Equal(c.Identifier, msg.Identifier) {
 		return errors.New("message doesn't belong to Identifier")
 	}
 
@@ -133,11 +147,11 @@ func (c *Controller) GetIdentifier() []byte {
 
 // isFutureMessage returns true if message height is from a future instance.
 // It takes into consideration a special case where FirstHeight didn't start but  c.Height == FirstHeight (since we bump height on start instance)
-func (c *Controller) isFutureMessage(msg *SignedMessage) bool {
+func (c *Controller) isFutureMessage(msg *Message) bool {
 	if c.Height == FirstHeight && c.StoredInstances.FindInstance(c.Height) == nil {
 		return true
 	}
-	return msg.Message.Height > c.Height
+	return msg.Height > c.Height
 }
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
@@ -186,19 +200,8 @@ func (c *Controller) Decode(data []byte) error {
 	return nil
 }
 
-func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
-	// Broadcast Decided msg
-	byts, err := aggregatedCommit.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode decided message")
-	}
-
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVConsensusMsgType,
-		MsgID:   ControllerIdToMessageID(c.Identifier),
-		Data:    byts,
-	}
-	if err := c.GetConfig().GetNetwork().Broadcast(msgToBroadcast); err != nil {
+func (c *Controller) broadcastDecided(aggregatedCommit *types.SignedSSVMessage) error {
+	if err := c.GetConfig().GetNetwork().Broadcast(aggregatedCommit); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}

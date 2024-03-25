@@ -2,12 +2,14 @@ package types
 
 import (
 	"bytes"
+	"crypto"
+	"crypto/rsa"
 	"crypto/sha256"
 	"fmt"
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
@@ -103,7 +105,7 @@ func (s Signature) ECRecover(data Root, domain DomainType, sigType SignatureType
 		return errors.Wrap(err, "could not compute signing root")
 	}
 
-	recoveredUncompressedPubKey, err := crypto.Ecrecover(computedRoot[:], s)
+	recoveredUncompressedPubKey, err := ethcrypto.Ecrecover(computedRoot[:], s)
 	if err != nil {
 		return errors.Wrap(err, "could not recover ethereum address")
 	}
@@ -113,7 +115,7 @@ func (s Signature) ECRecover(data Root, domain DomainType, sigType SignatureType
 		return errors.Wrap(err, "could not parse ecdsa pubkey")
 	}
 
-	recoveredAdd := crypto.PubkeyToAddress(*pk.ToECDSA())
+	recoveredAdd := ethcrypto.PubkeyToAddress(*pk.ToECDSA())
 
 	if !bytes.Equal(address[:], recoveredAdd[:]) {
 		return errors.Wrap(err, "message EC recover doesn't match address")
@@ -191,6 +193,49 @@ func VerifyReconstructedSignature(sig *bls.Sign, validatorPubKey []byte, root [3
 	// verify reconstructed sig
 	if res := sig.VerifyByte(pk, root[:]); !res {
 		return errors.New("could not reconstruct a valid signature")
+	}
+	return nil
+}
+
+// Verify a SignedSSVMessage using the Network public keys in a list of Operators
+func VerifySignedSSVMessage(msg *SignedSSVMessage, operators []*Operator) error {
+
+	// Assertion check
+	if len(msg.Signature) != len(msg.GetOperatorIDs()) {
+		return errors.New("Can't verify SignedSSVMessage with len(Signatures) != len(signers)")
+	}
+
+	// Get message hash
+	data, err := msg.SSVMessage.Encode()
+	if err != nil {
+		return err
+	}
+	hash := sha256.Sum256(data)
+
+	// For each signer, verify signature
+	for idx, signer := range msg.GetOperatorIDs() {
+		operatorFound := false
+		for _, op := range operators {
+			// Find operator
+			if op.OperatorID == signer {
+				// Get public key
+				pkPEM := op.NetworkPubKey
+				pk, err := PemToPublicKey(pkPEM)
+				if err != nil {
+					return err
+				}
+				// Verify
+				err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, hash[:], msg.Signature[idx])
+				if err != nil {
+					return err
+				}
+				operatorFound = true
+				break
+			}
+		}
+		if !operatorFound {
+			return errors.New("Signer not found in operators list")
+		}
 	}
 	return nil
 }

@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -10,12 +11,18 @@ import (
 // Assumes round change message is valid!
 func (i *Instance) uponRoundChange(
 	instanceStartValue []byte,
-	signedRoundChange *SignedMessage,
+	signedRoundChange *types.SignedSSVMessage,
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
 ) error {
-	hasQuorumBefore := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(signedRoundChange.Message.
-		Round))
+
+	// Decode
+	rcMessage := &Message{}
+	if err := rcMessage.Decode(signedRoundChange.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode Round Change Message")
+	}
+
+	hasQuorumBefore := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(rcMessage.Round))
 	// Currently, even if we have a quorum of round change messages, we update the container
 	addedMsg, err := roundChangeMsgContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
 	if err != nil {
@@ -40,7 +47,12 @@ func (i *Instance) uponRoundChange(
 		return errors.Wrap(err, "could not get proposal justification for leading round")
 	}
 	if justifiedRoundChangeMsg != nil {
-		roundChangeJustification, _ := justifiedRoundChangeMsg.Message.GetRoundChangeJustifications() // no need to check error, check on isValidRoundChange
+		// Decode
+		justifiedRCMessage := &Message{}
+		if err := justifiedRCMessage.Decode(justifiedRoundChangeMsg.SSVMessage.Data); err != nil {
+			return errors.Wrap(err, "Could not decode justified Round Change Message")
+		}
+		roundChangeJustification, _ := justifiedRCMessage.GetRoundChangeJustifications() // no need to check error, check on isValidRoundChange
 
 		proposal, err := CreateProposal(
 			i.State,
@@ -84,12 +96,19 @@ func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartVal
 	return nil
 }
 
-func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContainer) (bool, []*SignedMessage) {
+func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContainer) (bool, []*types.SignedSSVMessage) {
 	all := roundChangeMsgContainer.AllMessaged()
 
-	rc := make([]*SignedMessage, 0)
+	rc := make([]*types.SignedSSVMessage, 0)
 	for _, msg := range all {
-		if msg.Message.Round > state.Round {
+
+		// Decode
+		rcMessage := &Message{}
+		if err := rcMessage.Decode(msg.SSVMessage.Data); err != nil {
+			continue
+		}
+
+		if rcMessage.Round > state.Round {
 			rc = append(rc, msg)
 		}
 	}
@@ -105,11 +124,18 @@ func hasReceivedProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
 	instanceStartValue []byte,
-	signedRoundChange *SignedMessage,
+	signedRoundChange *types.SignedSSVMessage,
 	roundChangeMsgContainer *MsgContainer,
 	valCheck ProposedValueCheckF,
-) (*SignedMessage, []byte, error) {
-	roundChanges := roundChangeMsgContainer.MessagesForRound(signedRoundChange.Message.Round)
+) (*types.SignedSSVMessage, []byte, error) {
+
+	// Decode
+	rcMessage := &Message{}
+	if err := rcMessage.Decode(signedRoundChange.SSVMessage.Data); err != nil {
+		return nil, nil, errors.Wrap(err, "Could not decode RoundChange Message to check if has received proposal justification")
+	}
+
+	roundChanges := roundChangeMsgContainer.MessagesForRound(rcMessage.Round)
 
 	// optimization, if no round change quorum can return false
 	if !HasQuorum(state.Share, roundChanges) {
@@ -120,15 +146,21 @@ func hasReceivedProposalJustificationForLeadingRound(
 	// We iterate on all round chance msgs for liveliness in case the last round change msg is malicious.
 	for _, msg := range roundChanges {
 
+		// Decode
+		rcMessageI := &Message{}
+		if err := rcMessageI.Decode(msg.SSVMessage.Data); err != nil {
+			return nil, nil, errors.Wrap(err, "Could not decode stored RoundChange Message to check if has received proposal justification")
+		}
+
 		// Chose proposal value.
 		// If justifiedRoundChangeMsg has no prepare justification chose state value
 		// If justifiedRoundChangeMsg has prepare justification chose prepared value
 		valueToPropose := instanceStartValue
-		if msg.Message.RoundChangePrepared() {
-			valueToPropose = signedRoundChange.FullData
+		if rcMessageI.RoundChangePrepared() {
+			valueToPropose = rcMessageI.FullData
 		}
 
-		roundChangeJustification, _ := msg.Message.GetRoundChangeJustifications() // no need to check error, checked on isValidRoundChange
+		roundChangeJustification, _ := rcMessageI.GetRoundChangeJustifications() // no need to check error, checked on isValidRoundChange
 		if isProposalJustificationForLeadingRound(
 			state,
 			config,
@@ -137,7 +169,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 			roundChangeJustification,
 			valueToPropose,
 			valCheck,
-			signedRoundChange.Message.Round,
+			rcMessageI.Round,
 		) == nil {
 			// not returning error, no need to
 			return msg, valueToPropose, nil
@@ -150,25 +182,32 @@ func hasReceivedProposalJustificationForLeadingRound(
 func isProposalJustificationForLeadingRound(
 	state *State,
 	config IConfig,
-	roundChangeMsg *SignedMessage,
-	roundChanges []*SignedMessage,
-	roundChangeJustifications []*SignedMessage,
+	roundChangeMsg *types.SignedSSVMessage,
+	roundChanges []*types.SignedSSVMessage,
+	roundChangeJustifications []*types.SignedSSVMessage,
 	value []byte,
 	valCheck ProposedValueCheckF,
 	newRound Round,
 ) error {
+
+	// Decode
+	rcMessage := &Message{}
+	if err := rcMessage.Decode(roundChangeMsg.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode RoundChange Message for proposal justification")
+	}
+
 	if err := isReceivedProposalJustification(
 		state,
 		config,
 		roundChanges,
 		roundChangeJustifications,
-		roundChangeMsg.Message.Round,
+		rcMessage.Round,
 		value,
 		valCheck); err != nil {
 		return err
 	}
 
-	if proposer(state, config, roundChangeMsg.Message.Round) != state.Share.OperatorID {
+	if proposer(state, config, rcMessage.Round) != state.Share.OperatorID {
 		return errors.New("not proposer")
 	}
 
@@ -186,7 +225,7 @@ func isProposalJustificationForLeadingRound(
 func isReceivedProposalJustification(
 	state *State,
 	config IConfig,
-	roundChanges, prepares []*SignedMessage,
+	roundChanges, prepares []*types.SignedSSVMessage,
 	newRound Round,
 	value []byte,
 	valCheck ProposedValueCheckF,
@@ -209,55 +248,66 @@ func isReceivedProposalJustification(
 func validRoundChangeForData(
 	state *State,
 	config IConfig,
-	signedMsg *SignedMessage,
+	signedMsg *types.SignedSSVMessage,
 	height Height,
 	round Round,
 	fullData []byte,
+	verifySignature bool,
 ) error {
-	if signedMsg.Message.MsgType != RoundChangeMsgType {
+
+	// Decode
+	rcMessage := &Message{}
+	if err := rcMessage.Decode(signedMsg.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "Could not decode RoundChange Message to validate")
+	}
+
+	if rcMessage.MsgType != RoundChangeMsgType {
 		return errors.New("round change msg type is wrong")
 	}
-	if signedMsg.Message.Height != height {
+	if rcMessage.Height != height {
 		return errors.New("wrong msg height")
 	}
-	if signedMsg.Message.Round != round {
+	if rcMessage.Round != round {
 		return errors.New("wrong msg round")
 	}
-	if len(signedMsg.GetSigners()) != 1 {
+	if len(signedMsg.GetOperatorIDs()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
-	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+	if verifySignature {
+		if err := types.VerifySignedSSVMessage(signedMsg, state.Share.Committee); err != nil {
+			return errors.Wrap(err, "msg signature invalid")
+		}
 	}
 
-	if err := signedMsg.Message.Validate(); err != nil {
+	if err := rcMessage.Validate(); err != nil {
 		return errors.Wrap(err, "roundChange invalid")
 	}
 
 	// Addition to formal spec
 	// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
-	if signedMsg.Message.RoundChangePrepared() {
+	if rcMessage.RoundChangePrepared() {
 		r, err := HashDataRoot(fullData)
 		if err != nil {
 			return errors.Wrap(err, "could not hash input data")
 		}
 
 		// validate prepare message justifications
-		prepareMsgs, _ := signedMsg.Message.GetRoundChangeJustifications() // no need to check error, checked on signedMsg.Message.Validate()
+		prepareMsgs, _ := rcMessage.GetRoundChangeJustifications() // no need to check error, checked on signedMsg.Message.Validate()
 		for _, pm := range prepareMsgs {
 			if err := validSignedPrepareForHeightRoundAndRoot(
 				config,
 				pm,
 				state.Height,
-				signedMsg.Message.DataRound,
-				signedMsg.Message.Root,
-				state.Share.Committee); err != nil {
+				rcMessage.DataRound,
+				rcMessage.Root,
+				state.Share.Committee,
+				true); err != nil {
 				return errors.Wrap(err, "round change justification invalid")
 			}
 		}
 
-		if !bytes.Equal(r[:], signedMsg.Message.Root[:]) {
+		if !bytes.Equal(r[:], rcMessage.Root[:]) {
 			return errors.New("H(data) != root")
 		}
 
@@ -265,7 +315,7 @@ func validRoundChangeForData(
 			return errors.New("no justifications quorum")
 		}
 
-		if signedMsg.Message.DataRound > round {
+		if rcMessage.DataRound > round {
 			return errors.New("prepared round > round")
 		}
 
@@ -275,18 +325,27 @@ func validRoundChangeForData(
 }
 
 // highestPrepared returns a round change message with the highest prepared round, returns nil if none found
-func highestPrepared(roundChanges []*SignedMessage) (*SignedMessage, error) {
-	var ret *SignedMessage
+func highestPrepared(roundChanges []*types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
+	var ret *types.SignedSSVMessage
+	highestRound := NoRound
 	for _, rc := range roundChanges {
-		if !rc.Message.RoundChangePrepared() {
+		// Decode
+		rcMessage := &Message{}
+		if err := rcMessage.Decode(rc.SSVMessage.Data); err != nil {
+			return nil, errors.Wrap(err, "Could not decode RoundChange Message to compute the highest prepared message")
+		}
+
+		if !rcMessage.RoundChangePrepared() {
 			continue
 		}
 
 		if ret == nil {
 			ret = rc
+			highestRound = rcMessage.DataRound
 		} else {
-			if ret.Message.DataRound < rc.Message.DataRound {
+			if highestRound < rcMessage.DataRound {
 				ret = rc
+				highestRound = rcMessage.DataRound
 			}
 		}
 	}
@@ -294,17 +353,22 @@ func highestPrepared(roundChanges []*SignedMessage) (*SignedMessage, error) {
 }
 
 // returns the min round number out of the signed round change messages and the current round
-func minRound(roundChangeMsgs []*SignedMessage) Round {
+func minRound(roundChangeMsgs []*types.SignedSSVMessage) Round {
 	ret := NoRound
 	for _, msg := range roundChangeMsgs {
-		if ret == NoRound || ret > msg.Message.Round {
-			ret = msg.Message.Round
+		// Decode
+		rcMessage := &Message{}
+		if err := rcMessage.Decode(msg.SSVMessage.Data); err != nil {
+			continue
+		}
+		if ret == NoRound || ret > rcMessage.Round {
+			ret = rcMessage.Round
 		}
 	}
 	return ret
 }
 
-func getRoundChangeData(state *State, config IConfig, instanceStartValue []byte) (Round, [32]byte, []byte, []*SignedMessage, error) {
+func getRoundChangeData(state *State, config IConfig, instanceStartValue []byte) (Round, [32]byte, []byte, []*types.SignedSSVMessage, error) {
 	if state.LastPreparedRound != NoRound && state.LastPreparedValue != nil {
 		justifications, err := getRoundChangeJustification(state, config, state.PrepareContainer)
 		if err != nil {
@@ -335,7 +399,7 @@ RoundChange(
            getRoundChangeJustification(current)
        )
 */
-func CreateRoundChange(state *State, config IConfig, newRound Round, instanceStartValue []byte) (*SignedMessage, error) {
+func CreateRoundChange(state *State, config IConfig, newRound Round, instanceStartValue []byte) (*Message, error) {
 	round, root, fullData, justifications, err := getRoundChangeData(state, config, instanceStartValue)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not generate round change data")
@@ -354,18 +418,7 @@ func CreateRoundChange(state *State, config IConfig, newRound Round, instanceSta
 		Root:                     root,
 		DataRound:                round,
 		RoundChangeJustification: justificationsData,
+		FullData:                 fullData,
 	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed signing prepare msg")
-	}
-
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   *msg,
-
-		FullData: fullData,
-	}
-	return signedMsg, nil
+	return msg, nil
 }
