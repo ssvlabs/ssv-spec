@@ -38,8 +38,8 @@ func TestInstance_Marshaling(t *testing.T) {
 		PartialQuorum:   2,
 		Committee: []*types.Operator{
 			{
-				OperatorID: 1,
-				PubKey:     TestingSK.GetPublicKey().Serialize(),
+				OperatorID:   1,
+				BeaconPubKey: TestingSK.GetPublicKey().Serialize(),
 			},
 		},
 	}

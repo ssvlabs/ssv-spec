@@ -74,7 +74,7 @@ func (b *BaseRunner) verifyBeaconPartialSignature(msg *types.PartialSignatureMes
 	for _, n := range b.Share.Committee {
 		if n.GetID() == signer {
 			pk := &bls.PublicKey{}
-			if err := pk.Deserialize(n.GetPublicKey()); err != nil {
+			if err := pk.Deserialize(n.GetBeaconPublicKey()); err != nil {
 				return errors.Wrap(err, "could not deserialized pk")
 			}
 			sig := &bls.Sign{}

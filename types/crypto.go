@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"fmt"
+
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -26,7 +27,7 @@ func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, s
 		for _, n := range operators {
 			if id == n.GetID() {
 				pk := bls.PublicKey{}
-				if err := pk.Deserialize(n.GetPublicKey()); err != nil {
+				if err := pk.Deserialize(n.GetBeaconPublicKey()); err != nil {
 					return errors.Wrap(err, "failed to deserialize public key")
 				}
 

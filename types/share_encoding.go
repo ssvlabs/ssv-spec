@@ -36,7 +36,7 @@ func (s *Share) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Offset (3) 'Committee'
 	dst = ssz.WriteOffset(dst, offset)
-	offset += len(s.Committee) * 56
+	offset += len(s.Committee) * 312
 
 	// Field (4) 'DomainType'
 	dst = append(dst, s.DomainType[:]...)
@@ -115,7 +115,7 @@ func (s *Share) UnmarshalSSZ(buf []byte) error {
 	// Field (3) 'Committee'
 	{
 		buf = tail[o3:]
-		num, err := ssz.DivideInt2(len(buf), 56, 13)
+		num, err := ssz.DivideInt2(len(buf), 312, 13)
 		if err != nil {
 			return err
 		}
@@ -124,7 +124,7 @@ func (s *Share) UnmarshalSSZ(buf []byte) error {
 			if s.Committee[ii] == nil {
 				s.Committee[ii] = new(Operator)
 			}
-			if err = s.Committee[ii].UnmarshalSSZ(buf[ii*56 : (ii+1)*56]); err != nil {
+			if err = s.Committee[ii].UnmarshalSSZ(buf[ii*312 : (ii+1)*312]); err != nil {
 				return err
 			}
 		}
@@ -137,7 +137,7 @@ func (s *Share) SizeSSZ() (size int) {
 	size = 164
 
 	// Field (3) 'Committee'
-	size += len(s.Committee) * 56
+	size += len(s.Committee) * 312
 
 	return
 }
