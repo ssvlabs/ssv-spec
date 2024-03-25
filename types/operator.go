@@ -7,7 +7,7 @@ type OperatorID = uint64
 type Operator struct {
 	OperatorID    OperatorID
 	BeaconPubKey  []byte `ssz-size:"48"`
-	NetworkPubKey []byte `ssz-size:"256"`
+	NetworkPubKey []byte `ssz-size:"294"`
 }
 
 // GetBeaconPublicKey returns the beacon public key with which the node is identified with
