@@ -65,7 +65,7 @@ func ValidateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee, true); err != nil {
+	if err := baseCommitValidationWithVerification(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
 

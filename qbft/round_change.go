@@ -207,14 +207,13 @@ func isReceivedProposalJustification(
 	return nil
 }
 
-func validRoundChangeForData(
+func validRoundChangeForDataNoVerification(
 	state *State,
 	config IConfig,
 	signedMsg *SignedMessage,
 	height Height,
 	round Round,
 	fullData []byte,
-	verifySignature bool,
 ) error {
 	if signedMsg.Message.MsgType != RoundChangeMsgType {
 		return errors.New("round change msg type is wrong")
@@ -237,12 +236,6 @@ func validRoundChangeForData(
 		return errors.New("signers not in committee")
 	}
 
-	if verifySignature {
-		if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
-			return errors.Wrap(err, "msg signature invalid")
-		}
-	}
-
 	// Addition to formal spec
 	// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
 	if signedMsg.Message.RoundChangePrepared() {
@@ -254,14 +247,13 @@ func validRoundChangeForData(
 		// validate prepare message justifications
 		prepareMsgs, _ := signedMsg.Message.GetRoundChangeJustifications() // no need to check error, checked on signedMsg.Message.Validate()
 		for _, pm := range prepareMsgs {
-			if err := validSignedPrepareForHeightRoundAndRoot(
+			if err := validSignedPrepareForHeightRoundAndRootWithVerification(
 				config,
 				pm,
 				state.Height,
 				signedMsg.Message.DataRound,
 				signedMsg.Message.Root,
-				state.Share.Committee,
-				true); err != nil {
+				state.Share.Committee); err != nil {
 				return errors.Wrap(err, "round change justification invalid")
 			}
 		}
@@ -280,6 +272,28 @@ func validRoundChangeForData(
 
 		return nil
 	}
+
+	return nil
+}
+
+func validRoundChangeForDataWithVerification(
+	state *State,
+	config IConfig,
+	signedMsg *SignedMessage,
+	height Height,
+	round Round,
+	fullData []byte,
+) error {
+
+	if err := validRoundChangeForDataNoVerification(state, config, signedMsg, height, round, fullData); err != nil {
+		return err
+	}
+
+	// Verify signature
+	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
+	}
+
 	return nil
 }
 

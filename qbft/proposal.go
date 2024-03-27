@@ -129,7 +129,7 @@ func isProposalJustification(
 		// no quorum, duplicate signers,  invalid still has quorum, invalid no quorum
 		// prepared
 		for _, rc := range roundChangeMsgs {
-			if err := validRoundChangeForData(state, config, rc, height, round, fullData, true); err != nil {
+			if err := validRoundChangeForDataWithVerification(state, config, rc, height, round, fullData); err != nil {
 				return errors.Wrap(err, "change round msg not valid")
 			}
 		}
@@ -181,14 +181,13 @@ func isProposalJustification(
 
 			// validate each prepare message against the highest previously prepared fullData and round
 			for _, pm := range prepareMsgs {
-				if err := validSignedPrepareForHeightRoundAndRoot(
+				if err := validSignedPrepareForHeightRoundAndRootWithVerification(
 					config,
 					pm,
 					height,
 					rcm.Message.DataRound,
 					rcm.Message.Root,
 					state.Share.Committee,
-					true,
 				); err != nil {
 					return errors.New("signed prepare not valid")
 				}

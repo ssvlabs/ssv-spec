@@ -60,14 +60,13 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
 	ret := make([]*SignedMessage, 0)
 	for _, msg := range prepareMsgs {
-		if err := validSignedPrepareForHeightRoundAndRoot(
+		if err := validSignedPrepareForHeightRoundAndRootNoVerification(
 			config,
 			msg,
 			state.Height,
 			state.LastPreparedRound,
 			r,
 			state.Share.Committee,
-			false,
 		); err == nil {
 			ret = append(ret, msg)
 		}
@@ -81,14 +80,13 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 
 // validSignedPrepareForHeightRoundAndRoot known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
-func validSignedPrepareForHeightRoundAndRoot(
+func validSignedPrepareForHeightRoundAndRootNoVerification(
 	config IConfig,
 	signedPrepare *SignedMessage,
 	height Height,
 	round Round,
 	root [32]byte,
-	operators []*types.Operator,
-	verifySignature bool) error {
+	operators []*types.Operator) error {
 	if signedPrepare.Message.MsgType != PrepareMsgType {
 		return errors.New("prepare msg type is wrong")
 	}
@@ -115,10 +113,24 @@ func validSignedPrepareForHeightRoundAndRoot(
 		return errors.New("signers not in committee")
 	}
 
-	if verifySignature {
-		if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-			return errors.Wrap(err, "msg signature invalid")
-		}
+	return nil
+}
+
+func validSignedPrepareForHeightRoundAndRootWithVerification(
+	config IConfig,
+	signedPrepare *SignedMessage,
+	height Height,
+	round Round,
+	root [32]byte,
+	operators []*types.Operator) error {
+
+	if err := validSignedPrepareForHeightRoundAndRootNoVerification(config, signedPrepare, height, round, root, operators); err != nil {
+		return err
+	}
+
+	// Verify signature
+	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+		return errors.Wrap(err, "msg signature invalid")
 	}
 
 	return nil
