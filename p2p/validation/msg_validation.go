@@ -14,15 +14,23 @@ import (
 // MsgValidatorFunc represents a message validator
 type MsgValidatorFunc = func(ctx context.Context, p peer.ID, msg *pubsub.Message) pubsub.ValidationResult
 
-func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
+type MessageValidator interface {
+	ValidateSignedSSVMessage(signedSSVMessage *types.SignedSSVMessage) error
+	ValidateSignature(signedSSVMessage *types.SignedSSVMessage) error
+}
+
+func MsgValidation(runner ssv.Runner, msgValidator MessageValidator) MsgValidatorFunc {
 	return func(ctx context.Context, p peer.ID, msg *pubsub.Message) pubsub.ValidationResult {
 		signedSSVMsg, err := DecodePubsubMsg(msg)
 		if err != nil {
 			return pubsub.ValidationReject
 		}
 
-		// Validate SignedSSVMessage
-		if validateSignedSSVMessage(runner, signedSSVMsg) != nil {
+		// Message Validator
+		if err := msgValidator.ValidateSignedSSVMessage(signedSSVMsg); err != nil {
+			return pubsub.ValidationReject
+		}
+		if err := msgValidator.ValidateSignature(signedSSVMsg); err != nil {
 			return pubsub.ValidationReject
 		}
 
