@@ -15,8 +15,8 @@ import (
 type MsgValidatorFunc = func(ctx context.Context, p peer.ID, msg *pubsub.Message) pubsub.ValidationResult
 
 type MessageValidator interface {
-	ValidateSignedSSVMessage(signedSSVMessage *types.SignedSSVMessage) error
-	ValidateSignature(signedSSVMessage *types.SignedSSVMessage) error
+	ValidateSignedSSVMessage(runner ssv.Runner, signedSSVMessage *types.SignedSSVMessage) error
+	ValidateSignature(runner ssv.Runner, signedSSVMessage *types.SignedSSVMessage) error
 }
 
 func MsgValidation(runner ssv.Runner, msgValidator MessageValidator) MsgValidatorFunc {
@@ -27,10 +27,10 @@ func MsgValidation(runner ssv.Runner, msgValidator MessageValidator) MsgValidato
 		}
 
 		// Message Validator
-		if err := msgValidator.ValidateSignedSSVMessage(signedSSVMsg); err != nil {
+		if err := msgValidator.ValidateSignedSSVMessage(runner, signedSSVMsg); err != nil {
 			return pubsub.ValidationReject
 		}
-		if err := msgValidator.ValidateSignature(signedSSVMsg); err != nil {
+		if err := msgValidator.ValidateSignature(runner, signedSSVMsg); err != nil {
 			return pubsub.ValidationReject
 		}
 
@@ -64,32 +64,6 @@ func DecodePubsubMsg(msg *pubsub.Message) (*types.SignedSSVMessage, error) {
 		return nil, err
 	}
 	return ret, nil
-}
-
-func validateSignedSSVMessage(runner ssv.Runner, msg *types.SignedSSVMessage) error {
-
-	if err := msg.Validate(); err != nil {
-		return err
-	}
-
-	ssvMessage, err := msg.GetSSVMessageFromData()
-	if err != nil {
-		return err
-	}
-
-	return validateSSVMessage(runner, ssvMessage)
-}
-
-func validateSSVMessage(runner ssv.Runner, msg *types.SSVMessage) error {
-	if !runner.GetBaseRunner().Share.ValidatorPubKey.MessageIDBelongs(msg.GetID()) {
-		return errors.New("msg ID doesn't match validator ID")
-	}
-
-	if len(msg.GetData()) == 0 {
-		return errors.New("msg data is invalid")
-	}
-
-	return nil
 }
 
 func validateConsensusMsg(runner ssv.Runner, data []byte) error {
