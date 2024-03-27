@@ -231,4 +231,7 @@ var AllTests = []tests.TestF{
 	roundchange.JustificationPastRound,
 	roundchange.ForceStop,
 	roundchange.PostCutoff,
+	roundchange.EmptySigners,
+	roundchange.NonUniqueSigner,
+	roundchange.ZeroSigner,
 }
