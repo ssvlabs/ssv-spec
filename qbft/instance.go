@@ -156,7 +156,6 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			return errors.New("did not receive proposal for this round")
 		}
 		return validSignedPrepareForHeightRoundAndRootNoVerification(
-			i.config,
 			msg,
 			i.State.Height,
 			i.State.Round,
