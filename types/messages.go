@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 
 	"github.com/pkg/errors"
 )
@@ -18,6 +19,13 @@ const (
 	pubKeyStartPos   = domainStartPos + domainSize
 	roleTypeSize     = 4
 	roleTypeStartPos = pubKeyStartPos + pubKeySize
+
+	// SignedSSVMessage offsets
+	signatureSize    = 256
+	signatureOffset  = 0
+	operatorIDSize   = 8
+	operatorIDOffset = signatureOffset + signatureSize
+	messageOffset    = operatorIDOffset + operatorIDSize
 )
 
 type Validate interface {
@@ -162,12 +170,19 @@ func (msg *SignedSSVMessage) GetSSVMessageFromData() (*SSVMessage, error) {
 
 // Encode returns a msg encoded bytes or error
 func (msg *SignedSSVMessage) Encode() ([]byte, error) {
-	return msg.MarshalSSZ()
+	return EncodeSignedSSVMessage(msg.Data, msg.OperatorID, msg.Signature), nil
 }
 
 // Decode returns error if decoding failed
 func (msg *SignedSSVMessage) Decode(data []byte) error {
-	return msg.UnmarshalSSZ(data)
+	msgData, operatorID, signature, err := DecodeSignedSSVMessage(data)
+	if err != nil {
+		return errors.Wrap(err, "could not decode data into a SignedSSVMessage")
+	}
+	msg.Data = msgData
+	msg.OperatorID = operatorID
+	msg.Signature = signature
+	return nil
 }
 
 // Validate checks the following rules:
@@ -185,4 +200,25 @@ func (msg *SignedSSVMessage) Validate() error {
 		return errors.New("Data has length 0 in SignedSSVMessage")
 	}
 	return nil
+}
+
+// EncodeSignedSSVMessage serializes the message, op id and signature into bytes
+func EncodeSignedSSVMessage(message []byte, operatorID OperatorID, signature []byte) []byte {
+	b := make([]byte, signatureSize+operatorIDSize+len(message))
+	copy(b[signatureOffset:], signature)
+	binary.LittleEndian.PutUint64(b[operatorIDOffset:], operatorID)
+	copy(b[messageOffset:], message)
+	return b
+}
+
+// DecodeSignedSSVMessage deserializes signed message bytes messsage, op id and a signature
+func DecodeSignedSSVMessage(encoded []byte) ([]byte, OperatorID, []byte, error) {
+	if len(encoded) < messageOffset {
+		return nil, 0, nil, fmt.Errorf("unexpected encoded message size of %d", len(encoded))
+	}
+
+	message := encoded[messageOffset:]
+	operatorID := binary.LittleEndian.Uint64(encoded[operatorIDOffset : operatorIDOffset+operatorIDSize])
+	signature := encoded[signatureOffset : signatureOffset+signatureSize]
+	return message, operatorID, signature, nil
 }
