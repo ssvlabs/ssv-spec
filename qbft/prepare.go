@@ -111,6 +111,10 @@ func validSignedPrepareForHeightRoundAndRoot(
 		return errors.New("msg allows 1 signer")
 	}
 
+	if !signedPrepare.CheckSignersInCommittee(operators) {
+		return errors.New("signers not in committee")
+	}
+
 	if verifySignature {
 		if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 			return errors.Wrap(err, "msg signature invalid")

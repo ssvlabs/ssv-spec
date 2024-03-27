@@ -233,6 +233,10 @@ func validRoundChangeForData(
 		return errors.Wrap(err, "roundChange invalid")
 	}
 
+	if !signedMsg.CheckSignersInCommittee(state.Share.Committee) {
+		return errors.New("signers not in committee")
+	}
+
 	if verifySignature {
 		if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
 			return errors.Wrap(err, "msg signature invalid")

@@ -113,6 +113,10 @@ func baseCommitValidation(
 		return errors.Wrap(err, "signed commit invalid")
 	}
 
+	if !signedCommit.CheckSignersInCommittee(operators) {
+		return errors.New("signers not in committee")
+	}
+
 	// verify signature
 	if verifySignature {
 		if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {

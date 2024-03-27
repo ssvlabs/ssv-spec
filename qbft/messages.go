@@ -285,3 +285,20 @@ func (signedMsg *SignedMessage) WithoutFUllData() *SignedMessage {
 		Message:   signedMsg.Message,
 	}
 }
+
+// Check if all signedMsg's signers belong to the given committee in O(n+m)
+func (signedMsg *SignedMessage) CheckSignersInCommittee(committee []*types.Operator) bool {
+	// Committee's operators map
+	committeeMap := make(map[uint64]struct{})
+	for _, operator := range committee {
+		committeeMap[operator.OperatorID] = struct{}{}
+	}
+
+	// Check that all message signers belong to the map
+	for _, signer := range signedMsg.Signers {
+		if _, ok := committeeMap[signer]; !ok {
+			return false
+		}
+	}
+	return true
+}
