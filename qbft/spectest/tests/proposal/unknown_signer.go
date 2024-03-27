@@ -19,6 +19,6 @@ func UnknownSigner() tests.SpecTest {
 		Pre:           pre,
 		PostRoot:      "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
 		InputMessages: msgs,
-		ExpectedError: "invalid signed message: msg signature invalid: unknown signer",
+		ExpectedError: "invalid signed message: signers not in committee",
 	}
 }
