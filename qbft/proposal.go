@@ -62,6 +62,10 @@ func isValidProposal(
 		return errors.New("msg allows 1 signer")
 	}
 
+	if !signedProposal.CheckSignersInCommittee(state.Share.Committee) {
+		return errors.New("signers not in committee")
+	}
+
 	if !signedProposal.MatchedSigners([]types.OperatorID{proposer(state, config, signedProposal.Message.Round)}) {
 		return errors.New("proposal leader invalid")
 	}
