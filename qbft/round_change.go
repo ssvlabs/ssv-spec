@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -213,6 +214,7 @@ func validRoundChangeForData(
 	height Height,
 	round Round,
 	fullData []byte,
+	verifySignature bool,
 ) error {
 	if signedMsg.Message.MsgType != RoundChangeMsgType {
 		return errors.New("round change msg type is wrong")
@@ -227,12 +229,14 @@ func validRoundChangeForData(
 		return errors.New("msg allows 1 signer")
 	}
 
-	if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+	if err := signedMsg.Validate(); err != nil {
+		return errors.Wrap(err, "roundChange invalid")
 	}
 
-	if err := signedMsg.Message.Validate(); err != nil {
-		return errors.Wrap(err, "roundChange invalid")
+	if verifySignature {
+		if err := signedMsg.Signature.VerifyByOperators(signedMsg, config.GetSignatureDomainType(), types.QBFTSignatureType, state.Share.Committee); err != nil {
+			return errors.Wrap(err, "msg signature invalid")
+		}
 	}
 
 	// Addition to formal spec
@@ -252,7 +256,8 @@ func validRoundChangeForData(
 				state.Height,
 				signedMsg.Message.DataRound,
 				signedMsg.Message.Root,
-				state.Share.Committee); err != nil {
+				state.Share.Committee,
+				true); err != nil {
 				return errors.Wrap(err, "round change justification invalid")
 			}
 		}

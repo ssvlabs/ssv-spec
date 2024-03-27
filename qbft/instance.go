@@ -162,6 +162,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Round,
 			proposedMsg.Message.Root,
 			i.State.Share.Committee,
+			false,
 		)
 	case CommitMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
@@ -177,7 +178,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChangeForData(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
+		return validRoundChangeForData(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData, false)
 	default:
 		return errors.New("signed message type not supported")
 	}

@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -99,6 +100,7 @@ func baseCommitValidation(
 	signedCommit *SignedMessage,
 	height Height,
 	operators []*types.Operator,
+	verifySignature bool,
 ) error {
 	if signedCommit.Message.MsgType != CommitMsgType {
 		return errors.New("commit msg type is wrong")
@@ -112,8 +114,10 @@ func baseCommitValidation(
 	}
 
 	// verify signature
-	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+	if verifySignature {
+		if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+			return errors.Wrap(err, "msg signature invalid")
+		}
 	}
 
 	return nil
@@ -127,7 +131,7 @@ func validateCommit(
 	proposedMsg *SignedMessage,
 	operators []*types.Operator,
 ) error {
-	if err := baseCommitValidation(config, signedCommit, height, operators); err != nil {
+	if err := baseCommitValidation(config, signedCommit, height, operators, false); err != nil {
 		return err
 	}
 

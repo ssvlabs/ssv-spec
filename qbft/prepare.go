@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -66,6 +67,7 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 			state.LastPreparedRound,
 			r,
 			state.Share.Committee,
+			false,
 		); err == nil {
 			ret = append(ret, msg)
 		}
@@ -85,7 +87,8 @@ func validSignedPrepareForHeightRoundAndRoot(
 	height Height,
 	round Round,
 	root [32]byte,
-	operators []*types.Operator) error {
+	operators []*types.Operator,
+	verifySignature bool) error {
 	if signedPrepare.Message.MsgType != PrepareMsgType {
 		return errors.New("prepare msg type is wrong")
 	}
@@ -108,8 +111,10 @@ func validSignedPrepareForHeightRoundAndRoot(
 		return errors.New("msg allows 1 signer")
 	}
 
-	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+	if verifySignature {
+		if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+			return errors.Wrap(err, "msg signature invalid")
+		}
 	}
 
 	return nil
