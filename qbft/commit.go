@@ -138,7 +138,6 @@ func baseCommitValidationWithVerification(
 }
 
 func validateCommit(
-	config IConfig,
 	signedCommit *SignedMessage,
 	height Height,
 	round Round,
