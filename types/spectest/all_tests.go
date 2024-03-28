@@ -10,6 +10,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
+
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
 )
 
@@ -96,6 +98,13 @@ var AllTests = []SpecTest{
 	ssz.SSZWithdrawalsMarshaling(),
 
 	beacon.DepositData(),
+
+	signedssvmsg.Encoding(),
+	signedssvmsg.Valid(),
+	signedssvmsg.NoData(),
+	signedssvmsg.EmptySignature(),
+	signedssvmsg.ZeroSigner(),
+	signedssvmsg.WrongData(),
 
 	share.HasPartialQuorumButNoQuorum(),
 	share.HasQuorum(),
