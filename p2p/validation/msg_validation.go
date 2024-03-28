@@ -17,7 +17,8 @@ type MsgValidatorFunc = func(ctx context.Context, p peer.ID, msg *pubsub.Message
 // To-Do: better spec the intended Message Validation behavior. Issue #375: https://github.com/bloxapp/ssv-spec/issues/375
 type MessageValidator interface {
 	ValidateSignedSSVMessage(runner ssv.Runner, signedSSVMessage *types.SignedSSVMessage) error
-	ValidateSignature(runner ssv.Runner, signedSSVMessage *types.SignedSSVMessage) error // Verifies the message's RSA signature with PKCSv1.5 encoding. Ref: https://datatracker.ietf.org/doc/html/rfc8017#section-8.2.2
+	// Verifies the message's RSA signature with PKCSv1.5 encoding. Ref: https://datatracker.ietf.org/doc/html/rfc8017#section-8.2.2
+	VerifySignature(runner ssv.Runner, signedSSVMessage *types.SignedSSVMessage) error
 }
 
 func MsgValidation(runner ssv.Runner, msgValidator MessageValidator) MsgValidatorFunc {
@@ -31,7 +32,7 @@ func MsgValidation(runner ssv.Runner, msgValidator MessageValidator) MsgValidato
 		if err := msgValidator.ValidateSignedSSVMessage(runner, signedSSVMsg); err != nil {
 			return pubsub.ValidationReject
 		}
-		if err := msgValidator.ValidateSignature(runner, signedSSVMsg); err != nil {
+		if err := msgValidator.VerifySignature(runner, signedSSVMsg); err != nil {
 			return pubsub.ValidationReject
 		}
 
