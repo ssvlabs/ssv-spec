@@ -29,7 +29,7 @@ func UnknownSigner() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: failed to verify PartialSignature: unknown signer",
+				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: unknown signer",
 			},
 			{
 				Name:   "aggregator selection proof",
@@ -43,7 +43,7 @@ func UnknownSigner() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: failed to verify PartialSignature: unknown signer",
+				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: unknown signer",
 			},
 		},
 	}
@@ -62,7 +62,7 @@ func UnknownSigner() tests.SpecTest {
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: "failed processing randao message: invalid pre-consensus message: failed to verify PartialSignature: unknown signer",
+			ExpectedError: "failed processing randao message: invalid pre-consensus message: unknown signer",
 		}
 	}
 
@@ -80,7 +80,7 @@ func UnknownSigner() tests.SpecTest {
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: "failed processing randao message: invalid pre-consensus message: failed to verify PartialSignature: unknown signer",
+			ExpectedError: "failed processing randao message: invalid pre-consensus message: unknown signer",
 		}
 	}
 

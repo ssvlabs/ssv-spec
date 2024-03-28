@@ -27,7 +27,7 @@ var AllTests = []tests.TestF{
 	postconsensus.PostFinish,
 	postconsensus.NoRunningDuty,
 	postconsensus.InvalidMessageSignature,
-	postconsensus.InvalidBeaconSignature,
+	postconsensus.InvalidBeaconSignatureInQuorum,
 	postconsensus.DuplicateMsgDifferentRoots,
 	postconsensus.DuplicateMsgDifferentRootsThenQuorum,
 	postconsensus.DuplicateMsg,
@@ -46,6 +46,7 @@ var AllTests = []tests.TestF{
 	postconsensus.Quorum13Operators,
 	postconsensus.InvalidDecidedValue,
 	postconsensus.InvalidThenQuorum,
+	postconsensus.InvalidQuorumThenValidQuorum,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -130,9 +131,10 @@ var AllTests = []tests.TestF{
 	preconsensus.ValidMessage13Operators,
 	preconsensus.InconsistentBeaconSigner,
 	preconsensus.UnknownSigner,
-	preconsensus.InvalidBeaconSignature,
+	preconsensus.InvalidBeaconSignatureInQuorum,
 	preconsensus.InvalidMessageSignature,
 	preconsensus.InvalidThenQuorum,
+	preconsensus.InvalidQuorumThenValidQuorum,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,

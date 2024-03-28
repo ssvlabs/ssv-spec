@@ -2,11 +2,12 @@ package ssv
 
 import (
 	"bytes"
+	"sort"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
-	"sort"
 )
 
 func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
@@ -24,6 +25,18 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.Sig
 	}
 
 	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
+}
+
+// Verify each signature in container removing the invalid ones
+func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContainer, root [32]byte) {
+
+	signatures := container.GetSignatures(root)
+
+	for operatorID, signature := range signatures {
+		if err := b.verifyBeaconPartialSignature(operatorID, signature, root); err != nil {
+			container.Remove(operatorID, root)
+		}
+	}
 }
 
 func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {

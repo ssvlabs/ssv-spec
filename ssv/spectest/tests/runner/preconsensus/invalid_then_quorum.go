@@ -32,7 +32,6 @@ func InvalidThenQuorum() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
 			},
 			{
 				Name:   "aggregator selection proof",
@@ -50,14 +49,13 @@ func InvalidThenQuorum() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
 			},
 			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationWrongRootMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationWrongBeaconSigMsg(ks.Shares[1], 1)),
 
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
@@ -71,14 +69,13 @@ func InvalidThenQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingValidatorRegistration),
 				},
-				ExpectedError: "failed processing validator registration message: invalid pre-consensus message: wrong signing root",
 			},
 			{
 				Name:   "voluntary exit",
 				Runner: testingutils.VoluntaryExitRunner(ks),
 				Duty:   &testingutils.TestingVoluntaryExitDuty,
 				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitWrongRootMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitWrongBeaconSigMsg(ks.Shares[1], 1)),
 
 					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
 					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2)),
@@ -92,7 +89,6 @@ func InvalidThenQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedVoluntaryExit(ks)),
 				},
-				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: wrong signing root",
 			},
 		},
 	}
@@ -115,7 +111,6 @@ func InvalidThenQuorum() tests.SpecTest {
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: "failed processing randao message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
 		}
 	}
 
@@ -137,7 +132,6 @@ func InvalidThenQuorum() tests.SpecTest {
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: "failed processing randao message: invalid pre-consensus message: could not verify Beacon partial Signature: wrong signature",
 		}
 	}
 
