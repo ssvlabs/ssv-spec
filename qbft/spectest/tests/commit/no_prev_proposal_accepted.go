@@ -18,7 +18,7 @@ func NoPrevAcceptedProposal() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "no previous accepted proposal",
 		Pre:           pre,
-		PostRoot:      "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
+		PostRoot:      "7036b776c369eb5c5420266071034c6899f189e214cc0af89fbbcf8157062a58",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: did not receive proposal for this round",
 	}

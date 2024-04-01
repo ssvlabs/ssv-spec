@@ -41,7 +41,7 @@ func PreparedPreviouslyJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "previously prepared proposal",
 		Pre:           pre,
-		PostRoot:      "c750be146fad8375d8107451eabf8458d3216afa550d4380fc476cce8077a90e",
+		PostRoot:      "f43795fed02d252caa6d430eceb8a2323bc20c6665bf7ee8fff6ee1dd92fa639",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks10.Shares[1], types.OperatorID(1)),

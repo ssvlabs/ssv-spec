@@ -20,7 +20,7 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change f+1 not duplicate prepared",
 		Pre:            pre,
-		PostRoot:       "6a7c1be9ab4c16a305f393c97744fd224bf1bbc2e627c04659d9e65d6cea571f",
+		PostRoot:       "2df5688a7ed70e5686a76c65575890b75dfb733e6e6471e6fb533cc56e3b50ea",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

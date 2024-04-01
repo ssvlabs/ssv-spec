@@ -36,7 +36,7 @@ func DuplicateMsgQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change duplicate msg quorum",
 		Pre:           pre,
-		PostRoot:      "595889ae5096cb343497314ab7ea82299f8d05d01de3fad6902bfb559d5356ec",
+		PostRoot:      "adb28deb5d6062d618998501989f31725d144a75b660e5d356da62b28973ca7a",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingProposalMessageWithRoundAndRC(

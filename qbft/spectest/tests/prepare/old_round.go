@@ -29,7 +29,7 @@ func OldRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare prev round",
 		Pre:           pre,
-		PostRoot:      "3b9383a2b8f9dc723606044e95227cfc1914451ed35a80657c22ecab949d8324",
+		PostRoot:      "c988083323e00c386cc21915985374cf0f451389fcc4a810f058adeffee9e336",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: past round",
 	}
