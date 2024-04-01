@@ -42,55 +42,68 @@
 						"Committee": [
 								{
 										"OperatorID": 1,
-										"PubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt"
+										"BeaconPubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB"
 								},
 								{
 										"OperatorID": 2,
-										"PubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z"
+										"BeaconPubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvflPDLfhwkRxfzz5kBJLrOK5OnLdFlSh3Y74A3ZeqrJSO+NBBS9cBWbYvrlhi28YgA2dbUvvhuegA86S6U1mOZxl9Vu7sVVArmIYO5rQ+sE33AokQL6PCA9SXLvPAwOwAHKs2xy3zoIMEks8E4Ul38MHgWw/Rl3L2AyViJogAQCN4Y4A0h5BWmwqMj+wZ9gh70Z+Shg2PJI1lvJ+FJYU+R1A3Ivx4uiZLO5zt9TBeal2or4HdK+2CzCzjlo24WPkYJruL+yyxGUB0y005M4qje+Q7nZf+bm/+LSByBrNB/Jyut5TNeS+q7HF5dYTeLwdL/uWaGQcW7JVXNlCt8Rm4wIDAQAB"
 								},
 								{
 										"OperatorID": 3,
-										"PubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ"
+										"BeaconPubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJCU0IDKcMbE6AZ71ot9oXctndMsnwOhmzAMuxaPh0Z6OeV4lodboHdxZIUbFEVZ76d5W6Oh8/CZSrUroZ0wgOC5+v71P+hRfJndd8ZxPTRTure5yYALPK1FV8uN31WIGSN+4bmNOXdirB3t6mxP/o6cHDrryo5IoFcYYqF2neDwzmPoPfW4SOgMpAeOtqhrK1A4V1/8QLW/v3Q8srbVlRm1DEvY17k6ODDRq6mggP0oHs4udAwZEQUDivsx3/kpx7ift8BZbYQyumob6YsIYXMIj85B5CkBYtvdYqEKhYNyUTO3Au5TkfQlYwGy5JqOdbHWdRZnn7+jV2yY9YShuwIDAQAB"
 								},
 								{
 										"OperatorID": 4,
-										"PubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz"
+										"BeaconPubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs0DWybL8zLGGXB590kn0iSIrB1Gs3ju6ahu7MXj7icO2hN4G2u0CTYqx+Efc1KTen/FeIDuRt//K6fIl+W1wy6ijd1FyVSD4f+PQ2sFCml6hq20Y4w53cX2cKHdDV/F89BsdBn7EWqFmFAM31Klz5dc+REKyIittPNJ+g0Jo68IeTeWEk0cb2QFULPEneRagHTotmXkd95Dg+0wLaAKkfa+lXQcPHLp/uGgCWC95uFs+8VSIFlMcqhH4DI+FANkMTf2Y2fPZXOv80NlRDRKgKtGglnWIdkWzszzm91Ub3hn7hOLrz/7EeiFrcI+kAP8hJRAZqhGVIgSK9vP8LECVzwIDAQAB"
 								},
 								{
 										"OperatorID": 5,
-										"PubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb"
+										"BeaconPubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx1wFVtRw+P6Z1DiJciNwPYJ+E7ALpaJ23kdO5XptAp6BgoSaFRJUCBoDaDITu4uf17xCboJhQKE2xsdM5ytbTc1ZJJDPZYps5g3j6swKPm9wJxItbtrVEmh6cNo5DfVK9+sAlu0+LdWiySc9raL6fyrxeA9y+XeDgJTyTD7mHxGDc1JEm7zCTLPbGY1R12aNT332uIA7VMP0THSBFi5yfTGzvV88Kx1SBIkWDsZ0YM9eddMc7nqeI7mA+dHia5NaMRwklfBI1w6Yuh5m9T+hQa+Qhb4SURAFRah/yan/4j/sGM0ChpLrRgSuYnqYvR1nfnFzhOzKw6oS8cxTSu1U+QIDAQAB"
 								},
 								{
 										"OperatorID": 6,
-										"PubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3"
+										"BeaconPubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuhYNz0rmW/fh3hLM/VB8bCQf2nCIQhIwqqSYX6XcLqf/j3MOpJqo6fcgjpFdGIVXd18ugyeETvVpEcUGqGfMCbMhZx2uteMOqYLwm9P+kbLgDD8jXjtoU/gNb9g2g875xH7/VUN0u3VPBBIvFaHxijsFYCh4u+aSprOLyidDgT5E+ggUPICcdjOvxy3k3HUdy+QRmmnRDoqY1543TIXEfE04ws9nGBez1ySGpCVuhdQ7VqH9BCCsI/J0HP1cJY2wkMBRy793ETlqcnJT8r1Ij9gfArknUe9WchgFRKAuOXv/k0eBjwzOw9Rlg7LFqF1Oom2qOw9RfgqcM3AhY59wAQIDAQAB"
 								},
 								{
 										"OperatorID": 7,
-										"PubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j"
+										"BeaconPubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ4/bjOW8EnWJlu9oyRNu6HzhhjUK2QJAwXEe3itwYnBX4lJEMrTf1ulkvafuZePO2aIN7B/x24kS3aR//b3kSJvMxfrOvzASgpba/4Fpuxw/lgVtY/LX41F3QQkVWPWwaXWai2Gpmsf6BwJMMaeNoAUYhOjs8XsFMoqWj6eInSCNHOI6kqNcJuY4F2KheCdj6TS6/LKoLhbt3jqGMJCuxoWDB1zXCI4xedGxUjJLxgFqKuRYZkxZgrRWBHUc34DJEy4dlYxGiTTAK9FUdPTwZXVYGTModLQBoO9UnIRS7SMNRghOxk3rk48jRhqKCIu2vqLlpBs14mpu7vThQ4duQIDAQAB"
 								},
 								{
 										"OperatorID": 8,
-										"PubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo"
+										"BeaconPubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuKiCnNGnDCxLWIWVo8NNkYagGGyKMVGFWLCVXcslGrUqs5v7gpfQozt+hqo4lOxUQ+ixxyzXwbqe5jvLL+ZbW1hptoQYPKyBIM2xNAaLJZ/JIEZNuPy3KhiIgYKNc/GUZqT5Y7USTPh6lCk4IAu1BLjzxAiDz3TiwhEAAoFbwqsh7x8oWOsEibjMSnuFR8caAgZNwvbi/tC+Gelb1Ax0o40bdXGECuyra0u9oq2YX2GbQ7T//ADMlEcoiWwirM5Tza75c+5FbkDCh7Xu6udqLKSyR1X4ldAyFSIH5rNfCAGsT9N024QbTmFdrYUbQws6WT7w3Aa8+Q4eEsmLy0uLlQIDAQAB"
 								},
 								{
 										"OperatorID": 9,
-										"PubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP"
+										"BeaconPubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2wCW/pL6zXBf3i/Mz7Hy6oZe91SmDp39V09UIKLnOlWWhR6Qadn29W2gwQkhV7NHaLvJ5ZkqTS2gFatCLBz1sFz97MO1mR2Z3ubGWBBXhrxnGXPwpyKtS9Th4mJYNO4og1R2E/FkU4jkuQs83un5zLlCUFW/ctpWSuUBYDObnvN0T6971idIspH7fG4FIJ21eHMLoEQh38x+IPdxg5CWLQ2Nr1Tn3i5zP0ZNGtW0T/OGNhd0BkiChzJ3oNY5TRd5E74SO3oJDb9Iv/mj+JvYHPYQqv843ozBMbO3SSbzOViy9Qx0QK4qTcdc36N4HOeZzPTfOVcfvdVqzhhGIL4jZwIDAQAB"
 								},
 								{
 										"OperatorID": 10,
-										"PubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj"
+										"BeaconPubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuUe/KSiKVyU42YyFHb6N1Ak3b3D2PgNVpE8pjUZ/vqKWssaZu+OrDnfKDBbs32UIgSJzwYweZN7YAZPIZojeWRm7JYyDimRXZ0x6/4yKLJPHYIKzZApmOQggrOS5GSYcuGh/vdzduGbe3B+rVtYRxazA9tJKTv3BKXoe1uKTiQWqvmdqiSxY0B2yclmihMZ5397eeYW9iEiG4+9t/uao1C93/rW1dL3NH1jK/niy+g3+Gc3CKfNekPU61n0v3tAHAtMJHQoD/9vEzncGSUwUoM6m2HGzCAgW7zceOhwTBQW8ODnb0AGL6ezLHo+k59hlNRRt/1Gv8ayfXbqdaQrhtQIDAQAB"
 								},
 								{
 										"OperatorID": 11,
-										"PubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq"
+										"BeaconPubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlffCZ8+jtP/bk3hhWBz8H84FpmVPc6UBBUg/4K4zBc8K/zEzNf6SJU1aucQfNVHu9k52kyaEdjOSITwiOKRoqwbg4HsFirx8Pj+SE1wiwVnktKN8Gw+1tgqA1qydjzJMysVLN4S55d/Y7aFROpoOUolZYSo+WcneUKbHw9fu8DOIKatFmY4cbev/RtLqacjGz9OYOy7yRVFwwj1XJrpAY0JgiNuDNDAoeOjj28y+AbcZDY6Vgaz0uNbcuhsWpVbdXSL7/7dtBK9FjYuewgALpiGWHvsS1Rn7NfMsF4gYQ/J8Bj8614wCUZvh6CDJ4dssSZz6Ro933yD6lFymj1JePQIDAQAB"
 								},
 								{
 										"OperatorID": 12,
-										"PubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3"
+										"BeaconPubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArdX/wLlQ5N9Bxdve59YH/jOROOx00KdPkLVy7kZ8ocniYjzoZ5LdpY9TuTLnd8HuHyUlQsNVjas82DtTyzg11IOMuPUcXkUlf6YfTbprwBVAX8mggOW109ttfBeRcO/m81/507/u38x6pdG3JLVfEyrHpQkdBivRYR8AhWOYn4OWoWRZ8tVXdTRKH2+I+ypONa4mCcxNP/eQYzIjmKIsve5X03AjT7dGMSCV7KG+0pRZhCXoGyVr1HziAJQ1nVMRFYjVzUqxJMhSLuE4W6L12szMJn/czc3PUYC8IPUN2K7//HtBpVyKtypfcTMVKdaF9+hWciLRaTSq1UAaZslnRwIDAQAB"
 								},
 								{
 										"OperatorID": 13,
-										"PubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim"
+										"BeaconPubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim",
+										"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqk9eLm6lCcQeqJrMvhlfiQEoJpFTlwWYJZO+D8F/jSXNUMUHDP/IWw+HkBVIuXOwquYqKEGrzgIymqWWXVSGS94BGOu4+zNSu1dRpyBi8zkgvp9+uhlNEdVK1IEWTHzO6j6nO8zN9zilrxbpKAMEnk9rDAyD+I9p3h1DKRrk/4/+SgLgSuCdGSJ3mktxR3IJ48Cc/V21HMnTVEsj6Q6aZ2wfW2SdUN2bsyOh+vQjFNv0AnIOcaTy/L3hD13+5yILEGlmBI9ACTcbb1rRqmg7DR/lSzpiudyiI+pnZVDhIxJKq8+9TYa25i7U1hiHZinRtT30U5wlPJpB8j653snPJQIDAQAB"
 								}
 						],
 						"Quorum": 9,
@@ -136,55 +149,68 @@
 								"Committee": [
 										{
 												"OperatorID": 1,
-												"PubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt"
+												"BeaconPubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB"
 										},
 										{
 												"OperatorID": 2,
-												"PubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z"
+												"BeaconPubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvflPDLfhwkRxfzz5kBJLrOK5OnLdFlSh3Y74A3ZeqrJSO+NBBS9cBWbYvrlhi28YgA2dbUvvhuegA86S6U1mOZxl9Vu7sVVArmIYO5rQ+sE33AokQL6PCA9SXLvPAwOwAHKs2xy3zoIMEks8E4Ul38MHgWw/Rl3L2AyViJogAQCN4Y4A0h5BWmwqMj+wZ9gh70Z+Shg2PJI1lvJ+FJYU+R1A3Ivx4uiZLO5zt9TBeal2or4HdK+2CzCzjlo24WPkYJruL+yyxGUB0y005M4qje+Q7nZf+bm/+LSByBrNB/Jyut5TNeS+q7HF5dYTeLwdL/uWaGQcW7JVXNlCt8Rm4wIDAQAB"
 										},
 										{
 												"OperatorID": 3,
-												"PubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ"
+												"BeaconPubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJCU0IDKcMbE6AZ71ot9oXctndMsnwOhmzAMuxaPh0Z6OeV4lodboHdxZIUbFEVZ76d5W6Oh8/CZSrUroZ0wgOC5+v71P+hRfJndd8ZxPTRTure5yYALPK1FV8uN31WIGSN+4bmNOXdirB3t6mxP/o6cHDrryo5IoFcYYqF2neDwzmPoPfW4SOgMpAeOtqhrK1A4V1/8QLW/v3Q8srbVlRm1DEvY17k6ODDRq6mggP0oHs4udAwZEQUDivsx3/kpx7ift8BZbYQyumob6YsIYXMIj85B5CkBYtvdYqEKhYNyUTO3Au5TkfQlYwGy5JqOdbHWdRZnn7+jV2yY9YShuwIDAQAB"
 										},
 										{
 												"OperatorID": 4,
-												"PubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz"
+												"BeaconPubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs0DWybL8zLGGXB590kn0iSIrB1Gs3ju6ahu7MXj7icO2hN4G2u0CTYqx+Efc1KTen/FeIDuRt//K6fIl+W1wy6ijd1FyVSD4f+PQ2sFCml6hq20Y4w53cX2cKHdDV/F89BsdBn7EWqFmFAM31Klz5dc+REKyIittPNJ+g0Jo68IeTeWEk0cb2QFULPEneRagHTotmXkd95Dg+0wLaAKkfa+lXQcPHLp/uGgCWC95uFs+8VSIFlMcqhH4DI+FANkMTf2Y2fPZXOv80NlRDRKgKtGglnWIdkWzszzm91Ub3hn7hOLrz/7EeiFrcI+kAP8hJRAZqhGVIgSK9vP8LECVzwIDAQAB"
 										},
 										{
 												"OperatorID": 5,
-												"PubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb"
+												"BeaconPubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx1wFVtRw+P6Z1DiJciNwPYJ+E7ALpaJ23kdO5XptAp6BgoSaFRJUCBoDaDITu4uf17xCboJhQKE2xsdM5ytbTc1ZJJDPZYps5g3j6swKPm9wJxItbtrVEmh6cNo5DfVK9+sAlu0+LdWiySc9raL6fyrxeA9y+XeDgJTyTD7mHxGDc1JEm7zCTLPbGY1R12aNT332uIA7VMP0THSBFi5yfTGzvV88Kx1SBIkWDsZ0YM9eddMc7nqeI7mA+dHia5NaMRwklfBI1w6Yuh5m9T+hQa+Qhb4SURAFRah/yan/4j/sGM0ChpLrRgSuYnqYvR1nfnFzhOzKw6oS8cxTSu1U+QIDAQAB"
 										},
 										{
 												"OperatorID": 6,
-												"PubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3"
+												"BeaconPubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuhYNz0rmW/fh3hLM/VB8bCQf2nCIQhIwqqSYX6XcLqf/j3MOpJqo6fcgjpFdGIVXd18ugyeETvVpEcUGqGfMCbMhZx2uteMOqYLwm9P+kbLgDD8jXjtoU/gNb9g2g875xH7/VUN0u3VPBBIvFaHxijsFYCh4u+aSprOLyidDgT5E+ggUPICcdjOvxy3k3HUdy+QRmmnRDoqY1543TIXEfE04ws9nGBez1ySGpCVuhdQ7VqH9BCCsI/J0HP1cJY2wkMBRy793ETlqcnJT8r1Ij9gfArknUe9WchgFRKAuOXv/k0eBjwzOw9Rlg7LFqF1Oom2qOw9RfgqcM3AhY59wAQIDAQAB"
 										},
 										{
 												"OperatorID": 7,
-												"PubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j"
+												"BeaconPubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ4/bjOW8EnWJlu9oyRNu6HzhhjUK2QJAwXEe3itwYnBX4lJEMrTf1ulkvafuZePO2aIN7B/x24kS3aR//b3kSJvMxfrOvzASgpba/4Fpuxw/lgVtY/LX41F3QQkVWPWwaXWai2Gpmsf6BwJMMaeNoAUYhOjs8XsFMoqWj6eInSCNHOI6kqNcJuY4F2KheCdj6TS6/LKoLhbt3jqGMJCuxoWDB1zXCI4xedGxUjJLxgFqKuRYZkxZgrRWBHUc34DJEy4dlYxGiTTAK9FUdPTwZXVYGTModLQBoO9UnIRS7SMNRghOxk3rk48jRhqKCIu2vqLlpBs14mpu7vThQ4duQIDAQAB"
 										},
 										{
 												"OperatorID": 8,
-												"PubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo"
+												"BeaconPubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuKiCnNGnDCxLWIWVo8NNkYagGGyKMVGFWLCVXcslGrUqs5v7gpfQozt+hqo4lOxUQ+ixxyzXwbqe5jvLL+ZbW1hptoQYPKyBIM2xNAaLJZ/JIEZNuPy3KhiIgYKNc/GUZqT5Y7USTPh6lCk4IAu1BLjzxAiDz3TiwhEAAoFbwqsh7x8oWOsEibjMSnuFR8caAgZNwvbi/tC+Gelb1Ax0o40bdXGECuyra0u9oq2YX2GbQ7T//ADMlEcoiWwirM5Tza75c+5FbkDCh7Xu6udqLKSyR1X4ldAyFSIH5rNfCAGsT9N024QbTmFdrYUbQws6WT7w3Aa8+Q4eEsmLy0uLlQIDAQAB"
 										},
 										{
 												"OperatorID": 9,
-												"PubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP"
+												"BeaconPubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2wCW/pL6zXBf3i/Mz7Hy6oZe91SmDp39V09UIKLnOlWWhR6Qadn29W2gwQkhV7NHaLvJ5ZkqTS2gFatCLBz1sFz97MO1mR2Z3ubGWBBXhrxnGXPwpyKtS9Th4mJYNO4og1R2E/FkU4jkuQs83un5zLlCUFW/ctpWSuUBYDObnvN0T6971idIspH7fG4FIJ21eHMLoEQh38x+IPdxg5CWLQ2Nr1Tn3i5zP0ZNGtW0T/OGNhd0BkiChzJ3oNY5TRd5E74SO3oJDb9Iv/mj+JvYHPYQqv843ozBMbO3SSbzOViy9Qx0QK4qTcdc36N4HOeZzPTfOVcfvdVqzhhGIL4jZwIDAQAB"
 										},
 										{
 												"OperatorID": 10,
-												"PubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj"
+												"BeaconPubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuUe/KSiKVyU42YyFHb6N1Ak3b3D2PgNVpE8pjUZ/vqKWssaZu+OrDnfKDBbs32UIgSJzwYweZN7YAZPIZojeWRm7JYyDimRXZ0x6/4yKLJPHYIKzZApmOQggrOS5GSYcuGh/vdzduGbe3B+rVtYRxazA9tJKTv3BKXoe1uKTiQWqvmdqiSxY0B2yclmihMZ5397eeYW9iEiG4+9t/uao1C93/rW1dL3NH1jK/niy+g3+Gc3CKfNekPU61n0v3tAHAtMJHQoD/9vEzncGSUwUoM6m2HGzCAgW7zceOhwTBQW8ODnb0AGL6ezLHo+k59hlNRRt/1Gv8ayfXbqdaQrhtQIDAQAB"
 										},
 										{
 												"OperatorID": 11,
-												"PubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq"
+												"BeaconPubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlffCZ8+jtP/bk3hhWBz8H84FpmVPc6UBBUg/4K4zBc8K/zEzNf6SJU1aucQfNVHu9k52kyaEdjOSITwiOKRoqwbg4HsFirx8Pj+SE1wiwVnktKN8Gw+1tgqA1qydjzJMysVLN4S55d/Y7aFROpoOUolZYSo+WcneUKbHw9fu8DOIKatFmY4cbev/RtLqacjGz9OYOy7yRVFwwj1XJrpAY0JgiNuDNDAoeOjj28y+AbcZDY6Vgaz0uNbcuhsWpVbdXSL7/7dtBK9FjYuewgALpiGWHvsS1Rn7NfMsF4gYQ/J8Bj8614wCUZvh6CDJ4dssSZz6Ro933yD6lFymj1JePQIDAQAB"
 										},
 										{
 												"OperatorID": 12,
-												"PubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3"
+												"BeaconPubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArdX/wLlQ5N9Bxdve59YH/jOROOx00KdPkLVy7kZ8ocniYjzoZ5LdpY9TuTLnd8HuHyUlQsNVjas82DtTyzg11IOMuPUcXkUlf6YfTbprwBVAX8mggOW109ttfBeRcO/m81/507/u38x6pdG3JLVfEyrHpQkdBivRYR8AhWOYn4OWoWRZ8tVXdTRKH2+I+ypONa4mCcxNP/eQYzIjmKIsve5X03AjT7dGMSCV7KG+0pRZhCXoGyVr1HziAJQ1nVMRFYjVzUqxJMhSLuE4W6L12szMJn/czc3PUYC8IPUN2K7//HtBpVyKtypfcTMVKdaF9+hWciLRaTSq1UAaZslnRwIDAQAB"
 										},
 										{
 												"OperatorID": 13,
-												"PubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim"
+												"BeaconPubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim",
+												"NetworkPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqk9eLm6lCcQeqJrMvhlfiQEoJpFTlwWYJZO+D8F/jSXNUMUHDP/IWw+HkBVIuXOwquYqKEGrzgIymqWWXVSGS94BGOu4+zNSu1dRpyBi8zkgvp9+uhlNEdVK1IEWTHzO6j6nO8zN9zilrxbpKAMEnk9rDAyD+I9p3h1DKRrk/4/+SgLgSuCdGSJ3mktxR3IJ48Cc/V21HMnTVEsj6Q6aZ2wfW2SdUN2bsyOh+vQjFNv0AnIOcaTy/L3hD13+5yILEGlmBI9ACTcbb1rRqmg7DR/lSzpiudyiI+pnZVDhIxJKq8+9TYa25i7U1hiHZinRtT30U5wlPJpB8j653snPJQIDAQAB"
 										}
 								],
 								"Quorum": 9,
