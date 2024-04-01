@@ -18,5 +18,6 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 			types.BNRoleSyncCommittee:             SyncCommitteeRunner(keySet),
 			types.BNRoleSyncCommitteeContribution: SyncCommitteeContributionRunner(keySet),
 		},
+		NewTestingVerifier(),
 	)
 }

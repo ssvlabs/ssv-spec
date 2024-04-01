@@ -10,11 +10,12 @@ import (
 // Every validator has a validatorID which is validator's public key.
 // Each validator has multiple DutyRunners, for each duty type.
 type Validator struct {
-	DutyRunners DutyRunners
-	Network     Network
-	Beacon      BeaconNode
-	Share       *types.Share
-	Signer      types.KeyManager
+	DutyRunners       DutyRunners
+	Network           Network
+	Beacon            BeaconNode
+	Share             *types.Share
+	Signer            types.KeyManager
+	SignatureVerifier types.SignatureVerifier
 }
 
 func NewValidator(
@@ -23,13 +24,15 @@ func NewValidator(
 	share *types.Share,
 	signer types.KeyManager,
 	runners map[types.BeaconRole]Runner,
+	signatureVerifier types.SignatureVerifier,
 ) *Validator {
 	return &Validator{
-		DutyRunners: runners,
-		Network:     network,
-		Beacon:      beacon,
-		Share:       share,
-		Signer:      signer,
+		DutyRunners:       runners,
+		Network:           network,
+		Beacon:            beacon,
+		Share:             share,
+		Signer:            signer,
+		SignatureVerifier: signatureVerifier,
 	}
 }
 
@@ -43,7 +46,19 @@ func (v *Validator) StartDuty(duty *types.Duty) error {
 }
 
 // ProcessMessage processes Network Message of all types
-func (v *Validator) ProcessMessage(msg *types.SSVMessage) error {
+func (v *Validator) ProcessMessage(signedMsg *types.SignedSSVMessage) error {
+
+	// Decode an SSVMessage
+	msg := &types.SSVMessage{}
+	if err := msg.Decode(signedMsg.Data); err != nil {
+		return errors.Wrap(err, "could not decode data into an SSVMessage")
+	}
+
+	// Verify SignedSSVMessage's signature
+	if err := v.SignatureVerifier.Verify(signedMsg, v.Share.Committee); err != nil {
+		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
+	}
+
 	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
 	if dutyRunner == nil {
 		return errors.Errorf("could not get duty runner for msg ID")
