@@ -10,6 +10,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
+
+	"github.com/bloxapp/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
 )
 
@@ -35,16 +37,16 @@ var AllTests = []SpecTest{
 	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
-	//share.HasQuorum(),
-	//share.QuorumWithDuplicate(),
-	//share.HasQuorum3f1(),
-	//share.NoQuorum(),
-	//share.NoQuorumDuplicate(),
-	//share.HasPartialQuorum(),
-	//share.PartialQuorumWithDuplicate(),
-	//share.HasPartialQuorum2f1(),
-	//share.NoPartialQuorum(),
-	//share.NoPartialQuorumDuplicate(),
+	// //share.HasQuorum(),
+	// //share.QuorumWithDuplicate(),
+	// //share.HasQuorum3f1(),
+	// //share.NoQuorum(),
+	// //share.NoQuorumDuplicate(),
+	// //share.HasPartialQuorum(),
+	// //share.PartialQuorumWithDuplicate(),
+	// //share.HasPartialQuorum2f1(),
+	// //share.NoPartialQuorum(),
+	// //share.NoPartialQuorumDuplicate(),
 
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
@@ -96,6 +98,13 @@ var AllTests = []SpecTest{
 	ssz.SSZWithdrawalsMarshaling(),
 
 	beacon.DepositData(),
+
+	signedssvmsg.Encoding(),
+	signedssvmsg.Valid(),
+	signedssvmsg.NoData(),
+	signedssvmsg.EmptySignature(),
+	signedssvmsg.ZeroSigner(),
+	signedssvmsg.WrongData(),
 
 	share.HasPartialQuorumButNoQuorum(),
 	share.HasQuorum(),

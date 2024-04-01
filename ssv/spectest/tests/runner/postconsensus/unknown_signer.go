@@ -14,7 +14,7 @@ import (
 // UnknownSigner tests an unknown  signer
 func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "failed processing post consensus message: invalid post-consensus message: failed to verify PartialSignature: unknown signer"
+	expectedError := "failed processing post consensus message: invalid post-consensus message: unknown signer"
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus unknown signer",

@@ -2,7 +2,11 @@
 		"BaseRunner": {
 				"State": {
 						"PreConsensusContainer": {
-								"Signatures": {},
+								"Signatures": {
+										"462611d2c592bdf5214f124fe7a5269ab73d44efc9e6ce1abe32f8196ae526de": {
+												"2": "pHmwI9nyjrnM3TW7lg+1wmVTDf8Xiufkqbd/AX91nKWiEl5ya94M2SozMAlUlMjAB4Kif6iQfowarePazbjgYUaGxn4fYoMEYF14YeDtmAPGriFrSq5VqP+0nu0ZPL6n"
+										}
+								},
 								"Quorum": 3
 						},
 						"PostConsensusContainer": {

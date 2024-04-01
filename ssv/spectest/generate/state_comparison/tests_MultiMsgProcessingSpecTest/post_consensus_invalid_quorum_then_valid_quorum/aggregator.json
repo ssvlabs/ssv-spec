@@ -6,7 +6,13 @@
 								"Quorum": 3
 						},
 						"PostConsensusContainer": {
-								"Signatures": {},
+								"Signatures": {
+										"c4551c9873f0588b4a13819ed39bde8c5cb6838b52e18d7b1807f02208c5b515": {
+												"2": "tVOROqJaP6C4g7uajgC44qC1QJ505Ol2tNefLK9jHg5AH0TCzsEnVIMbWRbYkZchALink2Clu63xVq79esPDOJ3u0sT5DkKAOCC2GebeKpQBZWxXVaMf3/QtNxs52ZBR",
+												"3": "p4mJsTHfJ9m/maFmyKe6pmptN6IMZMTD6pek2OhyB7k/9gc9iFNrnh/g7ZlxPMgJEs4RyEPe6RPBw5R2ldz9GECRUuE+so0uURYzfZtbDeC31xHu8QAwAdXAmFyA0x9t",
+												"4": "oPyoI1dhO9bGzV/Yi3phY1coXDwfcOvBGQNuahGf5HEGkdAUVNDGLUemyvDw9UcsAi+hotMe+mB4ZZptA8XZDNxdz/IetNLkaiBW/BE9jCkB53hU2DHR4mjiEMUzkfCd"
+										}
+								},
 								"Quorum": 3
 						},
 						"RunningInstance": {
@@ -65,14 +71,14 @@
 												],
 												"Graffiti": null
 										},
-										"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+										"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 										"Round": 1,
 										"Height": 0,
 										"LastPreparedRound": 0,
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": null,
 										"Decided": true,
-										"DecidedValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
+										"DecidedValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ==",
 										"ProposeContainer": {
 												"Msgs": {}
 										},
@@ -90,40 +96,32 @@
 						},
 						"DecidedValue": {
 								"Duty": {
-										"Type": 3,
+										"Type": 1,
 										"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
 										"Slot": "12",
 										"ValidatorIndex": "1",
-										"CommitteeIndex": 3,
+										"CommitteeIndex": 22,
 										"CommitteeLength": 128,
 										"CommitteesAtSlot": 36,
 										"ValidatorCommitteeIndex": 11,
-										"ValidatorSyncCommitteeIndices": [
-												0,
-												1,
-												2
-										]
+										"ValidatorSyncCommitteeIndices": null
 								},
 								"Version": "phase0",
 								"PreConsensusJustifications": null,
-								"DataSSZ": "AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI="
+								"DataSSZ": "AQAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5AAAAAwAAAAAAAAAAwAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIBAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="
 						},
 						"StartingDuty": {
-								"Type": 3,
+								"Type": 1,
 								"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
 								"Slot": "12",
 								"ValidatorIndex": "1",
-								"CommitteeIndex": 3,
+								"CommitteeIndex": 22,
 								"CommitteeLength": 128,
 								"CommitteesAtSlot": 36,
 								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": [
-										0,
-										1,
-										2
-								]
+								"ValidatorSyncCommitteeIndices": null
 						},
-						"Finished": false
+						"Finished": true
 				},
 				"Share": {
 						"OperatorID": 1,
@@ -180,7 +178,7 @@
 						"Graffiti": null
 				},
 				"QBFTController": {
-						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 						"Height": 0,
 						"StoredInstances": [
 								{
@@ -239,14 +237,14 @@
 														],
 														"Graffiti": null
 												},
-												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAMAAAA=",
+												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
 												"Round": 1,
 												"Height": 0,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
 												"Decided": true,
-												"DecidedValue": "FAAAAAAAAAAAAAAAmAAAAJgAAAADAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg==",
+												"DecidedValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ==",
 												"ProposeContainer": {
 														"Msgs": {}
 												},
@@ -319,6 +317,6 @@
 						}
 				},
 				"BeaconNetwork": "now_test_network",
-				"BeaconRoleType": 3
+				"BeaconRoleType": 1
 		}
 }

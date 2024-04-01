@@ -9,10 +9,9 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidMessageSignature tests PartialSignatureMessage signature invalid
+// InvalidMessageSignature tests PartialSignatureMessage signature invalid. No error is generated since the SignedPartialSignatureMessage.Signature is no longer checked
 func InvalidMessageSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "failed processing post consensus message: invalid post-consensus message: failed to verify PartialSignature: failed to verify signature"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid msg signature",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -31,7 +30,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -48,7 +46,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
 			},
 			{
 				Name: "proposer",
@@ -65,7 +62,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -82,7 +78,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
 			},
 			{
 				Name: "aggregator",
@@ -99,7 +94,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
 			},
 			{
 				Name: "attester",
@@ -116,7 +110,6 @@ func InvalidMessageSignature() tests.SpecTest {
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
 			},
 		},
 	}

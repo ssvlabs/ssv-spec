@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"encoding/hex"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,41 @@ func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessag
 		m[sigMsg.Signer] = make([]byte, 96)
 		copy(m[sigMsg.Signer], sigMsg.PartialSignature)
 	}
+}
+
+// Returns if container has signature for signer and signing root
+func (ps *PartialSigContainer) HasSigner(signer types.OperatorID, signingRoot [32]byte) bool {
+	if ps.Signatures[rootHex(signingRoot)] == nil {
+		return false
+	}
+	return ps.Signatures[rootHex(signingRoot)][signer] != nil
+}
+
+// Return signature for given root and signer
+func (ps *PartialSigContainer) GetSignature(signer types.OperatorID, signingRoot [32]byte) (types.Signature, error) {
+	if ps.Signatures[rootHex(signingRoot)] == nil {
+		return nil, errors.New("Dont have signature for the given signing root")
+	}
+	if ps.Signatures[rootHex(signingRoot)][signer] == nil {
+		return nil, errors.New("Dont have signature on signing root for the given signer")
+	}
+	return ps.Signatures[rootHex(signingRoot)][signer], nil
+}
+
+// Return signature map for given root
+func (ps *PartialSigContainer) GetSignatures(signingRoot [32]byte) map[types.OperatorID][]byte {
+	return ps.Signatures[rootHex(signingRoot)]
+}
+
+// Remove signer from signature map
+func (ps *PartialSigContainer) Remove(signer uint64, signingRoot [32]byte) {
+	if ps.Signatures[rootHex(signingRoot)] == nil {
+		return
+	}
+	if ps.Signatures[rootHex(signingRoot)][signer] == nil {
+		return
+	}
+	delete(ps.Signatures[rootHex(signingRoot)], signer)
 }
 
 func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte) ([]byte, error) {
