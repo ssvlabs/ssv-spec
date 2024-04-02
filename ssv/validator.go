@@ -46,41 +46,63 @@ func (v *Validator) StartDuty(duty *types.Duty) error {
 }
 
 // ProcessMessage processes Network Message of all types
-func (v *Validator) ProcessMessage(signedMsg *types.SignedSSVMessage) error {
+func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
 
-	// Decode an SSVMessage
+	// Validate message
+	if err := signedSSVMessage.Validate(); err != nil {
+		return errors.Wrap(err, "invalid SignedSSVMessage")
+	}
+
+	// Decode the nested SSVMessage
 	msg := &types.SSVMessage{}
-	if err := msg.Decode(signedMsg.Data); err != nil {
+	if err := msg.Decode(signedSSVMessage.Data); err != nil {
 		return errors.Wrap(err, "could not decode data into an SSVMessage")
 	}
 
 	// Verify SignedSSVMessage's signature
-	if err := v.SignatureVerifier.Verify(signedMsg, v.Share.Committee); err != nil {
+	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.Share.Committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
+	// Get runner
 	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
 	if dutyRunner == nil {
 		return errors.Errorf("could not get duty runner for msg ID")
 	}
 
+	// Validate message for runner
 	if err := v.validateMessage(dutyRunner, msg); err != nil {
 		return errors.Wrap(err, "Message invalid")
 	}
 
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
+		// Decode
 		signedMsg := &qbft.SignedMessage{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
+
+		// Check signer consistency
+		if !signedMsg.CommonSigners([]types.OperatorID{signedSSVMessage.OperatorID}) {
+			return errors.New("SignedSSVMessage's signer not consistent with SignedMessage's signers")
+		}
+
+		// Process
 		return dutyRunner.ProcessConsensus(signedMsg)
 	case types.SSVPartialSignatureMsgType:
+		// Decode
 		signedMsg := &types.SignedPartialSignatureMessage{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
+		// Check signer consistency
+		if signedMsg.Signer != signedSSVMessage.OperatorID {
+			return errors.New("SignedSSVMessage's signer not consistent with SignedPartialSignatureMessage's signer")
+		}
+
+		// Process
 		if signedMsg.Message.Type == types.PostConsensusPartialSig {
 			return dutyRunner.ProcessPostConsensus(signedMsg)
 		}
