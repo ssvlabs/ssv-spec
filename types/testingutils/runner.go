@@ -186,7 +186,7 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 		panic(err.Error())
 	}
 	for _, msg := range msgs {
-		ssvMsg := SSVMsgAttester(msg, nil)
+		ssvMsg := SignedSSVMessageF(keySet, SSVMsgAttester(msg, nil))
 		if err := v.ProcessMessage(ssvMsg); err != nil {
 			panic(err.Error())
 		}

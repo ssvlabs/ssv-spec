@@ -191,7 +191,7 @@ func (msg *SignedSSVMessage) Decode(data []byte) error {
 // - Data length should not be 0
 func (msg *SignedSSVMessage) Validate() error {
 	if msg.OperatorID == 0 {
-		return errors.New("OperatorID in SignedSSVMessage is 0")
+		return errors.New("signer ID 0 not allowed")
 	}
 	if len(msg.Signature) == 0 {
 		return errors.New("Signature has length 0 in SignedSSVMessage")

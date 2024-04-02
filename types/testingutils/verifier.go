@@ -56,7 +56,7 @@ func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types
 		}
 	}
 
-	return errors.New("Signer not found in operators list")
+	return errors.New("unknown signer")
 }
 
 func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byte, signature []byte) bool {
