@@ -6,13 +6,13 @@ type OperatorID = uint64
 // Operator represents an SSV operator node
 type Operator struct {
 	OperatorID    OperatorID
-	BeaconPubKey  []byte `ssz-size:"48"`
+	SharePubKey   []byte `ssz-size:"48"`
 	NetworkPubKey []byte `ssz-size:"294"`
 }
 
-// GetBeaconPublicKey returns the beacon public key with which the node is identified with
-func (n *Operator) GetBeaconPublicKey() []byte {
-	return n.BeaconPubKey
+// GetSharePublicKey returns the share public key
+func (n *Operator) GetSharePublicKey() []byte {
+	return n.SharePubKey
 }
 
 // GetNetworkPublicKey returns the network public key with which the node is identified with

@@ -27,7 +27,7 @@ func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, s
 		for _, n := range operators {
 			if id == n.GetID() {
 				pk := bls.PublicKey{}
-				if err := pk.Deserialize(n.GetBeaconPublicKey()); err != nil {
+				if err := pk.Deserialize(n.GetSharePublicKey()); err != nil {
 					return errors.Wrap(err, "failed to deserialize public key")
 				}
 

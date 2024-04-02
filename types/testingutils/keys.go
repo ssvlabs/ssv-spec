@@ -444,7 +444,7 @@ func (ks *TestKeySet) Committee() []*types.Operator {
 		}
 		committee[i-1] = &types.Operator{
 			OperatorID:    i,
-			BeaconPubKey:  s.GetPublicKey().Serialize(),
+			SharePubKey:   s.GetPublicKey().Serialize(),
 			NetworkPubKey: rsaPublicKeyBytes,
 		}
 	}
