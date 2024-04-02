@@ -35,6 +35,7 @@ var AllTests = []tests.TestF{
 	postconsensus.PreDecided,
 	postconsensus.PostQuorum,
 	postconsensus.InvalidMessage,
+	postconsensus.InvalidNetworkSignature,
 	postconsensus.InvalidMessageSlot,
 	postconsensus.ValidMessage,
 	postconsensus.ValidMessage7Operators,
@@ -47,6 +48,8 @@ var AllTests = []tests.TestF{
 	postconsensus.InvalidDecidedValue,
 	postconsensus.InvalidThenQuorum,
 	postconsensus.InvalidQuorumThenValidQuorum,
+	postconsensus.InconsistentNetworkSigner,
+	postconsensus.InvalidDecode,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -114,6 +117,7 @@ var AllTests = []tests.TestF{
 	preconsensus.TooManyRoots,
 	preconsensus.UnorderedExpectedRoots,
 	preconsensus.InvalidSignedMessage,
+	preconsensus.InvalidNetworkSignature,
 	preconsensus.InvalidExpectedRoot,
 	preconsensus.DuplicateMsg,
 	preconsensus.DuplicateMsgDifferentRoots,
@@ -135,6 +139,8 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidMessageSignature,
 	preconsensus.InvalidThenQuorum,
 	preconsensus.InvalidQuorumThenValidQuorum,
+	preconsensus.InconsistentNetworkSigner,
+	preconsensus.InvalidDecode,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
