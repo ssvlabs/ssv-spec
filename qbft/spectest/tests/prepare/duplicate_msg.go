@@ -22,7 +22,7 @@ func DuplicateMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate prepare message",
 		Pre:           pre,
-		PostRoot:      "95725bada090c354937947d0bf72685bfc1e45b6ec660da197fddadff37d5c9d",
+		PostRoot:      "29e39b5903e17532811400d7ecec856640bd48d8a1dbae5cc118a234effea445",
 		InputMessages: msgs,
 	}
 }

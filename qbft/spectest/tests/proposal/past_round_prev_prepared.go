@@ -33,7 +33,7 @@ func PastRoundProposalPrevPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal past round (not prev prepared)",
 		Pre:            pre,
-		PostRoot:       "3b0b5e2ec4260681ccfa109079f7866a70f82676e0bb1de2d4e488e2b763e5e6",
+		PostRoot:       "17193c091adba381761a28daa27c0cdd71f2e51639cf58d09b50ca76dcec7dbf",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: past round",

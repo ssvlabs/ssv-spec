@@ -21,7 +21,7 @@ func PastRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit past round",
 		Pre:           pre,
-		PostRoot:      "d061215a11cc3db83c387e7bab47be68dd5a76824e0b69965974547ae7e0a12b",
+		PostRoot:      "4b113ad48617d64bdca5afb81db76eefc0037bcfc25c4d54ce4fd2dd3d7d16a6",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: past round",
 	}

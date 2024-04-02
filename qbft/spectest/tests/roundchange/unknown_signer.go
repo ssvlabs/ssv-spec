@@ -20,7 +20,7 @@ func UnknownSigner() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change unknown signer",
 		Pre:            pre,
-		PostRoot:       "b689c2c2a7966addc9f8fd5ef80e6bc2ff4e694e353fc198a973e07642003730",
+		PostRoot:       "9fa0a12336985b92e272c478ec8ae64295897d7bc35c0ad870c412396cda3bc1",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: signers not in committee",

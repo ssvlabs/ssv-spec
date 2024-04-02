@@ -29,7 +29,7 @@ func PastRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change past round",
 		Pre:            pre,
-		PostRoot:       "2e020a9f57494922379a395fc67f19d1ba0876818b47c81a60880d2f5b058df3",
+		PostRoot:       "01c504b6b9a00c9cf956fdb4585452bf202873027b1b573e6b22ea166cb67164",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: past round",
