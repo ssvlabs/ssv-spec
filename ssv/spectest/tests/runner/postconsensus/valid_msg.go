@@ -45,11 +45,11 @@ func ValidMessage() tests.SpecTest {
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgSyncCommitteeContribution(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "f1283949bbe8a2cec6e76df6aed1cbfb38e1438ae1ceb55835ba0fa540fa564a",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
@@ -61,11 +61,11 @@ func ValidMessage() tests.SpecTest {
 					testingutils.TestSyncCommitteeConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgSyncCommittee(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "8af0ed561466beb547bc32fac6887b5aa962833ee2d6ee3c50a259e60ab2421b",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
@@ -77,11 +77,11 @@ func ValidMessage() tests.SpecTest {
 					testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
 				),
 				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgProposer(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)),
 				},
 				PostDutyRunnerStateRoot: "79dea0905cae233ecfaabdf8468351ea1c88d2684009176eb4a4d3e91823e74c",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
@@ -93,11 +93,11 @@ func ValidMessage() tests.SpecTest {
 					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
 				),
 				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgProposer(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)),
 				},
 				PostDutyRunnerStateRoot: "b57fb84140f2785ed05295d294271ab6636116f8cd013d8e9a060f47976dfe3d",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
@@ -109,11 +109,11 @@ func ValidMessage() tests.SpecTest {
 					testingutils.TestAggregatorConsensusData,
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgAggregator(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
 				},
 				PostDutyRunnerStateRoot: "b0b3ad187064938e82373b5c15732e4522f8f51db84074f906784d98cf93d594",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
@@ -125,11 +125,11 @@ func ValidMessage() tests.SpecTest {
 					testingutils.TestAttesterConsensusData,
 				),
 				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgAttester(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
 				PostDutyRunnerStateRoot: "e76de69f02eab8d067b77f4cb1d9bf0da90cf3b744bbb91d2b3ca6077c57668f",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
@@ -137,14 +137,14 @@ func ValidMessage() tests.SpecTest {
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
-					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgValidatorRegistration(1, ks.NetworkKeys[1], nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgValidatorRegistration(2, ks.NetworkKeys[2], nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgValidatorRegistration(3, ks.NetworkKeys[3], nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgValidatorRegistration(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
 				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				BeaconBroadcastedRoots: []string{
@@ -156,14 +156,14 @@ func ValidMessage() tests.SpecTest {
 				Name:   "voluntary exit",
 				Runner: testingutils.VoluntaryExitRunner(ks),
 				Duty:   &testingutils.TestingVoluntaryExitDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3)),
-					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgVoluntaryExit(1, ks.NetworkKeys[1], nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgVoluntaryExit(2, ks.NetworkKeys[2], nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgVoluntaryExit(3, ks.NetworkKeys[3], nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgVoluntaryExit(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
 				},
 				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				BeaconBroadcastedRoots: []string{

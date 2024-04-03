@@ -26,14 +26,14 @@ func Quorum() tests.SpecTest {
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgSyncCommitteeContribution(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgSyncCommitteeContribution(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgSyncCommitteeContribution(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3)),
 				},
 				PostDutyRunnerStateRoot: quorumSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     quorumSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
@@ -49,14 +49,14 @@ func Quorum() tests.SpecTest {
 					testingutils.TestSyncCommitteeConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgSyncCommittee(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgSyncCommittee(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgSyncCommittee(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
 				},
 				PostDutyRunnerStateRoot: quorumSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     quorumSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
@@ -70,14 +70,14 @@ func Quorum() tests.SpecTest {
 					testingutils.TestAggregatorConsensusData,
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgAggregator(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgAggregator(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgAggregator(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
 				},
 				PostDutyRunnerStateRoot: quorumAggregatorSC().Root(),
 				PostDutyRunnerState:     quorumAggregatorSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
@@ -91,14 +91,14 @@ func Quorum() tests.SpecTest {
 					testingutils.TestAttesterConsensusData,
 				),
 				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgAttester(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+					testingutils.SSVMsgAttester(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
+					testingutils.SSVMsgAttester(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
 				},
 				PostDutyRunnerStateRoot: quorumAttesterSC().Root(),
 				PostDutyRunnerState:     quorumAttesterSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
@@ -117,14 +117,14 @@ func Quorum() tests.SpecTest {
 				testingutils.TestProposerConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SSVMsgProposer(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+				testingutils.SSVMsgProposer(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+				testingutils.SSVMsgProposer(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 			},
 			PostDutyRunnerStateRoot: quorumProposerSC(version).Root(),
 			PostDutyRunnerState:     quorumProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
@@ -142,14 +142,14 @@ func Quorum() tests.SpecTest {
 				testingutils.TestProposerBlindedBlockConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SSVMsgProposer(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+				testingutils.SSVMsgProposer(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+				testingutils.SSVMsgProposer(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
 			},
 			PostDutyRunnerStateRoot: quorumBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     quorumBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},

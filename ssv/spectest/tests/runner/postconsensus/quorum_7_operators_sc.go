@@ -24,16 +24,16 @@ func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4, ks)),
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[5], 5, ks)),
+					[]*types.SignedSSVMessage{
+						testingutils.SSVMsgSyncCommitteeContribution(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgSyncCommitteeContribution(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgSyncCommitteeContribution(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgSyncCommitteeContribution(4, ks.NetworkKeys[4], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4)),
+						testingutils.SSVMsgSyncCommitteeContribution(5, ks.NetworkKeys[5], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[5], 5)),
 					},
 				),
 				DecidedValue: cd,
@@ -51,7 +51,7 @@ func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -72,16 +72,16 @@ func quorum7OperatorsSyncCommitteeSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
-						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4)),
-						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[5], 5)),
+					[]*types.SignedSSVMessage{
+						testingutils.SSVMsgSyncCommittee(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgSyncCommittee(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgSyncCommittee(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgSyncCommittee(4, ks.NetworkKeys[4], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4)),
+						testingutils.SSVMsgSyncCommittee(5, ks.NetworkKeys[5], nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[5], 5)),
 					},
 				),
 				DecidedValue: cd,
@@ -99,7 +99,7 @@ func quorum7OperatorsSyncCommitteeSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -120,16 +120,16 @@ func quorum7OperatorsAggregatorSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
-						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
-						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
-						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4)),
-						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[5], 5)),
+					[]*types.SignedSSVMessage{
+						testingutils.SSVMsgAggregator(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
+						testingutils.SSVMsgAggregator(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
+						testingutils.SSVMsgAggregator(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
+						testingutils.SSVMsgAggregator(4, ks.NetworkKeys[4], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4)),
+						testingutils.SSVMsgAggregator(5, ks.NetworkKeys[5], nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[5], 5)),
 					},
 				),
 				DecidedValue: cd,
@@ -147,7 +147,7 @@ func quorum7OperatorsAggregatorSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -168,16 +168,16 @@ func quorum7OperatorsAttesterSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight)),
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[5], 5, qbft.FirstHeight)),
+					[]*types.SignedSSVMessage{
+						testingutils.SSVMsgAttester(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+						testingutils.SSVMsgAttester(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
+						testingutils.SSVMsgAttester(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
+						testingutils.SSVMsgAttester(4, ks.NetworkKeys[4], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight)),
+						testingutils.SSVMsgAttester(5, ks.NetworkKeys[5], nil, testingutils.PostConsensusAttestationMsg(ks.Shares[5], 5, qbft.FirstHeight)),
 					},
 				),
 				DecidedValue: cd,
@@ -195,7 +195,7 @@ func quorum7OperatorsAttesterSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -216,16 +216,16 @@ func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateCompa
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, version)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[5], 5, version)),
+					[]*types.SignedSSVMessage{
+						testingutils.SSVMsgProposer(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+						testingutils.SSVMsgProposer(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+						testingutils.SSVMsgProposer(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+						testingutils.SSVMsgProposer(4, ks.NetworkKeys[4], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, version)),
+						testingutils.SSVMsgProposer(5, ks.NetworkKeys[5], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[5], 5, version)),
 					},
 				),
 				DecidedValue: cd,
@@ -243,7 +243,7 @@ func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateCompa
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -264,16 +264,16 @@ func quorum7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.Sta
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, version)),
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[5], 5, version)),
+					[]*types.SignedSSVMessage{
+						testingutils.SSVMsgProposer(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+						testingutils.SSVMsgProposer(2, ks.NetworkKeys[2], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
+						testingutils.SSVMsgProposer(3, ks.NetworkKeys[3], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+						testingutils.SSVMsgProposer(4, ks.NetworkKeys[4], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, version)),
+						testingutils.SSVMsgProposer(5, ks.NetworkKeys[5], nil, testingutils.PostConsensusProposerMsgV(ks.Shares[5], 5, version)),
 					},
 				),
 				DecidedValue: cd,
@@ -291,7 +291,7 @@ func quorum7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.Sta
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret

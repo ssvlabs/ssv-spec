@@ -24,11 +24,11 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
@@ -45,7 +45,7 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -66,11 +66,11 @@ func unknownSignerSyncCommitteeSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
@@ -87,7 +87,7 @@ func unknownSignerSyncCommitteeSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -108,11 +108,11 @@ func unknownSignerAggregatorSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
@@ -129,7 +129,7 @@ func unknownSignerAggregatorSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -150,11 +150,11 @@ func unknownSignerAttesterSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
@@ -171,7 +171,7 @@ func unknownSignerAttesterSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -192,11 +192,11 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
@@ -213,7 +213,7 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -234,11 +234,11 @@ func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				DecidedValue: cd,
 				StartingDuty: &cd.Duty,
@@ -255,7 +255,7 @@ func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
