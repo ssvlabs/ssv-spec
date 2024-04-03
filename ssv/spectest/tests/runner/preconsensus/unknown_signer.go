@@ -10,7 +10,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// UnknownSigner tests SignedPartialSignatureMessage unknown signer
+// UnknownSigner tests PartialSignatureMessages unknown signer
 func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -21,13 +21,13 @@ func UnknownSigner() tests.SpecTest {
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 5, 5)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgSyncCommitteeContribution(5, ks.NetworkKeys[5], nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], 5)),
 				},
 				PostDutyRunnerStateRoot: unknownSignerSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     unknownSignerSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: failed to verify PartialSignature: unknown signer",
 			},
@@ -35,13 +35,13 @@ func UnknownSigner() tests.SpecTest {
 				Name:   "aggregator selection proof",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 5, 5)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SSVMsgAggregator(5, ks.NetworkKeys[5], nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], 5)),
 				},
 				PostDutyRunnerStateRoot: unknownSignerAggregatorSC().Root(),
 				PostDutyRunnerState:     unknownSignerAggregatorSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: "failed processing selection proof message: invalid pre-consensus message: failed to verify PartialSignature: unknown signer",
 			},
@@ -54,12 +54,12 @@ func UnknownSigner() tests.SpecTest {
 			Name:   fmt.Sprintf("randao (%s)", version.String()),
 			Runner: testingutils.ProposerRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 5, 5, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SSVMsgProposer(5, ks.NetworkKeys[5], nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], 5, version)),
 			},
 			PostDutyRunnerStateRoot: unknownSignerProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 			ExpectedError: "failed processing randao message: invalid pre-consensus message: failed to verify PartialSignature: unknown signer",
@@ -72,12 +72,12 @@ func UnknownSigner() tests.SpecTest {
 			Name:   fmt.Sprintf("randao blinded block (%s)", version.String()),
 			Runner: testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 5, 5, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SSVMsgProposer(5, ks.NetworkKeys[5], nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], 5, version)),
 			},
 			PostDutyRunnerStateRoot: unknownSignerBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 			ExpectedError: "failed processing randao message: invalid pre-consensus message: failed to verify PartialSignature: unknown signer",
