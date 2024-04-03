@@ -25,9 +25,9 @@ func ValidDecided7Operators() tests.SpecTest {
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
 				PostDutyRunnerStateRoot: validDecided7OperatorsSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1),
 				},
 			},
 			{
@@ -37,7 +37,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
 				PostDutyRunnerStateRoot: validDecided7OperatorsSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
 			},
@@ -48,8 +48,8 @@ func ValidDecided7Operators() tests.SpecTest {
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
 				PostDutyRunnerStateRoot: validDecided7OperatorsAggregatorSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsAggregatorSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 			},
@@ -60,7 +60,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
 				PostDutyRunnerStateRoot: validDecided7OperatorsAttesterSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsAttesterSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},
 			},
@@ -76,7 +76,7 @@ func ValidDecided7Operators() tests.SpecTest {
 			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
 			PostDutyRunnerStateRoot: validDecided7OperatorsProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecided7OperatorsProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
@@ -92,7 +92,7 @@ func ValidDecided7Operators() tests.SpecTest {
 			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
 			PostDutyRunnerStateRoot: validDecided7OperatorsBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecided7OperatorsBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},

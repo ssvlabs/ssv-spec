@@ -24,13 +24,12 @@ func PostDecided() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
-					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeContributionMsgID, testingutils.TestSyncCommitteeContributionConsensusDataByts), nil)),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.NetworkKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeContributionMsgID, testingutils.TestSyncCommitteeContributionConsensusDataByts)),
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], 1),
+					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1),
 				},
 			},
 			{
@@ -39,11 +38,10 @@ func PostDecided() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
-					testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeMsgID, testingutils.TestSyncCommitteeConsensusDataByts), nil)),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.NetworkKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeMsgID, testingutils.TestSyncCommitteeConsensusDataByts)),
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
 			},
@@ -53,12 +51,11 @@ func PostDecided() tests.SpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
-					testingutils.SSVMsgAggregator(
-						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.AggregatorMsgID, testingutils.TestAggregatorConsensusDataByts), nil)),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.NetworkKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.AggregatorMsgID, testingutils.TestAggregatorConsensusDataByts)),
 				PostDutyRunnerStateRoot: postDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     postDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 			},
@@ -68,11 +65,10 @@ func PostDecided() tests.SpecTest {
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
-					testingutils.SSVMsgAttester(
-						testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.AttesterMsgID, testingutils.TestAttesterConsensusDataByts), nil)),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.NetworkKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.AttesterMsgID, testingutils.TestAttesterConsensusDataByts)),
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
 				},
 			},
@@ -87,13 +83,12 @@ func PostDecided() tests.SpecTest {
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
 				testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
-				testingutils.SSVMsgProposer(
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4],
-						types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
-						testingutils.TestProposerConsensusDataBytsV(version)), nil)),
+				testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.NetworkKeys[4],
+					types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
+					testingutils.TestProposerConsensusDataBytsV(version))),
 			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
@@ -108,13 +103,12 @@ func PostDecided() tests.SpecTest {
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
 				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
-				testingutils.SSVMsgProposer(
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.Shares[4],
-						types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
-						testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)), nil)),
+				testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.NetworkKeys[4],
+					types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
+					testingutils.TestProposerBlindedBlockConsensusDataBytsV(version))),
 			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
