@@ -10,15 +10,12 @@ func SignerAndSignatureWithDifferentLength() *SignedSSVMessageTest {
 
 	ks := testingutils.Testing4SharesSet()
 
+	msg := testingutils.SSVMsgAttester(1, ks.NetworkKeys[1], nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1))
+	msg.OperatorID = []types.OperatorID{1, 2}
+
 	return &SignedSSVMessageTest{
-		Name: "signer and signature with different length",
-		Messages: []*types.SignedSSVMessage{
-			{
-				OperatorID: []types.OperatorID{1, 2},
-				Signature:  [][]byte{{1, 2, 3, 4}},
-				SSVMessage: testingutils.SSVMsgAttester(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-			},
-		},
+		Name:          "signer and signature with different length",
+		Messages:      []*types.SignedSSVMessage{msg},
 		ExpectedError: "SignedSSVMessage has a different number of operato IDs and signatures",
 	}
 }

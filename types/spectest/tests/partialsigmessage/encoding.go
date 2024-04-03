@@ -7,7 +7,7 @@ import (
 // Encoding tests encoding of a ssv message
 func Encoding() *EncodingTest {
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)
+	msg := testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], 1)
 
 	byts, err := msg.Encode()
 	if err != nil {
@@ -19,7 +19,7 @@ func Encoding() *EncodingTest {
 	}
 
 	return &EncodingTest{
-		Name:         "SignedPartialSignatureMessage encoding",
+		Name:         "PartialSignatureMessages encoding",
 		Data:         byts,
 		ExpectedRoot: root,
 	}

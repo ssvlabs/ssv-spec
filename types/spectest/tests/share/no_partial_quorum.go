@@ -9,7 +9,7 @@ func NoPartialQuorum() *ShareTest {
 	ks := testingutils.Testing4SharesSet()
 	share := testingutils.TestingShare(ks)
 
-	msg := testingutils.TestingCommitMessage(ks.Shares[1], 1)
+	msg := testingutils.TestingCommitMessage(ks.NetworkKeys[1], 1)
 
 	return &ShareTest{
 		Name:                     "no partial quorum",

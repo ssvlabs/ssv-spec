@@ -10,15 +10,12 @@ func EmptySignature() *SignedSSVMessageTest {
 
 	ks := testingutils.Testing4SharesSet()
 
+	msg := testingutils.SSVMsgAttester(1, ks.NetworkKeys[1], nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1))
+	msg.Signature = [][]byte{{}}
+
 	return &SignedSSVMessageTest{
-		Name: "empty signature",
-		Messages: []*types.SignedSSVMessage{
-			{
-				OperatorID: []types.OperatorID{1},
-				Signature:  [][]byte{{}},
-				SSVMessage: testingutils.SSVMsgAttester(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-			},
-		},
+		Name:          "empty signature",
+		Messages:      []*types.SignedSSVMessage{msg},
 		ExpectedError: "Signature has length 0 in SignedSSVMessage",
 	}
 }

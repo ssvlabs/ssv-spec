@@ -10,15 +10,12 @@ func NoSigner() *SignedSSVMessageTest {
 
 	ks := testingutils.Testing4SharesSet()
 
+	msg := testingutils.SSVMsgAttester(1, ks.NetworkKeys[1], nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1))
+	msg.OperatorID = []types.OperatorID{}
+
 	return &SignedSSVMessageTest{
-		Name: "no signer",
-		Messages: []*types.SignedSSVMessage{
-			{
-				OperatorID: []types.OperatorID{},
-				Signature:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
-				SSVMessage: testingutils.SSVMsgAttester(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
-			},
-		},
+		Name:          "no signer",
+		Messages:      []*types.SignedSSVMessage{msg},
 		ExpectedError: "No OperatorID in SignedSSVMessage",
 	}
 }
