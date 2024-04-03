@@ -149,10 +149,10 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	byts, _ := json.Marshal(m["Duty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
-	outputMsgs := make([]*types.SignedPartialSignatureMessage, 0)
+	outputMsgs := make([]*types.PartialSignatureMessages, 0)
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
-		typedMsg := &types.SignedPartialSignatureMessage{}
+		typedMsg := &types.PartialSignatureMessages{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
@@ -179,19 +179,19 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	byts, _ := json.Marshal(m["Duty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.SignedSSVMessage, 0)
 	for _, msg := range m["Messages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
-		typedMsg := &types.SSVMessage{}
+		typedMsg := &types.SignedSSVMessage{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		msgs = append(msgs, typedMsg)
 	}
 
-	outputMsgs := make([]*types.SignedPartialSignatureMessage, 0)
+	outputMsgs := make([]*types.PartialSignatureMessages, 0)
 	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
-		typedMsg := &types.SignedPartialSignatureMessage{}
+		typedMsg := &types.PartialSignatureMessages{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}

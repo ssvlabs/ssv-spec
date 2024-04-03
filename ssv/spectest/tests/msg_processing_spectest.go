@@ -20,11 +20,11 @@ type MsgProcessingSpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
 	Duty                    *types.Duty
-	Messages                []*types.SSVMessage
+	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
-	OutputMessages         []*types.SignedPartialSignatureMessage
+	OutputMessages         []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
@@ -100,10 +100,10 @@ func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
 }
 
 func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Validator) {
-	filterPartialSigs := func(messages []*types.SSVMessage) []*types.SSVMessage {
-		ret := make([]*types.SSVMessage, 0)
+	filterPartialSigs := func(messages []*types.SignedSSVMessage) []*types.SignedSSVMessage {
+		ret := make([]*types.SignedSSVMessage, 0)
 		for _, msg := range messages {
-			if msg.MsgType != types.SSVPartialSignatureMsgType {
+			if msg.SSVMessage.MsgType != types.SSVPartialSignatureMsgType {
 				continue
 			}
 			ret = append(ret, msg)
@@ -114,18 +114,18 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 	index := 0
 	for _, msg := range broadcastedMsgs {
-		if msg.MsgType != types.SSVPartialSignatureMsgType {
+		if msg.SSVMessage.MsgType != types.SSVPartialSignatureMsgType {
 			continue
 		}
 
-		msg1 := &types.SignedPartialSignatureMessage{}
-		require.NoError(t, msg1.Decode(msg.Data))
+		msg1 := &types.PartialSignatureMessages{}
+		require.NoError(t, msg1.Decode(msg.SSVMessage.Data))
 		msg2 := test.OutputMessages[index]
-		require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))
+		require.Len(t, msg1.Messages, len(msg2.Messages))
 
 		// messages are not guaranteed to be in order so we map them and then test all roots to be equal
 		roots := make(map[string]string)
-		for i, partialSigMsg2 := range msg2.Message.Messages {
+		for i, partialSigMsg2 := range msg2.Messages {
 			r2, err := partialSigMsg2.GetRoot()
 			require.NoError(t, err)
 			if _, found := roots[hex.EncodeToString(r2[:])]; !found {
@@ -134,7 +134,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 				roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
 			}
 
-			partialSigMsg1 := msg1.Message.Messages[i]
+			partialSigMsg1 := msg1.Messages[i]
 			r1, err := partialSigMsg1.GetRoot()
 			require.NoError(t, err)
 
@@ -149,7 +149,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		}
 
 		// test that slot is correct in broadcasted msg
-		require.EqualValues(t, msg1.Message.Slot, msg2.Message.Slot, "incorrect broadcasted slot")
+		require.EqualValues(t, msg1.Slot, msg2.Slot, "incorrect broadcasted slot")
 
 		index++
 	}
