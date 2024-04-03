@@ -160,6 +160,11 @@ func (msg *SignedSSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
+// GetRoot returns the root
+func (msg *SignedSSVMessage) GetRoot() ([32]byte, error) {
+	return msg.HashTreeRoot()
+}
+
 // Validate
 func (msg *SignedSSVMessage) Validate() error {
 	// There must be at least one signer

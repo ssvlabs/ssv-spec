@@ -5,16 +5,16 @@ import (
 )
 
 type TestingNetwork struct {
-	BroadcastedMsgs []*types.SSVMessage
+	BroadcastedMsgs []*types.SignedSSVMessage
 }
 
 func NewTestingNetwork() *TestingNetwork {
 	return &TestingNetwork{
-		BroadcastedMsgs: make([]*types.SSVMessage, 0),
+		BroadcastedMsgs: make([]*types.SignedSSVMessage, 0),
 	}
 }
 
-func (net *TestingNetwork) Broadcast(message *types.SSVMessage) error {
+func (net *TestingNetwork) Broadcast(message *types.SignedSSVMessage) error {
 	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message)
 	return nil
 }
