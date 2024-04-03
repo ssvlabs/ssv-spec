@@ -7,7 +7,9 @@ import (
 // Encoding tests encoding of a ssv message
 func Encoding() *EncodingTest {
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.SSVMsgSyncCommitteeContribution(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1))
+	signedMsg := testingutils.SSVMsgSyncCommitteeContribution(1, ks.NetworkKeys[1], nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1))
+
+	msg := signedMsg.SSVMessage
 
 	byts, err := msg.Encode()
 	if err != nil {

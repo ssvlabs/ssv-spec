@@ -23,6 +23,6 @@ func MessageSigner0() *MsgSpecTest {
 			msgPre,
 			msgPost,
 		},
-		ExpectedError: "signer ID 0 not allowed",
+		ExpectedError: "message invalid: signer ID 0 not allowed",
 	}
 }

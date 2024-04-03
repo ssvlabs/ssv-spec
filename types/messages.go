@@ -178,7 +178,7 @@ func (msg *SignedSSVMessage) Validate() error {
 			return errors.New("OperatorID in SignedSSVMessage is 0")
 		}
 		if operatorsSet[operatorID] {
-			return errors.New("Non unique OperatorID")
+			return errors.New("non unique signer")
 		}
 		operatorsSet[operatorID] = true
 	}

@@ -41,14 +41,16 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 var TestingInvalidValueCheck = []byte{1, 1, 1, 1}
 
 var TestingShare = func(keysSet *TestKeySet) *types.Share {
+	committee := keysSet.Committee()
 	return &types.Share{
 		OperatorID:          1,
 		ValidatorPubKey:     keysSet.ValidatorPK.Serialize(),
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
+		NetworkPubkey:       committee[1].NetworkPubKey,
 		DomainType:          TestingSSVDomainType,
 		Quorum:              keysSet.Threshold,
 		PartialQuorum:       keysSet.PartialThreshold,
-		Committee:           keysSet.Committee(),
+		Committee:           committee,
 		FeeRecipientAddress: TestingFeeRecipient,
 	}
 }
