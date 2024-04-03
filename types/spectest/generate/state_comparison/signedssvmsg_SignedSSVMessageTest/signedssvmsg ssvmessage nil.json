@@ -2,8 +2,12 @@
 		"Name": "ssvmessage nil",
 		"Messages": [
 				{
-						"OperatorID": 1,
-						"Signature": "AQIDBA==",
+						"OperatorID": [
+								1
+						],
+						"Signature": [
+								"AQIDBA=="
+						],
 						"SSVMessage": null
 				}
 		],

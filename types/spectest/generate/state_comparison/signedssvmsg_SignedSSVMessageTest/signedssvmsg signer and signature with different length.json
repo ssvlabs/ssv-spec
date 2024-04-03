@@ -1,12 +1,13 @@
 {
-		"Name": "empty signature",
+		"Name": "signer and signature with different length",
 		"Messages": [
 				{
 						"OperatorID": [
-								1
+								1,
+								2
 						],
 						"Signature": [
-								""
+								"FhYFJEb6kqHZaSNt6tZmI0GuF2ZZqroWZIztPGWd4INR9TvmimMAQromZ1N64oPzpjWdErLBSv+J7sG/Mn6yzrxwzF5GFbmSBxxgzjrdxIaUlr0gpeSJ69Y5aZd6R6vZau0qq0jXaGnXbc5oPFXaqS/HPX0ybnKMzHRlGpat6ghYA0xomiYcbrukwU4n6SwDoTUBVACy74E30SWfneAMsCJSvF7dBkf6upzQU2emMaQLeWC9y9iS1+yoBaC/GakJQe4i6IJHKMbPkyGtewkRrND14iGU2/JN1Mkl4aeu8dnFDJJpFGg+rpf/oQUBfUByFpulir4p5RdKKsYxlMjgxw=="
 						],
 						"SSVMessage": {
 								"MsgType": 1,
@@ -72,6 +73,6 @@
 						}
 				}
 		],
-		"ExpectedError": "Signature has length 0 in SignedSSVMessage",
+		"ExpectedError": "SignedSSVMessage has a different number of operato IDs and signatures",
 		"RSAPublicKey": null
 }

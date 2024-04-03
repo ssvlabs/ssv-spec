@@ -2,8 +2,12 @@
 		"Name": "zero signer",
 		"Messages": [
 				{
-						"OperatorID": 0,
-						"Signature": "AQIDBA==",
+						"OperatorID": [
+								0
+						],
+						"Signature": [
+								"FhYFJEb6kqHZaSNt6tZmI0GuF2ZZqroWZIztPGWd4INR9TvmimMAQromZ1N64oPzpjWdErLBSv+J7sG/Mn6yzrxwzF5GFbmSBxxgzjrdxIaUlr0gpeSJ69Y5aZd6R6vZau0qq0jXaGnXbc5oPFXaqS/HPX0ybnKMzHRlGpat6ghYA0xomiYcbrukwU4n6SwDoTUBVACy74E30SWfneAMsCJSvF7dBkf6upzQU2emMaQLeWC9y9iS1+yoBaC/GakJQe4i6IJHKMbPkyGtewkRrND14iGU2/JN1Mkl4aeu8dnFDJJpFGg+rpf/oQUBfUByFpulir4p5RdKKsYxlMjgxw=="
+						],
 						"SSVMessage": {
 								"MsgType": 1,
 								"MsgID": [
@@ -64,7 +68,7 @@
 										0,
 										0
 								],
-								"Data": "bAAAAJSiIAgMlvW7ubirWes10jWmgQm/rIKDrBJ3PCSNEL0mJ343H56095JQBpycj5bLtggDCdhiFtcOXySdU/mSPKDMHC9Yskx97Sofww3tJn7T0h4Sp4ok88O2cX8vXY2kkgEAAAAAAAAAAQAAAAAAAAAMAAAAAAAAABQAAACqYtWxqJS9TpuMtuxKg8vDgJM1H2V559u7tsvDiPWthvEQzZmecz+I5Gy02sZh6egKStIzFEk5lQEFG5kqiltYv76DvXtLIAPPczcX1wyMtA/y/XO8wILRIHH+Np8+mbTkiuaucDdgUACrzQm/z9biDJ1EUaIwDERr+4LeutIfvQEAAAAAAAAA"
+								"Data": "AQAAAAAAAAAMAAAAAAAAABQAAACqYtWxqJS9TpuMtuxKg8vDgJM1H2V559u7tsvDiPWthvEQzZmecz+I5Gy02sZh6egKStIzFEk5lQEFG5kqiltYv76DvXtLIAPPczcX1wyMtA/y/XO8wILRIHH+Np8+mbTkiuaucDdgUACrzQm/z9biDJ1EUaIwDERr+4LeutIfvQEAAAAAAAAA"
 						}
 				}
 		],

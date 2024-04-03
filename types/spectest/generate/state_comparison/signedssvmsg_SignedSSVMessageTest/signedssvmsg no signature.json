@@ -1,13 +1,11 @@
 {
-		"Name": "empty signature",
+		"Name": "no signature",
 		"Messages": [
 				{
 						"OperatorID": [
 								1
 						],
-						"Signature": [
-								""
-						],
+						"Signature": [],
 						"SSVMessage": {
 								"MsgType": 1,
 								"MsgID": [
@@ -72,6 +70,6 @@
 						}
 				}
 		],
-		"ExpectedError": "Signature has length 0 in SignedSSVMessage",
+		"ExpectedError": "No signature in SignedSSVMessage",
 		"RSAPublicKey": null
 }
