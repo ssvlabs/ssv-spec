@@ -17,7 +17,7 @@ func UnmarshalJustifications() tests.SpecTest {
 	encodedPrepareMsg, _ := hex.DecodeString("8129e6862a5120bd085e1936b4efb5a55fc7d19c0d0fda0e9ec576d18abd4a17ab3a033f5296b74c5fdaf85cb7b3da3201b63feca76b883613e3b1ca137e763a342e3b1dddbce016f8ca3cbce32c8b125dd8c25a7639819c20b539e9e7c6c5796c00000074000000c400000001000000000000000100000000000000000000000000000001000000000000004c000000be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b40000000000000000500000005000000001020304")
 
 	msg := testingutils.TestingProposalMessageWithParams(
-		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+		ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		[][]byte{encodedRCMsg}, [][]byte{encodedPrepareMsg})
 
 	r, err := hex.DecodeString("fddc24432bfcc56695474576b1c70aed011f18bfa1ad2c10c85772f8c588e412")
@@ -32,7 +32,7 @@ func UnmarshalJustifications() tests.SpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "unmarshal justifications",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		EncodedMessages: [][]byte{

@@ -13,16 +13,16 @@ import (
 func MarshalJustificationsWithoutFullData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndFullData(ks.Shares[1], 1, 2, nil),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndFullData(ks.NetworkKeys[1], 1, 2, nil),
 	}
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessageWithRoundAndFullData(ks.Shares[1], types.OperatorID(1), 1, nil),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithRoundAndFullData(ks.NetworkKeys[1], types.OperatorID(1), 1, nil),
 	}
 
 	msg := testingutils.TestingProposalMessageWithParams(
-		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+		ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs))
 
 	r, err := hex.DecodeString("38977ca5244c072549564f2fd90a88fd7e3cf5124ebd3c77154c042ea3ed8aa0")
@@ -37,7 +37,7 @@ func MarshalJustificationsWithoutFullData() tests.SpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "marshal justifications",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		EncodedMessages: [][]byte{

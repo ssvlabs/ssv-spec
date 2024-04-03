@@ -1,9 +1,8 @@
 package decided
 
 import (
+	"crypto/rsa"
 	"crypto/sha256"
-
-	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
@@ -22,9 +21,9 @@ func InvalidValCheckData() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
+				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessageWithParams(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]*rsa.PrivateKey{ks.NetworkKeys[1], ks.NetworkKeys[2], ks.NetworkKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						qbft.FirstRound,
 						qbft.FirstHeight,
@@ -46,9 +45,9 @@ func InvalidValCheckData() tests.SpecTest {
 
 func invalidValCheckDataStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*qbft.SignedMessage{
+	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingCommitMultiSignerMessageWithParams(
-			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+			[]*rsa.PrivateKey{ks.NetworkKeys[1], ks.NetworkKeys[2], ks.NetworkKeys[3]},
 			[]types.OperatorID{1, 2, 3},
 			qbft.FirstRound,
 			qbft.FirstHeight,

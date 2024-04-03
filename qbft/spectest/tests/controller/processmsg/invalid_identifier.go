@@ -19,8 +19,8 @@ func InvalidIdentifier() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
-					testingutils.SignQBFTMsg(ks.Shares[1], 1, &qbft.Message{
+				InputMessages: []*types.SignedSSVMessage{
+					testingutils.SignQBFTMsg(ks.NetworkKeys[1], 1, &qbft.Message{
 						MsgType:    qbft.ProposalMsgType,
 						Height:     qbft.FirstHeight,
 						Round:      qbft.FirstRound,

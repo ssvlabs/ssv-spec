@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
@@ -18,16 +19,16 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 	testData := []byte{1, 2}
 	testDataRoot := sha256.Sum256(testData)
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessageWithFullData(ks.Shares[1], types.OperatorID(1), testData),
-		testingutils.TestingPrepareMessageWithFullData(ks.Shares[2], types.OperatorID(2), testData),
-		testingutils.TestingPrepareMessageWithFullData(ks.Shares[3], types.OperatorID(3), testData),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithFullData(ks.NetworkKeys[1], types.OperatorID(1), testData),
+		testingutils.TestingPrepareMessageWithFullData(ks.NetworkKeys[2], types.OperatorID(2), testData),
+		testingutils.TestingPrepareMessageWithFullData(ks.NetworkKeys[3], types.OperatorID(3), testData),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
-		testingutils.TestingRoundChangeMessageWithParamsAndFullData(ks.Shares[4], types.OperatorID(4), 2, qbft.FirstHeight,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithParamsAndFullData(ks.NetworkKeys[4], types.OperatorID(4), 2, qbft.FirstHeight,
 			testDataRoot, 1, testData, testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
@@ -35,8 +36,8 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 		Name:          "quorum not triggered twice justification ignored",
 		Pre:           pre,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingProposalMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 				testingutils.TestingQBFTRootData, testingutils.MarshalJustifications(msgs[:len(msgs)-1]),
 				[][]byte{}),
 		},

@@ -1,6 +1,8 @@
 package qbft_test
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"testing"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -19,14 +21,18 @@ func TestInstance_Marshaling(t *testing.T) {
 		Identifier: []byte{1, 2, 3, 4},
 		Root:       testingutils.TestingQBFTRootData,
 	}
+	rsaSK, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		panic(err)
+	}
 	TestingSK := func() *bls.SecretKey {
 		types.InitBLS()
 		ret := &bls.SecretKey{}
 		ret.SetByCSPRNG()
 		return ret
 	}()
-	testingSignedMsg := func() *qbft.SignedMessage {
-		return testingutils.SignQBFTMsg(TestingSK, 1, TestingMessage)
+	testingSignedMsg := func() *types.SignedSSVMessage {
+		return testingutils.SignQBFTMsg(rsaSK, 1, TestingMessage)
 	}()
 	testingValidatorPK := spec.BLSPubKey{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4}
 	testingShare := &types.Share{
@@ -56,28 +62,28 @@ func TestInstance_Marshaling(t *testing.T) {
 			DecidedValue:                    []byte{1, 2, 3, 4},
 
 			ProposeContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			PrepareContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			CommitContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			RoundChangeContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 					1: {
 						testingSignedMsg,
 					},

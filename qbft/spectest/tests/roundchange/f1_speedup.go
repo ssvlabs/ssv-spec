@@ -12,9 +12,9 @@ func F1Speedup() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 10),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 10),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -22,8 +22,8 @@ func F1Speedup() tests.SpecTest {
 		Pre:           pre,
 		PostRoot:      "a7d293fbc40215b96d25c87dc10fce642f25cda2d004e745b2e08a5ebc5db2e3",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingRoundChangeMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
 				[32]byte{}, 0, [][]byte{}),
 		},
 		ExpectedTimerState: &testingutils.TimerState{

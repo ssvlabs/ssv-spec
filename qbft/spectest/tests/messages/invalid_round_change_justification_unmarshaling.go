@@ -12,20 +12,19 @@ func InvalidRoundChangeJustificationsUnmarshalling() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	msg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
+	msg := testingutils.SignQBFTMsg(ks.NetworkKeys[1], types.OperatorID(1), &qbft.Message{
 		MsgType:                  qbft.ProposalMsgType,
 		Height:                   qbft.FirstHeight,
 		Round:                    qbft.FirstRound,
 		Identifier:               []byte{1, 2, 3, 4},
 		Root:                     testingutils.DifferentRoot,
 		RoundChangeJustification: [][]byte{{1}},
+		FullData:                 testingutils.TestingQBFTFullData,
 	})
-
-	msg.FullData = testingutils.TestingQBFTFullData
 
 	return &tests.MsgSpecTest{
 		Name: "invalid round change justification unmarshalling",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		ExpectedError: "incorrect size",

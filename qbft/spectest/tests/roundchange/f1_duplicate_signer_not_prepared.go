@@ -1,7 +1,6 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -12,9 +11,9 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 5),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -22,6 +21,6 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 		Pre:            pre,
 		PostRoot:       "6a7c1be9ab4c16a305f393c97744fd224bf1bbc2e627c04659d9e65d6cea571f",
 		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		OutputMessages: []*types.SignedSSVMessage{},
 	}
 }

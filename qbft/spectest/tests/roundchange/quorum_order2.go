@@ -13,16 +13,16 @@ func QuorumOrder2() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[3], types.OperatorID(3)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], types.OperatorID(2)),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 2),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -30,9 +30,9 @@ func QuorumOrder2() tests.SpecTest {
 		Pre:           pre,
 		PostRoot:      "a7aed8500c01312f41067319c037b4c8d180bbe733a6da1464390394dcd9cc02",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
+		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithParams(
-				ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+				ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}

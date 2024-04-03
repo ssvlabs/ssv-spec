@@ -1,8 +1,8 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -11,11 +11,11 @@ func DuplicateMsg() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], 1)
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.NetworkKeys[1], 1)
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingCommitMessage(ks.Shares[1], 1),
-		testingutils.TestingCommitMessage(ks.Shares[1], 1),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingCommitMessage(ks.NetworkKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.NetworkKeys[1], 1),
 	}
 
 	return &tests.MsgProcessingSpecTest{

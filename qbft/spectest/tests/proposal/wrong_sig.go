@@ -1,7 +1,6 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -11,8 +10,8 @@ import (
 func WrongSignature() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[2], types.OperatorID(1)),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.NetworkKeys[2], types.OperatorID(1)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong proposal sig",

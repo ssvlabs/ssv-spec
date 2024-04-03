@@ -2,14 +2,15 @@ package tests
 
 import (
 	"encoding/hex"
+	"reflect"
+	"testing"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
-	"reflect"
-	"testing"
 )
 
 const (
@@ -26,7 +27,7 @@ type CreateMsgSpecTest struct {
 	// ISSUE 217: rename to value
 	StateValue                                       []byte
 	Round                                            qbft.Round
-	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
+	RoundChangeJustifications, PrepareJustifications []*types.SignedSSVMessage
 	CreateType                                       string
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
@@ -34,7 +35,7 @@ type CreateMsgSpecTest struct {
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
-	var msg *qbft.SignedMessage
+	var msg *types.SignedSSVMessage
 	var err error
 	switch test.CreateType {
 	case CreateProposal:
@@ -71,7 +72,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
-func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -79,10 +80,15 @@ func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateCommit(state, config, test.Value)
+	msg, err := qbft.CreateCommit(state, config, test.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	return testingutils.SignQBFTMsg(ks.NetworkKeys[1], 1, msg), err
 }
 
-func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -90,10 +96,15 @@ func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreatePrepare(state, config, test.Round, test.Value)
+	msg, err := qbft.CreatePrepare(state, config, test.Round, test.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	return testingutils.SignQBFTMsg(ks.NetworkKeys[1], 1, msg), err
 }
 
-func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share: testingutils.TestingShare(ks),
@@ -101,10 +112,15 @@ func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	}
 	config := testingutils.TestingConfig(ks)
 
-	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
+	msg, err := qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
+	if err != nil {
+		return nil, err
+	}
+
+	return testingutils.SignQBFTMsg(ks.NetworkKeys[1], 1, msg), err
 }
 
-func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		Share:            testingutils.TestingShare(ks),
@@ -114,7 +130,11 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 	config := testingutils.TestingConfig(ks)
 
 	if len(test.PrepareJustifications) > 0 {
-		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
+		qbftMessage := &qbft.Message{}
+		if err := qbftMessage.Decode(test.PrepareJustifications[0].SSVMessage.Data); err != nil {
+			return nil, err
+		}
+		state.LastPreparedRound = qbftMessage.Round
 		state.LastPreparedValue = test.StateValue
 
 		for _, msg := range test.PrepareJustifications {
@@ -125,7 +145,12 @@ func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) 
 		}
 	}
 
-	return qbft.CreateRoundChange(state, config, 1, test.Value[:])
+	msg, err := qbft.CreateRoundChange(state, config, 1, test.Value[:])
+	if err != nil {
+		return nil, err
+	}
+
+	return testingutils.SignQBFTMsg(ks.NetworkKeys[1], 1, msg), err
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

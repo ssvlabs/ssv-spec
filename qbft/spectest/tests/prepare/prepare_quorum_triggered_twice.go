@@ -13,16 +13,16 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	sc := prepareQuorumTriggeredTwiceStateComparison()
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], 1),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.NetworkKeys[1], 1),
 
-		testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-		testingutils.TestingPrepareMessage(ks.Shares[2], 2),
-		testingutils.TestingPrepareMessage(ks.Shares[3], 3),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], 1),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], 2),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[3], 3),
 
-		testingutils.TestingCommitMessage(ks.Shares[1], 1),
+		testingutils.TestingCommitMessage(ks.NetworkKeys[1], 1),
 
-		testingutils.TestingPrepareMessage(ks.Shares[4], 4),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[4], 4),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepared quorum committed twice",
@@ -30,9 +30,9 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-			testingutils.TestingCommitMessage(ks.Shares[1], 1),
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessage(ks.NetworkKeys[1], 1),
+			testingutils.TestingCommitMessage(ks.NetworkKeys[1], 1),
 		},
 	}
 }
@@ -41,29 +41,29 @@ func prepareQuorumTriggeredTwiceStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	state := testingutils.BaseInstance().State
-	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
+	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.NetworkKeys[1], types.OperatorID(1))
 
 	state.LastPreparedRound = 1
 	state.LastPreparedValue = testingutils.TestingQBFTFullData
 
-	state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+	state.ProposeContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 		qbft.FirstRound: {
-			testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+			testingutils.TestingProposalMessage(ks.NetworkKeys[1], types.OperatorID(1)),
 		},
 	}}
 
-	state.PrepareContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+	state.PrepareContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 		qbft.FirstRound: {
-			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-			testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-			testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
-			testingutils.TestingPrepareMessage(ks.Shares[4], types.OperatorID(4)),
+			testingutils.TestingPrepareMessage(ks.NetworkKeys[1], types.OperatorID(1)),
+			testingutils.TestingPrepareMessage(ks.NetworkKeys[2], types.OperatorID(2)),
+			testingutils.TestingPrepareMessage(ks.NetworkKeys[3], types.OperatorID(3)),
+			testingutils.TestingPrepareMessage(ks.NetworkKeys[4], types.OperatorID(4)),
 		},
 	}}
 
-	state.CommitContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*qbft.SignedMessage{
+	state.CommitContainer = &qbft.MsgContainer{Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 		qbft.FirstRound: {
-			testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1)),
+			testingutils.TestingCommitMessage(ks.NetworkKeys[1], types.OperatorID(1)),
 		},
 	}}
 

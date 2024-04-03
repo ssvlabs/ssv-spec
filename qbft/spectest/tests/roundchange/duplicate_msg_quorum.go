@@ -14,23 +14,23 @@ func DuplicateMsgQuorum() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData, qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 2),
 	}
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 2),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -38,9 +38,9 @@ func DuplicateMsgQuorum() tests.SpecTest {
 		Pre:           pre,
 		PostRoot:      "595889ae5096cb343497314ab7ea82299f8d05d01de3fad6902bfb559d5356ec",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
+		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithRoundAndRC(
-				ks.Shares[1], types.OperatorID(1), 2, testingutils.MarshalJustifications(rcMsgs)),
+				ks.NetworkKeys[1], types.OperatorID(1), 2, testingutils.MarshalJustifications(rcMsgs)),
 		},
 	}
 }

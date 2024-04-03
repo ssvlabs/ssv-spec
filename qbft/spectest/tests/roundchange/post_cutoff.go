@@ -1,7 +1,6 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -14,8 +13,8 @@ func PostCutoff() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 15
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 16),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 16),
 	}
 
 	return &tests.MsgProcessingSpecTest{

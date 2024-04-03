@@ -1,8 +1,8 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -11,10 +11,10 @@ func WrongData1() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], 1)
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.NetworkKeys[1], 1)
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingCommitMessageWrongRoot(ks.Shares[1], 1),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingCommitMessageWrongRoot(ks.NetworkKeys[1], 1),
 	}
 
 	return &tests.MsgProcessingSpecTest{

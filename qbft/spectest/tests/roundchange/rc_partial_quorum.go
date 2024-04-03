@@ -14,10 +14,10 @@ func RoundChangePartialQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := roundChangePartialQuorumStateComparison()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 3),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -26,8 +26,8 @@ func RoundChangePartialQuorum() tests.SpecTest {
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingRoundChangeMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 				[32]byte{}, 0, [][]byte{}),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
@@ -40,10 +40,10 @@ func RoundChangePartialQuorum() tests.SpecTest {
 func roundChangePartialQuorumStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 3),
 	}
 
 	instance := &qbft.Instance{

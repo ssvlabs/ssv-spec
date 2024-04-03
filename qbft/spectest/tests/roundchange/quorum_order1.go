@@ -15,16 +15,16 @@ func QuorumOrder1() tests.SpecTest {
 	sc := quorumOrder1StateComparison()
 
 	ks := testingutils.Testing4SharesSet()
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[3], types.OperatorID(3)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], types.OperatorID(2)),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 2),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -33,8 +33,8 @@ func QuorumOrder1() tests.SpecTest {
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingProposalMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 				testingutils.TestingQBFTRootData,
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
@@ -44,17 +44,17 @@ func QuorumOrder1() tests.SpecTest {
 func quorumOrder1StateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[3], types.OperatorID(3)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], types.OperatorID(2)),
 	}
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], types.OperatorID(3), 2),
 	}
 
 	instance := &qbft.Instance{

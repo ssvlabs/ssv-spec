@@ -14,17 +14,17 @@ func ValidJustification() tests.SpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = nil // proposal resets on upon timeout
 	pre.State.Round = 2
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[2], types.OperatorID(2), 2,
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[2], types.OperatorID(2), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[3], types.OperatorID(3), 2,
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[3], types.OperatorID(3), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
@@ -33,8 +33,8 @@ func ValidJustification() tests.SpecTest {
 		Pre:           pre,
 		PostRoot:      "4df173f288dd51463fc9277bdf8c1ded677a764992b916729eee9432681e54ce",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingProposalMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 				testingutils.TestingQBFTRootData,
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},

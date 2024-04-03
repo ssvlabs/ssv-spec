@@ -1,7 +1,7 @@
 package latemsg
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
 
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
@@ -17,7 +17,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
 
-	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
+	msgPerHeight := make(map[qbft.Height][]*types.SignedSSVMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
 
@@ -28,7 +28,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
 				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
-					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+					[]*rsa.PrivateKey{ks.NetworkKeys[1], ks.NetworkKeys[2], ks.NetworkKeys[3]},
 					[]types.OperatorID{1, 2, 3},
 					height,
 				),
@@ -40,7 +40,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 		}
 	}
 
-	lateMsg := testingutils.TestingMultiSignerRoundChangeMessageWithHeight([]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, qbft.FirstHeight)
+	lateMsg := testingutils.TestingMultiSignerRoundChangeMessageWithHeight([]*rsa.PrivateKey{ks.NetworkKeys[4]}, []types.OperatorID{4}, qbft.FirstHeight)
 	sc := lateRoundChangePastInstanceStateComparison(2, lateMsg)
 
 	return &tests.ControllerSpecTest{
@@ -50,9 +50,9 @@ func LateRoundChangePastInstance() tests.SpecTest {
 			instanceData(1),
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
+				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingMultiSignerRoundChangeMessageWithHeight(
-						[]*bls.SecretKey{ks.Shares[4]},
+						[]*rsa.PrivateKey{ks.NetworkKeys[4]},
 						[]types.OperatorID{4},
 						qbft.FirstHeight,
 					),
@@ -67,7 +67,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 
 // lateRoundChangePastInstanceStateComparison returns a comparable.StateComparison for controller running up to the given height.
 // lateMsg will be added to the rc container of the instance at the proper height.
-func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
+func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *types.SignedSSVMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
 	offset := 7 // 7 messages per height (1 propose + 3 prepare + 3 commit)
@@ -98,7 +98,7 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *qbf
 			break
 		}
 
-		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
 		instance.State.LastPreparedRound = qbft.FirstRound
 		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
 		instance.State.Decided = true

@@ -14,23 +14,23 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := invalidPrepareJustificationValueStateComparison()
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], types.OperatorID(2)),
 		testingutils.TestingPrepareMessageWithParams(
 			// TODO: different value instead of wrong root
-			ks.Shares[3], types.OperatorID(3), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingIdentifier, testingutils.DifferentRoot),
+			ks.NetworkKeys[3], types.OperatorID(3), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingIdentifier, testingutils.DifferentRoot),
 	}
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[2], types.OperatorID(2), 2,
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[2], types.OperatorID(2), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[3], types.OperatorID(3), 2,
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.NetworkKeys[3], types.OperatorID(3), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
@@ -41,7 +41,7 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 		PostRoot:       sc.Root(),
 		PostState:      sc.ExpectedState,
 		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: proposed data mistmatch",
 	}
 }

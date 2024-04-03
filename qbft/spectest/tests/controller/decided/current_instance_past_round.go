@@ -1,41 +1,41 @@
 package decided
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
+	"crypto/rsa"
+
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // CurrentInstancePastRound tests a decided msg received for current running instance for a past round
 func CurrentInstancePastRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], 1, 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], 2, 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], 3, 2),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], 1, 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], 2, 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[3], 3, 2),
 	}
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], 1),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.NetworkKeys[1], 1),
 
-		testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-		testingutils.TestingPrepareMessage(ks.Shares[2], 2),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], 1),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], 2),
 	}
 	msgs = append(msgs, rcMsgs...)
-	msgs = append(msgs, []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithRoundAndRC(ks.Shares[1], 1, 2,
+	msgs = append(msgs, []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithRoundAndRC(ks.NetworkKeys[1], 1, 2,
 			testingutils.MarshalJustifications(rcMsgs)),
 
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], 1, 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], 2, 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], 3, 2),
+		testingutils.TestingPrepareMessageWithRound(ks.NetworkKeys[1], 1, 2),
+		testingutils.TestingPrepareMessageWithRound(ks.NetworkKeys[2], 2, 2),
+		testingutils.TestingPrepareMessageWithRound(ks.NetworkKeys[3], 3, 2),
 
-		testingutils.TestingCommitMessageWithRound(ks.Shares[1], 1, 2),
-		testingutils.TestingCommitMessageWithRound(ks.Shares[2], 2, 2),
-		testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
+		testingutils.TestingCommitMessageWithRound(ks.NetworkKeys[1], 1, 2),
+		testingutils.TestingCommitMessageWithRound(ks.NetworkKeys[2], 2, 2),
+		testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.NetworkKeys[1], ks.NetworkKeys[2], ks.NetworkKeys[3]}, []types.OperatorID{1, 2, 3}),
 	}...)
 
 	return &tests.ControllerSpecTest{

@@ -14,9 +14,9 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := f1DifferentFutureRoundsNotPreparedStateComparison()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 5),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 10),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -25,8 +25,8 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 5, qbft.FirstHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingRoundChangeMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 5, qbft.FirstHeight,
 				[32]byte{}, 0, [][]byte{}),
 		},
 	}
@@ -35,9 +35,9 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 func f1DifferentFutureRoundsNotPreparedStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 5),
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[2], types.OperatorID(2), 10),
 	}
 
 	instance := &qbft.Instance{

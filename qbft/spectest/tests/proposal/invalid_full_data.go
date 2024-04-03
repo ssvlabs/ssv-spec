@@ -11,14 +11,13 @@ import (
 func InvalidFullData() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
-	msg.FullData = nil
+	msg := testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.NetworkKeys[1], types.OperatorID(1), []byte{1, 2, 3, 4}, nil, qbft.FirstHeight)
 
 	return &tests.MsgProcessingSpecTest{
 		Name:          "invalid full data",
 		Pre:           pre,
 		PostRoot:      "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
-		InputMessages: []*qbft.SignedMessage{msg},
+		InputMessages: []*types.SignedSSVMessage{msg},
 		ExpectedError: "invalid signed message: H(data) != root",
 	}
 }

@@ -13,14 +13,14 @@ func DuplicateMsg() tests.SpecTest {
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.NetworkKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),
-		testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 5, qbft.FirstHeight,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.NetworkKeys[1], types.OperatorID(1), 5),
+		testingutils.TestingRoundChangeMessageWithParams(ks.NetworkKeys[1], types.OperatorID(1), 5, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData, qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
@@ -29,6 +29,6 @@ func DuplicateMsg() tests.SpecTest {
 		Pre:            pre,
 		PostRoot:       "c91c804a02a9a20518a3556f1b6c5028465253b853cb2a0fe321964a58dbf92f",
 		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		OutputMessages: []*types.SignedSSVMessage{},
 	}
 }
