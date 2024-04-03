@@ -5,16 +5,16 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
-func SetMessages(instance *qbft.Instance, messages []*types.SSVMessage) {
+func SetMessages(instance *qbft.Instance, messages []*types.SignedSSVMessage) {
 	InitContainers(instance)
 
 	for _, ssvMsg := range messages {
-		if ssvMsg.MsgType != types.SSVConsensusMsgType {
+		if ssvMsg.SSVMessage.MsgType != types.SSVConsensusMsgType {
 			continue
 		}
 
 		msg := &types.SignedSSVMessage{}
-		if err := msg.Decode(ssvMsg.Data); err != nil {
+		if err := msg.Decode(ssvMsg.SSVMessage.Data); err != nil {
 			panic(err.Error())
 		}
 		setMessage(instance, msg)

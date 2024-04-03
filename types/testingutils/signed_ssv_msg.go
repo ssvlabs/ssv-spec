@@ -15,7 +15,7 @@ var TestingMessageID = types.NewMsgID(TestingSSVDomainType, TestingValidatorPubK
 
 var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorID, rsaSK *rsa.PrivateKey) *types.SignedSSVMessage {
 	// SignedPartialSigMessage
-	signedPartialSig := PreConsensusSelectionProofMsg(sk, sk, operatorID, operatorID)
+	signedPartialSig := PreConsensusSelectionProofMsg(sk, operatorID)
 	signedPartialSigByts, err := signedPartialSig.Encode()
 	if err != nil {
 		panic(err.Error())

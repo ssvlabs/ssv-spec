@@ -1,8 +1,6 @@
 package testingutils
 
 import (
-	"crypto/rsa"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -188,8 +186,14 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 		panic(err.Error())
 	}
 	for _, msg := range msgs {
-		ssvMsg := SSVMsgAttester(msg, nil)
-		signedSSVMessage := SignedSSVMessageF(ssvMsg, msg.OperatorID, []*rsa.PrivateKey{keySet.NetworkKeys[msg.OperatorID[0]]})
+
+		// Take the qbft Message
+		qbftMesage := &qbft.Message{}
+		if err := qbftMesage.Decode(msg.SSVMessage.Data); err != nil {
+			panic(err)
+		}
+		// Convert it to an attester message
+		signedSSVMessage := SSVMsgAttester(msg.OperatorID[0], keySet.NetworkKeys[msg.OperatorID[0]], qbftMesage, nil)
 		if err := v.ProcessMessage(signedSSVMessage); err != nil {
 			panic(err.Error())
 		}
