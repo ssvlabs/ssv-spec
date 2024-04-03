@@ -21,11 +21,11 @@ func notDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				StartingDuty: &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				Finished:     false,
@@ -40,7 +40,7 @@ func notDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					Decided:           false,
 				},
 			}
-			comparable.SetMessages(instance, []*types.SSVMessage{})
+			comparable.SetMessages(instance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.
 				StoredInstances, instance)
 			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
@@ -61,11 +61,11 @@ func notDecidedSyncCommitteeSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				StartingDuty: &testingutils.TestingSyncCommitteeDutyNextEpoch,
 				Finished:     false,
@@ -81,7 +81,7 @@ func notDecidedSyncCommitteeSC() *comparable.StateComparison {
 				},
 				StartValue: cdBytes,
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 
 			instance := &qbft.Instance{
 				State: &qbft.State{
@@ -94,7 +94,7 @@ func notDecidedSyncCommitteeSC() *comparable.StateComparison {
 				},
 			}
 			instance.ForceStop()
-			comparable.SetMessages(instance, []*types.SSVMessage{})
+			comparable.SetMessages(instance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, instance)
 			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot2
@@ -114,11 +114,11 @@ func notDecidedAggregatorSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				StartingDuty: &testingutils.TestingAggregatorDutyNextEpoch,
 				Finished:     false,
@@ -133,7 +133,7 @@ func notDecidedAggregatorSC() *comparable.StateComparison {
 					Decided:           false,
 				},
 			}
-			comparable.SetMessages(instance, []*types.SSVMessage{})
+			comparable.SetMessages(instance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, instance)
 			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
 
@@ -153,11 +153,11 @@ func notDecidedAttesterSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				StartingDuty: &testingutils.TestingAttesterDutyNextEpoch,
 				Finished:     false,
@@ -173,7 +173,7 @@ func notDecidedAttesterSC() *comparable.StateComparison {
 				},
 				StartValue: cdBytes,
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 
 			instance := &qbft.Instance{
 				State: &qbft.State{
@@ -186,7 +186,7 @@ func notDecidedAttesterSC() *comparable.StateComparison {
 				},
 			}
 			instance.ForceStop()
-			comparable.SetMessages(instance, []*types.SSVMessage{})
+			comparable.SetMessages(instance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, instance)
 			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot2
@@ -206,11 +206,11 @@ func notDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison 
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				StartingDuty: testingutils.TestingProposerDutyNextEpochV(version),
 				Finished:     false,
@@ -225,7 +225,7 @@ func notDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison 
 					Decided:           false,
 				},
 			}
-			comparable.SetMessages(instance, []*types.SSVMessage{})
+			comparable.SetMessages(instance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, instance)
 			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
 
@@ -244,11 +244,11 @@ func notDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				StartingDuty: testingutils.TestingProposerDutyNextEpochV(version),
 				Finished:     false,
@@ -263,7 +263,7 @@ func notDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 					Decided:           false,
 				},
 			}
-			comparable.SetMessages(instance, []*types.SSVMessage{})
+			comparable.SetMessages(instance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, instance)
 			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
 

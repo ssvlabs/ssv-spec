@@ -41,8 +41,8 @@ func PostDecided() tests.SpecTest {
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 			{
@@ -51,7 +51,7 @@ func PostDecided() tests.SpecTest {
 				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    "aggregator",
@@ -59,8 +59,8 @@ func PostDecided() tests.SpecTest {
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     postDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 			{
@@ -69,7 +69,7 @@ func PostDecided() tests.SpecTest {
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
 	}
@@ -82,7 +82,7 @@ func PostDecided() tests.SpecTest {
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
 			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}
@@ -96,7 +96,7 @@ func PostDecided() tests.SpecTest {
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
 			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}

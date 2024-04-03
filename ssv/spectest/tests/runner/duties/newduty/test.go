@@ -23,7 +23,7 @@ type StartNewRunnerDutySpecTest struct {
 	Duty                    *types.Duty
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
-	OutputMessages          []*types.SignedPartialSignatureMessage
+	OutputMessages          []*types.PartialSignatureMessages
 	ExpectedError           string
 }
 
@@ -51,18 +51,18 @@ func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {
-			if msg.MsgType != types.SSVPartialSignatureMsgType {
+			if msg.SSVMessage.MsgType != types.SSVPartialSignatureMsgType {
 				continue
 			}
 
-			msg1 := &types.SignedPartialSignatureMessage{}
-			require.NoError(t, msg1.Decode(msg.Data))
+			msg1 := &types.PartialSignatureMessages{}
+			require.NoError(t, msg1.Decode(msg.SSVMessage.Data))
 			msg2 := test.OutputMessages[index]
-			require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))
+			require.Len(t, msg1.Messages, len(msg2.Messages))
 
 			// messages are not guaranteed to be in order so we map them and then test all roots to be equal
 			roots := make(map[string]string)
-			for i, partialSigMsg2 := range msg2.Message.Messages {
+			for i, partialSigMsg2 := range msg2.Messages {
 				r2, err := partialSigMsg2.GetRoot()
 				require.NoError(t, err)
 				if _, found := roots[hex.EncodeToString(r2[:])]; !found {
@@ -71,7 +71,7 @@ func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 					roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
 				}
 
-				partialSigMsg1 := msg1.Message.Messages[i]
+				partialSigMsg1 := msg1.Messages[i]
 				r1, err := partialSigMsg1.GetRoot()
 				require.NoError(t, err)
 
