@@ -207,7 +207,7 @@ func isReceivedProposalJustification(
 	return nil
 }
 
-func validRoundChangeForDataNoVerification(
+func validRoundChangeForDataIgnoreSignature(
 	state *State,
 	config IConfig,
 	signedMsg *SignedMessage,
@@ -285,7 +285,7 @@ func validRoundChangeForDataWithVerification(
 	fullData []byte,
 ) error {
 
-	if err := validRoundChangeForDataNoVerification(state, config, signedMsg, height, round, fullData); err != nil {
+	if err := validRoundChangeForDataIgnoreSignature(state, config, signedMsg, height, round, fullData); err != nil {
 		return err
 	}
 

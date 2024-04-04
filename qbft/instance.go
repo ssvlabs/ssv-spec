@@ -155,7 +155,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		if proposedMsg == nil {
 			return errors.New("did not receive proposal for this round")
 		}
-		return validSignedPrepareForHeightRoundAndRootNoVerification(
+		return validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
 			i.State.Height,
 			i.State.Round,
@@ -175,7 +175,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChangeForDataNoVerification(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
+		return validRoundChangeForDataIgnoreSignature(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
 	default:
 		return errors.New("signed message type not supported")
 	}

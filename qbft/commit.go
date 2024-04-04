@@ -95,7 +95,7 @@ func CreateCommit(state *State, config IConfig, root [32]byte) (*SignedMessage, 
 	return signedMsg, nil
 }
 
-func baseCommitValidationNoVerification(
+func baseCommitValidationIgnoreSignature(
 	signedCommit *SignedMessage,
 	height Height,
 	operators []*types.Operator,
@@ -125,7 +125,7 @@ func baseCommitValidationWithVerification(
 	operators []*types.Operator,
 ) error {
 
-	if err := baseCommitValidationNoVerification(signedCommit, height, operators); err != nil {
+	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err
 	}
 
@@ -144,7 +144,7 @@ func validateCommit(
 	proposedMsg *SignedMessage,
 	operators []*types.Operator,
 ) error {
-	if err := baseCommitValidationNoVerification(signedCommit, height, operators); err != nil {
+	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err
 	}
 
