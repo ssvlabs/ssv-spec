@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
@@ -93,6 +94,7 @@ func isValidProposal(
 		signedProposal.Message.Round,
 		signedProposal.FullData,
 		valCheck,
+		true,
 	); err != nil {
 		return errors.Wrap(err, "proposal not justified")
 	}
@@ -114,6 +116,7 @@ func isProposalJustification(
 	round Round,
 	fullData []byte,
 	valCheck ProposedValueCheckF,
+	verifySignatures bool,
 ) error {
 	if err := valCheck(fullData); err != nil {
 		return errors.Wrap(err, "proposal fullData invalid")
@@ -126,9 +129,16 @@ func isProposalJustification(
 		// no quorum, duplicate signers,  invalid still has quorum, invalid no quorum
 		// prepared
 		for _, rc := range roundChangeMsgs {
-			if err := validRoundChangeForData(state, config, rc, height, round, fullData); err != nil {
-				return errors.Wrap(err, "change round msg not valid")
+			if verifySignatures {
+				if err := validSignedRoundChangeForData(state, config, rc, height, round, fullData); err != nil {
+					return errors.Wrap(err, "change round msg not valid")
+				}
+			} else {
+				if err := validRoundChangeForData(state, config, rc, height, round, fullData); err != nil {
+					return errors.Wrap(err, "change round msg not valid")
+				}
 			}
+
 		}
 
 		// check there is a quorum
@@ -178,15 +188,28 @@ func isProposalJustification(
 
 			// validate each prepare message against the highest previously prepared fullData and round
 			for _, pm := range prepareMsgs {
-				if err := validSignedPrepareForHeightRoundAndRoot(
-					config,
-					pm,
-					height,
-					rcm.Message.DataRound,
-					rcm.Message.Root,
-					state.Share.Committee,
-				); err != nil {
-					return errors.New("signed prepare not valid")
+				if verifySignatures {
+					if err := validSignedPrepareForHeightRoundAndRoot(
+						config,
+						pm,
+						height,
+						rcm.Message.DataRound,
+						rcm.Message.Root,
+						state.Share.Committee,
+					); err != nil {
+						return errors.New("signed prepare not valid")
+					}
+				} else {
+					if err := validPrepareForHeightRoundAndRoot(
+						config,
+						pm,
+						height,
+						rcm.Message.DataRound,
+						rcm.Message.Root,
+						state.Share.Committee,
+					); err != nil {
+						return errors.New("signed prepare not valid")
+					}
 				}
 			}
 			return nil
