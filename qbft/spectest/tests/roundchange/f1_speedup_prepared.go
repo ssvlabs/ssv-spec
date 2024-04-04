@@ -26,7 +26,7 @@ func F1SpeedupPrevPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up prev prepared",
 		Pre:           pre,
-		PostRoot:      "41aa5f5357d2a97289fcc90ebad50711f0ff77724ac7f00ebba2c303011d4b78",
+		PostRoot:      "50f32d85be78af424db9a42c06e43efa15c49dedd0b95b9a1348a2b3346674da",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight,

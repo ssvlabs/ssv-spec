@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"encoding/hex"
+	"sync"
 
 	"github.com/bloxapp/ssv-spec/types"
 )
@@ -16,9 +17,13 @@ type testingOperatorSigner struct {
 
 var (
 	testingOperatorSignerInstance *testingOperatorSigner
+	opMu                          sync.Mutex
 )
 
 func NewTestingOperatorSigner() *testingOperatorSigner {
+
+	mu.Lock()
+	defer mu.Unlock()
 
 	if testingOperatorSignerInstance != nil {
 		return testingOperatorSignerInstance

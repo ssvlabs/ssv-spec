@@ -28,7 +28,7 @@ func PeerPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change peer prepared",
 		Pre:           pre,
-		PostRoot:      "5dd6746af708d3ddfeece8dd5c6f396ab9b83a93d008ae61b0ca091442084836",
+		PostRoot:      "6eb5843e6defd9e72f09a82e0da584516ded7e357aa708836b85bc02cfe6a0b4",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,

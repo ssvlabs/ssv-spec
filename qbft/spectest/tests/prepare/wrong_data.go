@@ -21,7 +21,7 @@ func WrongData() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare wrong data",
 		Pre:           pre,
-		PostRoot:      "e3194c84f99e73171890f32848497b619050587254bf2315ed757095ced37839",
+		PostRoot:      "470d1a88e97b20eafb08ad9682c10642de27515fff7a8ef3c2d2e97953432357",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: proposed data mistmatch",
 	}

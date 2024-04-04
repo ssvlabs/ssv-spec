@@ -21,7 +21,7 @@ func PostCutoff() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round cutoff prepare message",
 		Pre:           pre,
-		PostRoot:      "a6469cacf8abddea7b4c0a52917d1ade6d64dbfd27def7ba1d07aa5218835a87",
+		PostRoot:      "fc38640f9cf1613bb500f2a9b8aacfd2685727adc5a261d28646f494f505b357",
 		InputMessages: msgs,
 		ExpectedError: "instance stopped processing messages",
 	}

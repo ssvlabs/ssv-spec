@@ -29,7 +29,7 @@ func SevenOperators() SpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow seven operators",
 		Pre:           pre,
-		PostRoot:      "1e5790ec1f6a776fef8f9db4e26d192fc74203a18aa1d151c1b614c769fc3a4f",
+		PostRoot:      "6cd50bd44cc5a745876ccd2fd9dee748bdcca4a609c719930d9f95c468ed2e65",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
