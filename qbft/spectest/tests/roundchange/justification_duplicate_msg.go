@@ -26,7 +26,7 @@ func JustificationDuplicateMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "justification duplicate msg",
 		Pre:            pre,
-		PostRoot:       "9fa0a12336985b92e272c478ec8ae64295897d7bc35c0ad870c412396cda3bc1",
+		PostRoot:       "2acefd218d4d074e8fd7fa3d2bc59c87ade70cc14b7846c85356a931da37ace7",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: no justifications quorum",

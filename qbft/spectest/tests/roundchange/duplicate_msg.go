@@ -27,7 +27,7 @@ func DuplicateMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change duplicate msg",
 		Pre:            pre,
-		PostRoot:       "49cbc65f38d8432a0621d6be406118248c342b41c2544091a6dd56de494861ed",
+		PostRoot:       "ac272837c0fda2b17bcb3b684a093b572cc5f45fc355c8b78044ed7198617014",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

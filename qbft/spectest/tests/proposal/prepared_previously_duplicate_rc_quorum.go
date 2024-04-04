@@ -34,7 +34,7 @@ func PreparedPreviouslyDuplicateRCQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate rc msg justification (prepared) quorum",
 		Pre:           pre,
-		PostRoot:      "862c22d40d513adc95f0f27093ba917807cf5dd4d432317ff7c457e47f2f8d7f",
+		PostRoot:      "dfc0aa968f25d3633a8076cda374aef23e6b8aa39c97ee05a24504200b8ee3e0",
 		InputMessages: append(msgs, testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2)),
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),

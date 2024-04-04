@@ -27,7 +27,7 @@ func MultiSignerWithOverlap() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "multi signer, with overlap",
 		Pre:           pre,
-		PostRoot:      "294aa82b2f82a2ccd08ab666e2a73c44db91d7805440712766fbc8dbbf34a6bd",
+		PostRoot:      "c47275774ac12fab96625660db46e936d2834eaa60cf83a23d07c94556604358",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),

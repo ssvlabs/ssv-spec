@@ -32,7 +32,7 @@ func PreparedPreviouslyDuplicateRCMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "duplicate rc msg justification (prepared)",
 		Pre:            pre,
-		PostRoot:       "35d96d47901971b46055a010e136a97c71644d7d8bee368a8c1f29c149d3fa6c",
+		PostRoot:       "16577c5ca1fcfd7e43549b13fc730edfd05ac8b0110e451e44d512f034ec6eb3",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
