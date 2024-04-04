@@ -76,8 +76,8 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		for _, s := range testingShareSet.Shares {
 			_ = ret.AddShare(s)
 		}
-		for _, k := range testingShareSet.NetworkKeys {
-			_ = ret.AddNetworkKey(k)
+		for _, k := range testingShareSet.SSVKeys {
+			_ = ret.AddSSVKey(k)
 		}
 		for _, o := range testingShareSet.DKGOperators {
 			ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
@@ -154,7 +154,7 @@ func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Addr
 	panic("implement")
 }
 
-func (km *testingKeyManager) SignNetworkData(data []byte, pk []byte) ([]byte, error) {
+func (km *testingKeyManager) SignSSVData(data []byte, pk []byte) ([]byte, error) {
 	hash := sha256.Sum256(data)
 	sk := km.networkKeys[hex.EncodeToString(pk)]
 	signature, err := rsa.SignPKCS1v15(rand.Reader, sk, crypto.SHA256, hash[:])
@@ -169,7 +169,7 @@ func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {
 	return nil
 }
 
-func (km *testingKeyManager) AddNetworkKey(sk *rsa.PrivateKey) error {
+func (km *testingKeyManager) AddSSVKey(sk *rsa.PrivateKey) error {
 	pem, err := types.GetPublicKeyPem(sk)
 	if err != nil {
 		panic(err)

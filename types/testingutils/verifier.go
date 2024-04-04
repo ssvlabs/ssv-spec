@@ -37,7 +37,7 @@ func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types
 			}
 
 			// Get public key
-			parsedPk, err := x509.ParsePKIXPublicKey(op.NetworkPubKey)
+			parsedPk, err := x509.ParsePKIXPublicKey(op.SSVPubKey)
 			if err != nil {
 				return errors.Wrap(err, "could not parse signer public key")
 			}

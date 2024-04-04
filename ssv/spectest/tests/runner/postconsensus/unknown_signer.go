@@ -28,7 +28,7 @@ func UnknownSigner() tests.SpecTest {
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.NetworkKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongSignerMsg(ks.Shares[1], 5, 5, ks))),
+					testingutils.SignedSSVMessageWithSigner(5, ks.SSVKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongSignerMsg(ks.Shares[1], 5, 5, ks))),
 				},
 				PostDutyRunnerStateRoot: unknownSignerSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     unknownSignerSyncCommitteeContributionSC().ExpectedState,
@@ -46,7 +46,7 @@ func UnknownSigner() tests.SpecTest {
 				),
 				Duty: &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.NetworkKeys[1], testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSigSyncCommitteeWrongBeaconSignerMsg(ks.Shares[1], 5, 5))),
+					testingutils.SignedSSVMessageWithSigner(5, ks.SSVKeys[1], testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSigSyncCommitteeWrongBeaconSignerMsg(ks.Shares[1], 5, 5))),
 				},
 				PostDutyRunnerStateRoot: unknownSignerSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     unknownSignerSyncCommitteeSC().ExpectedState,
@@ -64,7 +64,7 @@ func UnknownSigner() tests.SpecTest {
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.NetworkKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusSigAggregatorWrongBeaconSignerMsg(ks.Shares[1], 5, 5))),
+					testingutils.SignedSSVMessageWithSigner(5, ks.SSVKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusSigAggregatorWrongBeaconSignerMsg(ks.Shares[1], 5, 5))),
 				},
 				PostDutyRunnerStateRoot: unknownSignerAggregatorSC().Root(),
 				PostDutyRunnerState:     unknownSignerAggregatorSC().ExpectedState,
@@ -82,7 +82,7 @@ func UnknownSigner() tests.SpecTest {
 				),
 				Duty: &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.NetworkKeys[1], testingutils.SSVMsgAttester(nil, testingutils.PostConsensusSigAttestationWrongBeaconSignerMsg(ks.Shares[1], 5, 5, qbft.FirstHeight))),
+					testingutils.SignedSSVMessageWithSigner(5, ks.SSVKeys[1], testingutils.SSVMsgAttester(nil, testingutils.PostConsensusSigAttestationWrongBeaconSignerMsg(ks.Shares[1], 5, 5, qbft.FirstHeight))),
 				},
 				PostDutyRunnerStateRoot: unknownSignerAttesterSC().Root(),
 				PostDutyRunnerState:     unknownSignerAttesterSC().ExpectedState,
@@ -105,7 +105,7 @@ func UnknownSigner() tests.SpecTest {
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageWithSigner(5, ks.NetworkKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, version))),
+				testingutils.SignedSSVMessageWithSigner(5, ks.SSVKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, version))),
 			},
 			PostDutyRunnerStateRoot: unknownSignerProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerProposerSC(version).ExpectedState,
@@ -127,7 +127,7 @@ func UnknownSigner() tests.SpecTest {
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageWithSigner(5, ks.NetworkKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, version))),
+				testingutils.SignedSSVMessageWithSigner(5, ks.SSVKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, version))),
 			},
 			PostDutyRunnerStateRoot: unknownSignerBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerBlindedProposerSC(version).ExpectedState,

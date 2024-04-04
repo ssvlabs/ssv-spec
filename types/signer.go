@@ -37,7 +37,7 @@ type BeaconSigner interface {
 // SSVSigner used for all SSV specific signing
 type SSVSigner interface {
 	SignRoot(data Root, sigType SignatureType, pk []byte) (Signature, error)
-	SignNetworkData(data []byte, pk []byte) ([]byte, error)
+	SignSSVData(data []byte, pk []byte) ([]byte, error)
 }
 
 type DKGSigner interface {
@@ -56,6 +56,6 @@ type KeyManager interface {
 	AddShare(shareKey *bls.SecretKey) error
 	// RemoveShare removes a share key
 	RemoveShare(pubKey string) error
-	// AddNetworkKey saves a network key
-	AddNetworkKey(sk *rsa.PrivateKey) error
+	// AddSSVKey saves an SSV key
+	AddSSVKey(sk *rsa.PrivateKey) error
 }
