@@ -44,6 +44,7 @@ func (test *SpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, test.Pre.State.Share.Committee))
 	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))

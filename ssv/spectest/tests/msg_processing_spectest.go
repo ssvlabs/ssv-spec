@@ -111,6 +111,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		return ret
 	}
 	broadcastedSignedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Share.Committee))
 	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
 	require.Len(t, broadcastedMsgs, len(test.OutputMessages))

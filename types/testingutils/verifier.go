@@ -78,3 +78,16 @@ func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]by
 	}
 	v.signaturesCache[operatorID][root] = signature
 }
+
+// Verifies a list of SignedSSVMessage using the operators list
+func VerifyListOfSignedSSVMessages(msgs []*types.SignedSSVMessage, operators []*types.Operator) error {
+	verifier := NewTestingVerifier()
+
+	for _, msg := range msgs {
+		err := verifier.Verify(msg, operators)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
