@@ -59,7 +59,7 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
 	share := TestingShare(keySet)
 	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
-	net := NewTestingNetwork()
+	net := NewTestingNetwork(1, keySet.NetworkKeys[1])
 	km := NewTestingKeyManager()
 
 	config := TestingConfig(keySet)

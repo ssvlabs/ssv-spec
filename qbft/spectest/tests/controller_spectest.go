@@ -129,8 +129,9 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 ) {
 	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
 		// test broadcasted
-		broadcastedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-		require.Greater(t, len(broadcastedMsgs), 0)
+		broadcastedSignedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+		require.Greater(t, len(broadcastedSignedMsgs), 0)
+		broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 		found := false
 		for _, msg := range broadcastedMsgs {
 

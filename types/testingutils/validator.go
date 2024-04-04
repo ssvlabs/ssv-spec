@@ -7,7 +7,7 @@ import (
 
 var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 	return ssv.NewValidator(
-		NewTestingNetwork(),
+		NewTestingNetwork(1, keySet.NetworkKeys[1]),
 		NewTestingBeaconNode(),
 		TestingShare(keySet),
 		NewTestingKeyManager(),

@@ -54,7 +54,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 
 	// test output message
-	broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 
