@@ -75,6 +75,7 @@ var AllTests = []tests.TestF{
 	consensus.ValidDecided10Operators,
 	consensus.ValidDecided13Operators,
 	consensus.ValidMessage,
+	consensus.InvalidSignature,
 
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
