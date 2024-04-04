@@ -78,7 +78,7 @@ var SignedSSVMessageF = func(ks *TestKeySet, msg *types.SSVMessage) *types.Signe
 	}
 
 	// Convert SSVMessage to SignedSSVMessage
-	return SignedSSVMessageWithSigner(signer, ks.SSVKeys[signer], msg)
+	return SignedSSVMessageWithSigner(signer, ks.SSVOperatorKeys[signer], msg)
 }
 
 var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, ssvMessage *types.SSVMessage) *types.SignedSSVMessage {

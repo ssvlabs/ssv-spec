@@ -15,10 +15,11 @@ import (
 type ValidatorRegistrationRunner struct {
 	BaseRunner *BaseRunner
 
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon         BeaconNode
+	network        Network
+	signer         types.KeyManager
+	operatorSigner types.SSVOperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 }
 
 func NewValidatorRegistrationRunner(
@@ -27,6 +28,7 @@ func NewValidatorRegistrationRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
+	operatorSigner types.SSVOperatorSigner,
 ) Runner {
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
@@ -35,9 +37,10 @@ func NewValidatorRegistrationRunner(
 			Share:          share,
 		},
 
-		beacon:  beacon,
-		network: network,
-		signer:  signer,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
 	}
 }
 
@@ -186,6 +189,10 @@ func (r *ValidatorRegistrationRunner) GetValCheckF() qbft.ProposedValueCheckF {
 
 func (r *ValidatorRegistrationRunner) GetSigner() types.KeyManager {
 	return r.signer
+}
+
+func (r *ValidatorRegistrationRunner) GetOperatorSigner() types.SSVOperatorSigner {
+	return r.operatorSigner
 }
 
 // Encode returns the encoded struct in bytes or error

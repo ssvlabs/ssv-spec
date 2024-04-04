@@ -18,10 +18,11 @@ type ProposerRunner struct {
 	// ProducesBlindedBlocks is true when the runner will only produce blinded blocks
 	ProducesBlindedBlocks bool
 
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon         BeaconNode
+	network        Network
+	signer         types.KeyManager
+	operatorSigner types.SSVOperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 }
 
 func NewProposerRunner(
@@ -31,6 +32,7 @@ func NewProposerRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
+	operatorSigner types.SSVOperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
@@ -43,10 +45,11 @@ func NewProposerRunner(
 			highestDecidedSlot: highestDecidedSlot,
 		},
 
-		beacon:   beacon,
-		network:  network,
-		signer:   signer,
-		valCheck: valCheck,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
+		valCheck:       valCheck,
 	}
 }
 
@@ -325,6 +328,10 @@ func (r *ProposerRunner) GetValCheckF() qbft.ProposedValueCheckF {
 
 func (r *ProposerRunner) GetSigner() types.KeyManager {
 	return r.signer
+}
+
+func (r *ProposerRunner) GetOperatorSigner() types.SSVOperatorSigner {
+	return r.operatorSigner
 }
 
 // Encode returns the encoded struct in bytes or error

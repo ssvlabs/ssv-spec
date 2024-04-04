@@ -25,7 +25,7 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.SSVKeys[2], testingutils.SSVMsgSyncCommitteeContribution(
+					testingutils.SignedSSVMessageWithSigner(1, ks.SSVOperatorKeys[2], testingutils.SSVMsgSyncCommitteeContribution(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID, testingutils.TestSyncCommitteeContributionConsensusDataByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
@@ -42,7 +42,7 @@ func InvalidSignature() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.SSVKeys[2], testingutils.SSVMsgSyncCommittee(
+					testingutils.SignedSSVMessageWithSigner(1, ks.SSVOperatorKeys[2], testingutils.SSVMsgSyncCommittee(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID, testingutils.TestSyncCommitteeConsensusDataByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
@@ -60,7 +60,7 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.SSVKeys[2], testingutils.SSVMsgAggregator(
+					testingutils.SignedSSVMessageWithSigner(1, ks.SSVOperatorKeys[2], testingutils.SSVMsgAggregator(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.AggregatorMsgID, testingutils.TestAggregatorConsensusDataByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
@@ -80,7 +80,7 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionDeneb))),
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.SSVKeys[2], testingutils.SSVMsgProposer(
+					testingutils.SignedSSVMessageWithSigner(1, ks.SSVOperatorKeys[2], testingutils.SSVMsgProposer(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
 							qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb))), nil)),
@@ -100,7 +100,7 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionDeneb))),
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.SSVKeys[2], testingutils.SSVMsgProposer(
+					testingutils.SignedSSVMessageWithSigner(1, ks.SSVOperatorKeys[2], testingutils.SSVMsgProposer(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 							qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb))), nil)),
@@ -117,7 +117,7 @@ func InvalidSignature() tests.SpecTest {
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.SSVKeys[2], testingutils.SSVMsgAttester(
+					testingutils.SignedSSVMessageWithSigner(1, ks.SSVOperatorKeys[2], testingutils.SSVMsgAttester(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.AttesterMsgID, testingutils.TestAttesterConsensusDataByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
@@ -135,7 +135,7 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2))),
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3))),
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.SSVKeys[2], testingutils.SSVMsgValidatorRegistration(
+					testingutils.SignedSSVMessageWithSigner(1, ks.SSVOperatorKeys[2], testingutils.SSVMsgValidatorRegistration(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID, testingutils.TestAttesterConsensusDataByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
@@ -158,7 +158,7 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2))),
 					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3))),
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.SSVKeys[2], testingutils.SSVMsgVoluntaryExit(
+					testingutils.SignedSSVMessageWithSigner(1, ks.SSVOperatorKeys[2], testingutils.SSVMsgVoluntaryExit(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.VoluntaryExitMsgID, testingutils.TestAttesterConsensusDataByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),

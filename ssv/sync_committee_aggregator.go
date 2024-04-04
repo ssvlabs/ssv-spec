@@ -16,10 +16,11 @@ import (
 type SyncCommitteeAggregatorRunner struct {
 	BaseRunner *BaseRunner
 
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon         BeaconNode
+	network        Network
+	signer         types.KeyManager
+	operatorSigner types.SSVOperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 }
 
 func NewSyncCommitteeAggregatorRunner(
@@ -29,6 +30,7 @@ func NewSyncCommitteeAggregatorRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
+	operatorSigner types.SSVOperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
@@ -41,10 +43,11 @@ func NewSyncCommitteeAggregatorRunner(
 			highestDecidedSlot: highestDecidedSlot,
 		},
 
-		beacon:   beacon,
-		network:  network,
-		signer:   signer,
-		valCheck: valCheck,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
+		valCheck:       valCheck,
 	}
 }
 
@@ -388,6 +391,10 @@ func (r *SyncCommitteeAggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF 
 
 func (r *SyncCommitteeAggregatorRunner) GetSigner() types.KeyManager {
 	return r.signer
+}
+
+func (r *SyncCommitteeAggregatorRunner) GetOperatorSigner() types.SSVOperatorSigner {
+	return r.operatorSigner
 }
 
 // Encode returns the encoded struct in bytes or error

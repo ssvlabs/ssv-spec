@@ -15,6 +15,7 @@ type Validator struct {
 	Beacon            BeaconNode
 	Share             *types.Share
 	Signer            types.KeyManager
+	OperatorSigner    types.SSVOperatorSigner
 	SignatureVerifier types.SignatureVerifier
 }
 
@@ -23,6 +24,7 @@ func NewValidator(
 	beacon BeaconNode,
 	share *types.Share,
 	signer types.KeyManager,
+	operatorSigner types.SSVOperatorSigner,
 	runners map[types.BeaconRole]Runner,
 	signatureVerifier types.SignatureVerifier,
 ) *Validator {
@@ -32,6 +34,7 @@ func NewValidator(
 		Beacon:            beacon,
 		Share:             share,
 		Signer:            signer,
+		OperatorSigner:    operatorSigner,
 		SignatureVerifier: signatureVerifier,
 	}
 }

@@ -2,11 +2,8 @@ package testingutils
 
 import (
 	"bytes"
-	"crypto"
 	"crypto/ecdsa"
-	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"hash/fnv"
@@ -25,7 +22,6 @@ type testingKeyManager struct {
 	keys           map[string]*bls.SecretKey
 	ecdsaKeys      map[string]*ecdsa.PrivateKey
 	encryptionKeys map[string]*rsa.PrivateKey
-	networkKeys    map[string]*rsa.PrivateKey
 	domain         types.DomainType
 
 	slashableDataRoots [][]byte
@@ -63,7 +59,6 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		keys:           map[string]*bls.SecretKey{},
 		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 		encryptionKeys: nil,
-		networkKeys:    map[string]*rsa.PrivateKey{},
 		domain:         TestingSSVDomainType,
 
 		slashableDataRoots: slashableDataRoots,
@@ -75,9 +70,6 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		_ = ret.AddShare(testingShareSet.ValidatorSK)
 		for _, s := range testingShareSet.Shares {
 			_ = ret.AddShare(s)
-		}
-		for _, k := range testingShareSet.SSVKeys {
-			_ = ret.AddSSVKey(k)
 		}
 		for _, o := range testingShareSet.DKGOperators {
 			ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
@@ -154,27 +146,8 @@ func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Addr
 	panic("implement")
 }
 
-func (km *testingKeyManager) SignSSVData(data []byte, pk []byte) ([]byte, error) {
-	hash := sha256.Sum256(data)
-	sk := km.networkKeys[hex.EncodeToString(pk)]
-	signature, err := rsa.SignPKCS1v15(rand.Reader, sk, crypto.SHA256, hash[:])
-	if err != nil {
-		return []byte{}, err
-	}
-	return signature, nil
-}
-
 func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {
 	km.keys[hex.EncodeToString(shareKey.GetPublicKey().Serialize())] = shareKey
-	return nil
-}
-
-func (km *testingKeyManager) AddSSVKey(sk *rsa.PrivateKey) error {
-	pem, err := types.GetPublicKeyPem(sk)
-	if err != nil {
-		panic(err)
-	}
-	km.networkKeys[hex.EncodeToString(pem)] = sk
 	return nil
 }
 
