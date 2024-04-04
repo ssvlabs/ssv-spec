@@ -22,8 +22,8 @@ var (
 
 func NewTestingOperatorSigner() *testingOperatorSigner {
 
-	mu.Lock()
-	defer mu.Unlock()
+	opMu.Lock()
+	defer opMu.Unlock()
 
 	if testingOperatorSignerInstance != nil {
 		return testingOperatorSignerInstance
