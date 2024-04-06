@@ -155,7 +155,7 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 
 		Root: root,
 	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	sig, err := config.GetSSVShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}

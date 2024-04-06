@@ -205,10 +205,6 @@ func (r *VoluntaryExitRunner) GetSigner() types.KeyManager {
 	return r.signer
 }
 
-func (r *VoluntaryExitRunner) GetOperatorSigner() types.SSVOperatorSigner {
-	return r.operatorSigner
-}
-
 // Encode returns the encoded struct in bytes or error
 func (r *VoluntaryExitRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)

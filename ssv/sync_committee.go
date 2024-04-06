@@ -219,10 +219,6 @@ func (r *SyncCommitteeRunner) GetSigner() types.KeyManager {
 	return r.signer
 }
 
-func (r *SyncCommitteeRunner) GetOperatorSigner() types.SSVOperatorSigner {
-	return r.operatorSigner
-}
-
 // Encode returns the encoded struct in bytes or error
 func (r *SyncCommitteeRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)

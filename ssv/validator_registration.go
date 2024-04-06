@@ -191,10 +191,6 @@ func (r *ValidatorRegistrationRunner) GetSigner() types.KeyManager {
 	return r.signer
 }
 
-func (r *ValidatorRegistrationRunner) GetOperatorSigner() types.SSVOperatorSigner {
-	return r.operatorSigner
-}
-
 // Encode returns the encoded struct in bytes or error
 func (r *ValidatorRegistrationRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)

@@ -240,7 +240,7 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		RoundChangeJustification: roundChangesData,
 		PrepareJustification:     preparesData,
 	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	sig, err := config.GetSSVShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}

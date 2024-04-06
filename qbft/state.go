@@ -10,8 +10,8 @@ import (
 )
 
 type signing interface {
-	// GetSigner returns an share signer instance
-	GetSigner() types.SSVShareSigner
+	// GetSSVShareSigner returns an share signer instance
+	GetSSVShareSigner() types.SSVShareSigner
 	// GetSigner returns an operator signer instance
 	GetOperatorSigner() types.SSVOperatorSigner
 	// GetSignatureDomainType returns the Domain type used for signatures
@@ -31,7 +31,7 @@ type IConfig interface {
 }
 
 type Config struct {
-	Signer         types.SSVShareSigner
+	SSVShareSigner types.SSVShareSigner
 	OperatorSigner types.SSVOperatorSigner
 	SigningPK      []byte
 	Domain         types.DomainType
@@ -42,8 +42,8 @@ type Config struct {
 }
 
 // GetSigner returns a Signer instance
-func (c *Config) GetSigner() types.SSVShareSigner {
-	return c.Signer
+func (c *Config) GetSSVShareSigner() types.SSVShareSigner {
+	return c.SSVShareSigner
 }
 
 // GetSigner returns a Signer instance

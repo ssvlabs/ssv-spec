@@ -42,7 +42,7 @@ func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 
 	ks := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(ks)
-	sig, err := config.GetSigner().SignRoot(&expectedMsg, types.QBFTSignatureType, config.GetSigningPubKey())
+	sig, err := config.GetSSVShareSigner().SignRoot(&expectedMsg, types.QBFTSignatureType, config.GetSigningPubKey())
 	if err != nil {
 		panic(errors.Wrap(err, "unable to sign root for create_round_change_no_justification_quorum"))
 	}
