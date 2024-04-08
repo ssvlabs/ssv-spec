@@ -9,7 +9,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// CommitteeIndexMismatch tests Duty.CommitteeIndex != AttestationData.Index
+// CommitteeIndexMismatch tests BeaconDuty.CommitteeIndex != AttestationData.Index
 func CommitteeIndexMismatch() tests.SpecTest {
 	attestationData := &spec.AttestationData{
 		Slot:            testingutils.TestingDutySlot,
@@ -28,7 +28,7 @@ func CommitteeIndexMismatch() tests.SpecTest {
 	attestationDataBytes, _ := attestationData.MarshalSSZ()
 
 	data := &types.ConsensusData{
-		Duty: types.Duty{
+		Duty: types.BeaconDuty{
 			Type:                    types.BNRoleAttester,
 			PubKey:                  testingutils.TestingValidatorPubKey,
 			Slot:                    testingutils.TestingDutySlot,

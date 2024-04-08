@@ -15,7 +15,7 @@ func InvalidDecidedValue() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{
-			Duty: types.Duty{
+			Duty: types.BeaconDuty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
 				Slot:                    testingutils.TestingDutySlot,

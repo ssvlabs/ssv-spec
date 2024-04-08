@@ -50,7 +50,7 @@ func NewProposerRunner(
 	}
 }
 
-func (r *ProposerRunner) StartNewDuty(duty *types.Duty) error {
+func (r *ProposerRunner) StartNewDuty(duty *types.BeaconDuty) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
@@ -259,7 +259,7 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 // 3) start consensus on duty + block data
 // 4) Once consensus decides, sign partial block and broadcast
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid block sig to the BN
-func (r *ProposerRunner) executeDuty(duty *types.Duty) error {
+func (r *ProposerRunner) executeDuty(duty *types.BeaconDuty) error {
 	// sign partial randao
 	epoch := r.GetBeaconNode().GetBeaconNetwork().EstimatedEpochAtSlot(duty.Slot)
 	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZUint64(epoch), duty.Slot, types.DomainRandao)

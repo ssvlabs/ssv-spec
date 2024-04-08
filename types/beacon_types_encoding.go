@@ -8,13 +8,13 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 )
 
-// MarshalSSZ ssz marshals the Duty object
-func (d *Duty) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the BeaconDuty object
+func (d *BeaconDuty) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(d)
 }
 
-// MarshalSSZTo ssz marshals the Duty object to a target array
-func (d *Duty) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the BeaconDuty object to a target array
+func (d *BeaconDuty) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(108)
 
@@ -48,7 +48,7 @@ func (d *Duty) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Field (8) 'ValidatorSyncCommitteeIndices'
 	if size := len(d.ValidatorSyncCommitteeIndices); size > 13 {
-		err = ssz.ErrListTooBigFn("Duty.ValidatorSyncCommitteeIndices", size, 13)
+		err = ssz.ErrListTooBigFn("BeaconDuty.ValidatorSyncCommitteeIndices", size, 13)
 		return
 	}
 	for ii := 0; ii < len(d.ValidatorSyncCommitteeIndices); ii++ {
@@ -58,8 +58,8 @@ func (d *Duty) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the Duty object
-func (d *Duty) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the BeaconDuty object
+func (d *BeaconDuty) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 108 {
@@ -117,8 +117,8 @@ func (d *Duty) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the Duty object
-func (d *Duty) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the BeaconDuty object
+func (d *BeaconDuty) SizeSSZ() (size int) {
 	size = 108
 
 	// Field (8) 'ValidatorSyncCommitteeIndices'
@@ -127,13 +127,13 @@ func (d *Duty) SizeSSZ() (size int) {
 	return
 }
 
-// HashTreeRoot ssz hashes the Duty object
-func (d *Duty) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the BeaconDuty object
+func (d *BeaconDuty) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(d)
 }
 
-// HashTreeRootWith ssz hashes the Duty object with a hasher
-func (d *Duty) HashTreeRootWith(hh ssz.HashWalker) (err error) {
+// HashTreeRootWith ssz hashes the BeaconDuty object with a hasher
+func (d *BeaconDuty) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Type'
@@ -163,7 +163,7 @@ func (d *Duty) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	// Field (8) 'ValidatorSyncCommitteeIndices'
 	{
 		if size := len(d.ValidatorSyncCommitteeIndices); size > 13 {
-			err = ssz.ErrListTooBigFn("Duty.ValidatorSyncCommitteeIndices", size, 13)
+			err = ssz.ErrListTooBigFn("BeaconDuty.ValidatorSyncCommitteeIndices", size, 13)
 			return
 		}
 		subIndx := hh.Index()
@@ -179,7 +179,7 @@ func (d *Duty) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	return
 }
 
-// GetTree ssz hashes the Duty object
-func (d *Duty) GetTree() (*ssz.Node, error) {
+// GetTree ssz hashes the BeaconDuty object
+func (d *BeaconDuty) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(d)
 }

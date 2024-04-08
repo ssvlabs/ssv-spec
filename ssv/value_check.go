@@ -11,7 +11,7 @@ import (
 )
 
 func dutyValueCheck(
-	duty *types.Duty,
+	duty *types.BeaconDuty,
 	network types.BeaconNetwork,
 	expectedType types.BeaconRole,
 	validatorPK types.ValidatorPK,

@@ -145,8 +145,8 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	runnerMap := m["Runner"].(map[string]interface{})
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
-	duty := &types.Duty{}
-	byts, _ := json.Marshal(m["Duty"])
+	duty := &types.BeaconDuty{}
+	byts, _ := json.Marshal(m["BeaconDuty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
 	outputMsgs := make([]*types.SignedPartialSignatureMessage, 0)
@@ -175,8 +175,8 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	runnerMap := m["Runner"].(map[string]interface{})
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
-	duty := &types.Duty{}
-	byts, _ := json.Marshal(m["Duty"])
+	duty := &types.BeaconDuty{}
+	byts, _ := json.Marshal(m["BeaconDuty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
 	msgs := make([]*types.SSVMessage, 0)

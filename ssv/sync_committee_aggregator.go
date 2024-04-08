@@ -48,7 +48,7 @@ func NewSyncCommitteeAggregatorRunner(
 	}
 }
 
-func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty *types.Duty) error {
+func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty *types.BeaconDuty) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
@@ -311,7 +311,7 @@ func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([
 // 2) Reconstruct contribution proofs, check IsSyncCommitteeAggregator and start consensus on duty + contribution data
 // 3) Once consensus decides, sign partial contribution data (for each subcommittee) and broadcast
 // 4) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedContributionAndProof (for each subcommittee) sig to the BN
-func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
+func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.BeaconDuty) error {
 	// sign selection proofs
 	msgs := types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,

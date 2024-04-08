@@ -9,7 +9,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// SlotMismatch tests Duty.Slot != AttestationData.Slot
+// SlotMismatch tests BeaconDuty.Slot != AttestationData.Slot
 func SlotMismatch() tests.SpecTest {
 	attestationData := &spec.AttestationData{
 		Slot:            2,
@@ -27,7 +27,7 @@ func SlotMismatch() tests.SpecTest {
 	attestationDataBytes, _ := attestationData.MarshalSSZ()
 
 	data := &types.ConsensusData{
-		Duty: types.Duty{
+		Duty: types.BeaconDuty{
 			Type:                    types.BNRoleAttester,
 			PubKey:                  testingutils.TestingValidatorPubKey,
 			Slot:                    1,

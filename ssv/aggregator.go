@@ -46,7 +46,7 @@ func NewAggregatorRunner(
 	}
 }
 
-func (r *AggregatorRunner) StartNewDuty(duty *types.Duty) error {
+func (r *AggregatorRunner) StartNewDuty(duty *types.BeaconDuty) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
@@ -211,7 +211,7 @@ func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot
 // 3) start consensus on duty + aggregation data
 // 4) Once consensus decides, sign partial aggregation data and broadcast
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedAggregateSubmitRequest sig to the BN
-func (r *AggregatorRunner) executeDuty(duty *types.Duty) error {
+func (r *AggregatorRunner) executeDuty(duty *types.BeaconDuty) error {
 	// sign selection proof
 	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZUint64(duty.Slot), duty.Slot, types.DomainSelectionProof)
 	if err != nil {

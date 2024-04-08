@@ -14,11 +14,10 @@ import (
 
 type AttesterRunner struct {
 	BaseRunner *BaseRunner
-
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon     BeaconNode
+	network    Network
+	signer     types.KeyManager
+	valCheck   qbft.ProposedValueCheckF
 }
 
 func NewAttesterRunnner(
@@ -47,7 +46,7 @@ func NewAttesterRunnner(
 	}
 }
 
-func (r *AttesterRunner) StartNewDuty(duty *types.Duty) error {
+func (r *AttesterRunner) StartNewDuty(duty types.Duty) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
@@ -174,10 +173,10 @@ func (r *AttesterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 // 2) start consensus on duty + attestation data
 // 3) Once consensus decides, sign partial attestation and broadcast
 // 4) collect 2f+1 partial sigs, reconstruct and broadcast valid attestation sig to the BN
-func (r *AttesterRunner) executeDuty(duty *types.Duty) error {
+func (r *AttesterRunner) executeDuty(duty types.Duty) error {
 	// TODO - waitOneThirdOrValidBlock
-
-	attData, ver, err := r.GetBeaconNode().GetAttestationData(duty.Slot, duty.CommitteeIndex)
+	beaconDuty := duty.(*types.BeaconDuty)
+	attData, ver, err := r.GetBeaconNode().GetAttestationData(beaconDuty.Slot, beaconDuty.CommitteeIndex)
 	if err != nil {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
@@ -188,7 +187,7 @@ func (r *AttesterRunner) executeDuty(duty *types.Duty) error {
 	}
 
 	input := &types.ConsensusData{
-		Duty:    *duty,
+		Duty:    *beaconDuty,
 		Version: ver,
 		DataSSZ: attDataByts,
 	}

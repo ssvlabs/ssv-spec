@@ -20,7 +20,7 @@ import (
 type StartNewRunnerDutySpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
-	Duty                    *types.Duty
+	Duty                    *types.BeaconDuty
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages          []*types.SignedPartialSignatureMessage

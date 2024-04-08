@@ -14,7 +14,7 @@ func ConsensusNotStarted() tests.SpecTest {
 
 	// TODO: check error
 	// nolint
-	startRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	startRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		return r
 	}

@@ -112,7 +112,7 @@ func (c *ConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(20)
 
-	// Offset (0) 'Duty'
+	// Offset (0) 'BeaconDuty'
 	dst = ssz.WriteOffset(dst, offset)
 	offset += c.Duty.SizeSSZ()
 
@@ -130,7 +130,7 @@ func (c *ConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = ssz.WriteOffset(dst, offset)
 	offset += len(c.DataSSZ)
 
-	// Field (0) 'Duty'
+	// Field (0) 'BeaconDuty'
 	if dst, err = c.Duty.MarshalSSZTo(dst); err != nil {
 		return
 	}
@@ -174,7 +174,7 @@ func (c *ConsensusData) UnmarshalSSZ(buf []byte) error {
 	tail := buf
 	var o0, o2, o3 uint64
 
-	// Offset (0) 'Duty'
+	// Offset (0) 'BeaconDuty'
 	if o0 = ssz.ReadOffset(buf[0:4]); o0 > size {
 		return ssz.ErrOffset
 	}
@@ -196,7 +196,7 @@ func (c *ConsensusData) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	// Field (0) 'Duty'
+	// Field (0) 'BeaconDuty'
 	{
 		buf = tail[o0:o2]
 		if err = c.Duty.UnmarshalSSZ(buf); err != nil {
@@ -244,7 +244,7 @@ func (c *ConsensusData) UnmarshalSSZ(buf []byte) error {
 func (c *ConsensusData) SizeSSZ() (size int) {
 	size = 20
 
-	// Field (0) 'Duty'
+	// Field (0) 'BeaconDuty'
 	size += c.Duty.SizeSSZ()
 
 	// Field (2) 'PreConsensusJustifications'
@@ -268,7 +268,7 @@ func (c *ConsensusData) HashTreeRoot() ([32]byte, error) {
 func (c *ConsensusData) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	indx := hh.Index()
 
-	// Field (0) 'Duty'
+	// Field (0) 'BeaconDuty'
 	if err = c.Duty.HashTreeRootWith(hh); err != nil {
 		return
 	}

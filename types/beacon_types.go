@@ -48,6 +48,7 @@ const (
 
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
+	BNRoleCluster
 )
 
 // String returns name of the role
@@ -63,6 +64,8 @@ func (r BeaconRole) String() string {
 		return "SYNC_COMMITTEE"
 	case BNRoleSyncCommitteeContribution:
 		return "SYNC_COMMITTEE_CONTRIBUTION"
+	case BNRoleCluster:
+		return "CLUSTER"
 	case BNRoleValidatorRegistration:
 		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
@@ -72,8 +75,12 @@ func (r BeaconRole) String() string {
 	}
 }
 
-// Duty represent data regarding the duty type with the duty data
-type Duty struct {
+type Duty interface {
+	DutySlot() spec.Slot
+}
+
+// BeaconDuty represent data regarding the duty type with the duty data
+type BeaconDuty struct {
 	// Type is the duty type (attest, propose)
 	Type BeaconRole
 	// PubKey is the public key of the validator that should attest.
@@ -92,6 +99,25 @@ type Duty struct {
 	ValidatorCommitteeIndex uint64
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
 	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
+}
+
+type BeaconVote struct {
+	BlockRoot spec.Root
+	Source    *spec.Checkpoint
+	Target    *spec.Checkpoint
+}
+
+func (bd *BeaconDuty) DutySlot() spec.Slot {
+	return bd.Slot
+}
+
+type ClusterDuty struct {
+	Slot         spec.Slot
+	BeaconDuties []BeaconDuty
+}
+
+func (cd *ClusterDuty) DutySlot() spec.Slot {
+	return cd.Slot
 }
 
 // Available networks.

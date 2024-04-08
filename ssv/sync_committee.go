@@ -47,7 +47,7 @@ func NewSyncCommitteeRunner(
 	}
 }
 
-func (r *SyncCommitteeRunner) StartNewDuty(duty *types.Duty) error {
+func (r *SyncCommitteeRunner) StartNewDuty(duty *types.BeaconDuty) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
@@ -168,7 +168,7 @@ func (r *SyncCommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashR
 // 2) start consensus on duty + block root data
 // 3) Once consensus decides, sign partial block root and broadcast
 // 4) collect 2f+1 partial sigs, reconstruct and broadcast valid sync committee sig to the BN
-func (r *SyncCommitteeRunner) executeDuty(duty *types.Duty) error {
+func (r *SyncCommitteeRunner) executeDuty(duty *types.BeaconDuty) error {
 	// TODO - waitOneThirdOrValidBlock
 
 	root, ver, err := r.GetBeaconNode().GetSyncMessageBlockRoot(duty.Slot)

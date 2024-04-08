@@ -9,13 +9,13 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func finishRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
+func finishRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData) ssv.Runner {
 	ret := decideRunner(r, duty, decidedValue)
 	ret.GetBaseRunner().State.Finished = true
 	return ret
 }
 
-func decideRunner(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
+func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData) ssv.Runner {
 	r.GetBaseRunner().State = ssv.NewRunnerState(r.GetBaseRunner().Share.Quorum, duty)
 	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
