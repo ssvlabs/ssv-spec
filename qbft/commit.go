@@ -82,7 +82,7 @@ func CreateCommit(state *State, config IConfig, root [32]byte) (*SignedMessage, 
 
 		Root: root,
 	}
-	sig, err := config.GetSSVShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	sig, err := config.GetShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing commit msg")
 	}
@@ -112,13 +112,13 @@ func baseCommitValidationIgnoreSignature(
 	}
 
 	if !signedCommit.CheckSignersInCommittee(operators) {
-		return errors.New("signers not in committee")
+		return errors.New("signer not in committee")
 	}
 
 	return nil
 }
 
-func baseCommitValidationWithVerification(
+func baseCommitValidationVerifySignature(
 	config IConfig,
 	signedCommit *SignedMessage,
 	height Height,

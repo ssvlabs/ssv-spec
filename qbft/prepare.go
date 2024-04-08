@@ -108,13 +108,13 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	}
 
 	if !signedPrepare.CheckSignersInCommittee(operators) {
-		return errors.New("signers not in committee")
+		return errors.New("signer not in committee")
 	}
 
 	return nil
 }
 
-func validSignedPrepareForHeightRoundAndRootWithVerification(
+func validSignedPrepareForHeightRoundAndRootVerifySignature(
 	config IConfig,
 	signedPrepare *SignedMessage,
 	height Height,
@@ -155,7 +155,7 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 
 		Root: root,
 	}
-	sig, err := config.GetSSVShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	sig, err := config.GetShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}

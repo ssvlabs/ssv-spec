@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-	"crypto/rsa"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
@@ -34,22 +33,18 @@ type BeaconSigner interface {
 	IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error
 }
 
-// SSVOperatorSigner used for to sign protocol messages
-type SSVOperatorSigner interface {
+// OperatorSigner used for to sign protocol messages
+type OperatorSigner interface {
 	SignSSVMessage(data []byte, pk []byte) ([]byte, error)
-	// AddSSVOperatorKey saves an SSV operator key
-	AddSSVOperatorKey(sk *rsa.PrivateKey) error
-	// RemoveSSVOperatorKey removes an SSV operator key
-	RemoveSSVOperatorKey(pubKey string)
 }
 
-// SSVShareSigner used for signing with the operator's share
-type SSVShareSigner interface {
+// ShareSigner used for signing with the operator's share
+type ShareSigner interface {
 	SignRoot(data Root, sigType SignatureType, pk []byte) (Signature, error)
 }
 
 type DKGSigner interface {
-	SSVShareSigner
+	ShareSigner
 	// SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
 	SignDKGOutput(output Root, address common.Address) (Signature, error)
 	// SignETHDepositRoot signs an ethereum deposit root
@@ -59,7 +54,7 @@ type DKGSigner interface {
 // KeyManager is an interface responsible for all key manager functions
 type KeyManager interface {
 	BeaconSigner
-	SSVShareSigner
+	ShareSigner
 	// AddShare saves a share key
 	AddShare(shareKey *bls.SecretKey) error
 	// RemoveShare removes a share key

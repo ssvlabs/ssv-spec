@@ -16,9 +16,9 @@ var TestingQBFTRootData = func() [32]byte {
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
-		SSVShareSigner: NewTestingKeyManager(),
-		SigningPK:      keySet.Shares[1].GetPublicKey().Serialize(),
-		Domain:         TestingSSVDomainType,
+		ShareSigner: NewTestingKeyManager(),
+		SigningPK:   keySet.Shares[1].GetPublicKey().Serialize(),
+		Domain:      TestingSSVDomainType,
 		ValueCheckF: func(data []byte) error {
 			if bytes.Equal(data, TestingInvalidValueCheck) {
 				return errors.New("invalid value")

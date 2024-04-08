@@ -63,7 +63,7 @@ func isValidProposal(
 	}
 
 	if !signedProposal.CheckSignersInCommittee(state.Share.Committee) {
-		return errors.New("signers not in committee")
+		return errors.New("signer not in committee")
 	}
 
 	if !signedProposal.MatchedSigners([]types.OperatorID{proposer(state, config, signedProposal.Message.Round)}) {
@@ -129,7 +129,7 @@ func isProposalJustification(
 		// no quorum, duplicate signers,  invalid still has quorum, invalid no quorum
 		// prepared
 		for _, rc := range roundChangeMsgs {
-			if err := validRoundChangeForDataWithVerification(state, config, rc, height, round, fullData); err != nil {
+			if err := validRoundChangeForDataVerifySignature(state, config, rc, height, round, fullData); err != nil {
 				return errors.Wrap(err, "change round msg not valid")
 			}
 		}
@@ -181,7 +181,7 @@ func isProposalJustification(
 
 			// validate each prepare message against the highest previously prepared fullData and round
 			for _, pm := range prepareMsgs {
-				if err := validSignedPrepareForHeightRoundAndRootWithVerification(
+				if err := validSignedPrepareForHeightRoundAndRootVerifySignature(
 					config,
 					pm,
 					height,
@@ -240,7 +240,7 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		RoundChangeJustification: roundChangesData,
 		PrepareJustification:     preparesData,
 	}
-	sig, err := config.GetSSVShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	sig, err := config.GetShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}

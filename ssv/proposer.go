@@ -21,7 +21,7 @@ type ProposerRunner struct {
 	beacon         BeaconNode
 	network        Network
 	signer         types.KeyManager
-	operatorSigner types.SSVOperatorSigner
+	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
 
@@ -32,7 +32,7 @@ func NewProposerRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
-	operatorSigner types.SSVOperatorSigner,
+	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {

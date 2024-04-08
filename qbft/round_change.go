@@ -233,7 +233,7 @@ func validRoundChangeForDataIgnoreSignature(
 	}
 
 	if !signedMsg.CheckSignersInCommittee(state.Share.Committee) {
-		return errors.New("signers not in committee")
+		return errors.New("signer not in committee")
 	}
 
 	// Addition to formal spec
@@ -247,7 +247,7 @@ func validRoundChangeForDataIgnoreSignature(
 		// validate prepare message justifications
 		prepareMsgs, _ := signedMsg.Message.GetRoundChangeJustifications() // no need to check error, checked on signedMsg.Message.Validate()
 		for _, pm := range prepareMsgs {
-			if err := validSignedPrepareForHeightRoundAndRootWithVerification(
+			if err := validSignedPrepareForHeightRoundAndRootVerifySignature(
 				config,
 				pm,
 				state.Height,
@@ -276,7 +276,7 @@ func validRoundChangeForDataIgnoreSignature(
 	return nil
 }
 
-func validRoundChangeForDataWithVerification(
+func validRoundChangeForDataVerifySignature(
 	state *State,
 	config IConfig,
 	signedMsg *SignedMessage,
@@ -378,7 +378,7 @@ func CreateRoundChange(state *State, config IConfig, newRound Round, instanceSta
 		DataRound:                round,
 		RoundChangeJustification: justificationsData,
 	}
-	sig, err := config.GetSSVShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	sig, err := config.GetShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}
