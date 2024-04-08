@@ -1,6 +1,8 @@
 package ssv
 
 import (
+	"crypto/sha256"
+	"encoding/json"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -43,18 +45,20 @@ func (cr ClusterRunner) StartNewDuty(duty types.Duty) error {
 }
 
 func (cr ClusterRunner) Encode() ([]byte, error) {
-	//TODO implement me
-	panic("implement me")
+	return json.Marshal(cr)
 }
 
 func (cr ClusterRunner) Decode(data []byte) error {
-	//TODO implement me
-	panic("implement me")
+	return json.Unmarshal(data, &cr)
 }
 
 func (cr ClusterRunner) GetRoot() ([32]byte, error) {
-	//TODO implement me
-	panic("implement me")
+	marshaledRoot, err := cr.Encode()
+	if err != nil {
+		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret, nil
 }
 
 func (cr ClusterRunner) GetBaseRunner() *BaseRunner {
@@ -83,8 +87,7 @@ func (cr ClusterRunner) GetNetwork() Network {
 }
 
 func (cr ClusterRunner) HasRunningDuty() bool {
-	//TODO implement me
-	panic("implement me")
+	return cr.BaseRunner.hasRunningDuty()
 }
 
 func (cr ClusterRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
@@ -93,8 +96,65 @@ func (cr ClusterRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignat
 }
 
 func (cr ClusterRunner) ProcessConsensus(msg *qbft.SignedMessage) error {
-	//TODO implement me
-	panic("implement me")
+	decided, decidedValue, err := cr.BaseRunner.baseConsensusMsgProcessing(cr, msg)
+	if err != nil {
+		return errors.Wrap(err, "failed processing consensus message")
+	}
+
+	// Decided returns true only once so if it is true it must be for the current running instance
+	if !decided {
+		return nil
+	}
+
+	beaconVote, err := decidedValue.GetBeaconVote()
+	if err != nil {
+		return errors.Wrap(err, "decided value is not a beacon vote")
+	}
+
+	postConsensusMsg := &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     decidedValue.Duty.Slot,
+		Messages: []*types.PartialSignatureMessage{},
+	}
+	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.ClusterDuty).BeaconDuties {
+		switch duty.Type {
+		case types.BNRoleAttester:
+			attestationData := constructAttestationData(beaconVote, duty)
+
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, attestationData, decidedValue.Duty.Slot, types.DomainAttester)
+			if err != nil {
+				return errors.Wrap(err, "failed signing attestation data")
+			}
+			postConsensusMsg.Messages = append(postConsensusMsg.Messages, partialMsg)
+
+		case types.BNRoleSyncCommittee:
+			//TODO implement me
+			panic("implement me")
+		}
+	}
+
+	//TODO depends on https://github.com/bloxapp/SIPs/pull/45
+	/*postSignedMsg, err := cr.BaseRunner.signPostConsensusMsg(cr, postConsensusMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not sign post consensus msg")
+	}
+
+	data, err := postSignedMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode post consensus signature msg")
+	}
+
+	msgToBroadcast := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		Data:    data,
+	}
+
+	if err := cr.GetNetwork().Broadcast(msgToBroadcast); err != nil {
+		return errors.Wrap(err, "can't broadcast partial post consensus sig")
+	}*/
+	return nil
+
 }
 
 func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
@@ -141,4 +201,14 @@ func (cr ClusterRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
+}
+
+func constructAttestationData(vote *types.BeaconVote, duty *types.BeaconDuty) *phase0.AttestationData {
+	return &phase0.AttestationData{
+		Slot:            duty.Slot,
+		Index:           duty.CommitteeIndex,
+		BeaconBlockRoot: vote.BlockRoot,
+		Source:          vote.Source,
+		Target:          vote.Target,
+	}
 }

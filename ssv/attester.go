@@ -80,6 +80,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
+
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
 		Slot:     decidedValue.Duty.Slot,

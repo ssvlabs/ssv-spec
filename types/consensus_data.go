@@ -212,6 +212,14 @@ func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 	return ret, nil
 }
 
+func (ci *ConsensusData) GetBeaconVote() (*BeaconVote, error) {
+	ret := &BeaconVote{}
+	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		return nil, errors.Wrap(err, "could not unmarshal ssz")
+	}
+	return ret, nil
+}
+
 // GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
 func (ci *ConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
 	switch ci.Version {

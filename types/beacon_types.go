@@ -113,7 +113,7 @@ func (bd *BeaconDuty) DutySlot() spec.Slot {
 
 type ClusterDuty struct {
 	Slot         spec.Slot
-	BeaconDuties []BeaconDuty
+	BeaconDuties []*BeaconDuty
 }
 
 func (cd *ClusterDuty) DutySlot() spec.Slot {

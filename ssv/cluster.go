@@ -38,7 +38,7 @@ func (c *Cluster) StartDuty(duty *types.ClusterDuty) error {
 
 // ProcessMessage processes Network Message of all types
 func (c *Cluster) ProcessMessage(msg *types.SSVMessage) error {
-	//TODO validate message
+
 	//dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
 	//if dutyRunner == nil {
 	//	return errors.Errorf("could not get duty runner for msg ID")
