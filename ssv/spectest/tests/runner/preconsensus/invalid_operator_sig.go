@@ -8,12 +8,12 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidNetworkSignature tests a SignedSSVMessage with invalid signature
-func InvalidNetworkSignature() tests.SpecTest {
+// InvalidOperatorSignature tests a SignedSSVMessage with invalid signature
+func InvalidOperatorSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus invalid network signature",
+		Name: "pre consensus invalid operator signature",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

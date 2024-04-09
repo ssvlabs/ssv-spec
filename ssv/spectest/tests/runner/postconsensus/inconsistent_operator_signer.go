@@ -9,12 +9,12 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InconsistentNetworkSigner tests a SignedSSVMessage with inconsistent signer regarding its nested SignedPartialSignatureMessage
-func InconsistentNetworkSigner() tests.SpecTest {
+// InconsistentOperatorSigner tests a SignedSSVMessage with inconsistent signer regarding its nested SignedPartialSignatureMessage
+func InconsistentOperatorSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage's signer not consistent with SignedPartialSignatureMessage's signer"
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus inconsistent network signer",
+		Name: "post consensus inconsistent operator signer",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
