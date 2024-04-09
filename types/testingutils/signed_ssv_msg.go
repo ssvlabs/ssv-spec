@@ -11,7 +11,7 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-var TestingSignedSSVMessageSignature = []byte{1, 2, 3, 4}
+var TestingSignedSSVMessageSignature = [256]byte{1, 2, 3, 4}
 
 var TestingMessageID = types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
 
@@ -40,11 +40,13 @@ var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorI
 	if err != nil {
 		panic(err.Error())
 	}
+	sig := [256]byte{}
+	copy(sig[:], signature)
 
 	//SignedSSVMessage
 	return &types.SignedSSVMessage{
 		OperatorID: operatorID,
-		Signature:  signature,
+		Signature:  sig,
 		Data:       ssvMsgByts,
 	}
 }
@@ -89,9 +91,12 @@ var SignedSSVMessageOnData = func(operatorID types.OperatorID, rsaSK *rsa.Privat
 		panic(err)
 	}
 
+	sig := [256]byte{}
+	copy(sig[:], signature)
+
 	return &types.SignedSSVMessage{
 		OperatorID: operatorID,
-		Signature:  signature,
+		Signature:  sig,
 		Data:       data,
 	}
 }
@@ -109,10 +114,12 @@ var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.Pr
 	if err != nil {
 		panic(err)
 	}
+	sig := [256]byte{}
+	copy(sig[:], signature)
 
 	return &types.SignedSSVMessage{
 		OperatorID: operatorID,
-		Signature:  signature,
+		Signature:  sig,
 		Data:       data,
 	}
 }

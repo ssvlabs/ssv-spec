@@ -35,10 +35,12 @@ func (net *TestingNetwork) Broadcast(message *types.SSVMessage) error {
 	if err != nil {
 		panic(err)
 	}
+	sig := [256]byte{}
+	copy(sig[:], signature)
 
 	signedMessage := &types.SignedSSVMessage{
 		OperatorID: net.OperatorID,
-		Signature:  signature,
+		Signature:  sig,
 		Data:       encodedMessage,
 	}
 
