@@ -81,6 +81,21 @@ var SignedSSVMessageF = func(ks *TestKeySet, msg *types.SSVMessage) *types.Signe
 	return SignedSSVMessageWithSigner(signer, ks.SSVOperatorKeys[signer], msg)
 }
 
+var SignedSSVMessageOnData = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, data []byte) *types.SignedSSVMessage {
+	hash := sha256.Sum256(data)
+
+	signature, err := rsa.SignPKCS1v15(rand.Reader, rsaSK, crypto.SHA256, hash[:])
+	if err != nil {
+		panic(err)
+	}
+
+	return &types.SignedSSVMessage{
+		OperatorID: operatorID,
+		Signature:  signature,
+		Data:       data,
+	}
+}
+
 var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, ssvMessage *types.SSVMessage) *types.SignedSSVMessage {
 
 	data, err := ssvMessage.Encode()

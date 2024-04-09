@@ -56,15 +56,15 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		return errors.Wrap(err, "invalid SignedSSVMessage")
 	}
 
+	// Verify SignedSSVMessage's signature
+	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.Share.Committee); err != nil {
+		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
+	}
+
 	// Decode the nested SSVMessage
 	msg := &types.SSVMessage{}
 	if err := msg.Decode(signedSSVMessage.Data); err != nil {
 		return errors.Wrap(err, "could not decode data into an SSVMessage")
-	}
-
-	// Verify SignedSSVMessage's signature
-	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.Share.Committee); err != nil {
-		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
 	// Get runner
