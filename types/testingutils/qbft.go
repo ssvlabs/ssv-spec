@@ -33,7 +33,7 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 		ProposerF: func(state *qbft.State, round qbft.Round) types.OperatorID {
 			return 1
 		},
-		Network: NewTestingNetwork(1, keySet.SSVOperatorKeys[1]),
+		Network: NewTestingNetwork(1, keySet.OperatorKeys[1]),
 		Timer:   NewTestingTimer(),
 	}
 }

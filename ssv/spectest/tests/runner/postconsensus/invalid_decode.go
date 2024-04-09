@@ -13,7 +13,7 @@ func InvalidDecode() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "could not decode data into an SSVMessage: incorrect size"
 
-	invalidMsg := testingutils.SignedSSVMessageOnData(1, ks.SSVOperatorKeys[1], []byte{1, 2, 3, 4})
+	invalidMsg := testingutils.SignedSSVMessageOnData(1, ks.OperatorKeys[1], []byte{1, 2, 3, 4})
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid decode",

@@ -36,7 +36,7 @@ func NewTestingOperatorSigner() *testingOperatorSigner {
 	testingSharesSets := []*TestKeySet{Testing4SharesSet(), Testing7SharesSet(), Testing10SharesSet(), Testing13SharesSet()}
 
 	for _, testingShareSet := range testingSharesSets {
-		for _, k := range testingShareSet.SSVOperatorKeys {
+		for _, k := range testingShareSet.OperatorKeys {
 			_ = ret.AddSSVOperatorKey(k)
 		}
 	}
