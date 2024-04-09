@@ -48,10 +48,10 @@ func PastMessage() tests.SpecTest {
 				Name:   "sync committee contribution",
 				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(
 						pastMsgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID),
-						nil),
+						nil)),
 				},
 				PostDutyRunnerStateRoot: "d1ba71cab348c80ebb7b4533c9c482eaba407f6a73864ee742aab93e73b94dab",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -61,10 +61,10 @@ func PastMessage() tests.SpecTest {
 				Name:   "sync committee",
 				Runner: bumpHeight(testingutils.SyncCommitteeRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(
 						pastMsgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-						nil),
+						nil)),
 				},
 				PostDutyRunnerStateRoot: "c1fe93bc3530e14e014b78102b078bbdd6e55c2c0979fce40fa00b1400d9e774",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -74,10 +74,10 @@ func PastMessage() tests.SpecTest {
 				Name:   "aggregator",
 				Runner: bumpHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(
 						pastMsgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID),
-						nil),
+						nil)),
 				},
 				PostDutyRunnerStateRoot: "5a1a9b9fb21682ea854f919be531a692fe5c3a6c5302214dbf3421faed57cff8",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -87,10 +87,10 @@ func PastMessage() tests.SpecTest {
 				Name:   "proposer",
 				Runner: bumpHeight(testingutils.ProposerRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(
 						pastMsgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
-						nil),
+						nil)),
 				},
 				PostDutyRunnerStateRoot: "1c939726a237c02013fab61901e819e34ec99e2ef62dadb6c847e5ad118fc4e7",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -100,10 +100,10 @@ func PastMessage() tests.SpecTest {
 				Name:   "proposer (blinded block)",
 				Runner: bumpHeight(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgProposer(
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(
 						pastMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
-						nil),
+						nil)),
 				},
 				PostDutyRunnerStateRoot: "49edaab0d759ba8a35a37ab26416ae04962d77ec088b87c4f1e65f781c1ed96f",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -113,10 +113,10 @@ func PastMessage() tests.SpecTest {
 				Name:   "attester",
 				Runner: bumpHeight(testingutils.AttesterRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(
 						pastMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-						nil),
+						nil)),
 				},
 				PostDutyRunnerStateRoot: "7218b8c7b0c3fc4751b62ed15960de36bb28d6ec800a6d689d16ae99754fbf66",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
@@ -126,12 +126,12 @@ func PastMessage() tests.SpecTest {
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgValidatorRegistration(
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgValidatorRegistration(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID,
 							testingutils.TestAttesterConsensusDataByts, qbft.Height(testingutils.TestingDutySlot)),
-						nil),
+						nil)),
 				},
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -143,12 +143,12 @@ func PastMessage() tests.SpecTest {
 				Name:   "voluntary exit",
 				Runner: testingutils.VoluntaryExitRunner(ks),
 				Duty:   &testingutils.TestingVoluntaryExitDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgVoluntaryExit(
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgVoluntaryExit(
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
 							ks.Shares[1], types.OperatorID(1), testingutils.VoluntaryExitMsgID,
 							testingutils.TestAttesterConsensusDataByts, qbft.Height(testingutils.TestingDutySlot)),
-						nil),
+						nil)),
 				},
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.SignedPartialSignatureMessage{

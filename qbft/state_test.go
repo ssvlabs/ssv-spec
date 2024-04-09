@@ -16,8 +16,8 @@ func TestState_Decoding(t *testing.T) {
 			ValidatorPubKey: []byte{1, 2, 3, 4},
 			Committee: []*types.Operator{
 				{
-					OperatorID: 1,
-					PubKey:     []byte{1, 2, 3, 4},
+					OperatorID:  1,
+					SharePubKey: []byte{1, 2, 3, 4},
 				},
 			},
 			DomainType: testingutils.TestingSSVDomainType,
@@ -48,7 +48,7 @@ func TestState_Decoding(t *testing.T) {
 
 	require.EqualValues(t, 1, decodedState.Share.OperatorID)
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.ValidatorPubKey)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.Committee[0].PubKey)
+	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.Committee[0].SharePubKey)
 	require.EqualValues(t, 1, decodedState.Share.Committee[0].OperatorID)
 	require.EqualValues(t, testingutils.TestingSSVDomainType, decodedState.Share.DomainType)
 

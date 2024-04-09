@@ -21,8 +21,8 @@ func NoRunningDuty() tests.SpecTest {
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
 				},
 				PostDutyRunnerStateRoot: noRunningDutySyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     noRunningDutySyncCommitteeContributionSC().ExpectedState,
@@ -34,8 +34,8 @@ func NoRunningDuty() tests.SpecTest {
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
 				},
 				PostDutyRunnerStateRoot: noRunningDutyAggregatorSC().Root(),
 				PostDutyRunnerState:     noRunningDutyAggregatorSC().ExpectedState,
@@ -47,8 +47,8 @@ func NoRunningDuty() tests.SpecTest {
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: noRunningDutyValidatorRegistrationSC().Root(),
 				PostDutyRunnerState:     noRunningDutyValidatorRegistrationSC().ExpectedState,
@@ -60,8 +60,8 @@ func NoRunningDuty() tests.SpecTest {
 				Name:   "voluntary exit",
 				Runner: testingutils.VoluntaryExitRunner(ks),
 				Duty:   &testingutils.TestingVoluntaryExitDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: noRunningDutyVoluntaryExitSC().Root(),
 				PostDutyRunnerState:     noRunningDutyVoluntaryExitSC().ExpectedState,
@@ -78,8 +78,8 @@ func NoRunningDuty() tests.SpecTest {
 			Name:   fmt.Sprintf("proposer (%s)", version.String()),
 			Runner: testingutils.ProposerRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version))),
 			},
 			PostDutyRunnerStateRoot: noRunningDutyProposerSC(version).Root(),
 			PostDutyRunnerState:     noRunningDutyProposerSC(version).ExpectedState,
@@ -95,8 +95,8 @@ func NoRunningDuty() tests.SpecTest {
 			Name:   fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner: testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version))),
 			},
 			PostDutyRunnerStateRoot: noRunningDutyBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     noRunningDutyBlindedProposerSC(version).ExpectedState,

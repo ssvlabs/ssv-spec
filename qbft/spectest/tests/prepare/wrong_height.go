@@ -20,7 +20,7 @@ func WrongHeight() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare wrong height",
 		Pre:           pre,
-		PostRoot:      "b61f5233721865ca43afc68f4ad5045eeb123f6e8f095ce76ecf956dabc74713",
+		PostRoot:      "470d1a88e97b20eafb08ad9682c10642de27515fff7a8ef3c2d2e97953432357",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: wrong msg height",
 	}

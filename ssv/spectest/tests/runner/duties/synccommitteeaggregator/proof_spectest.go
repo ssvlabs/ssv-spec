@@ -2,11 +2,12 @@ package synccommitteeaggregator
 
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
 
@@ -16,7 +17,7 @@ import (
 
 type SyncCommitteeAggregatorProofSpecTest struct {
 	Name                    string
-	Messages                []*types.SSVMessage
+	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     string
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator

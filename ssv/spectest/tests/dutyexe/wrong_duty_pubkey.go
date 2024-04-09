@@ -54,7 +54,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:     "sync committee contribution",
 				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:     &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{decidedMessage(types.BNRoleSyncCommitteeContribution)},
+				Messages: []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleSyncCommitteeContribution))},
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -64,7 +64,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:           "sync committee",
 				Runner:         testingutils.SyncCommitteeRunner(ks),
 				Duty:           &testingutils.TestingSyncCommitteeDuty,
-				Messages:       []*types.SSVMessage{decidedMessage(types.BNRoleSyncCommittee)},
+				Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleSyncCommittee))},
 				OutputMessages: []*types.SignedPartialSignatureMessage{},
 				ExpectedError:  expectedError,
 			},
@@ -72,7 +72,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:     "aggregator",
 				Runner:   testingutils.AggregatorRunner(ks),
 				Duty:     &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{decidedMessage(types.BNRoleAggregator)},
+				Messages: []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleAggregator))},
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -82,7 +82,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:           "attester",
 				Runner:         testingutils.AttesterRunner(ks),
 				Duty:           &testingutils.TestingAttesterDuty,
-				Messages:       []*types.SSVMessage{decidedMessage(types.BNRoleAttester)},
+				Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleAttester))},
 				OutputMessages: []*types.SignedPartialSignatureMessage{},
 				ExpectedError:  expectedError,
 			},
@@ -95,7 +95,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:   testingutils.ProposerRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{decidedMessage(types.BNRoleProposer)},
+			Messages: []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleProposer))},
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
@@ -109,7 +109,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:   testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{decidedMessage(types.BNRoleProposer)},
+			Messages: []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleProposer))},
 			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},

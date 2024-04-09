@@ -7,22 +7,24 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// WrongSig tests a signed round change msg with wrong signature
-func WrongSig() tests.SpecTest {
+// EmptySigners tests a round change msg with no signers
+func EmptySigners() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
 
+	msg := testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(5), 2)
+	msg.Signers = []types.OperatorID{}
+
 	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(2), 2),
+		msg,
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:           "round change invalid sig",
+		Name:           "round change empty signer",
 		Pre:            pre,
-		PostRoot:       "ddb0f7e1a8888a8de5295005872d8525d6afea053121993dc65e34fcb7f290b2",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
-		ExpectedError:  "invalid signed message: msg signature invalid: failed to verify signature",
+		ExpectedError:  "invalid signed message: invalid signed message: message signers is empty",
 	}
 }
