@@ -10,8 +10,10 @@ import (
 )
 
 type signing interface {
-	// GetSigner returns a Signer instance
-	GetSigner() types.SSVSigner
+	// GetShareSigner returns an share signer instance
+	GetShareSigner() types.ShareSigner
+	// GetSigner returns an operator signer instance
+	GetOperatorSigner() types.OperatorSigner
 	// GetSignatureDomainType returns the Domain type used for signatures
 	GetSignatureDomainType() types.DomainType
 }
@@ -29,18 +31,24 @@ type IConfig interface {
 }
 
 type Config struct {
-	Signer      types.SSVSigner
-	SigningPK   []byte
-	Domain      types.DomainType
-	ValueCheckF ProposedValueCheckF
-	ProposerF   ProposerF
-	Network     Network
-	Timer       Timer
+	ShareSigner    types.ShareSigner
+	OperatorSigner types.OperatorSigner
+	SigningPK      []byte
+	Domain         types.DomainType
+	ValueCheckF    ProposedValueCheckF
+	ProposerF      ProposerF
+	Network        Network
+	Timer          Timer
 }
 
 // GetSigner returns a Signer instance
-func (c *Config) GetSigner() types.SSVSigner {
-	return c.Signer
+func (c *Config) GetShareSigner() types.ShareSigner {
+	return c.ShareSigner
+}
+
+// GetSigner returns a Signer instance
+func (c *Config) GetOperatorSigner() types.OperatorSigner {
+	return c.OperatorSigner
 }
 
 // GetSigningPubKey returns the public key used to sign all QBFT messages

@@ -20,7 +20,7 @@ func HappyFlow() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare happy flow",
 		Pre:           pre,
-		PostRoot:      "976cd5cecd58bba892a38ec0ef02b3aed4656fb89fef473d8af78fedf095439d",
+		PostRoot:      "bee2790f72eaeb5dfa15d998817ec0ae09443951aafbb5040f779c2eaa52bc53",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),

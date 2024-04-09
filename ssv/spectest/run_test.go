@@ -179,10 +179,10 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	byts, _ := json.Marshal(m["BeaconDuty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.SignedSSVMessage, 0)
 	for _, msg := range m["Messages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
-		typedMsg := &types.SSVMessage{}
+		typedMsg := &types.SignedSSVMessage{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		msgs = append(msgs, typedMsg)
 	}

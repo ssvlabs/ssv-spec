@@ -18,10 +18,11 @@ type ProposerRunner struct {
 	// ProducesBlindedBlocks is true when the runner will only produce blinded blocks
 	ProducesBlindedBlocks bool
 
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon         BeaconNode
+	network        Network
+	signer         types.KeyManager
+	operatorSigner types.OperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 }
 
 func NewProposerRunner(
@@ -31,6 +32,7 @@ func NewProposerRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
+	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
@@ -43,10 +45,11 @@ func NewProposerRunner(
 			highestDecidedSlot: highestDecidedSlot,
 		},
 
-		beacon:   beacon,
-		network:  network,
-		signer:   signer,
-		valCheck: valCheck,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
+		valCheck:       valCheck,
 	}
 }
 

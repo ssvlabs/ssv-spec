@@ -15,10 +15,11 @@ import (
 type VoluntaryExitRunner struct {
 	BaseRunner *BaseRunner
 
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon         BeaconNode
+	network        Network
+	signer         types.KeyManager
+	operatorSigner types.OperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 
 	voluntaryExit *phase0.VoluntaryExit
 }
@@ -29,6 +30,7 @@ func NewVoluntaryExitRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
+	operatorSigner types.OperatorSigner,
 ) Runner {
 	return &VoluntaryExitRunner{
 		BaseRunner: &BaseRunner{
@@ -37,9 +39,10 @@ func NewVoluntaryExitRunner(
 			Share:          share,
 		},
 
-		beacon:  beacon,
-		network: network,
-		signer:  signer,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
 	}
 }
 

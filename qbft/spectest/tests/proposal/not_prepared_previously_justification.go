@@ -25,7 +25,7 @@ func NotPreparedPreviouslyJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal justification (not prepared)",
 		Pre:           pre,
-		PostRoot:      "c36727f091866a125ef815fe77a50df5e38335a1bb44eca2dbe0d2a4c34de4d8",
+		PostRoot:      "5f9887c77a6beabc81c2ea64ff41868bc3f06ca1fdb5607ca862dfeed0e1f95f",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 5),

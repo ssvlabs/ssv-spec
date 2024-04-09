@@ -19,8 +19,8 @@ import (
 type MsgProcessingSpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
-	Duty                    *types.BeaconDuty
-	Messages                []*types.SSVMessage
+	Duty                    *types.Duty
+	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
@@ -110,7 +110,10 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		}
 		return ret
 	}
-	broadcastedMsgs := filterPartialSigs(v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs)
+	broadcastedSignedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Share.Committee))
+	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
+	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
 	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 	index := 0
 	for _, msg := range broadcastedMsgs {

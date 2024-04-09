@@ -14,10 +14,11 @@ import (
 type AggregatorRunner struct {
 	BaseRunner *BaseRunner
 
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon         BeaconNode
+	network        Network
+	signer         types.KeyManager
+	operatorSigner types.OperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 }
 
 func NewAggregatorRunner(
@@ -27,6 +28,7 @@ func NewAggregatorRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
+	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
@@ -39,10 +41,11 @@ func NewAggregatorRunner(
 			highestDecidedSlot: highestDecidedSlot,
 		},
 
-		beacon:   beacon,
-		network:  network,
-		signer:   signer,
-		valCheck: valCheck,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
+		valCheck:       valCheck,
 	}
 }
 

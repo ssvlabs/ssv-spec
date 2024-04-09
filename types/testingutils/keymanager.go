@@ -12,7 +12,7 @@ import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -64,36 +64,16 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		slashableDataRoots: slashableDataRoots,
 	}
 
-	_ = ret.AddShare(Testing4SharesSet().ValidatorSK)
-	for _, s := range Testing4SharesSet().Shares {
-		_ = ret.AddShare(s)
-	}
+	testingSharesSets := []*TestKeySet{Testing4SharesSet(), Testing7SharesSet(), Testing10SharesSet(), Testing13SharesSet()}
 
-	_ = ret.AddShare(Testing7SharesSet().ValidatorSK)
-	for _, s := range Testing7SharesSet().Shares {
-		_ = ret.AddShare(s)
-	}
-
-	_ = ret.AddShare(Testing10SharesSet().ValidatorSK)
-	for _, s := range Testing10SharesSet().Shares {
-		_ = ret.AddShare(s)
-	}
-
-	_ = ret.AddShare(Testing13SharesSet().ValidatorSK)
-	for _, s := range Testing13SharesSet().Shares {
-		_ = ret.AddShare(s)
-	}
-	for _, o := range Testing4SharesSet().DKGOperators {
-		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-	}
-	for _, o := range Testing7SharesSet().DKGOperators {
-		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-	}
-	for _, o := range Testing10SharesSet().DKGOperators {
-		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-	}
-	for _, o := range Testing13SharesSet().DKGOperators {
-		ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+	for _, testingShareSet := range testingSharesSets {
+		_ = ret.AddShare(testingShareSet.ValidatorSK)
+		for _, s := range testingShareSet.Shares {
+			_ = ret.AddShare(s)
+		}
+		for _, o := range testingShareSet.DKGOperators {
+			ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+		}
 	}
 
 	instancesMap[hash] = ret
@@ -155,7 +135,7 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 	if sk == nil {
 		return nil, errors.New(fmt.Sprintf("unable to find ecdsa key for address %v", address.String()))
 	}
-	sig, err := crypto.Sign(root[:], sk)
+	sig, err := ethcrypto.Sign(root[:], sk)
 	if err != nil {
 		return nil, err
 	}

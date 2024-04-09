@@ -22,6 +22,6 @@ func UnknownSigner() tests.SpecTest {
 				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
-		ExpectedError: "invalid decided msg: invalid decided msg: msg signature invalid: unknown signer",
+		ExpectedError: "invalid decided msg: invalid decided msg: signer not in committee",
 	}
 }
