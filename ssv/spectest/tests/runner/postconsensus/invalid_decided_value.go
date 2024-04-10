@@ -12,6 +12,9 @@ import (
 
 // InvalidDecidedValue tests an invalid decided value
 func InvalidDecidedValue() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{
@@ -61,27 +64,6 @@ func InvalidDecidedValue() tests.SpecTest {
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedErr,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-							[]*bls.SecretKey{
-								ks.Shares[1], ks.Shares[2], ks.Shares[3],
-							},
-							[]types.OperatorID{1, 2, 3},
-							qbft.Height(testingutils.TestingDutySlot),
-							testingutils.SyncCommitteeMsgID,
-							consensusDataByts(types.BNRoleSyncCommittee),
-						), nil)),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-				},
-				PostDutyRunnerStateRoot: "90c84430996225da29d9ed64d038a81d754599ce67d2a46a92689f2d4d57dfde",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedErr,
 			},
 			{
 				Name:   "aggregator",
@@ -165,26 +147,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(
-						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-							[]*bls.SecretKey{
-								ks.Shares[1], ks.Shares[2], ks.Shares[3],
-							},
-							[]types.OperatorID{1, 2, 3},
-							qbft.Height(testingutils.TestingDutySlot),
-							testingutils.AttesterMsgID,
-							consensusDataByts(types.BNRoleAttester),
-						), nil)),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1,
-						testingutils.TestingDutySlot))),
-				},
-				PostDutyRunnerStateRoot: "33953714dd71325c2ad309b2e122bf5fab016a5a2f1bfbf91125b3866c9dc844",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedErr,
+				Name: "attester and sync committee",
 			},
 		},
 	}

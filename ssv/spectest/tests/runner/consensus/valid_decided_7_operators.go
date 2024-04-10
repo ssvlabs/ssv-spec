@@ -5,7 +5,6 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -13,6 +12,9 @@ import (
 
 // ValidDecided7Operators tests a valid decided value (7 operators)
 func ValidDecided7Operators() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing7SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
@@ -31,17 +33,6 @@ func ValidDecided7Operators() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  testingutils.SyncCommitteeRunner(ks),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee)),
-				PostDutyRunnerStateRoot: validDecided7OperatorsSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     validDecided7OperatorsSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    &testingutils.TestingAggregatorDuty,
@@ -54,15 +45,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  testingutils.AttesterRunner(ks),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester)),
-				PostDutyRunnerStateRoot: validDecided7OperatorsAttesterSC().Root(),
-				PostDutyRunnerState:     validDecided7OperatorsAttesterSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-				},
+				Name: "attester and sync committee",
 			},
 		},
 	}

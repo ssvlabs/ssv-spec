@@ -3,7 +3,6 @@ package consensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -11,6 +10,9 @@ import (
 
 // ValidDecided10Operators tests a valid decided value (10 operators)
 func ValidDecided10Operators() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing10SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid decided 10 operators",
@@ -24,16 +26,6 @@ func ValidDecided10Operators() tests.SpecTest {
 				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
-				},
-			},
-			{
-				Name:                    "sync committee",
-				Runner:                  testingutils.SyncCommitteeRunner(ks),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee)),
-				PostDutyRunnerStateRoot: "b8f8e1c7eeca8f986ba04118ae36df3e5e70e229d490edd379393622abe8c708",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
 			},
 			{
@@ -70,14 +62,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  testingutils.AttesterRunner(ks),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester)),
-				PostDutyRunnerStateRoot: "d88c7514e53f394e4d6ceca2f7b864c1f993f3e71b485c547640321621303e1a",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-				},
+				Name: "attester and sync committee",
 			},
 		},
 	}

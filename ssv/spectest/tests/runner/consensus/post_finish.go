@@ -14,6 +14,9 @@ import (
 
 // PostFinish tests a valid commit msg after runner finished
 func PostFinish() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
@@ -52,35 +55,6 @@ func PostFinish() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: append(
-					testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee)),
-					// post consensus
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
-					// commit msg
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]},
-							[]types.OperatorID{4},
-							qbft.Height(testingutils.TestingDutySlot),
-							testingutils.SyncCommitteeMsgID,
-							testingutils.TestSyncCommitteeConsensusDataByts,
-						), nil)),
-				),
-				PostDutyRunnerStateRoot: postFinishSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     postFinishSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
-				},
-			},
-			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
@@ -111,33 +85,7 @@ func PostFinish() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: append(
-					testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester)),
-					// post consensus
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
-					// commit msg
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(
-						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]},
-							[]types.OperatorID{4},
-							qbft.Height(testingutils.TestingDutySlot),
-							testingutils.AttesterMsgID,
-							testingutils.TestAttesterConsensusDataByts,
-						), nil)),
-				),
-				PostDutyRunnerStateRoot: postFinishAttesterSC().Root(),
-				PostDutyRunnerState:     postFinishAttesterSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
-				},
+				Name: "attester and sync committee",
 			},
 		},
 	}

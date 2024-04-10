@@ -11,6 +11,9 @@ import (
 
 // FutureMessage tests a valid proposal future msg
 func FutureMessage() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 	futureMsgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
 		fullData, _ := obj.Encode()
@@ -43,20 +46,6 @@ func FutureMessage() tests.SpecTest {
 						nil)),
 				},
 				PostDutyRunnerStateRoot: "68fd25b1cb30902e7b7b3e7ff674c3862ff956954a06fac0df485961b8bb3934",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(
-						futureMsgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-						nil)),
-				},
-				PostDutyRunnerStateRoot: "022d7b2bbb97b88684ae317f5c2aaa46a56d1d272a65ffcbeb935d0511bbe7e0",
 				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
@@ -104,18 +93,7 @@ func FutureMessage() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(
-						futureMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-						nil)),
-				},
-				PostDutyRunnerStateRoot: "8ccbad4587df73b4a94e4c5d1c47c7ebfbc8e4e949518443a56f0f11d3ab70cd",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
+				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

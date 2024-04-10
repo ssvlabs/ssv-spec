@@ -14,6 +14,9 @@ import (
 
 // PostInvalidDecided tests starting a new duty after prev was decided with an invalid decided value
 func PostInvalidDecided() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	consensusDataByts := func(role types.BeaconRole) []byte {
@@ -68,13 +71,6 @@ func PostInvalidDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: "b3a2925d737a16363053e430c3ce317232fdff0a951e51bdf37cf593bfee0ae7",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
@@ -94,11 +90,7 @@ func PostInvalidDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  decideWrong(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: "679d7b60bd8bd84697331c6c872658a0cc8e3371156c7511be403d42abe18620",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				Name: "attester and sync committee",
 			},
 		},
 	}

@@ -15,6 +15,9 @@ import (
 // PostWrongDecided tests starting a new duty after prev was decided wrongly (future decided)
 // This can happen if we receive a future decided message from the network.
 func PostWrongDecided() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	// https://github.com/bloxapp/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
@@ -66,14 +69,6 @@ func PostWrongDecided() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty, 50),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "daf5d2d2469f71f2f9c08a75fb45f1be7f6cdc8b367dedf5adc50c066f73f942",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedError,
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty, 50),
 				Duty:                    &testingutils.TestingAggregatorDuty,
@@ -95,12 +90,7 @@ func PostWrongDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb), testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 			{
-				Name:                    "attester",
-				Runner:                  decideWrong(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty, 50),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "8efe8f69adeecb1da0762d54aeb7b2970eb293395ad6e379cf2521125881f5fe",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedError,
+				Name: "attester and sync committee",
 			},
 		},
 	}

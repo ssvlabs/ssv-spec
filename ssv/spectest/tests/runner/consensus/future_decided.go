@@ -15,6 +15,9 @@ import (
 // FutureDecided tests a running instance at a certain height, then processing a decided msg from a larger height.
 // then returning an error and don't move to post consensus as it's not the same instance decided
 func FutureDecided() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.BeaconRole) []byte {
@@ -53,26 +56,6 @@ func FutureDecided() tests.SpecTest {
 				ExpectedError: errStr,
 			},
 			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-							[]types.OperatorID{1, 2, 3},
-							testingutils.TestingDutySlot+1,
-							getID(types.BNRoleSyncCommittee),
-						),
-						nil,
-					)),
-				},
-				PostDutyRunnerStateRoot: futureDecidedSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     futureDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           errStr,
-			},
-			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
@@ -98,24 +81,7 @@ func FutureDecided() tests.SpecTest {
 				ExpectedError: errStr,
 			},
 			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(
-						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-							[]types.OperatorID{1, 2, 3},
-							testingutils.TestingDutySlot+1,
-							getID(types.BNRoleAttester),
-						),
-						nil,
-					)),
-				},
-				PostDutyRunnerStateRoot: futureDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     futureDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           errStr,
+				Name: "attester and sync committee",
 			},
 		},
 	}

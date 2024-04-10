@@ -12,6 +12,9 @@ import (
 
 // Finished tests a valid start duty after finished prev
 func Finished() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
@@ -49,13 +52,6 @@ func Finished() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty, true),
-				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: "b160f3edf371d390ac09b99f01ae283ffc6339649ca0352f3bd974ab2d6458b3",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  finishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty, true),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
@@ -75,11 +71,7 @@ func Finished() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  finishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty, true),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				Name: "attester and sync committee",
 			},
 			{
 				Name:                    "voluntary exit",

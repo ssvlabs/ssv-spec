@@ -16,6 +16,9 @@ import (
 // - Runner doesn't finish the duty
 // - Runner is assigned the same duty again
 func DuplicateDutyNotFinished() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	notFinishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
@@ -60,14 +63,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  notFinishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				PostDutyRunnerStateRoot: "1bc2227b9a53699b42f5581911ef9b1a51ba2fbe481449195739f17fb61b4178",
-				ExpectedError:           expectedError,
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  notFinishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDuty,
@@ -90,12 +85,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
 			},
 			{
-				Name:                    "attester",
-				Runner:                  notFinishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedError,
+				Name: "attester and sync committee",
 			},
 			{
 				Name: "validator registration",

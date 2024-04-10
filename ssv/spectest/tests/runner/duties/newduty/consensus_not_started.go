@@ -10,6 +10,9 @@ import (
 
 // ConsensusNotStarted tests starting duty after prev already started but for some duties' consensus didn't start because pre-consensus didnt get quorum (different duties will enable starting a new duty)
 func ConsensusNotStarted() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
@@ -33,13 +36,6 @@ func ConsensusNotStarted() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  startRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: "6309028d3972d81c7ed985ed9e20b2c45779fb1c254bd36b38e66e381572d953",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  startRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
@@ -60,11 +56,7 @@ func ConsensusNotStarted() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  startRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				Name: "attester and sync committee",
 			},
 			{
 				Name:                    "voluntary exit",

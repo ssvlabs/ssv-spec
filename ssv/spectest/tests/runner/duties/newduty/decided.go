@@ -15,6 +15,9 @@ import (
 // PostDecided tests a valid start duty before finished and after decided of another duty.
 // Duties that have a preconsensus phase won't update the `currentRunningInstance`.
 func PostDecided() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	decidedRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
@@ -46,14 +49,6 @@ func PostDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  decidedRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  decidedRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
@@ -64,12 +59,7 @@ func PostDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  decidedRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				Name: "attester and sync committee",
 			},
 		},
 	}

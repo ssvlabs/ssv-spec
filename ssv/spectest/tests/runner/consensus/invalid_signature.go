@@ -11,6 +11,9 @@ import (
 
 // InvalidSignature tests a consensus message with an invalid signature
 func InvalidSignature() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	return &tests.MultiMsgProcessingSpecTest{
@@ -35,21 +38,6 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedError,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID, testingutils.TestSyncCommitteeConsensusDataByts,
-							qbft.Height(testingutils.TestingDutySlot)), nil)),
-				},
-				PostDutyRunnerStateRoot: "339b34e6f00899baf8740299d3d453aea60c30cc0e28912a6ebb3770f59fc9b8",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedError,
 			},
 			{
 				Name:   "aggregator",
@@ -112,19 +100,7 @@ func InvalidSignature() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgAttester(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.Shares[1], types.OperatorID(1), testingutils.AttesterMsgID, testingutils.TestAttesterConsensusDataByts,
-							qbft.Height(testingutils.TestingDutySlot)), nil)),
-				},
-				PostDutyRunnerStateRoot: "e062f2e50b8b308e83278c2f771c9473f4415bd8a64975bc5f29b61b29bd33fd",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				ExpectedError:           expectedError,
+				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

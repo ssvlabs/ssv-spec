@@ -12,6 +12,9 @@ import (
 
 // PastMessage tests a valid proposal past msg
 func PastMessage() tests.SpecTest {
+
+	panic("implement me")
+
 	ks := testingutils.Testing4SharesSet()
 
 	bumpHeight := func(r ssv.Runner) ssv.Runner {
@@ -58,19 +61,6 @@ func PastMessage() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 			{
-				Name:   "sync committee",
-				Runner: bumpHeight(testingutils.SyncCommitteeRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(
-						pastMsgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-						nil)),
-				},
-				PostDutyRunnerStateRoot: "c1fe93bc3530e14e014b78102b078bbdd6e55c2c0979fce40fa00b1400d9e774",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
-			},
-			{
 				Name:   "aggregator",
 				Runner: bumpHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
@@ -110,17 +100,7 @@ func PastMessage() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 			{
-				Name:   "attester",
-				Runner: bumpHeight(testingutils.AttesterRunner(ks)),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(
-						pastMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-						nil)),
-				},
-				PostDutyRunnerStateRoot: "7218b8c7b0c3fc4751b62ed15960de36bb28d6ec800a6d689d16ae99754fbf66",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				DontStartDuty:           true,
+				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",
