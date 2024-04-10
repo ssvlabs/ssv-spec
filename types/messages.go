@@ -220,3 +220,21 @@ func DecodeSignedSSVMessage(encoded []byte) ([]byte, OperatorID, [256]byte, erro
 	copy(signature[:], encoded[signatureOffset:signatureOffset+signatureSize])
 	return message, operatorID, signature, nil
 }
+
+func SSVMessageToSignedSSVMessage(msg *SSVMessage, operatorID OperatorID, signSSVMessageF SignSSVMessageF) (*SignedSSVMessage, error) {
+	encodedSSVMsg, err := msg.Encode()
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode SSVMessage")
+	}
+
+	sig, err := signSSVMessageF(encodedSSVMsg)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	return &SignedSSVMessage{
+		Signature:  sig,
+		OperatorID: operatorID,
+		Data:       encodedSSVMsg,
+	}, nil
+}

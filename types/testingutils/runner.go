@@ -61,7 +61,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
-	opSigner := NewTestingOperatorSigner()
+	opSigner := NewTestingOperatorSigner(keySet, share.OperatorID)
 
 	config := TestingConfig(keySet)
 	config.ValueCheckF = valCheck
@@ -70,6 +70,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 	}
 	config.Network = net
 	config.ShareSigner = km
+	config.OperatorSigner = opSigner
 
 	contr := qbft.NewController(
 		identifier[:],
@@ -79,7 +80,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 
 	switch role {
 	case types.BNRoleAttester:
-		return ssv.NewAttesterRunnner(
+		return ssv.NewAttesterRunner(
 			types.BeaconTestNetwork,
 			share,
 			contr,
@@ -157,7 +158,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			opSigner,
 		)
 	case UnknownDutyType:
-		ret := ssv.NewAttesterRunnner(
+		ret := ssv.NewAttesterRunner(
 			types.BeaconTestNetwork,
 			share,
 			contr,
