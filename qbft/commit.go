@@ -98,7 +98,7 @@ func CreateCommit(state *State, config IConfig, root [32]byte) (*SignedMessage, 
 func baseCommitValidationIgnoreSignature(
 	signedCommit *SignedMessage,
 	height Height,
-	operators []*types.Operator,
+	operators []*types.CommitteeMember,
 ) error {
 	if signedCommit.Message.MsgType != CommitMsgType {
 		return errors.New("commit msg type is wrong")
@@ -142,7 +142,7 @@ func validateCommit(
 	height Height,
 	round Round,
 	proposedMsg *SignedMessage,
-	operators []*types.Operator,
+	operators []*types.CommitteeMember,
 ) error {
 	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err

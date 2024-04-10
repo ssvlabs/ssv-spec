@@ -82,7 +82,7 @@ func (c *Config) GetTimer() Timer {
 }
 
 type State struct {
-	Share                           *types.Share
+	Share                           *types.Operator
 	ID                              []byte // instance Identifier
 	Round                           Round
 	Height                          Height

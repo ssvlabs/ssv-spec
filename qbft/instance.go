@@ -28,7 +28,7 @@ type Instance struct {
 
 func NewInstance(
 	config IConfig,
-	share *types.Share,
+	share *types.Operator,
 	identifier []byte,
 	height Height,
 ) *Instance {
@@ -148,7 +148,6 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.config,
 			msg,
 			i.config.GetValueCheckF(),
-			i.State.Share.Committee,
 		)
 	case PrepareMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound

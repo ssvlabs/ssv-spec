@@ -50,7 +50,6 @@ func isValidProposal(
 	config IConfig,
 	signedProposal *SignedMessage,
 	valCheck ProposedValueCheckF,
-	operators []*types.Operator,
 ) error {
 	if signedProposal.Message.MsgType != ProposalMsgType {
 		return errors.New("msg type is not proposal")

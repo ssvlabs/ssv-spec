@@ -15,7 +15,7 @@ func HashDataRoot(data []byte) ([32]byte, error) {
 }
 
 // HasQuorum returns true if a unique set of signers has quorum
-func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
+func HasQuorum(share *types.Operator, msgs []*SignedMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
 		for _, signer := range msg.GetSigners() {
@@ -26,7 +26,7 @@ func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
 }
 
 // HasPartialQuorum returns true if a unique set of signers has partial quorum
-func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
+func HasPartialQuorum(share *types.Operator, msgs []*SignedMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
 		for _, signer := range msg.GetSigners() {
@@ -287,7 +287,7 @@ func (signedMsg *SignedMessage) WithoutFUllData() *SignedMessage {
 }
 
 // Check if all signedMsg's signers belong to the given committee in O(n+m)
-func (signedMsg *SignedMessage) CheckSignersInCommittee(committee []*types.Operator) bool {
+func (signedMsg *SignedMessage) CheckSignersInCommittee(committee []*types.CommitteeMember) bool {
 	// Committee's operators map
 	committeeMap := make(map[uint64]struct{})
 	for _, operator := range committee {
