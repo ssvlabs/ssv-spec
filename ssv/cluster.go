@@ -1,11 +1,15 @@
 package ssv
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/binary"
 	"fmt"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"sort"
 )
 
 type Cluster struct {
@@ -14,20 +18,35 @@ type Cluster struct {
 	Beacon            BeaconNode
 	Operator          types.Operator
 	Share             *types.Share
-	Signer            types.KeyManager
+	Signer            types.BeaconSigner
 	OperatorSigner    types.OperatorSigner
 	SignatureVerifier types.SignatureVerifier
 	CreateRunnerFn    func() *ClusterRunner
 }
 
-func NewCluster(network Network, beacon BeaconNode, signer types.KeyManager, createRunnerFn func() *ClusterRunner) *Cluster {
+// NewCluster creates a new cluster
+func NewCluster(
+	network Network,
+	beacon BeaconNode,
+	operator types.Operator,
+	share *types.Share,
+	signer types.BeaconSigner,
+	operatorSigner types.OperatorSigner,
+	verifier types.SignatureVerifier,
+	createRunnerFn func() *ClusterRunner,
+) *Cluster {
 	return &Cluster{
-		Runners:        make(map[spec.Slot]*ClusterRunner),
-		Network:        network,
-		Beacon:         beacon,
-		Signer:         signer,
-		CreateRunnerFn: createRunnerFn,
+		Runners:           make(map[spec.Slot]*ClusterRunner),
+		Network:           network,
+		Beacon:            beacon,
+		Operator:          operator,
+		Share:             share,
+		Signer:            signer,
+		OperatorSigner:    operatorSigner,
+		SignatureVerifier: verifier,
+		CreateRunnerFn:    createRunnerFn,
 	}
+
 }
 
 // StartDuty starts a new duty for the given slot
@@ -47,14 +66,9 @@ func (c *Cluster) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error
 		return err
 	}
 
-	//dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
-	//if dutyRunner == nil {
-	//	return errors.Errorf("could not get duty runner for msg ID")
-	//}
-	//
-	//if err := v.validateMessage(dutyRunner, msg); err != nil {
-	//	return errors.Wrap(err, "Message invalid")
-	//}
+	if err := c.validateMessage(msg); err != nil {
+		return errors.Wrap(err, "Message invalid")
+	}
 
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
@@ -83,6 +97,35 @@ func (c *Cluster) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error
 
 }
 
-func validateMessage(msg *types.SSVMessage) error {
-	panic("implement me")
+func (c *Cluster) validateMessage(msg *types.SSVMessage) error {
+	if !c.Operator.ClusterID.MessageIDBelongs(msg.GetID()) {
+		return errors.New("Message ID does not match cluster IF")
+	}
+	if len(msg.GetData()) == 0 {
+		return errors.New("msg data is invalid")
+	}
+
+	return nil
+}
+
+type ClusterID [32]byte
+
+func (cid ClusterID) MessageIDBelongs(msgID types.MessageID) bool {
+	id := msgID.GetSenderID()[16:]
+	return bytes.Equal(id, cid[:])
+}
+
+// Return a 32 bytes ID for the cluster of operators
+func getClusterID(committee []types.OperatorID) ClusterID {
+	// sort
+	sort.Slice(committee, func(i, j int) bool {
+		return committee[i] < committee[j]
+	})
+	// Convert to bytes
+	bytes := make([]byte, len(committee)*4)
+	for i, v := range committee {
+		binary.LittleEndian.PutUint32(bytes[i*4:], uint32(v))
+	}
+	// Hash
+	return sha256.Sum256(bytes)
 }

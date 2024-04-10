@@ -18,10 +18,10 @@ type ShareValidatorPK []byte
 const (
 	domainSize       = 4
 	domainStartPos   = 0
-	pubKeySize       = 48
-	pubKeyStartPos   = domainStartPos + domainSize
 	roleTypeSize     = 4
-	roleTypeStartPos = pubKeyStartPos + pubKeySize
+	roleTypeStartPos = domainStartPos + domainSize
+	senderIDSize     = 48
+	senderIDStartPos = roleTypeStartPos + roleTypeSize
 
 	// SignedSSVMessage offsets
 	signatureSize    = 256
@@ -39,7 +39,7 @@ type Validate interface {
 
 // MessageIDBelongs returns true if message ID belongs to validator
 func (vid ValidatorPK) MessageIDBelongs(msgID MessageID) bool {
-	toMatch := msgID.GetPubKey()
+	toMatch := msgID.GetSenderID()
 	return bytes.Equal(vid, toMatch)
 }
 
@@ -50,8 +50,8 @@ func (msg MessageID) GetDomain() []byte {
 	return msg[domainStartPos : domainStartPos+domainSize]
 }
 
-func (msg MessageID) GetPubKey() []byte {
-	return msg[pubKeyStartPos : pubKeyStartPos+pubKeySize]
+func (msg MessageID) GetSenderID() []byte {
+	return msg[senderIDStartPos : senderIDStartPos+senderIDSize]
 }
 
 func (msg MessageID) GetRoleType() BeaconRole {
@@ -71,21 +71,22 @@ func (msgID MessageID) String() string {
 }
 
 func MessageIDFromBytes(mid []byte) MessageID {
-	if len(mid) < domainSize+pubKeySize+roleTypeSize {
+	if len(mid) < domainSize+senderIDSize+roleTypeSize {
 		return MessageID{}
 	}
 	return newMessageID(
 		mid[domainStartPos:domainStartPos+domainSize],
-		mid[pubKeyStartPos:pubKeyStartPos+pubKeySize],
 		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
+		mid[senderIDStartPos:senderIDStartPos+senderIDSize],
 	)
 }
 
-func newMessageID(domain, pk, roleByts []byte) MessageID {
+func newMessageID(domain, senderID, roleByts []byte) MessageID {
 	mid := MessageID{}
 	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
-	copy(mid[pubKeyStartPos:pubKeyStartPos+pubKeySize], pk)
 	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
+	prefixLen := senderIDSize - len(senderID)
+	copy(mid[senderIDStartPos+prefixLen:senderIDStartPos+senderIDSize], senderID)
 	return mid
 }
 
