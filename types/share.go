@@ -1,11 +1,10 @@
 package types
 
-// Share holds all info about the QBFT/ SSV Committee for msg signing and verification
+// Share holds all info about the validator share
 type Share struct {
-	OperatorID            OperatorID
-	ValidatorPubKey       ValidatorPK `ssz-size:"48"`
-	SharePubKey           []byte      `ssz-size:"48"`
-	Committee             []*Operator `ssz-max:"13"`
+	ValidatorPubKey       ValidatorPK        `ssz-size:"48"`
+	SharePubKey           []ShareValidatorPK `ssz-size:"48"`
+	Committee             []ShareValidatorPK `ssz-max:"13"`
 	Quorum, PartialQuorum uint64
 	DomainType            DomainType `ssz-size:"4"`
 	FeeRecipientAddress   [20]byte   `ssz-size:"20"`
