@@ -9,11 +9,15 @@ import (
 )
 
 type Cluster struct {
-	Runners        map[spec.Slot]*ClusterRunner
-	Network        Network
-	Beacon         BeaconNode
-	Signer         types.KeyManager
-	CreateRunnerFn func() *ClusterRunner
+	Runners           map[spec.Slot]*ClusterRunner
+	Network           Network
+	Beacon            BeaconNode
+	Operator          types.Operator
+	Share             *types.Share
+	Signer            types.KeyManager
+	OperatorSigner    types.OperatorSigner
+	SignatureVerifier types.SignatureVerifier
+	CreateRunnerFn    func() *ClusterRunner
 }
 
 func NewCluster(network Network, beacon BeaconNode, signer types.KeyManager, createRunnerFn func() *ClusterRunner) *Cluster {
@@ -37,7 +41,11 @@ func (c *Cluster) StartDuty(duty *types.ClusterDuty) error {
 }
 
 // ProcessMessage processes Network Message of all types
-func (c *Cluster) ProcessMessage(msg *types.SSVMessage) error {
+func (c *Cluster) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
+	msg, err := signedSSVMessage.VerifyAndDecodeData(c.SignatureVerifier, c.Operator.Committee)
+	if err != nil {
+		return err
+	}
 
 	//dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
 	//if dutyRunner == nil {
@@ -54,7 +62,9 @@ func (c *Cluster) ProcessMessage(msg *types.SSVMessage) error {
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
-		return c.Runners[spec.Slot(signedMsg.Message.Height)].ProcessConsensus(signedMsg)
+		runner := c.Runners[spec.Slot(signedMsg.Message.Height)]
+		// TODO: check if runner is nil
+		return runner.ProcessConsensus(signedMsg)
 	case types.SSVPartialSignatureMsgType:
 		signedMsg := &types.SignedPartialSignatureMessage{}
 		if err := signedMsg.Decode(msg.GetData()); err != nil {
@@ -62,7 +72,9 @@ func (c *Cluster) ProcessMessage(msg *types.SSVMessage) error {
 		}
 
 		if signedMsg.Message.Type == types.PostConsensusPartialSig {
-			return c.Runners[signedMsg.Message.Slot].ProcessPostConsensus(signedMsg)
+			runner := c.Runners[signedMsg.Message.Slot]
+			// TODO: check if runner is nil
+			return runner.ProcessPostConsensus(signedMsg)
 		}
 	default:
 		return errors.New("unknown msg")

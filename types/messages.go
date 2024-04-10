@@ -9,8 +9,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ValidatorPK is an eth2 validator public key
+// ValidatorPK is an eth2 validator public key 48 bytes long
 type ValidatorPK []byte
+
+// ShareValidatorPK is a partial eth2 validator public key 48 bytes long
+type ShareValidatorPK []byte
 
 const (
 	domainSize       = 4
@@ -187,7 +190,6 @@ func (msg *SignedSSVMessage) Decode(data []byte) error {
 
 // Validate checks the following rules:
 // - OperatorID should not be 0
-// - Signature length should not be 0
 // - Data length should not be 0
 func (msg *SignedSSVMessage) Validate() error {
 	if msg.OperatorID == 0 {
@@ -195,6 +197,16 @@ func (msg *SignedSSVMessage) Validate() error {
 	}
 	if len(msg.Data) == 0 {
 		return errors.New("Data has length 0 in SignedSSVMessage")
+	}
+	return nil
+}
+
+func (msg *SignedSSVMessage) ValidateWithSig(verifier SignatureVerifier, committeeOperators []*CommitteeMember) error {
+	if err := msg.Validate(); err != nil {
+		return err
+	}
+	if err := verifier.Verify(msg, committeeOperators); err != nil {
+		return errors.Wrap(err, "invalid signature")
 	}
 	return nil
 }
@@ -219,4 +231,25 @@ func DecodeSignedSSVMessage(encoded []byte) ([]byte, OperatorID, [256]byte, erro
 	signature := [256]byte{}
 	copy(signature[:], encoded[signatureOffset:signatureOffset+signatureSize])
 	return message, operatorID, signature, nil
+}
+
+// VerifyAndDecodeData verifies the signature of the SignedSSVMessage and decodes the nested SSVMessage
+func (msg *SignedSSVMessage) VerifyAndDecodeData(verifier SignatureVerifier,
+	committee []*CommitteeMember) (*SSVMessage, error) {
+	// Validate message
+	if err := msg.Validate(); err != nil {
+		return nil, errors.Wrap(err, "invalid SignedSSVMessage")
+	}
+
+	// Verify SignedSSVMessage's signature
+	if err := verifier.Verify(msg, committee); err != nil {
+		return nil, errors.Wrap(err, "SignedSSVMessage has an invalid signature")
+	}
+
+	// Decode the nested SSVMessage
+	ssvMsg := &SSVMessage{}
+	if err := ssvMsg.Decode(msg.Data); err != nil {
+		return nil, errors.Wrap(err, "could not decode data into an SSVMessage")
+	}
+	return ssvMsg, nil
 }

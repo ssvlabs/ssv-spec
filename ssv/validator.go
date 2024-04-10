@@ -13,6 +13,7 @@ type Validator struct {
 	DutyRunners       DutyRunners
 	Network           Network
 	Beacon            BeaconNode
+	Operator          types.Operator
 	Share             *types.Share
 	Signer            types.KeyManager
 	OperatorSigner    types.OperatorSigner
@@ -50,21 +51,9 @@ func (v *Validator) StartDuty(duty *types.BeaconDuty) error {
 
 // ProcessMessage processes Network Message of all types
 func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
-
-	// Validate message
-	if err := signedSSVMessage.Validate(); err != nil {
-		return errors.Wrap(err, "invalid SignedSSVMessage")
-	}
-
-	// Verify SignedSSVMessage's signature
-	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.Share.Committee); err != nil {
-		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
-	}
-
-	// Decode the nested SSVMessage
-	msg := &types.SSVMessage{}
-	if err := msg.Decode(signedSSVMessage.Data); err != nil {
-		return errors.Wrap(err, "could not decode data into an SSVMessage")
+	msg, err := signedSSVMessage.VerifyAndDecodeData(v.SignatureVerifier, v.Operator.Committee)
+	if err != nil {
+		return err
 	}
 
 	// Get runner

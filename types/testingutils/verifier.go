@@ -21,7 +21,7 @@ func NewTestingVerifier() types.SignatureVerifier {
 	}
 }
 
-func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types.Operator) error {
+func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types.CommitteeMember) error {
 
 	// Get message hash
 	hash := sha256.Sum256(msg.Data)
@@ -80,7 +80,7 @@ func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]by
 }
 
 // Verifies a list of SignedSSVMessage using the operators list
-func VerifyListOfSignedSSVMessages(msgs []*types.SignedSSVMessage, operators []*types.Operator) error {
+func VerifyListOfSignedSSVMessages(msgs []*types.SignedSSVMessage, operators []*types.CommitteeMember) error {
 	verifier := NewTestingVerifier()
 
 	for _, msg := range msgs {
