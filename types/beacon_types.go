@@ -38,7 +38,6 @@ const DefaultGasLimit = 30_000_000
 // BeaconRole type of the validator role for a specific duty
 type BeaconRole uint64
 
-// List of roles
 const (
 	BNRoleAttester BeaconRole = iota
 	BNRoleAggregator
@@ -48,7 +47,6 @@ const (
 
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
-	BNRoleCluster
 )
 
 // String returns name of the role
@@ -64,8 +62,6 @@ func (r BeaconRole) String() string {
 		return "SYNC_COMMITTEE"
 	case BNRoleSyncCommitteeContribution:
 		return "SYNC_COMMITTEE_CONTRIBUTION"
-	case BNRoleCluster:
-		return "CLUSTER"
 	case BNRoleValidatorRegistration:
 		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
@@ -102,9 +98,14 @@ type BeaconDuty struct {
 }
 
 type BeaconVote struct {
-	BlockRoot spec.Root
+	BlockRoot spec.Root `ssz-size:"32"`
 	Source    *spec.Checkpoint
 	Target    *spec.Checkpoint
+}
+
+// Encode the BeaconVote object
+func (b *BeaconVote) Encode() ([]byte, error) {
+	return b.MarshalSSZ()
 }
 
 func (bd *BeaconDuty) DutySlot() spec.Slot {

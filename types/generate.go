@@ -10,7 +10,7 @@ package types
 // go run github.com/ferranbt/fastssz/sszgen --path messages.go --include ./operator.go --exclude-objs ValidatorPK,MessageID,MsgType,SignedSSVMessage
 
 //go:generate rm -f ./beacon_types_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.19.7/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.19.7/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole,ClusterDuty
 
 //go:generate rm -f ./partial_sig_message_encoding.go
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path partial_sig_message.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.19.7/spec/phase0,./signer.go,./operator.go --exclude-objs PartialSigMsgType
