@@ -22,7 +22,7 @@ func PostFutureDecided() tests.SpecTest {
 
 	// TODO: check error
 	// nolint
-	futureDecide := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	futureDecide := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),

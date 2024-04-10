@@ -21,7 +21,7 @@ func PostInvalidDecided() tests.SpecTest {
 
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{
-			Duty: types.Duty{
+			Duty: types.BeaconDuty{
 				Type:                    100, // invalid
 				PubKey:                  testingutils.TestingValidatorPubKey,
 				Slot:                    testingutils.TestingDutySlot,
@@ -39,7 +39,7 @@ func PostInvalidDecided() tests.SpecTest {
 
 	// https://github.com/bloxapp/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
 	// Maybe we should ensure that `ValidateDecided()` doesn't let the runner enter this state and delete the test?
-	decideWrong := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	decideWrong := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),

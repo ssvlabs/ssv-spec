@@ -28,7 +28,7 @@ func Slashable() tests.SpecTest {
 	attestationDataBytes, _ := attestationData.MarshalSSZ()
 
 	data := &types.ConsensusData{
-		Duty: types.Duty{
+		Duty: types.BeaconDuty{
 			Type:                    types.BNRoleAttester,
 			PubKey:                  testingutils.TestingValidatorPubKey,
 			Slot:                    testingutils.TestingDutySlot,

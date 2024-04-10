@@ -21,7 +21,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	finishRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
@@ -41,7 +41,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 
 	// finishTaskRunner is a helper function that finishes a task runner and returns it
 	// task is an operation that isn't a beacon duty, e.g. validator registration
-	finishTaskRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	finishTaskRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.Finished = true
 		return r

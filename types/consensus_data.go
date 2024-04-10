@@ -105,7 +105,7 @@ func (c Contributions) SizeSSZ() int {
 type ConsensusData struct {
 	// Duty max size is
 	// 			8 + 48 + 6*8 + 13*8 = 208 ~= 2^8
-	Duty    Duty
+	Duty    BeaconDuty
 	Version spec.DataVersion
 	// PreConsensusJustifications max size is
 	//			13*SignedPartialSignatureMessage(2^16) ~= 2^20
@@ -206,6 +206,14 @@ func (cid *ConsensusData) Validate() error {
 
 func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
 	ret := &phase0.AttestationData{}
+	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		return nil, errors.Wrap(err, "could not unmarshal ssz")
+	}
+	return ret, nil
+}
+
+func (ci *ConsensusData) GetBeaconVote() (*BeaconVote, error) {
+	ret := &BeaconVote{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
 	}

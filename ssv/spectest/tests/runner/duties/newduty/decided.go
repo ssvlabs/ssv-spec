@@ -20,7 +20,7 @@ func PostDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	decidedRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	decidedRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
 		// baseStartNewDuty(r, duty) will override this state.
 		// We set it here to correctly mimic the state of the runner after the duty is started.
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)

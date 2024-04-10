@@ -10,7 +10,7 @@ import (
 func InvalidDuty() *ConsensusDataTest {
 
 	cd := &types.ConsensusData{
-		Duty: types.Duty{
+		Duty: types.BeaconDuty{
 			Type:   types.BeaconRole(100),
 			PubKey: testingutils.TestingValidatorPubKey,
 		},

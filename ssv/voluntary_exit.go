@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Duty runner for validator voluntary exit duty
+// BeaconDuty runner for validator voluntary exit duty
 type VoluntaryExitRunner struct {
 	BaseRunner *BaseRunner
 
@@ -46,7 +46,7 @@ func NewVoluntaryExitRunner(
 	}
 }
 
-func (r *VoluntaryExitRunner) StartNewDuty(duty *types.Duty) error {
+func (r *VoluntaryExitRunner) StartNewDuty(duty *types.BeaconDuty) error {
 	// Note: Voluntary exit doesn't require any consensus, it can start a new duty even if previous one didn't finish
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
 }
@@ -118,7 +118,7 @@ func (r *VoluntaryExitRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashR
 // Validator voluntary exit duty doesn't need consensus nor post-consensus.
 // It just performs pre-consensus with VoluntaryExitPartialSig over
 // a VoluntaryExit object to create a SignedVoluntaryExit
-func (r *VoluntaryExitRunner) executeDuty(duty *types.Duty) error {
+func (r *VoluntaryExitRunner) executeDuty(duty *types.BeaconDuty) error {
 	voluntaryExit, err := r.calculateVoluntaryExit()
 	if err != nil {
 		return errors.Wrap(err, "could not calculate voluntary exit")

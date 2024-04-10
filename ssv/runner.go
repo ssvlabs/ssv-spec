@@ -22,7 +22,7 @@ type Runner interface {
 	Getters
 
 	// StartNewDuty starts a new duty for the runner, returns error if can't
-	StartNewDuty(duty *types.Duty) error
+	StartNewDuty(duty types.Duty) error
 	// HasRunningDuty returns true if it has a running duty
 	HasRunningDuty() bool
 	// ProcessPreConsensus processes all pre-consensus msgs, returns error if can't process
@@ -37,7 +37,7 @@ type Runner interface {
 	// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 	expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
 	// executeDuty an INTERNAL function, executes a duty.
-	executeDuty(duty *types.Duty) error
+	executeDuty(duty types.Duty) error
 }
 
 type BaseRunner struct {
@@ -75,13 +75,13 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 }
 
 // setupForNewDuty is sets the runner for a new duty
-func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
+func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
 	// start new state
 	b.State = NewRunnerState(b.Share.Quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
-func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
+func (b *BaseRunner) baseStartNewDuty(runner Runner, duty types.Duty) error {
 	if err := b.ShouldProcessDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start duty")
 	}
@@ -92,7 +92,7 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 }
 
 // baseStartNewBeaconDuty is a base func that all runner implementation can call to start a non-beacon duty
-func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.Duty) error {
+func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.BeaconDuty) error {
 	if err := b.ShouldProcessNonBeaconDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start non-beacon duty")
 	}
@@ -251,19 +251,19 @@ func (b *BaseRunner) hasRunningDuty() bool {
 	return !b.State.Finished
 }
 
-func (b *BaseRunner) ShouldProcessDuty(duty *types.Duty) error {
-	if b.QBFTController.Height >= qbft.Height(duty.Slot) && b.QBFTController.Height != 0 {
-		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.Slot,
+func (b *BaseRunner) ShouldProcessDuty(duty types.Duty) error {
+	if b.QBFTController.Height >= qbft.Height(duty.DutySlot()) && b.QBFTController.Height != 0 {
+		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.DutySlot(),
 			b.QBFTController.Height)
 	}
 	return nil
 }
 
-func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty *types.Duty) error {
+func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty types.Duty) error {
 	// assume StartingDuty is not nil if state is not nil
-	if b.State != nil && b.State.StartingDuty.Slot >= duty.Slot {
-		return errors.Errorf("duty for slot %d already passed. Current slot is %d", duty.Slot,
-			b.State.StartingDuty.Slot)
+	if b.State != nil && b.State.StartingDuty.DutySlot() >= duty.DutySlot() {
+		return errors.Errorf("duty for slot %d already passed. Current slot is %d", duty.DutySlot(),
+			b.State.StartingDuty.DutySlot())
 	}
 	return nil
 }

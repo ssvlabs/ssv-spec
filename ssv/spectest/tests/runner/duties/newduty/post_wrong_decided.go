@@ -22,7 +22,7 @@ func PostWrongDecided() tests.SpecTest {
 
 	// https://github.com/bloxapp/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
 	// Maybe we should ensure that `ValidateDecided()` doesn't let the runner enter this state and delete the test?
-	decideWrong := func(r ssv.Runner, duty *types.Duty, higherDecidedSlot qbft.Height) ssv.Runner {
+	decideWrong := func(r ssv.Runner, duty *types.BeaconDuty, higherDecidedSlot qbft.Height) ssv.Runner {
 		storedInstances := r.GetBaseRunner().QBFTController.StoredInstances
 		storedInstances = append(storedInstances, nil)
 		storedInstances = append(storedInstances, nil)

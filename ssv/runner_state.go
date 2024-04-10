@@ -17,12 +17,12 @@ type State struct {
 	RunningInstance        *qbft.Instance
 	DecidedValue           *types.ConsensusData
 	// CurrentDuty is the duty the node pulled locally from the beacon node, might be different from decided duty
-	StartingDuty *types.Duty
+	StartingDuty types.Duty
 	// flags
 	Finished bool // Finished marked true when there is a full successful cycle (pre, consensus and post) with quorum
 }
 
-func NewRunnerState(quorum uint64, duty *types.Duty) *State {
+func NewRunnerState(quorum uint64, duty types.Duty) *State {
 	return &State{
 		PreConsensusContainer:  NewPartialSigContainer(quorum),
 		PostConsensusContainer: NewPartialSigContainer(quorum),

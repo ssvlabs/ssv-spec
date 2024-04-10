@@ -19,7 +19,7 @@ func Finished() tests.SpecTest {
 
 	// TODO: check error
 	// nolint
-	finishRunner := func(r ssv.Runner, duty *types.Duty, finishController bool) ssv.Runner {
+	finishRunner := func(r ssv.Runner, duty *types.BeaconDuty, finishController bool) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 
 		// for duties with a consensus controller
