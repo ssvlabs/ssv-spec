@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -128,8 +129,12 @@ func (cr ClusterRunner) ProcessConsensus(msg *qbft.SignedMessage) error {
 			postConsensusMsg.Messages = append(postConsensusMsg.Messages, partialMsg)
 
 		case types.BNRoleSyncCommittee:
-			//TODO implement me
-			panic("implement me")
+			syncCommitteeMessage := ConstructSyncCommittee(beaconVote, duty)
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, syncCommitteeMessage, decidedValue.Duty.Slot, types.DomainSyncCommittee)
+			if err != nil {
+				return errors.Wrap(err, "failed signing sync committee message")
+			}
+			postConsensusMsg.Messages = append(postConsensusMsg.Messages, partialMsg)
 		}
 	}
 
@@ -210,5 +215,12 @@ func constructAttestationData(vote *types.BeaconVote, duty *types.BeaconDuty) *p
 		BeaconBlockRoot: vote.BlockRoot,
 		Source:          vote.Source,
 		Target:          vote.Target,
+	}
+}
+func ConstructSyncCommittee(vote *types.BeaconVote, duty *types.BeaconDuty) *altair.SyncCommitteeMessage {
+	return &altair.SyncCommitteeMessage{
+		Slot:            duty.Slot,
+		BeaconBlockRoot: vote.BlockRoot,
+		ValidatorIndex:  duty.ValidatorIndex,
 	}
 }
