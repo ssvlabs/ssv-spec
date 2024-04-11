@@ -9,6 +9,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+	"github.com/prysmaticlabs/go-bitfield"
 )
 
 type ClusterRunner struct {
@@ -162,9 +163,84 @@ func (cr ClusterRunner) ProcessConsensus(msg *qbft.SignedMessage) error {
 
 }
 
-func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
-	//TODO implement me
-	panic("implement me")
+
+// TODO finish edge case where some roots may be missing
+func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
+	quorum, roots, err := cr.BaseRunner.basePostConsensusMsgProcessing(cr, signedMsg)
+
+	if err != nil {
+		return errors.Wrap(err, "failed processing post consensus message")
+	}
+
+	if !quorum {
+		return nil
+	}
+	attestationMap, committeeMap, beaconObjects := cr.expectedPostConsensusRootsAndDomain()
+	for _, root := range roots {
+		role, pubKeys, found := findPubkey(root, attestationMap, committeeMap, cr.BaseRunner.Share)
+
+		if !found {
+			// TODO error?
+			continue
+		}
+
+		for _, pubkey := range pubKeys {
+
+			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
+				pubkey)
+			// If the reconstructed signature verification failed, fall back to verifying each partial signature
+			// TODO should we return an error here? maybe other sigs are fine?
+			if err != nil {
+				for _, root := range roots {
+					cr.BaseRunner.FallBackAndVerifyEachSignature(cr.BaseRunner.State.PostConsensusContainer, root)
+				}
+				return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+			}
+			specSig := phase0.BLSSignature{}
+			copy(specSig[:], sig)
+
+			if role == types.BNRoleAttester {
+				att := beaconObjects[root].(*phase0.Attestation)
+				att.Signature = specSig
+				// broadcast
+				if err := cr.beacon.SubmitAttestation(att); err != nil {
+					return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
+				}
+			} else if role == types.BNRoleSyncCommittee {
+				syncMsg := beaconObjects[root].(*altair.SyncCommitteeMessage)
+				syncMsg.Signature = specSig
+				if err := cr.beacon.SubmitSyncMessage(syncMsg); err != nil {
+					return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
+				}
+			}
+		}
+
+	}
+	cr.BaseRunner.State.Finished = true
+	return nil
+}
+
+func findPubkey(expectedRoot [32]byte, attestationMap map[phase0.ValidatorIndex][32]byte, committeeMap map[phase0.ValidatorIndex][32]byte,
+	share map[phase0.ValidatorIndex]*types.Share) (types.BeaconRole, []types.ValidatorPK, bool) {
+	var pks []types.ValidatorPK
+
+	// look for the expectedRoot in attestationMap
+	for validator, root := range attestationMap {
+		if root == expectedRoot {
+			pks = append(pks, share[validator].ValidatorPubKey)
+		}
+	}
+	if len(pks) > 0 {
+		return types.BNRoleAttester, pks, true
+	}
+	// look for the expectedRoot in committeeMap
+	for validator, root := range committeeMap {
+		if root == expectedRoot {
+			return types.BNRoleSyncCommittee, []types.ValidatorPK{share[validator].ValidatorPubKey)}, true
+		}
+	}
+	return types.BNRoleUnknown, nil, false
+
 }
 
 func (cr ClusterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
@@ -172,9 +248,37 @@ func (cr ClusterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, ph
 	panic("implement me")
 }
 
-func (cr ClusterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	//TODO implement me
-	panic("implement me")
+func (cr ClusterRunner) expectedPostConsensusRootsAndDomain() (attestationMap map[phase0.ValidatorIndex][32]byte,
+	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot) {
+	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
+	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
+	duty := cr.BaseRunner.State.StartingDuty
+	// TODO DecidedValue should be interface??
+	beaconVoteData := cr.BaseRunner.State.DecidedValue
+	beaconVote := &types.BeaconVote{}
+	beaconVote.Decode(beaconVoteData)
+	for _, beaconDuty := range duty.(*types.ClusterDuty).BeaconDuties {
+		switch beaconDuty.Type {
+		case types.BNRoleAttester:
+			attestationData := constructAttestationData(beaconVote, beaconDuty)
+			aggregationBitfield := bitfield.NewBitlist(beaconDuty.CommitteeLength)
+			aggregationBitfield.SetBitAt(beaconDuty.ValidatorCommitteeIndex, true)
+			signedAtt := &phase0.Attestation{
+				Data:            attestationData,
+				Signature:       nil,
+				AggregationBits: aggregationBitfield,
+			}
+			root, _ := attestationData.HashTreeRoot()
+			attestationMap[beaconDuty.ValidatorIndex] = root
+			beaconObjects[root] = signedAtt
+		case types.BNRoleSyncCommittee:
+			syncCommitteeMessage := ConstructSyncCommittee(beaconVote, beaconDuty)
+			root, _ := syncCommitteeMessage.HashTreeRoot()
+			syncCommitteeMap[beaconDuty.ValidatorIndex] = root
+			beaconObjects[root] = syncCommitteeMessage
+		}
+	}
+return attestationMap, syncCommitteeMap, beaconObjects
 }
 
 func (cr ClusterRunner) executeDuty(duty types.Duty) error {
