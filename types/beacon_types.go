@@ -108,6 +108,11 @@ func (b *BeaconVote) Encode() ([]byte, error) {
 	return b.MarshalSSZ()
 }
 
+// Decode the BeaconVote object
+func (b *BeaconVote) Decode(data []byte) error {
+	return b.UnmarshalSSZ(data)
+}
+
 func (bd *BeaconDuty) DutySlot() spec.Slot {
 	return bd.Slot
 }

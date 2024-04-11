@@ -59,7 +59,7 @@ func (msgs PartialSignatureMessages) Validate() error {
 type PartialSignatureMessage struct {
 	PartialSignature Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty
 	SigningRoot      [32]byte  `ssz-size:"32"` // the root signed in PartialSignature
-	Signer           OperatorID
+	Signer           phase0.ValidatorIndex
 }
 
 // Encode returns a msg encoded bytes or error

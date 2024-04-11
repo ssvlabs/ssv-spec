@@ -27,7 +27,7 @@ func (b *BeaconDuty) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	// Field (2) 'Slot'
 	dst = ssz.MarshalUint64(dst, uint64(b.Slot))
 
-	// Field (3) 'ValidatorIndex'
+	// Field (3) 'Signer'
 	dst = ssz.MarshalUint64(dst, uint64(b.ValidatorIndex))
 
 	// Field (4) 'CommitteeIndex'
@@ -78,7 +78,7 @@ func (b *BeaconDuty) UnmarshalSSZ(buf []byte) error {
 	// Field (2) 'Slot'
 	b.Slot = spec.Slot(ssz.UnmarshallUint64(buf[56:64]))
 
-	// Field (3) 'ValidatorIndex'
+	// Field (3) 'Signer'
 	b.ValidatorIndex = spec.ValidatorIndex(ssz.UnmarshallUint64(buf[64:72]))
 
 	// Field (4) 'CommitteeIndex'
@@ -145,7 +145,7 @@ func (b *BeaconDuty) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	// Field (2) 'Slot'
 	hh.PutUint64(uint64(b.Slot))
 
-	// Field (3) 'ValidatorIndex'
+	// Field (3) 'Signer'
 	hh.PutUint64(uint64(b.ValidatorIndex))
 
 	// Field (4) 'CommitteeIndex'

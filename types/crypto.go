@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"fmt"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ethereum/go-ethereum/common"
@@ -13,7 +14,7 @@ import (
 )
 
 // VerifyByOperators verifies signature by the provided operators
-func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, sigType SignatureType, operators []*Operator) error {
+func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, sigType SignatureType, operators []*CommitteeMember) error {
 	// decode sig
 	sign := &bls.Sign{}
 	if err := sign.Deserialize(s); err != nil {
@@ -25,9 +26,9 @@ func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, s
 	for _, id := range data.GetSigners() {
 		found := false
 		for _, n := range operators {
-			if id == n.GetID() {
+			if id == n.OperatorID {
 				pk := bls.PublicKey{}
-				if err := pk.Deserialize(n.GetSharePublicKey()); err != nil {
+				if err := pk.Deserialize(n.SSVOperatorPubKey); err != nil {
 					return errors.Wrap(err, "failed to deserialize public key")
 				}
 
@@ -155,7 +156,7 @@ func ComputeSignatureDomain(domain DomainType, sigType SignatureType) SignatureD
 
 // ReconstructSignatures receives a map of user indexes and serialized bls.Sign.
 // It then reconstructs the original threshold signature using lagrange interpolation
-func ReconstructSignatures(signatures map[OperatorID][]byte) (*bls.Sign, error) {
+func ReconstructSignatures(signatures map[phase0.ValidatorIndex][]byte) (*bls.Sign, error) {
 	reconstructedSig := bls.Sign{}
 
 	idVec := make([]bls.ID, 0)

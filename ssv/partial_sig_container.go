@@ -2,13 +2,14 @@ package ssv
 
 import (
 	"encoding/hex"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
 )
 
 type PartialSigContainer struct {
-	Signatures map[string]map[types.OperatorID][]byte
+	Signatures map[string]map[phase0.ValidatorIndex][]byte
 	// Quorum is the number of min signatures needed for quorum
 	Quorum uint64
 }
@@ -16,13 +17,13 @@ type PartialSigContainer struct {
 func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
 	return &PartialSigContainer{
 		Quorum:     quorum,
-		Signatures: make(map[string]map[types.OperatorID][]byte),
+		Signatures: make(map[string]map[phase0.ValidatorIndex][]byte),
 	}
 }
 
 func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessage) {
 	if ps.Signatures[rootHex(sigMsg.SigningRoot)] == nil {
-		ps.Signatures[rootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID][]byte)
+		ps.Signatures[rootHex(sigMsg.SigningRoot)] = make(map[phase0.ValidatorIndex][]byte)
 	}
 	m := ps.Signatures[rootHex(sigMsg.SigningRoot)]
 
@@ -33,7 +34,7 @@ func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessag
 }
 
 // Returns if container has signature for signer and signing root
-func (ps *PartialSigContainer) HasSigner(signer types.OperatorID, signingRoot [32]byte) bool {
+func (ps *PartialSigContainer) HasSigner(signer phase0.ValidatorIndex, signingRoot [32]byte) bool {
 	if ps.Signatures[rootHex(signingRoot)] == nil {
 		return false
 	}
@@ -41,7 +42,7 @@ func (ps *PartialSigContainer) HasSigner(signer types.OperatorID, signingRoot [3
 }
 
 // Return signature for given root and signer
-func (ps *PartialSigContainer) GetSignature(signer types.OperatorID, signingRoot [32]byte) (types.Signature, error) {
+func (ps *PartialSigContainer) GetSignature(signer phase0.ValidatorIndex, signingRoot [32]byte) (types.Signature, error) {
 	if ps.Signatures[rootHex(signingRoot)] == nil {
 		return nil, errors.New("Dont have signature for the given signing root")
 	}
@@ -52,12 +53,12 @@ func (ps *PartialSigContainer) GetSignature(signer types.OperatorID, signingRoot
 }
 
 // Return signature map for given root
-func (ps *PartialSigContainer) GetSignatures(signingRoot [32]byte) map[types.OperatorID][]byte {
+func (ps *PartialSigContainer) GetSignatures(signingRoot [32]byte) map[phase0.ValidatorIndex][]byte {
 	return ps.Signatures[rootHex(signingRoot)]
 }
 
 // Remove signer from signature map
-func (ps *PartialSigContainer) Remove(signer uint64, signingRoot [32]byte) {
+func (ps *PartialSigContainer) Remove(signer phase0.ValidatorIndex, signingRoot [32]byte) {
 	if ps.Signatures[rootHex(signingRoot)] == nil {
 		return
 	}
