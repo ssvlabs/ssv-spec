@@ -12,27 +12,43 @@ import (
 )
 
 type testingVerifier struct {
-	signaturesCache map[types.OperatorID]map[[32]byte][256]byte
+	signaturesCache map[types.OperatorID]map[[32]byte][]byte
 }
 
 func NewTestingVerifier() types.SignatureVerifier {
 	return &testingVerifier{
-		signaturesCache: make(map[uint64]map[[32]byte][256]byte),
+		signaturesCache: make(map[uint64]map[[32]byte][]byte),
 	}
 }
 
 func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types.Operator) error {
 
+	encodedMsg, err := msg.SSVMessage.Encode()
+	if err != nil {
+		return err
+	}
+
 	// Get message hash
-	hash := sha256.Sum256(msg.Data)
+	hash := sha256.Sum256(encodedMsg)
 
 	// Find operator that matches ID with the signer and verify signature
+	for i, signer := range msg.OperatorID {
+		if err := v.VerifySignatureForSigner(hash, msg.Signature[i], signer, operators); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []byte, signer types.OperatorID, operators []*types.Operator) error {
+
 	for _, op := range operators {
-		// Find operator
-		if op.OperatorID == msg.GetOperatorID() {
+		// Find signer
+		if signer == op.OperatorID {
 
 			// Check cache
-			if v.HasSignature(op.OperatorID, hash, msg.Signature) {
+			if v.HasSignature(op.OperatorID, root, signature) {
 				return nil
 			}
 
@@ -47,19 +63,18 @@ func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types
 			}
 
 			// Verify
-			err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, hash[:], msg.Signature[:])
+			err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, root[:], signature)
 
 			if err == nil {
-				v.SaveSignature(op.OperatorID, hash, msg.Signature)
+				v.SaveSignature(op.OperatorID, root, signature)
 			}
 			return err
 		}
 	}
-
 	return errors.New("unknown signer")
 }
 
-func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byte, signature [256]byte) bool {
+func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byte, signature []byte) bool {
 	if _, found := v.signaturesCache[operatorID]; !found {
 		return false
 	}
@@ -72,9 +87,9 @@ func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byt
 	return bytes.Equal(storedSignature[:], signature[:])
 }
 
-func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]byte, signature [256]byte) {
+func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]byte, signature []byte) {
 	if _, found := v.signaturesCache[operatorID]; !found {
-		v.signaturesCache[operatorID] = make(map[[32]byte][256]byte)
+		v.signaturesCache[operatorID] = make(map[[32]byte][]byte)
 	}
 	v.signaturesCache[operatorID][root] = signature
 }

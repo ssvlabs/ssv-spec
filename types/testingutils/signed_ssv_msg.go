@@ -11,7 +11,7 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
-var TestingSignedSSVMessageSignature = [256]byte{1, 2, 3, 4}
+var TestingSignedSSVMessageSignature = []byte{1, 2, 3, 4}
 
 var TestingMessageID = types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
 
@@ -40,14 +40,12 @@ var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorI
 	if err != nil {
 		panic(err.Error())
 	}
-	sig := [256]byte{}
-	copy(sig[:], signature)
 
 	//SignedSSVMessage
 	return &types.SignedSSVMessage{
-		OperatorID: operatorID,
-		Signature:  sig,
-		Data:       ssvMsgByts,
+		OperatorID: []types.OperatorID{operatorID},
+		Signature:  [][]byte{signature},
+		SSVMessage: &ssvMsg,
 	}
 }
 
@@ -83,24 +81,6 @@ var SignedSSVMessageF = func(ks *TestKeySet, msg *types.SSVMessage) *types.Signe
 	return SignedSSVMessageWithSigner(signer, ks.OperatorKeys[signer], msg)
 }
 
-var SignedSSVMessageOnData = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, data []byte) *types.SignedSSVMessage {
-	hash := sha256.Sum256(data)
-
-	signature, err := rsa.SignPKCS1v15(rand.Reader, rsaSK, crypto.SHA256, hash[:])
-	if err != nil {
-		panic(err)
-	}
-
-	sig := [256]byte{}
-	copy(sig[:], signature)
-
-	return &types.SignedSSVMessage{
-		OperatorID: operatorID,
-		Signature:  sig,
-		Data:       data,
-	}
-}
-
 var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, ssvMessage *types.SSVMessage) *types.SignedSSVMessage {
 
 	data, err := ssvMessage.Encode()
@@ -114,12 +94,10 @@ var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.Pr
 	if err != nil {
 		panic(err)
 	}
-	sig := [256]byte{}
-	copy(sig[:], signature)
 
 	return &types.SignedSSVMessage{
-		OperatorID: operatorID,
-		Signature:  sig,
-		Data:       data,
+		OperatorID: []types.OperatorID{operatorID},
+		Signature:  [][]byte{signature},
+		SSVMessage: ssvMessage,
 	}
 }
