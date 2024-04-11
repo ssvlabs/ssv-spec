@@ -21,7 +21,7 @@ type ClusterRunner struct {
 }
 
 func NewClusterRunner(beaconNetwork types.BeaconNetwork,
-	share *types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,

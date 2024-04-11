@@ -76,7 +76,8 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 // setupForNewDuty is sets the runner for a new duty
 func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
 	// start new state
-	b.State = NewRunnerState(b.Quorum, duty)
+	// TODO nicer way to get quorum
+	b.State = NewRunnerState(b.QBFTController.Share.Quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
