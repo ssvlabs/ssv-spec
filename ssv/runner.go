@@ -42,7 +42,7 @@ type Runner interface {
 
 type BaseRunner struct {
 	State          *State
-	Share          *types.Share
+	Share          map[spec.ValidatorIndex]*types.Share
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	BeaconRoleType types.BeaconRole
@@ -53,12 +53,11 @@ type BaseRunner struct {
 
 func NewBaseRunner(
 	state *State,
-	share *types.Share,
+	share map[spec.ValidatorIndex]*types.Share,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
 	beaconRoleType types.BeaconRole,
-	highestDecidedSlot spec.Slot,
-) *BaseRunner {
+	highestDecidedSlot spec.Slot) *BaseRunner {
 	return &BaseRunner{
 		State:              state,
 		Share:              share,
@@ -77,7 +76,7 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 // setupForNewDuty is sets the runner for a new duty
 func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
 	// start new state
-	b.State = NewRunnerState(b.Share.Quorum, duty)
+	b.State = NewRunnerState(b.Quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
@@ -106,7 +105,7 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, signedMsg *typ
 		return false, nil, errors.Wrap(err, "invalid pre-consensus message")
 	}
 
-	hasQuorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PreConsensusContainer)
+	hasQuorum, roots, err := b.basePartialSigMsgProcessing(msg, b.State.PreConsensusContainer)
 	return hasQuorum, roots, errors.Wrap(err, "could not process pre-consensus partial signature msg")
 }
 
@@ -158,23 +157,24 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *qbft.SignedM
 }
 
 // basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg
-func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, signedMsg *types.SignedPartialSignatureMessage) (bool, [][32]byte, error) {
-	if err := b.ValidatePostConsensusMsg(runner, signedMsg); err != nil {
+func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, msg *types.PartialSignatureMessages) (bool,
+	[][32]byte, error) {
+	if err := b.ValidatePostConsensusMsg(runner, msg); err != nil {
 		return false, nil, errors.Wrap(err, "invalid post-consensus message")
 	}
 
-	hasQuorum, roots, err := b.basePartialSigMsgProcessing(signedMsg, b.State.PostConsensusContainer)
+	hasQuorum, roots, err := b.basePartialSigMsgProcessing(msg, b.State.PostConsensusContainer)
 	return hasQuorum, roots, errors.Wrap(err, "could not process post-consensus partial signature msg")
 }
 
 // basePartialSigMsgProcessing adds a validated (without signature verification) partial msg to the container, checks for quorum and returns true (and roots) if quorum exists
 func (b *BaseRunner) basePartialSigMsgProcessing(
-	signedMsg *types.SignedPartialSignatureMessage,
+	msg *types.PartialSignatureMessages,
 	container *PartialSigContainer,
 ) (bool, [][32]byte, error) {
 	roots := make([][32]byte, 0)
 	anyQuorum := false
-	for _, msg := range signedMsg.Message.Messages {
+	for _, msg := range msg.Messages {
 		prevQuorum := container.HasQuorum(msg.SigningRoot)
 
 		// Check if it has two signatures for the same signer

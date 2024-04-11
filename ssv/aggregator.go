@@ -24,7 +24,7 @@ type AggregatorRunner struct {
 
 func NewAggregatorRunner(
 	beaconNetwork types.BeaconNetwork,
-	share *types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
@@ -50,7 +50,7 @@ func NewAggregatorRunner(
 	}
 }
 
-func (r *AggregatorRunner) StartNewDuty(duty *types.BeaconDuty) error {
+func (r *AggregatorRunner) StartNewDuty(duty *types.Duty) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
@@ -279,7 +279,9 @@ func (r *AggregatorRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *AggregatorRunner) GetShare() *types.Share {
-	return r.BaseRunner.Share
+	for _, share := range r.BaseRunner.Share {
+		return share
+	}
 }
 
 func (r *AggregatorRunner) GetState() *State {

@@ -122,15 +122,15 @@ func baseCommitValidationVerifySignature(
 	config IConfig,
 	signedCommit *SignedMessage,
 	height Height,
-	operators []*types.Operator,
-) error {
+	operators []*types.CommitteeMember) error {
 
 	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err
 	}
 
 	// verify signature
-	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(),
+		types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
