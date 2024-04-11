@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
+
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 type AttesterRunner struct {
@@ -22,7 +23,7 @@ type AttesterRunner struct {
 	valCheck       qbft.ProposedValueCheckF
 }
 
-func NewAttesterRunnner(
+func NewAttesterRunner(
 	beaconNetwork types.BeaconNetwork,
 	share *types.Share,
 	qbftController *qbft.Controller,
@@ -100,10 +101,15 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
 		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
+	}
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, r.BaseRunner.Share.OperatorID, r.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {

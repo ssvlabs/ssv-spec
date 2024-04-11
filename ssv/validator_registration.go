@@ -6,10 +6,11 @@ import (
 
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
 )
 
 type ValidatorRegistrationRunner struct {
@@ -138,11 +139,18 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to encode randao pre-consensus signature msg")
 	}
-	msgToBroadcast := &types.SSVMessage{
+
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
 		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, r.BaseRunner.Share.OperatorID, r.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
 	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial randao sig")
 	}
