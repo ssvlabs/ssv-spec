@@ -89,12 +89,19 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 	msgID := types.MessageID{}
 	copy(msgID[:], msg.Message.Identifier)
 
-	msgToBroadcast := &types.SSVMessage{
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVConsensusMsgType,
 		MsgID:   msgID,
 		Data:    byts,
 	}
-	return i.config.GetNetwork().Broadcast(msgToBroadcast)
+
+	operatorSigner := i.GetConfig().GetOperatorSigner()
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, i.State.Share.OperatorID, operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	return i.GetConfig().GetNetwork().Broadcast(msgToBroadcast)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error

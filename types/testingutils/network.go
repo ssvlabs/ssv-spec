@@ -1,10 +1,7 @@
 package testingutils
 
 import (
-	"crypto"
-	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha256"
 
 	"github.com/bloxapp/ssv-spec/types"
 )
@@ -23,28 +20,8 @@ func NewTestingNetwork(operatorID types.OperatorID, sk *rsa.PrivateKey) *Testing
 	}
 }
 
-func (net *TestingNetwork) Broadcast(message *types.SSVMessage) error {
-
-	encodedMessage, err := message.Encode()
-	if err != nil {
-		panic(err)
-	}
-	hash := sha256.Sum256(encodedMessage)
-
-	signature, err := rsa.SignPKCS1v15(rand.Reader, net.OperatorSK, crypto.SHA256, hash[:])
-	if err != nil {
-		panic(err)
-	}
-	sig := [256]byte{}
-	copy(sig[:], signature)
-
-	signedMessage := &types.SignedSSVMessage{
-		OperatorID: net.OperatorID,
-		Signature:  sig,
-		Data:       encodedMessage,
-	}
-
-	net.BroadcastedMsgs = append(net.BroadcastedMsgs, signedMessage)
+func (net *TestingNetwork) Broadcast(message *types.SignedSSVMessage) error {
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message)
 	return nil
 }
 
