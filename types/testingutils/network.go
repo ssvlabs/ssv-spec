@@ -20,7 +20,7 @@ func NewTestingNetwork(operatorID types.OperatorID, sk *rsa.PrivateKey) *Testing
 	}
 }
 
-func (net *TestingNetwork) Broadcast(message *types.SignedSSVMessage) error {
+func (net *TestingNetwork) Broadcast(message *types.SignedSSVMessage, msgID types.MessageID) error {
 	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message)
 	return nil
 }

@@ -151,7 +151,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty *types.Duty) error {
 		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
+	if err := r.GetNetwork().Broadcast(msgToBroadcast, ssvMsg.MsgID); err != nil {
 		return errors.Wrap(err, "can't broadcast partial randao sig")
 	}
 	return nil
