@@ -22,10 +22,7 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 		}
 
 		// Get SSVMessage
-		ssvMsg, err := signedSSVMsg.GetSSVMessageFromData()
-		if err != nil {
-			return pubsub.ValidationReject
-		}
+		ssvMsg := signedSSVMsg.SSVMessage
 
 		switch ssvMsg.GetType() {
 		case types.SSVConsensusMsgType:

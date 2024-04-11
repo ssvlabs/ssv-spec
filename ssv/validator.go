@@ -61,11 +61,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
-	// Decode the nested SSVMessage
-	msg := &types.SSVMessage{}
-	if err := msg.Decode(signedSSVMessage.Data); err != nil {
-		return errors.Wrap(err, "could not decode data into an SSVMessage")
-	}
+	msg := signedSSVMessage.SSVMessage
 
 	// Get runner
 	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
@@ -87,7 +83,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		}
 
 		// Check signer consistency
-		if !signedMsg.CommonSigners([]types.OperatorID{signedSSVMessage.OperatorID}) {
+		if !signedMsg.CommonSigners(signedSSVMessage.OperatorID) {
 			return errors.New("SignedSSVMessage's signer not consistent with SignedMessage's signers")
 		}
 
@@ -100,8 +96,12 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
+		if len(signedSSVMessage.OperatorID) != 1 {
+			return errors.New("SignedPartialSignatureMessage without single signer")
+		}
+
 		// Check signer consistency
-		if signedMsg.Signer != signedSSVMessage.OperatorID {
+		if signedMsg.Signer != signedSSVMessage.OperatorID[0] {
 			return errors.New("SignedSSVMessage's signer not consistent with SignedPartialSignatureMessage's signer")
 		}
 
