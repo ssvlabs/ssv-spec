@@ -205,7 +205,7 @@ func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
 		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
 
-	if err := c.GetConfig().GetNetwork().Broadcast(msgToBroadcast, ssvMsg.MsgID); err != nil {
+	if err := c.GetConfig().GetNetwork().Broadcast(ssvMsg.MsgID, msgToBroadcast); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}
