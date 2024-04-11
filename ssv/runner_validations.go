@@ -39,7 +39,7 @@ func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContain
 	}
 }
 
-func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}

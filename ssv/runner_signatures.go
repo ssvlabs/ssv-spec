@@ -47,20 +47,19 @@ func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSigna
 
 // Validate message content without verifying signatures
 func (b *BaseRunner) validatePartialSigMsgForSlot(
-	signedMsg *types.SignedPartialSignatureMessage,
-	slot spec.Slot,
-) error {
-	if err := signedMsg.Validate(); err != nil {
+	msg *types.PartialSignatureMessages,
+	slot spec.Slot) error {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
 	}
-	if signedMsg.Message.Slot != slot {
+	if msg.Slot != slot {
 		return errors.New("invalid partial sig slot")
 	}
 
 	// Check if signer is in committee
 	signerInCommittee := false
 	for _, operator := range b.Share.Committee {
-		if operator.OperatorID == signedMsg.Signer {
+		if operator.OperatorID == msg.Signer {
 			signerInCommittee = true
 			break
 		}
