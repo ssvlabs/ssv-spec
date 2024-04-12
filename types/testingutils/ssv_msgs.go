@@ -149,63 +149,62 @@ var TestConsensusWrongDutyPKData = &types.ConsensusData{
 }
 var TestConsensusWrongDutyPKDataByts, _ = TestConsensusWrongDutyPKData.Encode()
 
-var SSVMsgAttester = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
+var SSVMsgAttester = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester))
 }
 
-var SSVMsgWrongID = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
+var SSVMsgWrongID = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingWrongValidatorPubKey[:], types.BNRoleAttester))
 }
 
-var SSVMsgProposer = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
+var SSVMsgProposer = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleProposer))
 }
 
-var SSVMsgAggregator = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
+var SSVMsgAggregator = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAggregator))
 }
 
-var SSVMsgSyncCommittee = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
+var SSVMsgSyncCommittee = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommittee))
 }
 
-var SSVMsgSyncCommitteeContribution = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
+var SSVMsgSyncCommitteeContribution = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution))
 }
 
-var SSVMsgValidatorRegistration = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
+var SSVMsgValidatorRegistration = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleValidatorRegistration))
 }
 
-var SSVMsgVoluntaryExit = func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
+var SSVMsgVoluntaryExit = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleVoluntaryExit))
 }
 
-var ssvMsg = func(qbftMsg *qbft.SignedMessage, postMsg *types.SignedPartialSignatureMessage, msgID types.MessageID) *types.SSVMessage {
-	var msgType types.MsgType
-	var data []byte
-	var err error
+var ssvMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.SignedPartialSignatureMessage, msgID types.MessageID) *types.SSVMessage {
+
 	if qbftMsg != nil {
-		msgType = types.SSVConsensusMsgType
-		data, err = qbftMsg.Encode()
-		if err != nil {
-			panic(err)
+		return &types.SSVMessage{
+			MsgType: qbftMsg.SSVMessage.MsgType,
+			MsgID:   msgID,
+			Data:    qbftMsg.SSVMessage.Data,
 		}
-	} else if postMsg != nil {
-		msgType = types.SSVPartialSignatureMsgType
-		data, err = postMsg.Encode()
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		panic("msg type undefined")
 	}
 
-	return &types.SSVMessage{
-		MsgType: msgType,
-		MsgID:   msgID,
-		Data:    data,
+	if postMsg != nil {
+		msgType := types.SSVPartialSignatureMsgType
+		data, err := postMsg.Encode()
+		if err != nil {
+			panic(err)
+		}
+		return &types.SSVMessage{
+			MsgType: msgType,
+			MsgID:   msgID,
+			Data:    data,
+		}
 	}
+
+	panic("msg type undefined")
 }
 
 var PostConsensusWrongAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.SignedPartialSignatureMessage {

@@ -20,13 +20,17 @@ func NewTestingOperatorSigner(keySet *TestKeySet, operatorID types.OperatorID) *
 }
 
 func (km *testingOperatorSigner) SignSSVMessage(ssvMsg *types.SSVMessage) ([]byte, error) {
+	return SignSSVMessage(km.SSVOperatorSK, ssvMsg)
+}
+
+func SignSSVMessage(sk *rsa.PrivateKey, ssvMsg *types.SSVMessage) ([]byte, error) {
 	encodedMsg, err := ssvMsg.Encode()
 	if err != nil {
 		return nil, err
 	}
 
 	hash := sha256.Sum256(encodedMsg)
-	signature, err := rsa.SignPKCS1v15(rand.Reader, km.SSVOperatorSK, crypto.SHA256, hash[:])
+	signature, err := rsa.SignPKCS1v15(rand.Reader, sk, crypto.SHA256, hash[:])
 	if err != nil {
 		return []byte{}, err
 	}
