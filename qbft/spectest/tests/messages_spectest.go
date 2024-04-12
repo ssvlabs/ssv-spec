@@ -1,15 +1,17 @@
 package tests
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/stretchr/testify/require"
 )
 
 // MsgSpecTest tests encoding and decoding of a msg
 type MsgSpecTest struct {
 	Name            string
-	Messages        []*qbft.SignedMessage
+	Messages        []*types.SignedSSVMessage
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
 	ExpectedError   string
@@ -23,6 +25,15 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			lastErr = err
 			continue
 		}
+
+		qbftMessage := &qbft.Message{}
+		require.NoError(t, qbftMessage.Decode(msg.SSVMessage.Data))
+		if err := qbftMessage.Validate(); err != nil {
+			lastErr = err
+			continue
+		}
+
+		qbftMessage.Validate()
 
 		if len(test.EncodedMessages) > 0 {
 			byts, err := msg.Encode()

@@ -1,20 +1,19 @@
 package share
 
 import (
-	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	reflect2 "reflect"
 	"testing"
 
+	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/stretchr/testify/require"
-
-	"github.com/bloxapp/ssv-spec/qbft"
 )
 
 type ShareTest struct {
 	Name                     string
 	Share                    types.Share
-	Message                  qbft.SignedMessage
+	Message                  types.SignedSSVMessage
 	ExpectedHasPartialQuorum bool
 	ExpectedHasQuorum        bool
 	ExpectedFullCommittee    bool
@@ -29,7 +28,7 @@ func (test *ShareTest) TestName() string {
 func (test *ShareTest) GetUniqueMessageSignersCount() int {
 	uniqueSigners := make(map[uint64]bool)
 
-	for _, element := range test.Message.Signers {
+	for _, element := range test.Message.GetOperatorID() {
 		uniqueSigners[element] = true
 	}
 

@@ -1,7 +1,6 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -11,8 +10,8 @@ import (
 func WrongHeight() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithHeight(ks.Shares[1], types.OperatorID(1), 2),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithHeight(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong proposal height",

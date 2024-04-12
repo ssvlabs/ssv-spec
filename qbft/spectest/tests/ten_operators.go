@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
@@ -11,33 +10,33 @@ func TenOperators() SpecTest {
 	pre := testingutils.TenOperatorsInstance()
 	ks := testingutils.Testing10SharesSet()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
-		testingutils.TestingPrepareMessage(ks.Shares[4], types.OperatorID(4)),
-		testingutils.TestingPrepareMessage(ks.Shares[5], types.OperatorID(5)),
-		testingutils.TestingPrepareMessage(ks.Shares[6], types.OperatorID(6)),
-		testingutils.TestingPrepareMessage(ks.Shares[7], types.OperatorID(7)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], types.OperatorID(4)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[5], types.OperatorID(5)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[6], types.OperatorID(6)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[7], types.OperatorID(7)),
 
-		testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingCommitMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingCommitMessage(ks.Shares[3], types.OperatorID(3)),
-		testingutils.TestingCommitMessage(ks.Shares[4], types.OperatorID(4)),
-		testingutils.TestingCommitMessage(ks.Shares[5], types.OperatorID(5)),
-		testingutils.TestingCommitMessage(ks.Shares[6], types.OperatorID(6)),
-		testingutils.TestingCommitMessage(ks.Shares[7], types.OperatorID(7)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[3], types.OperatorID(3)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[4], types.OperatorID(4)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[5], types.OperatorID(5)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[6], types.OperatorID(6)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[7], types.OperatorID(7)),
 	}
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow ten operators",
 		Pre:           pre,
-		PostRoot:      "9f295e9f4994601c3358183740bb45526402b01d158781484c7dcf6cdaa91357",
+		PostRoot:      "22d0c8c5b30b50571abf135913c75f99904d59cdc1752761a4ac436d6d129432",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-			testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1)),
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+			testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		},
 	}
 }

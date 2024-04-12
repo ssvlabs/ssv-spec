@@ -1,43 +1,43 @@
 package latemsg
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
+	"crypto/rsa"
+
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // LateCommitPastRound tests process late commit msg for an instance which just decided for a round < decided round
 func LateCommitPastRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 	}
 	msgs = append(msgs, rcMsgs...)
-	msgs = append(msgs, []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+	msgs = append(msgs, []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(rcMsgs)),
 
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 
-		testingutils.TestingCommitMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingCommitMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingCommitMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 
-		testingutils.TestingCommitMessage(ks.Shares[4], 4),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[4], 4),
 	}...)
 
 	return &tests.ControllerSpecTest{
@@ -50,7 +50,7 @@ func LateCommitPastRound() tests.SpecTest {
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithRound(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						2,
 					),
