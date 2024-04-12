@@ -13,12 +13,12 @@ func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*type
 			continue
 		}
 
-		msg := &types.SignedPartialSignatureMessage{}
+		msg := &types.PartialSignatureMessages{}
 		if err := msg.Decode(signedSSVMsg.SSVMessage.Data); err != nil {
 			panic(err.Error())
 		}
 
-		for _, partialSigMsg := range msg.Message.Messages {
+		for _, partialSigMsg := range msg.Messages {
 			root := hex.EncodeToString(partialSigMsg.SigningRoot[:])
 			if container.Signatures[root] == nil {
 				container.Signatures[root] = map[types.OperatorID][]byte{}

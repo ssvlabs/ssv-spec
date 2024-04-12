@@ -60,7 +60,7 @@ func PostWrongDecided() tests.SpecTest {
 				Runner:                  decideWrong(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty, 50),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
 				PostDutyRunnerStateRoot: "4fce8afe24a8f812c9daccfb54c8247771c88b48d161b06901669d1e23ce7a0d",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
@@ -70,7 +70,7 @@ func PostWrongDecided() tests.SpecTest {
 				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty, 50),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
 				PostDutyRunnerStateRoot: "daf5d2d2469f71f2f9c08a75fb45f1be7f6cdc8b367dedf5adc50c066f73f942",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedError,
 			},
 			{
@@ -78,7 +78,7 @@ func PostWrongDecided() tests.SpecTest {
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty, 50),
 				Duty:                    &testingutils.TestingAggregatorDuty,
 				PostDutyRunnerStateRoot: "533fa28f89164dc4a26bdd4e2cd55cca8c17375d3e88251f2480ae727ced1ee1",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
@@ -88,7 +88,7 @@ func PostWrongDecided() tests.SpecTest {
 				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb), qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50)),
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				PostDutyRunnerStateRoot: "fd8de7873c9cf83ec9366f856f4b8d81d77c215f935185d90cea8be8dcb44089",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
@@ -99,7 +99,7 @@ func PostWrongDecided() tests.SpecTest {
 				Runner:                  decideWrong(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty, 50),
 				Duty:                    &testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "8efe8f69adeecb1da0762d54aeb7b2970eb293395ad6e379cf2521125881f5fe",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedError,
 			},
 		},

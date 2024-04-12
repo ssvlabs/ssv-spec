@@ -14,10 +14,10 @@ func DuplicateRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// duplicateRootsMsg will duplicate signing roots for justifications with more than 1 root
-	duplicateRootsMsg := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
+	duplicateRootsMsg := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
 		if len(obj.PreConsensusJustifications) > 0 {
 			for _, m := range obj.PreConsensusJustifications {
-				m.Message.Messages = append(m.Message.Messages, m.Message.Messages[0])
+				m.Messages = append(m.Messages, m.Messages[0])
 			}
 		}
 
@@ -30,7 +30,7 @@ func DuplicateRoots() tests.SpecTest {
 			Identifier: id,
 			Root:       root,
 		}
-		signed := testingutils.SignQBFTMsg(ks.Shares[1], 1, msg)
+		signed := testingutils.SignQBFTMsg(ks.OperatorKeys[1], 1, msg)
 		signed.FullData = fullData
 
 		return signed
@@ -46,10 +46,10 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(duplicateRootsMsg(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil)),
+					duplicateRootsMsg(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID),
 				},
 				PostDutyRunnerStateRoot: "2619aeecde47fe0efc36aa98fbb2df9834d9eee77f62abe0d10532dbd5215790",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedErr,
@@ -59,10 +59,10 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(duplicateRootsMsg(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil)),
+					duplicateRootsMsg(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID),
 				},
 				PostDutyRunnerStateRoot: "db1b416873d19be76cddc92ded0d442ba0e642514973b5dfec45f587c6ffde15",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedErr,
@@ -72,10 +72,10 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.ProposerRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(duplicateRootsMsg(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID), nil)),
+					duplicateRootsMsg(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "2754fc7ced14fb15f3f18556bb6b837620287cbbfbf908abafa5a0533fc4bc5f",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedErr,
@@ -85,10 +85,10 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(duplicateRootsMsg(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID), nil)),
+					duplicateRootsMsg(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "6bd59da9f817b8e40112e58231e36738b9d021db4416c9eeec1dd0236a5362e2",
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedErr,
@@ -99,20 +99,20 @@ func DuplicateRoots() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(duplicateRootsMsg(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil)),
+					duplicateRootsMsg(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
 				},
 				PostDutyRunnerStateRoot: "c913d1b6e4150231615ad2475a26b03403cc40fc7dd90c011c1c24a7bb39ae1a",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   "sync committee",
 				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(duplicateRootsMsg(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil)),
+					duplicateRootsMsg(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
 				},
 				PostDutyRunnerStateRoot: "4dbe7550c9fe66953ae2f5066463e8d1288fc37a4cc031b58d4b3e1a87220dc0",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
 	}

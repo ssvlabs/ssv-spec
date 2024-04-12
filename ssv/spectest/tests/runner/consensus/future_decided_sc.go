@@ -1,8 +1,9 @@
 package consensus
 
 import (
+	"crypto/rsa"
+
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
@@ -27,9 +28,9 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
 					},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -50,7 +51,7 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 				},
 				StartValue: comparable.NoErrorEncoding(comparable.FixIssue178(cd, spec.DataVersionBellatrix)),
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
@@ -65,15 +66,12 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				decidedInstance,
-				[]*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-							[]types.OperatorID{1, 2, 3},
-							qbft.Height(testingutils.TestingDutySlot+1),
-							ret.GetBaseRunner().QBFTController.Identifier,
-						),
-						nil,
+				[]*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlot+1),
+						ret.GetBaseRunner().QBFTController.Identifier,
 					),
 				},
 			)
@@ -121,7 +119,7 @@ func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 				},
 				StartValue: cdBytes,
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
@@ -136,15 +134,12 @@ func futureDecidedSyncCommitteeSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				decidedInstance,
-				[]*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-							[]types.OperatorID{1, 2, 3},
-							testingutils.TestingDutySlot+1,
-							ret.GetBaseRunner().QBFTController.Identifier,
-						),
-						nil,
+				[]*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+						testingutils.TestingDutySlot+1,
+						ret.GetBaseRunner().QBFTController.Identifier,
 					),
 				},
 			)
@@ -173,9 +168,9 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
 					},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -196,7 +191,7 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 				},
 				StartValue: cdBytes,
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
@@ -211,15 +206,12 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				decidedInstance,
-				[]*types.SSVMessage{
-					testingutils.SSVMsgAggregator(
-						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-							[]types.OperatorID{1, 2, 3},
-							testingutils.TestingDutySlot+1,
-							ret.GetBaseRunner().QBFTController.Identifier,
-						),
-						nil,
+				[]*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+						testingutils.TestingDutySlot+1,
+						ret.GetBaseRunner().QBFTController.Identifier,
 					),
 				},
 			)
@@ -267,7 +259,7 @@ func futureDecidedAttesterSC() *comparable.StateComparison {
 				},
 				StartValue: cdBytes,
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
@@ -282,15 +274,12 @@ func futureDecidedAttesterSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				decidedInstance,
-				[]*types.SSVMessage{
-					testingutils.SSVMsgProposer(
-						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-							[]types.OperatorID{1, 2, 3},
-							testingutils.TestingDutySlot+1,
-							ret.GetBaseRunner().QBFTController.Identifier,
-						),
-						nil,
+				[]*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+						testingutils.TestingDutySlot+1,
+						ret.GetBaseRunner().QBFTController.Identifier,
 					),
 				},
 			)
@@ -319,9 +308,9 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version))),
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, version))),
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version))),
 					},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
@@ -342,7 +331,7 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 				},
 				StartValue: cdBytes,
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
@@ -357,15 +346,12 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 			}
 			comparable.SetMessages(
 				decidedInstance,
-				[]*types.SSVMessage{
-					testingutils.SSVMsgProposer(
-						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-							[]types.OperatorID{1, 2, 3},
-							qbft.Height(testingutils.TestingDutySlotV(version)+1),
-							ret.GetBaseRunner().QBFTController.Identifier,
-						),
-						nil,
+				[]*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlotV(version)+1),
+						ret.GetBaseRunner().QBFTController.Identifier,
 					),
 				},
 			)
@@ -394,9 +380,9 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version))),
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, version))),
-						testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version))),
 					}),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
@@ -416,7 +402,7 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 				},
 				StartValue: cdBytes,
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
@@ -431,15 +417,12 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			}
 			comparable.SetMessages(
 				decidedInstance,
-				[]*types.SSVMessage{
-					testingutils.SSVMsgProposer(
-						testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-							[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
-							[]types.OperatorID{1, 2, 3},
-							qbft.Height(testingutils.TestingDutySlotV(version)+1),
-							ret.GetBaseRunner().QBFTController.Identifier,
-						),
-						nil,
+				[]*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlotV(version)+1),
+						ret.GetBaseRunner().QBFTController.Identifier,
 					),
 				},
 			)

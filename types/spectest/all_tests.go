@@ -28,7 +28,6 @@ var AllTests = []SpecTest{
 	partialsigmessage.Encoding(),
 	partialsigmessage.InvalidMsg(),
 	partialsigmessage.MessageSigner0(),
-	partialsigmessage.SignedMsgSigner0(),
 	partialsigmessage.NoMsgs(),
 	partialsigmessage.SigValid(),
 	partialsigmessage.PartialSigValid(),
