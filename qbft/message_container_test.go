@@ -108,9 +108,15 @@ func TestMsgContainer_AddMsg(t *testing.T) {
 			Msgs: map[qbft.Round][]*types.SignedSSVMessage{},
 		}
 
-		c.AddMsg(MessageWithSigners([]types.OperatorID{1, 2, 3}, &qbft.Message{Round: 1, Root: [32]byte{1, 2, 3, 4}}))
-		c.AddMsg(MessageWithSigners([]types.OperatorID{1}, &qbft.Message{Round: 1, Root: [32]byte{1, 2, 3, 4}}))
-		c.AddMsg(MessageWithSigners([]types.OperatorID{1, 2, 3, 4}, &qbft.Message{Round: 1, Root: [32]byte{1, 2, 3, 4}}))
+		if err := c.AddMsg(MessageWithSigners([]types.OperatorID{1, 2, 3}, &qbft.Message{Round: 1, Root: [32]byte{1, 2, 3, 4}})); err != nil {
+			panic(err)
+		}
+		if err := c.AddMsg(MessageWithSigners([]types.OperatorID{1}, &qbft.Message{Round: 1, Root: [32]byte{1, 2, 3, 4}})); err != nil {
+			panic(err)
+		}
+		if err := c.AddMsg(MessageWithSigners([]types.OperatorID{1, 2, 3, 4}, &qbft.Message{Round: 1, Root: [32]byte{1, 2, 3, 4}})); err != nil {
+			panic(err)
+		}
 
 		cnt, msgs := c.LongestUniqueSignersForRoundAndRoot(1, [32]byte{1, 2, 3, 4})
 		require.EqualValues(t, []types.OperatorID{1, 2, 3, 4}, cnt)

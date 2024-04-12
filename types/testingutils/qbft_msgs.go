@@ -65,7 +65,7 @@ var SignQBFTMsg = func(sk *rsa.PrivateKey, id types.OperatorID, msg *qbft.Messag
 	return &types.SignedSSVMessage{
 		OperatorID: []types.OperatorID{id},
 		Signature:  [][]byte{signature},
-		SSVMessage: *&ssvMsg,
+		SSVMessage: ssvMsg,
 	}
 }
 

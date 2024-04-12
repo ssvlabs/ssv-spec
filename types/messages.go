@@ -18,13 +18,6 @@ const (
 	pubKeyStartPos   = domainStartPos + domainSize
 	roleTypeSize     = 4
 	roleTypeStartPos = pubKeyStartPos + pubKeySize
-
-	// SignedSSVMessage offsets
-	signatureSize    = 256
-	signatureOffset  = 0
-	operatorIDSize   = 8
-	operatorIDOffset = signatureOffset + signatureSize
-	messageOffset    = operatorIDOffset + operatorIDSize
 )
 
 type Validate interface {

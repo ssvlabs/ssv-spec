@@ -59,7 +59,6 @@ var SignedSSVMessageListF = func(ks *TestKeySet, signers []types.OperatorID, ssv
 var SignPartialSigSSVMessage = func(ks *TestKeySet, msg *types.SSVMessage) *types.SignedSSVMessage {
 
 	// Discover message's signer
-	signer := types.OperatorID(1)
 	if msg.MsgType != types.SSVPartialSignatureMsgType {
 		panic("type different than SSVPartialSignatureMsgType to sign partial signature ssv message")
 	}
@@ -68,7 +67,7 @@ var SignPartialSigSSVMessage = func(ks *TestKeySet, msg *types.SSVMessage) *type
 	if err := psigMsgs.Decode(msg.Data); err != nil {
 		panic(err)
 	}
-	signer = psigMsgs.Messages[0].Signer
+	signer := psigMsgs.Messages[0].Signer
 
 	// Convert SSVMessage to SignedSSVMessage
 	return SignedSSVMessageWithSigner(signer, ks.OperatorKeys[signer], msg)

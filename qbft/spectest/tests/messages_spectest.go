@@ -33,8 +33,6 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			continue
 		}
 
-		qbftMessage.Validate()
-
 		if len(test.EncodedMessages) > 0 {
 			byts, err := msg.Encode()
 			require.NoError(t, err)
