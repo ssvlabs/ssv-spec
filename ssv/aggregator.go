@@ -107,7 +107,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSig
 	return nil
 }
 
-func (r *AggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")

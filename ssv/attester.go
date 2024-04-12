@@ -64,7 +64,7 @@ func (r *AttesterRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSigna
 	return errors.New("no pre consensus sigs required for attester role")
 }
 
-func (r *AttesterRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *AttesterRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")

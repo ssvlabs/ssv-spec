@@ -64,7 +64,7 @@ func (r *SyncCommitteeRunner) ProcessPreConsensus(signedMsg *types.SignedPartial
 	return errors.New("no pre consensus sigs required for sync committee role")
 }
 
-func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")

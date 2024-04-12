@@ -28,17 +28,20 @@ type IConfig interface {
 	GetNetwork() Network
 	// GetTimer returns round timer
 	GetTimer() Timer
+	// GetSignatureVerifier returns the signature verifier for operator signatures
+	GetSignatureVerifier() types.SignatureVerifier
 }
 
 type Config struct {
-	ShareSigner    types.ShareSigner
-	OperatorSigner types.OperatorSigner
-	SigningPK      []byte
-	Domain         types.DomainType
-	ValueCheckF    ProposedValueCheckF
-	ProposerF      ProposerF
-	Network        Network
-	Timer          Timer
+	ShareSigner       types.ShareSigner
+	OperatorSigner    types.OperatorSigner
+	SigningPK         []byte
+	Domain            types.DomainType
+	ValueCheckF       ProposedValueCheckF
+	ProposerF         ProposerF
+	Network           Network
+	Timer             Timer
+	SignatureVerifier types.SignatureVerifier
 }
 
 // GetSigner returns a Signer instance
@@ -81,6 +84,11 @@ func (c *Config) GetTimer() Timer {
 	return c.Timer
 }
 
+// GetSignatureVerifier returns the verifier for operator's signatures
+func (c *Config) GetSignatureVerifier() types.SignatureVerifier {
+	return c.SignatureVerifier
+}
+
 type State struct {
 	Share                           *types.Share
 	ID                              []byte // instance Identifier
@@ -88,7 +96,7 @@ type State struct {
 	Height                          Height
 	LastPreparedRound               Round
 	LastPreparedValue               []byte
-	ProposalAcceptedForCurrentRound *SignedMessage
+	ProposalAcceptedForCurrentRound *types.SignedSSVMessage
 	Decided                         bool
 	DecidedValue                    []byte
 

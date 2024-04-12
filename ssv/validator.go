@@ -77,18 +77,17 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
 		// Decode
-		signedMsg := &qbft.SignedMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		qbftMsg := &qbft.Message{}
+		if err := qbftMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
 
-		// Check signer consistency
-		if !signedMsg.CommonSigners(signedSSVMessage.OperatorID) {
-			return errors.New("SignedSSVMessage's signer not consistent with SignedMessage's signers")
+		if err := qbftMsg.Validate(); err != nil {
+			return errors.Wrap(err, "invalid qbft Message")
 		}
 
 		// Process
-		return dutyRunner.ProcessConsensus(signedMsg)
+		return dutyRunner.ProcessConsensus(signedSSVMessage)
 	case types.SSVPartialSignatureMsgType:
 		// Decode
 		signedMsg := &types.SignedPartialSignatureMessage{}
