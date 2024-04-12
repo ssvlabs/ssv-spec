@@ -90,7 +90,7 @@
 												"Msgs": {}
 										}
 								},
-								"StartValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+								"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 						},
 						"DecidedValue": null,
 						"StartingDuty": {
@@ -246,54 +246,77 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "p1/SxWYL3XjbU2WDUZD/Q3poPe1Y4NDh2CExnogNKLBjx4jO03S+v/O71Mcb2kTVEPKerh65xJqVR9ZvnwpYLPiaMxu/3m3o/eCCPUfFTfg5uUoSUib/Nc6tspo0pmFC",
-																				"Signers": [
+																				"Signature": [
+																						"MLKVZSbmXGK6IGJ0h+ZUWbpPAOU24E7ZRPu99xnaPurK9AgB5uIdAWsVxh3tDv7d5f35wIb5rL7PiSg1EUB7hIoqU4cmbkVlGdDxhFMP+45JTudIlzy+RxiFKMgTSfl79acPxBbFa9r+FumzzdqrqmFC/RHUAT2f+wZb/qYJK0lBR9zpYTLvi53zJlVYAsedgtpZddaL4b+3Bv0puERFlLVZ70h5clcTiVZLTWVy52QidYm4WlTepP+07iBQsvRfvSXM0aMIOPEcPRXirk9Ryo8TtohUIQXHP9M6M7R9d1XpM6syiyA2mi1Vt83z19K82uwaaamZIYHYpChx86RXlg==",
+																						"XU4imQI5CgD39CP5dr372J4Ry4hNSHfBB8f7sYAi9ewJJWlI7CdR7xpMfVGvbhZjqXzjn9SkHIUU1npQTrWT9hHJZfJHP5no6WWdMj3CU4YNlm9/xMzD6DzgR1RxR5uGQBj9Ozok8IkE6X35SefwBCc3PLenJuKheNcKAOOrMBvqOqt4RxSLYh+MhA0Gqzwojk4Oudcx47ZehdQGN/UbqGMWgPi6Jq/BdZZC1JeCxK6rUSoS0RLRBzY5hYblT0J5qFv4XayB89OE8Hy1CI6XXy6n/CKmyP1StD9CCdFXp889wDN3Aymf7ds2zF0/VjXajdprJigyRfsSPu0AqkU7pQ==",
+																						"HXd9uqOp4ANVnNclQTDM67F//TblZRMhWdI1suGOquIJgey/fn8XK+xB5zOdRv9UZl64ee4DZcHRPRHA8VqIltx5EXsZVpHCH5D1TewzZaPYc7iNrUoAJWGfbpOEcXuQXzxrigW1btYlrVic71QpsDBylW82urDx7kFW9DEPd/C8XyG8yKRd0vpO+BUiA/Tl4zRiaYzAT/vUrF8694b1qDaXBv+bTXESdPh9K92lZKM7EtHr0hPm9Um/mUWkdg0+CwcjfmeAicrGkHdvBjpwI4nk4of/nPLl+igxbISQPkQolvFVTZtLQdYnkNJZaEHuVNAU+Wz+tv5DGLAcZnHNYA=="
+																				],
+																				"OperatorID": [
 																						1,
 																						2,
 																						3
 																				],
-																				"Message": {
-																						"MsgType": 2,
-																						"Height": 13,
-																						"Round": 1,
-																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
-																						"Root": [
-																								190,
-																								149,
-																								111,
-																								183,
-																								223,
-																								78,
-																								243,
-																								117,
-																								49,
-																								104,
-																								45,
-																								88,
-																								131,
-																								32,
-																								8,
-																								79,
-																								201,
-																								20,
-																								195,
-																								240,
-																								254,
-																								211,
-																								53,
-																								38,
-																								62,
-																								91,
-																								68,
+																				"SSVMessage": {
+																						"MsgType": 0,
+																						"MsgID": [
+																								0,
+																								0,
+																								3,
+																								1,
+																								142,
+																								128,
 																								6,
-																								46,
-																								108,
-																								41,
-																								180
+																								101,
+																								81,
+																								168,
+																								27,
+																								49,
+																								130,
+																								88,
+																								112,
+																								158,
+																								218,
+																								247,
+																								221,
+																								31,
+																								99,
+																								205,
+																								104,
+																								106,
+																								14,
+																								77,
+																								184,
+																								178,
+																								155,
+																								187,
+																								122,
+																								207,
+																								230,
+																								86,
+																								8,
+																								103,
+																								122,
+																								245,
+																								165,
+																								39,
+																								217,
+																								68,
+																								142,
+																								228,
+																								120,
+																								53,
+																								72,
+																								94,
+																								2,
+																								181,
+																								11,
+																								192,
+																								0,
+																								0,
+																								0,
+																								0
 																						],
-																						"DataRound": 0,
-																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"Data": "AgAAAAAAAAANAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
 																				},
 																				"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																		}
@@ -387,7 +410,7 @@
 														"Msgs": {}
 												}
 										},
-										"StartValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+										"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 								}
 						],
 						"Share": {

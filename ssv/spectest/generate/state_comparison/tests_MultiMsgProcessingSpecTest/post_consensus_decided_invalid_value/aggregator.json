@@ -82,7 +82,7 @@
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": null,
 										"Decided": true,
-										"DecidedValue": "FAAAAAAAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA=",
+										"DecidedValue": "FAAAAAEAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA=",
 										"ProposeContainer": {
 												"Msgs": {}
 										},
@@ -93,56 +93,79 @@
 												"Msgs": {
 														"1": [
 																{
-																		"Signature": "r72F8FIqMMJa609oRzjWOeNPITf7xhSzgc3meelOUHYFnnuWZ+ksn8KQ0/MsLj5IEEZ/WQ35roqGiqd6cs8KjUdzxRh+OJI6rN51WEcFvA12RPxZ2zx0T9z8nGA2BjI7",
-																		"Signers": [
+																		"Signature": [
+																				"E73cU8jZapuX8IACPW2oE4z6u5G4Kn9HMhwDT3pHeC246wzgeNNTR9O1XjCFDWPgE66BoGxeZ8sRNkG7kUlVEg24iNahRZhKKVzLajMqfFTAUgtyFQIXt1LpBfhLQM3eZny7Jqj3CJbJGQuMsqA7JHNmLdH+dlx/2gNjZDaCLG3hyo9ij79FoSb5/5WVqUMhA/XQGvQcch40dBBPhx4pMmBNkP33gAzP/9WTlBXed3PRL3ZTc1QbknwVwI3HkDjN4/fsez57z5Q/hTsdsR4SieaLJHd40sca6rXd91BW+unWa8kc0+uyk1+Scs+J5uN4wy7qDqzYiKzGWi72kORUVg==",
+																				"GZelgCDNNrpEQOvR6pDa2LtMckA/CTlHGPGvIiAxKK2WyK53Nsp07KZ2KMP94dXy0izDd6qPfcRyNVEhhbXy6Z5Natn4nd5SF2MZbcIsj8TzGnFrNTkgUcpjRwlK41TEq6jfyu+5XZNzlIFVFSVG5dzMgA1L2SqAC4pnlhGiQn+/Z+J7d4NxBwlICYXb969nyTCtGKpGiF+hFHDXuOOCUbvsnc7gHArPCs6b8cZx/+U4R3aWs5fLGO0p53S/iLiHpMlvIVnU00GTT4CH91CBvN9otWTVTzabGeA+4bqvqKyUNqWr+m5+XWao7Ccc4BsHxAlPN2L2jJtITyFLR9XNzw==",
+																				"lXxB/Wos6zdVH+3hj0K4H57yTBmutqJ7dIjQK4JZt+eHwP0dwpaugBc9+LpIFxfA18FGCVj6xdKhTFFavAQw/uPRh1c2smTD4xdVgCI/yKFQkIKXAgpvx6G7TCuG9EAvxAhu1RPUEcB7Q/YPPjYGQfpSSO5aoKvWBE7yoPYO+qtL/yDBdcKGrWhWe2XafSKE0ZIhVemgbfdeFwM31epuNUv2wleLjb7IldTyFf14KPk2hLXZ366B0c10GN2VY+WLsGlnnLBBzLhj0tNXPagLZwkSaEZd9NC3O1Rxlbum6e8Z9cAJthf1XpElZLIoGqqtnK/6e2akKTzglx6msdgTfw=="
+																		],
+																		"OperatorID": [
 																				1,
 																				2,
 																				3
 																		],
-																		"Message": {
-																				"MsgType": 2,
-																				"Height": 12,
-																				"Round": 1,
-																				"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
-																				"Root": [
-																						97,
-																						238,
-																						197,
-																						105,
-																						132,
-																						189,
-																						191,
-																						14,
-																						40,
-																						166,
-																						138,
-																						220,
-																						105,
-																						24,
-																						54,
-																						243,
+																		"SSVMessage": {
+																				"MsgType": 0,
+																				"MsgID": [
+																						0,
+																						0,
+																						3,
+																						1,
+																						142,
+																						128,
+																						6,
+																						101,
 																						81,
-																						113,
-																						114,
-																						114,
-																						75,
-																						93,
-																						195,
-																						9,
-																						214,
-																						56,
-																						97,
-																						249,
-																						238,
+																						168,
+																						27,
+																						49,
+																						130,
+																						88,
+																						112,
+																						158,
+																						218,
+																						247,
+																						221,
 																						31,
-																						174,
-																						172
+																						99,
+																						205,
+																						104,
+																						106,
+																						14,
+																						77,
+																						184,
+																						178,
+																						155,
+																						187,
+																						122,
+																						207,
+																						230,
+																						86,
+																						8,
+																						103,
+																						122,
+																						245,
+																						165,
+																						39,
+																						217,
+																						68,
+																						142,
+																						228,
+																						120,
+																						53,
+																						72,
+																						94,
+																						2,
+																						181,
+																						11,
+																						192,
+																						1,
+																						0,
+																						0,
+																						0
 																				],
-																				"DataRound": 0,
-																				"RoundChangeJustification": [],
-																				"PrepareJustification": []
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAHK5gCXj49wXpUfVsiz2mAcRN0puUmiMheRnWw1EVY99AAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8ABAAAA"
 																		},
-																		"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA="
+																		"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA="
 																}
 														]
 												}
@@ -151,7 +174,7 @@
 												"Msgs": {}
 										}
 								},
-								"StartValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+								"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
 						},
 						"DecidedValue": null,
 						"StartingDuty": {
@@ -296,7 +319,7 @@
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
 												"Decided": true,
-												"DecidedValue": "FAAAAAAAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA=",
+												"DecidedValue": "FAAAAAEAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA=",
 												"ProposeContainer": {
 														"Msgs": {}
 												},
@@ -307,56 +330,79 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "r72F8FIqMMJa609oRzjWOeNPITf7xhSzgc3meelOUHYFnnuWZ+ksn8KQ0/MsLj5IEEZ/WQ35roqGiqd6cs8KjUdzxRh+OJI6rN51WEcFvA12RPxZ2zx0T9z8nGA2BjI7",
-																				"Signers": [
+																				"Signature": [
+																						"E73cU8jZapuX8IACPW2oE4z6u5G4Kn9HMhwDT3pHeC246wzgeNNTR9O1XjCFDWPgE66BoGxeZ8sRNkG7kUlVEg24iNahRZhKKVzLajMqfFTAUgtyFQIXt1LpBfhLQM3eZny7Jqj3CJbJGQuMsqA7JHNmLdH+dlx/2gNjZDaCLG3hyo9ij79FoSb5/5WVqUMhA/XQGvQcch40dBBPhx4pMmBNkP33gAzP/9WTlBXed3PRL3ZTc1QbknwVwI3HkDjN4/fsez57z5Q/hTsdsR4SieaLJHd40sca6rXd91BW+unWa8kc0+uyk1+Scs+J5uN4wy7qDqzYiKzGWi72kORUVg==",
+																						"GZelgCDNNrpEQOvR6pDa2LtMckA/CTlHGPGvIiAxKK2WyK53Nsp07KZ2KMP94dXy0izDd6qPfcRyNVEhhbXy6Z5Natn4nd5SF2MZbcIsj8TzGnFrNTkgUcpjRwlK41TEq6jfyu+5XZNzlIFVFSVG5dzMgA1L2SqAC4pnlhGiQn+/Z+J7d4NxBwlICYXb969nyTCtGKpGiF+hFHDXuOOCUbvsnc7gHArPCs6b8cZx/+U4R3aWs5fLGO0p53S/iLiHpMlvIVnU00GTT4CH91CBvN9otWTVTzabGeA+4bqvqKyUNqWr+m5+XWao7Ccc4BsHxAlPN2L2jJtITyFLR9XNzw==",
+																						"lXxB/Wos6zdVH+3hj0K4H57yTBmutqJ7dIjQK4JZt+eHwP0dwpaugBc9+LpIFxfA18FGCVj6xdKhTFFavAQw/uPRh1c2smTD4xdVgCI/yKFQkIKXAgpvx6G7TCuG9EAvxAhu1RPUEcB7Q/YPPjYGQfpSSO5aoKvWBE7yoPYO+qtL/yDBdcKGrWhWe2XafSKE0ZIhVemgbfdeFwM31epuNUv2wleLjb7IldTyFf14KPk2hLXZ366B0c10GN2VY+WLsGlnnLBBzLhj0tNXPagLZwkSaEZd9NC3O1Rxlbum6e8Z9cAJthf1XpElZLIoGqqtnK/6e2akKTzglx6msdgTfw=="
+																				],
+																				"OperatorID": [
 																						1,
 																						2,
 																						3
 																				],
-																				"Message": {
-																						"MsgType": 2,
-																						"Height": 12,
-																						"Round": 1,
-																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
-																						"Root": [
-																								97,
-																								238,
-																								197,
-																								105,
-																								132,
-																								189,
-																								191,
-																								14,
-																								40,
-																								166,
-																								138,
-																								220,
-																								105,
-																								24,
-																								54,
-																								243,
+																				"SSVMessage": {
+																						"MsgType": 0,
+																						"MsgID": [
+																								0,
+																								0,
+																								3,
+																								1,
+																								142,
+																								128,
+																								6,
+																								101,
 																								81,
-																								113,
-																								114,
-																								114,
-																								75,
-																								93,
-																								195,
-																								9,
-																								214,
-																								56,
-																								97,
-																								249,
-																								238,
+																								168,
+																								27,
+																								49,
+																								130,
+																								88,
+																								112,
+																								158,
+																								218,
+																								247,
+																								221,
 																								31,
-																								174,
-																								172
+																								99,
+																								205,
+																								104,
+																								106,
+																								14,
+																								77,
+																								184,
+																								178,
+																								155,
+																								187,
+																								122,
+																								207,
+																								230,
+																								86,
+																								8,
+																								103,
+																								122,
+																								245,
+																								165,
+																								39,
+																								217,
+																								68,
+																								142,
+																								228,
+																								120,
+																								53,
+																								72,
+																								94,
+																								2,
+																								181,
+																								11,
+																								192,
+																								1,
+																								0,
+																								0,
+																								0
 																						],
-																						"DataRound": 0,
-																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAHK5gCXj49wXpUfVsiz2mAcRN0puUmiMheRnWw1EVY99AAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8ABAAAA"
 																				},
-																				"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA="
+																				"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAABkAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAA="
 																		}
 																]
 														}
@@ -365,7 +411,7 @@
 														"Msgs": {}
 												}
 										},
-										"StartValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+										"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
 								}
 						],
 						"Share": {
