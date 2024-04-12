@@ -90,25 +90,25 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		return dutyRunner.ProcessConsensus(signedSSVMessage)
 	case types.SSVPartialSignatureMsgType:
 		// Decode
-		signedMsg := &types.SignedPartialSignatureMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		psigMsgs := &types.PartialSignatureMessages{}
+		if err := psigMsgs.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
+		// Validate
 		if len(signedSSVMessage.OperatorID) != 1 {
-			return errors.New("SignedPartialSignatureMessage without single signer")
+			return errors.New("PartialSignatureMessage has more than 1 signer")
 		}
 
-		// Check signer consistency
-		if signedMsg.Signer != signedSSVMessage.OperatorID[0] {
-			return errors.New("SignedSSVMessage's signer not consistent with SignedPartialSignatureMessage's signer")
+		if err := psigMsgs.ValidateForSigner(signedSSVMessage.OperatorID[0]); err != nil {
+			return errors.Wrap(err, "invalid PartialSignatureMessages")
 		}
 
 		// Process
-		if signedMsg.Message.Type == types.PostConsensusPartialSig {
-			return dutyRunner.ProcessPostConsensus(signedMsg)
+		if psigMsgs.Type == types.PostConsensusPartialSig {
+			return dutyRunner.ProcessPostConsensus(psigMsgs)
 		}
-		return dutyRunner.ProcessPreConsensus(signedMsg)
+		return dutyRunner.ProcessPreConsensus(psigMsgs)
 	default:
 		return errors.New("unknown msg")
 	}

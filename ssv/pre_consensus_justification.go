@@ -63,24 +63,26 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 			return err
 		}
 
+		signer := msg.Messages[0].Signer
+
 		// check unique signers
-		if !signers[msg.Signer] {
-			signers[msg.Signer] = true
+		if !signers[signer] {
+			signers[signer] = true
 		} else {
 			return errors.New("duplicate signer")
 		}
 
 		// verify all justifications have the same root count
 		if i == 0 {
-			rootCount = len(msg.Message.Messages)
+			rootCount = len(msg.Messages)
 		} else {
-			if rootCount != len(msg.Message.Messages) {
+			if rootCount != len(msg.Messages) {
 				return errors.New("inconsistent root count")
 			}
 		}
 
 		// validate roots
-		for _, partialSigMessage := range msg.Message.Messages {
+		for _, partialSigMessage := range msg.Messages {
 			// validate roots
 			if i == 0 {
 				// check signer did not sign duplicate root
