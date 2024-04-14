@@ -51,10 +51,17 @@ func (v *Validator) StartDuty(duty *types.BeaconDuty) error {
 
 // ProcessMessage processes Network Message of all types
 func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
-	msg, err := signedSSVMessage.VerifyAndDecodeData(v.SignatureVerifier, v.Operator.Committee)
-	if err != nil {
-		return err
+	// Validate message
+	if err := signedSSVMessage.Validate(); err != nil {
+		return errors.Wrap(err, "invalid SignedSSVMessage")
 	}
+
+	// Verify SignedSSVMessage's signature
+	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.Share.Committee); err != nil {
+		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
+	}
+
+	msg := signedSSVMessage.SSVMessage
 
 	// Get runner
 	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
@@ -70,35 +77,38 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
 		// Decode
-		signedMsg := &qbft.SignedMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		qbftMsg := &qbft.Message{}
+		if err := qbftMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
 
-		// Check signer consistency
-		if !signedMsg.CommonSigners([]types.OperatorID{signedSSVMessage.OperatorID}) {
-			return errors.New("SignedSSVMessage's signer not consistent with SignedMessage's signers")
+		if err := qbftMsg.Validate(); err != nil {
+			return errors.Wrap(err, "invalid qbft Message")
 		}
 
 		// Process
-		return dutyRunner.ProcessConsensus(signedMsg)
+		return dutyRunner.ProcessConsensus(signedSSVMessage)
 	case types.SSVPartialSignatureMsgType:
 		// Decode
-		signedMsg := &types.SignedPartialSignatureMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		psigMsgs := &types.PartialSignatureMessages{}
+		if err := psigMsgs.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
-		// Check signer consistency
-		if signedMsg.Signer != signedSSVMessage.OperatorID {
-			return errors.New("SignedSSVMessage's signer not consistent with SignedPartialSignatureMessage's signer")
+		// Validate
+		if len(signedSSVMessage.OperatorID) != 1 {
+			return errors.New("PartialSignatureMessage has more than 1 signer")
+		}
+
+		if err := psigMsgs.ValidateForSigner(signedSSVMessage.OperatorID[0]); err != nil {
+			return errors.Wrap(err, "invalid PartialSignatureMessages")
 		}
 
 		// Process
-		if signedMsg.Message.Type == types.PostConsensusPartialSig {
-			return dutyRunner.ProcessPostConsensus(signedMsg)
+		if psigMsgs.Type == types.PostConsensusPartialSig {
+			return dutyRunner.ProcessPostConsensus(psigMsgs)
 		}
-		return dutyRunner.ProcessPreConsensus(signedMsg)
+		return dutyRunner.ProcessPreConsensus(psigMsgs)
 	default:
 		return errors.New("unknown msg")
 	}

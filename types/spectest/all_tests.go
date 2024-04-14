@@ -28,7 +28,6 @@ var AllTests = []SpecTest{
 	partialsigmessage.Encoding(),
 	partialsigmessage.InvalidMsg(),
 	partialsigmessage.MessageSigner0(),
-	partialsigmessage.SignedMsgSigner0(),
 	partialsigmessage.NoMsgs(),
 	partialsigmessage.SigValid(),
 	partialsigmessage.PartialSigValid(),
@@ -101,10 +100,9 @@ var AllTests = []SpecTest{
 
 	signedssvmsg.Encoding(),
 	signedssvmsg.Valid(),
-	signedssvmsg.NoData(),
+	signedssvmsg.NilSSVMessage(),
 	signedssvmsg.EmptySignature(),
 	signedssvmsg.ZeroSigner(),
-	signedssvmsg.WrongData(),
 
 	share.HasPartialQuorumButNoQuorum(),
 	share.HasQuorum(),

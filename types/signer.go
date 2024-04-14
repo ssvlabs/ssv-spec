@@ -12,7 +12,7 @@ import (
 type SignatureDomain []byte
 type Signature []byte
 type SignatureType [4]byte
-type SignSSVMessageF = func(data []byte) ([256]byte, error)
+type SignSSVMessageF = func(ssvMessage *SSVMessage) ([]byte, error)
 
 func (sigType SignatureType) Equal(other SignatureType) bool {
 	return bytes.Equal(sigType[:], other[:])
@@ -35,7 +35,7 @@ type BeaconSigner interface {
 
 // OperatorSigner used for to sign protocol messages
 type OperatorSigner interface {
-	SignSSVMessage(data []byte) ([256]byte, error)
+	SignSSVMessage(ssvMsg *SSVMessage) ([]byte, error)
 }
 
 // ShareSigner used for signing with the operator's share

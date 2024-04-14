@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-	"fmt"
 
 	"github.com/pkg/errors"
 )
@@ -142,133 +141,205 @@ func (msg *SSVMessage) Decode(data []byte) error {
 
 // SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
-	Signature  [256]byte // Created by the operator's network key
-	OperatorID OperatorID
-	Data       []byte
+	Signature  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
+	OperatorID []OperatorID `ssz-max:"13"`
+	SSVMessage *SSVMessage
+	// Full data max value is ConsensusData max value ~= 2^8 + 8 + 2^20 + 2^22 = 5243144
+	FullData []byte `ssz-max:"5243144"`
 }
 
 // GetOperatorID returns the sender operator ID
-func (msg *SignedSSVMessage) GetOperatorID() OperatorID {
+func (msg *SignedSSVMessage) GetOperatorID() []OperatorID {
 	return msg.OperatorID
 }
 
 // GetSignature returns the signature of the OperatorID over Data
-func (msg *SignedSSVMessage) GetSignature() [256]byte {
+func (msg *SignedSSVMessage) GetSignature() [][]byte {
 	return msg.Signature
 }
 
 // GetData returns message Data as byte slice
-func (msg *SignedSSVMessage) GetData() []byte {
-	return msg.Data
-}
-
-// GetSSVMessageFromData returns message SSVMessage decoded from data
-func (msg *SignedSSVMessage) GetSSVMessageFromData() (*SSVMessage, error) {
-	ssvMessage := &SSVMessage{}
-	err := ssvMessage.Decode(msg.Data)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not decode SSVMessage from data in SignedSSVMessage")
-	}
-	return ssvMessage, nil
+func (msg *SignedSSVMessage) GetSSVMessage() *SSVMessage {
+	return msg.SSVMessage
 }
 
 // Encode returns a msg encoded bytes or error
 func (msg *SignedSSVMessage) Encode() ([]byte, error) {
-	return EncodeSignedSSVMessage(msg.Data, msg.OperatorID, msg.Signature), nil
+	return msg.MarshalSSZ()
 }
 
 // Decode returns error if decoding failed
 func (msg *SignedSSVMessage) Decode(data []byte) error {
-	msgData, operatorID, signature, err := DecodeSignedSSVMessage(data)
-	if err != nil {
-		return errors.Wrap(err, "could not decode data into a SignedSSVMessage")
-	}
-	msg.Data = msgData
-	msg.OperatorID = operatorID
-	msg.Signature = signature
-	return nil
+	return msg.UnmarshalSSZ(data)
+}
+
+// GetRoot returns the root
+func (msg *SignedSSVMessage) GetRoot() ([32]byte, error) {
+	return msg.HashTreeRoot()
 }
 
 // Validate checks the following rules:
-// - OperatorID should not be 0
-// - Data length should not be 0
+// - OperatorID must have at least one element
+// - Any OperatorID must not be 0
+// - The number of signatures and OperatorIDs must be the same
+// - Any signature must not have length 0
+// - SSVMessage must not be nil
 func (msg *SignedSSVMessage) Validate() error {
-	if msg.OperatorID == 0 {
-		return errors.New("signer ID 0 not allowed")
+	// Validate OperatorID field
+	if len(msg.OperatorID) == 0 {
+		return errors.New("no signers")
 	}
-	if len(msg.Data) == 0 {
-		return errors.New("Data has length 0 in SignedSSVMessage")
+	// Check unique signers
+	signed := make(map[OperatorID]bool)
+	for _, operatorID := range msg.OperatorID {
+		if signed[operatorID] {
+			return errors.New("non unique signer")
+		}
+		if operatorID == 0 {
+			return errors.New("signer ID 0 not allowed")
+		}
+		signed[operatorID] = true
 	}
+	// Validate Signature field
+	if len(msg.Signature) == 0 {
+		return errors.New("no signatures")
+	}
+	for _, signature := range msg.Signature {
+		if len(signature) == 0 {
+			return errors.New("empty signature")
+		}
+	}
+	// Check that the numbers of signatures and signers are equal
+	if len(msg.Signature) != len(msg.OperatorID) {
+		return errors.New("number of signatures is different than number of signers")
+	}
+	// Validate SSVMessage
+	if msg.SSVMessage == nil {
+		return errors.New("nil SSVMessage")
+	}
+
 	return nil
-}
-
-func (msg *SignedSSVMessage) ValidateWithSig(verifier SignatureVerifier, committeeOperators []*CommitteeMember) error {
-	if err := msg.Validate(); err != nil {
-		return err
-	}
-	if err := verifier.Verify(msg, committeeOperators); err != nil {
-		return errors.Wrap(err, "invalid signature")
-	}
-	return nil
-}
-
-// EncodeSignedSSVMessage serializes the message, op id and signature into bytes
-func EncodeSignedSSVMessage(message []byte, operatorID OperatorID, signature [256]byte) []byte {
-	b := make([]byte, signatureSize+operatorIDSize+len(message))
-	copy(b[signatureOffset:], signature[:])
-	binary.LittleEndian.PutUint64(b[operatorIDOffset:], operatorID)
-	copy(b[messageOffset:], message)
-	return b
-}
-
-// DecodeSignedSSVMessage deserializes signed message bytes messsage, op id and a signature
-func DecodeSignedSSVMessage(encoded []byte) ([]byte, OperatorID, [256]byte, error) {
-	if len(encoded) < messageOffset {
-		return nil, 0, [256]byte{}, fmt.Errorf("unexpected encoded message size of %d", len(encoded))
-	}
-
-	message := encoded[messageOffset:]
-	operatorID := binary.LittleEndian.Uint64(encoded[operatorIDOffset : operatorIDOffset+operatorIDSize])
-	signature := [256]byte{}
-	copy(signature[:], encoded[signatureOffset:signatureOffset+signatureSize])
-	return message, operatorID, signature, nil
-}
-
-// VerifyAndDecodeData verifies the signature of the SignedSSVMessage and decodes the nested SSVMessage
-func (msg *SignedSSVMessage) VerifyAndDecodeData(verifier SignatureVerifier,
-	committee []*CommitteeMember) (*SSVMessage, error) {
-	// Validate message
-	if err := msg.Validate(); err != nil {
-		return nil, errors.Wrap(err, "invalid SignedSSVMessage")
-	}
-
-	// Verify SignedSSVMessage's signature
-	if err := verifier.Verify(msg, committee); err != nil {
-		return nil, errors.Wrap(err, "SignedSSVMessage has an invalid signature")
-	}
-
-	// Decode the nested SSVMessage
-	ssvMsg := &SSVMessage{}
-	if err := ssvMsg.Decode(msg.Data); err != nil {
-		return nil, errors.Wrap(err, "could not decode data into an SSVMessage")
-	}
-	return ssvMsg, nil
 }
 
 func SSVMessageToSignedSSVMessage(msg *SSVMessage, operatorID OperatorID, signSSVMessageF SignSSVMessageF) (*SignedSSVMessage, error) {
-	encodedSSVMsg, err := msg.Encode()
-	if err != nil {
-		return nil, errors.Wrap(err, "could not encode SSVMessage")
-	}
-
-	sig, err := signSSVMessageF(encodedSSVMsg)
+	sig, err := signSSVMessageF(msg)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign SSVMessage")
 	}
 
 	return &SignedSSVMessage{
-		Signature:  sig,
-		OperatorID: operatorID,
-		Data:       encodedSSVMsg,
+		Signature:  [][]byte{sig},
+		OperatorID: []OperatorID{operatorID},
+		SSVMessage: msg,
 	}, nil
+}
+
+// DeepCopy returns a new instance of SignedMessage, deep copied
+func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
+	ret := &SignedSSVMessage{
+		OperatorID: make([]OperatorID, len(signedMsg.GetOperatorID())),
+		Signature:  make([][]byte, len(signedMsg.Signature)),
+	}
+	copy(ret.OperatorID, signedMsg.GetOperatorID())
+	copy(ret.Signature, signedMsg.Signature)
+
+	retSSV := &SSVMessage{
+		MsgType: signedMsg.SSVMessage.MsgType,
+		Data:    make([]byte, len(signedMsg.SSVMessage.Data)),
+	}
+	msgID := [56]byte{}
+	copy(msgID[:], signedMsg.SSVMessage.MsgID[:])
+	retSSV.MsgID = msgID
+
+	copy(retSSV.Data, signedMsg.SSVMessage.Data)
+
+	if len(signedMsg.FullData) > 0 {
+		ret.FullData = make([]byte, len(signedMsg.FullData))
+		copy(ret.FullData, signedMsg.FullData)
+	}
+	ret.SSVMessage = retSSV
+	return ret
+}
+
+// MatchedSigners returns true if the provided signer ids are equal to GetOperatorID() without order significance
+func (msg *SignedSSVMessage) MatchedSigners(ids []OperatorID) bool {
+	if len(msg.GetOperatorID()) != len(ids) {
+		return false
+	}
+
+	for _, id := range msg.GetOperatorID() {
+		found := false
+		for _, id2 := range ids {
+			if id == id2 {
+				found = true
+			}
+		}
+
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
+// CommonSigners returns true if there is at least 1 common signer
+func (msg *SignedSSVMessage) CommonSigners(ids []OperatorID) bool {
+	for _, id := range msg.GetOperatorID() {
+		for _, id2 := range ids {
+			if id == id2 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
+func (msg *SignedSSVMessage) Aggregate(msgToAggregate *SignedSSVMessage) error {
+	if msg.CommonSigners(msgToAggregate.GetOperatorID()) {
+		return errors.New("duplicate signers")
+	}
+
+	e1, err := msg.SSVMessage.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not get own encoded SSVMessage")
+	}
+	e2, err := msgToAggregate.SSVMessage.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not get encoded SSVMessage to be aggregated")
+	}
+	if !bytes.Equal(e1[:], e2[:]) {
+		return errors.New("can't aggregate, encoded messages not equal")
+	}
+
+	msg.Signature = append(msg.Signature, msgToAggregate.Signature...)
+	msg.OperatorID = append(msg.OperatorID, msgToAggregate.GetOperatorID()...)
+
+	return nil
+}
+
+// Check if all signedMsg's signers belong to the given committee in O(n+m)
+func (msg *SignedSSVMessage) CheckSignersInCommittee(committee []*Operator) bool {
+	// Committee's operators map
+	committeeMap := make(map[uint64]struct{})
+	for _, operator := range committee {
+		committeeMap[operator.OperatorID] = struct{}{}
+	}
+
+	// Check that all message signers belong to the map
+	for _, signer := range msg.GetOperatorID() {
+		if _, ok := committeeMap[signer]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
+// WithoutFullData returns SignedMessage without full data
+func (msg *SignedSSVMessage) WithoutFullData() *SignedSSVMessage {
+	return &SignedSSVMessage{
+		OperatorID: msg.OperatorID,
+		Signature:  msg.Signature,
+		SSVMessage: msg.SSVMessage,
+	}
 }

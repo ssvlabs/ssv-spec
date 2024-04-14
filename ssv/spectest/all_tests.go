@@ -49,7 +49,7 @@ var AllTests = []tests.TestF{
 	postconsensus.InvalidThenQuorum,
 	postconsensus.InvalidQuorumThenValidQuorum,
 	postconsensus.InconsistentOperatorSigner,
-	postconsensus.InvalidDecode,
+	postconsensus.NilSSVMessage,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -141,7 +141,7 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidThenQuorum,
 	preconsensus.InvalidQuorumThenValidQuorum,
 	preconsensus.InconsistentOperatorSigner,
-	preconsensus.InvalidDecode,
+	preconsensus.NilSSVMessage,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,

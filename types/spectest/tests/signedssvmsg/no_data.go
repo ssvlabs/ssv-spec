@@ -5,18 +5,18 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// NoData tests an invalid SignedSSVMessageTest with empty data
-func NoData() *SignedSSVMessageTest {
+// NilSSVMessage tests an invalid SignedSSVMessageTest with nil SSVMessage
+func NilSSVMessage() *SignedSSVMessageTest {
 
 	return &SignedSSVMessageTest{
-		Name: "no data",
+		Name: "nil ssvmessage",
 		Messages: []*types.SignedSSVMessage{
 			{
-				OperatorID: 1,
-				Signature:  testingutils.TestingSignedSSVMessageSignature,
-				Data:       []byte{},
+				OperatorID: []types.OperatorID{1},
+				Signature:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
+				SSVMessage: nil,
 			},
 		},
-		ExpectedError: "Data has length 0 in SignedSSVMessage",
+		ExpectedError: "nil SSVMessage",
 	}
 }

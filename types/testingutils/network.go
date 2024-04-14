@@ -28,12 +28,7 @@ func (net *TestingNetwork) Broadcast(message *types.SignedSSVMessage) error {
 func ConvertBroadcastedMessagesToSSVMessages(signedMessages []*types.SignedSSVMessage) []*types.SSVMessage {
 	ret := make([]*types.SSVMessage, 0)
 	for _, msg := range signedMessages {
-		ssvMsg := &types.SSVMessage{}
-		err := ssvMsg.Decode(msg.Data)
-		if err != nil {
-			panic(err)
-		}
-		ret = append(ret, ssvMsg)
+		ret = append(ret, msg.SSVMessage)
 	}
 	return ret
 }

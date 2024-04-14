@@ -16,7 +16,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 	panic("implement me")
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "failed processing post consensus message: invalid post-consensus message: SignedPartialSignatureMessage invalid: inconsistent signers"
+	expectedError := "SignedSSVMessage has an invalid signature: unknown signer"
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus inconsistent beacon signer",
@@ -30,11 +30,11 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongSignerMsg(ks.Shares[1], 1, 5, ks))),
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 				},
 				PostDutyRunnerStateRoot: inconsistentBeaconSignerSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     inconsistentBeaconSignerSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
@@ -48,17 +48,32 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusSigAggregatorWrongBeaconSignerMsg(ks.Shares[1], 1, 5))),
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: inconsistentBeaconSignerAggregatorSC().Root(),
 				PostDutyRunnerState:     inconsistentBeaconSignerAggregatorSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
 			{
 				Name: "attester and sync committee",
+				Runner: decideRunner(
+					testingutils.AttesterRunner(ks),
+					&testingutils.TestingAttesterDuty,
+					testingutils.TestAttesterConsensusData,
+				),
+				Duty: &testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+				},
+				PostDutyRunnerStateRoot: inconsistentBeaconSignerAttesterSC().Root(),
+				PostDutyRunnerState:     inconsistentBeaconSignerAttesterSC().ExpectedState,
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+				ExpectedError:           expectedError,
 			},
 		},
 	}
@@ -74,11 +89,11 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 1, 5, version))),
+				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 			},
 			PostDutyRunnerStateRoot: inconsistentBeaconSignerProposerSC(version).Root(),
 			PostDutyRunnerState:     inconsistentBeaconSignerProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 			ExpectedError:           expectedError,
@@ -96,11 +111,11 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 1, 5, version))),
+				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 			},
 			PostDutyRunnerStateRoot: inconsistentBeaconSignerBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     inconsistentBeaconSignerBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 			ExpectedError:           expectedError,

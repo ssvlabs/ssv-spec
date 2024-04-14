@@ -14,22 +14,22 @@ func OldRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 10
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 10),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(
-		ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+		ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		testingutils.MarshalJustifications(rcMsgs), nil)
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], 1, 9),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], 1, 9),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare prev round",
 		Pre:           pre,
-		PostRoot:      "aeb7b4349c38d35cf5a16d25ca6019282e1ff24e3b230ed92463bddd55f6059f",
+		PostRoot:      "4bc8edb51154291cf0a94c7ffb9d0b3eba7fe41ef25aa844d8a8a4e7412e417c",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: past round",
 	}

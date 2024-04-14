@@ -8,18 +8,27 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
+<<<<<<< HEAD:ssv/spectest/tests/runner/postconsensus/invalid_decode.go
 // InvalidDecode tests a SignedSSVMessage with wrong data that can't be decoded
 func InvalidDecode() tests.SpecTest {
 
 	panic("implement me")
 
+=======
+// NilSSVMessage tests a SignedSSVMessage with a nil SSVMessage
+func NilSSVMessage() tests.SpecTest {
+>>>>>>> msg_structures_rsa:ssv/spectest/tests/runner/postconsensus/nil_ssvmessage.go
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "could not decode data into an SSVMessage: incorrect size"
+	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
 
-	invalidMsg := testingutils.SignedSSVMessageOnData(1, ks.OperatorKeys[1], []byte{1, 2, 3, 4})
+	invalidMsg := &types.SignedSSVMessage{
+		Signature:  [][]byte{{1, 2, 3, 4}},
+		OperatorID: []types.OperatorID{1},
+		SSVMessage: nil,
+	}
 
 	return &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus invalid decode",
+		Name: "post consensus nil ssvmessage",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -31,12 +40,30 @@ func InvalidDecode() tests.SpecTest {
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages:                []*types.SignedSSVMessage{invalidMsg},
 				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
 			{
+<<<<<<< HEAD:ssv/spectest/tests/runner/postconsensus/invalid_decode.go
+=======
+				Name: "sync committee",
+				Runner: decideRunner(
+					testingutils.SyncCommitteeRunner(ks),
+					&testingutils.TestingSyncCommitteeDuty,
+					testingutils.TestSyncCommitteeConsensusData,
+				),
+				Duty:                    &testingutils.TestingSyncCommitteeDuty,
+				Messages:                []*types.SignedSSVMessage{invalidMsg},
+				PostDutyRunnerStateRoot: "599f535071e53121470fc10c80fad5d103340eba90dcd9672cff3e7a874de276",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+				ExpectedError:           expectedError,
+			},
+			{
+>>>>>>> msg_structures_rsa:ssv/spectest/tests/runner/postconsensus/nil_ssvmessage.go
 				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
@@ -46,7 +73,7 @@ func InvalidDecode() tests.SpecTest {
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages:                []*types.SignedSSVMessage{invalidMsg},
 				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
@@ -61,7 +88,7 @@ func InvalidDecode() tests.SpecTest {
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages:                []*types.SignedSSVMessage{invalidMsg},
 				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
@@ -76,13 +103,29 @@ func InvalidDecode() tests.SpecTest {
 				Duty:                    &testingutils.TestingAggregatorDuty,
 				Messages:                []*types.SignedSSVMessage{invalidMsg},
 				PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
 			{
+<<<<<<< HEAD:ssv/spectest/tests/runner/postconsensus/invalid_decode.go
 				Name: "attester and sync committee",
+=======
+				Name: "attester",
+				Runner: decideRunner(
+					testingutils.AttesterRunner(ks),
+					&testingutils.TestingAttesterDuty,
+					testingutils.TestAttesterConsensusData,
+				),
+				Duty:                    &testingutils.TestingAttesterDuty,
+				Messages:                []*types.SignedSSVMessage{invalidMsg},
+				PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+				ExpectedError:           expectedError,
+>>>>>>> msg_structures_rsa:ssv/spectest/tests/runner/postconsensus/nil_ssvmessage.go
 			},
 		},
 	}

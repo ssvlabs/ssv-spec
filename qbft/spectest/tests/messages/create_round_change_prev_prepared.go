@@ -1,7 +1,6 @@
 package messages
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -11,14 +10,14 @@ import (
 func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.CreateMsgSpecTest{
-		CreateType: tests.CreateProposal,
+		CreateType: tests.CreateRoundChange,
 		Name:       "create round change previously prepared",
 		Value:      [32]byte{1, 2, 3, 4},
-		PrepareJustifications: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-			testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-			testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+		PrepareJustifications: []*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 		},
-		ExpectedRoot: "a095b2f42e32e62980d9675cfcf3a58ed4da4d05b63463e182a451461de3b44e",
+		ExpectedRoot: "d31ba4f08c790d96b6951cf632c51923ce3e77fbc896336b1def371476b13743",
 	}
 }

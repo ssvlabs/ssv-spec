@@ -14,7 +14,7 @@ func PartialSigValid() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "partial sig valid",
-		Messages: []*types.SignedPartialSignatureMessage{
+		Messages: []*types.PartialSignatureMessages{
 			msg,
 		},
 	}

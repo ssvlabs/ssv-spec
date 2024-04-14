@@ -1,11 +1,11 @@
 package messages
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
+	"crypto/rsa"
+
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // SignedMsgDuplicateSigners tests SignedMessage with duplicate signers
@@ -13,14 +13,14 @@ func SignedMsgDuplicateSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingCommitMultiSignerMessage(
-		[]*bls.SecretKey{ks.Shares[1], ks.Shares[1], ks.Shares[2]},
+		[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[1], ks.OperatorKeys[2]},
 		[]types.OperatorID{1, 2, 3},
 	)
-	msg.Signers = []types.OperatorID{1, 1, 2}
+	msg.OperatorID = []types.OperatorID{1, 1, 2}
 
 	return &tests.MsgSpecTest{
 		Name: "duplicate signers",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		ExpectedError: "non unique signer",

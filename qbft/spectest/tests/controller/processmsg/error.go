@@ -1,8 +1,8 @@
 package processmsg
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -15,8 +15,8 @@ func MsgError() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
-					testingutils.TestingProposalMessageWithRound(ks.Shares[1], 1, 100),
+				InputMessages: []*types.SignedSSVMessage{
+					testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], 1, 100),
 				},
 				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},

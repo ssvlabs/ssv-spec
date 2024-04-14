@@ -23,8 +23,8 @@ type MsgProcessingSpecTest struct {
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
-	InputMessages      []*qbft.SignedMessage
-	OutputMessages     []*qbft.SignedMessage
+	InputMessages      []*types.SignedSSVMessage
+	OutputMessages     []*types.SignedSSVMessage
 	ExpectedError      string
 	ExpectedTimerState *testingutils.TimerState
 }
@@ -56,15 +56,13 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	// test output message
 	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, test.Pre.State.Share.Committee))
-	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
-	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
-		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
+	if len(test.OutputMessages) > 0 || len(broadcastedSignedMsgs) > 0 {
+		require.Len(t, broadcastedSignedMsgs, len(test.OutputMessages))
 
 		for i, msg := range test.OutputMessages {
 			r1, _ := msg.GetRoot()
 
-			msg2 := &qbft.SignedMessage{}
-			require.NoError(t, msg2.Decode(broadcastedMsgs[i].Data))
+			msg2 := broadcastedSignedMsgs[i]
 			r2, _ := msg2.GetRoot()
 
 			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))

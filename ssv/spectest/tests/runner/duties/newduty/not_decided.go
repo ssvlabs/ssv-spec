@@ -42,22 +42,42 @@ func NotDecided() tests.SpecTest {
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				PostDutyRunnerStateRoot: notDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     notDecidedSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
+<<<<<<< HEAD
+=======
+				Name:                    "sync committee",
+				Runner:                  startRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: notDecidedSyncCommitteeSC().Root(),
+				PostDutyRunnerState:     notDecidedSyncCommitteeSC().ExpectedState,
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+>>>>>>> msg_structures_rsa
 				Name:                    "aggregator",
 				Runner:                  startRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
 				PostDutyRunnerStateRoot: notDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     notDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
+<<<<<<< HEAD
 				Name: "attester and sync committee",
+=======
+				Name:                    "attester",
+				Runner:                  startRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
+				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
+				PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
+				PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,
+				OutputMessages:          []*types.PartialSignatureMessages{},
+>>>>>>> msg_structures_rsa
 			},
 		},
 	}
@@ -70,7 +90,7 @@ func NotDecided() tests.SpecTest {
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
 			PostDutyRunnerStateRoot: notDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}
@@ -84,7 +104,7 @@ func NotDecided() tests.SpecTest {
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
 			PostDutyRunnerStateRoot: notDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}
