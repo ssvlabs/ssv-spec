@@ -27,7 +27,7 @@ type ProposerRunner struct {
 
 func NewProposerRunner(
 	beaconNetwork types.BeaconNetwork,
-	share *types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
@@ -144,12 +144,9 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 		}
 	}
 
-	msg, err := r.BaseRunner.signBeaconObject(
-		r,
-		blkToSign,
+	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty), blkToSign,
 		decidedValue.Duty.Slot,
-		types.DomainProposer,
-	)
+		types.DomainProposer)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -160,7 +157,8 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID, r.GetShare().OperatorID, r.operatorSigner)
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID, r.BaseRunner.OperatorID,
+		r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign post-consensus partial signature message")
 	}
@@ -255,7 +253,8 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 func (r *ProposerRunner) executeDuty(duty types.Duty) error {
 	// sign partial randao
 	epoch := r.GetBeaconNode().GetBeaconNetwork().EstimatedEpochAtSlot(duty.DutySlot())
-	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZUint64(epoch), duty.DutySlot(), types.DomainRandao)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), types.SSZUint64(epoch), duty.DutySlot(),
+		types.DomainRandao)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")
 	}
@@ -266,7 +265,8 @@ func (r *ProposerRunner) executeDuty(duty types.Duty) error {
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.GetShare().OperatorID, r.operatorSigner)
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.BaseRunner.OperatorID,
+		r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
 	}
@@ -290,7 +290,11 @@ func (r *ProposerRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *ProposerRunner) GetShare() *types.Share {
-	return r.BaseRunner.Share
+	// TODO better solution for this
+	for _, share := range r.BaseRunner.Share {
+		return share
+	}
+	return nil
 }
 
 func (r *ProposerRunner) GetState() *State {

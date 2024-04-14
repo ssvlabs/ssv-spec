@@ -61,34 +61,36 @@ func (c *Cluster) StartDuty(duty *types.ClusterDuty) error {
 
 // ProcessMessage processes Network Message of all types
 func (c *Cluster) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
-	msg, err := signedSSVMessage.VerifyAndDecodeData(c.SignatureVerifier, c.Operator.Committee)
-	if err != nil {
-		return err
+	// Validate message
+	if err := signedSSVMessage.Validate(); err != nil {
+		return errors.Wrap(err, "invalid SignedSSVMessage")
 	}
 
-	if err := c.validateMessage(msg); err != nil {
-		return errors.Wrap(err, "Message invalid")
+	// Verify SignedSSVMessage's signature
+	if err := c.SignatureVerifier.Verify(signedSSVMessage, c.Operator.Committee); err != nil {
+		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
+
+	msg := signedSSVMessage.SSVMessage
 
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
-		signedMsg := &qbft.SignedMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		qbftMsg := &qbft.Message{}
+		if err := qbftMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
-		runner := c.Runners[spec.Slot(signedMsg.Message.Height)]
+		runner := c.Runners[spec.Slot(qbftMsg.Height)]
 		// TODO: check if runner is nil
-		return runner.ProcessConsensus(signedMsg)
+		return runner.ProcessConsensus(qbftMsg)
 	case types.SSVPartialSignatureMsgType:
-		signedMsg := &types.SignedPartialSignatureMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		pSigMessages := &types.PartialSignatureMessages{}
+		if err := pSigMessages.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
-
-		if signedMsg.Message.Type == types.PostConsensusPartialSig {
-			runner := c.Runners[signedMsg.Message.Slot]
+		if pSigMessages.Type == types.PostConsensusPartialSig {
+			runner := c.Runners[pSigMessages.Slot]
 			// TODO: check if runner is nil
-			return runner.ProcessPostConsensus(signedMsg)
+			return runner.ProcessPostConsensus(pSigMessages)
 		}
 	default:
 		return errors.New("unknown msg")

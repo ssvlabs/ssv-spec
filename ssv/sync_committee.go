@@ -80,7 +80,7 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage
 	if err != nil {
 		return errors.Wrap(err, "could not get sync committee block root")
 	}
-	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZBytes(root[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty, types.SSZBytes(root[:]), decidedValue.Duty.Slot, types.DomainSyncCommittee)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}

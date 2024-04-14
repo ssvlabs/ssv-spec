@@ -45,7 +45,8 @@ func NewValidatorRegistrationRunner(
 	}
 }
 
-func (r *ValidatorRegistrationRunner) StartNewDuty(duty *types.BeaconDuty) error {
+func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty) error {
+	r.executeDuty()
 	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
 }
@@ -106,14 +107,15 @@ func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]s
 	return nil, [4]byte{}, errors.New("no post consensus roots for validator registration")
 }
 
-func (r *ValidatorRegistrationRunner) executeDuty(duty *types.BeaconDuty) error {
+func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 	vr, err := r.calculateValidatorRegistration()
 	if err != nil {
 		return errors.Wrap(err, "could not calculate validator registration")
 	}
 
 	// sign partial randao
-	msg, err := r.BaseRunner.signBeaconObject(r, vr, duty.Slot, types.DomainApplicationBuilder)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), vr, duty.DutySlot(),
+		types.DomainApplicationBuilder)
 	if err != nil {
 		return errors.Wrap(err, "could not sign validator registration")
 	}

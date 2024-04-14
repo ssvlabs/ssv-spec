@@ -126,7 +126,7 @@ func (r *VoluntaryExitRunner) executeDuty(duty *types.BeaconDuty) error {
 	}
 
 	// get PartialSignatureMessage with voluntaryExit root and signature
-	msg, err := r.BaseRunner.signBeaconObject(r, voluntaryExit, duty.Slot, types.DomainVoluntaryExit)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty, voluntaryExit, duty.Slot, types.DomainVoluntaryExit)
 	if err != nil {
 		return errors.Wrap(err, "could not sign VoluntaryExit object")
 	}

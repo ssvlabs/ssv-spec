@@ -80,7 +80,7 @@ func (r *AttesterRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	}
 
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, attestationData, decidedValue.Duty.Slot, types.DomainAttester)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty, attestationData, decidedValue.Duty.Slot, types.DomainAttester)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}

@@ -1,14 +1,22 @@
 package types
 
+import "github.com/attestantio/go-eth2-client/spec/phase0"
+
 // Share holds all info about the validator share
 type Share struct {
-	ValidatorPubKey     ValidatorPK        `ssz-size:"48"`
-	SharePubKey         []ShareValidatorPK `ssz-size:"48"`
-	Committee           []ShareValidatorPK `ssz-max:"13"`
+	ValidatorPubKey     ValidatorPK      `ssz-size:"48"`
+	SharePubKey         ShareValidatorPK `ssz-size:"48"`
+	Committee           []ShareMember    `ssz-max:"13"`
 	Quorum              uint64
 	DomainType          DomainType `ssz-size:"4"`
 	FeeRecipientAddress [20]byte   `ssz-size:"20"`
 	Graffiti            []byte     `ssz-size:"32"`
+}
+
+// ShareMember holds ShareValidatorPK and ValidatorIndex
+type ShareMember struct {
+	SharePubKey    ShareValidatorPK `ssz-size:"48"`
+	ValidatorIndex phase0.ValidatorIndex
 }
 
 // HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure

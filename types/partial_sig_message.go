@@ -61,7 +61,7 @@ func (msgs PartialSignatureMessages) Validate() error {
 	return nil
 }
 
-func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error {
+func (msgs PartialSignatureMessages) ValidateForSigner(signer phase0.ValidatorIndex) error {
 	if err := msgs.Validate(); err != nil {
 		return err
 	}

@@ -26,7 +26,7 @@ type SyncCommitteeAggregatorRunner struct {
 
 func NewSyncCommitteeAggregatorRunner(
 	beaconNetwork types.BeaconNetwork,
-	share *types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
@@ -52,7 +52,7 @@ func NewSyncCommitteeAggregatorRunner(
 	}
 }
 
-func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty *types.BeaconDuty) error {
+func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty types.Duty) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty)
 }
 
@@ -99,7 +99,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Par
 		}
 
 		// fetch sync committee contribution
-		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(r.GetState().StartingDuty.ValidatorSyncCommitteeIndices[i]))
+		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(r.GetState().StartingDuty.(*types.BeaconDuty).ValidatorSyncCommitteeIndices[i]))
 		if err != nil {
 			return errors.Wrap(err, "could not get sync committee subnet ID")
 		}
@@ -113,10 +113,10 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Par
 		return nil
 	}
 
-	duty := r.GetState().StartingDuty
+	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
 
 	// fetch contributions
-	contributions, ver, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.Slot, selectionProofs, subnets)
+	contributions, ver, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.DutySlot(), selectionProofs, subnets)
 	if err != nil {
 		return errors.Wrap(err, "could not get sync committee contribution")
 	}
@@ -162,7 +162,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 			return errors.Wrap(err, "could not generate contribution and proof")
 		}
 
-		signed, err := r.BaseRunner.signBeaconObject(r, contribAndProof, decidedValue.Duty.Slot, types.DomainContributionAndProof)
+		signed, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty), contribAndProof,
+			decidedValue.Duty.Slot,
+			types.DomainContributionAndProof)
 		if err != nil {
 			return errors.Wrap(err, "failed to sign aggregate and proof")
 		}
@@ -176,7 +178,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID, r.GetShare().OperatorID, r.operatorSigner)
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID,
+		r.BaseRunner.OperatorID,
+		r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign post-consensus partial signature message")
 	}
@@ -267,13 +271,13 @@ func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib alt
 
 func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	sszIndexes := make([]ssz.HashRoot, 0)
-	for _, index := range r.GetState().StartingDuty.ValidatorSyncCommitteeIndices {
+	for _, index := range r.GetState().StartingDuty.(*types.BeaconDuty).ValidatorSyncCommitteeIndices {
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(index))
 		if err != nil {
 			return nil, types.DomainError, errors.Wrap(err, "could not get sync committee subnet ID")
 		}
 		data := &altair.SyncAggregatorSelectionData{
-			Slot:              r.GetState().StartingDuty.Slot,
+			Slot:              r.GetState().StartingDuty.DutySlot(),
 			SubcommitteeIndex: subnet,
 		}
 		sszIndexes = append(sszIndexes, data)
@@ -305,23 +309,24 @@ func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([
 // 2) Reconstruct contribution proofs, check IsSyncCommitteeAggregator and start consensus on duty + contribution data
 // 3) Once consensus decides, sign partial contribution data (for each subcommittee) and broadcast
 // 4) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedContributionAndProof (for each subcommittee) sig to the BN
-func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.BeaconDuty) error {
+func (r *SyncCommitteeAggregatorRunner) executeDuty(duty types.Duty) error {
 	// sign selection proofs
 	msgs := &types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,
-		Slot:     duty.Slot,
+		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{},
 	}
-	for _, index := range r.GetState().StartingDuty.ValidatorSyncCommitteeIndices {
+	for _, index := range r.GetState().StartingDuty.(*types.BeaconDuty).ValidatorSyncCommitteeIndices {
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(index))
 		if err != nil {
 			return errors.Wrap(err, "could not get sync committee subnet ID")
 		}
 		data := &altair.SyncAggregatorSelectionData{
-			Slot:              duty.Slot,
+			Slot:              duty.DutySlot(),
 			SubcommitteeIndex: subnet,
 		}
-		msg, err := r.BaseRunner.signBeaconObject(r, data, duty.Slot, types.DomainSyncCommitteeSelectionProof)
+		msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), data, duty.DutySlot(),
+			types.DomainSyncCommitteeSelectionProof)
 		if err != nil {
 			return errors.Wrap(err, "could not sign sync committee selection proof")
 		}
@@ -330,7 +335,8 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.BeaconDuty) erro
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.GetShare().OperatorID, r.operatorSigner)
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.BaseRunner.OperatorID,
+		r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
 	}
@@ -354,7 +360,11 @@ func (r *SyncCommitteeAggregatorRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetShare() *types.Share {
-	return r.BaseRunner.Share
+	// TODO better solution for this
+	for _, share := range r.BaseRunner.Share {
+		return share
+	}
+	return nil
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetState() *State {

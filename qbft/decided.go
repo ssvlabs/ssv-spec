@@ -69,7 +69,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 func ValidateDecided(
 	config IConfig,
 	signedDecided *types.SignedSSVMessage,
-	share *types.Share,
+	share *types.Operator,
 ) error {
 
 	isDecided, err := IsDecidedMsg(share, signedDecided)
@@ -109,7 +109,7 @@ func ValidateDecided(
 }
 
 // IsDecidedMsg returns true if signed commit has all quorum sigs
-func IsDecidedMsg(share *types.Share, signedDecided *types.SignedSSVMessage) (bool, error) {
+func IsDecidedMsg(share *types.Operator, signedDecided *types.SignedSSVMessage) (bool, error) {
 
 	msg, err := GetMessageFromBytes(signedDecided.SSVMessage.Data)
 	if err != nil {

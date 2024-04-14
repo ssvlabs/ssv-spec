@@ -80,7 +80,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.PartialSignature
 		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 
-	duty := r.GetState().StartingDuty
+	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
 
 	// TODO waitToSlotTwoThirds
 
@@ -124,7 +124,10 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) e
 	}
 
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, aggregateAndProof, decidedValue.Duty.Slot, types.DomainAggregateAndProof)
+	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty),
+		aggregateAndProof,
+		decidedValue.Duty.Slot,
+		types.DomainAggregateAndProof)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
@@ -135,7 +138,8 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) e
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID, r.GetShare().OperatorID, r.operatorSigner)
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID,
+		r.BaseRunner.OperatorID, r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign post-consensus partial signature message")
 	}
@@ -186,7 +190,7 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.PartialSignatur
 }
 
 func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{types.SSZUint64(r.GetState().StartingDuty.Slot)}, types.DomainSelectionProof, nil
+	return []ssz.HashRoot{types.SSZUint64(r.GetState().StartingDuty.DutySlot())}, types.DomainSelectionProof, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
@@ -207,7 +211,8 @@ func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedAggregateSubmitRequest sig to the BN
 func (r *AggregatorRunner) executeDuty(duty types.Duty) error {
 	// sign selection proof
-	msg, err := r.BaseRunner.signBeaconObject(r, types.SSZUint64(duty.DutySlot()), duty.DutySlot(), types.DomainSelectionProof)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), types.SSZUint64(duty.DutySlot()), duty.DutySlot(),
+		types.DomainSelectionProof)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")
 	}
@@ -218,7 +223,8 @@ func (r *AggregatorRunner) executeDuty(duty types.Duty) error {
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.GetShare().OperatorID, r.operatorSigner)
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.BaseRunner.OperatorID,
+		r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
 	}
@@ -242,9 +248,11 @@ func (r *AggregatorRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *AggregatorRunner) GetShare() *types.Share {
+	// TODO better solution for this
 	for _, share := range r.BaseRunner.Share {
 		return share
 	}
+	return nil
 }
 
 func (r *AggregatorRunner) GetState() *State {

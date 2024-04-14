@@ -319,7 +319,7 @@ func (msg *SignedSSVMessage) Aggregate(msgToAggregate *SignedSSVMessage) error {
 }
 
 // Check if all signedMsg's signers belong to the given committee in O(n+m)
-func (msg *SignedSSVMessage) CheckSignersInCommittee(committee []*Operator) bool {
+func (msg *SignedSSVMessage) CheckSignersInCommittee(committee []*CommitteeMember) bool {
 	// Committee's operators map
 	committeeMap := make(map[uint64]struct{})
 	for _, operator := range committee {

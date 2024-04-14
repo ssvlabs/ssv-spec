@@ -92,12 +92,12 @@ func (cr ClusterRunner) HasRunningDuty() bool {
 	return cr.BaseRunner.hasRunningDuty()
 }
 
-func (cr ClusterRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
+func (cr ClusterRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (cr ClusterRunner) ProcessConsensus(msg *qbft.SignedMessage) error {
+func (cr ClusterRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	decided, decidedValue, err := cr.BaseRunner.baseConsensusMsgProcessing(cr, msg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
@@ -123,7 +123,7 @@ func (cr ClusterRunner) ProcessConsensus(msg *qbft.SignedMessage) error {
 		case types.BNRoleAttester:
 			attestationData := constructAttestationData(beaconVote, duty)
 
-			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, attestationData, decidedValue.Duty.Slot, types.DomainAttester)
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, attestationData, decidedValue.Duty.Slot, types.DomainAttester)
 			if err != nil {
 				return errors.Wrap(err, "failed signing attestation data")
 			}
@@ -131,7 +131,7 @@ func (cr ClusterRunner) ProcessConsensus(msg *qbft.SignedMessage) error {
 
 		case types.BNRoleSyncCommittee:
 			syncCommitteeMessage := ConstructSyncCommittee(beaconVote, duty)
-			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, syncCommitteeMessage, decidedValue.Duty.Slot, types.DomainSyncCommittee)
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, syncCommitteeMessage, decidedValue.Duty.Slot, types.DomainSyncCommittee)
 			if err != nil {
 				return errors.Wrap(err, "failed signing sync committee message")
 			}

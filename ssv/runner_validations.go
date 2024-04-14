@@ -15,7 +15,7 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.Part
 		return errors.New("no running duty")
 	}
 
-	if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.Slot); err != nil {
+	if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
 		return err
 	}
 
@@ -93,7 +93,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSi
 
 	// convert expected roots to map and mark unique roots when verified
 	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][32]byte, error) {
-		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.Slot)
+		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.DutySlot())
 		d, err := runner.GetBeaconNode().DomainData(epoch, domain)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get pre consensus root domain")
