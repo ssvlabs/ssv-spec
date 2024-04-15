@@ -52,9 +52,10 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 	return nil
 }
 
-func (b *BaseRunner) verifyBeaconPartialSignature(signer spec.ValidatorIndex, signature types.Signature, root [32]byte) error {
-	for _, n := range b.Share[signer].Committee {
-		if n.ValidatorIndex == signer {
+func (b *BaseRunner) verifyBeaconPartialSignature(signer types.OperatorID, signature types.Signature, root [32]byte,
+	committee []types.ShareMember) error {
+	for _, n := range committee {
+		if n.Signer == signer {
 			pk := &bls.PublicKey{}
 			if err := pk.Deserialize(n.SharePubKey); err != nil {
 				return errors.Wrap(err, "could not deserialized pk")
@@ -79,7 +80,7 @@ func (b *BaseRunner) resolveDuplicateSignature(container *PartialSigContainer, m
 	// Check previous signature validity
 	previousSignature, err := container.GetSignature(msg.Signer, msg.SigningRoot)
 	if err == nil {
-		err = b.verifyBeaconPartialSignature(msg.Signer, previousSignature, msg.SigningRoot)
+		err = b.verifyBeaconPartialSignature(msg.Signer, previousSignature, msg.SigningRoot, committee)
 		if err == nil {
 			// Keep the previous sigature since it's correct
 			return
@@ -90,7 +91,7 @@ func (b *BaseRunner) resolveDuplicateSignature(container *PartialSigContainer, m
 	container.Remove(msg.Signer, msg.SigningRoot)
 
 	// Hold the new signature, if correct
-	err = b.verifyBeaconPartialSignature(msg.Signer, msg.PartialSignature, msg.SigningRoot)
+	err = b.verifyBeaconPartialSignature(msg.Signer, msg.PartialSignature, msg.SigningRoot, committee)
 	if err == nil {
 		container.AddSignature(msg)
 	}

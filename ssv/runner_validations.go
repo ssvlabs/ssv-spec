@@ -28,12 +28,12 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.Part
 }
 
 // Verify each signature in container removing the invalid ones
-func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContainer, root [32]byte) {
+func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContainer, root [32]byte, committee []types.ShareMember) {
 
 	signatures := container.GetSignatures(root)
 
 	for operatorID, signature := range signatures {
-		if err := b.verifyBeaconPartialSignature(operatorID, signature, root); err != nil {
+		if err := b.verifyBeaconPartialSignature(operatorID, signature, root, committee); err != nil {
 			container.Remove(operatorID, root)
 		}
 	}

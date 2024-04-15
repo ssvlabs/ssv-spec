@@ -83,7 +83,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Par
 		if err != nil {
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			for _, root := range roots {
-				r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root)
+				r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root, r.GetShare().Committee)
 			}
 			return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 		}
@@ -210,7 +210,8 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Pa
 		if err != nil {
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			for _, root := range roots {
-				r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root)
+				r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root,
+					r.GetShare().Committee)
 			}
 			return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
 		}

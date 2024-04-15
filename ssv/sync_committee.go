@@ -122,7 +122,8 @@ func (r *SyncCommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSigna
 		if err != nil {
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			for _, root := range roots {
-				r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root)
+				r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root,
+					r.GetShare().Committee)
 			}
 			return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
 		}
