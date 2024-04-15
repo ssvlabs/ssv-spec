@@ -75,6 +75,7 @@ func (r BeaconRole) String() string {
 
 type Duty interface {
 	DutySlot() spec.Slot
+	GetValidatorIndex() spec.ValidatorIndex
 }
 
 // BeaconDuty represent data regarding the duty type with the duty data
@@ -117,6 +118,11 @@ func (b *BeaconVote) Decode(data []byte) error {
 
 func (bd *BeaconDuty) DutySlot() spec.Slot {
 	return bd.Slot
+}
+
+// GetValidatorIndex returns the validator index
+func (bd *BeaconDuty) GetValidatorIndex() spec.ValidatorIndex {
+	return bd.ValidatorIndex
 }
 
 type ClusterDuty struct {

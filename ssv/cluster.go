@@ -12,7 +12,7 @@ import (
 	"sort"
 )
 
-type Cluster struct {
+type Committee struct {
 	Runners           map[spec.Slot]*ClusterRunner
 	Network           Network
 	Beacon            BeaconNode
@@ -24,8 +24,8 @@ type Cluster struct {
 	CreateRunnerFn    func() *ClusterRunner
 }
 
-// NewCluster creates a new cluster
-func NewCluster(
+// NewCommittee creates a new cluster
+func NewCommittee(
 	network Network,
 	beacon BeaconNode,
 	operator types.Operator,
@@ -34,8 +34,8 @@ func NewCluster(
 	operatorSigner types.OperatorSigner,
 	verifier types.SignatureVerifier,
 	createRunnerFn func() *ClusterRunner,
-) *Cluster {
-	return &Cluster{
+) *Committee {
+	return &Committee{
 		Runners:           make(map[spec.Slot]*ClusterRunner),
 		Network:           network,
 		Beacon:            beacon,
@@ -50,7 +50,7 @@ func NewCluster(
 }
 
 // StartDuty starts a new duty for the given slot
-func (c *Cluster) StartDuty(duty *types.ClusterDuty) error {
+func (c *Committee) StartDuty(duty *types.ClusterDuty) error {
 	// do we need slot?
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("ClusterRunner for slot %d already exists", duty.Slot))
@@ -60,7 +60,7 @@ func (c *Cluster) StartDuty(duty *types.ClusterDuty) error {
 }
 
 // ProcessMessage processes Network Message of all types
-func (c *Cluster) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
+func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
 	// Validate message
 	if err := signedSSVMessage.Validate(); err != nil {
 		return errors.Wrap(err, "invalid SignedSSVMessage")
@@ -99,7 +99,7 @@ func (c *Cluster) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error
 
 }
 
-func (c *Cluster) validateMessage(msg *types.SSVMessage) error {
+func (c *Committee) validateMessage(msg *types.SSVMessage) error {
 	if !c.Operator.ClusterID.MessageIDBelongs(msg.GetID()) {
 		return errors.New("Message ID does not match cluster IF")
 	}
