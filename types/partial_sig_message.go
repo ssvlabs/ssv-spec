@@ -71,7 +71,7 @@ func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error 
 	return nil
 }
 
-func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessages, msgID MessageID, operatorID OperatorID, operatorSigner OperatorSigner) (*SignedSSVMessage, error) {
+func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessages, msgID MessageID, operatorSigner OperatorSigner) (*SignedSSVMessage, error) {
 	encodedMsg, err := psigMsgs.Encode()
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessag
 
 	return &SignedSSVMessage{
 		Signature:  [][]byte{sig},
-		OperatorID: []OperatorID{operatorID},
+		OperatorID: []OperatorID{operatorSigner.GetOperatorID()},
 		SSVMessage: ssvMsg,
 	}, nil
 }

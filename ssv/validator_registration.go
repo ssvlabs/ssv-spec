@@ -25,7 +25,7 @@ type ValidatorRegistrationRunner struct {
 
 func NewValidatorRegistrationRunner(
 	beaconNetwork types.BeaconNetwork,
-	share *types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
@@ -46,9 +46,9 @@ func NewValidatorRegistrationRunner(
 }
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty) error {
-	r.executeDuty()
+	r.executeDuty(duty)
 	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
-	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
+	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty))
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -121,12 +121,12 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 	}
 	msgs := &types.PartialSignatureMessages{
 		Type:     types.ValidatorRegistrationPartialSig,
-		Slot:     duty.Slot,
+		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.GetShare().OperatorID, r.operatorSigner)
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
 	}
@@ -164,7 +164,10 @@ func (r *ValidatorRegistrationRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *ValidatorRegistrationRunner) GetShare() *types.Share {
-	return r.BaseRunner.Share
+	for _, share := range r.BaseRunner.Share {
+		return share
+	}
+	return nil
 }
 
 func (r *ValidatorRegistrationRunner) GetState() *State {
