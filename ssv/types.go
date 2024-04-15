@@ -13,7 +13,7 @@ import (
 )
 
 // DutyRunners is a map of duty runners mapped by msg id hex.
-type DutyRunners map[types.BeaconRole]Runner
+type DutyRunners map[RunnerRole]Runner
 
 // DutyRunnerForMsgID returns a Runner from the provided msg ID, or nil if not found
 func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) Runner {

@@ -8,10 +8,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-type RunnerRole uint32
+// TODO since this is on wire no real need to take 32 bits
+type RunnerRole int32
 
 const (
-	RoleCluster BeaconRole = iota
+	RoleCluster RunnerRole = iota
 	RoleAggregator
 	RoleProposer
 	RoleSyncCommitteeContribution
@@ -59,7 +60,7 @@ type BaseRunner struct {
 	Share          map[spec.ValidatorIndex]*types.Share
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
-	BeaconRoleType types.BeaconRole
+	RunnerRoleType RunnerRole
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
 	highestDecidedSlot spec.Slot
@@ -70,7 +71,7 @@ func NewBaseRunner(
 	share map[spec.ValidatorIndex]*types.Share,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
-	beaconRoleType types.BeaconRole,
+	beaconRoleType RunnerRole,
 	operatorSigner types.OperatorSigner,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
@@ -79,7 +80,7 @@ func NewBaseRunner(
 		Share:              share,
 		QBFTController:     controller,
 		BeaconNetwork:      beaconNetwork,
-		BeaconRoleType:     beaconRoleType,
+		RunnerRoleType:     beaconRoleType,
 		highestDecidedSlot: highestDecidedSlot,
 	}
 }

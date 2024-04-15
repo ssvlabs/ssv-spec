@@ -30,7 +30,7 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	highestDecidedSlot phase0.Slot) *ClusterRunner {
 	return &ClusterRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType:     types.BNRoleAttester,
+			RunnerRoleType:     RoleCluster,
 			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,
@@ -152,7 +152,7 @@ func (cr ClusterRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 	msgToBroadcast := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.RunnerRoleType),
 		Data:    data,
 	}
 

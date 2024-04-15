@@ -30,7 +30,8 @@ func (b *BaseRunner) shouldProcessingJustificationsForHeight(signedMsg *types.Si
 	}
 
 	correctMsgTYpe := msg.MsgType == qbft.ProposalMsgType || msg.MsgType == qbft.RoundChangeMsgType
-	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
+	correctBeaconRole := b.RunnerRoleType == RoleProposer || b.RunnerRoleType == RoleAggregator || b.
+		RunnerRoleType == RoleSyncCommitteeContribution
 	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole, nil
 }
 
@@ -41,7 +42,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 		return err
 	}
 
-	if b.BeaconRoleType != data.Duty.Type {
+	if b.RunnerRoleType != types.MapDutyToRunnerRole(data.Duty.Type) {
 		return errors.New("wrong beacon role")
 	}
 
@@ -50,7 +51,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 	}
 
 	// validate justification quorum
-	if !b.Share.HasQuorum(len(data.PreConsensusJustifications)) {
+	if !b.Share[data.Duty.ValidatorIndex].HasQuorum(len(data.PreConsensusJustifications)) {
 		return errors.New("no quorum")
 	}
 

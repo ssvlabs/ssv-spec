@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/bloxapp/ssv-spec/ssv"
 	"time"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -75,7 +76,6 @@ func (r BeaconRole) String() string {
 
 type Duty interface {
 	DutySlot() spec.Slot
-	GetValidatorIndex() spec.ValidatorIndex
 }
 
 // BeaconDuty represent data regarding the duty type with the duty data
@@ -98,6 +98,20 @@ type BeaconDuty struct {
 	ValidatorCommitteeIndex uint64
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
 	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
+}
+
+func MapDutyToRunnerRole(dutyRole BeaconRole) ssv.RunnerRole {
+	switch dutyRole {
+	case BNRoleAttester | BNRoleSyncCommittee:
+		return ssv.RoleCluster
+	case BNRoleProposer:
+		return ssv.RoleProposer
+	case BNRoleAggregator:
+		return ssv.RoleAggregator
+	case BNRoleSyncCommitteeContribution:
+		return ssv.RoleSyncCommitteeContribution
+	}
+	return ssv.RoleUnknown
 }
 
 type BeaconVote struct {

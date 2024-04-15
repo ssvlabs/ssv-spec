@@ -54,9 +54,9 @@ func (msg MessageID) GetSenderID() []byte {
 	return msg[senderIDStartPos : senderIDStartPos+senderIDSize]
 }
 
-func (msg MessageID) GetRoleType() BeaconRole {
+func (msg MessageID) GetRoleType() ssv.RunnerRole {
 	roleByts := msg[roleTypeStartPos : roleTypeStartPos+roleTypeSize]
-	return BeaconRole(binary.LittleEndian.Uint32(roleByts))
+	return ssv.RunnerRole(binary.LittleEndian.Uint32(roleByts))
 }
 
 func NewMsgID(domain DomainType, pk []byte, role ssv.RunnerRole) MessageID {

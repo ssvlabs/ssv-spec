@@ -33,7 +33,7 @@ func NewValidatorRegistrationRunner(
 ) Runner {
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType: types.BNRoleValidatorRegistration,
+			RunnerRoleType: RoleValidatorRegistration,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},
@@ -78,7 +78,8 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 	specSig := phase0.BLSSignature{}
 	copy(specSig[:], fullSig)
 
-	if err := r.beacon.SubmitValidatorRegistration(r.BaseRunner.Share.ValidatorPubKey, r.BaseRunner.Share.FeeRecipientAddress, specSig); err != nil {
+	if err := r.beacon.SubmitValidatorRegistration(r.BaseRunner.Share[0].ValidatorPubKey,
+		r.BaseRunner.Share[0].FeeRecipientAddress, specSig); err != nil {
 		return errors.Wrap(err, "could not submit validator registration")
 	}
 
@@ -125,7 +126,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
+	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, RunnerRole(r.BaseRunner.RunnerRoleType))
 	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
@@ -139,12 +140,12 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 
 func (r *ValidatorRegistrationRunner) calculateValidatorRegistration() (*v1.ValidatorRegistration, error) {
 	pk := phase0.BLSPubKey{}
-	copy(pk[:], r.BaseRunner.Share.ValidatorPubKey)
+	copy(pk[:], r.BaseRunner.Share[0].ValidatorPubKey)
 
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.Slot)
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
 
 	return &v1.ValidatorRegistration{
-		FeeRecipient: r.BaseRunner.Share.FeeRecipientAddress,
+		FeeRecipient: r.BaseRunner.Share[0].FeeRecipientAddress,
 		GasLimit:     types.DefaultGasLimit,
 		Timestamp:    r.BaseRunner.BeaconNetwork.EpochStartTime(epoch),
 		Pubkey:       pk,
