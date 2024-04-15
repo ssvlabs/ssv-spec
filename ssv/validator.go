@@ -102,9 +102,10 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 			return errors.New("PartialSignatureMessage has more than 1 signer")
 		}
 
-		if err := psigMsgs.ValidateForSigner(signedSSVMessage.OperatorID[0]); err != nil {
-			return errors.Wrap(err, "invalid PartialSignatureMessages")
-		}
+		// TODO: can we rely soley on p2p validation for this?
+		//if err := psigMsgs.ValidateForSigner(signedSSVMessage.); err != nil {
+		//	return errors.Wrap(err, "invalid PartialSignatureMessages")
+		//}
 
 		// Process
 		if psigMsgs.Type == types.PostConsensusPartialSig {
