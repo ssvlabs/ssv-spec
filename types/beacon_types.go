@@ -47,6 +47,8 @@ const (
 
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
+
+	BNRoleUnknown = -1
 )
 
 // String returns name of the role

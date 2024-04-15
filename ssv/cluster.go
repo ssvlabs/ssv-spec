@@ -81,7 +81,7 @@ func (c *Cluster) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error
 		}
 		runner := c.Runners[spec.Slot(qbftMsg.Height)]
 		// TODO: check if runner is nil
-		return runner.ProcessConsensus(qbftMsg)
+		return runner.ProcessConsensus(signedSSVMessage)
 	case types.SSVPartialSignatureMsgType:
 		pSigMessages := &types.PartialSignatureMessages{}
 		if err := pSigMessages.Decode(msg.GetData()); err != nil {

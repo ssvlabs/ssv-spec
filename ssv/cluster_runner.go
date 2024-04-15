@@ -163,10 +163,9 @@ func (cr ClusterRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 }
 
-
 // TODO finish edge case where some roots may be missing
 func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
-	quorum, roots, err := cr.BaseRunner.basePostConsensusMsgProcessing(cr, signedMsg)
+	quorum, roots, err := cr.BaseRunner.basePostConsensusMsgProcessing(&cr, signedMsg)
 
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -175,7 +174,7 @@ func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMe
 	if !quorum {
 		return nil
 	}
-	attestationMap, committeeMap, beaconObjects := cr.expectedPostConsensusRootsAndDomain()
+	attestationMap, committeeMap, beaconObjects := cr.expectedPostConsensusRootsAndDomain2()
 	for _, root := range roots {
 		role, pubKeys, found := findPubkey(root, attestationMap, committeeMap, cr.BaseRunner.Share)
 
@@ -236,11 +235,10 @@ func findPubkey(expectedRoot [32]byte, attestationMap map[phase0.ValidatorIndex]
 	// look for the expectedRoot in committeeMap
 	for validator, root := range committeeMap {
 		if root == expectedRoot {
-			return types.BNRoleSyncCommittee, []types.ValidatorPK{share[validator].ValidatorPubKey)}, true
+			return types.BNRoleSyncCommittee, []types.ValidatorPK{share[validator].ValidatorPubKey}, true
 		}
 	}
 	return types.BNRoleUnknown, nil, false
-
 }
 
 func (cr ClusterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
@@ -248,7 +246,12 @@ func (cr ClusterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, ph
 	panic("implement me")
 }
 
-func (cr ClusterRunner) expectedPostConsensusRootsAndDomain() (attestationMap map[phase0.ValidatorIndex][32]byte,
+func (cr ClusterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (cr *ClusterRunner) expectedPostConsensusRootsAndDomain2() (attestationMap map[phase0.ValidatorIndex][32]byte,
 	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot) {
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
@@ -263,14 +266,13 @@ func (cr ClusterRunner) expectedPostConsensusRootsAndDomain() (attestationMap ma
 			attestationData := constructAttestationData(beaconVote, beaconDuty)
 			aggregationBitfield := bitfield.NewBitlist(beaconDuty.CommitteeLength)
 			aggregationBitfield.SetBitAt(beaconDuty.ValidatorCommitteeIndex, true)
-			signedAtt := &phase0.Attestation{
+			unSignedAtt := &phase0.Attestation{
 				Data:            attestationData,
-				Signature:       nil,
 				AggregationBits: aggregationBitfield,
 			}
 			root, _ := attestationData.HashTreeRoot()
 			attestationMap[beaconDuty.ValidatorIndex] = root
-			beaconObjects[root] = signedAtt
+			beaconObjects[root] = unSignedAtt
 		case types.BNRoleSyncCommittee:
 			syncCommitteeMessage := ConstructSyncCommittee(beaconVote, beaconDuty)
 			root, _ := syncCommitteeMessage.HashTreeRoot()
@@ -278,7 +280,7 @@ func (cr ClusterRunner) expectedPostConsensusRootsAndDomain() (attestationMap ma
 			beaconObjects[root] = syncCommitteeMessage
 		}
 	}
-return attestationMap, syncCommitteeMap, beaconObjects
+	return attestationMap, syncCommitteeMap, beaconObjects
 }
 
 func (cr ClusterRunner) executeDuty(duty types.Duty) error {
