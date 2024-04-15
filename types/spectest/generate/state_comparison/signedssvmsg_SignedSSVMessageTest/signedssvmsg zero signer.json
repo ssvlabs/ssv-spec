@@ -2,10 +2,10 @@
 		"Name": "zero signer",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"AQIDBA=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								0
 						],
 						"SSVMessage": {

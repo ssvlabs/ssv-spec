@@ -2,10 +2,10 @@
 		"Name": "round change prepared",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"PKcCqlEHuT+0h9XBpZOKyCHklT20Wi5ZEWHQh7p5MtfjoYgKyGQz8vwroz5xjjOXiRX5VH3FyjMlj0Oejghd0P98749/7WfBHfZ0RRDhxQWihU9/KBOI5zbOHRpKngieYxtrB0QVeHwJwcr8QBoMMndOno4z51gB/aHMZkDDqdTP5zrD+Ds9BdMQFrIo6IbBvReEBKxE2Ys3PyliTed3CJNxjE3xBTQ8+V3JwieGUHAawQzwbRpzNmJqWNui+vPWjjkSJ7RjWcMYs0OZZkrtUKrXg+IxO/n0QiAvLuEHg3w3nuC1mm59wWIucbSqHEUaw+91nZuEyRIk0Etxn9weCQ=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

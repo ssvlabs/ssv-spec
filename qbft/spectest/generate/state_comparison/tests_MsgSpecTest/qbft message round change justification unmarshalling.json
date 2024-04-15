@@ -2,10 +2,10 @@
 		"Name": "round change justification unmarshalling",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"VwGDAredEnqjzmZ+X9NifvvFaUtiRJRptD9mhJPYCcj6ukt7J9D3EFFLIuBN6RhawGzMmbEsJAvMj1KEG6haYvPvH4L7sO2mWeRJbb6FsHUJEcpzjFDnxwHnWjBpc9DpDO/uosG4vau4LdO8FuYUXqNSLH3UcI2SCYmJR575B73t6trERo0YlnMVaLtsYpavbGIAWeRU6xDQ9C9cA30u2QUOWtDF19LBFy8bfwmpn5e47yppbY97bg4SFQT7gliJpPbnnpZPx00Yy/GffcNFpivH687Wexd6tFJQmWsntKiniahevF3hm037Al4a59UkYTjvG5eV1ncLft2RW272YA=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

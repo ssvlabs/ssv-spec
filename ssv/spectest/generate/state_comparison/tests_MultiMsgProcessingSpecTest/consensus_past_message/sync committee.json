@@ -129,10 +129,10 @@
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": [
+														"Signatures": [
 																"Xcid3LPHoa9fQ+iNkGmmPIPGP9h5TBfO4sHsWYDpeNsNat+es/pcin/XHJLowsYukYDljDNr3+71IxRPEM+O4NtZaGcFkoqiWjDIXZ2TQuYeJYLnODTVnPWPX9ycP7sp3clQdlcXsmy0HUG5DTHYwtkD1wGPI2Oymlj4L0/ZfPg7ovXrQm5R9vov8n2/d7U/g5gvmqbmfFBwkscWuoooi5/zkOvOUFJqRF1t9jxXp4jjbo/9Ul0eYZBCvW6faTATsD2eT9JoVpT7+VFq04xNZfU1/J30PY5gEAgfus8VYZj40uwN/S+0KaQNGFQcTIkfPOdwqpYR2x1NNIjXpnjtaw=="
 														],
-														"OperatorID": [
+														"OperatorIDs": [
 																1
 														],
 														"SSVMessage": {
@@ -205,10 +205,10 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": [
+																				"Signatures": [
 																						"Xcid3LPHoa9fQ+iNkGmmPIPGP9h5TBfO4sHsWYDpeNsNat+es/pcin/XHJLowsYukYDljDNr3+71IxRPEM+O4NtZaGcFkoqiWjDIXZ2TQuYeJYLnODTVnPWPX9ycP7sp3clQdlcXsmy0HUG5DTHYwtkD1wGPI2Oymlj4L0/ZfPg7ovXrQm5R9vov8n2/d7U/g5gvmqbmfFBwkscWuoooi5/zkOvOUFJqRF1t9jxXp4jjbo/9Ul0eYZBCvW6faTATsD2eT9JoVpT7+VFq04xNZfU1/J30PY5gEAgfus8VYZj40uwN/S+0KaQNGFQcTIkfPOdwqpYR2x1NNIjXpnjtaw=="
 																				],
-																				"OperatorID": [
+																				"OperatorIDs": [
 																						1
 																				],
 																				"SSVMessage": {

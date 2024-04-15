@@ -59,10 +59,10 @@
 				"Graffiti": null
 		},
 		"Message": {
-				"Signature": [
+				"Signatures": [
 						"GfE8aDUxusaQMSTteNUd48JIy+lw6uRaqg16gvVD/c6143K0dv8252oUIP7Hno1PtCBd53JobukPE08pFXlNCxKadbXD57N1IGL3ovRpb3M6imeKoaHzn/lTuYlmPYrzc5KFuFK3rbEBjq2/OLK24PCZeWa288IY+jX9U+i7byWCBR/PyJQPTzjK9P7uyNuGHQDYcKoT6B8r/2O6woxMSxFjCGTw0K7yUhQEJrmYaQbUvg/T0S2/n4GUirNHqVj011t2MnrBW1RvQcDWI++JkjdtxgwmzcjdKLj+ouANn8QWJzFtvPOcD2dMU0ph3VVZYA95j/yOBlum4NVzC+Qf7Q=="
 				],
-				"OperatorID": [
+				"OperatorIDs": [
 						1
 				],
 				"SSVMessage": {

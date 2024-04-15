@@ -2,10 +2,10 @@
 		"Name": "prepare data encoding",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"xpIorjwflKm67zy3dDUmk/0VS4JqIFIslh7ij5uYmPqMKCUyufrDQImHzbM5Gy1Ysarv5itL5LnDutsYYX8oNYeOZzC7XRRAPe5zbdQD74A3tMwm83astKAjdHDYZqz4kb9Xx0Umf93yh2wMJXFlXrIPafyDiEMg7JvdPvwL+1XZ20MGkUHOcRGdNHfVaiyUPaZB5ji/Q5DGI7vZ21jW5aHnxQSWs4jtBKC539PiFSZBiccSdQtCt6JJHn963nVzmcSeVORk0B8mvUvVHDP1HpM/uusvep0KabJAJYWCTyO+9XpI4CP2EriLxdrj9jwKzGrkjJjyemxDWd+0We0+0g=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {
