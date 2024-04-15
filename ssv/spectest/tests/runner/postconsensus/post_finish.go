@@ -36,26 +36,6 @@ func PostFinish() tests.SpecTest {
 				ExpectedError:           err,
 			},
 			{
-<<<<<<< HEAD
-=======
-				Name: "sync committee",
-				Runner: finishRunner(
-					testingutils.SyncCommitteeRunner(ks),
-					&testingutils.TestingSyncCommitteeDuty,
-					testingutils.TestSyncCommitteeConsensusData,
-				),
-				Duty: &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4))),
-				},
-				PostDutyRunnerStateRoot: "43d4404e8bb20f18d68dd9bfacf06c3ebce8a1cdf686b83ec09690af5ba0318e",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
-			},
-			{
->>>>>>> msg_structures_rsa
 				Name: "proposer",
 				Runner: finishRunner(
 					testingutils.ProposerRunner(ks),
@@ -107,25 +87,7 @@ func PostFinish() tests.SpecTest {
 				ExpectedError:           err,
 			},
 			{
-<<<<<<< HEAD
 				Name: "attester and sync committee",
-=======
-				Name: "attester",
-				Runner: finishRunner(
-					testingutils.AttesterRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight))),
-				},
-				PostDutyRunnerStateRoot: "8e21027a3f7f1a8b4507beefee7fa1d242e4bec09fae83fb489a349e64f7ee34",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
->>>>>>> msg_structures_rsa
 			},
 		},
 	}

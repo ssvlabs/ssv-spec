@@ -36,21 +36,6 @@ func ValidMessage() tests.SpecTest {
 				},
 			},
 			{
-<<<<<<< HEAD
-=======
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID, testingutils.TestSyncCommitteeConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-				},
-				PostDutyRunnerStateRoot: "339b34e6f00899baf8740299d3d453aea60c30cc0e28912a6ebb3770f59fc9b8",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
->>>>>>> msg_structures_rsa
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
@@ -102,20 +87,7 @@ func ValidMessage() tests.SpecTest {
 				},
 			},
 			{
-<<<<<<< HEAD
 				Name: "attester and sync committee",
-=======
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.AttesterMsgID, testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-				},
-				PostDutyRunnerStateRoot: "e062f2e50b8b308e83278c2f771c9473f4415bd8a64975bc5f29b61b29bd33fd",
-				OutputMessages:          []*types.PartialSignatureMessages{},
->>>>>>> msg_structures_rsa
 			},
 			{
 				Name:   "validator registration",

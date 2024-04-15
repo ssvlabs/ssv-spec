@@ -59,20 +59,6 @@ func PastMessage() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 			{
-<<<<<<< HEAD
-=======
-				Name:   "sync committee",
-				Runner: bumpHeight(testingutils.SyncCommitteeRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-				},
-				PostDutyRunnerStateRoot: "c1fe93bc3530e14e014b78102b078bbdd6e55c2c0979fce40fa00b1400d9e774",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-			},
-			{
->>>>>>> msg_structures_rsa
 				Name:   "aggregator",
 				Runner: bumpHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
@@ -106,19 +92,7 @@ func PastMessage() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 			{
-<<<<<<< HEAD
 				Name: "attester and sync committee",
-=======
-				Name:   "attester",
-				Runner: bumpHeight(testingutils.AttesterRunner(ks)),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "7218b8c7b0c3fc4751b62ed15960de36bb28d6ec800a6d689d16ae99754fbf66",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
->>>>>>> msg_structures_rsa
 			},
 			{
 				Name:   "validator registration",

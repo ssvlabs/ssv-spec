@@ -33,20 +33,6 @@ func ValidDecided7Operators() tests.SpecTest {
 				},
 			},
 			{
-<<<<<<< HEAD
-=======
-				Name:                    "sync committee",
-				Runner:                  testingutils.SyncCommitteeRunner(ks),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
-				PostDutyRunnerStateRoot: validDecided7OperatorsSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     validDecided7OperatorsSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
-			},
-			{
->>>>>>> msg_structures_rsa
 				Name:                    "aggregator",
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    &testingutils.TestingAggregatorDuty,
@@ -59,19 +45,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				},
 			},
 			{
-<<<<<<< HEAD
 				Name: "attester and sync committee",
-=======
-				Name:                    "attester",
-				Runner:                  testingutils.AttesterRunner(ks),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
-				PostDutyRunnerStateRoot: validDecided7OperatorsAttesterSC().Root(),
-				PostDutyRunnerState:     validDecided7OperatorsAttesterSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-				},
->>>>>>> msg_structures_rsa
 			},
 		},
 	}

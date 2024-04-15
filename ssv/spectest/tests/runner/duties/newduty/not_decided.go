@@ -47,17 +47,6 @@ func NotDecided() tests.SpecTest {
 				},
 			},
 			{
-<<<<<<< HEAD
-=======
-				Name:                    "sync committee",
-				Runner:                  startRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: notDecidedSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     notDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
->>>>>>> msg_structures_rsa
 				Name:                    "aggregator",
 				Runner:                  startRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
@@ -68,16 +57,12 @@ func NotDecided() tests.SpecTest {
 				},
 			},
 			{
-<<<<<<< HEAD
-				Name: "attester and sync committee",
-=======
 				Name:                    "attester",
 				Runner:                  startRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,
 				OutputMessages:          []*types.PartialSignatureMessages{},
->>>>>>> msg_structures_rsa
 			},
 		},
 	}

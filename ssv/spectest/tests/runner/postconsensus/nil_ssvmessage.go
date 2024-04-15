@@ -8,16 +8,11 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-<<<<<<< HEAD:ssv/spectest/tests/runner/postconsensus/invalid_decode.go
 // InvalidDecode tests a SignedSSVMessage with wrong data that can't be decoded
 func InvalidDecode() tests.SpecTest {
 
 	panic("implement me")
 
-=======
-// NilSSVMessage tests a SignedSSVMessage with a nil SSVMessage
-func NilSSVMessage() tests.SpecTest {
->>>>>>> msg_structures_rsa:ssv/spectest/tests/runner/postconsensus/nil_ssvmessage.go
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
 
@@ -46,24 +41,6 @@ func NilSSVMessage() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 			{
-<<<<<<< HEAD:ssv/spectest/tests/runner/postconsensus/invalid_decode.go
-=======
-				Name: "sync committee",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeRunner(ks),
-					&testingutils.TestingSyncCommitteeDuty,
-					testingutils.TestSyncCommitteeConsensusData,
-				),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				Messages:                []*types.SignedSSVMessage{invalidMsg},
-				PostDutyRunnerStateRoot: "599f535071e53121470fc10c80fad5d103340eba90dcd9672cff3e7a874de276",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
->>>>>>> msg_structures_rsa:ssv/spectest/tests/runner/postconsensus/nil_ssvmessage.go
 				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
@@ -109,23 +86,7 @@ func NilSSVMessage() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 			{
-<<<<<<< HEAD:ssv/spectest/tests/runner/postconsensus/invalid_decode.go
 				Name: "attester and sync committee",
-=======
-				Name: "attester",
-				Runner: decideRunner(
-					testingutils.AttesterRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				Messages:                []*types.SignedSSVMessage{invalidMsg},
-				PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
->>>>>>> msg_structures_rsa:ssv/spectest/tests/runner/postconsensus/nil_ssvmessage.go
 			},
 		},
 	}

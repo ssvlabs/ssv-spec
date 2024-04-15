@@ -18,11 +18,7 @@ func PostDecided() tests.SpecTest {
 
 	// TODO: check errors
 	// nolint
-<<<<<<< HEAD
 	decideRunner := func(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData, preMsgs []*types.SignedPartialSignatureMessage) ssv.Runner {
-=======
-	decideRunner := func(r ssv.Runner, duty *types.Duty, decidedValue *types.ConsensusData, preMsgs []*types.PartialSignatureMessages) ssv.Runner {
->>>>>>> msg_structures_rsa
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		for _, msg := range preMsgs {
 			err := r.ProcessPreConsensus(msg)
