@@ -174,19 +174,19 @@ func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMe
 	if !quorum {
 		return nil
 	}
-	attestationMap, committeeMap, beaconObjects := cr.expectedPostConsensusRootsAndDomain2()
+	attestationMap, committeeMap, beaconObjects := cr.expectedPostConsensusRootsAndBeaconObjects()
 	for _, root := range roots {
-		role, pubKeys, found := findPubkey(root, attestationMap, committeeMap, cr.BaseRunner.Share)
+		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
 		if !found {
 			// TODO error?
 			continue
 		}
 
-		for _, pubkey := range pubKeys {
-
+		for _, validator := range validators {
+			pubKey := cr.BaseRunner.Share[validator].ValidatorPubKey
 			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
-				pubkey)
+				pubKey)
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			// TODO should we return an error here? maybe other sigs are fine?
 			if err != nil {
@@ -219,23 +219,25 @@ func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMe
 	return nil
 }
 
-func findPubkey(expectedRoot [32]byte, attestationMap map[phase0.ValidatorIndex][32]byte, committeeMap map[phase0.ValidatorIndex][32]byte,
-	share map[phase0.ValidatorIndex]*types.Share) (types.BeaconRole, []types.ValidatorPK, bool) {
-	var pks []types.ValidatorPK
+func findValidators(
+	expectedRoot [32]byte,
+	attestationMap map[phase0.ValidatorIndex][32]byte,
+	committeeMap map[phase0.ValidatorIndex][32]byte) (types.BeaconRole, []phase0.ValidatorIndex, bool) {
+	var validators []phase0.ValidatorIndex
 
 	// look for the expectedRoot in attestationMap
 	for validator, root := range attestationMap {
 		if root == expectedRoot {
-			pks = append(pks, share[validator].ValidatorPubKey)
+			validators = append(validators, validator)
 		}
 	}
-	if len(pks) > 0 {
-		return types.BNRoleAttester, pks, true
+	if len(validators) > 0 {
+		return types.BNRoleAttester, validators, true
 	}
 	// look for the expectedRoot in committeeMap
 	for validator, root := range committeeMap {
 		if root == expectedRoot {
-			return types.BNRoleSyncCommittee, []types.ValidatorPK{share[validator].ValidatorPubKey}, true
+			return types.BNRoleSyncCommittee, []phase0.ValidatorIndex{validator}, true
 		}
 	}
 	return types.BNRoleUnknown, nil, false
@@ -251,7 +253,7 @@ func (cr ClusterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, p
 	panic("implement me")
 }
 
-func (cr *ClusterRunner) expectedPostConsensusRootsAndDomain2() (attestationMap map[phase0.ValidatorIndex][32]byte,
+func (cr *ClusterRunner) expectedPostConsensusRootsAndBeaconObjects() (attestationMap map[phase0.ValidatorIndex][32]byte,
 	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot) {
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)

@@ -14,7 +14,7 @@ type Share struct {
 // ShareMember holds ShareValidatorPK and ValidatorIndex
 type ShareMember struct {
 	SharePubKey ShareValidatorPK `ssz-size:"48"`
-	signer      OperatorID
+	Signer      OperatorID
 }
 
 // HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure
