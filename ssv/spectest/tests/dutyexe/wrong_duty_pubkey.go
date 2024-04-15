@@ -35,11 +35,11 @@ func WrongDutyPubKey() tests.SpecTest {
 
 		signedMessage.SSVMessage.MsgID = getID(role)
 
-		sig1 := testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], signedMessage.SSVMessage).Signature[0]
-		sig2 := testingutils.SignedSSVMessageWithSigner(2, ks.OperatorKeys[2], signedMessage.SSVMessage).Signature[0]
-		sig3 := testingutils.SignedSSVMessageWithSigner(3, ks.OperatorKeys[3], signedMessage.SSVMessage).Signature[0]
+		sig1 := testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], signedMessage.SSVMessage).Signatures[0]
+		sig2 := testingutils.SignedSSVMessageWithSigner(2, ks.OperatorKeys[2], signedMessage.SSVMessage).Signatures[0]
+		sig3 := testingutils.SignedSSVMessageWithSigner(3, ks.OperatorKeys[3], signedMessage.SSVMessage).Signatures[0]
 
-		signedMessage.Signature = [][]byte{sig1, sig2, sig3}
+		signedMessage.Signatures = [][]byte{sig1, sig2, sig3}
 
 		return signedMessage
 	}

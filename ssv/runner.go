@@ -207,7 +207,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 		return false, errors.New("ssv message is nil")
 	}
 
-	decidedMessage, err := qbft.GetMessageFromBytes(signedMessage.SSVMessage.Data)
+	decidedMessage, err := qbft.DecodeMessage(signedMessage.SSVMessage.Data)
 	if err != nil {
 		return false, err
 	}

@@ -16,7 +16,7 @@ func (i *Instance) uponRoundChange(
 	valCheck ProposedValueCheckF,
 ) error {
 
-	roundChangeMessage, err := GetMessageFromBytes(signedRoundChange.SSVMessage.Data)
+	roundChangeMessage, err := DecodeMessage(signedRoundChange.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func (i *Instance) uponRoundChange(
 
 	if signedJustifiedRoundChangeMsg != nil {
 
-		justifiedRoundChangeMsg, err := GetMessageFromBytes(signedJustifiedRoundChangeMsg.SSVMessage.Data)
+		justifiedRoundChangeMsg, err := DecodeMessage(signedJustifiedRoundChangeMsg.SSVMessage.Data)
 		if err != nil {
 			return err
 		}
@@ -99,12 +99,12 @@ func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartVal
 }
 
 func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContainer) (bool, []*types.SignedSSVMessage) {
-	all := roundChangeMsgContainer.AllMessaged()
+	all := roundChangeMsgContainer.AllMessages()
 
 	rc := make([]*types.SignedSSVMessage, 0)
 	for _, signedMsg := range all {
 
-		msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+		msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 		if err != nil {
 			continue
 		}
@@ -130,7 +130,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 	valCheck ProposedValueCheckF,
 ) (*types.SignedSSVMessage, []byte, error) {
 
-	roundChangeMessage, err := GetMessageFromBytes(signedRoundChange.SSVMessage.Data)
+	roundChangeMessage, err := DecodeMessage(signedRoundChange.SSVMessage.Data)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -146,7 +146,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 	// We iterate on all round chance msgs for liveliness in case the last round change msg is malicious.
 	for _, containerRoundChangeSignedMessage := range roundChanges {
 
-		containerRoundChangeMessage, err := GetMessageFromBytes(containerRoundChangeSignedMessage.SSVMessage.Data)
+		containerRoundChangeMessage, err := DecodeMessage(containerRoundChangeSignedMessage.SSVMessage.Data)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -189,7 +189,7 @@ func isProposalJustificationForLeadingRound(
 	newRound Round,
 ) error {
 
-	roundChangeMsg, err := GetMessageFromBytes(roundChangeSignedMsg.SSVMessage.Data)
+	roundChangeMsg, err := DecodeMessage(roundChangeSignedMsg.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -252,7 +252,7 @@ func validRoundChangeForDataIgnoreSignature(
 	fullData []byte,
 ) error {
 
-	msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -266,7 +266,7 @@ func validRoundChangeForDataIgnoreSignature(
 	if msg.Round != round {
 		return errors.New("wrong msg round")
 	}
-	if len(signedMsg.GetOperatorID()) != 1 {
+	if len(signedMsg.GetOperatorIDs()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
@@ -345,7 +345,7 @@ func highestPrepared(roundChanges []*types.SignedSSVMessage) (*types.SignedSSVMe
 	var highestPreparedRound Round
 	for _, rc := range roundChanges {
 
-		msg, err := GetMessageFromBytes(rc.SSVMessage.Data)
+		msg, err := DecodeMessage(rc.SSVMessage.Data)
 		if err != nil {
 			continue
 		}
@@ -372,7 +372,7 @@ func minRound(roundChangeMsgs []*types.SignedSSVMessage) Round {
 	ret := NoRound
 	for _, signedMsg := range roundChangeMsgs {
 
-		msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+		msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 		if err != nil {
 			continue
 		}

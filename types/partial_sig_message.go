@@ -89,9 +89,9 @@ func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessag
 	}
 
 	return &SignedSSVMessage{
-		Signature:  [][]byte{sig},
-		OperatorID: []OperatorID{operatorID},
-		SSVMessage: ssvMsg,
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []OperatorID{operatorID},
+		SSVMessage:  ssvMsg,
 	}, nil
 }
 

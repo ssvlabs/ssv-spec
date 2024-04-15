@@ -28,7 +28,7 @@ func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsg
 		return nil // no quorum yet
 	}
 
-	proposalMsgAccepted, err := GetMessageFromBytes(i.State.ProposalAcceptedForCurrentRound.SSVMessage.Data)
+	proposalMsgAccepted, err := DecodeMessage(i.State.ProposalAcceptedForCurrentRound.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -91,7 +91,7 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	root [32]byte,
 	operators []*types.Operator) error {
 
-	msg, err := GetMessageFromBytes(signedPrepare.SSVMessage.Data)
+	msg, err := DecodeMessage(signedPrepare.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 		return errors.New("proposed data mistmatch")
 	}
 
-	if len(signedPrepare.GetOperatorID()) != 1 {
+	if len(signedPrepare.GetOperatorIDs()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 

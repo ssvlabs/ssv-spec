@@ -59,9 +59,9 @@ func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 	}
 
 	signedMsg := &types.SignedSSVMessage{
-		Signature:  [][]byte{sig},
-		OperatorID: []types.OperatorID{1},
-		SSVMessage: ssvMsg,
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{1},
+		SSVMessage:  ssvMsg,
 
 		FullData: testingutils.TestingQBFTFullData,
 	}

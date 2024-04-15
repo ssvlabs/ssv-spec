@@ -32,8 +32,8 @@ func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types
 	hash := sha256.Sum256(encodedMsg)
 
 	// Find operator that matches ID with the signer and verify signature
-	for i, signer := range msg.OperatorID {
-		if err := v.VerifySignatureForSigner(hash, msg.Signature[i], signer, operators); err != nil {
+	for i, signer := range msg.OperatorIDs {
+		if err := v.VerifySignatureForSigner(hash, msg.Signatures[i], signer, operators); err != nil {
 			return err
 		}
 	}

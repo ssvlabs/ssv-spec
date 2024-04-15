@@ -95,7 +95,7 @@ func (c *Controller) ProcessMsg(msg *types.SignedSSVMessage) (*types.SignedSSVMe
 
 func (c *Controller) UponExistingInstanceMsg(signedMsg *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
 
-	msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +132,7 @@ func (c *Controller) UponExistingInstanceMsg(signedMsg *types.SignedSSVMessage) 
 // BaseMsgValidation returns error if msg is invalid (base validation)
 func (c *Controller) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
 
-	msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -161,7 +161,7 @@ func (c *Controller) isFutureMessage(signedMsg *types.SignedSSVMessage) (bool, e
 		return true, nil
 	}
 
-	msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return false, err
 	}

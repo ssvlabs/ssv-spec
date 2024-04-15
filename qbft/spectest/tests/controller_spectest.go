@@ -151,8 +151,8 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 			require.NoError(t, err)
 
 			if r1 == r2 &&
-				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.GetOperatorID(), msg.GetOperatorID()) &&
-				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signature, msg.Signature) {
+				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.GetOperatorIDs(), msg.GetOperatorIDs()) &&
+				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signatures, msg.Signatures) {
 				require.False(t, found)
 				found = true
 			}

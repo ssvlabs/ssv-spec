@@ -96,11 +96,11 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		}
 
 		// Validate
-		if len(signedSSVMessage.OperatorID) != 1 {
+		if len(signedSSVMessage.OperatorIDs) != 1 {
 			return errors.New("PartialSignatureMessage has more than 1 signer")
 		}
 
-		if err := psigMsgs.ValidateForSigner(signedSSVMessage.OperatorID[0]); err != nil {
+		if err := psigMsgs.ValidateForSigner(signedSSVMessage.OperatorIDs[0]); err != nil {
 			return errors.Wrap(err, "invalid PartialSignatureMessages")
 		}
 

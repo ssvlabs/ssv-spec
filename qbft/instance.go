@@ -91,7 +91,7 @@ func (i *Instance) ProcessMsg(signedMsg *types.SignedSSVMessage) (decided bool, 
 		return false, nil, nil, errors.New("instance stopped processing messages")
 	}
 
-	msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return false, nil, nil, err
 	}
@@ -130,7 +130,7 @@ func (i *Instance) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
 		return errors.Wrap(err, "invalid SignedSSVMessage")
 	}
 
-	msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -158,7 +158,7 @@ func (i *Instance) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
 			return errors.New("did not receive proposal for this round")
 		}
 
-		proposedMsg, err := GetMessageFromBytes(proposedSignedMsg.SSVMessage.Data)
+		proposedMsg, err := DecodeMessage(proposedSignedMsg.SSVMessage.Data)
 		if err != nil {
 			return errors.Wrap(err, "proposal saved for this round is invalid")
 		}

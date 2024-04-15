@@ -13,7 +13,7 @@ func EmptySigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(5), 2)
-	msg.OperatorID = []types.OperatorID{}
+	msg.OperatorIDs = []types.OperatorID{}
 
 	msgs := []*types.SignedSSVMessage{
 		msg,

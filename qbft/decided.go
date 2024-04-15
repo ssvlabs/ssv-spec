@@ -17,7 +17,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 		return nil, errors.Wrap(err, "invalid decided msg")
 	}
 
-	msg, err := GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 		inst.State.DecidedValue = signedMsg.FullData
 	} else { // decide previously, add if has more signers
 		signers, _ := inst.State.CommitContainer.LongestUniqueSignersForRoundAndRoot(msg.Round, msg.Root)
-		if len(signedMsg.GetOperatorID()) > len(signers) {
+		if len(signedMsg.GetOperatorIDs()) > len(signers) {
 			err := inst.State.CommitContainer.AddMsg(signedMsg)
 			if err != nil {
 				return nil, err
@@ -84,7 +84,7 @@ func ValidateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	msg, err := GetMessageFromBytes(signedDecided.SSVMessage.Data)
+	msg, err := DecodeMessage(signedDecided.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -111,10 +111,10 @@ func ValidateDecided(
 // IsDecidedMsg returns true if signed commit has all quorum sigs
 func IsDecidedMsg(share *types.Share, signedDecided *types.SignedSSVMessage) (bool, error) {
 
-	msg, err := GetMessageFromBytes(signedDecided.SSVMessage.Data)
+	msg, err := DecodeMessage(signedDecided.SSVMessage.Data)
 	if err != nil {
 		return false, err
 	}
 
-	return share.HasQuorum(len(signedDecided.GetOperatorID())) && msg.MsgType == CommitMsgType, nil
+	return share.HasQuorum(len(signedDecided.GetOperatorIDs())) && msg.MsgType == CommitMsgType, nil
 }

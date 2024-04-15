@@ -63,9 +63,9 @@ var SignQBFTMsg = func(sk *rsa.PrivateKey, id types.OperatorID, msg *qbft.Messag
 	}
 
 	return &types.SignedSSVMessage{
-		OperatorID: []types.OperatorID{id},
-		Signature:  [][]byte{signature},
-		SSVMessage: ssvMsg,
+		OperatorIDs: []types.OperatorID{id},
+		Signatures:  [][]byte{signature},
+		SSVMessage:  ssvMsg,
 	}
 }
 
@@ -95,7 +95,7 @@ var TestingProposalMessage = func(sk *rsa.PrivateKey, id types.OperatorID) *type
 var TestingProposalMessageWithID = func(sk *rsa.PrivateKey, id types.OperatorID, msgID types.MessageID) *types.SignedSSVMessage {
 	ret := TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
 
-	qbftMsg, err := qbft.GetMessageFromBytes(ret.SSVMessage.Data)
+	qbftMsg, err := qbft.DecodeMessage(ret.SSVMessage.Data)
 	if err != nil {
 		panic(err)
 	}
