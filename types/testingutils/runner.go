@@ -10,8 +10,9 @@ import (
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
-var AttesterRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.BNRoleAttester, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil), keySet)
+var ClusterRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(ssv.RoleCluster, ssv.AttesterValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork,
+		TestingValidatorPubKey[:], TestingValidatorIndex, nil), keySet)
 }
 
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
@@ -56,7 +57,7 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
 }
 
-var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
+var baseRunner = func(role ssv.RunnerRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
 	share := TestingShare(keySet)
 	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])

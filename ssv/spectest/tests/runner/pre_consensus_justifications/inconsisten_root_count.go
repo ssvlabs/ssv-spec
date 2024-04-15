@@ -94,7 +94,7 @@ func InconsistentRootCount() tests.SpecTest {
 			{
 
 				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
+				Runner: decideFirstHeight(testingutils.ClusterRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					changeRootCountAndPrepareMsg(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),

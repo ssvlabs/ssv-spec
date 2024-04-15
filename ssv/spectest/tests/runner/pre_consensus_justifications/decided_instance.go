@@ -84,7 +84,7 @@ func DecidedInstance() tests.SpecTest {
 			{
 
 				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
+				Runner: decideFirstHeight(testingutils.ClusterRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),

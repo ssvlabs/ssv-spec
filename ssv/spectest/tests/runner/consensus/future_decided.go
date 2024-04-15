@@ -75,8 +75,8 @@ func FutureDecided() tests.SpecTest {
 				ExpectedError: errStr,
 			},
 			{
-				Name: "attester and sync committee",
-				Runner: testingutils.AttesterRunner(ks),
+				Name:   "attester and sync committee",
+				Runner: testingutils.ClusterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(

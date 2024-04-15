@@ -300,6 +300,11 @@ var TestingAttesterDuty = types.BeaconDuty{
 	ValidatorCommitteeIndex: 11,
 }
 
+// TODO: create cluster duty with:
+// 1) only attestations
+// 2) only sync committees
+// 3) both
+
 var TestingAttesterDutyNextEpoch = types.BeaconDuty{
 	Type:                    types.BNRoleAttester,
 	PubKey:                  TestingValidatorPubKey,

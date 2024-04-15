@@ -74,7 +74,7 @@ func InvalidMessageSlot() tests.SpecTest {
 			},
 			{
 				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
+				Runner: testingutils.ClusterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, invalidateSlot(testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)))),

@@ -73,7 +73,7 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 			{
 				Name: "attester and sync committee",
 				Runner: decideRunner(
-					testingutils.AttesterRunner(ks),
+					testingutils.ClusterRunner(ks),
 					&testingutils.TestingAttesterDuty,
 					testingutils.TestAttesterConsensusData,
 				),

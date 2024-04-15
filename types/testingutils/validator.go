@@ -13,7 +13,7 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 		NewTestingKeyManager(),
 		NewTestingOperatorSigner(keySet, 1),
 		map[types.BeaconRole]ssv.Runner{
-			types.BNRoleAttester:                  AttesterRunner(keySet),
+			types.BNRoleAttester:                  ClusterRunner(keySet),
 			types.BNRoleProposer:                  ProposerRunner(keySet),
 			types.BNRoleAggregator:                AggregatorRunner(keySet),
 			types.BNRoleSyncCommittee:             SyncCommitteeRunner(keySet),

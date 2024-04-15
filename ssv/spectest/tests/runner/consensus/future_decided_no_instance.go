@@ -56,7 +56,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 			},
 			{
 				Name:           "attester and sync committee",
-				Runner:         testingutils.AttesterRunner(ks),
+				Runner:         testingutils.ClusterRunner(ks),
 				Duty:           &testingutils.TestingAttesterDuty,
 				DontStartDuty:  true,
 				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.BNRoleProposer, testingutils.TestingDutySlot+1)},

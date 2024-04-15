@@ -57,11 +57,12 @@ func ConsensusNotStarted() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  startRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  startRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
+			// TODO cluster runners with attestations, sync committees and mixed duties
 			{
 				Name:                    "voluntary exit",
 				Runner:                  startRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty),

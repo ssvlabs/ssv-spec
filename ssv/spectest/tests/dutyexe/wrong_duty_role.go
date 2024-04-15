@@ -79,7 +79,7 @@ func WrongDutyRole() tests.SpecTest {
 			},
 			{
 				Name:           "attester",
-				Runner:         testingutils.AttesterRunner(ks),
+				Runner:         testingutils.ClusterRunner(ks),
 				Duty:           &testingutils.TestingAttesterDuty,
 				Messages:       []*types.SignedSSVMessage{decidedMessage(types.BNRoleAttester)},
 				OutputMessages: []*types.PartialSignatureMessages{},

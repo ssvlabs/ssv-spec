@@ -20,7 +20,7 @@ type ClusterRunner struct {
 	valCheck   qbft.ProposedValueCheckF
 }
 
-func NewClusterRunner(beaconNetwork types.BeaconNetwork,
+func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	share map[phase0.ValidatorIndex]*types.Share,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,

@@ -43,8 +43,8 @@ func FirstHeight() tests.SpecTest {
 				},
 			},
 			{
-				Name: "attester and sync committee",
-				Runner:         testingutils.AttesterRunner(ks),
+				Name:           "attester and sync committee",
+				Runner:         testingutils.ClusterRunner(ks),
 				Duty:           &testingutils.TestingAttesterDutyFirstSlot,
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},

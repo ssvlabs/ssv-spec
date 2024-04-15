@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
+	"github.com/bloxapp/ssv-spec/ssv"
 
 	"github.com/pkg/errors"
 )
@@ -58,7 +59,7 @@ func (msg MessageID) GetRoleType() BeaconRole {
 	return BeaconRole(binary.LittleEndian.Uint32(roleByts))
 }
 
-func NewMsgID(domain DomainType, pk []byte, role BeaconRole) MessageID {
+func NewMsgID(domain DomainType, pk []byte, role ssv.RunnerRole) MessageID {
 	roleByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 

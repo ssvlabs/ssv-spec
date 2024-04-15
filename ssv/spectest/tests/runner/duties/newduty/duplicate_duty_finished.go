@@ -89,7 +89,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  finishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  finishRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
 				OutputMessages:          []*types.PartialSignatureMessages{},

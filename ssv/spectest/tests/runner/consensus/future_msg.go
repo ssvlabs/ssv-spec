@@ -86,7 +86,7 @@ func FutureMessage() tests.SpecTest {
 			},
 			{
 				Name:   "attester and sync committee",
-				Runner: testingutils.AttesterRunner(ks),
+				Runner: testingutils.ClusterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					futureMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),

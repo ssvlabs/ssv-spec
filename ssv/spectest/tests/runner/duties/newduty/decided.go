@@ -26,7 +26,7 @@ func PostDecided() tests.SpecTest {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.Slot))
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
@@ -60,7 +60,7 @@ func PostDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  decidedRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  decidedRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,

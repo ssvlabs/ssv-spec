@@ -95,7 +95,7 @@ func FullHappyFlow() tests.SpecTest {
 			},
 			{
 				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
+				Runner: testingutils.ClusterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester), // consensus

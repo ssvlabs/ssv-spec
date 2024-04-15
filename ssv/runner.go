@@ -8,6 +8,20 @@ import (
 	"github.com/pkg/errors"
 )
 
+type RunnerRole uint32
+
+const (
+	RoleCluster BeaconRole = iota
+	RoleAggregator
+	RoleProposer
+	RoleSyncCommitteeContribution
+
+	RoleValidatorRegistration
+	RoleVoluntaryExit
+
+	RoleUnknown = -1
+)
+
 type Getters interface {
 	GetBaseRunner() *BaseRunner
 	GetBeaconNode() BeaconNode

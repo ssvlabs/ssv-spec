@@ -242,7 +242,7 @@ func HappyFlow() tests.SpecTest {
 			},
 			{
 				Name:   "attester first height",
-				Runner: testingutils.AttesterRunner(ks),
+				Runner: testingutils.ClusterRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
 					consensusMsgs(testingutils.TestAttesterConsensusData, types.BNRoleAttester)[:7], // consensus
