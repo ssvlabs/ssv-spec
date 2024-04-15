@@ -20,7 +20,7 @@ type ProposerRunner struct {
 
 	beacon         BeaconNode
 	network        Network
-	signer         types.KeyManager
+	signer         types.BeaconSigner
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
@@ -31,7 +31,7 @@ func NewProposerRunner(
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
@@ -301,7 +301,7 @@ func (r *ProposerRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *ProposerRunner) GetSigner() types.KeyManager {
+func (r *ProposerRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 

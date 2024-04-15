@@ -12,7 +12,7 @@ type Getters interface {
 	GetBaseRunner() *BaseRunner
 	GetBeaconNode() BeaconNode
 	GetValCheckF() qbft.ProposedValueCheckF
-	GetSigner() types.KeyManager
+	GetSigner() types.BeaconSigner
 	GetNetwork() Network
 }
 

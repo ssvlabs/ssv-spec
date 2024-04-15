@@ -17,7 +17,6 @@ var TestingQBFTRootData = func() [32]byte {
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
-		ShareSigner:    NewTestingKeyManager(),
 		OperatorSigner: NewTestingOperatorSigner(keySet, 1),
 		SigningPK:      keySet.Shares[1].GetPublicKey().Serialize(),
 		Domain:         TestingSSVDomainType,

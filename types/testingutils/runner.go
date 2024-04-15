@@ -69,7 +69,6 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		return 1
 	}
 	config.Network = net
-	config.ShareSigner = km
 	config.OperatorSigner = opSigner
 	config.SignatureVerifier = NewTestingVerifier()
 

@@ -10,12 +10,8 @@ import (
 )
 
 type signing interface {
-	// GetShareSigner returns an share signer instance
-	GetShareSigner() types.ShareSigner
 	// GetSigner returns an operator signer instance
 	GetOperatorSigner() types.OperatorSigner
-	// GetSignatureDomainType returns the Domain type used for signatures
-	GetSignatureDomainType() types.DomainType
 }
 
 type IConfig interface {
@@ -33,7 +29,6 @@ type IConfig interface {
 }
 
 type Config struct {
-	ShareSigner       types.ShareSigner
 	OperatorSigner    types.OperatorSigner
 	SigningPK         []byte
 	Domain            types.DomainType
@@ -42,11 +37,6 @@ type Config struct {
 	Network           Network
 	Timer             Timer
 	SignatureVerifier types.SignatureVerifier
-}
-
-// GetSigner returns a Signer instance
-func (c *Config) GetShareSigner() types.ShareSigner {
-	return c.ShareSigner
 }
 
 // GetSigner returns a Signer instance
