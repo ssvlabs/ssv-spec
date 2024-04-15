@@ -58,17 +58,6 @@ func PostFutureDecided() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 			{
-<<<<<<< HEAD
-=======
-				Name:                    "sync committee",
-				Runner:                  futureDecide(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "89edc9d9c28654a0113c3003c1538aaae36fe14490992dbf057b9f5e5d492e33",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
-			},
-			{
->>>>>>> msg_structures_rsa
 				Name:                    "aggregator",
 				Runner:                  futureDecide(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDuty,
@@ -91,16 +80,12 @@ func PostFutureDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 			{
-<<<<<<< HEAD
-				Name: "attester and sync committee",
-=======
-				Name:                    "attester",
+				Name:                    "attester and sync committee",
 				Runner:                  futureDecide(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedError,
->>>>>>> msg_structures_rsa
 			},
 		},
 	}
