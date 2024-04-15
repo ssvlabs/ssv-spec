@@ -97,9 +97,9 @@ func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessag
 
 // PartialSignatureMessage is a msg for partial Beacon chain related signatures (like partial attestation, block, randao sigs)
 type PartialSignatureMessage struct {
-	PartialSignature Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty
-	SigningRoot      [32]byte  `ssz-size:"32"` // the root signed in PartialSignature
-	Signer           phase0.ValidatorIndex
+	PartialSignature Signature  `ssz-size:"96"` // The Beacon chain partial Signature for a duty
+	SigningRoot      [32]byte   `ssz-size:"32"` // the root signed in PartialSignature
+	Signer           OperatorID // the signer of the partial signature
 }
 
 // Encode returns a msg encoded bytes or error

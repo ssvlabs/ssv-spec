@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"fmt"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -156,7 +154,7 @@ func ComputeSignatureDomain(domain DomainType, sigType SignatureType) SignatureD
 
 // ReconstructSignatures receives a map of user indexes and serialized bls.Sign.
 // It then reconstructs the original threshold signature using lagrange interpolation
-func ReconstructSignatures(signatures map[phase0.ValidatorIndex][]byte) (*bls.Sign, error) {
+func ReconstructSignatures(signatures map[OperatorID][]byte) (*bls.Sign, error) {
 	reconstructedSig := bls.Sign{}
 
 	idVec := make([]bls.ID, 0)
