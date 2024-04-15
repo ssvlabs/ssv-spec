@@ -125,12 +125,12 @@ func (bd *BeaconDuty) GetValidatorIndex() spec.ValidatorIndex {
 	return bd.ValidatorIndex
 }
 
-type ClusterDuty struct {
+type CommitteeDuty struct {
 	Slot         spec.Slot
 	BeaconDuties []*BeaconDuty
 }
 
-func (cd *ClusterDuty) DutySlot() spec.Slot {
+func (cd *CommitteeDuty) DutySlot() spec.Slot {
 	return cd.Slot
 }
 

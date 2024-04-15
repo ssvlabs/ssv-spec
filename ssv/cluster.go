@@ -50,7 +50,7 @@ func NewCommittee(
 }
 
 // StartDuty starts a new duty for the given slot
-func (c *Committee) StartDuty(duty *types.ClusterDuty) error {
+func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	// do we need slot?
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("ClusterRunner for slot %d already exists", duty.Slot))

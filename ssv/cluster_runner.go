@@ -118,7 +118,7 @@ func (cr ClusterRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		Slot:     decidedValue.Duty.Slot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
-	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.ClusterDuty).BeaconDuties {
+	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty).BeaconDuties {
 		switch duty.Type {
 		case types.BNRoleAttester:
 			attestationData := constructAttestationData(beaconVote, duty)
@@ -260,7 +260,7 @@ func (cr *ClusterRunner) expectedPostConsensusRootsAndDomain2() (attestationMap 
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
 	beaconVote := &types.BeaconVote{}
 	beaconVote.Decode(beaconVoteData)
-	for _, beaconDuty := range duty.(*types.ClusterDuty).BeaconDuties {
+	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
 		switch beaconDuty.Type {
 		case types.BNRoleAttester:
 			attestationData := constructAttestationData(beaconVote, beaconDuty)
