@@ -2,8 +2,6 @@ package testingutils
 
 import (
 	"encoding/hex"
-	"fmt"
-
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
@@ -301,28 +299,19 @@ var TestingAttesterDuty = types.BeaconDuty{
 	ValidatorCommitteeIndex: 11,
 }
 
-// #TODO Implement me
-func getValPubKeyByValIdx(valIdx int) (bool, phase0.BLSPubKey) {
+func getValPubKeyByValIdx(valIdx int) phase0.BLSPubKey {
 	switch valIdx {
 	case TestingValidatorIndex:
-		return true, TestingValidatorPubKey
+		return TestingValidatorPubKey
 	}
-	return false, phase0.BLSPubKey{}
+	panic("such validator index not found")
 }
 
-// TODO: create cluster duty with:
-// 1) only attestations
-// 2) only sync committees
-// 3) both
-
-func TestingCommitteeAttesterDuty(slot phase0.Slot, validatorIds []int) (*types.CommitteeDuty, error) {
+func TestingCommitteeAttesterDuty(slot phase0.Slot, validatorIds []int) *types.CommitteeDuty {
 	duties := make([]*types.BeaconDuty, 0)
 
 	for _, valIdx := range validatorIds {
-		found, pk := getValPubKeyByValIdx(valIdx)
-		if !found {
-			return nil, fmt.Errorf("validator pubkey not found")
-		}
+		pk := getValPubKeyByValIdx(valIdx)
 		duties = append(duties, &types.BeaconDuty{
 			Type:                    types.BNRoleAttester,
 			PubKey:                  pk,
@@ -334,17 +323,14 @@ func TestingCommitteeAttesterDuty(slot phase0.Slot, validatorIds []int) (*types.
 			ValidatorCommitteeIndex: 11,
 		})
 	}
-	return &types.CommitteeDuty{Slot: slot, BeaconDuties: duties}, nil
+	return &types.CommitteeDuty{Slot: slot, BeaconDuties: duties}
 }
 
-func TestingCommitteeSyncCommitteeDuty(slot phase0.Slot, validatorIds []int) (*types.CommitteeDuty, error) {
+func TestingCommitteeSyncCommitteeDuty(slot phase0.Slot, validatorIds []int) *types.CommitteeDuty {
 	duties := make([]*types.BeaconDuty, 0)
 
 	for _, valIdx := range validatorIds {
-		found, pk := getValPubKeyByValIdx(valIdx)
-		if !found {
-			return nil, fmt.Errorf("validator pubkey not found")
-		}
+		pk := getValPubKeyByValIdx(valIdx)
 		duties = append(duties, &types.BeaconDuty{
 			Type:                          types.BNRoleSyncCommittee,
 			PubKey:                        pk,
@@ -357,17 +343,14 @@ func TestingCommitteeSyncCommitteeDuty(slot phase0.Slot, validatorIds []int) (*t
 			ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 		})
 	}
-	return &types.CommitteeDuty{Slot: slot, BeaconDuties: duties}, nil
+	return &types.CommitteeDuty{Slot: slot, BeaconDuties: duties}
 }
 
-func TestingCommitteeAttesterAndSyncCommitteeDuty(slot phase0.Slot, validatorIds []int) (*types.CommitteeDuty, error) {
+func TestingCommitteeAttesterAndSyncCommitteeDuty(slot phase0.Slot, validatorIds []int) *types.CommitteeDuty {
 	duties := make([]*types.BeaconDuty, 0)
 
 	for _, valIdx := range validatorIds {
-		found, pk := getValPubKeyByValIdx(valIdx)
-		if !found {
-			return nil, fmt.Errorf("validator pubkey not found")
-		}
+		pk := getValPubKeyByValIdx(valIdx)
 		duties = append(duties, &types.BeaconDuty{
 			// #TODO set correct role
 			Type:                          types.BNRoleSyncCommittee,
@@ -381,7 +364,7 @@ func TestingCommitteeAttesterAndSyncCommitteeDuty(slot phase0.Slot, validatorIds
 			ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 		})
 	}
-	return &types.CommitteeDuty{Slot: slot, BeaconDuties: duties}, nil
+	return &types.CommitteeDuty{Slot: slot, BeaconDuties: duties}
 }
 
 var TestingAttesterDutyNextEpoch = types.BeaconDuty{
