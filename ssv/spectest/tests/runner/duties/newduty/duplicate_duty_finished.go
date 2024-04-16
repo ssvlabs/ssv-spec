@@ -25,7 +25,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.Slot))
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
@@ -89,7 +89,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  finishRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
 				OutputMessages:          []*types.PartialSignatureMessages{},

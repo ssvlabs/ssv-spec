@@ -293,7 +293,7 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
 	switch role {
 	case types.BNRoleAttester:
-		ret := testingutils.ClusterRunner(ks)
+		ret := testingutils.CommitteeRunner(ks)
 		ret.(*ssv.AttesterRunner).BaseRunner = base
 		return ret
 	case types.BNRoleAggregator:
@@ -305,7 +305,7 @@ func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingu
 		ret.(*ssv.ProposerRunner).BaseRunner = base
 		return ret
 	case types.BNRoleSyncCommittee:
-		ret := testingutils.SyncCommitteeRunner(ks)
+		ret := testingutils.CommitteeRunner(ks)
 		ret.(*ssv.SyncCommitteeRunner).BaseRunner = base
 		return ret
 	case types.BNRoleSyncCommitteeContribution:

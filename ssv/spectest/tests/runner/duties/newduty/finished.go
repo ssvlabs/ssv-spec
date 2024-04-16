@@ -13,8 +13,8 @@ import (
 // Finished tests a valid start duty after finished prev
 func Finished() tests.SpecTest {
 
-	panic("implement me")
-
+	//panic("implement me")
+	//
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
@@ -26,7 +26,7 @@ func Finished() tests.SpecTest {
 		if finishController {
 			r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 				r.GetBaseRunner().QBFTController.GetConfig(),
-				r.GetBaseRunner().Share,
+				r.GetBaseRunner().QBFTController.Share,
 				r.GetBaseRunner().QBFTController.Identifier,
 				qbft.Height(duty.Slot))
 			r.GetBaseRunner().State.RunningInstance.State.Decided = true
@@ -72,7 +72,7 @@ func Finished() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  finishRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty, true),
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty, true),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
 				OutputMessages:          []*types.PartialSignatureMessages{},

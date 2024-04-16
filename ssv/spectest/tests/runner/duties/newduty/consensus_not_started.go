@@ -57,7 +57,7 @@ func ConsensusNotStarted() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  startRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  startRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
 				OutputMessages:          []*types.PartialSignatureMessages{},

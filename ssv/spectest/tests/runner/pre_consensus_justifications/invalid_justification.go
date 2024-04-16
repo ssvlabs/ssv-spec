@@ -94,7 +94,7 @@ func InvalidJustification() tests.SpecTest {
 			{
 
 				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.ClusterRunner(ks)),
+				Runner: decideFirstHeight(testingutils.CommitteeRunner(ks)),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					setZeroSignerAndPrepareMsg(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),

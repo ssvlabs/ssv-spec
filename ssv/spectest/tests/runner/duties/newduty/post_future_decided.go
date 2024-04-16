@@ -26,14 +26,14 @@ func PostFutureDecided() tests.SpecTest {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.Slot))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 
 		futureDecidedInstance := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.Slot+50))
 		futureDecidedInstance.State.Decided = true
@@ -81,7 +81,7 @@ func PostFutureDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  futureDecide(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  futureDecide(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
 				OutputMessages:          []*types.PartialSignatureMessages{},

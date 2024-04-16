@@ -114,7 +114,7 @@ func PastSlot() tests.SpecTest {
 			{
 
 				Name:   "attester",
-				Runner: testingutils.ClusterRunner(ks),
+				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
