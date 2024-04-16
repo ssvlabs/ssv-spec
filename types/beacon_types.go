@@ -103,7 +103,7 @@ type BeaconDuty struct {
 func MapDutyToRunnerRole(dutyRole BeaconRole) ssv.RunnerRole {
 	switch dutyRole {
 	case BNRoleAttester | BNRoleSyncCommittee:
-		return ssv.RoleCluster
+		return ssv.RoleCommittee
 	case BNRoleProposer:
 		return ssv.RoleProposer
 	case BNRoleAggregator:

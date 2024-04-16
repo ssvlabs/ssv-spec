@@ -12,7 +12,7 @@ import (
 type RunnerRole int32
 
 const (
-	RoleCluster RunnerRole = iota
+	RoleCommittee RunnerRole = iota
 	RoleAggregator
 	RoleProposer
 	RoleSyncCommitteeContribution
@@ -61,6 +61,7 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	RunnerRoleType RunnerRole
+	types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
 	highestDecidedSlot spec.Slot

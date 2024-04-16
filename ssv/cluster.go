@@ -13,7 +13,7 @@ import (
 )
 
 type Committee struct {
-	Runners           map[spec.Slot]*ClusterRunner
+	Runners           map[spec.Slot]*CommitteeRunner
 	Network           Network
 	Beacon            BeaconNode
 	Operator          types.Operator
@@ -21,7 +21,7 @@ type Committee struct {
 	Signer            types.BeaconSigner
 	OperatorSigner    types.OperatorSigner
 	SignatureVerifier types.SignatureVerifier
-	CreateRunnerFn    func() *ClusterRunner
+	CreateRunnerFn    func() *CommitteeRunner
 }
 
 // NewCommittee creates a new cluster
@@ -33,10 +33,10 @@ func NewCommittee(
 	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	verifier types.SignatureVerifier,
-	createRunnerFn func() *ClusterRunner,
+	createRunnerFn func() *CommitteeRunner,
 ) *Committee {
 	return &Committee{
-		Runners:           make(map[spec.Slot]*ClusterRunner),
+		Runners:           make(map[spec.Slot]*CommitteeRunner),
 		Network:           network,
 		Beacon:            beacon,
 		Operator:          operator,
@@ -53,7 +53,7 @@ func NewCommittee(
 func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	// do we need slot?
 	if _, exists := c.Runners[duty.Slot]; exists {
-		return errors.New(fmt.Sprintf("ClusterRunner for slot %d already exists", duty.Slot))
+		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
 	c.Runners[duty.Slot] = c.CreateRunnerFn()
 	return c.Runners[duty.Slot].StartNewDuty(duty)
