@@ -13,11 +13,12 @@ import (
 )
 
 type CommitteeRunner struct {
-	BaseRunner *BaseRunner
-	beacon     BeaconNode
-	network    Network
-	signer     types.KeyManager
-	valCheck   qbft.ProposedValueCheckF
+	BaseRunner     *BaseRunner
+	beacon         BeaconNode
+	network        Network
+	signer         types.BeaconSigner
+	operatorSigner types.OperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 }
 
 func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
@@ -25,9 +26,10 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
+	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot) *CommitteeRunner {
+	highestDecidedSlot phase0.Slot) Runner {
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType:     RoleCommittee,
@@ -36,9 +38,10 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,
 		},
-		beacon:  beacon,
-		network: network,
-		signer:  signer,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
 	}
 }
 
@@ -74,11 +77,6 @@ func (cr CommitteeRunner) GetBeaconNode() BeaconNode {
 }
 
 func (cr CommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (cr CommitteeRunner) GetSigner() types.KeyManager {
 	//TODO implement me
 	panic("implement me")
 }
@@ -315,6 +313,14 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
+}
+
+func (cr CommitteeRunner) GetSigner() types.BeaconSigner {
+	return cr.signer
+}
+
+func (cr CommitteeRunner) GetOperatorSigner() types.OperatorSigner {
+	return cr.operatorSigner
 }
 
 func constructAttestationData(vote *types.BeaconVote, duty *types.BeaconDuty) *phase0.AttestationData {

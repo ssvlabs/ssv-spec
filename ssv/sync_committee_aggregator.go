@@ -377,6 +377,11 @@ func (r *SyncCommitteeAggregatorRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 
+func (r *SyncCommitteeAggregatorRunner) GetOperatorSigner() types.OperatorSigner {
+	//TODO implement me
+	panic("implement me")
+}
+
 // Encode returns the encoded struct in bytes or error
 func (r *SyncCommitteeAggregatorRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)

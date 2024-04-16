@@ -308,6 +308,10 @@ func (r *ProposerRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 
+func (r *ProposerRunner) GetOperatorSigner() types.OperatorSigner {
+	return r.operatorSigner
+}
+
 // Encode returns the encoded struct in bytes or error
 func (r *ProposerRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)
