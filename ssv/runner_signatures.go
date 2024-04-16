@@ -26,7 +26,8 @@ func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.BeaconDuty,
 	return &types.PartialSignatureMessage{
 		PartialSignature: sig,
 		SigningRoot:      r,
-		Signer:           duty.ValidatorIndex,
+		Signer:           runner.GetOperatorSigner().GetOperatorID(),
+		ValidatorIndex:   duty.ValidatorIndex,
 	}, nil
 }
 
@@ -44,7 +45,7 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 
 	// Check if signer is in committee
 	for _, msg := range psigMsgs.Messages {
-		if _, ok := b.Share[msg.Signer]; !ok {
+		if _, ok := b.Share[msg.ValidatorIndex]; !ok {
 			return errors.New("unknown signer")
 		}
 	}
@@ -80,7 +81,8 @@ func (b *BaseRunner) resolveDuplicateSignature(container *PartialSigContainer, m
 	// Check previous signature validity
 	previousSignature, err := container.GetSignature(msg.Signer, msg.SigningRoot)
 	if err == nil {
-		err = b.verifyBeaconPartialSignature(msg.Signer, previousSignature, msg.SigningRoot, committee)
+		err = b.verifyBeaconPartialSignature(msg.Signer, previousSignature, msg.SigningRoot,
+			b.Share[msg.ValidatorIndex].Committee)
 		if err == nil {
 			// Keep the previous sigature since it's correct
 			return
@@ -91,7 +93,8 @@ func (b *BaseRunner) resolveDuplicateSignature(container *PartialSigContainer, m
 	container.Remove(msg.Signer, msg.SigningRoot)
 
 	// Hold the new signature, if correct
-	err = b.verifyBeaconPartialSignature(msg.Signer, msg.PartialSignature, msg.SigningRoot, committee)
+	err = b.verifyBeaconPartialSignature(msg.Signer, msg.PartialSignature, msg.SigningRoot,
+		b.Share[msg.ValidatorIndex].Committee)
 	if err == nil {
 		container.AddSignature(msg)
 	}
