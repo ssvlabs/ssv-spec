@@ -288,6 +288,24 @@ var TestingAttesterDutyFirstSlot = types.BeaconDuty{
 	ValidatorCommitteeIndex: 11,
 }
 
+//func TestingCommitteeAttesterDuty() types.CommitteeDuty {
+//	return types.CommitteeDuty{
+//		Slot: TestingDutySlot,
+//		BeaconDuties: []*types.BeaconDuty{
+//			{
+//				Type:                    types.BNRoleAttester,
+//				PubKey:                  TestingValidatorPubKey,
+//				Slot:                    TestingDutySlot,
+//				ValidatorIndex:          TestingValidatorIndex,
+//				CommitteeIndex:          3,
+//				CommitteesAtSlot:        36,
+//				CommitteeLength:         128,
+//				ValidatorCommitteeIndex: 11,
+//			},
+//		},
+//	}
+//}
+
 var TestingAttesterDuty = types.BeaconDuty{
 	Type:                    types.BNRoleAttester,
 	PubKey:                  TestingValidatorPubKey,
@@ -351,18 +369,30 @@ func TestingCommitteeAttesterAndSyncCommitteeDuty(slot phase0.Slot, validatorIds
 
 	for _, valIdx := range validatorIds {
 		pk := getValPubKeyByValIdx(valIdx)
-		duties = append(duties, &types.BeaconDuty{
-			// #TODO set correct role
-			Type:                          types.BNRoleSyncCommittee,
-			PubKey:                        pk,
-			Slot:                          0,
-			ValidatorIndex:                phase0.ValidatorIndex(valIdx),
-			CommitteeIndex:                3,
-			CommitteesAtSlot:              36,
-			CommitteeLength:               128,
-			ValidatorCommitteeIndex:       11,
-			ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
-		})
+		duties = append(duties, []*types.BeaconDuty{
+			{
+				Type:                          types.BNRoleSyncCommittee,
+				PubKey:                        pk,
+				Slot:                          0,
+				ValidatorIndex:                phase0.ValidatorIndex(valIdx),
+				CommitteeIndex:                3,
+				CommitteesAtSlot:              36,
+				CommitteeLength:               128,
+				ValidatorCommitteeIndex:       11,
+				ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+			}, {
+				Type:                    types.BNRoleAttester,
+				PubKey:                  pk,
+				Slot:                    TestingDutySlot,
+				ValidatorIndex:          phase0.ValidatorIndex(valIdx),
+				CommitteeIndex:          3,
+				CommitteesAtSlot:        36,
+				CommitteeLength:         128,
+				ValidatorCommitteeIndex: 11,
+			},
+		}...,
+		)
+
 	}
 	return &types.CommitteeDuty{Slot: slot, BeaconDuties: duties}
 }
@@ -378,7 +408,6 @@ var TestingAttesterDutyNextEpoch = types.BeaconDuty{
 	ValidatorCommitteeIndex: 11,
 }
 
-// TestingAggregatorDutyFirstSlot
 var TestingAggregatorDutyFirstSlot = types.BeaconDuty{
 	Type:                    types.BNRoleAggregator,
 	PubKey:                  TestingValidatorPubKey,
