@@ -96,7 +96,7 @@ func (r *SyncCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage
 		return errors.Wrap(err, "could not sign post-consensus partial signature message")
 	}
 
-	if err := r.GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
+	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
 	}
 	return nil
