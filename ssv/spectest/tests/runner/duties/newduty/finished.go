@@ -13,8 +13,8 @@ import (
 // Finished tests a valid start duty after finished prev
 func Finished() tests.SpecTest {
 
-	panic("implement me")
-
+	//panic("implement me")
+	//
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
@@ -26,7 +26,7 @@ func Finished() tests.SpecTest {
 		if finishController {
 			r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 				r.GetBaseRunner().QBFTController.GetConfig(),
-				r.GetBaseRunner().Share,
+				r.GetBaseRunner().QBFTController.Share,
 				r.GetBaseRunner().QBFTController.Identifier,
 				qbft.Height(duty.Slot))
 			r.GetBaseRunner().State.RunningInstance.State.Decided = true

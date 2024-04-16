@@ -303,7 +303,10 @@ var TestingAttesterDuty = types.BeaconDuty{
 
 // #TODO Implement me
 func getValPubKeyByValIdx(valIdx int) (bool, phase0.BLSPubKey) {
-
+	switch valIdx {
+	case TestingValidatorIndex:
+		return true, TestingValidatorPubKey
+	}
 	return false, phase0.BLSPubKey{}
 }
 
@@ -378,6 +381,7 @@ func TestingCommitteeAttesterAndSyncCommitteeDuty(slot phase0.Slot, validatorIds
 			ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 		})
 	}
+	return &types.CommitteeDuty{Slot: slot, BeaconDuties: duties}, nil
 }
 
 var TestingAttesterDutyNextEpoch = types.BeaconDuty{

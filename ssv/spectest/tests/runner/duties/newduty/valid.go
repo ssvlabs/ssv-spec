@@ -2,7 +2,6 @@ package newduty
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -11,7 +10,7 @@ import (
 // Valid tests a valid start duty
 func Valid() tests.SpecTest {
 
-	//panic("implement me")
+	panic("implement me")
 
 	ks := testingutils.Testing4SharesSet()
 	return &MultiStartNewRunnerDutySpecTest{
@@ -45,9 +44,13 @@ func Valid() tests.SpecTest {
 				},
 			},
 			{ //#TODO CHECK
-				Name:                    "attester and sync committee",
-				Runner:                  testingutils.CommitteeRunner(ks),
-				Duty:                    &testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty,
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty: func() types.Duty {
+					// #TODO
+					d, _ := testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(0, []int{1})
+					return d
+				}(),
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
