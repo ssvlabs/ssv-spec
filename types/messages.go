@@ -136,7 +136,7 @@ func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
-// SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
+// SignedSSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
 	Signature  [256]byte // Created by the operator's network key
 	OperatorID OperatorID

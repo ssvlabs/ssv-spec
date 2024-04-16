@@ -101,7 +101,7 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
 
-	return i.GetConfig().GetNetwork().Broadcast(msgToBroadcast)
+	return i.GetConfig().GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
