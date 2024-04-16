@@ -15,12 +15,12 @@ func DuplicateSigners() tests.SpecTest {
 
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1)
 	commit := testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]}, []types.OperatorID{1, 2})
-	commit.OperatorID = []types.OperatorID{1, 1}
+	commit.OperatorIDs = []types.OperatorID{1, 1}
 
 	return &tests.MsgProcessingSpecTest{
 		Name:     "duplicate signers",
 		Pre:      pre,
-		PostRoot: "167c1835a17bab210547283205e8e9cc754cb0c8a7fcdfcee57a63315ff63378",
+		PostRoot: "2253eea5735c33797cd1f1a1e3ced2cb8b16ee1c78ae1747e18041b67216d622",
 		InputMessages: []*types.SignedSSVMessage{
 			commit,
 		},

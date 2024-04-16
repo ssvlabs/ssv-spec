@@ -35,7 +35,7 @@ func InitContainers(instance *qbft.Instance) {
 
 func setMessage(instance *qbft.Instance, signedMsg *types.SignedSSVMessage) {
 
-	msg, err := qbft.GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := qbft.DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		panic(err)
 	}

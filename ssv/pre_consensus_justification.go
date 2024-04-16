@@ -24,7 +24,7 @@ func (b *BaseRunner) correctQBFTState(msg *qbft.Message) bool {
 // shouldProcessingJustificationsForHeight returns true if pre-consensus justification should be processed, false otherwise
 func (b *BaseRunner) shouldProcessingJustificationsForHeight(signedMsg *types.SignedSSVMessage) (bool, error) {
 
-	msg, err := qbft.GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := qbft.DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return false, err
 	}

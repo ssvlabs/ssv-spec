@@ -10,7 +10,7 @@ import (
 func SignedMsgNoSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1))
-	msg.OperatorID = nil
+	msg.OperatorIDs = nil
 
 	return &tests.MsgSpecTest{
 		Name: "no signers",

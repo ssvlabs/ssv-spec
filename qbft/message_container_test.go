@@ -47,13 +47,13 @@ func TestMsgContainer_AddIfDoesntExist(t *testing.T) {
 		}
 
 		m := testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))
-		m.OperatorID = []types.OperatorID{1, 2, 3, 4}
+		m.OperatorIDs = []types.OperatorID{1, 2, 3, 4}
 		added, err := c.AddFirstMsgForSignerAndRound(m)
 		require.NoError(t, err)
 		require.True(t, added)
 
 		m = testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))
-		m.OperatorID = []types.OperatorID{1, 5, 6, 7}
+		m.OperatorIDs = []types.OperatorID{1, 5, 6, 7}
 		added, err = c.AddFirstMsgForSignerAndRound(m)
 		require.NoError(t, err)
 		require.True(t, added)
@@ -95,9 +95,9 @@ func MessageWithSigners(signers []types.OperatorID, msg *qbft.Message) *types.Si
 		Data:    encodedMsg,
 	}
 	return &types.SignedSSVMessage{
-		OperatorID: signers,
-		Signature:  make([][]byte, len(signers)),
-		SSVMessage: ssvMsg,
+		OperatorIDs: signers,
+		Signatures:  make([][]byte, len(signers)),
+		SSVMessage:  ssvMsg,
 	}
 }
 

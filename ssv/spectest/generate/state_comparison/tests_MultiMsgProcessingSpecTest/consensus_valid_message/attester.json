@@ -75,10 +75,10 @@
 										"LastPreparedRound": 0,
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": {
-												"Signature": [
+												"Signatures": [
 														"Z3cz3JNgnuRI850Zjxb6sXJ1jDyPEEKdmcL+lLtVjrZMPBgr/vhREC+OboasQJruGuMmFMlPZttHgkdmiUEROANOYAb8x0BIF2k4YwmJ730+J0AqO77Cwq9gU8qeegxztSpCH+MTeVICtvNsIV/yhdwkFEqyAvCP4PMUdWlh15WHlaPxSb2LTlRwicAyKwsW2/oCbnKeIGf8bq25yghsqcnnrmE/xIawJQcTP9xPfC/ZQeqPt1/oZN0YjDeEGDyj+Qk2UcW2v+cCWssHZbsSTv/AVDducr4DSUSsWz9o7zyB/Ohl4M8jsRSwvcKhBNDVwWHqofB4kokh7UicjsS3YA=="
 												],
-												"OperatorID": [
+												"OperatorIDs": [
 														1
 												],
 												"SSVMessage": {
@@ -151,10 +151,10 @@
 												"Msgs": {
 														"1": [
 																{
-																		"Signature": [
+																		"Signatures": [
 																				"Z3cz3JNgnuRI850Zjxb6sXJ1jDyPEEKdmcL+lLtVjrZMPBgr/vhREC+OboasQJruGuMmFMlPZttHgkdmiUEROANOYAb8x0BIF2k4YwmJ730+J0AqO77Cwq9gU8qeegxztSpCH+MTeVICtvNsIV/yhdwkFEqyAvCP4PMUdWlh15WHlaPxSb2LTlRwicAyKwsW2/oCbnKeIGf8bq25yghsqcnnrmE/xIawJQcTP9xPfC/ZQeqPt1/oZN0YjDeEGDyj+Qk2UcW2v+cCWssHZbsSTv/AVDducr4DSUSsWz9o7zyB/Ohl4M8jsRSwvcKhBNDVwWHqofB4kokh7UicjsS3YA=="
 																		],
-																		"OperatorID": [
+																		"OperatorIDs": [
 																				1
 																		],
 																		"SSVMessage": {
@@ -378,10 +378,10 @@
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": {
-														"Signature": [
+														"Signatures": [
 																"Z3cz3JNgnuRI850Zjxb6sXJ1jDyPEEKdmcL+lLtVjrZMPBgr/vhREC+OboasQJruGuMmFMlPZttHgkdmiUEROANOYAb8x0BIF2k4YwmJ730+J0AqO77Cwq9gU8qeegxztSpCH+MTeVICtvNsIV/yhdwkFEqyAvCP4PMUdWlh15WHlaPxSb2LTlRwicAyKwsW2/oCbnKeIGf8bq25yghsqcnnrmE/xIawJQcTP9xPfC/ZQeqPt1/oZN0YjDeEGDyj+Qk2UcW2v+cCWssHZbsSTv/AVDducr4DSUSsWz9o7zyB/Ohl4M8jsRSwvcKhBNDVwWHqofB4kokh7UicjsS3YA=="
 														],
-														"OperatorID": [
+														"OperatorIDs": [
 																1
 														],
 														"SSVMessage": {
@@ -454,10 +454,10 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": [
+																				"Signatures": [
 																						"Z3cz3JNgnuRI850Zjxb6sXJ1jDyPEEKdmcL+lLtVjrZMPBgr/vhREC+OboasQJruGuMmFMlPZttHgkdmiUEROANOYAb8x0BIF2k4YwmJ730+J0AqO77Cwq9gU8qeegxztSpCH+MTeVICtvNsIV/yhdwkFEqyAvCP4PMUdWlh15WHlaPxSb2LTlRwicAyKwsW2/oCbnKeIGf8bq25yghsqcnnrmE/xIawJQcTP9xPfC/ZQeqPt1/oZN0YjDeEGDyj+Qk2UcW2v+cCWssHZbsSTv/AVDducr4DSUSsWz9o7zyB/Ohl4M8jsRSwvcKhBNDVwWHqofB4kokh7UicjsS3YA=="
 																				],
-																				"OperatorID": [
+																				"OperatorIDs": [
 																						1
 																				],
 																				"SSVMessage": {

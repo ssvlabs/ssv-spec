@@ -18,7 +18,7 @@ type SyncCommitteeRunner struct {
 
 	beacon         BeaconNode
 	network        Network
-	signer         types.KeyManager
+	signer         types.BeaconSigner
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
@@ -29,7 +29,7 @@ func NewSyncCommitteeRunner(
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
@@ -207,7 +207,7 @@ func (r *SyncCommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *SyncCommitteeRunner) GetSigner() types.KeyManager {
+func (r *SyncCommitteeRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 

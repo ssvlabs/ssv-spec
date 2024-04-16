@@ -18,7 +18,7 @@ type ValidatorRegistrationRunner struct {
 
 	beacon         BeaconNode
 	network        Network
-	signer         types.KeyManager
+	signer         types.BeaconSigner
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
@@ -28,7 +28,7 @@ func NewValidatorRegistrationRunner(
 	share map[phase0.ValidatorIndex]*types.Share,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 ) Runner {
 	return &ValidatorRegistrationRunner{
@@ -179,7 +179,7 @@ func (r *ValidatorRegistrationRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *ValidatorRegistrationRunner) GetSigner() types.KeyManager {
+func (r *ValidatorRegistrationRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 

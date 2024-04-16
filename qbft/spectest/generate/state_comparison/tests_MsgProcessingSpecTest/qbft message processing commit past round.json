@@ -63,10 +63,10 @@
 		"LastPreparedRound": 0,
 		"LastPreparedValue": null,
 		"ProposalAcceptedForCurrentRound": {
-				"Signature": [
+				"Signatures": [
 						"qzZ94Pc+/7AkOR/4xotCpAKle3+lgBPDs6N+DoZ+ZxkMIgB3hS7YN0LZdvFd+y02nfLspQlEyesDtP5PDr123e3SDDASxT6QfhciXSE23/SARwcS6FK3BegrqTGWbJsgTBdvUU0/UZG3c5jXvGH/SqMC16Twm3JGDliL7NM4CWWINByYVrVdkHuVINZQ+CWGKKAIlsrHEGOkeDgT70v84CGrRBA3Y3PvcjZIoStAjBDsYUxh/VD6lQIRDiFPy5RdrZxKx37E4Hbbp74fN+5o8GXJXEPMP1tR4yiZ0mazfY4nCQsq8Md0Rz4VVtfTZJYeMoLCuI50fsxnscruXB+4gA=="
 				],
-				"OperatorID": [
+				"OperatorIDs": [
 						1
 				],
 				"SSVMessage": {

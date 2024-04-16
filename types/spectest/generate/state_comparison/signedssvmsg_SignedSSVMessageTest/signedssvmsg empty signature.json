@@ -2,10 +2,10 @@
 		"Name": "empty signature",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								""
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

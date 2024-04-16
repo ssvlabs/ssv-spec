@@ -70,7 +70,6 @@ var baseRunner = func(role ssv.RunnerRole, valCheck qbft.ProposedValueCheckF, ke
 		return 1
 	}
 	config.Network = net
-	config.ShareSigner = km
 	config.OperatorSigner = opSigner
 	config.SignatureVerifier = NewTestingVerifier()
 

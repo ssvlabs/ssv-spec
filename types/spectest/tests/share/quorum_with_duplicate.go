@@ -13,7 +13,7 @@ func QuorumWithDuplicate() *ShareTest {
 	share := testingutils.TestingShare(ks)
 
 	msg := testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[4], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 4, 2, 3})
-	msg.OperatorID = []types.OperatorID{1, 1, 2, 3}
+	msg.OperatorIDs = []types.OperatorID{1, 1, 2, 3}
 
 	return &ShareTest{
 		Name:                     "quorum with duplicate",

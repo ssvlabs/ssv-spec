@@ -2,10 +2,10 @@
 		"Name": "signed message encoding",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"tcNuVGY0dpRnc0SToMHlobWfT3cHi1oMR7D9A3M1JROqfPPUujutfUGQxix+EPAthCJ6ixbLlm7J/8Y8ypb6qvepJT7A1D6QLJ4QmD/Tf9uUyelNuH/33YceVe0WFLSz/w3xZNVgShGKqtLu+KATIc3e3VUy5s+8OvnmscV5292QpcxkAj3rbzUENXFKDCdLZoOxGfHOOXOw6uFE3BEMQ/NTSke/sfo66YmY0a8piosiibbme3fm0sj5Ma5+PZj6muR3+XvpVrYVpainQOTFRG7OvFnxpAqy8wyuEbbjQ/OwBZ4wvZVv/YLRhrvAvhWCO/9E7kLtIvJmeY6PHz7YtQ=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

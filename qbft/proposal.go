@@ -18,7 +18,7 @@ func (i *Instance) uponProposal(signedProposal *types.SignedSSVMessage, proposeM
 		return nil // uponProposal was already called
 	}
 
-	msg, err := GetMessageFromBytes(signedProposal.SSVMessage.Data)
+	msg, err := DecodeMessage(signedProposal.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func isValidProposal(
 	valCheck ProposedValueCheckF,
 ) error {
 
-	msg, err := GetMessageFromBytes(signedProposal.SSVMessage.Data)
+	msg, err := DecodeMessage(signedProposal.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func isValidProposal(
 	if msg.Height != state.Height {
 		return errors.New("wrong msg height")
 	}
-	if len(signedProposal.GetOperatorID()) != 1 {
+	if len(signedProposal.GetOperatorIDs()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
@@ -153,7 +153,7 @@ func isProposalJustification(
 		previouslyPrepared, err := func(rcMsgs []*types.SignedSSVMessage) (bool, error) {
 			for _, rc := range rcMsgs {
 
-				msg, err := GetMessageFromBytes(rc.SSVMessage.Data)
+				msg, err := DecodeMessage(rc.SSVMessage.Data)
 				if err != nil {
 					continue
 				}
@@ -186,7 +186,7 @@ func isProposalJustification(
 				return errors.New("no highest prepared")
 			}
 
-			rcMsg, err := GetMessageFromBytes(rcSignedMsg.SSVMessage.Data)
+			rcMsg, err := DecodeMessage(rcSignedMsg.SSVMessage.Data)
 			if err != nil {
 				return errors.Wrap(err, "highest prepared can't be decoded to Message")
 			}

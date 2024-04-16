@@ -17,7 +17,7 @@ func FirstRoundJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal first round justification",
 		Pre:           pre,
-		PostRoot:      "7aee13e3d989dd5bbef6d1afb2042d9dd37d32f111ac2f0e00492828135b3d79",
+		PostRoot:      "69081699f981619e5c7b23d372253a50d8c1f321068286b2eb4e7df6e9e4a8b9",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),

@@ -17,7 +17,7 @@ type AttesterRunner struct {
 	BaseRunner     *BaseRunner
 	beacon         BeaconNode
 	network        Network
-	signer         types.KeyManager
+	signer         types.BeaconSigner
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
@@ -28,7 +28,7 @@ func NewAttesterRunner(
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
@@ -218,7 +218,7 @@ func (r *AttesterRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *AttesterRunner) GetSigner() types.KeyManager {
+func (r *AttesterRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 

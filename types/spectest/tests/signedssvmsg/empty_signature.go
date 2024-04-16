@@ -14,9 +14,9 @@ func EmptySignature() *SignedSSVMessageTest {
 		Name: "empty signature",
 		Messages: []*types.SignedSSVMessage{
 			{
-				OperatorID: []types.OperatorID{1},
-				Signature:  [][]byte{{}},
-				SSVMessage: testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
+				OperatorIDs: []types.OperatorID{1},
+				Signatures:  [][]byte{{}},
+				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
 		ExpectedError: "empty signature",

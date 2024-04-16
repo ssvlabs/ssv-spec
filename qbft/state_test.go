@@ -23,8 +23,8 @@ func TestState_Decoding(t *testing.T) {
 		panic(err)
 	}
 	signedProposalMsg := &types.SignedSSVMessage{
-		OperatorID: []types.OperatorID{1},
-		Signature:  [][]byte{{1, 2, 3, 4}},
+		OperatorIDs: []types.OperatorID{1},
+		Signatures:  [][]byte{{1, 2, 3, 4}},
 		SSVMessage: &types.SSVMessage{
 			MsgType: types.SSVConsensusMsgType,
 			MsgID:   [56]byte{1, 2, 3, 4},
@@ -75,8 +75,8 @@ func TestState_Decoding(t *testing.T) {
 		panic(err)
 	}
 
-	require.EqualValues(t, [][]byte{{1, 2, 3, 4}}, decodedState.ProposalAcceptedForCurrentRound.Signature)
-	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.GetOperatorID())
+	require.EqualValues(t, [][]byte{{1, 2, 3, 4}}, decodedState.ProposalAcceptedForCurrentRound.Signatures)
+	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.GetOperatorIDs())
 	require.EqualValues(t, qbft.CommitMsgType, decodedProposalMsg.MsgType)
 	require.EqualValues(t, 1, decodedProposalMsg.Height)
 	require.EqualValues(t, 2, decodedProposalMsg.Round)
