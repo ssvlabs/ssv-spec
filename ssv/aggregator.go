@@ -171,7 +171,11 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.PartialSignatur
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		aggregateAndProof, err := r.GetState().DecidedValue.GetAggregateAndProof()
+		cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
+		if err != nil {
+			return errors.Wrap(err, "could not create consensus data")
+		}
+		aggregateAndProof, err := cd.GetAggregateAndProof()
 		if err != nil {
 			return errors.Wrap(err, "could not get aggregate and proof")
 		}
@@ -194,7 +198,11 @@ func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot,
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	aggregateAndProof, err := r.GetState().DecidedValue.GetAggregateAndProof()
+	cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	if err != nil {
+		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
+	}
+	aggregateAndProof, err := cd.GetAggregateAndProof()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get aggregate and proof")
 	}

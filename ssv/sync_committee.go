@@ -23,6 +23,16 @@ type SyncCommitteeRunner struct {
 	valCheck       qbft.ProposedValueCheckF
 }
 
+func (r *SyncCommitteeRunner) StartNewDuty(duty types.Duty) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *SyncCommitteeRunner) executeDuty(duty types.Duty) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewSyncCommitteeRunner(
 	beaconNetwork types.BeaconNetwork,
 	share *types.Share,

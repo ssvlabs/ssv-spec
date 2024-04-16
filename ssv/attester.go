@@ -113,7 +113,11 @@ func (r *AttesterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		return nil
 	}
 
-	attestationData, err := r.GetState().DecidedValue.GetAttestationData()
+	cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	if err != nil {
+		return errors.Wrap(err, "could not create consensus data")
+	}
+	attestationData, err := cd.GetAttestationData()
 	if err != nil {
 		return errors.Wrap(err, "could not get attestation data")
 	}
@@ -131,9 +135,9 @@ func (r *AttesterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		duty := r.GetState().DecidedValue.Duty
+		duty := r.GetState().StartingDuty.(*types.BeaconDuty)
 
-		aggregationBitfield := bitfield.NewBitlist(r.GetState().DecidedValue.Duty.CommitteeLength)
+		aggregationBitfield := bitfield.NewBitlist(r.GetState().StartingDuty.(*types.BeaconDuty).CommitteeLength)
 		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
 		signedAtt := &phase0.Attestation{
 			Data:            attestationData,
@@ -156,7 +160,11 @@ func (r *AttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *AttesterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	attestationData, err := r.GetState().DecidedValue.GetAttestationData()
+	cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	if err != nil {
+		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
+	}
+	attestationData, err := cd.GetAttestationData()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get attestation data")
 	}

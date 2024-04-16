@@ -171,7 +171,10 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
 	}
 
-	runner.GetBaseRunner().State.DecidedValue = decidedValue
+	runner.GetBaseRunner().State.DecidedValue, err = decidedValue.Encode()
+	if err != nil {
+		return true, nil, errors.Wrap(err, "could not encode decided value")
+	}
 
 	return true, decidedValue, nil
 }

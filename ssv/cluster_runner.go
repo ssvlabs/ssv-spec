@@ -172,7 +172,10 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	if !quorum {
 		return nil
 	}
-	attestationMap, committeeMap, beaconObjects := cr.expectedPostConsensusRootsAndBeaconObjects()
+	attestationMap, committeeMap, beaconObjects, err := cr.expectedPostConsensusRootsAndBeaconObjects()
+	if err != nil {
+		return errors.Wrap(err, "could not get expected post consensus roots and beacon objects")
+	}
 	for _, root := range roots {
 		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
@@ -253,13 +256,16 @@ func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot,
 }
 
 func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attestationMap map[phase0.ValidatorIndex][32]byte,
-	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot) {
+	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot, error error) {
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
 	duty := cr.BaseRunner.State.StartingDuty
 	// TODO DecidedValue should be interface??
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
-	beaconVote := &types.BeaconVote{}
+	beaconVote, err := types.NewBeaconVote(beaconVoteData)
+	if err != nil {
+		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
+	}
 	beaconVote.Decode(beaconVoteData)
 	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
 		switch beaconDuty.Type {
@@ -281,7 +287,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attesta
 			beaconObjects[root] = syncCommitteeMessage
 		}
 	}
-	return attestationMap, syncCommitteeMap, beaconObjects
+	return attestationMap, syncCommitteeMap, beaconObjects, nil
 }
 
 func (cr CommitteeRunner) executeDuty(duty types.Duty) error {

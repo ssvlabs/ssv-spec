@@ -120,6 +120,15 @@ type BeaconVote struct {
 	Target    *spec.Checkpoint
 }
 
+// NewBeaconVote creates a new BeaconVote object
+func NewBeaconVote(rawSSZ []byte) (*BeaconVote, error) {
+	vote := &BeaconVote{}
+	if err := vote.Decode(rawSSZ); err != nil {
+		return nil, err
+	}
+	return vote, nil
+}
+
 // Encode the BeaconVote object
 func (b *BeaconVote) Encode() ([]byte, error) {
 	return b.MarshalSSZ()
