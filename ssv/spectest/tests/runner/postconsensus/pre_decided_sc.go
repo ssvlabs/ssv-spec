@@ -154,7 +154,7 @@ func preDecidedAttesterSC() *comparable.StateComparison {
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
-			ret := testingutils.ClusterRunner(ks)
+			ret := testingutils.CommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),

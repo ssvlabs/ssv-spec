@@ -58,7 +58,7 @@ func NotDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "attester",
-				Runner:                  startRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  startRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,

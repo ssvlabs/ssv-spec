@@ -20,7 +20,7 @@ import (
 type StartNewRunnerDutySpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
-	Duty                    *types.BeaconDuty
+	Duty                    types.Duty
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages          []*types.PartialSignatureMessages
@@ -169,8 +169,8 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 		runner = &ssv.AggregatorRunner{}
 	case *ssv.ProposerRunner:
 		runner = &ssv.ProposerRunner{}
-	case *ssv.SyncCommitteeRunner:
-		runner = &ssv.SyncCommitteeRunner{}
+	case *ssv.ClusterRunner:
+		runner = &ssv.ClusterRunner{}
 	case *ssv.SyncCommitteeAggregatorRunner:
 		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:

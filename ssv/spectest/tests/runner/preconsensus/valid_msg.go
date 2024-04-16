@@ -64,7 +64,7 @@ func ValidMessage() tests.SpecTest {
 			},
 			{
 				Name:   "attester",
-				Runner: testingutils.ClusterRunner(ks),
+				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PreConsensusFailedMsg(ks.Shares[1], 1))),

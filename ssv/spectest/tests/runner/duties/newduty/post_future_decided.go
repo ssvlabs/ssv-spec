@@ -81,7 +81,7 @@ func PostFutureDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  futureDecide(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  futureDecide(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDuty,
 				PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
 				OutputMessages:          []*types.PartialSignatureMessages{},

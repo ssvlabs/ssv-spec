@@ -16,7 +16,7 @@ import (
 // Duties that have a preconsensus phase won't update the `currentRunningInstance`.
 func PostDecided() tests.SpecTest {
 
-	panic("implement me")
+	//panic("implement me")
 
 	ks := testingutils.Testing4SharesSet()
 
@@ -60,7 +60,7 @@ func PostDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  decidedRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty),
+				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,

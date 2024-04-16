@@ -72,7 +72,7 @@ func Finished() tests.SpecTest {
 			},
 			{
 				Name:                    "attester and sync committee",
-				Runner:                  finishRunner(testingutils.ClusterRunner(ks), &testingutils.TestingAttesterDuty, true),
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty, true),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
 				OutputMessages:          []*types.PartialSignatureMessages{},

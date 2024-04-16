@@ -76,7 +76,7 @@ func FutureDecided() tests.SpecTest {
 			},
 			{
 				Name:   "attester and sync committee",
-				Runner: testingutils.ClusterRunner(ks),
+				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(

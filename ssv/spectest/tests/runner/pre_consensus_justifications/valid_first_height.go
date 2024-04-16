@@ -83,7 +83,7 @@ func ValidFirstHeight() tests.SpecTest {
 			{
 
 				Name:   "attester",
-				Runner: testingutils.ClusterRunner(ks),
+				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),

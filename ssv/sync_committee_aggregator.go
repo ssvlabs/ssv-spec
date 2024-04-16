@@ -177,6 +177,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 		Messages: msgs,
 	}
 
+	// #TODO change to RoleCluster?
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
 	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID, r.operatorSigner)
 	if err != nil {
@@ -332,6 +333,7 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty types.Duty) error {
 		msgs.Messages = append(msgs.Messages, msg)
 	}
 
+	// #TODO change to RoleCluster?
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
 	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
 	if err != nil {

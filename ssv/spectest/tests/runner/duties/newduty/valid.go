@@ -11,7 +11,7 @@ import (
 // Valid tests a valid start duty
 func Valid() tests.SpecTest {
 
-	panic("implement me")
+	//panic("implement me")
 
 	ks := testingutils.Testing4SharesSet()
 	return &MultiStartNewRunnerDutySpecTest{
@@ -44,8 +44,12 @@ func Valid() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
-			{
-				Name: "attester and sync committee",
+			{ //#TODO CHECK
+				Name:                    "attester and sync committee",
+				Runner:                  testingutils.CommitteeRunner(ks),
+				Duty:                    &testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty,
+				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
+				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
 	}
