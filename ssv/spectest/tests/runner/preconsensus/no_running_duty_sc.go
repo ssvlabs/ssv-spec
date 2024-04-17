@@ -2,10 +2,10 @@ package preconsensus
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv"
 
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // noRunningDutySyncCommitteeContributionSC returns state comparison object for the NoRunningDuty SyncCommitteeContribution versioned spec test

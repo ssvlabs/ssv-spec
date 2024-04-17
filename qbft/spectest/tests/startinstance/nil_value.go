@@ -1,7 +1,7 @@
 package startinstance
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 )
 
 // NilValue tests a starting an instance for a nil value (not passing value check)

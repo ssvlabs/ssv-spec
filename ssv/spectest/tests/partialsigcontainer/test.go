@@ -3,8 +3,8 @@ package partialsigcontainer
 import (
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
 

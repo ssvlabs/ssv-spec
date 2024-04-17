@@ -1,9 +1,10 @@
 package encryption
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/stretchr/testify/require"
 )
 
 type EncryptionSpecTest struct {

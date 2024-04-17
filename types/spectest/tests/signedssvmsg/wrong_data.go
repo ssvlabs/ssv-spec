@@ -1,8 +1,8 @@
 package signedssvmsg
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // WrongData tests a SignedSSVMessageTest with wrong data (can't decode to SSVMessage)

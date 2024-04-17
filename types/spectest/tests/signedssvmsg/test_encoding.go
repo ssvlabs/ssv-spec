@@ -3,7 +3,7 @@ package signedssvmsg
 import (
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
 
