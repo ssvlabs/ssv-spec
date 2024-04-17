@@ -9,10 +9,8 @@ import (
 
 // Valid tests a valid start duty
 func Valid() tests.SpecTest {
-
-	//panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty valid",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -44,23 +42,29 @@ func Valid() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  testingutils.CommitteeRunner(ks),
-				Duty:                    testingutils.TestingCommitteeAttesterDuty(0, []int{1}),
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty: testingutils.TestingCommitteeAttesterDuty(0, []int{
+					testingutils.TestingValidatorIndex,
+				}),
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  testingutils.CommitteeRunner(ks),
-				Duty:                    testingutils.TestingCommitteeSyncCommitteeDuty(0, []int{1}),
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty: testingutils.TestingCommitteeSyncCommitteeDuty(0, []int{
+					testingutils.TestingValidatorIndex,
+				}),
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
-				Name:                    "attester and sync committee",
-				Runner:                  testingutils.CommitteeRunner(ks),
-				Duty:                    testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(0, []int{1}),
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty: testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+					testingutils.TestingValidatorIndex,
+				}),
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},

@@ -163,14 +163,12 @@ func (tests *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing
 func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, name string, testType string) {
 	var runner ssv.Runner
 	switch test.Runner.(type) {
-	case *ssv.AttesterRunner:
-		runner = &ssv.AttesterRunner{}
+	case *ssv.CommitteeRunner:
+		runner = &ssv.CommitteeRunner{}
 	case *ssv.AggregatorRunner:
 		runner = &ssv.AggregatorRunner{}
 	case *ssv.ProposerRunner:
 		runner = &ssv.ProposerRunner{}
-	case *ssv.ClusterRunner:
-		runner = &ssv.ClusterRunner{}
 	case *ssv.SyncCommitteeAggregatorRunner:
 		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:

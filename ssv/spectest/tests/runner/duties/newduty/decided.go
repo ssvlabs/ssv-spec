@@ -15,9 +15,6 @@ import (
 // PostDecided tests a valid start duty before finished and after decided of another duty.
 // Duties that have a preconsensus phase won't update the `currentRunningInstance`.
 func PostDecided() tests.SpecTest {
-
-	//panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
 	decidedRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
@@ -59,10 +56,14 @@ func PostDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "attester",
-				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{1})),
+				Name: "attester",
+				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(
+					testingutils.TestingDutySlot, []int{
+						testingutils.TestingValidatorIndex,
+					})),
 				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2, BeaconDuties: []*types.BeaconDuty{
+					Slot: testingutils.TestingDutySlot2,
+					BeaconDuties: []*types.BeaconDuty{
 						&testingutils.TestingAttesterDutyNextEpoch,
 					},
 				},
@@ -71,10 +72,13 @@ func PostDecided() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
-				Name:   "sync committee",
-				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{1})),
+				Name: "sync committee",
+				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+					testingutils.TestingValidatorIndex,
+				})),
 				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2, BeaconDuties: []*types.BeaconDuty{
+					Slot: testingutils.TestingDutySlot2,
+					BeaconDuties: []*types.BeaconDuty{
 						&testingutils.TestingSyncCommitteeDutyNextEpoch,
 					},
 				},
@@ -83,10 +87,13 @@ func PostDecided() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
-				Name:   "attester and sync committee",
-				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{1})),
+				Name: "attester and sync committee",
+				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+					testingutils.TestingValidatorIndex,
+				})),
 				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2, BeaconDuties: []*types.BeaconDuty{
+					Slot: testingutils.TestingDutySlot2,
+					BeaconDuties: []*types.BeaconDuty{
 						&testingutils.TestingSyncCommitteeDutyNextEpoch,
 						&testingutils.TestingAttesterDutyNextEpoch,
 					},

@@ -14,22 +14,19 @@ import (
 
 // NotDecided tests starting duty before finished or decided
 func NotDecided() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
 	// nolint
-	startRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	startRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		return r
 	}
 
@@ -57,8 +54,12 @@ func NotDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  startRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
+				Name: "attester",
+				Runner: startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(
+					testingutils.TestingDutySlot, []int{
+						testingutils.TestingValidatorIndex,
+					}),
+				),
 				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,

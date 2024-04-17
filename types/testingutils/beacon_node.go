@@ -276,35 +276,69 @@ var TestingProposerDutyFirstSlot = types.BeaconDuty{
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-// TestingAttesterDutyFirstSlot
-var TestingAttesterDutyFirstSlot = types.BeaconDuty{
-	Type:                    types.BNRoleAttester,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    0,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+func TestingCommitteeAttesterDutyFirstSlot() *types.CommitteeDuty {
+	return &types.CommitteeDuty{
+		Slot: TestingDutySlot,
+		BeaconDuties: []*types.BeaconDuty{
+			{
+				Type:                    types.BNRoleAttester,
+				PubKey:                  TestingValidatorPubKey,
+				Slot:                    0,
+				ValidatorIndex:          TestingValidatorIndex,
+				CommitteeIndex:          3,
+				CommitteesAtSlot:        36,
+				CommitteeLength:         128,
+				ValidatorCommitteeIndex: 11,
+			},
+		},
+	}
 }
 
-//func TestingCommitteeAttesterDuty() types.CommitteeDuty {
-//	return types.CommitteeDuty{
-//		Slot: TestingDutySlot,
-//		BeaconDuties: []*types.BeaconDuty{
-//			{
-//				Type:                    types.BNRoleAttester,
-//				PubKey:                  TestingValidatorPubKey,
-//				Slot:                    TestingDutySlot,
-//				ValidatorIndex:          TestingValidatorIndex,
-//				CommitteeIndex:          3,
-//				CommitteesAtSlot:        36,
-//				CommitteeLength:         128,
-//				ValidatorCommitteeIndex: 11,
-//			},
-//		},
-//	}
-//}
+func TestingCommitteeSyncCommitteeDutyFirstSlot() *types.CommitteeDuty {
+	return &types.CommitteeDuty{
+		Slot: TestingDutySlot,
+		BeaconDuties: []*types.BeaconDuty{
+			{
+				Type:                    types.BNRoleSyncCommittee,
+				PubKey:                  TestingValidatorPubKey,
+				Slot:                    0,
+				ValidatorIndex:          TestingValidatorIndex,
+				CommitteeIndex:          3,
+				CommitteesAtSlot:        36,
+				CommitteeLength:         128,
+				ValidatorCommitteeIndex: 11,
+			},
+		},
+	}
+}
+
+func TestingCommitteeAttesterAndSyncCommitteeDutyFirstSlot() *types.CommitteeDuty {
+	return &types.CommitteeDuty{
+		Slot: TestingDutySlot,
+		BeaconDuties: []*types.BeaconDuty{
+			{
+				Type:                    types.BNRoleSyncCommittee,
+				PubKey:                  TestingValidatorPubKey,
+				Slot:                    0,
+				ValidatorIndex:          TestingValidatorIndex,
+				CommitteeIndex:          3,
+				CommitteesAtSlot:        36,
+				CommitteeLength:         128,
+				ValidatorCommitteeIndex: 11,
+			},
+			{
+				Type:                    types.BNRoleAttester,
+				PubKey:                  TestingValidatorPubKey,
+				Slot:                    0,
+				ValidatorIndex:          TestingValidatorIndex,
+				CommitteeIndex:          3,
+				CommitteesAtSlot:        36,
+				CommitteeLength:         128,
+				ValidatorCommitteeIndex: 11,
+			},
+		},
+	}
+}
 
 var TestingAttesterDuty = types.BeaconDuty{
 	Type:                    types.BNRoleAttester,

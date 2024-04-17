@@ -8,10 +8,8 @@ import (
 
 // FirstHeight tests a valid start duty at slot 0
 func FirstHeight() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty first height",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -43,9 +41,21 @@ func FirstHeight() tests.SpecTest {
 				},
 			},
 			{
+				Name:           "attester",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingCommitteeAttesterDutyFirstSlot(),
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingCommitteeSyncCommitteeDutyFirstSlot(),
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
 				Name:           "attester and sync committee",
 				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           &testingutils.TestingAttesterDutyFirstSlot,
+				Duty:           testingutils.TestingCommitteeAttesterAndSyncCommitteeDutyFirstSlot(),
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
