@@ -48,7 +48,7 @@ func DifferentJustifications() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "different proposal round change justification",
 		Pre:           pre,
-		PostRoot:      "8f110c3f860c4a4789dd19d756cc9a34c5987c7fc7d04d62d7b61d11271f59d9",
+		PostRoot:      "020830fcec4b0feffbcbf86465926fe80657ce62d1dc637cc141856e4013d6ef",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),

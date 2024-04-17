@@ -47,7 +47,7 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 					panic(err.Error())
 				}
 
-				err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, messageHash[:], msg.Signature[i])
+				err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, messageHash[:], msg.Signatures[i])
 			}
 		}
 

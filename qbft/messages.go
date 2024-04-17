@@ -17,7 +17,7 @@ func HashDataRoot(data []byte) ([32]byte, error) {
 func HasQuorum(share *types.Operator, msgs []*types.SignedSSVMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorID() {
+		for _, signer := range msg.GetOperatorIDs() {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -28,7 +28,7 @@ func HasQuorum(share *types.Operator, msgs []*types.SignedSSVMessage) bool {
 func HasPartialQuorum(share *types.Operator, msgs []*types.SignedSSVMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorID() {
+		for _, signer := range msg.GetOperatorIDs() {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -56,6 +56,13 @@ type Message struct {
 	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
 }
 
+// Creates a Message object from bytes
+func DecodeMessage(data []byte) (*Message, error) {
+	ret := &Message{}
+	err := ret.Decode(data)
+	return ret, err
+}
+
 // RoundChangePrepared returns true if message is a RoundChange and prepared
 func (msg *Message) RoundChangePrepared() bool {
 	if msg.MsgType != RoundChangeMsgType {
@@ -73,12 +80,6 @@ func (msg *Message) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *Message) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
-}
-
-func GetMessageFromBytes(data []byte) (*Message, error) {
-	ret := &Message{}
-	err := ret.Decode(data)
-	return ret, err
 }
 
 // GetRoot returns the root used for signing and verification

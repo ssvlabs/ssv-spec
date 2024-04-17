@@ -70,7 +70,7 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 		return qbft.ValidateDecided(contr.GetConfig(), signedMsg, contr.Share)
 	}
 
-	msg, err := qbft.GetMessageFromBytes(signedMsg.SSVMessage.Data)
+	msg, err := qbft.DecodeMessage(signedMsg.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func validateFutureMsg(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if len(msg.GetOperatorID()) != 1 {
+	if len(msg.GetOperatorIDs()) != 1 {
 		return errors.New("allows 1 signer")
 	}
 

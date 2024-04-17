@@ -2,10 +2,10 @@
 		"Name": "marshal justifications",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"YqVcqRyJozahJzfTgeocCG7sgWhBuFuoEMxRdxG74umadN6GqRgSswtfEzBznZM3LDeSIfVqomqOqut3JG9G2+WKzxIh6ExroH7ixBuvw4TgC3mTz7/4w0DWKlDYf4UtQhqosZCJ7haCueniCep1iJqhbNa9H4fn7TrdlKPLPelg6WaL6D1cvmLKgmf4LCVJ9A5jDCQ40BmBL83E8mXoqqxiRxObxjGDUx1jsIFUkegEC306z+PZeloQzf563jI+4YRNgNX+Uin/M6iYu5bo4KzbyQbNLTpflygKpNAtrc0yeBlIYiC3oEGkFikWxbHMKTyFATQv57bHaFDewIcY3g=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

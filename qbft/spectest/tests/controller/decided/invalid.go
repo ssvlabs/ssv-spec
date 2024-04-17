@@ -18,7 +18,7 @@ func Invalid() tests.SpecTest {
 		[]types.OperatorID{1, 2, 3},
 		qbft.FirstHeight,
 	)
-	msg.OperatorID = []types.OperatorID{}
+	msg.OperatorIDs = []types.OperatorID{}
 	return &tests.ControllerSpecTest{
 		Name: "decide invalid msg",
 		RunInstanceData: []*tests.RunInstanceData{

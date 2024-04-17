@@ -2,10 +2,10 @@
 		"Name": "prepare justification unmarshalling",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"AMDrqVx/WPHv8t2Hh5th1pGBdyI4TxNcDTF1zho0jlM13wxU853B4mEEFpyaO7c6RYI7SYjzRUZ4j+yRp4ffTmZMoiWDHRR6OaixSjBpw8p4Hr+rlawU7v3sr71vcRMz8sh3A8y8PIbn6dDd7s80EIMWbZFOKmGuwPy+TVhuFQoueryQGtdIjoPF9SBH1Dg2lA6NPGTRg0/OsJXg6b9hVaJ2W2nEeK+lgD51mCfJZPK9t9rhIAmOHe5A5BEebBeprA2DbRHGjhxeCc5GuL4CUfwtYFOCeFitZZsjaY6YUMKdBOM7On3HSq6MUBoIIOrdwrscrwMspbUOUUs28t6bVg=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

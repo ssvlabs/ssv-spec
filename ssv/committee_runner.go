@@ -12,12 +12,13 @@ import (
 	"github.com/prysmaticlabs/go-bitfield"
 )
 
-type ClusterRunner struct {
-	BaseRunner *BaseRunner
-	beacon     BeaconNode
-	network    Network
-	signer     types.KeyManager
-	valCheck   qbft.ProposedValueCheckF
+type CommitteeRunner struct {
+	BaseRunner     *BaseRunner
+	beacon         BeaconNode
+	network        Network
+	signer         types.BeaconSigner
+	operatorSigner types.OperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 }
 
 func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
@@ -25,36 +26,38 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
+	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot) *ClusterRunner {
-	return &ClusterRunner{
+	highestDecidedSlot phase0.Slot) Runner {
+	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     RoleCluster,
+			RunnerRoleType:     RoleCommittee,
 			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,
 		},
-		beacon:  beacon,
-		network: network,
-		signer:  signer,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
 	}
 }
 
-func (cr ClusterRunner) StartNewDuty(duty types.Duty) error {
+func (cr CommitteeRunner) StartNewDuty(duty types.Duty) error {
 	return cr.BaseRunner.baseStartNewDuty(cr, duty)
 }
 
-func (cr ClusterRunner) Encode() ([]byte, error) {
+func (cr CommitteeRunner) Encode() ([]byte, error) {
 	return json.Marshal(cr)
 }
 
-func (cr ClusterRunner) Decode(data []byte) error {
+func (cr CommitteeRunner) Decode(data []byte) error {
 	return json.Unmarshal(data, &cr)
 }
 
-func (cr ClusterRunner) GetRoot() ([32]byte, error) {
+func (cr CommitteeRunner) GetRoot() ([32]byte, error) {
 	marshaledRoot, err := cr.Encode()
 	if err != nil {
 		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
@@ -63,41 +66,36 @@ func (cr ClusterRunner) GetRoot() ([32]byte, error) {
 	return ret, nil
 }
 
-func (cr ClusterRunner) GetBaseRunner() *BaseRunner {
+func (cr CommitteeRunner) GetBaseRunner() *BaseRunner {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (cr ClusterRunner) GetBeaconNode() BeaconNode {
+func (cr CommitteeRunner) GetBeaconNode() BeaconNode {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (cr ClusterRunner) GetValCheckF() qbft.ProposedValueCheckF {
+func (cr CommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (cr ClusterRunner) GetSigner() types.KeyManager {
+func (cr CommitteeRunner) GetNetwork() Network {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (cr ClusterRunner) GetNetwork() Network {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (cr ClusterRunner) HasRunningDuty() bool {
+func (cr CommitteeRunner) HasRunningDuty() bool {
 	return cr.BaseRunner.hasRunningDuty()
 }
 
-func (cr ClusterRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (cr CommitteeRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (cr ClusterRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
+func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	decided, decidedValue, err := cr.BaseRunner.baseConsensusMsgProcessing(cr, msg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
@@ -164,7 +162,7 @@ func (cr ClusterRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 }
 
 // TODO finish edge case where some roots may be missing
-func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	quorum, roots, err := cr.BaseRunner.basePostConsensusMsgProcessing(&cr, signedMsg)
 
 	if err != nil {
@@ -174,7 +172,10 @@ func (cr ClusterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMe
 	if !quorum {
 		return nil
 	}
-	attestationMap, committeeMap, beaconObjects := cr.expectedPostConsensusRootsAndBeaconObjects()
+	attestationMap, committeeMap, beaconObjects, err := cr.expectedPostConsensusRootsAndBeaconObjects()
+	if err != nil {
+		return errors.Wrap(err, "could not get expected post consensus roots and beacon objects")
+	}
 	for _, root := range roots {
 		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
@@ -244,24 +245,27 @@ func findValidators(
 	return types.BNRoleUnknown, nil, false
 }
 
-func (cr ClusterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (cr ClusterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (cr *ClusterRunner) expectedPostConsensusRootsAndBeaconObjects() (attestationMap map[phase0.ValidatorIndex][32]byte,
-	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot) {
+func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attestationMap map[phase0.ValidatorIndex][32]byte,
+	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot, error error) {
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
 	duty := cr.BaseRunner.State.StartingDuty
 	// TODO DecidedValue should be interface??
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
-	beaconVote := &types.BeaconVote{}
+	beaconVote, err := types.NewBeaconVote(beaconVoteData)
+	if err != nil {
+		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
+	}
 	beaconVote.Decode(beaconVoteData)
 	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
 		switch beaconDuty.Type {
@@ -283,10 +287,10 @@ func (cr *ClusterRunner) expectedPostConsensusRootsAndBeaconObjects() (attestati
 			beaconObjects[root] = syncCommitteeMessage
 		}
 	}
-	return attestationMap, syncCommitteeMap, beaconObjects
+	return attestationMap, syncCommitteeMap, beaconObjects, nil
 }
 
-func (cr ClusterRunner) executeDuty(duty types.Duty) error {
+func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 
 	//TODO committeeIndex is 0, is this correct?
 	attData, ver, err := cr.GetBeaconNode().GetAttestationData(duty.DutySlot(), 0)
@@ -315,6 +319,14 @@ func (cr ClusterRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
+}
+
+func (cr CommitteeRunner) GetSigner() types.BeaconSigner {
+	return cr.signer
+}
+
+func (cr CommitteeRunner) GetOperatorSigner() types.OperatorSigner {
+	return cr.operatorSigner
 }
 
 func constructAttestationData(vote *types.BeaconVote, duty *types.BeaconDuty) *phase0.AttestationData {

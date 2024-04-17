@@ -115,7 +115,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 	config := testingutils.TestingConfig(ks)
 
 	if len(test.PrepareJustifications) > 0 {
-		prepareMsg, err := qbft.GetMessageFromBytes(test.PrepareJustifications[0].SSVMessage.Data)
+		prepareMsg, err := qbft.DecodeMessage(test.PrepareJustifications[0].SSVMessage.Data)
 		if err != nil {
 			return nil, err
 		}

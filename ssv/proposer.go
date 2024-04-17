@@ -20,7 +20,7 @@ type ProposerRunner struct {
 
 	beacon         BeaconNode
 	network        Network
-	signer         types.KeyManager
+	signer         types.BeaconSigner
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
@@ -31,7 +31,7 @@ func NewProposerRunner(
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
@@ -191,8 +191,12 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
+		consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+		if err != nil {
+			return errors.Wrap(err, "could not create consensus data")
+		}
 		if r.decidedBlindedBlock() {
-			vBlindedBlk, _, err := r.GetState().DecidedValue.GetBlindedBlockData()
+			vBlindedBlk, _, err := consensusData.GetBlindedBlockData()
 			if err != nil {
 				return errors.Wrap(err, "could not get blinded block")
 			}
@@ -201,7 +205,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
 			}
 		} else {
-			vBlk, _, err := r.GetState().DecidedValue.GetBlockData()
+			vBlk, _, err := consensusData.GetBlockData()
 			if err != nil {
 				return errors.Wrap(err, "could not get block")
 			}
@@ -218,7 +222,11 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 // decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (r *ProposerRunner) decidedBlindedBlock() bool {
-	_, _, err := r.BaseRunner.State.DecidedValue.GetBlindedBlockData()
+	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	if err != nil {
+		return false
+	}
+	_, _, err = consensusData.GetBlindedBlockData()
 	return err == nil
 }
 
@@ -229,15 +237,20 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+
+	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	if err != nil {
+		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
+	}
 	if r.decidedBlindedBlock() {
-		_, data, err := r.GetState().DecidedValue.GetBlindedBlockData()
+		_, data, err := consensusData.GetBlindedBlockData()
 		if err != nil {
 			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block data")
 		}
 		return []ssz.HashRoot{data}, types.DomainProposer, nil
 	}
 
-	_, data, err := r.GetState().DecidedValue.GetBlockData()
+	_, data, err := consensusData.GetBlockData()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
 	}
@@ -304,8 +317,12 @@ func (r *ProposerRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *ProposerRunner) GetSigner() types.KeyManager {
+func (r *ProposerRunner) GetSigner() types.BeaconSigner {
 	return r.signer
+}
+
+func (r *ProposerRunner) GetOperatorSigner() types.OperatorSigner {
+	return r.operatorSigner
 }
 
 // Encode returns the encoded struct in bytes or error

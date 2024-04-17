@@ -2,10 +2,10 @@
 		"Name": "round change data encoding",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"OL27rkr3eiTnxNsnT7vwEA8V4Qm26X0XHeltlCT/DgrErPhqasHdS75Mlw7ORECT/yyngM3+czZejSarEVwIkPZCa6qdOGxXuFLoieq3WCbu6xZitrkToNVJ6Fz/iUB7CCURNZ3PUNIJGX6sO+6WHWxmGD5iaSJ0eiAR0K341imMKR62hzkd8lSs9VQUReQtbW3dbAMCAuQGdyEH2daTWQr6fkRsHDnO8Bmme2XDsOYLnHlpBtiMrFPAV3NKEPUqwxqvSijJ4Fi3YcgmcZ4LD/3QHh6k4lrSe0+IeJNqEXJAtPP4m46OuYluLYcXHOIfwVCXjksxYlPE5eNF63m4Dw=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

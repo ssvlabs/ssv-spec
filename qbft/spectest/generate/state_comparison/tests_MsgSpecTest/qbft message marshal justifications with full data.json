@@ -2,10 +2,10 @@
 		"Name": "marshal justifications with full data",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"YAW+JoVKcaOdB5+1uv7z4103UxEQysOe3uwviZS2nHajip8b/ay+OMPRwjl1XQWluXhKOheYDUjj1cHKOWBjNtPPj/6MUp/9HaQRPH5InopK60TK4n0P/Z6GWl+ZIE+jC9KroLBaTb+xEM6B4pl6kTa+NHdzFhaNU4++31+7xbN/24144HYOT7b2uT+xqBnk/pEe20UQqbRG3RT/1UPQ0DHqMu4ulQdf5fBOYi5ArY6AMUc3qHhJKZJyU1YCeZINGExEjpOgL2x8J+ixwcIrt1ouOqhrcjhcylPQrjeX6w+0kRVMqtGK5hm/9iRBjECHZMditImVyNA/IniWkBNKxQ=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

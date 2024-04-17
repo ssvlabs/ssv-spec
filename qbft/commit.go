@@ -11,7 +11,7 @@ import (
 // Assumes commit message is valid!
 func (i *Instance) UponCommit(signedCommit *types.SignedSSVMessage, commitMsgContainer *MsgContainer) (bool, []byte, *types.SignedSSVMessage, error) {
 	// Decode qbft message
-	msg, err := GetMessageFromBytes(signedCommit.SSVMessage.Data)
+	msg, err := DecodeMessage(signedCommit.SSVMessage.Data)
 	if err != nil {
 		return false, nil, nil, err
 	}
@@ -101,7 +101,7 @@ func baseCommitValidationIgnoreSignature(
 		return errors.Wrap(err, "signed commit invalid")
 	}
 
-	msg, err := GetMessageFromBytes(signedCommit.SSVMessage.Data)
+	msg, err := DecodeMessage(signedCommit.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -149,11 +149,11 @@ func validateCommit(
 		return err
 	}
 
-	if len(signedCommit.GetOperatorID()) != 1 {
+	if len(signedCommit.GetOperatorIDs()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
-	msg, err := GetMessageFromBytes(signedCommit.SSVMessage.Data)
+	msg, err := DecodeMessage(signedCommit.SSVMessage.Data)
 	if err != nil {
 		return err
 	}
@@ -162,7 +162,7 @@ func validateCommit(
 		return errors.New("wrong msg round")
 	}
 
-	proposedMsg, err := GetMessageFromBytes(proposedSignedMsg.SSVMessage.Data)
+	proposedMsg, err := DecodeMessage(proposedSignedMsg.SSVMessage.Data)
 	if err != nil {
 		return err
 	}

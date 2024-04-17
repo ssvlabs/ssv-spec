@@ -21,9 +21,9 @@ var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, 
 			panic(err)
 		}
 		return &types.SignedSSVMessage{
-			OperatorID: []types.OperatorID{signer},
-			Signature:  [][]byte{sig},
-			SSVMessage: ssvMsg,
+			OperatorIDs: []types.OperatorID{signer},
+			Signatures:  [][]byte{sig},
+			SSVMessage:  ssvMsg,
 		}
 	}
 
@@ -68,9 +68,9 @@ var ExpectedSSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *Test
 			panic(err)
 		}
 		return &types.SignedSSVMessage{
-			OperatorID: []types.OperatorID{signer},
-			Signature:  [][]byte{sig},
-			SSVMessage: ssvMsg,
+			OperatorIDs: []types.OperatorID{signer},
+			Signatures:  [][]byte{sig},
+			SSVMessage:  ssvMsg,
 		}
 	}
 

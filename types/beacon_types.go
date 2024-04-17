@@ -103,7 +103,7 @@ type BeaconDuty struct {
 func MapDutyToRunnerRole(dutyRole BeaconRole) ssv.RunnerRole {
 	switch dutyRole {
 	case BNRoleAttester | BNRoleSyncCommittee:
-		return ssv.RoleCluster
+		return ssv.RoleCommittee
 	case BNRoleProposer:
 		return ssv.RoleProposer
 	case BNRoleAggregator:
@@ -118,6 +118,15 @@ type BeaconVote struct {
 	BlockRoot spec.Root `ssz-size:"32"`
 	Source    *spec.Checkpoint
 	Target    *spec.Checkpoint
+}
+
+// NewBeaconVote creates a new BeaconVote object
+func NewBeaconVote(rawSSZ []byte) (*BeaconVote, error) {
+	vote := &BeaconVote{}
+	if err := vote.Decode(rawSSZ); err != nil {
+		return nil, err
+	}
+	return vote, nil
 }
 
 // Encode the BeaconVote object

@@ -16,7 +16,7 @@ func SignedMsgDuplicateSigners() tests.SpecTest {
 		[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[1], ks.OperatorKeys[2]},
 		[]types.OperatorID{1, 2, 3},
 	)
-	msg.OperatorID = []types.OperatorID{1, 1, 2}
+	msg.OperatorIDs = []types.OperatorID{1, 1, 2}
 
 	return &tests.MsgSpecTest{
 		Name: "duplicate signers",

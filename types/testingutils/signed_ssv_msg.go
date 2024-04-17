@@ -42,9 +42,9 @@ var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorI
 
 	//SignedSSVMessage
 	return &types.SignedSSVMessage{
-		OperatorID: []types.OperatorID{operatorID},
-		Signature:  [][]byte{signature},
-		SSVMessage: &ssvMsg,
+		OperatorIDs: []types.OperatorID{operatorID},
+		Signatures:  [][]byte{signature},
+		SSVMessage:  &ssvMsg,
 	}
 }
 
@@ -88,8 +88,8 @@ var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.Pr
 	}
 
 	return &types.SignedSSVMessage{
-		OperatorID: []types.OperatorID{operatorID},
-		Signature:  [][]byte{signature},
-		SSVMessage: ssvMessage,
+		OperatorIDs: []types.OperatorID{operatorID},
+		Signatures:  [][]byte{signature},
+		SSVMessage:  ssvMessage,
 	}
 }

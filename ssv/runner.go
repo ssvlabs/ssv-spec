@@ -12,7 +12,7 @@ import (
 type RunnerRole int32
 
 const (
-	RoleCluster RunnerRole = iota
+	RoleCommittee RunnerRole = iota
 	RoleAggregator
 	RoleProposer
 	RoleSyncCommitteeContribution
@@ -27,7 +27,8 @@ type Getters interface {
 	GetBaseRunner() *BaseRunner
 	GetBeaconNode() BeaconNode
 	GetValCheckF() qbft.ProposedValueCheckF
-	GetSigner() types.KeyManager
+	GetSigner() types.BeaconSigner
+	GetOperatorSigner() types.OperatorSigner
 	GetNetwork() Network
 }
 
@@ -61,6 +62,7 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	RunnerRoleType RunnerRole
+	types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
 	highestDecidedSlot spec.Slot
@@ -169,7 +171,10 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
 	}
 
-	runner.GetBaseRunner().State.DecidedValue = decidedValue
+	runner.GetBaseRunner().State.DecidedValue, err = decidedValue.Encode()
+	if err != nil {
+		return true, nil, errors.Wrap(err, "could not encode decided value")
+	}
 
 	return true, decidedValue, nil
 }
@@ -223,7 +228,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 		return false, errors.New("ssv message is nil")
 	}
 
-	decidedMessage, err := qbft.GetMessageFromBytes(signedMessage.SSVMessage.Data)
+	decidedMessage, err := qbft.DecodeMessage(signedMessage.SSVMessage.Data)
 	if err != nil {
 		return false, err
 	}

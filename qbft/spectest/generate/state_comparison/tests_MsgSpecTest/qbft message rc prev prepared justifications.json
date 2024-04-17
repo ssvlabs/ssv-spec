@@ -2,10 +2,10 @@
 		"Name": "rc prev prepared justifications",
 		"Messages": [
 				{
-						"Signature": [
+						"Signatures": [
 								"Ah/dhxdRpex9z8ahm+U0LqaxRZfIrsItfryn22UHPlQKPqwLslrmaxGVnwxrVgY7t5nee5Dh/Xo3hNmbtMUh+O4i3EtUv2FnvR6ity70XB3dTCwTqJcqTclbsRSlNyupDHNAbifLNZyhcBn3SLmEYXi2O1V5OsA8cWPVicuXQv5kKq9WqUd4gctbl1T/1IJYiVPMMLW+Hc9f5/0z8ZD1/UHoZYhArNIThwLFAskP9yvyCDAGWHkYPGabt9erCE//Yl/ylPqCjhHrMOxmY3MoIwgtkyONiQROk+o9TaPXkl+8HIonF3BLZEUH2HflMob8sOKfReNabdW8Dv2YxgGjTw=="
 						],
-						"OperatorID": [
+						"OperatorIDs": [
 								1
 						],
 						"SSVMessage": {

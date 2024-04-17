@@ -17,9 +17,9 @@ func InvalidDecode() tests.SpecTest {
 	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
 
 	invalidMsg := &types.SignedSSVMessage{
-		Signature:  [][]byte{{1, 2, 3, 4}},
-		OperatorID: []types.OperatorID{1},
-		SSVMessage: nil,
+		Signatures:  [][]byte{{1, 2, 3, 4}},
+		OperatorIDs: []types.OperatorID{1},
+		SSVMessage:  nil,
 	}
 
 	return &tests.MultiMsgProcessingSpecTest{

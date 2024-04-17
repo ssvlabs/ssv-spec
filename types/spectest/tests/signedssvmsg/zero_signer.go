@@ -14,9 +14,9 @@ func ZeroSigner() *SignedSSVMessageTest {
 		Name: "zero signer",
 		Messages: []*types.SignedSSVMessage{
 			{
-				OperatorID: []types.OperatorID{0},
-				Signature:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
-				SSVMessage: testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
+				OperatorIDs: []types.OperatorID{0},
+				Signatures:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
+				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
 		ExpectedError: "signer ID 0 not allowed",

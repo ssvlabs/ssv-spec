@@ -15,7 +15,7 @@ type Validator struct {
 	Beacon            BeaconNode
 	Operator          *types.Operator
 	Share             *types.Share
-	Signer            types.KeyManager
+	Signer            types.BeaconSigner
 	OperatorSigner    types.OperatorSigner
 	SignatureVerifier types.SignatureVerifier
 }
@@ -25,9 +25,9 @@ func NewValidator(
 	beacon BeaconNode,
 	operator *types.Operator,
 	share *types.Share,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
-	runners map[types.BeaconRole]Runner,
+	runners map[RunnerRole]Runner,
 	signatureVerifier types.SignatureVerifier,
 ) *Validator {
 	return &Validator{
@@ -44,7 +44,8 @@ func NewValidator(
 
 // StartDuty starts a duty for the validator
 func (v *Validator) StartDuty(duty *types.BeaconDuty) error {
-	dutyRunner := v.DutyRunners[duty.Type]
+	role := types.MapDutyToRunnerRole(duty.Type)
+	dutyRunner := v.DutyRunners[role]
 	if dutyRunner == nil {
 		return errors.Errorf("duty type %s not supported", duty.Type.String())
 	}
@@ -98,14 +99,13 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		}
 
 		// Validate
-		if len(signedSSVMessage.OperatorID) != 1 {
+		if len(signedSSVMessage.OperatorIDs) != 1 {
 			return errors.New("PartialSignatureMessage has more than 1 signer")
 		}
 
-		// TODO: can we rely soley on p2p validation for this?
-		//if err := psigMsgs.ValidateForSigner(signedSSVMessage.); err != nil {
-		//	return errors.Wrap(err, "invalid PartialSignatureMessages")
-		//}
+		if err := psigMsgs.ValidateForSigner(signedSSVMessage.OperatorIDs[0]); err != nil {
+			return errors.Wrap(err, "invalid PartialSignatureMessages")
+		}
 
 		// Process
 		if psigMsgs.Type == types.PostConsensusPartialSig {

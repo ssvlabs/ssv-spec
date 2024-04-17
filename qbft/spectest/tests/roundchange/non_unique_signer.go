@@ -19,7 +19,7 @@ func NonUniqueSigner() tests.SpecTest {
 		[]types.OperatorID{types.OperatorID(1), types.OperatorID(2)},
 		2,
 	)
-	msg.OperatorID = []types.OperatorID{types.OperatorID(1), types.OperatorID(1)}
+	msg.OperatorIDs = []types.OperatorID{types.OperatorID(1), types.OperatorID(1)}
 
 	msgs := []*types.SignedSSVMessage{
 		msg,

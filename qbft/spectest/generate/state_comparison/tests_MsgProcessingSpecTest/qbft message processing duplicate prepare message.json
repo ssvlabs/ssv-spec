@@ -63,10 +63,10 @@
 		"LastPreparedRound": 0,
 		"LastPreparedValue": null,
 		"ProposalAcceptedForCurrentRound": {
-				"Signature": [
+				"Signatures": [
 						"w3UJv6FMo17RQc7ewjyw7D39a5mHNKnYS8ZkVBNbyYT56RXYJJ6Kg6TEdCMqwLnNtRE+hI5QvVvFa+7llT2/0jkdQxP7TW8Fph0GTZMBP0Sa6dliDTBvYH9KjahV8uFJ+S/Sq640Ed5FF6vedOh8eYbB7Us0w/aVN1qlufLAC17dcLbaYcnQqkT4fSy4j2hb2vi2Vi3siJcbVDREAo3JHd6K6cmB3bO54hFbkJjEGVAr3ov+l/XrUsu+6dgPkdj3VMkMWOsMZjCxB0sjawdbUvfqqspAAW7eMxGvz+yc03WrodImQUEJaNY7GofeCuUfux5tyRbgycsHU2Qv3zc7cA=="
 				],
-				"OperatorID": [
+				"OperatorIDs": [
 						1
 				],
 				"SSVMessage": {
@@ -142,10 +142,10 @@
 				"Msgs": {
 						"1": [
 								{
-										"Signature": [
+										"Signatures": [
 												"xpIorjwflKm67zy3dDUmk/0VS4JqIFIslh7ij5uYmPqMKCUyufrDQImHzbM5Gy1Ysarv5itL5LnDutsYYX8oNYeOZzC7XRRAPe5zbdQD74A3tMwm83astKAjdHDYZqz4kb9Xx0Umf93yh2wMJXFlXrIPafyDiEMg7JvdPvwL+1XZ20MGkUHOcRGdNHfVaiyUPaZB5ji/Q5DGI7vZ21jW5aHnxQSWs4jtBKC539PiFSZBiccSdQtCt6JJHn963nVzmcSeVORk0B8mvUvVHDP1HpM/uusvep0KabJAJYWCTyO+9XpI4CP2EriLxdrj9jwKzGrkjJjyemxDWd+0We0+0g=="
 										],
-										"OperatorID": [
+										"OperatorIDs": [
 												1
 										],
 										"SSVMessage": {

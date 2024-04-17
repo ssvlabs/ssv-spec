@@ -15,7 +15,7 @@ type State struct {
 	PreConsensusContainer  *PartialSigContainer
 	PostConsensusContainer *PartialSigContainer
 	RunningInstance        *qbft.Instance
-	DecidedValue           *types.ConsensusData
+	DecidedValue           []byte
 	// CurrentDuty is the duty the node pulled locally from the beacon node, might be different from decided duty
 	StartingDuty types.Duty
 	// flags

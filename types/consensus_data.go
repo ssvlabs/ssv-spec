@@ -158,6 +158,12 @@ type ConsensusData struct {
 	DataSSZ []byte `ssz-max:"4194304"` // 2^22
 }
 
+func CreateConsensusData(rawSSZ []byte) (*ConsensusData, error) {
+	cd := &ConsensusData{}
+	err := cd.Decode(rawSSZ)
+	return cd, err
+}
+
 func (cid *ConsensusData) Validate() error {
 	switch cid.Duty.Type {
 	case BNRoleAttester:

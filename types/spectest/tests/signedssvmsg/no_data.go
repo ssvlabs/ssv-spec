@@ -12,9 +12,9 @@ func NilSSVMessage() *SignedSSVMessageTest {
 		Name: "nil ssvmessage",
 		Messages: []*types.SignedSSVMessage{
 			{
-				OperatorID: []types.OperatorID{1},
-				Signature:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
-				SSVMessage: nil,
+				OperatorIDs: []types.OperatorID{1},
+				Signatures:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
+				SSVMessage:  nil,
 			},
 		},
 		ExpectedError: "nil SSVMessage",

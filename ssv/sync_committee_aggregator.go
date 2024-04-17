@@ -19,7 +19,7 @@ type SyncCommitteeAggregatorRunner struct {
 
 	beacon         BeaconNode
 	network        Network
-	signer         types.KeyManager
+	signer         types.BeaconSigner
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
@@ -30,7 +30,7 @@ func NewSyncCommitteeAggregatorRunner(
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
@@ -200,7 +200,8 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Pa
 	}
 
 	// get contributions
-	contributions, err := r.GetState().DecidedValue.GetSyncCommitteeContributions()
+	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	contributions, err := consensusData.GetSyncCommitteeContributions()
 	if err != nil {
 		return errors.Wrap(err, "could not get contributions")
 	}
@@ -251,12 +252,12 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Pa
 
 func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib altair.SyncCommitteeContribution, proof phase0.BLSSignature) (*altair.ContributionAndProof, phase0.Root, error) {
 	contribAndProof := &altair.ContributionAndProof{
-		AggregatorIndex: r.GetState().DecidedValue.Duty.ValidatorIndex,
+		AggregatorIndex: r.GetState().StartingDuty.(*types.BeaconDuty).ValidatorIndex,
 		Contribution:    &contrib,
 		SelectionProof:  proof,
 	}
 
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().DecidedValue.Duty.Slot)
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.DutySlot())
 	dContribAndProof, err := r.GetBeaconNode().DomainData(epoch, types.DomainContributionAndProof)
 	if err != nil {
 		return nil, phase0.Root{}, errors.Wrap(err, "could not get domain data")
@@ -287,7 +288,11 @@ func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	// get contributions
-	contributions, err := r.GetState().DecidedValue.GetSyncCommitteeContributions()
+	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	if err != nil {
+		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
+	}
+	contributions, err := consensusData.GetSyncCommitteeContributions()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get contributions")
 	}
@@ -373,8 +378,13 @@ func (r *SyncCommitteeAggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF 
 	return r.valCheck
 }
 
-func (r *SyncCommitteeAggregatorRunner) GetSigner() types.KeyManager {
+func (r *SyncCommitteeAggregatorRunner) GetSigner() types.BeaconSigner {
 	return r.signer
+}
+
+func (r *SyncCommitteeAggregatorRunner) GetOperatorSigner() types.OperatorSigner {
+	//TODO implement me
+	panic("implement me")
 }
 
 // Encode returns the encoded struct in bytes or error
