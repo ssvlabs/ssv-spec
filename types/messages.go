@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/ssv"
 
 	"github.com/pkg/errors"
 )
 
 // ValidatorPK is an eth2 validator public key 48 bytes long
-type ValidatorPK []byte
+// TODO: maybe we can use BLS pubkey simply?
+type ValidatorPK phase0.BLSPubKey
 
 // ShareValidatorPK is a partial eth2 validator public key 48 bytes long
 type ShareValidatorPK []byte
@@ -40,7 +42,7 @@ type Validate interface {
 // MessageIDBelongs returns true if message ID belongs to validator
 func (vid ValidatorPK) MessageIDBelongs(msgID MessageID) bool {
 	toMatch := msgID.GetSenderID()
-	return bytes.Equal(vid, toMatch)
+	return bytes.Equal(vid[:], toMatch)
 }
 
 // MessageID is used to identify and route messages to the right validator and Runner

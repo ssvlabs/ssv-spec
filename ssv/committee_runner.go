@@ -53,6 +53,15 @@ func (cr CommitteeRunner) Encode() ([]byte, error) {
 	return json.Marshal(cr)
 }
 
+// StopDuty stops the duty for the given validator
+func (cr *CommitteeRunner) StopDuty(validator types.ValidatorPK) {
+	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty).BeaconDuties {
+		if types.ValidatorPK(duty.PubKey) == validator {
+			duty.IsStopped = true
+		}
+	}
+}
+
 func (cr CommitteeRunner) Decode(data []byte) error {
 	return json.Unmarshal(data, &cr)
 }
@@ -188,7 +197,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			share := cr.BaseRunner.Share[validator]
 			pubKey := share.ValidatorPubKey
 			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
-				pubKey)
+				pubKey[:])
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			// TODO should we return an error here? maybe other sigs are fine?
 			if err != nil {
@@ -268,6 +277,9 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attesta
 	}
 	beaconVote.Decode(beaconVoteData)
 	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
+		if beaconDuty == nil {
+			continue
+		}
 		switch beaconDuty.Type {
 		case types.BNRoleAttester:
 			attestationData := constructAttestationData(beaconVote, beaconDuty)
