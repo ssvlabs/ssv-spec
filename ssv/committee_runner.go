@@ -197,12 +197,13 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			share := cr.BaseRunner.Share[validator]
 			pubKey := share.ValidatorPubKey
 			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
-				pubKey[:])
+				pubKey[:], validator)
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			// TODO should we return an error here? maybe other sigs are fine?
 			if err != nil {
 				for _, root := range roots {
-					cr.BaseRunner.FallBackAndVerifyEachSignature(cr.BaseRunner.State.PostConsensusContainer, root, share.Committee)
+					cr.BaseRunner.FallBackAndVerifyEachSignature(cr.BaseRunner.State.PostConsensusContainer, root,
+						share.Committee, validator)
 				}
 				return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
 			}
@@ -277,7 +278,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attesta
 	}
 	beaconVote.Decode(beaconVoteData)
 	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
-		if beaconDuty == nil {
+		if beaconDuty == nil || beaconDuty.IsStopped {
 			continue
 		}
 		switch beaconDuty.Type {
