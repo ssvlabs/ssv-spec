@@ -1,8 +1,8 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -11,20 +11,20 @@ func PostDecided() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], 1)
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1)
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingCommitMessage(ks.Shares[1], 1),
-		testingutils.TestingCommitMessage(ks.Shares[2], 2),
-		testingutils.TestingCommitMessage(ks.Shares[3], 3),
-		testingutils.TestingCommitMessage(ks.Shares[4], 4),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[3], 3),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[4], 4),
 	}
 
 	return &tests.MsgProcessingSpecTest{
 		Name:           "post decided",
 		Pre:            pre,
-		PostRoot:       "e3b6652ebea2ed368979e60c38e1c1e8fecbf3240b35762954e4b290b702ce5c",
+		PostRoot:       "f040f67ff9425540f38a5e95d4d999bcf84c25b4492e6b3e115bd2c493fd945d",
 		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		OutputMessages: []*types.SignedSSVMessage{},
 	}
 }

@@ -17,7 +17,6 @@ var TestingQBFTRootData = func() [32]byte {
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
-		ShareSigner:    NewTestingKeyManager(),
 		OperatorSigner: NewTestingOperatorSigner(keySet, 1),
 		SigningPK:      keySet.Shares[1].GetPublicKey().Serialize(),
 		Domain:         TestingSSVDomainType,
@@ -35,8 +34,9 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 		ProposerF: func(state *qbft.State, round qbft.Round) types.OperatorID {
 			return 1
 		},
-		Network: NewTestingNetwork(1, keySet.OperatorKeys[1]),
-		Timer:   NewTestingTimer(),
+		Network:           NewTestingNetwork(1, keySet.OperatorKeys[1]),
+		Timer:             NewTestingTimer(),
+		SignatureVerifier: NewTestingVerifier(),
 	}
 }
 

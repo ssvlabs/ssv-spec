@@ -25,8 +25,9 @@ func TestInstance_Marshaling(t *testing.T) {
 		ret.SetByCSPRNG()
 		return ret
 	}()
-	testingSignedMsg := func() *qbft.SignedMessage {
-		return testingutils.SignQBFTMsg(TestingSK, 1, TestingMessage)
+	TestingRSASK := testingutils.Testing4SharesSet().OperatorKeys[1]
+	testingSignedMsg := func() *types.SignedSSVMessage {
+		return testingutils.SignQBFTMsg(TestingRSASK, 1, TestingMessage)
 	}()
 	testingValidatorPK := spec.BLSPubKey{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4}
 	testingShare := &types.Share{
@@ -56,28 +57,28 @@ func TestInstance_Marshaling(t *testing.T) {
 			DecidedValue:                    []byte{1, 2, 3, 4},
 
 			ProposeContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			PrepareContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			CommitContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			RoundChangeContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
 					1: {
 						testingSignedMsg,
 					},

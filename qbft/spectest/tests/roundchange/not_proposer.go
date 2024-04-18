@@ -1,7 +1,6 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -13,18 +12,18 @@ func NotProposer() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Height = tests.ChangeProposerFuncInstanceHeight // will change proposer default for tests
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.Shares[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight),
-		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.Shares[2], types.OperatorID(2), 2, tests.ChangeProposerFuncInstanceHeight),
-		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.Shares[3], types.OperatorID(3), 2, tests.ChangeProposerFuncInstanceHeight),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight),
+		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[2], types.OperatorID(2), 2, tests.ChangeProposerFuncInstanceHeight),
+		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[3], types.OperatorID(3), 2, tests.ChangeProposerFuncInstanceHeight),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change justification not proposer",
 		Pre:           pre,
-		PostRoot:      "6cd4ca943b96bbc598eb09ade7bcfc273759aa0b14a5b35199093383463a0458",
+		PostRoot:      "cd38e73c2b2c13d4fc7a7ff60d596fbe274fd0ccaa1a19ad96b1f1520e95de1d",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight,
 				[32]byte{}, 0, [][]byte{}),
 		},
 	}

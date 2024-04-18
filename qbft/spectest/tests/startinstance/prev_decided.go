@@ -60,12 +60,12 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 
 		// last height
 		if !decidedState && qbft.Height(i) == height {
-			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			comparable.SetSignedMessages(instance, []*types.SignedSSVMessage{})
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
 
-		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
 		instance.State.LastPreparedRound = qbft.FirstRound
 		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
 		instance.State.Decided = true

@@ -61,7 +61,7 @@ func (c *Controller) StartNewInstance(height Height, value []byte) error {
 }
 
 // ProcessMsg processes a new msg, returns decided message or error
-func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
+func (c *Controller) ProcessMsg(msg *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
 	if err := c.BaseMsgValidation(msg); err != nil {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
@@ -73,24 +73,41 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	if IsDecidedMsg(c.Share, msg) {
+	isDecided, err := IsDecidedMsg(c.Share, msg)
+	if err != nil {
+		return nil, err
+	}
+	if isDecided {
 		return c.UponDecided(msg)
-	} else if c.isFutureMessage(msg) {
+	}
+
+	isFuture, err := c.isFutureMessage(msg)
+	if err != nil {
+		return nil, err
+	}
+	if isFuture {
 		return nil, fmt.Errorf("future msg from height, could not process")
 	}
+
 	return c.UponExistingInstanceMsg(msg)
 
 }
 
-func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage, error) {
-	inst := c.InstanceForHeight(msg.Message.Height)
+func (c *Controller) UponExistingInstanceMsg(signedMsg *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
+
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	inst := c.InstanceForHeight(msg.Height)
 	if inst == nil {
 		return nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
 
-	decided, _, decidedMsg, err := inst.ProcessMsg(msg)
+	decided, _, decidedMsg, err := inst.ProcessMsg(signedMsg)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not process msg")
 	}
@@ -113,9 +130,15 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 }
 
 // BaseMsgValidation returns error if msg is invalid (base validation)
-func (c *Controller) BaseMsgValidation(msg *SignedMessage) error {
+func (c *Controller) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
+
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
+	if err != nil {
+		return err
+	}
+
 	// verify msg belongs to controller
-	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
+	if !bytes.Equal(c.Identifier, msg.Identifier) {
 		return errors.New("message doesn't belong to Identifier")
 	}
 
@@ -133,11 +156,17 @@ func (c *Controller) GetIdentifier() []byte {
 
 // isFutureMessage returns true if message height is from a future instance.
 // It takes into consideration a special case where FirstHeight didn't start but  c.Height == FirstHeight (since we bump height on start instance)
-func (c *Controller) isFutureMessage(msg *SignedMessage) bool {
+func (c *Controller) isFutureMessage(signedMsg *types.SignedSSVMessage) (bool, error) {
 	if c.Height == FirstHeight && c.StoredInstances.FindInstance(c.Height) == nil {
-		return true
+		return true, nil
 	}
-	return msg.Message.Height > c.Height
+
+	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
+	if err != nil {
+		return false, err
+	}
+
+	return msg.Height > c.Height, nil
 }
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
@@ -186,26 +215,9 @@ func (c *Controller) Decode(data []byte) error {
 	return nil
 }
 
-func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
-	// Broadcast Decided msg
-	byts, err := aggregatedCommit.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode decided message")
-	}
+func (c *Controller) broadcastDecided(aggregatedCommit *types.SignedSSVMessage) error {
 
-	ssvMsg := &types.SSVMessage{
-		MsgType: types.SSVConsensusMsgType,
-		MsgID:   ControllerIdToMessageID(c.Identifier),
-		Data:    byts,
-	}
-
-	operatorSigner := c.GetConfig().GetOperatorSigner()
-	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, c.Share.OperatorID, operatorSigner.SignSSVMessage)
-	if err != nil {
-		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
-	}
-
-	if err := c.GetConfig().GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
+	if err := c.GetConfig().GetNetwork().Broadcast(aggregatedCommit.SSVMessage.GetID(), aggregatedCommit); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}

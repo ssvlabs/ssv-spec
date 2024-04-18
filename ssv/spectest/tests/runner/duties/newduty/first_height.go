@@ -16,7 +16,7 @@ func FirstHeight() tests.SpecTest {
 				Name:   "sync committee aggregator",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusCustomSlotContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, 0),
 					// broadcasts when starting a new duty
 				},
@@ -25,13 +25,13 @@ func FirstHeight() tests.SpecTest {
 				Name:           "sync committee",
 				Runner:         testingutils.SyncCommitteeRunner(ks),
 				Duty:           &testingutils.TestingSyncCommitteeDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{},
+				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusCustomSlotSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, 0),
 					// broadcasts when starting a new duty
 				},
@@ -40,7 +40,7 @@ func FirstHeight() tests.SpecTest {
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   &testingutils.TestingProposerDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					// broadcasts when starting a new duty
 				},
@@ -49,7 +49,7 @@ func FirstHeight() tests.SpecTest {
 				Name:           "attester",
 				Runner:         testingutils.AttesterRunner(ks),
 				Duty:           &testingutils.TestingAttesterDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{},
+				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
 	}

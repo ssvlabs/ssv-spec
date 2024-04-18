@@ -1,7 +1,7 @@
 package processmsg
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
 
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
@@ -25,7 +25,7 @@ func FullDecided() tests.SpecTest {
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
@@ -51,7 +51,7 @@ func fullDecidedStateComparison() *qbftcomparable.StateComparison {
 		State: &qbft.State{
 			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet()),
 			ID:                              testingutils.TestingIdentifier,
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 			LastPreparedRound:               qbft.FirstRound,
 			LastPreparedValue:               testingutils.TestingQBFTFullData,
 			Decided:                         true,

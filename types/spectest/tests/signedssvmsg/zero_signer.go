@@ -8,13 +8,15 @@ import (
 // ZeroSigner tests an invalid SignedSSVMessageTest with zero signer
 func ZeroSigner() *SignedSSVMessageTest {
 
+	ks := testingutils.Testing4SharesSet()
+
 	return &SignedSSVMessageTest{
 		Name: "zero signer",
 		Messages: []*types.SignedSSVMessage{
 			{
-				OperatorID: 0,
-				Signature:  testingutils.TestingSignedSSVMessageSignature,
-				Data:       []byte{1, 2, 3, 4},
+				OperatorIDs: []types.OperatorID{0},
+				Signatures:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
+				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
 		ExpectedError: "signer ID 0 not allowed",

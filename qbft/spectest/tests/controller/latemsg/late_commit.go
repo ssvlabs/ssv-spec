@@ -1,7 +1,7 @@
 package latemsg
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
 
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
@@ -17,7 +17,7 @@ func LateCommit() tests.SpecTest {
 
 	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
-	msgs = append(msgs, testingutils.TestingCommitMessage(ks.Shares[4], types.OperatorID(4)))
+	msgs = append(msgs, testingutils.TestingCommitMessage(ks.OperatorKeys[4], types.OperatorID(4)))
 
 	return &tests.ControllerSpecTest{
 		Name: "late commit",
@@ -29,7 +29,7 @@ func LateCommit() tests.SpecTest {
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
@@ -46,7 +46,7 @@ func LateCommit() tests.SpecTest {
 func lateCommitStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
-	msgs = append(msgs, testingutils.TestingCommitMessage(ks.Shares[4], types.OperatorID(4)))
+	msgs = append(msgs, testingutils.TestingCommitMessage(ks.OperatorKeys[4], types.OperatorID(4)))
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
@@ -61,7 +61,7 @@ func lateCommitStateComparison() *comparable.StateComparison {
 			ID:                              testingutils.TestingIdentifier,
 			Round:                           qbft.FirstRound,
 			Height:                          qbft.FirstHeight,
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 			LastPreparedRound:               qbft.FirstRound,
 			LastPreparedValue:               testingutils.TestingQBFTFullData,
 			Decided:                         true,

@@ -14,7 +14,7 @@ type Validator struct {
 	Network           Network
 	Beacon            BeaconNode
 	Share             *types.Share
-	Signer            types.KeyManager
+	Signer            types.BeaconSigner
 	OperatorSigner    types.OperatorSigner
 	SignatureVerifier types.SignatureVerifier
 }
@@ -23,7 +23,7 @@ func NewValidator(
 	network Network,
 	beacon BeaconNode,
 	share *types.Share,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	runners map[types.BeaconRole]Runner,
 	signatureVerifier types.SignatureVerifier,
@@ -61,11 +61,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
-	// Decode the nested SSVMessage
-	msg := &types.SSVMessage{}
-	if err := msg.Decode(signedSSVMessage.Data); err != nil {
-		return errors.Wrap(err, "could not decode data into an SSVMessage")
-	}
+	msg := signedSSVMessage.SSVMessage
 
 	// Get runner
 	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
@@ -81,35 +77,38 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
 		// Decode
-		signedMsg := &qbft.SignedMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		qbftMsg := &qbft.Message{}
+		if err := qbftMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
 
-		// Check signer consistency
-		if !signedMsg.CommonSigners([]types.OperatorID{signedSSVMessage.OperatorID}) {
-			return errors.New("SignedSSVMessage's signer not consistent with SignedMessage's signers")
+		if err := qbftMsg.Validate(); err != nil {
+			return errors.Wrap(err, "invalid qbft Message")
 		}
 
 		// Process
-		return dutyRunner.ProcessConsensus(signedMsg)
+		return dutyRunner.ProcessConsensus(signedSSVMessage)
 	case types.SSVPartialSignatureMsgType:
 		// Decode
-		signedMsg := &types.SignedPartialSignatureMessage{}
-		if err := signedMsg.Decode(msg.GetData()); err != nil {
+		psigMsgs := &types.PartialSignatureMessages{}
+		if err := psigMsgs.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
-		// Check signer consistency
-		if signedMsg.Signer != signedSSVMessage.OperatorID {
-			return errors.New("SignedSSVMessage's signer not consistent with SignedPartialSignatureMessage's signer")
+		// Validate
+		if len(signedSSVMessage.OperatorIDs) != 1 {
+			return errors.New("PartialSignatureMessage has more than 1 signer")
+		}
+
+		if err := psigMsgs.ValidateForSigner(signedSSVMessage.OperatorIDs[0]); err != nil {
+			return errors.Wrap(err, "invalid PartialSignatureMessages")
 		}
 
 		// Process
-		if signedMsg.Message.Type == types.PostConsensusPartialSig {
-			return dutyRunner.ProcessPostConsensus(signedMsg)
+		if psigMsgs.Type == types.PostConsensusPartialSig {
+			return dutyRunner.ProcessPostConsensus(psigMsgs)
 		}
-		return dutyRunner.ProcessPreConsensus(signedMsg)
+		return dutyRunner.ProcessPreConsensus(psigMsgs)
 	default:
 		return errors.New("unknown msg")
 	}

@@ -1,8 +1,8 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
@@ -11,25 +11,25 @@ func HappyFlow() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], 1),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 
-		testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-		testingutils.TestingPrepareMessage(ks.Shares[2], 2),
-		testingutils.TestingPrepareMessage(ks.Shares[3], 3),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], 2),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], 3),
 
-		testingutils.TestingCommitMessage(ks.Shares[1], 1),
-		testingutils.TestingCommitMessage(ks.Shares[2], 2),
-		testingutils.TestingCommitMessage(ks.Shares[3], 3),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[3], 3),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit happy flow",
 		Pre:           pre,
-		PostRoot:      "0435531b93a3c21862b48c2d18fb85e7ab7539f738fb15ced288ce15b6193974",
+		PostRoot:      "32d6cf79c4d652318a1d395f690808ab4907ba035d467a1b789e03544fe46f1a",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-			testingutils.TestingCommitMessage(ks.Shares[1], 1),
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
 	}
 }

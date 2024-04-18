@@ -96,7 +96,7 @@
 												"Msgs": {}
 										}
 								},
-								"StartValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+								"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
 						},
 						"DecidedValue": null,
 						"StartingDuty": {
@@ -252,54 +252,77 @@
 														"Msgs": {
 																"1": [
 																		{
-																				"Signature": "sWd+TXrXgvZKqgXxWjcSS04rHlh2U3AE/2bHl8FqVdI45sous6lNZTaVnzRvUwH1AGUCUuZYfSeSlwYE/4CC7puPz3zNIf1qsqmlZ/j70zthAsn3BWPH09o7lipMPDzA",
-																				"Signers": [
+																				"Signatures": [
+																						"tghvwrwZn47yjwdHuYr08mzqdWd9e1OeEUXfQ7nQ4mmBSUKo4E3exVOCYblJX3UpHr4RluwB2JUSlSTTB5cur+HwPsNsABWF0h0WyBLNuPEXty+7GAWrLFMlxXhcUox/ZaF9YWq7hz+XcDfbSfhICQD4C4kqe3HYcZ4NuL55JjjyHk2bKQEqyAX0vFo3/BR30UTB4jdO6G4tsl8SERkhsA0pMSzqm1OcKwKEp/8ofQs3x//HtNJMx6TwvM08vQTQS89WER3d9LkfwQolNDHrXdNOhRKM918s+hZZKqqcmBFUshUrM2IyVWHTFbMoUZjwUr+MgYIb8Z8UR7/MM2Gb7w==",
+																						"MWJ+dwb2KmewgNTgdCZyru/0UHMPP2ES+mKBgp2FWOgv5q6Iw3Th8MHsxTDF5kYPTnEzO4BkcmbS12UZ9QlAI1TOgV/G4JEozgejZZvG9r1RPMM9WMjdvspJ5jMekKPG1/67LaS1bHDvimnuKTqn2Rofz4nRkLrwHavItkDrL0XMdpsAMdOUngxCMQCri3EGYC2nMpmku1vuYgRRNmM61eksW0GlbbnkQ1qtPs3veNQ+pSstYQ3o+FSSTcYkNzljS73suDP52YpmQ67Si4eXNzByAN6ggqVqdM0Dp613y9VR2HMBIZQi9g7kAa5b0hcLbifHtJ78NxTGI7cwu4VPJw==",
+																						"Ik5Fvbv1LjUJ3j5xL5pyOubse6V7w0jO+Y4kUr2mKZ71YVkArMu4S0fH7WwxjSo2BLzWRmJYZ8Wo/BS9o8YIILwz8Pd1/Jzb0H6Ust+G1iGvgUjsWhK3tQJQgDIUOfTMxCMMKtR3kXUTB8SzzsAkn3CkkyklzIPZ8oMh1gdcp9HJwHSb/aaWU/z/Fl8ZTsQL4kVTiAbJuNpaS1VNYZys7I9X0qt3GXc/da4lWRKScfBQ6IvmmeeXhK2tGgwLrTsVp2tn+AznL/wuDAznCTE/lffb/72C0ORTt4ciBpHUHH48TKDIs1xRTwJRO9YiRj6LdHCi8XNjd8T3SDC7zFu0HA=="
+																				],
+																				"OperatorIDs": [
 																						1,
 																						2,
 																						3
 																				],
-																				"Message": {
-																						"MsgType": 2,
-																						"Height": 13,
-																						"Round": 1,
-																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAEAAAA=",
-																						"Root": [
-																								190,
-																								149,
-																								111,
-																								183,
-																								223,
-																								78,
-																								243,
-																								117,
-																								49,
-																								104,
-																								45,
-																								88,
-																								131,
-																								32,
-																								8,
-																								79,
-																								201,
-																								20,
-																								195,
-																								240,
-																								254,
-																								211,
-																								53,
-																								38,
-																								62,
-																								91,
-																								68,
+																				"SSVMessage": {
+																						"MsgType": 0,
+																						"MsgID": [
+																								0,
+																								0,
+																								3,
+																								1,
+																								142,
+																								128,
 																								6,
-																								46,
-																								108,
-																								41,
-																								180
+																								101,
+																								81,
+																								168,
+																								27,
+																								49,
+																								130,
+																								88,
+																								112,
+																								158,
+																								218,
+																								247,
+																								221,
+																								31,
+																								99,
+																								205,
+																								104,
+																								106,
+																								14,
+																								77,
+																								184,
+																								178,
+																								155,
+																								187,
+																								122,
+																								207,
+																								230,
+																								86,
+																								8,
+																								103,
+																								122,
+																								245,
+																								165,
+																								39,
+																								217,
+																								68,
+																								142,
+																								228,
+																								120,
+																								53,
+																								72,
+																								94,
+																								2,
+																								181,
+																								11,
+																								192,
+																								1,
+																								0,
+																								0,
+																								0
 																						],
-																						"DataRound": 0,
-																						"RoundChangeJustification": [],
-																						"PrepareJustification": []
+																						"Data": "AgAAAAAAAAANAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8ABAAAA"
 																				},
 																				"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
 																		}
@@ -393,7 +416,7 @@
 														"Msgs": {}
 												}
 										},
-										"StartValue": "FAAAAAAAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+										"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
 								}
 						],
 						"Share": {

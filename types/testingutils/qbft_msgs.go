@@ -1,10 +1,11 @@
 package testingutils
 
 import (
+	"crypto/rsa"
 	"crypto/sha256"
+
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
-	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 var TestingIdentifier = []byte{1, 2, 3, 4}
@@ -14,7 +15,7 @@ var DifferentRoot = func() [32]byte {
 	return sha256.Sum256(DifferentFullData)
 }()
 
-var MarshalJustifications = func(msgs []*qbft.SignedMessage) [][]byte {
+var MarshalJustifications = func(msgs []*types.SignedSSVMessage) [][]byte {
 	bytes, err := qbft.MarshalJustifications(msgs)
 	if err != nil {
 		panic(err)
@@ -23,11 +24,11 @@ var MarshalJustifications = func(msgs []*qbft.SignedMessage) [][]byte {
 	return bytes
 }
 
-var MultiSignQBFTMsg = func(sks []*bls.SecretKey, ids []types.OperatorID, msg *qbft.Message) *qbft.SignedMessage {
+var MultiSignQBFTMsg = func(sks []*rsa.PrivateKey, ids []types.OperatorID, msg *qbft.Message) *types.SignedSSVMessage {
 	if len(sks) == 0 || len(ids) != len(sks) {
 		panic("sks != ids")
 	}
-	var signed *qbft.SignedMessage
+	var signed *types.SignedSSVMessage
 	for i, sk := range sks {
 		if signed == nil {
 			signed = SignQBFTMsg(sk, ids[i], msg)
@@ -41,24 +42,37 @@ var MultiSignQBFTMsg = func(sks []*bls.SecretKey, ids []types.OperatorID, msg *q
 	return signed
 }
 
-var SignQBFTMsg = func(sk *bls.SecretKey, id types.OperatorID, msg *qbft.Message) *qbft.SignedMessage {
-	domain := TestingSSVDomainType
-	sigType := types.QBFTSignatureType
+var SignQBFTMsg = func(sk *rsa.PrivateKey, id types.OperatorID, msg *qbft.Message) *types.SignedSSVMessage {
+	encodedMsg, err := msg.Encode()
+	if err != nil {
+		panic(err)
+	}
 
-	r, _ := types.ComputeSigningRoot(msg, types.ComputeSignatureDomain(domain, sigType))
-	sig := sk.SignByte(r[:])
+	msgID := [56]byte{}
+	copy(msgID[:], msg.Identifier)
 
-	return &qbft.SignedMessage{
-		Message:   *msg,
-		Signers:   []types.OperatorID{id},
-		Signature: sig.Serialize(),
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVConsensusMsgType,
+		MsgID:   msgID,
+		Data:    encodedMsg,
+	}
+
+	signature, err := SignSSVMessage(sk, ssvMsg)
+	if err != nil {
+		panic(err)
+	}
+
+	return &types.SignedSSVMessage{
+		OperatorIDs: []types.OperatorID{id},
+		Signatures:  [][]byte{signature},
+		SSVMessage:  ssvMsg,
 	}
 }
 
-var TestingInvalidMessage = func(sk *bls.SecretKey, id types.OperatorID, msgType qbft.MessageType) *qbft.SignedMessage {
-	return TestingMultiSignerInvalidMessage([]*bls.SecretKey{sk}, []types.OperatorID{id}, msgType)
+var TestingInvalidMessage = func(sk *rsa.PrivateKey, id types.OperatorID, msgType qbft.MessageType) *types.SignedSSVMessage {
+	return TestingMultiSignerInvalidMessage([]*rsa.PrivateKey{sk}, []types.OperatorID{id}, msgType)
 }
-var TestingMultiSignerInvalidMessage = func(sks []*bls.SecretKey, ids []types.OperatorID, msgType qbft.MessageType) *qbft.SignedMessage {
+var TestingMultiSignerInvalidMessage = func(sks []*rsa.PrivateKey, ids []types.OperatorID, msgType qbft.MessageType) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    msgType,
 		Height:     qbft.FirstHeight,
@@ -75,22 +89,28 @@ var TestingMultiSignerInvalidMessage = func(sks []*bls.SecretKey, ids []types.Op
 *
 Proposal messages
 */
-var TestingProposalMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingProposalMessage = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	return TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
 }
-var TestingProposalMessageWithID = func(sk *bls.SecretKey, id types.OperatorID, msgID types.MessageID) *qbft.SignedMessage {
+var TestingProposalMessageWithID = func(sk *rsa.PrivateKey, id types.OperatorID, msgID types.MessageID) *types.SignedSSVMessage {
 	ret := TestingProposalMessageWithRound(sk, id, qbft.FirstRound)
-	ret.Message.Identifier = msgID[:]
-	ret.Signature = SignQBFTMsg(sk, id, &ret.Message).Signature
-	return ret
+
+	qbftMsg, err := qbft.DecodeMessage(ret.SSVMessage.Data)
+	if err != nil {
+		panic(err)
+	}
+	qbftMsg.Identifier = msgID[:]
+
+	return SignQBFTMsg(sk, id, qbftMsg)
 }
-var TestingProposalMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+
+var TestingProposalMessageWithRound = func(sk *rsa.PrivateKey, id types.OperatorID, round qbft.Round) *types.SignedSSVMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, nil, nil)
 }
-var TestingProposalMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+var TestingProposalMessageWithHeight = func(sk *rsa.PrivateKey, id types.OperatorID, height qbft.Height) *types.SignedSSVMessage {
 	return TestingProposalMessageWithParams(sk, id, qbft.FirstRound, height, TestingQBFTRootData, nil, nil)
 }
-var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingProposalMessageDifferentRoot = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.ProposalMsgType,
 		Height:     qbft.FirstHeight,
@@ -102,11 +122,11 @@ var TestingProposalMessageDifferentRoot = func(sk *bls.SecretKey, id types.Opera
 	ret.FullData = DifferentFullData
 	return ret
 }
-var TestingProposalMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
+var TestingProposalMessageWithRoundAndRC = func(sk *rsa.PrivateKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *types.SignedSSVMessage {
 	return TestingProposalMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, roundChangeJustification, nil)
 }
 
-func TestingProposalMessageWithIdentifierAndFullData(sk *bls.SecretKey, id types.OperatorID, identifier, fullData []byte, height qbft.Height) *qbft.SignedMessage {
+func TestingProposalMessageWithIdentifierAndFullData(sk *rsa.PrivateKey, id types.OperatorID, identifier, fullData []byte, height qbft.Height) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.ProposalMsgType,
 		Height:     height,
@@ -123,14 +143,14 @@ func TestingProposalMessageWithIdentifierAndFullData(sk *bls.SecretKey, id types
 }
 
 var TestingProposalMessageWithParams = func(
-	sk *bls.SecretKey,
+	sk *rsa.PrivateKey,
 	id types.OperatorID,
 	round qbft.Round,
 	height qbft.Height,
 	root [32]byte,
 	roundChangeJustification [][]byte,
 	prepareJustification [][]byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:                  qbft.ProposalMsgType,
 		Height:                   height,
@@ -144,21 +164,21 @@ var TestingProposalMessageWithParams = func(
 	ret.FullData = TestingQBFTFullData
 	return ret
 }
-var TestingMultiSignerProposalMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
+var TestingMultiSignerProposalMessage = func(sks []*rsa.PrivateKey, ids []types.OperatorID) *types.SignedSSVMessage {
 	return TestingMultiSignerProposalMessageWithParams(sks, ids, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, TestingQBFTFullData, TestingQBFTRootData)
 }
-var TestingMultiSignerProposalMessageWithHeight = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+var TestingMultiSignerProposalMessageWithHeight = func(sks []*rsa.PrivateKey, ids []types.OperatorID, height qbft.Height) *types.SignedSSVMessage {
 	return TestingMultiSignerProposalMessageWithParams(sks, ids, qbft.FirstRound, height, TestingIdentifier, TestingQBFTFullData, TestingQBFTRootData)
 }
 var TestingMultiSignerProposalMessageWithParams = func(
-	sk []*bls.SecretKey,
+	sk []*rsa.PrivateKey,
 	id []types.OperatorID,
 	round qbft.Round,
 	height qbft.Height,
 	identifier,
 	fullData []byte,
 	root [32]byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.ProposalMsgType,
 		Height:     height,
@@ -175,19 +195,19 @@ var TestingMultiSignerProposalMessageWithParams = func(
 *
 Prepare messages
 */
-var TestingPrepareMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingPrepareMessage = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	return TestingPrepareMessageWithRound(sk, id, qbft.FirstRound)
 }
-var TestingPrepareMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+var TestingPrepareMessageWithRound = func(sk *rsa.PrivateKey, id types.OperatorID, round qbft.Round) *types.SignedSSVMessage {
 	return TestingPrepareMessageWithParams(sk, id, round, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData)
 }
-var TestingPrepareMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+var TestingPrepareMessageWithHeight = func(sk *rsa.PrivateKey, id types.OperatorID, height qbft.Height) *types.SignedSSVMessage {
 	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, height, TestingIdentifier, TestingQBFTRootData)
 }
-var TestingPrepareMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingPrepareMessageWrongRoot = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	return TestingPrepareMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, DifferentRoot)
 }
-var TestingPrepareMessageWithFullData = func(sk *bls.SecretKey, id types.OperatorID, fullData []byte) *qbft.SignedMessage {
+var TestingPrepareMessageWithFullData = func(sk *rsa.PrivateKey, id types.OperatorID, fullData []byte) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.PrepareMsgType,
 		Height:     qbft.FirstHeight,
@@ -199,7 +219,7 @@ var TestingPrepareMessageWithFullData = func(sk *bls.SecretKey, id types.Operato
 	ret.FullData = fullData
 	return ret
 }
-var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id types.OperatorID, identifier []byte, root [32]byte) *qbft.SignedMessage {
+var TestingPrepareMessageWithIdentifierAndRoot = func(sk *rsa.PrivateKey, id types.OperatorID, identifier []byte, root [32]byte) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.PrepareMsgType,
 		Height:     qbft.FirstHeight,
@@ -215,11 +235,11 @@ var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id type
 	return ret
 }
 var TestingPrepareMessageWithRoundAndFullData = func(
-	sk *bls.SecretKey,
+	sk *rsa.PrivateKey,
 	id types.OperatorID,
 	round qbft.Round,
 	fullData []byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.PrepareMsgType,
 		Height:     qbft.FirstHeight,
@@ -232,13 +252,13 @@ var TestingPrepareMessageWithRoundAndFullData = func(
 	return ret
 }
 var TestingPrepareMessageWithParams = func(
-	sk *bls.SecretKey,
+	sk *rsa.PrivateKey,
 	id types.OperatorID,
 	round qbft.Round,
 	height qbft.Height,
 	identifier []byte,
 	root [32]byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.PrepareMsgType,
 		Height:     height,
@@ -247,22 +267,21 @@ var TestingPrepareMessageWithParams = func(
 		Root:       root,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
-	ret.FullData = TestingQBFTFullData
 	return ret
 }
-var TestingPrepareMultiSignerMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
+var TestingPrepareMultiSignerMessage = func(sks []*rsa.PrivateKey, ids []types.OperatorID) *types.SignedSSVMessage {
 	return TestingPrepareMultiSignerMessageWithRound(sks, ids, qbft.FirstRound)
 }
-var TestingPrepareMultiSignerMessageWithRound = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+var TestingPrepareMultiSignerMessageWithRound = func(sks []*rsa.PrivateKey, ids []types.OperatorID, round qbft.Round) *types.SignedSSVMessage {
 	return TestingPrepareMultiSignerMessageWithParams(sks, ids, round, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData)
 }
-var TestingPrepareMultiSignerMessageWithHeight = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+var TestingPrepareMultiSignerMessageWithHeight = func(sks []*rsa.PrivateKey, ids []types.OperatorID, height qbft.Height) *types.SignedSSVMessage {
 	return TestingPrepareMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, TestingIdentifier, TestingQBFTRootData)
 }
-var TestingPrepareMultiSignerMessageWithHeightAndIdentifier = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height, identifier []byte) *qbft.SignedMessage {
+var TestingPrepareMultiSignerMessageWithHeightAndIdentifier = func(sks []*rsa.PrivateKey, ids []types.OperatorID, height qbft.Height, identifier []byte) *types.SignedSSVMessage {
 	return TestingPrepareMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, identifier, TestingQBFTRootData)
 }
-var TestingPrepareMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round, height qbft.Height, identifier []byte, root [32]byte) *qbft.SignedMessage {
+var TestingPrepareMultiSignerMessageWithParams = func(sks []*rsa.PrivateKey, ids []types.OperatorID, round qbft.Round, height qbft.Height, identifier []byte, root [32]byte) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.PrepareMsgType,
 		Height:     height,
@@ -279,23 +298,23 @@ var TestingPrepareMultiSignerMessageWithParams = func(sks []*bls.SecretKey, ids 
 *
 Commit messages
 */
-var TestingCommitMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingCommitMessage = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	return TestingCommitMessageWithRound(sk, id, qbft.FirstRound)
 }
-var TestingCommitMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+var TestingCommitMessageWithRound = func(sk *rsa.PrivateKey, id types.OperatorID, round qbft.Round) *types.SignedSSVMessage {
 	return TestingCommitMessageWithParams(sk, id, round, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData)
 }
-var TestingCommitMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+var TestingCommitMessageWithHeight = func(sk *rsa.PrivateKey, id types.OperatorID, height qbft.Height) *types.SignedSSVMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, height, TestingIdentifier, TestingQBFTRootData)
 }
-var TestingCommitMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingCommitMessageWrongRoot = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, TestingIdentifier, DifferentRoot)
 }
-var TestingCommitMessageWrongHeight = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingCommitMessageWrongHeight = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	return TestingCommitMessageWithParams(sk, id, qbft.FirstRound, 10, TestingIdentifier, DifferentRoot)
 }
 
-func TestingCommitMessageWithHeightIdentifierAndFullData(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, identifier, fullData []byte) *qbft.SignedMessage {
+func TestingCommitMessageWithHeightIdentifierAndFullData(sk *rsa.PrivateKey, id types.OperatorID, height qbft.Height, identifier, fullData []byte) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
 		Height:     height,
@@ -308,7 +327,7 @@ func TestingCommitMessageWithHeightIdentifierAndFullData(sk *bls.SecretKey, id t
 	return ret
 }
 
-var TestingCommitMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id types.OperatorID, identifier []byte, root [32]byte) *qbft.SignedMessage {
+var TestingCommitMessageWithIdentifierAndRoot = func(sk *rsa.PrivateKey, id types.OperatorID, identifier []byte, root [32]byte) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
 		Height:     qbft.FirstHeight,
@@ -321,13 +340,13 @@ var TestingCommitMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id types
 	return ret
 }
 var TestingCommitMessageWithParams = func(
-	sk *bls.SecretKey,
+	sk *rsa.PrivateKey,
 	id types.OperatorID,
 	round qbft.Round,
 	height qbft.Height,
 	identifier []byte,
 	root [32]byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
 		Height:     height,
@@ -338,37 +357,37 @@ var TestingCommitMessageWithParams = func(
 	ret := SignQBFTMsg(sk, id, msg)
 	return ret
 }
-var TestingCommitMultiSignerMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
+var TestingCommitMultiSignerMessage = func(sks []*rsa.PrivateKey, ids []types.OperatorID) *types.SignedSSVMessage {
 	return TestingCommitMultiSignerMessageWithRound(sks, ids, qbft.FirstRound)
 }
-var TestingCommitMultiSignerMessageWithRound = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+var TestingCommitMultiSignerMessageWithRound = func(sks []*rsa.PrivateKey, ids []types.OperatorID, round qbft.Round) *types.SignedSSVMessage {
 	return TestingCommitMultiSignerMessageWithParams(sks, ids, round, qbft.FirstHeight, TestingIdentifier, TestingQBFTRootData, TestingQBFTFullData)
 }
-var TestingCommitMultiSignerMessageWithHeight = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+var TestingCommitMultiSignerMessageWithHeight = func(sks []*rsa.PrivateKey, ids []types.OperatorID, height qbft.Height) *types.SignedSSVMessage {
 	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, TestingIdentifier, TestingQBFTRootData, TestingQBFTFullData)
 }
-var TestingCommitMultiSignerMessageWithHeightAndIdentifier = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height, identifier []byte) *qbft.SignedMessage {
+var TestingCommitMultiSignerMessageWithHeightAndIdentifier = func(sks []*rsa.PrivateKey, ids []types.OperatorID, height qbft.Height, identifier []byte) *types.SignedSSVMessage {
 	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, identifier, TestingQBFTRootData, TestingQBFTFullData)
 }
 
 func TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-	sks []*bls.SecretKey,
+	sks []*rsa.PrivateKey,
 	ids []types.OperatorID,
 	height qbft.Height,
 	identifier, fullData []byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	return TestingCommitMultiSignerMessageWithParams(sks, ids, qbft.FirstRound, height, identifier, sha256.Sum256(fullData), fullData)
 }
 
 var TestingCommitMultiSignerMessageWithParams = func(
-	sks []*bls.SecretKey,
+	sks []*rsa.PrivateKey,
 	ids []types.OperatorID,
 	round qbft.Round,
 	height qbft.Height,
 	identifier []byte,
 	root [32]byte,
 	fullData []byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.CommitMsgType,
 		Height:     height,
@@ -385,22 +404,24 @@ var TestingCommitMultiSignerMessageWithParams = func(
 *
 Round Change messages
 */
-var TestingRoundChangeMessage = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingRoundChangeMessage = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	return TestingRoundChangeMessageWithRound(sk, id, qbft.FirstRound)
 }
-var TestingRoundChangeMessageWithRound = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+var TestingRoundChangeMessageWithRound = func(sk *rsa.PrivateKey, id types.OperatorID, round qbft.Round) *types.SignedSSVMessage {
 	return TestingRoundChangeMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, qbft.NoRound, nil)
 }
-var TestingRoundChangeMessageWithHeight = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+var TestingRoundChangeMessageWithHeight = func(sk *rsa.PrivateKey, id types.OperatorID, height qbft.Height) *types.SignedSSVMessage {
 	return TestingRoundChangeMessageWithParams(sk, id, qbft.FirstRound, height, TestingQBFTRootData, qbft.NoRound, nil)
 }
-var TestingRoundChangeMessageWithRoundAndHeight = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, height qbft.Height) *qbft.SignedMessage {
+var TestingRoundChangeMessageWithRoundAndHeight = func(sk *rsa.PrivateKey, id types.OperatorID, round qbft.Round, height qbft.Height) *types.SignedSSVMessage {
 	return TestingRoundChangeMessageWithParams(sk, id, round, height, TestingQBFTRootData, qbft.NoRound, nil)
 }
-var TestingRoundChangeMessageWithRoundAndRC = func(sk *bls.SecretKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *qbft.SignedMessage {
-	return TestingRoundChangeMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, qbft.FirstRound, roundChangeJustification)
+var TestingRoundChangeMessageWithRoundAndRC = func(sk *rsa.PrivateKey, id types.OperatorID, round qbft.Round, roundChangeJustification [][]byte) *types.SignedSSVMessage {
+	ret := TestingRoundChangeMessageWithParams(sk, id, round, qbft.FirstHeight, TestingQBFTRootData, qbft.FirstRound, roundChangeJustification)
+	ret.FullData = TestingQBFTFullData
+	return ret
 }
-var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, identifier []byte) *qbft.SignedMessage {
+var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *rsa.PrivateKey, id types.OperatorID, height qbft.Height, identifier []byte) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.RoundChangeMsgType,
 		Height:     height,
@@ -409,15 +430,14 @@ var TestingRoundChangeMessageWithHeightAndIdentifier = func(sk *bls.SecretKey, i
 		Root:       TestingQBFTRootData,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
-	ret.FullData = TestingQBFTFullData
 	return ret
 }
 var TestingRoundChangeMessageWithRoundAndFullData = func(
-	sk *bls.SecretKey,
+	sk *rsa.PrivateKey,
 	id types.OperatorID,
 	round qbft.Round,
 	fullData []byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.RoundChangeMsgType,
 		Height:     qbft.FirstHeight,
@@ -430,14 +450,14 @@ var TestingRoundChangeMessageWithRoundAndFullData = func(
 	return ret
 }
 var TestingRoundChangeMessageWithParams = func(
-	sk *bls.SecretKey,
+	sk *rsa.PrivateKey,
 	id types.OperatorID,
 	round qbft.Round,
 	height qbft.Height,
 	root [32]byte,
 	dataRound qbft.Round,
 	roundChangeJustification [][]byte,
-) *qbft.SignedMessage {
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   height,
@@ -448,20 +468,19 @@ var TestingRoundChangeMessageWithParams = func(
 		RoundChangeJustification: roundChangeJustification,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
-	ret.FullData = TestingQBFTFullData
 	return ret
 }
 
 var TestingRoundChangeMessageWithParamsAndFullData = func(
-	sk *bls.SecretKey,
+	sk *rsa.PrivateKey,
 	id types.OperatorID,
 	round qbft.Round,
 	height qbft.Height,
 	root [32]byte,
 	dataRound qbft.Round,
-	fullData []byte,
 	roundChangeJustification [][]byte,
-) *qbft.SignedMessage {
+	fullData []byte,
+) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   height,
@@ -476,19 +495,19 @@ var TestingRoundChangeMessageWithParamsAndFullData = func(
 	return ret
 }
 
-var TestingMultiSignerRoundChangeMessage = func(sks []*bls.SecretKey, ids []types.OperatorID) *qbft.SignedMessage {
+var TestingMultiSignerRoundChangeMessage = func(sks []*rsa.PrivateKey, ids []types.OperatorID) *types.SignedSSVMessage {
 	return TestingMultiSignerRoundChangeMessageWithParams(sks, ids, qbft.FirstRound, qbft.FirstHeight, TestingQBFTRootData)
 }
-var TestingMultiSignerRoundChangeMessageWithRound = func(sks []*bls.SecretKey, ids []types.OperatorID, round qbft.Round) *qbft.SignedMessage {
+var TestingMultiSignerRoundChangeMessageWithRound = func(sks []*rsa.PrivateKey, ids []types.OperatorID, round qbft.Round) *types.SignedSSVMessage {
 	return TestingMultiSignerRoundChangeMessageWithParams(sks, ids, round, qbft.FirstHeight, TestingQBFTRootData)
 }
-var TestingMultiSignerRoundChangeMessageWithHeight = func(sks []*bls.SecretKey, ids []types.OperatorID, height qbft.Height) *qbft.SignedMessage {
+var TestingMultiSignerRoundChangeMessageWithHeight = func(sks []*rsa.PrivateKey, ids []types.OperatorID, height qbft.Height) *types.SignedSSVMessage {
 	return TestingMultiSignerRoundChangeMessageWithParams(sks, ids, qbft.FirstRound, height, TestingQBFTRootData)
 }
-var TestingRoundChangeMessageWrongRoot = func(sk *bls.SecretKey, id types.OperatorID) *qbft.SignedMessage {
+var TestingRoundChangeMessageWrongRoot = func(sk *rsa.PrivateKey, id types.OperatorID) *types.SignedSSVMessage {
 	return TestingRoundChangeMessageWithParams(sk, id, qbft.FirstRound, qbft.FirstHeight, DifferentRoot, qbft.NoRound, nil)
 }
-var TestingMultiSignerRoundChangeMessageWithParams = func(sk []*bls.SecretKey, id []types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *qbft.SignedMessage {
+var TestingMultiSignerRoundChangeMessageWithParams = func(sk []*rsa.PrivateKey, id []types.OperatorID, round qbft.Round, height qbft.Height, root [32]byte) *types.SignedSSVMessage {
 	msg := &qbft.Message{
 		MsgType:    qbft.RoundChangeMsgType,
 		Height:     height,

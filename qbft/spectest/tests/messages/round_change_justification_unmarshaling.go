@@ -12,16 +12,16 @@ func RoundChangeJustificationsUnmarshalling() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], 1, 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], 2, 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], 3, 2),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], 1, 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], 2, 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], 3, 2),
 	}
 
 	rcMarshalled := testingutils.MarshalJustifications(rcMsgs)
 
 	msg := testingutils.TestingProposalMessageWithParams(
-		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+		ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		rcMarshalled, nil)
 
 	msgRoot, err := msg.GetRoot()
@@ -35,7 +35,7 @@ func RoundChangeJustificationsUnmarshalling() tests.SpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "round change justification unmarshalling",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		EncodedMessages: [][]byte{

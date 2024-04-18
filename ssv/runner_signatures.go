@@ -32,35 +32,22 @@ func (b *BaseRunner) signBeaconObject(
 	}, nil
 }
 
-func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSignatureMessages) (*types.SignedPartialSignatureMessage, error) {
-	signature, err := runner.GetSigner().SignRoot(msg, types.PartialSignatureType, b.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign PartialSignatureMessage for PostConsensusContainer")
-	}
-
-	return &types.SignedPartialSignatureMessage{
-		Message:   *msg,
-		Signature: signature,
-		Signer:    b.Share.OperatorID,
-	}, nil
-}
-
 // Validate message content without verifying signatures
 func (b *BaseRunner) validatePartialSigMsgForSlot(
-	signedMsg *types.SignedPartialSignatureMessage,
+	psigMsgs *types.PartialSignatureMessages,
 	slot spec.Slot,
 ) error {
-	if err := signedMsg.Validate(); err != nil {
-		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
+	if err := psigMsgs.Validate(); err != nil {
+		return errors.Wrap(err, "PartialSignatureMessages invalid")
 	}
-	if signedMsg.Message.Slot != slot {
+	if psigMsgs.Slot != slot {
 		return errors.New("invalid partial sig slot")
 	}
 
 	// Check if signer is in committee
 	signerInCommittee := false
 	for _, operator := range b.Share.Committee {
-		if operator.OperatorID == signedMsg.Signer {
+		if operator.OperatorID == psigMsgs.Messages[0].Signer {
 			signerInCommittee = true
 			break
 		}

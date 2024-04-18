@@ -24,7 +24,7 @@ type MsgProcessingSpecTest struct {
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
-	OutputMessages         []*types.SignedPartialSignatureMessage
+	OutputMessages         []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
@@ -121,14 +121,14 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 			continue
 		}
 
-		msg1 := &types.SignedPartialSignatureMessage{}
+		msg1 := &types.PartialSignatureMessages{}
 		require.NoError(t, msg1.Decode(msg.Data))
 		msg2 := test.OutputMessages[index]
-		require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))
+		require.Len(t, msg1.Messages, len(msg2.Messages))
 
 		// messages are not guaranteed to be in order so we map them and then test all roots to be equal
 		roots := make(map[string]string)
-		for i, partialSigMsg2 := range msg2.Message.Messages {
+		for i, partialSigMsg2 := range msg2.Messages {
 			r2, err := partialSigMsg2.GetRoot()
 			require.NoError(t, err)
 			if _, found := roots[hex.EncodeToString(r2[:])]; !found {
@@ -137,7 +137,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 				roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
 			}
 
-			partialSigMsg1 := msg1.Message.Messages[i]
+			partialSigMsg1 := msg1.Messages[i]
 			r1, err := partialSigMsg1.GetRoot()
 			require.NoError(t, err)
 
@@ -152,7 +152,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		}
 
 		// test that slot is correct in broadcasted msg
-		require.EqualValues(t, msg1.Message.Slot, msg2.Message.Slot, "incorrect broadcasted slot")
+		require.EqualValues(t, msg1.Slot, msg2.Slot, "incorrect broadcasted slot")
 
 		index++
 	}

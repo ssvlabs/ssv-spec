@@ -14,7 +14,7 @@ func Round15() tests.SpecTest {
 
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 15
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1],
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1],
 		types.OperatorID(1), 15)
 
 	return &SpecTest{
@@ -35,7 +35,7 @@ func round15StateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	state := testingutils.BaseInstance().State
 	state.Round = 15
-	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1],
+	state.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1],
 		types.OperatorID(1), 15)
 
 	return &comparable.StateComparison{ExpectedState: state}
