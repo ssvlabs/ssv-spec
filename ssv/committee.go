@@ -22,11 +22,7 @@ type Committee struct {
 
 // NewCommittee creates a new cluster
 func NewCommittee(
-	network Network,
-	beacon BeaconNode,
 	operator types.Operator,
-	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
 	verifier types.SignatureVerifier,
 	createRunnerFn func() *CommitteeRunner,
 ) *Committee {
