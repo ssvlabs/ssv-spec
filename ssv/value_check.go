@@ -36,42 +36,34 @@ func dutyValueCheck(
 	return nil
 }
 
-func AttesterValueCheckF(
+// TODO add tests
+func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
-	network types.BeaconNetwork,
-	validatorPK types.ValidatorPK,
-	validatorIndex phase0.ValidatorIndex,
+	duty types.Duty,
 	sharePublicKey []byte,
+	estimatedCurrentEpoch phase0.Epoch,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
-		cd := &types.ConsensusData{}
-		if err := cd.Decode(data); err != nil {
-			return errors.Wrap(err, "failed decoding consensus data")
-		}
-		if err := cd.Validate(); err != nil {
-			return errors.Wrap(err, "invalid value")
+		bv := types.BeaconVote{}
+		if err := bv.Decode(data); err != nil {
+			return errors.Wrap(err, "failed decoding beacon vote")
 		}
 
-		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleAttester, validatorPK, validatorIndex); err != nil {
-			return errors.Wrap(err, "duty invalid")
-		}
-
-		attestationData, _ := cd.GetAttestationData() // error checked in cd.validate()
-
-		if cd.Duty.Slot != attestationData.Slot {
-			return errors.New("attestation data slot != duty slot")
-		}
-
-		if cd.Duty.CommitteeIndex != attestationData.Index {
-			return errors.New("attestation data CommitteeIndex != duty CommitteeIndex")
-		}
-
-		if attestationData.Target.Epoch > network.EstimatedCurrentEpoch()+1 {
+		if bv.Target.Epoch > estimatedCurrentEpoch+1 {
 			return errors.New("attestation data target epoch is into far future")
 		}
 
-		if attestationData.Source.Epoch >= attestationData.Target.Epoch {
+		if bv.Source.Epoch >= bv.Target.Epoch {
 			return errors.New("attestation data source > target")
+		}
+
+		attestationData := &phase0.AttestationData{
+			Slot: duty.DutySlot(),
+			// CommitteeIndex doesn't matter for slashing checks
+			Index:           0,
+			BeaconBlockRoot: bv.BlockRoot,
+			Source:          nil,
+			Target:          nil,
 		}
 
 		return signer.IsAttestationSlashable(sharePublicKey, attestationData)
@@ -133,28 +125,6 @@ func AggregatorValueCheckF(
 		}
 
 		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleAggregator, validatorPK, validatorIndex); err != nil {
-			return errors.Wrap(err, "duty invalid")
-		}
-		return nil
-	}
-}
-
-func SyncCommitteeValueCheckF(
-	signer types.BeaconSigner,
-	network types.BeaconNetwork,
-	validatorPK types.ValidatorPK,
-	validatorIndex phase0.ValidatorIndex,
-) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
-		cd := &types.ConsensusData{}
-		if err := cd.Decode(data); err != nil {
-			return errors.Wrap(err, "failed decoding consensus data")
-		}
-		if err := cd.Validate(); err != nil {
-			return errors.Wrap(err, "invalid value")
-		}
-
-		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleSyncCommittee, validatorPK, validatorIndex); err != nil {
 			return errors.Wrap(err, "duty invalid")
 		}
 		return nil
