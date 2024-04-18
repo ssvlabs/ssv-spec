@@ -19,7 +19,7 @@ import (
 type MsgProcessingSpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
-	Duty                    *types.Duty
+	Duty                    types.Duty
 	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json

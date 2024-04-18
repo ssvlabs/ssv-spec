@@ -37,7 +37,7 @@ func fullHappyFlowProposerReceivingBlindedBlockSC(version spec.DataVersion) *com
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: comparable.FixIssue178(cd, version).DataSSZ,
 				StartingDuty: &testingutils.TestProposerConsensusDataV(version).Duty,
 				Finished:     true,
 			}
@@ -93,7 +93,7 @@ func fullHappyFlowBlindedProposerReceivingNormalBlockSC(version spec.DataVersion
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: comparable.FixIssue178(cd, version).DataSSZ,
 				StartingDuty: &testingutils.TestProposerConsensusDataV(version).Duty,
 				Finished:     true,
 			}

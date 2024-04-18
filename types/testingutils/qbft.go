@@ -44,14 +44,14 @@ var TestingInvalidValueCheck = []byte{1, 1, 1, 1}
 
 var TestingShare = func(keysSet *TestKeySet) *types.Share {
 	return &types.Share{
-		OperatorID:          1,
-		ValidatorPubKey:     keysSet.ValidatorPK.Serialize(),
+		ValidatorIndex:      TestingValidatorIndex,
+		ValidatorPubKey:     keysSet.ValidatorPK,
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
-		DomainType:          TestingSSVDomainType,
-		Quorum:              keysSet.Threshold,
-		PartialQuorum:       keysSet.PartialThreshold,
 		Committee:           keysSet.Committee(),
+		Quorum:              keysSet.Threshold,
+		DomainType:          TestingSSVDomainType
 		FeeRecipientAddress: TestingFeeRecipient,
+		Graffiti:            []byte,
 	}
 }
 

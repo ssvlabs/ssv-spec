@@ -126,13 +126,13 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 	config qbft.IConfig,
 	identifier []byte,
 	runData *RunInstanceData,
-	operators []*types.Operator,
+	committee []*types.CommitteeMember,
 ) {
 	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
 		// test broadcasted
 		broadcastedSignedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 		require.Greater(t, len(broadcastedSignedMsgs), 0)
-		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, operators))
+		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
 		found := false
 		for _, msg := range broadcastedSignedMsgs {
 

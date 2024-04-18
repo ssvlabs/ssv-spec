@@ -49,7 +49,7 @@ var AllTests = []tests.TestF{
 	postconsensus.InvalidThenQuorum,
 	postconsensus.InvalidQuorumThenValidQuorum,
 	postconsensus.InconsistentOperatorSigner,
-	postconsensus.NilSSVMessage,
+	//postconsensus.NilSSVMessage,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,

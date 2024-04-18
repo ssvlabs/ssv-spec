@@ -3,6 +3,7 @@ package dutyexe
 import (
 	"crypto/rsa"
 	"fmt"
+	"github.com/bloxapp/ssv-spec/ssv"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -15,12 +16,12 @@ func WrongDutyPubKey() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// Correct ID for SSVMessage
-	getID := func(role types.BeaconRole) types.MessageID {
+	getID := func(role ssv.RunnerRole) types.MessageID {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return ret
 	}
 	// Wrong ID for SignedMessage
-	getWrongID := func(role types.BeaconRole) []byte {
+	getWrongID := func(role ssv.RunnerRole) []byte {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingWrongValidatorPubKey[:], role)
 		return ret[:]
 	}
