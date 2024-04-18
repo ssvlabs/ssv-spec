@@ -86,8 +86,7 @@ func (cr CommitteeRunner) GetBeaconNode() BeaconNode {
 }
 
 func (cr CommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
-	//TODO implement me
-	panic("implement me")
+	return cr.valCheck
 }
 
 func (cr CommitteeRunner) GetNetwork() Network {
