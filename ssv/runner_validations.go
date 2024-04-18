@@ -86,7 +86,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 	return nil
 }
 
-func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
+func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encoder) error {
 	byts, err := val.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode decided value")
