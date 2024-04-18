@@ -146,26 +146,28 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		}
 	}
 
-	//TODO depends on https://github.com/bloxapp/SIPs/pull/45
-	/*postSignedMsg, err := cr.BaseRunner.signPostConsensusMsg(cr, postConsensusMsg)
-	if err != nil {
-		return errors.Wrap(err, "could not sign post consensus msg")
-	}
-
-	data, err := postSignedMsg.Encode()
+	data, err := postConsensusMsg.Encode()
 	if err != nil {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.RunnerRoleType),
-		Data:    data,
+		//TODO: The Domain will be updated after new Domain PR... Will be created after this PR is merged
+		MsgID: types.NewMsgID(types.GenesisMainnet, cr.GetBaseRunner().QBFTController.Share.ClusterID[:],
+			cr.BaseRunner.RunnerRoleType),
+		Data: data,
+	}
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.Share.OperatorID,
+		cr.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
 
 	if err := cr.GetNetwork().Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
-	}*/
+	}
 	return nil
 
 }
