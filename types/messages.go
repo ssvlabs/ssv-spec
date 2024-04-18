@@ -142,16 +142,6 @@ func (msg *SignedSSVMessage) GetOperatorIDs() []OperatorID {
 	return msg.OperatorIDs
 }
 
-// GetSignature returns the signature of the OperatorID over Data
-func (msg *SignedSSVMessage) GetSignature() [][]byte {
-	return msg.Signatures
-}
-
-// GetData returns message Data as byte slice
-func (msg *SignedSSVMessage) GetSSVMessage() *SSVMessage {
-	return msg.SSVMessage
-}
-
 // Encode returns a msg encoded bytes or error
 func (msg *SignedSSVMessage) Encode() ([]byte, error) {
 	return msg.MarshalSSZ()
