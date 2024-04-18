@@ -76,7 +76,7 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 	}
 
 	if msg.Height > contr.Height {
-		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.Share.Committee)
+		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.Share)
 	}
 
 	if inst := contr.StoredInstances.FindInstance(msg.Height); inst != nil {
@@ -100,7 +100,7 @@ func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
 func validateFutureMsg(
 	config qbft.IConfig,
 	msg *types.SignedSSVMessage,
-	operators []*types.Operator,
+	operator *types.Operator,
 ) error {
 	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
@@ -111,7 +111,7 @@ func validateFutureMsg(
 	}
 
 	// verify signature
-	if err := config.GetSignatureVerifier().Verify(msg, operators); err != nil {
+	if err := config.GetSignatureVerifier().Verify(msg, operator.Committee); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 

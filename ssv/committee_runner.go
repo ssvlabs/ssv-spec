@@ -29,19 +29,19 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot) Runner {
+) Runner {
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     RoleCommittee,
-			BeaconNetwork:      beaconNetwork,
-			Share:              share,
-			QBFTController:     qbftController,
-			highestDecidedSlot: highestDecidedSlot,
+			RunnerRoleType: RoleCommittee,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
 		},
 		beacon:         beacon,
 		network:        network,
 		signer:         signer,
 		operatorSigner: operatorSigner,
+		valCheck:       valCheck,
 	}
 }
 
