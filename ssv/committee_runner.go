@@ -256,11 +256,14 @@ func findValidators(
 	return types.BNRoleUnknown, nil, false
 }
 
+// unneeded
 func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
+// This function signature returns only one domain type
+// instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
 func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	//TODO implement me
 	panic("implement me")
