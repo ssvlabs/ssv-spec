@@ -25,7 +25,7 @@ func dutyValueCheck(
 		return errors.New("wrong beacon role type")
 	}
 
-	if !bytes.Equal(validatorPK, duty.PubKey[:]) {
+	if !bytes.Equal(validatorPK[:], duty.PubKey[:]) {
 		return errors.New("wrong validator pk")
 	}
 

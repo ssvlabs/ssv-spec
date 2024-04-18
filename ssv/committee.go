@@ -13,15 +13,11 @@ import (
 )
 
 type Committee struct {
-	Runners           map[spec.Slot]*CommitteeRunner
-	Network           Network
-	Beacon            BeaconNode
-	Operator          types.Operator
-	Share             *types.Share
-	Signer            types.BeaconSigner
-	OperatorSigner    types.OperatorSigner
-	SignatureVerifier types.SignatureVerifier
-	CreateRunnerFn    func() *CommitteeRunner
+	Runners                 map[spec.Slot]*CommitteeRunner
+	Operator                types.Operator
+	SignatureVerifier       types.SignatureVerifier
+	CreateRunnerFn          func() *CommitteeRunner
+	HighestAttestingSlotMap map[types.ValidatorPK]spec.Slot
 }
 
 // NewCommittee creates a new cluster
@@ -29,7 +25,6 @@ func NewCommittee(
 	network Network,
 	beacon BeaconNode,
 	operator types.Operator,
-	share *types.Share,
 	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	verifier types.SignatureVerifier,
@@ -37,12 +32,7 @@ func NewCommittee(
 ) *Committee {
 	return &Committee{
 		Runners:           make(map[spec.Slot]*CommitteeRunner),
-		Network:           network,
-		Beacon:            beacon,
 		Operator:          operator,
-		Share:             share,
-		Signer:            signer,
-		OperatorSigner:    operatorSigner,
 		SignatureVerifier: verifier,
 		CreateRunnerFn:    createRunnerFn,
 	}
@@ -56,7 +46,35 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
 	c.Runners[duty.Slot] = c.CreateRunnerFn()
+	validatorToStopMap := make(map[spec.Slot]types.ValidatorPK)
+	duty, validatorToStopMap, c.HighestAttestingSlotMap = FilterCommitteeDuty(duty, c.HighestAttestingSlotMap)
+	c.StopDuties(validatorToStopMap)
 	return c.Runners[duty.Slot].StartNewDuty(duty)
+}
+
+func (c *Committee) StopDuties(validatorToStopMap map[spec.Slot]types.ValidatorPK) {
+	for slot, validator := range validatorToStopMap {
+		c.Runners[slot].StopDuty(validator)
+	}
+}
+
+// FilterCommitteeDuty filters the committee duty. It returns the new duty, the validators to stop and the highest attesting slot map
+func FilterCommitteeDuty(duty *types.CommitteeDuty, slotMap map[types.ValidatorPK]spec.Slot) (
+	*types.CommitteeDuty,
+	map[spec.Slot]types.ValidatorPK,
+	map[types.ValidatorPK]spec.Slot) {
+	validatorsToStop := make(map[spec.Slot]types.ValidatorPK)
+
+	for i, beaconDuty := range duty.BeaconDuties {
+		validatorPK := types.ValidatorPK(beaconDuty.PubKey)
+		if slotMap[validatorPK] < beaconDuty.Slot {
+			validatorsToStop[beaconDuty.Slot] = validatorPK
+			slotMap[validatorPK] = beaconDuty.Slot
+		} else { // else don't run duty with old slot
+			duty.BeaconDuties[i] = nil
+		}
+	}
+	return duty, validatorsToStop, slotMap
 }
 
 // ProcessMessage processes Network Message of all types

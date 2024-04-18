@@ -197,16 +197,16 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 	roots := make([][32]byte, 0)
 	anyQuorum := false
 	for _, msg := range psigMsgs.Messages {
-		prevQuorum := container.HasQuorum(msg.SigningRoot)
+		prevQuorum := container.HasQuorum(msg.ValidatorIndex, msg.SigningRoot)
 
 		// Check if it has two signatures for the same signer
-		if container.HasSigner(msg.Signer, msg.SigningRoot) {
+		if container.HasSigner(msg.ValidatorIndex, msg.Signer, msg.SigningRoot) {
 			b.resolveDuplicateSignature(container, msg)
 		} else {
 			container.AddSignature(msg)
 		}
 
-		hasQuorum := container.HasQuorum(msg.SigningRoot)
+		hasQuorum := container.HasQuorum(msg.ValidatorIndex, msg.SigningRoot)
 
 		if hasQuorum && !prevQuorum {
 			// Notify about first quorum only

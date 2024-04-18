@@ -98,6 +98,8 @@ type BeaconDuty struct {
 	ValidatorCommitteeIndex uint64
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
 	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
+	// IsStopped stops partial sig messages form being processed or sent... CommitteeRunner only
+	IsStopped bool
 }
 
 func MapDutyToRunnerRole(dutyRole BeaconRole) ssv.RunnerRole {
@@ -156,6 +158,8 @@ type CommitteeDuty struct {
 func (cd *CommitteeDuty) DutySlot() spec.Slot {
 	return cd.Slot
 }
+
+//
 
 // Available networks.
 const (
