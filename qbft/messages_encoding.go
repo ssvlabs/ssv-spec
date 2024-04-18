@@ -4,8 +4,8 @@
 package qbft
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // MarshalSSZ ssz marshals the Message object

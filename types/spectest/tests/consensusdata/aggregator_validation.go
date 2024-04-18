@@ -1,6 +1,6 @@
 package consensusdata
 
-import "github.com/bloxapp/ssv-spec/types/testingutils"
+import "github.com/ssvlabs/ssv-spec/types/testingutils"
 
 // AggregatorValidation tests a valid consensus data with AggregateAndProof
 func AggregatorValidation() *ConsensusDataTest {

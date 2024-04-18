@@ -6,14 +6,14 @@ import (
 	"reflect"
 	"testing"
 
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/google/go-cmp/cmp"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 type MsgProcessingSpecTest struct {
