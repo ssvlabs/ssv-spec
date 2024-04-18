@@ -272,6 +272,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attesta
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
 	duty := cr.BaseRunner.State.StartingDuty
 	// TODO DecidedValue should be interface??
+	// This should block if consensus is not reached
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
 	beaconVote, err := types.NewBeaconVote(beaconVoteData)
 	if err != nil {

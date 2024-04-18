@@ -99,7 +99,7 @@ func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessag
 type PartialSignatureMessage struct {
 	PartialSignature Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty
 	SigningRoot      [32]byte  `ssz-size:"32"` // the root signed in PartialSignature
-	// TODO get OpertatorID from the SSVSIgnedMessage
+	// TODO get OperatorID from the SSVSignedMessage
 	Signer         OperatorID
 	ValidatorIndex phase0.ValidatorIndex
 }
