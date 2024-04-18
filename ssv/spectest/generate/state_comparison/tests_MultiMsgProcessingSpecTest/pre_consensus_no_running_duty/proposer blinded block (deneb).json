@@ -116,6 +116,5 @@
 				},
 				"BeaconNetwork": "now_test_network",
 				"BeaconRoleType": 2
-		},
-		"ProducesBlindedBlocks": true
+		}
 }
