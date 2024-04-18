@@ -179,15 +179,15 @@ func (msg *SignedSSVMessage) Validate() error {
 		return errors.New("no signers")
 	}
 	// Check unique signers
-	signed := make(map[OperatorID]bool)
+	signed := make(map[OperatorID]struct{})
 	for _, operatorID := range msg.OperatorIDs {
-		if signed[operatorID] {
+		if _, exists := signed[operatorID]; exists {
 			return errors.New("non unique signer")
 		}
 		if operatorID == 0 {
 			return errors.New("signer ID 0 not allowed")
 		}
-		signed[operatorID] = true
+		signed[operatorID] = struct{}{}
 	}
 	// Validate Signature field
 	if len(msg.Signatures) == 0 {
