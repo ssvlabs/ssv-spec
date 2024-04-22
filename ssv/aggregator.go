@@ -119,7 +119,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) e
 		return nil
 	}
 
-	aggregateAndProof, err := decidedValue.GetAggregateAndProof()
+	aggregateAndProof, err := decidedValue.(*types.ConsensusData).GetAggregateAndProof()
 	if err != nil {
 		return errors.Wrap(err, "could not get aggregate and proof")
 	}
@@ -127,14 +127,14 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) e
 	// specific duty sig
 	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty),
 		aggregateAndProof,
-		decidedValue.Duty.Slot,
+		decidedValue.(*types.ConsensusData).Duty.Slot,
 		types.DomainAggregateAndProof)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.Duty.Slot,
+		Slot:     decidedValue.(*types.ConsensusData).Duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 

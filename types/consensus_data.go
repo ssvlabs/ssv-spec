@@ -166,13 +166,6 @@ func CreateConsensusData(rawSSZ []byte) (*ConsensusData, error) {
 
 func (cid *ConsensusData) Validate() error {
 	switch cid.Duty.Type {
-	case BNRoleAttester:
-		if _, err := cid.GetAttestationData(); err != nil {
-			return err
-		}
-		if len(cid.PreConsensusJustifications) > 0 {
-			return errors.New("attester invalid justifications")
-		}
 	case BNRoleAggregator:
 		if _, err := cid.GetAggregateAndProof(); err != nil {
 			return err
@@ -188,14 +181,6 @@ func (cid *ConsensusData) Validate() error {
 		if err1 == nil && err2 == nil {
 			return errors.New("no beacon data")
 		}
-	case BNRoleSyncCommittee:
-		if len(cid.PreConsensusJustifications) > 0 {
-			return errors.New("sync committee invalid justifications")
-		}
-		if _, err := cid.GetSyncCommitteeBlockRoot(); err != nil {
-			return err
-		}
-		return nil
 	case BNRoleSyncCommitteeContribution:
 		if _, err := cid.GetSyncCommitteeContributions(); err != nil {
 			return err
@@ -208,22 +193,6 @@ func (cid *ConsensusData) Validate() error {
 		return errors.New("unknown duty role")
 	}
 	return nil
-}
-
-func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
-	ret := &phase0.AttestationData{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
-	}
-	return ret, nil
-}
-
-func (ci *ConsensusData) GetBeaconVote() (*BeaconVote, error) {
-	ret := &BeaconVote{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
-	}
-	return ret, nil
 }
 
 // GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
@@ -272,14 +241,6 @@ func (ci *ConsensusData) GetAggregateAndProof() (*phase0.AggregateAndProof, erro
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
 	}
 	return ret, nil
-}
-
-func (ci *ConsensusData) GetSyncCommitteeBlockRoot() (phase0.Root, error) {
-	ret := SSZ32Bytes{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return phase0.Root{}, errors.Wrap(err, "could not unmarshal ssz")
-	}
-	return phase0.Root(ret), nil
 }
 
 func (ci *ConsensusData) GetSyncCommitteeContributions() (Contributions, error) {

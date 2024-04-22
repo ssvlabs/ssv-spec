@@ -30,19 +30,19 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot) Runner {
+) Runner {
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     types.RoleCommittee,
-			BeaconNetwork:      beaconNetwork,
-			Share:              share,
-			QBFTController:     qbftController,
-			highestDecidedSlot: highestDecidedSlot,
+			RunnerRoleType: types.RoleCommittee,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
+			QBFTController: qbftController,
 		},
 		beacon:         beacon,
 		network:        network,
 		signer:         signer,
 		operatorSigner: operatorSigner,
+		valCheck:       valCheck,
 	}
 }
 
@@ -87,8 +87,7 @@ func (cr CommitteeRunner) GetBeaconNode() BeaconNode {
 }
 
 func (cr CommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
-	//TODO implement me
-	panic("implement me")
+	return cr.valCheck
 }
 
 func (cr CommitteeRunner) GetNetwork() Network {
@@ -116,22 +115,25 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		return nil
 	}
 
-	beaconVote, err := decidedValue.GetBeaconVote()
 	if err != nil {
 		return errors.Wrap(err, "decided value is not a beacon vote")
 	}
 
+	duty := cr.BaseRunner.State.StartingDuty
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.Duty.Slot,
+		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{},
 	}
-	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty).BeaconDuties {
+
+	beaconVote := decidedValue.(*types.BeaconVote)
+	for _, duty := range duty.(*types.CommitteeDuty).BeaconDuties {
 		switch duty.Type {
 		case types.BNRoleAttester:
 			attestationData := constructAttestationData(beaconVote, duty)
 
-			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, attestationData, decidedValue.Duty.Slot, types.DomainAttester)
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, attestationData, duty.DutySlot(),
+				types.DomainAttester)
 			if err != nil {
 				return errors.Wrap(err, "failed signing attestation data")
 			}
@@ -139,7 +141,8 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 		case types.BNRoleSyncCommittee:
 			syncCommitteeMessage := ConstructSyncCommittee(beaconVote, duty)
-			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, syncCommitteeMessage, decidedValue.Duty.Slot, types.DomainSyncCommittee)
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, syncCommitteeMessage, duty.DutySlot(),
+				types.DomainSyncCommittee)
 			if err != nil {
 				return errors.Wrap(err, "failed signing sync committee message")
 			}
@@ -147,26 +150,28 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		}
 	}
 
-	//TODO depends on https://github.com/bloxapp/SIPs/pull/45
-	/*postSignedMsg, err := cr.BaseRunner.signPostConsensusMsg(cr, postConsensusMsg)
-	if err != nil {
-		return errors.Wrap(err, "could not sign post consensus msg")
-	}
-
-	data, err := postSignedMsg.Encode()
+	data, err := postConsensusMsg.Encode()
 	if err != nil {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.RunnerRoleType),
-		Data:    data,
+		//TODO: The Domain will be updated after new Domain PR... Will be created after this PR is merged
+		MsgID: types.NewMsgID(types.GenesisMainnet, cr.GetBaseRunner().QBFTController.Share.ClusterID[:],
+			cr.BaseRunner.RunnerRoleType),
+		Data: data,
+	}
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.Share.OperatorID,
+		cr.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
 
 	if err := cr.GetNetwork().Broadcast(msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
-	}*/
+	}
 	return nil
 
 }
@@ -256,11 +261,14 @@ func findValidators(
 	return types.BNRoleUnknown, nil, false
 }
 
+// unneeded
 func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
+// This function signature returns only one domain type
+// instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
 func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	//TODO implement me
 	panic("implement me")

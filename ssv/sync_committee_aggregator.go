@@ -151,7 +151,8 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 		return nil
 	}
 
-	contributions, err := decidedValue.GetSyncCommitteeContributions()
+	cd := decidedValue.(*types.ConsensusData)
+	contributions, err := cd.GetSyncCommitteeContributions()
 	if err != nil {
 		return errors.Wrap(err, "could not get contributions")
 	}
@@ -165,7 +166,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 		}
 
 		signed, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty), contribAndProof,
-			decidedValue.Duty.Slot,
+			cd.Duty.Slot,
 			types.DomainContributionAndProof)
 		if err != nil {
 			return errors.Wrap(err, "failed to sign aggregate and proof")
@@ -175,7 +176,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.Duty.Slot,
+		Slot:     cd.Duty.Slot,
 		Messages: msgs,
 	}
 

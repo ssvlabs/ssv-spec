@@ -4,11 +4,12 @@ import "github.com/attestantio/go-eth2-client/spec/phase0"
 
 // Share holds all info about the validator share
 type Share struct {
-	ValidatorIndex      phase0.ValidatorIndex
-	ValidatorPubKey     ValidatorPK      `ssz-size:"48"`
-	SharePubKey         ShareValidatorPK `ssz-size:"48"`
-	Committee           []*ShareMember   `ssz-max:"13"`
-	Quorum              uint64
+	ValidatorIndex  phase0.ValidatorIndex
+	ValidatorPubKey ValidatorPK      `ssz-size:"48"`
+	SharePubKey     ShareValidatorPK `ssz-size:"48"`
+	Committee       []*ShareMember   `ssz-max:"13"`
+	Quorum          uint64
+	// TODO: move this out of Share after this PR is merged
 	DomainType          DomainType `ssz-size:"4"`
 	FeeRecipientAddress [20]byte   `ssz-size:"20"`
 	Graffiti            []byte     `ssz-size:"32"`

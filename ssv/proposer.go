@@ -133,27 +133,29 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 
 	// specific duty sig
 	var blkToSign ssz.HashRoot
+
+	cd := decidedValue.(*types.ConsensusData)
 	if r.decidedBlindedBlock() {
-		_, blkToSign, err = decidedValue.GetBlindedBlockData()
+		_, blkToSign, err = cd.GetBlindedBlockData()
 		if err != nil {
 			return errors.Wrap(err, "could not get blinded block data")
 		}
 	} else {
-		_, blkToSign, err = decidedValue.GetBlockData()
+		_, blkToSign, err = cd.GetBlockData()
 		if err != nil {
 			return errors.Wrap(err, "could not get block data")
 		}
 	}
 
 	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty), blkToSign,
-		decidedValue.Duty.Slot,
+		cd.Duty.Slot,
 		types.DomainProposer)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.Duty.Slot,
+		Slot:     cd.Duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
