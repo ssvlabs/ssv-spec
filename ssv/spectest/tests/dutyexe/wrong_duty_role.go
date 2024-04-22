@@ -15,18 +15,18 @@ func WrongDutyRole() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// Correct ID for SSVMessage
-	getID := func(role types.BeaconRole) types.MessageID {
+	getID := func(role types.RunnerRole) types.MessageID {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return ret
 	}
 	// Wrong ID for SignedMessage
-	getWrongID := func(role types.BeaconRole) []byte {
+	getWrongID := func(role types.RunnerRole) []byte {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role+1)
 		return ret[:]
 	}
 
 	// Function to get decided message with wrong ID for role
-	decidedMessage := func(role types.BeaconRole) *types.SignedSSVMessage {
+	decidedMessage := func(role types.RunnerRole) *types.SignedSSVMessage {
 		signedMessage := testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 			[]types.OperatorID{1, 2, 3},
@@ -53,7 +53,7 @@ func WrongDutyRole() tests.SpecTest {
 				Name:     "sync committee contribution",
 				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:     &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleSyncCommitteeContribution)},
+				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleSyncCommitteeContribution)},
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -63,7 +63,7 @@ func WrongDutyRole() tests.SpecTest {
 				Name:           "sync committee",
 				Runner:         testingutils.SyncCommitteeRunner(ks),
 				Duty:           &testingutils.TestingSyncCommitteeDuty,
-				Messages:       []*types.SignedSSVMessage{decidedMessage(types.BNRoleSyncCommittee)},
+				Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleSyncCommittee)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
@@ -71,7 +71,7 @@ func WrongDutyRole() tests.SpecTest {
 				Name:     "aggregator",
 				Runner:   testingutils.AggregatorRunner(ks),
 				Duty:     &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleAggregator)},
+				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregator)},
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -81,7 +81,7 @@ func WrongDutyRole() tests.SpecTest {
 				Name:           "attester",
 				Runner:         testingutils.CommitteeRunner(ks),
 				Duty:           &testingutils.TestingAttesterDuty,
-				Messages:       []*types.SignedSSVMessage{decidedMessage(types.BNRoleAttester)},
+				Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},

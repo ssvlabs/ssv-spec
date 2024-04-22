@@ -228,7 +228,7 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 	byts, _ := json.Marshal(baseRunnerMap)
 	require.NoError(t, json.Unmarshal(byts, &base))
 
-	ret := baseRunnerForRole(base.BeaconRoleType, base, ks)
+	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
 
 	// specific for blinded block
 	if blindedBlocks, ok := runnerMap["ProducesBlindedBlocks"]; ok {
@@ -239,7 +239,8 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
 		if ret.GetBaseRunner().State != nil {
 			if ret.GetBaseRunner().State.RunningInstance != nil {
-				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
+				operator := testingutils.TestingOperator(ks)
+				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, operator)
 			}
 		}
 	}
@@ -262,12 +263,13 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 		if inst == nil {
 			continue
 		}
-		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, runner.GetBaseRunner().Share)
+		operator := testingutils.TestingOperator(ks)
+		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, operator)
 	}
 	return newContr
 }
 
-func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Share) *qbft.Instance {
+func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Operator) *qbft.Instance {
 	newInst := qbft.NewInstance(
 		contr.GetConfig(),
 		share,
@@ -290,39 +292,35 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 	return newInst
 }
 
-func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
+func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
 	switch role {
-	case types.BNRoleAttester:
+	case types.RoleCommittee:
 		ret := testingutils.CommitteeRunner(ks)
-		ret.(*ssv.AttesterRunner).BaseRunner = base
+		ret.(*ssv.CommitteeRunner).BaseRunner = base
 		return ret
-	case types.BNRoleAggregator:
+	case types.RoleAggregator:
 		ret := testingutils.AggregatorRunner(ks)
 		ret.(*ssv.AggregatorRunner).BaseRunner = base
 		return ret
-	case types.BNRoleProposer:
+	case types.RoleProposer:
 		ret := testingutils.ProposerRunner(ks)
 		ret.(*ssv.ProposerRunner).BaseRunner = base
 		return ret
-	case types.BNRoleSyncCommittee:
-		ret := testingutils.CommitteeRunner(ks)
-		ret.(*ssv.SyncCommitteeRunner).BaseRunner = base
-		return ret
-	case types.BNRoleSyncCommitteeContribution:
+	case types.RoleSyncCommitteeContribution:
 		ret := testingutils.SyncCommitteeContributionRunner(ks)
 		ret.(*ssv.SyncCommitteeAggregatorRunner).BaseRunner = base
 		return ret
-	case types.BNRoleValidatorRegistration:
+	case types.RoleValidatorRegistration:
 		ret := testingutils.ValidatorRegistrationRunner(ks)
 		ret.(*ssv.ValidatorRegistrationRunner).BaseRunner = base
 		return ret
-	case types.BNRoleVoluntaryExit:
+	case types.RoleVoluntaryExit:
 		ret := testingutils.VoluntaryExitRunner(ks)
 		ret.(*ssv.VoluntaryExitRunner).BaseRunner = base
 		return ret
 	case testingutils.UnknownDutyType:
 		ret := testingutils.UnknownDutyTypeRunner(ks)
-		ret.(*ssv.AttesterRunner).BaseRunner = base
+		ret.(*ssv.CommitteeRunner).BaseRunner = base
 		return ret
 	default:
 		panic("unknown beacon role")

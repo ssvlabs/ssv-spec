@@ -3,7 +3,6 @@ package dutyexe
 import (
 	"crypto/rsa"
 	"fmt"
-	"github.com/bloxapp/ssv-spec/ssv"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -16,18 +15,18 @@ func WrongDutyPubKey() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// Correct ID for SSVMessage
-	getID := func(role ssv.RunnerRole) types.MessageID {
+	getID := func(role types.RunnerRole) types.MessageID {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return ret
 	}
 	// Wrong ID for SignedMessage
-	getWrongID := func(role ssv.RunnerRole) []byte {
+	getWrongID := func(role types.RunnerRole) []byte {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingWrongValidatorPubKey[:], role)
 		return ret[:]
 	}
 
 	// Function to get decided message with wrong ID for role
-	decidedMessage := func(role types.BeaconRole) *types.SignedSSVMessage {
+	decidedMessage := func(role types.RunnerRole) *types.SignedSSVMessage {
 		signedMessage := testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 			[]types.OperatorID{1, 2, 3},
@@ -54,7 +53,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:     "sync committee contribution",
 				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:     &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleSyncCommitteeContribution)},
+				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleSyncCommitteeContribution)},
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -64,7 +63,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:           "sync committee",
 				Runner:         testingutils.SyncCommitteeRunner(ks),
 				Duty:           &testingutils.TestingSyncCommitteeDuty,
-				Messages:       []*types.SignedSSVMessage{decidedMessage(types.BNRoleSyncCommittee)},
+				Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
