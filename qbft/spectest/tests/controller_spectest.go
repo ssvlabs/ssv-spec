@@ -76,10 +76,12 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 func (test *ControllerSpecTest) generateController() *qbft.Controller {
 	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	keySet := testingutils.Testing4SharesSet()
+	config := testingutils.TestingConfig(keySet)
+	operator := testingutils.TestingOperator(keySet)
 	return testingutils.NewTestingQBFTController(
 		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		operator,
 		config,
 	)
 }

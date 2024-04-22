@@ -104,12 +104,8 @@ var AllTests = []SpecTest{
 	signedssvmsg.EmptySignature(),
 	signedssvmsg.ZeroSigner(),
 
-	share.HasPartialQuorumButNoQuorum(),
 	share.HasQuorum(),
 	share.HasQuorum3f1(),
-	share.NoPartialQuorumDuplicate(),
-	share.NoPartialQuorum(),
 	share.NoQuorumDuplicate(),
-	share.PartialQuorumWithDuplicate(),
 	share.QuorumWithDuplicate(),
 }
