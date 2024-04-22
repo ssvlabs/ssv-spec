@@ -1,15 +1,12 @@
 package ssv
 
 import (
-	"bytes"
-	"crypto/sha256"
-	"encoding/binary"
 	"fmt"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
-	"sort"
 )
 
 type Committee struct {
@@ -126,26 +123,4 @@ func (c *Committee) validateMessage(msg *types.SSVMessage) error {
 	}
 
 	return nil
-}
-
-type ClusterID [32]byte
-
-func (cid ClusterID) MessageIDBelongs(msgID types.MessageID) bool {
-	id := msgID.GetSenderID()[16:]
-	return bytes.Equal(id, cid[:])
-}
-
-// Return a 32 bytes ID for the cluster of operators
-func getClusterID(committee []types.OperatorID) ClusterID {
-	// sort
-	sort.Slice(committee, func(i, j int) bool {
-		return committee[i] < committee[j]
-	})
-	// Convert to bytes
-	bytes := make([]byte, len(committee)*4)
-	for i, v := range committee {
-		binary.LittleEndian.PutUint32(bytes[i*4:], uint32(v))
-	}
-	// Hash
-	return sha256.Sum256(bytes)
 }

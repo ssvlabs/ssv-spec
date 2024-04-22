@@ -37,7 +37,7 @@ func NewSyncCommitteeAggregatorRunner(
 ) Runner {
 	return &SyncCommitteeAggregatorRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     RoleSyncCommitteeContribution,
+			RunnerRoleType:     types.RoleSyncCommitteeContribution,
 			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,

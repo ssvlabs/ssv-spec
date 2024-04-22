@@ -35,7 +35,7 @@ func NewAggregatorRunner(
 ) Runner {
 	return &AggregatorRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     RoleAggregator,
+			RunnerRoleType:     types.RoleAggregator,
 			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,

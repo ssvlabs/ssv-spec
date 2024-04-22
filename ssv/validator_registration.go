@@ -33,7 +33,7 @@ func NewValidatorRegistrationRunner(
 ) Runner {
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType: RoleValidatorRegistration,
+			RunnerRoleType: types.RoleValidatorRegistration,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},
@@ -127,7 +127,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], RunnerRole(r.BaseRunner.RunnerRoleType))
+	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], types.RunnerRole(r.BaseRunner.RunnerRoleType))
 	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign pre-consensus partial signature message")

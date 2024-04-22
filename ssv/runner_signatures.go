@@ -54,7 +54,7 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 }
 
 func (b *BaseRunner) verifyBeaconPartialSignature(signer types.OperatorID, signature types.Signature, root [32]byte,
-	committee []types.ShareMember) error {
+	committee []*types.ShareMember) error {
 	for _, n := range committee {
 		if n.Signer == signer {
 			pk := &bls.PublicKey{}

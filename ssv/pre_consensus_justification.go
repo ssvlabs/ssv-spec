@@ -30,8 +30,8 @@ func (b *BaseRunner) shouldProcessingJustificationsForHeight(signedMsg *types.Si
 	}
 
 	correctMsgTYpe := msg.MsgType == qbft.ProposalMsgType || msg.MsgType == qbft.RoundChangeMsgType
-	correctBeaconRole := b.RunnerRoleType == RoleProposer || b.RunnerRoleType == RoleAggregator || b.
-		RunnerRoleType == RoleSyncCommitteeContribution
+	correctBeaconRole := b.RunnerRoleType == types.RoleProposer || b.RunnerRoleType == types.RoleAggregator || b.
+		RunnerRoleType == types.RoleSyncCommitteeContribution
 	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole, nil
 }
 
@@ -110,7 +110,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 
 	// Verify the reconstructed signature for each root
 	for root := range roots {
-		_, err := b.State.ReconstructBeaconSig(partialSigContainer, root, b.Share[data.Duty.ValidatorIndex].ValidatorPubKey[:], r.GetShare().ValidatorIndex)
+		_, err := b.State.ReconstructBeaconSig(partialSigContainer, root, b.Share[data.Duty.ValidatorIndex].ValidatorPubKey[:], data.Duty.ValidatorIndex)
 		if err != nil {
 			return errors.Wrap(err, "wrong pre-consensus partial signature")
 		}
