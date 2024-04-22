@@ -435,17 +435,12 @@ var pkFromHex = func(str string) *bls.PublicKey {
 	return ret
 }
 
-func (ks *TestKeySet) Committee() []*types.Operator {
-	committee := make([]*types.Operator, len(ks.Shares))
+func (ks *TestKeySet) Committee() []*types.ShareMember {
+	committee := make([]*types.ShareMember, len(ks.Shares))
 	for i, s := range ks.Shares {
-		rsaPublicKeyBytes, err := x509.MarshalPKIXPublicKey(&ks.OperatorKeys[i].PublicKey)
-		if err != nil {
-			panic(err)
-		}
-		committee[i-1] = &types.Operator{
-			OperatorID:        i,
-			SharePubKey:       s.GetPublicKey().Serialize(),
-			SSVOperatorPubKey: rsaPublicKeyBytes,
+		committee[i-1] = &types.ShareMember{
+			Signer:      i,
+			SharePubKey: s.GetPublicKey().Serialize(),
 		}
 	}
 	return committee

@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/ssv"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 )
 
@@ -24,13 +23,6 @@ const (
 	roleTypeStartPos = domainStartPos + domainSize
 	senderIDSize     = 48
 	senderIDStartPos = roleTypeStartPos + roleTypeSize
-
-	// SignedSSVMessage offsets
-	signatureSize    = 256
-	signatureOffset  = 0
-	operatorIDSize   = 8
-	operatorIDOffset = signatureOffset + signatureSize
-	messageOffset    = operatorIDOffset + operatorIDSize
 )
 
 type Validate interface {
@@ -56,12 +48,12 @@ func (msg MessageID) GetSenderID() []byte {
 	return msg[senderIDStartPos : senderIDStartPos+senderIDSize]
 }
 
-func (msg MessageID) GetRoleType() ssv.RunnerRole {
+func (msg MessageID) GetRoleType() RunnerRole {
 	roleByts := msg[roleTypeStartPos : roleTypeStartPos+roleTypeSize]
-	return ssv.RunnerRole(binary.LittleEndian.Uint32(roleByts))
+	return RunnerRole(binary.LittleEndian.Uint32(roleByts))
 }
 
-func NewMsgID(domain DomainType, pk []byte, role ssv.RunnerRole) MessageID {
+func NewMsgID(domain DomainType, pk []byte, role RunnerRole) MessageID {
 	roleByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 

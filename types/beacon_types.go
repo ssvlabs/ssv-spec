@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv"
+	"math"
 	"time"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -49,7 +49,7 @@ const (
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
 
-	BNRoleUnknown = -1
+	BNRoleUnknown = math.MaxUint64
 )
 
 // String returns name of the role
@@ -102,18 +102,18 @@ type BeaconDuty struct {
 	IsStopped bool
 }
 
-func MapDutyToRunnerRole(dutyRole BeaconRole) ssv.RunnerRole {
+func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 	switch dutyRole {
 	case BNRoleAttester | BNRoleSyncCommittee:
-		return ssv.RoleCommittee
+		return RoleCommittee
 	case BNRoleProposer:
-		return ssv.RoleProposer
+		return RoleProposer
 	case BNRoleAggregator:
-		return ssv.RoleAggregator
+		return RoleAggregator
 	case BNRoleSyncCommitteeContribution:
-		return ssv.RoleSyncCommitteeContribution
+		return RoleSyncCommitteeContribution
 	}
-	return ssv.RoleUnknown
+	return RoleUnknown
 }
 
 type BeaconVote struct {
