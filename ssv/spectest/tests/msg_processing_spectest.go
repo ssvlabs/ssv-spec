@@ -19,7 +19,7 @@ import (
 type MsgProcessingSpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
-	Duty                    types.Duty
+	Duty                    *types.BeaconDuty
 	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
@@ -66,8 +66,16 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 }
 
 func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
-	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetBaseRunner().Share))
-	v.DutyRunners[test.Runner.GetBaseRunner().BeaconRoleType] = test.Runner
+	var share *types.Share
+	if len(test.Runner.GetBaseRunner().Share) == 0 {
+		panic("No share in base runner for tests")
+	}
+	for _, validatorShare := range test.Runner.GetBaseRunner().Share {
+		share = validatorShare
+		break
+	}
+	v := testingutils.BaseValidator(testingutils.KeySetForShare(share))
+	v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
 	v.Network = test.Runner.GetNetwork()
 
 	var lastErr error
@@ -111,7 +119,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		return ret
 	}
 	broadcastedSignedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
-	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Share.Committee))
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Operator.Committee))
 	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
 	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
@@ -165,14 +173,12 @@ func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name string, testType string) {
 	var runner ssv.Runner
 	switch test.Runner.(type) {
-	case *ssv.AttesterRunner:
-		runner = &ssv.AttesterRunner{}
+	case *ssv.CommitteeRunner:
+		runner = &ssv.CommitteeRunner{}
 	case *ssv.AggregatorRunner:
 		runner = &ssv.AggregatorRunner{}
 	case *ssv.ProposerRunner:
 		runner = &ssv.ProposerRunner{}
-	case *ssv.SyncCommitteeRunner:
-		runner = &ssv.SyncCommitteeRunner{}
 	case *ssv.SyncCommitteeAggregatorRunner:
 		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:
