@@ -2,6 +2,7 @@ package postconsensus
 
 import (
 	"fmt"
+	"github.com/bloxapp/ssv-spec/qbft"
 
 	"github.com/attestantio/go-eth2-client/spec"
 

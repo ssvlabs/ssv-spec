@@ -9,7 +9,7 @@ import (
 
 type RoundRobinSpecTest struct {
 	Name      string
-	Share     *types.Share
+	Share     *types.Operator
 	Heights   []qbft.Height
 	Rounds    []qbft.Round
 	Proposers []types.OperatorID

@@ -6,8 +6,7 @@ import "github.com/bloxapp/ssv-spec/types/testingutils"
 func Encoding() *EncodingTest {
 	ks := testingutils.Testing4SharesSet()
 	share := testingutils.TestingShare(ks)
-	share.Graffiti = []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-
+	
 	byts, err := share.Encode()
 	if err != nil {
 		panic(err.Error())
