@@ -71,7 +71,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:     "aggregator",
 				Runner:   testingutils.AggregatorRunner(ks),
 				Duty:     &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleAggregator)},
+				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregator)},
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -81,7 +81,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:           "attester",
 				Runner:         testingutils.CommitteeRunner(ks),
 				Duty:           &testingutils.TestingAttesterDuty,
-				Messages:       []*types.SignedSSVMessage{decidedMessage(types.BNRoleAttester)},
+				Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
@@ -94,7 +94,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:   testingutils.ProposerRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleProposer)},
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
@@ -108,7 +108,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:   testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleProposer)},
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},

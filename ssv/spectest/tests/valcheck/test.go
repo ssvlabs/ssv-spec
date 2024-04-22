@@ -46,15 +46,18 @@ func (test *SpecTest) Run(t *testing.T) {
 
 func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueCheckF {
 	pubKeyBytes := types.ValidatorPK(testingutils.TestingValidatorPubKey)
+	keySet := testingutils.Testing4SharesSet()
+	sharePK := keySet.Shares[1]
+	sharePKBytes := sharePK.Serialize()
 	switch test.BeaconRole {
 	case types.BNRoleAttester:
-		return ssv.AttesterValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
+		return ssv.BeaconVoteValueCheckF(signer, testingutils.TestingDutySlot, sharePKBytes, testingutils.TestingDutyEpoch)
 	case types.BNRoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
 	case types.BNRoleAggregator:
 		return ssv.AggregatorValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex)
 	case types.BNRoleSyncCommittee:
-		return ssv.SyncCommitteeValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex)
+		return ssv.BeaconVoteValueCheckF(signer, testingutils.TestingDutySlot, sharePKBytes, testingutils.TestingDutyEpoch)
 	case types.BNRoleSyncCommitteeContribution:
 		return ssv.SyncCommitteeContributionValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex)
 	default:

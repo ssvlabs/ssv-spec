@@ -63,7 +63,7 @@ func WrongDutyRole() tests.SpecTest {
 				Name:           "sync committee",
 				Runner:         testingutils.SyncCommitteeRunner(ks),
 				Duty:           &testingutils.TestingSyncCommitteeDuty,
-				Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleSyncCommittee)},
+				Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
@@ -94,7 +94,7 @@ func WrongDutyRole() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:   testingutils.ProposerRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleProposer)},
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
@@ -108,7 +108,7 @@ func WrongDutyRole() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:   testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleProposer)},
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
