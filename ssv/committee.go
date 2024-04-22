@@ -22,11 +22,7 @@ type Committee struct {
 
 // NewCommittee creates a new cluster
 func NewCommittee(
-	network Network,
-	beacon BeaconNode,
 	operator types.Operator,
-	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
 	verifier types.SignatureVerifier,
 	createRunnerFn func() *CommitteeRunner,
 ) *Committee {
@@ -41,20 +37,25 @@ func NewCommittee(
 
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
-	// do we need slot?
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
 	c.Runners[duty.Slot] = c.CreateRunnerFn()
 	validatorToStopMap := make(map[spec.Slot]types.ValidatorPK)
+	// Filter old duties based on highest attesting slot
 	duty, validatorToStopMap, c.HighestAttestingSlotMap = FilterCommitteeDuty(duty, c.HighestAttestingSlotMap)
-	c.StopDuties(validatorToStopMap)
+	// Stop validators with old duties
+	c.stopDuties(validatorToStopMap)
+	c.updateAttestingSlotMap(duty)
 	return c.Runners[duty.Slot].StartNewDuty(duty)
 }
 
-func (c *Committee) StopDuties(validatorToStopMap map[spec.Slot]types.ValidatorPK) {
+func (c *Committee) stopDuties(validatorToStopMap map[spec.Slot]types.ValidatorPK) {
 	for slot, validator := range validatorToStopMap {
-		c.Runners[slot].StopDuty(validator)
+		runner, exists := c.Runners[slot]
+		if exists {
+			runner.StopDuty(validator)
+		}
 	}
 }
 
@@ -67,11 +68,14 @@ func FilterCommitteeDuty(duty *types.CommitteeDuty, slotMap map[types.ValidatorP
 
 	for i, beaconDuty := range duty.BeaconDuties {
 		validatorPK := types.ValidatorPK(beaconDuty.PubKey)
-		if slotMap[validatorPK] < beaconDuty.Slot {
-			validatorsToStop[beaconDuty.Slot] = validatorPK
-			slotMap[validatorPK] = beaconDuty.Slot
-		} else { // else don't run duty with old slot
-			duty.BeaconDuties[i] = nil
+		slot, exists := slotMap[validatorPK]
+		if exists {
+			if slot < beaconDuty.Slot {
+				validatorsToStop[beaconDuty.Slot] = validatorPK
+				slot = beaconDuty.Slot
+			} else { // else don't run duty with old slot
+				duty.BeaconDuties[i] = nil
+			}
 		}
 	}
 	return duty, validatorsToStop, slotMap
@@ -126,6 +130,18 @@ func (c *Committee) validateMessage(msg *types.SSVMessage) error {
 	}
 
 	return nil
+}
+
+// updateAttestingSlotMap updates the highest attesting slot map from beacon duties
+func (c *Committee) updateAttestingSlotMap(duty *types.CommitteeDuty) {
+	for _, beaconDuty := range duty.BeaconDuties {
+		if beaconDuty.Type == types.BNRoleAttester {
+			validatorPK := types.ValidatorPK(beaconDuty.PubKey)
+			if c.HighestAttestingSlotMap[validatorPK] < beaconDuty.Slot {
+				c.HighestAttestingSlotMap[validatorPK] = beaconDuty.Slot
+			}
+		}
+	}
 }
 
 type ClusterID [32]byte

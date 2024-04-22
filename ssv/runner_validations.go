@@ -58,24 +58,35 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 		return errors.New("consensus instance not decided")
 	}
 
-	decidedValue := &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedValueByts); err != nil {
-		return errors.Wrap(err, "failed to parse decided value to ConsensusData")
+	// TODO maybe nicer to do this without switch
+	switch runner.(type) {
+	case *CommitteeRunner:
+		decidedValue := &types.BeaconVote{}
+		decidedValue.Decode(decidedValueByts)
+		if err := decidedValue.Decode(decidedValueByts); err != nil {
+			return errors.Wrap(err, "failed to parse decided value to BeaconData")
+		}
+	default:
+		decidedValue := &types.ConsensusData{}
+		if err := decidedValue.Decode(decidedValueByts); err != nil {
+			return errors.Wrap(err, "failed to parse decided value to ConsensusData")
+		}
+
+		if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {
+			return err
+		}
+		roots, domain, err := runner.expectedPostConsensusRootsAndDomain()
+		if err != nil {
+			return err
+		}
+
+		return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
 	}
 
-	if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {
-		return err
-	}
-
-	roots, domain, err := runner.expectedPostConsensusRootsAndDomain()
-	if err != nil {
-		return err
-	}
-
-	return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
+	return nil
 }
 
-func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
+func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encoder) error {
 	byts, err := val.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode decided value")

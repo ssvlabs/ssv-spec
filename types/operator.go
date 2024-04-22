@@ -12,7 +12,8 @@ type Operator struct {
 	SSVOperatorPubKey []byte `ssz-size:"294"`
 	// TODO: change with one parameter F
 	Quorum, PartialQuorum uint64
-	Committee             []*CommitteeMember `ssz-max:"13"`
+	// All the members of the committee
+	Committee []*CommitteeMember `ssz-max:"13"`
 }
 
 // CommitteeMember represents all data in order to verify a committee member's identity
