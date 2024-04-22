@@ -12,7 +12,7 @@ import (
 func HappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	consensusMsgs := func(cd *types.ConsensusData, role types.BeaconRole) []*types.SignedSSVMessage {
+	consensusMsgs := func(cd *types.ConsensusData, role types.RunnerRole) []*types.SignedSSVMessage {
 		id := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return testingutils.SSVDecidingMsgsForHeight(cd, id[:], 2, ks)
 	}
@@ -26,7 +26,7 @@ func HappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), types.BNRoleSyncCommitteeContribution)[:7],
+					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), types.RoleSyncCommitteeContribution)[:7],
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
@@ -50,7 +50,7 @@ func HappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), types.BNRoleSyncCommitteeContribution)[7:14],
+					consensusMsgs(testingutils.TestContributionProofWithJustificationsConsensusData(ks), types.RoleSyncCommitteeContribution)[7:14],
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
@@ -73,7 +73,7 @@ func HappyFlow() tests.SpecTest {
 				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
-					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.BNRoleSyncCommittee)[:7], // consensus
+					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.RoleCommittee)[:7], // consensus
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
@@ -93,7 +93,7 @@ func HappyFlow() tests.SpecTest {
 				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
-					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.BNRoleSyncCommittee)[7:14], // consensus
+					consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.RoleCommittee)[7:14], // consensus
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
@@ -114,7 +114,7 @@ func HappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), types.BNRoleAggregator)[:7],
+					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), types.RoleAggregator)[:7],
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2))),
@@ -136,7 +136,7 @@ func HappyFlow() tests.SpecTest {
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), types.BNRoleAggregator)[7:14],
+					consensusMsgs(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), types.RoleAggregator)[7:14],
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2))),
@@ -158,7 +158,7 @@ func HappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), types.BNRoleProposer)[:7],
+					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), types.RoleProposer)[:7],
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
@@ -180,7 +180,7 @@ func HappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), types.BNRoleProposer)[7:14],
+					consensusMsgs(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), types.RoleProposer)[7:14],
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
@@ -202,7 +202,7 @@ func HappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), types.BNRoleProposer)[:7],
+					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), types.RoleProposer)[:7],
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
@@ -224,7 +224,7 @@ func HappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: append(
 					// consensus
-					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), types.BNRoleProposer)[7:14],
+					consensusMsgs(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), types.RoleProposer)[7:14],
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
@@ -245,7 +245,7 @@ func HappyFlow() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
-					consensusMsgs(testingutils.TestAttesterConsensusData, types.BNRoleAttester)[:7], // consensus
+					consensusMsgs(testingutils.TestAttesterConsensusData, types.RoleCommittee)[:7], // consensus
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight))),

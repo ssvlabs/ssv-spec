@@ -33,13 +33,13 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd,
+				DecidedValue: cd.DataSSZ,
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet()),
+					Share:             testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -77,13 +77,13 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd,
+				DecidedValue: cd.DataSSZ,
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet()),
+					Share:             testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -121,13 +121,13 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd,
+				DecidedValue: cd.DataSSZ,
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet()),
+					Share:             testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -165,13 +165,13 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd,
+				DecidedValue: cd.DataSSZ,
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet()),
+					Share:             testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,

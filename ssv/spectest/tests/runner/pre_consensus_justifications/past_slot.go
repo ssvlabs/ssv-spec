@@ -56,7 +56,7 @@ func PastSlot() tests.SpecTest {
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
+					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.RoleSyncCommitteeContribution),
 					msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID),
 				),
 				PostDutyRunnerStateRoot: "bcaaa6fda6ec6e09f355371b391499ef38c4cf0e19f2ee00560906a8cd65fc94",
@@ -71,7 +71,7 @@ func PastSlot() tests.SpecTest {
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
+					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.RoleAggregator),
 					msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID),
 				),
 				PostDutyRunnerStateRoot: "21ec7a48e5132e13de7499e7d44e4d7665287106433fd32dfba016b1a1afd02e",
@@ -86,7 +86,7 @@ func PastSlot() tests.SpecTest {
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), ks, types.BNRoleProposer),
+					testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), ks, types.RoleProposer),
 					msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				),
 				PostDutyRunnerStateRoot: "62b2dd10ed329c8ffeb4ba4a4fd3597f9746d8cd03ea8a7907ac0e6c5638b1b3",
@@ -101,7 +101,7 @@ func PastSlot() tests.SpecTest {
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb), ks, types.BNRoleProposer),
+					testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb), ks, types.RoleProposer),
 					msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				),
 				PostDutyRunnerStateRoot: "2d8b29b5bf69b642910a9caa8a9662c2e71e5e13f19a5d0b52cc932eb29f3969",
@@ -117,7 +117,7 @@ func PastSlot() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   &testingutils.TestingAttesterDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
+					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.RoleCommittee),
 					msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
 				),
 				PostDutyRunnerStateRoot: "16c1db7c756f2e7dfff270c3ce0f9b1ee321b28bc57b9394cf030d99d29f25a1",
@@ -130,7 +130,7 @@ func PastSlot() tests.SpecTest {
 				Runner: testingutils.SyncCommitteeRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
+					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.RoleCommittee),
 					msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
 				),
 				PostDutyRunnerStateRoot: "618756a8dbfef101c4a18ffc128de49c3bcac17388575bd3ab58db9ec3ce1b71",

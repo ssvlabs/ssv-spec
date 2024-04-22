@@ -3,6 +3,7 @@ package postconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"

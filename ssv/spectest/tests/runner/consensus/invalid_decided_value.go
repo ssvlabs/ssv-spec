@@ -17,7 +17,7 @@ func InvalidDecidedValue() tests.SpecTest {
 	panic("implement me")
 
 	ks := testingutils.Testing4SharesSet()
-	consensusDataByts := func(role types.BeaconRole) []byte {
+	consensusDataByts := func() []byte {
 		cd := &types.ConsensusData{
 			Duty: types.BeaconDuty{
 				Type:                    100,
@@ -65,7 +65,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
 						testingutils.SyncCommitteeContributionMsgID,
-						consensusDataByts(types.BNRoleSyncCommitteeContribution),
+						consensusDataByts(),
 					),
 				},
 				PostDutyRunnerStateRoot: "aff4af0dbbead81d6cb9dd4ff734d4660712a8b5ab8e9016a3f86e2c2ead7549",
@@ -90,7 +90,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
 						testingutils.AggregatorMsgID,
-						consensusDataByts(types.BNRoleAggregator),
+						consensusDataByts(),
 					),
 				},
 				PostDutyRunnerStateRoot: "a93047858c5597f2b1de078a566e6b0227a217e10758a741ff7a2ed9e0a87d96",
@@ -115,7 +115,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
 						testingutils.ProposerMsgID,
-						consensusDataByts(types.BNRoleProposer),
+						consensusDataByts(),
 					),
 				},
 				PostDutyRunnerStateRoot: "0c965c41a9318297ad03c27e79ca2d2d0fee357fff21995c014182ce5e2970b3",
@@ -140,7 +140,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
 						testingutils.ProposerMsgID,
-						consensusDataByts(types.BNRoleProposer),
+						consensusDataByts(),
 					),
 				},
 				PostDutyRunnerStateRoot: "d03cef76867bcb4540191a8e93a735b460ce5844271f718508a3821c404331a2",
@@ -161,7 +161,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
 						testingutils.AttesterMsgID,
-						consensusDataByts(types.BNRoleAttester),
+						consensusDataByts(),
 					),
 				},
 				PostDutyRunnerStateRoot: "33953714dd71325c2ad309b2e122bf5fab016a5a2f1bfbf91125b3866c9dc844",

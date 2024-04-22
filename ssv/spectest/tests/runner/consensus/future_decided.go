@@ -20,7 +20,7 @@ func FutureDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	getID := func(role types.BeaconRole) []byte {
+	getID := func(role types.RunnerRole) []byte {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return ret[:]
 	}
@@ -42,7 +42,7 @@ func FutureDecided() tests.SpecTest {
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						testingutils.TestingDutySlot+1,
-						getID(types.BNRoleSyncCommitteeContribution),
+						getID(types.RoleSyncCommitteeContribution),
 					),
 				},
 				PostDutyRunnerStateRoot: futureDecidedSyncCommitteeContributionSC().Root(),
@@ -64,7 +64,7 @@ func FutureDecided() tests.SpecTest {
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						testingutils.TestingDutySlot+1,
-						getID(types.BNRoleAggregator),
+						getID(types.RoleAggregator),
 					),
 				},
 				PostDutyRunnerStateRoot: futureDecidedAggregatorSC().Root(),
@@ -83,7 +83,7 @@ func FutureDecided() tests.SpecTest {
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						testingutils.TestingDutySlot+1,
-						getID(types.BNRoleAttester),
+						getID(types.RoleCommittee),
 					),
 				},
 				PostDutyRunnerStateRoot: futureDecidedAttesterSC().Root(),
@@ -108,7 +108,7 @@ func FutureDecided() tests.SpecTest {
 					[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 					[]types.OperatorID{1, 2, 3},
 					qbft.Height(testingutils.TestingDutySlotV(version)+1),
-					getID(types.BNRoleProposer),
+					getID(types.RoleProposer),
 				),
 			},
 			PostDutyRunnerStateRoot: futureDecidedProposerSC(version).Root(),
@@ -134,7 +134,7 @@ func FutureDecided() tests.SpecTest {
 					[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 					[]types.OperatorID{1, 2, 3},
 					qbft.Height(testingutils.TestingDutySlotV(version)+1),
-					getID(types.BNRoleProposer),
+					getID(types.RoleProposer),
 				),
 			},
 			PostDutyRunnerStateRoot: futureDecidedBlindedProposerSC(version).Root(),

@@ -16,7 +16,17 @@ func finishRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.Cons
 }
 
 func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData) ssv.Runner {
-	r.GetBaseRunner().State = ssv.NewRunnerState(r.GetBaseRunner().Share.Quorum, duty)
+
+	var share *types.Share
+	if len(r.GetBaseRunner().Share) == 0 {
+		panic("no share in base runner")
+	}
+	for _, valShare := range r.GetBaseRunner().Share {
+		share = valShare
+		break
+	}
+
+	r.GetBaseRunner().State = ssv.NewRunnerState(share.Quorum, duty)
 	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
 		r.GetBaseRunner().QBFTController.Share,
@@ -24,7 +34,7 @@ func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.Cons
 		qbft.FirstHeight)
 	r.GetBaseRunner().State.RunningInstance.State.Decided = true
 	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, _ = decidedValue.Encode()
-	r.GetBaseRunner().State.DecidedValue = decidedValue
+	r.GetBaseRunner().State.DecidedValue = decidedValue.DataSSZ
 	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 	r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 	return r

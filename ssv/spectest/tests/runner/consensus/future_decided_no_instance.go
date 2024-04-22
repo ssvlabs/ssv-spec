@@ -20,12 +20,12 @@ func FutureDecidedNoInstance() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	getID := func(role types.BeaconRole) []byte {
+	getID := func(role types.RunnerRole) []byte {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return ret[:]
 	}
 
-	getDecidedMessage := func(role types.BeaconRole, height qbft.Height) *types.SignedSSVMessage {
+	getDecidedMessage := func(role types.RunnerRole, height qbft.Height) *types.SignedSSVMessage {
 		signedMsg := testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 			[]types.OperatorID{1, 2, 3},
@@ -43,7 +43,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				Runner:         testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:           &testingutils.TestingSyncCommitteeContributionDuty,
 				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.BNRoleSyncCommitteeContribution, testingutils.TestingDutySlot+1)},
+				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleSyncCommitteeContribution, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
@@ -51,7 +51,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				Runner:         testingutils.AggregatorRunner(ks),
 				Duty:           &testingutils.TestingAggregatorDuty,
 				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.BNRoleAggregator, testingutils.TestingDutySlot+1)},
+				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregator, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
@@ -59,7 +59,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				Runner:         testingutils.CommitteeRunner(ks),
 				Duty:           &testingutils.TestingAttesterDuty,
 				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.BNRoleProposer, testingutils.TestingDutySlot+1)},
+				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
@@ -72,7 +72,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 			Runner:         testingutils.ProposerRunner(ks),
 			Duty:           testingutils.TestingProposerDutyV(version),
 			DontStartDuty:  true,
-			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.BNRoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
+			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
 			OutputMessages: []*types.PartialSignatureMessages{},
 		}
 	}
@@ -84,7 +84,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 			Runner:         testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:           testingutils.TestingProposerDutyV(version),
 			DontStartDuty:  true,
-			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.BNRoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
+			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
 			OutputMessages: []*types.PartialSignatureMessages{},
 		}
 	}

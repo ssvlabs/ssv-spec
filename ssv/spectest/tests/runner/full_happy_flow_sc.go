@@ -39,7 +39,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:                           testingutils.TestingShare(ks),
+					Share:                           testingutils.TestingOperator(ks),
 					ID:                              ret.GetBaseRunner().QBFTController.Identifier,
 					Round:                           qbft.FirstRound,
 					Height:                          qbft.Height(testingutils.TestingDutySlot),
@@ -90,7 +90,7 @@ func fullHappyFlowSyncCommitteeSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:                           testingutils.TestingShare(ks),
+					Share:                           testingutils.TestingOperator(ks),
 					ID:                              ret.GetBaseRunner().QBFTController.Identifier,
 					Round:                           qbft.FirstRound,
 					Height:                          qbft.Height(testingutils.TestingDutySlot),
@@ -141,7 +141,7 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:                           testingutils.TestingShare(ks),
+					Share:                           testingutils.TestingOperator(ks),
 					ID:                              ret.GetBaseRunner().QBFTController.Identifier,
 					Round:                           qbft.FirstRound,
 					Height:                          qbft.Height(testingutils.TestingDutySlot),
@@ -192,7 +192,7 @@ func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparis
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					Share:             testingutils.TestingOperator(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
@@ -244,7 +244,7 @@ func fullHappyFlowBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					Share:             testingutils.TestingOperator(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
@@ -296,7 +296,7 @@ func fullHappyFlowAttesterSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					Share:             testingutils.TestingOperator(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlot),
