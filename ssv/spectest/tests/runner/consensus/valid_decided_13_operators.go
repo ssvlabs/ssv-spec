@@ -10,9 +10,6 @@ import (
 
 // ValidDecided13Operators tests a valid decided value (13 operators)
 func ValidDecided13Operators() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing13SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid decided 13 operators",

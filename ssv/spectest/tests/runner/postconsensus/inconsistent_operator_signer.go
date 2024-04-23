@@ -12,8 +12,7 @@ import (
 // InconsistentOperatorSigner tests a SignedSSVMessage with inconsistent signer regarding its nested SignedPartialSignatureMessage
 func InconsistentOperatorSigner() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid PartialSignatureMessages: signer from signed message is inconsistent with partial signature signers"
 	return &tests.MultiMsgProcessingSpecTest{

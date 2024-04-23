@@ -11,9 +11,7 @@ import (
 
 // FutureMessage tests a valid proposal future msg
 func FutureMessage() tests.SpecTest {
-
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	futureMsgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
 		fullData, _ := obj.Encode()

@@ -12,8 +12,7 @@ import (
 // InvalidMessageSignature tests PartialSignatureMessage signature invalid. No error is generated since the SignedPartialSignatureMessage.Signature is no longer checked
 func InvalidMessageSignature() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid msg signature",

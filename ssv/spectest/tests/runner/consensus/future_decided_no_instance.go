@@ -15,9 +15,7 @@ import (
 // FutureDecidedNoInstance tests processing a decided msg from a larger height with no running instance
 // then returning an error and don't move to post consensus as it's not the same instance decided
 func FutureDecidedNoInstance() tests.SpecTest {
-
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.RunnerRole) []byte {

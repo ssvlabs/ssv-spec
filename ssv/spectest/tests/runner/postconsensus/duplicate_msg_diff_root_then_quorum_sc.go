@@ -57,52 +57,6 @@ func duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC() *comparab
 	}
 }
 
-// duplicateMsgDifferentRootsThenQuorumSyncCommitteeSC returns state comparison object for the duplicateMsgDifferentRootsThenQuorum SyncCommittee versioned spec test
-// it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgDifferentRootsThenQuorumSyncCommitteeSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestSyncCommitteeConsensusData
-	cdBytes := testingutils.TestSyncCommitteeConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.SyncCommitteeRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
-					},
-				),
-				DecidedValue: cd.DataSSZ,
-				StartingDuty: &cd.Duty,
-				Finished:     true,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           true,
-					DecidedValue:      cdBytes,
-				},
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-
-			return ret
-		}(),
-	}
-}
-
 // duplicateMsgDifferentRootsThenQuorumAggregatorSC returns state comparison object for the duplicateMsgDifferentRootsThenQuorum Aggregator versioned spec test
 // it ignores the invalid duplicate message and doesn't insert it to the container
 func duplicateMsgDifferentRootsThenQuorumAggregatorSC() *comparable.StateComparison {

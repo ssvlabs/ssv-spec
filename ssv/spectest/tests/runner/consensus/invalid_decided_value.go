@@ -13,9 +13,6 @@ import (
 
 // InvalidDecidedValue tests an invalid decided value ConsensusData.Validate() != nil (unknown duty role)
 func InvalidDecidedValue() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func() []byte {
 		cd := &types.ConsensusData{

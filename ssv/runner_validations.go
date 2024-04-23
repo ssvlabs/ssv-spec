@@ -53,7 +53,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 	if b.State.RunningInstance == nil {
 		return errors.New("no running consensus instance")
 	}
-	decided, decidedValueByts := b.State.RunningInstance.IsDecided()
+	decided, decidedValueBytes := b.State.RunningInstance.IsDecided()
 	if !decided {
 		return errors.New("consensus instance not decided")
 	}
@@ -62,13 +62,12 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 	switch runner.(type) {
 	case *CommitteeRunner:
 		decidedValue := &types.BeaconVote{}
-		decidedValue.Decode(decidedValueByts)
-		if err := decidedValue.Decode(decidedValueByts); err != nil {
+		if err := decidedValue.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")
 		}
 	default:
 		decidedValue := &types.ConsensusData{}
-		if err := decidedValue.Decode(decidedValueByts); err != nil {
+		if err := decidedValue.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to ConsensusData")
 		}
 

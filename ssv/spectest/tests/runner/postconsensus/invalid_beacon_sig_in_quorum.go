@@ -12,8 +12,7 @@ import (
 // InvalidBeaconSignatureInQuorum tests a quorum with an invalid PartialSignatureMessage signature
 func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
 	return &tests.MultiMsgProcessingSpecTest{

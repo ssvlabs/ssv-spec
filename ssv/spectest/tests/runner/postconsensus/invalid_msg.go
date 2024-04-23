@@ -12,8 +12,7 @@ import (
 // InvalidMessage tests a valid SignedPartialSignatureMessage.valid() != nil
 func InvalidMessage() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	err := "invalid SignedSSVMessage: signer ID 0 not allowed"

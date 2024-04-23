@@ -13,8 +13,7 @@ import (
 // Quorum  tests a quorum of valid SignedPartialSignatureMessage
 func Quorum() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{

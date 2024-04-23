@@ -11,8 +11,6 @@ import (
 // ValidMessage7Operators tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages with 7 operators
 func ValidMessage7Operators() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing7SharesSet()
 
 	return &tests.MultiMsgProcessingSpecTest{

@@ -13,8 +13,7 @@ import (
 // ValidDecided tests a valid decided value
 func ValidDecided() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{

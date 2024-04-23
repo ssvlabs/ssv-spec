@@ -50,60 +50,6 @@ func notDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// notDecidedSyncCommitteeSC returns state comparison object for the NotDecided SyncCommittee versioned spec test
-func notDecidedSyncCommitteeSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cdBytes := testingutils.TestSyncCommitteeNextEpochConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.SyncCommitteeRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{},
-				),
-				StartingDuty: &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            testingutils.TestingDutySlot2,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           false,
-				},
-				StartValue: cdBytes,
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
-
-			instance := &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            testingutils.TestingDutySlot,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           false,
-				},
-			}
-			instance.ForceStop()
-			comparable.SetMessages(instance, []*types.SignedSSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, instance)
-			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot2
-
-			return ret
-		}(),
-	}
-}
-
 // notDecidedAggregatorSC returns state comparison object for the NotDecided Aggregator versioned spec test
 func notDecidedAggregatorSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()

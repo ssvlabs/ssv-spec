@@ -16,8 +16,7 @@ import (
 // This can happen if we receive a future decided message from the network.
 func PostWrongDecided() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	// https://github.com/bloxapp/ssv-spec/issues/285. We initialize the runner with an impossible decided value.

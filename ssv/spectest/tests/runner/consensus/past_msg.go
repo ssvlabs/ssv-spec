@@ -13,8 +13,7 @@ import (
 // PastMessage tests a valid proposal past msg
 func PastMessage() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	bumpHeight := func(r ssv.Runner) ssv.Runner {

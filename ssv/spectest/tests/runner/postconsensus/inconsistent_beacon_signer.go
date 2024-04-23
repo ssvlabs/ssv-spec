@@ -14,8 +14,7 @@ import (
 // InconsistentBeaconSigner tests a beacon signer != SignedPartialSignatureMessage.signer
 func InconsistentBeaconSigner() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: unknown signer"
 

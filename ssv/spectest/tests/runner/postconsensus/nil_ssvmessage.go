@@ -11,8 +11,7 @@ import (
 // InvalidDecode tests a SignedSSVMessage with wrong data that can't be decoded
 func InvalidDecode() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
 

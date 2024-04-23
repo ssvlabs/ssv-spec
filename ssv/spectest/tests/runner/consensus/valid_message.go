@@ -11,9 +11,7 @@ import (
 
 // ValidMessage tests a valid consensus message
 func ValidMessage() tests.SpecTest {
-
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid message",

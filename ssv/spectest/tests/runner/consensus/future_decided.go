@@ -16,8 +16,7 @@ import (
 // then returning an error and don't move to post consensus as it's not the same instance decided
 func FutureDecided() tests.SpecTest {
 
-	//panic("implement me")
-
+	//
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.RunnerRole) []byte {

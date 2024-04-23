@@ -12,8 +12,7 @@ import (
 // InvalidOperatorSignature tests a SignedSSVMessage with invalid signature
 func InvalidOperatorSignature() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	return &tests.MultiMsgProcessingSpecTest{

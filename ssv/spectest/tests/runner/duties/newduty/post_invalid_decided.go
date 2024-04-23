@@ -14,9 +14,6 @@ import (
 
 // PostInvalidDecided tests starting a new duty after prev was decided with an invalid decided value
 func PostInvalidDecided() tests.SpecTest {
-
-	//panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
 	consensusDataByts := func() []byte {

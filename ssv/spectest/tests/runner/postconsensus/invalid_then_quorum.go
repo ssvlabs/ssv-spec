@@ -13,8 +13,7 @@ import (
 // InvalidThenQuorum  tests a runner receiving an invalid message then a valid quorum, terminating successfully
 func InvalidThenQuorum() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid then quorum",

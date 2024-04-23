@@ -115,10 +115,6 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		return nil
 	}
 
-	if err != nil {
-		return errors.Wrap(err, "decided value is not a beacon vote")
-	}
-
 	duty := cr.BaseRunner.State.StartingDuty
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
@@ -150,17 +146,15 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		}
 	}
 
-	data, err := postConsensusMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode post consensus signature msg")
-	}
-
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
 		//TODO: The Domain will be updated after new Domain PR... Will be created after this PR is merged
 		MsgID: types.NewMsgID(types.GenesisMainnet, cr.GetBaseRunner().QBFTController.Share.ClusterID[:],
 			cr.BaseRunner.RunnerRoleType),
-		Data: data,
+	}
+	ssvMsg.Data, err = postConsensusMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
 	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.Share.OperatorID,
@@ -274,10 +268,14 @@ func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot,
 	panic("implement me")
 }
 
-func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attestationMap map[phase0.ValidatorIndex][32]byte,
-	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot, error error) {
+func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
+	attestationMap map[phase0.ValidatorIndex][32]byte,
+	syncCommitteeMap map[phase0.ValidatorIndex][32]byte,
+	beaconObjects map[[32]byte]ssz.HashRoot, error error,
+) {
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
+	beaconObjects = make(map[[32]byte]ssz.HashRoot)
 	duty := cr.BaseRunner.State.StartingDuty
 	// TODO DecidedValue should be interface??
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
@@ -285,7 +283,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attesta
 	if err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
-	beaconVote.Decode(beaconVoteData)
+	err = beaconVote.Decode(beaconVoteData)
+	if err != nil {
+		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
+	}
 	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
 		if beaconDuty == nil || beaconDuty.IsStopped {
 			continue

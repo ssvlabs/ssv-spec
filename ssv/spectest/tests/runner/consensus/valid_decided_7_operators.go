@@ -13,8 +13,7 @@ import (
 // ValidDecided7Operators tests a valid decided value (7 operators)
 func ValidDecided7Operators() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing7SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{

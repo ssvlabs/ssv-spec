@@ -11,8 +11,7 @@ import (
 // ValidMessage13Operators tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages with 13 operators
 func ValidMessage13Operators() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing13SharesSet()
 
 	return &tests.MultiMsgProcessingSpecTest{

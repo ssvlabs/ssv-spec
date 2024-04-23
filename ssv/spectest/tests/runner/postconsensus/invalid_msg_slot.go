@@ -12,8 +12,7 @@ import (
 // InvalidMessageSlot tests a valid SignedPartialSignatureMessage with an invalid msg slot
 func InvalidMessageSlot() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	invalidateSlot := func(msg *types.PartialSignatureMessages) *types.PartialSignatureMessages {

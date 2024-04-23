@@ -204,6 +204,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Pa
 
 	// get contributions
 	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	if err != nil {
+		return errors.Wrap(err, "could not create consensus data")
+	}
 	contributions, err := consensusData.GetSyncCommitteeContributions()
 	if err != nil {
 		return errors.Wrap(err, "could not get contributions")

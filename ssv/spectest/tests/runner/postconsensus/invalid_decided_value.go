@@ -14,8 +14,7 @@ import (
 // InvalidDecidedValue tests an invalid decided value
 func InvalidDecidedValue() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{

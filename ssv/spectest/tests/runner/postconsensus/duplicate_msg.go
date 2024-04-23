@@ -14,8 +14,7 @@ import (
 // DuplicateMsg tests duplicate SignedPartialSignatureMessage
 func DuplicateMsg() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{

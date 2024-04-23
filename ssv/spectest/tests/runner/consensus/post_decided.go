@@ -14,8 +14,7 @@ import (
 // PostDecided tests a valid commit msg after returned decided already
 func PostDecided() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{

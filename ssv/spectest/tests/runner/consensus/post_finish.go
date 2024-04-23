@@ -15,8 +15,7 @@ import (
 // PostFinish tests a valid commit msg after runner finished
 func PostFinish() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{

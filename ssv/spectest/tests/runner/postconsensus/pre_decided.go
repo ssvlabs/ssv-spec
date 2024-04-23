@@ -13,8 +13,7 @@ import (
 // PreDecided tests a valid SignedPartialSignatureMessage sent before decided reached, should error
 func PreDecided() tests.SpecTest {
 
-	panic("implement me")
-
+	
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: no decided value"
 
