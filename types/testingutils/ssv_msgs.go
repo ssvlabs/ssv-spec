@@ -326,6 +326,7 @@ var randaoMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 		if wrongRoot {
 			msg.SigningRoot = [32]byte{}
@@ -402,6 +403,7 @@ var selectionProofMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           beaconid,
+			ValidatorIndex:   TestingValidatorIndex,
 		})
 	}
 
@@ -470,6 +472,7 @@ var validatorRegistrationMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           beaconID,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 		msgs.Messages = append(msgs.Messages, msg)
 	}
@@ -478,6 +481,7 @@ var validatorRegistrationMsg = func(
 		PartialSignature: signed[:],
 		SigningRoot:      root,
 		Signer:           id,
+		ValidatorIndex:   TestingValidatorIndex,
 	}
 	if wrongRoot {
 		msg.SigningRoot = [32]byte{}
@@ -543,6 +547,7 @@ var VoluntaryExitMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           beaconID,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 		msgs.Messages = append(msgs.Messages, msg)
 	}
@@ -551,6 +556,7 @@ var VoluntaryExitMsg = func(
 		PartialSignature: signed[:],
 		SigningRoot:      root,
 		Signer:           id,
+		ValidatorIndex:   TestingValidatorIndex,
 	}
 	if wrongRoot {
 		msg.SigningRoot = [32]byte{}
@@ -776,6 +782,7 @@ var contributionProofMsg = func(
 			PartialSignature: sig[:],
 			SigningRoot:      ensureRoot(root),
 			Signer:           beaconid,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 
 		msgs = append(msgs, msg)
@@ -869,6 +876,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 			PartialSignature: signed,
 			SigningRoot:      root,
 			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 
 		msgs = append(msgs, msg)

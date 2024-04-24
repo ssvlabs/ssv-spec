@@ -203,7 +203,20 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		}
 	}
 
-	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(baseRunnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
+	shareInstance := &types.Share{}
+	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
+		fmt.Printf("Share: %v\n", share)
+		shareBytes, err := json.Marshal(share)
+		if err != nil {
+			panic(err)
+		}
+		err = json.Unmarshal(shareBytes, shareInstance)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	ks := testingutils.KeySetForShare(shareInstance)
 
 	// runner
 	runner := fixRunnerForRun(t, runnerMap, ks)

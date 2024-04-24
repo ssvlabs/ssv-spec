@@ -50,13 +50,13 @@ var TestingGraffiti = [32]byte{1}
 var TestingShare = func(keysSet *TestKeySet) *types.Share {
 
 	// Decode validator public key
-	bytes := keysSet.ValidatorPK.Serialize()
-	blsPubKeyBytes := [48]byte{}
-	copy(blsPubKeyBytes[:], bytes)
+	pkBytesSlice := keysSet.ValidatorPK.Serialize()
+	pkBytesArray := [48]byte{}
+	copy(pkBytesArray[:], pkBytesSlice)
 
 	return &types.Share{
 		ValidatorIndex:      TestingValidatorIndex,
-		ValidatorPubKey:     blsPubKeyBytes,
+		ValidatorPubKey:     pkBytesArray,
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
 		Committee:           keysSet.Committee(),
 		Quorum:              keysSet.Threshold,

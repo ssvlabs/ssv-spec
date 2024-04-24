@@ -43,9 +43,23 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 		return errors.New("invalid partial sig slot")
 	}
 
-	// Check if signer is in committee
 	for _, msg := range psigMsgs.Messages {
-		if _, ok := b.Share[msg.ValidatorIndex]; !ok {
+
+		// Check if knows it has the validator index share
+		validatorShare, ok := b.Share[msg.ValidatorIndex]
+		if !ok {
+			return errors.New("unknown validator index")
+		}
+
+		// Check if signer is in committee
+		signerInCommittee := false
+		for _, operator := range validatorShare.Committee {
+			if operator.Signer == msg.Signer {
+				signerInCommittee = true
+				break
+			}
+		}
+		if !signerInCommittee {
 			return errors.New("unknown signer")
 		}
 	}
