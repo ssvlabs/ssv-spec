@@ -10,7 +10,8 @@
 						"CommitteeLength": 128,
 						"CommitteesAtSlot": 36,
 						"ValidatorCommitteeIndex": 11,
-						"ValidatorSyncCommitteeIndices": null
+						"ValidatorSyncCommitteeIndices": null,
+						"IsStopped": false
 				},
 				"Version": "bellatrix",
 				"PreConsensusJustifications": [
@@ -54,7 +55,8 @@
 														38,
 														222
 												],
-												"Signer": 1
+												"Signer": 1,
+												"ValidatorIndex": "0"
 										}
 								]
 						},
@@ -98,7 +100,8 @@
 														38,
 														222
 												],
-												"Signer": 2
+												"Signer": 2,
+												"ValidatorIndex": "0"
 										}
 								]
 						},
@@ -142,7 +145,8 @@
 														38,
 														222
 												],
-												"Signer": 3
+												"Signer": 3,
+												"ValidatorIndex": "0"
 										}
 								]
 						}

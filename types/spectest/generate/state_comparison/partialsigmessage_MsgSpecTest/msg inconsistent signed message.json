@@ -41,7 +41,8 @@
 												11,
 												252
 										],
-										"Signer": 1
+										"Signer": 1,
+										"ValidatorIndex": "0"
 								},
 								{
 										"PartialSignature": "gMXzIoe/QJBrH+ntuAoJ+kvr4qhj4VUmWphfsoLyOQ2VYjwvIOqDtLlXstFKbKXSCqNmxYecfX8xts3jWxcfHILOEgavz6rA8kiThsqlCSHWx3yDbjuBrISi9kU2a0a4",
@@ -79,7 +80,8 @@
 												123,
 												131
 										],
-										"Signer": 2
+										"Signer": 2,
+										"ValidatorIndex": "0"
 								}
 						]
 				}
