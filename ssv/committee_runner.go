@@ -77,13 +77,11 @@ func (cr CommitteeRunner) GetRoot() ([32]byte, error) {
 }
 
 func (cr CommitteeRunner) GetBaseRunner() *BaseRunner {
-	//TODO implement me
-	panic("implement me")
+	return cr.BaseRunner
 }
 
 func (cr CommitteeRunner) GetBeaconNode() BeaconNode {
-	//TODO implement me
-	panic("implement me")
+	return cr.beacon
 }
 
 func (cr CommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
@@ -91,8 +89,7 @@ func (cr CommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
 }
 
 func (cr CommitteeRunner) GetNetwork() Network {
-	//TODO implement me
-	panic("implement me")
+	return cr.network
 }
 
 func (cr CommitteeRunner) HasRunningDuty() bool {
@@ -100,8 +97,7 @@ func (cr CommitteeRunner) HasRunningDuty() bool {
 }
 
 func (cr CommitteeRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	//TODO implement me
-	panic("implement me")
+	return errors.New("no pre consensus phase for committee runner")
 }
 
 func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
@@ -257,15 +253,13 @@ func findValidators(
 
 // unneeded
 func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	//TODO implement me
-	panic("implement me")
+	return nil, types.DomainError, errors.New("no pre consensus root for committee runner")
 }
 
 // This function signature returns only one domain type
 // instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
 func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	//TODO implement me
-	panic("implement me")
+	return []ssz.HashRoot{}, types.DomainCommittee, nil
 }
 
 func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
