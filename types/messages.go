@@ -91,6 +91,8 @@ const (
 	SSVConsensusMsgType MsgType = iota
 	// SSVPartialSignatureMsgType are all partial signatures msgs over beacon chain specific signatures
 	SSVPartialSignatureMsgType
+	// SSVEventMsgType represents an Event message
+	SSVEventMsgType
 	// DKGMsgType represent all DKG related messages
 	DKGMsgType
 )
