@@ -66,13 +66,13 @@ func (mv *MessageValidation) ValidJustificationForProposal(signedSSVMessage *typ
 func (mv *MessageValidation) ValidJustificationForRoundChange(signedSSVMessage *types.SignedSSVMessage) bool {
 	return false
 }
-func (mv *MessageValidation) NewDecidedHaveMoreSigners(peerID peer.ID, signedSSVMessage *types.SignedSSVMessage) bool {
+func (mv *MessageValidation) HasSentDecidedWithSameNumberOfSigners(peerID peer.ID, signedSSVMessage *types.SignedSSVMessage) bool {
 	return false
 }
 func (mv *MessageValidation) ValidRoundForRole(round qbft.Round, role types.RunnerRole) bool {
 	return false
 }
-func (mv *MessageValidation) ValidPartialSigMessageCount(peerID peer.ID, role types.RunnerRole, partialSignatureMessages *types.PartialSignatureMessages) error {
+func (mv *MessageValidation) ValidPartialSigMessageCount(peerID peer.ID, msgID types.MessageID, partialSignatureMessages *types.PartialSignatureMessages) error {
 	return nil
 }
 func (mv *MessageValidation) ValidDutySlot(peerID peer.ID, slot phase0.Slot, role types.RunnerRole) error {
@@ -84,7 +84,7 @@ func (mv *MessageValidation) ValidRoleForConsensus(role types.RunnerRole) bool {
 func (mv *MessageValidation) ValidNumberOfSignaturesForCommitteeDuty(senderID []byte, partialSignatureMessages *types.PartialSignatureMessages) bool {
 	return false
 }
-func (mv *MessageValidation) ValidNumberOfCommitteeDutiesPerEpoch(peerID peer.ID, msgID types.MessageID, slot phase0.Slot) bool {
+func (mv *MessageValidation) ValidNumberOfDutiesPerEpoch(peerID peer.ID, msgID types.MessageID, slot phase0.Slot) bool {
 	return false
 }
 func (mv *MessageValidation) NoTripleValidatorOccurrence(partialSignatureMessages *types.PartialSignatureMessages) bool {
@@ -106,5 +106,17 @@ func (mv *MessageValidation) ValidNumberOfVoluntaryExitDutiesPerEpoch(peerID pee
 	return false
 }
 func (mv *MessageValidation) CorrectTopic(msgID types.MessageID, topic string) bool {
+	return false
+}
+func (mv *MessageValidation) ValidPartialSignatureType(signatureType types.PartialSigMsgType) bool {
+	return false
+}
+func (mv *MessageValidation) PeerAlreadyAdvancedRound(peerID peer.ID, msgID types.MessageID, height qbft.Height, round qbft.Round) bool {
+	return false
+}
+func (mv *MessageValidation) PeerHasSentProposalWithDifferentData(peerID peer.ID, msgID types.MessageID, height qbft.Height, round qbft.Round, fullData []byte) bool {
+	return false
+}
+func (mv *MessageValidation) HasMoreSignersThanCommitteeSize(signers []types.OperatorID, msgID types.MessageID) bool {
 	return false
 }

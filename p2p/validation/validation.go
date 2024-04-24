@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"golang.org/x/exp/slices"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -109,7 +111,7 @@ func (mv *MessageValidation) ValidateSyntax(pmsg *pubsub.Message) error {
 			// pb.Message
 				type Message struct {
 				From
-				Data -> Size limit, Decodable to SignedSSVMessage
+				Data -> Not empty, Size limit, Decodable to SignedSSVMessage
 				Seqno
 				Topic
 				Signature
@@ -118,8 +120,8 @@ func (mv *MessageValidation) ValidateSyntax(pmsg *pubsub.Message) error {
 				XXX_unrecognized
 				XXX_sizecache
 			}
-			type SignedSSVMessage struct { -> Validate
-				Signatures  [][]byte
+			type SignedSSVMessage struct {
+				Signatures  [][]byte -> Signature size
 				OperatorIDs []OperatorID
 				SSVMessage  *SSVMessage
 				FullData    []byte
@@ -141,6 +143,11 @@ func (mv *MessageValidation) ValidateSyntax(pmsg *pubsub.Message) error {
 			}
 	*/
 
+	// Rule: Pubsub.Message.Message.Data must not be empty
+	if len(pmsg.Data) == 0 {
+		return ErrPubSubMessageHasNoData
+	}
+
 	// Rule: Pubsub.Message.Message.Data size upper limit
 	if float64(len(pmsg.Data)) > MaxMsgSize {
 		return ErrPubSubDataTooBig
@@ -151,9 +158,11 @@ func (mv *MessageValidation) ValidateSyntax(pmsg *pubsub.Message) error {
 		return ErrUndecodableData
 	}
 
-	// Rule: Invalid SignedSSVMessage
-	if err := signedSSVMessage.Validate(); err != nil {
-		return ErrInvalidSignedMessage
+	// Rule: Signature size
+	for _, sig := range signedSSVMessage.Signatures {
+		if len(sig) != MessageSignatureSize {
+			return ErrWrongRSASignatureSize
+		}
 	}
 
 	switch signedSSVMessage.SSVMessage.MsgType {
@@ -189,41 +198,64 @@ func (mv *MessageValidation) ValidateSemantics(peerID peer.ID, signedSSVMessage 
 		Messages structures and checks (->)
 
 			type SignedSSVMessage struct {
-				Signatures  [][]byte -> Signature size
-				OperatorIDs []OperatorID -> Check if signers are in committee
+				Signatures  [][]byte -> Len > 0,
+				OperatorIDs []OperatorID -> Len > 0, Len must be <= CommitteeSize, Unique signers, Sorted, Signer not 0, Len = Len(signatures), Signers are in committee
 				SSVMessage  *SSVMessage
 				FullData    []byte
 			}
 			type SSVMessage struct {
 				MsgType MsgType -> Can't be event, Can't be DKG, Must be valid (known)
-				MsgID   MessageID -> Equal domain, Valid role (known), Active Validator, Validator Liquidated, ClusterID exists, Correct topic
+				MsgID   MessageID -> Equal domain, Valid role (known), Active Validator, Validator Liquidated, ClusterID exists
 				Data 	[]byte
 			}
 	*/
 
-	// Rule: Signature size
-	for _, sig := range signedSSVMessage.Signatures {
-		if len(sig) != MessageSignatureSize {
-			return ErrWrongSignatureSize
+	// Rule: Must have at least one signature
+	if len(signedSSVMessage.Signatures) == 0 {
+		return ErrNoSignatures
+	}
+
+	// Rule: Must have at least one signer
+	if len(signedSSVMessage.OperatorIDs) == 0 {
+		return ErrNoSigners
+	}
+
+	// Rule: Len(signers) must be <= CommitteeSize
+	if mv.HasMoreSignersThanCommitteeSize(signedSSVMessage.OperatorIDs, signedSSVMessage.SSVMessage.MsgID) {
+		return ErrMoreSignersThanCommitteeSize
+	}
+
+	// Rule: Signers must be unique
+	signersSet := make(map[types.OperatorID]bool)
+	for _, signer := range signedSSVMessage.OperatorIDs {
+		if signersSet[signer] {
+			return ErrDuplicatedSigner
+		}
+		signersSet[signer] = true
+	}
+
+	// Rule: Signers must be sorted
+	if !slices.IsSorted(signedSSVMessage.OperatorIDs) {
+		return ErrSignersNotSorted
+	}
+
+	// Rule: Signer can't be zero
+	for _, signer := range signedSSVMessage.OperatorIDs {
+		if signer == 0 {
+			return ErrZeroSigner
 		}
 	}
 
-	// Rule: Signers must belong to validator committee or clusterID -
+	// Rule: Len(Signers) must be equal to Len(Signatures)
+	if len(signedSSVMessage.OperatorIDs) != len(signedSSVMessage.Signatures) {
+		return ErrSignersAndSignaturesWithDifferentLength
+	}
+
+	// Rule: Signers must belong to validator committee or clusterID
 	for _, signer := range signedSSVMessage.GetOperatorIDs() {
 		if !mv.SignerBelongsToCommittee(signer, signedSSVMessage.SSVMessage.MsgID) {
 			return ErrSignerNotInCommittee
 		}
-	}
-
-	if signedSSVMessage.SSVMessage.MsgType == types.SSVEventMsgType {
-		// Rule: Event message
-		return ErrEventMessage
-	} else if signedSSVMessage.SSVMessage.MsgType == types.DKGMsgType {
-		// Rule: DKG message
-		return ErrDKGMessage
-	} else if signedSSVMessage.SSVMessage.MsgType != types.SSVConsensusMsgType && signedSSVMessage.SSVMessage.MsgType != types.SSVPartialSignatureMsgType {
-		// Rule: Unknown msg type
-		return ErrUnknownSSVMessageType
 	}
 
 	// Rule: If domain is different then self domain
@@ -263,16 +295,20 @@ func (mv *MessageValidation) ValidateSemantics(peerID peer.ID, signedSSVMessage 
 		return ErrIncorrectTopic
 	}
 
-	// Call specific semantics rules
-	if signedSSVMessage.SSVMessage.MsgType == types.SSVConsensusMsgType {
+	if signedSSVMessage.SSVMessage.MsgType == types.SSVEventMsgType {
+		// Rule: Event message
+		return ErrEventMessage
+	} else if signedSSVMessage.SSVMessage.MsgType == types.DKGMsgType {
+		// Rule: DKG message
+		return ErrDKGMessage
+	} else if signedSSVMessage.SSVMessage.MsgType == types.SSVConsensusMsgType {
 		return mv.ValidateConsensusMessageSemantics(peerID, signedSSVMessage)
 	} else if signedSSVMessage.SSVMessage.MsgType == types.SSVPartialSignatureMsgType {
 		return mv.ValidatePartialSignatureMessageSemantics(peerID, signedSSVMessage)
 	} else {
-		panic("type should have been checked to be either consensus or partial signature")
+		// Unknown message type
+		return ErrUnknownSSVMessageType
 	}
-
-	return nil
 }
 
 func (mv *MessageValidation) ValidateConsensusMessageSemantics(peerID peer.ID, signedSSVMessage *types.SignedSSVMessage) error {
@@ -282,7 +318,7 @@ func (mv *MessageValidation) ValidateConsensusMessageSemantics(peerID peer.ID, s
 
 			type SignedSSVMessage struct {
 				Signatures  [][]byte
-				OperatorIDs []OperatorID -> Valid length for decided, Length 1 for non-decided
+				OperatorIDs []OperatorID -> Valid length for decided
 				SSVMessage  *SSVMessage
 				FullData    []byte -> Must be empty for prepare and commit (with 1 signer)
 			}
@@ -294,7 +330,7 @@ func (mv *MessageValidation) ValidateConsensusMessageSemantics(peerID peer.ID, s
 			type Message struct {
 				MsgType    				 MessageType -> Valid (known), Must be of type commit for decided message
 				Height     				 Height
-				Round      				 Round
+				Round      				 Round -> Valid (>0)
 				Identifier 				 []byte -> Match SSVMessage.MsgID
 				Root                     [32]byte -> Must be hash of FullData
 				DataRound                Round
@@ -319,14 +355,11 @@ func (mv *MessageValidation) ValidateConsensusMessageSemantics(peerID peer.ID, s
 		if !mv.ValidSignersLengthForCommitMessage(signers) {
 			return ErrWrongSignersLength
 		}
-	} else if len(signers) != 1 {
-		// Rule: Non-decided messages must have one signer
-		return ErrNoSigners
 	}
 
 	if len(signedSSVMessage.FullData) > 0 {
 		// Rule: Prepare or commit messages must not have full data
-		if (qbftMessage.MsgType == qbft.PrepareMsgType) &&
+		if (qbftMessage.MsgType == qbft.PrepareMsgType) ||
 			(qbftMessage.MsgType == qbft.CommitMsgType && len(signers) == 1) {
 			return ErrPrepareOrCommitWithFullData
 		}
@@ -340,6 +373,11 @@ func (mv *MessageValidation) ValidateConsensusMessageSemantics(peerID peer.ID, s
 	// Rule: Consensus message type must be valid
 	if !mv.ValidConsensusMessageType(qbftMessage.MsgType) {
 		return ErrUnknownQBFTMessageType
+	}
+
+	// Rule: Round must be valid
+	if qbftMessage.Round == qbft.NoRound {
+		return ErrInvalidRound
 	}
 
 	// Rule: consensus message must have the same identifier as the ssv message's identifier
@@ -357,7 +395,7 @@ func (mv *MessageValidation) ValidateQBFTLogic(peerID peer.ID, signedSSVMessage 
 
 			type SignedSSVMessage struct {
 				Signatures  [][]byte
-				OperatorIDs []OperatorID -> Must be leader if message is Proposal, Decided msg must have more signers than a previous decided
+				OperatorIDs []OperatorID -> Must be leader if message is Proposal, Decided msg can't have an equal number of signers already sent in another message
 				SSVMessage  *SSVMessage
 				FullData    []byte
 			}
@@ -369,7 +407,7 @@ func (mv *MessageValidation) ValidateQBFTLogic(peerID peer.ID, signedSSVMessage 
 			type Message struct {
 				MsgType    				 MessageType -> Message count rules
 				Height     				 Height
-				Round      				 Round -> Must belong to round spread
+				Round      				 Round -> Must belong to round spread, Already advanced to later round
 				Identifier 				 []byte
 				Root                     [32]byte
 				DataRound                Round
@@ -392,14 +430,19 @@ func (mv *MessageValidation) ValidateQBFTLogic(peerID peer.ID, signedSSVMessage 
 	}
 
 	if len(signers) > 1 {
-		// Rule: Decided must have more signers than previous messages
-		if !mv.NewDecidedHaveMoreSigners(peerID, signedSSVMessage) {
-			return ErrDecidedWithLessSignersThanPrevious
+		// Rule: Decided msg can't have an equal number of signers already sent in another message
+		if mv.HasSentDecidedWithSameNumberOfSigners(peerID, signedSSVMessage) {
+			return ErrDecidedWithSameNumberOfSigners
 		}
 	}
 
 	if len(signers) == 1 {
-		// Rule: peer must send only 1 proposal, 1 prepare, 1 commit and 1 round-change per round
+		// Rule: Peer must not send two proposals with different data
+		if mv.PeerHasSentProposalWithDifferentData(peerID, signedSSVMessage.SSVMessage.MsgID, qbftMessage.Height, qbftMessage.Round, signedSSVMessage.FullData) {
+			return ErrDuplicatedProposalWithDifferentData
+		}
+
+		// Rule: Peer must send only 1 proposal, 1 prepare, 1 commit and 1 round-change per round
 		if err := mv.ValidConsensusMessageCount(peerID, signedSSVMessage.SSVMessage.MsgID, qbftMessage.Height, qbftMessage.MsgType, qbftMessage.Round); err != nil {
 			return err
 		}
@@ -410,10 +453,15 @@ func (mv *MessageValidation) ValidateQBFTLogic(peerID peer.ID, signedSSVMessage 
 		return err
 	}
 
-	return mv.ValidateQBFTMessageByDutyRules(peerID, signedSSVMessage)
+	// Rule: Ignore if peer already advanced to a later round
+	if mv.PeerAlreadyAdvancedRound(peerID, signedSSVMessage.SSVMessage.MsgID, qbftMessage.Height, qbftMessage.Round) {
+		return ErrRoundAlreadyAdvanced
+	}
+
+	return mv.ValidateQBFTMessageByDutyLogic(peerID, signedSSVMessage)
 }
 
-func (mv *MessageValidation) ValidateQBFTMessageByDutyRules(peerID peer.ID, signedSSVMessage *types.SignedSSVMessage) error {
+func (mv *MessageValidation) ValidateQBFTMessageByDutyLogic(peerID peer.ID, signedSSVMessage *types.SignedSSVMessage) error {
 
 	/*
 		Messages structures and checks (->)
@@ -475,7 +523,7 @@ func (mv *MessageValidation) ValidateQBFTMessageByDutyRules(peerID peer.ID, sign
 	// - 2 for aggregation, voluntary exit and validator registration
 	// - 2*V for Committee duty (where V is the number of validators in the cluster) (if no validator is doing sync committee in this epoch)
 	// - else, accept
-	if !mv.ValidNumberOfCommitteeDutiesPerEpoch(peerID, signedSSVMessage.SSVMessage.MsgID, phase0.Slot(qbftMessage.Height)) {
+	if !mv.ValidNumberOfDutiesPerEpoch(peerID, signedSSVMessage.SSVMessage.MsgID, phase0.Slot(qbftMessage.Height)) {
 		return ErrTooManyDutiesPerEpoch
 	}
 
@@ -506,7 +554,7 @@ func (mv *MessageValidation) ValidatePartialSignatureMessageSemantics(peerID pee
 				Data 	[]byte
 			}
 			type PartialSignatureMessages struct {
-				Type     PartialSigMsgType -> Aligned to MsgID.Role
+				Type     PartialSigMsgType -> Valid, Aligned to MsgID.Role
 				Slot     phase0.Slot
 				Messages []*PartialSignatureMessage -> Mut not be empty
 			}
@@ -535,6 +583,11 @@ func (mv *MessageValidation) ValidatePartialSignatureMessageSemantics(peerID pee
 		return ErrFullDataNotInConsensusMessage
 	}
 
+	// Rule: Valid signature type
+	if !mv.ValidPartialSignatureType(partialSignatureMessages.Type) {
+		return ErrInvalidPartialSignatureType
+	}
+
 	// Rule: Partial signature type must match expected type:
 	// - PostConsensusPartialSig, for Committee duty
 	// - RandaoPartialSig or PostConsensusPartialSig for Proposer
@@ -548,13 +601,13 @@ func (mv *MessageValidation) ValidatePartialSignatureMessageSemantics(peerID pee
 
 	// Rule: Partial signature message must have at least one signature
 	if len(partialSignatureMessages.Messages) == 0 {
-		return ErrEmptySignatures
+		return ErrNoPartialSignatureMessages
 	}
 
 	for _, psigMsg := range partialSignatureMessages.Messages {
 		// Rule: Partial signature must have expected length
 		if len(psigMsg.PartialSignature) != PartialSignatureSize {
-			return ErrWrongSignatureSize
+			return ErrWrongBLSSignatureSize
 		}
 		// Rule: Partial signature signer must be consistent
 		if psigMsg.Signer != signer {
@@ -566,10 +619,10 @@ func (mv *MessageValidation) ValidatePartialSignatureMessageSemantics(peerID pee
 		}
 	}
 
-	return mv.ValidatePartialSigMessagesByDutyRules(peerID, signedSSVMessage)
+	return mv.ValidatePartialSigMessagesByDutyLogic(peerID, signedSSVMessage)
 }
 
-func (mv *MessageValidation) ValidatePartialSigMessagesByDutyRules(peerID peer.ID, signedSSVMessage *types.SignedSSVMessage) error {
+func (mv *MessageValidation) ValidatePartialSigMessagesByDutyLogic(peerID peer.ID, signedSSVMessage *types.SignedSSVMessage) error {
 
 	/*
 		Messages structures and checks (->)
@@ -624,7 +677,7 @@ func (mv *MessageValidation) ValidatePartialSigMessagesByDutyRules(peerID peer.I
 	// - 1 SelectionProofPartialSig and 1 PostConsensusPartialSig for Sync committee contribution
 	// - 1 ValidatorRegistrationPartialSig for Validator Registration
 	// - 1 VoluntaryExitPartialSig for Voluntary Exit
-	if err := mv.ValidPartialSigMessageCount(peerID, signedSSVMessage.SSVMessage.MsgID.GetRoleType(), &partialSignatureMessages); err != nil {
+	if err := mv.ValidPartialSigMessageCount(peerID, signedSSVMessage.SSVMessage.MsgID, &partialSignatureMessages); err != nil {
 		return err
 	}
 
@@ -639,7 +692,7 @@ func (mv *MessageValidation) ValidatePartialSigMessagesByDutyRules(peerID peer.I
 	// - 2 for aggregation, voluntary exit and validator registration
 	// - 2*V for Committee duty (where V is the number of validators in the cluster) (if no validator is doing sync committee in this epoch)
 	// - else, accept
-	if !mv.ValidNumberOfCommitteeDutiesPerEpoch(peerID, signedSSVMessage.SSVMessage.MsgID, partialSignatureMessages.Slot) {
+	if !mv.ValidNumberOfDutiesPerEpoch(peerID, signedSSVMessage.SSVMessage.MsgID, partialSignatureMessages.Slot) {
 		return ErrTooManyDutiesPerEpoch
 	}
 
