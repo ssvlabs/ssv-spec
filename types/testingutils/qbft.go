@@ -15,6 +15,8 @@ var TestingQBFTRootData = func() [32]byte {
 	return sha256.Sum256(TestingQBFTFullData)
 }()
 
+var TestingCutOffRound = 15
+
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
 		OperatorSigner: NewTestingOperatorSigner(keySet, 1),
@@ -37,10 +39,13 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 		Network:           NewTestingNetwork(1, keySet.OperatorKeys[1]),
 		Timer:             NewTestingTimer(),
 		SignatureVerifier: NewTestingVerifier(),
+		CutOffRound:       TestingCutOffRound,
 	}
 }
 
 var TestingInvalidValueCheck = []byte{1, 1, 1, 1}
+
+var TestingGraffiti = [32]byte{1}
 
 var TestingShare = func(keysSet *TestKeySet) *types.Share {
 
@@ -57,7 +62,7 @@ var TestingShare = func(keysSet *TestKeySet) *types.Share {
 		Quorum:              keysSet.Threshold,
 		DomainType:          TestingSSVDomainType,
 		FeeRecipientAddress: TestingFeeRecipient,
-		Graffiti:            []byte{},
+		Graffiti:            TestingGraffiti[:],
 	}
 }
 
