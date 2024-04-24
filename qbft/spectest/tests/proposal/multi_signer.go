@@ -21,7 +21,7 @@ func MultiSigner() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal multi signer",
 		Pre:            pre,
-		PostRoot:       "eaa7264b5d6f05cfcdec3158fcae4ff58c3de1e7e9e12bd876177a58686994d4",
+		PostRoot:       "620ad2417e47411537db8df9d4a072327e3c3efc391c3162867f30d5bf9af52c",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: msg allows 1 signer",

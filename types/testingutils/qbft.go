@@ -98,6 +98,7 @@ var TestingOperator = func(keysSet *TestKeySet) *types.Operator {
 		ClusterID:         types.GetClusterID(opIds),
 		SSVOperatorPubKey: operatorPubKeyBytes,
 		Quorum:            keysSet.Threshold,
+		PartialQuorum:     keysSet.PartialThreshold,
 		Committee:         committeeMembers,
 	}
 }
