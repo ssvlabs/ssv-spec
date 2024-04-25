@@ -176,7 +176,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
 	duty := &types.BeaconDuty{}
-	byts, _ := json.Marshal(m["BeaconDuty"])
+	byts, _ := json.Marshal(m["Duty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
 	msgs := make([]*types.SignedSSVMessage, 0)
@@ -205,7 +205,6 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 
 	shareInstance := &types.Share{}
 	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
-		fmt.Printf("Share: %v\n", share)
 		shareBytes, err := json.Marshal(share)
 		if err != nil {
 			panic(err)
