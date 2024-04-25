@@ -81,7 +81,11 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
 	// start new state
 	// TODO nicer way to get quorum
-	b.State = NewRunnerState(b.QBFTController.Share.Quorum, duty)
+	var share *types.Share
+	for _, shareInstance := range b.Share {
+		share = shareInstance
+	}
+	b.State = NewRunnerState(share.Quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty

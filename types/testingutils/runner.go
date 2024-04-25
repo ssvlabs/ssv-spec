@@ -33,7 +33,7 @@ var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
 }
 
 var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleCommittee, ssv.AggregatorValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, (types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex), keySet)
+	return baseRunner(types.RoleAggregator, ssv.AggregatorValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, (types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex), keySet)
 }
 
 var SyncCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
@@ -132,7 +132,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 		)
 	case types.RoleValidatorRegistration:
 		return ssv.NewValidatorRegistrationRunner(
-			types.PraterNetwork,
+			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
 			net,
@@ -141,7 +141,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 		)
 	case types.RoleVoluntaryExit:
 		return ssv.NewVoluntaryExitRunner(
-			types.PraterNetwork,
+			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
 			net,

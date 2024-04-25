@@ -270,6 +270,7 @@ var postConsensusAttestationMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -290,6 +291,7 @@ var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.Ope
 				PartialSignature: signed[:],
 				SigningRoot:      root,
 				Signer:           msgSignerID,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -626,6 +628,7 @@ var postConsensusAggregatorMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -691,6 +694,7 @@ var postConsensusSyncCommitteeMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}

@@ -113,6 +113,10 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RoleAggregator
 	case BNRoleSyncCommitteeContribution:
 		return RoleSyncCommitteeContribution
+	case BNRoleValidatorRegistration:
+		return RoleValidatorRegistration
+	case BNRoleVoluntaryExit:
+		return RoleVoluntaryExit
 	}
 	return RoleUnknown
 }
