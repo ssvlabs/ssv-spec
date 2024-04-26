@@ -41,33 +41,33 @@ func Valid() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
-			// {
-			// 	Name:   "attester",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty: testingutils.TestingCommitteeAttesterDuty(0, []int{
-			// 		testingutils.TestingValidatorIndex,
-			// 	}),
-			// 	PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// },
-			// {
-			// 	Name:   "sync committee",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty: testingutils.TestingCommitteeSyncCommitteeDuty(0, []int{
-			// 		testingutils.TestingValidatorIndex,
-			// 	}),
-			// 	PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// },
-			// {
-			// 	Name:   "attester and sync committee",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty: testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-			// 		testingutils.TestingValidatorIndex,
-			// 	}),
-			// 	PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// },
+			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty: testingutils.TestingCommitteeAttesterDuty(0, []int{
+					testingutils.TestingValidatorIndex,
+				}),
+				PostDutyRunnerStateRoot: "7f926e54651ed34901256e8c82a40658647afe17cb089f6c1d7406e7350f4c2e",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty: testingutils.TestingCommitteeSyncCommitteeDuty(0, []int{
+					testingutils.TestingValidatorIndex,
+				}),
+				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty: testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+					testingutils.TestingValidatorIndex,
+				}),
+				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
 		},
 	}
 }
