@@ -11,7 +11,6 @@ import (
 // ValidMessage10Operators tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages with 10 operators
 func ValidMessage10Operators() tests.SpecTest {
 
-	
 	ks := testingutils.Testing10SharesSet()
 
 	return &tests.MultiMsgProcessingSpecTest{
@@ -80,9 +79,6 @@ func ValidMessage10Operators() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

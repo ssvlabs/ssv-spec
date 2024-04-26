@@ -34,7 +34,7 @@ func quorumSyncCommitteeContributionSC() *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -80,7 +80,7 @@ func quorumAggregatorSC() *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -126,7 +126,7 @@ func quorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -172,7 +172,7 @@ func quorumBlindedProposerSC(version spec.DataVersion) *comparable.StateComparis
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}

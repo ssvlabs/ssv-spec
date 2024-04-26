@@ -13,7 +13,6 @@ import (
 // PastMessage tests a valid proposal past msg
 func PastMessage() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 
 	bumpHeight := func(r ssv.Runner) ssv.Runner {
@@ -89,9 +88,6 @@ func PastMessage() tests.SpecTest {
 				PostDutyRunnerStateRoot: "49edaab0d759ba8a35a37ab26416ae04962d77ec088b87c4f1e65f781c1ed96f",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

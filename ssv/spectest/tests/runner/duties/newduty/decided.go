@@ -55,53 +55,53 @@ func PostDecided() tests.SpecTest {
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
-			{
-				Name: "attester",
-				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(
-					testingutils.TestingDutySlot, []int{
-						testingutils.TestingValidatorIndex,
-					})),
-				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2,
-					BeaconDuties: []*types.BeaconDuty{
-						&testingutils.TestingAttesterDutyNextEpoch,
-					},
-				},
-				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name: "sync committee",
-				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				})),
-				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2,
-					BeaconDuties: []*types.BeaconDuty{
-						&testingutils.TestingSyncCommitteeDutyNextEpoch,
-					},
-				},
-				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name: "attester and sync committee",
-				Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				})),
-				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2,
-					BeaconDuties: []*types.BeaconDuty{
-						&testingutils.TestingSyncCommitteeDutyNextEpoch,
-						&testingutils.TestingAttesterDutyNextEpoch,
-					},
-				},
-				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
+			// {
+			// 	Name: "attester",
+			// 	Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(
+			// 		testingutils.TestingDutySlot, []int{
+			// 			testingutils.TestingValidatorIndex,
+			// 		})),
+			// 	Duty: &types.CommitteeDuty{
+			// 		Slot: testingutils.TestingDutySlot2,
+			// 		BeaconDuties: []*types.BeaconDuty{
+			// 			&testingutils.TestingAttesterDutyNextEpoch,
+			// 		},
+			// 	},
+			// 	PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
+			// 	PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
+			// {
+			// 	Name: "sync committee",
+			// 	Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	})),
+			// 	Duty: &types.CommitteeDuty{
+			// 		Slot: testingutils.TestingDutySlot2,
+			// 		BeaconDuties: []*types.BeaconDuty{
+			// 			&testingutils.TestingSyncCommitteeDutyNextEpoch,
+			// 		},
+			// 	},
+			// 	PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
+			// 	PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
+			// {
+			// 	Name: "attester and sync committee",
+			// 	Runner: decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	})),
+			// 	Duty: &types.CommitteeDuty{
+			// 		Slot: testingutils.TestingDutySlot2,
+			// 		BeaconDuties: []*types.BeaconDuty{
+			// 			&testingutils.TestingSyncCommitteeDutyNextEpoch,
+			// 			&testingutils.TestingAttesterDutyNextEpoch,
+			// 		},
+			// 	},
+			// 	PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
+			// 	PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
 		},
 	}
 

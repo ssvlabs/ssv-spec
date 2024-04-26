@@ -13,7 +13,6 @@ import (
 // Quorum7Operators  tests a quorum of valid SignedPartialSignatureMessage 7 operators
 func Quorum7Operators() tests.SpecTest {
 
-	
 	ks := testingutils.Testing7SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
@@ -66,9 +65,6 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
 				DontStartDuty: true,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

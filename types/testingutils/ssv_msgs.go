@@ -44,6 +44,11 @@ var VoluntaryExitMsgID = func() []byte {
 	return ret[:]
 }()
 
+var EncodeConsensusDataTest = func(cd *types.ConsensusData) []byte {
+	encodedCD, _ := cd.Encode()
+	return encodedCD
+}
+
 var TestAttesterConsensusData = &types.ConsensusData{
 	Duty:    TestingAttesterDuty,
 	DataSSZ: TestingAttestationDataBytes,

@@ -16,7 +16,6 @@ import (
 // This can happen if we receive a future decided message from the network.
 func PostWrongDecided() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 
 	// https://github.com/bloxapp/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
@@ -87,9 +86,6 @@ func PostWrongDecided() tests.SpecTest {
 				},
 				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb), testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

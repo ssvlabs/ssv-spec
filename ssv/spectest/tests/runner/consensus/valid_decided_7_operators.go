@@ -13,7 +13,6 @@ import (
 // ValidDecided7Operators tests a valid decided value (7 operators)
 func ValidDecided7Operators() tests.SpecTest {
 
-	
 	ks := testingutils.Testing7SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
@@ -42,9 +41,6 @@ func ValidDecided7Operators() tests.SpecTest {
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

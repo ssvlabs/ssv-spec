@@ -33,7 +33,7 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -77,7 +77,7 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -121,7 +121,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -165,7 +165,7 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}

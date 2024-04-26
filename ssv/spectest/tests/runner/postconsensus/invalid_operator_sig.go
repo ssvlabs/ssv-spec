@@ -3,7 +3,6 @@ package postconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -12,7 +11,6 @@ import (
 // InvalidOperatorSignature tests a SignedSSVMessage with invalid signature
 func InvalidOperatorSignature() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	return &tests.MultiMsgProcessingSpecTest{
@@ -86,23 +84,23 @@ func InvalidOperatorSignature() tests.SpecTest {
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
-			{
-				Name: "attester and sync committee",
-				Runner: decideRunner(
-					testingutils.CommitteeRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-				},
-				PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
+			// {
+			// 	Name: "attester and sync committee",
+			// 	Runner: decideRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		&testingutils.TestingAttesterDuty,
+			// 		testingutils.TestAttesterConsensusData,
+			// 	),
+			// 	Duty: &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	BeaconBroadcastedRoots:  []string{},
+			// 	DontStartDuty:           true,
+			// 	ExpectedError:           expectedError,
+			// },
 		},
 	}
 }

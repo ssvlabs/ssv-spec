@@ -13,7 +13,6 @@ import (
 // Quorum  tests a quorum of valid SignedPartialSignatureMessage
 func Quorum() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
@@ -62,9 +61,6 @@ func Quorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
 				DontStartDuty: true,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

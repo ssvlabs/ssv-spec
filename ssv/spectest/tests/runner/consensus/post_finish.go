@@ -15,7 +15,6 @@ import (
 // PostFinish tests a valid commit msg after runner finished
 func PostFinish() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
@@ -80,9 +79,6 @@ func PostFinish() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

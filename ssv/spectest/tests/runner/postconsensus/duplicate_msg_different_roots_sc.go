@@ -32,7 +32,7 @@ func duplicateMsgDifferentRootsSyncCommitteeContributionSC() *comparable.StateCo
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -76,7 +76,7 @@ func duplicateMsgDifferentRootsAggregatorSC() *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -120,7 +120,7 @@ func duplicateMsgDifferentRootsAttesterSC() *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -164,7 +164,7 @@ func duplicateMsgDifferentRootsProposerSC(version spec.DataVersion) *comparable.
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -208,7 +208,7 @@ func duplicateMsgDifferentRootsBlindedProposerSC(version spec.DataVersion) *comp
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 					},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}

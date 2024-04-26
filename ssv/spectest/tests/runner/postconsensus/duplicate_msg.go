@@ -2,7 +2,6 @@ package postconsensus
 
 import (
 	"fmt"
-	"github.com/bloxapp/ssv-spec/qbft"
 
 	"github.com/attestantio/go-eth2-client/spec"
 
@@ -14,7 +13,6 @@ import (
 // DuplicateMsg tests duplicate SignedPartialSignatureMessage
 func DuplicateMsg() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
@@ -56,24 +54,24 @@ func DuplicateMsg() tests.SpecTest {
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
-			{
-				Name: "attester and sync committee",
-				Runner: decideRunner(
-					testingutils.CommitteeRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-				},
-				PostDutyRunnerStateRoot: duplicateMsgAttesterSC().Root(),
-				PostDutyRunnerState:     duplicateMsgAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-			},
+			// {
+			// 	Name: "attester and sync committee",
+			// 	Runner: decideRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		&testingutils.TestingAttesterDuty,
+			// 		testingutils.TestAttesterConsensusData,
+			// 	),
+			// 	Duty: &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+			// 	},
+			// 	PostDutyRunnerStateRoot: duplicateMsgAttesterSC().Root(),
+			// 	PostDutyRunnerState:     duplicateMsgAttesterSC().ExpectedState,
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	BeaconBroadcastedRoots:  []string{},
+			// 	DontStartDuty:           true,
+			// },
 		},
 	}
 

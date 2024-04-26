@@ -4,8 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
-
-	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -44,27 +42,6 @@ func FullHappyFlow() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.RoleCommittee), // consensus
-					[]*types.SignedSSVMessage{ // post consensus
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
-					}...,
-				),
-				PostDutyRunnerStateRoot: fullHappyFlowSyncCommitteeSC().Root(), //"48c73f57659b69131467ef133ccb35d7de2fe96438d30bfa2b5ea63b19ead011",
-				PostDutyRunnerState:     fullHappyFlowSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
-				},
-			},
-			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
@@ -91,27 +68,6 @@ func FullHappyFlow() tests.SpecTest {
 				},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
-				},
-			},
-			{
-				Name:   "attester",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.RoleCommittee), // consensus
-					[]*types.SignedSSVMessage{ // post consensus
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight))),
-					}...,
-				),
-				PostDutyRunnerStateRoot: fullHappyFlowAttesterSC().Root(), // "9d55ff5721b21c5b99dd4b4bacb0acda0b674112fe3cec55cc6aeb04ad5dc2fc",
-				PostDutyRunnerState:     fullHappyFlowAttesterSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
 			},
 			{

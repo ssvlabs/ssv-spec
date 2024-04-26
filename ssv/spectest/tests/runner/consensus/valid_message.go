@@ -11,7 +11,7 @@ import (
 
 // ValidMessage tests a valid consensus message
 func ValidMessage() tests.SpecTest {
-	
+
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid message",
@@ -83,9 +83,6 @@ func ValidMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
-			},
-			{
-				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

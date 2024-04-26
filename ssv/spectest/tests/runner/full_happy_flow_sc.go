@@ -33,7 +33,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, spec.DataVersionPhase0)),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -84,7 +84,7 @@ func fullHappyFlowSyncCommitteeSC() *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, spec.DataVersionPhase0)),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -135,7 +135,7 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3))),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, spec.DataVersionPhase0)),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -186,7 +186,7 @@ func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparis
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, version)),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}
@@ -238,7 +238,7 @@ func fullHappyFlowBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, version)),
 				StartingDuty: &testingutils.TestProposerConsensusDataV(version).Duty,
 				Finished:     true,
 			}
@@ -290,7 +290,7 @@ func fullHappyFlowAttesterSC() *comparable.StateComparison {
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.Height(testingutils.TestingDutySlot)))),
 					},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, spec.DataVersionPhase0)),
 				StartingDuty: &cd.Duty,
 				Finished:     true,
 			}

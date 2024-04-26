@@ -58,9 +58,6 @@ func ValidDecided13Operators() tests.SpecTest {
 					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
 			},
-			{
-				Name: "attester and sync committee",
-			},
 		},
 	}
 }

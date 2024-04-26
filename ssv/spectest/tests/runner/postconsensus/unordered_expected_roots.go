@@ -11,7 +11,6 @@ import (
 // UnorderedExpectedRoots tests a valid SignedPartialSignatureMessage with unordered roots
 func UnorderedExpectedRoots() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.MultiMsgProcessingSpecTest{
@@ -80,9 +79,6 @@ func UnorderedExpectedRoots() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

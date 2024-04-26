@@ -14,7 +14,6 @@ import (
 // PostDecided tests a valid commit msg after returned decided already
 func PostDecided() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
@@ -49,9 +48,6 @@ func PostDecided() tests.SpecTest {
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

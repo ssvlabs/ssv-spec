@@ -33,8 +33,12 @@ func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.Cons
 		r.GetBaseRunner().QBFTController.Identifier,
 		qbft.FirstHeight)
 	r.GetBaseRunner().State.RunningInstance.State.Decided = true
-	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, _ = decidedValue.Encode()
-	r.GetBaseRunner().State.DecidedValue = decidedValue.DataSSZ
+	var err error
+	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, err = decidedValue.Encode()
+	if err != nil {
+		panic(err)
+	}
+	r.GetBaseRunner().State.DecidedValue = testingutils.EncodeConsensusDataTest(decidedValue)
 	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 	r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 	return r
@@ -43,7 +47,6 @@ func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.Cons
 // ValidMessage tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages
 func ValidMessage() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.MultiMsgProcessingSpecTest{
@@ -112,9 +115,6 @@ func ValidMessage() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

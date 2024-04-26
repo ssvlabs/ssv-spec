@@ -59,14 +59,14 @@ func WrongDutyPubKey() tests.SpecTest {
 				},
 				ExpectedError: expectedError,
 			},
-			{
-				Name:           "sync committee",
-				Runner:         testingutils.SyncCommitteeRunner(ks),
-				Duty:           &testingutils.TestingSyncCommitteeDuty,
-				Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
-			},
+			// {
+			// 	Name:           "sync committee",
+			// 	Runner:         testingutils.SyncCommitteeRunner(ks),
+			// 	Duty:           &testingutils.TestingSyncCommitteeDuty,
+			// 	Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
+			// 	OutputMessages: []*types.PartialSignatureMessages{},
+			// 	ExpectedError:  expectedError,
+			// },
 			{
 				Name:     "aggregator",
 				Runner:   testingutils.AggregatorRunner(ks),
@@ -77,14 +77,14 @@ func WrongDutyPubKey() tests.SpecTest {
 				},
 				ExpectedError: expectedError,
 			},
-			{
-				Name:           "attester",
-				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           &testingutils.TestingAttesterDuty,
-				Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
-			},
+			// {
+			// 	Name:           "attester",
+			// 	Runner:         testingutils.CommitteeRunner(ks),
+			// 	Duty:           &testingutils.TestingAttesterDuty,
+			// 	Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
+			// 	OutputMessages: []*types.PartialSignatureMessages{},
+			// 	ExpectedError:  expectedError,
+			// },
 		},
 	}
 

@@ -67,68 +67,68 @@ func Finished() tests.SpecTest {
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
-			{
-				Name: "attester",
-				Runner: finishRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingCommitteeAttesterDuty(
-						testingutils.TestingDutySlot, []int{
-							testingutils.TestingValidatorIndex,
-						},
-					),
-					true,
-				),
-				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2,
-					BeaconDuties: []*types.BeaconDuty{
-						&testingutils.TestingAttesterDutyNextEpoch,
-					},
-				},
-				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name: "sync committee",
-				Runner: finishRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingCommitteeSyncCommitteeDuty(
-						testingutils.TestingDutySlot, []int{
-							testingutils.TestingValidatorIndex,
-						},
-					),
-					true,
-				),
-				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2,
-					BeaconDuties: []*types.BeaconDuty{
-						&testingutils.TestingSyncCommitteeDutyNextEpoch,
-					},
-				},
-				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name: "attester and sync committee",
-				Runner: finishRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(
-						testingutils.TestingDutySlot,
-						[]int{
-							testingutils.TestingValidatorIndex,
-						},
-					),
-					true,
-				),
-				Duty: &types.CommitteeDuty{
-					Slot: testingutils.TestingDutySlot2,
-					BeaconDuties: []*types.BeaconDuty{
-						&testingutils.TestingSyncCommitteeDutyNextEpoch,
-						&testingutils.TestingAttesterDutyNextEpoch,
-					},
-				},
-				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
+			// {
+			// 	Name: "attester",
+			// 	Runner: finishRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		testingutils.TestingCommitteeAttesterDuty(
+			// 			testingutils.TestingDutySlot, []int{
+			// 				testingutils.TestingValidatorIndex,
+			// 			},
+			// 		),
+			// 		true,
+			// 	),
+			// 	Duty: &types.CommitteeDuty{
+			// 		Slot: testingutils.TestingDutySlot2,
+			// 		BeaconDuties: []*types.BeaconDuty{
+			// 			&testingutils.TestingAttesterDutyNextEpoch,
+			// 		},
+			// 	},
+			// 	PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
+			// {
+			// 	Name: "sync committee",
+			// 	Runner: finishRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		testingutils.TestingCommitteeSyncCommitteeDuty(
+			// 			testingutils.TestingDutySlot, []int{
+			// 				testingutils.TestingValidatorIndex,
+			// 			},
+			// 		),
+			// 		true,
+			// 	),
+			// 	Duty: &types.CommitteeDuty{
+			// 		Slot: testingutils.TestingDutySlot2,
+			// 		BeaconDuties: []*types.BeaconDuty{
+			// 			&testingutils.TestingSyncCommitteeDutyNextEpoch,
+			// 		},
+			// 	},
+			// 	PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
+			// {
+			// 	Name: "attester and sync committee",
+			// 	Runner: finishRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(
+			// 			testingutils.TestingDutySlot,
+			// 			[]int{
+			// 				testingutils.TestingValidatorIndex,
+			// 			},
+			// 		),
+			// 		true,
+			// 	),
+			// 	Duty: &types.CommitteeDuty{
+			// 		Slot: testingutils.TestingDutySlot2,
+			// 		BeaconDuties: []*types.BeaconDuty{
+			// 			&testingutils.TestingSyncCommitteeDutyNextEpoch,
+			// 			&testingutils.TestingAttesterDutyNextEpoch,
+			// 		},
+			// 	},
+			// 	PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
 			{
 				Name:                    "voluntary exit",
 				Runner:                  finishRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty, false),

@@ -30,7 +30,7 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -72,7 +72,7 @@ func unknownSignerAggregatorSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -114,7 +114,7 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -156,7 +156,7 @@ func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd.DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}

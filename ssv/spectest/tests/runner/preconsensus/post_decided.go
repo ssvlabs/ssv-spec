@@ -32,7 +32,7 @@ func PostDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		r.GetBaseRunner().State.DecidedValue = decidedValue.DataSSZ
+		r.GetBaseRunner().State.DecidedValue = testingutils.EncodeConsensusDataTest(decidedValue)
 		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		return r

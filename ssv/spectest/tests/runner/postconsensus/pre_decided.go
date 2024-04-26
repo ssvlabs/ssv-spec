@@ -13,7 +13,6 @@ import (
 // PreDecided tests a valid SignedPartialSignatureMessage sent before decided reached, should error
 func PreDecided() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: no decided value"
 
@@ -57,9 +56,6 @@ func PreDecided() tests.SpecTest {
 				},
 				BeaconBroadcastedRoots: []string{},
 				ExpectedError:          err,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

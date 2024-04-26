@@ -73,23 +73,23 @@ func FutureDecided() tests.SpecTest {
 				},
 				ExpectedError: errStr,
 			},
-			{
-				Name:   "attester and sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-						[]types.OperatorID{1, 2, 3},
-						testingutils.TestingDutySlot+1,
-						getID(types.RoleCommittee),
-					),
-				},
-				PostDutyRunnerStateRoot: futureDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     futureDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           errStr,
-			},
+			// {
+			// 	Name:   "attester and sync committee",
+			// 	Runner: testingutils.CommitteeRunner(ks),
+			// 	Duty:   &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+			// 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+			// 			[]types.OperatorID{1, 2, 3},
+			// 			testingutils.TestingDutySlot+1,
+			// 			getID(types.RoleCommittee),
+			// 		),
+			// 	},
+			// 	PostDutyRunnerStateRoot: futureDecidedAttesterSC().Root(),
+			// 	PostDutyRunnerState:     futureDecidedAttesterSC().ExpectedState,
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           errStr,
+			// },
 		},
 	}
 

@@ -11,7 +11,7 @@ import (
 
 // InvalidSignature tests a consensus message with an invalid signature
 func InvalidSignature() tests.SpecTest {
-	
+
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	return &tests.MultiMsgProcessingSpecTest{
@@ -96,9 +96,6 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
 				ExpectedError: expectedError,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

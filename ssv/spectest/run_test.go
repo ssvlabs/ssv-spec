@@ -157,7 +157,19 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
-	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(baseRunnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
+	shareInstance := &types.Share{}
+	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
+		shareBytes, err := json.Marshal(share)
+		if err != nil {
+			panic(err)
+		}
+		err = json.Unmarshal(shareBytes, shareInstance)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	ks := testingutils.KeySetForShare(shareInstance)
 
 	runner := fixRunnerForRun(t, runnerMap, ks)
 

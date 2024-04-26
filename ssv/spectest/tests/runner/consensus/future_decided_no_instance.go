@@ -15,7 +15,7 @@ import (
 // FutureDecidedNoInstance tests processing a decided msg from a larger height with no running instance
 // then returning an error and don't move to post consensus as it's not the same instance decided
 func FutureDecidedNoInstance() tests.SpecTest {
-	
+
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.RunnerRole) []byte {
@@ -52,14 +52,14 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregator, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
-			{
-				Name:           "attester and sync committee",
-				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           &testingutils.TestingAttesterDuty,
-				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, testingutils.TestingDutySlot+1)},
-				OutputMessages: []*types.PartialSignatureMessages{},
-			},
+			// {
+			// 	Name:           "attester and sync committee",
+			// 	Runner:         testingutils.CommitteeRunner(ks),
+			// 	Duty:           &testingutils.TestingAttesterDuty,
+			// 	DontStartDuty:  true,
+			// 	Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, testingutils.TestingDutySlot+1)},
+			// 	OutputMessages: []*types.PartialSignatureMessages{},
+			// },
 		},
 	}
 

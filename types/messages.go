@@ -134,6 +134,20 @@ func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
+// Decode returns error if decoding failed
+func (msg *SSVMessage) Validate() error {
+
+	if msg.MsgType > DKGMsgType {
+		return errors.New("ssvmessage with unknown type")
+	}
+
+	if len(msg.Data) == 0 {
+		return errors.New("ssvmessage with no data")
+	}
+
+	return nil
+}
+
 // SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
@@ -213,7 +227,7 @@ func (msg *SignedSSVMessage) Validate() error {
 		return errors.New("nil SSVMessage")
 	}
 
-	return nil
+	return msg.SSVMessage.Validate()
 }
 
 func SSVMessageToSignedSSVMessage(msg *SSVMessage, operatorID OperatorID, signSSVMessageF SignSSVMessageF) (*SignedSSVMessage, error) {

@@ -80,9 +80,6 @@ func ValidMessage7Operators() tests.SpecTest {
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 			},
-			{
-				Name: "attester and sync committee",
-			},
 		},
 	}
 }

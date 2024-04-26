@@ -11,7 +11,6 @@ import (
 // TooFewRoots tests a valid SignedPartialSignatureMessage with too few roots
 func TooFewRoots() tests.SpecTest {
 
-	
 	ks := testingutils.Testing4SharesSet()
 	err := "invalid PartialSignatureMessages: no PartialSignatureMessages messages"
 	return &tests.MultiMsgProcessingSpecTest{
@@ -84,9 +83,6 @@ func TooFewRoots() tests.SpecTest {
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

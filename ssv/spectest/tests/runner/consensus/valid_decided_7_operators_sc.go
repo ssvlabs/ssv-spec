@@ -30,7 +30,7 @@ func validDecided7OperatorsSyncCommitteeContributionSC() *comparable.StateCompar
 					ssv.NewPartialSigContainer(5),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, spec.DataVersionPhase0)),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -80,7 +80,7 @@ func validDecided7OperatorsAggregatorSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(5),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, spec.DataVersionPhase0)),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -130,7 +130,7 @@ func validDecided7OperatorsProposerSC(version spec.DataVersion) *comparable.Stat
 					ssv.NewPartialSigContainer(5),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, version)),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
@@ -180,7 +180,7 @@ func validDecided7OperatorsBlindedProposerSC(version spec.DataVersion) *comparab
 					ssv.NewPartialSigContainer(5),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version).DataSSZ,
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, version)),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
