@@ -310,7 +310,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 
 	//TODO committeeIndex is 0, is this correct?
-	attData, ver, err := cr.GetBeaconNode().GetAttestationData(duty.DutySlot(), 0)
+	attData, _, err := cr.GetBeaconNode().GetAttestationData(duty.DutySlot(), 0)
 	if err != nil {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
@@ -320,19 +320,12 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 		Source:    attData.Source,
 		Target:    attData.Target,
 	}
-	voteByts, err := vote.MarshalSSZ()
+	voteByts, err := vote.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not marshal attestation data")
 	}
 
-	//TODO should duty be empty?
-	input := &types.ConsensusData{
-		Duty:    types.BeaconDuty{},
-		Version: ver,
-		DataSSZ: voteByts,
-	}
-
-	if err := cr.BaseRunner.decide(cr, input); err != nil {
+	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), voteByts); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil

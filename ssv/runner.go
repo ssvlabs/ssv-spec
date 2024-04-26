@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
@@ -249,19 +250,15 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 	return true, nil
 }
 
-func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
-	byts, err := input.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode ConsensusData")
-	}
-
-	if err := runner.GetValCheckF()(byts); err != nil {
+// decide input param can be a BeaconVote or ConsensusData
+func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input []byte) error {
+	if err := runner.GetValCheckF()(input); err != nil {
 		return errors.Wrap(err, "input data invalid")
 	}
 
 	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(
-		qbft.Height(input.Duty.Slot),
-		byts,
+		qbft.Height(slot),
+		input,
 	); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")
 	}
