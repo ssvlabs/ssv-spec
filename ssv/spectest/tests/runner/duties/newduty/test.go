@@ -2,6 +2,8 @@ package newduty
 
 import (
 	"encoding/hex"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -189,4 +191,79 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 	require.NoError(t, err)
 
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(root[:])
+}
+
+func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
+
+	// Create alias without duty
+	type StartNewRunnerDutySpecTestAlias struct {
+		Name                    string
+		Runner                  ssv.Runner
+		PostDutyRunnerStateRoot string
+		PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
+		OutputMessages          []*types.PartialSignatureMessages
+		ExpectedError           string
+		BeaconDuty              *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
+		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	}
+
+	alias := &StartNewRunnerDutySpecTestAlias{
+		Name:                    t.Name,
+		Runner:                  t.Runner,
+		PostDutyRunnerStateRoot: t.PostDutyRunnerStateRoot,
+		PostDutyRunnerState:     t.PostDutyRunnerState,
+		OutputMessages:          t.OutputMessages,
+		ExpectedError:           t.ExpectedError,
+	}
+
+	if t.Duty != nil {
+		if beaconDuty, ok := t.Duty.(*types.BeaconDuty); ok {
+			alias.BeaconDuty = beaconDuty
+		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
+			alias.CommitteeDuty = committeeDuty
+		} else {
+			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't BeaconDuty or CommitteeDuty")
+		}
+	}
+	byts, err := json.Marshal(alias)
+
+	return byts, err
+}
+
+func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
+
+	// Create alias without duty
+	type StartNewRunnerDutySpecTestAlias struct {
+		Name                    string
+		Runner                  ssv.Runner
+		PostDutyRunnerStateRoot string
+		PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
+		OutputMessages          []*types.PartialSignatureMessages
+		ExpectedError           string
+		BeaconDuty              *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
+		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	}
+
+	aux := &StartNewRunnerDutySpecTestAlias{}
+
+	// Unmarshal the JSON data into the auxiliary struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	t.Name = aux.Name
+	t.Runner = aux.Runner
+	t.PostDutyRunnerStateRoot = aux.PostDutyRunnerStateRoot
+	t.PostDutyRunnerState = aux.PostDutyRunnerState
+	t.OutputMessages = aux.OutputMessages
+	t.ExpectedError = aux.ExpectedError
+
+	// Determine which type of duty was marshaled
+	if aux.BeaconDuty != nil {
+		t.Duty = aux.BeaconDuty
+	} else if aux.CommitteeDuty != nil {
+		t.Duty = aux.CommitteeDuty
+	}
+
+	return nil
 }
