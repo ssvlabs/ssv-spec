@@ -148,6 +148,9 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	var testDuty types.Duty
 	if _, ok := m["CommitteeDuty"]; ok {
 		byts, err := json.Marshal(m["CommitteeDuty"])
+		if err != nil {
+			panic("cant marshal committee duty")
+		}
 		committeeDuty := &types.CommitteeDuty{}
 		err = json.Unmarshal(byts, committeeDuty)
 		if err != nil {
