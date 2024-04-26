@@ -13,8 +13,6 @@ import (
 // PostQuorum tests a msg received post post-consensus quorum
 func PostQuorum() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no running duty"
 
@@ -68,9 +66,6 @@ func PostQuorum() tests.SpecTest {
 				},
 				DontStartDuty: true,
 				ExpectedError: expectedErr,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

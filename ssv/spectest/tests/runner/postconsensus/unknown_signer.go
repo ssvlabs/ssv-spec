@@ -13,8 +13,6 @@ import (
 // UnknownSigner tests an unknown  signer
 func UnknownSigner() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: unknown signer"
 
@@ -56,9 +54,6 @@ func UnknownSigner() tests.SpecTest {
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

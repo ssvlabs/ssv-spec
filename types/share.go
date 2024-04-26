@@ -7,7 +7,7 @@ type Share struct {
 	ValidatorIndex  phase0.ValidatorIndex
 	ValidatorPubKey ValidatorPK      `ssz-size:"48"`
 	SharePubKey     ShareValidatorPK `ssz-size:"48"`
-	Committee       []ShareMember    `ssz-max:"13"`
+	Committee       []*ShareMember   `ssz-max:"13"`
 	Quorum          uint64
 	// TODO: move this out of Share after this PR is merged
 	DomainType          DomainType `ssz-size:"4"`

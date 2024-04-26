@@ -16,15 +16,29 @@ func finishRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.Cons
 }
 
 func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData) ssv.Runner {
-	r.GetBaseRunner().State = ssv.NewRunnerState(r.GetBaseRunner().Share.Quorum, duty)
+
+	var share *types.Share
+	if len(r.GetBaseRunner().Share) == 0 {
+		panic("no share in base runner")
+	}
+	for _, valShare := range r.GetBaseRunner().Share {
+		share = valShare
+		break
+	}
+
+	r.GetBaseRunner().State = ssv.NewRunnerState(share.Quorum, duty)
 	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
 		r.GetBaseRunner().QBFTController.Share,
 		r.GetBaseRunner().QBFTController.Identifier,
 		qbft.FirstHeight)
 	r.GetBaseRunner().State.RunningInstance.State.Decided = true
-	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, _ = decidedValue.Encode()
-	r.GetBaseRunner().State.DecidedValue = decidedValue
+	var err error
+	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, err = decidedValue.Encode()
+	if err != nil {
+		panic(err)
+	}
+	r.GetBaseRunner().State.DecidedValue = testingutils.EncodeConsensusDataTest(decidedValue)
 	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 	r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 	return r
@@ -32,8 +46,6 @@ func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.Cons
 
 // ValidMessage tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages
 func ValidMessage() tests.SpecTest {
-
-	panic("implement me")
 
 	ks := testingutils.Testing4SharesSet()
 
@@ -103,9 +115,6 @@ func ValidMessage() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

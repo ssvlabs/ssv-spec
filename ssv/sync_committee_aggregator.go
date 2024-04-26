@@ -37,7 +37,7 @@ func NewSyncCommitteeAggregatorRunner(
 ) Runner {
 	return &SyncCommitteeAggregatorRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     RoleSyncCommitteeContribution,
+			RunnerRoleType:     types.RoleSyncCommitteeContribution,
 			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,
@@ -204,6 +204,9 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Pa
 
 	// get contributions
 	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	if err != nil {
+		return errors.Wrap(err, "could not create consensus data")
+	}
 	contributions, err := consensusData.GetSyncCommitteeContributions()
 	if err != nil {
 		return errors.Wrap(err, "could not get contributions")
@@ -386,8 +389,7 @@ func (r *SyncCommitteeAggregatorRunner) GetSigner() types.BeaconSigner {
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetOperatorSigner() types.OperatorSigner {
-	//TODO implement me
-	panic("implement me")
+	return r.operatorSigner
 }
 
 // Encode returns the encoded struct in bytes or error

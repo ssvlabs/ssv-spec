@@ -14,8 +14,6 @@ import (
 // - a duplicate SignedPartialSignatureMessage (from same signer) but with different roots
 func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 
@@ -70,29 +68,29 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 				DontStartDuty: true,
 				ExpectedError: expectedError,
 			},
-			{
-				Name: "attester and sync committee",
-				Runner: decideRunner(
-					testingutils.CommitteeRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight))),
-				},
-				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumAttesterSC().Root(),
-				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
-				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
-			},
+			// {
+			// 	Name: "attester and sync committee",
+			// 	Runner: decideRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		&testingutils.TestingAttesterDuty,
+			// 		testingutils.TestAttesterConsensusData,
+			// 	),
+			// 	Duty: &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight))),
+			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight))),
+			// 	},
+			// 	PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumAttesterSC().Root(),
+			// 	PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumAttesterSC().ExpectedState,
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	BeaconBroadcastedRoots: []string{
+			// 		testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+			// 	},
+			// 	DontStartDuty: true,
+			// 	ExpectedError: expectedError,
+			// },
 		},
 	}
 

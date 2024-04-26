@@ -12,8 +12,6 @@ import (
 // FutureMessage tests a valid proposal future msg
 func FutureMessage() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	futureMsgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
 		fullData, _ := obj.Encode()
@@ -84,18 +82,18 @@ func FutureMessage() tests.SpecTest {
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
-			{
-				Name:   "attester and sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					futureMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "8ccbad4587df73b4a94e4c5d1c47c7ebfbc8e4e949518443a56f0f11d3ab70cd",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
+			// {
+			// 	Name:   "attester and sync committee",
+			// 	Runner: testingutils.CommitteeRunner(ks),
+			// 	Duty:   &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		futureMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "8ccbad4587df73b4a94e4c5d1c47c7ebfbc8e4e949518443a56f0f11d3ab70cd",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	DontStartDuty:           true,
+			// 	ExpectedError:           expectedError,
+			// },
 			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),

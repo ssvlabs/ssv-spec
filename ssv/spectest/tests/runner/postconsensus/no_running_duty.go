@@ -11,8 +11,6 @@ import (
 // NoRunningDuty tests a valid SignedPartialSignatureMessage without a running duty
 func NoRunningDuty() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: no running duty"
 	return &tests.MultiMsgProcessingSpecTest{
@@ -69,9 +67,6 @@ func NoRunningDuty() tests.SpecTest {
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

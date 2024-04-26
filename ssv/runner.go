@@ -8,21 +8,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-// TODO since this is on wire no real need to take 32 bits
-type RunnerRole int32
-
-const (
-	RoleCommittee RunnerRole = iota
-	RoleAggregator
-	RoleProposer
-	RoleSyncCommitteeContribution
-
-	RoleValidatorRegistration
-	RoleVoluntaryExit
-
-	RoleUnknown = -1
-)
-
 type Getters interface {
 	GetBaseRunner() *BaseRunner
 	GetBeaconNode() BeaconNode
@@ -61,7 +46,7 @@ type BaseRunner struct {
 	Share          map[spec.ValidatorIndex]*types.Share
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
-	RunnerRoleType RunnerRole
+	RunnerRoleType types.RunnerRole
 	types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
@@ -73,7 +58,7 @@ func NewBaseRunner(
 	share map[spec.ValidatorIndex]*types.Share,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
-	beaconRoleType RunnerRole,
+	beaconRoleType types.RunnerRole,
 	operatorSigner types.OperatorSigner,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
@@ -96,7 +81,11 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
 	// start new state
 	// TODO nicer way to get quorum
-	b.State = NewRunnerState(b.QBFTController.Share.Quorum, duty)
+	var share *types.Share
+	for _, shareInstance := range b.Share {
+		share = shareInstance
+	}
+	b.State = NewRunnerState(share.Quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty

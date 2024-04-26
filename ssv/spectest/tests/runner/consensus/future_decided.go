@@ -16,11 +16,10 @@ import (
 // then returning an error and don't move to post consensus as it's not the same instance decided
 func FutureDecided() tests.SpecTest {
 
-	panic("implement me")
-
+	//
 	ks := testingutils.Testing4SharesSet()
 
-	getID := func(role types.BeaconRole) []byte {
+	getID := func(role types.RunnerRole) []byte {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return ret[:]
 	}
@@ -42,7 +41,7 @@ func FutureDecided() tests.SpecTest {
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						testingutils.TestingDutySlot+1,
-						getID(types.BNRoleSyncCommitteeContribution),
+						getID(types.RoleSyncCommitteeContribution),
 					),
 				},
 				PostDutyRunnerStateRoot: futureDecidedSyncCommitteeContributionSC().Root(),
@@ -64,7 +63,7 @@ func FutureDecided() tests.SpecTest {
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						testingutils.TestingDutySlot+1,
-						getID(types.BNRoleAggregator),
+						getID(types.RoleAggregator),
 					),
 				},
 				PostDutyRunnerStateRoot: futureDecidedAggregatorSC().Root(),
@@ -74,23 +73,23 @@ func FutureDecided() tests.SpecTest {
 				},
 				ExpectedError: errStr,
 			},
-			{
-				Name:   "attester and sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-						[]types.OperatorID{1, 2, 3},
-						testingutils.TestingDutySlot+1,
-						getID(types.BNRoleAttester),
-					),
-				},
-				PostDutyRunnerStateRoot: futureDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     futureDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           errStr,
-			},
+			// {
+			// 	Name:   "attester and sync committee",
+			// 	Runner: testingutils.CommitteeRunner(ks),
+			// 	Duty:   &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+			// 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+			// 			[]types.OperatorID{1, 2, 3},
+			// 			testingutils.TestingDutySlot+1,
+			// 			getID(types.RoleCommittee),
+			// 		),
+			// 	},
+			// 	PostDutyRunnerStateRoot: futureDecidedAttesterSC().Root(),
+			// 	PostDutyRunnerState:     futureDecidedAttesterSC().ExpectedState,
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           errStr,
+			// },
 		},
 	}
 
@@ -108,7 +107,7 @@ func FutureDecided() tests.SpecTest {
 					[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 					[]types.OperatorID{1, 2, 3},
 					qbft.Height(testingutils.TestingDutySlotV(version)+1),
-					getID(types.BNRoleProposer),
+					getID(types.RoleProposer),
 				),
 			},
 			PostDutyRunnerStateRoot: futureDecidedProposerSC(version).Root(),
@@ -134,7 +133,7 @@ func FutureDecided() tests.SpecTest {
 					[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 					[]types.OperatorID{1, 2, 3},
 					qbft.Height(testingutils.TestingDutySlotV(version)+1),
-					getID(types.BNRoleProposer),
+					getID(types.RoleProposer),
 				),
 			},
 			PostDutyRunnerStateRoot: futureDecidedBlindedProposerSC(version).Root(),

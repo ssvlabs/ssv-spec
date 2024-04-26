@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
@@ -32,7 +33,7 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 ) Runner {
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType: RoleCommittee,
+			RunnerRoleType: types.RoleCommittee,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 			QBFTController: qbftController,
@@ -76,13 +77,11 @@ func (cr CommitteeRunner) GetRoot() ([32]byte, error) {
 }
 
 func (cr CommitteeRunner) GetBaseRunner() *BaseRunner {
-	//TODO implement me
-	panic("implement me")
+	return cr.BaseRunner
 }
 
 func (cr CommitteeRunner) GetBeaconNode() BeaconNode {
-	//TODO implement me
-	panic("implement me")
+	return cr.beacon
 }
 
 func (cr CommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
@@ -90,8 +89,7 @@ func (cr CommitteeRunner) GetValCheckF() qbft.ProposedValueCheckF {
 }
 
 func (cr CommitteeRunner) GetNetwork() Network {
-	//TODO implement me
-	panic("implement me")
+	return cr.network
 }
 
 func (cr CommitteeRunner) HasRunningDuty() bool {
@@ -99,8 +97,7 @@ func (cr CommitteeRunner) HasRunningDuty() bool {
 }
 
 func (cr CommitteeRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	//TODO implement me
-	panic("implement me")
+	return errors.New("no pre consensus phase for committee runner")
 }
 
 func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
@@ -112,10 +109,6 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	// Decided returns true only once so if it is true it must be for the current running instance
 	if !decided {
 		return nil
-	}
-
-	if err != nil {
-		return errors.Wrap(err, "decided value is not a beacon vote")
 	}
 
 	duty := cr.BaseRunner.State.StartingDuty
@@ -149,17 +142,15 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		}
 	}
 
-	data, err := postConsensusMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode post consensus signature msg")
-	}
-
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
 		//TODO: The Domain will be updated after new Domain PR... Will be created after this PR is merged
 		MsgID: types.NewMsgID(types.GenesisMainnet, cr.GetBaseRunner().QBFTController.Share.ClusterID[:],
 			cr.BaseRunner.RunnerRoleType),
-		Data: data,
+	}
+	ssvMsg.Data, err = postConsensusMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
 	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.Share.OperatorID,
@@ -262,21 +253,23 @@ func findValidators(
 
 // unneeded
 func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	//TODO implement me
-	panic("implement me")
+	return nil, types.DomainError, errors.New("no pre consensus root for committee runner")
 }
 
 // This function signature returns only one domain type
 // instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
 func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	//TODO implement me
-	panic("implement me")
+	return []ssz.HashRoot{}, types.DomainCommittee, nil
 }
 
-func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attestationMap map[phase0.ValidatorIndex][32]byte,
-	syncCommitteeMap map[phase0.ValidatorIndex][32]byte, beaconObjects map[[32]byte]ssz.HashRoot, error error) {
+func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
+	attestationMap map[phase0.ValidatorIndex][32]byte,
+	syncCommitteeMap map[phase0.ValidatorIndex][32]byte,
+	beaconObjects map[[32]byte]ssz.HashRoot, error error,
+) {
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
+	beaconObjects = make(map[[32]byte]ssz.HashRoot)
 	duty := cr.BaseRunner.State.StartingDuty
 	// TODO DecidedValue should be interface??
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
@@ -284,7 +277,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (attesta
 	if err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
-	beaconVote.Decode(beaconVoteData)
+	err = beaconVote.Decode(beaconVoteData)
+	if err != nil {
+		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
+	}
 	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
 		if beaconDuty == nil || beaconDuty.IsStopped {
 			continue

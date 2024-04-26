@@ -39,7 +39,7 @@ func dutyValueCheck(
 // TODO add tests
 func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
-	duty types.Duty,
+	slot phase0.Slot,
 	sharePublicKey []byte,
 	estimatedCurrentEpoch phase0.Epoch,
 ) qbft.ProposedValueCheckF {
@@ -58,7 +58,7 @@ func BeaconVoteValueCheckF(
 		}
 
 		attestationData := &phase0.AttestationData{
-			Slot: duty.DutySlot(),
+			Slot: slot,
 			// CommitteeIndex doesn't matter for slashing checks
 			Index:           0,
 			BeaconBlockRoot: bv.BlockRoot,

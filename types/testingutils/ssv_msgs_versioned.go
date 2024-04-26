@@ -132,6 +132,7 @@ var postConsensusBeaconBlockMsgV = func(
 				PartialSignature: blsSig[:],
 				SigningRoot:      root,
 				Signer:           id,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -187,6 +188,7 @@ var PreConsensusRandaoDifferentSignerMsgV = func(
 				PartialSignature: signed[:],
 				SigningRoot:      root,
 				Signer:           randaoSignerID,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -220,6 +222,7 @@ var randaoMsgV = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 		if wrongRoot {
 			msg.SigningRoot = [32]byte{}

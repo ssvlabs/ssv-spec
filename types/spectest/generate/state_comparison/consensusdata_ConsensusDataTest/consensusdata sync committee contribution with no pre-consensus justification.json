@@ -14,7 +14,8 @@
 								0,
 								1,
 								2
-						]
+						],
+						"IsStopped": false
 				},
 				"Version": "capella",
 				"PreConsensusJustifications": null,

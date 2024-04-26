@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"encoding/hex"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/bloxapp/ssv-spec/types"
@@ -22,6 +23,9 @@ func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
 }
 
 func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessage) {
+	if ps.Signatures[sigMsg.ValidatorIndex] == nil {
+		ps.Signatures[sigMsg.ValidatorIndex] = make(map[string]map[uint64][]byte)
+	}
 	if ps.Signatures[sigMsg.ValidatorIndex][rootHex(sigMsg.SigningRoot)] == nil {
 		ps.Signatures[sigMsg.ValidatorIndex][rootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID][]byte)
 	}
@@ -35,6 +39,9 @@ func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessag
 
 // Returns if container has signature for signer and signing root
 func (ps *PartialSigContainer) HasSigner(validatorIndex phase0.ValidatorIndex, signer types.OperatorID, signingRoot [32]byte) bool {
+	if ps.Signatures[validatorIndex] == nil {
+		return false
+	}
 	if ps.Signatures[validatorIndex][rootHex(signingRoot)] == nil {
 		return false
 	}
@@ -43,6 +50,9 @@ func (ps *PartialSigContainer) HasSigner(validatorIndex phase0.ValidatorIndex, s
 
 // Return signature for given root and signer
 func (ps *PartialSigContainer) GetSignature(validatorIndex phase0.ValidatorIndex, signer types.OperatorID, signingRoot [32]byte) (types.Signature, error) {
+	if ps.Signatures[validatorIndex] == nil {
+		return nil, errors.New("Dont have signature for the given validator index")
+	}
 	if ps.Signatures[validatorIndex][rootHex(signingRoot)] == nil {
 		return nil, errors.New("Dont have signature for the given signing root")
 	}
@@ -54,11 +64,17 @@ func (ps *PartialSigContainer) GetSignature(validatorIndex phase0.ValidatorIndex
 
 // Return signature map for given root
 func (ps *PartialSigContainer) GetSignatures(validatorIndex phase0.ValidatorIndex, signingRoot [32]byte) map[types.OperatorID][]byte {
+	if ps.Signatures[validatorIndex] == nil {
+		return nil
+	}
 	return ps.Signatures[validatorIndex][rootHex(signingRoot)]
 }
 
 // Remove signer from signature map
 func (ps *PartialSigContainer) Remove(validatorIndex phase0.ValidatorIndex, signer uint64, signingRoot [32]byte) {
+	if ps.Signatures[validatorIndex] == nil {
+		return
+	}
 	if ps.Signatures[validatorIndex][rootHex(signingRoot)] == nil {
 		return
 	}
@@ -70,11 +86,22 @@ func (ps *PartialSigContainer) Remove(validatorIndex phase0.ValidatorIndex, sign
 
 func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte, validatorIndex phase0.ValidatorIndex) ([]byte, error) {
 	// Reconstruct signatures
+	if ps.Signatures[validatorIndex] == nil {
+		return nil, errors.New("no signatures for the given validator index")
+	}
+	if ps.Signatures[validatorIndex][rootHex(root)] == nil {
+		return nil, errors.New("no signatures for the given signing root")
+	}
 	signature, err := types.ReconstructSignatures(ps.Signatures[validatorIndex][rootHex(root)])
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to reconstruct signatures")
 	}
-	if err := types.VerifyReconstructedSignature(signature, validatorPubKey, root); err != nil {
+
+	// Get validator pub key copy (This avoids cgo Go pointer to Go pointer issue)
+	validatorPubKeyCopy := make([]byte, len(validatorPubKey))
+	copy(validatorPubKeyCopy, validatorPubKey)
+
+	if err := types.VerifyReconstructedSignature(signature, validatorPubKeyCopy, root); err != nil {
 		return nil, errors.Wrap(err, "failed to verify reconstruct signature")
 	}
 	return signature.Serialize(), nil

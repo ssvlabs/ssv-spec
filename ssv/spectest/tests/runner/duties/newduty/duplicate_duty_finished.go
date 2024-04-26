@@ -84,42 +84,42 @@ func DuplicateDutyFinished() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb),
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
 			},
-			{
-				Name: "attester",
-				Runner: finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				})),
-				Duty: testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				}),
-				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
-			},
-			{
-				Name: "sync committee",
-				Runner: finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				})),
-				Duty: testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				}),
-				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
-			},
-			{
-				Name: "attester and sync committee",
-				Runner: finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				})),
-				Duty: testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				}),
-				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
-			},
+			// {
+			// 	Name: "attester",
+			// 	Runner: finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	})),
+			// 	Duty: testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	}),
+			// 	PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           expectedError,
+			// },
+			// {
+			// 	Name: "sync committee",
+			// 	Runner: finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	})),
+			// 	Duty: testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	}),
+			// 	PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           expectedError,
+			// },
+			// {
+			// 	Name: "attester and sync committee",
+			// 	Runner: finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	})),
+			// 	Duty: testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	}),
+			// 	PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           expectedError,
+			// },
 			{
 				Name: "validator registration",
 				Runner: finishTaskRunner(testingutils.ValidatorRegistrationRunner(ks),

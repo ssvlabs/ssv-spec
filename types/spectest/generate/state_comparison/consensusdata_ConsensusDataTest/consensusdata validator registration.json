@@ -10,7 +10,8 @@
 						"CommitteeLength": 0,
 						"CommitteesAtSlot": 0,
 						"ValidatorCommitteeIndex": 0,
-						"ValidatorSyncCommitteeIndices": null
+						"ValidatorSyncCommitteeIndices": null,
+						"IsStopped": false
 				},
 				"Version": "capella",
 				"PreConsensusJustifications": null,

@@ -27,7 +27,7 @@ func NewValidator(
 	share *types.Share,
 	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
-	runners map[RunnerRole]Runner,
+	runners map[types.RunnerRole]Runner,
 	signatureVerifier types.SignatureVerifier,
 ) *Validator {
 	return &Validator{

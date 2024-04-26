@@ -2,7 +2,6 @@ package postconsensus
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
@@ -10,8 +9,6 @@ import (
 
 // TooManyRoots tests a valid SignedPartialSignatureMessage with too many roots
 func TooManyRoots() tests.SpecTest {
-
-	panic("implement me")
 
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: wrong expected roots count"
@@ -85,9 +82,6 @@ func TooManyRoots() tests.SpecTest {
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           err,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

@@ -8,10 +8,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidDecode tests a SignedSSVMessage with wrong data that can't be decoded
-func InvalidDecode() tests.SpecTest {
-
-	panic("implement me")
+// NilSSVMessage tests a SignedSSVMessage with wrong data that can't be decoded
+func NilSSVMessage() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
@@ -84,9 +82,6 @@ func InvalidDecode() tests.SpecTest {
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

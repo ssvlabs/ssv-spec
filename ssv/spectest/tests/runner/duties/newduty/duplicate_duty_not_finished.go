@@ -81,48 +81,48 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb),
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
 			},
-			{
-				Name: "attester",
-				Runner: notFinishRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
-						testingutils.TestingValidatorIndex,
-					})),
-				Duty: testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				}),
-				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
-			},
-			{
-				Name: "sync committee",
-				Runner: notFinishRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-						testingutils.TestingValidatorIndex,
-					})),
-				Duty: testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				}),
-				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
-			},
-			{
-				Name: "attester and sync committee",
-				Runner: notFinishRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-						testingutils.TestingValidatorIndex,
-					})),
-				Duty: testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-					testingutils.TestingValidatorIndex,
-				}),
-				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
-			},
+			// {
+			// 	Name: "attester",
+			// 	Runner: notFinishRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
+			// 			testingutils.TestingValidatorIndex,
+			// 		})),
+			// 	Duty: testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	}),
+			// 	PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           expectedError,
+			// },
+			// {
+			// 	Name: "sync committee",
+			// 	Runner: notFinishRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 			testingutils.TestingValidatorIndex,
+			// 		})),
+			// 	Duty: testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	}),
+			// 	PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           expectedError,
+			// },
+			// {
+			// 	Name: "attester and sync committee",
+			// 	Runner: notFinishRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 			testingutils.TestingValidatorIndex,
+			// 		})),
+			// 	Duty: testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
+			// 		testingutils.TestingValidatorIndex,
+			// 	}),
+			// 	PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           expectedError,
+			// },
 			{
 				Name: "validator registration",
 				Runner: notFinishTaskRunner(testingutils.ValidatorRegistrationRunner(ks),

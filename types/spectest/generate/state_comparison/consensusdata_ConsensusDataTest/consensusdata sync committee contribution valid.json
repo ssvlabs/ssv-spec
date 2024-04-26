@@ -14,7 +14,8 @@
 								0,
 								1,
 								2
-						]
+						],
+						"IsStopped": false
 				},
 				"Version": "deneb",
 				"PreConsensusJustifications": [
@@ -58,7 +59,8 @@
 														110,
 														83
 												],
-												"Signer": 1
+												"Signer": 1,
+												"ValidatorIndex": "1"
 										},
 										{
 												"PartialSignature": "jqIz63D8mz2hXyzIpoWcGwg2t9lkU8YGkU5Lcc5oAvweLS59pdMt+MIjFlL8ARWKGUuV5E2j4m27c3UW8lrKfD7nE3ISdP3byCnDxSa/s4OGgva7iof4O5vl6U55DkKr",
@@ -96,7 +98,8 @@
 														252,
 														28
 												],
-												"Signer": 1
+												"Signer": 1,
+												"ValidatorIndex": "1"
 										},
 										{
 												"PartialSignature": "tCc27SYK3Lfv7HuJdjuOJbtZI5wm7d+Ogqq4W5ulSgaJlR2+sDx5oSnb/Zs24GFeGYhhQFxeBvLFPc/R/oyjV5lFLAY2j+tzpMXD0tGjdTS/c0ZW2k2N6jGUOKbGEgxb",
@@ -134,7 +137,8 @@
 														38,
 														159
 												],
-												"Signer": 1
+												"Signer": 1,
+												"ValidatorIndex": "1"
 										}
 								]
 						},
@@ -178,7 +182,8 @@
 														110,
 														83
 												],
-												"Signer": 2
+												"Signer": 2,
+												"ValidatorIndex": "1"
 										},
 										{
 												"PartialSignature": "pKkmqaP0Qmx7LBPZA1/dYFikb8HY/DPPkdlul6JxYjMGl8UW3a5w6mShTd+qpaaSBhD84CCnLh4ypriDuYOuts5F2l6q1UmH+1tnSH16O+EhkmY6TydRO/U848IL+CAF",
@@ -216,7 +221,8 @@
 														252,
 														28
 												],
-												"Signer": 2
+												"Signer": 2,
+												"ValidatorIndex": "1"
 										},
 										{
 												"PartialSignature": "o3dStcwl+qT4Uu7zYrkY5/MbvjaEtcMCmWZ4KbU5ickHkcZv4PU+MqY8Vvb11gsKCyW7n0jUQPghbgoXD37kS1r90itdhgIYb9MS4/VdwFKCl2GCtGKkGAAXGOocCD55",
@@ -254,7 +260,8 @@
 														38,
 														159
 												],
-												"Signer": 2
+												"Signer": 2,
+												"ValidatorIndex": "1"
 										}
 								]
 						},
@@ -298,7 +305,8 @@
 														110,
 														83
 												],
-												"Signer": 3
+												"Signer": 3,
+												"ValidatorIndex": "1"
 										},
 										{
 												"PartialSignature": "iXOrrTj7uFYIMdd3DkYUM6GgFX298ST0T3FdfTMXUhrjhyf8YB/9p5OqaZUEG5tFBB9I3Zex1iQB0qRi3rcYL6ugpSWFtgoFPVfug7WICGZrVEJK2b1WVLP0JX1oFXHN",
@@ -336,7 +344,8 @@
 														252,
 														28
 												],
-												"Signer": 3
+												"Signer": 3,
+												"ValidatorIndex": "1"
 										},
 										{
 												"PartialSignature": "l8LHenM0lCAjHAaBeDAg/RCGRx7jlhOtlqktj7Q4tPAJz1awB08eYvoyw1T+xLbJCL2Nzc71iXZkv/hRbxJnO6LOnrKK/lEo7eD5P60kJiKrXM2ery0XOCPGgxFu9p1z",
@@ -374,7 +383,8 @@
 														38,
 														159
 												],
-												"Signer": 3
+												"Signer": 3,
+												"ValidatorIndex": "1"
 										}
 								]
 						},
@@ -418,7 +428,8 @@
 														110,
 														83
 												],
-												"Signer": 4
+												"Signer": 4,
+												"ValidatorIndex": "1"
 										},
 										{
 												"PartialSignature": "gDTbU+RmB3BLZ8+tvd1nHFkouB/lPb7KFyUJUVVGcob3yQMw68a4KpHExZD9QQwUCbMyJtRj5ql7bZjWugayJ85XTGaIm6K2KeyZPp7DjKPtV8zWEGD1t0CCuDcRMMTh",
@@ -456,7 +467,8 @@
 														252,
 														28
 												],
-												"Signer": 4
+												"Signer": 4,
+												"ValidatorIndex": "1"
 										},
 										{
 												"PartialSignature": "sE5mb0Aw21M8AV0ZjoD9dOCuQdMYRIHBzjJChJxhGgus2ecTVr7qkV+5SDB170HnCrGUBoO7meE3XTXL4Sl9rzCLYVgHb//jRDr1dB6cXP6SxWW2nKZENjROnAL8YtlP",
@@ -494,7 +506,8 @@
 														38,
 														159
 												],
-												"Signer": 4
+												"Signer": 4,
+												"ValidatorIndex": "1"
 										}
 								]
 						}

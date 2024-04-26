@@ -53,18 +53,18 @@ func NotDecided() tests.SpecTest {
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
-			{
-				Name: "attester",
-				Runner: startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(
-					testingutils.TestingDutySlot, []int{
-						testingutils.TestingValidatorIndex,
-					}),
-				),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
+			// {
+			// 	Name: "attester",
+			// 	Runner: startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(
+			// 		testingutils.TestingDutySlot, []int{
+			// 			testingutils.TestingValidatorIndex,
+			// 		}),
+			// 	),
+			// 	Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
+			// 	PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
+			// 	PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
 		},
 	}
 

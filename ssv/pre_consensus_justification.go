@@ -30,8 +30,8 @@ func (b *BaseRunner) shouldProcessingJustificationsForHeight(signedMsg *types.Si
 	}
 
 	correctMsgTYpe := msg.MsgType == qbft.ProposalMsgType || msg.MsgType == qbft.RoundChangeMsgType
-	correctBeaconRole := b.RunnerRoleType == RoleProposer || b.RunnerRoleType == RoleAggregator || b.
-		RunnerRoleType == RoleSyncCommitteeContribution
+	correctBeaconRole := b.RunnerRoleType == types.RoleProposer || b.RunnerRoleType == types.RoleAggregator || b.
+		RunnerRoleType == types.RoleSyncCommitteeContribution
 	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole, nil
 }
 

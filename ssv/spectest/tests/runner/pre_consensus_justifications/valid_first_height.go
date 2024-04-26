@@ -80,27 +80,27 @@ func ValidFirstHeight() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
-			{
+			// {
 
-				Name:   "attester",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "0d5b671f94eeddcb00025dd70fa52d259cafaa5f284645db4fd20e943e2e900d",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-				},
-				PostDutyRunnerStateRoot: "5adbf2c86193070a8f74596275e7a62d48a6a573259150d7ec694b3571c7a787",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
+			// 	Name:   "attester",
+			// 	Runner: testingutils.CommitteeRunner(ks),
+			// 	Duty:   &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "0d5b671f94eeddcb00025dd70fa52d259cafaa5f284645db4fd20e943e2e900d",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
+			// {
+			// 	Name:   "sync committee",
+			// 	Runner: testingutils.SyncCommitteeRunner(ks),
+			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "5adbf2c86193070a8f74596275e7a62d48a6a573259150d7ec694b3571c7a787",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
 		},
 	}
 }

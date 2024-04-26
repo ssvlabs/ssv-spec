@@ -35,7 +35,7 @@ func NewAggregatorRunner(
 ) Runner {
 	return &AggregatorRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     RoleAggregator,
+			RunnerRoleType:     types.RoleAggregator,
 			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,
@@ -276,8 +276,7 @@ func (r *AggregatorRunner) GetSigner() types.BeaconSigner {
 }
 
 func (r *AggregatorRunner) GetOperatorSigner() types.OperatorSigner {
-	//TODO implement me
-	panic("implement me")
+	return r.operatorSigner
 }
 
 // Encode returns the encoded struct in bytes or error

@@ -38,7 +38,7 @@ func NewProposerRunner(
 ) Runner {
 	return &ProposerRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     RoleProposer,
+			RunnerRoleType:     types.RoleProposer,
 			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,

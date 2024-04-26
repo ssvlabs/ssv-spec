@@ -18,7 +18,7 @@ func PostDecided() tests.SpecTest {
 
 	// TODO: check errors
 	// nolint
-	decideRunner := func(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData, preMsgs []*types.SignedPartialSignatureMessage) ssv.Runner {
+	decideRunner := func(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData, preMsgs []*types.PartialSignatureMessages) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		for _, msg := range preMsgs {
 			err := r.ProcessPreConsensus(msg)
@@ -32,7 +32,7 @@ func PostDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		r.GetBaseRunner().State.DecidedValue = decidedValue
+		r.GetBaseRunner().State.DecidedValue = testingutils.EncodeConsensusDataTest(decidedValue)
 		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		return r

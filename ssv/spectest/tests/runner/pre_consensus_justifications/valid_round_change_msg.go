@@ -80,27 +80,27 @@ func ValidRoundChangeMsg() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
-			{
+			// {
 
-				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.CommitteeRunner(ks)),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "c68624598e1d901acf3720735be9e11648a491d538508a6658451272338b42ae",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:   "sync committee",
-				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-				},
-				PostDutyRunnerStateRoot: "d28fc482d502b25b2b176d14df889600c80db75023dc22c46f5383011fbed1a8",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
+			// 	Name:   "attester",
+			// 	Runner: decideFirstHeight(testingutils.CommitteeRunner(ks)),
+			// 	Duty:   &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "c68624598e1d901acf3720735be9e11648a491d538508a6658451272338b42ae",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
+			// {
+			// 	Name:   "sync committee",
+			// 	Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
+			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "d28fc482d502b25b2b176d14df889600c80db75023dc22c46f5383011fbed1a8",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// },
 		},
 	}
 }

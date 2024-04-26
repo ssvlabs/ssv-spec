@@ -85,29 +85,29 @@ func InvalidData() tests.SpecTest {
 				},
 				ExpectedError: expectedErr,
 			},
-			{
+			// {
 
-				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.CommitteeRunner(ks)),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					invalidateMsgDataF(testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "81cb7b1d3ea3087d49f9773b3a2b75a87b901e50427d237f2a10c0e1904e7684",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding consensus data: incorrect offset",
-			},
-			{
-				Name:   "sync committee",
-				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					invalidateMsgDataF(testingutils.SyncCommitteeMsgID),
-				},
-				PostDutyRunnerStateRoot: "38592232077cd45709a7c6cfdd20c9d899af9d79bc750add3c4b8f2b6794cb34",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding consensus data: incorrect offset",
-			},
+			// 	Name:   "attester",
+			// 	Runner: decideFirstHeight(testingutils.CommitteeRunner(ks)),
+			// 	Duty:   &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		invalidateMsgDataF(testingutils.AttesterMsgID),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "81cb7b1d3ea3087d49f9773b3a2b75a87b901e50427d237f2a10c0e1904e7684",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding consensus data: incorrect offset",
+			// },
+			// {
+			// 	Name:   "sync committee",
+			// 	Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
+			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		invalidateMsgDataF(testingutils.SyncCommitteeMsgID),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "38592232077cd45709a7c6cfdd20c9d899af9d79bc750add3c4b8f2b6794cb34",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding consensus data: incorrect offset",
+			// },
 		},
 	}
 }

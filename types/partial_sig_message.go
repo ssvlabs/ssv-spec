@@ -62,12 +62,12 @@ func (msgs PartialSignatureMessages) Validate() error {
 }
 
 func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error {
-	//if err := msgs.Validate(); err != nil {
-	//	return err
-	//}
-	//if msgs.Messages[0].Signer != signer {
-	//	return errors.New("signer from signed message is inconsistent with partial signature signers")
-	//}
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	if msgs.Messages[0].Signer != signer {
+		return errors.New("signer from signed message is inconsistent with partial signature signers")
+	}
 	return nil
 }
 
