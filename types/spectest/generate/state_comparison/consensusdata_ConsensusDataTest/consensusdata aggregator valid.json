@@ -56,7 +56,7 @@
 														222
 												],
 												"Signer": 1,
-												"ValidatorIndex": "0"
+												"ValidatorIndex": "1"
 										}
 								]
 						},
@@ -101,7 +101,7 @@
 														222
 												],
 												"Signer": 2,
-												"ValidatorIndex": "0"
+												"ValidatorIndex": "1"
 										}
 								]
 						},
@@ -146,7 +146,7 @@
 														222
 												],
 												"Signer": 3,
-												"ValidatorIndex": "0"
+												"ValidatorIndex": "1"
 										}
 								]
 						}
