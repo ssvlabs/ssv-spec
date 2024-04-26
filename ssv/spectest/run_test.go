@@ -146,7 +146,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
 	duty := &types.BeaconDuty{}
-	byts, _ := json.Marshal(m["BeaconDuty"])
+	byts, _ := json.Marshal(m["Duty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
