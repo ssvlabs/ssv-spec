@@ -31,19 +31,54 @@ func PostFinish() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
 					// commit msg
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{ks.OperatorKeys[4]},
-						[]types.OperatorID{4},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						testingutils.TestBeaconVoteByts,
-					),
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, qbft.Height(testingutils.TestingDutySlot), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
 				},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+				},
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					// post consensus
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
+					// commit msg
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, qbft.Height(testingutils.TestingDutySlot), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+				},
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					// post consensus
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
+					// commit msg
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, qbft.Height(testingutils.TestingDutySlot), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 			},
 			{

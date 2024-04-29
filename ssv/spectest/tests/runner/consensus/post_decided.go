@@ -20,6 +20,42 @@ func PostDecided() tests.SpecTest {
 		Name: "consensus valid post decided",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
+				},
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
+				},
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
+				},
+			},
+			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
