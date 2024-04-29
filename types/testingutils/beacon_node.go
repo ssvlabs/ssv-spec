@@ -278,70 +278,6 @@ var TestingProposerDutyFirstSlot = types.BeaconDuty{
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-func TestingCommitteeAttesterDutyFirstSlot() *types.CommitteeDuty {
-	return &types.CommitteeDuty{
-		Slot: TestingDutySlot,
-		BeaconDuties: []*types.BeaconDuty{
-			{
-				Type:                    types.BNRoleAttester,
-				PubKey:                  TestingValidatorPubKey,
-				Slot:                    0,
-				ValidatorIndex:          TestingValidatorIndex,
-				CommitteeIndex:          3,
-				CommitteesAtSlot:        36,
-				CommitteeLength:         128,
-				ValidatorCommitteeIndex: 11,
-			},
-		},
-	}
-}
-
-func TestingCommitteeSyncCommitteeDutyFirstSlot() *types.CommitteeDuty {
-	return &types.CommitteeDuty{
-		Slot: TestingDutySlot,
-		BeaconDuties: []*types.BeaconDuty{
-			{
-				Type:                    types.BNRoleSyncCommittee,
-				PubKey:                  TestingValidatorPubKey,
-				Slot:                    0,
-				ValidatorIndex:          TestingValidatorIndex,
-				CommitteeIndex:          3,
-				CommitteesAtSlot:        36,
-				CommitteeLength:         128,
-				ValidatorCommitteeIndex: 11,
-			},
-		},
-	}
-}
-
-func TestingCommitteeAttesterAndSyncCommitteeDutyFirstSlot() *types.CommitteeDuty {
-	return &types.CommitteeDuty{
-		Slot: TestingDutySlot,
-		BeaconDuties: []*types.BeaconDuty{
-			{
-				Type:                    types.BNRoleSyncCommittee,
-				PubKey:                  TestingValidatorPubKey,
-				Slot:                    0,
-				ValidatorIndex:          TestingValidatorIndex,
-				CommitteeIndex:          3,
-				CommitteesAtSlot:        36,
-				CommitteeLength:         128,
-				ValidatorCommitteeIndex: 11,
-			},
-			{
-				Type:                    types.BNRoleAttester,
-				PubKey:                  TestingValidatorPubKey,
-				Slot:                    0,
-				ValidatorIndex:          TestingValidatorIndex,
-				CommitteeIndex:          3,
-				CommitteesAtSlot:        36,
-				CommitteeLength:         128,
-				ValidatorCommitteeIndex: 11,
-			},
-		},
-	}
-}
-
 func getValPubKeyByValIdx(valIdx int) phase0.BLSPubKey {
 	switch valIdx {
 	case TestingValidatorIndex:
@@ -394,19 +330,28 @@ func TestingCommitteeSyncCommitteeDuty(slot phase0.Slot, validatorIds []int) *ty
 	return TestingCommitteeDuty(slot, nil, validatorIds)
 }
 
+// Committee duty - Attestation only
 var TestingAttesterDuty = TestingCommitteeAttesterDuty(TestingDutySlot, []int{TestingValidatorIndex})
 
 var TestingAttesterDutyNextEpoch = TestingCommitteeAttesterDuty(TestingDutySlot2, []int{TestingValidatorIndex})
 
-var TestingSyncCommitteeDutyFirstSlot = TestingCommitteeSyncCommitteeDuty(0, []int{TestingValidatorIndex})
+var TestingAttesterDutyFirstSlot = TestingCommitteeAttesterDuty(0, []int{TestingValidatorIndex})
+
+// Committee duty - Sync Committee only
 
 var TestingSyncCommitteeDuty = TestingCommitteeSyncCommitteeDuty(TestingDutySlot, []int{TestingValidatorIndex})
 
 var TestingSyncCommitteeDutyNextEpoch = TestingCommitteeSyncCommitteeDuty(TestingDutySlot2, []int{TestingValidatorIndex})
 
+var TestingSyncCommitteeDutyFirstSlot = TestingCommitteeSyncCommitteeDuty(0, []int{TestingValidatorIndex})
+
+// Committee duty - Attestation and Sync Committee
+
 var TestingAttesterAndSyncCommitteeDuties = TestingCommitteeDuty(TestingDutySlot, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
 
 var TestingAttesterAndSyncCommitteeDutiesNextEpoch = TestingCommitteeDuty(TestingDutySlot2, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
+
+var TestingAttesterAndSyncCommitteeDutiesFirstSlot = TestingCommitteeDuty(0, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
 
 var TestingAggregatorDutyFirstSlot = types.BeaconDuty{
 	Type:                    types.BNRoleAggregator,

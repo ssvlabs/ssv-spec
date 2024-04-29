@@ -40,24 +40,24 @@ func FirstHeight() tests.SpecTest {
 					// broadcasts when starting a new duty
 				},
 			},
-			// {
-			// 	Name:           "attester",
-			// 	Runner:         testingutils.CommitteeRunner(ks),
-			// 	Duty:           testingutils.TestingCommitteeAttesterDutyFirstSlot(),
-			// 	OutputMessages: []*types.PartialSignatureMessages{},
-			// },
-			// {
-			// 	Name:           "sync committee",
-			// 	Runner:         testingutils.CommitteeRunner(ks),
-			// 	Duty:           testingutils.TestingCommitteeSyncCommitteeDutyFirstSlot(),
-			// 	OutputMessages: []*types.PartialSignatureMessages{},
-			// },
-			// {
-			// 	Name:           "attester and sync committee",
-			// 	Runner:         testingutils.CommitteeRunner(ks),
-			// 	Duty:           testingutils.TestingCommitteeAttesterAndSyncCommitteeDutyFirstSlot(),
-			// 	OutputMessages: []*types.PartialSignatureMessages{},
-			// },
+			{
+				Name:           "attester",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingAttesterDutyFirstSlot,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingSyncCommitteeDutyFirstSlot,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingSyncCommitteeDutyFirstSlot,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
 		},
 	}
 }
