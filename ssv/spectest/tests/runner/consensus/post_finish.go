@@ -21,6 +21,32 @@ func PostFinish() tests.SpecTest {
 		Name: "consensus valid post finish",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					// post consensus
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
+					// commit msg
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{ks.OperatorKeys[4]},
+						[]types.OperatorID{4},
+						qbft.Height(testingutils.TestingDutySlot),
+						testingutils.CommitteeMsgID,
+						testingutils.TestBeaconVoteByts,
+					),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+				},
+			},
+			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,

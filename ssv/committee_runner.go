@@ -214,17 +214,8 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
 				}
 			} else if role == types.BNRoleSyncCommittee {
-				// Get root
-				blockRoot := beaconObjects[root].(types.SSZBytes)
-				blockRootSlice := [32]byte{}
-				copy(blockRootSlice[:], blockRoot)
-				// Create sync committee message
-				syncMsg := &altair.SyncCommitteeMessage{
-					Slot:            cr.BaseRunner.State.StartingDuty.DutySlot(),
-					BeaconBlockRoot: phase0.Root(blockRootSlice),
-					ValidatorIndex:  validator,
-					Signature:       specSig,
-				}
+				syncMsg := beaconObjects[root].(*altair.SyncCommitteeMessage)
+				syncMsg.Signature = specSig
 				// Broadcast
 				if err := cr.beacon.SubmitSyncMessage(syncMsg); err != nil {
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
@@ -295,8 +286,12 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 		if beaconDuty == nil || beaconDuty.IsStopped {
 			continue
 		}
+		slot := beaconDuty.DutySlot()
+		epoch := cr.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
 		switch beaconDuty.Type {
 		case types.BNRoleAttester:
+
+			// Attestation object
 			attestationData := constructAttestationData(beaconVote, beaconDuty)
 			aggregationBitfield := bitfield.NewBitlist(beaconDuty.CommitteeLength)
 			aggregationBitfield.SetBitAt(beaconDuty.ValidatorCommitteeIndex, true)
@@ -304,14 +299,46 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 				Data:            attestationData,
 				AggregationBits: aggregationBitfield,
 			}
-			root, _ := attestationData.HashTreeRoot()
+
+			// Root
+			domain, err := cr.GetBeaconNode().DomainData(epoch, types.DomainAttester)
+			if err != nil {
+				continue
+			}
+			root, err := types.ComputeETHSigningRoot(attestationData, domain)
+			if err != nil {
+				continue
+			}
+
+			// Add to map
 			attestationMap[beaconDuty.ValidatorIndex] = root
 			beaconObjects[root] = unSignedAtt
 		case types.BNRoleSyncCommittee:
+			// Block root
 			blockRoot := types.SSZBytes(beaconVote.BlockRoot[:])
-			root, _ := blockRoot.HashTreeRoot()
+			blockRootSlice := [32]byte{}
+			copy(blockRootSlice[:], blockRoot)
+
+			// Sync committee beacon object
+			syncMsg := &altair.SyncCommitteeMessage{
+				Slot:            slot,
+				BeaconBlockRoot: phase0.Root(blockRootSlice),
+				ValidatorIndex:  beaconDuty.ValidatorIndex,
+			}
+
+			// Root
+			domain, err := cr.GetBeaconNode().DomainData(epoch, types.DomainSyncCommittee)
+			if err != nil {
+				continue
+			}
+			root, err := types.ComputeETHSigningRoot(blockRoot, domain)
+			if err != nil {
+				continue
+			}
+
+			// Set root and beacon object
 			syncCommitteeMap[beaconDuty.ValidatorIndex] = root
-			beaconObjects[root] = blockRoot
+			beaconObjects[root] = syncMsg
 		}
 	}
 	return attestationMap, syncCommitteeMap, beaconObjects, nil
