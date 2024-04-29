@@ -210,13 +210,36 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	runnerMap := m["Runner"].(map[string]interface{})
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
-	duty := &types.BeaconDuty{}
-	byts, _ := json.Marshal(m["Duty"])
-	require.NoError(t, json.Unmarshal(byts, duty))
+	var testDuty types.Duty
+	if _, ok := m["CommitteeDuty"]; ok {
+		byts, err := json.Marshal(m["CommitteeDuty"])
+		if err != nil {
+			panic("cant marshal committee duty")
+		}
+		committeeDuty := &types.CommitteeDuty{}
+		err = json.Unmarshal(byts, committeeDuty)
+		if err != nil {
+			panic("cant unmarshal committee duty")
+		}
+		testDuty = committeeDuty
+	} else if _, ok := m["BeaconDuty"]; ok {
+		byts, err := json.Marshal(m["BeaconDuty"])
+		if err != nil {
+			panic("cant marshal beacon duty")
+		}
+		beaconDuty := &types.BeaconDuty{}
+		err = json.Unmarshal(byts, beaconDuty)
+		if err != nil {
+			panic("cant unmarshal beacon duty")
+		}
+		testDuty = beaconDuty
+	} else {
+		panic("no beacon or committee duty")
+	}
 
 	msgs := make([]*types.SignedSSVMessage, 0)
 	for _, msg := range m["Messages"].([]interface{}) {
-		byts, _ = json.Marshal(msg)
+		byts, _ := json.Marshal(msg)
 		typedMsg := &types.SignedSSVMessage{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		msgs = append(msgs, typedMsg)
@@ -225,7 +248,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
 	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
 	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ = json.Marshal(msg)
+		byts, _ := json.Marshal(msg)
 		typedMsg := &types.PartialSignatureMessages{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
@@ -257,7 +280,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 
 	return &tests2.MsgProcessingSpecTest{
 		Name:                    m["Name"].(string),
-		Duty:                    duty,
+		Duty:                    testDuty,
 		Runner:                  runner,
 		Messages:                msgs,
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),

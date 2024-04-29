@@ -14,11 +14,14 @@ import (
 
 var TestingSSVDomainType = types.JatoTestnet
 var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSVDomainType}
+var CommitteeMsgID = func() []byte {
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
+	return ret[:]
+}()
 var AttesterMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
 	return ret[:]
 }()
-
 var ProposerMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer)
 	return ret[:]
@@ -49,6 +52,14 @@ var EncodeConsensusDataTest = func(cd *types.ConsensusData) []byte {
 	return encodedCD
 }
 
+// BeaconVote data - Committee Runner
+
+var TestBeaconVoteByts, _ = TestBeaconVote.Encode()
+
+var TestBeaconVoteNextEpochByts, _ = TestBeaconVoteNextEpoch.Encode()
+
+// ConsensusData - Attester
+
 var TestAttesterConsensusData = &types.ConsensusData{
 	Duty:    *TestingAttesterDuty.BeaconDuties[0],
 	DataSSZ: TestingAttestationDataBytes,
@@ -63,6 +74,8 @@ var TestAttesterNextEpochConsensusData = &types.ConsensusData{
 }
 
 var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensusData.Encode()
+
+// ConsensusData - Aggregator
 
 var TestAggregatorConsensusData = &types.ConsensusData{
 	Duty:    TestingAggregatorDuty,
@@ -100,6 +113,8 @@ var TestAggregatorWithJustificationsConsensusData = func(ks *TestKeySet) *types.
 
 }
 
+// ConsensusData - Sync Committee
+
 // TestSyncCommitteeWithJustificationsConsensusData is an invalid sync committee msg (doesn't have pre-consensus)
 var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	justif := make([]*types.PartialSignatureMessages, 0)
@@ -129,6 +144,8 @@ var TestSyncCommitteeNextEpochConsensusData = &types.ConsensusData{
 }
 
 var TestSyncCommitteeNextEpochConsensusDataByts, _ = TestSyncCommitteeNextEpochConsensusData.Encode()
+
+// ConsensusData - Sync Committee Contribution
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeContributionDuty,
