@@ -19,6 +19,33 @@ func ValidDecided7Operators() tests.SpecTest {
 		Name: "consensus valid decided 7 operators",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name:     "attester",
+				Runner:   testingutils.CommitteeRunner(ks),
+				Duty:     testingutils.TestingAttesterDuty,
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
+				},
+			},
+			{
+				Name:     "sync committee",
+				Runner:   testingutils.CommitteeRunner(ks),
+				Duty:     testingutils.TestingSyncCommitteeDuty,
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
+				},
+			},
+			{
+				Name:     "attester and sync committee",
+				Runner:   testingutils.CommitteeRunner(ks),
+				Duty:     testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
+				},
+			},
+			{
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
