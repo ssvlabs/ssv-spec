@@ -52,37 +52,27 @@ func ConsensusNotStarted() tests.SpecTest {
 					// broadcasts when starting a new duty
 				},
 			},
-			// {
-			// 	Name: "attester",
-			// 	Runner: startRunner(
-			// 		testingutils.CommitteeRunner(ks),
-			// 		testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
-			// 			testingutils.TestingValidatorIndex,
-			// 		}),
-			// 	),
-			// 	Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-			// 	PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// },
-			// {
-			// 	Name:                    "sync committee",
-			// 	Runner:                  startRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
-			// 	Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-			// 	PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// },
-			// {
-			// 	Name: "attester and sync committee",
-			// 	Runner: startRunner(
-			// 		testingutils.CommitteeRunner(ks),
-			// 		testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-			// 			testingutils.TestingValidatorIndex,
-			// 		}),
-			// 	),
-			// 	Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-			// 	PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// },
+			{
+				Name:                    "attester",
+				Runner:                  startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
+				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
 			{
 				Name:                    "voluntary exit",
 				Runner:                  startRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty),
