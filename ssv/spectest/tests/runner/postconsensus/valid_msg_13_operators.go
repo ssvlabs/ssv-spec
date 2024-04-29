@@ -17,6 +17,51 @@ func ValidMessage13Operators() tests.SpecTest {
 		Name: "post consensus valid msg 13 operators",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+			},
+			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
