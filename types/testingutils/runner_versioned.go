@@ -5,6 +5,14 @@ import (
 	"github.com/bloxapp/ssv-spec/types"
 )
 
+var SSVDecidingMsgsForCommitteeRunner = func(beaconVote *types.BeaconVote, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
+	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
+
+	// consensus
+	qbftMsgs := SSVDecidingMsgsForHeightAndBeaconVote(beaconVote, id[:], height, ks)
+	return qbftMsgs
+}
+
 var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 

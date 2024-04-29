@@ -35,43 +35,45 @@ func GetSSZRootNoError(obj ssz.HashRoot) string {
 	return hex.EncodeToString(r[:])
 }
 
+var TestingBlockRoot = phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2}
+
 // Beacon vote
 
 var TestBeaconVote = types.BeaconVote{
-	BlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	BlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 	Target: &phase0.Checkpoint{
 		Epoch: 1,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 }
 
 var TestBeaconVoteNextEpoch = types.BeaconVote{
-	BlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	BlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 	Target: &phase0.Checkpoint{
 		Epoch: 1,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 }
 
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            TestingDutySlot,
 	Index:           3,
-	BeaconBlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	BeaconBlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 	Target: &phase0.Checkpoint{
 		Epoch: 1,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 }
 var TestingAttestationDataBytes = func() []byte {
@@ -82,14 +84,14 @@ var TestingAttestationDataBytes = func() []byte {
 var TestingAttestationNextEpochData = &phase0.AttestationData{
 	Slot:            TestingDutySlot2,
 	Index:           3,
-	BeaconBlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	BeaconBlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 	Target: &phase0.Checkpoint{
 		Epoch: 1,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 }
 var TestingAttestationNextEpochDataBytes = func() []byte {
@@ -161,7 +163,7 @@ const (
 	UnknownDutyType = 100
 )
 
-var TestingSyncCommitteeBlockRoot = phase0.Root{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+var TestingSyncCommitteeBlockRoot = TestingBlockRoot
 var TestingSyncCommitteeWrongBlockRoot = phase0.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommitteeMessage {
 	return &altair.SyncCommitteeMessage{

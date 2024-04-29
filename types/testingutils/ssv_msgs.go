@@ -299,6 +299,27 @@ var postConsensusAttestationMsg = func(
 	return &msgs
 }
 
+// Post Consensus - Attestation and Sync Committee
+
+var PostConsensusAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	return postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, false)
+}
+
+var postConsensusAttestationAndSyncCommitteeMsg = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	height qbft.Height,
+	wrongRoot bool,
+	wrongBeaconSig bool,
+) *types.PartialSignatureMessages {
+	attestationPSigMsg := postConsensusAttestationMsg(sk, id, height, wrongRoot, wrongBeaconSig)
+	syncCommitteePSigMessage := postConsensusSyncCommitteeMsg(sk, id, wrongRoot, wrongBeaconSig)
+
+	attestationPSigMsg.Messages = append(attestationPSigMsg.Messages, syncCommitteePSigMessage.Messages...)
+
+	return attestationPSigMsg
+}
+
 var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.OperatorID) *types.PartialSignatureMessages {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
