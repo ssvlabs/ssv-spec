@@ -151,7 +151,7 @@
 								]
 						}
 				],
-				"DataSSZ": "AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI="
+				"DataSSZ": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQI="
 		},
 		"ExpectedError": "could not unmarshal ssz: incorrect size"
 }

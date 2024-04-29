@@ -71,7 +71,7 @@
 										},
 										"ID": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 										"Round": 1,
-										"Height": 0,
+										"Height": 12,
 										"LastPreparedRound": 0,
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": null,
@@ -95,12 +95,12 @@
 						"DecidedValue": null,
 						"Finished": false,
 						"CommitteeDuty": {
-								"Slot": "0",
+								"Slot": "12",
 								"BeaconDuties": [
 										{
 												"Type": 3,
 												"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-												"Slot": "0",
+												"Slot": "12",
 												"ValidatorIndex": "1",
 												"CommitteeIndex": 3,
 												"CommitteeLength": 128,
@@ -222,7 +222,7 @@
 				},
 				"QBFTController": {
 						"Identifier": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
-						"Height": 0,
+						"Height": 12,
 						"StoredInstances": [
 								{
 										"State": {
@@ -286,7 +286,7 @@
 												},
 												"ID": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 12,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
