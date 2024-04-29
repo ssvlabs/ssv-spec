@@ -77,6 +77,7 @@ func (r BeaconRole) String() string {
 
 type Duty interface {
 	DutySlot() spec.Slot
+	RunnerRole() RunnerRole
 }
 
 // BeaconDuty represent data regarding the duty type with the duty data
@@ -150,6 +151,10 @@ func (bd *BeaconDuty) DutySlot() spec.Slot {
 	return bd.Slot
 }
 
+func (bd *BeaconDuty) RunnerRole() RunnerRole {
+	return MapDutyToRunnerRole(bd.Type)
+}
+
 // GetValidatorIndex returns the validator index
 func (bd *BeaconDuty) GetValidatorIndex() spec.ValidatorIndex {
 	return bd.ValidatorIndex
@@ -162,6 +167,10 @@ type CommitteeDuty struct {
 
 func (cd *CommitteeDuty) DutySlot() spec.Slot {
 	return cd.Slot
+}
+
+func (cd *CommitteeDuty) RunnerRole() RunnerRole {
+	return RoleCommittee
 }
 
 //
