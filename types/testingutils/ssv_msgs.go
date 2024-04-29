@@ -50,14 +50,14 @@ var EncodeConsensusDataTest = func(cd *types.ConsensusData) []byte {
 }
 
 var TestAttesterConsensusData = &types.ConsensusData{
-	Duty:    TestingAttesterDuty,
+	Duty:    *TestingAttesterDuty.BeaconDuties[0],
 	DataSSZ: TestingAttestationDataBytes,
 	Version: spec.DataVersionPhase0,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAttesterNextEpochConsensusData = &types.ConsensusData{
-	Duty:    TestingAttesterDutyNextEpoch,
+	Duty:    *TestingAttesterDutyNextEpoch.BeaconDuties[0],
 	DataSSZ: TestingAttestationNextEpochDataBytes,
 	Version: spec.DataVersionPhase0,
 }
@@ -78,7 +78,7 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 	}
 
 	return &types.ConsensusData{
-		Duty:                       TestingAttesterDuty,
+		Duty:                       *TestingAttesterDuty.BeaconDuties[0],
 		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAttestationDataBytes,
@@ -108,7 +108,7 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 	}
 
 	return &types.ConsensusData{
-		Duty:                       TestingSyncCommitteeDuty,
+		Duty:                       *TestingSyncCommitteeDuty.BeaconDuties[0],
 		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingSyncCommitteeBlockRoot[:],
@@ -116,14 +116,14 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 }
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
-	Duty:    TestingSyncCommitteeDuty,
+	Duty:    *TestingSyncCommitteeDuty.BeaconDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
 var TestSyncCommitteeNextEpochConsensusData = &types.ConsensusData{
-	Duty:    TestingSyncCommitteeDutyNextEpoch,
+	Duty:    *TestingSyncCommitteeDutyNextEpoch.BeaconDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
 }
