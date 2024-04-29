@@ -87,6 +87,27 @@ func PostWrongDecided() tests.SpecTest {
 				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb), testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
+			{
+				Name:           "attester",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty, 50),
+				Duty:           testingutils.TestingAttesterDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "sync committee",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty, 50),
+				Duty:           testingutils.TestingSyncCommitteeDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties, 50),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
 		},
 	}
 }

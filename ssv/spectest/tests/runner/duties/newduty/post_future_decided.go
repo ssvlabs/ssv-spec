@@ -76,62 +76,27 @@ func PostFutureDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb),
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
-			// {
-			// 	Name: "attester",
-			// 	Runner: futureDecide(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(
-			// 		testingutils.TestingDutySlot, []int{
-			// 			testingutils.TestingValidatorIndex,
-			// 		},
-			// 	)),
-			// 	Duty: &types.CommitteeDuty{
-			// 		Slot: testingutils.TestingDutySlot,
-			// 		BeaconDuties: []*types.BeaconDuty{
-			// 			&testingutils.TestingAttesterDuty,
-			// 		},
-			// 	},
-			// 	PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           expectedError,
-			// },
-			// {
-			// 	Name: "sync committee",
-			// 	Runner: futureDecide(testingutils.CommitteeRunner(ks),
-			// 		testingutils.TestingCommitteeSyncCommitteeDuty(
-			// 			testingutils.TestingDutySlot, []int{
-			// 				testingutils.TestingValidatorIndex,
-			// 			},
-			// 		),
-			// 	),
-			// 	Duty: &types.CommitteeDuty{
-			// 		Slot: testingutils.TestingDutySlot2,
-			// 		BeaconDuties: []*types.BeaconDuty{
-			// 			&testingutils.TestingSyncCommitteeDuty,
-			// 		},
-			// 	},
-			// 	PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           expectedError,
-			// },
-			// {
-			// 	Name: "attester and sync committee",
-			// 	Runner: futureDecide(testingutils.CommitteeRunner(ks),
-			// 		testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(
-			// 			testingutils.TestingDutySlot, []int{
-			// 				testingutils.TestingValidatorIndex,
-			// 			},
-			// 		),
-			// 	),
-			// 	Duty: &types.CommitteeDuty{
-			// 		Slot: testingutils.TestingDutySlot2,
-			// 		BeaconDuties: []*types.BeaconDuty{
-			// 			&testingutils.TestingSyncCommitteeDuty,
-			// 			&testingutils.TestingAttesterDuty,
-			// 		},
-			// 	},
-			// 	PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           expectedError,
-			// },
+			{
+				Name:           "attester",
+				Runner:         futureDecide(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:           testingutils.TestingAttesterDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "sync committee",
+				Runner:         futureDecide(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:           testingutils.TestingSyncCommitteeDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         futureDecide(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
 		},
 	}
 }

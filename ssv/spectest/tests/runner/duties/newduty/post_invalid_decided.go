@@ -86,58 +86,27 @@ func PostInvalidDecided() tests.SpecTest {
 					// broadcasts when starting a new duty
 				},
 			},
-			// {
-			// 	Name: "attester",
-			// 	Runner: decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{
-			// 		testingutils.TestingValidatorIndex,
-			// 	})),
-			// 	Duty: &types.CommitteeDuty{
-			// 		Slot: testingutils.TestingDutySlot2,
-			// 		BeaconDuties: []*types.BeaconDuty{
-			// 			&testingutils.TestingAttesterDutyNextEpoch,
-			// 		},
-			// 	},
-			// 	PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-			// 	OutputMessages: []*types.PartialSignatureMessages{
-			// 		testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-			// 		// broadcasts when starting a new duty
-			// 	},
-			// },
-			// {
-			// 	Name: "sync committee",
-			// 	Runner: decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-			// 		testingutils.TestingValidatorIndex,
-			// 	})),
-			// 	Duty: &types.CommitteeDuty{
-			// 		Slot: testingutils.TestingDutySlot2,
-			// 		BeaconDuties: []*types.BeaconDuty{
-			// 			&testingutils.TestingSyncCommitteeDutyNextEpoch,
-			// 		},
-			// 	},
-			// 	PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-			// 	OutputMessages: []*types.PartialSignatureMessages{
-			// 		testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-			// 		// broadcasts when starting a new duty
-			// 	},
-			// },
-			// {
-			// 	Name: "attester and sync committee",
-			// 	Runner: decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(testingutils.TestingDutySlot, []int{
-			// 		testingutils.TestingValidatorIndex,
-			// 	})),
-			// 	Duty: &types.CommitteeDuty{
-			// 		Slot: testingutils.TestingDutySlot2,
-			// 		BeaconDuties: []*types.BeaconDuty{
-			// 			&testingutils.TestingSyncCommitteeDutyNextEpoch,
-			// 			&testingutils.TestingAttesterDutyNextEpoch,
-			// 		},
-			// 	},
-			// 	PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-			// 	OutputMessages: []*types.PartialSignatureMessages{
-			// 		testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-			// 		// broadcasts when starting a new duty
-			// 	},
-			// },
+			{
+				Name:                    "attester",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
 		},
 	}
 }
