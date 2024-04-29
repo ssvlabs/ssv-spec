@@ -132,8 +132,8 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 			postConsensusMsg.Messages = append(postConsensusMsg.Messages, partialMsg)
 
 		case types.BNRoleSyncCommittee:
-			syncCommitteeMessage := ConstructSyncCommittee(beaconVote, duty)
-			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, syncCommitteeMessage, duty.DutySlot(),
+			blockRoot := beaconVote.BlockRoot
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, types.SSZBytes(blockRoot[:]), duty.DutySlot(),
 				types.DomainSyncCommittee)
 			if err != nil {
 				return errors.Wrap(err, "failed signing sync committee message")
@@ -214,8 +214,18 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
 				}
 			} else if role == types.BNRoleSyncCommittee {
-				syncMsg := beaconObjects[root].(*altair.SyncCommitteeMessage)
-				syncMsg.Signature = specSig
+				// Get root
+				blockRoot := beaconObjects[root].(types.SSZBytes)
+				blockRootSlice := [32]byte{}
+				copy(blockRootSlice[:], blockRoot)
+				// Create sync committee message
+				syncMsg := &altair.SyncCommitteeMessage{
+					Slot:            cr.BaseRunner.State.StartingDuty.DutySlot(),
+					BeaconBlockRoot: phase0.Root(blockRootSlice),
+					ValidatorIndex:  validator,
+					Signature:       specSig,
+				}
+				// Broadcast
 				if err := cr.beacon.SubmitSyncMessage(syncMsg); err != nil {
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
 				}
@@ -298,10 +308,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			attestationMap[beaconDuty.ValidatorIndex] = root
 			beaconObjects[root] = unSignedAtt
 		case types.BNRoleSyncCommittee:
-			syncCommitteeMessage := ConstructSyncCommittee(beaconVote, beaconDuty)
-			root, _ := syncCommitteeMessage.HashTreeRoot()
+			blockRoot := types.SSZBytes(beaconVote.BlockRoot[:])
+			root, _ := blockRoot.HashTreeRoot()
 			syncCommitteeMap[beaconDuty.ValidatorIndex] = root
-			beaconObjects[root] = syncCommitteeMessage
+			beaconObjects[root] = blockRoot
 		}
 	}
 	return attestationMap, syncCommitteeMap, beaconObjects, nil
@@ -346,12 +356,5 @@ func constructAttestationData(vote *types.BeaconVote, duty *types.BeaconDuty) *p
 		BeaconBlockRoot: vote.BlockRoot,
 		Source:          vote.Source,
 		Target:          vote.Target,
-	}
-}
-func ConstructSyncCommittee(vote *types.BeaconVote, duty *types.BeaconDuty) *altair.SyncCommitteeMessage {
-	return &altair.SyncCommitteeMessage{
-		Slot:            duty.Slot,
-		BeaconBlockRoot: vote.BlockRoot,
-		ValidatorIndex:  duty.ValidatorIndex,
 	}
 }
