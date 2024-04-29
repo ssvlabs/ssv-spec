@@ -60,7 +60,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 	// TODO maybe nicer to do this without switch
 	switch runner.(type) {
-	case *CommitteeRunner:
+	case CommitteeRunner:
 		decidedValue := &types.BeaconVote{}
 		if err := decidedValue.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")

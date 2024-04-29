@@ -151,7 +151,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 
 	// decode consensus data
 	switch runner.(type) {
-	case *CommitteeRunner:
+	case CommitteeRunner:
 		decidedValue = &types.BeaconVote{}
 	default:
 		decidedValue = &types.ConsensusData{}
