@@ -37,6 +37,30 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		Name: "consensus future decided no running instance",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name:           "attester",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingAttesterDuty,
+				DontStartDuty:  true,
+				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingSyncCommitteeDuty,
+				DontStartDuty:  true,
+				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties,
+				DontStartDuty:  true,
+				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
 				Name:           "sync committee contribution",
 				Runner:         testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:           &testingutils.TestingSyncCommitteeContributionDuty,
@@ -52,14 +76,6 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregator, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
-			// {
-			// 	Name:           "attester and sync committee",
-			// 	Runner:         testingutils.CommitteeRunner(ks),
-			// 	Duty:           &testingutils.TestingAttesterDuty,
-			// 	DontStartDuty:  true,
-			// 	Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, testingutils.TestingDutySlot+1)},
-			// 	OutputMessages: []*types.PartialSignatureMessages{},
-			// },
 		},
 	}
 
