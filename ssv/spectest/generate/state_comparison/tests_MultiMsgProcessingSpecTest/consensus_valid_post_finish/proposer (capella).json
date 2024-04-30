@@ -1240,5 +1240,5 @@
 				},
 				"BeaconNetwork": "now_test_network",
 				"BeaconRoleType": 2
-		},
+		}
 }
