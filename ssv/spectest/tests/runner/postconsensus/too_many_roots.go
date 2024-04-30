@@ -16,6 +16,54 @@ func TooManyRoots() tests.SpecTest {
 		Name: "post consensus too many roots",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationTooManyRootsMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				// No error for this runner type
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeTooManyRootsMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				// No error for this runner type
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgTooManyRootsMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				// No error for this runner type
+			},
+			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),

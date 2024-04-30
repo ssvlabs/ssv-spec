@@ -260,7 +260,7 @@ func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, 
 // This function signature returns only one domain type
 // instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
 func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{}, types.DomainCommittee, nil
+	return []ssz.HashRoot{}, types.DomainAttester, nil
 }
 
 func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (

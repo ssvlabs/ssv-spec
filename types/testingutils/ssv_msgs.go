@@ -309,6 +309,18 @@ var PostConsensusAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id typ
 	return postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, false)
 }
 
+var PostConsensusAttestationAndSyncCommitteeMsgTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	ret := postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, false)
+	ret.Messages = append(ret.Messages, ret.Messages[0])
+
+	msg := &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
+		Messages: ret.Messages,
+	}
+	return msg
+}
+
 var postConsensusAttestationAndSyncCommitteeMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
