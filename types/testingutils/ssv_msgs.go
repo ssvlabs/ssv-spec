@@ -14,50 +14,68 @@ import (
 
 var TestingSSVDomainType = types.JatoTestnet
 var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSVDomainType}
-var AttesterMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
+var CommitteeMsgID = func() []byte {
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
 	return ret[:]
 }()
-
+var AttesterMsgID = func() []byte {
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
+	return ret[:]
+}()
 var ProposerMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleProposer)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer)
 	return ret[:]
 }()
 var AggregatorMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAggregator)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleAggregator)
 	return ret[:]
 }()
 var SyncCommitteeMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommittee)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
 	return ret[:]
 }()
 var SyncCommitteeContributionMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleSyncCommitteeContribution)
 	return ret[:]
 }()
 var ValidatorRegistrationMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleValidatorRegistration)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleValidatorRegistration)
 	return ret[:]
 }()
 var VoluntaryExitMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleVoluntaryExit)
+	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleVoluntaryExit)
 	return ret[:]
 }()
 
+var EncodeConsensusDataTest = func(cd *types.ConsensusData) []byte {
+	encodedCD, _ := cd.Encode()
+	return encodedCD
+}
+
+// BeaconVote data - Committee Runner
+
+var TestBeaconVoteByts, _ = TestBeaconVote.Encode()
+
+var TestBeaconVoteNextEpochByts, _ = TestBeaconVoteNextEpoch.Encode()
+
+// ConsensusData - Attester
+
 var TestAttesterConsensusData = &types.ConsensusData{
-	Duty:    TestingAttesterDuty,
+	Duty:    *TestingAttesterDuty.BeaconDuties[0],
 	DataSSZ: TestingAttestationDataBytes,
 	Version: spec.DataVersionPhase0,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAttesterNextEpochConsensusData = &types.ConsensusData{
-	Duty:    TestingAttesterDutyNextEpoch,
+	Duty:    *TestingAttesterDutyNextEpoch.BeaconDuties[0],
 	DataSSZ: TestingAttestationNextEpochDataBytes,
 	Version: spec.DataVersionPhase0,
 }
 
 var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensusData.Encode()
+
+// ConsensusData - Aggregator
 
 var TestAggregatorConsensusData = &types.ConsensusData{
 	Duty:    TestingAggregatorDuty,
@@ -73,7 +91,7 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 	}
 
 	return &types.ConsensusData{
-		Duty:                       TestingAttesterDuty,
+		Duty:                       *TestingAttesterDuty.BeaconDuties[0],
 		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAttestationDataBytes,
@@ -95,6 +113,8 @@ var TestAggregatorWithJustificationsConsensusData = func(ks *TestKeySet) *types.
 
 }
 
+// ConsensusData - Sync Committee
+
 // TestSyncCommitteeWithJustificationsConsensusData is an invalid sync committee msg (doesn't have pre-consensus)
 var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *types.ConsensusData {
 	justif := make([]*types.PartialSignatureMessages, 0)
@@ -103,7 +123,7 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 	}
 
 	return &types.ConsensusData{
-		Duty:                       TestingSyncCommitteeDuty,
+		Duty:                       *TestingSyncCommitteeDuty.BeaconDuties[0],
 		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingSyncCommitteeBlockRoot[:],
@@ -111,19 +131,21 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 }
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
-	Duty:    TestingSyncCommitteeDuty,
+	Duty:    *TestingSyncCommitteeDuty.BeaconDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
 var TestSyncCommitteeNextEpochConsensusData = &types.ConsensusData{
-	Duty:    TestingSyncCommitteeDutyNextEpoch,
+	Duty:    *TestingSyncCommitteeDutyNextEpoch.BeaconDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
 }
 
 var TestSyncCommitteeNextEpochConsensusDataByts, _ = TestSyncCommitteeNextEpochConsensusData.Encode()
+
+// ConsensusData - Sync Committee Contribution
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeContributionDuty,
@@ -150,35 +172,39 @@ var TestConsensusWrongDutyPKData = &types.ConsensusData{
 var TestConsensusWrongDutyPKDataByts, _ = TestConsensusWrongDutyPKData.Encode()
 
 var SSVMsgAttester = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
 }
 
 var SSVMsgWrongID = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingWrongValidatorPubKey[:], types.BNRoleAttester))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingWrongValidatorPubKey[:], types.RoleCommittee))
+}
+
+var SSVMsgCommittee = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
 }
 
 var SSVMsgProposer = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleProposer))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer))
 }
 
 var SSVMsgAggregator = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAggregator))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleAggregator))
 }
 
 var SSVMsgSyncCommittee = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommittee))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
 }
 
 var SSVMsgSyncCommitteeContribution = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleSyncCommitteeContribution))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleSyncCommitteeContribution))
 }
 
 var SSVMsgValidatorRegistration = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleValidatorRegistration))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleValidatorRegistration))
 }
 
 var SSVMsgVoluntaryExit = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleVoluntaryExit))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleVoluntaryExit))
 }
 
 var ssvMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.PartialSignatureMessages, msgID types.MessageID) *types.SSVMessage {
@@ -209,6 +235,14 @@ var ssvMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.PartialSignatu
 
 var PostConsensusWrongAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 	return postConsensusAttestationMsg(sk, id, height, true, false)
+}
+
+var PostConsensusWrongValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	msg := postConsensusAttestationMsg(sk, id, height, true, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
 }
 
 var PostConsensusWrongSigAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
@@ -270,10 +304,69 @@ var postConsensusAttestationMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
 	return &msgs
+}
+
+// Post Consensus - Attestation and Sync Committee
+
+var PostConsensusAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	return postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, false)
+}
+
+var PostConsensusWrongAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	return postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, true, false)
+}
+
+var PostConsensusWrongValidatorIndexAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	msg := postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, true, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
+var PostConsensusWrongSigAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	return postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, true)
+}
+
+var PostConsensusAttestationAndSyncCommitteeMsgTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	ret := postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, false)
+	ret.Messages = append(ret.Messages, ret.Messages[0])
+
+	msg := &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
+		Messages: ret.Messages,
+	}
+	return msg
+}
+
+var PostConsensusAttestationAndSyncCommitteeMsgTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	msg := &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
+		Messages: []*types.PartialSignatureMessage{},
+	}
+	return msg
+}
+
+var postConsensusAttestationAndSyncCommitteeMsg = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	height qbft.Height,
+	wrongRoot bool,
+	wrongBeaconSig bool,
+) *types.PartialSignatureMessages {
+	attestationPSigMsg := postConsensusAttestationMsg(sk, id, height, wrongRoot, wrongBeaconSig)
+	syncCommitteePSigMessage := postConsensusSyncCommitteeMsg(sk, id, wrongRoot, wrongBeaconSig)
+
+	attestationPSigMsg.Messages = append(attestationPSigMsg.Messages, syncCommitteePSigMessage.Messages...)
+
+	return attestationPSigMsg
 }
 
 var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.OperatorID) *types.PartialSignatureMessages {
@@ -290,6 +383,7 @@ var PreConsensusFailedMsg = func(msgSigner *bls.SecretKey, msgSignerID types.Ope
 				PartialSignature: signed[:],
 				SigningRoot:      root,
 				Signer:           msgSignerID,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -326,6 +420,7 @@ var randaoMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 		if wrongRoot {
 			msg.SigningRoot = [32]byte{}
@@ -402,6 +497,7 @@ var selectionProofMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           beaconid,
+			ValidatorIndex:   TestingValidatorIndex,
 		})
 	}
 
@@ -470,6 +566,7 @@ var validatorRegistrationMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           beaconID,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 		msgs.Messages = append(msgs.Messages, msg)
 	}
@@ -478,6 +575,7 @@ var validatorRegistrationMsg = func(
 		PartialSignature: signed[:],
 		SigningRoot:      root,
 		Signer:           id,
+		ValidatorIndex:   TestingValidatorIndex,
 	}
 	if wrongRoot {
 		msg.SigningRoot = [32]byte{}
@@ -543,6 +641,7 @@ var VoluntaryExitMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           beaconID,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 		msgs.Messages = append(msgs.Messages, msg)
 	}
@@ -551,6 +650,7 @@ var VoluntaryExitMsg = func(
 		PartialSignature: signed[:],
 		SigningRoot:      root,
 		Signer:           id,
+		ValidatorIndex:   TestingValidatorIndex,
 	}
 	if wrongRoot {
 		msg.SigningRoot = [32]byte{}
@@ -588,6 +688,14 @@ var PostConsensusWrongAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorI
 	return postConsensusAggregatorMsg(sk, id, true, false)
 }
 
+var PostConsensusWrongValidatorIndexAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	msg := postConsensusAggregatorMsg(sk, id, true, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
 var PostConsensusWrongSigAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
 	return postConsensusAggregatorMsg(sk, id, false, true)
 }
@@ -620,6 +728,7 @@ var postConsensusAggregatorMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -655,6 +764,14 @@ var PostConsensusWrongSyncCommitteeMsg = func(sk *bls.SecretKey, id types.Operat
 	return postConsensusSyncCommitteeMsg(sk, id, true, false)
 }
 
+var PostConsensusWrongValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	msg := postConsensusSyncCommitteeMsg(sk, id, true, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
 var PostConsensusWrongSigSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
 	return postConsensusSyncCommitteeMsg(sk, id, false, true)
 }
@@ -685,6 +802,7 @@ var postConsensusSyncCommitteeMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -776,6 +894,7 @@ var contributionProofMsg = func(
 			PartialSignature: sig[:],
 			SigningRoot:      ensureRoot(root),
 			Signer:           beaconid,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 
 		msgs = append(msgs, msg)
@@ -830,6 +949,14 @@ var PostConsensusWrongSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id 
 	return postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, true, false, false)
 }
 
+var PostConsensusWrongValidatorIndexSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types.OperatorID, keySet *TestKeySet) *types.PartialSignatureMessages {
+	msg := postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, true, false, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
 var PostConsensusWrongSigSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types.OperatorID, keySet *TestKeySet) *types.PartialSignatureMessages {
 	return postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, false, true, false)
 }
@@ -869,6 +996,7 @@ var postConsensusSyncCommitteeContributionMsg = func(
 			PartialSignature: signed,
 			SigningRoot:      root,
 			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 
 		msgs = append(msgs, msg)

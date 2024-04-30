@@ -13,14 +13,45 @@ import (
 // PreDecided tests a valid SignedPartialSignatureMessage sent before decided reached, should error
 func PreDecided() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: no decided value"
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus before decided",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				ExpectedError:          err,
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				ExpectedError:          err,
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				ExpectedError:          err,
+			},
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -58,9 +89,6 @@ func PreDecided() tests.SpecTest {
 				},
 				BeaconBroadcastedRoots: []string{},
 				ExpectedError:          err,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

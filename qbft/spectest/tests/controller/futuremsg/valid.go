@@ -36,7 +36,7 @@ func createBaseController() *qbft.Controller {
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		id[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 		config)
 	return contr
 }

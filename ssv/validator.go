@@ -27,7 +27,7 @@ func NewValidator(
 	share *types.Share,
 	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
-	runners map[RunnerRole]Runner,
+	runners map[types.RunnerRole]Runner,
 	signatureVerifier types.SignatureVerifier,
 ) *Validator {
 	return &Validator{
@@ -43,11 +43,11 @@ func NewValidator(
 }
 
 // StartDuty starts a duty for the validator
-func (v *Validator) StartDuty(duty *types.BeaconDuty) error {
-	role := types.MapDutyToRunnerRole(duty.Type)
+func (v *Validator) StartDuty(duty types.Duty) error {
+	role := duty.RunnerRole()
 	dutyRunner := v.DutyRunners[role]
 	if dutyRunner == nil {
-		return errors.Errorf("duty type %s not supported", duty.Type.String())
+		return errors.Errorf("duty type %s not supported", role.String())
 	}
 	return dutyRunner.StartNewDuty(duty)
 }

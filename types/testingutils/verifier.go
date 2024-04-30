@@ -41,7 +41,7 @@ func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types
 	return nil
 }
 
-func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []byte, signer types.OperatorID, operators []*types.Operator) error {
+func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []byte, signer types.OperatorID, operators []*types.CommitteeMember) error {
 
 	for _, op := range operators {
 		// Find signer

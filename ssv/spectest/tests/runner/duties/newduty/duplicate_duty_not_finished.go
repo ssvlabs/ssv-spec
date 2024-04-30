@@ -16,20 +16,17 @@ import (
 // - Runner doesn't finish the duty
 // - Runner is assigned the same duty again
 func DuplicateDutyNotFinished() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
-	notFinishRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	notFinishRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		return r
 	}
 
@@ -85,9 +82,25 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
 			},
 			{
+				Name:                    "attester",
+				Runner:                  notFinishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDuty,
+				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				ExpectedError:           expectedError,
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  notFinishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDuty,
+				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				ExpectedError:           expectedError,
+			},
+			{
 				Name:                    "attester and sync committee",
-				Runner:                  notFinishRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDuty,
+				Runner:                  notFinishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties,
 				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedError,

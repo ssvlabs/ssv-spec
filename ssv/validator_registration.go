@@ -33,7 +33,7 @@ func NewValidatorRegistrationRunner(
 ) Runner {
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType: RoleValidatorRegistration,
+			RunnerRoleType: types.RoleValidatorRegistration,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},
@@ -46,7 +46,6 @@ func NewValidatorRegistrationRunner(
 }
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty) error {
-	r.executeDuty(duty)
 	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty))
 }
@@ -79,8 +78,18 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 	specSig := phase0.BLSSignature{}
 	copy(specSig[:], fullSig)
 
-	if err := r.beacon.SubmitValidatorRegistration(r.BaseRunner.Share[0].ValidatorPubKey[:],
-		r.BaseRunner.Share[0].FeeRecipientAddress, specSig); err != nil {
+	// Get share
+	if len(r.BaseRunner.Share) == 0 {
+		return errors.New("no share to get validator public key")
+	}
+	var share *types.Share
+	for _, shareInstance := range r.BaseRunner.Share {
+		share = shareInstance
+		break
+	}
+
+	if err := r.beacon.SubmitValidatorRegistration(share.ValidatorPubKey[:],
+		share.FeeRecipientAddress, specSig); err != nil {
 		return errors.Wrap(err, "could not submit validator registration")
 	}
 
@@ -97,7 +106,10 @@ func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.Part
 }
 
 func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	vr, err := r.calculateValidatorRegistration()
+	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil {
+		return nil, types.DomainError, errors.New("no running duty to compute preconsensus roots and domain")
+	}
+	vr, err := r.calculateValidatorRegistration(r.BaseRunner.State.StartingDuty)
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not calculate validator registration")
 	}
@@ -110,7 +122,7 @@ func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]s
 }
 
 func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
-	vr, err := r.calculateValidatorRegistration()
+	vr, err := r.calculateValidatorRegistration(duty)
 	if err != nil {
 		return errors.Wrap(err, "could not calculate validator registration")
 	}
@@ -127,7 +139,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], RunnerRole(r.BaseRunner.RunnerRoleType))
+	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], types.RunnerRole(r.BaseRunner.RunnerRoleType))
 	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
@@ -139,14 +151,24 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 	return nil
 }
 
-func (r *ValidatorRegistrationRunner) calculateValidatorRegistration() (*v1.ValidatorRegistration, error) {
-	pk := phase0.BLSPubKey{}
-	copy(pk[:], r.BaseRunner.Share[0].ValidatorPubKey[:])
+func (r *ValidatorRegistrationRunner) calculateValidatorRegistration(duty types.Duty) (*v1.ValidatorRegistration, error) {
 
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
+	if len(r.BaseRunner.Share) == 0 {
+		return nil, errors.New("no share to get validator public key")
+	}
+	var share *types.Share
+	for _, shareInstance := range r.BaseRunner.Share {
+		share = shareInstance
+		break
+	}
+
+	pk := phase0.BLSPubKey{}
+	copy(pk[:], share.ValidatorPubKey[:])
+
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(duty.DutySlot())
 
 	return &v1.ValidatorRegistration{
-		FeeRecipient: r.BaseRunner.Share[0].FeeRecipientAddress,
+		FeeRecipient: share.FeeRecipientAddress,
 		GasLimit:     types.DefaultGasLimit,
 		Timestamp:    r.BaseRunner.BeaconNetwork.EpochStartTime(epoch),
 		Pubkey:       pk,

@@ -8,10 +8,8 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// InvalidDecode tests a SignedSSVMessage with wrong data that can't be decoded
-func InvalidDecode() tests.SpecTest {
-
-	panic("implement me")
+// NilSSVMessage tests a SignedSSVMessage with wrong data that can't be decoded
+func NilSSVMessage() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
@@ -25,6 +23,48 @@ func InvalidDecode() tests.SpecTest {
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus nil ssvmessage",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingAttesterDuty,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingSyncCommitteeDuty,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -84,9 +124,6 @@ func InvalidDecode() tests.SpecTest {
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 		},
 	}

@@ -38,7 +38,7 @@ func NewProposerRunner(
 ) Runner {
 	return &ProposerRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     RoleProposer,
+			RunnerRoleType:     types.RoleProposer,
 			BeaconNetwork:      beaconNetwork,
 			Share:              share,
 			QBFTController:     qbftController,
@@ -112,8 +112,13 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 		Version: ver,
 		DataSSZ: byts,
 	}
+	
+	inputBytes, err := input.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not encode ConsensusData")
+	}
 
-	if err := r.BaseRunner.decide(r, input); err != nil {
+	if err := r.BaseRunner.decide(r, input.Duty.DutySlot(), inputBytes); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 

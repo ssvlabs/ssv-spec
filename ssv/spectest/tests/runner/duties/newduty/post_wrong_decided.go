@@ -16,13 +16,11 @@ import (
 // This can happen if we receive a future decided message from the network.
 func PostWrongDecided() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
 	// https://github.com/bloxapp/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
 	// Maybe we should ensure that `ValidateDecided()` doesn't let the runner enter this state and delete the test?
-	decideWrong := func(r ssv.Runner, duty *types.BeaconDuty, higherDecidedSlot qbft.Height) ssv.Runner {
+	decideWrong := func(r ssv.Runner, duty types.Duty, higherDecidedSlot qbft.Height) ssv.Runner {
 		storedInstances := r.GetBaseRunner().QBFTController.StoredInstances
 		storedInstances = append(storedInstances, nil)
 		storedInstances = append(storedInstances, nil)
@@ -90,7 +88,25 @@ func PostWrongDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb), testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 			{
-				Name: "attester and sync committee",
+				Name:           "attester",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty, 50),
+				Duty:           testingutils.TestingAttesterDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "sync committee",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty, 50),
+				Duty:           testingutils.TestingSyncCommitteeDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties, 50),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
 			},
 		},
 	}

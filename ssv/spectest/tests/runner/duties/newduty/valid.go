@@ -9,10 +9,8 @@ import (
 
 // Valid tests a valid start duty
 func Valid() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty valid",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -43,14 +41,24 @@ func Valid() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
-			{ //#TODO CHECK
-				Name:   "attester and sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty: func() types.Duty {
-					// #TODO
-					d, _ := testingutils.TestingCommitteeAttesterAndSyncCommitteeDuty(0, []int{1})
-					return d
-				}(),
+			{
+				Name:                    "attester",
+				Runner:                  testingutils.CommitteeRunner(ks),
+				Duty:                    testingutils.TestingAttesterDuty,
+				PostDutyRunnerStateRoot: "7f926e54651ed34901256e8c82a40658647afe17cb089f6c1d7406e7350f4c2e",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  testingutils.CommitteeRunner(ks),
+				Duty:                    testingutils.TestingSyncCommitteeDuty,
+				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  testingutils.CommitteeRunner(ks),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties,
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},

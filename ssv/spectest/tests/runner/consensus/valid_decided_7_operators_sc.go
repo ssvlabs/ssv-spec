@@ -24,19 +24,19 @@ func validDecided7OperatorsSyncCommitteeContributionSC() *comparable.StateCompar
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleSyncCommitteeContribution)[:5],
+					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleSyncCommitteeContribution)[:5],
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, spec.DataVersionPhase0)),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					Share:             testingutils.TestingOperator(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -52,56 +52,7 @@ func validDecided7OperatorsSyncCommitteeContributionSC() *comparable.StateCompar
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleSyncCommitteeContribution)[5:16],
-			)
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
-			return ret
-		}(),
-	}
-}
-
-// validDecided7OperatorsSyncCommitteeSC returns a non-finished decided runner upon a valid quorum decided on a value.
-func validDecided7OperatorsSyncCommitteeSC() *comparable.StateComparison {
-	ks := testingutils.Testing7SharesSet()
-	cd := testingutils.TestSyncCommitteeConsensusData
-	cdBytes := testingutils.TestSyncCommitteeConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.SyncCommitteeRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleSyncCommittee)[:5],
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SignedSSVMessage{},
-				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            testingutils.TestingDutySlot,
-					LastPreparedRound: qbft.FirstRound,
-					LastPreparedValue: cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
-						qbft.Height(testingutils.TestingDutySlot)),
-					Decided:      true,
-					DecidedValue: cdBytes,
-				},
-				StartValue: cdBytes,
-			}
-			comparable.SetMessages(
-				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleSyncCommittee)[:11],
+				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleSyncCommitteeContribution)[5:16],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
@@ -123,19 +74,19 @@ func validDecided7OperatorsAggregatorSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleAggregator)[:5],
+					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleAggregator)[:5],
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, spec.DataVersionPhase0)),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					Share:             testingutils.TestingOperator(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -151,57 +102,7 @@ func validDecided7OperatorsAggregatorSC() *comparable.StateComparison {
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleAggregator)[5:16],
-			)
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
-			return ret
-		}(),
-	}
-}
-
-// validDecided7OperatorsAttesterSC returns a non-finished decided runner upon a valid quorum decided on a value.
-// There are pre-consensus messages in the container that start the consensus instance.
-func validDecided7OperatorsAttesterSC() *comparable.StateComparison {
-	ks := testingutils.Testing7SharesSet()
-	cd := testingutils.TestAttesterConsensusData
-	cdBytes := testingutils.TestAttesterConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.CommitteeRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleAttester)[:5],
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SignedSSVMessage{},
-				),
-				DecidedValue: comparable.FixIssue178(cd, spec.DataVersionPhase0),
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            testingutils.TestingDutySlot,
-					LastPreparedRound: qbft.FirstRound,
-					LastPreparedValue: cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
-						qbft.Height(testingutils.TestingDutySlot)),
-					Decided:      true,
-					DecidedValue: cdBytes,
-				},
-				StartValue: cdBytes,
-			}
-			comparable.SetMessages(
-				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleAttester)[:11],
+				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleAggregator)[5:16],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			ret.GetBaseRunner().QBFTController.Height = testingutils.TestingDutySlot
@@ -223,19 +124,19 @@ func validDecided7OperatorsProposerSC(version spec.DataVersion) *comparable.Stat
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[:5],
+					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleProposer)[:5],
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, version)),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					Share:             testingutils.TestingOperator(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
@@ -251,7 +152,7 @@ func validDecided7OperatorsProposerSC(version spec.DataVersion) *comparable.Stat
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[5:16],
+				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleProposer)[5:16],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))
@@ -273,19 +174,19 @@ func validDecided7OperatorsBlindedProposerSC(version spec.DataVersion) *comparab
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
-					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[:5],
+					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleProposer)[:5],
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(5),
 					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: comparable.FixIssue178(cd, version),
+				DecidedValue: testingutils.EncodeConsensusDataTest(comparable.FixIssue178(cd, version)),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					Share:             testingutils.TestingOperator(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
@@ -301,7 +202,7 @@ func validDecided7OperatorsBlindedProposerSC(version spec.DataVersion) *comparab
 			}
 			comparable.SetMessages(
 				ret.GetBaseRunner().State.RunningInstance,
-				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.BNRoleProposer)[5:16],
+				testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleProposer)[5:16],
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 			ret.GetBaseRunner().QBFTController.Height = qbft.Height(testingutils.TestingDutySlotV(version))

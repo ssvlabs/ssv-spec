@@ -1,15 +1,12 @@
 package ssv
 
 import (
-	"bytes"
-	"crypto/sha256"
-	"encoding/binary"
 	"fmt"
+
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
-	"sort"
 )
 
 type Committee struct {
@@ -41,7 +38,7 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
 	c.Runners[duty.Slot] = c.CreateRunnerFn()
-	validatorToStopMap := make(map[spec.Slot]types.ValidatorPK)
+	var validatorToStopMap map[spec.Slot]types.ValidatorPK
 	// Filter old duties based on highest attesting slot
 	duty, validatorToStopMap, c.HighestAttestingSlotMap = FilterCommitteeDuty(duty, c.HighestAttestingSlotMap)
 	// Stop validators with old duties
@@ -59,11 +56,13 @@ func (c *Committee) stopDuties(validatorToStopMap map[spec.Slot]types.ValidatorP
 	}
 }
 
-// FilterCommitteeDuty filters the committee duty. It returns the new duty, the validators to stop and the highest attesting slot map
+// FilterCommitteeDuty filters the committee duties by the slots given per validator.
+// It returns the filtered duties, the validators to stop and updated slot map.
 func FilterCommitteeDuty(duty *types.CommitteeDuty, slotMap map[types.ValidatorPK]spec.Slot) (
 	*types.CommitteeDuty,
 	map[spec.Slot]types.ValidatorPK,
-	map[types.ValidatorPK]spec.Slot) {
+	map[types.ValidatorPK]spec.Slot,
+) {
 	validatorsToStop := make(map[spec.Slot]types.ValidatorPK)
 
 	for i, beaconDuty := range duty.BeaconDuties {
@@ -72,7 +71,7 @@ func FilterCommitteeDuty(duty *types.CommitteeDuty, slotMap map[types.ValidatorP
 		if exists {
 			if slot < beaconDuty.Slot {
 				validatorsToStop[beaconDuty.Slot] = validatorPK
-				slot = beaconDuty.Slot
+				slotMap[validatorPK] = beaconDuty.Slot
 			} else { // else don't run duty with old slot
 				duty.BeaconDuties[i] = nil
 			}
@@ -121,17 +120,6 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 }
 
-func (c *Committee) validateMessage(msg *types.SSVMessage) error {
-	if !c.Operator.ClusterID.MessageIDBelongs(msg.GetID()) {
-		return errors.New("Message ID does not match cluster IF")
-	}
-	if len(msg.GetData()) == 0 {
-		return errors.New("msg data is invalid")
-	}
-
-	return nil
-}
-
 // updateAttestingSlotMap updates the highest attesting slot map from beacon duties
 func (c *Committee) updateAttestingSlotMap(duty *types.CommitteeDuty) {
 	for _, beaconDuty := range duty.BeaconDuties {
@@ -142,26 +130,4 @@ func (c *Committee) updateAttestingSlotMap(duty *types.CommitteeDuty) {
 			}
 		}
 	}
-}
-
-type ClusterID [32]byte
-
-func (cid ClusterID) MessageIDBelongs(msgID types.MessageID) bool {
-	id := msgID.GetSenderID()[16:]
-	return bytes.Equal(id, cid[:])
-}
-
-// Return a 32 bytes ID for the cluster of operators
-func getClusterID(committee []types.OperatorID) ClusterID {
-	// sort
-	sort.Slice(committee, func(i, j int) bool {
-		return committee[i] < committee[j]
-	})
-	// Convert to bytes
-	bytes := make([]byte, len(committee)*4)
-	for i, v := range committee {
-		binary.LittleEndian.PutUint32(bytes[i*4:], uint32(v))
-	}
-	// Hash
-	return sha256.Sum256(bytes)
 }

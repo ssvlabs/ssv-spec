@@ -14,12 +14,9 @@ import (
 
 // PostInvalidDecided tests starting a new duty after prev was decided with an invalid decided value
 func PostInvalidDecided() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
-	consensusDataByts := func(role types.BeaconRole) []byte {
+	consensusDataByts := func() []byte {
 		cd := &types.ConsensusData{
 			Duty: types.BeaconDuty{
 				Type:                    100, // invalid
@@ -39,18 +36,18 @@ func PostInvalidDecided() tests.SpecTest {
 
 	// https://github.com/bloxapp/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
 	// Maybe we should ensure that `ValidateDecided()` doesn't let the runner enter this state and delete the test?
-	decideWrong := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	decideWrong := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		decidedValue := sha256.Sum256(consensusDataByts(r.GetBaseRunner().BeaconRoleType))
+		decidedValue := sha256.Sum256(consensusDataByts())
 		r.GetBaseRunner().State.RunningInstance.State.DecidedValue = decidedValue[:]
 
 		return r
@@ -90,7 +87,25 @@ func PostInvalidDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name: "attester and sync committee",
+				Name:                    "attester",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
 	}

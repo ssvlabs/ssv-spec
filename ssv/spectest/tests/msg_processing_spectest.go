@@ -2,6 +2,8 @@ package tests
 
 import (
 	"encoding/hex"
+	"encoding/json"
+	"errors"
 	"os"
 	"reflect"
 	"testing"
@@ -19,7 +21,7 @@ import (
 type MsgProcessingSpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
-	Duty                    *types.Duty
+	Duty                    types.Duty
 	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
@@ -66,8 +68,16 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 }
 
 func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
-	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetBaseRunner().Share))
-	v.DutyRunners[test.Runner.GetBaseRunner().BeaconRoleType] = test.Runner
+	var share *types.Share
+	if len(test.Runner.GetBaseRunner().Share) == 0 {
+		panic("No share in base runner for tests")
+	}
+	for _, validatorShare := range test.Runner.GetBaseRunner().Share {
+		share = validatorShare
+		break
+	}
+	v := testingutils.BaseValidator(testingutils.KeySetForShare(share))
+	v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
 	v.Network = test.Runner.GetNetwork()
 
 	var lastErr error
@@ -111,7 +121,7 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		return ret
 	}
 	broadcastedSignedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
-	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Share.Committee))
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Operator.Committee))
 	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
 	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
@@ -165,14 +175,12 @@ func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name string, testType string) {
 	var runner ssv.Runner
 	switch test.Runner.(type) {
-	case *ssv.AttesterRunner:
-		runner = &ssv.AttesterRunner{}
+	case *ssv.CommitteeRunner:
+		runner = &ssv.CommitteeRunner{}
 	case *ssv.AggregatorRunner:
 		runner = &ssv.AggregatorRunner{}
 	case *ssv.ProposerRunner:
 		runner = &ssv.ProposerRunner{}
-	case *ssv.SyncCommitteeRunner:
-		runner = &ssv.SyncCommitteeRunner{}
 	case *ssv.SyncCommitteeAggregatorRunner:
 		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:
@@ -203,4 +211,93 @@ func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	}
 
 	return test.Runner, nil
+}
+
+func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
+
+	// Create alias without duty
+	type MsgProcessingSpecTestAlias struct {
+		Name   string
+		Runner ssv.Runner
+		// No duty from type types.Duty
+		Messages                []*types.SignedSSVMessage
+		PostDutyRunnerStateRoot string
+		PostDutyRunnerState     types.Root `json:"-"`
+		OutputMessages          []*types.PartialSignatureMessages
+		BeaconBroadcastedRoots  []string
+		DontStartDuty           bool
+		ExpectedError           string
+		BeaconDuty              *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
+		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	}
+
+	alias := &MsgProcessingSpecTestAlias{
+		Name:                    t.Name,
+		Runner:                  t.Runner,
+		Messages:                t.Messages,
+		PostDutyRunnerStateRoot: t.PostDutyRunnerStateRoot,
+		PostDutyRunnerState:     t.PostDutyRunnerState,
+		OutputMessages:          t.OutputMessages,
+		BeaconBroadcastedRoots:  t.BeaconBroadcastedRoots,
+		DontStartDuty:           t.DontStartDuty,
+		ExpectedError:           t.ExpectedError,
+	}
+
+	if t.Duty != nil {
+		if beaconDuty, ok := t.Duty.(*types.BeaconDuty); ok {
+			alias.BeaconDuty = beaconDuty
+		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
+			alias.CommitteeDuty = committeeDuty
+		} else {
+			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't BeaconDuty or CommitteeDuty")
+		}
+	}
+	byts, err := json.Marshal(alias)
+
+	return byts, err
+}
+
+func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
+
+	// Create alias without duty
+	type MsgProcessingSpecTestAlias struct {
+		Name   string
+		Runner ssv.Runner
+		// No duty from type types.Duty
+		Messages                []*types.SignedSSVMessage
+		PostDutyRunnerStateRoot string
+		PostDutyRunnerState     types.Root `json:"-"`
+		OutputMessages          []*types.PartialSignatureMessages
+		BeaconBroadcastedRoots  []string
+		DontStartDuty           bool
+		ExpectedError           string
+		BeaconDuty              *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
+		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	}
+
+	aux := &MsgProcessingSpecTestAlias{}
+
+	// Unmarshal the JSON data into the auxiliary struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	t.Name = aux.Name
+	t.Runner = aux.Runner
+	t.Messages = aux.Messages
+	t.PostDutyRunnerStateRoot = aux.PostDutyRunnerStateRoot
+	t.PostDutyRunnerState = aux.PostDutyRunnerState
+	t.OutputMessages = aux.OutputMessages
+	t.BeaconBroadcastedRoots = aux.BeaconBroadcastedRoots
+	t.DontStartDuty = aux.DontStartDuty
+	t.ExpectedError = aux.ExpectedError
+
+	// Determine which type of duty was marshaled
+	if aux.BeaconDuty != nil {
+		t.Duty = aux.BeaconDuty
+	} else if aux.CommitteeDuty != nil {
+		t.Duty = aux.CommitteeDuty
+	}
+
+	return nil
 }

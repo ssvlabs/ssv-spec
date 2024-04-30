@@ -15,12 +15,9 @@ import (
 // PostDecided tests a valid start duty before finished and after decided of another duty.
 // Duties that have a preconsensus phase won't update the `currentRunningInstance`.
 func PostDecided() tests.SpecTest {
-
-	//panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
-	decidedRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	decidedRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		// baseStartNewDuty(r, duty) will override this state.
 		// We set it here to correctly mimic the state of the runner after the duty is started.
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
@@ -28,10 +25,10 @@ func PostDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		return r
 	}
 
@@ -59,11 +56,27 @@ func PostDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester and sync committee",
-				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
+				Name:                    "attester",
+				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
+				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				PostDutyRunnerStateRoot: postDecidedCommitteeSC().Root(),
+				PostDutyRunnerState:     postDecidedCommitteeSC().ExpectedState,
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},

@@ -15,6 +15,8 @@ var TestingQBFTRootData = func() [32]byte {
 	return sha256.Sum256(TestingQBFTFullData)
 }()
 
+var TestingCutOffRound = 15
+
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
 		OperatorSigner: NewTestingOperatorSigner(keySet, 1),
@@ -37,49 +39,95 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 		Network:           NewTestingNetwork(1, keySet.OperatorKeys[1]),
 		Timer:             NewTestingTimer(),
 		SignatureVerifier: NewTestingVerifier(),
+		CutOffRound:       TestingCutOffRound,
 	}
 }
 
 var TestingInvalidValueCheck = []byte{1, 1, 1, 1}
 
+var TestingGraffiti = [32]byte{1}
+
 var TestingShare = func(keysSet *TestKeySet) *types.Share {
+
+	// Decode validator public key
+	pkBytesSlice := keysSet.ValidatorPK.Serialize()
+	pkBytesArray := [48]byte{}
+	copy(pkBytesArray[:], pkBytesSlice)
+
 	return &types.Share{
-		OperatorID:          1,
-		ValidatorPubKey:     keysSet.ValidatorPK.Serialize(),
+		ValidatorIndex:      TestingValidatorIndex,
+		ValidatorPubKey:     pkBytesArray,
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
-		DomainType:          TestingSSVDomainType,
-		Quorum:              keysSet.Threshold,
-		PartialQuorum:       keysSet.PartialThreshold,
 		Committee:           keysSet.Committee(),
+		Quorum:              keysSet.Threshold,
+		DomainType:          TestingSSVDomainType,
 		FeeRecipientAddress: TestingFeeRecipient,
+		Graffiti:            TestingGraffiti[:],
+	}
+}
+
+var TestingOperator = func(keysSet *TestKeySet) *types.Operator {
+	committeeMembers := []*types.CommitteeMember{}
+
+	for _, key := range keysSet.Committee() {
+
+		// Encode member's public key
+		pkBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[key.Signer])
+		if err != nil {
+			panic(err)
+		}
+
+		committeeMembers = append(committeeMembers, &types.CommitteeMember{
+			OperatorID:        key.Signer,
+			SSVOperatorPubKey: pkBytes,
+		})
+	}
+
+	opIds := []types.OperatorID{}
+	for _, key := range keysSet.Committee() {
+		opIds = append(opIds, key.Signer)
+	}
+
+	operatorPubKeyBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[1])
+	if err != nil {
+		panic(err)
+	}
+
+	return &types.Operator{
+		OperatorID:        1,
+		ClusterID:         types.GetClusterID(opIds),
+		SSVOperatorPubKey: operatorPubKeyBytes,
+		Quorum:            keysSet.Threshold,
+		PartialQuorum:     keysSet.PartialThreshold,
+		Committee:         committeeMembers,
 	}
 }
 
 var BaseInstance = func() *qbft.Instance {
-	return baseInstance(TestingShare(Testing4SharesSet()), Testing4SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingOperator(Testing4SharesSet()), Testing4SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var SevenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingShare(Testing7SharesSet()), Testing7SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingOperator(Testing7SharesSet()), Testing7SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var TenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingShare(Testing10SharesSet()), Testing10SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingOperator(Testing10SharesSet()), Testing10SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var ThirteenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingShare(Testing13SharesSet()), Testing13SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingOperator(Testing13SharesSet()), Testing13SharesSet(), []byte{1, 2, 3, 4})
 }
 
-var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {
-	ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
+var baseInstance = func(operator *types.Operator, keySet *TestKeySet, identifier []byte) *qbft.Instance {
+	ret := qbft.NewInstance(TestingConfig(keySet), operator, identifier, qbft.FirstHeight)
 	ret.StartValue = TestingQBFTFullData
 	return ret
 }
 
 func NewTestingQBFTController(
 	identifier []byte,
-	share *types.Share,
+	share *types.Operator,
 	config qbft.IConfig,
 ) *qbft.Controller {
 	return qbft.NewController(

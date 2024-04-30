@@ -11,13 +11,59 @@ import (
 // InvalidExpectedRoot tests 1 expected root which doesn't match the signed root
 func InvalidExpectedRoot() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid expected roots",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				// No error for this committee duty
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusWrongSyncCommitteeMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				// No error for this committee duty
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusWrongAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				// No error for this committee duty
+			},
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -81,23 +127,6 @@ func InvalidExpectedRoot() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
-				Name: "attester and sync committee",
-				Runner: decideRunner(
-					testingutils.CommitteeRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-				},
-				PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,

@@ -1,26 +1,12 @@
 package ssv
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
-)
-
-// TODO since this is on wire no real need to take 32 bits
-type RunnerRole int32
-
-const (
-	RoleCommittee RunnerRole = iota
-	RoleAggregator
-	RoleProposer
-	RoleSyncCommitteeContribution
-
-	RoleValidatorRegistration
-	RoleVoluntaryExit
-
-	RoleUnknown = -1
 )
 
 type Getters interface {
@@ -61,7 +47,7 @@ type BaseRunner struct {
 	Share          map[spec.ValidatorIndex]*types.Share
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
-	RunnerRoleType RunnerRole
+	RunnerRoleType types.RunnerRole
 	types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
@@ -73,7 +59,7 @@ func NewBaseRunner(
 	share map[spec.ValidatorIndex]*types.Share,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
-	beaconRoleType RunnerRole,
+	beaconRoleType types.RunnerRole,
 	operatorSigner types.OperatorSigner,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
@@ -96,7 +82,11 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
 	// start new state
 	// TODO nicer way to get quorum
-	b.State = NewRunnerState(b.QBFTController.Share.Quorum, duty)
+	var share *types.Share
+	for _, shareInstance := range b.Share {
+		share = shareInstance
+	}
+	b.State = NewRunnerState(share.Quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
@@ -161,7 +151,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 
 	// decode consensus data
 	switch runner.(type) {
-	case *CommitteeRunner:
+	case CommitteeRunner:
 		decidedValue = &types.BeaconVote{}
 	default:
 		decidedValue = &types.ConsensusData{}
@@ -260,19 +250,15 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 	return true, nil
 }
 
-func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
-	byts, err := input.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode ConsensusData")
-	}
-
-	if err := runner.GetValCheckF()(byts); err != nil {
+// decide input param can be a BeaconVote or ConsensusData
+func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input []byte) error {
+	if err := runner.GetValCheckF()(input); err != nil {
 		return errors.Wrap(err, "input data invalid")
 	}
 
 	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(
-		qbft.Height(input.Duty.Slot),
-		byts,
+		qbft.Height(slot),
+		input,
 	); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")
 	}

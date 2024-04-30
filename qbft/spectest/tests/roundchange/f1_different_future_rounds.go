@@ -60,7 +60,7 @@ func f1DifferentFutureRoundsStateComparison() *comparable.StateComparison {
 
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share: testingutils.TestingShare(testingutils.Testing4SharesSet()),
+			Share: testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 			ID:    testingutils.TestingIdentifier,
 			Round: 5,
 		},

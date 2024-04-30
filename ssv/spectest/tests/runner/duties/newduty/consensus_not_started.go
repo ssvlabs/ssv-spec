@@ -10,14 +10,11 @@ import (
 
 // ConsensusNotStarted tests starting duty after prev already started but for some duties' consensus didn't start because pre-consensus didnt get quorum (different duties will enable starting a new duty)
 func ConsensusNotStarted() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
 	// nolint
-	startRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	startRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		return r
 	}
@@ -56,13 +53,26 @@ func ConsensusNotStarted() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester and sync committee",
-				Runner:                  startRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
+				Name:                    "attester",
+				Runner:                  startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
-			// TODO cluster runners with attestations, sync committees and mixed duties
+			{
+				Name:                    "sync committee",
+				Runner:                  startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
 			{
 				Name:                    "voluntary exit",
 				Runner:                  startRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty),

@@ -11,13 +11,59 @@ import (
 // InconsistentOperatorSigner tests a SignedSSVMessage with inconsistent signer regarding its nested SignedPartialSignatureMessage
 func InconsistentOperatorSigner() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid PartialSignatureMessages: signer from signed message is inconsistent with partial signature signers"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus inconsistent operator signer",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(2, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(2, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(2, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -86,23 +132,23 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
-			{
-				Name: "attester and sync committee",
-				Runner: decideRunner(
-					testingutils.CommitteeRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(2, ks.OperatorKeys[2], testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-				},
-				PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
+			// {
+			// 	Name: "attester and sync committee",
+			// 	Runner: decideRunner(
+			// 		testingutils.CommitteeRunner(ks),
+			// 		&testingutils.TestingAttesterDuty,
+			// 		testingutils.TestAttesterConsensusData,
+			// 	),
+			// 	Duty: &testingutils.TestingAttesterDuty,
+			// 	Messages: []*types.SignedSSVMessage{
+			// 		testingutils.SignedSSVMessageWithSigner(2, ks.OperatorKeys[2], testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+			// 	},
+			// 	PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
+			// 	OutputMessages:          []*types.PartialSignatureMessages{},
+			// 	BeaconBroadcastedRoots:  []string{},
+			// 	DontStartDuty:           true,
+			// 	ExpectedError:           expectedError,
+			// },
 		},
 	}
 }

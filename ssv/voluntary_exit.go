@@ -35,7 +35,7 @@ func NewVoluntaryExitRunner(
 ) Runner {
 	return &VoluntaryExitRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType: RoleVoluntaryExit,
+			RunnerRoleType: types.RoleVoluntaryExit,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},

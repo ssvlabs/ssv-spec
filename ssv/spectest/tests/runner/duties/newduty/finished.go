@@ -12,14 +12,11 @@ import (
 
 // Finished tests a valid start duty after finished prev
 func Finished() tests.SpecTest {
-
-	//panic("implement me")
-	//
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
 	// nolint
-	finishRunner := func(r ssv.Runner, duty *types.BeaconDuty, finishController bool) ssv.Runner {
+	finishRunner := func(r ssv.Runner, duty types.Duty, finishController bool) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 
 		// for duties with a consensus controller
@@ -28,10 +25,10 @@ func Finished() tests.SpecTest {
 				r.GetBaseRunner().QBFTController.GetConfig(),
 				r.GetBaseRunner().QBFTController.Share,
 				r.GetBaseRunner().QBFTController.Identifier,
-				qbft.Height(duty.Slot))
+				qbft.Height(duty.DutySlot()))
 			r.GetBaseRunner().State.RunningInstance.State.Decided = true
 			r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-			r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+			r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		}
 
 		r.GetBaseRunner().State.Finished = true
@@ -71,9 +68,23 @@ func Finished() tests.SpecTest {
 				},
 			},
 			{
+				Name:                    "attester",
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty, true),
+				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
+				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty, true),
+				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
 				Name:                    "attester and sync committee",
-				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty, true),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties, true),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
 				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},

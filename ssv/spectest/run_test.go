@@ -145,25 +145,60 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	runnerMap := m["Runner"].(map[string]interface{})
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
-	duty := &types.BeaconDuty{}
-	byts, _ := json.Marshal(m["BeaconDuty"])
-	require.NoError(t, json.Unmarshal(byts, duty))
+	var testDuty types.Duty
+	if _, ok := m["CommitteeDuty"]; ok {
+		byts, err := json.Marshal(m["CommitteeDuty"])
+		if err != nil {
+			panic("cant marshal committee duty")
+		}
+		committeeDuty := &types.CommitteeDuty{}
+		err = json.Unmarshal(byts, committeeDuty)
+		if err != nil {
+			panic("cant unmarshal committee duty")
+		}
+		testDuty = committeeDuty
+	} else if _, ok := m["BeaconDuty"]; ok {
+		byts, err := json.Marshal(m["BeaconDuty"])
+		if err != nil {
+			panic("cant marshal beacon duty")
+		}
+		beaconDuty := &types.BeaconDuty{}
+		err = json.Unmarshal(byts, beaconDuty)
+		if err != nil {
+			panic("cant unmarshal beacon duty")
+		}
+		testDuty = beaconDuty
+	} else {
+		panic("no beacon or committee duty")
+	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
 	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ = json.Marshal(msg)
+		byts, _ := json.Marshal(msg)
 		typedMsg := &types.PartialSignatureMessages{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
-	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(baseRunnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
+	shareInstance := &types.Share{}
+	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
+		shareBytes, err := json.Marshal(share)
+		if err != nil {
+			panic(err)
+		}
+		err = json.Unmarshal(shareBytes, shareInstance)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	ks := testingutils.KeySetForShare(shareInstance)
 
 	runner := fixRunnerForRun(t, runnerMap, ks)
 
 	return &newduty.StartNewRunnerDutySpecTest{
 		Name:                    m["Name"].(string),
-		Duty:                    duty,
+		Duty:                    testDuty,
 		Runner:                  runner,
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		ExpectedError:           m["ExpectedError"].(string),
@@ -175,13 +210,36 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	runnerMap := m["Runner"].(map[string]interface{})
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
-	duty := &types.BeaconDuty{}
-	byts, _ := json.Marshal(m["BeaconDuty"])
-	require.NoError(t, json.Unmarshal(byts, duty))
+	var testDuty types.Duty
+	if _, ok := m["CommitteeDuty"]; ok {
+		byts, err := json.Marshal(m["CommitteeDuty"])
+		if err != nil {
+			panic("cant marshal committee duty")
+		}
+		committeeDuty := &types.CommitteeDuty{}
+		err = json.Unmarshal(byts, committeeDuty)
+		if err != nil {
+			panic("cant unmarshal committee duty")
+		}
+		testDuty = committeeDuty
+	} else if _, ok := m["BeaconDuty"]; ok {
+		byts, err := json.Marshal(m["BeaconDuty"])
+		if err != nil {
+			panic("cant marshal beacon duty")
+		}
+		beaconDuty := &types.BeaconDuty{}
+		err = json.Unmarshal(byts, beaconDuty)
+		if err != nil {
+			panic("cant unmarshal beacon duty")
+		}
+		testDuty = beaconDuty
+	} else {
+		panic("no beacon or committee duty")
+	}
 
 	msgs := make([]*types.SignedSSVMessage, 0)
 	for _, msg := range m["Messages"].([]interface{}) {
-		byts, _ = json.Marshal(msg)
+		byts, _ := json.Marshal(msg)
 		typedMsg := &types.SignedSSVMessage{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		msgs = append(msgs, typedMsg)
@@ -190,7 +248,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
 	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
 	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ = json.Marshal(msg)
+		byts, _ := json.Marshal(msg)
 		typedMsg := &types.PartialSignatureMessages{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
@@ -203,14 +261,26 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		}
 	}
 
-	ks := testingutils.KeySetForShare(&types.Share{Quorum: uint64(baseRunnerMap["Share"].(map[string]interface{})["Quorum"].(float64))})
+	shareInstance := &types.Share{}
+	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
+		shareBytes, err := json.Marshal(share)
+		if err != nil {
+			panic(err)
+		}
+		err = json.Unmarshal(shareBytes, shareInstance)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	ks := testingutils.KeySetForShare(shareInstance)
 
 	// runner
 	runner := fixRunnerForRun(t, runnerMap, ks)
 
 	return &tests2.MsgProcessingSpecTest{
 		Name:                    m["Name"].(string),
-		Duty:                    duty,
+		Duty:                    testDuty,
 		Runner:                  runner,
 		Messages:                msgs,
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
@@ -228,7 +298,7 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 	byts, _ := json.Marshal(baseRunnerMap)
 	require.NoError(t, json.Unmarshal(byts, &base))
 
-	ret := baseRunnerForRole(base.BeaconRoleType, base, ks)
+	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
 
 	// specific for blinded block
 	if blindedBlocks, ok := runnerMap["ProducesBlindedBlocks"]; ok {
@@ -239,7 +309,8 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
 		if ret.GetBaseRunner().State != nil {
 			if ret.GetBaseRunner().State.RunningInstance != nil {
-				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, ret.GetBaseRunner().Share)
+				operator := testingutils.TestingOperator(ks)
+				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, operator)
 			}
 		}
 	}
@@ -262,12 +333,13 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 		if inst == nil {
 			continue
 		}
-		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, runner.GetBaseRunner().Share)
+		operator := testingutils.TestingOperator(ks)
+		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, operator)
 	}
 	return newContr
 }
 
-func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Share) *qbft.Instance {
+func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Operator) *qbft.Instance {
 	newInst := qbft.NewInstance(
 		contr.GetConfig(),
 		share,
@@ -290,39 +362,35 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 	return newInst
 }
 
-func baseRunnerForRole(role types.BeaconRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
+func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
 	switch role {
-	case types.BNRoleAttester:
+	case types.RoleCommittee:
 		ret := testingutils.CommitteeRunner(ks)
-		ret.(*ssv.AttesterRunner).BaseRunner = base
+		ret.(*ssv.CommitteeRunner).BaseRunner = base
 		return ret
-	case types.BNRoleAggregator:
+	case types.RoleAggregator:
 		ret := testingutils.AggregatorRunner(ks)
 		ret.(*ssv.AggregatorRunner).BaseRunner = base
 		return ret
-	case types.BNRoleProposer:
+	case types.RoleProposer:
 		ret := testingutils.ProposerRunner(ks)
 		ret.(*ssv.ProposerRunner).BaseRunner = base
 		return ret
-	case types.BNRoleSyncCommittee:
-		ret := testingutils.CommitteeRunner(ks)
-		ret.(*ssv.SyncCommitteeRunner).BaseRunner = base
-		return ret
-	case types.BNRoleSyncCommitteeContribution:
+	case types.RoleSyncCommitteeContribution:
 		ret := testingutils.SyncCommitteeContributionRunner(ks)
 		ret.(*ssv.SyncCommitteeAggregatorRunner).BaseRunner = base
 		return ret
-	case types.BNRoleValidatorRegistration:
+	case types.RoleValidatorRegistration:
 		ret := testingutils.ValidatorRegistrationRunner(ks)
 		ret.(*ssv.ValidatorRegistrationRunner).BaseRunner = base
 		return ret
-	case types.BNRoleVoluntaryExit:
+	case types.RoleVoluntaryExit:
 		ret := testingutils.VoluntaryExitRunner(ks)
 		ret.(*ssv.VoluntaryExitRunner).BaseRunner = base
 		return ret
 	case testingutils.UnknownDutyType:
 		ret := testingutils.UnknownDutyTypeRunner(ks)
-		ret.(*ssv.AttesterRunner).BaseRunner = base
+		ret.(*ssv.CommitteeRunner).BaseRunner = base
 		return ret
 	default:
 		panic("unknown beacon role")

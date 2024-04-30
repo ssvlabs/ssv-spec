@@ -12,13 +12,53 @@ import (
 // InvalidSignature tests a consensus message with an invalid signature
 func InvalidSignature() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus invalid signature",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					// Invalid Message
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							qbft.Height(testingutils.TestingDutySlot)), nil)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					// Invalid Message
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							qbft.Height(testingutils.TestingDutySlot)), nil)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					// Invalid Message
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							qbft.Height(testingutils.TestingDutySlot)), nil)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -98,9 +138,6 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
 				ExpectedError: expectedError,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

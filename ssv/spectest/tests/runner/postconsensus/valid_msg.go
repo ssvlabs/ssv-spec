@@ -9,21 +9,53 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func finishRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData) ssv.Runner {
+func finishRunner(r ssv.Runner, duty types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
 	ret := decideRunner(r, duty, decidedValue)
 	ret.GetBaseRunner().State.Finished = true
 	return ret
 }
 
-func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.ConsensusData) ssv.Runner {
-	r.GetBaseRunner().State = ssv.NewRunnerState(r.GetBaseRunner().Share.Quorum, duty)
+func finishCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
+	ret := decideCommitteeRunner(r, duty, bv)
+	ret.GetBaseRunner().State.Finished = true
+	return ret
+}
+
+func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
+	bvBytes, err := bv.Encode()
+	if err != nil {
+		panic(err)
+	}
+	return decideRunnerForData(r, duty, bvBytes)
+}
+
+func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ConsensusData) ssv.Runner {
+	cdBytes, err := cd.Encode()
+	if err != nil {
+		panic(err)
+	}
+	return decideRunnerForData(r, duty, cdBytes)
+}
+
+func decideRunnerForData(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv.Runner {
+
+	var share *types.Share
+	if len(r.GetBaseRunner().Share) == 0 {
+		panic("no share in base runner")
+	}
+	for _, valShare := range r.GetBaseRunner().Share {
+		share = valShare
+		break
+	}
+
+	r.GetBaseRunner().State = ssv.NewRunnerState(share.Quorum, duty)
 	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
 		r.GetBaseRunner().QBFTController.Share,
 		r.GetBaseRunner().QBFTController.Identifier,
 		qbft.FirstHeight)
 	r.GetBaseRunner().State.RunningInstance.State.Decided = true
-	r.GetBaseRunner().State.RunningInstance.State.DecidedValue, _ = decidedValue.Encode()
+	r.GetBaseRunner().State.RunningInstance.State.DecidedValue = decidedValue
 	r.GetBaseRunner().State.DecidedValue = decidedValue
 	r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 	r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
@@ -33,13 +65,56 @@ func decideRunner(r ssv.Runner, duty *types.BeaconDuty, decidedValue *types.Cons
 // ValidMessage tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages
 func ValidMessage() tests.SpecTest {
 
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus valid msg",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+			},
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -103,9 +178,6 @@ func ValidMessage() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-			},
-			{
-				Name: "attester and sync committee",
 			},
 			{
 				Name:   "validator registration",

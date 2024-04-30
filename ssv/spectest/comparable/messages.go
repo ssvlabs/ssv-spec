@@ -20,10 +20,14 @@ func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*type
 
 		for _, partialSigMsg := range msg.Messages {
 			root := hex.EncodeToString(partialSigMsg.SigningRoot[:])
-			if container.Signatures[root] == nil {
-				container.Signatures[root] = map[types.OperatorID][]byte{}
+
+			if container.Signatures[partialSigMsg.ValidatorIndex] == nil {
+				container.Signatures[partialSigMsg.ValidatorIndex] = make(map[string]map[uint64][]byte)
 			}
-			container.Signatures[root][partialSigMsg.Signer] = partialSigMsg.PartialSignature
+			if container.Signatures[partialSigMsg.ValidatorIndex][root] == nil {
+				container.Signatures[partialSigMsg.ValidatorIndex][root] = make(map[uint64][]byte)
+			}
+			container.Signatures[partialSigMsg.ValidatorIndex][root][partialSigMsg.Signer] = partialSigMsg.PartialSignature
 		}
 	}
 	return container

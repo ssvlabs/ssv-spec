@@ -76,10 +76,12 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 func (test *ControllerSpecTest) generateController() *qbft.Controller {
 	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	keySet := testingutils.Testing4SharesSet()
+	config := testingutils.TestingConfig(keySet)
+	operator := testingutils.TestingOperator(keySet)
 	return testingutils.NewTestingQBFTController(
 		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		operator,
 		config,
 	)
 }
@@ -126,13 +128,13 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 	config qbft.IConfig,
 	identifier []byte,
 	runData *RunInstanceData,
-	operators []*types.Operator,
+	committee []*types.CommitteeMember,
 ) {
 	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
 		// test broadcasted
 		broadcastedSignedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 		require.Greater(t, len(broadcastedSignedMsgs), 0)
-		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, operators))
+		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
 		found := false
 		for _, msg := range broadcastedSignedMsgs {
 

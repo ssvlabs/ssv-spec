@@ -15,30 +15,27 @@ import (
 // PostFutureDecided tests starting duty after a future decided
 // This can happen if we receive a future decided message from the network and we are behind.
 func PostFutureDecided() tests.SpecTest {
-
-	panic("implement me")
-
 	ks := testingutils.Testing4SharesSet()
 
 	// TODO: check error
 	// nolint
-	futureDecide := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	futureDecide := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 
 		futureDecidedInstance := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot+50))
+			qbft.Height(duty.DutySlot()+50))
 		futureDecidedInstance.State.Decided = true
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, futureDecidedInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot + 50)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot() + 50)
 		return r
 	}
 
@@ -80,12 +77,25 @@ func PostFutureDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 			{
-				Name:                    "attester and sync committee",
-				Runner:                  futureDecide(testingutils.CommitteeRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "ca53abb401eaae1154b075d5fc6ddca2da760c097fc30da8ee8e3abb94efb6d2",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
+				Name:           "attester",
+				Runner:         futureDecide(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:           testingutils.TestingAttesterDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "sync committee",
+				Runner:         futureDecide(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:           testingutils.TestingSyncCommitteeDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         futureDecide(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
 			},
 		},
 	}
