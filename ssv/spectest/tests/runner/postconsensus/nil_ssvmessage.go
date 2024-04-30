@@ -24,6 +24,48 @@ func NilSSVMessage() tests.SpecTest {
 		Name: "post consensus nil ssvmessage",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingAttesterDuty,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingSyncCommitteeDuty,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),

@@ -15,6 +15,12 @@ func finishRunner(r ssv.Runner, duty types.Duty, decidedValue *types.ConsensusDa
 	return ret
 }
 
+func finishCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
+	ret := decideCommitteeRunner(r, duty, bv)
+	ret.GetBaseRunner().State.Finished = true
+	return ret
+}
+
 func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
 	bvBytes, err := bv.Encode()
 	if err != nil {
