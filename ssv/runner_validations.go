@@ -83,8 +83,6 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 		return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
 	}
-
-	return nil
 }
 
 func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encoder) error {
