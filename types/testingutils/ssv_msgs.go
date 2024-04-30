@@ -321,6 +321,15 @@ var PostConsensusAttestationAndSyncCommitteeMsgTooManyRootsMsg = func(sk *bls.Se
 	return msg
 }
 
+var PostConsensusAttestationAndSyncCommitteeMsgTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	msg := &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingDutySlot,
+		Messages: []*types.PartialSignatureMessage{},
+	}
+	return msg
+}
+
 var postConsensusAttestationAndSyncCommitteeMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
