@@ -237,6 +237,14 @@ var PostConsensusWrongAttestationMsg = func(sk *bls.SecretKey, id types.Operator
 	return postConsensusAttestationMsg(sk, id, height, true, false)
 }
 
+var PostConsensusWrongValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	msg := postConsensusAttestationMsg(sk, id, height, true, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
 var PostConsensusWrongSigAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 	return postConsensusAttestationMsg(sk, id, height, false, true)
 }
@@ -311,6 +319,14 @@ var PostConsensusAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id typ
 
 var PostConsensusWrongAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 	return postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, true, false)
+}
+
+var PostConsensusWrongValidatorIndexAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	msg := postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, true, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
 }
 
 var PostConsensusWrongSigAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
@@ -672,6 +688,14 @@ var PostConsensusWrongAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorI
 	return postConsensusAggregatorMsg(sk, id, true, false)
 }
 
+var PostConsensusWrongValidatorIndexAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	msg := postConsensusAggregatorMsg(sk, id, true, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
 var PostConsensusWrongSigAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
 	return postConsensusAggregatorMsg(sk, id, false, true)
 }
@@ -738,6 +762,14 @@ var PostConsensusSyncCommitteeTooFewRootsMsg = func(sk *bls.SecretKey, id types.
 
 var PostConsensusWrongSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
 	return postConsensusSyncCommitteeMsg(sk, id, true, false)
+}
+
+var PostConsensusWrongValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	msg := postConsensusSyncCommitteeMsg(sk, id, true, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
 }
 
 var PostConsensusWrongSigSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
@@ -915,6 +947,14 @@ var PostConsensusSyncCommitteeContributionTooFewRootsMsg = func(sk *bls.SecretKe
 
 var PostConsensusWrongSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types.OperatorID, keySet *TestKeySet) *types.PartialSignatureMessages {
 	return postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, true, false, false)
+}
+
+var PostConsensusWrongValidatorIndexSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types.OperatorID, keySet *TestKeySet) *types.PartialSignatureMessages {
+	msg := postConsensusSyncCommitteeContributionMsg(sk, id, TestingValidatorIndex, keySet, true, false, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
 }
 
 var PostConsensusWrongSigSyncCommitteeContributionMsg = func(sk *bls.SecretKey, id types.OperatorID, keySet *TestKeySet) *types.PartialSignatureMessages {

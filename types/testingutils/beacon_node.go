@@ -155,10 +155,11 @@ var TestingSignedAggregateAndProof = func(ks *TestKeySet) *phase0.SignedAggregat
 }
 
 const (
-	TestingDutySlot       = 12
-	TestingDutySlot2      = 50
-	TestingDutyEpoch      = 0
-	TestingValidatorIndex = 1
+	TestingDutySlot            = 12
+	TestingDutySlot2           = 50
+	TestingDutyEpoch           = 0
+	TestingValidatorIndex      = 1
+	TestingWrongValidatorIndex = 100
 
 	UnknownDutyType = 100
 )
