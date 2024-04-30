@@ -24,9 +24,59 @@ func InvalidMessageSlot() tests.SpecTest {
 		return msg
 	}
 
+	expectedErr := "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid msg slot",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedErr,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, invalidateSlot(testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedErr,
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, invalidateSlot(testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedErr,
+			},
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -42,7 +92,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name: "proposer",
@@ -59,7 +109,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -76,7 +126,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name: "aggregator",
@@ -93,25 +143,8 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
+				ExpectedError:           expectedErr,
 			},
-			// {
-			// 	Name: "attester and sync committee",
-			// 	Runner: decideRunner(
-			// 		testingutils.CommitteeRunner(ks),
-			// 		&testingutils.TestingAttesterDuty,
-			// 		testingutils.TestAttesterConsensusData,
-			// 	),
-			// 	Duty: &testingutils.TestingAttesterDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)))),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	BeaconBroadcastedRoots:  []string{},
-			// 	DontStartDuty:           true,
-			// 	ExpectedError:           "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot",
-			// },
 			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),

@@ -65,6 +65,8 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 		if err := decidedValue.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")
 		}
+
+		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
 	default:
 		decidedValue := &types.ConsensusData{}
 		if err := decidedValue.Decode(decidedValueBytes); err != nil {
