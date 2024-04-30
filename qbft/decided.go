@@ -69,10 +69,6 @@ func ValidateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if err := signedDecided.Validate(); err != nil {
-		return errors.Wrap(err, "invalid decided")
-	}
-
 	r, err := HashDataRoot(signedDecided.FullData)
 	if err != nil {
 		return errors.Wrap(err, "could not hash input data")
