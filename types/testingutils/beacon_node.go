@@ -63,6 +63,18 @@ var TestBeaconVoteNextEpoch = types.BeaconVote{
 	},
 }
 
+var TestWrongBeaconVote = types.BeaconVote{
+	BlockRoot: phase0.Root{1, 2, 3, 4},
+	Source: &phase0.Checkpoint{
+		Epoch: 2,
+		Root:  phase0.Root{1, 2, 3, 4},
+	},
+	Target: &phase0.Checkpoint{
+		Epoch: 1,
+		Root:  phase0.Root{1, 2, 3, 5},
+	},
+}
+
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            TestingDutySlot,
 	Index:           3,
@@ -308,11 +320,11 @@ var TestingProposerDutyFirstSlot = types.BeaconDuty{
 }
 
 func getValPubKeyByValIdx(valIdx int) phase0.BLSPubKey {
-	switch valIdx {
-	case TestingValidatorIndex:
+	if valIdx == TestingValidatorIndex {
 		return TestingValidatorPubKey
+	} else {
+		return TestingValidatorPubKeyForValidatorIndex(phase0.ValidatorIndex(valIdx))
 	}
-	panic("such validator index not found")
 }
 
 func TestingCommitteeDuty(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int) *types.CommitteeDuty {
@@ -339,7 +351,7 @@ func TestingCommitteeDuty(slot phase0.Slot, attestationValidatorIds []int, syncC
 			Type:                          types.BNRoleSyncCommittee,
 			PubKey:                        pk,
 			Slot:                          slot,
-			ValidatorIndex:                TestingValidatorIndex,
+			ValidatorIndex:                phase0.ValidatorIndex(valIdx),
 			CommitteeIndex:                3,
 			CommitteesAtSlot:              36,
 			CommitteeLength:               128,

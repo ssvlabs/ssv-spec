@@ -58,6 +58,8 @@ var TestBeaconVoteByts, _ = TestBeaconVote.Encode()
 
 var TestBeaconVoteNextEpochByts, _ = TestBeaconVoteNextEpoch.Encode()
 
+var TestWrongBeaconVoteByts, _ = TestWrongBeaconVote.Encode()
+
 // ConsensusData - Attester
 
 var TestAttesterConsensusData = &types.ConsensusData{

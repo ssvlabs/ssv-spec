@@ -4,7 +4,6 @@ import (
 	"crypto/rsa"
 
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
@@ -34,22 +33,6 @@ func InvalidDecidedValue() tests.SpecTest {
 		return byts
 	}
 
-	beaconVoteByts := func() []byte {
-		cd := &types.BeaconVote{
-			BlockRoot: phase0.Root{1, 2, 3, 4},
-			Source: &phase0.Checkpoint{
-				Epoch: 2,
-				Root:  phase0.Root{1, 2, 3, 4},
-			},
-			Target: &phase0.Checkpoint{
-				Epoch: 1,
-				Root:  phase0.Root{1, 2, 3, 5},
-			},
-		}
-		byts, _ := cd.Encode()
-		return byts
-	}
-
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus decided invalid value",
@@ -66,7 +49,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
 						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
 				},
@@ -85,7 +68,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
 						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
 				},
@@ -104,7 +87,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
 						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
 				},
