@@ -14,6 +14,10 @@ var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
 }
 
+var CommitteeRunnerWithKeySetMap = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) ssv.Runner {
+	return baseRunnerWithKeySetMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySetMap)
+}
+
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
 }
@@ -54,6 +58,124 @@ var VoluntaryExitRunner = func(keySet *TestKeySet) ssv.Runner {
 
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
+}
+
+var baseRunnerWithKeySetMap = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, keySetMap map[phase0.ValidatorIndex]*TestKeySet) ssv.Runner {
+	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
+	for valIdx, keySet := range keySetMap {
+		shareMap[valIdx] = TestingShare(keySet)
+	}
+
+	var keySetInstance *TestKeySet
+	for _, keySet := range keySetMap {
+		keySetInstance = keySet
+		break
+	}
+
+	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
+	net := NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
+
+	km := NewTestingKeyManager()
+	operator := TestingOperator(keySetInstance)
+	opSigner := NewTestingOperatorSigner(keySetInstance, operator.OperatorID)
+
+	config := TestingConfig(keySetInstance)
+	config.ValueCheckF = valCheck
+	config.ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
+		return 1
+	}
+	config.Network = net
+	config.OperatorSigner = opSigner
+	config.SignatureVerifier = NewTestingVerifier()
+
+	contr := qbft.NewController(
+		identifier[:],
+		operator,
+		config,
+	)
+
+	switch role {
+	case types.RoleCommittee:
+		return ssv.NewCommitteeRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+		)
+	case types.RoleAggregator:
+		return ssv.NewAggregatorRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+			TestingHighestDecidedSlot,
+		)
+	case types.RoleProposer:
+		return ssv.NewProposerRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+			TestingHighestDecidedSlot,
+		)
+	case types.RoleSyncCommitteeContribution:
+		return ssv.NewSyncCommitteeAggregatorRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+			TestingHighestDecidedSlot,
+		)
+	case types.RoleValidatorRegistration:
+		return ssv.NewValidatorRegistrationRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+		)
+	case types.RoleVoluntaryExit:
+		return ssv.NewVoluntaryExitRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+		)
+	case UnknownDutyType:
+		ret := ssv.NewCommitteeRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+		)
+		ret.(*ssv.CommitteeRunner).BaseRunner.RunnerRoleType = UnknownDutyType
+		return ret
+	default:
+		panic("unknown role type")
+	}
 }
 
 var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
