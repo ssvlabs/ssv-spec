@@ -2,8 +2,8 @@
 		"Name": "empty signature",
 		"Messages": [
 				{
-						"OperatorID": 1,
 						"Signature": "",
+						"OperatorID": 1,
 						"Data": "AQIDBA=="
 				}
 		],
