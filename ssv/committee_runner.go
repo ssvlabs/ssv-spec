@@ -185,8 +185,9 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
 		if !found {
-			// TODO error?
-			continue
+			// All roots have quorum, so if we can't find validators for a root, it means we have a bug
+			// We assume it is safe to stop due to honest majority assumption
+			return errors.New("could not find validators for root")
 		}
 
 		for _, validator := range validators {
@@ -195,13 +196,15 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
 				pubKey[:], validator)
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
-			// TODO should we return an error here? maybe other sigs are fine?
 			if err != nil {
 				for _, root := range roots {
 					cr.BaseRunner.FallBackAndVerifyEachSignature(cr.BaseRunner.State.PostConsensusContainer, root,
 						share.Committee, validator)
 				}
-				return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+				// An error shouldn't be returned here, as it may open an attack vector...
+				// Bad sig can block processing of other roots.
+				// An additional message may not retrigger processing if only first quorum is processed
+				continue
 			}
 			specSig := phase0.BLSSignature{}
 			copy(specSig[:], sig)
