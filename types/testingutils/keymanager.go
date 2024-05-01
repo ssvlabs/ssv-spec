@@ -76,6 +76,16 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		}
 	}
 
+	for _, keySet := range TestingKeySetMap {
+		_ = ret.AddShare(keySet.ValidatorSK)
+		for _, s := range keySet.Shares {
+			_ = ret.AddShare(s)
+		}
+		for _, o := range keySet.DKGOperators {
+			ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+		}
+	}
+
 	instancesMap[hash] = ret
 
 	return ret
