@@ -111,7 +111,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x9291dce97378bce68bf213ffcd67316feb3a1a12592b68e53919bedaa4163a99f29bc57e2437cedfe849d3f44c121408",
+												"PubKey": "0xaa57905889288431b819bee5bc3d77ef1dffcb3d3d0d7be8b748b96f27e0ed23a604e7a5b56c0b402af1810a17b21fe1",
 												"Slot": "12",
 												"ValidatorIndex": "2",
 												"CommitteeIndex": 3,
@@ -123,7 +123,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x82d4f5b59b1e1a9a4677cac96b563ebd4f2a0b5489881e170dc415dee2be0c08416b4deed2f3533b11901f5179fbd4bd",
+												"PubKey": "0x989069e005b47e318cd427a0c50a0c72a9f14b26c93a26b1220fe66c45ca12c31925ac6b7c3fdb1f57b0775356954b08",
 												"Slot": "12",
 												"ValidatorIndex": "3",
 												"CommitteeIndex": 3,
@@ -135,7 +135,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x8244ea8981d5b8e353ee31452c3b2a4679759a209e0e298066391cbc766fee624e76c932bc9b1b4308ce20f1afe4a808",
+												"PubKey": "0x91f93af57b80c9e8d3885240066c23e606f2d5ba2e700052844b3fbef990db04296cab46c06317b8e469c7a63a421e3d",
 												"Slot": "12",
 												"ValidatorIndex": "4",
 												"CommitteeIndex": 3,
@@ -147,7 +147,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x8ef48413b3a448917b06caf44b2b6d40af04b54191625c60f86a0a726d13e4112ae75b74b6d46cba832059e20116828e",
+												"PubKey": "0x91e4ffe73dfe57e548450a65ffd1d685f6140d97ba1ee2fab7183c91d5cb2d50f53b133a2e2f1345f551381f3e38cf32",
 												"Slot": "12",
 												"ValidatorIndex": "5",
 												"CommitteeIndex": 3,
@@ -159,7 +159,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xa20cef24a3c70d989df2649f15d4d688e17a630be0825cd216557ae1d32315448b372ce668e77e1712b14397b0921be5",
+												"PubKey": "0xad91661fd9643f66ee19fae3f1795aca33738c9a25f1c0d8e367df7d3df59332ef5476b00727f3b3a6047ad7542822d7",
 												"Slot": "12",
 												"ValidatorIndex": "6",
 												"CommitteeIndex": 3,
@@ -171,7 +171,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xab33dd7544312599340d2b21151a27ba5632ccffc11195e3ab10fe7d8c64909beb130499ea0c57751c73e3b8175435e4",
+												"PubKey": "0xb6bb580b997b8ec19ce4a3f49e77a2483d6ded63c94dbc29ed64c3299b864342c016d18cda03181457bb8921fb33fbae",
 												"Slot": "12",
 												"ValidatorIndex": "7",
 												"CommitteeIndex": 3,
@@ -183,7 +183,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x89b175b6e86de78e29ab85aa3a365d88637272e5d9e25a96e60104ac2dabe869326e601ed3fbb91e3860ee776b08bc6d",
+												"PubKey": "0xa77558846b46ea9dbd414f9ae93660e945de298af833e93910f5f3f8184e728ce1f04f8fcfb666b7d64afa2367a14e1b",
 												"Slot": "12",
 												"ValidatorIndex": "8",
 												"CommitteeIndex": 3,
@@ -195,7 +195,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xb660c191a55e001f5e04ec144b48771d71e022ee6a44edcd52065a0b64552aa5c22947c4c747a2124be232a05ac316e7",
+												"PubKey": "0x8ac7a584851a8b57a02a271e5103ba7bceac43c0714d55dcff37dcb6388cd1cbf69d249a2d257694899caca17dff5d8e",
 												"Slot": "12",
 												"ValidatorIndex": "9",
 												"CommitteeIndex": 3,
@@ -207,7 +207,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xab3d964d87eb98da57469eda4dbd8c7f0dd20400fa23e07b8865853752b63ec55af15f241842086dfa607171792ad2d4",
+												"PubKey": "0x944bb0c2aa979f00d5362fb0b5960246c3f0966a82695863ccd49cd3c4f807bfba1d762239998320de0b479c4ec9e770",
 												"Slot": "12",
 												"ValidatorIndex": "10",
 												"CommitteeIndex": 3,
@@ -219,7 +219,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x8589d11caba6e3594dd247fc658ed77c5eacb4cf40aa26d9583857014c19b62b07eb8e80179275cc6a0df6163defd18a",
+												"PubKey": "0x83fa5148587dfa30864dcc6a37310636cd57dd3069d6ec04d922cc303f8d288a4ebdbd4c665e4f7d3c2afb7a19ccd1e2",
 												"Slot": "12",
 												"ValidatorIndex": "11",
 												"CommitteeIndex": 3,
@@ -231,7 +231,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x81770eebfc0b82caec4f50b403c1913678788aaf1a28b97c1c98dd6456dcdf524a02a4ccdf9eff417da2e7fd2fe8109a",
+												"PubKey": "0x8bdbec655a1906e34e6bfe4baea2d4511038f4f82e0e7a584497d7f7c64b718a86a365885963e747437df428c6ae1037",
 												"Slot": "12",
 												"ValidatorIndex": "12",
 												"CommitteeIndex": 3,
@@ -243,7 +243,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xb760bef75aff773a63621e5c617f747d077f858f4f640d4fbdabe85925231f1ebf75e3b2967e3f79bcf3e4cc4d140549",
+												"PubKey": "0x8184490b26c1add8b08f384c6eca35d5db17d1f93805eff1e897e9cbd3b7c912614061b56c5915755f33ac5e4d7e260a",
 												"Slot": "12",
 												"ValidatorIndex": "13",
 												"CommitteeIndex": 3,
@@ -255,7 +255,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x8a2cb718836915c4fe1a4c4a0ff94f03fe8fc9aa02a0e194c087f3ae30f9ed493f50b74f3395607d38f07edcff30fce7",
+												"PubKey": "0xa357a8a188be7cecda1ecb9f4914c7cfb0ea0151b16f570b71030e9c78958c6fd335062b92588bfb4fa723a1e288aaeb",
 												"Slot": "12",
 												"ValidatorIndex": "14",
 												"CommitteeIndex": 3,
@@ -267,7 +267,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xa26862505d26c3e93541854321a188680bb82002d5b9766622a01ada61295ec15ea735e7d8307d08d890c8e5f2d6204f",
+												"PubKey": "0xadaeffbd52c20abe165ee908a7b33b7ba07f5b1a52af3651311d9c02a22bf747a79a53a324c91b41ca96f7fab3f15677",
 												"Slot": "12",
 												"ValidatorIndex": "15",
 												"CommitteeIndex": 3,
@@ -279,7 +279,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xb174ea7acb19aa76ce4667f20775cd94cd56966297d23a9b717254477f85149132f15832af1bbb235cd874510d004009",
+												"PubKey": "0x936c151648b4d507ba834ff57e71be210b3a3304912048abbcb3f029e054a50593c90b4bddb74c75aa0d2f749cdd8fd1",
 												"Slot": "12",
 												"ValidatorIndex": "16",
 												"CommitteeIndex": 3,
@@ -291,7 +291,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xb02d7b68e497e09998ddc9985ab68cc529ce403be0ad3d156a62b6e96b8b8252ca3ac51d42ac1447c470482f4cd2348f",
+												"PubKey": "0xa287505c81d68676c04c329f5d210ea74d5964c7a02a2b7919e6c7c8b9dd5f2c516cc71c1735295aa348ad8802721c12",
 												"Slot": "12",
 												"ValidatorIndex": "17",
 												"CommitteeIndex": 3,
@@ -303,7 +303,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xb9964740b43db778e3c5ccffade0e12360acb5344ffcefc236d3fdff7b66156963500378d60354613645d70ef37c4627",
+												"PubKey": "0xa1ae110bee7da3f0d6d6377ae5a755414c2357bdf0efe4dfb6d8e9429dd914509c9b98c01fc979b2e032762b30e9fe7a",
 												"Slot": "12",
 												"ValidatorIndex": "18",
 												"CommitteeIndex": 3,
@@ -315,7 +315,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xaea54056d287a29638f438505f671e99a090e8257f34b1bca4567653d09fe3962badb3eb055015989a9ad1bbcf473950",
+												"PubKey": "0xabcc85d65fe3da39abc7af2940ec0d5c81fcb55150050da5670ae2f916a9c5953be3c41ddbf4d4c3b0e033674aec7d7c",
 												"Slot": "12",
 												"ValidatorIndex": "19",
 												"CommitteeIndex": 3,
@@ -327,7 +327,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x8cfdd5817e52397f82714c4b26829bcf744190824113e2c373f4460f449fc67f1901edc63f0f12550bfd090a784e745d",
+												"PubKey": "0xacd06cc45c6abf54f9fcc032a82d85c8407f4b210692b22068b555a3e8f48c1b0feee86c248d5947e3f88f6431607c27",
 												"Slot": "12",
 												"ValidatorIndex": "20",
 												"CommitteeIndex": 3,
@@ -339,7 +339,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x8888d7bf5d50e6f0700ba43190876e224f08607a75205bdb1e134b120b3ed09ead6ef6f3e86df6415bdf2350634b6b2f",
+												"PubKey": "0xa220e107a08e8631c2785e43f00639c8cdb4358de5f979af71fbe3c4961b2d307d45075c34255a9232c975450b914e4d",
 												"Slot": "12",
 												"ValidatorIndex": "21",
 												"CommitteeIndex": 3,
@@ -351,7 +351,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xaa9bf678e427d420200075196f31994fa4830c3b84ceb3e1d656f0db9ace04077bdd4f278bb7b661f3ddae05418b6758",
+												"PubKey": "0x8eaa5c01dbb6c00cfd508c7c1b49d0901656ba2e6a23e329965a2571d4383264f429d5c7eadadcfe065abdd9ccdf8785",
 												"Slot": "12",
 												"ValidatorIndex": "22",
 												"CommitteeIndex": 3,
@@ -363,7 +363,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xaf1628a11b025f2a158cc90b2f0395358b6b141c2a0e0a3e1e859172228bc14c0d5ef07ee1f9a69ce1ff4569b39ebd99",
+												"PubKey": "0xafc2a83f67f3aeab5682f599ae64c89b69f217303ee9ac89c5076b37e85f8b0db7ababd6cb358f0e81cd0fe4b04f7bbc",
 												"Slot": "12",
 												"ValidatorIndex": "23",
 												"CommitteeIndex": 3,
@@ -375,7 +375,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x8f9f578d7bda18e559d33acd1227b131ca5942a263a97e377733e0bade6059c9a338c567281fde63ff802d0c02ff0a14",
+												"PubKey": "0x931fb9cb3725403e4e65fded1c2a1c851b6cc7bd1759c26ba556c67366bf59b57b9bffa60e99e203303e6a5faa5c10a3",
 												"Slot": "12",
 												"ValidatorIndex": "24",
 												"CommitteeIndex": 3,
@@ -387,7 +387,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xb0f86e36f223af4e2e61c0fbf6cec886226d8d96f2cb8d2581901de8bc1c1f8ace6dd536051fcd468b954f2ddf585ab7",
+												"PubKey": "0xb260df27d481cda28498ff6d11292149485e9b890c71218b6fbfee816241fdc61f16ff2a76e250e354587a1cb056b8ad",
 												"Slot": "12",
 												"ValidatorIndex": "25",
 												"CommitteeIndex": 3,
@@ -399,7 +399,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x8ba36269e654b1d68efe84987a34d1f688a1ce83b8cf5fae1bb33fbb1d517eac9a93325f7047565a0b3e63a0ec07ab5b",
+												"PubKey": "0x8a7a8f2c2eb232217313720b3849aeadbb4e11c7d83de9407b426358c68e147c70fe6c5817771f0c064d98e70619db8e",
 												"Slot": "12",
 												"ValidatorIndex": "26",
 												"CommitteeIndex": 3,
@@ -411,7 +411,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xac84a500c6a2b00775625009a901648719692b011f5e3d9cc060be4e76b4e1250d75d9ca8d51a7e0a4937e8ffcc155a5",
+												"PubKey": "0xa7a05cd2463111b1c3dd1b59f2f6f17c5b3b4fab85b01ba28e2ffe55b6d0621801281e3c54daf5f446564b527118516f",
 												"Slot": "12",
 												"ValidatorIndex": "27",
 												"CommitteeIndex": 3,
@@ -423,7 +423,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0xb28d6a03109d72aaef0613f33287a9cb93f9fc1682d24df6f2af47e10705094924ffec10ae4ef81307eb567fdfcad8c7",
+												"PubKey": "0xb15a7faad48d2f19e98e5a9885c018e89d5d1d4a3685703c51f99488dab054a4fbfe9bee9c7bae8f42774490f01e8972",
 												"Slot": "12",
 												"ValidatorIndex": "28",
 												"CommitteeIndex": 3,
@@ -435,7 +435,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x969b5e7cd9fe948e10af7f67a2f5bb2b5ed72f51f02e85fb49d9ba059ea3dabd528525093d9f324531231513eb194890",
+												"PubKey": "0xb96e420605b2dca3c0bad0b430f41acdf2fde1f49a1cc0b7a902e03b55ba8dfc03b0651bef58018253959a28a430133d",
 												"Slot": "12",
 												"ValidatorIndex": "29",
 												"CommitteeIndex": 3,
@@ -447,7 +447,7 @@
 										},
 										{
 												"Type": 0,
-												"PubKey": "0x9559a27bc9684b28508feeb171e452883ebfc8f7801f9461a996892cfd679353b84b626bdc9101628f08aa4644bc6220",
+												"PubKey": "0xab3b65410a8abf830481caa768ca79d95be39783a92d61065a05ea46b4d906352e5bda3756c86a59c5f79fdfefbd298d",
 												"Slot": "12",
 												"ValidatorIndex": "30",
 												"CommitteeIndex": 3,
@@ -475,7 +475,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x9291dce97378bce68bf213ffcd67316feb3a1a12592b68e53919bedaa4163a99f29bc57e2437cedfe849d3f44c121408",
+												"PubKey": "0xaa57905889288431b819bee5bc3d77ef1dffcb3d3d0d7be8b748b96f27e0ed23a604e7a5b56c0b402af1810a17b21fe1",
 												"Slot": "12",
 												"ValidatorIndex": "2",
 												"CommitteeIndex": 3,
@@ -491,7 +491,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x82d4f5b59b1e1a9a4677cac96b563ebd4f2a0b5489881e170dc415dee2be0c08416b4deed2f3533b11901f5179fbd4bd",
+												"PubKey": "0x989069e005b47e318cd427a0c50a0c72a9f14b26c93a26b1220fe66c45ca12c31925ac6b7c3fdb1f57b0775356954b08",
 												"Slot": "12",
 												"ValidatorIndex": "3",
 												"CommitteeIndex": 3,
@@ -507,7 +507,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x8244ea8981d5b8e353ee31452c3b2a4679759a209e0e298066391cbc766fee624e76c932bc9b1b4308ce20f1afe4a808",
+												"PubKey": "0x91f93af57b80c9e8d3885240066c23e606f2d5ba2e700052844b3fbef990db04296cab46c06317b8e469c7a63a421e3d",
 												"Slot": "12",
 												"ValidatorIndex": "4",
 												"CommitteeIndex": 3,
@@ -523,7 +523,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x8ef48413b3a448917b06caf44b2b6d40af04b54191625c60f86a0a726d13e4112ae75b74b6d46cba832059e20116828e",
+												"PubKey": "0x91e4ffe73dfe57e548450a65ffd1d685f6140d97ba1ee2fab7183c91d5cb2d50f53b133a2e2f1345f551381f3e38cf32",
 												"Slot": "12",
 												"ValidatorIndex": "5",
 												"CommitteeIndex": 3,
@@ -539,7 +539,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xa20cef24a3c70d989df2649f15d4d688e17a630be0825cd216557ae1d32315448b372ce668e77e1712b14397b0921be5",
+												"PubKey": "0xad91661fd9643f66ee19fae3f1795aca33738c9a25f1c0d8e367df7d3df59332ef5476b00727f3b3a6047ad7542822d7",
 												"Slot": "12",
 												"ValidatorIndex": "6",
 												"CommitteeIndex": 3,
@@ -555,7 +555,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xab33dd7544312599340d2b21151a27ba5632ccffc11195e3ab10fe7d8c64909beb130499ea0c57751c73e3b8175435e4",
+												"PubKey": "0xb6bb580b997b8ec19ce4a3f49e77a2483d6ded63c94dbc29ed64c3299b864342c016d18cda03181457bb8921fb33fbae",
 												"Slot": "12",
 												"ValidatorIndex": "7",
 												"CommitteeIndex": 3,
@@ -571,7 +571,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x89b175b6e86de78e29ab85aa3a365d88637272e5d9e25a96e60104ac2dabe869326e601ed3fbb91e3860ee776b08bc6d",
+												"PubKey": "0xa77558846b46ea9dbd414f9ae93660e945de298af833e93910f5f3f8184e728ce1f04f8fcfb666b7d64afa2367a14e1b",
 												"Slot": "12",
 												"ValidatorIndex": "8",
 												"CommitteeIndex": 3,
@@ -587,7 +587,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xb660c191a55e001f5e04ec144b48771d71e022ee6a44edcd52065a0b64552aa5c22947c4c747a2124be232a05ac316e7",
+												"PubKey": "0x8ac7a584851a8b57a02a271e5103ba7bceac43c0714d55dcff37dcb6388cd1cbf69d249a2d257694899caca17dff5d8e",
 												"Slot": "12",
 												"ValidatorIndex": "9",
 												"CommitteeIndex": 3,
@@ -603,7 +603,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xab3d964d87eb98da57469eda4dbd8c7f0dd20400fa23e07b8865853752b63ec55af15f241842086dfa607171792ad2d4",
+												"PubKey": "0x944bb0c2aa979f00d5362fb0b5960246c3f0966a82695863ccd49cd3c4f807bfba1d762239998320de0b479c4ec9e770",
 												"Slot": "12",
 												"ValidatorIndex": "10",
 												"CommitteeIndex": 3,
@@ -619,7 +619,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x8589d11caba6e3594dd247fc658ed77c5eacb4cf40aa26d9583857014c19b62b07eb8e80179275cc6a0df6163defd18a",
+												"PubKey": "0x83fa5148587dfa30864dcc6a37310636cd57dd3069d6ec04d922cc303f8d288a4ebdbd4c665e4f7d3c2afb7a19ccd1e2",
 												"Slot": "12",
 												"ValidatorIndex": "11",
 												"CommitteeIndex": 3,
@@ -635,7 +635,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x81770eebfc0b82caec4f50b403c1913678788aaf1a28b97c1c98dd6456dcdf524a02a4ccdf9eff417da2e7fd2fe8109a",
+												"PubKey": "0x8bdbec655a1906e34e6bfe4baea2d4511038f4f82e0e7a584497d7f7c64b718a86a365885963e747437df428c6ae1037",
 												"Slot": "12",
 												"ValidatorIndex": "12",
 												"CommitteeIndex": 3,
@@ -651,7 +651,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xb760bef75aff773a63621e5c617f747d077f858f4f640d4fbdabe85925231f1ebf75e3b2967e3f79bcf3e4cc4d140549",
+												"PubKey": "0x8184490b26c1add8b08f384c6eca35d5db17d1f93805eff1e897e9cbd3b7c912614061b56c5915755f33ac5e4d7e260a",
 												"Slot": "12",
 												"ValidatorIndex": "13",
 												"CommitteeIndex": 3,
@@ -667,7 +667,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x8a2cb718836915c4fe1a4c4a0ff94f03fe8fc9aa02a0e194c087f3ae30f9ed493f50b74f3395607d38f07edcff30fce7",
+												"PubKey": "0xa357a8a188be7cecda1ecb9f4914c7cfb0ea0151b16f570b71030e9c78958c6fd335062b92588bfb4fa723a1e288aaeb",
 												"Slot": "12",
 												"ValidatorIndex": "14",
 												"CommitteeIndex": 3,
@@ -683,7 +683,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xa26862505d26c3e93541854321a188680bb82002d5b9766622a01ada61295ec15ea735e7d8307d08d890c8e5f2d6204f",
+												"PubKey": "0xadaeffbd52c20abe165ee908a7b33b7ba07f5b1a52af3651311d9c02a22bf747a79a53a324c91b41ca96f7fab3f15677",
 												"Slot": "12",
 												"ValidatorIndex": "15",
 												"CommitteeIndex": 3,
@@ -699,7 +699,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xb174ea7acb19aa76ce4667f20775cd94cd56966297d23a9b717254477f85149132f15832af1bbb235cd874510d004009",
+												"PubKey": "0x936c151648b4d507ba834ff57e71be210b3a3304912048abbcb3f029e054a50593c90b4bddb74c75aa0d2f749cdd8fd1",
 												"Slot": "12",
 												"ValidatorIndex": "16",
 												"CommitteeIndex": 3,
@@ -715,7 +715,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xb02d7b68e497e09998ddc9985ab68cc529ce403be0ad3d156a62b6e96b8b8252ca3ac51d42ac1447c470482f4cd2348f",
+												"PubKey": "0xa287505c81d68676c04c329f5d210ea74d5964c7a02a2b7919e6c7c8b9dd5f2c516cc71c1735295aa348ad8802721c12",
 												"Slot": "12",
 												"ValidatorIndex": "17",
 												"CommitteeIndex": 3,
@@ -731,7 +731,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xb9964740b43db778e3c5ccffade0e12360acb5344ffcefc236d3fdff7b66156963500378d60354613645d70ef37c4627",
+												"PubKey": "0xa1ae110bee7da3f0d6d6377ae5a755414c2357bdf0efe4dfb6d8e9429dd914509c9b98c01fc979b2e032762b30e9fe7a",
 												"Slot": "12",
 												"ValidatorIndex": "18",
 												"CommitteeIndex": 3,
@@ -747,7 +747,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xaea54056d287a29638f438505f671e99a090e8257f34b1bca4567653d09fe3962badb3eb055015989a9ad1bbcf473950",
+												"PubKey": "0xabcc85d65fe3da39abc7af2940ec0d5c81fcb55150050da5670ae2f916a9c5953be3c41ddbf4d4c3b0e033674aec7d7c",
 												"Slot": "12",
 												"ValidatorIndex": "19",
 												"CommitteeIndex": 3,
@@ -763,7 +763,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x8cfdd5817e52397f82714c4b26829bcf744190824113e2c373f4460f449fc67f1901edc63f0f12550bfd090a784e745d",
+												"PubKey": "0xacd06cc45c6abf54f9fcc032a82d85c8407f4b210692b22068b555a3e8f48c1b0feee86c248d5947e3f88f6431607c27",
 												"Slot": "12",
 												"ValidatorIndex": "20",
 												"CommitteeIndex": 3,
@@ -779,7 +779,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x8888d7bf5d50e6f0700ba43190876e224f08607a75205bdb1e134b120b3ed09ead6ef6f3e86df6415bdf2350634b6b2f",
+												"PubKey": "0xa220e107a08e8631c2785e43f00639c8cdb4358de5f979af71fbe3c4961b2d307d45075c34255a9232c975450b914e4d",
 												"Slot": "12",
 												"ValidatorIndex": "21",
 												"CommitteeIndex": 3,
@@ -795,7 +795,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xaa9bf678e427d420200075196f31994fa4830c3b84ceb3e1d656f0db9ace04077bdd4f278bb7b661f3ddae05418b6758",
+												"PubKey": "0x8eaa5c01dbb6c00cfd508c7c1b49d0901656ba2e6a23e329965a2571d4383264f429d5c7eadadcfe065abdd9ccdf8785",
 												"Slot": "12",
 												"ValidatorIndex": "22",
 												"CommitteeIndex": 3,
@@ -811,7 +811,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xaf1628a11b025f2a158cc90b2f0395358b6b141c2a0e0a3e1e859172228bc14c0d5ef07ee1f9a69ce1ff4569b39ebd99",
+												"PubKey": "0xafc2a83f67f3aeab5682f599ae64c89b69f217303ee9ac89c5076b37e85f8b0db7ababd6cb358f0e81cd0fe4b04f7bbc",
 												"Slot": "12",
 												"ValidatorIndex": "23",
 												"CommitteeIndex": 3,
@@ -827,7 +827,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x8f9f578d7bda18e559d33acd1227b131ca5942a263a97e377733e0bade6059c9a338c567281fde63ff802d0c02ff0a14",
+												"PubKey": "0x931fb9cb3725403e4e65fded1c2a1c851b6cc7bd1759c26ba556c67366bf59b57b9bffa60e99e203303e6a5faa5c10a3",
 												"Slot": "12",
 												"ValidatorIndex": "24",
 												"CommitteeIndex": 3,
@@ -843,7 +843,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xb0f86e36f223af4e2e61c0fbf6cec886226d8d96f2cb8d2581901de8bc1c1f8ace6dd536051fcd468b954f2ddf585ab7",
+												"PubKey": "0xb260df27d481cda28498ff6d11292149485e9b890c71218b6fbfee816241fdc61f16ff2a76e250e354587a1cb056b8ad",
 												"Slot": "12",
 												"ValidatorIndex": "25",
 												"CommitteeIndex": 3,
@@ -859,7 +859,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x8ba36269e654b1d68efe84987a34d1f688a1ce83b8cf5fae1bb33fbb1d517eac9a93325f7047565a0b3e63a0ec07ab5b",
+												"PubKey": "0x8a7a8f2c2eb232217313720b3849aeadbb4e11c7d83de9407b426358c68e147c70fe6c5817771f0c064d98e70619db8e",
 												"Slot": "12",
 												"ValidatorIndex": "26",
 												"CommitteeIndex": 3,
@@ -875,7 +875,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xac84a500c6a2b00775625009a901648719692b011f5e3d9cc060be4e76b4e1250d75d9ca8d51a7e0a4937e8ffcc155a5",
+												"PubKey": "0xa7a05cd2463111b1c3dd1b59f2f6f17c5b3b4fab85b01ba28e2ffe55b6d0621801281e3c54daf5f446564b527118516f",
 												"Slot": "12",
 												"ValidatorIndex": "27",
 												"CommitteeIndex": 3,
@@ -891,7 +891,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0xb28d6a03109d72aaef0613f33287a9cb93f9fc1682d24df6f2af47e10705094924ffec10ae4ef81307eb567fdfcad8c7",
+												"PubKey": "0xb15a7faad48d2f19e98e5a9885c018e89d5d1d4a3685703c51f99488dab054a4fbfe9bee9c7bae8f42774490f01e8972",
 												"Slot": "12",
 												"ValidatorIndex": "28",
 												"CommitteeIndex": 3,
@@ -907,7 +907,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x969b5e7cd9fe948e10af7f67a2f5bb2b5ed72f51f02e85fb49d9ba059ea3dabd528525093d9f324531231513eb194890",
+												"PubKey": "0xb96e420605b2dca3c0bad0b430f41acdf2fde1f49a1cc0b7a902e03b55ba8dfc03b0651bef58018253959a28a430133d",
 												"Slot": "12",
 												"ValidatorIndex": "29",
 												"CommitteeIndex": 3,
@@ -923,7 +923,7 @@
 										},
 										{
 												"Type": 3,
-												"PubKey": "0x9559a27bc9684b28508feeb171e452883ebfc8f7801f9461a996892cfd679353b84b626bdc9101628f08aa4644bc6220",
+												"PubKey": "0xab3b65410a8abf830481caa768ca79d95be39783a92d61065a05ea46b4d906352e5bda3756c86a59c5f79fdfefbd298d",
 												"Slot": "12",
 												"ValidatorIndex": "30",
 												"CommitteeIndex": 3,
