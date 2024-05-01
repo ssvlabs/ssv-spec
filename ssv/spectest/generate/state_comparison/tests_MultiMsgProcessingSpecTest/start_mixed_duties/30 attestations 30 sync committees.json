@@ -1,0 +1,1198 @@
+{
+		"BaseRunner": {
+				"State": {
+						"PreConsensusContainer": {
+								"Signatures": {},
+								"Quorum": 3
+						},
+						"PostConsensusContainer": {
+								"Signatures": {},
+								"Quorum": 3
+						},
+						"RunningInstance": {
+								"State": {
+										"Share": {
+												"OperatorID": 1,
+												"ClusterID": [
+														207,
+														151,
+														173,
+														238,
+														219,
+														89,
+														224,
+														91,
+														253,
+														115,
+														162,
+														180,
+														194,
+														168,
+														136,
+														87,
+														8,
+														196,
+														244,
+														247,
+														12,
+														132,
+														198,
+														75,
+														39,
+														18,
+														14,
+														114,
+														171,
+														115,
+														59,
+														114
+												],
+												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
+												"Quorum": 3,
+												"PartialQuorum": 2,
+												"Committee": [
+														{
+																"OperatorID": 1,
+																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB"
+														},
+														{
+																"OperatorID": 2,
+																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmYZP2GG4q3VRRaidmgmaOCwzz88GTL2/ts4sx2fMaJBwt2mcRpGSJLuMAh+QJEIhEPcWaSbrYUa7NeH6TvRwuMIQvWsOxsECfO6gvfbLhMxDrhfkFg6GzMgJYBmUQuqEIpbIWf+QW2hCEbB3uGv8qi07iI0SO0z8KcfxBUBW6kq6DItz3lJ6gVNN7S4TAnVdKj660nGbnHCe9RP34fkrTKnQ0GoCD8xvE17SWlY8GrasDlIl51qbRDlvErIKt/DqAnYdfN+/PKzLI2LePccHQuWJjP9QvYMhkr/UVgr0c8Rk7nkvazkbkkKbkxeT2Jw8/V7h/ya4h8YoPz2BKwNQcQIDAQAB"
+														},
+														{
+																"OperatorID": 3,
+																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtoiFTUqJpL84xvhMFSAOYAqbEYizDBPl/lM2c18KsG9IASDSzbNfxGnc2pC37jjr7h3blSxENYSKOYVHW2N2q8bzLBu06kK0gzsVDDJMNc8jpVqN+EIrPlIjNYL2mp5ZNnazyaWAaVVkNYyMaajIAzTyrZ+6wuoQRoiuzSglu0R6euWQZe8CciET1ZDrC0Rihn+bIBo3e7v0zFAew3QwU3IlFojztJ5rj+JflyQaUi/zTCy9qTPnWWFAztGZ6Fe/03uhVN0s8WZwt2y1V1biHYAPYz62fitCV44YrkzEOmISgRn3UojOzk8vNFYmcCR41L2w/o17R0D3Lg8nxC6MJQIDAQAB"
+														},
+														{
+																"OperatorID": 4,
+																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
+														}
+												]
+										},
+										"ID": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+										"Round": 1,
+										"Height": 12,
+										"LastPreparedRound": 0,
+										"LastPreparedValue": null,
+										"ProposalAcceptedForCurrentRound": null,
+										"Decided": false,
+										"DecidedValue": null,
+										"ProposeContainer": {
+												"Msgs": {}
+										},
+										"PrepareContainer": {
+												"Msgs": {}
+										},
+										"CommitContainer": {
+												"Msgs": {}
+										},
+										"RoundChangeContainer": {
+												"Msgs": {}
+										}
+								},
+								"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+						},
+						"DecidedValue": null,
+						"Finished": false,
+						"CommitteeDuty": {
+								"Slot": "12",
+								"BeaconDuties": [
+										{
+												"Type": 0,
+												"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+												"Slot": "12",
+												"ValidatorIndex": "1",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x9291dce97378bce68bf213ffcd67316feb3a1a12592b68e53919bedaa4163a99f29bc57e2437cedfe849d3f44c121408",
+												"Slot": "12",
+												"ValidatorIndex": "2",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x82d4f5b59b1e1a9a4677cac96b563ebd4f2a0b5489881e170dc415dee2be0c08416b4deed2f3533b11901f5179fbd4bd",
+												"Slot": "12",
+												"ValidatorIndex": "3",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x8244ea8981d5b8e353ee31452c3b2a4679759a209e0e298066391cbc766fee624e76c932bc9b1b4308ce20f1afe4a808",
+												"Slot": "12",
+												"ValidatorIndex": "4",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x8ef48413b3a448917b06caf44b2b6d40af04b54191625c60f86a0a726d13e4112ae75b74b6d46cba832059e20116828e",
+												"Slot": "12",
+												"ValidatorIndex": "5",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xa20cef24a3c70d989df2649f15d4d688e17a630be0825cd216557ae1d32315448b372ce668e77e1712b14397b0921be5",
+												"Slot": "12",
+												"ValidatorIndex": "6",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xab33dd7544312599340d2b21151a27ba5632ccffc11195e3ab10fe7d8c64909beb130499ea0c57751c73e3b8175435e4",
+												"Slot": "12",
+												"ValidatorIndex": "7",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x89b175b6e86de78e29ab85aa3a365d88637272e5d9e25a96e60104ac2dabe869326e601ed3fbb91e3860ee776b08bc6d",
+												"Slot": "12",
+												"ValidatorIndex": "8",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xb660c191a55e001f5e04ec144b48771d71e022ee6a44edcd52065a0b64552aa5c22947c4c747a2124be232a05ac316e7",
+												"Slot": "12",
+												"ValidatorIndex": "9",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xab3d964d87eb98da57469eda4dbd8c7f0dd20400fa23e07b8865853752b63ec55af15f241842086dfa607171792ad2d4",
+												"Slot": "12",
+												"ValidatorIndex": "10",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x8589d11caba6e3594dd247fc658ed77c5eacb4cf40aa26d9583857014c19b62b07eb8e80179275cc6a0df6163defd18a",
+												"Slot": "12",
+												"ValidatorIndex": "11",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x81770eebfc0b82caec4f50b403c1913678788aaf1a28b97c1c98dd6456dcdf524a02a4ccdf9eff417da2e7fd2fe8109a",
+												"Slot": "12",
+												"ValidatorIndex": "12",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xb760bef75aff773a63621e5c617f747d077f858f4f640d4fbdabe85925231f1ebf75e3b2967e3f79bcf3e4cc4d140549",
+												"Slot": "12",
+												"ValidatorIndex": "13",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x8a2cb718836915c4fe1a4c4a0ff94f03fe8fc9aa02a0e194c087f3ae30f9ed493f50b74f3395607d38f07edcff30fce7",
+												"Slot": "12",
+												"ValidatorIndex": "14",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xa26862505d26c3e93541854321a188680bb82002d5b9766622a01ada61295ec15ea735e7d8307d08d890c8e5f2d6204f",
+												"Slot": "12",
+												"ValidatorIndex": "15",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xb174ea7acb19aa76ce4667f20775cd94cd56966297d23a9b717254477f85149132f15832af1bbb235cd874510d004009",
+												"Slot": "12",
+												"ValidatorIndex": "16",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xb02d7b68e497e09998ddc9985ab68cc529ce403be0ad3d156a62b6e96b8b8252ca3ac51d42ac1447c470482f4cd2348f",
+												"Slot": "12",
+												"ValidatorIndex": "17",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xb9964740b43db778e3c5ccffade0e12360acb5344ffcefc236d3fdff7b66156963500378d60354613645d70ef37c4627",
+												"Slot": "12",
+												"ValidatorIndex": "18",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xaea54056d287a29638f438505f671e99a090e8257f34b1bca4567653d09fe3962badb3eb055015989a9ad1bbcf473950",
+												"Slot": "12",
+												"ValidatorIndex": "19",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x8cfdd5817e52397f82714c4b26829bcf744190824113e2c373f4460f449fc67f1901edc63f0f12550bfd090a784e745d",
+												"Slot": "12",
+												"ValidatorIndex": "20",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x8888d7bf5d50e6f0700ba43190876e224f08607a75205bdb1e134b120b3ed09ead6ef6f3e86df6415bdf2350634b6b2f",
+												"Slot": "12",
+												"ValidatorIndex": "21",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xaa9bf678e427d420200075196f31994fa4830c3b84ceb3e1d656f0db9ace04077bdd4f278bb7b661f3ddae05418b6758",
+												"Slot": "12",
+												"ValidatorIndex": "22",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xaf1628a11b025f2a158cc90b2f0395358b6b141c2a0e0a3e1e859172228bc14c0d5ef07ee1f9a69ce1ff4569b39ebd99",
+												"Slot": "12",
+												"ValidatorIndex": "23",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x8f9f578d7bda18e559d33acd1227b131ca5942a263a97e377733e0bade6059c9a338c567281fde63ff802d0c02ff0a14",
+												"Slot": "12",
+												"ValidatorIndex": "24",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xb0f86e36f223af4e2e61c0fbf6cec886226d8d96f2cb8d2581901de8bc1c1f8ace6dd536051fcd468b954f2ddf585ab7",
+												"Slot": "12",
+												"ValidatorIndex": "25",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x8ba36269e654b1d68efe84987a34d1f688a1ce83b8cf5fae1bb33fbb1d517eac9a93325f7047565a0b3e63a0ec07ab5b",
+												"Slot": "12",
+												"ValidatorIndex": "26",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xac84a500c6a2b00775625009a901648719692b011f5e3d9cc060be4e76b4e1250d75d9ca8d51a7e0a4937e8ffcc155a5",
+												"Slot": "12",
+												"ValidatorIndex": "27",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0xb28d6a03109d72aaef0613f33287a9cb93f9fc1682d24df6f2af47e10705094924ffec10ae4ef81307eb567fdfcad8c7",
+												"Slot": "12",
+												"ValidatorIndex": "28",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x969b5e7cd9fe948e10af7f67a2f5bb2b5ed72f51f02e85fb49d9ba059ea3dabd528525093d9f324531231513eb194890",
+												"Slot": "12",
+												"ValidatorIndex": "29",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 0,
+												"PubKey": "0x9559a27bc9684b28508feeb171e452883ebfc8f7801f9461a996892cfd679353b84b626bdc9101628f08aa4644bc6220",
+												"Slot": "12",
+												"ValidatorIndex": "30",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+												"Slot": "12",
+												"ValidatorIndex": "1",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x9291dce97378bce68bf213ffcd67316feb3a1a12592b68e53919bedaa4163a99f29bc57e2437cedfe849d3f44c121408",
+												"Slot": "12",
+												"ValidatorIndex": "2",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x82d4f5b59b1e1a9a4677cac96b563ebd4f2a0b5489881e170dc415dee2be0c08416b4deed2f3533b11901f5179fbd4bd",
+												"Slot": "12",
+												"ValidatorIndex": "3",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8244ea8981d5b8e353ee31452c3b2a4679759a209e0e298066391cbc766fee624e76c932bc9b1b4308ce20f1afe4a808",
+												"Slot": "12",
+												"ValidatorIndex": "4",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8ef48413b3a448917b06caf44b2b6d40af04b54191625c60f86a0a726d13e4112ae75b74b6d46cba832059e20116828e",
+												"Slot": "12",
+												"ValidatorIndex": "5",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xa20cef24a3c70d989df2649f15d4d688e17a630be0825cd216557ae1d32315448b372ce668e77e1712b14397b0921be5",
+												"Slot": "12",
+												"ValidatorIndex": "6",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xab33dd7544312599340d2b21151a27ba5632ccffc11195e3ab10fe7d8c64909beb130499ea0c57751c73e3b8175435e4",
+												"Slot": "12",
+												"ValidatorIndex": "7",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x89b175b6e86de78e29ab85aa3a365d88637272e5d9e25a96e60104ac2dabe869326e601ed3fbb91e3860ee776b08bc6d",
+												"Slot": "12",
+												"ValidatorIndex": "8",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xb660c191a55e001f5e04ec144b48771d71e022ee6a44edcd52065a0b64552aa5c22947c4c747a2124be232a05ac316e7",
+												"Slot": "12",
+												"ValidatorIndex": "9",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xab3d964d87eb98da57469eda4dbd8c7f0dd20400fa23e07b8865853752b63ec55af15f241842086dfa607171792ad2d4",
+												"Slot": "12",
+												"ValidatorIndex": "10",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8589d11caba6e3594dd247fc658ed77c5eacb4cf40aa26d9583857014c19b62b07eb8e80179275cc6a0df6163defd18a",
+												"Slot": "12",
+												"ValidatorIndex": "11",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x81770eebfc0b82caec4f50b403c1913678788aaf1a28b97c1c98dd6456dcdf524a02a4ccdf9eff417da2e7fd2fe8109a",
+												"Slot": "12",
+												"ValidatorIndex": "12",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xb760bef75aff773a63621e5c617f747d077f858f4f640d4fbdabe85925231f1ebf75e3b2967e3f79bcf3e4cc4d140549",
+												"Slot": "12",
+												"ValidatorIndex": "13",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8a2cb718836915c4fe1a4c4a0ff94f03fe8fc9aa02a0e194c087f3ae30f9ed493f50b74f3395607d38f07edcff30fce7",
+												"Slot": "12",
+												"ValidatorIndex": "14",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xa26862505d26c3e93541854321a188680bb82002d5b9766622a01ada61295ec15ea735e7d8307d08d890c8e5f2d6204f",
+												"Slot": "12",
+												"ValidatorIndex": "15",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xb174ea7acb19aa76ce4667f20775cd94cd56966297d23a9b717254477f85149132f15832af1bbb235cd874510d004009",
+												"Slot": "12",
+												"ValidatorIndex": "16",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xb02d7b68e497e09998ddc9985ab68cc529ce403be0ad3d156a62b6e96b8b8252ca3ac51d42ac1447c470482f4cd2348f",
+												"Slot": "12",
+												"ValidatorIndex": "17",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xb9964740b43db778e3c5ccffade0e12360acb5344ffcefc236d3fdff7b66156963500378d60354613645d70ef37c4627",
+												"Slot": "12",
+												"ValidatorIndex": "18",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xaea54056d287a29638f438505f671e99a090e8257f34b1bca4567653d09fe3962badb3eb055015989a9ad1bbcf473950",
+												"Slot": "12",
+												"ValidatorIndex": "19",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8cfdd5817e52397f82714c4b26829bcf744190824113e2c373f4460f449fc67f1901edc63f0f12550bfd090a784e745d",
+												"Slot": "12",
+												"ValidatorIndex": "20",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8888d7bf5d50e6f0700ba43190876e224f08607a75205bdb1e134b120b3ed09ead6ef6f3e86df6415bdf2350634b6b2f",
+												"Slot": "12",
+												"ValidatorIndex": "21",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xaa9bf678e427d420200075196f31994fa4830c3b84ceb3e1d656f0db9ace04077bdd4f278bb7b661f3ddae05418b6758",
+												"Slot": "12",
+												"ValidatorIndex": "22",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xaf1628a11b025f2a158cc90b2f0395358b6b141c2a0e0a3e1e859172228bc14c0d5ef07ee1f9a69ce1ff4569b39ebd99",
+												"Slot": "12",
+												"ValidatorIndex": "23",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8f9f578d7bda18e559d33acd1227b131ca5942a263a97e377733e0bade6059c9a338c567281fde63ff802d0c02ff0a14",
+												"Slot": "12",
+												"ValidatorIndex": "24",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xb0f86e36f223af4e2e61c0fbf6cec886226d8d96f2cb8d2581901de8bc1c1f8ace6dd536051fcd468b954f2ddf585ab7",
+												"Slot": "12",
+												"ValidatorIndex": "25",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x8ba36269e654b1d68efe84987a34d1f688a1ce83b8cf5fae1bb33fbb1d517eac9a93325f7047565a0b3e63a0ec07ab5b",
+												"Slot": "12",
+												"ValidatorIndex": "26",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xac84a500c6a2b00775625009a901648719692b011f5e3d9cc060be4e76b4e1250d75d9ca8d51a7e0a4937e8ffcc155a5",
+												"Slot": "12",
+												"ValidatorIndex": "27",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0xb28d6a03109d72aaef0613f33287a9cb93f9fc1682d24df6f2af47e10705094924ffec10ae4ef81307eb567fdfcad8c7",
+												"Slot": "12",
+												"ValidatorIndex": "28",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x969b5e7cd9fe948e10af7f67a2f5bb2b5ed72f51f02e85fb49d9ba059ea3dabd528525093d9f324531231513eb194890",
+												"Slot": "12",
+												"ValidatorIndex": "29",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										},
+										{
+												"Type": 3,
+												"PubKey": "0x9559a27bc9684b28508feeb171e452883ebfc8f7801f9461a996892cfd679353b84b626bdc9101628f08aa4644bc6220",
+												"Slot": "12",
+												"ValidatorIndex": "30",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": [
+														0,
+														1,
+														2
+												],
+												"IsStopped": false
+										}
+								]
+						}
+				},
+				"Share": {
+						"1": {
+								"ValidatorIndex": "1",
+								"ValidatorPubKey": [
+										142,
+										128,
+										6,
+										101,
+										81,
+										168,
+										27,
+										49,
+										130,
+										88,
+										112,
+										158,
+										218,
+										247,
+										221,
+										31,
+										99,
+										205,
+										104,
+										106,
+										14,
+										77,
+										184,
+										178,
+										155,
+										187,
+										122,
+										207,
+										230,
+										86,
+										8,
+										103,
+										122,
+										245,
+										165,
+										39,
+										217,
+										68,
+										142,
+										228,
+										120,
+										53,
+										72,
+										94,
+										2,
+										181,
+										11,
+										192
+								],
+								"SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+								"Committee": [
+										{
+												"SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+												"Signer": 1
+										},
+										{
+												"SharePubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt",
+												"Signer": 2
+										},
+										{
+												"SharePubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN",
+												"Signer": 3
+										},
+										{
+												"SharePubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk",
+												"Signer": 4
+										}
+								],
+								"Quorum": 3,
+								"DomainType": [
+										0,
+										0,
+										3,
+										1
+								],
+								"FeeRecipientAddress": [
+										83,
+										89,
+										83,
+										181,
+										166,
+										4,
+										0,
+										116,
+										148,
+										140,
+										241,
+										133,
+										234,
+										167,
+										210,
+										171,
+										189,
+										102,
+										128,
+										143
+								],
+								"Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+						}
+				},
+				"QBFTController": {
+						"Identifier": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+						"Height": 12,
+						"StoredInstances": [
+								{
+										"State": {
+												"Share": {
+														"OperatorID": 1,
+														"ClusterID": [
+																207,
+																151,
+																173,
+																238,
+																219,
+																89,
+																224,
+																91,
+																253,
+																115,
+																162,
+																180,
+																194,
+																168,
+																136,
+																87,
+																8,
+																196,
+																244,
+																247,
+																12,
+																132,
+																198,
+																75,
+																39,
+																18,
+																14,
+																114,
+																171,
+																115,
+																59,
+																114
+														],
+														"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
+														"Quorum": 3,
+														"PartialQuorum": 2,
+														"Committee": [
+																{
+																		"OperatorID": 1,
+																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB"
+																},
+																{
+																		"OperatorID": 2,
+																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmYZP2GG4q3VRRaidmgmaOCwzz88GTL2/ts4sx2fMaJBwt2mcRpGSJLuMAh+QJEIhEPcWaSbrYUa7NeH6TvRwuMIQvWsOxsECfO6gvfbLhMxDrhfkFg6GzMgJYBmUQuqEIpbIWf+QW2hCEbB3uGv8qi07iI0SO0z8KcfxBUBW6kq6DItz3lJ6gVNN7S4TAnVdKj660nGbnHCe9RP34fkrTKnQ0GoCD8xvE17SWlY8GrasDlIl51qbRDlvErIKt/DqAnYdfN+/PKzLI2LePccHQuWJjP9QvYMhkr/UVgr0c8Rk7nkvazkbkkKbkxeT2Jw8/V7h/ya4h8YoPz2BKwNQcQIDAQAB"
+																},
+																{
+																		"OperatorID": 3,
+																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtoiFTUqJpL84xvhMFSAOYAqbEYizDBPl/lM2c18KsG9IASDSzbNfxGnc2pC37jjr7h3blSxENYSKOYVHW2N2q8bzLBu06kK0gzsVDDJMNc8jpVqN+EIrPlIjNYL2mp5ZNnazyaWAaVVkNYyMaajIAzTyrZ+6wuoQRoiuzSglu0R6euWQZe8CciET1ZDrC0Rihn+bIBo3e7v0zFAew3QwU3IlFojztJ5rj+JflyQaUi/zTCy9qTPnWWFAztGZ6Fe/03uhVN0s8WZwt2y1V1biHYAPYz62fitCV44YrkzEOmISgRn3UojOzk8vNFYmcCR41L2w/o17R0D3Lg8nxC6MJQIDAQAB"
+																},
+																{
+																		"OperatorID": 4,
+																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
+																}
+														]
+												},
+												"ID": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+												"Round": 1,
+												"Height": 12,
+												"LastPreparedRound": 0,
+												"LastPreparedValue": null,
+												"ProposalAcceptedForCurrentRound": null,
+												"Decided": false,
+												"DecidedValue": null,
+												"ProposeContainer": {
+														"Msgs": {}
+												},
+												"PrepareContainer": {
+														"Msgs": {}
+												},
+												"CommitContainer": {
+														"Msgs": {}
+												},
+												"RoundChangeContainer": {
+														"Msgs": {}
+												}
+										},
+										"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+								}
+						],
+						"Share": {
+								"OperatorID": 1,
+								"ClusterID": [
+										207,
+										151,
+										173,
+										238,
+										219,
+										89,
+										224,
+										91,
+										253,
+										115,
+										162,
+										180,
+										194,
+										168,
+										136,
+										87,
+										8,
+										196,
+										244,
+										247,
+										12,
+										132,
+										198,
+										75,
+										39,
+										18,
+										14,
+										114,
+										171,
+										115,
+										59,
+										114
+								],
+								"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
+								"Quorum": 3,
+								"PartialQuorum": 2,
+								"Committee": [
+										{
+												"OperatorID": 1,
+												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB"
+										},
+										{
+												"OperatorID": 2,
+												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmYZP2GG4q3VRRaidmgmaOCwzz88GTL2/ts4sx2fMaJBwt2mcRpGSJLuMAh+QJEIhEPcWaSbrYUa7NeH6TvRwuMIQvWsOxsECfO6gvfbLhMxDrhfkFg6GzMgJYBmUQuqEIpbIWf+QW2hCEbB3uGv8qi07iI0SO0z8KcfxBUBW6kq6DItz3lJ6gVNN7S4TAnVdKj660nGbnHCe9RP34fkrTKnQ0GoCD8xvE17SWlY8GrasDlIl51qbRDlvErIKt/DqAnYdfN+/PKzLI2LePccHQuWJjP9QvYMhkr/UVgr0c8Rk7nkvazkbkkKbkxeT2Jw8/V7h/ya4h8YoPz2BKwNQcQIDAQAB"
+										},
+										{
+												"OperatorID": 3,
+												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtoiFTUqJpL84xvhMFSAOYAqbEYizDBPl/lM2c18KsG9IASDSzbNfxGnc2pC37jjr7h3blSxENYSKOYVHW2N2q8bzLBu06kK0gzsVDDJMNc8jpVqN+EIrPlIjNYL2mp5ZNnazyaWAaVVkNYyMaajIAzTyrZ+6wuoQRoiuzSglu0R6euWQZe8CciET1ZDrC0Rihn+bIBo3e7v0zFAew3QwU3IlFojztJ5rj+JflyQaUi/zTCy9qTPnWWFAztGZ6Fe/03uhVN0s8WZwt2y1V1biHYAPYz62fitCV44YrkzEOmISgRn3UojOzk8vNFYmcCR41L2w/o17R0D3Lg8nxC6MJQIDAQAB"
+										},
+										{
+												"OperatorID": 4,
+												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
+										}
+								]
+						}
+				},
+				"BeaconNetwork": "now_test_network",
+				"RunnerRoleType": 0,
+				"OperatorSigner": null
+		}
+}
