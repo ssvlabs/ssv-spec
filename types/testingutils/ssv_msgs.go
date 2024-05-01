@@ -236,11 +236,11 @@ var ssvMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.PartialSignatu
 }
 
 var PostConsensusWrongAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
-	return postConsensusAttestationMsg(sk, id, height, true, false)
+	return postConsensusAttestationMsg(sk, id, height, true, false, TestingValidatorIndex)
 }
 
 var PostConsensusWrongValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
-	msg := postConsensusAttestationMsg(sk, id, height, true, false)
+	msg := postConsensusAttestationMsg(sk, id, height, true, false, TestingValidatorIndex)
 	for _, m := range msg.Messages {
 		m.ValidatorIndex = TestingWrongValidatorIndex
 	}
@@ -248,15 +248,15 @@ var PostConsensusWrongValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id 
 }
 
 var PostConsensusWrongSigAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
-	return postConsensusAttestationMsg(sk, id, height, false, true)
+	return postConsensusAttestationMsg(sk, id, height, false, true, TestingValidatorIndex)
 }
 
 var PostConsensusAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
-	return postConsensusAttestationMsg(sk, id, height, false, false)
+	return postConsensusAttestationMsg(sk, id, height, false, false, TestingValidatorIndex)
 }
 
 var PostConsensusAttestationTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
-	ret := postConsensusAttestationMsg(sk, id, height, false, false)
+	ret := postConsensusAttestationMsg(sk, id, height, false, false, TestingValidatorIndex)
 	ret.Messages = append(ret.Messages, ret.Messages[0])
 
 	msg := &types.PartialSignatureMessages{
@@ -282,6 +282,7 @@ var postConsensusAttestationMsg = func(
 	height qbft.Height,
 	wrongRoot bool,
 	wrongBeaconSig bool,
+	validatorIndex phase0.ValidatorIndex,
 ) *types.PartialSignatureMessages {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -306,7 +307,7 @@ var postConsensusAttestationMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
-				ValidatorIndex:   TestingValidatorIndex,
+				ValidatorIndex:   validatorIndex,
 			},
 		},
 	}
@@ -314,6 +315,30 @@ var postConsensusAttestationMsg = func(
 }
 
 // Post Consensus - Attestation and Sync Committee
+
+var PostConsensusAttestationAndSyncCommitteeMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+
+	var ret *types.PartialSignatureMessages
+	// Get post consensus for attestations for each validator in shares
+	for valIdx, ks := range keySetMap {
+		pSigMsgs := postConsensusAttestationMsg(ks.Shares[id], id, height, false, false, valIdx)
+		if ret == nil {
+			ret = pSigMsgs
+		} else {
+			ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
+		}
+	}
+	// Get post consensus for sync committees for each validator in shares
+	for valIdx, ks := range keySetMap {
+		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, false, false, valIdx)
+		if ret == nil {
+			ret = pSigMsgs
+		} else {
+			ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
+		}
+	}
+	return ret
+}
 
 var PostConsensusAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 	return postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, false)
@@ -363,8 +388,8 @@ var postConsensusAttestationAndSyncCommitteeMsg = func(
 	wrongRoot bool,
 	wrongBeaconSig bool,
 ) *types.PartialSignatureMessages {
-	attestationPSigMsg := postConsensusAttestationMsg(sk, id, height, wrongRoot, wrongBeaconSig)
-	syncCommitteePSigMessage := postConsensusSyncCommitteeMsg(sk, id, wrongRoot, wrongBeaconSig)
+	attestationPSigMsg := postConsensusAttestationMsg(sk, id, height, wrongRoot, wrongBeaconSig, TestingValidatorIndex)
+	syncCommitteePSigMessage := postConsensusSyncCommitteeMsg(sk, id, wrongRoot, wrongBeaconSig, TestingValidatorIndex)
 
 	attestationPSigMsg.Messages = append(attestationPSigMsg.Messages, syncCommitteePSigMessage.Messages...)
 
@@ -738,11 +763,11 @@ var postConsensusAggregatorMsg = func(
 }
 
 var PostConsensusSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	return postConsensusSyncCommitteeMsg(sk, id, false, false)
+	return postConsensusSyncCommitteeMsg(sk, id, false, false, TestingValidatorIndex)
 }
 
 var PostConsensusSyncCommitteeTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	ret := postConsensusSyncCommitteeMsg(sk, id, false, false)
+	ret := postConsensusSyncCommitteeMsg(sk, id, false, false, TestingValidatorIndex)
 	ret.Messages = append(ret.Messages, ret.Messages[0])
 
 	msg := &types.PartialSignatureMessages{
@@ -763,11 +788,11 @@ var PostConsensusSyncCommitteeTooFewRootsMsg = func(sk *bls.SecretKey, id types.
 }
 
 var PostConsensusWrongSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	return postConsensusSyncCommitteeMsg(sk, id, true, false)
+	return postConsensusSyncCommitteeMsg(sk, id, true, false, TestingValidatorIndex)
 }
 
 var PostConsensusWrongValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	msg := postConsensusSyncCommitteeMsg(sk, id, true, false)
+	msg := postConsensusSyncCommitteeMsg(sk, id, true, false, TestingValidatorIndex)
 	for _, m := range msg.Messages {
 		m.ValidatorIndex = TestingWrongValidatorIndex
 	}
@@ -775,7 +800,7 @@ var PostConsensusWrongValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, i
 }
 
 var PostConsensusWrongSigSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	return postConsensusSyncCommitteeMsg(sk, id, false, true)
+	return postConsensusSyncCommitteeMsg(sk, id, false, true, TestingValidatorIndex)
 }
 
 var postConsensusSyncCommitteeMsg = func(
@@ -783,6 +808,7 @@ var postConsensusSyncCommitteeMsg = func(
 	id types.OperatorID,
 	wrongRoot bool,
 	wrongBeaconSig bool,
+	validatorIndex phase0.ValidatorIndex,
 ) *types.PartialSignatureMessages {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -804,7 +830,7 @@ var postConsensusSyncCommitteeMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
-				ValidatorIndex:   TestingValidatorIndex,
+				ValidatorIndex:   validatorIndex,
 			},
 		},
 	}
