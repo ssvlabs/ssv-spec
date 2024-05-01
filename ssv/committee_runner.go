@@ -263,6 +263,8 @@ func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot,
 	return []ssz.HashRoot{}, types.DomainAttester, nil
 }
 
+// expectedPostConsensusRootsAndBeaconObjects returns the expected roots and beacon objects for the post consensus
+// phase. It returns the attestation and sync committee validator to root map, as well as a root to beacon object map.
 func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	attestationMap map[phase0.ValidatorIndex][32]byte,
 	syncCommitteeMap map[phase0.ValidatorIndex][32]byte,
@@ -271,18 +273,13 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
 	beaconObjects = make(map[[32]byte]ssz.HashRoot)
-	duty := cr.BaseRunner.State.StartingDuty
-	// TODO DecidedValue should be interface??
+	duty := cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty)
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
 	beaconVote, err := types.NewBeaconVote(beaconVoteData)
 	if err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
-	err = beaconVote.Decode(beaconVoteData)
-	if err != nil {
-		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
-	}
-	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
+	for _, beaconDuty := range duty.BeaconDuties {
 		if beaconDuty == nil || beaconDuty.IsStopped {
 			continue
 		}
