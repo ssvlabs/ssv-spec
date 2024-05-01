@@ -6,6 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
+	attestationsynccommittee "github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/attestation_sync_committee"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
@@ -62,6 +63,15 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyFinished,
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
+
+	attestationsynccommittee.StartAttestations,
+	attestationsynccommittee.StartSyncCommittees,
+	attestationsynccommittee.StartMixedDuties,
+	attestationsynccommittee.StartNoDuty,
+	attestationsynccommittee.StartMaximumPossibleDuties,
+	attestationsynccommittee.ValidConsensusData,
+	attestationsynccommittee.WrongConsensusData,
+	attestationsynccommittee.Decided,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,

@@ -1,11 +1,33 @@
-package newduty
+package attestationsynccommittee
 
 import (
+	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// ValidConsensusData sends a proposal message to a cluster runner with a valid BeaconVote consensus data
-// Expects: prepare message
+// ValidConsensusData sends a proposal message to a maximal committee runner with a valid BeaconVote consensus data
 func ValidConsensusData() tests.SpecTest {
-	panic("implement me")
+
+	ks := testingutils.Testing4SharesSet()
+
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
+		Name: "valid consensus data",
+		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name:   "500 attestations 500 sync committees",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, ValidatorIndexList(500), ValidatorIndexList(500)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingProposalMessageWithIdentifierAndFullData(
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+						qbft.Height(testingutils.TestingDutySlot)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+		},
+	}
+
+	return multiSpecTest
 }
