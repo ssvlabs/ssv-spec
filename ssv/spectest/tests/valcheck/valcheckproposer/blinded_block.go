@@ -18,7 +18,6 @@ func BlindedBlock() tests.SpecTest {
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleProposer,
 				Input:      testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
-				AnyError:   false,
 			},
 		},
 	}

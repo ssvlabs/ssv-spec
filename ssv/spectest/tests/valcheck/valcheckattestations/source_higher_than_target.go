@@ -28,6 +28,6 @@ func SourceHigherThanTarget() tests.SpecTest {
 		Network:       types.BeaconTestNetwork,
 		RunnerRole:    types.RoleCommittee,
 		Input:         input,
-		ExpectedError: "attestation data source > target",
+		ExpectedError: "attestation data source >= target",
 	}
 }

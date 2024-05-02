@@ -151,9 +151,7 @@ var AllTests = []tests.TestF{
 	valcheckattestations.Slashable,
 	valcheckattestations.SourceHigherThanTarget,
 	valcheckattestations.FarFutureTarget,
-	//valcheckattestations.CommitteeIndexMismatch,
-	//valcheckattestations.SlotMismatch,
-	//valcheckattestations.ConsensusDataNil,
+	valcheckattestations.BeaconVoteDataNil,
 	valcheckattestations.Valid,
 	valcheckproposer.BlindedBlock,
 

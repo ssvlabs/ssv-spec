@@ -36,13 +36,6 @@ func FarFutureDutySlot() tests.SpecTest {
 				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
 				ExpectedError: "duty invalid: duty epoch is into far future",
 			},
-			// {
-			// 	Name:          "sync committee",
-			// 	Network:       types.BeaconTestNetwork,
-			// 	BeaconRole:    types.BNRoleSyncCommittee,
-			// 	Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
-			// 	ExpectedError: "duty invalid: duty epoch is into far future",
-			// },
 			{
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
@@ -57,13 +50,6 @@ func FarFutureDutySlot() tests.SpecTest {
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
 				ExpectedError: "duty invalid: duty epoch is into far future",
 			},
-			// {
-			// 	Name:          "attester",
-			// 	Network:       types.BeaconTestNetwork,
-			// 	BeaconRole:    types.BNRoleAttester,
-			// 	Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
-			// 	ExpectedError: "duty invalid: duty epoch is into far future",
-			// },
 		},
 	}
 }
