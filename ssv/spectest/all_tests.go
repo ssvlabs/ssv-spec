@@ -11,6 +11,7 @@ import (
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
 )
@@ -147,13 +148,13 @@ var AllTests = []tests.TestF{
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
-	// valcheckattestations.Slashable,
-	// valcheckattestations.SourceHigherThanTarget,
-	// valcheckattestations.FarFutureTarget,
-	// valcheckattestations.CommitteeIndexMismatch,
-	// valcheckattestations.SlotMismatch,
-	// valcheckattestations.ConsensusDataNil,
-	// valcheckattestations.Valid,
+	valcheckattestations.Slashable,
+	valcheckattestations.SourceHigherThanTarget,
+	valcheckattestations.FarFutureTarget,
+	//valcheckattestations.CommitteeIndexMismatch,
+	//valcheckattestations.SlotMismatch,
+	//valcheckattestations.ConsensusDataNil,
+	valcheckattestations.Valid,
 	valcheckproposer.BlindedBlock,
 
 	dutyexe.WrongDutyRole,
