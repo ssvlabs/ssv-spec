@@ -119,17 +119,17 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 
 	// specific duty sig
 	var blkToSign ssz.HashRoot
-	//if r.decidedBlindedBlock() {
-	//	_, blkToSign, err = decidedValue.GetBlindedBlockData()
-	//	if err != nil {
-	//		return errors.Wrap(err, "could not get blinded block data")
-	//	}
-	//} else {
-	_, blkToSign, err = decidedValue.GetBlockData()
-	if err != nil {
-		return errors.Wrap(err, "could not get block data")
+	if r.decidedBlindedBlock() {
+		_, blkToSign, err = decidedValue.GetBlindedBlockData()
+		if err != nil {
+			return errors.Wrap(err, "could not get blinded block data")
+		}
+	} else {
+		_, blkToSign, err = decidedValue.GetBlockData()
+		if err != nil {
+			return errors.Wrap(err, "could not get block data")
+		}
 	}
-	//}
 
 	msg, err := r.BaseRunner.signBeaconObject(
 		r,
