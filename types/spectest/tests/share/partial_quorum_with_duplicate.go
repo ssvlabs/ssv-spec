@@ -3,8 +3,8 @@ package share
 import (
 	"crypto/rsa"
 
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PartialQuorumWithDuplicate tests msg with unique f+1 signers (but also including duplicates)

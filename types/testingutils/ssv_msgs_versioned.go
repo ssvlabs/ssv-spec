@@ -5,7 +5,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 var TestProposerConsensusDataV = func(version spec.DataVersion) *types.ConsensusData {
