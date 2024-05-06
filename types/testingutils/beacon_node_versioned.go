@@ -166,8 +166,7 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 		if vBlk.Deneb.Block == nil {
 			panic("empty block")
 		}
-		println("<<<<<<<<<<<<<<<<<<<<<<<<<<guy>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-		bla := &apiv1deneb.SignedBlockContents{
+		return &apiv1deneb.SignedBlockContents{
 			SignedBlock: &deneb.SignedBeaconBlock{
 				Message:   vBlk.Deneb.Block,
 				Signature: signBeaconObject(vBlk.Deneb.Block, types.DomainProposer, ks),
@@ -175,8 +174,6 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 			KZGProofs: vBlk.Deneb.KZGProofs,
 			Blobs:     vBlk.Deneb.Blobs,
 		}
-		println(bla.String())
-		println("<<<<<<<<<<<<<<<<<<<<<<<<<<guy>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 		return &apiv1deneb.SignedBlockContents{
 			SignedBlock: &deneb.SignedBeaconBlock{
 				Message:   vBlk.Deneb.Block,
