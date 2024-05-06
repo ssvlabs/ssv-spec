@@ -9,20 +9,20 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-// Decided decides a maximal committee runner
-func Decided() tests.SpecTest {
+// MaxDecided decides a maximal committee runner
+func MaxDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
 	msgID := testingutils.CommitteeMsgID
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "decided",
+		Name: "max decided",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
 				Name:   "500 attestations 500 sync committees",
 				Runner: testingutils.CommitteeRunnerWithKeySetMap(testingutils.TestingKeySetMap),
-				Duty:   testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, ValidatorIndexList(500), ValidatorIndexList(500)),
+				Duty:   testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorIndexList(500), validatorIndexList(500)),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
@@ -33,7 +33,6 @@ func Decided() tests.SpecTest {
 
 					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
 					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					// TODO add decided and expected post-consensus message
 					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{

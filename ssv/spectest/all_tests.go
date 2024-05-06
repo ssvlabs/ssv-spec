@@ -71,7 +71,7 @@ var AllTests = []tests.TestF{
 	attestationsynccommittee.StartMaximumPossibleDuties,
 	attestationsynccommittee.ValidConsensusData,
 	attestationsynccommittee.WrongConsensusData,
-	attestationsynccommittee.Decided,
+	attestationsynccommittee.MaxDecided,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,

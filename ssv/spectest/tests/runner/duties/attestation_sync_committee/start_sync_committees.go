@@ -17,7 +17,7 @@ func StartSyncCommittees() tests.SpecTest {
 			{
 				Name:           "30 sync committees",
 				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, ValidatorIndexList(30)),
+				Duty:           testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorIndexList(30)),
 				Messages:       []*types.SignedSSVMessage{},
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},

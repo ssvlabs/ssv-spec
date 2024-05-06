@@ -201,25 +201,6 @@ func InvalidDecidedValue() tests.SpecTest {
 				},
 				ExpectedError: expectedErr,
 			},
-			// {
-			// 	Name:   "attester and sync committee",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-			// 			[]*rsa.PrivateKey{
-			// 				ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-			// 			},
-			// 			[]types.OperatorID{1, 2, 3},
-			// 			qbft.Height(testingutils.TestingDutySlot),
-			// 			testingutils.AttesterMsgID,
-			// 			consensusDataByts(),
-			// 		),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "33953714dd71325c2ad309b2e122bf5fab016a5a2f1bfbf91125b3866c9dc844",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           expectedErr,
-			// },
 		},
 	}
 }

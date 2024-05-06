@@ -19,7 +19,7 @@ func WrongConsensusData() tests.SpecTest {
 			{
 				Name:   "500 attestations 500 sync committees",
 				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, ValidatorIndexList(500), ValidatorIndexList(500)),
+				Duty:   testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorIndexList(500), validatorIndexList(500)),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestWrongBeaconVoteByts,

@@ -17,7 +17,7 @@ func StartMixedDuties() tests.SpecTest {
 			{
 				Name:           "30 attestations 30 sync committees",
 				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, ValidatorIndexList(30), ValidatorIndexList(30)),
+				Duty:           testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorIndexList(30), validatorIndexList(30)),
 				Messages:       []*types.SignedSSVMessage{},
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},

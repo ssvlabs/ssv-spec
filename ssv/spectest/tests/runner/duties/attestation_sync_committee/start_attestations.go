@@ -6,7 +6,7 @@ import (
 	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
-func ValidatorIndexList(limit int) []int {
+func validatorIndexList(limit int) []int {
 	ret := make([]int, limit)
 	for i := 0; i < limit; i++ {
 		ret[i] = i + 1
@@ -24,7 +24,7 @@ func StartAttestations() tests.SpecTest {
 			{
 				Name:           "30 attestations",
 				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, ValidatorIndexList(30)),
+				Duty:           testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorIndexList(30)),
 				Messages:       []*types.SignedSSVMessage{},
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
