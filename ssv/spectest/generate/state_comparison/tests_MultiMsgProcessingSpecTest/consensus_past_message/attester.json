@@ -1,0 +1,302 @@
+{
+		"BaseRunner": {
+				"State": null,
+				"Share": {
+						"OperatorID": 1,
+						"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+						"SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+						"Committee": [
+								{
+										"OperatorID": 1,
+										"PubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn"
+								},
+								{
+										"OperatorID": 2,
+										"PubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt"
+								},
+								{
+										"OperatorID": 3,
+										"PubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN"
+								},
+								{
+										"OperatorID": 4,
+										"PubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk"
+								}
+						],
+						"Quorum": 3,
+						"PartialQuorum": 2,
+						"DomainType": [
+								0,
+								0,
+								3,
+								1
+						],
+						"FeeRecipientAddress": [
+								83,
+								89,
+								83,
+								181,
+								166,
+								4,
+								0,
+								116,
+								148,
+								140,
+								241,
+								133,
+								234,
+								167,
+								210,
+								171,
+								189,
+								102,
+								128,
+								143
+						],
+						"Graffiti": null
+				},
+				"QBFTController": {
+						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
+						"Height": 10,
+						"StoredInstances": [
+								{
+										"State": {
+												"Share": {
+														"OperatorID": 1,
+														"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+														"SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+														"Committee": [
+																{
+																		"OperatorID": 1,
+																		"PubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn"
+																},
+																{
+																		"OperatorID": 2,
+																		"PubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt"
+																},
+																{
+																		"OperatorID": 3,
+																		"PubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN"
+																},
+																{
+																		"OperatorID": 4,
+																		"PubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk"
+																}
+														],
+														"Quorum": 3,
+														"PartialQuorum": 2,
+														"DomainType": [
+																0,
+																0,
+																3,
+																1
+														],
+														"FeeRecipientAddress": [
+																83,
+																89,
+																83,
+																181,
+																166,
+																4,
+																0,
+																116,
+																148,
+																140,
+																241,
+																133,
+																234,
+																167,
+																210,
+																171,
+																189,
+																102,
+																128,
+																143
+														],
+														"Graffiti": null
+												},
+												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
+												"Round": 1,
+												"Height": 0,
+												"LastPreparedRound": 0,
+												"LastPreparedValue": null,
+												"ProposalAcceptedForCurrentRound": {
+														"Signature": "iNoTmK1dV43RICH1D+cU8FMooZAX4UifHyfWO2oVdu+h5c2nx38sodrlaCMlr5u0CmnPaVVU87XJwPZaftkQB5dY/dEZIZRUqJthri5HpUYj/zOPN3mq8kepwIAfsXpH",
+														"Signers": [
+																1
+														],
+														"Message": {
+																"MsgType": 0,
+																"Height": 0,
+																"Round": 1,
+																"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
+																"Root": [
+																		251,
+																		196,
+																		151,
+																		49,
+																		88,
+																		154,
+																		4,
+																		120,
+																		172,
+																		102,
+																		192,
+																		211,
+																		225,
+																		98,
+																		53,
+																		149,
+																		164,
+																		181,
+																		251,
+																		102,
+																		149,
+																		186,
+																		56,
+																		30,
+																		184,
+																		150,
+																		228,
+																		206,
+																		119,
+																		41,
+																		120,
+																		31
+																],
+																"DataRound": 0,
+																"RoundChangeJustification": [],
+																"PrepareJustification": []
+														},
+														"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+												},
+												"Decided": false,
+												"DecidedValue": null,
+												"ProposeContainer": {
+														"Msgs": {
+																"1": [
+																		{
+																				"Signature": "iNoTmK1dV43RICH1D+cU8FMooZAX4UifHyfWO2oVdu+h5c2nx38sodrlaCMlr5u0CmnPaVVU87XJwPZaftkQB5dY/dEZIZRUqJthri5HpUYj/zOPN3mq8kepwIAfsXpH",
+																				"Signers": [
+																						1
+																				],
+																				"Message": {
+																						"MsgType": 0,
+																						"Height": 0,
+																						"Round": 1,
+																						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
+																						"Root": [
+																								251,
+																								196,
+																								151,
+																								49,
+																								88,
+																								154,
+																								4,
+																								120,
+																								172,
+																								102,
+																								192,
+																								211,
+																								225,
+																								98,
+																								53,
+																								149,
+																								164,
+																								181,
+																								251,
+																								102,
+																								149,
+																								186,
+																								56,
+																								30,
+																								184,
+																								150,
+																								228,
+																								206,
+																								119,
+																								41,
+																								120,
+																								31
+																						],
+																						"DataRound": 0,
+																						"RoundChangeJustification": [],
+																						"PrepareJustification": []
+																				},
+																				"FullData": "FAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+																		}
+																]
+														}
+												},
+												"PrepareContainer": {
+														"Msgs": {}
+												},
+												"CommitContainer": {
+														"Msgs": {}
+												},
+												"RoundChangeContainer": {
+														"Msgs": {}
+												}
+										},
+										"StartValue": null
+								}
+						],
+						"Share": {
+								"OperatorID": 1,
+								"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
+								"SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+								"Committee": [
+										{
+												"OperatorID": 1,
+												"PubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn"
+										},
+										{
+												"OperatorID": 2,
+												"PubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt"
+										},
+										{
+												"OperatorID": 3,
+												"PubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN"
+										},
+										{
+												"OperatorID": 4,
+												"PubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk"
+										}
+								],
+								"Quorum": 3,
+								"PartialQuorum": 2,
+								"DomainType": [
+										0,
+										0,
+										3,
+										1
+								],
+								"FeeRecipientAddress": [
+										83,
+										89,
+										83,
+										181,
+										166,
+										4,
+										0,
+										116,
+										148,
+										140,
+										241,
+										133,
+										234,
+										167,
+										210,
+										171,
+										189,
+										102,
+										128,
+										143
+								],
+								"Graffiti": null
+						}
+				},
+				"BeaconNetwork": "now_test_network",
+				"BeaconRoleType": 0
+		}
+}
