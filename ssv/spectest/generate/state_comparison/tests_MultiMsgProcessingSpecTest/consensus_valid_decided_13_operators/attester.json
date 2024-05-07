@@ -13,115 +13,106 @@
 								"State": {
 										"Share": {
 												"OperatorID": 1,
-												"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
-												"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+												"ClusterID": [
+														223,
+														110,
+														165,
+														181,
+														159,
+														14,
+														108,
+														3,
+														243,
+														144,
+														173,
+														95,
+														234,
+														11,
+														188,
+														25,
+														158,
+														195,
+														82,
+														76,
+														10,
+														104,
+														41,
+														19,
+														20,
+														143,
+														208,
+														113,
+														175,
+														24,
+														152,
+														236
+												],
+												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
+												"Quorum": 9,
+												"PartialQuorum": 5,
 												"Committee": [
 														{
 																"OperatorID": 1,
-																"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB"
 														},
 														{
 																"OperatorID": 2,
-																"SharePubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvflPDLfhwkRxfzz5kBJLrOK5OnLdFlSh3Y74A3ZeqrJSO+NBBS9cBWbYvrlhi28YgA2dbUvvhuegA86S6U1mOZxl9Vu7sVVArmIYO5rQ+sE33AokQL6PCA9SXLvPAwOwAHKs2xy3zoIMEks8E4Ul38MHgWw/Rl3L2AyViJogAQCN4Y4A0h5BWmwqMj+wZ9gh70Z+Shg2PJI1lvJ+FJYU+R1A3Ivx4uiZLO5zt9TBeal2or4HdK+2CzCzjlo24WPkYJruL+yyxGUB0y005M4qje+Q7nZf+bm/+LSByBrNB/Jyut5TNeS+q7HF5dYTeLwdL/uWaGQcW7JVXNlCt8Rm4wIDAQAB"
 														},
 														{
 																"OperatorID": 3,
-																"SharePubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJCU0IDKcMbE6AZ71ot9oXctndMsnwOhmzAMuxaPh0Z6OeV4lodboHdxZIUbFEVZ76d5W6Oh8/CZSrUroZ0wgOC5+v71P+hRfJndd8ZxPTRTure5yYALPK1FV8uN31WIGSN+4bmNOXdirB3t6mxP/o6cHDrryo5IoFcYYqF2neDwzmPoPfW4SOgMpAeOtqhrK1A4V1/8QLW/v3Q8srbVlRm1DEvY17k6ODDRq6mggP0oHs4udAwZEQUDivsx3/kpx7ift8BZbYQyumob6YsIYXMIj85B5CkBYtvdYqEKhYNyUTO3Au5TkfQlYwGy5JqOdbHWdRZnn7+jV2yY9YShuwIDAQAB"
 														},
 														{
 																"OperatorID": 4,
-																"SharePubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs0DWybL8zLGGXB590kn0iSIrB1Gs3ju6ahu7MXj7icO2hN4G2u0CTYqx+Efc1KTen/FeIDuRt//K6fIl+W1wy6ijd1FyVSD4f+PQ2sFCml6hq20Y4w53cX2cKHdDV/F89BsdBn7EWqFmFAM31Klz5dc+REKyIittPNJ+g0Jo68IeTeWEk0cb2QFULPEneRagHTotmXkd95Dg+0wLaAKkfa+lXQcPHLp/uGgCWC95uFs+8VSIFlMcqhH4DI+FANkMTf2Y2fPZXOv80NlRDRKgKtGglnWIdkWzszzm91Ub3hn7hOLrz/7EeiFrcI+kAP8hJRAZqhGVIgSK9vP8LECVzwIDAQAB"
 														},
 														{
 																"OperatorID": 5,
-																"SharePubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx1wFVtRw+P6Z1DiJciNwPYJ+E7ALpaJ23kdO5XptAp6BgoSaFRJUCBoDaDITu4uf17xCboJhQKE2xsdM5ytbTc1ZJJDPZYps5g3j6swKPm9wJxItbtrVEmh6cNo5DfVK9+sAlu0+LdWiySc9raL6fyrxeA9y+XeDgJTyTD7mHxGDc1JEm7zCTLPbGY1R12aNT332uIA7VMP0THSBFi5yfTGzvV88Kx1SBIkWDsZ0YM9eddMc7nqeI7mA+dHia5NaMRwklfBI1w6Yuh5m9T+hQa+Qhb4SURAFRah/yan/4j/sGM0ChpLrRgSuYnqYvR1nfnFzhOzKw6oS8cxTSu1U+QIDAQAB"
 														},
 														{
 																"OperatorID": 6,
-																"SharePubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuhYNz0rmW/fh3hLM/VB8bCQf2nCIQhIwqqSYX6XcLqf/j3MOpJqo6fcgjpFdGIVXd18ugyeETvVpEcUGqGfMCbMhZx2uteMOqYLwm9P+kbLgDD8jXjtoU/gNb9g2g875xH7/VUN0u3VPBBIvFaHxijsFYCh4u+aSprOLyidDgT5E+ggUPICcdjOvxy3k3HUdy+QRmmnRDoqY1543TIXEfE04ws9nGBez1ySGpCVuhdQ7VqH9BCCsI/J0HP1cJY2wkMBRy793ETlqcnJT8r1Ij9gfArknUe9WchgFRKAuOXv/k0eBjwzOw9Rlg7LFqF1Oom2qOw9RfgqcM3AhY59wAQIDAQAB"
 														},
 														{
 																"OperatorID": 7,
-																"SharePubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ4/bjOW8EnWJlu9oyRNu6HzhhjUK2QJAwXEe3itwYnBX4lJEMrTf1ulkvafuZePO2aIN7B/x24kS3aR//b3kSJvMxfrOvzASgpba/4Fpuxw/lgVtY/LX41F3QQkVWPWwaXWai2Gpmsf6BwJMMaeNoAUYhOjs8XsFMoqWj6eInSCNHOI6kqNcJuY4F2KheCdj6TS6/LKoLhbt3jqGMJCuxoWDB1zXCI4xedGxUjJLxgFqKuRYZkxZgrRWBHUc34DJEy4dlYxGiTTAK9FUdPTwZXVYGTModLQBoO9UnIRS7SMNRghOxk3rk48jRhqKCIu2vqLlpBs14mpu7vThQ4duQIDAQAB"
 														},
 														{
 																"OperatorID": 8,
-																"SharePubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuKiCnNGnDCxLWIWVo8NNkYagGGyKMVGFWLCVXcslGrUqs5v7gpfQozt+hqo4lOxUQ+ixxyzXwbqe5jvLL+ZbW1hptoQYPKyBIM2xNAaLJZ/JIEZNuPy3KhiIgYKNc/GUZqT5Y7USTPh6lCk4IAu1BLjzxAiDz3TiwhEAAoFbwqsh7x8oWOsEibjMSnuFR8caAgZNwvbi/tC+Gelb1Ax0o40bdXGECuyra0u9oq2YX2GbQ7T//ADMlEcoiWwirM5Tza75c+5FbkDCh7Xu6udqLKSyR1X4ldAyFSIH5rNfCAGsT9N024QbTmFdrYUbQws6WT7w3Aa8+Q4eEsmLy0uLlQIDAQAB"
 														},
 														{
 																"OperatorID": 9,
-																"SharePubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2wCW/pL6zXBf3i/Mz7Hy6oZe91SmDp39V09UIKLnOlWWhR6Qadn29W2gwQkhV7NHaLvJ5ZkqTS2gFatCLBz1sFz97MO1mR2Z3ubGWBBXhrxnGXPwpyKtS9Th4mJYNO4og1R2E/FkU4jkuQs83un5zLlCUFW/ctpWSuUBYDObnvN0T6971idIspH7fG4FIJ21eHMLoEQh38x+IPdxg5CWLQ2Nr1Tn3i5zP0ZNGtW0T/OGNhd0BkiChzJ3oNY5TRd5E74SO3oJDb9Iv/mj+JvYHPYQqv843ozBMbO3SSbzOViy9Qx0QK4qTcdc36N4HOeZzPTfOVcfvdVqzhhGIL4jZwIDAQAB"
 														},
 														{
 																"OperatorID": 10,
-																"SharePubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuUe/KSiKVyU42YyFHb6N1Ak3b3D2PgNVpE8pjUZ/vqKWssaZu+OrDnfKDBbs32UIgSJzwYweZN7YAZPIZojeWRm7JYyDimRXZ0x6/4yKLJPHYIKzZApmOQggrOS5GSYcuGh/vdzduGbe3B+rVtYRxazA9tJKTv3BKXoe1uKTiQWqvmdqiSxY0B2yclmihMZ5397eeYW9iEiG4+9t/uao1C93/rW1dL3NH1jK/niy+g3+Gc3CKfNekPU61n0v3tAHAtMJHQoD/9vEzncGSUwUoM6m2HGzCAgW7zceOhwTBQW8ODnb0AGL6ezLHo+k59hlNRRt/1Gv8ayfXbqdaQrhtQIDAQAB"
 														},
 														{
 																"OperatorID": 11,
-																"SharePubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlffCZ8+jtP/bk3hhWBz8H84FpmVPc6UBBUg/4K4zBc8K/zEzNf6SJU1aucQfNVHu9k52kyaEdjOSITwiOKRoqwbg4HsFirx8Pj+SE1wiwVnktKN8Gw+1tgqA1qydjzJMysVLN4S55d/Y7aFROpoOUolZYSo+WcneUKbHw9fu8DOIKatFmY4cbev/RtLqacjGz9OYOy7yRVFwwj1XJrpAY0JgiNuDNDAoeOjj28y+AbcZDY6Vgaz0uNbcuhsWpVbdXSL7/7dtBK9FjYuewgALpiGWHvsS1Rn7NfMsF4gYQ/J8Bj8614wCUZvh6CDJ4dssSZz6Ro933yD6lFymj1JePQIDAQAB"
 														},
 														{
 																"OperatorID": 12,
-																"SharePubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArdX/wLlQ5N9Bxdve59YH/jOROOx00KdPkLVy7kZ8ocniYjzoZ5LdpY9TuTLnd8HuHyUlQsNVjas82DtTyzg11IOMuPUcXkUlf6YfTbprwBVAX8mggOW109ttfBeRcO/m81/507/u38x6pdG3JLVfEyrHpQkdBivRYR8AhWOYn4OWoWRZ8tVXdTRKH2+I+ypONa4mCcxNP/eQYzIjmKIsve5X03AjT7dGMSCV7KG+0pRZhCXoGyVr1HziAJQ1nVMRFYjVzUqxJMhSLuE4W6L12szMJn/czc3PUYC8IPUN2K7//HtBpVyKtypfcTMVKdaF9+hWciLRaTSq1UAaZslnRwIDAQAB"
 														},
 														{
 																"OperatorID": 13,
-																"SharePubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim",
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqk9eLm6lCcQeqJrMvhlfiQEoJpFTlwWYJZO+D8F/jSXNUMUHDP/IWw+HkBVIuXOwquYqKEGrzgIymqWWXVSGS94BGOu4+zNSu1dRpyBi8zkgvp9+uhlNEdVK1IEWTHzO6j6nO8zN9zilrxbpKAMEnk9rDAyD+I9p3h1DKRrk/4/+SgLgSuCdGSJ3mktxR3IJ48Cc/V21HMnTVEsj6Q6aZ2wfW2SdUN2bsyOh+vQjFNv0AnIOcaTy/L3hD13+5yILEGlmBI9ACTcbb1rRqmg7DR/lSzpiudyiI+pnZVDhIxJKq8+9TYa25i7U1hiHZinRtT30U5wlPJpB8j653snPJQIDAQAB"
 														}
-												],
-												"Quorum": 9,
-												"PartialQuorum": 5,
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
-												"FeeRecipientAddress": [
-														83,
-														89,
-														83,
-														181,
-														166,
-														4,
-														0,
-														116,
-														148,
-														140,
-														241,
-														133,
-														234,
-														167,
-														210,
-														171,
-														189,
-														102,
-														128,
-														143
-												],
-												"Graffiti": null
+												]
 										},
-										"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
+										"ID": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 										"Round": 1,
 										"Height": 12,
 										"LastPreparedRound": 1,
-										"LastPreparedValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+										"LastPreparedValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 										"ProposalAcceptedForCurrentRound": {
 												"Signatures": [
-														"KjZkQkoqlVbpZsc7AvQ8HuHDIn1s9ryI3FKNQ4zK2/DpbZxkG5DLCMmpxQewSfeACfnBcAMQrroebPJxKXAg8KdaXRSpGkU/X7t3ANmzBK+rlNYIoIZ4PzSwCdM/3/cVb1GoTTsIiBTM63wpvqHeJ8jwSN9RgE9WUKI+UjFbemJJhB83/nb1UpETceG5rUx151782+SPeB72R+dvdOu4qHpMkRW0qZ77lyDkMgS9XJysVsiVxl4JtA4BoOeqYCJnc5aD8PPzCtdEg98fTCmcrMzV0801WVLx8qFd8y8fNqy+IVUFEyGe9S6U+7LdsbfDg3lVqFBwQlaaUI72k9LXfQ=="
+														"Zk/+MkqBHBiw37+0U/+JOuBLI64eylL+8A2iqbVzegwekgB9CwYc1lOb7yXQKhuvjbRBTlcEGFQf9JeDYKh4qTH7hBlH0V/k94UnyB8/Tu3qHswAXqrFmgGkaCMF2BIw/rYi67mtV4xrGd++sgZJxx1Rv/Vk0z3MRt3eJKeH5Vm4CKv4hns2+bpm+uBjhRTbbxENcsFK71Ow98QvPB8EiNJ6paUxM6yMAOF3UMh9ajrKY4kQ1wui4v8MGwiDYTYmEIzHIAC7YA0LAZ0JpOppTO0224C5VFGxwywo0ulk2uD0G6woK7ccZKMxcMyYujHn+fr3L9A2KuP3ZDEXCenWJA=="
 												],
 												"OperatorIDs": [
 														1
@@ -133,6 +124,10 @@
 																0,
 																3,
 																1,
+																0,
+																0,
+																0,
+																0,
 																142,
 																128,
 																6,
@@ -180,24 +175,20 @@
 																2,
 																181,
 																11,
-																192,
-																0,
-																0,
-																0,
-																0
+																192
 														],
-														"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+														"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 												},
-												"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+												"FullData": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 										},
 										"Decided": true,
-										"DecidedValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+										"DecidedValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 										"ProposeContainer": {
 												"Msgs": {
 														"1": [
 																{
 																		"Signatures": [
-																				"KjZkQkoqlVbpZsc7AvQ8HuHDIn1s9ryI3FKNQ4zK2/DpbZxkG5DLCMmpxQewSfeACfnBcAMQrroebPJxKXAg8KdaXRSpGkU/X7t3ANmzBK+rlNYIoIZ4PzSwCdM/3/cVb1GoTTsIiBTM63wpvqHeJ8jwSN9RgE9WUKI+UjFbemJJhB83/nb1UpETceG5rUx151782+SPeB72R+dvdOu4qHpMkRW0qZ77lyDkMgS9XJysVsiVxl4JtA4BoOeqYCJnc5aD8PPzCtdEg98fTCmcrMzV0801WVLx8qFd8y8fNqy+IVUFEyGe9S6U+7LdsbfDg3lVqFBwQlaaUI72k9LXfQ=="
+																				"Zk/+MkqBHBiw37+0U/+JOuBLI64eylL+8A2iqbVzegwekgB9CwYc1lOb7yXQKhuvjbRBTlcEGFQf9JeDYKh4qTH7hBlH0V/k94UnyB8/Tu3qHswAXqrFmgGkaCMF2BIw/rYi67mtV4xrGd++sgZJxx1Rv/Vk0z3MRt3eJKeH5Vm4CKv4hns2+bpm+uBjhRTbbxENcsFK71Ow98QvPB8EiNJ6paUxM6yMAOF3UMh9ajrKY4kQ1wui4v8MGwiDYTYmEIzHIAC7YA0LAZ0JpOppTO0224C5VFGxwywo0ulk2uD0G6woK7ccZKMxcMyYujHn+fr3L9A2KuP3ZDEXCenWJA=="
 																		],
 																		"OperatorIDs": [
 																				1
@@ -209,6 +200,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -256,15 +251,11 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
-																		"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+																		"FullData": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 																}
 														]
 												}
@@ -274,7 +265,7 @@
 														"1": [
 																{
 																		"Signatures": [
-																				"iEjZRb8P2Q9b2ELm+hm/iVhsraGrBDxobejDbVyAsWBsBJlDlBvHQtGAemIx771+BsFUAiG0Rwmz0/lx7rW2oVceSFQ22b3HP2CAx2rZWlJK2X6kXTPUAfzsjB0cKMAsG3Q0GeUX/jEVxSo3WqY8orB1lJk/I3knFZ9jh/bBRquWwKBWYXaeKy3SmERVNBuTJLnhZM2oHbhhKd4Q7RyNHfmkjIjMaaRWRtmtENSkxSZTycg9XATA2y+CH+rW46ESKbJUD5XzaeDCRwdeuITIof/4dEDTWGK4YVsFnW4YZt4CmhQgn/VG6C0bw52LjCTzwtFqqJa4KK+eDEZniM9I2g=="
+																				"yoi0Avkc23OzOH4j73LYSb2140o+NTTZRXfepjHKE22m+vDt+hNTyBNApWaYC0UfLYyuKFPUHZ5smzIRnYgZCUmrIW7grgJIzr0ffzcvLtiRGKZrn1Rm1uO/KxtwkaeLYRazrJgEOWCvBbVtNICmR8Q8rIsjR01D8o4uP+1YrRPsOKV5DLjUsfutY0+uvYH6ed0J86PVcH2tivry7TbEr7OuJsrh96EwN7wK/1d2WaGW5qkEOQJf3rc2ErXuL8phAjSkzEs/CopCu5BgRktErIkI2jdwVcibaHUS5UcmmGNVt6dtyJfW/XFwrE5SWH67u2NcPnGyCbgdxeClc8zQ3A=="
 																		],
 																		"OperatorIDs": [
 																				1
@@ -286,6 +277,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -333,19 +328,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"qhOnnNKRwnVgGIxvxDfvX0y2sdrZaMFwAScWQp7p2ni7o+Nt+ypY5vdCVj9RqfkEvUVsRQ6KkKN9GA0AGAkhaf2ALIyWYgR+21a4sIhnQIHK9n3z48GXdpOj2qWsmeE63JdyxH3MMSzefjVlUrAvT5e6k5pPtE8uxHiDMcVPI9sjAidM0KMzD6H1CKAS+hk4q8fOubOEFEpvcxI+7edilTMCNH1R3LPS/M1eaXb/UZQl7f3VIq079dzfQt6NNGTojTPid6OFr8psA5n5jViNHuP8RxNZDjccaTCdibGjMRFauDkvSTNzWKMvNNHwTkOKFd8+a/FZ+q8Cz/5JTwUogw=="
+																				"CuHGB1rYShCQ8ESL2iYC+ESLz/E+oQhtOY95zP1dgrvZfvb1iToRK7J+4qCYQGn7yTA+NBO4Oe/1oguMTDPpKZmdzre8YKRlaJkBWq922njPVrMaMhNdBCXtUoRaRyVKiLwEvdeMEtkeBLeFosB8wsrxs+4De+508/PHbaqlyphn7/tRGXzaKt438P8oEjC0ZWx4vmxdVJXZzLiAmvfXtvI4EPeGMn2HGgkAYtvNg4CdIScnRxI+sy2dzD8JfgxR75uA7mBP3Q+zMN+seaiVTymR9tLimp4rZ8t3zc+ASa62/d0LPsf6C52VQEn72cy6OhnvE/SRL26gytVQs9cJTg=="
 																		],
 																		"OperatorIDs": [
 																				2
@@ -357,6 +348,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -404,19 +399,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"c+RaOT4itco5eScXKMxQj5DUK2dcwms1RB7doAdE0Wv+nw+hLwvIIa9suu3+jc+98JZ3dtzEvJoEuRErMbKbA6Pg71uxMpfKxmDm5DnTKPWctDD7IxEAelUkuGYhrtaeNVfvvcisFFiCB5UiLP5di/0SfMmCh7T1STC4fxhwWtlExogg1TSEt+dXnkLA2A3oEcFWDV+YEGPny5+TZV8QKu9/nUE+3AnyrOo8SU2KgvtCw5XykK4WHtmXFhdch4IVZZ008akCk82pErYHkE3+tm4AFjRvFVZw2D71mmLREI0NdwDn8SrSGQBdbpQEJh48eTdquO1sGt+kUtYlPVqVtQ=="
+																				"JqE7g5IgUgZvR/3SN4YxC5EIAxuZFiome19jz9B7jLlJD28b8blBurGcu4A2lZLOo/RRG/9BnBrW46ZQ7Tmur3AHeDoIk4m4cfW8sKRSIWdVewbbc6FyoBGg44f19+PB5Q+9sQQF8xd/y7KjleUEi1MXhQyeqlZteytLUaPgj+HBVoNKasdtVHZ17W15TJ9mdUbLyecBlUgmqDEc+QQsDn+oImP+K+jKA9Tu3Qb185Uiy4Hp9fmiyMSLNhqYKTTzd8smXoxk4tW/qZOEY+7bDA8ex1l/kDuxStcnNw/wY8qjDY5qVw2XbgfIXg6CXrRMqhJWHOdIFOJnFuEalKo3SQ=="
 																		],
 																		"OperatorIDs": [
 																				3
@@ -428,6 +419,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -475,19 +470,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"nzJZZCUq6s1ep3HpMWkm1eGLe8ihwjTwb6Bl6t3y0Iq+1KuVv5MtDkU73Fm7gUNRTbz5+vxtGL6fwLPxOjjJvXkr7+Xy+oS8x30WL2BrjnN0nAQoK3rD26kdqWuFSpC1Wu3crVPxk1O7IZzGuBZnYDbjwkwIPoO1yczMHvBV21diwVWxP2KyOgeBUYKPeOB7ks88zpupIM/Z/HdqcLS+H9hxoA16PMaWpyJRufTVhhzsDITROjuHhvicAl7DVegR5StfeKHYiEO3aAc+TNiyLVdIhfH6dlBSrk1YqP0hnZJ04hP5Q2q6WCN13tLO3u/ihKP5oB8ooRls5DOC+xVgkg=="
+																				"BDmWHccmwmVFeBmDyfcLOeI+WiOzG5X7NAFkrLV7rHAE1vMx2UOetTbzkIzD7DF8FtdYX5rAMlEoPZMuQwF86q6S1GDrmPFuzikb7O+ucGNad/nBX04O1y1R2bHXuPtDLEqYd1SyOQu15AMgrMq0Jc+0PV1ekCPuNSDkeLT1pLUWHk0VSGLWqYZCFBTiSqiLQCw7qCUC8DEjIHix0GOy+tIqtLKevqbZGDvjBMFT1tRSXV0TyGWtOG7VimSSQh6QZ32rD8UomTdCrDbJqmWQTkibuKacRQR+geq6eR4lG0dSQeMAw7nt4G7AoTKT53I3vclOGdK0VDTRcZn7nHiypA=="
 																		],
 																		"OperatorIDs": [
 																				4
@@ -499,6 +490,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -546,19 +541,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"LfEYeAwEVUdHd5jrOVX74btK5aX3MU6V2UVWHCM9bkSp5iz06nT2MzfjL6EsYUE6e0YB/5g+FoDSDG5EJ47QBjgkvth3V+ILwEi+YOm+fvMeNOHvp86ZdEyjlIJsF4nFLPynO9aerJYohwi5pdT+x9PS0mKz8l7Pglij7W5DRCuyGuiGbk3nMs4WqGPJ7Tcb1atBUooTp+N8fMrHyfHOLRLtj+hTVMZ/LT4xpkTqMOMlO5OiA2OC8NipjaurffabGjnY1LQCWohm172mTlsBbrJuWotn/zGqTP2+c5Q6DvkNO9kl7p57JBV3/DH1/av+IihK4U52CPGy2vXUBcHCkg=="
+																				"KSw1OSJDFAHOZ2En89/Rw8TTkXtxIBQ7wD10TJPCBNGwYpFuFGuB3Oj7TzZ1wmovnohF/d0PQ06vKiajDxX0ZLrGmS1jXsiEOhUHYixW4uM6ZQBDtunPHBdKIQmDV+0J9P2ernK15Pe51BCEcvSLW0YFJ4/HuoWX/8/T7B1iEwUjSMf/6Oe/85LCjEFvOsymk4+1OXyfNeEIWuuTC8VSF3p+P1nxDh9tKUpmaDxF2VgN5cHgiaR7xLWJ9e2znmP0WLnbFGg9xJHmvKs1ZiJi2N2t7ToofGw3iNPTgoJHgge/xkYDZcdt5qShIPQJPIqB9ks6tUkHvTYKh+R49LDXWw=="
 																		],
 																		"OperatorIDs": [
 																				5
@@ -570,6 +561,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -617,19 +612,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"VtGf5DapCpxUNCaZ6+VJ2OWFcZaG9vsGjHblYkL/xd+0lR+tqml/5r3fEZmA4DfWbFxViq5shHD2Wd6mwNAGScWtBtEa+jQHodLQdpYauuPVI1dMxFACnPghOQsFWH3AVKdnpRtQHQOA1CLq+OevdeWnJmWOu2JarDkcC6Qjg73CuWrlXMePwxdpChshYWmQv6HMj6hmi+gFJBjlTiay1tdoqQgoHKGUAfOb9OQd9SqoYiQyZyp9RX2bJN0tgsIDWsJZRHCdeT3TSLOm+xJjC1sc5YuXBp9q8h6VJsXTT6FJeiB+iFdo78GpkZtk6FTwuI8s5hOoNWgM2F41rY8gHA=="
+																				"oMUBVAqiAbZ+pSAQIlU3TMXR/j7FitcMHvN3WOJd/cFw1Rr6X3vgDEoYMX0+LjEI4WfBLMb8G+KGHvQr28NbGTIgp7SwV0+fUMHTj3Fy83giAG/a5dIUlgWUEkssDNh+NAY8KlIk89q4723NFUvjuS3/sAGNPn4TYVwnIx8capgXUcJAUWHDyIrDaPOYDxbXVHSCptkpK1gvGaP0xWW5RUb1RFJZnoj8XqFm3e5HdjE84STgLixbh/b6bbsoBGBOP9s7vQOUu1eBt3ndWsF5/3aGCWBHLpWVJ4PsuW3eTGpOAzp+kuWpRk2Tyk/xs+Ig8fYXVd1lwEYn579/q2Cfog=="
 																		],
 																		"OperatorIDs": [
 																				6
@@ -641,6 +632,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -688,19 +683,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"VhaF4SaNY8EjP3PzDEdYk/hKN/8N8c0CXZkaCphQ2RUxlihu8DpRIzFPZeXEElc0zP4zmdzjyWuh5F7U6tFBfRQxZ+WlLNsSl4z3rcjre1CO1ibZZZCsZTfyPAqOG++E1HHJAlBVKpqUn2KtlgaT8znp2mcJNdTY8RliJz+FU7t2jjkdvWQljEFcNADr2fnlHnYXgI/DdOf7uG5LA7sYM+dxVF9MFJP5wRRXjW6kiQHsPmqJD7AzxjwoRxDie4J6OLVDRT0LKDebtzBCvCXU+pHbJ8+Bw4XONK3t1lI/emJEf5vIu31xUmLHW4pgBakAq9N39vivmSo8iteFFBMaHg=="
+																				"Id1ZBct0VS4uwhFSqOnDHr7tu8FZnfU6QJOxqxfWLK+kaxm9K3T2mg/fnMz7pIjmLCSocsvaoIuSLujsaG2rSLfavsmvCi9R4I7Q/vZlbRpwRCU58ZBrji+hk6cSiYaQHtC+TL7RfAUmZkFQf1Rak2jmJZFCPSTNMFdXYEaBzSmhrWm5s7X6TXEUkyhPX3Y33pLEB49rWRpZQznTd5ZXvm4DnH1ZHWm4+QMbxYD66WfzlGFr1Yae9FuxiU/WJoHX3zwun7NaCbmdYQGfRpJQ56XEjOgl5KJnI+TlRLGKC6w2GfV6EdchHnhpKlAQh/ocI+oGbGVC75IeB/Yk7cwrzw=="
 																		],
 																		"OperatorIDs": [
 																				7
@@ -712,6 +703,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -759,19 +754,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"rEOQkgLDq1SH4BRDolGeAC3/VoDNlJVLebls88X0SEzhtn0J1qS3QENe9EVoLYqSgwGKno7Vfdl5O377I4wFdurnXHYNV0unUWyhe59ktHB1t5OJufaVpPIiuLBDpAQPxuA0kthlIclyHCpBhNM4q/TD+yrstCcbxkHKaMp2QObUQAYneErBYqc3PF1xe3BS7J472SJGdbFUE1fBd2IHZV+xO+oFY/RWh93XOweH9Zg5MYWnb/nRS8CDvqZxtpDww5nNDBrYMRdhNH2OcQQwMFFmryUMWMGeu5gD6q1m4kcvRVeQb9kzg/IsIerps6BXMmbNQ8DVT5y/UNJAXUJSpQ=="
+																				"pw8Y3anC4C8Dy4P3wuawvv+zYS/GruAmo9sB83Mec2xnDttWZfMoR8YauA7ok+A6FNfLc3im2KfmYQTDsg3XCIX9PsEMWRtAHuctxF4KgyN+VeMfbRSpIWd4NdmajtVuTS/QQjFZJyHQxoF78hHB+nQ9EXhkaSmz4tOXXbUksbBIuREbebQUsn39bCKq21/PsTqKIEJPMEGkoR4p/c0yAH+UqsTyVvk/7Mvjdz4536YuqyUkx2N0wTgqtHYAqSMNMESwQu6osZlHFdq83mRr/lrP0DF1HBsGZK6+1EWTyea9Tjh/493ajkcnB5JhxPYrfdyFW8L7c3Q565n6qwzSWA=="
 																		],
 																		"OperatorIDs": [
 																				8
@@ -783,6 +774,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -830,19 +825,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"LEsFw87z/vTyoQNKjg0DirBdynoapeS9bY4s5boHWxezljZ/e2TZiQESWNT85yWnEbskis9TPWFT20hRMppDJ0hO/k2F9p05R8igETU3Z4alPO+ynUSj63JeuoZ3Kk0XrWXMLdJfiGiGIw0c/nTq0xL0RQbj+iM+agADsw8MygzmlDsP1Mxt0wL5kxo5e6MdNPp6B3+zXis/Z3JQNuVkD1EM4v4132N0kEmNcoS6AwdEt9hXAZg6Jzrng884HHDnVdA0H6dJemg8DKXWAZ/nKDxEiMeHWnNuAZlX4hbZ35wSt1Y/zxxeYeLxlupFoXV31L40BCBm3kqDMxZYkPddSw=="
+																				"gm8rjmpbvh7ZUz+EyW3A72vq3yZMTdQkGlUbQzZmShjdJhJDJr7JJleaNFofbva7D1qFGqAxGiW7xRcTSM8GnI6DqbVd3pd3yL0EUVfAndKgA29LoKU9utDcV3fEZ/5HwtrE2zGwSw/nzwnhhuliCLA3qtcZon1NKukncIHl81xPwZ2YiBEkd5+ORvOf0fV1Xq3flgiqKQ5qWjd/r19F2oem5V7ZBnO3N475F+deDBtqsZINDNXy5Washca+anrOJOpYu/MQS6P+PJ4xuCt5gPSH2DbYEFONRhJQqqbzcueOLKcoby8PG4nZr8g/4eL6m2BNbtalheLNJxW2GQTE6g=="
 																		],
 																		"OperatorIDs": [
 																				9
@@ -854,6 +845,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -901,13 +896,9 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																}
@@ -919,7 +910,7 @@
 														"1": [
 																{
 																		"Signatures": [
-																				"XESkFzE2q/EnpnWi/2d4k5HQwROC24E7b26DDJlmhM4d7FH1vZukU6FC/acAtWaRqkVkjaxEfSLvapdVBAL3AecSYhifXhOKLDDNgwTj8goVAUOFjPWy0kMbv0RJ8dCVvurKeYpEl1eA0Sj135Y46wAIrIvol0D6RqI7GFquevsA9miFqkkew7+aDHe1Gsw0Xpe1JViU6fcVsw0aYg6vS1EyENlFlbgzKBiE2pICdCQv7gpUa41+kAkhmZmg+cCx5pRuVwF08cFvT+YRSm2C+pHvSndvS+B59Pk4tOHTXF0rDINAjX89nIfPLdFWA8IVaJSPgSfn7pSM3hOwUyweEA=="
+																				"hygxLr68B7ljGSAVWeyBs3nA+BcznrP8UEd3jE0fq3CYMHxeAMam9kpkN/WFIjJrAg2gUY87n6JSPCFxkWI6kNVJ310lIo9KRgS5PdWilSkPZPXSvmNeHy8NqE4NsKeWv4hTQ3BRFJKGa+5O8+oSeiKzPFRR8ooNVp8Oda9kLNbX+fqnhc91SocT0W5VFpxLpR7uEwPZ11Pr2KtRM4ZavGCLnNlV4DlbusT7Q5DkxByMtZJtCmZ6NjebUOOmjjEHz+CZt6+kYYNBtXEQN/zAObiJHM0S9vosJRqyYlvV4XEWHZNOtO6XoeQdCzULVAE7Daaq5X2+3ZBI2D99uIhviw=="
 																		],
 																		"OperatorIDs": [
 																				1
@@ -931,6 +922,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -978,19 +973,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"qthz3f32DQhG2qxsyFbpB4me1cIt5bie7d+34Tp6pY192qZjZWtixOn/2utgTBZsTVOgahUEX5dkvRl6nzGdwtdUPlCNz8/DlSZSMm531rKbqfA79TAM41nO1AbZ24KdG6cxv7eFOc/PK/UzE+9ENJYeBvRozqyVWy8RcB7iDKCnIBG9qWziK2ONzmwwpn7kSNVO2IOBafAN8uy5iWfbR88OyYjZhaMNEq7Ugi1zoGo0Hgz/DRSps540T33dROozuGda8aQ9BuCYtK0YhHrUz/dH61/znzv4RhP++yGwWEs5El10W5fx4xVws3o/FDpBYcP/5gtsy0jU9mItgY7a5g=="
+																				"Mv/hZCydt2/+NnI+fQOtPqE8JRQeEJ+hKlP4JTIxYnoXRfzn5MhbAtriNNGqRSs75g1Xcl5oM/WH1rBcYU6P5DeIpUfE9rjJYruliht46zpubRrTxvAzjAivLYRWoj8UazQmCKBb8kdMSBcJupyKFDA0PHTzdPgPcV0GWJjsas5dCvcdSqqAbEhnk8zFWlLYRgSGgrJOXEcAAIEKUQJJyKAxWKKpLkMHn1MFl84Rd/KNoPdrebgm1y4Lu5UI04GhwyT1eJQGKTbXB3aPyX62U/y7jUbzKq+ZhW62aQ9wS4OiFl0rVSjkiBNAJhDtiS4vsp9kxK4oIWl2kN4xbDEqiA=="
 																		],
 																		"OperatorIDs": [
 																				2
@@ -1002,6 +993,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -1049,19 +1044,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"qqF0DFP9a2uW1dsgFFi8kV30rRLNFPZqN8ZowH9q/7EJ3LisxTzevuEP/yenA2THr9CvGRWiz09b/2h4FyE5+njKi6o0NRdiAOOcJeaxb8VcTHgL5Si8EFUtPyg7Ytwceej16dJZQ+Niuh2T+D6WYMjVYv/9zkEx4/NpRK1fmTFFz+sU8PnEQ6dWIfkTDOplD9bqjNQ3kzu4ONeelBdmDSpGiV+SHjziPu1S6Dd2vWVnqtJgP6uJutfYCaRA7wB88Aoap8L/NdRbvAMYw6DbAaWotDV0GVwp1PuV6m2YcmRyjCkn3Lx9l1QDVZzeJT+J6ZREBzerPMPSpLdThbo+Cw=="
+																				"JPgsbvF8cz9cQ3DtSBFpUQ1qTdeYXGECW4ojTrNrVJkp8w+qILL7epVVAf/eideh46KskuSt/t09+6buiiP2w02Cr2VXui/If7J+IDi+jbq6Yg3A2T1z2YJndn6p4FqNt346+qRIPOT98oS4XF2w7xt/H7ITgFncJPIKqS1ZSn7Wd3eSArDNcX64pvOXecPwZY8amHYyc+wk5CYXGF40+esnqZdHi6EuwVhq54pgpce47NObjOfjyO/Vqt72H6LqkJUOmq0YTY4KKZRlGXSwps+9ayPPEGsbzWL3bSfs04mfTUAl5PGTJAqVwOgCPWhUkMX+oV/K5q9BTnMPd5HBqQ=="
 																		],
 																		"OperatorIDs": [
 																				3
@@ -1073,6 +1064,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -1120,19 +1115,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"nQnaS3If3z4yrNucrF+T0ctaTlyvIVdda4GccziXrN6zyrIYxhAKPdLZ3HBJLmc9y8jJXF9cV6WLTP6n4Wi5UvBNfbISzmr5GAOhaDbWAF2WilMlMZjpV67zp7JEX6jPV59BEFMKXm77K7bf3cWHdE06Ef9HNvv3KSPQ5iDtfLgpMFBqmHhVGRaHOoI3rYfydhNxPfvFxFbKOkOh5CIcTvlvSfx4F+ykbgvUlyonEKOmHP4nrOw/3WQ0K8Y9i6esDOdCpLhZ5DyA2w73NGbK9w8LEIHtwLxwhHR7AD1ZRNd8HGLU7qebjQLACuEMuMMBoe/jD9PNpqjX4zKeYaZE/g=="
+																				"HP+vno1U5c9jHHYD8kVv+pakyx2ZUqlLnQ4TZVBple8MFkyxSQBDWLhuJNV0r4ARGWvQxkPZL5VkqW08w/gvUsNMGx2lzX0XLoo9deNUgcRBgDPw0+KCh0P/vy/OK78BML7GudEHxyL//uqD8SC0RVnHKVEEWBdjazTgm89KO7Eq4tEudfiEpKA5j75J0YxJUo4kc4JfvjOcBn8bYEJTjzEdQFdPNebx7YHyrhMVwD0RpzxyU4n2/BQu+GfianL4It6UJLRp/o1Sg0RdBxb7HmmDyOSCZcUfQdkdLxwHI1og6/C87Os/RdDt5PS7A5ao0JaxQHslyV9xE1cM1ksJlQ=="
 																		],
 																		"OperatorIDs": [
 																				4
@@ -1144,6 +1135,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -1191,19 +1186,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"mQrMUo2kRxJyiL08uWvKfpsMzknx/oev+4kfe0U7hI7RrTUQ4PbdmxZEZuCT/d70s0y+xxUtF/44hm7/BA0nEG2wq1HtADSCSiBp3gejQo0GL7MKa2EnK+9FMfpVfWs1j7/KKnG5+Z+HXlNt0VvTUz9eCn7HnwtpOSjfA8EuB+iGylhzfxDtMpKolhbbIES9woWP4Bx5tteMryJb4J8egCYXHA984t/AklDT1UkoI9BXCzPZ+IrKBMasJzFI6Jtow/k6Bl9Cc3c758KhIhpgofK8ukfhY8Za/SOR9VaN0bYx6n3ZA2zSFC3/hs/F7fNydkOJgbcmnKgbC+fywnkx/g=="
+																				"pttJCMJGEo6i/mpui3R6RL7d7NrzBTV50SqcEdV7jmw948EqHv8UB4HvlBYymFzFwOPhI2sBA+YjUq/hfR1DWEJmmzKvzcCf6pg0jB317IYIS67RbdTHzZYhHgxZlrHz/n6V5EPZYFQ1B7vB0+arwt88qzWeZJOXyL5mqCP84Do2N4byEoNOIj2Utwya7w+FHCamXtsjGAqmgkgoEehRq1XhadWcEObsn7Wbw/18qA0LLTgvErOhWClc0pPuzwO7Q+Dek8yYAvIVbwQzyLQTzLmg4pPYQDX//3TF1Y6dOk/oVs05/lLpG9RJVB1mSu2LccJDfsUIgfJhrGsbCLxNKQ=="
 																		],
 																		"OperatorIDs": [
 																				5
@@ -1215,6 +1206,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -1262,19 +1257,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"eYhCfm6RcSfXSnIWH1IcCw8sIzKef6sRuUrAKBhSnNPk8+JXJw+Uvf1gRl49g7wif2bkqveD5yoGy5sOoEf3mUwEKOm+aynmGNm5b0rem28Qyru/+LZ/XyaFjEeXGzYJ+5LnqvVKCf5IVWF14eKyMX9k4ptlD7oI/Z5leNoLF8QLhVOFmcfTYhelHgRfm3CT1i1TwQUpCBSjcjztEhE5QAdGj5NocaOxWv/LTpv/qtMev68Gn3mtDH6TU6G6hIod9xoy7J1SqR9299qZSr313p7n5/Gz8oKreEXwgr6isqGbsoNip48eZD45KtBxt380/R/8q4TnBmPf2Y/+IRLXvA=="
+																				"dSfObQ/3RaHkwTZLD3unD/CUftgL2E+AJtI4X2h7/5aOC+NJg+akn228BxWvXEmqz/SUUQSDEDXxDMJ7GeB78WUxS75aKfqss4mFyr9IC/rtLR7gET8OQidkB3+jMJ2SXZw5L93odp3IA5bS+1ax++gcbVlruPxz5mmXEkTMRZ4h2pDS/ijCZf4lAMdu1Jy7mXj57wX4muW0l70HSFlRM7QDj3k+8cZw+7tOSFk8nhzWQ11zsqPK+qRi2qoZG3g8IXlOCvFZrdBlC8yxAS/vrf7V2VN/gLw/XjcbcDO2plYL19PQ+o+SxqvUWnU+3ZjHrQjVVjsFnTUysr+TuesqmQ=="
 																		],
 																		"OperatorIDs": [
 																				6
@@ -1286,6 +1277,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -1333,19 +1328,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"WVnZWfxX3F3HnOyK/+VnyMQfB0qaS7g34CcsiMQqZM64BnpKr9mW4SUCXQItr8FghtBbfFQDoop+t/+aR0tdZ9KArb5GSM2GdTCg2B9/6q0GapFxEraAvCRVnnMEbZyUOfMGJpFHZla5DUIwFGHUOkD4Qj463UPHGR37JwjD+Vbttxk4vGzp7j7X9x96r41JAayF04Zp932j8kLU1dohYRVpZuVeWga6Nb/avp22psIBgMfrhvZ9jiZkNWDTpGklEQiUS8Ph6A3yyoaC8R/3HNPoM1Y3cLHQ40Gy35oN6Q+BzOd4ywMok8WCiTEQNF4toBo7Cc247+huGFq/pvwQ8Q=="
+																				"ggHgzlOTY7o21ed5uKXRISfaOLhSTA2ZEZOLT54Ou28BVbLfhzcWMGU+3k1wvWK7T+cpJ6p2feglFKbIEVqtSVvjbLDCZIrF1ENJ4R+jty1UrbNhwZo1E2MmDTlD/PMpBMKGqZBAo6/+kxQIk6ko65JGtuxsDDinwmrxvPWJHdiPe6Ipc30ULnVLoEbxGHZGxPqi4PWyYoM95X7PRq7Xq3VP6sQBlPs9wKwttRnLI0d11vNMV8v5D9TbJYo7xlQXAatJ84xIfaC4EE8afrKqrneu5c7AZEbg4uPZYqc5qHHPVUaWj2kRexuwPcjMsRDnFKVbOpIi2r/0zkF2eZzLlw=="
 																		],
 																		"OperatorIDs": [
 																				7
@@ -1357,6 +1348,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -1404,19 +1399,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"QK89wv76KLkRlU03K3N5GtWlOLYwfKeqZZhDXnlQduGfYE/NUzx5QbeaMGJtajCS1PRGLTzWLoiG8VAIU0mewEW0ZvAK/PiGxdWT15qbaAZaOxnQvi/7tXHXW0Gy3yl7qBcBTx80J/XUXH3wBXcW2jwbQoLUG9FRTU6gk3qEE9JDyAe1iGVMSFeTywgXQKVWhfeS2ldNOit3mkTH2+KCRFdxTIEasLWiL9Z95lO6WspReIiFaWfNkoURkcMDY6V+XccBCVbOa2X6V23Q2sbfGZvyIJaQGrPH+euOKmhBrQMN/0Bu8d6wZWM0ikmlEj0MbtPkUirPRmM+wsw7DFW7ZQ=="
+																				"ELam1b78XjeptCE7vDpg/7fRpalPpKKEWFURzCCEgSP6jt8QxqqZU5C2LlmT3WH2dtWUQeye0zg9/3cJRITbOKJeG+XAUvtnCf9KKsCP/+8T1PpvvbgzvML1lem7x+ZNIPPPe6Kfjo5hfLh0lb9n23Aud77ticzRZy0l/XcWZGFzBOxyi4rQd0Ot/amGYcIq4fbkrTTX10Wjy3SQuZ7opFUtoxmQ8oSFj+OcoxcYpXNuDGjalFQ67wYEcEQRZbLIJCCnCq+9J7KmOfJn0EtzdHjZVp39KhWo3n5ZAKVKlAOFRbZqgUkbxxCQXezK/D5zEnBs8+qLbawrH3tM9AnzuA=="
 																		],
 																		"OperatorIDs": [
 																				8
@@ -1428,6 +1419,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -1475,19 +1470,15 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																},
 																{
 																		"Signatures": [
-																				"rZzf13YNenhuBcOsbXpi49RB38K8xw+zXPv6RQfY8tkhXTP3egIK8HXT7OCyUMB/nDD35bzkIylIHmkE/wxSrFsiSzWnwrGP/8ulTPpjp3CqHcWc7JqkoqyyfChmyriU1kgv3+0Z3vrsMnYCyCdT0udj4GmigSKhx8gJooYCyaEq0kZQEMcL74B0gObbUcaIYC79Ch7bUyyuC8TRMO4+i/PEX75Cz5yIwefj/dQPlxRqTD6DBfPEMatWas05FIkSr4fSOzz1giFdFhh6anIozZGuZaCLaod93RtwCmCUCZAHDYIn6dQosZC+P//dAVVGaKkEAGS78Prny5nyyr9APg=="
+																				"zhT5wOYblrV1Ah/mwMVJ0Le7+MK6Lo29NGwcxgJgNYVw9TeVTJp+YgVutoRxzYRL0+Oha1K9B9A3Lm+YM5rl66kWxuHsYQY+PkyG5MLngRRqetO6o9I1LuAG6qHzzsgmKiPAGefij/9CEGS88TwJ5sF2PeFdDM7UlyS+Bo9nreSAm68FS+wMZPElzm5q6pDfWIq6MvjIFemRh5Uk6R6jEPDzINJmL0iGgDYzG8saafbuk6KZsp+UELzFXkxAQqQFYt2q4VpGAe/Ffd+GxS639JSyKxAEOgZ9bj9YFD2Xcu6DhujEpOR9QGRCNHRIZsv+REHjbkB6oSvW9bQN02ElZQ=="
 																		],
 																		"OperatorIDs": [
 																				9
@@ -1499,6 +1490,10 @@
 																						0,
 																						3,
 																						1,
+																						0,
+																						0,
+																						0,
+																						0,
 																						142,
 																						128,
 																						6,
@@ -1546,13 +1541,9 @@
 																						2,
 																						181,
 																						11,
-																						192,
-																						0,
-																						0,
-																						0,
-																						0
+																						192
 																				],
-																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																				"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																		},
 																		"FullData": null
 																}
@@ -1563,257 +1554,276 @@
 												"Msgs": {}
 										}
 								},
-								"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+								"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 						},
-						"DecidedValue": {
-								"Duty": {
-										"Type": 0,
-										"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-										"Slot": "12",
-										"ValidatorIndex": "1",
-										"CommitteeIndex": 3,
-										"CommitteeLength": 128,
-										"CommitteesAtSlot": 36,
-										"ValidatorCommitteeIndex": 11,
-										"ValidatorSyncCommitteeIndices": []
-								},
-								"Version": "phase0",
-								"PreConsensusJustifications": [],
-								"DataSSZ": "DAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQI="
-						},
-						"StartingDuty": {
-								"Type": 0,
-								"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+						"DecidedValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+						"Finished": false,
+						"CommitteeDuty": {
 								"Slot": "12",
-								"ValidatorIndex": "1",
-								"CommitteeIndex": 3,
-								"CommitteeLength": 128,
-								"CommitteesAtSlot": 36,
-								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": null
-						},
-						"Finished": false
+								"BeaconDuties": [
+										{
+												"Type": 0,
+												"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+												"Slot": "12",
+												"ValidatorIndex": "1",
+												"CommitteeIndex": 3,
+												"CommitteeLength": 128,
+												"CommitteesAtSlot": 36,
+												"ValidatorCommitteeIndex": 11,
+												"ValidatorSyncCommitteeIndices": null,
+												"IsStopped": false
+										}
+								]
+						}
 				},
 				"Share": {
-						"OperatorID": 1,
-						"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
-						"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
-						"Committee": [
-								{
-										"OperatorID": 1,
-										"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB"
-								},
-								{
-										"OperatorID": 2,
-										"SharePubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvflPDLfhwkRxfzz5kBJLrOK5OnLdFlSh3Y74A3ZeqrJSO+NBBS9cBWbYvrlhi28YgA2dbUvvhuegA86S6U1mOZxl9Vu7sVVArmIYO5rQ+sE33AokQL6PCA9SXLvPAwOwAHKs2xy3zoIMEks8E4Ul38MHgWw/Rl3L2AyViJogAQCN4Y4A0h5BWmwqMj+wZ9gh70Z+Shg2PJI1lvJ+FJYU+R1A3Ivx4uiZLO5zt9TBeal2or4HdK+2CzCzjlo24WPkYJruL+yyxGUB0y005M4qje+Q7nZf+bm/+LSByBrNB/Jyut5TNeS+q7HF5dYTeLwdL/uWaGQcW7JVXNlCt8Rm4wIDAQAB"
-								},
-								{
-										"OperatorID": 3,
-										"SharePubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJCU0IDKcMbE6AZ71ot9oXctndMsnwOhmzAMuxaPh0Z6OeV4lodboHdxZIUbFEVZ76d5W6Oh8/CZSrUroZ0wgOC5+v71P+hRfJndd8ZxPTRTure5yYALPK1FV8uN31WIGSN+4bmNOXdirB3t6mxP/o6cHDrryo5IoFcYYqF2neDwzmPoPfW4SOgMpAeOtqhrK1A4V1/8QLW/v3Q8srbVlRm1DEvY17k6ODDRq6mggP0oHs4udAwZEQUDivsx3/kpx7ift8BZbYQyumob6YsIYXMIj85B5CkBYtvdYqEKhYNyUTO3Au5TkfQlYwGy5JqOdbHWdRZnn7+jV2yY9YShuwIDAQAB"
-								},
-								{
-										"OperatorID": 4,
-										"SharePubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs0DWybL8zLGGXB590kn0iSIrB1Gs3ju6ahu7MXj7icO2hN4G2u0CTYqx+Efc1KTen/FeIDuRt//K6fIl+W1wy6ijd1FyVSD4f+PQ2sFCml6hq20Y4w53cX2cKHdDV/F89BsdBn7EWqFmFAM31Klz5dc+REKyIittPNJ+g0Jo68IeTeWEk0cb2QFULPEneRagHTotmXkd95Dg+0wLaAKkfa+lXQcPHLp/uGgCWC95uFs+8VSIFlMcqhH4DI+FANkMTf2Y2fPZXOv80NlRDRKgKtGglnWIdkWzszzm91Ub3hn7hOLrz/7EeiFrcI+kAP8hJRAZqhGVIgSK9vP8LECVzwIDAQAB"
-								},
-								{
-										"OperatorID": 5,
-										"SharePubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx1wFVtRw+P6Z1DiJciNwPYJ+E7ALpaJ23kdO5XptAp6BgoSaFRJUCBoDaDITu4uf17xCboJhQKE2xsdM5ytbTc1ZJJDPZYps5g3j6swKPm9wJxItbtrVEmh6cNo5DfVK9+sAlu0+LdWiySc9raL6fyrxeA9y+XeDgJTyTD7mHxGDc1JEm7zCTLPbGY1R12aNT332uIA7VMP0THSBFi5yfTGzvV88Kx1SBIkWDsZ0YM9eddMc7nqeI7mA+dHia5NaMRwklfBI1w6Yuh5m9T+hQa+Qhb4SURAFRah/yan/4j/sGM0ChpLrRgSuYnqYvR1nfnFzhOzKw6oS8cxTSu1U+QIDAQAB"
-								},
-								{
-										"OperatorID": 6,
-										"SharePubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuhYNz0rmW/fh3hLM/VB8bCQf2nCIQhIwqqSYX6XcLqf/j3MOpJqo6fcgjpFdGIVXd18ugyeETvVpEcUGqGfMCbMhZx2uteMOqYLwm9P+kbLgDD8jXjtoU/gNb9g2g875xH7/VUN0u3VPBBIvFaHxijsFYCh4u+aSprOLyidDgT5E+ggUPICcdjOvxy3k3HUdy+QRmmnRDoqY1543TIXEfE04ws9nGBez1ySGpCVuhdQ7VqH9BCCsI/J0HP1cJY2wkMBRy793ETlqcnJT8r1Ij9gfArknUe9WchgFRKAuOXv/k0eBjwzOw9Rlg7LFqF1Oom2qOw9RfgqcM3AhY59wAQIDAQAB"
-								},
-								{
-										"OperatorID": 7,
-										"SharePubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ4/bjOW8EnWJlu9oyRNu6HzhhjUK2QJAwXEe3itwYnBX4lJEMrTf1ulkvafuZePO2aIN7B/x24kS3aR//b3kSJvMxfrOvzASgpba/4Fpuxw/lgVtY/LX41F3QQkVWPWwaXWai2Gpmsf6BwJMMaeNoAUYhOjs8XsFMoqWj6eInSCNHOI6kqNcJuY4F2KheCdj6TS6/LKoLhbt3jqGMJCuxoWDB1zXCI4xedGxUjJLxgFqKuRYZkxZgrRWBHUc34DJEy4dlYxGiTTAK9FUdPTwZXVYGTModLQBoO9UnIRS7SMNRghOxk3rk48jRhqKCIu2vqLlpBs14mpu7vThQ4duQIDAQAB"
-								},
-								{
-										"OperatorID": 8,
-										"SharePubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuKiCnNGnDCxLWIWVo8NNkYagGGyKMVGFWLCVXcslGrUqs5v7gpfQozt+hqo4lOxUQ+ixxyzXwbqe5jvLL+ZbW1hptoQYPKyBIM2xNAaLJZ/JIEZNuPy3KhiIgYKNc/GUZqT5Y7USTPh6lCk4IAu1BLjzxAiDz3TiwhEAAoFbwqsh7x8oWOsEibjMSnuFR8caAgZNwvbi/tC+Gelb1Ax0o40bdXGECuyra0u9oq2YX2GbQ7T//ADMlEcoiWwirM5Tza75c+5FbkDCh7Xu6udqLKSyR1X4ldAyFSIH5rNfCAGsT9N024QbTmFdrYUbQws6WT7w3Aa8+Q4eEsmLy0uLlQIDAQAB"
-								},
-								{
-										"OperatorID": 9,
-										"SharePubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2wCW/pL6zXBf3i/Mz7Hy6oZe91SmDp39V09UIKLnOlWWhR6Qadn29W2gwQkhV7NHaLvJ5ZkqTS2gFatCLBz1sFz97MO1mR2Z3ubGWBBXhrxnGXPwpyKtS9Th4mJYNO4og1R2E/FkU4jkuQs83un5zLlCUFW/ctpWSuUBYDObnvN0T6971idIspH7fG4FIJ21eHMLoEQh38x+IPdxg5CWLQ2Nr1Tn3i5zP0ZNGtW0T/OGNhd0BkiChzJ3oNY5TRd5E74SO3oJDb9Iv/mj+JvYHPYQqv843ozBMbO3SSbzOViy9Qx0QK4qTcdc36N4HOeZzPTfOVcfvdVqzhhGIL4jZwIDAQAB"
-								},
-								{
-										"OperatorID": 10,
-										"SharePubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuUe/KSiKVyU42YyFHb6N1Ak3b3D2PgNVpE8pjUZ/vqKWssaZu+OrDnfKDBbs32UIgSJzwYweZN7YAZPIZojeWRm7JYyDimRXZ0x6/4yKLJPHYIKzZApmOQggrOS5GSYcuGh/vdzduGbe3B+rVtYRxazA9tJKTv3BKXoe1uKTiQWqvmdqiSxY0B2yclmihMZ5397eeYW9iEiG4+9t/uao1C93/rW1dL3NH1jK/niy+g3+Gc3CKfNekPU61n0v3tAHAtMJHQoD/9vEzncGSUwUoM6m2HGzCAgW7zceOhwTBQW8ODnb0AGL6ezLHo+k59hlNRRt/1Gv8ayfXbqdaQrhtQIDAQAB"
-								},
-								{
-										"OperatorID": 11,
-										"SharePubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlffCZ8+jtP/bk3hhWBz8H84FpmVPc6UBBUg/4K4zBc8K/zEzNf6SJU1aucQfNVHu9k52kyaEdjOSITwiOKRoqwbg4HsFirx8Pj+SE1wiwVnktKN8Gw+1tgqA1qydjzJMysVLN4S55d/Y7aFROpoOUolZYSo+WcneUKbHw9fu8DOIKatFmY4cbev/RtLqacjGz9OYOy7yRVFwwj1XJrpAY0JgiNuDNDAoeOjj28y+AbcZDY6Vgaz0uNbcuhsWpVbdXSL7/7dtBK9FjYuewgALpiGWHvsS1Rn7NfMsF4gYQ/J8Bj8614wCUZvh6CDJ4dssSZz6Ro933yD6lFymj1JePQIDAQAB"
-								},
-								{
-										"OperatorID": 12,
-										"SharePubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArdX/wLlQ5N9Bxdve59YH/jOROOx00KdPkLVy7kZ8ocniYjzoZ5LdpY9TuTLnd8HuHyUlQsNVjas82DtTyzg11IOMuPUcXkUlf6YfTbprwBVAX8mggOW109ttfBeRcO/m81/507/u38x6pdG3JLVfEyrHpQkdBivRYR8AhWOYn4OWoWRZ8tVXdTRKH2+I+ypONa4mCcxNP/eQYzIjmKIsve5X03AjT7dGMSCV7KG+0pRZhCXoGyVr1HziAJQ1nVMRFYjVzUqxJMhSLuE4W6L12szMJn/czc3PUYC8IPUN2K7//HtBpVyKtypfcTMVKdaF9+hWciLRaTSq1UAaZslnRwIDAQAB"
-								},
-								{
-										"OperatorID": 13,
-										"SharePubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim",
-										"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqk9eLm6lCcQeqJrMvhlfiQEoJpFTlwWYJZO+D8F/jSXNUMUHDP/IWw+HkBVIuXOwquYqKEGrzgIymqWWXVSGS94BGOu4+zNSu1dRpyBi8zkgvp9+uhlNEdVK1IEWTHzO6j6nO8zN9zilrxbpKAMEnk9rDAyD+I9p3h1DKRrk/4/+SgLgSuCdGSJ3mktxR3IJ48Cc/V21HMnTVEsj6Q6aZ2wfW2SdUN2bsyOh+vQjFNv0AnIOcaTy/L3hD13+5yILEGlmBI9ACTcbb1rRqmg7DR/lSzpiudyiI+pnZVDhIxJKq8+9TYa25i7U1hiHZinRtT30U5wlPJpB8j653snPJQIDAQAB"
-								}
-						],
-						"Quorum": 9,
-						"PartialQuorum": 5,
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
-						"FeeRecipientAddress": [
-								83,
-								89,
-								83,
-								181,
-								166,
-								4,
-								0,
-								116,
-								148,
-								140,
-								241,
-								133,
-								234,
-								167,
-								210,
-								171,
-								189,
-								102,
-								128,
-								143
-						],
-						"Graffiti": null
+						"1": {
+								"ValidatorIndex": "1",
+								"ValidatorPubKey": [
+										142,
+										128,
+										6,
+										101,
+										81,
+										168,
+										27,
+										49,
+										130,
+										88,
+										112,
+										158,
+										218,
+										247,
+										221,
+										31,
+										99,
+										205,
+										104,
+										106,
+										14,
+										77,
+										184,
+										178,
+										155,
+										187,
+										122,
+										207,
+										230,
+										86,
+										8,
+										103,
+										122,
+										245,
+										165,
+										39,
+										217,
+										68,
+										142,
+										228,
+										120,
+										53,
+										72,
+										94,
+										2,
+										181,
+										11,
+										192
+								],
+								"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+								"Committee": [
+										{
+												"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+												"Signer": 1
+										},
+										{
+												"SharePubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z",
+												"Signer": 2
+										},
+										{
+												"SharePubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ",
+												"Signer": 3
+										},
+										{
+												"SharePubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz",
+												"Signer": 4
+										},
+										{
+												"SharePubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb",
+												"Signer": 5
+										},
+										{
+												"SharePubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3",
+												"Signer": 6
+										},
+										{
+												"SharePubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j",
+												"Signer": 7
+										},
+										{
+												"SharePubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo",
+												"Signer": 8
+										},
+										{
+												"SharePubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP",
+												"Signer": 9
+										},
+										{
+												"SharePubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj",
+												"Signer": 10
+										},
+										{
+												"SharePubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq",
+												"Signer": 11
+										},
+										{
+												"SharePubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3",
+												"Signer": 12
+										},
+										{
+												"SharePubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim",
+												"Signer": 13
+										}
+								],
+								"Quorum": 9,
+								"DomainType": [
+										0,
+										0,
+										3,
+										1
+								],
+								"FeeRecipientAddress": [
+										83,
+										89,
+										83,
+										181,
+										166,
+										4,
+										0,
+										116,
+										148,
+										140,
+										241,
+										133,
+										234,
+										167,
+										210,
+										171,
+										189,
+										102,
+										128,
+										143
+								],
+								"Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+						}
 				},
 				"QBFTController": {
-						"Identifier": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
+						"Identifier": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 						"Height": 12,
 						"StoredInstances": [
 								{
 										"State": {
 												"Share": {
 														"OperatorID": 1,
-														"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
-														"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+														"ClusterID": [
+																223,
+																110,
+																165,
+																181,
+																159,
+																14,
+																108,
+																3,
+																243,
+																144,
+																173,
+																95,
+																234,
+																11,
+																188,
+																25,
+																158,
+																195,
+																82,
+																76,
+																10,
+																104,
+																41,
+																19,
+																20,
+																143,
+																208,
+																113,
+																175,
+																24,
+																152,
+																236
+														],
+														"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
+														"Quorum": 9,
+														"PartialQuorum": 5,
 														"Committee": [
 																{
 																		"OperatorID": 1,
-																		"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB"
 																},
 																{
 																		"OperatorID": 2,
-																		"SharePubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvflPDLfhwkRxfzz5kBJLrOK5OnLdFlSh3Y74A3ZeqrJSO+NBBS9cBWbYvrlhi28YgA2dbUvvhuegA86S6U1mOZxl9Vu7sVVArmIYO5rQ+sE33AokQL6PCA9SXLvPAwOwAHKs2xy3zoIMEks8E4Ul38MHgWw/Rl3L2AyViJogAQCN4Y4A0h5BWmwqMj+wZ9gh70Z+Shg2PJI1lvJ+FJYU+R1A3Ivx4uiZLO5zt9TBeal2or4HdK+2CzCzjlo24WPkYJruL+yyxGUB0y005M4qje+Q7nZf+bm/+LSByBrNB/Jyut5TNeS+q7HF5dYTeLwdL/uWaGQcW7JVXNlCt8Rm4wIDAQAB"
 																},
 																{
 																		"OperatorID": 3,
-																		"SharePubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJCU0IDKcMbE6AZ71ot9oXctndMsnwOhmzAMuxaPh0Z6OeV4lodboHdxZIUbFEVZ76d5W6Oh8/CZSrUroZ0wgOC5+v71P+hRfJndd8ZxPTRTure5yYALPK1FV8uN31WIGSN+4bmNOXdirB3t6mxP/o6cHDrryo5IoFcYYqF2neDwzmPoPfW4SOgMpAeOtqhrK1A4V1/8QLW/v3Q8srbVlRm1DEvY17k6ODDRq6mggP0oHs4udAwZEQUDivsx3/kpx7ift8BZbYQyumob6YsIYXMIj85B5CkBYtvdYqEKhYNyUTO3Au5TkfQlYwGy5JqOdbHWdRZnn7+jV2yY9YShuwIDAQAB"
 																},
 																{
 																		"OperatorID": 4,
-																		"SharePubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs0DWybL8zLGGXB590kn0iSIrB1Gs3ju6ahu7MXj7icO2hN4G2u0CTYqx+Efc1KTen/FeIDuRt//K6fIl+W1wy6ijd1FyVSD4f+PQ2sFCml6hq20Y4w53cX2cKHdDV/F89BsdBn7EWqFmFAM31Klz5dc+REKyIittPNJ+g0Jo68IeTeWEk0cb2QFULPEneRagHTotmXkd95Dg+0wLaAKkfa+lXQcPHLp/uGgCWC95uFs+8VSIFlMcqhH4DI+FANkMTf2Y2fPZXOv80NlRDRKgKtGglnWIdkWzszzm91Ub3hn7hOLrz/7EeiFrcI+kAP8hJRAZqhGVIgSK9vP8LECVzwIDAQAB"
 																},
 																{
 																		"OperatorID": 5,
-																		"SharePubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx1wFVtRw+P6Z1DiJciNwPYJ+E7ALpaJ23kdO5XptAp6BgoSaFRJUCBoDaDITu4uf17xCboJhQKE2xsdM5ytbTc1ZJJDPZYps5g3j6swKPm9wJxItbtrVEmh6cNo5DfVK9+sAlu0+LdWiySc9raL6fyrxeA9y+XeDgJTyTD7mHxGDc1JEm7zCTLPbGY1R12aNT332uIA7VMP0THSBFi5yfTGzvV88Kx1SBIkWDsZ0YM9eddMc7nqeI7mA+dHia5NaMRwklfBI1w6Yuh5m9T+hQa+Qhb4SURAFRah/yan/4j/sGM0ChpLrRgSuYnqYvR1nfnFzhOzKw6oS8cxTSu1U+QIDAQAB"
 																},
 																{
 																		"OperatorID": 6,
-																		"SharePubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuhYNz0rmW/fh3hLM/VB8bCQf2nCIQhIwqqSYX6XcLqf/j3MOpJqo6fcgjpFdGIVXd18ugyeETvVpEcUGqGfMCbMhZx2uteMOqYLwm9P+kbLgDD8jXjtoU/gNb9g2g875xH7/VUN0u3VPBBIvFaHxijsFYCh4u+aSprOLyidDgT5E+ggUPICcdjOvxy3k3HUdy+QRmmnRDoqY1543TIXEfE04ws9nGBez1ySGpCVuhdQ7VqH9BCCsI/J0HP1cJY2wkMBRy793ETlqcnJT8r1Ij9gfArknUe9WchgFRKAuOXv/k0eBjwzOw9Rlg7LFqF1Oom2qOw9RfgqcM3AhY59wAQIDAQAB"
 																},
 																{
 																		"OperatorID": 7,
-																		"SharePubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ4/bjOW8EnWJlu9oyRNu6HzhhjUK2QJAwXEe3itwYnBX4lJEMrTf1ulkvafuZePO2aIN7B/x24kS3aR//b3kSJvMxfrOvzASgpba/4Fpuxw/lgVtY/LX41F3QQkVWPWwaXWai2Gpmsf6BwJMMaeNoAUYhOjs8XsFMoqWj6eInSCNHOI6kqNcJuY4F2KheCdj6TS6/LKoLhbt3jqGMJCuxoWDB1zXCI4xedGxUjJLxgFqKuRYZkxZgrRWBHUc34DJEy4dlYxGiTTAK9FUdPTwZXVYGTModLQBoO9UnIRS7SMNRghOxk3rk48jRhqKCIu2vqLlpBs14mpu7vThQ4duQIDAQAB"
 																},
 																{
 																		"OperatorID": 8,
-																		"SharePubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuKiCnNGnDCxLWIWVo8NNkYagGGyKMVGFWLCVXcslGrUqs5v7gpfQozt+hqo4lOxUQ+ixxyzXwbqe5jvLL+ZbW1hptoQYPKyBIM2xNAaLJZ/JIEZNuPy3KhiIgYKNc/GUZqT5Y7USTPh6lCk4IAu1BLjzxAiDz3TiwhEAAoFbwqsh7x8oWOsEibjMSnuFR8caAgZNwvbi/tC+Gelb1Ax0o40bdXGECuyra0u9oq2YX2GbQ7T//ADMlEcoiWwirM5Tza75c+5FbkDCh7Xu6udqLKSyR1X4ldAyFSIH5rNfCAGsT9N024QbTmFdrYUbQws6WT7w3Aa8+Q4eEsmLy0uLlQIDAQAB"
 																},
 																{
 																		"OperatorID": 9,
-																		"SharePubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2wCW/pL6zXBf3i/Mz7Hy6oZe91SmDp39V09UIKLnOlWWhR6Qadn29W2gwQkhV7NHaLvJ5ZkqTS2gFatCLBz1sFz97MO1mR2Z3ubGWBBXhrxnGXPwpyKtS9Th4mJYNO4og1R2E/FkU4jkuQs83un5zLlCUFW/ctpWSuUBYDObnvN0T6971idIspH7fG4FIJ21eHMLoEQh38x+IPdxg5CWLQ2Nr1Tn3i5zP0ZNGtW0T/OGNhd0BkiChzJ3oNY5TRd5E74SO3oJDb9Iv/mj+JvYHPYQqv843ozBMbO3SSbzOViy9Qx0QK4qTcdc36N4HOeZzPTfOVcfvdVqzhhGIL4jZwIDAQAB"
 																},
 																{
 																		"OperatorID": 10,
-																		"SharePubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuUe/KSiKVyU42YyFHb6N1Ak3b3D2PgNVpE8pjUZ/vqKWssaZu+OrDnfKDBbs32UIgSJzwYweZN7YAZPIZojeWRm7JYyDimRXZ0x6/4yKLJPHYIKzZApmOQggrOS5GSYcuGh/vdzduGbe3B+rVtYRxazA9tJKTv3BKXoe1uKTiQWqvmdqiSxY0B2yclmihMZ5397eeYW9iEiG4+9t/uao1C93/rW1dL3NH1jK/niy+g3+Gc3CKfNekPU61n0v3tAHAtMJHQoD/9vEzncGSUwUoM6m2HGzCAgW7zceOhwTBQW8ODnb0AGL6ezLHo+k59hlNRRt/1Gv8ayfXbqdaQrhtQIDAQAB"
 																},
 																{
 																		"OperatorID": 11,
-																		"SharePubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlffCZ8+jtP/bk3hhWBz8H84FpmVPc6UBBUg/4K4zBc8K/zEzNf6SJU1aucQfNVHu9k52kyaEdjOSITwiOKRoqwbg4HsFirx8Pj+SE1wiwVnktKN8Gw+1tgqA1qydjzJMysVLN4S55d/Y7aFROpoOUolZYSo+WcneUKbHw9fu8DOIKatFmY4cbev/RtLqacjGz9OYOy7yRVFwwj1XJrpAY0JgiNuDNDAoeOjj28y+AbcZDY6Vgaz0uNbcuhsWpVbdXSL7/7dtBK9FjYuewgALpiGWHvsS1Rn7NfMsF4gYQ/J8Bj8614wCUZvh6CDJ4dssSZz6Ro933yD6lFymj1JePQIDAQAB"
 																},
 																{
 																		"OperatorID": 12,
-																		"SharePubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArdX/wLlQ5N9Bxdve59YH/jOROOx00KdPkLVy7kZ8ocniYjzoZ5LdpY9TuTLnd8HuHyUlQsNVjas82DtTyzg11IOMuPUcXkUlf6YfTbprwBVAX8mggOW109ttfBeRcO/m81/507/u38x6pdG3JLVfEyrHpQkdBivRYR8AhWOYn4OWoWRZ8tVXdTRKH2+I+ypONa4mCcxNP/eQYzIjmKIsve5X03AjT7dGMSCV7KG+0pRZhCXoGyVr1HziAJQ1nVMRFYjVzUqxJMhSLuE4W6L12szMJn/czc3PUYC8IPUN2K7//HtBpVyKtypfcTMVKdaF9+hWciLRaTSq1UAaZslnRwIDAQAB"
 																},
 																{
 																		"OperatorID": 13,
-																		"SharePubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim",
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqk9eLm6lCcQeqJrMvhlfiQEoJpFTlwWYJZO+D8F/jSXNUMUHDP/IWw+HkBVIuXOwquYqKEGrzgIymqWWXVSGS94BGOu4+zNSu1dRpyBi8zkgvp9+uhlNEdVK1IEWTHzO6j6nO8zN9zilrxbpKAMEnk9rDAyD+I9p3h1DKRrk/4/+SgLgSuCdGSJ3mktxR3IJ48Cc/V21HMnTVEsj6Q6aZ2wfW2SdUN2bsyOh+vQjFNv0AnIOcaTy/L3hD13+5yILEGlmBI9ACTcbb1rRqmg7DR/lSzpiudyiI+pnZVDhIxJKq8+9TYa25i7U1hiHZinRtT30U5wlPJpB8j653snPJQIDAQAB"
 																}
-														],
-														"Quorum": 9,
-														"PartialQuorum": 5,
-														"DomainType": [
-																0,
-																0,
-																3,
-																1
-														],
-														"FeeRecipientAddress": [
-																83,
-																89,
-																83,
-																181,
-																166,
-																4,
-																0,
-																116,
-																148,
-																140,
-																241,
-																133,
-																234,
-																167,
-																210,
-																171,
-																189,
-																102,
-																128,
-																143
-														],
-														"Graffiti": null
+														]
 												},
-												"ID": "AAADAY6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAAAAAA=",
+												"ID": "AAADAQAAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 												"Round": 1,
 												"Height": 12,
 												"LastPreparedRound": 1,
-												"LastPreparedValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+												"LastPreparedValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 												"ProposalAcceptedForCurrentRound": {
 														"Signatures": [
-																"KjZkQkoqlVbpZsc7AvQ8HuHDIn1s9ryI3FKNQ4zK2/DpbZxkG5DLCMmpxQewSfeACfnBcAMQrroebPJxKXAg8KdaXRSpGkU/X7t3ANmzBK+rlNYIoIZ4PzSwCdM/3/cVb1GoTTsIiBTM63wpvqHeJ8jwSN9RgE9WUKI+UjFbemJJhB83/nb1UpETceG5rUx151782+SPeB72R+dvdOu4qHpMkRW0qZ77lyDkMgS9XJysVsiVxl4JtA4BoOeqYCJnc5aD8PPzCtdEg98fTCmcrMzV0801WVLx8qFd8y8fNqy+IVUFEyGe9S6U+7LdsbfDg3lVqFBwQlaaUI72k9LXfQ=="
+																"Zk/+MkqBHBiw37+0U/+JOuBLI64eylL+8A2iqbVzegwekgB9CwYc1lOb7yXQKhuvjbRBTlcEGFQf9JeDYKh4qTH7hBlH0V/k94UnyB8/Tu3qHswAXqrFmgGkaCMF2BIw/rYi67mtV4xrGd++sgZJxx1Rv/Vk0z3MRt3eJKeH5Vm4CKv4hns2+bpm+uBjhRTbbxENcsFK71Ow98QvPB8EiNJ6paUxM6yMAOF3UMh9ajrKY4kQ1wui4v8MGwiDYTYmEIzHIAC7YA0LAZ0JpOppTO0224C5VFGxwywo0ulk2uD0G6woK7ccZKMxcMyYujHn+fr3L9A2KuP3ZDEXCenWJA=="
 														],
 														"OperatorIDs": [
 																1
@@ -1825,6 +1835,10 @@
 																		0,
 																		3,
 																		1,
+																		0,
+																		0,
+																		0,
+																		0,
 																		142,
 																		128,
 																		6,
@@ -1872,24 +1886,20 @@
 																		2,
 																		181,
 																		11,
-																		192,
-																		0,
-																		0,
-																		0,
-																		0
+																		192
 																],
-																"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 														},
-														"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+														"FullData": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 												},
 												"Decided": true,
-												"DecidedValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+												"DecidedValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 												"ProposeContainer": {
 														"Msgs": {
 																"1": [
 																		{
 																				"Signatures": [
-																						"KjZkQkoqlVbpZsc7AvQ8HuHDIn1s9ryI3FKNQ4zK2/DpbZxkG5DLCMmpxQewSfeACfnBcAMQrroebPJxKXAg8KdaXRSpGkU/X7t3ANmzBK+rlNYIoIZ4PzSwCdM/3/cVb1GoTTsIiBTM63wpvqHeJ8jwSN9RgE9WUKI+UjFbemJJhB83/nb1UpETceG5rUx151782+SPeB72R+dvdOu4qHpMkRW0qZ77lyDkMgS9XJysVsiVxl4JtA4BoOeqYCJnc5aD8PPzCtdEg98fTCmcrMzV0801WVLx8qFd8y8fNqy+IVUFEyGe9S6U+7LdsbfDg3lVqFBwQlaaUI72k9LXfQ=="
+																						"Zk/+MkqBHBiw37+0U/+JOuBLI64eylL+8A2iqbVzegwekgB9CwYc1lOb7yXQKhuvjbRBTlcEGFQf9JeDYKh4qTH7hBlH0V/k94UnyB8/Tu3qHswAXqrFmgGkaCMF2BIw/rYi67mtV4xrGd++sgZJxx1Rv/Vk0z3MRt3eJKeH5Vm4CKv4hns2+bpm+uBjhRTbbxENcsFK71Ow98QvPB8EiNJ6paUxM6yMAOF3UMh9ajrKY4kQ1wui4v8MGwiDYTYmEIzHIAC7YA0LAZ0JpOppTO0224C5VFGxwywo0ulk2uD0G6woK7ccZKMxcMyYujHn+fr3L9A2KuP3ZDEXCenWJA=="
 																				],
 																				"OperatorIDs": [
 																						1
@@ -1901,6 +1911,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -1948,15 +1962,11 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
-																				"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+																				"FullData": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 																		}
 																]
 														}
@@ -1966,7 +1976,7 @@
 																"1": [
 																		{
 																				"Signatures": [
-																						"iEjZRb8P2Q9b2ELm+hm/iVhsraGrBDxobejDbVyAsWBsBJlDlBvHQtGAemIx771+BsFUAiG0Rwmz0/lx7rW2oVceSFQ22b3HP2CAx2rZWlJK2X6kXTPUAfzsjB0cKMAsG3Q0GeUX/jEVxSo3WqY8orB1lJk/I3knFZ9jh/bBRquWwKBWYXaeKy3SmERVNBuTJLnhZM2oHbhhKd4Q7RyNHfmkjIjMaaRWRtmtENSkxSZTycg9XATA2y+CH+rW46ESKbJUD5XzaeDCRwdeuITIof/4dEDTWGK4YVsFnW4YZt4CmhQgn/VG6C0bw52LjCTzwtFqqJa4KK+eDEZniM9I2g=="
+																						"yoi0Avkc23OzOH4j73LYSb2140o+NTTZRXfepjHKE22m+vDt+hNTyBNApWaYC0UfLYyuKFPUHZ5smzIRnYgZCUmrIW7grgJIzr0ffzcvLtiRGKZrn1Rm1uO/KxtwkaeLYRazrJgEOWCvBbVtNICmR8Q8rIsjR01D8o4uP+1YrRPsOKV5DLjUsfutY0+uvYH6ed0J86PVcH2tivry7TbEr7OuJsrh96EwN7wK/1d2WaGW5qkEOQJf3rc2ErXuL8phAjSkzEs/CopCu5BgRktErIkI2jdwVcibaHUS5UcmmGNVt6dtyJfW/XFwrE5SWH67u2NcPnGyCbgdxeClc8zQ3A=="
 																				],
 																				"OperatorIDs": [
 																						1
@@ -1978,6 +1988,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2025,19 +2039,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"qhOnnNKRwnVgGIxvxDfvX0y2sdrZaMFwAScWQp7p2ni7o+Nt+ypY5vdCVj9RqfkEvUVsRQ6KkKN9GA0AGAkhaf2ALIyWYgR+21a4sIhnQIHK9n3z48GXdpOj2qWsmeE63JdyxH3MMSzefjVlUrAvT5e6k5pPtE8uxHiDMcVPI9sjAidM0KMzD6H1CKAS+hk4q8fOubOEFEpvcxI+7edilTMCNH1R3LPS/M1eaXb/UZQl7f3VIq079dzfQt6NNGTojTPid6OFr8psA5n5jViNHuP8RxNZDjccaTCdibGjMRFauDkvSTNzWKMvNNHwTkOKFd8+a/FZ+q8Cz/5JTwUogw=="
+																						"CuHGB1rYShCQ8ESL2iYC+ESLz/E+oQhtOY95zP1dgrvZfvb1iToRK7J+4qCYQGn7yTA+NBO4Oe/1oguMTDPpKZmdzre8YKRlaJkBWq922njPVrMaMhNdBCXtUoRaRyVKiLwEvdeMEtkeBLeFosB8wsrxs+4De+508/PHbaqlyphn7/tRGXzaKt438P8oEjC0ZWx4vmxdVJXZzLiAmvfXtvI4EPeGMn2HGgkAYtvNg4CdIScnRxI+sy2dzD8JfgxR75uA7mBP3Q+zMN+seaiVTymR9tLimp4rZ8t3zc+ASa62/d0LPsf6C52VQEn72cy6OhnvE/SRL26gytVQs9cJTg=="
 																				],
 																				"OperatorIDs": [
 																						2
@@ -2049,6 +2059,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2096,19 +2110,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"c+RaOT4itco5eScXKMxQj5DUK2dcwms1RB7doAdE0Wv+nw+hLwvIIa9suu3+jc+98JZ3dtzEvJoEuRErMbKbA6Pg71uxMpfKxmDm5DnTKPWctDD7IxEAelUkuGYhrtaeNVfvvcisFFiCB5UiLP5di/0SfMmCh7T1STC4fxhwWtlExogg1TSEt+dXnkLA2A3oEcFWDV+YEGPny5+TZV8QKu9/nUE+3AnyrOo8SU2KgvtCw5XykK4WHtmXFhdch4IVZZ008akCk82pErYHkE3+tm4AFjRvFVZw2D71mmLREI0NdwDn8SrSGQBdbpQEJh48eTdquO1sGt+kUtYlPVqVtQ=="
+																						"JqE7g5IgUgZvR/3SN4YxC5EIAxuZFiome19jz9B7jLlJD28b8blBurGcu4A2lZLOo/RRG/9BnBrW46ZQ7Tmur3AHeDoIk4m4cfW8sKRSIWdVewbbc6FyoBGg44f19+PB5Q+9sQQF8xd/y7KjleUEi1MXhQyeqlZteytLUaPgj+HBVoNKasdtVHZ17W15TJ9mdUbLyecBlUgmqDEc+QQsDn+oImP+K+jKA9Tu3Qb185Uiy4Hp9fmiyMSLNhqYKTTzd8smXoxk4tW/qZOEY+7bDA8ex1l/kDuxStcnNw/wY8qjDY5qVw2XbgfIXg6CXrRMqhJWHOdIFOJnFuEalKo3SQ=="
 																				],
 																				"OperatorIDs": [
 																						3
@@ -2120,6 +2130,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2167,19 +2181,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"nzJZZCUq6s1ep3HpMWkm1eGLe8ihwjTwb6Bl6t3y0Iq+1KuVv5MtDkU73Fm7gUNRTbz5+vxtGL6fwLPxOjjJvXkr7+Xy+oS8x30WL2BrjnN0nAQoK3rD26kdqWuFSpC1Wu3crVPxk1O7IZzGuBZnYDbjwkwIPoO1yczMHvBV21diwVWxP2KyOgeBUYKPeOB7ks88zpupIM/Z/HdqcLS+H9hxoA16PMaWpyJRufTVhhzsDITROjuHhvicAl7DVegR5StfeKHYiEO3aAc+TNiyLVdIhfH6dlBSrk1YqP0hnZJ04hP5Q2q6WCN13tLO3u/ihKP5oB8ooRls5DOC+xVgkg=="
+																						"BDmWHccmwmVFeBmDyfcLOeI+WiOzG5X7NAFkrLV7rHAE1vMx2UOetTbzkIzD7DF8FtdYX5rAMlEoPZMuQwF86q6S1GDrmPFuzikb7O+ucGNad/nBX04O1y1R2bHXuPtDLEqYd1SyOQu15AMgrMq0Jc+0PV1ekCPuNSDkeLT1pLUWHk0VSGLWqYZCFBTiSqiLQCw7qCUC8DEjIHix0GOy+tIqtLKevqbZGDvjBMFT1tRSXV0TyGWtOG7VimSSQh6QZ32rD8UomTdCrDbJqmWQTkibuKacRQR+geq6eR4lG0dSQeMAw7nt4G7AoTKT53I3vclOGdK0VDTRcZn7nHiypA=="
 																				],
 																				"OperatorIDs": [
 																						4
@@ -2191,6 +2201,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2238,19 +2252,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"LfEYeAwEVUdHd5jrOVX74btK5aX3MU6V2UVWHCM9bkSp5iz06nT2MzfjL6EsYUE6e0YB/5g+FoDSDG5EJ47QBjgkvth3V+ILwEi+YOm+fvMeNOHvp86ZdEyjlIJsF4nFLPynO9aerJYohwi5pdT+x9PS0mKz8l7Pglij7W5DRCuyGuiGbk3nMs4WqGPJ7Tcb1atBUooTp+N8fMrHyfHOLRLtj+hTVMZ/LT4xpkTqMOMlO5OiA2OC8NipjaurffabGjnY1LQCWohm172mTlsBbrJuWotn/zGqTP2+c5Q6DvkNO9kl7p57JBV3/DH1/av+IihK4U52CPGy2vXUBcHCkg=="
+																						"KSw1OSJDFAHOZ2En89/Rw8TTkXtxIBQ7wD10TJPCBNGwYpFuFGuB3Oj7TzZ1wmovnohF/d0PQ06vKiajDxX0ZLrGmS1jXsiEOhUHYixW4uM6ZQBDtunPHBdKIQmDV+0J9P2ernK15Pe51BCEcvSLW0YFJ4/HuoWX/8/T7B1iEwUjSMf/6Oe/85LCjEFvOsymk4+1OXyfNeEIWuuTC8VSF3p+P1nxDh9tKUpmaDxF2VgN5cHgiaR7xLWJ9e2znmP0WLnbFGg9xJHmvKs1ZiJi2N2t7ToofGw3iNPTgoJHgge/xkYDZcdt5qShIPQJPIqB9ks6tUkHvTYKh+R49LDXWw=="
 																				],
 																				"OperatorIDs": [
 																						5
@@ -2262,6 +2272,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2309,19 +2323,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"VtGf5DapCpxUNCaZ6+VJ2OWFcZaG9vsGjHblYkL/xd+0lR+tqml/5r3fEZmA4DfWbFxViq5shHD2Wd6mwNAGScWtBtEa+jQHodLQdpYauuPVI1dMxFACnPghOQsFWH3AVKdnpRtQHQOA1CLq+OevdeWnJmWOu2JarDkcC6Qjg73CuWrlXMePwxdpChshYWmQv6HMj6hmi+gFJBjlTiay1tdoqQgoHKGUAfOb9OQd9SqoYiQyZyp9RX2bJN0tgsIDWsJZRHCdeT3TSLOm+xJjC1sc5YuXBp9q8h6VJsXTT6FJeiB+iFdo78GpkZtk6FTwuI8s5hOoNWgM2F41rY8gHA=="
+																						"oMUBVAqiAbZ+pSAQIlU3TMXR/j7FitcMHvN3WOJd/cFw1Rr6X3vgDEoYMX0+LjEI4WfBLMb8G+KGHvQr28NbGTIgp7SwV0+fUMHTj3Fy83giAG/a5dIUlgWUEkssDNh+NAY8KlIk89q4723NFUvjuS3/sAGNPn4TYVwnIx8capgXUcJAUWHDyIrDaPOYDxbXVHSCptkpK1gvGaP0xWW5RUb1RFJZnoj8XqFm3e5HdjE84STgLixbh/b6bbsoBGBOP9s7vQOUu1eBt3ndWsF5/3aGCWBHLpWVJ4PsuW3eTGpOAzp+kuWpRk2Tyk/xs+Ig8fYXVd1lwEYn579/q2Cfog=="
 																				],
 																				"OperatorIDs": [
 																						6
@@ -2333,6 +2343,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2380,19 +2394,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"VhaF4SaNY8EjP3PzDEdYk/hKN/8N8c0CXZkaCphQ2RUxlihu8DpRIzFPZeXEElc0zP4zmdzjyWuh5F7U6tFBfRQxZ+WlLNsSl4z3rcjre1CO1ibZZZCsZTfyPAqOG++E1HHJAlBVKpqUn2KtlgaT8znp2mcJNdTY8RliJz+FU7t2jjkdvWQljEFcNADr2fnlHnYXgI/DdOf7uG5LA7sYM+dxVF9MFJP5wRRXjW6kiQHsPmqJD7AzxjwoRxDie4J6OLVDRT0LKDebtzBCvCXU+pHbJ8+Bw4XONK3t1lI/emJEf5vIu31xUmLHW4pgBakAq9N39vivmSo8iteFFBMaHg=="
+																						"Id1ZBct0VS4uwhFSqOnDHr7tu8FZnfU6QJOxqxfWLK+kaxm9K3T2mg/fnMz7pIjmLCSocsvaoIuSLujsaG2rSLfavsmvCi9R4I7Q/vZlbRpwRCU58ZBrji+hk6cSiYaQHtC+TL7RfAUmZkFQf1Rak2jmJZFCPSTNMFdXYEaBzSmhrWm5s7X6TXEUkyhPX3Y33pLEB49rWRpZQznTd5ZXvm4DnH1ZHWm4+QMbxYD66WfzlGFr1Yae9FuxiU/WJoHX3zwun7NaCbmdYQGfRpJQ56XEjOgl5KJnI+TlRLGKC6w2GfV6EdchHnhpKlAQh/ocI+oGbGVC75IeB/Yk7cwrzw=="
 																				],
 																				"OperatorIDs": [
 																						7
@@ -2404,6 +2414,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2451,19 +2465,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"rEOQkgLDq1SH4BRDolGeAC3/VoDNlJVLebls88X0SEzhtn0J1qS3QENe9EVoLYqSgwGKno7Vfdl5O377I4wFdurnXHYNV0unUWyhe59ktHB1t5OJufaVpPIiuLBDpAQPxuA0kthlIclyHCpBhNM4q/TD+yrstCcbxkHKaMp2QObUQAYneErBYqc3PF1xe3BS7J472SJGdbFUE1fBd2IHZV+xO+oFY/RWh93XOweH9Zg5MYWnb/nRS8CDvqZxtpDww5nNDBrYMRdhNH2OcQQwMFFmryUMWMGeu5gD6q1m4kcvRVeQb9kzg/IsIerps6BXMmbNQ8DVT5y/UNJAXUJSpQ=="
+																						"pw8Y3anC4C8Dy4P3wuawvv+zYS/GruAmo9sB83Mec2xnDttWZfMoR8YauA7ok+A6FNfLc3im2KfmYQTDsg3XCIX9PsEMWRtAHuctxF4KgyN+VeMfbRSpIWd4NdmajtVuTS/QQjFZJyHQxoF78hHB+nQ9EXhkaSmz4tOXXbUksbBIuREbebQUsn39bCKq21/PsTqKIEJPMEGkoR4p/c0yAH+UqsTyVvk/7Mvjdz4536YuqyUkx2N0wTgqtHYAqSMNMESwQu6osZlHFdq83mRr/lrP0DF1HBsGZK6+1EWTyea9Tjh/493ajkcnB5JhxPYrfdyFW8L7c3Q565n6qwzSWA=="
 																				],
 																				"OperatorIDs": [
 																						8
@@ -2475,6 +2485,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2522,19 +2536,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"LEsFw87z/vTyoQNKjg0DirBdynoapeS9bY4s5boHWxezljZ/e2TZiQESWNT85yWnEbskis9TPWFT20hRMppDJ0hO/k2F9p05R8igETU3Z4alPO+ynUSj63JeuoZ3Kk0XrWXMLdJfiGiGIw0c/nTq0xL0RQbj+iM+agADsw8MygzmlDsP1Mxt0wL5kxo5e6MdNPp6B3+zXis/Z3JQNuVkD1EM4v4132N0kEmNcoS6AwdEt9hXAZg6Jzrng884HHDnVdA0H6dJemg8DKXWAZ/nKDxEiMeHWnNuAZlX4hbZ35wSt1Y/zxxeYeLxlupFoXV31L40BCBm3kqDMxZYkPddSw=="
+																						"gm8rjmpbvh7ZUz+EyW3A72vq3yZMTdQkGlUbQzZmShjdJhJDJr7JJleaNFofbva7D1qFGqAxGiW7xRcTSM8GnI6DqbVd3pd3yL0EUVfAndKgA29LoKU9utDcV3fEZ/5HwtrE2zGwSw/nzwnhhuliCLA3qtcZon1NKukncIHl81xPwZ2YiBEkd5+ORvOf0fV1Xq3flgiqKQ5qWjd/r19F2oem5V7ZBnO3N475F+deDBtqsZINDNXy5Washca+anrOJOpYu/MQS6P+PJ4xuCt5gPSH2DbYEFONRhJQqqbzcueOLKcoby8PG4nZr8g/4eL6m2BNbtalheLNJxW2GQTE6g=="
 																				],
 																				"OperatorIDs": [
 																						9
@@ -2546,6 +2556,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2593,13 +2607,9 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AQAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		}
@@ -2611,7 +2621,7 @@
 																"1": [
 																		{
 																				"Signatures": [
-																						"XESkFzE2q/EnpnWi/2d4k5HQwROC24E7b26DDJlmhM4d7FH1vZukU6FC/acAtWaRqkVkjaxEfSLvapdVBAL3AecSYhifXhOKLDDNgwTj8goVAUOFjPWy0kMbv0RJ8dCVvurKeYpEl1eA0Sj135Y46wAIrIvol0D6RqI7GFquevsA9miFqkkew7+aDHe1Gsw0Xpe1JViU6fcVsw0aYg6vS1EyENlFlbgzKBiE2pICdCQv7gpUa41+kAkhmZmg+cCx5pRuVwF08cFvT+YRSm2C+pHvSndvS+B59Pk4tOHTXF0rDINAjX89nIfPLdFWA8IVaJSPgSfn7pSM3hOwUyweEA=="
+																						"hygxLr68B7ljGSAVWeyBs3nA+BcznrP8UEd3jE0fq3CYMHxeAMam9kpkN/WFIjJrAg2gUY87n6JSPCFxkWI6kNVJ310lIo9KRgS5PdWilSkPZPXSvmNeHy8NqE4NsKeWv4hTQ3BRFJKGa+5O8+oSeiKzPFRR8ooNVp8Oda9kLNbX+fqnhc91SocT0W5VFpxLpR7uEwPZ11Pr2KtRM4ZavGCLnNlV4DlbusT7Q5DkxByMtZJtCmZ6NjebUOOmjjEHz+CZt6+kYYNBtXEQN/zAObiJHM0S9vosJRqyYlvV4XEWHZNOtO6XoeQdCzULVAE7Daaq5X2+3ZBI2D99uIhviw=="
 																				],
 																				"OperatorIDs": [
 																						1
@@ -2623,6 +2633,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2670,19 +2684,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"qthz3f32DQhG2qxsyFbpB4me1cIt5bie7d+34Tp6pY192qZjZWtixOn/2utgTBZsTVOgahUEX5dkvRl6nzGdwtdUPlCNz8/DlSZSMm531rKbqfA79TAM41nO1AbZ24KdG6cxv7eFOc/PK/UzE+9ENJYeBvRozqyVWy8RcB7iDKCnIBG9qWziK2ONzmwwpn7kSNVO2IOBafAN8uy5iWfbR88OyYjZhaMNEq7Ugi1zoGo0Hgz/DRSps540T33dROozuGda8aQ9BuCYtK0YhHrUz/dH61/znzv4RhP++yGwWEs5El10W5fx4xVws3o/FDpBYcP/5gtsy0jU9mItgY7a5g=="
+																						"Mv/hZCydt2/+NnI+fQOtPqE8JRQeEJ+hKlP4JTIxYnoXRfzn5MhbAtriNNGqRSs75g1Xcl5oM/WH1rBcYU6P5DeIpUfE9rjJYruliht46zpubRrTxvAzjAivLYRWoj8UazQmCKBb8kdMSBcJupyKFDA0PHTzdPgPcV0GWJjsas5dCvcdSqqAbEhnk8zFWlLYRgSGgrJOXEcAAIEKUQJJyKAxWKKpLkMHn1MFl84Rd/KNoPdrebgm1y4Lu5UI04GhwyT1eJQGKTbXB3aPyX62U/y7jUbzKq+ZhW62aQ9wS4OiFl0rVSjkiBNAJhDtiS4vsp9kxK4oIWl2kN4xbDEqiA=="
 																				],
 																				"OperatorIDs": [
 																						2
@@ -2694,6 +2704,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2741,19 +2755,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"qqF0DFP9a2uW1dsgFFi8kV30rRLNFPZqN8ZowH9q/7EJ3LisxTzevuEP/yenA2THr9CvGRWiz09b/2h4FyE5+njKi6o0NRdiAOOcJeaxb8VcTHgL5Si8EFUtPyg7Ytwceej16dJZQ+Niuh2T+D6WYMjVYv/9zkEx4/NpRK1fmTFFz+sU8PnEQ6dWIfkTDOplD9bqjNQ3kzu4ONeelBdmDSpGiV+SHjziPu1S6Dd2vWVnqtJgP6uJutfYCaRA7wB88Aoap8L/NdRbvAMYw6DbAaWotDV0GVwp1PuV6m2YcmRyjCkn3Lx9l1QDVZzeJT+J6ZREBzerPMPSpLdThbo+Cw=="
+																						"JPgsbvF8cz9cQ3DtSBFpUQ1qTdeYXGECW4ojTrNrVJkp8w+qILL7epVVAf/eideh46KskuSt/t09+6buiiP2w02Cr2VXui/If7J+IDi+jbq6Yg3A2T1z2YJndn6p4FqNt346+qRIPOT98oS4XF2w7xt/H7ITgFncJPIKqS1ZSn7Wd3eSArDNcX64pvOXecPwZY8amHYyc+wk5CYXGF40+esnqZdHi6EuwVhq54pgpce47NObjOfjyO/Vqt72H6LqkJUOmq0YTY4KKZRlGXSwps+9ayPPEGsbzWL3bSfs04mfTUAl5PGTJAqVwOgCPWhUkMX+oV/K5q9BTnMPd5HBqQ=="
 																				],
 																				"OperatorIDs": [
 																						3
@@ -2765,6 +2775,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2812,19 +2826,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"nQnaS3If3z4yrNucrF+T0ctaTlyvIVdda4GccziXrN6zyrIYxhAKPdLZ3HBJLmc9y8jJXF9cV6WLTP6n4Wi5UvBNfbISzmr5GAOhaDbWAF2WilMlMZjpV67zp7JEX6jPV59BEFMKXm77K7bf3cWHdE06Ef9HNvv3KSPQ5iDtfLgpMFBqmHhVGRaHOoI3rYfydhNxPfvFxFbKOkOh5CIcTvlvSfx4F+ykbgvUlyonEKOmHP4nrOw/3WQ0K8Y9i6esDOdCpLhZ5DyA2w73NGbK9w8LEIHtwLxwhHR7AD1ZRNd8HGLU7qebjQLACuEMuMMBoe/jD9PNpqjX4zKeYaZE/g=="
+																						"HP+vno1U5c9jHHYD8kVv+pakyx2ZUqlLnQ4TZVBple8MFkyxSQBDWLhuJNV0r4ARGWvQxkPZL5VkqW08w/gvUsNMGx2lzX0XLoo9deNUgcRBgDPw0+KCh0P/vy/OK78BML7GudEHxyL//uqD8SC0RVnHKVEEWBdjazTgm89KO7Eq4tEudfiEpKA5j75J0YxJUo4kc4JfvjOcBn8bYEJTjzEdQFdPNebx7YHyrhMVwD0RpzxyU4n2/BQu+GfianL4It6UJLRp/o1Sg0RdBxb7HmmDyOSCZcUfQdkdLxwHI1og6/C87Os/RdDt5PS7A5ao0JaxQHslyV9xE1cM1ksJlQ=="
 																				],
 																				"OperatorIDs": [
 																						4
@@ -2836,6 +2846,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2883,19 +2897,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"mQrMUo2kRxJyiL08uWvKfpsMzknx/oev+4kfe0U7hI7RrTUQ4PbdmxZEZuCT/d70s0y+xxUtF/44hm7/BA0nEG2wq1HtADSCSiBp3gejQo0GL7MKa2EnK+9FMfpVfWs1j7/KKnG5+Z+HXlNt0VvTUz9eCn7HnwtpOSjfA8EuB+iGylhzfxDtMpKolhbbIES9woWP4Bx5tteMryJb4J8egCYXHA984t/AklDT1UkoI9BXCzPZ+IrKBMasJzFI6Jtow/k6Bl9Cc3c758KhIhpgofK8ukfhY8Za/SOR9VaN0bYx6n3ZA2zSFC3/hs/F7fNydkOJgbcmnKgbC+fywnkx/g=="
+																						"pttJCMJGEo6i/mpui3R6RL7d7NrzBTV50SqcEdV7jmw948EqHv8UB4HvlBYymFzFwOPhI2sBA+YjUq/hfR1DWEJmmzKvzcCf6pg0jB317IYIS67RbdTHzZYhHgxZlrHz/n6V5EPZYFQ1B7vB0+arwt88qzWeZJOXyL5mqCP84Do2N4byEoNOIj2Utwya7w+FHCamXtsjGAqmgkgoEehRq1XhadWcEObsn7Wbw/18qA0LLTgvErOhWClc0pPuzwO7Q+Dek8yYAvIVbwQzyLQTzLmg4pPYQDX//3TF1Y6dOk/oVs05/lLpG9RJVB1mSu2LccJDfsUIgfJhrGsbCLxNKQ=="
 																				],
 																				"OperatorIDs": [
 																						5
@@ -2907,6 +2917,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -2954,19 +2968,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"eYhCfm6RcSfXSnIWH1IcCw8sIzKef6sRuUrAKBhSnNPk8+JXJw+Uvf1gRl49g7wif2bkqveD5yoGy5sOoEf3mUwEKOm+aynmGNm5b0rem28Qyru/+LZ/XyaFjEeXGzYJ+5LnqvVKCf5IVWF14eKyMX9k4ptlD7oI/Z5leNoLF8QLhVOFmcfTYhelHgRfm3CT1i1TwQUpCBSjcjztEhE5QAdGj5NocaOxWv/LTpv/qtMev68Gn3mtDH6TU6G6hIod9xoy7J1SqR9299qZSr313p7n5/Gz8oKreEXwgr6isqGbsoNip48eZD45KtBxt380/R/8q4TnBmPf2Y/+IRLXvA=="
+																						"dSfObQ/3RaHkwTZLD3unD/CUftgL2E+AJtI4X2h7/5aOC+NJg+akn228BxWvXEmqz/SUUQSDEDXxDMJ7GeB78WUxS75aKfqss4mFyr9IC/rtLR7gET8OQidkB3+jMJ2SXZw5L93odp3IA5bS+1ax++gcbVlruPxz5mmXEkTMRZ4h2pDS/ijCZf4lAMdu1Jy7mXj57wX4muW0l70HSFlRM7QDj3k+8cZw+7tOSFk8nhzWQ11zsqPK+qRi2qoZG3g8IXlOCvFZrdBlC8yxAS/vrf7V2VN/gLw/XjcbcDO2plYL19PQ+o+SxqvUWnU+3ZjHrQjVVjsFnTUysr+TuesqmQ=="
 																				],
 																				"OperatorIDs": [
 																						6
@@ -2978,6 +2988,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -3025,19 +3039,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"WVnZWfxX3F3HnOyK/+VnyMQfB0qaS7g34CcsiMQqZM64BnpKr9mW4SUCXQItr8FghtBbfFQDoop+t/+aR0tdZ9KArb5GSM2GdTCg2B9/6q0GapFxEraAvCRVnnMEbZyUOfMGJpFHZla5DUIwFGHUOkD4Qj463UPHGR37JwjD+Vbttxk4vGzp7j7X9x96r41JAayF04Zp932j8kLU1dohYRVpZuVeWga6Nb/avp22psIBgMfrhvZ9jiZkNWDTpGklEQiUS8Ph6A3yyoaC8R/3HNPoM1Y3cLHQ40Gy35oN6Q+BzOd4ywMok8WCiTEQNF4toBo7Cc247+huGFq/pvwQ8Q=="
+																						"ggHgzlOTY7o21ed5uKXRISfaOLhSTA2ZEZOLT54Ou28BVbLfhzcWMGU+3k1wvWK7T+cpJ6p2feglFKbIEVqtSVvjbLDCZIrF1ENJ4R+jty1UrbNhwZo1E2MmDTlD/PMpBMKGqZBAo6/+kxQIk6ko65JGtuxsDDinwmrxvPWJHdiPe6Ipc30ULnVLoEbxGHZGxPqi4PWyYoM95X7PRq7Xq3VP6sQBlPs9wKwttRnLI0d11vNMV8v5D9TbJYo7xlQXAatJ84xIfaC4EE8afrKqrneu5c7AZEbg4uPZYqc5qHHPVUaWj2kRexuwPcjMsRDnFKVbOpIi2r/0zkF2eZzLlw=="
 																				],
 																				"OperatorIDs": [
 																						7
@@ -3049,6 +3059,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -3096,19 +3110,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"QK89wv76KLkRlU03K3N5GtWlOLYwfKeqZZhDXnlQduGfYE/NUzx5QbeaMGJtajCS1PRGLTzWLoiG8VAIU0mewEW0ZvAK/PiGxdWT15qbaAZaOxnQvi/7tXHXW0Gy3yl7qBcBTx80J/XUXH3wBXcW2jwbQoLUG9FRTU6gk3qEE9JDyAe1iGVMSFeTywgXQKVWhfeS2ldNOit3mkTH2+KCRFdxTIEasLWiL9Z95lO6WspReIiFaWfNkoURkcMDY6V+XccBCVbOa2X6V23Q2sbfGZvyIJaQGrPH+euOKmhBrQMN/0Bu8d6wZWM0ikmlEj0MbtPkUirPRmM+wsw7DFW7ZQ=="
+																						"ELam1b78XjeptCE7vDpg/7fRpalPpKKEWFURzCCEgSP6jt8QxqqZU5C2LlmT3WH2dtWUQeye0zg9/3cJRITbOKJeG+XAUvtnCf9KKsCP/+8T1PpvvbgzvML1lem7x+ZNIPPPe6Kfjo5hfLh0lb9n23Aud77ticzRZy0l/XcWZGFzBOxyi4rQd0Ot/amGYcIq4fbkrTTX10Wjy3SQuZ7opFUtoxmQ8oSFj+OcoxcYpXNuDGjalFQ67wYEcEQRZbLIJCCnCq+9J7KmOfJn0EtzdHjZVp39KhWo3n5ZAKVKlAOFRbZqgUkbxxCQXezK/D5zEnBs8+qLbawrH3tM9AnzuA=="
 																				],
 																				"OperatorIDs": [
 																						8
@@ -3120,6 +3130,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -3167,19 +3181,15 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		},
 																		{
 																				"Signatures": [
-																						"rZzf13YNenhuBcOsbXpi49RB38K8xw+zXPv6RQfY8tkhXTP3egIK8HXT7OCyUMB/nDD35bzkIylIHmkE/wxSrFsiSzWnwrGP/8ulTPpjp3CqHcWc7JqkoqyyfChmyriU1kgv3+0Z3vrsMnYCyCdT0udj4GmigSKhx8gJooYCyaEq0kZQEMcL74B0gObbUcaIYC79Ch7bUyyuC8TRMO4+i/PEX75Cz5yIwefj/dQPlxRqTD6DBfPEMatWas05FIkSr4fSOzz1giFdFhh6anIozZGuZaCLaod93RtwCmCUCZAHDYIn6dQosZC+P//dAVVGaKkEAGS78Prny5nyyr9APg=="
+																						"zhT5wOYblrV1Ah/mwMVJ0Le7+MK6Lo29NGwcxgJgNYVw9TeVTJp+YgVutoRxzYRL0+Oha1K9B9A3Lm+YM5rl66kWxuHsYQY+PkyG5MLngRRqetO6o9I1LuAG6qHzzsgmKiPAGefij/9CEGS88TwJ5sF2PeFdDM7UlyS+Bo9nreSAm68FS+wMZPElzm5q6pDfWIq6MvjIFemRh5Uk6R6jEPDzINJmL0iGgDYzG8saafbuk6KZsp+UELzFXkxAQqQFYt2q4VpGAe/Ffd+GxS639JSyKxAEOgZ9bj9YFD2Xcu6DhujEpOR9QGRCNHRIZsv+REHjbkB6oSvW9bQN02ElZQ=="
 																				],
 																				"OperatorIDs": [
 																						9
@@ -3191,6 +3201,10 @@
 																								0,
 																								3,
 																								1,
+																								0,
+																								0,
+																								0,
+																								0,
 																								142,
 																								128,
 																								6,
@@ -3238,13 +3252,9 @@
 																								2,
 																								181,
 																								11,
-																								192,
-																								0,
-																								0,
-																								0,
-																								0
+																								192
 																						],
-																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAADHXq9XAXxGP10T/YVNnROODwOChU+AraiEH8sTqjDzAAAAAAAAAACEAAAAhAAAAAAAAwGOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8AAAAAA"
+																						"Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
 																				"FullData": null
 																		}
@@ -3255,114 +3265,106 @@
 														"Msgs": {}
 												}
 										},
-										"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAADAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
+										"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 								}
 						],
 						"Share": {
 								"OperatorID": 1,
-								"ValidatorPubKey": "joAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA",
-								"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+								"ClusterID": [
+										223,
+										110,
+										165,
+										181,
+										159,
+										14,
+										108,
+										3,
+										243,
+										144,
+										173,
+										95,
+										234,
+										11,
+										188,
+										25,
+										158,
+										195,
+										82,
+										76,
+										10,
+										104,
+										41,
+										19,
+										20,
+										143,
+										208,
+										113,
+										175,
+										24,
+										152,
+										236
+								],
+								"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
+								"Quorum": 9,
+								"PartialQuorum": 5,
 								"Committee": [
 										{
 												"OperatorID": 1,
-												"SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB"
 										},
 										{
 												"OperatorID": 2,
-												"SharePubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvflPDLfhwkRxfzz5kBJLrOK5OnLdFlSh3Y74A3ZeqrJSO+NBBS9cBWbYvrlhi28YgA2dbUvvhuegA86S6U1mOZxl9Vu7sVVArmIYO5rQ+sE33AokQL6PCA9SXLvPAwOwAHKs2xy3zoIMEks8E4Ul38MHgWw/Rl3L2AyViJogAQCN4Y4A0h5BWmwqMj+wZ9gh70Z+Shg2PJI1lvJ+FJYU+R1A3Ivx4uiZLO5zt9TBeal2or4HdK+2CzCzjlo24WPkYJruL+yyxGUB0y005M4qje+Q7nZf+bm/+LSByBrNB/Jyut5TNeS+q7HF5dYTeLwdL/uWaGQcW7JVXNlCt8Rm4wIDAQAB"
 										},
 										{
 												"OperatorID": 3,
-												"SharePubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJCU0IDKcMbE6AZ71ot9oXctndMsnwOhmzAMuxaPh0Z6OeV4lodboHdxZIUbFEVZ76d5W6Oh8/CZSrUroZ0wgOC5+v71P+hRfJndd8ZxPTRTure5yYALPK1FV8uN31WIGSN+4bmNOXdirB3t6mxP/o6cHDrryo5IoFcYYqF2neDwzmPoPfW4SOgMpAeOtqhrK1A4V1/8QLW/v3Q8srbVlRm1DEvY17k6ODDRq6mggP0oHs4udAwZEQUDivsx3/kpx7ift8BZbYQyumob6YsIYXMIj85B5CkBYtvdYqEKhYNyUTO3Au5TkfQlYwGy5JqOdbHWdRZnn7+jV2yY9YShuwIDAQAB"
 										},
 										{
 												"OperatorID": 4,
-												"SharePubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs0DWybL8zLGGXB590kn0iSIrB1Gs3ju6ahu7MXj7icO2hN4G2u0CTYqx+Efc1KTen/FeIDuRt//K6fIl+W1wy6ijd1FyVSD4f+PQ2sFCml6hq20Y4w53cX2cKHdDV/F89BsdBn7EWqFmFAM31Klz5dc+REKyIittPNJ+g0Jo68IeTeWEk0cb2QFULPEneRagHTotmXkd95Dg+0wLaAKkfa+lXQcPHLp/uGgCWC95uFs+8VSIFlMcqhH4DI+FANkMTf2Y2fPZXOv80NlRDRKgKtGglnWIdkWzszzm91Ub3hn7hOLrz/7EeiFrcI+kAP8hJRAZqhGVIgSK9vP8LECVzwIDAQAB"
 										},
 										{
 												"OperatorID": 5,
-												"SharePubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx1wFVtRw+P6Z1DiJciNwPYJ+E7ALpaJ23kdO5XptAp6BgoSaFRJUCBoDaDITu4uf17xCboJhQKE2xsdM5ytbTc1ZJJDPZYps5g3j6swKPm9wJxItbtrVEmh6cNo5DfVK9+sAlu0+LdWiySc9raL6fyrxeA9y+XeDgJTyTD7mHxGDc1JEm7zCTLPbGY1R12aNT332uIA7VMP0THSBFi5yfTGzvV88Kx1SBIkWDsZ0YM9eddMc7nqeI7mA+dHia5NaMRwklfBI1w6Yuh5m9T+hQa+Qhb4SURAFRah/yan/4j/sGM0ChpLrRgSuYnqYvR1nfnFzhOzKw6oS8cxTSu1U+QIDAQAB"
 										},
 										{
 												"OperatorID": 6,
-												"SharePubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuhYNz0rmW/fh3hLM/VB8bCQf2nCIQhIwqqSYX6XcLqf/j3MOpJqo6fcgjpFdGIVXd18ugyeETvVpEcUGqGfMCbMhZx2uteMOqYLwm9P+kbLgDD8jXjtoU/gNb9g2g875xH7/VUN0u3VPBBIvFaHxijsFYCh4u+aSprOLyidDgT5E+ggUPICcdjOvxy3k3HUdy+QRmmnRDoqY1543TIXEfE04ws9nGBez1ySGpCVuhdQ7VqH9BCCsI/J0HP1cJY2wkMBRy793ETlqcnJT8r1Ij9gfArknUe9WchgFRKAuOXv/k0eBjwzOw9Rlg7LFqF1Oom2qOw9RfgqcM3AhY59wAQIDAQAB"
 										},
 										{
 												"OperatorID": 7,
-												"SharePubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ4/bjOW8EnWJlu9oyRNu6HzhhjUK2QJAwXEe3itwYnBX4lJEMrTf1ulkvafuZePO2aIN7B/x24kS3aR//b3kSJvMxfrOvzASgpba/4Fpuxw/lgVtY/LX41F3QQkVWPWwaXWai2Gpmsf6BwJMMaeNoAUYhOjs8XsFMoqWj6eInSCNHOI6kqNcJuY4F2KheCdj6TS6/LKoLhbt3jqGMJCuxoWDB1zXCI4xedGxUjJLxgFqKuRYZkxZgrRWBHUc34DJEy4dlYxGiTTAK9FUdPTwZXVYGTModLQBoO9UnIRS7SMNRghOxk3rk48jRhqKCIu2vqLlpBs14mpu7vThQ4duQIDAQAB"
 										},
 										{
 												"OperatorID": 8,
-												"SharePubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuKiCnNGnDCxLWIWVo8NNkYagGGyKMVGFWLCVXcslGrUqs5v7gpfQozt+hqo4lOxUQ+ixxyzXwbqe5jvLL+ZbW1hptoQYPKyBIM2xNAaLJZ/JIEZNuPy3KhiIgYKNc/GUZqT5Y7USTPh6lCk4IAu1BLjzxAiDz3TiwhEAAoFbwqsh7x8oWOsEibjMSnuFR8caAgZNwvbi/tC+Gelb1Ax0o40bdXGECuyra0u9oq2YX2GbQ7T//ADMlEcoiWwirM5Tza75c+5FbkDCh7Xu6udqLKSyR1X4ldAyFSIH5rNfCAGsT9N024QbTmFdrYUbQws6WT7w3Aa8+Q4eEsmLy0uLlQIDAQAB"
 										},
 										{
 												"OperatorID": 9,
-												"SharePubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2wCW/pL6zXBf3i/Mz7Hy6oZe91SmDp39V09UIKLnOlWWhR6Qadn29W2gwQkhV7NHaLvJ5ZkqTS2gFatCLBz1sFz97MO1mR2Z3ubGWBBXhrxnGXPwpyKtS9Th4mJYNO4og1R2E/FkU4jkuQs83un5zLlCUFW/ctpWSuUBYDObnvN0T6971idIspH7fG4FIJ21eHMLoEQh38x+IPdxg5CWLQ2Nr1Tn3i5zP0ZNGtW0T/OGNhd0BkiChzJ3oNY5TRd5E74SO3oJDb9Iv/mj+JvYHPYQqv843ozBMbO3SSbzOViy9Qx0QK4qTcdc36N4HOeZzPTfOVcfvdVqzhhGIL4jZwIDAQAB"
 										},
 										{
 												"OperatorID": 10,
-												"SharePubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuUe/KSiKVyU42YyFHb6N1Ak3b3D2PgNVpE8pjUZ/vqKWssaZu+OrDnfKDBbs32UIgSJzwYweZN7YAZPIZojeWRm7JYyDimRXZ0x6/4yKLJPHYIKzZApmOQggrOS5GSYcuGh/vdzduGbe3B+rVtYRxazA9tJKTv3BKXoe1uKTiQWqvmdqiSxY0B2yclmihMZ5397eeYW9iEiG4+9t/uao1C93/rW1dL3NH1jK/niy+g3+Gc3CKfNekPU61n0v3tAHAtMJHQoD/9vEzncGSUwUoM6m2HGzCAgW7zceOhwTBQW8ODnb0AGL6ezLHo+k59hlNRRt/1Gv8ayfXbqdaQrhtQIDAQAB"
 										},
 										{
 												"OperatorID": 11,
-												"SharePubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlffCZ8+jtP/bk3hhWBz8H84FpmVPc6UBBUg/4K4zBc8K/zEzNf6SJU1aucQfNVHu9k52kyaEdjOSITwiOKRoqwbg4HsFirx8Pj+SE1wiwVnktKN8Gw+1tgqA1qydjzJMysVLN4S55d/Y7aFROpoOUolZYSo+WcneUKbHw9fu8DOIKatFmY4cbev/RtLqacjGz9OYOy7yRVFwwj1XJrpAY0JgiNuDNDAoeOjj28y+AbcZDY6Vgaz0uNbcuhsWpVbdXSL7/7dtBK9FjYuewgALpiGWHvsS1Rn7NfMsF4gYQ/J8Bj8614wCUZvh6CDJ4dssSZz6Ro933yD6lFymj1JePQIDAQAB"
 										},
 										{
 												"OperatorID": 12,
-												"SharePubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArdX/wLlQ5N9Bxdve59YH/jOROOx00KdPkLVy7kZ8ocniYjzoZ5LdpY9TuTLnd8HuHyUlQsNVjas82DtTyzg11IOMuPUcXkUlf6YfTbprwBVAX8mggOW109ttfBeRcO/m81/507/u38x6pdG3JLVfEyrHpQkdBivRYR8AhWOYn4OWoWRZ8tVXdTRKH2+I+ypONa4mCcxNP/eQYzIjmKIsve5X03AjT7dGMSCV7KG+0pRZhCXoGyVr1HziAJQ1nVMRFYjVzUqxJMhSLuE4W6L12szMJn/czc3PUYC8IPUN2K7//HtBpVyKtypfcTMVKdaF9+hWciLRaTSq1UAaZslnRwIDAQAB"
 										},
 										{
 												"OperatorID": 13,
-												"SharePubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim",
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqk9eLm6lCcQeqJrMvhlfiQEoJpFTlwWYJZO+D8F/jSXNUMUHDP/IWw+HkBVIuXOwquYqKEGrzgIymqWWXVSGS94BGOu4+zNSu1dRpyBi8zkgvp9+uhlNEdVK1IEWTHzO6j6nO8zN9zilrxbpKAMEnk9rDAyD+I9p3h1DKRrk/4/+SgLgSuCdGSJ3mktxR3IJ48Cc/V21HMnTVEsj6Q6aZ2wfW2SdUN2bsyOh+vQjFNv0AnIOcaTy/L3hD13+5yILEGlmBI9ACTcbb1rRqmg7DR/lSzpiudyiI+pnZVDhIxJKq8+9TYa25i7U1hiHZinRtT30U5wlPJpB8j653snPJQIDAQAB"
 										}
-								],
-								"Quorum": 9,
-								"PartialQuorum": 5,
-								"DomainType": [
-										0,
-										0,
-										3,
-										1
-								],
-								"FeeRecipientAddress": [
-										83,
-										89,
-										83,
-										181,
-										166,
-										4,
-										0,
-										116,
-										148,
-										140,
-										241,
-										133,
-										234,
-										167,
-										210,
-										171,
-										189,
-										102,
-										128,
-										143
-								],
-								"Graffiti": null
+								]
 						}
 				},
 				"BeaconNetwork": "now_test_network",
-				"BeaconRoleType": 0
+				"RunnerRoleType": 0,
+				"OperatorSigner": null
 		}
 }
