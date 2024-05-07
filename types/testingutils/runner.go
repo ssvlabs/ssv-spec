@@ -72,7 +72,20 @@ var baseRunnerWithKeySetMap = func(role types.RunnerRole, valCheck qbft.Proposed
 		break
 	}
 
-	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
+	// Identifier
+	ownerID := []byte{}
+	if role == types.RoleCommittee {
+		committee := make([]uint64, 0)
+		for _, op := range keySetInstance.Committee() {
+			committee = append(committee, op.Signer)
+		}
+		clusterID := types.GetClusterID(committee)
+		copy(ownerID, clusterID[:])
+	} else {
+		ownerID = TestingValidatorPubKey[:]
+	}
+	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
+
 	net := NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
 
 	km := NewTestingKeyManager()
@@ -180,7 +193,21 @@ var baseRunnerWithKeySetMap = func(role types.RunnerRole, valCheck qbft.Proposed
 
 var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
 	share := TestingShare(keySet)
-	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
+
+	// Identifier
+	ownerID := []byte{}
+	if role == types.RoleCommittee {
+		committee := make([]uint64, 0)
+		for _, op := range keySet.Committee() {
+			committee = append(committee, op.Signer)
+		}
+		clusterID := types.GetClusterID(committee)
+		copy(ownerID, clusterID[:])
+	} else {
+		ownerID = TestingValidatorPubKey[:]
+	}
+	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
+
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
 	operator := TestingOperator(keySet)

@@ -14,10 +14,20 @@ import (
 
 var TestingSSVDomainType = types.JatoTestnet
 var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSVDomainType}
-var CommitteeMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
+var CommitteeMsgID = func(keySet *TestKeySet) []byte {
+
+	// Identifier
+	ownerID := []byte{}
+	committee := make([]uint64, 0)
+	for _, op := range keySet.Committee() {
+		committee = append(committee, op.Signer)
+	}
+	clusterID := types.GetClusterID(committee)
+	copy(ownerID, clusterID[:])
+
+	ret := types.NewMsgID(TestingSSVDomainType, ownerID[:], types.RoleCommittee)
 	return ret[:]
-}()
+}
 var AttesterMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
 	return ret[:]
@@ -181,8 +191,11 @@ var SSVMsgWrongID = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.P
 	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingWrongValidatorPubKey[:], types.RoleCommittee))
 }
 
-var SSVMsgCommittee = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
+var SSVMsgCommittee = func(ks *TestKeySet, qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
+	msgIDBytes := CommitteeMsgID(ks)
+	var msgID types.MessageID
+	copy(msgID[:], msgIDBytes)
+	return ssvMsg(qbftMsg, partialSigMsg, msgID)
 }
 
 var SSVMsgProposer = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {

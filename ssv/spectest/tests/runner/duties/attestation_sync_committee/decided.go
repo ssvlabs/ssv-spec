@@ -14,7 +14,7 @@ func MaxDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	msgID := testingutils.CommitteeMsgID
+	msgID := testingutils.CommitteeMsgID(ks)
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "max decided",

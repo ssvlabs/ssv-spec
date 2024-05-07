@@ -22,7 +22,7 @@ func WrongConsensusData() tests.SpecTest {
 				Duty:   testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorIndexList(500), validatorIndexList(500)),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestWrongBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestWrongBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
