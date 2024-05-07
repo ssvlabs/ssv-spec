@@ -1,7 +1,7 @@
 package startinstance
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 )
 
 // EmptyValue tests a starting an instance for an empty value (not passing value check)

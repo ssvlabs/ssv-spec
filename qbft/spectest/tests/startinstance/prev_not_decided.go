@@ -1,11 +1,11 @@
 package startinstance
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	qbftcomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	qbftcomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // PreviousNotDecided tests starting an instance when the previous one not decided

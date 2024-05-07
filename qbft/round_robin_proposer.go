@@ -1,6 +1,6 @@
 package qbft
 
-import "github.com/bloxapp/ssv-spec/types"
+import "github.com/ssvlabs/ssv-spec/types"
 
 // RoundRobinProposer returns the proposer for the round.
 // Each new height starts with the first proposer and increments by 1 with each following round.

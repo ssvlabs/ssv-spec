@@ -1,9 +1,9 @@
 package partialsigmessage
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidMsg tests a signed msg with 1 invalid message

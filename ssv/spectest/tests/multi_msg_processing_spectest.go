@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 	"path/filepath"
 	"reflect"
 	"strings"

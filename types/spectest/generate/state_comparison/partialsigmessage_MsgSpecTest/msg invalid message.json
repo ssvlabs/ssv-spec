@@ -41,8 +41,7 @@
 												123,
 												131
 										],
-										"Signer": 1,
-										"ValidatorIndex": "1"
+										"Signer": 1
 								},
 								{
 										"PartialSignature": null,
@@ -80,8 +79,7 @@
 												0,
 												0
 										],
-										"Signer": 0,
-										"ValidatorIndex": "0"
+										"Signer": 0
 								}
 						]
 				}

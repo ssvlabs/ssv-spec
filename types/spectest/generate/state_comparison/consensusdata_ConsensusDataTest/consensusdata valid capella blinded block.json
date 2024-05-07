@@ -10,8 +10,7 @@
 						"CommitteeLength": 128,
 						"CommitteesAtSlot": 36,
 						"ValidatorCommitteeIndex": 11,
-						"ValidatorSyncCommitteeIndices": null,
-						"IsStopped": false
+						"ValidatorSyncCommitteeIndices": null
 				},
 				"Version": "capella",
 				"PreConsensusJustifications": [
@@ -55,8 +54,7 @@
 														252,
 														194
 												],
-												"Signer": 1,
-												"ValidatorIndex": "1"
+												"Signer": 1
 										}
 								]
 						},
@@ -100,8 +98,7 @@
 														252,
 														194
 												],
-												"Signer": 2,
-												"ValidatorIndex": "1"
+												"Signer": 2
 										}
 								]
 						},
@@ -145,8 +142,7 @@
 														252,
 														194
 												],
-												"Signer": 3,
-												"ValidatorIndex": "1"
+												"Signer": 3
 										}
 								]
 						},
@@ -190,8 +186,7 @@
 														252,
 														194
 												],
-												"Signer": 4,
-												"ValidatorIndex": "1"
+												"Signer": 4
 										}
 								]
 						}

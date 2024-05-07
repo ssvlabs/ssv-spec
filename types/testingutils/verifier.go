@@ -7,8 +7,8 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type testingVerifier struct {
@@ -22,6 +22,11 @@ func NewTestingVerifier() types.SignatureVerifier {
 }
 
 func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types.CommitteeMember) error {
+
+	encodedMsg, err := msg.SSVMessage.Encode()
+	if err != nil {
+		return err
+	}
 
 	encodedMsg, err := msg.SSVMessage.Encode()
 	if err != nil {

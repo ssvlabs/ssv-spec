@@ -5,9 +5,15 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+<<<<<<< HEAD
 	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
 	"github.com/bloxapp/ssv-spec/types"
 	"github.com/bloxapp/ssv-spec/types/testingutils"
+=======
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+>>>>>>> alan
 )
 
 // WrongDutyRole tests decided value duty with wrong duty role (!= duty runner role)
@@ -26,7 +32,11 @@ func WrongDutyRole() tests.SpecTest {
 	}
 
 	// Function to get decided message with wrong ID for role
+<<<<<<< HEAD
 	decidedMessage := func(role types.RunnerRole) *types.SignedSSVMessage {
+=======
+	decidedMessage := func(role types.BeaconRole) *types.SignedSSVMessage {
+>>>>>>> alan
 		signedMessage := testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 			[]types.OperatorID{1, 2, 3},
@@ -53,12 +63,17 @@ func WrongDutyRole() tests.SpecTest {
 				Name:     "sync committee contribution",
 				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:     &testingutils.TestingSyncCommitteeContributionDuty,
+<<<<<<< HEAD
 				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleSyncCommitteeContribution)},
+=======
+				Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleSyncCommitteeContribution)},
+>>>>>>> alan
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedError,
 			},
+<<<<<<< HEAD
 			// {
 			// 	Name:           "sync committee",
 			// 	Runner:         testingutils.SyncCommitteeRunner(ks),
@@ -67,16 +82,31 @@ func WrongDutyRole() tests.SpecTest {
 			// 	OutputMessages: []*types.PartialSignatureMessages{},
 			// 	ExpectedError:  expectedError,
 			// },
+=======
+			{
+				Name:           "sync committee",
+				Runner:         testingutils.SyncCommitteeRunner(ks),
+				Duty:           &testingutils.TestingSyncCommitteeDuty,
+				Messages:       []*types.SignedSSVMessage{decidedMessage(types.BNRoleSyncCommittee)},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+>>>>>>> alan
 			{
 				Name:     "aggregator",
 				Runner:   testingutils.AggregatorRunner(ks),
 				Duty:     &testingutils.TestingAggregatorDuty,
+<<<<<<< HEAD
 				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregator)},
+=======
+				Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleAggregator)},
+>>>>>>> alan
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedError,
 			},
+<<<<<<< HEAD
 			// {
 			// 	Name:           "attester",
 			// 	Runner:         testingutils.CommitteeRunner(ks),
@@ -85,6 +115,16 @@ func WrongDutyRole() tests.SpecTest {
 			// 	OutputMessages: []*types.PartialSignatureMessages{},
 			// 	ExpectedError:  expectedError,
 			// },
+=======
+			{
+				Name:           "attester",
+				Runner:         testingutils.AttesterRunner(ks),
+				Duty:           &testingutils.TestingAttesterDuty,
+				Messages:       []*types.SignedSSVMessage{decidedMessage(types.BNRoleAttester)},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+>>>>>>> alan
 		},
 	}
 
@@ -94,7 +134,11 @@ func WrongDutyRole() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:   testingutils.ProposerRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
+<<<<<<< HEAD
 			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
+=======
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleProposer)},
+>>>>>>> alan
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
@@ -108,7 +152,11 @@ func WrongDutyRole() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:   testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
+<<<<<<< HEAD
 			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
+=======
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.BNRoleProposer)},
+>>>>>>> alan
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},

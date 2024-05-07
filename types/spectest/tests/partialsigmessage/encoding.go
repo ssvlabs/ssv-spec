@@ -1,7 +1,7 @@
 package partialsigmessage
 
 import (
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // Encoding tests encoding of a ssv message
