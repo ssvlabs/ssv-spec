@@ -28,11 +28,6 @@ func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types
 		return err
 	}
 
-	encodedMsg, err := msg.SSVMessage.Encode()
-	if err != nil {
-		return err
-	}
-
 	// Get message hash
 	hash := sha256.Sum256(encodedMsg)
 
