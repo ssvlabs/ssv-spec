@@ -92,6 +92,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
+				ExpectedError:           expectedErr,
 			},
 			{
 				Name: "proposer",
