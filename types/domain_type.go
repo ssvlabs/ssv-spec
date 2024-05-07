@@ -96,5 +96,10 @@ func mainnetForks() []*ForkData {
 			Epoch:  0,
 			Domain: GenesisMainnet,
 		},
+		{
+			// TODO: Update this when the mainnet fork is known
+			Epoch:  0,
+			Domain: AlanMainnet,
+		},
 	}
 }
