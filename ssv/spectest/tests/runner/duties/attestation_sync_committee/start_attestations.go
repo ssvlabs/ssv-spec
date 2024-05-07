@@ -1,7 +1,7 @@
 package newduty
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 )
 
 // StartAttestations starts a cluster runner with a list of 30 attestation duties
