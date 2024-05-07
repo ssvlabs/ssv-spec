@@ -153,13 +153,14 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
+	// TODO change GenesisMainnet to the correct network
 	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.Share.OperatorID,
 		cr.operatorSigner.SignSSVMessage)
 	if err != nil {
 		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
 
-	if err := cr.GetNetwork().Broadcast(msgToBroadcast); err != nil {
+	if err := cr.GetNetwork().Broadcast(ssvMsg.MsgID, msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
 	}
 	return nil
