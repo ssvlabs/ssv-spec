@@ -1,9 +1,9 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PastRound tests a commit msg with past round, should process but not decide
@@ -21,7 +21,7 @@ func PastRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit past round",
 		Pre:           pre,
-		PostRoot:      "a8d66621100a3f07eef3412e1bebece90917c1d7116b95f857c070dc33b2e5ad",
+		PostRoot:      "3783417654934abf09b3d676e4a2553884911fc845701dcb19d5555bf8e5c929",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: past round",
 	}

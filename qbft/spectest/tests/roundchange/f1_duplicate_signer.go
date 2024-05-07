@@ -1,9 +1,9 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // F1DuplicateSigner tests not accepting f+1 speed for duplicate signer
@@ -26,7 +26,7 @@ func F1DuplicateSigner() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change f+1 duplicate",
 		Pre:            pre,
-		PostRoot:       "01f2d89ae17ca6315c35bb44ac704ea88bba670d40d906260685ecc5ef29142d",
+		PostRoot:       "31525cafafd8fa04574aea50226ec4384cea1a10ec7c77e514f712416aac45b1",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 	}

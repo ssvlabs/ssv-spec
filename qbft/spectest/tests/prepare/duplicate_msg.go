@@ -1,9 +1,9 @@
 package prepare
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // DuplicateMsg tests a duplicate prepare msg processing
@@ -21,7 +21,7 @@ func DuplicateMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate prepare message",
 		Pre:           pre,
-		PostRoot:      "81477ca56203282186be46fa2e33fd8725adf0a724e1eb6ae97ab824395c874f",
+		PostRoot:      "14e301e11b0eb8f8f589e83c53639116bd51fc026a2d931e3cd66ed4b5b00d48",
 		InputMessages: msgs,
 	}
 }

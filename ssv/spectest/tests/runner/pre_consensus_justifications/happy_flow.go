@@ -2,9 +2,9 @@ package pre_consensus_justifications
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // HappyFlow  tests a full flow of an already started duty with pre-consensus justifications
@@ -67,46 +67,6 @@ func HappyFlow() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
 			},
-			// {
-			// 	Name:   "sync committee first height",
-			// 	Runner: testingutils.SyncCommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
-			// 	Messages: append(
-			// 		consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.RoleCommittee)[:7], // consensus
-			// 		[]*types.SignedSSVMessage{ // post consensus
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
-			// 		}...,
-			// 	),
-			// 	PostDutyRunnerStateRoot: "48c73f57659b69131467ef133ccb35d7de2fe96438d30bfa2b5ea63b19ead011",
-			// 	OutputMessages: []*types.PartialSignatureMessages{
-			// 		testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-			// 	},
-			// 	BeaconBroadcastedRoots: []string{
-			// 		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
-			// 	},
-			// },
-			// {
-			// 	Name:   "sync committee > first height",
-			// 	Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
-			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
-			// 	Messages: append(
-			// 		consensusMsgs(testingutils.TestSyncCommitteeConsensusData, types.RoleCommittee)[7:14], // consensus
-			// 		[]*types.SignedSSVMessage{ // post consensus
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
-			// 		}...,
-			// 	),
-			// 	PostDutyRunnerStateRoot: "eebc533814dfc97cd96facd431a67cc26bc5653a4fd3301609a6a1a9be18afd5",
-			// 	OutputMessages: []*types.PartialSignatureMessages{
-			// 		testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-			// 	},
-			// 	BeaconBroadcastedRoots: []string{
-			// 		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
-			// 	},
-			// },
 			{
 				Name:   "aggregator first height",
 				Runner: testingutils.AggregatorRunner(ks),
@@ -239,26 +199,6 @@ func HappyFlow() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, spec.DataVersionDeneb)),
 				},
 			},
-			// {
-			// 	Name:   "attester first height",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: append(
-			// 		consensusMsgs(testingutils.TestAttesterConsensusData, types.RoleCommittee)[:7], // consensus
-			// 		[]*types.SignedSSVMessage{ // post consensus
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight))),
-			// 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight))),
-			// 		}...,
-			// 	),
-			// 	PostDutyRunnerStateRoot: "9d55ff5721b21c5b99dd4b4bacb0acda0b674112fe3cec55cc6aeb04ad5dc2fc",
-			// 	OutputMessages: []*types.PartialSignatureMessages{
-			// 		testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-			// 	},
-			// 	BeaconBroadcastedRoots: []string{
-			// 		testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
-			// 	},
-			// },
 			{
 				Name:   "validator registration first height",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),

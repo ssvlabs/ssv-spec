@@ -1,9 +1,9 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // QuorumNotPrepared tests a round change quorum for non-prepared state
@@ -21,7 +21,7 @@ func QuorumNotPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change not prepared",
 		Pre:           pre,
-		PostRoot:      "c4113fe5de15489803c247c158cdb2d7396a938b56dd7518399d0fa9268549f6",
+		PostRoot:      "4e4bf729cf6b51c775dd8652f9cb56f2bde8564a409c4e37df3e6443b2e715d3",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,

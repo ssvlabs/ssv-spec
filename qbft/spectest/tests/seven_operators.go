@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // SevenOperators tests a simple full happy flow until decided
@@ -28,7 +28,7 @@ func SevenOperators() SpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow seven operators",
 		Pre:           pre,
-		PostRoot:      "eceb1d9689217606ddef19d2c73565006892eef1bb25697312184d9bc6909301",
+		PostRoot:      "c54d4e1e08a48867d9ddeecabaa29a7b702ce63cbf5bd382d07207388939a0fa",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),

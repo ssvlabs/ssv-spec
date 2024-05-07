@@ -1,10 +1,10 @@
 package prepare
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // OldRound tests prepare for signedProposal.Message.Round < state.Round
@@ -29,7 +29,7 @@ func OldRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare prev round",
 		Pre:           pre,
-		PostRoot:      "f16c3384489a8d2ee68e57e8fb5194498c90f694a142a6dda397cc192fd7bdac",
+		PostRoot:      "caf6dcec8dcd3412d4098e0c646b8af4d85d1f9231136182860cdd300eaba49d",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: past round",
 	}

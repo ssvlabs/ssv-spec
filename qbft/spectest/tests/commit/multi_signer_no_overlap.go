@@ -3,9 +3,9 @@ package commit
 import (
 	"crypto/rsa"
 
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // MultiSignerNoOverlap tests a multi signer commit msg which doesn't overlap previous valid commits
@@ -26,7 +26,7 @@ func MultiSignerNoOverlap() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "multi signer, no overlap",
 		Pre:           pre,
-		PostRoot:      "00a787ff5f675fe78cfbbac89f7b1760c78be0f81933db7924a19daa16ee08a1",
+		PostRoot:      "2b524a5c0dd123546ff40a3bcf96d5e8b796129150b301f8d225970e9f4800d9",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),

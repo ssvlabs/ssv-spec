@@ -3,10 +3,10 @@ package pre_consensus_justifications
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidConsensusData tests consensusData.Validate() != nil
@@ -91,29 +91,6 @@ func InvalidConsensusData() tests.SpecTest {
 				},
 				ExpectedError: "failed processing consensus message: invalid pre-consensus justification: could not unmarshal ssz: incorrect size",
 			},
-			// {
-
-			// 	Name:   "attester",
-			// 	Runner: decideFirstHeight(testingutils.CommitteeRunner(ks)),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		invalidateMsgDataF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "81cb7b1d3ea3087d49f9773b3a2b75a87b901e50427d237f2a10c0e1904e7684",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: invalid value: could not unmarshal ssz: incorrect size",
-			// },
-			// {
-			// 	Name:   "sync committee",
-			// 	Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
-			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		invalidateMsgDataF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "38592232077cd45709a7c6cfdd20c9d899af9d79bc750add3c4b8f2b6794cb34",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: invalid value: could not unmarshal ssz: expected buffer of length 32 receiced 4",
-			// },
 		},
 	}
 }

@@ -1,9 +1,9 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // WrongHeight tests a commit msg received with the wrong height
@@ -23,7 +23,7 @@ func WrongHeight() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong commit height",
 		Pre:           pre,
-		PostRoot:      "037dcf8d9dcca591bc4f93e8c2a7034b148c33e6d201f1f9203f7c271fe016ee",
+		PostRoot:      "738fff32174f946a02813c45bfae8807d761c0987d3360d3bf00d7468c78058a",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: wrong msg height",
 		OutputMessages: []*types.SignedSSVMessage{

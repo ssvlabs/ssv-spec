@@ -1,9 +1,9 @@
 package prepare
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // UnknownSigner tests a single prepare received with an unknown signer
@@ -19,7 +19,7 @@ func UnknownSigner() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare unknown signer",
 		Pre:           pre,
-		PostRoot:      "fc68d10ca3bc1250da3aa789d4feae5fa197d08964c26c9f16cdfd39931d38ce",
+		PostRoot:      "2253eea5735c33797cd1f1a1e3ced2cb8b16ee1c78ae1747e18041b67216d622",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: signer not in committee",
 	}

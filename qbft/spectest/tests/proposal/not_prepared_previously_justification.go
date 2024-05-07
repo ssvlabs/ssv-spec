@@ -1,9 +1,9 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // NotPreparedPreviouslyJustification tests a proposal for > 1 round, not prepared previously
@@ -24,7 +24,7 @@ func NotPreparedPreviouslyJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal justification (not prepared)",
 		Pre:           pre,
-		PostRoot:      "4c33cd42459175c9858a99fc450e517ac2f3f8c99ba0a1d74775e129117398b8",
+		PostRoot:      "339b6b43d39cd8163e56b9721edfc66a0723c1e8921343571d65f80a4668b574",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),

@@ -112,7 +112,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 		Version: ver,
 		DataSSZ: byts,
 	}
-	
+
 	inputBytes, err := input.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode ConsensusData")
