@@ -49,6 +49,8 @@ func PastMessage() tests.SpecTest {
 		return signed
 	}
 
+	expectedErrCommittee := "no runner found for message's slot"
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus past message",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -57,30 +59,33 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
 				Duty:   testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
+				ExpectedError:  expectedErrCommittee,
 			},
 			{
 				Name:   "sync committee",
 				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
 				Duty:   testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
+				ExpectedError:  expectedErrCommittee,
 			},
 			{
 				Name:   "attester and sync committee",
 				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
+				ExpectedError:  expectedErrCommittee,
 			},
 			{
 				Name:   "sync committee contribution",

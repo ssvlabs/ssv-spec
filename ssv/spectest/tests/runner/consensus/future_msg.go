@@ -36,7 +36,8 @@ func FutureMessage() tests.SpecTest {
 		return signed
 	}
 
-	const expectedError = "failed processing consensus message: future msg from height, could not process"
+	expectedError := "failed processing consensus message: future msg from height, could not process"
+	expectedErrorCommittee := "no runner found for message's slot"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus future message",
@@ -46,33 +47,33 @@ func FutureMessage() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					futureMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					futureMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
-				ExpectedError:  expectedError,
+				ExpectedError:  expectedErrorCommittee,
 			},
 			{
 				Name:   "sync committee",
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					futureMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					futureMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
-				ExpectedError:  expectedError,
+				ExpectedError:  expectedErrorCommittee,
 			},
 			{
 				Name:   "attester sync committee",
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
-					futureMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					futureMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
-				ExpectedError:  expectedError,
+				ExpectedError:  expectedErrorCommittee,
 			},
 			{
 				Name:   "sync committee contribution",
