@@ -24,10 +24,11 @@ func NewCommittee(
 	createRunnerFn func() *CommitteeRunner,
 ) *Committee {
 	return &Committee{
-		Runners:           make(map[spec.Slot]*CommitteeRunner),
-		Operator:          operator,
-		SignatureVerifier: verifier,
-		CreateRunnerFn:    createRunnerFn,
+		Runners:                 make(map[spec.Slot]*CommitteeRunner),
+		Operator:                operator,
+		SignatureVerifier:       verifier,
+		CreateRunnerFn:          createRunnerFn,
+		HighestAttestingSlotMap: make(map[types.ValidatorPK]spec.Slot),
 	}
 
 }
@@ -100,17 +101,36 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		if err := qbftMsg.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
-		runner := c.Runners[spec.Slot(qbftMsg.Height)]
-		// TODO: check if runner is nil
+
+		if err := qbftMsg.Validate(); err != nil {
+			return errors.Wrap(err, "invalid qbft Message")
+		}
+
+		runner, exists := c.Runners[spec.Slot(qbftMsg.Height)]
+		if !exists {
+			return errors.New("no runner found for message's slot")
+		}
 		return runner.ProcessConsensus(signedSSVMessage)
 	case types.SSVPartialSignatureMsgType:
 		pSigMessages := &types.PartialSignatureMessages{}
 		if err := pSigMessages.Decode(msg.GetData()); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
+
+		// Validate
+		if len(signedSSVMessage.OperatorIDs) != 1 {
+			return errors.New("PartialSignatureMessage has more than 1 signer")
+		}
+
+		if err := pSigMessages.ValidateForSigner(signedSSVMessage.OperatorIDs[0]); err != nil {
+			return errors.Wrap(err, "invalid PartialSignatureMessages")
+		}
+
 		if pSigMessages.Type == types.PostConsensusPartialSig {
-			runner := c.Runners[pSigMessages.Slot]
-			// TODO: check if runner is nil
+			runner, exists := c.Runners[pSigMessages.Slot]
+			if !exists {
+				return errors.New("no runner found for message's slot")
+			}
 			return runner.ProcessPostConsensus(pSigMessages)
 		}
 	default:
@@ -125,6 +145,9 @@ func (c *Committee) updateAttestingSlotMap(duty *types.CommitteeDuty) {
 	for _, beaconDuty := range duty.BeaconDuties {
 		if beaconDuty.Type == types.BNRoleAttester {
 			validatorPK := types.ValidatorPK(beaconDuty.PubKey)
+			if _, ok := c.HighestAttestingSlotMap[validatorPK]; !ok {
+				c.HighestAttestingSlotMap[validatorPK] = beaconDuty.Slot
+			}
 			if c.HighestAttestingSlotMap[validatorPK] < beaconDuty.Slot {
 				c.HighestAttestingSlotMap[validatorPK] = beaconDuty.Slot
 			}
