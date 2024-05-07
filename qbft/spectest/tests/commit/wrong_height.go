@@ -23,7 +23,7 @@ func WrongHeight() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "wrong commit height",
 		Pre:           pre,
-		PostRoot:      "738fff32174f946a02813c45bfae8807d761c0987d3360d3bf00d7468c78058a",
+		PostRoot:      "037dcf8d9dcca591bc4f93e8c2a7034b148c33e6d201f1f9203f7c271fe016ee",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: wrong msg height",
 		OutputMessages: []*types.SignedSSVMessage{
