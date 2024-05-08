@@ -1,6 +1,8 @@
 package ssv
 
 import (
+	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -153,4 +155,85 @@ func (c *Committee) updateAttestingSlotMap(duty *types.CommitteeDuty) {
 			}
 		}
 	}
+}
+
+func (c *Committee) Encode() ([]byte, error) {
+	return json.Marshal(c)
+}
+
+func (c *Committee) Decode(data []byte) error {
+	return json.Unmarshal(data, &c)
+}
+
+// GetRoot returns the state's deterministic root
+func (c *Committee) GetRoot() ([32]byte, error) {
+	marshaledRoot, err := c.Encode()
+	if err != nil {
+		return [32]byte{}, errors.Wrap(err, "could not encode state")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret, nil
+}
+
+func (c *Committee) MarshalJSON() ([]byte, error) {
+
+	type CommitteeAlias struct {
+		Runners           map[spec.Slot]*CommitteeRunner
+		Operator          types.Operator
+		SignatureVerifier types.SignatureVerifier
+		// Transforms the map into entry-value lists
+		HighestAttestingSlotMapEntry []types.ValidatorPK
+		HighestAttestingSlot         []spec.Slot
+	}
+
+	// Create lists
+	validatorPKs := make([]types.ValidatorPK, 0)
+	slots := make([]spec.Slot, 0)
+	for valPK, slot := range c.HighestAttestingSlotMap {
+		validatorPKs = append(validatorPKs, valPK)
+		slots = append(slots, slot)
+	}
+
+	// Create object and marshal
+	alias := &CommitteeAlias{
+		Runners:                      c.Runners,
+		Operator:                     c.Operator,
+		SignatureVerifier:            c.SignatureVerifier,
+		HighestAttestingSlotMapEntry: validatorPKs,
+		HighestAttestingSlot:         slots,
+	}
+
+	byts, err := json.Marshal(alias)
+
+	return byts, err
+}
+
+func (c *Committee) UnmarshalJSON(data []byte) error {
+
+	type CommitteeAlias struct {
+		Runners           map[spec.Slot]*CommitteeRunner
+		Operator          types.Operator
+		SignatureVerifier types.SignatureVerifier
+		// Transforms the map into two lists
+		HighestAttestingSlotMapEntry []types.ValidatorPK
+		HighestAttestingSlot         []spec.Slot
+	}
+
+	// Unmarshal the JSON data into the auxiliary struct
+	aux := &CommitteeAlias{}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// Assign fields
+	c.Runners = aux.Runners
+	c.Operator = aux.Operator
+	c.SignatureVerifier = aux.SignatureVerifier
+	// Create map from the entry-value lists
+	c.HighestAttestingSlotMap = make(map[types.ValidatorPK]spec.Slot)
+	for index, valPK := range aux.HighestAttestingSlotMapEntry {
+		c.HighestAttestingSlotMap[valPK] = aux.HighestAttestingSlot[index]
+	}
+
+	return nil
 }
