@@ -3,7 +3,7 @@ package testingutils
 import (
 	"crypto/rsa"
 
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type TestingNetwork struct {
@@ -20,7 +20,7 @@ func NewTestingNetwork(operatorID types.OperatorID, sk *rsa.PrivateKey) *Testing
 	}
 }
 
-func (net *TestingNetwork) Broadcast(message *types.SignedSSVMessage) error {
+func (net *TestingNetwork) Broadcast(msgID types.MessageID, message *types.SignedSSVMessage) error {
 	net.BroadcastedMsgs = append(net.BroadcastedMsgs, message)
 	return nil
 }

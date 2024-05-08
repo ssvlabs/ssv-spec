@@ -134,21 +134,7 @@ func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
-// Decode returns error if decoding failed
-func (msg *SSVMessage) Validate() error {
-
-	if msg.MsgType > DKGMsgType {
-		return errors.New("ssvmessage with unknown type")
-	}
-
-	if len(msg.Data) == 0 {
-		return errors.New("ssvmessage with no data")
-	}
-
-	return nil
-}
-
-// SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
+// SignedSSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
 	OperatorIDs []OperatorID `ssz-max:"13"`
@@ -160,16 +146,6 @@ type SignedSSVMessage struct {
 // GetOperatorIDs returns the sender operator ID
 func (msg *SignedSSVMessage) GetOperatorIDs() []OperatorID {
 	return msg.OperatorIDs
-}
-
-// GetSignature returns the signature of the OperatorID over Data
-func (msg *SignedSSVMessage) GetSignature() [][]byte {
-	return msg.Signatures
-}
-
-// GetData returns message Data as byte slice
-func (msg *SignedSSVMessage) GetSSVMessage() *SSVMessage {
-	return msg.SSVMessage
 }
 
 // Encode returns a msg encoded bytes or error
@@ -199,15 +175,16 @@ func (msg *SignedSSVMessage) Validate() error {
 		return errors.New("no signers")
 	}
 	// Check unique signers
-	signed := make(map[OperatorID]bool)
+	signed := make(map[OperatorID]struct{})
 	for _, operatorID := range msg.OperatorIDs {
-		if signed[operatorID] {
+		if _, exists := signed[operatorID]; exists {
 			return errors.New("non unique signer")
 		}
 		if operatorID == 0 {
 			return errors.New("signer ID 0 not allowed")
 		}
-		signed[operatorID] = true
+
+		signed[operatorID] = struct{}{}
 	}
 	// Validate Signature field
 	if len(msg.Signatures) == 0 {
@@ -227,7 +204,7 @@ func (msg *SignedSSVMessage) Validate() error {
 		return errors.New("nil SSVMessage")
 	}
 
-	return msg.SSVMessage.Validate()
+	return nil
 }
 
 func SSVMessageToSignedSSVMessage(msg *SSVMessage, operatorID OperatorID, signSSVMessageF SignSSVMessageF) (*SignedSSVMessage, error) {
@@ -330,7 +307,7 @@ func (msg *SignedSSVMessage) Aggregate(msgToAggregate *SignedSSVMessage) error {
 // Check if all signedMsg's signers belong to the given committee in O(n+m)
 func (msg *SignedSSVMessage) CheckSignersInCommittee(committee []*CommitteeMember) bool {
 	// Committee's operators map
-	committeeMap := make(map[uint64]struct{})
+	committeeMap := make(map[OperatorID]struct{})
 	for _, operator := range committee {
 		committeeMap[operator.OperatorID] = struct{}{}
 	}

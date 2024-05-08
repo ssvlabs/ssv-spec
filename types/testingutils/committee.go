@@ -1,8 +1,8 @@
 package testingutils
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv"
 )
 
 var BaseCommitteeWithRunnerSample = func(keySet *TestKeySet, runnerSample *ssv.CommitteeRunner) *ssv.Committee {

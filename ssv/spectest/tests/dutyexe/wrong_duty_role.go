@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // WrongDutyRole tests decided value duty with wrong duty role (!= duty runner role)
@@ -59,14 +59,6 @@ func WrongDutyRole() tests.SpecTest {
 				},
 				ExpectedError: expectedError,
 			},
-			// {
-			// 	Name:           "sync committee",
-			// 	Runner:         testingutils.SyncCommitteeRunner(ks),
-			// 	Duty:           &testingutils.TestingSyncCommitteeDuty,
-			// 	Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
-			// 	OutputMessages: []*types.PartialSignatureMessages{},
-			// 	ExpectedError:  expectedError,
-			// },
 			{
 				Name:     "aggregator",
 				Runner:   testingutils.AggregatorRunner(ks),
@@ -77,14 +69,6 @@ func WrongDutyRole() tests.SpecTest {
 				},
 				ExpectedError: expectedError,
 			},
-			// {
-			// 	Name:           "attester",
-			// 	Runner:         testingutils.CommitteeRunner(ks),
-			// 	Duty:           &testingutils.TestingAttesterDuty,
-			// 	Messages:       []*types.SignedSSVMessage{decidedMessage(types.RoleCommittee)},
-			// 	OutputMessages: []*types.PartialSignatureMessages{},
-			// 	ExpectedError:  expectedError,
-			// },
 		},
 	}
 

@@ -1,11 +1,11 @@
 package consensusdata
 
 import (
-	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	reflect2 "reflect"
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
 

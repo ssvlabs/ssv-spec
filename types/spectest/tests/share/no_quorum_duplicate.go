@@ -3,8 +3,8 @@ package share
 import (
 	"crypto/rsa"
 
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // NoQuorumDuplicate tests msg with < unique 2f+1 signers (but 2f+1 signers including duplicates)

@@ -5,10 +5,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidDecidedValue tests an invalid decided value
@@ -198,27 +198,6 @@ func InvalidDecidedValue() tests.SpecTest {
 				},
 				ExpectedError: expectedErr,
 			},
-			// {
-			// 	Name:   "attester and sync committee",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-			// 			[]*rsa.PrivateKey{
-			// 				ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-			// 			},
-			// 			[]types.OperatorID{1, 2, 3},
-			// 			qbft.Height(testingutils.TestingDutySlot),
-			// 			testingutils.AttesterMsgID,
-			// 			consensusDataByts(types.BNRoleAttester),
-			// 		),
-			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1,
-			// 			testingutils.TestingDutySlot))),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "33953714dd71325c2ad309b2e122bf5fab016a5a2f1bfbf91125b3866c9dc844",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           expectedErr,
-			// },
 		},
 	}
 }

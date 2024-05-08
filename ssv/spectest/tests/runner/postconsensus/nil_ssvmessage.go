@@ -3,9 +3,9 @@ package postconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // NilSSVMessage tests a SignedSSVMessage with wrong data that can't be decoded
@@ -13,7 +13,6 @@ func NilSSVMessage() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
-
 	invalidMsg := &types.SignedSSVMessage{
 		Signatures:  [][]byte{{1, 2, 3, 4}},
 		OperatorIDs: []types.OperatorID{1},
