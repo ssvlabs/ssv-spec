@@ -2,6 +2,7 @@ package postconsensus
 
 import (
 	"fmt"
+	"github.com/bloxapp/ssv-spec/qbft"
 
 	"github.com/attestantio/go-eth2-client/spec"
 
@@ -15,102 +16,102 @@ func Quorum7Operators() tests.SpecTest {
 	ks := testingutils.Testing7SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "post consensus quorum 7 operators",
+		Name: "post consensus quorum 7 operators",
 		Tests: []*tests.MsgProcessingSpecTest{
-			//{
-			//	Name: "sync committee contribution",
-			//	Runner: decideRunner(
-			//		testingutils.SyncCommitteeContributionRunner(ks),
-			//		&testingutils.TestingSyncCommitteeContributionDuty,
-			//		testingutils.TestSyncCommitteeContributionConsensusData,
-			//	),
-			//	Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-			//		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
-			//		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
-			//		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4, ks)),
-			//		testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[5], 5, ks)),
-			//	},
-			//	PostDutyRunnerStateRoot: quorum7OperatorsSyncCommitteeContributionSC().Root(),
-			//	PostDutyRunnerState:     quorum7OperatorsSyncCommitteeContributionSC().ExpectedState,
-			//	OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			//	BeaconBroadcastedRoots: []string{
-			//		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
-			//		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
-			//		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
-			//	},
-			//	DontStartDuty: true,
-			//},
-			//{
-			//	Name: "sync committee",
-			//	Runner: decideRunner(
-			//		testingutils.SyncCommitteeRunner(ks),
-			//		&testingutils.TestingSyncCommitteeDuty,
-			//		testingutils.TestSyncCommitteeConsensusData,
-			//	),
-			//	Duty: &testingutils.TestingSyncCommitteeDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
-			//		testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
-			//		testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
-			//		testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4)),
-			//		testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[5], 5)),
-			//	},
-			//	PostDutyRunnerStateRoot: quorum7OperatorsSyncCommitteeSC().Root(),
-			//	PostDutyRunnerState:     quorum7OperatorsSyncCommitteeSC().ExpectedState,
-			//	OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			//	BeaconBroadcastedRoots: []string{
-			//		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
-			//	},
-			//	DontStartDuty: true,
-			//},
-			//{
-			//	Name: "aggregator",
-			//	Runner: decideRunner(
-			//		testingutils.AggregatorRunner(ks),
-			//		&testingutils.TestingAggregatorDuty,
-			//		testingutils.TestAggregatorConsensusData,
-			//	),
-			//	Duty: &testingutils.TestingAggregatorDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
-			//		testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
-			//		testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
-			//		testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4)),
-			//		testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[5], 5)),
-			//	},
-			//	PostDutyRunnerStateRoot: quorum7OperatorsAggregatorSC().Root(),
-			//	PostDutyRunnerState:     quorum7OperatorsAggregatorSC().ExpectedState,
-			//	OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			//	BeaconBroadcastedRoots: []string{
-			//		testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
-			//	},
-			//	DontStartDuty: true,
-			//},
-			//{
-			//	Name: "attester",
-			//	Runner: decideRunner(
-			//		testingutils.AttesterRunner(ks),
-			//		&testingutils.TestingAttesterDuty,
-			//		testingutils.TestAttesterConsensusData,
-			//	),
-			//	Duty: &testingutils.TestingAttesterDuty,
-			//	Messages: []*types.SSVMessage{
-			//		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-			//		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
-			//		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
-			//		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight)),
-			//		testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[5], 5, qbft.FirstHeight)),
-			//	},
-			//	PostDutyRunnerStateRoot: quorum7OperatorsAttesterSC().Root(),
-			//	PostDutyRunnerState:     quorum7OperatorsAttesterSC().ExpectedState,
-			//	OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			//	BeaconBroadcastedRoots: []string{
-			//		testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
-			//	},
-			//	DontStartDuty: true,
-			//},
+			{
+				Name: "sync committee contribution",
+				Runner: decideRunner(
+					testingutils.SyncCommitteeContributionRunner(ks),
+					&testingutils.TestingSyncCommitteeContributionDuty,
+					testingutils.TestSyncCommitteeContributionConsensusData,
+				),
+				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4, ks)),
+					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[5], 5, ks)),
+				},
+				PostDutyRunnerStateRoot: quorum7OperatorsSyncCommitteeContributionSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsSyncCommitteeContributionSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
+				},
+				DontStartDuty: true,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideRunner(
+					testingutils.SyncCommitteeRunner(ks),
+					&testingutils.TestingSyncCommitteeDuty,
+					testingutils.TestSyncCommitteeConsensusData,
+				),
+				Duty: &testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4)),
+					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[5], 5)),
+				},
+				PostDutyRunnerStateRoot: quorum7OperatorsSyncCommitteeSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsSyncCommitteeSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+				},
+				DontStartDuty: true,
+			},
+			{
+				Name: "aggregator",
+				Runner: decideRunner(
+					testingutils.AggregatorRunner(ks),
+					&testingutils.TestingAggregatorDuty,
+					testingutils.TestAggregatorConsensusData,
+				),
+				Duty: &testingutils.TestingAggregatorDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
+					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
+					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
+					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4)),
+					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[5], 5)),
+				},
+				PostDutyRunnerStateRoot: quorum7OperatorsAggregatorSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsAggregatorSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
+				},
+				DontStartDuty: true,
+			},
+			{
+				Name: "attester",
+				Runner: decideRunner(
+					testingutils.AttesterRunner(ks),
+					&testingutils.TestingAttesterDuty,
+					testingutils.TestAttesterConsensusData,
+				),
+				Duty: &testingutils.TestingAttesterDuty,
+				Messages: []*types.SSVMessage{
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, qbft.FirstHeight)),
+					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[5], 5, qbft.FirstHeight)),
+				},
+				PostDutyRunnerStateRoot: quorum7OperatorsAttesterSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsAttesterSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+				},
+				DontStartDuty: true,
+			},
 		},
 	}
 
