@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
@@ -88,6 +89,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committee, error) {
 	var share *types.Share
+	ketSetMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
 	if len(test.Runner.GetBaseRunner().Share) == 0 {
 		panic("No share in base runner for tests")
 	}
@@ -95,13 +97,16 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		share = validatorShare
 		break
 	}
+	for valIdx, validatorShare := range test.Runner.GetBaseRunner().Share {
+		ketSetMap[valIdx] = testingutils.KeySetForShare(validatorShare)
+	}
 
 	var v *ssv.Validator
 	var c *ssv.Committee
 	var lastErr error
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
-		c = testingutils.BaseCommitteeWithRunnerSample(testingutils.KeySetForShare(share), test.Runner.(*ssv.CommitteeRunner))
+		c = testingutils.BaseCommitteeWithRunnerSample(ketSetMap, test.Runner.(*ssv.CommitteeRunner))
 
 		if !test.DontStartDuty {
 			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))

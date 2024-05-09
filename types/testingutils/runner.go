@@ -14,8 +14,8 @@ var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
 }
 
-var CommitteeRunnerWithKeySetMap = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) ssv.Runner {
-	return baseRunnerWithKeySetMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySetMap)
+var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+	return baseRunnerWithShareMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), shareMap)
 }
 
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
@@ -60,15 +60,11 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
 }
 
-var baseRunnerWithKeySetMap = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, keySetMap map[phase0.ValidatorIndex]*TestKeySet) ssv.Runner {
-	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
-	for valIdx, keySet := range keySetMap {
-		shareMap[valIdx] = TestingShare(keySet)
-	}
+var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
 
 	var keySetInstance *TestKeySet
-	for _, keySet := range keySetMap {
-		keySetInstance = keySet
+	for _, share := range shareMap {
+		keySetInstance = KeySetForShare(share)
 		break
 	}
 
@@ -192,7 +188,7 @@ var baseRunnerWithKeySetMap = func(role types.RunnerRole, valCheck qbft.Proposed
 }
 
 var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
-	share := TestingShare(keySet)
+	share := TestingShare(keySet, TestingValidatorIndex)
 
 	// Identifier
 	ownerID := []byte{}
