@@ -42,7 +42,7 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 		PostState:      sc.ExpectedState,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: proposed data mistmatch",
+		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: proposed data mismatch",
 	}
 }
 

@@ -111,7 +111,7 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	}
 
 	if !bytes.Equal(msg.Root[:], root[:]) {
-		return errors.New("proposed data mistmatch")
+		return errors.New("proposed data mismatch")
 	}
 
 	if len(signedPrepare.GetOperatorIDs()) != 1 {

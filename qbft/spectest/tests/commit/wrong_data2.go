@@ -29,6 +29,6 @@ func WrongData2() tests.SpecTest {
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
-		ExpectedError: "invalid signed message: proposed data mistmatch",
+		ExpectedError: "invalid signed message: proposed data mismatch",
 	}
 }
