@@ -26,12 +26,10 @@ func PastMessage() tests.SpecTest {
 		return r
 	}
 
-	pastMsgF := func(cd *types.ConsensusData, beaconVote *types.BeaconVote, id []byte) *types.SignedSSVMessage {
+	pastMsgF := func(value types.Encoder, id []byte) *types.SignedSSVMessage {
 		var fullData []byte
-		if cd != nil {
-			fullData, _ = cd.Encode()
-		} else if beaconVote != nil {
-			fullData, _ = beaconVote.Encode()
+		if value != nil {
+			fullData, _ = value.Encode()
 		} else {
 			panic("no consensus data or beacon vote")
 		}
@@ -57,7 +55,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
 				Duty:   testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
@@ -67,7 +65,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
 				Duty:   testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
@@ -77,7 +75,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(nil, &testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				DontStartDuty:  true,
@@ -87,7 +85,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), nil, testingutils.SyncCommitteeContributionMsgID),
+					pastMsgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID),
 				},
 				PostDutyRunnerStateRoot: "d1ba71cab348c80ebb7b4533c9c482eaba407f6a73864ee742aab93e73b94dab",
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -98,7 +96,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), nil, testingutils.AggregatorMsgID),
+					pastMsgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID),
 				},
 				PostDutyRunnerStateRoot: "5a1a9b9fb21682ea854f919be531a692fe5c3a6c5302214dbf3421faed57cff8",
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -109,7 +107,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.ProposerRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), nil, testingutils.ProposerMsgID),
+					pastMsgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "1c939726a237c02013fab61901e819e34ec99e2ef62dadb6c847e5ad118fc4e7",
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -120,7 +118,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), nil, testingutils.ProposerMsgID),
+					pastMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "49edaab0d759ba8a35a37ab26416ae04962d77ec088b87c4f1e65f781c1ed96f",
 				OutputMessages:          []*types.PartialSignatureMessages{},
