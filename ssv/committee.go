@@ -1,9 +1,11 @@
 package ssv
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"sort"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -11,11 +13,14 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
+type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.Share) *CommitteeRunner
+
 type Committee struct {
 	Runners                 map[spec.Slot]*CommitteeRunner
 	Operator                types.Operator
 	SignatureVerifier       types.SignatureVerifier
-	CreateRunnerFn          func() *CommitteeRunner
+	CreateRunnerFn          CreateRunnerFn
+	Share                   map[spec.ValidatorIndex]*types.Share
 	HighestAttestingSlotMap map[types.ValidatorPK]spec.Slot
 }
 
@@ -23,13 +28,15 @@ type Committee struct {
 func NewCommittee(
 	operator types.Operator,
 	verifier types.SignatureVerifier,
-	createRunnerFn func() *CommitteeRunner,
+	share map[spec.ValidatorIndex]*types.Share,
+	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	return &Committee{
 		Runners:                 make(map[spec.Slot]*CommitteeRunner),
 		Operator:                operator,
 		SignatureVerifier:       verifier,
 		CreateRunnerFn:          createRunnerFn,
+		Share:                   share,
 		HighestAttestingSlotMap: make(map[types.ValidatorPK]spec.Slot),
 	}
 
@@ -40,7 +47,7 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
-	c.Runners[duty.Slot] = c.CreateRunnerFn()
+	c.Runners[duty.Slot] = c.CreateRunnerFn(c.Share)
 	var validatorToStopMap map[spec.Slot]types.ValidatorPK
 	// Filter old duties based on highest attesting slot
 	duty, validatorToStopMap, c.HighestAttestingSlotMap = FilterCommitteeDuty(duty, c.HighestAttestingSlotMap)
@@ -178,9 +185,10 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners           map[spec.Slot]*CommitteeRunner
-		Operator          types.Operator
-		SignatureVerifier types.SignatureVerifier
+		Runners  map[spec.Slot]*CommitteeRunner
+		Operator types.Operator
+		Share    map[spec.ValidatorIndex]*types.Share
+		// SignatureVerifier types.SignatureVerifier
 		// Transforms the map into entry-value lists
 		HighestAttestingSlotMapEntry []types.ValidatorPK
 		HighestAttestingSlot         []spec.Slot
@@ -194,11 +202,18 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 		slots = append(slots, slot)
 	}
 
+	sort.Slice(slots, func(i, j int) bool {
+		return bytes.Compare(validatorPKs[i][:], validatorPKs[j][:]) <= 0
+	})
+	sort.Slice(validatorPKs, func(i, j int) bool {
+		return bytes.Compare(validatorPKs[i][:], validatorPKs[j][:]) <= 0
+	})
+
 	// Create object and marshal
 	alias := &CommitteeAlias{
 		Runners:                      c.Runners,
 		Operator:                     c.Operator,
-		SignatureVerifier:            c.SignatureVerifier,
+		Share:                        c.Share,
 		HighestAttestingSlotMapEntry: validatorPKs,
 		HighestAttestingSlot:         slots,
 	}
@@ -211,9 +226,10 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
-		Runners           map[spec.Slot]*CommitteeRunner
-		Operator          types.Operator
-		SignatureVerifier types.SignatureVerifier
+		Runners  map[spec.Slot]*CommitteeRunner
+		Operator types.Operator
+		Share    map[spec.ValidatorIndex]*types.Share
+		// SignatureVerifier types.SignatureVerifier
 		// Transforms the map into two lists
 		HighestAttestingSlotMapEntry []types.ValidatorPK
 		HighestAttestingSlot         []spec.Slot
@@ -228,7 +244,8 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 	// Assign fields
 	c.Runners = aux.Runners
 	c.Operator = aux.Operator
-	c.SignatureVerifier = aux.SignatureVerifier
+	c.Share = aux.Share
+	// c.SignatureVerifier = aux.SignatureVerifier
 	// Create map from the entry-value lists
 	c.HighestAttestingSlotMap = make(map[types.ValidatorPK]spec.Slot)
 	for index, valPK := range aux.HighestAttestingSlotMapEntry {
