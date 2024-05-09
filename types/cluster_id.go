@@ -10,7 +10,7 @@ import (
 type ClusterID [32]byte
 
 func (cid ClusterID) MessageIDBelongs(msgID MessageID) bool {
-	id := msgID.GetSenderID()[16:]
+	id := msgID.GetDutyExecutorID()[16:]
 	return bytes.Equal(id, cid[:])
 }
 
