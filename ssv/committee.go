@@ -44,6 +44,7 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	// Stop validators with old duties
 	c.stopDuties(validatorToStopMap)
 	c.updateAttestingSlotMap(duty)
+	// TODO: check if there are beacon duties remaining
 	return c.Runners[duty.Slot].StartNewDuty(duty)
 }
 
