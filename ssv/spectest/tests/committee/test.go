@@ -3,7 +3,9 @@ package committee
 import (
 	"encoding/hex"
 	"os"
+	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -19,7 +21,7 @@ import (
 type CommitteeSpecTest struct {
 	Name                   string
 	Committee              *ssv.Committee
-	input                  []interface{} // Can be a types.Duty or a *types.SignedSSVMessage
+	Input                  []interface{} // Can be a types.Duty or a *types.SignedSSVMessage
 	PostDutyCommitteeRoot  string
 	PostDutyCommittee      types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages         []*types.PartialSignatureMessages
@@ -75,7 +77,7 @@ func (test *CommitteeSpecTest) runPreTesting() error {
 
 	var lastErr error
 
-	for _, input := range test.input {
+	for _, input := range test.Input {
 		var err error
 		switch input := input.(type) {
 		case types.Duty:
@@ -98,7 +100,7 @@ func (test *CommitteeSpecTest) overrideStateComparison(t *testing.T) {
 }
 
 func overrideStateComparison(t *testing.T, test *CommitteeSpecTest, name string, testType string) {
-	var committee *ssv.Committee
+	committee := &ssv.Committee{}
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
 	committee, err = typescomparable.UnmarshalStateComparison(basedir, name, testType, committee)
@@ -120,4 +122,44 @@ func (test *CommitteeSpecTest) GetPostState() (interface{}, error) {
 	}
 
 	return test.Committee, nil
+}
+
+type MultiCommitteeSpecTest struct {
+	Name  string
+	Tests []*CommitteeSpecTest
+}
+
+func (tests *MultiCommitteeSpecTest) TestName() string {
+	return tests.Name
+}
+
+func (tests *MultiCommitteeSpecTest) Run(t *testing.T) {
+	tests.overrideStateComparison(t)
+
+	for _, test := range tests.Tests {
+		t.Run(test.TestName(), func(t *testing.T) {
+			test.RunAsPartOfMultiTest(t)
+		})
+	}
+}
+
+// overrideStateComparison overrides the post state comparison for all tests in the multi test
+func (tests *MultiCommitteeSpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(tests.TestName(), " ", "_")
+	for _, test := range tests.Tests {
+		path := filepath.Join(testsName, test.TestName())
+		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
+	}
+}
+
+func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
+	ret := make(map[string]types.Root, len(tests.Tests))
+	for _, test := range tests.Tests {
+		err := test.runPreTesting()
+		if err != nil && test.ExpectedError != err.Error() {
+			return nil, err
+		}
+		ret[test.Name] = test.Committee
+	}
+	return ret, nil
 }

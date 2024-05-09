@@ -10,11 +10,13 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	tests2 "github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
@@ -133,6 +135,22 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 			require.NoError(t, err)
 			typedTest := &partialsigcontainer.PartialSigContainerTest{}
 			require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+			typedTest.Run(t)
+		case reflect.TypeOf(&committee.CommitteeSpecTest{}).String():
+			typedTest := committeeSpecTestFromMap(t, test.(map[string]interface{}))
+			typedTest.Run(t)
+		case reflect.TypeOf(&committee.MultiCommitteeSpecTest{}).String():
+			subtests := test.(map[string]interface{})["Tests"].([]interface{})
+			typedTests := make([]*committee.CommitteeSpecTest, 0)
+			for _, subtest := range subtests {
+				typedTests = append(typedTests, committeeSpecTestFromMap(t, subtest.(map[string]interface{})))
+			}
+
+			typedTest := &committee.MultiCommitteeSpecTest{
+				Name:  test.(map[string]interface{})["Name"].(string),
+				Tests: typedTests,
+			}
 
 			typedTest.Run(t)
 		default:
@@ -289,6 +307,90 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		OutputMessages:          outputMsgs,
 		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
 	}
+}
+
+func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee.CommitteeSpecTest {
+	committeeMap := m["Committee"].(map[string]interface{})
+
+	inputs := make([]interface{}, 0)
+	for _, input := range m["Input"].([]interface{}) {
+		byts, err := json.Marshal(input)
+		if err != nil {
+			panic(err)
+		}
+
+		var getDecoder = func() *json.Decoder {
+			decoder := json.NewDecoder(strings.NewReader(string(byts)))
+			decoder.DisallowUnknownFields()
+			return decoder
+		}
+
+		committeeDuty := &types.CommitteeDuty{}
+		err = getDecoder().Decode(&committeeDuty)
+		if err == nil {
+			inputs = append(inputs, committeeDuty)
+			continue
+		}
+
+		beaconDuty := &types.BeaconDuty{}
+		err = getDecoder().Decode(&beaconDuty)
+		if err == nil {
+			inputs = append(inputs, beaconDuty)
+			continue
+		}
+
+		msg := &types.SignedSSVMessage{}
+		err = getDecoder().Decode(&msg)
+		if err == nil {
+			inputs = append(inputs, msg)
+			continue
+		}
+
+		panic(fmt.Sprintf("Unsupported input: %T\n", input))
+	}
+
+	outputMsgs := make([]*types.PartialSignatureMessages, 0)
+	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
+	for _, msg := range m["OutputMessages"].([]interface{}) {
+		byts, _ := json.Marshal(msg)
+		typedMsg := &types.PartialSignatureMessages{}
+		require.NoError(t, json.Unmarshal(byts, typedMsg))
+		outputMsgs = append(outputMsgs, typedMsg)
+	}
+
+	beaconBroadcastedRoots := make([]string, 0)
+	if m["BeaconBroadcastedRoots"] != nil {
+		for _, r := range m["BeaconBroadcastedRoots"].([]interface{}) {
+			beaconBroadcastedRoots = append(beaconBroadcastedRoots, r.(string))
+		}
+	}
+
+	c := fixCommitteeForRun(t, committeeMap)
+
+	return &committee.CommitteeSpecTest{
+		Name:                   m["Name"].(string),
+		Committee:              c,
+		Input:                  inputs,
+		PostDutyCommitteeRoot:  m["PostDutyCommitteeRoot"].(string),
+		OutputMessages:         outputMsgs,
+		BeaconBroadcastedRoots: beaconBroadcastedRoots,
+		ExpectedError:          m["ExpectedError"].(string),
+	}
+}
+
+func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.Committee {
+
+	byts, _ := json.Marshal(committeeMap)
+	c := &ssv.Committee{}
+	require.NoError(t, json.Unmarshal(byts, c))
+
+	c.CreateRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
+		return testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
+	}
+
+	c.SignatureVerifier = testingutils.NewTestingVerifier()
+
+	return c
 }
 
 func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testingutils.TestKeySet) ssv.Runner {
