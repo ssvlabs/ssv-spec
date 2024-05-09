@@ -3,12 +3,41 @@ package testingutils
 import (
 	"crypto/ecdsa"
 	"crypto/rsa"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/ssvlabs/ssv-spec/types"
 )
+
+func ValidatorIndexList(limit int) []int {
+	ret := make([]int, limit)
+	for i := 0; i < limit; i++ {
+		ret[i] = i + 1
+	}
+	return ret
+}
+
+func KeySetMapForValidatorIndexList(valIndexes []int) map[phase0.ValidatorIndex]*TestKeySet {
+	ret := make(map[phase0.ValidatorIndex]*TestKeySet)
+	for _, valIdx := range valIndexes {
+		ks, exists := TestingKeySetMap[phase0.ValidatorIndex(valIdx)]
+		if !exists {
+			panic(fmt.Sprintf("Validator index %v does not exist in TestingKeySetMap", valIdx))
+		}
+		ret[phase0.ValidatorIndex(valIdx)] = ks
+	}
+	return ret
+}
+
+func ShareMapFromKeySetMap(keySetMap map[phase0.ValidatorIndex]*TestKeySet) map[phase0.ValidatorIndex]*types.Share {
+	ret := make(map[phase0.ValidatorIndex]*types.Share)
+	for valIdx, ks := range keySetMap {
+		ret[valIdx] = TestingShare(ks, valIdx)
+	}
+	return ret
+}
 
 var TestingOperatorKeys4Map = map[types.OperatorID]*rsa.PrivateKey{
 	1: rsaSKFromHex("308204a40201000282010100c8ccf66fe299248cc1cd1670b696f22effe0ed8e0f14bf054dbe1c178a97b045f1261bb49462614f4618602c5809abcc65fe743500cee1009d7b796ca046016b0d1e7ed917362d8b5ffc708a3ddc37ce7a7761a8d2161fd81115d89137a337524abe5c862fda4efd7797c68c61c8d6d3c972033940533dd782f4627552a6c7186300f1137f73e6a6ec216a8dd89ffc0bf1147a3808c2111e0aed173fe6f9ca8ef061e7b95241fed814e7567e094770c7177f0539f9ebda12645a8a8a1acd2072d352a8d910c1a45fee13beec75fd42eb94d026fa0acb61742506efd0e4134a35b408fc34852daf3b304d53ebc01045f8c2a063cf75fe3c3bbd2dbc00e785a6510203010001028201000a16219ae52b0426fde52b676604970dbd54b31a1bafd318951b23961b241b7aa7ee5e1de80639151e544320771ba541932e00f058a60baf5839c793a9495af0e1abd27b5d2b1f868cbfc5776c3c0fa1938d439e934f01327d4937a3b3c3c317a32184cc48c3128cb0e132dc025d704d1b255afc193b15342a23d47e48349073965e376ad6adda5b2b0ca0079211e57a4333975e40cb7be59c1496514f179efb29055f4940aa7b0ebd05d2534f3cd84333b2a7d14782f85bc65dfbb9e39c3829b94aef63072ebc8f54a03cb696dde520cdd5f47213fedcbd72220d63df197a882d4cfa488d7067bbc5ec3b6c5c07effbf85b310bc3572c07048e653814cf54b102818100e49816bb4cc65881dfedd4f766074c4ba5d25dea4a241de0d043c0ebef275db2ddf4182611f2ae4e66e409555f190f82e6a6fff8e9da984afe5e23beaa85511b534d559f2ded88ba16f2d177f75fb2496d528a4ff80bf1714e0a91b7f73eb403f54cda1c524c8fd7b7238a350c392f141c9ea88ba37a7628dce811c07c6cfdc302818100e0dfd9544d600582e0ab69b6a262990818696a3c500e7fc07f3bf83dc5fb0331ec70468186518374d5299cb395f35166195ebef5d6d04190c05de9233553a5d1f1816250b45804286461d5984c7f6490812bf0066c4255dbbbf67e9bd792d3a7a612540e44395f24332ccb3913ef0a25a20738b3c5d81e8e0260e6677429a65b02818100c03df36802f20f7ef19e66eac44040f6a176a00aa7dd65cf29f6c0e8ea10362975a591257b14976851f956ac1834d029aae62900e152379f61fa339f667285ba303d2a539ae1578a0040a6ce78185fac86a6d2b0dc0ed7370d85aff4819696f77934ef7cbfeda94ea5b2dac930056b4543a85e6048d475487a3724aeb73545d702818100cef777b10d5dd8f4b20f51c694022752ba151b7fd336e501a898eb4aff929d482f92ce719bcc1e2f43997eee128ed55620f780ce071db99a9e5250a6e507cdd0427490a632b5e76dbda605ce9c698b872c3be238271f8ea2248723d40f3ec5aac140913868365d8895c91e69b41d07bbc73ada472b4a5424e3af879fa3dc498d02818053120a3e1ed0900b6c63e844b5068d92e5f84e0268d5aa83a8e31d39cab5c2a75dbbfeee601f928c4f7250f8daaf7b1c64f05d5e41b5b731c7837978a5f230f281adcbffc685876a41fee167e7fddd6c18a147aa68bd4d6cb47563f71f93dfb2125549c6080cab6b991fb799f6f2877293b682228b30100eb1619a467bf37e14"),

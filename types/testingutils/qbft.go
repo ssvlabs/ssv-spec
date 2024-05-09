@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -47,7 +48,7 @@ var TestingInvalidValueCheck = []byte{1, 1, 1, 1}
 
 var TestingGraffiti = [32]byte{1}
 
-var TestingShare = func(keysSet *TestKeySet) *types.Share {
+var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *types.Share {
 
 	// Decode validator public key
 	pkBytesSlice := keysSet.ValidatorPK.Serialize()
@@ -55,7 +56,7 @@ var TestingShare = func(keysSet *TestKeySet) *types.Share {
 	copy(pkBytesArray[:], pkBytesSlice)
 
 	return &types.Share{
-		ValidatorIndex:      TestingValidatorIndex,
+		ValidatorIndex:      valIdx,
 		ValidatorPubKey:     pkBytesArray,
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
 		Committee:           keysSet.Committee(),

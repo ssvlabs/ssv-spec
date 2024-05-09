@@ -320,11 +320,7 @@ var TestingProposerDutyFirstSlot = types.BeaconDuty{
 }
 
 func getValPubKeyByValIdx(valIdx int) phase0.BLSPubKey {
-	if valIdx == TestingValidatorIndex {
-		return TestingValidatorPubKey
-	} else {
-		return TestingValidatorPubKeyForValidatorIndex(phase0.ValidatorIndex(valIdx))
-	}
+	return TestingValidatorPubKeyForValidatorIndex(phase0.ValidatorIndex(valIdx))
 }
 
 func TestingCommitteeDuty(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int) *types.CommitteeDuty {
