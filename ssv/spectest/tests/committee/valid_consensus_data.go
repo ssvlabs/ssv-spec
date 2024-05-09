@@ -11,7 +11,7 @@ import (
 func ValidConsensusData() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	ksMapFor500Validators := testingutils.KeySetMapForValidatorIndexList(testingutils.ValidatorIndexList(500))
+	ksMapFor500Validators := testingutils.KeySetMapForValidators(500)
 
 	multiSpecTest := &MultiCommitteeSpecTest{
 		Name: "valid consensus data",

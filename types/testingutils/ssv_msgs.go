@@ -248,6 +248,21 @@ var ssvMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.PartialSignatu
 	panic("msg type undefined")
 }
 
+var PostConsensusAttestationMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+
+	var ret *types.PartialSignatureMessages
+	// Get post consensus for attestations for each validator in shares
+	for valIdx, ks := range keySetMap {
+		pSigMsgs := postConsensusAttestationMsg(ks.Shares[id], id, height, false, false, valIdx)
+		if ret == nil {
+			ret = pSigMsgs
+		} else {
+			ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
+		}
+	}
+	return ret
+}
+
 var PostConsensusWrongAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 	return postConsensusAttestationMsg(sk, id, height, true, false, TestingValidatorIndex)
 }
@@ -773,6 +788,21 @@ var postConsensusAggregatorMsg = func(
 		},
 	}
 	return &msgs
+}
+
+var PostConsensusSyncCommitteeMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID) *types.PartialSignatureMessages {
+
+	var ret *types.PartialSignatureMessages
+	// Get post consensus for sync committees for each validator in shares
+	for valIdx, ks := range keySetMap {
+		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, false, false, valIdx)
+		if ret == nil {
+			ret = pSigMsgs
+		} else {
+			ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
+		}
+	}
+	return ret
 }
 
 var PostConsensusSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {

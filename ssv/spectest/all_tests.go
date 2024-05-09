@@ -64,11 +64,8 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
 
-	committee.StartAttestations,
-	committee.StartSyncCommittees,
-	committee.StartMixedDuties,
+	committee.StartDuty,
 	committee.StartNoDuty,
-	committee.StartMaximumPossibleDuties,
 	committee.ValidConsensusData,
 	committee.WrongConsensusData,
 	committee.Decided,
@@ -172,5 +169,5 @@ var AllTests = []tests.TestF{
 	partialsigcontainer.Quorum,
 	partialsigcontainer.Duplicate,
 	partialsigcontainer.DuplicateQuorum,
-	// partialsigcontainer.Invalid,
+	partialsigcontainer.Invalid,
 }

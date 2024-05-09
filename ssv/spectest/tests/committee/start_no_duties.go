@@ -10,7 +10,7 @@ import (
 // Expects: error?
 func StartNoDuty() tests.SpecTest {
 
-	ksMapFor1Validator := testingutils.KeySetMapForValidatorIndexList(testingutils.ValidatorIndexList(1))
+	ksMapFor1Validator := testingutils.KeySetMapForValidators(1)
 
 	multiSpecTest := &MultiCommitteeSpecTest{
 		Name: "start no duties",
