@@ -1,4 +1,4 @@
-package attestationsynccommittee
+package committee
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -11,15 +11,16 @@ import (
 func ValidConsensusData() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
+	ksMapFor500Validators := testingutils.KeySetMapForValidatorIndexList(testingutils.ValidatorIndexList(500))
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &MultiCommitteeSpecTest{
 		Name: "valid consensus data",
-		Tests: []*tests.MsgProcessingSpecTest{
+		Tests: []*CommitteeSpecTest{
 			{
-				Name:   "500 attestations 500 sync committees",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorIndexList(500), validatorIndexList(500)),
-				Messages: []*types.SignedSSVMessage{
+				Name:      "500 attestations 500 sync committees",
+				Committee: testingutils.BaseCommittee(ksMapFor500Validators),
+				Input: []interface{}{
+					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, testingutils.ValidatorIndexList(500), testingutils.ValidatorIndexList(500)),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot)),

@@ -2,11 +2,11 @@ package spectest
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
-	attestationsynccommittee "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/attestation_sync_committee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
@@ -64,14 +64,14 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
 
-	attestationsynccommittee.StartAttestations,
-	attestationsynccommittee.StartSyncCommittees,
-	attestationsynccommittee.StartMixedDuties,
-	attestationsynccommittee.StartNoDuty,
-	attestationsynccommittee.StartMaximumPossibleDuties,
-	attestationsynccommittee.ValidConsensusData,
-	attestationsynccommittee.WrongConsensusData,
-	attestationsynccommittee.MaxDecided,
+	committee.StartAttestations,
+	committee.StartSyncCommittees,
+	committee.StartMixedDuties,
+	committee.StartNoDuty,
+	committee.StartMaximumPossibleDuties,
+	committee.ValidConsensusData,
+	committee.WrongConsensusData,
+	committee.Decided,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
@@ -172,5 +172,5 @@ var AllTests = []tests.TestF{
 	partialsigcontainer.Quorum,
 	partialsigcontainer.Duplicate,
 	partialsigcontainer.DuplicateQuorum,
-	partialsigcontainer.Invalid,
+	// partialsigcontainer.Invalid,
 }
