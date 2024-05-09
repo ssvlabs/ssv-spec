@@ -26,7 +26,7 @@ type IConfig interface {
 	GetTimer() Timer
 	// GetSignatureVerifier returns the signature verifier for operator signatures
 	GetSignatureVerifier() types.SignatureVerifier
-	// GetRoundCutOff returns the round cut off
+	// GetCutOffRound returns the round that stops the instance
 	GetCutOffRound() int
 }
 
