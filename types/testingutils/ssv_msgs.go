@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"crypto/sha256"
+	"fmt"
 	"sort"
 
 	"github.com/attestantio/go-eth2-client/spec"
@@ -249,6 +250,37 @@ var ssvMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.PartialSignatu
 	panic("msg type undefined")
 }
 
+var PostConsensusCommitteeMsgForDuty = func(duty *types.CommitteeDuty, keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID) *types.PartialSignatureMessages {
+
+	var ret *types.PartialSignatureMessages
+
+	for _, beaconDuty := range duty.BeaconDuties {
+
+		ks := keySetMap[beaconDuty.ValidatorIndex]
+
+		if beaconDuty.Type == types.BNRoleAttester {
+			attData := TestingAttestationDataForBeaconDuty(beaconDuty)
+			pSigMsgs := postConsensusAttestationMsgForAttestationData(ks.Shares[id], id, qbft.Height(duty.Slot), attData, beaconDuty.ValidatorIndex)
+			if ret == nil {
+				ret = pSigMsgs
+			} else {
+				ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
+			}
+		} else if beaconDuty.Type == types.BNRoleSyncCommittee {
+			pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, false, false, beaconDuty.ValidatorIndex)
+			if ret == nil {
+				ret = pSigMsgs
+			} else {
+				ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
+			}
+		} else {
+			panic(fmt.Sprintf("type %v not expected", beaconDuty.Type))
+		}
+	}
+
+	return ret
+}
+
 var PostConsensusAttestationMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 
 	var ret *types.PartialSignatureMessages
@@ -349,6 +381,32 @@ var PostConsensusAttestationTooFewRootsMsg = func(sk *bls.SecretKey, id types.Op
 		Messages: []*types.PartialSignatureMessage{},
 	}
 	return msg
+}
+
+var postConsensusAttestationMsgForAttestationData = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	height qbft.Height,
+	attData *phase0.AttestationData,
+	validatorIndex phase0.ValidatorIndex,
+) *types.PartialSignatureMessages {
+	signer := NewTestingKeyManager()
+	beacon := NewTestingBeaconNode()
+	d, _ := beacon.DomainData(TestingAttestationData.Target.Epoch, types.DomainAttester)
+	signed, root, _ := signer.SignBeaconObject(attData, d, sk.GetPublicKey().Serialize(), types.DomainAttester)
+	msgs := types.PartialSignatureMessages{
+		Type: types.PostConsensusPartialSig,
+		Slot: TestingDutySlot,
+		Messages: []*types.PartialSignatureMessage{
+			{
+				PartialSignature: signed,
+				SigningRoot:      root,
+				Signer:           id,
+				ValidatorIndex:   validatorIndex,
+			},
+		},
+	}
+	return &msgs
 }
 
 var postConsensusAttestationMsg = func(
