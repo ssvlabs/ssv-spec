@@ -223,5 +223,5 @@ func (i *Instance) Decode(data []byte) error {
 
 // CanProcessMessages will return true if instance can process messages
 func (i *Instance) CanProcessMessages() bool {
-	return !i.forceStop && int(i.State.Round) < i.config.GetCutOffRound()
+	return !i.forceStop && i.State.Round < i.config.GetCutOffRound()
 }

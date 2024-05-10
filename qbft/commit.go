@@ -168,7 +168,7 @@ func validateCommit(
 	}
 
 	if !bytes.Equal(proposedMsg.Root[:], msg.Root[:]) {
-		return errors.New("proposed data mistmatch")
+		return errors.New("proposed data mismatch")
 	}
 
 	return nil

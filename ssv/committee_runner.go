@@ -351,13 +351,13 @@ func findValidators(
 
 // unneeded
 func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, types.DomainError, errors.New("no pre consensus root for committee runner")
+	panic("not in use")
 }
 
 // This function signature returns only one domain type
 // instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
 func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{}, types.DomainAttester, nil
+	panic("not in use")
 }
 
 func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (

@@ -16,7 +16,7 @@ var TestingQBFTRootData = func() [32]byte {
 	return sha256.Sum256(TestingQBFTFullData)
 }()
 
-var TestingCutOffRound = 15
+var TestingCutOffRound = qbft.Round(15)
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
@@ -96,7 +96,7 @@ var TestingOperator = func(keysSet *TestKeySet) *types.Operator {
 
 	return &types.Operator{
 		OperatorID:        1,
-		ClusterID:         types.GetClusterID(opIds),
+		ClusterID:         types.GetCommitteeID(opIds),
 		SSVOperatorPubKey: operatorPubKeyBytes,
 		Quorum:            keysSet.Threshold,
 		PartialQuorum:     keysSet.PartialThreshold,

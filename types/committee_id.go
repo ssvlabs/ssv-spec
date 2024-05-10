@@ -7,15 +7,15 @@ import (
 	"sort"
 )
 
-type ClusterID [32]byte
+type CommitteeID [32]byte
 
-func (cid ClusterID) MessageIDBelongs(msgID MessageID) bool {
-	id := msgID.GetSenderID()[16:]
+func (cid CommitteeID) MessageIDBelongs(msgID MessageID) bool {
+	id := msgID.GetDutyExecutorID()[16:]
 	return bytes.Equal(id, cid[:])
 }
 
 // Return a 32 bytes ID for the cluster of operators
-func GetClusterID(committee []OperatorID) ClusterID {
+func GetCommitteeID(committee []OperatorID) CommitteeID {
 	// sort
 	sort.Slice(committee, func(i, j int) bool {
 		return committee[i] < committee[j]
@@ -29,7 +29,7 @@ func GetClusterID(committee []OperatorID) ClusterID {
 	return sha256.Sum256(bytes)
 }
 
-// [ERR]: failed to encode Operator: failed to encode ClusterID: failed to encode ClusterID: no ssz-size or ssz-max tags found for element. tag=
+// [ERR]: failed to encode Operator: failed to encode CommitteeID: failed to encode CommitteeID: no ssz-size or ssz-max tags found for element. tag=
 // exit status 1
 // types/generate.go:4: running "go": exit status 1
 // make: *** [generate-ssz] Error 1

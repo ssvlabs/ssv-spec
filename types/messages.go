@@ -10,19 +10,18 @@ import (
 )
 
 // ValidatorPK is an eth2 validator public key 48 bytes long
-// TODO: maybe we can use BLS pubkey simply?
 type ValidatorPK phase0.BLSPubKey
 
 // ShareValidatorPK is a partial eth2 validator public key 48 bytes long
 type ShareValidatorPK []byte
 
 const (
-	domainSize       = 4
-	domainStartPos   = 0
-	roleTypeSize     = 4
-	roleTypeStartPos = domainStartPos + domainSize
-	senderIDSize     = 48
-	senderIDStartPos = roleTypeStartPos + roleTypeSize
+	domainSize             = 4
+	domainStartPos         = 0
+	roleTypeSize           = 4
+	roleTypeStartPos       = domainStartPos + domainSize
+	dutyExecutorIDSize     = 48
+	dutyExecutorIDStartPos = roleTypeStartPos + roleTypeSize
 )
 
 type Validate interface {
@@ -33,7 +32,7 @@ type Validate interface {
 
 // MessageIDBelongs returns true if message ID belongs to validator
 func (vid ValidatorPK) MessageIDBelongs(msgID MessageID) bool {
-	toMatch := msgID.GetSenderID()
+	toMatch := msgID.GetDutyExecutorID()
 	return bytes.Equal(vid[:], toMatch)
 }
 
@@ -44,8 +43,8 @@ func (msg MessageID) GetDomain() []byte {
 	return msg[domainStartPos : domainStartPos+domainSize]
 }
 
-func (msg MessageID) GetSenderID() []byte {
-	return msg[senderIDStartPos : senderIDStartPos+senderIDSize]
+func (msg MessageID) GetDutyExecutorID() []byte {
+	return msg[dutyExecutorIDStartPos : dutyExecutorIDStartPos+dutyExecutorIDSize]
 }
 
 func (msg MessageID) GetRoleType() RunnerRole {
@@ -65,22 +64,22 @@ func (msgID MessageID) String() string {
 }
 
 func MessageIDFromBytes(mid []byte) MessageID {
-	if len(mid) < domainSize+senderIDSize+roleTypeSize {
+	if len(mid) < domainSize+dutyExecutorIDSize+roleTypeSize {
 		return MessageID{}
 	}
 	return newMessageID(
 		mid[domainStartPos:domainStartPos+domainSize],
 		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
-		mid[senderIDStartPos:senderIDStartPos+senderIDSize],
+		mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize],
 	)
 }
 
-func newMessageID(domain, senderID, roleByts []byte) MessageID {
+func newMessageID(domain, dutyExecutorID, roleByts []byte) MessageID {
 	mid := MessageID{}
 	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
 	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
-	prefixLen := senderIDSize - len(senderID)
-	copy(mid[senderIDStartPos+prefixLen:senderIDStartPos+senderIDSize], senderID)
+	prefixLen := dutyExecutorIDSize - len(dutyExecutorID)
+	copy(mid[dutyExecutorIDStartPos+prefixLen:dutyExecutorIDStartPos+dutyExecutorIDSize], dutyExecutorID)
 	return mid
 }
 
@@ -143,7 +142,7 @@ type SignedSSVMessage struct {
 	FullData []byte `ssz-max:"5243144"`
 }
 
-// GetOperatorIDs returns the sender operator ID
+// GetOperatorIDs returns the dutyExecutor operator ID
 func (msg *SignedSSVMessage) GetOperatorIDs() []OperatorID {
 	return msg.OperatorIDs
 }
