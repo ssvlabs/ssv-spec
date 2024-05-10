@@ -71,6 +71,7 @@ var AllTests = []tests.TestF{
 	committee.ValidConsensusData,
 	committee.WrongConsensusData,
 	committee.Decided,
+	committee.HappyFlow,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
