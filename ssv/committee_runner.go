@@ -14,12 +14,13 @@ import (
 )
 
 type CommitteeRunner struct {
-	BaseRunner     *BaseRunner
-	beacon         BeaconNode
-	network        Network
-	signer         types.BeaconSigner
-	operatorSigner types.OperatorSigner
-	valCheck       qbft.ProposedValueCheckF
+	BaseRunner      *BaseRunner
+	beacon          BeaconNode
+	network         Network
+	signer          types.BeaconSigner
+	operatorSigner  types.OperatorSigner
+	valCheck        qbft.ProposedValueCheckF
+	submittedDuties map[types.BeaconRole]map[phase0.ValidatorIndex]map[phase0.Slot]struct{}
 }
 
 func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
@@ -38,11 +39,12 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 			Share:          share,
 			QBFTController: qbftController,
 		},
-		beacon:         beacon,
-		network:        network,
-		signer:         signer,
-		operatorSigner: operatorSigner,
-		valCheck:       valCheck,
+		beacon:          beacon,
+		network:         network,
+		signer:          signer,
+		operatorSigner:  operatorSigner,
+		valCheck:        valCheck,
+		submittedDuties: make(map[types.BeaconRole]map[phase0.ValidatorIndex]map[phase0.Slot]struct{}),
 	}
 }
 
@@ -169,7 +171,8 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 // TODO finish edge case where some roots may be missing
 func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
-	quorum, roots, err := cr.BaseRunner.basePostConsensusMsgProcessing(&cr, signedMsg)
+	// Gets all the roots that received a quorum of signatures
+	quorum, rootsList, err := cr.BaseRunner.basePostConsensusMsgProcessing(&cr, signedMsg)
 
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -178,11 +181,21 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	if !quorum {
 		return nil
 	}
+
+	// Get unique roots to avoid repetition
+	rootSet := make(map[[32]byte]struct{})
+	for _, root := range rootsList {
+		rootSet[root] = struct{}{}
+	}
+
+	// Get validator-root maps for attestations and sync committees, and the root-beacon object map
 	attestationMap, committeeMap, beaconObjects, err := cr.expectedPostConsensusRootsAndBeaconObjects()
 	if err != nil {
 		return errors.Wrap(err, "could not get expected post consensus roots and beacon objects")
 	}
-	for _, root := range roots {
+	slot := cr.GetBaseRunner().State.StartingDuty.DutySlot()
+	for root := range rootSet {
+		// Get validators related to the given root
 		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
 		if !found {
@@ -191,6 +204,14 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 		}
 
 		for _, validator := range validators {
+			// Skip if no quorum
+			if !cr.BaseRunner.State.PostConsensusContainer.HasQuorum(validator, root) {
+				continue
+			}
+			// Skip if already submitted
+			if cr.HasSubmitted(role, validator, slot) {
+				continue
+			}
 			share := cr.BaseRunner.Share[validator]
 			pubKey := share.ValidatorPubKey
 			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
@@ -198,7 +219,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			// TODO should we return an error here? maybe other sigs are fine?
 			if err != nil {
-				for _, root := range roots {
+				for root := range rootSet {
 					cr.BaseRunner.FallBackAndVerifyEachSignature(cr.BaseRunner.State.PostConsensusContainer, root,
 						share.Committee, validator)
 				}
@@ -208,25 +229,85 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			copy(specSig[:], sig)
 
 			if role == types.BNRoleAttester {
+				// Get the beacon object related to root
 				att := beaconObjects[root].(*phase0.Attestation)
+
+				// Insert signature
 				att.Signature = specSig
-				// broadcast
+
 				if err := cr.beacon.SubmitAttestation(att); err != nil {
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
 				}
+				cr.RecordSubmission(types.BNRoleAttester, validator, slot)
 			} else if role == types.BNRoleSyncCommittee {
+				// Get the beacon object related to root
 				syncMsg := beaconObjects[root].(*altair.SyncCommitteeMessage)
+
+				// Fix with the correct validator index
+				syncMsg.ValidatorIndex = validator
+
+				// Insert signature
 				syncMsg.Signature = specSig
-				// Broadcast
+
 				if err := cr.beacon.SubmitSyncMessage(syncMsg); err != nil {
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
 				}
+				cr.RecordSubmission(types.BNRoleSyncCommittee, validator, slot)
 			}
 		}
-
 	}
-	cr.BaseRunner.State.Finished = true
+
+	// Check if duty has terminated (runner has submitted for all duties)
+	if cr.HasSubmittedAllBeaconDuties(slot, attestationMap, committeeMap) {
+		cr.BaseRunner.State.Finished = true
+	}
 	return nil
+}
+
+// Returns true if the runner has done submissions for all validators for the given slot
+func (cr *CommitteeRunner) HasSubmittedAllBeaconDuties(slot phase0.Slot, attestationMap map[phase0.ValidatorIndex][32]byte, syncCommitteeMap map[phase0.ValidatorIndex][32]byte) bool {
+
+	// Expected total
+	expectedTotalSubmissions := len(attestationMap) + len(syncCommitteeMap)
+
+	totalSubmissions := 0
+
+	// Add submitted attestation duties
+	for valIdx := range attestationMap {
+		if cr.HasSubmitted(types.BNRoleAttester, valIdx, slot) {
+			totalSubmissions++
+		}
+	}
+	// Add submitted sync committee duties
+	for valIdx := range syncCommitteeMap {
+		if cr.HasSubmitted(types.BNRoleSyncCommittee, valIdx, slot) {
+			totalSubmissions++
+		}
+	}
+	return totalSubmissions >= expectedTotalSubmissions
+}
+
+// Records a submission for the (role, validator index, slot) tuple
+func (cr *CommitteeRunner) RecordSubmission(role types.BeaconRole, valIdx phase0.ValidatorIndex, slot phase0.Slot) {
+	if _, ok := cr.submittedDuties[role]; !ok {
+		cr.submittedDuties[role] = make(map[phase0.ValidatorIndex]map[phase0.Slot]struct{})
+	}
+	if _, ok := cr.submittedDuties[role][valIdx]; !ok {
+		cr.submittedDuties[role][valIdx] = make(map[phase0.Slot]struct{})
+	}
+	cr.submittedDuties[role][valIdx][slot] = struct{}{}
+}
+
+// Returns true if there is a record of submission for the (role, validator index, slot) tuple
+func (cr *CommitteeRunner) HasSubmitted(role types.BeaconRole, valIdx phase0.ValidatorIndex, slot phase0.Slot) bool {
+	if _, ok := cr.submittedDuties[role]; !ok {
+		return false
+	}
+	if _, ok := cr.submittedDuties[role][valIdx]; !ok {
+		return false
+	}
+	_, ok := cr.submittedDuties[role][valIdx][slot]
+	return ok
 }
 
 func findValidators(
@@ -247,8 +328,11 @@ func findValidators(
 	// look for the expectedRoot in committeeMap
 	for validator, root := range committeeMap {
 		if root == expectedRoot {
-			return types.BNRoleSyncCommittee, []phase0.ValidatorIndex{validator}, true
+			validators = append(validators, validator)
 		}
+	}
+	if len(validators) > 0 {
+		return types.BNRoleSyncCommittee, validators, true
 	}
 	return types.BNRoleUnknown, nil, false
 }
