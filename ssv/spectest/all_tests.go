@@ -52,6 +52,7 @@ var AllTests = []tests.TestF{
 	postconsensus.NilSSVMessage,
 	postconsensus.InvalidValidatorIndex,
 	postconsensus.PartialInvalidRootQuorumThenValidQuorum,
+	postconsensus.PartialInvalidSigQuorumThenValidQuorum,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
