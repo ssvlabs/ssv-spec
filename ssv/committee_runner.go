@@ -235,11 +235,20 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			specSig := phase0.BLSSignature{}
 			copy(specSig[:], sig)
 
+			// Get the beacon object related to root
+			if _, exists := beaconObjects[validator]; !exists {
+				anyErr = errors.Wrap(err, "could not find beacon object for validator")
+				continue
+			}
+			if _, exists := beaconObjects[validator][root]; !exists {
+				anyErr = errors.Wrap(err, "could not find beacon object for validator")
+				continue
+			}
+			sszObject := beaconObjects[validator][root]
+
 			// Submit
 			if role == types.BNRoleAttester {
-				// Get the beacon object related to root
-				att := beaconObjects[root].(*phase0.Attestation)
-
+				att := sszObject.(*phase0.Attestation)
 				// Insert signature
 				att.Signature = specSig
 
@@ -248,8 +257,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 				}
 				cr.RecordSubmission(types.BNRoleAttester, validator, slot)
 			} else if role == types.BNRoleSyncCommittee {
-				// Get the beacon object related to root
-				syncMsg := beaconObjects[root].(*altair.SyncCommitteeMessage)
+				syncMsg := sszObject.(*altair.SyncCommitteeMessage)
 
 				// Fix with the correct validator index
 				syncMsg.ValidatorIndex = validator
@@ -363,11 +371,11 @@ func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot,
 func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	attestationMap map[phase0.ValidatorIndex][32]byte,
 	syncCommitteeMap map[phase0.ValidatorIndex][32]byte,
-	beaconObjects map[[32]byte]ssz.HashRoot, error error,
+	beaconObjects map[phase0.ValidatorIndex]map[[32]byte]ssz.HashRoot, error error,
 ) {
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
-	beaconObjects = make(map[[32]byte]ssz.HashRoot)
+	beaconObjects = make(map[phase0.ValidatorIndex]map[[32]byte]ssz.HashRoot)
 	duty := cr.BaseRunner.State.StartingDuty
 	// TODO DecidedValue should be interface??
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
@@ -409,7 +417,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 
 			// Add to map
 			attestationMap[beaconDuty.ValidatorIndex] = root
-			beaconObjects[root] = unSignedAtt
+			if _, ok := beaconObjects[beaconDuty.ValidatorIndex]; !ok {
+				beaconObjects[beaconDuty.ValidatorIndex] = make(map[[32]byte]ssz.HashRoot)
+			}
+			beaconObjects[beaconDuty.ValidatorIndex][root] = unSignedAtt
 		case types.BNRoleSyncCommittee:
 			// Block root
 			blockRoot := types.SSZBytes(beaconVote.BlockRoot[:])
@@ -435,7 +446,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 
 			// Set root and beacon object
 			syncCommitteeMap[beaconDuty.ValidatorIndex] = root
-			beaconObjects[root] = syncMsg
+			if _, ok := beaconObjects[beaconDuty.ValidatorIndex]; !ok {
+				beaconObjects[beaconDuty.ValidatorIndex] = make(map[[32]byte]ssz.HashRoot)
+			}
+			beaconObjects[beaconDuty.ValidatorIndex][root] = syncMsg
 		}
 	}
 	return attestationMap, syncCommitteeMap, beaconObjects, nil
