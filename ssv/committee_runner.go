@@ -173,7 +173,6 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	// Gets all the roots that received a quorum of signatures
 	quorum, rootsList, err := cr.BaseRunner.basePostConsensusMsgProcessing(&cr, signedMsg)
-
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
 	}
@@ -193,8 +192,12 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	if err != nil {
 		return errors.Wrap(err, "could not get expected post consensus roots and beacon objects")
 	}
+
 	slot := cr.GetBaseRunner().State.StartingDuty.DutySlot()
+	var anyErr error
+	// For each root that got at least one quorum, find the duties associated to it and try to submit
 	for root := range rootSet {
+
 		// Get validators related to the given root
 		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
@@ -204,6 +207,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 		}
 
 		for _, validator := range validators {
+
 			// Skip if no quorum
 			if !cr.BaseRunner.State.PostConsensusContainer.HasQuorum(validator, root) {
 				continue
@@ -212,22 +216,26 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			if cr.HasSubmitted(role, validator, slot) {
 				continue
 			}
+
+			// Reconstruct signature
 			share := cr.BaseRunner.Share[validator]
 			pubKey := share.ValidatorPubKey
 			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
 				pubKey[:], validator)
-			// If the reconstructed signature verification failed, fall back to verifying each partial signature
-			// TODO should we return an error here? maybe other sigs are fine?
 			if err != nil {
+				// If fail, fall back to verifying each partial signature
 				for root := range rootSet {
 					cr.BaseRunner.FallBackAndVerifyEachSignature(cr.BaseRunner.State.PostConsensusContainer, root,
 						share.Committee, validator)
 				}
-				return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+				// Record the error and continue to next validators
+				anyErr = errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+				continue
 			}
 			specSig := phase0.BLSSignature{}
 			copy(specSig[:], sig)
 
+			// Submit
 			if role == types.BNRoleAttester {
 				// Get the beacon object related to root
 				att := beaconObjects[root].(*phase0.Attestation)
@@ -255,6 +263,10 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 				cr.RecordSubmission(types.BNRoleSyncCommittee, validator, slot)
 			}
 		}
+	}
+
+	if anyErr != nil {
+		return anyErr
 	}
 
 	// Check if duty has terminated (runner has submitted for all duties)
