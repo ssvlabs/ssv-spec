@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"crypto/sha256"
+	"sort"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
@@ -263,6 +264,41 @@ var PostConsensusAttestationMsgForKeySet = func(keySetMap map[phase0.ValidatorIn
 	return ret
 }
 
+var PostConsensusPartiallyWrongRootAttestationMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+
+	numValid := len(keySetMap) / 2
+	msgIndex := 0
+
+	var ret *types.PartialSignatureMessages
+
+	validatorIndexes := make([]phase0.ValidatorIndex, 0)
+	for valIdx := range keySetMap {
+		validatorIndexes = append(validatorIndexes, valIdx)
+	}
+	sort.Slice(validatorIndexes, func(i, j int) bool {
+		return validatorIndexes[i] < validatorIndexes[j]
+	})
+
+	for _, valIdx := range validatorIndexes {
+		ks, ok := keySetMap[valIdx]
+		if !ok {
+			panic("validator index not in key set map")
+		}
+
+		validFlag := (msgIndex >= numValid)
+
+		pSigMsgs := postConsensusAttestationMsg(ks.Shares[id], id, height, validFlag, false, valIdx)
+		if ret == nil {
+			ret = pSigMsgs
+		} else {
+			ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
+		}
+
+		msgIndex++
+	}
+	return ret
+}
+
 var PostConsensusWrongAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 	return postConsensusAttestationMsg(sk, id, height, true, false, TestingValidatorIndex)
 }
@@ -364,6 +400,44 @@ var PostConsensusAttestationAndSyncCommitteeMsgForKeySet = func(keySetMap map[ph
 		} else {
 			ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
 		}
+	}
+	return ret
+}
+
+var PostConsensusPartiallyWrongRootAttestationAndSyncCommitteeMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+
+	numValid := len(keySetMap) / 2
+	msgIndex := 0
+
+	var ret *types.PartialSignatureMessages
+
+	validatorIndexes := make([]phase0.ValidatorIndex, 0)
+	for valIdx := range keySetMap {
+		validatorIndexes = append(validatorIndexes, valIdx)
+	}
+	sort.Slice(validatorIndexes, func(i, j int) bool {
+		return validatorIndexes[i] < validatorIndexes[j]
+	})
+
+	for _, valIdx := range validatorIndexes {
+		ks, ok := keySetMap[valIdx]
+		if !ok {
+			panic("validator index not in key set map")
+		}
+
+		validFlag := (msgIndex >= numValid)
+
+		attPSigMsgs := postConsensusAttestationMsg(ks.Shares[id], id, height, validFlag, false, valIdx)
+		if ret == nil {
+			ret = attPSigMsgs
+		} else {
+			ret.Messages = append(ret.Messages, attPSigMsgs.Messages...)
+		}
+
+		scPSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, validFlag, false, valIdx)
+		ret.Messages = append(ret.Messages, scPSigMsgs.Messages...)
+
+		msgIndex++
 	}
 	return ret
 }
@@ -801,6 +875,41 @@ var PostConsensusSyncCommitteeMsgForKeySet = func(keySetMap map[phase0.Validator
 		} else {
 			ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
 		}
+	}
+	return ret
+}
+
+var PostConsensusPartiallyWrongRootSyncCommitteeMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID) *types.PartialSignatureMessages {
+
+	numValid := len(keySetMap) / 2
+	msgIndex := 0
+
+	var ret *types.PartialSignatureMessages
+
+	validatorIndexes := make([]phase0.ValidatorIndex, 0)
+	for valIdx := range keySetMap {
+		validatorIndexes = append(validatorIndexes, valIdx)
+	}
+	sort.Slice(validatorIndexes, func(i, j int) bool {
+		return validatorIndexes[i] < validatorIndexes[j]
+	})
+
+	for _, valIdx := range validatorIndexes {
+		ks, ok := keySetMap[valIdx]
+		if !ok {
+			panic("validator index not in key set map")
+		}
+
+		validFlag := (msgIndex >= numValid)
+
+		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, validFlag, false, valIdx)
+		if ret == nil {
+			ret = pSigMsgs
+		} else {
+			ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
+		}
+
+		msgIndex++
 	}
 	return ret
 }

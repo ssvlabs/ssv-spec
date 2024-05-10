@@ -132,6 +132,21 @@ var TestingSignedAttestation = func(ks *TestKeySet) *phase0.Attestation {
 	}
 }
 
+var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+	ret := make([]string, 0)
+	for _, ks := range ksMap {
+		duty := TestingAttesterDuty.BeaconDuties[0]
+		aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
+		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
+		ret = append(ret, GetSSZRootNoError(&phase0.Attestation{
+			Data:            TestingAttestationData,
+			Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+			AggregationBits: aggregationBitfield,
+		}))
+	}
+	return ret
+}
+
 var TestingAggregateAndProof = &phase0.AggregateAndProof{
 	AggregatorIndex: 1,
 	SelectionProof:  phase0.BLSSignature{},
@@ -185,6 +200,19 @@ var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommi
 		ValidatorIndex:  TestingValidatorIndex,
 		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
 	}
+}
+
+var TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+	ret := make([]string, 0)
+	for valIdx, ks := range ksMap {
+		ret = append(ret, GetSSZRootNoError(&altair.SyncCommitteeMessage{
+			Slot:            TestingDutySlot,
+			BeaconBlockRoot: TestingBlockRoot,
+			ValidatorIndex:  valIdx,
+			Signature:       signBeaconObject(types.SSZBytes(TestingBlockRoot[:]), types.DomainSyncCommittee, ks),
+		}))
+	}
+	return ret
 }
 
 var TestingContributionProofIndexes = []uint64{0, 1, 2}
