@@ -75,7 +75,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 		for _, op := range keySetInstance.Committee() {
 			committee = append(committee, op.Signer)
 		}
-		clusterID := types.GetClusterID(committee)
+		clusterID := types.GetCommitteeID(committee)
 		copy(ownerID, clusterID[:])
 	} else {
 		ownerID = TestingValidatorPubKey[:]
@@ -197,7 +197,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 		for _, op := range keySet.Committee() {
 			committee = append(committee, op.Signer)
 		}
-		clusterID := types.GetClusterID(committee)
+		clusterID := types.GetCommitteeID(committee)
 		copy(ownerID, clusterID[:])
 	} else {
 		ownerID = TestingValidatorPubKey[:]

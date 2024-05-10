@@ -23,7 +23,7 @@ var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 	for _, op := range keySet.Committee() {
 		committee = append(committee, op.Signer)
 	}
-	clusterID := types.GetClusterID(committee)
+	clusterID := types.GetCommitteeID(committee)
 	copy(ownerID, clusterID[:])
 
 	ret := types.NewMsgID(TestingSSVDomainType, ownerID[:], types.RoleCommittee)
