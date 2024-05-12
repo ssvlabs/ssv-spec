@@ -9,6 +9,7 @@ import (
 // FirstHeight tests a valid start duty at slot 0
 func FirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty first height",
 		Tests: []*StartNewRunnerDutySpecTest{
@@ -20,12 +21,6 @@ func FirstHeight() tests.SpecTest {
 					testingutils.PreConsensusCustomSlotContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, 0),
 					// broadcasts when starting a new duty
 				},
-			},
-			{
-				Name:           "sync committee",
-				Runner:         testingutils.SyncCommitteeRunner(ks),
-				Duty:           &testingutils.TestingSyncCommitteeDutyFirstSlot,
-				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   "aggregator",
@@ -47,8 +42,20 @@ func FirstHeight() tests.SpecTest {
 			},
 			{
 				Name:           "attester",
-				Runner:         testingutils.AttesterRunner(ks),
-				Duty:           &testingutils.TestingAttesterDutyFirstSlot,
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingAttesterDutyFirstSlot,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingSyncCommitteeDutyFirstSlot,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingSyncCommitteeDutyFirstSlot,
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},

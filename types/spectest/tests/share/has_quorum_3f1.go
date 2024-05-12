@@ -15,11 +15,10 @@ func HasQuorum3f1() *ShareTest {
 	msg := testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3], ks.OperatorKeys[4]}, []types.OperatorID{1, 2, 3, 4})
 
 	return &ShareTest{
-		Name:                     "has quorum 3f1",
-		Share:                    *share,
-		Message:                  *msg,
-		ExpectedHasPartialQuorum: true,
-		ExpectedHasQuorum:        true,
-		ExpectedFullCommittee:    true,
+		Name:                  "has quorum 3f1",
+		Share:                 *share,
+		Message:               *msg,
+		ExpectedHasQuorum:     true,
+		ExpectedFullCommittee: true,
 	}
 }

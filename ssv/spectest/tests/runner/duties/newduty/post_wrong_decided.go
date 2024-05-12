@@ -15,11 +15,12 @@ import (
 // PostWrongDecided tests starting a new duty after prev was decided wrongly (future decided)
 // This can happen if we receive a future decided message from the network.
 func PostWrongDecided() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
 
 	// https://github.com/ssvlabs/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
 	// Maybe we should ensure that `ValidateDecided()` doesn't let the runner enter this state and delete the test?
-	decideWrong := func(r ssv.Runner, duty *types.Duty, higherDecidedSlot qbft.Height) ssv.Runner {
+	decideWrong := func(r ssv.Runner, duty types.Duty, higherDecidedSlot qbft.Height) ssv.Runner {
 		storedInstances := r.GetBaseRunner().QBFTController.StoredInstances
 		storedInstances = append(storedInstances, nil)
 		storedInstances = append(storedInstances, nil)
@@ -27,7 +28,7 @@ func PostWrongDecided() tests.SpecTest {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
@@ -35,7 +36,7 @@ func PostWrongDecided() tests.SpecTest {
 
 		higherDecided := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
 			higherDecidedSlot)
 		higherDecided.State.Decided = true
@@ -66,14 +67,6 @@ func PostWrongDecided() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty, 50),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				PostDutyRunnerStateRoot: "daf5d2d2469f71f2f9c08a75fb45f1be7f6cdc8b367dedf5adc50c066f73f942",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty, 50),
 				Duty:                    &testingutils.TestingAggregatorDuty,
@@ -95,12 +88,25 @@ func PostWrongDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb), testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 			{
-				Name:                    "attester",
-				Runner:                  decideWrong(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty, 50),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				PostDutyRunnerStateRoot: "8efe8f69adeecb1da0762d54aeb7b2970eb293395ad6e379cf2521125881f5fe",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
+				Name:           "attester",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty, 50),
+				Duty:           testingutils.TestingAttesterDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "sync committee",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty, 50),
+				Duty:           testingutils.TestingSyncCommitteeDuty,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties, 50),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
 			},
 		},
 	}

@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -13,6 +14,7 @@ type Getters interface {
 	GetBeaconNode() BeaconNode
 	GetValCheckF() qbft.ProposedValueCheckF
 	GetSigner() types.BeaconSigner
+	GetOperatorSigner() types.OperatorSigner
 	GetNetwork() Network
 }
 
@@ -22,7 +24,7 @@ type Runner interface {
 	Getters
 
 	// StartNewDuty starts a new duty for the runner, returns error if can't
-	StartNewDuty(duty *types.Duty) error
+	StartNewDuty(duty types.Duty) error
 	// HasRunningDuty returns true if it has a running duty
 	HasRunningDuty() bool
 	// ProcessPreConsensus processes all pre-consensus msgs, returns error if can't process
@@ -37,15 +39,16 @@ type Runner interface {
 	// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 	expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
 	// executeDuty an INTERNAL function, executes a duty.
-	executeDuty(duty *types.Duty) error
+	executeDuty(duty types.Duty) error
 }
 
 type BaseRunner struct {
 	State          *State
-	Share          *types.Share
+	Share          map[spec.ValidatorIndex]*types.Share
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
-	BeaconRoleType types.BeaconRole
+	RunnerRoleType types.RunnerRole
+	types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
 	highestDecidedSlot spec.Slot
@@ -53,10 +56,10 @@ type BaseRunner struct {
 
 func NewBaseRunner(
 	state *State,
-	share *types.Share,
+	share map[spec.ValidatorIndex]*types.Share,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
-	beaconRoleType types.BeaconRole,
+	beaconRoleType types.RunnerRole,
 	operatorSigner types.OperatorSigner,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
@@ -65,7 +68,7 @@ func NewBaseRunner(
 		Share:              share,
 		QBFTController:     controller,
 		BeaconNetwork:      beaconNetwork,
-		BeaconRoleType:     beaconRoleType,
+		RunnerRoleType:     beaconRoleType,
 		highestDecidedSlot: highestDecidedSlot,
 	}
 }
@@ -76,13 +79,18 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 }
 
 // setupForNewDuty is sets the runner for a new duty
-func (b *BaseRunner) baseSetupForNewDuty(duty *types.Duty) {
+func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
 	// start new state
-	b.State = NewRunnerState(b.Share.Quorum, duty)
+	// TODO nicer way to get quorum
+	var share *types.Share
+	for _, shareInstance := range b.Share {
+		share = shareInstance
+	}
+	b.State = NewRunnerState(share.Quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
-func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
+func (b *BaseRunner) baseStartNewDuty(runner Runner, duty types.Duty) error {
 	if err := b.ShouldProcessDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start duty")
 	}
@@ -93,7 +101,7 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty *types.Duty) error {
 }
 
 // baseStartNewBeaconDuty is a base func that all runner implementation can call to start a non-beacon duty
-func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.Duty) error {
+func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.BeaconDuty) error {
 	if err := b.ShouldProcessNonBeaconDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start non-beacon duty")
 	}
@@ -112,7 +120,8 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, psigMsgs *type
 }
 
 // baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
-func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.SignedSSVMessage) (decided bool, decidedValue *types.ConsensusData, err error) {
+func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.SignedSSVMessage) (decided bool,
+	decidedValue types.Encoder, err error) {
 	prevDecided := false
 	if b.hasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
@@ -141,19 +150,28 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 	}
 
 	// decode consensus data
-	decidedValue = &types.ConsensusData{}
+	switch runner.(type) {
+	case CommitteeRunner:
+		decidedValue = &types.BeaconVote{}
+	default:
+		decidedValue = &types.ConsensusData{}
+	}
 	if err := decidedValue.Decode(decidedSignedMsg.FullData); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
 	// update the highest decided slot
-	b.highestDecidedSlot = decidedValue.Duty.Slot
+	// TODO: bad name because it wasn't decided yet
+	b.highestDecidedSlot = b.State.StartingDuty.DutySlot()
 
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
 	}
 
-	runner.GetBaseRunner().State.DecidedValue = decidedValue
+	runner.GetBaseRunner().State.DecidedValue, err = decidedValue.Encode()
+	if err != nil {
+		return true, nil, errors.Wrap(err, "could not encode decided value")
+	}
 
 	return true, decidedValue, nil
 }
@@ -176,16 +194,16 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 	roots := make([][32]byte, 0)
 	anyQuorum := false
 	for _, msg := range psigMsgs.Messages {
-		prevQuorum := container.HasQuorum(msg.SigningRoot)
+		prevQuorum := container.HasQuorum(msg.ValidatorIndex, msg.SigningRoot)
 
 		// Check if it has two signatures for the same signer
-		if container.HasSigner(msg.Signer, msg.SigningRoot) {
+		if container.HasSigner(msg.ValidatorIndex, msg.Signer, msg.SigningRoot) {
 			b.resolveDuplicateSignature(container, msg)
 		} else {
 			container.AddSignature(msg)
 		}
 
-		hasQuorum := container.HasQuorum(msg.SigningRoot)
+		hasQuorum := container.HasQuorum(msg.ValidatorIndex, msg.SigningRoot)
 
 		if hasQuorum && !prevQuorum {
 			// Notify about first quorum only
@@ -232,19 +250,15 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 	return true, nil
 }
 
-func (b *BaseRunner) decide(runner Runner, input *types.ConsensusData) error {
-	byts, err := input.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode ConsensusData")
-	}
-
-	if err := runner.GetValCheckF()(byts); err != nil {
+// decide input param can be a BeaconVote or ConsensusData
+func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input []byte) error {
+	if err := runner.GetValCheckF()(input); err != nil {
 		return errors.Wrap(err, "input data invalid")
 	}
 
 	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(
-		qbft.Height(input.Duty.Slot),
-		byts,
+		qbft.Height(slot),
+		input,
 	); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")
 	}
@@ -265,19 +279,19 @@ func (b *BaseRunner) hasRunningDuty() bool {
 	return !b.State.Finished
 }
 
-func (b *BaseRunner) ShouldProcessDuty(duty *types.Duty) error {
-	if b.QBFTController.Height >= qbft.Height(duty.Slot) && b.QBFTController.Height != 0 {
-		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.Slot,
+func (b *BaseRunner) ShouldProcessDuty(duty types.Duty) error {
+	if b.QBFTController.Height >= qbft.Height(duty.DutySlot()) && b.QBFTController.Height != 0 {
+		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.DutySlot(),
 			b.QBFTController.Height)
 	}
 	return nil
 }
 
-func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty *types.Duty) error {
+func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty types.Duty) error {
 	// assume StartingDuty is not nil if state is not nil
-	if b.State != nil && b.State.StartingDuty.Slot >= duty.Slot {
-		return errors.Errorf("duty for slot %d already passed. Current slot is %d", duty.Slot,
-			b.State.StartingDuty.Slot)
+	if b.State != nil && b.State.StartingDuty.DutySlot() >= duty.DutySlot() {
+		return errors.Errorf("duty for slot %d already passed. Current slot is %d", duty.DutySlot(),
+			b.State.StartingDuty.DutySlot())
 	}
 	return nil
 }

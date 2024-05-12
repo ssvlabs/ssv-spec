@@ -36,13 +36,13 @@ func WrongValidatorPK() tests.SpecTest {
 				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
 				ExpectedError: expectedErr,
 			},
-			{
-				Name:          "sync committee",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
-				ExpectedError: expectedErr,
-			},
+			// {
+			// 	Name:          "sync committee",
+			// 	Network:       types.BeaconTestNetwork,
+			// 	BeaconRole:    types.BNRoleSyncCommittee,
+			// 	Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
+			// 	ExpectedError: expectedErr,
+			// },
 			{
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
@@ -57,13 +57,13 @@ func WrongValidatorPK() tests.SpecTest {
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
 				ExpectedError: expectedErr,
 			},
-			{
-				Name:          "attester",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
-				ExpectedError: expectedErr,
-			},
+			// {
+			// 	Name:          "attester",
+			// 	Network:       types.BeaconTestNetwork,
+			// 	BeaconRole:    types.BNRoleAttester,
+			// 	Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
+			// 	ExpectedError: expectedErr,
+			// },
 		},
 	}
 

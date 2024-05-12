@@ -11,7 +11,7 @@ import (
 // ConsensusDataNil tests consensus data != nil
 func ConsensusDataNil() tests.SpecTest {
 	consensusData := &types.ConsensusData{
-		Duty:    testingutils.TestingAttesterDuty,
+		Duty:    *testingutils.TestingAttesterDuty.BeaconDuties[0],
 		DataSSZ: nil,
 		Version: spec.DataVersionPhase0,
 	}

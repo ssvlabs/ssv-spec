@@ -26,6 +26,8 @@ type IConfig interface {
 	GetTimer() Timer
 	// GetSignatureVerifier returns the signature verifier for operator signatures
 	GetSignatureVerifier() types.SignatureVerifier
+	// GetCutOffRound returns the round that stops the instance
+	GetCutOffRound() Round
 }
 
 type Config struct {
@@ -37,6 +39,7 @@ type Config struct {
 	Network           Network
 	Timer             Timer
 	SignatureVerifier types.SignatureVerifier
+	CutOffRound       Round
 }
 
 // GetSigner returns a Signer instance
@@ -74,13 +77,17 @@ func (c *Config) GetTimer() Timer {
 	return c.Timer
 }
 
+func (c *Config) GetCutOffRound() Round {
+	return c.CutOffRound
+}
+
 // GetSignatureVerifier returns the verifier for operator's signatures
 func (c *Config) GetSignatureVerifier() types.SignatureVerifier {
 	return c.SignatureVerifier
 }
 
 type State struct {
-	Share                           *types.Share
+	Share                           *types.Operator
 	ID                              []byte // instance Identifier
 	Round                           Round
 	Height                          Height

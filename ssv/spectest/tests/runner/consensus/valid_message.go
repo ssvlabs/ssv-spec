@@ -11,10 +11,44 @@ import (
 
 // ValidMessage tests a valid consensus message
 func ValidMessage() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid message",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingProposalMessageWithIdentifierAndFullData(
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+						qbft.Height(testingutils.TestingDutySlot)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingProposalMessageWithIdentifierAndFullData(
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+						qbft.Height(testingutils.TestingDutySlot)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingProposalMessageWithIdentifierAndFullData(
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+						qbft.Height(testingutils.TestingDutySlot)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -31,18 +65,6 @@ func ValidMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID, testingutils.TestSyncCommitteeConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-				},
-				PostDutyRunnerStateRoot: "339b34e6f00899baf8740299d3d453aea60c30cc0e28912a6ebb3770f59fc9b8",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   "aggregator",
@@ -94,18 +116,6 @@ func ValidMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
-			},
-			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.AttesterMsgID, testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-				},
-				PostDutyRunnerStateRoot: "e062f2e50b8b308e83278c2f771c9473f4415bd8a64975bc5f29b61b29bd33fd",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   "validator registration",

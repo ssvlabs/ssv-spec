@@ -12,7 +12,7 @@ import (
 
 var TestingSignedSSVMessageSignature = []byte{1, 2, 3, 4}
 
-var TestingMessageID = types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
+var TestingMessageID = types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
 
 var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorID, rsaSK *rsa.PrivateKey) *types.SignedSSVMessage {
 	// SignedPartialSigMessage
@@ -67,7 +67,12 @@ var SignPartialSigSSVMessage = func(ks *TestKeySet, msg *types.SSVMessage) *type
 	if err := psigMsgs.Decode(msg.Data); err != nil {
 		panic(err)
 	}
-	signer := psigMsgs.Messages[0].Signer
+	var signer types.OperatorID
+	if len(psigMsgs.Messages) == 0 {
+		signer = 1
+	} else {
+		signer = psigMsgs.Messages[0].Signer
+	}
 
 	// Convert SSVMessage to SignedSSVMessage
 	return SignedSSVMessageWithSigner(signer, ks.OperatorKeys[signer], msg)

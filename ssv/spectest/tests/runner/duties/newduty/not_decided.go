@@ -18,15 +18,15 @@ func NotDecided() tests.SpecTest {
 
 	// TODO: check error
 	// nolint
-	startRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	startRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		return r
 	}
 
@@ -44,14 +44,6 @@ func NotDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  startRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: notDecidedSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     notDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  startRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
@@ -62,12 +54,22 @@ func NotDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "attester",
-				Runner:                  startRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
+				Name:           "attester",
+				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:           testingutils.TestingAttesterDutyNextEpoch,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "sync committee",
+				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
 	}

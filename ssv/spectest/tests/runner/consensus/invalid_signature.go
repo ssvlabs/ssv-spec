@@ -11,11 +11,54 @@ import (
 
 // InvalidSignature tests a consensus message with an invalid signature
 func InvalidSignature() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus invalid signature",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					// Invalid Message
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							qbft.Height(testingutils.TestingDutySlot)), nil)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					// Invalid Message
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							qbft.Height(testingutils.TestingDutySlot)), nil)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					// Invalid Message
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							qbft.Height(testingutils.TestingDutySlot)), nil)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -35,21 +78,6 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedError,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.SyncCommitteeMsgID, testingutils.TestSyncCommitteeConsensusDataByts,
-							qbft.Height(testingutils.TestingDutySlot)), nil)),
-				},
-				PostDutyRunnerStateRoot: "339b34e6f00899baf8740299d3d453aea60c30cc0e28912a6ebb3770f59fc9b8",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
 			},
 			{
 				Name:   "aggregator",
@@ -110,21 +138,6 @@ func InvalidSignature() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
 				ExpectedError: expectedError,
-			},
-			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgAttester(
-						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.AttesterMsgID, testingutils.TestAttesterConsensusDataByts,
-							qbft.Height(testingutils.TestingDutySlot)), nil)),
-				},
-				PostDutyRunnerStateRoot: "e062f2e50b8b308e83278c2f771c9473f4415bd8a64975bc5f29b61b29bd33fd",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedError,
 			},
 			{
 				Name:   "validator registration",

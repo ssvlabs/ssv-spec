@@ -12,7 +12,7 @@ func InvalidIdentifier() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	invalidPK := make([]byte, 32)
-	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, invalidPK, types.BNRoleAttester)
+	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, invalidPK, types.RoleCommittee)
 
 	return &tests.ControllerSpecTest{
 		Name: "invalid identifier",

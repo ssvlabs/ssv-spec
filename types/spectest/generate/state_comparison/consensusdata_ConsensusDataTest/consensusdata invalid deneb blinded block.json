@@ -10,7 +10,8 @@
 						"CommitteeLength": 128,
 						"CommitteesAtSlot": 36,
 						"ValidatorCommitteeIndex": 11,
-						"ValidatorSyncCommitteeIndices": null
+						"ValidatorSyncCommitteeIndices": null,
+						"IsStopped": false
 				},
 				"Version": "deneb",
 				"PreConsensusJustifications": null,

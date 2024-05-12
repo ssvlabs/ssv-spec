@@ -11,9 +11,15 @@ import (
 
 // FutureMessage tests a valid proposal future msg
 func FutureMessage() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
-	futureMsgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
-		fullData, _ := obj.Encode()
+	futureMsgF := func(value types.Encoder, id []byte) *types.SignedSSVMessage {
+		var fullData []byte
+		if value != nil {
+			fullData, _ = value.Encode()
+		} else {
+			panic("no consensus data or beacon vote")
+		}
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
@@ -34,6 +40,39 @@ func FutureMessage() tests.SpecTest {
 		Name: "consensus future message",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					futureMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					futureMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:   "attester sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					futureMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+				ExpectedError:  expectedError,
+			},
+			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
@@ -41,18 +80,6 @@ func FutureMessage() tests.SpecTest {
 					futureMsgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID),
 				},
 				PostDutyRunnerStateRoot: "68fd25b1cb30902e7b7b3e7ff674c3862ff956954a06fac0df485961b8bb3934",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					futureMsgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-				},
-				PostDutyRunnerStateRoot: "022d7b2bbb97b88684ae317f5c2aaa46a56d1d272a65ffcbeb935d0511bbe7e0",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
@@ -89,18 +116,6 @@ func FutureMessage() tests.SpecTest {
 					futureMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "58b946451dc5ccbd52fbc9e6bbe0ac888253d1708be018a3ff0b07762dd28891",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					futureMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "8ccbad4587df73b4a94e4c5d1c47c7ebfbc8e4e949518443a56f0f11d3ab70cd",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,

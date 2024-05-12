@@ -28,7 +28,7 @@ type Instance struct {
 
 func NewInstance(
 	config IConfig,
-	share *types.Share,
+	share *types.Operator,
 	identifier []byte,
 	height Height,
 ) *Instance {
@@ -150,7 +150,6 @@ func (i *Instance) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
 			i.config,
 			signedMsg,
 			i.config.GetValueCheckF(),
-			i.State.Share.Committee,
 		)
 	case PrepareMsgType:
 		proposedSignedMsg := i.State.ProposalAcceptedForCurrentRound
@@ -224,5 +223,5 @@ func (i *Instance) Decode(data []byte) error {
 
 // CanProcessMessages will return true if instance can process messages
 func (i *Instance) CanProcessMessages() bool {
-	return !i.forceStop && int(i.State.Round) < CutoffRound
+	return !i.forceStop && i.State.Round < i.config.GetCutOffRound()
 }

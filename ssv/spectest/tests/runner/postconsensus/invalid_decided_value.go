@@ -2,6 +2,7 @@ package postconsensus
 
 import (
 	"crypto/rsa"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/attestantio/go-eth2-client/spec"
 
@@ -13,10 +14,11 @@ import (
 
 // InvalidDecidedValue tests an invalid decided value
 func InvalidDecidedValue() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func(role types.BeaconRole) []byte {
 		cd := &types.ConsensusData{
-			Duty: types.Duty{
+			Duty: types.BeaconDuty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
 				Slot:                    testingutils.TestingDutySlot,
@@ -32,10 +34,83 @@ func InvalidDecidedValue() tests.SpecTest {
 		return byts
 	}
 
+	beaconVoteByts := func() []byte {
+		cd := &types.BeaconVote{
+			BlockRoot: phase0.Root{1, 2, 3, 4},
+			Source: &phase0.Checkpoint{
+				Epoch: 2,
+				Root:  phase0.Root{1, 2, 3, 4},
+			},
+			Target: &phase0.Checkpoint{
+				Epoch: 1,
+				Root:  phase0.Root{1, 2, 3, 5},
+			},
+		}
+		byts, _ := cd.Encode()
+		return byts
+	}
+
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus decided invalid value",
 		Tests: []*tests.MsgProcessingSpecTest{
+			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{
+							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
+						},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlot),
+						testingutils.CommitteeMsgID,
+						beaconVoteByts(),
+					),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedErr,
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{
+							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
+						},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlot),
+						testingutils.CommitteeMsgID,
+						beaconVoteByts(),
+					),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedErr,
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{
+							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
+						},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlot),
+						testingutils.CommitteeMsgID,
+						beaconVoteByts(),
+					),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedErr,
+			},
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -61,26 +136,6 @@ func InvalidDecidedValue() tests.SpecTest {
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedErr,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.SyncCommitteeMsgID,
-						consensusDataByts(types.BNRoleSyncCommittee),
-					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-				},
-				PostDutyRunnerStateRoot: "90c84430996225da29d9ed64d038a81d754599ce67d2a46a92689f2d4d57dfde",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedErr,
 			},
 			{
 				Name:   "aggregator",
@@ -159,27 +214,6 @@ func InvalidDecidedValue() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, spec.DataVersionDeneb),
 				},
 				ExpectedError: expectedErr,
-			},
-			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.AttesterMsgID,
-						consensusDataByts(types.BNRoleAttester),
-					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1,
-						testingutils.TestingDutySlot))),
-				},
-				PostDutyRunnerStateRoot: "33953714dd71325c2ad309b2e122bf5fab016a5a2f1bfbf91125b3866c9dc844",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           expectedErr,
 			},
 		},
 	}

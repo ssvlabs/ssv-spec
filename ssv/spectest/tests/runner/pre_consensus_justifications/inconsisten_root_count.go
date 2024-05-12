@@ -91,27 +91,6 @@ func InconsistentRootCount() tests.SpecTest {
 				},
 				ExpectedError: expectedErr,
 			},
-			{
-
-				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					changeRootCountAndPrepareMsg(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "c913d1b6e4150231615ad2475a26b03403cc40fc7dd90c011c1c24a7bb39ae1a",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:   "sync committee",
-				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					changeRootCountAndPrepareMsg(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-				},
-				PostDutyRunnerStateRoot: "4dbe7550c9fe66953ae2f5066463e8d1288fc37a4cc031b58d4b3e1a87220dc0",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
 		},
 	}
 }

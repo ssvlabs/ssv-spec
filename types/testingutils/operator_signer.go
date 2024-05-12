@@ -11,16 +11,23 @@ import (
 
 type testingOperatorSigner struct {
 	SSVOperatorSK *rsa.PrivateKey
+	operatorID    types.OperatorID
 }
 
 func NewTestingOperatorSigner(keySet *TestKeySet, operatorID types.OperatorID) *testingOperatorSigner {
 	return &testingOperatorSigner{
 		SSVOperatorSK: keySet.OperatorKeys[operatorID],
+		operatorID:    operatorID,
 	}
 }
 
 func (km *testingOperatorSigner) SignSSVMessage(ssvMsg *types.SSVMessage) ([]byte, error) {
 	return SignSSVMessage(km.SSVOperatorSK, ssvMsg)
+}
+
+// GetOperatorID returns the operator ID
+func (km *testingOperatorSigner) GetOperatorID() types.OperatorID {
+	return km.operatorID
 }
 
 func SignSSVMessage(sk *rsa.PrivateKey, ssvMsg *types.SSVMessage) ([]byte, error) {

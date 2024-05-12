@@ -3,24 +3,39 @@ package types
 // OperatorID is a unique ID for the node, used to create shares and verify msgs
 type OperatorID = uint64
 
-// Operator represents an SSV operator node
+// Operator represents an SSV operator node that is part of a committee
 type Operator struct {
 	OperatorID        OperatorID
-	SharePubKey       []byte `ssz-size:"48"`
+	ClusterID         CommitteeID `ssz-size:"32"`
+	SSVOperatorPubKey []byte      `ssz-size:"294"`
+	// TODO: change with one parameter F
+	Quorum, PartialQuorum uint64
+	// All the members of the committee
+	Committee []*CommitteeMember `ssz-max:"13"`
+}
+
+// CommitteeMember represents all data in order to verify a committee member's identity
+type CommitteeMember struct {
+	OperatorID        OperatorID
 	SSVOperatorPubKey []byte `ssz-size:"294"`
 }
 
-// GetSharePublicKey returns the share public key
-func (n *Operator) GetSharePublicKey() []byte {
-	return n.SharePubKey
+// HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure
+// https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L259
+func (operator *Operator) HasQuorum(cnt int) bool {
+	return uint64(cnt) >= operator.Quorum
 }
 
-// GetSSVOperatorPublicKey returns the ssv public key with which the node is identified with
-func (n *Operator) GetSSVOperatorPublicKey() []byte {
-	return n.SSVOperatorPubKey
+// HasPartialQuorum returns true if at least f+1 items present (cnt is the number of items). It assumes nothing about those items, not their type or structure.
+// https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L244
+func (operator *Operator) HasPartialQuorum(cnt int) bool {
+	return uint64(cnt) >= operator.PartialQuorum
 }
 
-// GetID returns the node's ID
-func (n *Operator) GetID() OperatorID {
-	return n.OperatorID
+func (operator *Operator) Encode() ([]byte, error) {
+	return operator.MarshalSSZ()
+}
+
+func (operator *Operator) Decode(data []byte) error {
+	return operator.UnmarshalSSZ(data)
 }

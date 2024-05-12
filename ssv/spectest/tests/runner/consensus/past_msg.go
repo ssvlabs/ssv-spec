@@ -12,6 +12,7 @@ import (
 
 // PastMessage tests a valid proposal past msg
 func PastMessage() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
 
 	bumpHeight := func(r ssv.Runner) ssv.Runner {
@@ -25,8 +26,13 @@ func PastMessage() tests.SpecTest {
 		return r
 	}
 
-	pastMsgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
-		fullData, _ := obj.Encode()
+	pastMsgF := func(value types.Encoder, id []byte) *types.SignedSSVMessage {
+		var fullData []byte
+		if value != nil {
+			fullData, _ = value.Encode()
+		} else {
+			panic("no consensus data or beacon vote")
+		}
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
@@ -45,6 +51,36 @@ func PastMessage() tests.SpecTest {
 		Name: "consensus past message",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name:   "attester",
+				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+			},
+			{
+				Name:   "sync committee",
+				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: []*types.SignedSSVMessage{
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+			},
+			{
 				Name:   "sync committee contribution",
 				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
@@ -52,17 +88,6 @@ func PastMessage() tests.SpecTest {
 					pastMsgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID),
 				},
 				PostDutyRunnerStateRoot: "d1ba71cab348c80ebb7b4533c9c482eaba407f6a73864ee742aab93e73b94dab",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-			},
-			{
-				Name:   "sync committee",
-				Runner: bumpHeight(testingutils.SyncCommitteeRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-				},
-				PostDutyRunnerStateRoot: "c1fe93bc3530e14e014b78102b078bbdd6e55c2c0979fce40fa00b1400d9e774",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 			},
@@ -96,17 +121,6 @@ func PastMessage() tests.SpecTest {
 					pastMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "49edaab0d759ba8a35a37ab26416ae04962d77ec088b87c4f1e65f781c1ed96f",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-			},
-			{
-				Name:   "attester",
-				Runner: bumpHeight(testingutils.AttesterRunner(ks)),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "7218b8c7b0c3fc4751b62ed15960de36bb28d6ec800a6d689d16ae99754fbf66",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 			},

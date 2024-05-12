@@ -3,8 +3,6 @@ package qbft_test
 import (
 	"testing"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,34 +17,16 @@ func TestInstance_Marshaling(t *testing.T) {
 		Identifier: []byte{1, 2, 3, 4},
 		Root:       testingutils.TestingQBFTRootData,
 	}
-	TestingSK := func() *bls.SecretKey {
-		types.InitBLS()
-		ret := &bls.SecretKey{}
-		ret.SetByCSPRNG()
-		return ret
-	}()
-	TestingRSASK := testingutils.Testing4SharesSet().OperatorKeys[1]
+	keySet := testingutils.Testing4SharesSet()
+	TestingRSASK := keySet.OperatorKeys[1]
 	testingSignedMsg := func() *types.SignedSSVMessage {
 		return testingutils.SignQBFTMsg(TestingRSASK, 1, TestingMessage)
 	}()
-	testingValidatorPK := spec.BLSPubKey{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4}
-	testingShare := &types.Share{
-		OperatorID:      1,
-		ValidatorPubKey: testingValidatorPK[:],
-		SharePubKey:     TestingSK.GetPublicKey().Serialize(),
-		DomainType:      types.PrimusTestnet,
-		Quorum:          3,
-		PartialQuorum:   2,
-		Committee: []*types.Operator{
-			{
-				OperatorID:  1,
-				SharePubKey: TestingSK.GetPublicKey().Serialize(),
-			},
-		},
-	}
+	testingOperator := testingutils.TestingOperator(keySet)
+
 	i := &qbft.Instance{
 		State: &qbft.State{
-			Share:                           testingShare,
+			Share:                           testingOperator,
 			ID:                              []byte{1, 2, 3, 4},
 			Round:                           1,
 			Height:                          1,

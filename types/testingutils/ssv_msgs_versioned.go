@@ -88,6 +88,14 @@ var PostConsensusWrongProposerMsgV = func(sk *bls.SecretKey, id types.OperatorID
 	return postConsensusBeaconBlockMsgV(sk, id, true, false, version)
 }
 
+var PostConsensusWrongValidatorIndexProposerMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	msg := postConsensusBeaconBlockMsgV(sk, id, true, false, version)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
 var PostConsensusWrongSigProposerMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	return postConsensusBeaconBlockMsgV(sk, id, false, true, version)
 }
@@ -132,6 +140,7 @@ var postConsensusBeaconBlockMsgV = func(
 				PartialSignature: blsSig[:],
 				SigningRoot:      root,
 				Signer:           id,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -187,6 +196,7 @@ var PreConsensusRandaoDifferentSignerMsgV = func(
 				PartialSignature: signed[:],
 				SigningRoot:      root,
 				Signer:           randaoSignerID,
+				ValidatorIndex:   TestingValidatorIndex,
 			},
 		},
 	}
@@ -220,6 +230,7 @@ var randaoMsgV = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
 		}
 		if wrongRoot {
 			msg.SigningRoot = [32]byte{}

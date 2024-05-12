@@ -25,7 +25,7 @@ type ValidatorRegistrationRunner struct {
 
 func NewValidatorRegistrationRunner(
 	beaconNetwork types.BeaconNetwork,
-	share *types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
@@ -33,7 +33,7 @@ func NewValidatorRegistrationRunner(
 ) Runner {
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType: types.BNRoleValidatorRegistration,
+			RunnerRoleType: types.RoleValidatorRegistration,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},
@@ -45,9 +45,9 @@ func NewValidatorRegistrationRunner(
 	}
 }
 
-func (r *ValidatorRegistrationRunner) StartNewDuty(duty *types.Duty) error {
+func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty) error {
 	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
-	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
+	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty))
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -68,16 +68,28 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 
 	// only 1 root, verified in basePreConsensusMsgProcessing
 	root := roots[0]
-	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
+	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
 	if err != nil {
 		// If the reconstructed signature verification failed, fall back to verifying each partial signature
-		r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root)
+		r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root, r.GetShare().Committee,
+			r.GetShare().ValidatorIndex)
 		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 	specSig := phase0.BLSSignature{}
 	copy(specSig[:], fullSig)
 
-	if err := r.beacon.SubmitValidatorRegistration(r.BaseRunner.Share.ValidatorPubKey, r.BaseRunner.Share.FeeRecipientAddress, specSig); err != nil {
+	// Get share
+	if len(r.BaseRunner.Share) == 0 {
+		return errors.New("no share to get validator public key")
+	}
+	var share *types.Share
+	for _, shareInstance := range r.BaseRunner.Share {
+		share = shareInstance
+		break
+	}
+
+	if err := r.beacon.SubmitValidatorRegistration(share.ValidatorPubKey[:],
+		share.FeeRecipientAddress, specSig); err != nil {
 		return errors.Wrap(err, "could not submit validator registration")
 	}
 
@@ -94,7 +106,10 @@ func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.Part
 }
 
 func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	vr, err := r.calculateValidatorRegistration()
+	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil {
+		return nil, types.DomainError, errors.New("no running duty to compute preconsensus roots and domain")
+	}
+	vr, err := r.calculateValidatorRegistration(r.BaseRunner.State.StartingDuty)
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not calculate validator registration")
 	}
@@ -106,25 +121,26 @@ func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]s
 	return nil, [4]byte{}, errors.New("no post consensus roots for validator registration")
 }
 
-func (r *ValidatorRegistrationRunner) executeDuty(duty *types.Duty) error {
-	vr, err := r.calculateValidatorRegistration()
+func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
+	vr, err := r.calculateValidatorRegistration(duty)
 	if err != nil {
 		return errors.Wrap(err, "could not calculate validator registration")
 	}
 
 	// sign partial randao
-	msg, err := r.BaseRunner.signBeaconObject(r, vr, duty.Slot, types.DomainApplicationBuilder)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), vr, duty.DutySlot(),
+		types.DomainApplicationBuilder)
 	if err != nil {
 		return errors.Wrap(err, "could not sign validator registration")
 	}
 	msgs := &types.PartialSignatureMessages{
 		Type:     types.ValidatorRegistrationPartialSig,
-		Slot:     duty.Slot,
+		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.GetShare().OperatorID, r.operatorSigner)
+	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], types.RunnerRole(r.BaseRunner.RunnerRoleType))
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
 	}
@@ -135,14 +151,24 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty *types.Duty) error {
 	return nil
 }
 
-func (r *ValidatorRegistrationRunner) calculateValidatorRegistration() (*v1.ValidatorRegistration, error) {
-	pk := phase0.BLSPubKey{}
-	copy(pk[:], r.BaseRunner.Share.ValidatorPubKey)
+func (r *ValidatorRegistrationRunner) calculateValidatorRegistration(duty types.Duty) (*v1.ValidatorRegistration, error) {
 
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.Slot)
+	if len(r.BaseRunner.Share) == 0 {
+		return nil, errors.New("no share to get validator public key")
+	}
+	var share *types.Share
+	for _, shareInstance := range r.BaseRunner.Share {
+		share = shareInstance
+		break
+	}
+
+	pk := phase0.BLSPubKey{}
+	copy(pk[:], share.ValidatorPubKey[:])
+
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(duty.DutySlot())
 
 	return &v1.ValidatorRegistration{
-		FeeRecipient: r.BaseRunner.Share.FeeRecipientAddress,
+		FeeRecipient: share.FeeRecipientAddress,
 		GasLimit:     types.DefaultGasLimit,
 		Timestamp:    r.BaseRunner.BeaconNetwork.EpochStartTime(epoch),
 		Pubkey:       pk,
@@ -162,7 +188,10 @@ func (r *ValidatorRegistrationRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *ValidatorRegistrationRunner) GetShare() *types.Share {
-	return r.BaseRunner.Share
+	for _, share := range r.BaseRunner.Share {
+		return share
+	}
+	return nil
 }
 
 func (r *ValidatorRegistrationRunner) GetState() *State {
@@ -175,6 +204,10 @@ func (r *ValidatorRegistrationRunner) GetValCheckF() qbft.ProposedValueCheckF {
 
 func (r *ValidatorRegistrationRunner) GetSigner() types.BeaconSigner {
 	return r.signer
+}
+
+func (r *ValidatorRegistrationRunner) GetOperatorSigner() types.OperatorSigner {
+	return r.operatorSigner
 }
 
 // Encode returns the encoded struct in bytes or error

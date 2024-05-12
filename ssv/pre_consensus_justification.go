@@ -30,7 +30,8 @@ func (b *BaseRunner) shouldProcessingJustificationsForHeight(signedMsg *types.Si
 	}
 
 	correctMsgTYpe := msg.MsgType == qbft.ProposalMsgType || msg.MsgType == qbft.RoundChangeMsgType
-	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
+	correctBeaconRole := b.RunnerRoleType == types.RoleProposer || b.RunnerRoleType == types.RoleAggregator || b.
+		RunnerRoleType == types.RoleSyncCommitteeContribution
 	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole, nil
 }
 
@@ -41,7 +42,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 		return err
 	}
 
-	if b.BeaconRoleType != data.Duty.Type {
+	if b.RunnerRoleType != types.MapDutyToRunnerRole(data.Duty.Type) {
 		return errors.New("wrong beacon role")
 	}
 
@@ -50,14 +51,14 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 	}
 
 	// validate justification quorum
-	if !b.Share.HasQuorum(len(data.PreConsensusJustifications)) {
+	if !b.Share[data.Duty.ValidatorIndex].HasQuorum(len(data.PreConsensusJustifications)) {
 		return errors.New("no quorum")
 	}
 
 	signers := make(map[types.OperatorID]bool)
 	roots := make(map[[32]byte]bool)
 	rootCount := 0
-	partialSigContainer := NewPartialSigContainer(b.Share.Quorum)
+	partialSigContainer := NewPartialSigContainer(b.Share[data.Duty.ValidatorIndex].Quorum)
 	for i, msg := range data.PreConsensusJustifications {
 		if err := msg.Validate(); err != nil {
 			return err
@@ -109,7 +110,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 
 	// Verify the reconstructed signature for each root
 	for root := range roots {
-		_, err := b.State.ReconstructBeaconSig(partialSigContainer, root, b.Share.ValidatorPubKey)
+		_, err := b.State.ReconstructBeaconSig(partialSigContainer, root, b.Share[data.Duty.ValidatorIndex].ValidatorPubKey[:], data.Duty.ValidatorIndex)
 		if err != nil {
 			return errors.Wrap(err, "wrong pre-consensus partial signature")
 		}
@@ -170,5 +171,10 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 		return errors.New("invalid pre-consensus justification quorum")
 	}
 
-	return b.decide(runner, cd)
+	inputBytes, err := cd.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not encode ConsensusData")
+	}
+
+	return b.decide(runner, cd.Duty.DutySlot(), inputBytes)
 }

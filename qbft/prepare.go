@@ -89,7 +89,7 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	height Height,
 	round Round,
 	root [32]byte,
-	operators []*types.Operator) error {
+	operators []*types.CommitteeMember) error {
 
 	msg, err := DecodeMessage(signedPrepare.SSVMessage.Data)
 	if err != nil {
@@ -111,7 +111,7 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	}
 
 	if !bytes.Equal(msg.Root[:], root[:]) {
-		return errors.New("proposed data mistmatch")
+		return errors.New("proposed data mismatch")
 	}
 
 	if len(signedPrepare.GetOperatorIDs()) != 1 {
@@ -131,7 +131,7 @@ func validSignedPrepareForHeightRoundAndRootVerifySignature(
 	height Height,
 	round Round,
 	root [32]byte,
-	operators []*types.Operator) error {
+	operators []*types.CommitteeMember) error {
 
 	if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(signedPrepare, height, round, root, operators); err != nil {
 		return err

@@ -41,7 +41,8 @@
 												11,
 												252
 										],
-										"Signer": 0
+										"Signer": 0,
+										"ValidatorIndex": "1"
 								}
 						]
 				},
@@ -85,7 +86,8 @@
 												123,
 												131
 										],
-										"Signer": 0
+										"Signer": 0,
+										"ValidatorIndex": "1"
 								}
 						]
 				}

@@ -34,4 +34,5 @@ type BeaconSigner interface {
 // OperatorSigner used for to sign protocol messages
 type OperatorSigner interface {
 	SignSSVMessage(ssvMsg *SSVMessage) ([]byte, error)
+	GetOperatorID() OperatorID
 }

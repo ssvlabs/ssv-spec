@@ -18,21 +18,21 @@ import (
 func DuplicateDutyNotFinished() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	notFinishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	notFinishRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		return r
 	}
 
 	// notFinishTaskRunner is a helper function that finishes a task runner and returns it
 	// task is an operation that isn't a beacon duty, e.g. validator registration
-	notFinishTaskRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	notFinishTaskRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		return r
 	}
@@ -60,14 +60,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 			{
-				Name:                    "sync committee",
-				Runner:                  notFinishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				PostDutyRunnerStateRoot: "1bc2227b9a53699b42f5581911ef9b1a51ba2fbe481449195739f17fb61b4178",
-				ExpectedError:           expectedError,
-			},
-			{
 				Name:                    "aggregator",
 				Runner:                  notFinishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDuty,
@@ -91,8 +83,24 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 			},
 			{
 				Name:                    "attester",
-				Runner:                  notFinishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDuty,
+				Runner:                  notFinishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDuty,
+				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				ExpectedError:           expectedError,
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  notFinishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDuty,
+				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				ExpectedError:           expectedError,
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  notFinishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties,
 				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedError,

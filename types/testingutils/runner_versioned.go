@@ -5,7 +5,15 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.BeaconRole) []*types.SignedSSVMessage {
+var SSVDecidingMsgsForCommitteeRunner = func(beaconVote *types.BeaconVote, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
+	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
+
+	// consensus
+	qbftMsgs := SSVDecidingMsgsForHeightAndBeaconVote(beaconVote, id[:], height, ks)
+	return qbftMsgs
+}
+
+var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
 	signedF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {
@@ -29,17 +37,17 @@ var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, 
 
 	// pre consensus msgs
 	base := make([]*types.SignedSSVMessage, 0)
-	if role == types.BNRoleProposer {
+	if role == types.RoleProposer {
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			base = append(base, signedF(PreConsensusRandaoMsgV(ks.Shares[types.OperatorID(i)], types.OperatorID(i), consensusData.Version)))
 		}
 	}
-	if role == types.BNRoleAggregator {
+	if role == types.RoleAggregator {
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			base = append(base, signedF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
-	if role == types.BNRoleSyncCommitteeContribution {
+	if role == types.RoleSyncCommitteeContribution {
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			base = append(base, signedF(PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
@@ -51,7 +59,7 @@ var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, 
 	return base
 }
 
-var ExpectedSSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.BeaconRole) []*types.SignedSSVMessage {
+var ExpectedSSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
 	ssvMsgF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {
@@ -76,17 +84,17 @@ var ExpectedSSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *Test
 
 	// pre consensus msgs
 	base := make([]*types.SignedSSVMessage, 0)
-	if role == types.BNRoleProposer {
+	if role == types.RoleProposer {
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			base = append(base, ssvMsgF(PreConsensusRandaoMsgV(ks.Shares[types.OperatorID(i)], types.OperatorID(i), consensusData.Version)))
 		}
 	}
-	if role == types.BNRoleAggregator {
+	if role == types.RoleAggregator {
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			base = append(base, ssvMsgF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
-	if role == types.BNRoleSyncCommitteeContribution {
+	if role == types.RoleSyncCommitteeContribution {
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			base = append(base, ssvMsgF(PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}

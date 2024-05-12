@@ -55,7 +55,6 @@ func isValidProposal(
 	config IConfig,
 	signedProposal *types.SignedSSVMessage,
 	valCheck ProposedValueCheckF,
-	operators []*types.Operator,
 ) error {
 
 	msg, err := DecodeMessage(signedProposal.SSVMessage.Data)

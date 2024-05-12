@@ -80,27 +80,6 @@ func Valid13Operators() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
-			{
-
-				Name:   "attester",
-				Runner: decideFirstHeight(testingutils.AttesterRunner(ks)),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-				},
-				PostDutyRunnerStateRoot: "723a3a8b1b1e20f28ec99cae097adb85b73473a842fd86686361ba2aef3d911a",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:   "sync committee",
-				Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-				},
-				PostDutyRunnerStateRoot: "0459c2be68b353e1a780f8f2e17c7350e32242d9a5c50e30ceac7eab0cc4cb85",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
 		},
 	}
 }

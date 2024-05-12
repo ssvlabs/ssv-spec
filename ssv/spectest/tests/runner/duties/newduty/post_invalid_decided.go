@@ -16,9 +16,9 @@ import (
 func PostInvalidDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	consensusDataByts := func(role types.BeaconRole) []byte {
+	consensusDataByts := func() []byte {
 		cd := &types.ConsensusData{
-			Duty: types.Duty{
+			Duty: types.BeaconDuty{
 				Type:                    100, // invalid
 				PubKey:                  testingutils.TestingValidatorPubKey,
 				Slot:                    testingutils.TestingDutySlot,
@@ -36,18 +36,18 @@ func PostInvalidDecided() tests.SpecTest {
 
 	// https://github.com/ssvlabs/ssv-spec/issues/285. We initialize the runner with an impossible decided value.
 	// Maybe we should ensure that `ValidateDecided()` doesn't let the runner enter this state and delete the test?
-	decideWrong := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	decideWrong := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
-		decidedValue := sha256.Sum256(consensusDataByts(r.GetBaseRunner().BeaconRoleType))
+		decidedValue := sha256.Sum256(consensusDataByts())
 		r.GetBaseRunner().State.RunningInstance.State.DecidedValue = decidedValue[:]
 
 		return r
@@ -66,13 +66,6 @@ func PostInvalidDecided() tests.SpecTest {
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					// broadcasts when starting a new duty
 				},
-			},
-			{
-				Name:                    "sync committee",
-				Runner:                  decideWrong(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: "b3a2925d737a16363053e430c3ce317232fdff0a951e51bdf37cf593bfee0ae7",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    "aggregator",
@@ -95,9 +88,23 @@ func PostInvalidDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "attester",
-				Runner:                  decideWrong(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: "679d7b60bd8bd84697331c6c872658a0cc8e3371156c7511be403d42abe18620",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},

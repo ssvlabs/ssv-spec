@@ -16,12 +16,11 @@ func NoQuorumDuplicate() *ShareTest {
 	msg.OperatorIDs = []types.OperatorID{1, 1, 2}
 
 	return &ShareTest{
-		Name:                     "no quorum duplicate",
-		Share:                    *share,
-		Message:                  *msg,
-		ExpectedHasPartialQuorum: true,
-		ExpectedHasQuorum:        false,
-		ExpectedFullCommittee:    false,
-		ExpectedError:            "non unique signer",
+		Name:                  "no quorum duplicate",
+		Share:                 *share,
+		Message:               *msg,
+		ExpectedHasQuorum:     false,
+		ExpectedFullCommittee: false,
+		ExpectedError:         "non unique signer",
 	}
 }

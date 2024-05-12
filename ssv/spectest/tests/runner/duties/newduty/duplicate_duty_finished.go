@@ -18,16 +18,16 @@ import (
 func DuplicateDutyFinished() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	finishRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	finishRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.Share,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		r.GetBaseRunner().State.Finished = true
 		return r
 	}
@@ -38,7 +38,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 
 	// finishTaskRunner is a helper function that finishes a task runner and returns it
 	// task is an operation that isn't a beacon duty, e.g. validator registration
-	finishTaskRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	finishTaskRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.Finished = true
 		return r
@@ -61,14 +61,6 @@ func DuplicateDutyFinished() tests.SpecTest {
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
-			},
-			{
-				Name:                    "sync committee",
-				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				PostDutyRunnerStateRoot: "9ed70d234980d27628811e78f59b0a723ae2bd768ad9ce02943aa3fdf737e2c5",
-				ExpectedError:           expectedError,
 			},
 			{
 				Name:                    "aggregator",
@@ -94,8 +86,24 @@ func DuplicateDutyFinished() tests.SpecTest {
 			},
 			{
 				Name:                    "attester",
-				Runner:                  finishRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDuty,
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
+				Duty:                    testingutils.TestingAttesterDuty,
+				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				ExpectedError:           expectedError,
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
+				Duty:                    testingutils.TestingSyncCommitteeDuty,
+				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+				ExpectedError:           expectedError,
+			},
+			{
+				Name:                    "attester and sync committee",
+				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedError,

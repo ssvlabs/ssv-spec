@@ -94,7 +94,7 @@ func CreateCommit(state *State, config IConfig, root [32]byte) (*types.SignedSSV
 func baseCommitValidationIgnoreSignature(
 	signedCommit *types.SignedSSVMessage,
 	height Height,
-	operators []*types.Operator,
+	operators []*types.CommitteeMember,
 ) error {
 
 	if err := signedCommit.Validate(); err != nil {
@@ -124,8 +124,7 @@ func baseCommitValidationVerifySignature(
 	config IConfig,
 	signedCommit *types.SignedSSVMessage,
 	height Height,
-	operators []*types.Operator,
-) error {
+	operators []*types.CommitteeMember) error {
 
 	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err
@@ -144,7 +143,7 @@ func validateCommit(
 	height Height,
 	round Round,
 	proposedSignedMsg *types.SignedSSVMessage,
-	operators []*types.Operator,
+	operators []*types.CommitteeMember,
 ) error {
 	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err
@@ -169,7 +168,7 @@ func validateCommit(
 	}
 
 	if !bytes.Equal(proposedMsg.Root[:], msg.Root[:]) {
-		return errors.New("proposed data mistmatch")
+		return errors.New("proposed data mismatch")
 	}
 
 	return nil

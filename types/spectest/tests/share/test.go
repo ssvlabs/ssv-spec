@@ -11,13 +11,12 @@ import (
 )
 
 type ShareTest struct {
-	Name                     string
-	Share                    types.Share
-	Message                  types.SignedSSVMessage
-	ExpectedHasPartialQuorum bool
-	ExpectedHasQuorum        bool
-	ExpectedFullCommittee    bool
-	ExpectedError            string
+	Name                  string
+	Share                 types.Share
+	Message               types.SignedSSVMessage
+	ExpectedHasQuorum     bool
+	ExpectedFullCommittee bool
+	ExpectedError         string
 }
 
 func (test *ShareTest) TestName() string {
@@ -49,7 +48,6 @@ func (test *ShareTest) Run(t *testing.T) {
 	numSigners := test.GetUniqueMessageSignersCount()
 
 	// Test expected thresholds results
-	require.Equal(t, test.ExpectedHasPartialQuorum, test.Share.HasPartialQuorum(numSigners))
 	require.Equal(t, test.ExpectedHasQuorum, test.Share.HasQuorum(numSigners))
 	require.Equal(t, test.ExpectedFullCommittee, (len(test.Share.Committee) == numSigners))
 

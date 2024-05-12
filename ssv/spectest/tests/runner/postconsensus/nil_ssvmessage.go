@@ -8,11 +8,11 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// NilSSVMessage tests a SignedSSVMessage with a nil SSVMessage
+// NilSSVMessage tests a SignedSSVMessage with wrong data that can't be decoded
 func NilSSVMessage() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
-
 	invalidMsg := &types.SignedSSVMessage{
 		Signatures:  [][]byte{{1, 2, 3, 4}},
 		OperatorIDs: []types.OperatorID{1},
@@ -23,6 +23,48 @@ func NilSSVMessage() tests.SpecTest {
 		Name: "post consensus nil ssvmessage",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name: "attester",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingAttesterDuty,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingSyncCommitteeDuty,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
+				Name: "attester and sync committee",
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties,
+					&testingutils.TestBeaconVote,
+				),
+				Duty:                   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages:               []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          expectedError,
+			},
+			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
 					testingutils.SyncCommitteeContributionRunner(ks),
@@ -32,21 +74,6 @@ func NilSSVMessage() tests.SpecTest {
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages:                []*types.SignedSSVMessage{invalidMsg},
 				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
-				Name: "sync committee",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeRunner(ks),
-					&testingutils.TestingSyncCommitteeDuty,
-					testingutils.TestSyncCommitteeConsensusData,
-				),
-				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				Messages:                []*types.SignedSSVMessage{invalidMsg},
-				PostDutyRunnerStateRoot: "599f535071e53121470fc10c80fad5d103340eba90dcd9672cff3e7a874de276",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
@@ -92,21 +119,6 @@ func NilSSVMessage() tests.SpecTest {
 				Duty:                    &testingutils.TestingAggregatorDuty,
 				Messages:                []*types.SignedSSVMessage{invalidMsg},
 				PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           expectedError,
-			},
-			{
-				Name: "attester",
-				Runner: decideRunner(
-					testingutils.AttesterRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty:                    &testingutils.TestingAttesterDuty,
-				Messages:                []*types.SignedSSVMessage{invalidMsg},
-				PostDutyRunnerStateRoot: "f43a47e0cb007d990f6972ce764ec8d0a35ae9c14a46f41bd7cde3df7d0e5f88",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,

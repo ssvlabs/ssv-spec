@@ -71,7 +71,7 @@ func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error 
 	return nil
 }
 
-func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessages, msgID MessageID, operatorID OperatorID, operatorSigner OperatorSigner) (*SignedSSVMessage, error) {
+func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessages, msgID MessageID, operatorSigner OperatorSigner) (*SignedSSVMessage, error) {
 	encodedMsg, err := psigMsgs.Encode()
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessag
 
 	return &SignedSSVMessage{
 		Signatures:  [][]byte{sig},
-		OperatorIDs: []OperatorID{operatorID},
+		OperatorIDs: []OperatorID{operatorSigner.GetOperatorID()},
 		SSVMessage:  ssvMsg,
 	}, nil
 }
@@ -99,7 +99,9 @@ func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessag
 type PartialSignatureMessage struct {
 	PartialSignature Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty
 	SigningRoot      [32]byte  `ssz-size:"32"` // the root signed in PartialSignature
-	Signer           OperatorID
+	// TODO get OperatorID from the SSVSignedMessage
+	Signer         OperatorID
+	ValidatorIndex phase0.ValidatorIndex
 }
 
 // Encode returns a msg encoded bytes or error
