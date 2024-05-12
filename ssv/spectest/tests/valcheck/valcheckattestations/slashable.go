@@ -26,8 +26,8 @@ func Slashable() tests.SpecTest {
 		Slot:            testingutils.TestingDutySlot,
 		Index:           0,
 		BeaconBlockRoot: data.BlockRoot,
-		Source:          nil,
-		Target:          nil,
+		Source:          data.Source,
+		Target:          data.Target,
 	}
 
 	r, _ := attestationData.HashTreeRoot()
