@@ -82,7 +82,7 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 }
 
 // IsAttestationSlashable returns error if attestation is slashable
-func (km *testingKeyManager) IsAttestationSlashable(pk []byte, data *spec.AttestationData) error {
+func (km *testingKeyManager) IsAttestationSlashable(pk types.ValidatorPK, data *spec.AttestationData) error {
 	for _, r := range km.slashableDataRoots {
 		r2, _ := data.HashTreeRoot()
 		if bytes.Equal(r, r2[:]) {

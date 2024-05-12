@@ -26,7 +26,7 @@ type BeaconSigner interface {
 	// SignBeaconObject returns signature and root.
 	SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (Signature, [32]byte, error)
 	// IsAttestationSlashable returns error if attestation is slashable
-	IsAttestationSlashable(pk []byte, data *spec.AttestationData) error
+	IsAttestationSlashable(pk ValidatorPK, data *spec.AttestationData) error
 	// IsBeaconBlockSlashable returns error if the given block is slashable
 	IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error
 }
