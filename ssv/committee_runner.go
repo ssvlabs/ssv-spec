@@ -123,8 +123,9 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		switch duty.Type {
 		case types.BNRoleAttester:
 			attestationData := constructAttestationData(beaconVote, duty)
-			// Must be added because in consensus we disregard committee index
-			if err := cr.signer.IsAttestationSlashable(types.ValidatorPK(duty.PubKey), attestationData); err != nil {
+			shareKey := cr.BaseRunner.Share[duty.ValidatorIndex].SharePubKey
+			// Slashing check must be added because in consensus we disregard committee index
+			if err := cr.signer.IsAttestationSlashable(shareKey, attestationData); err != nil {
 				// The attestation is slashable, so we should not sign it
 				// Return an error because it is a sign of malicious behavior
 				return errors.Wrap(err, "attestation is slashable")
