@@ -1,7 +1,6 @@
 package valcheckattestations
 
 import (
-	goEthSpec "github.com/attestantio/go-eth2-client/spec"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -11,10 +10,8 @@ import (
 
 // Slashable tests a slashable AttestationData
 func Slashable() tests.SpecTest {
-	attestationData := &spec.AttestationData{
-		Slot:            testingutils.TestingDutySlot,
-		Index:           50,
-		BeaconBlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	data := &types.BeaconVote{
+		BlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		Source: &spec.Checkpoint{
 			Epoch: 0,
 			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
@@ -25,21 +22,12 @@ func Slashable() tests.SpecTest {
 		},
 	}
 
-	attestationDataBytes, _ := attestationData.MarshalSSZ()
-
-	data := &types.ConsensusData{
-		Duty: types.BeaconDuty{
-			Type:                    types.BNRoleAttester,
-			PubKey:                  testingutils.TestingValidatorPubKey,
-			Slot:                    testingutils.TestingDutySlot,
-			ValidatorIndex:          testingutils.TestingValidatorIndex,
-			CommitteeIndex:          50,
-			CommitteesAtSlot:        36,
-			CommitteeLength:         128,
-			ValidatorCommitteeIndex: 11,
-		},
-		Version: goEthSpec.DataVersionPhase0,
-		DataSSZ: attestationDataBytes,
+	attestationData := &spec.AttestationData{
+		Slot:            testingutils.TestingDutySlot,
+		Index:           0,
+		BeaconBlockRoot: data.BlockRoot,
+		Source:          nil,
+		Target:          nil,
 	}
 
 	r, _ := attestationData.HashTreeRoot()
@@ -47,11 +35,11 @@ func Slashable() tests.SpecTest {
 	input, _ := data.Encode()
 
 	return &valcheck.SpecTest{
-		Name:       "attestation value check slashable",
-		Network:    types.BeaconTestNetwork,
-		BeaconRole: types.BNRoleAttester,
-		Input:      input,
-		AnyError:   true,
+		Name:          "attestation value check slashable",
+		Network:       types.BeaconTestNetwork,
+		RunnerRole:    types.RoleCommittee,
+		Input:         input,
+		ExpectedError: "slashable attestation",
 		SlashableDataRoots: [][]byte{
 			r[:],
 		},
