@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
@@ -43,20 +44,20 @@ func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 
-	var runnerInstance *ssv.CommitteeRunner
+	broadcastedMsgs := make([]*types.SignedSSVMessage, 0)
+	broadcastedRoots := make([]phase0.Root, 0)
 	for _, runner := range test.Committee.Runners {
-		runnerInstance = runner
-		break
+		network := runner.GetNetwork().(*testingutils.TestingNetwork)
+		beaconNetwork := runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
+		broadcastedMsgs = append(broadcastedMsgs, network.BroadcastedMsgs...)
+		broadcastedRoots = append(broadcastedRoots, beaconNetwork.BroadcastedRoots...)
 	}
-	network := runnerInstance.GetNetwork().(*testingutils.TestingNetwork)
-	beaconNetwork := runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
-	committee := test.Committee.Operator.Committee
 
 	// test output message
-	testingutils.ComparePartialSignatureOutputMessages(t, test.OutputMessages, network.BroadcastedMsgs, committee)
+	testingutils.ComparePartialSignatureOutputMessages(t, test.OutputMessages, broadcastedMsgs, test.Committee.Operator.Committee)
 
 	// test beacon broadcasted msgs
-	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, broadcastedRoots)
 
 	// post root
 	postRoot, err := test.Committee.GetRoot()

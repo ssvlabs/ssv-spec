@@ -47,6 +47,9 @@ func PastMessage() tests.SpecTest {
 		return signed
 	}
 
+	// The Committee object (used in CommitteeRunner tests) don't have a runner for the past slot
+	// (this feature can't be implemented with this test spec)
+	// Another "past_msg" test (that is added in the committee package) runs with an existing past runner
 	expectedErrCommittee := "no runner found for message's slot"
 
 	return &tests.MultiMsgProcessingSpecTest{

@@ -520,6 +520,8 @@
 						"Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 				}
 		},
-		"HighestAttestingSlotMapEntry": [],
-		"HighestAttestingSlot": []
+		"HighestDutySlotMap": {
+				"0": {},
+				"3": {}
+		}
 }

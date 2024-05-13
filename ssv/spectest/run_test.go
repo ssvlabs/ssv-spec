@@ -390,6 +390,18 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 
 	c.SignatureVerifier = testingutils.NewTestingVerifier()
 
+	for slot := range c.Runners {
+
+		var shareInstance *types.Share
+		for _, share := range c.Runners[slot].BaseRunner.Share {
+			shareInstance = share
+			break
+		}
+
+		fixedRunner := fixRunnerForRun(t, committeeMap["Runners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}), testingutils.KeySetForShare(shareInstance))
+		c.Runners[slot] = fixedRunner.(*ssv.CommitteeRunner)
+	}
+
 	return c
 }
 
@@ -461,6 +473,7 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 	newInst.State.PrepareContainer = inst.State.PrepareContainer
 	newInst.State.CommitContainer = inst.State.CommitContainer
 	newInst.State.RoundChangeContainer = inst.State.RoundChangeContainer
+	newInst.StartValue = inst.StartValue
 	return newInst
 }
 
