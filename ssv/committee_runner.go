@@ -57,9 +57,9 @@ func (cr CommitteeRunner) Encode() ([]byte, error) {
 }
 
 // StopDuty stops the duty for the given validator
-func (cr *CommitteeRunner) StopDuty(validator types.ValidatorPK) {
+func (cr *CommitteeRunner) StopDuty(validatorIndex phase0.ValidatorIndex) {
 	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty).BeaconDuties {
-		if types.ValidatorPK(duty.PubKey) == validator {
+		if duty.ValidatorIndex == validatorIndex {
 			duty.IsStopped = true
 		}
 	}
