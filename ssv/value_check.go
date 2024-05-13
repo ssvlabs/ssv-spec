@@ -36,13 +36,10 @@ func dutyValueCheck(
 	return nil
 }
 
-// TODO add tests
 func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
-	// sharePublicKeys and committeeIndices should be the same length
 	sharePublicKeys []types.ShareValidatorPK,
-	committeeIndices []phase0.CommitteeIndex,
 	estimatedCurrentEpoch phase0.Epoch,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
@@ -61,22 +58,19 @@ func BeaconVoteValueCheckF(
 
 		attestationData := &phase0.AttestationData{
 			Slot: slot,
-			// We can't fill CommitteeIndex for consensus data
-			Index:           0,
+			// Consensus data is unaware of CommitteeIndex
+			// We use -1 to not run into issues with the duplicate value slashing check:
+			// (data_1 != data_2 and data_1.target.epoch == data_2.target.epoch)
+			Index:           -1,
 			BeaconBlockRoot: bv.BlockRoot,
 			Source:          bv.Source,
 			Target:          bv.Target,
 		}
 
-		slashCounter := 0
-		for i, sharePublicKey := range sharePublicKeys {
-			attestationData.Index = committeeIndices[i]
+		for _, sharePublicKey := range sharePublicKeys {
 			if err := signer.IsAttestationSlashable(sharePublicKey, attestationData); err != nil {
-				slashCounter++
+				return errors.Wrap(err, "slashable attestation")
 			}
-		}
-		if slashCounter > len(sharePublicKeys)/2 {
-			return errors.New("slashable attestation")
 		}
 		return nil
 	}
