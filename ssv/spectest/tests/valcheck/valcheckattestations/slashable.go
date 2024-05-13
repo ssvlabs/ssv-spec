@@ -6,6 +6,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"math"
 )
 
 // Slashable tests a slashable AttestationData
@@ -24,7 +25,7 @@ func Slashable() tests.SpecTest {
 
 	attestationData := &spec.AttestationData{
 		Slot:            testingutils.TestingDutySlot,
-		Index:           0,
+		Index:           math.MaxUint64,
 		BeaconBlockRoot: data.BlockRoot,
 		Source:          data.Source,
 		Target:          data.Target,

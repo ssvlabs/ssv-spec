@@ -70,7 +70,7 @@ func BeaconVoteValueCheckF(
 
 		for _, sharePublicKey := range sharePublicKeys {
 			if err := signer.IsAttestationSlashable(sharePublicKey, attestationData); err != nil {
-				return errors.Wrap(err, "slashable attestation")
+				return err
 			}
 		}
 		return nil
