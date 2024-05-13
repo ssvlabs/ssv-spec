@@ -26,7 +26,10 @@ func PastMessage() tests.SpecTest {
 
 	bumpHeight := func(c *ssv.Committee, previousDuty types.Duty) *ssv.Committee {
 
-		c.StartDuty(previousDuty.(*types.CommitteeDuty))
+		err := c.StartDuty(previousDuty.(*types.CommitteeDuty))
+		if err != nil {
+			panic(err)
+		}
 
 		decidingMsgs := []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithIdentifierAndFullData(

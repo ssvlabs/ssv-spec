@@ -53,7 +53,8 @@ func (cr CommitteeRunner) StartNewDuty(duty types.Duty) error {
 	if err != nil {
 		return err
 	}
-	cr.submittedDuties = make(map[types.BeaconRole]map[phase0.ValidatorIndex]struct{})
+	cr.submittedDuties[types.BNRoleAttester] = make(map[phase0.ValidatorIndex]struct{})
+	cr.submittedDuties[types.BNRoleSyncCommittee] = make(map[phase0.ValidatorIndex]struct{})
 	return nil
 }
 
