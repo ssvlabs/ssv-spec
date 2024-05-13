@@ -259,7 +259,6 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 				if err := cr.beacon.SubmitAttestation(att); err != nil {
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
 				}
-				cr.RecordSubmission(types.BNRoleAttester, validator)
 			} else if role == types.BNRoleSyncCommittee {
 				syncMsg := sszObject.(*altair.SyncCommitteeMessage)
 
@@ -272,8 +271,9 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 				if err := cr.beacon.SubmitSyncMessage(syncMsg); err != nil {
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
 				}
-				cr.RecordSubmission(types.BNRoleSyncCommittee, validator)
 			}
+			// Record successful submission
+			cr.RecordSubmission(role, validator)
 		}
 	}
 
