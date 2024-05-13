@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"bytes"
+	"math"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -61,7 +62,7 @@ func BeaconVoteValueCheckF(
 			// Consensus data is unaware of CommitteeIndex
 			// We use -1 to not run into issues with the duplicate value slashing check:
 			// (data_1 != data_2 and data_1.target.epoch == data_2.target.epoch)
-			Index:           -1,
+			Index:           math.MaxUint64,
 			BeaconBlockRoot: bv.BlockRoot,
 			Source:          bv.Source,
 			Target:          bv.Target,
