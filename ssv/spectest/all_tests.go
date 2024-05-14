@@ -160,13 +160,7 @@ var AllTests = []tests.TestF{
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
-	// valcheckattestations.Slashable,
-	// valcheckattestations.SourceHigherThanTarget,
-	// valcheckattestations.FarFutureTarget,
-	// valcheckattestations.CommitteeIndexMismatch,
-	// valcheckattestations.SlotMismatch,
-	// valcheckattestations.ConsensusDataNil,
-	// valcheckattestations.Valid,
+
 	valcheckproposer.BlindedBlock,
 
 	valcheckcommittee.Valid,
