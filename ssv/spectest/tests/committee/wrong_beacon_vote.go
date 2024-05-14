@@ -7,15 +7,14 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// WrongConsensusData sends a proposal message to a cluster runner with an invalid consensus data that can't be decoded to BeaconVote
-// Expects: error
-func WrongConsensusData() tests.SpecTest {
+// WrongBeaconVote sends a proposal message to a cluster runner with an invalid beacon vote
+func WrongBeaconVote() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	ksMapFor500Validators := testingutils.KeySetMapForValidators(500)
 
 	multiSpecTest := &MultiCommitteeSpecTest{
-		Name: "wrong consensus data",
+		Name: "wrong beacon vote",
 		Tests: []*CommitteeSpecTest{
 			{
 				Name:      "500 attestations 500 sync committees",
