@@ -18,6 +18,6 @@ func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 		},
-		ExpectedRoot: "d31ba4f08c790d96b6951cf632c51923ce3e77fbc896336b1def371476b13743",
+		ExpectedRoot: "da8a16c59e5c5a1e454ed318770e64d7e22b9209d1dbddb0445abca459cd5199",
 	}
 }

@@ -39,6 +39,6 @@
 		"RoundChangeJustifications": null,
 		"PrepareJustifications": null,
 		"CreateType": "CreatePrepare",
-		"ExpectedRoot": "adf79bdbc15b8954cb75f60f3917410106ae8c36bbc3819f3313b4899a684aab",
+		"ExpectedRoot": "0d1ed244a454b3df5e80fac60ed426ee1d3166534b35cd2f6b1602cddef42ded",
 		"ExpectedError": ""
 }

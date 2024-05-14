@@ -9,6 +9,6 @@ func CreateCommit() tests.SpecTest {
 		Name:         "create commit",
 		Value:        [32]byte{1, 2, 3, 4},
 		Round:        10,
-		ExpectedRoot: "ce830104bddf6905db857b74df322663359c3c4bb31d8f0554b3ff4a78f96dda",
+		ExpectedRoot: "d6a58346ff2236d3c5e818d8b9d825a879e78886d895e5b645a20a22d7f50cbb",
 	}
 }

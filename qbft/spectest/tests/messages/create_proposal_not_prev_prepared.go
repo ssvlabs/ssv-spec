@@ -18,6 +18,6 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 			testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
 			testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 		},
-		ExpectedRoot: "310725e97a6c1566433ca70d4ae3ff4b91f8d32809a753ea2c64125a1bb98db2",
+		ExpectedRoot: "6eb9a3c33be480e348a745b6f1f21aa719f7ee99434dcf29b0ad3b16ca1aff1a",
 	}
 }

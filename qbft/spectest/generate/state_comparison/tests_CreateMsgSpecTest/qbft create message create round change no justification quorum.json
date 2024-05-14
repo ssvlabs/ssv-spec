@@ -182,6 +182,6 @@
 				}
 		],
 		"CreateType": "CreateRoundChange",
-		"ExpectedRoot": "fd7b5fef9c1cc3a1d769f602a1a6d3d776e615d468cc4e38ddc669bb80a81ff8",
+		"ExpectedRoot": "02575efc3ae03ac4265b5ef81beea896ca404f4843dd289e21e3576fa9065f3a",
 		"ExpectedError": ""
 }

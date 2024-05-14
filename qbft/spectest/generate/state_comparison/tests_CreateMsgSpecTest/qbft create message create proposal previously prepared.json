@@ -467,6 +467,6 @@
 				}
 		],
 		"CreateType": "createProposal",
-		"ExpectedRoot": "e43422be8b818596733c9492e6e3731a6ea1d9809a8cf1192b2ef0fd6b889c0d",
+		"ExpectedRoot": "d8692529738f1e107cde1bbf560403c7627d639a8ae56b6bf32dead23c28a775",
 		"ExpectedError": ""
 }
