@@ -36,13 +36,6 @@ func WrongValidatorIndex() tests.SpecTest {
 				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
 				ExpectedError: expectedErr,
 			},
-			// {
-			// 	Name:          "sync committee",
-			// 	Network:       types.BeaconTestNetwork,
-			// 	BeaconRole:    types.BNRoleSyncCommittee,
-			// 	Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
-			// 	ExpectedError: expectedErr,
-			// },
 			{
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
@@ -57,13 +50,13 @@ func WrongValidatorIndex() tests.SpecTest {
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
 				ExpectedError: expectedErr,
 			},
-			// {
-			// 	Name:          "attester",
-			// 	Network:       types.BeaconTestNetwork,
-			// 	BeaconRole:    types.BNRoleAttester,
-			// 	Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
-			// 	ExpectedError: "duty invalid: wrong validator index",
-			// },
+			{
+				Name:    "committee",
+				Network: types.BeaconTestNetwork,
+				Role:    types.RoleCommittee,
+				Input:   testingutils.TestBeaconVoteByts,
+				// No error since beacon vote doesn't include validator index
+			},
 		},
 	}
 }
