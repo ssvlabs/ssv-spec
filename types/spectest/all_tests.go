@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata/proposer"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
@@ -98,4 +99,6 @@ var AllTests = []SpecTest{
 	share.HasQuorum3f1(),
 	share.NoQuorumDuplicate(),
 	share.QuorumWithDuplicate(),
+
+	beaconvote.BeaconVoteEncoding(),
 }
