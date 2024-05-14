@@ -12,6 +12,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckcommittee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
 )
@@ -167,6 +168,13 @@ var AllTests = []tests.TestF{
 	// valcheckattestations.ConsensusDataNil,
 	// valcheckattestations.Valid,
 	valcheckproposer.BlindedBlock,
+
+	valcheckcommittee.Valid,
+	valcheckcommittee.WrongAttestationWithConsensusData,
+	valcheckcommittee.WrongSyncCommitteeWithConsensusData,
+	valcheckcommittee.SourceHigherThanTarget,
+	valcheckcommittee.FarFutureTarget,
+	valcheckcommittee.Slashable,
 
 	dutyexe.WrongDutyRole,
 	dutyexe.WrongDutyPubKey,
