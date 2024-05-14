@@ -14,11 +14,11 @@ func BlindedBlock() tests.SpecTest {
 		Name: "blinded blocks",
 		Tests: []*valcheck.SpecTest{
 			{
-				Name:       "blinded blocks accepted",
-				Network:    types.BeaconTestNetwork,
-				BeaconRole: types.BNRoleProposer,
-				Input:      testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
-				AnyError:   false,
+				Name:     "blinded blocks accepted",
+				Network:  types.BeaconTestNetwork,
+				Role:     types.RoleProposer,
+				Input:    testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
+				AnyError: false,
 			},
 		},
 	}

@@ -47,7 +47,7 @@ func FarFutureTarget() tests.SpecTest {
 	return &valcheck.SpecTest{
 		Name:          "attestation value check far future target",
 		Network:       types.BeaconTestNetwork,
-		BeaconRole:    types.BNRoleAttester,
+		Role:          types.RoleCommittee,
 		Input:         input,
 		ExpectedError: "attestation data target epoch is into far future",
 	}

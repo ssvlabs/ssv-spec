@@ -46,7 +46,7 @@ func SourceHigherThanTarget() tests.SpecTest {
 	return &valcheck.SpecTest{
 		Name:          "attestation value check source higher than target",
 		Network:       types.BeaconTestNetwork,
-		BeaconRole:    types.BNRoleAttester,
+		Role:          types.RoleCommittee,
 		Input:         input,
 		ExpectedError: "attestation data source > target",
 	}

@@ -46,7 +46,7 @@ func SlotMismatch() tests.SpecTest {
 	return &valcheck.SpecTest{
 		Name:          "attestation value check slot mismatch",
 		Network:       types.PraterNetwork,
-		BeaconRole:    types.BNRoleAttester,
+		Role:          types.RoleCommittee,
 		Input:         input,
 		ExpectedError: "attestation data slot != duty slot",
 	}

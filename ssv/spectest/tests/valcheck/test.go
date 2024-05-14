@@ -1,18 +1,19 @@
 package valcheck
 
 import (
+	"testing"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type SpecTest struct {
 	Name               string
 	Network            types.BeaconNetwork
-	BeaconRole         types.BeaconRole
+	Role               types.RunnerRole
 	Input              []byte
 	SlashableDataRoots [][]byte
 	ExpectedError      string
@@ -49,16 +50,14 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	keySet := testingutils.Testing4SharesSet()
 	sharePK := keySet.Shares[1]
 	sharePKBytes := sharePK.Serialize()
-	switch test.BeaconRole {
-	case types.BNRoleAttester:
+	switch test.Role {
+	case types.RoleCommittee:
 		return ssv.BeaconVoteValueCheckF(signer, testingutils.TestingDutySlot, sharePKBytes, testingutils.TestingDutyEpoch)
-	case types.BNRoleProposer:
+	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
-	case types.BNRoleAggregator:
+	case types.RoleAggregator:
 		return ssv.AggregatorValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex)
-	case types.BNRoleSyncCommittee:
-		return ssv.BeaconVoteValueCheckF(signer, testingutils.TestingDutySlot, sharePKBytes, testingutils.TestingDutyEpoch)
-	case types.BNRoleSyncCommitteeContribution:
+	case types.RoleSyncCommitteeContribution:
 		return ssv.SyncCommitteeContributionValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex)
 	default:
 		panic("unknown role")

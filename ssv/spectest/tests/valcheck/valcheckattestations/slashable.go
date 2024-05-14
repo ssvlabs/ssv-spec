@@ -47,11 +47,11 @@ func Slashable() tests.SpecTest {
 	input, _ := data.Encode()
 
 	return &valcheck.SpecTest{
-		Name:       "attestation value check slashable",
-		Network:    types.BeaconTestNetwork,
-		BeaconRole: types.BNRoleAttester,
-		Input:      input,
-		AnyError:   true,
+		Name:     "attestation value check slashable",
+		Network:  types.BeaconTestNetwork,
+		Role:     types.RoleCommittee,
+		Input:    input,
+		AnyError: true,
 		SlashableDataRoots: [][]byte{
 			r[:],
 		},
