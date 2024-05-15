@@ -262,9 +262,6 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			} else if role == types.BNRoleSyncCommittee {
 				syncMsg := sszObject.(*altair.SyncCommitteeMessage)
 
-				// Fix with the correct validator index
-				syncMsg.ValidatorIndex = validator
-
 				// Insert signature
 				syncMsg.Signature = specSig
 
