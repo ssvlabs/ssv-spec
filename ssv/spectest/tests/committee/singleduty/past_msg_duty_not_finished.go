@@ -1,4 +1,4 @@
-package committee
+package committeesingleduty
 
 import (
 	"crypto/sha256"
@@ -8,6 +8,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -74,9 +75,9 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 
 	expectedError := "failed processing consensus message: could not process msg: invalid signed message: proposal is not valid with current state"
 
-	multiSpecTest := &MultiCommitteeSpecTest{
+	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name: "past msg duty not finished",
-		Tests: []*CommitteeSpecTest{
+		Tests: []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("%v attestation", numValidators),
 				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), testingutils.TestingCommitteeAttesterDuty(phase0.Slot(pastHeight), validatorsIndexList)),

@@ -1,4 +1,4 @@
-package committee
+package committeesingleduty
 
 import (
 	"crypto/sha256"
@@ -8,6 +8,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -18,9 +19,9 @@ func HappyFlow() tests.SpecTest {
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(1)]
 	msgID := testingutils.CommitteeMsgID(ks)
 
-	multiSpecTest := &MultiCommitteeSpecTest{
+	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name:  "happy flow",
-		Tests: []*CommitteeSpecTest{},
+		Tests: []*committee.CommitteeSpecTest{},
 	}
 
 	for _, numValidators := range []int{1, 30, 100, 500} {
@@ -29,7 +30,7 @@ func HappyFlow() tests.SpecTest {
 		ksMap := testingutils.KeySetMapForValidators(numValidators)
 		shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*CommitteeSpecTest{
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("%v attestation", numValidators),
 				Committee: testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),

@@ -1,7 +1,8 @@
-package committee
+package committeesingleduty
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -12,9 +13,9 @@ func StartNoDuty() tests.SpecTest {
 
 	ksMapFor1Validator := testingutils.KeySetMapForValidators(1)
 
-	multiSpecTest := &MultiCommitteeSpecTest{
+	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name: "start no duties",
-		Tests: []*CommitteeSpecTest{
+		Tests: []*committee.CommitteeSpecTest{
 			{
 				Name:      "no duty",
 				Committee: testingutils.BaseCommittee(ksMapFor1Validator),

@@ -1,4 +1,4 @@
-package committee
+package committeesingleduty
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"

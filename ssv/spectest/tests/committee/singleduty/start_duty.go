@@ -1,9 +1,10 @@
-package committee
+package committeesingleduty
 
 import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -11,9 +12,9 @@ import (
 // StartDuty starts a cluster runner
 func StartDuty() tests.SpecTest {
 
-	multiSpecTest := &MultiCommitteeSpecTest{
+	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name:  "start duty",
-		Tests: []*CommitteeSpecTest{},
+		Tests: []*committee.CommitteeSpecTest{},
 	}
 
 	for _, numValidators := range []int{1, 30, 100, 500} {
@@ -21,7 +22,7 @@ func StartDuty() tests.SpecTest {
 		validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 		ksMap := testingutils.KeySetMapForValidators(numValidators)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*CommitteeSpecTest{
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 
 			{
 				Name:      fmt.Sprintf("%v attestation", numValidators),
