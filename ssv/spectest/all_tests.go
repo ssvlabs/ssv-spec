@@ -2,6 +2,7 @@ package spectest
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
@@ -51,6 +52,9 @@ var AllTests = []tests.TestF{
 	postconsensus.InconsistentOperatorSigner,
 	postconsensus.NilSSVMessage,
 	postconsensus.InvalidValidatorIndex,
+	postconsensus.PartialInvalidRootQuorumThenValidQuorum,
+	postconsensus.PartialInvalidSigQuorumThenValidQuorum,
+	postconsensus.MixedCommittees,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -63,6 +67,14 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyFinished,
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
+
+	committee.StartDuty,
+	committee.StartNoDuty,
+	committee.ValidConsensusData,
+	committee.WrongConsensusData,
+	committee.Decided,
+	committee.HappyFlow,
+	committee.PastMessageDutyNotFinished,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,

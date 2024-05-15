@@ -79,7 +79,7 @@
 										},
 										"ID": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 										"Round": 1,
-										"Height": 0,
+										"Height": 5193728,
 										"LastPreparedRound": 0,
 										"LastPreparedValue": null,
 										"ProposalAcceptedForCurrentRound": null,
@@ -221,7 +221,7 @@
 				},
 				"QBFTController": {
 						"Identifier": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
-						"Height": 0,
+						"Height": 5193728,
 						"StoredInstances": [
 								{
 										"State": {
@@ -285,7 +285,7 @@
 												},
 												"ID": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 												"Round": 1,
-												"Height": 0,
+												"Height": 5193728,
 												"LastPreparedRound": 0,
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,

@@ -2,7 +2,6 @@ package consensus
 
 import (
 	"crypto/rsa"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -32,21 +31,6 @@ func InvalidDecidedValue() tests.SpecTest {
 		byts, _ := cd.Encode()
 		return byts
 	}
-	beaconVoteByts := func() []byte {
-		cd := &types.BeaconVote{
-			BlockRoot: phase0.Root{1, 2, 3, 4},
-			Source: &phase0.Checkpoint{
-				Epoch: 2,
-				Root:  phase0.Root{1, 2, 3, 4},
-			},
-			Target: &phase0.Checkpoint{
-				Epoch: 1,
-				Root:  phase0.Root{1, 2, 3, 5},
-			},
-		}
-		byts, _ := cd.Encode()
-		return byts
-	}
 
 	expectedErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid" +
 		": invalid value: unknown duty role"
@@ -67,8 +51,8 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -85,8 +69,8 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -103,8 +87,8 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},

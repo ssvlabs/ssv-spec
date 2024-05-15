@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
@@ -38,7 +39,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 
 // RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest
 func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
-	v, lastErr := test.runPreTesting()
+	v, c, lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
@@ -46,11 +47,30 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		require.NoError(t, lastErr)
 	}
 
+	network := &testingutils.TestingNetwork{}
+	beaconNetwork := &testingutils.TestingBeaconNode{}
+	var committee []*types.CommitteeMember
+	switch test.Runner.(type) {
+	case *ssv.CommitteeRunner:
+		var runnerInstance *ssv.CommitteeRunner
+		for _, runner := range c.Runners {
+			runnerInstance = runner
+			break
+		}
+		network = runnerInstance.GetNetwork().(*testingutils.TestingNetwork)
+		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
+		committee = c.Operator.Committee
+	default:
+		network = v.Network.(*testingutils.TestingNetwork)
+		committee = v.Operator.Committee
+		beaconNetwork = test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
+	}
+
 	// test output message
-	test.compareOutputMsgs(t, v)
+	testingutils.ComparePartialSignatureOutputMessages(t, test.OutputMessages, network.BroadcastedMsgs, committee)
 
 	// test beacon broadcasted msgs
-	test.compareBroadcastedBeaconMsgs(t)
+	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
 
 	// post root
 	postRoot, err := test.Runner.GetRoot()
@@ -67,8 +87,9 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	test.RunAsPartOfMultiTest(t)
 }
 
-func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
+func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committee, error) {
 	var share *types.Share
+	ketSetMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
 	if len(test.Runner.GetBaseRunner().Share) == 0 {
 		panic("No share in base runner for tests")
 	}
@@ -76,96 +97,47 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, error) {
 		share = validatorShare
 		break
 	}
-	v := testingutils.BaseValidator(testingutils.KeySetForShare(share))
-	v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
-	v.Network = test.Runner.GetNetwork()
+	for valIdx, validatorShare := range test.Runner.GetBaseRunner().Share {
+		ketSetMap[valIdx] = testingutils.KeySetForShare(validatorShare)
+	}
 
+	var v *ssv.Validator
+	var c *ssv.Committee
 	var lastErr error
-	if !test.DontStartDuty {
-		lastErr = v.StartDuty(test.Duty)
-	}
-	for _, msg := range test.Messages {
-		err := v.ProcessMessage(msg)
-		if err != nil {
-			lastErr = err
+	switch test.Runner.(type) {
+	case *ssv.CommitteeRunner:
+		c = testingutils.BaseCommitteeWithRunnerSample(ketSetMap, test.Runner.(*ssv.CommitteeRunner))
+
+		if !test.DontStartDuty {
+			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))
+		} else {
+			c.Runners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
 		}
-	}
 
-	return v, lastErr
-}
-
-func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
-	broadcastedRoots := test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).BroadcastedRoots
-	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots))
-	for _, r1 := range test.BeaconBroadcastedRoots {
-		found := false
-		for _, r2 := range broadcastedRoots {
-			if r1 == hex.EncodeToString(r2[:]) {
-				found = true
-				break
+		for _, msg := range test.Messages {
+			err := c.ProcessMessage(msg)
+			if err != nil {
+				lastErr = err
 			}
 		}
-		require.Truef(t, found, "broadcasted beacon root not found")
-	}
-}
 
-func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Validator) {
-	filterPartialSigs := func(messages []*types.SSVMessage) []*types.SSVMessage {
-		ret := make([]*types.SSVMessage, 0)
-		for _, msg := range messages {
-			if msg.MsgType != types.SSVPartialSignatureMsgType {
-				continue
-			}
-			ret = append(ret, msg)
+	default:
+		v = testingutils.BaseValidator(testingutils.KeySetForShare(share))
+		v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
+		v.Network = test.Runner.GetNetwork()
+
+		if !test.DontStartDuty {
+			lastErr = v.StartDuty(test.Duty)
 		}
-		return ret
-	}
-	broadcastedSignedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
-	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Operator.Committee))
-	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
-	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
-	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
-	index := 0
-	for _, msg := range broadcastedMsgs {
-		if msg.MsgType != types.SSVPartialSignatureMsgType {
-			continue
-		}
-
-		msg1 := &types.PartialSignatureMessages{}
-		require.NoError(t, msg1.Decode(msg.Data))
-		msg2 := test.OutputMessages[index]
-		require.Len(t, msg1.Messages, len(msg2.Messages))
-
-		// messages are not guaranteed to be in order so we map them and then test all roots to be equal
-		roots := make(map[string]string)
-		for i, partialSigMsg2 := range msg2.Messages {
-			r2, err := partialSigMsg2.GetRoot()
-			require.NoError(t, err)
-			if _, found := roots[hex.EncodeToString(r2[:])]; !found {
-				roots[hex.EncodeToString(r2[:])] = ""
-			} else {
-				roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
-			}
-
-			partialSigMsg1 := msg1.Messages[i]
-			r1, err := partialSigMsg1.GetRoot()
-			require.NoError(t, err)
-
-			if _, found := roots[hex.EncodeToString(r1[:])]; !found {
-				roots[hex.EncodeToString(r1[:])] = ""
-			} else {
-				roots[hex.EncodeToString(r1[:])] = hex.EncodeToString(r1[:])
+		for _, msg := range test.Messages {
+			err := v.ProcessMessage(msg)
+			if err != nil {
+				lastErr = err
 			}
 		}
-		for k, v := range roots {
-			require.EqualValues(t, k, v, "missing output msg")
-		}
-
-		// test that slot is correct in broadcasted msg
-		require.EqualValues(t, msg1.Slot, msg2.Slot, "incorrect broadcasted slot")
-
-		index++
 	}
+
+	return v, c, lastErr
 }
 
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
@@ -205,7 +177,7 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 }
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
-	_, lastErr := test.runPreTesting()
+	_, _, lastErr := test.runPreTesting()
 	if lastErr != nil && len(test.ExpectedError) == 0 {
 		return nil, lastErr
 	}

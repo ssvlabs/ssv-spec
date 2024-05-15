@@ -10,7 +10,7 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 		NewTestingNetwork(1, keySet.OperatorKeys[1]),
 		NewTestingBeaconNode(),
 		TestingOperator(keySet),
-		TestingShare(keySet),
+		TestingShare(keySet, TestingValidatorIndex),
 		NewTestingKeyManager(),
 		NewTestingOperatorSigner(keySet, 1),
 		map[types.RunnerRole]ssv.Runner{

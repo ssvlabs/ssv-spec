@@ -33,6 +33,8 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		return signedMsg
 	}
 
+	expectedErr := "no runner found for message's slot"
+
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus future decided no running instance",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -43,6 +45,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				DontStartDuty:  true,
 				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedErr,
 			},
 			{
 				Name:           "sync committee",
@@ -51,6 +54,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				DontStartDuty:  true,
 				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedErr,
 			},
 			{
 				Name:           "attester and sync committee",
@@ -59,6 +63,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				DontStartDuty:  true,
 				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedErr,
 			},
 			{
 				Name:           "sync committee contribution",

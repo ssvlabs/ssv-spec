@@ -23,9 +23,9 @@ func InvalidSignature() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -37,9 +37,9 @@ func InvalidSignature() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -51,9 +51,9 @@ func InvalidSignature() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},

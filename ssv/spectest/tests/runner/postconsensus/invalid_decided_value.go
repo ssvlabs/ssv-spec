@@ -2,7 +2,6 @@ package postconsensus
 
 import (
 	"crypto/rsa"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/attestantio/go-eth2-client/spec"
 
@@ -34,22 +33,6 @@ func InvalidDecidedValue() tests.SpecTest {
 		return byts
 	}
 
-	beaconVoteByts := func() []byte {
-		cd := &types.BeaconVote{
-			BlockRoot: phase0.Root{1, 2, 3, 4},
-			Source: &phase0.Checkpoint{
-				Epoch: 2,
-				Root:  phase0.Root{1, 2, 3, 4},
-			},
-			Target: &phase0.Checkpoint{
-				Epoch: 1,
-				Root:  phase0.Root{1, 2, 3, 5},
-			},
-		}
-		byts, _ := cd.Encode()
-		return byts
-	}
-
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus decided invalid value",
@@ -65,10 +48,10 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedErr,
@@ -84,10 +67,10 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedErr,
@@ -103,10 +86,10 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedErr,

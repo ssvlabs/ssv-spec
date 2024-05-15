@@ -14,6 +14,10 @@ var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
 }
 
+var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+	return baseRunnerWithShareMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), shareMap)
+}
+
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
 }
@@ -56,9 +60,150 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
 }
 
+var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+
+	var keySetInstance *TestKeySet
+	for _, share := range shareMap {
+		keySetInstance = KeySetForShare(share)
+		break
+	}
+
+	// Identifier
+	ownerID := []byte{}
+	if role == types.RoleCommittee {
+		committee := make([]uint64, 0)
+		for _, op := range keySetInstance.Committee() {
+			committee = append(committee, op.Signer)
+		}
+		clusterID := types.GetCommitteeID(committee)
+		copy(ownerID, clusterID[:])
+	} else {
+		ownerID = TestingValidatorPubKey[:]
+	}
+	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
+
+	net := NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
+
+	km := NewTestingKeyManager()
+	operator := TestingOperator(keySetInstance)
+	opSigner := NewTestingOperatorSigner(keySetInstance, operator.OperatorID)
+
+	config := TestingConfig(keySetInstance)
+	config.ValueCheckF = valCheck
+	config.ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
+		return 1
+	}
+	config.Network = net
+	config.OperatorSigner = opSigner
+	config.SignatureVerifier = NewTestingVerifier()
+
+	contr := qbft.NewController(
+		identifier[:],
+		operator,
+		config,
+	)
+
+	switch role {
+	case types.RoleCommittee:
+		return ssv.NewCommitteeRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+		)
+	case types.RoleAggregator:
+		return ssv.NewAggregatorRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+			TestingHighestDecidedSlot,
+		)
+	case types.RoleProposer:
+		return ssv.NewProposerRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+			TestingHighestDecidedSlot,
+		)
+	case types.RoleSyncCommitteeContribution:
+		return ssv.NewSyncCommitteeAggregatorRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+			TestingHighestDecidedSlot,
+		)
+	case types.RoleValidatorRegistration:
+		return ssv.NewValidatorRegistrationRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+		)
+	case types.RoleVoluntaryExit:
+		return ssv.NewVoluntaryExitRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+		)
+	case UnknownDutyType:
+		ret := ssv.NewCommitteeRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+		)
+		ret.(*ssv.CommitteeRunner).BaseRunner.RunnerRoleType = UnknownDutyType
+		return ret
+	default:
+		panic("unknown role type")
+	}
+}
+
 var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
-	share := TestingShare(keySet)
-	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
+	share := TestingShare(keySet, TestingValidatorIndex)
+
+	// Identifier
+	ownerID := []byte{}
+	if role == types.RoleCommittee {
+		committee := make([]uint64, 0)
+		for _, op := range keySet.Committee() {
+			committee = append(committee, op.Signer)
+		}
+		clusterID := types.GetCommitteeID(committee)
+		copy(ownerID, clusterID[:])
+	} else {
+		ownerID = TestingValidatorPubKey[:]
+	}
+	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
+
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
 	operator := TestingOperator(keySet)

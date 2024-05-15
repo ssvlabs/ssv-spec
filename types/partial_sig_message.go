@@ -25,7 +25,7 @@ const (
 type PartialSignatureMessages struct {
 	Type     PartialSigMsgType
 	Slot     phase0.Slot
-	Messages []*PartialSignatureMessage `ssz-max:"13"`
+	Messages []*PartialSignatureMessage `ssz-max:"1000"`
 }
 
 // Encode returns a msg encoded bytes or error

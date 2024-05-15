@@ -25,6 +25,7 @@ func FutureDecided() tests.SpecTest {
 	}
 
 	errStr := "failed processing consensus message: decided wrong instance"
+	errStrCommittee := "no runner found for message's slot"
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus future decided",
@@ -42,7 +43,7 @@ func FutureDecided() tests.SpecTest {
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStr,
+				ExpectedError:  errStrCommittee,
 			},
 			{
 				Name:   "sync committee",
@@ -57,7 +58,7 @@ func FutureDecided() tests.SpecTest {
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStr,
+				ExpectedError:  errStrCommittee,
 			},
 			{
 				Name:   "attester and sync committee",
@@ -72,7 +73,7 @@ func FutureDecided() tests.SpecTest {
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStr,
+				ExpectedError:  errStrCommittee,
 			},
 			{
 				Name:   "sync committee contribution",
