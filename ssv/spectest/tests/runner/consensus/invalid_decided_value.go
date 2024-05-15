@@ -48,8 +48,10 @@ func InvalidDecidedValue() tests.SpecTest {
 		return byts
 	}
 
-	expectedErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: unknown duty role"
-	expectedCommitteeErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: attestation data source > target"
+	expectedErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid" +
+		": invalid value: unknown duty role"
+	expectedCommitteeErr := "failed processing consensus message: decided ConsensusData invalid: decided value" +
+		" is invalid: attestation data source >= target"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus decided invalid value",

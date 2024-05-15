@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"bytes"
+	"math"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -36,11 +37,10 @@ func dutyValueCheck(
 	return nil
 }
 
-// TODO add tests
 func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
-	sharePublicKey []byte,
+	sharePublicKeys []types.ShareValidatorPK,
 	estimatedCurrentEpoch phase0.Epoch,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
@@ -54,19 +54,26 @@ func BeaconVoteValueCheckF(
 		}
 
 		if bv.Source.Epoch >= bv.Target.Epoch {
-			return errors.New("attestation data source > target")
+			return errors.New("attestation data source >= target")
 		}
 
 		attestationData := &phase0.AttestationData{
 			Slot: slot,
-			// CommitteeIndex doesn't matter for slashing checks
-			Index:           0,
+			// Consensus data is unaware of CommitteeIndex
+			// We use -1 to not run into issues with the duplicate value slashing check:
+			// (data_1 != data_2 and data_1.target.epoch == data_2.target.epoch)
+			Index:           math.MaxUint64,
 			BeaconBlockRoot: bv.BlockRoot,
-			Source:          nil,
-			Target:          nil,
+			Source:          bv.Source,
+			Target:          bv.Target,
 		}
 
-		return signer.IsAttestationSlashable(sharePublicKey, attestationData)
+		for _, sharePublicKey := range sharePublicKeys {
+			if err := signer.IsAttestationSlashable(sharePublicKey, attestationData); err != nil {
+				return err
+			}
+		}
+		return nil
 	}
 }
 
