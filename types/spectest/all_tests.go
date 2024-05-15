@@ -1,6 +1,7 @@
 package spectest
 
 import (
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
@@ -98,4 +99,13 @@ var AllTests = []SpecTest{
 	share.HasQuorum3f1(),
 	share.NoQuorumDuplicate(),
 	share.QuorumWithDuplicate(),
+
+	duty.MapAttester(),
+	duty.MapProposer(),
+	duty.MapAggregator(),
+	duty.MapSyncCommittee(),
+	duty.MapSyncCommitteeContribution(),
+	duty.MapValidatorRegistration(),
+	duty.MapVoluntaryExit(),
+	duty.MapUnknownRole(),
 }

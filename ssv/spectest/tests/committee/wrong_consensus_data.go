@@ -27,7 +27,7 @@ func WrongConsensusData() tests.SpecTest {
 						qbft.Height(testingutils.TestingDutySlot)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: attestation data source > target",
+				ExpectedError:  "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: attestation data source >= target",
 			},
 		},
 	}
