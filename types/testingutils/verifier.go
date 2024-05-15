@@ -88,6 +88,8 @@ func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []by
 }
 
 func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byte, signature []byte) bool {
+	testingVerifierInstanceLock.Lock()
+	defer testingVerifierInstanceLock.Unlock()
 	if _, found := v.signaturesCache[operatorID]; !found {
 		return false
 	}
@@ -101,6 +103,8 @@ func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byt
 }
 
 func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]byte, signature []byte) {
+	testingVerifierInstanceLock.Lock()
+	defer testingVerifierInstanceLock.Unlock()
 	if _, found := v.signaturesCache[operatorID]; !found {
 		v.signaturesCache[operatorID] = make(map[[32]byte][]byte)
 	}
