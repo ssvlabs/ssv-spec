@@ -105,7 +105,7 @@ type BeaconDuty struct {
 
 func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 	switch dutyRole {
-	case BNRoleAttester | BNRoleSyncCommittee:
+	case BNRoleAttester, BNRoleSyncCommittee:
 		return RoleCommittee
 	case BNRoleProposer:
 		return RoleProposer

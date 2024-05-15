@@ -42,7 +42,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 		return err
 	}
 
-	if b.RunnerRoleType != types.MapDutyToRunnerRole(data.Duty.Type) {
+	if b.RunnerRoleType != data.Duty.RunnerRole() {
 		return errors.New("wrong beacon role")
 	}
 
