@@ -78,6 +78,7 @@ var AllTests = []tests.TestF{
 	committeesingleduty.PastMessageDutyNotFinished,
 
 	committeemultipleduty.SequencedDecidedDuties,
+	committeemultipleduty.SequencedHappyFlowDuties,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
