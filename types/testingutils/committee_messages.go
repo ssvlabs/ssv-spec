@@ -39,33 +39,29 @@ func selectValidatorsForDuties(numAttestingValidators int, numSyncCommitteeValid
 // Committee inputs
 
 func CommitteeInputForDuties(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, addPostConsensus bool) []interface{} {
-	return CommitteeInputForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, addPostConsensus, false, false)
+	return CommitteeInputForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot, addPostConsensus, false, false)
 }
 
 func CommitteeInputForDutiesWithShuffle(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, addPostConsensus bool) []interface{} {
-	return CommitteeInputForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, addPostConsensus, true, false)
+	return CommitteeInputForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot, addPostConsensus, true, false)
 }
 
 func CommitteeInputForDutiesWithShuffleAndDifferentValidators(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, addPostConsensus bool) []interface{} {
-	return CommitteeInputForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, addPostConsensus, true, true)
+	return CommitteeInputForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot, addPostConsensus, true, true)
+}
+
+func CommitteeInputForDutiesWithFailuresThanSuccess(numAttestingValidators int, numSyncCommitteeValidators int, numFails int, numSuccess int) []interface{} {
+	ret := CommitteeInputForDutiesWithParams(numFails, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot, false, false, false)
+	ret = append(ret, CommitteeInputForDutiesWithParams(numSuccess, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot+numFails, true, false, false)...)
+	return ret
 }
 
 // Returns a list of [Duty, qbft messages...] for each duty
-func CommitteeInputForDutiesWithParams(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, addPostConsensus bool, shuffle bool, diffValidatorsForDuties bool) []interface{} {
+func CommitteeInputForDutiesWithParams(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, startingSlot int, addPostConsensus bool, shuffle bool, diffValidatorsForDuties bool) []interface{} {
 
 	// KeySet map
 	maxValidators := int(math.Max(float64(numAttestingValidators), float64(numSyncCommitteeValidators)))
 	ksMap := KeySetMapForValidators(maxValidators)
-
-	// Sample KeySet
-	var sampleKeySet *TestKeySet
-	for _, ks := range ksMap {
-		sampleKeySet = ks
-		break
-	}
-
-	// Message ID
-	msgID := CommitteeMsgID(sampleKeySet)
 
 	ret := make([]interface{}, 0)
 	dutiesCommands := make([]interface{}, 0)
@@ -73,30 +69,20 @@ func CommitteeInputForDutiesWithParams(numSequencedDuties int, numAttestingValid
 
 	for slotIncrement := 0; slotIncrement < numSequencedDuties; slotIncrement++ {
 
-		dutyMsgs := make([]interface{}, 0)
+		// Current slot
+		currentSlot := startingSlot + slotIncrement
 
-		currentSlot := TestingDutySlot + slotIncrement
+		// Duty and messages for the given slot
+		duty, msgs := CommitteeInputForSlotInSequencedDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, currentSlot, ksMap, addPostConsensus, diffValidatorsForDuties)
 
-		// Validators assigned to the duties
-		attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
-
-		// Duty
-		duty := TestingCommitteeDuty(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
+		// Add duty to list
 		dutiesCommands = append(dutiesCommands, duty)
 
-		// QBFT
-		for _, msg := range SSVDecidingMsgsForHeightWithRoot(sha256.Sum256(TestBeaconVoteByts), TestBeaconVoteByts, msgID, qbft.Height(currentSlot), sampleKeySet) {
+		// Add duty's messages list to dutiesMsgs
+		dutyMsgs := make([]interface{}, 0)
+		for _, msg := range msgs {
 			dutyMsgs = append(dutyMsgs, msg)
 		}
-
-		// Post-consensus
-		if addPostConsensus {
-			for opID := uint64(1); opID <= sampleKeySet.Threshold; opID++ {
-				postConsensusMsg := SignPartialSigSSVMessage(sampleKeySet, SSVMsgCommittee(sampleKeySet, nil, PostConsensusCommitteeMsgForDuty(duty, ksMap, opID)))
-				dutyMsgs = append(dutyMsgs, postConsensusMsg)
-			}
-		}
-
 		dutiesMsgs = append(dutiesMsgs, dutyMsgs)
 	}
 
@@ -115,18 +101,59 @@ func CommitteeInputForDutiesWithParams(numSequencedDuties int, numAttestingValid
 	return ret
 }
 
+// Return the input for the committee for a given slot of a sequence of duties
+func CommitteeInputForSlotInSequencedDuties(numAttestingValidators int, numSyncCommitteeValidators int, numSequencedDuties int, slotIncrement int, currentSlot int, ksMap map[phase0.ValidatorIndex]*TestKeySet, addPostConsensus bool, diffValidatorsForDuties bool) (*types.CommitteeDuty, []*types.SignedSSVMessage) {
+
+	// Validators assigned to the duties
+	attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
+
+	// Duty
+	duty := TestingCommitteeDuty(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
+
+	// QBFT and Post-Consensus
+	msgs := CommitteeInputForDuty(duty, phase0.Slot(currentSlot), ksMap, addPostConsensus)
+
+	return duty, msgs
+}
+
+func CommitteeInputForDuty(duty *types.CommitteeDuty, slot phase0.Slot, ksMap map[phase0.ValidatorIndex]*TestKeySet, addPostConsensus bool) []*types.SignedSSVMessage {
+
+	var sampleKeySet *TestKeySet
+	for _, ks := range ksMap {
+		sampleKeySet = ks
+		break
+	}
+	msgID := CommitteeMsgID(sampleKeySet)
+
+	ret := make([]*types.SignedSSVMessage, 0)
+
+	// QBFT
+	qbftMsgs := SSVDecidingMsgsForHeightWithRoot(sha256.Sum256(TestBeaconVoteByts), TestBeaconVoteByts, msgID, qbft.Height(slot), sampleKeySet)
+	ret = append(ret, qbftMsgs...)
+
+	// Post-consensus
+	if addPostConsensus {
+		for opID := uint64(1); opID <= sampleKeySet.Threshold; opID++ {
+			postConsensusMsg := SignPartialSigSSVMessage(sampleKeySet, SSVMsgCommittee(sampleKeySet, nil, PostConsensusCommitteeMsgForDuty(duty, ksMap, opID)))
+			ret = append(ret, postConsensusMsg)
+		}
+	}
+
+	return ret
+}
+
 // Committee output
 
 func CommitteeOutputMessagesForDuties(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int) []*types.PartialSignatureMessages {
-	return CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, false)
+	return CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot, false)
 }
 
 func CommitteeOutputMessagesForDutiesWithDifferentValidators(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int) []*types.PartialSignatureMessages {
-	return CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, true)
+	return CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot, true)
 }
 
 // Returns a list of partial sig output messages for each duty slot
-func CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, diffValidatorsForDuties bool) []*types.PartialSignatureMessages {
+func CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, startingSlot int, diffValidatorsForDuties bool) []*types.PartialSignatureMessages {
 
 	// KeySet map
 	maxValidators := int(math.Max(float64(numAttestingValidators), float64(numSyncCommitteeValidators)))
@@ -136,7 +163,7 @@ func CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties int, numAttes
 
 	for slotIncrement := 0; slotIncrement < numSequencedDuties; slotIncrement++ {
 
-		currentSlot := TestingDutySlot + slotIncrement
+		currentSlot := startingSlot + slotIncrement
 
 		// Validators assigned to the duties
 		attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
@@ -154,14 +181,19 @@ func CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties int, numAttes
 // Committee beacon roots
 
 func CommitteeBeaconBroadcastedRootsForDuties(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int) []string {
-	return CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, false)
+	return CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot, false)
 }
+
+func CommitteeBeaconBroadcastedRootsForDutiesWithStartingSlot(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, slot int) []string {
+	return CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, slot, false)
+}
+
 func CommitteeBeaconBroadcastedRootsForDutiesWithDifferentValidators(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int) []string {
-	return CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, true)
+	return CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties, numAttestingValidators, numSyncCommitteeValidators, TestingDutySlot, true)
 }
 
 // Returns a list of beacon roots for committees duties
-func CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, diffValidatorsForDuties bool) []string {
+func CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties int, numAttestingValidators int, numSyncCommitteeValidators int, startingSlot int, diffValidatorsForDuties bool) []string {
 
 	// KeySet map
 	maxValidators := int(math.Max(float64(numAttestingValidators), float64(numSyncCommitteeValidators)))
@@ -170,7 +202,7 @@ func CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties int, 
 	ret := make([]string, 0)
 	for slotIncrement := 0; slotIncrement < numSequencedDuties; slotIncrement++ {
 
-		currentSlot := TestingDutySlot + slotIncrement
+		currentSlot := startingSlot + slotIncrement
 
 		// Validators assigned to the duties
 		attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)

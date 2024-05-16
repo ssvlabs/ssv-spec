@@ -29,6 +29,7 @@ func NewTestingVerifier() types.SignatureVerifier {
 			testingVerifierInstance = &testingVerifier{
 				signaturesCache: make(map[types.OperatorID]map[[32]byte][]byte),
 			}
+			return testingVerifierInstance
 		}
 	}
 	return testingVerifierInstance
