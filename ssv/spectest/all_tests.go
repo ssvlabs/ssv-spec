@@ -81,6 +81,7 @@ var AllTests = []tests.TestF{
 	committeemultipleduty.SequencedHappyFlowDuties,
 	committeemultipleduty.ShuffledDecidedDuties,
 	committeemultipleduty.ShuffledHappyFlowDutiesWithTheSameValidators,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
