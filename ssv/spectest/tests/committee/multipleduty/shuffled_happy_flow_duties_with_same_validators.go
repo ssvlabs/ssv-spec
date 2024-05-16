@@ -1,0 +1,58 @@
+package committeemultipleduty
+
+import (
+	"fmt"
+
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+)
+
+// ShuffledHappyFlowDutiesWithTheSameValidators performs the happy flow of duties with shuffled input messages (that preserves order between duty messages)
+func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
+
+	multiSpecTest := &committee.MultiCommitteeSpecTest{
+		Name:  "shuffled happy flow duties with same validators",
+		Tests: []*committee.CommitteeSpecTest{},
+	}
+
+	for _, numSequencedDuties := range []int{1, 2, 4} {
+
+		broadcastedBeaconRootSlot := phase0.Slot(testingutils.TestingDutySlot + numSequencedDuties - 1)
+
+		// TODO add 500
+		for _, numValidators := range []int{1, 30} {
+
+			ksMap := testingutils.KeySetMapForValidators(numValidators)
+			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
+
+			multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+				{
+					Name:                   fmt.Sprintf("%v duties %v attestation", numSequencedDuties, numValidators),
+					Committee:              testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, numValidators, 0, true, true),
+					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, 0),
+					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, numValidators, 0),
+				},
+				{
+					Name:                   fmt.Sprintf("%v duties %v sync committee", numSequencedDuties, numValidators),
+					Committee:              testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, 0, numValidators, true, true),
+					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, 0, numValidators),
+					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, 0, numValidators),
+				},
+				{
+					Name:                   fmt.Sprintf("%v duties %v attestations %v sync committees", numSequencedDuties, numValidators, numValidators),
+					Committee:              testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, numValidators, numValidators, true, true),
+					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, numValidators),
+					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, numValidators, numValidators),
+				},
+			}...)
+		}
+	}
+
+	return multiSpecTest
+}
