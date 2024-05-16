@@ -28,19 +28,19 @@ func ShuffledDecidedDuties() tests.SpecTest {
 				{
 					Name:           fmt.Sprintf("%v duties %v attestation", numSequencedDuties, numValidators),
 					Committee:      testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-					Input:          testingutils.CommitteeInputForDuties(numSequencedDuties, numValidators, 0, false, true),
+					Input:          testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, numValidators, 0, false),
 					OutputMessages: testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, 0),
 				},
 				{
 					Name:           fmt.Sprintf("%v duties %v sync committee", numSequencedDuties, numValidators),
 					Committee:      testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-					Input:          testingutils.CommitteeInputForDuties(numSequencedDuties, 0, numValidators, false, true),
+					Input:          testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, 0, numValidators, false),
 					OutputMessages: testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, 0, numValidators),
 				},
 				{
 					Name:           fmt.Sprintf("%v duties %v attestations %v sync committees", numSequencedDuties, numValidators, numValidators),
 					Committee:      testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-					Input:          testingutils.CommitteeInputForDuties(numSequencedDuties, numValidators, numValidators, false, true),
+					Input:          testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, numValidators, numValidators, false),
 					OutputMessages: testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, numValidators),
 				},
 			}...)

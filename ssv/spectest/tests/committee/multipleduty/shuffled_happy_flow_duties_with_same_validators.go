@@ -11,6 +11,7 @@ import (
 )
 
 // ShuffledHappyFlowDutiesWithTheSameValidators performs the happy flow of duties with shuffled input messages (that preserves order between duty messages)
+// The duties are assigned to the same validators. This causes the previous duties to be stopped and only the beacon root of the last duty is submitted
 func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
@@ -32,21 +33,21 @@ func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 				{
 					Name:                   fmt.Sprintf("%v duties %v attestation", numSequencedDuties, numValidators),
 					Committee:              testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-					Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, numValidators, 0, true, true),
+					Input:                  testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, numValidators, 0, true),
 					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, 0),
 					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, numValidators, 0),
 				},
 				{
 					Name:                   fmt.Sprintf("%v duties %v sync committee", numSequencedDuties, numValidators),
 					Committee:              testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-					Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, 0, numValidators, true, true),
+					Input:                  testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, 0, numValidators, true),
 					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, 0, numValidators),
 					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, 0, numValidators),
 				},
 				{
 					Name:                   fmt.Sprintf("%v duties %v attestations %v sync committees", numSequencedDuties, numValidators, numValidators),
 					Committee:              testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-					Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, numValidators, numValidators, true, true),
+					Input:                  testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, numValidators, numValidators, true),
 					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, numValidators),
 					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, numValidators, numValidators),
 				},
