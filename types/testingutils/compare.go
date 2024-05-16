@@ -27,6 +27,31 @@ func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*typ
 	require.NoError(t, VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
 
 	broadcastedMsgs := ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
+
+	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
+	require.Len(t, broadcastedMsgs, len(expectedMessages))
+
+	index := 0
+	for _, msg := range broadcastedMsgs {
+
+		msg1 := &types.PartialSignatureMessages{}
+		require.NoError(t, msg1.Decode(msg.Data))
+
+		msg2 := expectedMessages[index]
+
+		err := ComparePartialSignatureMessages(msg1, msg2)
+		require.NoError(t, err)
+
+		index++
+	}
+}
+
+// Compare partial sig output messages without assuming any order between messages (asynchonous)
+func ComparePartialSignatureOutputMessagesInAsynchronousOrder(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.CommitteeMember) {
+
+	require.NoError(t, VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
+
+	broadcastedMsgs := ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
 
 	// Require same length
