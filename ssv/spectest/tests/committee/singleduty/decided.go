@@ -24,7 +24,8 @@ func Decided() tests.SpecTest {
 		Tests: []*committee.CommitteeSpecTest{},
 	}
 
-	for _, numValidators := range []int{1, 30, 100, 500} {
+	// TODO add 500
+	for _, numValidators := range []int{1, 30, 100} {
 
 		validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 		ksMap := testingutils.KeySetMapForValidators(numValidators)

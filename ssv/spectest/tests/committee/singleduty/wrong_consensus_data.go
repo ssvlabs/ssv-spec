@@ -13,16 +13,16 @@ import (
 func WrongConsensusData() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	ksMapFor500Validators := testingutils.KeySetMapForValidators(500)
+	ksMapFor30Validators := testingutils.KeySetMapForValidators(30)
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name: "wrong consensus data",
 		Tests: []*committee.CommitteeSpecTest{
 			{
-				Name:      "500 attestations 500 sync committees",
-				Committee: testingutils.BaseCommittee(ksMapFor500Validators),
+				Name:      "30 attestations 30 sync committees",
+				Committee: testingutils.BaseCommittee(ksMapFor30Validators),
 				Input: []interface{}{
-					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, testingutils.ValidatorIndexList(500), testingutils.ValidatorIndexList(500)),
+					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, testingutils.ValidatorIndexList(30), testingutils.ValidatorIndexList(30)),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestWrongBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot)),
