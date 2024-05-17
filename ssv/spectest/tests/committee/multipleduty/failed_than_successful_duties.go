@@ -9,7 +9,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// FailedThanSuccessfulDuties decides a sequence of duties
+// FailedThanSuccessfulDuties decides a sequence of duties (not completing post-consensus) then performs the full happy flow of another sequence of duties
 func FailedThanSuccessfulDuties() tests.SpecTest {
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
