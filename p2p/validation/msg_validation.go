@@ -3,36 +3,21 @@ package validation
 import (
 	"context"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // MsgValidatorFunc represents a message validator
 type MsgValidatorFunc = func(ctx context.Context, p peer.ID, msg *pubsub.Message) pubsub.ValidationResult
 
-// To-Do: better spec the intended Message Validation behavior. Issue #375: https://github.com/bloxapp/ssv-spec/issues/375
-type MessageValidator interface {
-	ValidateSignedSSVMessage(runner ssv.Runner, signedSSVMessage *types.SignedSSVMessage) error
-	// Verifies the message's RSA signature with PKCSv1.5 encoding. Ref: https://datatracker.ietf.org/doc/html/rfc8017#section-8.2.2
-	VerifySignature(runner ssv.Runner, signedSSVMessage *types.SignedSSVMessage) error
-}
-
-func MsgValidation(runner ssv.Runner, msgValidator MessageValidator) MsgValidatorFunc {
+func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 	return func(ctx context.Context, p peer.ID, msg *pubsub.Message) pubsub.ValidationResult {
 		signedSSVMsg, err := DecodePubsubMsg(msg)
 		if err != nil {
-			return pubsub.ValidationReject
-		}
-
-		// Message Validator
-		if err := msgValidator.ValidateSignedSSVMessage(runner, signedSSVMsg); err != nil {
-			return pubsub.ValidationReject
-		}
-		if err := msgValidator.VerifySignature(runner, signedSSVMsg); err != nil {
 			return pubsub.ValidationReject
 		}
 

@@ -1,19 +1,19 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/dutyexe"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/partialsigcontainer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
 )
 
 var AllTests = []tests.TestF{
@@ -35,6 +35,7 @@ var AllTests = []tests.TestF{
 	postconsensus.PreDecided,
 	postconsensus.PostQuorum,
 	postconsensus.InvalidMessage,
+	postconsensus.InvalidOperatorSignature,
 	postconsensus.InvalidMessageSlot,
 	postconsensus.ValidMessage,
 	postconsensus.ValidMessage7Operators,
@@ -47,6 +48,8 @@ var AllTests = []tests.TestF{
 	postconsensus.InvalidDecidedValue,
 	postconsensus.InvalidThenQuorum,
 	postconsensus.InvalidQuorumThenValidQuorum,
+	postconsensus.InconsistentOperatorSigner,
+	postconsensus.InvalidDecode,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -72,6 +75,7 @@ var AllTests = []tests.TestF{
 	consensus.ValidDecided10Operators,
 	consensus.ValidDecided13Operators,
 	consensus.ValidMessage,
+	consensus.InvalidSignature,
 
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
@@ -114,6 +118,7 @@ var AllTests = []tests.TestF{
 	preconsensus.TooManyRoots,
 	preconsensus.UnorderedExpectedRoots,
 	preconsensus.InvalidSignedMessage,
+	preconsensus.InvalidOperatorSignature,
 	preconsensus.InvalidExpectedRoot,
 	preconsensus.DuplicateMsg,
 	preconsensus.DuplicateMsgDifferentRoots,
@@ -135,6 +140,8 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidMessageSignature,
 	preconsensus.InvalidThenQuorum,
 	preconsensus.InvalidQuorumThenValidQuorum,
+	preconsensus.InconsistentOperatorSigner,
+	preconsensus.InvalidDecode,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,

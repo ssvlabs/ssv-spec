@@ -136,9 +136,9 @@ func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
-// SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
+// SignedSSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
-	Signature  []byte // Created by the operator's network key
+	Signature  [256]byte // Created by the operator's network key
 	OperatorID OperatorID
 	Data       []byte
 }
@@ -149,7 +149,7 @@ func (msg *SignedSSVMessage) GetOperatorID() OperatorID {
 }
 
 // GetSignature returns the signature of the OperatorID over Data
-func (msg *SignedSSVMessage) GetSignature() []byte {
+func (msg *SignedSSVMessage) GetSignature() [256]byte {
 	return msg.Signature
 }
 
@@ -191,10 +191,7 @@ func (msg *SignedSSVMessage) Decode(data []byte) error {
 // - Data length should not be 0
 func (msg *SignedSSVMessage) Validate() error {
 	if msg.OperatorID == 0 {
-		return errors.New("OperatorID in SignedSSVMessage is 0")
-	}
-	if len(msg.Signature) == 0 {
-		return errors.New("Signature has length 0 in SignedSSVMessage")
+		return errors.New("signer ID 0 not allowed")
 	}
 	if len(msg.Data) == 0 {
 		return errors.New("Data has length 0 in SignedSSVMessage")
@@ -203,22 +200,41 @@ func (msg *SignedSSVMessage) Validate() error {
 }
 
 // EncodeSignedSSVMessage serializes the message, op id and signature into bytes
-func EncodeSignedSSVMessage(message []byte, operatorID OperatorID, signature []byte) []byte {
+func EncodeSignedSSVMessage(message []byte, operatorID OperatorID, signature [256]byte) []byte {
 	b := make([]byte, signatureSize+operatorIDSize+len(message))
-	copy(b[signatureOffset:], signature)
+	copy(b[signatureOffset:], signature[:])
 	binary.LittleEndian.PutUint64(b[operatorIDOffset:], operatorID)
 	copy(b[messageOffset:], message)
 	return b
 }
 
 // DecodeSignedSSVMessage deserializes signed message bytes messsage, op id and a signature
-func DecodeSignedSSVMessage(encoded []byte) ([]byte, OperatorID, []byte, error) {
+func DecodeSignedSSVMessage(encoded []byte) ([]byte, OperatorID, [256]byte, error) {
 	if len(encoded) < messageOffset {
-		return nil, 0, nil, fmt.Errorf("unexpected encoded message size of %d", len(encoded))
+		return nil, 0, [256]byte{}, fmt.Errorf("unexpected encoded message size of %d", len(encoded))
 	}
 
 	message := encoded[messageOffset:]
 	operatorID := binary.LittleEndian.Uint64(encoded[operatorIDOffset : operatorIDOffset+operatorIDSize])
-	signature := encoded[signatureOffset : signatureOffset+signatureSize]
+	signature := [256]byte{}
+	copy(signature[:], encoded[signatureOffset:signatureOffset+signatureSize])
 	return message, operatorID, signature, nil
+}
+
+func SSVMessageToSignedSSVMessage(msg *SSVMessage, operatorID OperatorID, signSSVMessageF SignSSVMessageF) (*SignedSSVMessage, error) {
+	encodedSSVMsg, err := msg.Encode()
+	if err != nil {
+		return nil, errors.Wrap(err, "could not encode SSVMessage")
+	}
+
+	sig, err := signSSVMessageF(encodedSSVMsg)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	return &SignedSSVMessage{
+		Signature:  sig,
+		OperatorID: operatorID,
+		Data:       encodedSSVMsg,
+	}, nil
 }

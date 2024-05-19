@@ -11,10 +11,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type StartNewRunnerDutySpecTest struct {
@@ -47,7 +47,9 @@ func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	}
 
 	// test output message
-	broadcastedMsgs := test.Runner.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	broadcastedSignedMsgs := test.Runner.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, test.Runner.GetBaseRunner().Share.Committee))
+	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {

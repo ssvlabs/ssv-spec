@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // DifferentJustifications tests a proposal for > 1 round, prepared previously with rc justification prepares at different heights (tests the highest prepared calculation)
@@ -49,7 +49,7 @@ func DifferentJustifications() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "different proposal round change justification",
 		Pre:           pre,
-		PostRoot:      "0ad556ecb45cf0366e4067fad721d5674fed6f75706bfb63fd6d512742fbc46c",
+		PostRoot:      "eeee6a5783cec81c67ffe6a185f9afb4c775b80a815f22dbb32489f8ffa6adce",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessageWithRound(ks10.Shares[1], types.OperatorID(1), 3),

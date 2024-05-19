@@ -2,12 +2,17 @@ package ssvcomparable
 
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
+
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
-func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*types.SSVMessage) *ssv.PartialSigContainer {
-	for _, ssvMsg := range messages {
+func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*types.SignedSSVMessage) *ssv.PartialSigContainer {
+	for _, signedSSVMsg := range messages {
+		ssvMsg := &types.SSVMessage{}
+		if err := ssvMsg.Decode(signedSSVMsg.Data); err != nil {
+			panic(err)
+		}
 		if ssvMsg.MsgType != types.SSVPartialSignatureMsgType {
 			continue
 		}

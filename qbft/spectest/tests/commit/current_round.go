@@ -1,10 +1,10 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // CurrentRound tests a commit msg with current round, should process
@@ -20,7 +20,7 @@ func CurrentRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit current round",
 		Pre:           pre,
-		PostRoot:      "c3e7db86655d01a58ae7a54e4c181c1626014adf43c30d694785874e30c005b9",
+		PostRoot:      "865b610062195fe9635487cfed19d3fc40ebffa96e3d440ccdf1209e9b93186d",
 		InputMessages: msgs,
 	}
 }

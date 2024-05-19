@@ -12,15 +12,15 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	tests2 "github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/partialsigcontainer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	tests2 "github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 func TestAll(t *testing.T) {
@@ -179,10 +179,10 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	byts, _ := json.Marshal(m["Duty"])
 	require.NoError(t, json.Unmarshal(byts, duty))
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.SignedSSVMessage, 0)
 	for _, msg := range m["Messages"].([]interface{}) {
 		byts, _ = json.Marshal(msg)
-		typedMsg := &types.SSVMessage{}
+		typedMsg := &types.SignedSSVMessage{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		msgs = append(msgs, typedMsg)
 	}

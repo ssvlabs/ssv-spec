@@ -1,6 +1,6 @@
 package signedssvmsg
 
-import "github.com/bloxapp/ssv-spec/types"
+import "github.com/ssvlabs/ssv-spec/types"
 
 // EmptySignature tests an invalid SignedSSVMessageTest with empty signature
 func EmptySignature() *SignedSSVMessageTest {
@@ -10,10 +10,10 @@ func EmptySignature() *SignedSSVMessageTest {
 		Messages: []*types.SignedSSVMessage{
 			{
 				OperatorID: 1,
-				Signature:  []byte{},
+				Signature:  [256]byte{},
 				Data:       []byte{1, 2, 3, 4},
 			},
 		},
-		ExpectedError: "Signature has length 0 in SignedSSVMessage",
+		ExpectedError: "could not decode SSVMessage from data in SignedSSVMessage: incorrect size",
 	}
 }

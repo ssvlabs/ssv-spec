@@ -1,8 +1,8 @@
 package signedssvmsg
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // ZeroSigner tests an invalid SignedSSVMessageTest with zero signer
@@ -17,6 +17,6 @@ func ZeroSigner() *SignedSSVMessageTest {
 				Data:       []byte{1, 2, 3, 4},
 			},
 		},
-		ExpectedError: "OperatorID in SignedSSVMessage is 0",
+		ExpectedError: "signer ID 0 not allowed",
 	}
 }

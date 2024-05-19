@@ -5,10 +5,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // DuplicateMsg tests duplicate SignedPartialSignatureMessage
@@ -26,9 +26,9 @@ func DuplicateMsg() tests.SpecTest {
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     duplicateMsgSyncCommitteeContributionSC().ExpectedState,
@@ -44,9 +44,9 @@ func DuplicateMsg() tests.SpecTest {
 					testingutils.TestSyncCommitteeConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     duplicateMsgSyncCommitteeSC().ExpectedState,
@@ -62,9 +62,9 @@ func DuplicateMsg() tests.SpecTest {
 					testingutils.TestAggregatorConsensusData,
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgAggregatorSC().Root(),
 				PostDutyRunnerState:     duplicateMsgAggregatorSC().ExpectedState,
@@ -80,9 +80,9 @@ func DuplicateMsg() tests.SpecTest {
 					testingutils.TestAttesterConsensusData,
 				),
 				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgAttesterSC().Root(),
 				PostDutyRunnerState:     duplicateMsgAttesterSC().ExpectedState,
@@ -103,9 +103,9 @@ func DuplicateMsg() tests.SpecTest {
 				testingutils.TestProposerConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 			},
 			PostDutyRunnerStateRoot: duplicateMsgProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgProposerSC(version).ExpectedState,
@@ -125,9 +125,9 @@ func DuplicateMsg() tests.SpecTest {
 				testingutils.TestProposerBlindedBlockConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 			},
 			PostDutyRunnerStateRoot: duplicateMsgBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgBlindedProposerSC(version).ExpectedState,

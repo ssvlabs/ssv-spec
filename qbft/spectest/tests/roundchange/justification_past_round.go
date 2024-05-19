@@ -1,10 +1,10 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // JustificationPastRound tests a quorum of round change msgs for past round
@@ -36,7 +36,7 @@ func JustificationPastRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change past round quorum",
 		Pre:            pre,
-		PostRoot:       "b3866ec2adb9149b65012cf4eb40a3fb9deaf0f350f92d508818ba3d6e051091",
+		PostRoot:       "d4882aa3b1f57455ea2d9b59fd42366611ee795b9d34ee5de6aac26a16535bfb",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: past round",

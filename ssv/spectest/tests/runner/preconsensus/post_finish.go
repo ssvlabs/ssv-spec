@@ -5,10 +5,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PostFinish tests a msg received post runner finished
@@ -33,8 +33,8 @@ func PostFinish() tests.SpecTest {
 					&testingutils.TestingSyncCommitteeContributionDuty,
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
 				},
 				PostDutyRunnerStateRoot: postFinishSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postFinishSyncCommitteeContributionSC().ExpectedState,
@@ -49,8 +49,8 @@ func PostFinish() tests.SpecTest {
 					&testingutils.TestingAggregatorDuty,
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
 				},
 				PostDutyRunnerStateRoot: postFinishAggregatorSC().Root(),
 				PostDutyRunnerState:     postFinishAggregatorSC().ExpectedState,
@@ -65,8 +65,8 @@ func PostFinish() tests.SpecTest {
 					&testingutils.TestingValidatorRegistrationDuty,
 				),
 				Duty: &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: postFinishValidatorRegistrationSC().Root(),
 				PostDutyRunnerState:     postFinishValidatorRegistrationSC().ExpectedState,
@@ -81,8 +81,8 @@ func PostFinish() tests.SpecTest {
 					&testingutils.TestingVoluntaryExitDuty,
 				),
 				Duty: &testingutils.TestingVoluntaryExitDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: postFinishVoluntaryExitSC().Root(),
 				PostDutyRunnerState:     postFinishVoluntaryExitSC().ExpectedState,
@@ -102,8 +102,8 @@ func PostFinish() tests.SpecTest {
 				testingutils.TestingProposerDutyV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
 			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
@@ -122,8 +122,8 @@ func PostFinish() tests.SpecTest {
 				testingutils.TestingProposerDutyV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
 			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,

@@ -3,6 +3,8 @@ github.com/attestantio/go-eth2-client v0.21.1-0.20240325145558-858fa8a893fa/go.m
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/benbjohnson/clock v1.3.0 h1:ip6w0uFQkncKQ979AypyG0ER7mqUSBdKLOgAle/AT8A=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
+github.com/bloxapp/ssv-spec v0.3.9 h1:WM3Te3GQ3kWGCcuEmuuXx6oT++GMwHN/Q4pQqBdsuxI=
+github.com/bloxapp/ssv-spec v0.3.9/go.mod h1:f9UvuHTb8N3PQpvA6fKYW/l7fzkfyX0Oj9qS34cSOVw=
 github.com/btcsuite/btcd/btcec/v2 v2.2.0 h1:fzn1qaOt32TuLjFlkzYSsBC35Q3KUjT1SwPxiMSCF5k=
 github.com/btcsuite/btcd/btcec/v2 v2.2.0/go.mod h1:U7MHm051Al6XmscBQ0BoNydpOTsFAn707034b5nY8zU=
 github.com/btcsuite/btcd/chaincfg/chainhash v1.0.1 h1:q0rUy8C/TYNBQS1+CGKw68tLOFYSNEs0TFnxxnS9+4U=

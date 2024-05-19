@@ -1,10 +1,10 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // DuplicateMsgQuorum tests a duplicate rc msg for signer 1, after which enough msgs for quorum
@@ -36,7 +36,7 @@ func DuplicateMsgQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change duplicate msg quorum",
 		Pre:           pre,
-		PostRoot:      "595889ae5096cb343497314ab7ea82299f8d05d01de3fad6902bfb559d5356ec",
+		PostRoot:      "fa3aacf3de3821776e51fdf926d66b7e794858374b5520292cbab2533a6e2e82",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingProposalMessageWithRoundAndRC(

@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // TenOperators tests a simple full happy flow until decided
@@ -33,7 +33,7 @@ func TenOperators() SpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow ten operators",
 		Pre:           pre,
-		PostRoot:      "5343638957c46929c846d4f10aa288d039ba22e862e4a7a8ed744253819387d6",
+		PostRoot:      "9f295e9f4994601c3358183740bb45526402b01d158781484c7dcf6cdaa91357",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),

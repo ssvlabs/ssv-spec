@@ -2,10 +2,10 @@ package ssv
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 func (b *BaseRunner) signBeaconObject(
@@ -77,7 +77,7 @@ func (b *BaseRunner) verifyBeaconPartialSignature(signer uint64, signature types
 	for _, n := range b.Share.Committee {
 		if n.GetID() == signer {
 			pk := &bls.PublicKey{}
-			if err := pk.Deserialize(n.GetPublicKey()); err != nil {
+			if err := pk.Deserialize(n.GetSharePublicKey()); err != nil {
 				return errors.Wrap(err, "could not deserialized pk")
 			}
 			sig := &bls.Sign{}

@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/herumi/bls-eth-go-binary/bls"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -38,8 +38,8 @@ func TestInstance_Marshaling(t *testing.T) {
 		PartialQuorum:   2,
 		Committee: []*types.Operator{
 			{
-				OperatorID: 1,
-				PubKey:     TestingSK.GetPublicKey().Serialize(),
+				OperatorID:  1,
+				SharePubKey: TestingSK.GetPublicKey().Serialize(),
 			},
 		},
 	}

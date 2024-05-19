@@ -1,9 +1,9 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PostDecided tests processing a commit msg after instance decided
@@ -23,7 +23,7 @@ func PostDecided() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "post decided",
 		Pre:            pre,
-		PostRoot:       "b778306f5782f6df3bc1aadd173f2e5dc41fcec00fee887a59c372bc94be91c2",
+		PostRoot:       "e3b6652ebea2ed368979e60c38e1c1e8fecbf3240b35762954e4b290b702ce5c",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 	}

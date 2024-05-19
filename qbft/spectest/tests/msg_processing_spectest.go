@@ -9,10 +9,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // ChangeProposerFuncInstanceHeight tests with this height will return proposer operator ID 2
@@ -54,7 +54,9 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 
 	// test output message
-	broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, test.Pre.State.Share.Committee))
+	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
 		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 

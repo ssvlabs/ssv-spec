@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PreparedPreviouslyNoRCJustificationQuorum tests a proposal for > 1 round, prepared previously but without quorum of round change msgs justification
@@ -31,7 +31,7 @@ func PreparedPreviouslyNoRCJustificationQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "no rc quorum (prepared)",
 		Pre:            pre,
-		PostRoot:       "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
+		PostRoot:       "eaa7264b5d6f05cfcdec3158fcae4ff58c3de1e7e9e12bd876177a58686994d4",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",

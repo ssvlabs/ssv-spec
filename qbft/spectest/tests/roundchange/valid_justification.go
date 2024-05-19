@@ -1,10 +1,10 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // ValidJustification tests a valid rc quorum justification
@@ -31,7 +31,7 @@ func ValidJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "valid justification",
 		Pre:           pre,
-		PostRoot:      "4df173f288dd51463fc9277bdf8c1ded677a764992b916729eee9432681e54ce",
+		PostRoot:      "9eaca08ea6e2a36551355354d358d0f48b6609ce000b5559c4fa73e6f9ec8bc8",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,

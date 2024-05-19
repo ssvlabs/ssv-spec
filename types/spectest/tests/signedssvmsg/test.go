@@ -7,7 +7,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -43,7 +43,7 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 			}
 
 			messageHash := sha256.Sum256(msg.Data)
-			err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, messageHash[:], msg.Signature)
+			err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, messageHash[:], msg.Signature[:])
 		}
 
 		if len(test.ExpectedError) != 0 {

@@ -5,10 +5,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // DuplicateMsgDifferentRoots tests duplicate SignedPartialSignatureMessage (from same signer) but with different roots
@@ -27,9 +27,9 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     duplicateMsgDifferentRootsSyncCommitteeContributionSC().ExpectedState,
@@ -46,9 +46,9 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 					testingutils.TestSyncCommitteeConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusWrongSyncCommitteeMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusWrongSyncCommitteeMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     duplicateMsgDifferentRootsSyncCommitteeSC().ExpectedState,
@@ -65,9 +65,9 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 					testingutils.TestAggregatorConsensusData,
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsAggregatorSC().Root(),
 				PostDutyRunnerState:     duplicateMsgDifferentRootsAggregatorSC().ExpectedState,
@@ -84,9 +84,9 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 					testingutils.TestAttesterConsensusData,
 				),
 				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsAttesterSC().Root(),
 				PostDutyRunnerState:     duplicateMsgDifferentRootsAttesterSC().ExpectedState,
@@ -108,9 +108,9 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				testingutils.TestProposerConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version))),
 			},
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsProposerSC(version).ExpectedState,
@@ -131,9 +131,9 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				testingutils.TestProposerBlindedBlockConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version))),
 			},
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsBlindedProposerSC(version).ExpectedState,

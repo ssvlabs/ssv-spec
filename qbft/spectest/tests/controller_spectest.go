@@ -12,10 +12,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type DecidedState struct {
@@ -126,11 +126,14 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 	config qbft.IConfig,
 	identifier []byte,
 	runData *RunInstanceData,
+	operators []*types.Operator,
 ) {
 	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
 		// test broadcasted
-		broadcastedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-		require.Greater(t, len(broadcastedMsgs), 0)
+		broadcastedSignedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+		require.Greater(t, len(broadcastedSignedMsgs), 0)
+		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, operators))
+		broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 		found := false
 		for _, msg := range broadcastedMsgs {
 
@@ -179,7 +182,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 		lastErr = err
 	}
 
-	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData)
+	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.Share.Committee)
 
 	// test root
 	r, err := contr.GetRoot()

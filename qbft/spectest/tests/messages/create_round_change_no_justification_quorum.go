@@ -1,12 +1,12 @@
 package messages
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // CreateRoundChangeNoJustificationQuorum tests creating a round change msg that was previouly prepared
@@ -42,7 +42,7 @@ func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 
 	ks := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(ks)
-	sig, err := config.GetSigner().SignRoot(&expectedMsg, types.QBFTSignatureType, config.GetSigningPubKey())
+	sig, err := config.GetShareSigner().SignRoot(&expectedMsg, types.QBFTSignatureType, config.GetSigningPubKey())
 	if err != nil {
 		panic(errors.Wrap(err, "unable to sign root for create_round_change_no_justification_quorum"))
 	}

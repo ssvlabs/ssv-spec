@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PreparedPreviouslyDuplicateRCMsg tests a proposal for > 1 round, prepared previously with quorum of round change but 2 are duplicates (shouldn't find quorum)
@@ -32,7 +32,7 @@ func PreparedPreviouslyDuplicateRCMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "duplicate rc msg justification (prepared)",
 		Pre:            pre,
-		PostRoot:       "5b18ca0b470208d8d247543306850618f02bddcbaa7c37eb6d5b36eb3accb5fb",
+		PostRoot:       "eaa7264b5d6f05cfcdec3158fcae4ff58c3de1e7e9e12bd876177a58686994d4",
 		InputMessages:  msgs,
 		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",

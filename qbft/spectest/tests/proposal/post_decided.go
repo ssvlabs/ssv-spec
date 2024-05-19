@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PostDecided tests processing proposal msg after instance decided
@@ -29,7 +29,7 @@ func PostDecided() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal post decided",
 		Pre:           pre,
-		PostRoot:      "a298f278a78362257e233e1db8eeb44c2bb9b45a55bb3555928d6723231ebcd2",
+		PostRoot:      "0435531b93a3c21862b48c2d18fb85e7ab7539f738fb15ced288ce15b6193974",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks10.Shares[1], types.OperatorID(1)),

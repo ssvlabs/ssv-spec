@@ -1,11 +1,11 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/herumi/bls-eth-go-binary/bls"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // MultiSignerNoOverlap tests a multi signer commit msg which doesn't overlap previous valid commits
@@ -26,7 +26,7 @@ func MultiSignerNoOverlap() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "multi signer, no overlap",
 		Pre:           pre,
-		PostRoot:      "4e569d9a6c0421d2bb69a4c544f8f1e67c73a129d4e6bd1304ddbae8812cfa38",
+		PostRoot:      "c72a82fa102b581273a5ba16dbadddee88fb850649fe7fb510986f126a07a04d",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),

@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // DuplicateMsg tests a duplicate proposal msg processing
@@ -18,7 +18,7 @@ func DuplicateMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal duplicate message",
 		Pre:           pre,
-		PostRoot:      "ce6d77d0602c7a368a6f86a32d70495b47e6d9fcfd2f5ad0d2952a3f5ac963e7",
+		PostRoot:      "8ab10dfff2576fd50287a27a8e99111a443e62ec4c2c7210b4636c3802338242",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),

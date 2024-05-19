@@ -7,19 +7,21 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type SyncCommitteeAggregatorRunner struct {
 	BaseRunner *BaseRunner
 
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon         BeaconNode
+	network        Network
+	signer         types.KeyManager
+	operatorSigner types.OperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 }
 
 func NewSyncCommitteeAggregatorRunner(
@@ -29,6 +31,7 @@ func NewSyncCommitteeAggregatorRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.KeyManager,
+	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
@@ -41,10 +44,11 @@ func NewSyncCommitteeAggregatorRunner(
 			highestDecidedSlot: highestDecidedSlot,
 		},
 
-		beacon:   beacon,
-		network:  network,
-		signer:   signer,
-		valCheck: valCheck,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
+		valCheck:       valCheck,
 	}
 }
 
@@ -181,13 +185,18 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedM
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
 		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, r.BaseRunner.Share.OperatorID, r.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	if err := r.GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
 	}
 	return nil
@@ -351,12 +360,19 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty *types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to encode contribution proofs pre-consensus signature msg")
 	}
-	msgToBroadcast := &types.SSVMessage{
+
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
 		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
 		Data:    data,
 	}
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, r.BaseRunner.Share.OperatorID, r.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	if err := r.GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial contribution proof sig")
 	}
 	return nil

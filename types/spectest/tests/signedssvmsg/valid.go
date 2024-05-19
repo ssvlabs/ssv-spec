@@ -1,8 +1,8 @@
 package signedssvmsg
 
 import (
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // Valid tests a valid SignedSSVMessageTest

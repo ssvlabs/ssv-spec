@@ -1,9 +1,9 @@
 package prepare
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PostDecided tests processing prepare msg after instance decided
@@ -26,7 +26,7 @@ func PostDecided() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare post decided",
 		Pre:           pre,
-		PostRoot:      "f7e6076054dc1ef0518533722d30994f44c638d44d9f0aab230c6335f58600b2",
+		PostRoot:      "449bd80ba40b79043a9a23a732f526dbf52637094277860b50bbd5a34de246d6",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),

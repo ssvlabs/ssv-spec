@@ -1,10 +1,10 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // QuorumOrder2 tests LIVENESS where the rc quorum msgs in different order
@@ -28,7 +28,7 @@ func QuorumOrder2() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum order 2",
 		Pre:           pre,
-		PostRoot:      "a7aed8500c01312f41067319c037b4c8d180bbe733a6da1464390394dcd9cc02",
+		PostRoot:      "12fb3fc90461a479cd4a574f637734ce8d9d959b361f4f424f40c3ac50977872",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingProposalMessageWithParams(

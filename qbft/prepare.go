@@ -2,8 +2,9 @@ package qbft
 
 import (
 	"bytes"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // uponPrepare process prepare message
@@ -59,8 +60,7 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
 	ret := make([]*SignedMessage, 0)
 	for _, msg := range prepareMsgs {
-		if err := validSignedPrepareForHeightRoundAndRoot(
-			config,
+		if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
 			state.Height,
 			state.LastPreparedRound,
@@ -79,8 +79,7 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 
 // validSignedPrepareForHeightRoundAndRoot known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
-func validSignedPrepareForHeightRoundAndRoot(
-	config IConfig,
+func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	signedPrepare *SignedMessage,
 	height Height,
 	round Round,
@@ -108,6 +107,26 @@ func validSignedPrepareForHeightRoundAndRoot(
 		return errors.New("msg allows 1 signer")
 	}
 
+	if !signedPrepare.CheckSignersInCommittee(operators) {
+		return errors.New("signer not in committee")
+	}
+
+	return nil
+}
+
+func validSignedPrepareForHeightRoundAndRootVerifySignature(
+	config IConfig,
+	signedPrepare *SignedMessage,
+	height Height,
+	round Round,
+	root [32]byte,
+	operators []*types.Operator) error {
+
+	if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(signedPrepare, height, round, root, operators); err != nil {
+		return err
+	}
+
+	// Verify signature
 	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
@@ -136,7 +155,7 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 
 		Root: root,
 	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
+	sig, err := config.GetShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed signing prepare msg")
 	}

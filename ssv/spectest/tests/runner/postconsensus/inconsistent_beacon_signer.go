@@ -5,10 +5,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InconsistentBeaconSigner tests a beacon signer != SignedPartialSignatureMessage.signer
@@ -27,8 +27,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongSignerMsg(ks.Shares[1], 1, 5, ks)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongSignerMsg(ks.Shares[1], 1, 5, ks))),
 				},
 				PostDutyRunnerStateRoot: inconsistentBeaconSignerSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     inconsistentBeaconSignerSyncCommitteeContributionSC().ExpectedState,
@@ -45,8 +45,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 					testingutils.TestSyncCommitteeConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSigSyncCommitteeWrongBeaconSignerMsg(ks.Shares[1], 1, 5)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSigSyncCommitteeWrongBeaconSignerMsg(ks.Shares[1], 1, 5))),
 				},
 				PostDutyRunnerStateRoot: inconsistentBeaconSignerSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     inconsistentBeaconSignerSyncCommitteeSC().ExpectedState,
@@ -63,8 +63,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 					testingutils.TestAggregatorConsensusData,
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusSigAggregatorWrongBeaconSignerMsg(ks.Shares[1], 1, 5)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusSigAggregatorWrongBeaconSignerMsg(ks.Shares[1], 1, 5))),
 				},
 				PostDutyRunnerStateRoot: inconsistentBeaconSignerAggregatorSC().Root(),
 				PostDutyRunnerState:     inconsistentBeaconSignerAggregatorSC().ExpectedState,
@@ -81,8 +81,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 					testingutils.TestAttesterConsensusData,
 				),
 				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusSigAttestationWrongBeaconSignerMsg(ks.Shares[1], 1, 5, qbft.FirstHeight)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusSigAttestationWrongBeaconSignerMsg(ks.Shares[1], 1, 5, qbft.FirstHeight))),
 				},
 				PostDutyRunnerStateRoot: inconsistentBeaconSignerAttesterSC().Root(),
 				PostDutyRunnerState:     inconsistentBeaconSignerAttesterSC().ExpectedState,
@@ -104,8 +104,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				testingutils.TestProposerConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 1, 5, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 1, 5, version))),
 			},
 			PostDutyRunnerStateRoot: inconsistentBeaconSignerProposerSC(version).Root(),
 			PostDutyRunnerState:     inconsistentBeaconSignerProposerSC(version).ExpectedState,
@@ -126,8 +126,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				testingutils.TestProposerBlindedBlockConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 1, 5, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 1, 5, version))),
 			},
 			PostDutyRunnerStateRoot: inconsistentBeaconSignerBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     inconsistentBeaconSignerBlindedProposerSC(version).ExpectedState,

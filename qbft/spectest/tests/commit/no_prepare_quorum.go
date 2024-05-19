@@ -1,9 +1,9 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // NoPrepareQuorum tests a commit msg received without a previous prepare quorum
@@ -25,7 +25,7 @@ func NoPrepareQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit no prepare quorum",
 		Pre:           pre,
-		PostRoot:      "254e9491d5e3167c239ec04149e7b6d29402a6f8638010c35e04f1cea7f8f7e0",
+		PostRoot:      "818959fd55ab50696b9625c0e573d19af0fd5c70dcbe2153169562be2bd7ff79",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks.Shares[1], 1),

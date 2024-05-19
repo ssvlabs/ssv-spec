@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PreparedPreviouslyDuplicatePrepareQuorum tests a proposal for > 1 round, prepared previously with quorum of prepared msgs (2 of which are duplicates)
@@ -37,7 +37,7 @@ func PreparedPreviouslyDuplicatePrepareQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate prepare msg justification quorum",
 		Pre:           pre,
-		PostRoot:      "3e3e18c3092be9b71beb13a33df58abeac35608b5ac98939fad4111492e0b920",
+		PostRoot:      "a07a5d1dc880a573dfc1e45ba61ac636d275138060c2742157b8981148da62e1",
 		InputMessages: append(msgs, testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2)),
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),

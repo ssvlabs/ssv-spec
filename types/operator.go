@@ -5,13 +5,19 @@ type OperatorID = uint64
 
 // Operator represents an SSV operator node
 type Operator struct {
-	OperatorID OperatorID
-	PubKey     []byte `ssz-size:"48"`
+	OperatorID        OperatorID
+	SharePubKey       []byte `ssz-size:"48"`
+	SSVOperatorPubKey []byte `ssz-size:"294"`
 }
 
-// GetPublicKey returns the public key with which the node is identified with
-func (n *Operator) GetPublicKey() []byte {
-	return n.PubKey
+// GetSharePublicKey returns the share public key
+func (n *Operator) GetSharePublicKey() []byte {
+	return n.SharePubKey
+}
+
+// GetSSVOperatorPublicKey returns the ssv public key with which the node is identified with
+func (n *Operator) GetSSVOperatorPublicKey() []byte {
+	return n.SSVOperatorPubKey
 }
 
 // GetID returns the node's ID

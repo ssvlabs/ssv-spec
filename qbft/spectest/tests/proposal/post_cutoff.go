@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PostCutoff tests processing a proposal msg when round >= cutoff
@@ -21,7 +21,7 @@ func PostCutoff() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round cutoff proposal message",
 		Pre:           pre,
-		PostRoot:      "9c9b1da0c431638ec4bbaabd98dfdca67ec54f6b56b2162ff7faf749c4efdcab",
+		PostRoot:      "fc38640f9cf1613bb500f2a9b8aacfd2685727adc5a261d28646f494f505b357",
 		InputMessages: msgs,
 		ExpectedError: "instance stopped processing messages",
 	}

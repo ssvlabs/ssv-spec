@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type ProposedValueCheckF func(data []byte) error
@@ -89,12 +89,19 @@ func (i *Instance) Broadcast(msg *SignedMessage) error {
 	msgID := types.MessageID{}
 	copy(msgID[:], msg.Message.Identifier)
 
-	msgToBroadcast := &types.SSVMessage{
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVConsensusMsgType,
 		MsgID:   msgID,
 		Data:    byts,
 	}
-	return i.config.GetNetwork().Broadcast(msgToBroadcast)
+
+	operatorSigner := i.GetConfig().GetOperatorSigner()
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, i.State.Share.OperatorID, operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	return i.GetConfig().GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
@@ -155,8 +162,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 		if proposedMsg == nil {
 			return errors.New("did not receive proposal for this round")
 		}
-		return validSignedPrepareForHeightRoundAndRoot(
-			i.config,
+		return validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
 			i.State.Height,
 			i.State.Round,
@@ -169,7 +175,6 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			return errors.New("did not receive proposal for this round")
 		}
 		return validateCommit(
-			i.config,
 			msg,
 			i.State.Height,
 			i.State.Round,
@@ -177,7 +182,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChangeForData(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
+		return validRoundChangeForDataIgnoreSignature(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
 	default:
 		return errors.New("signed message type not supported")
 	}

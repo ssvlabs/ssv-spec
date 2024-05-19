@@ -2,7 +2,7 @@ package consensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // CapellaBlockValidation tests a valid consensus data with capella block

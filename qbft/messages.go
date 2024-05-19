@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/sha256"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // HashDataRoot hashes input data to root
@@ -284,4 +284,21 @@ func (signedMsg *SignedMessage) WithoutFUllData() *SignedMessage {
 		Signature: signedMsg.Signature,
 		Message:   signedMsg.Message,
 	}
+}
+
+// Check if all signedMsg's signers belong to the given committee in O(n+m)
+func (signedMsg *SignedMessage) CheckSignersInCommittee(committee []*types.Operator) bool {
+	// Committee's operators map
+	committeeMap := make(map[uint64]struct{})
+	for _, operator := range committee {
+		committeeMap[operator.OperatorID] = struct{}{}
+	}
+
+	// Check that all message signers belong to the map
+	for _, signer := range signedMsg.Signers {
+		if _, ok := committeeMap[signer]; !ok {
+			return false
+		}
+	}
+	return true
 }

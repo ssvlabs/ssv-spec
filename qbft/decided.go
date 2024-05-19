@@ -2,8 +2,9 @@ package qbft
 
 import (
 	"bytes"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // UponDecided returns decided msg if decided, nil otherwise
@@ -64,7 +65,7 @@ func ValidateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
+	if err := baseCommitValidationVerifySignature(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
 

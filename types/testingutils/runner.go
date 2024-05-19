@@ -3,9 +3,9 @@ package testingutils
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
@@ -57,8 +57,9 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
 	share := TestingShare(keySet)
 	identifier := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
-	net := NewTestingNetwork()
+	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
+	opSigner := NewTestingOperatorSigner(keySet, share.OperatorID)
 
 	config := TestingConfig(keySet)
 	config.ValueCheckF = valCheck
@@ -66,7 +67,8 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 		return 1
 	}
 	config.Network = net
-	config.Signer = km
+	config.ShareSigner = km
+	config.OperatorSigner = opSigner
 
 	contr := qbft.NewController(
 		identifier[:],
@@ -76,13 +78,14 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 
 	switch role {
 	case types.BNRoleAttester:
-		return ssv.NewAttesterRunnner(
+		return ssv.NewAttesterRunner(
 			types.BeaconTestNetwork,
 			share,
 			contr,
 			NewTestingBeaconNode(),
 			net,
 			km,
+			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
 		)
@@ -94,6 +97,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			NewTestingBeaconNode(),
 			net,
 			km,
+			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
 		)
@@ -105,6 +109,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			NewTestingBeaconNode(),
 			net,
 			km,
+			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
 		)
@@ -116,6 +121,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			NewTestingBeaconNode(),
 			net,
 			km,
+			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
 		)
@@ -127,6 +133,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			NewTestingBeaconNode(),
 			net,
 			km,
+			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
 		)
@@ -137,6 +144,7 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			NewTestingBeaconNode(),
 			net,
 			km,
+			opSigner,
 		)
 	case types.BNRoleVoluntaryExit:
 		return ssv.NewVoluntaryExitRunner(
@@ -145,15 +153,17 @@ var baseRunner = func(role types.BeaconRole, valCheck qbft.ProposedValueCheckF, 
 			NewTestingBeaconNode(),
 			net,
 			km,
+			opSigner,
 		)
 	case UnknownDutyType:
-		ret := ssv.NewAttesterRunnner(
+		ret := ssv.NewAttesterRunner(
 			types.BeaconTestNetwork,
 			share,
 			contr,
 			NewTestingBeaconNode(),
 			net,
 			km,
+			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
 		)
@@ -184,7 +194,7 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 		panic(err.Error())
 	}
 	for _, msg := range msgs {
-		ssvMsg := SSVMsgAttester(msg, nil)
+		ssvMsg := SignedSSVMessageF(keySet, SSVMsgAttester(msg, nil))
 		if err := v.ProcessMessage(ssvMsg); err != nil {
 			panic(err.Error())
 		}

@@ -8,7 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // Controller is a QBFT coordinator responsible for starting and following the entire life cycle of multiple QBFT InstanceContainer
@@ -193,12 +193,19 @@ func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
 		return errors.Wrap(err, "could not encode decided message")
 	}
 
-	msgToBroadcast := &types.SSVMessage{
+	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVConsensusMsgType,
 		MsgID:   ControllerIdToMessageID(c.Identifier),
 		Data:    byts,
 	}
-	if err := c.GetConfig().GetNetwork().Broadcast(msgToBroadcast); err != nil {
+
+	operatorSigner := c.GetConfig().GetOperatorSigner()
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, c.Share.OperatorID, operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	if err := c.GetConfig().GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}

@@ -5,10 +5,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // ValidDecided tests a valid decided value
@@ -22,7 +22,7 @@ func ValidDecided() tests.SpecTest {
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution),
+				Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)),
 				PostDutyRunnerStateRoot: validDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     validDecidedSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -34,7 +34,7 @@ func ValidDecided() tests.SpecTest {
 				Name:                    "sync committee",
 				Runner:                  testingutils.SyncCommitteeRunner(ks),
 				Duty:                    &testingutils.TestingSyncCommitteeDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee),
+				Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee)),
 				PostDutyRunnerStateRoot: validDecidedSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     validDecidedSyncCommitteeSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -45,7 +45,7 @@ func ValidDecided() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  testingutils.AggregatorRunner(ks),
 				Duty:                    &testingutils.TestingAggregatorDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator),
+				Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)),
 				PostDutyRunnerStateRoot: validDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     validDecidedAggregatorSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -57,7 +57,7 @@ func ValidDecided() tests.SpecTest {
 				Name:                    "attester",
 				Runner:                  testingutils.AttesterRunner(ks),
 				Duty:                    &testingutils.TestingAttesterDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester),
+				Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester)),
 				PostDutyRunnerStateRoot: validDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     validDecidedAttesterSC().ExpectedState,
 				OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -73,7 +73,7 @@ func ValidDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  testingutils.ProposerRunner(ks),
 			Duty:                    testingutils.TestingProposerDutyV(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer),
+			Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(version), ks, types.BNRoleProposer)),
 			PostDutyRunnerStateRoot: validDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecidedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{
@@ -89,7 +89,7 @@ func ValidDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:                    testingutils.TestingProposerDutyV(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer),
+			Messages:                testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer)),
 			PostDutyRunnerStateRoot: validDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     validDecidedBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.SignedPartialSignatureMessage{

@@ -6,21 +6,21 @@ import (
 	"reflect"
 	"testing"
 
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/google/go-cmp/cmp"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 type MsgProcessingSpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
 	Duty                    *types.Duty
-	Messages                []*types.SSVMessage
+	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
@@ -110,7 +110,10 @@ func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Valida
 		}
 		return ret
 	}
-	broadcastedMsgs := filterPartialSigs(v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs)
+	broadcastedSignedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Share.Committee))
+	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
+	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
 	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
 	index := 0
 	for _, msg := range broadcastedMsgs {

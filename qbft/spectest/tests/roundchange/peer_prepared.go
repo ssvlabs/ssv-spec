@@ -1,10 +1,10 @@
 package roundchange
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PeerPrepared tests a round change quorum where a peer is the only one prepared
@@ -28,7 +28,7 @@ func PeerPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change peer prepared",
 		Pre:           pre,
-		PostRoot:      "7d6e2db3c1a0a9f0536c40b2e9f2d7d41cb89f102209f3f080bf3e44c89a786f",
+		PostRoot:      "6eb5843e6defd9e72f09a82e0da584516ded7e357aa708836b85bc02cfe6a0b4",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,

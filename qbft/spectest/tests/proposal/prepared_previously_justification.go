@@ -1,10 +1,10 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PreparedPreviouslyJustification tests a proposal for > 1 round, prepared previously with quorum of round change msgs justification
@@ -41,7 +41,7 @@ func PreparedPreviouslyJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "previously prepared proposal",
 		Pre:           pre,
-		PostRoot:      "c750be146fad8375d8107451eabf8458d3216afa550d4380fc476cce8077a90e",
+		PostRoot:      "bcebe00c0f95cc5c6ed593fd8be857cf6a76beeccbb78699e8a22a41dd3797fd",
 		InputMessages: msgs,
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.TestingPrepareMessage(ks10.Shares[1], types.OperatorID(1)),
