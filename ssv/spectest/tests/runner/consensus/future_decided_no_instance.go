@@ -19,6 +19,15 @@ func FutureDecidedNoInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.RunnerRole) []byte {
+		if role == types.RoleCommittee {
+			opIDs := make([]types.OperatorID, len(ks.Committee()))
+			for i, member := range ks.Committee() {
+				opIDs[i] = member.Signer
+			}
+			committeeID := types.GetCommitteeID(opIDs)
+			ret := types.NewMsgID(testingutils.TestingSSVDomainType, committeeID[:], role)
+			return ret[:]
+		}
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return ret[:]
 	}
