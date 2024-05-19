@@ -118,12 +118,12 @@
 						}
 				},
 				"QBFTController": {
-						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAATIFpUrpTzDYdjkW9gzM43GQn5KXV8G661TUf1GQ5oVo=",
 						"Height": 0,
 						"StoredInstances": [],
 						"Share": {
 								"OperatorID": 1,
-								"ClusterID": [
+								"CommitteeID": [
 										76,
 										129,
 										105,

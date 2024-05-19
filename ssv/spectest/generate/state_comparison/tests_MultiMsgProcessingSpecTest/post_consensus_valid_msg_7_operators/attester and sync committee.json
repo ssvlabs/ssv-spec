@@ -22,7 +22,7 @@
 								"State": {
 										"Share": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														76,
 														129,
 														105,
@@ -90,7 +90,7 @@
 														}
 												]
 										},
-										"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+										"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAATIFpUrpTzDYdjkW9gzM43GQn5KXV8G661TUf1GQ5oVo=",
 										"Round": 1,
 										"Height": 12,
 										"LastPreparedRound": 0,
@@ -266,14 +266,14 @@
 						}
 				},
 				"QBFTController": {
-						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAATIFpUrpTzDYdjkW9gzM43GQn5KXV8G661TUf1GQ5oVo=",
 						"Height": 12,
 						"StoredInstances": [
 								{
 										"State": {
 												"Share": {
 														"OperatorID": 1,
-														"ClusterID": [
+														"CommitteeID": [
 																76,
 																129,
 																105,
@@ -341,7 +341,7 @@
 																}
 														]
 												},
-												"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+												"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAATIFpUrpTzDYdjkW9gzM43GQn5KXV8G661TUf1GQ5oVo=",
 												"Round": 1,
 												"Height": 12,
 												"LastPreparedRound": 0,
@@ -367,7 +367,7 @@
 						],
 						"Share": {
 								"OperatorID": 1,
-								"ClusterID": [
+								"CommitteeID": [
 										76,
 										129,
 										105,
