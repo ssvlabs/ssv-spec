@@ -10,10 +10,10 @@ package types
 // go run github.com/ferranbt/fastssz/sszgen --path messages.go --include ./operator.go --exclude-objs ValidatorPK,MessageID,MsgType,SignedSSVMessage
 
 //go:generate rm -f ./beacon_types_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.1/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path beacon_types.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.3/spec/phase0 --exclude-objs BeaconNetwork,BeaconRole
 
 //go:generate rm -f ./partial_sig_message_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path partial_sig_message.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.1/spec/phase0,./signer.go,./operator.go --exclude-objs PartialSigMsgType
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path partial_sig_message.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.3/spec/phase0,./signer.go,./operator.go --exclude-objs PartialSigMsgType
 
 // rm -f ./consensus_data_encoding.go
 // go run github.com/ferranbt/fastssz/sszgen --path consensus_data.go --include ./operator.go,./signer.go,./partial_sig_message.go,./beacon_types.go,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.19.7/spec/phase0,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.19.7/spec,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.19.7/spec/altair --exclude-objs Contributions,BeaconNetwork,BeaconRole
