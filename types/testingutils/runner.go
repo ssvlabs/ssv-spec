@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"bytes"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -75,12 +76,12 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 		for _, op := range keySetInstance.Committee() {
 			committee = append(committee, op.Signer)
 		}
-		clusterID := types.GetCommitteeID(committee)
-		copy(ownerID, clusterID[:])
+		committeeID := types.GetCommitteeID(committee)
+		ownerID = bytes.Clone(committeeID[:])
 	} else {
 		ownerID = TestingValidatorPubKey[:]
 	}
-	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
+	identifier := types.NewMsgID(TestingSSVDomainType, ownerID, role)
 
 	net := NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
 
