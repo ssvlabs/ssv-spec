@@ -7,14 +7,14 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// ValidConsensusData sends a proposal message to a maximal committee runner with a valid BeaconVote consensus data
-func ValidConsensusData() tests.SpecTest {
+// ValidBeaconVote sends a proposal message to a maximal committee runner with a valid BeaconVote
+func ValidBeaconVote() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	ksMapFor500Validators := testingutils.KeySetMapForValidators(500)
 
 	multiSpecTest := &MultiCommitteeSpecTest{
-		Name: "valid consensus data",
+		Name: "valid beacon vote",
 		Tests: []*CommitteeSpecTest{
 			{
 				Name:      "500 attestations 500 sync committees",
