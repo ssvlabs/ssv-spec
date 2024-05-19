@@ -96,7 +96,7 @@ var TestingOperator = func(keysSet *TestKeySet) *types.Operator {
 
 	return &types.Operator{
 		OperatorID:        1,
-		ClusterID:         types.GetCommitteeID(opIds),
+		CommitteeID:       types.GetCommitteeID(opIds),
 		SSVOperatorPubKey: operatorPubKeyBytes,
 		Quorum:            keysSet.Threshold,
 		PartialQuorum:     keysSet.PartialThreshold,

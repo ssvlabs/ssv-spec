@@ -20,8 +20,8 @@ func (o *Operator) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	// Field (0) 'OperatorID'
 	dst = ssz.MarshalUint64(dst, uint64(o.OperatorID))
 
-	// Field (1) 'ClusterID'
-	dst = append(dst, o.ClusterID[:]...)
+	// Field (1) 'CommitteeID'
+	dst = append(dst, o.CommitteeID[:]...)
 
 	// Field (2) 'SSVOperatorPubKey'
 	if size := len(o.SSVOperatorPubKey); size != 294 {
@@ -62,8 +62,8 @@ func (o *Operator) UnmarshalSSZ(buf []byte) error {
 	// Field (0) 'OperatorID'
 	o.OperatorID = OperatorID(ssz.UnmarshallUint64(buf[0:8]))
 
-	// Field (1) 'ClusterID'
-	copy(o.ClusterID[:], buf[8:40])
+	// Field (1) 'CommitteeID'
+	copy(o.CommitteeID[:], buf[8:40])
 
 	// Field (2) 'SSVOperatorPubKey'
 	if cap(o.SSVOperatorPubKey) == 0 {
@@ -122,8 +122,8 @@ func (o *Operator) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	// Field (0) 'OperatorID'
 	hh.PutUint64(uint64(o.OperatorID))
 
-	// Field (1) 'ClusterID'
-	hh.PutBytes(o.ClusterID[:])
+	// Field (1) 'CommitteeID'
+	hh.PutBytes(o.CommitteeID[:])
 
 	// Field (2) 'SSVOperatorPubKey'
 	if size := len(o.SSVOperatorPubKey); size != 294 {
