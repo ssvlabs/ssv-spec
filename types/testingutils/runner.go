@@ -199,7 +199,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 			committee = append(committee, op.Signer)
 		}
 		clusterID := types.GetCommitteeID(committee)
-		copy(ownerID, clusterID[:])
+		ownerID = clusterID[:]
 	} else {
 		ownerID = TestingValidatorPubKey[:]
 	}
