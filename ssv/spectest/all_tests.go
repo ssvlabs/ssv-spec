@@ -71,8 +71,8 @@ var AllTests = []tests.TestF{
 
 	committeesingleduty.StartDuty,
 	committeesingleduty.StartNoDuty,
-	committeesingleduty.ValidConsensusData,
-	committeesingleduty.WrongConsensusData,
+	committeesingleduty.ValidBeaconVote,
+	committeesingleduty.WrongBeaconVote,
 	committeesingleduty.Decided,
 	committeesingleduty.HappyFlow,
 	committeesingleduty.PastMessageDutyNotFinished,

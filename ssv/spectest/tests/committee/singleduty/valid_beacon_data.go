@@ -8,15 +8,14 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// WrongConsensusData sends a proposal message to a cluster runner with an invalid consensus data that can't be decoded to BeaconVote
-// Expects: error
-func WrongConsensusData() tests.SpecTest {
+// ValidBeaconVote sends a proposal message to a maximal committee runner with a valid BeaconVote
+func ValidBeaconVote() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	ksMapFor30Validators := testingutils.KeySetMapForValidators(30)
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name: "wrong consensus data",
+		Name: "valid beacon vote",
 		Tests: []*committee.CommitteeSpecTest{
 			{
 				Name:      "30 attestations 30 sync committees",
@@ -24,11 +23,10 @@ func WrongConsensusData() tests.SpecTest {
 				Input: []interface{}{
 					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, testingutils.ValidatorIndexList(30), testingutils.ValidatorIndexList(30)),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestWrongBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: attestation data source >= target",
 			},
 		},
 	}
