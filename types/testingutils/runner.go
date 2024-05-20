@@ -70,7 +70,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 	}
 
 	// Identifier
-	ownerID := []byte{}
+	var ownerID []byte
 	if role == types.RoleCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySetInstance.Committee() {
@@ -192,7 +192,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 	share := TestingShare(keySet, TestingValidatorIndex)
 
 	// Identifier
-	ownerID := []byte{}
+	var ownerID []byte
 	if role == types.RoleCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySet.Committee() {
