@@ -23,13 +23,11 @@ var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
 }
 
 var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
-	ret := baseRunner(
+	return baseRunner(
 		types.BNRoleProposer,
 		ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, TestingValidatorPubKey[:], TestingValidatorIndex, nil),
 		keySet,
 	)
-	ret.(*ssv.ProposerRunner).ProducesBlindedBlocks = true
-	return ret
 }
 
 var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
