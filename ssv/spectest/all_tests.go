@@ -76,6 +76,7 @@ var AllTests = []tests.TestF{
 	committee.HappyFlow,
 	committee.PastMessageDutyNotFinished,
 	committee.ProposalWithConsensusData,
+	committee.WrongMessageID,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
