@@ -1,6 +1,6 @@
 module github.com/ssvlabs/ssv-spec
 
-go 1.19
+go 1.20
 
 require (
 	github.com/attestantio/go-eth2-client v0.19.7 // if version is changed, types/generate.go needs adjustment
