@@ -70,13 +70,14 @@ var AllTests = []tests.TestF{
 
 	committee.StartDuty,
 	committee.StartNoDuty,
-	committee.ValidConsensusData,
-	committee.WrongConsensusData,
+	committee.ValidBeaconVote,
+	committee.WrongBeaconVote,
 	committee.Decided,
 	committee.HappyFlow,
 	committee.PastMessageDutyNotFinished,
 	committee.PastMessageDutyFinished,
 	committee.PastMessageDutyDoesNotExist,
+	committee.ProposalWithConsensusData,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
