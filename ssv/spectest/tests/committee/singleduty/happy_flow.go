@@ -24,8 +24,7 @@ func HappyFlow() tests.SpecTest {
 		Tests: []*committee.CommitteeSpecTest{},
 	}
 
-	// TODO add 500
-	for _, numValidators := range []int{1, 30, 100} {
+	for _, numValidators := range []int{1, 30, 100, 500} {
 
 		validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 		ksMap := testingutils.KeySetMapForValidators(numValidators)

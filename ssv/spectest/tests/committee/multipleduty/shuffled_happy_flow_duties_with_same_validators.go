@@ -23,8 +23,7 @@ func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 
 		broadcastedBeaconRootSlot := phase0.Slot(testingutils.TestingDutySlot + numSequencedDuties - 1)
 
-		// TODO add 500
-		for _, numValidators := range []int{1, 30} {
+		for _, numValidators := range []int{1, 30, 500} {
 
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
 			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)

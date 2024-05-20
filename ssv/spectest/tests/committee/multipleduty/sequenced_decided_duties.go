@@ -18,8 +18,7 @@ func SequencedDecidedDuties() tests.SpecTest {
 	}
 
 	for _, numSequencedDuties := range []int{1, 2, 4} {
-		// TODO add 500
-		for _, numValidators := range []int{1, 30} {
+		for _, numValidators := range []int{1, 30, 500} {
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
 			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
