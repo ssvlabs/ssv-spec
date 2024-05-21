@@ -434,7 +434,7 @@ var postConsensusAttestationMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
-		Slot: TestingDutySlot,
+		Slot: phase0.Slot(height),
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed,
