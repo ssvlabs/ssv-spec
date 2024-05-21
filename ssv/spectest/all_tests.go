@@ -171,11 +171,15 @@ var AllTests = []tests.TestF{
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
+
 	valcheckattestations.Slashable,
 	valcheckattestations.SourceHigherThanTarget,
 	valcheckattestations.FarFutureTarget,
 	valcheckattestations.BeaconVoteDataNil,
 	valcheckattestations.Valid,
+	valcheckattestations.MinoritySlashable,
+	valcheckattestations.MajoritySlashable,
+
 	valcheckproposer.BlindedBlock,
 
 	dutyexe.WrongDutyRole,

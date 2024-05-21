@@ -24,14 +24,12 @@ type SignOutput struct {
 }
 
 type testingKeyManager struct {
-	keys           map[string]*bls.SecretKey
-	ecdsaKeys      map[string]*ecdsa.PrivateKey
-	encryptionKeys map[string]*rsa.PrivateKey
-	domain         types.DomainType
-
-	slashableDataRoots [][]byte
-
-	signatureCache map[string]map[string]map[spec.Domain]*SignOutput
+	keys               map[string]*bls.SecretKey
+	ecdsaKeys          map[string]*ecdsa.PrivateKey
+	encryptionKeys     map[string]*rsa.PrivateKey
+	domain             types.DomainType
+	signatureCache     map[string]map[string]map[spec.Domain]*SignOutput
+	slashableDataRoots map[string][][]byte
 }
 
 var (
@@ -39,19 +37,23 @@ var (
 	mu           sync.Mutex
 )
 
-func getHash(data [][]byte) uint64 {
+func getHash(data map[string][][]byte) uint64 {
 	h := fnv.New64a()
-	for _, d := range data {
-		h.Write(d)
+	for k, roots := range data {
+		kBytes, _ := hex.DecodeString(k)
+		h.Write(kBytes)
+		for _, d := range roots {
+			h.Write(d)
+		}
 	}
 	return h.Sum64()
 }
 
 func NewTestingKeyManager() *testingKeyManager {
-	return NewTestingKeyManagerWithSlashableRoots([][]byte{})
+	return NewTestingKeyManagerWithSlashableRoots(map[string][][]byte{})
 }
 
-func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testingKeyManager {
+func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]byte) *testingKeyManager {
 
 	hash := getHash(slashableDataRoots)
 
@@ -102,7 +104,8 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 
 // IsAttestationSlashable returns error if attestation is slashable
 func (km *testingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, data *spec.AttestationData) error {
-	for _, r := range km.slashableDataRoots {
+	entry := hex.EncodeToString(pk)
+	for _, r := range km.slashableDataRoots[entry] {
 		r2, _ := data.HashTreeRoot()
 		if bytes.Equal(r, r2[:]) {
 			return errors.New("slashable attestation")
