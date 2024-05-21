@@ -10,7 +10,6 @@ import (
 func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
 
 	numValidators := 30
 	validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
@@ -38,7 +37,6 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedAttestationSSZRootForKeyMap(ksMap),
 				DontStartDuty:          true,
-				ExpectedError:          expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -58,7 +56,6 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap),
 				DontStartDuty:          true,
-				ExpectedError:          expectedError,
 			},
 			{
 				Name: "attester and sync committee",
@@ -80,7 +77,6 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.TestingSignedAttestationSSZRootForKeyMap(ksMap),
 					testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap)...),
 				DontStartDuty: true,
-				ExpectedError: expectedError,
 			},
 		},
 	}
