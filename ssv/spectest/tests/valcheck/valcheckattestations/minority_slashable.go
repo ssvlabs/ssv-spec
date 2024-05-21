@@ -14,14 +14,14 @@ import (
 // MinoritySlashable tests a slashable attestation by majority of validators
 func MinoritySlashable() tests.SpecTest {
 	data := &types.BeaconVote{
-		BlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		BlockRoot: testingutils.TestingBlockRoot,
 		Source: &spec.Checkpoint{
 			Epoch: 0,
-			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+			Root:  testingutils.TestingBlockRoot,
 		},
 		Target: &spec.Checkpoint{
 			Epoch: 1,
-			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+			Root:  testingutils.TestingBlockRoot,
 		},
 	}
 

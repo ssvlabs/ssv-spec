@@ -14,14 +14,14 @@ import (
 // MajoritySlashable tests a slashable attestation by majority of validators
 func MajoritySlashable() tests.SpecTest {
 	data := &types.BeaconVote{
-		BlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		BlockRoot: testingutils.TestingBlockRoot,
 		Source: &spec.Checkpoint{
 			Epoch: 0,
-			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+			Root:  testingutils.TestingBlockRoot,
 		},
 		Target: &spec.Checkpoint{
 			Epoch: 1,
-			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+			Root:  testingutils.TestingBlockRoot,
 		},
 	}
 
@@ -50,8 +50,7 @@ func MajoritySlashable() tests.SpecTest {
 	// Make slashable map with majority
 	slashableMap := make(map[string][][]byte)
 	for i := 0; i < int(keySet.Threshold); i++ {
-		slashableMap[sharesPKString[i]] = make([][]byte, 0)
-		slashableMap[sharesPKString[i]] = append(slashableMap[sharesPKString[i]], r[:])
+		slashableMap[sharesPKString[i]] = [][]byte{r[:]}
 	}
 
 	return &valcheck.SpecTest{
