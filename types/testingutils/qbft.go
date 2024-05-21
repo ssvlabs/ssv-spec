@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"crypto/sha256"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 var TestingQBFTFullData = []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9}
@@ -15,7 +16,7 @@ var TestingQBFTRootData = func() [32]byte {
 	return sha256.Sum256(TestingQBFTFullData)
 }()
 
-var TestingCutOffRound = 15
+var TestingCutOffRound = qbft.Round(15)
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
@@ -47,7 +48,7 @@ var TestingInvalidValueCheck = []byte{1, 1, 1, 1}
 
 var TestingGraffiti = [32]byte{1}
 
-var TestingShare = func(keysSet *TestKeySet) *types.Share {
+var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *types.Share {
 
 	// Decode validator public key
 	pkBytesSlice := keysSet.ValidatorPK.Serialize()
@@ -55,7 +56,7 @@ var TestingShare = func(keysSet *TestKeySet) *types.Share {
 	copy(pkBytesArray[:], pkBytesSlice)
 
 	return &types.Share{
-		ValidatorIndex:      TestingValidatorIndex,
+		ValidatorIndex:      valIdx,
 		ValidatorPubKey:     pkBytesArray,
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
 		Committee:           keysSet.Committee(),
@@ -95,7 +96,7 @@ var TestingOperator = func(keysSet *TestKeySet) *types.Operator {
 
 	return &types.Operator{
 		OperatorID:        1,
-		ClusterID:         types.GetClusterID(opIds),
+		ClusterID:         types.GetCommitteeID(opIds),
 		SSVOperatorPubKey: operatorPubKeyBytes,
 		Quorum:            keysSet.Threshold,
 		PartialQuorum:     keysSet.PartialThreshold,

@@ -1,12 +1,12 @@
 package testingutils
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 var SSVDecidingMsgsForCommitteeRunner = func(beaconVote *types.BeaconVote, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
-	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
+	id := CommitteeMsgID(ks)
 
 	// consensus
 	qbftMsgs := SSVDecidingMsgsForHeightAndBeaconVote(beaconVote, id[:], height, ks)

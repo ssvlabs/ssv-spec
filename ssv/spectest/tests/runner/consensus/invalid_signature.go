@@ -2,11 +2,11 @@ package consensus
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidSignature tests a consensus message with an invalid signature
@@ -23,9 +23,9 @@ func InvalidSignature() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -37,9 +37,9 @@ func InvalidSignature() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -51,9 +51,9 @@ func InvalidSignature() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
 					// Invalid Message
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts,
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},

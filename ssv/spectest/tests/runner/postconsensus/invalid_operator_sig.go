@@ -3,9 +3,9 @@ package postconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidOperatorSignature tests a SignedSSVMessage with invalid signature
@@ -25,7 +25,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				),
 				Duty: testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
@@ -41,7 +41,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				),
 				Duty: testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
@@ -57,7 +57,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				),
 				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},

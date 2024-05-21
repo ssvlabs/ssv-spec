@@ -3,9 +3,9 @@ package postconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidExpectedRoot tests 1 expected root which doesn't match the signed root
@@ -25,7 +25,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				),
 				Duty: testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
@@ -41,7 +41,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				),
 				Duty: testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusWrongSyncCommitteeMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongSyncCommitteeMsg(ks.Shares[1], 1))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
@@ -57,7 +57,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				),
 				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, testingutils.PostConsensusWrongAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},

@@ -4,12 +4,11 @@ import (
 	"crypto/rsa"
 
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidDecidedValue tests an invalid decided value ConsensusData.Validate() != nil (unknown duty role)
@@ -32,24 +31,11 @@ func InvalidDecidedValue() tests.SpecTest {
 		byts, _ := cd.Encode()
 		return byts
 	}
-	beaconVoteByts := func() []byte {
-		cd := &types.BeaconVote{
-			BlockRoot: phase0.Root{1, 2, 3, 4},
-			Source: &phase0.Checkpoint{
-				Epoch: 2,
-				Root:  phase0.Root{1, 2, 3, 4},
-			},
-			Target: &phase0.Checkpoint{
-				Epoch: 1,
-				Root:  phase0.Root{1, 2, 3, 5},
-			},
-		}
-		byts, _ := cd.Encode()
-		return byts
-	}
 
-	expectedErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: invalid value: unknown duty role"
-	expectedCommitteeErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid: attestation data source > target"
+	expectedErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid" +
+		": invalid value: unknown duty role"
+	expectedCommitteeErr := "failed processing consensus message: decided ConsensusData invalid: decided value" +
+		" is invalid: attestation data source >= target"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus decided invalid value",
@@ -65,8 +51,8 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -83,8 +69,8 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -101,8 +87,8 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID,
-						beaconVoteByts(),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -217,25 +203,6 @@ func InvalidDecidedValue() tests.SpecTest {
 				},
 				ExpectedError: expectedErr,
 			},
-			// {
-			// 	Name:   "attester and sync committee",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-			// 			[]*rsa.PrivateKey{
-			// 				ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-			// 			},
-			// 			[]types.OperatorID{1, 2, 3},
-			// 			qbft.Height(testingutils.TestingDutySlot),
-			// 			testingutils.AttesterMsgID,
-			// 			consensusDataByts(),
-			// 		),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "33953714dd71325c2ad309b2e122bf5fab016a5a2f1bfbf91125b3866c9dc844",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           expectedErr,
-			// },
 		},
 	}
 }

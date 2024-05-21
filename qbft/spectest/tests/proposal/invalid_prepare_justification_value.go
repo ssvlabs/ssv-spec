@@ -1,11 +1,11 @@
 package proposal
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // InvalidPrepareJustificationValue tests a proposal for > 1 round, prepared previously but one of the prepare justifications has value != highest prepared
@@ -42,7 +42,7 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 		PostState:      sc.ExpectedState,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: proposed data mistmatch",
+		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: proposed data mismatch",
 	}
 }
 

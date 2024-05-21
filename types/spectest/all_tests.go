@@ -1,18 +1,19 @@
 package spectest
 
 import (
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
-	consensusdataproposer "github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata/proposer"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
+	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata/proposer"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/signedssvmsg"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
 )
 
 type SpecTest interface {
@@ -98,4 +99,13 @@ var AllTests = []SpecTest{
 	share.HasQuorum3f1(),
 	share.NoQuorumDuplicate(),
 	share.QuorumWithDuplicate(),
+
+	duty.MapAttester(),
+	duty.MapProposer(),
+	duty.MapAggregator(),
+	duty.MapSyncCommittee(),
+	duty.MapSyncCommitteeContribution(),
+	duty.MapValidatorRegistration(),
+	duty.MapVoluntaryExit(),
+	duty.MapUnknownRole(),
 }

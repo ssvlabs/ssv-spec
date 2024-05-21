@@ -3,8 +3,8 @@ package qbft
 import (
 	"bytes"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // uponPrepare process prepare message
@@ -111,7 +111,7 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	}
 
 	if !bytes.Equal(msg.Root[:], root[:]) {
-		return errors.New("proposed data mistmatch")
+		return errors.New("proposed data mismatch")
 	}
 
 	if len(signedPrepare.GetOperatorIDs()) != 1 {

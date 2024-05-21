@@ -1,9 +1,9 @@
 package commit
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // WrongData2 tests a single commit received with a different commit data than the prepared data
@@ -29,6 +29,6 @@ func WrongData2() tests.SpecTest {
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
-		ExpectedError: "invalid signed message: proposed data mistmatch",
+		ExpectedError: "invalid signed message: proposed data mismatch",
 	}
 }

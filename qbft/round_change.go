@@ -3,8 +3,8 @@ package qbft
 import (
 	"bytes"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // uponRoundChange process round change messages.
@@ -21,8 +21,7 @@ func (i *Instance) uponRoundChange(
 		return err
 	}
 
-	hasQuorumBefore := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(roundChangeMessage.
-		Round))
+	hasQuorumBefore := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(roundChangeMessage.Round))
 	// Currently, even if we have a quorum of round change messages, we update the container
 	addedMsg, err := roundChangeMsgContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
 	if err != nil {

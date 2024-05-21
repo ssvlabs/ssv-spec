@@ -6,8 +6,8 @@ type OperatorID = uint64
 // Operator represents an SSV operator node that is part of a committee
 type Operator struct {
 	OperatorID        OperatorID
-	ClusterID         ClusterID `ssz-size:"32"`
-	SSVOperatorPubKey []byte    `ssz-size:"294"`
+	ClusterID         CommitteeID `ssz-size:"32"`
+	SSVOperatorPubKey []byte      `ssz-size:"294"`
 	// TODO: change with one parameter F
 	Quorum, PartialQuorum uint64
 	// All the members of the committee

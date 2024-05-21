@@ -8,8 +8,8 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
-	"github.com/bloxapp/ssv-spec/p2p"
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/p2p"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // DutyRunners is a map of duty runners mapped by msg id hex.

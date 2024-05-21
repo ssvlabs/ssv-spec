@@ -3,9 +3,9 @@ package preconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidMessageSlot tests a valid SignedPartialSignatureMessage an invalid msg slot
@@ -72,28 +72,6 @@ func InvalidMessageSlot() tests.SpecTest {
 				},
 				ExpectedError: "failed processing randao message: invalid pre-consensus message: invalid partial sig slot",
 			},
-			// {
-			// 	Name:   "attester",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAttester(nil, invalidateSlot(testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)))),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "a52249c78fe1b1b0ee793328c1fe2a53e70c7684fdf51b64da235163a4682fdd",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           "no pre consensus sigs required for attester role",
-			// },
-			// {
-			// 	Name:   "sync committee",
-			// 	Runner: testingutils.SyncCommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommittee(nil, invalidateSlot(testingutils.PreConsensusFailedMsg(ks.Shares[1], 1)))),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "f1587ce0947c4cb592d8a6b95453aede2a0da6a1f4e185f45cd6e5e304da0f82",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	ExpectedError:           "no pre consensus sigs required for sync committee role",
-			// },
 			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),

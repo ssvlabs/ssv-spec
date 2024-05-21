@@ -1,18 +1,20 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/dutyexe"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/partialsigcontainer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
 )
 
 var AllTests = []tests.TestF{
@@ -50,6 +52,9 @@ var AllTests = []tests.TestF{
 	postconsensus.InconsistentOperatorSigner,
 	postconsensus.NilSSVMessage,
 	postconsensus.InvalidValidatorIndex,
+	postconsensus.PartialInvalidRootQuorumThenValidQuorum,
+	postconsensus.PartialInvalidSigQuorumThenValidQuorum,
+	postconsensus.MixedCommittees,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -62,6 +67,17 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyFinished,
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
+
+	committee.StartDuty,
+	committee.StartNoDuty,
+	committee.ValidBeaconVote,
+	committee.WrongBeaconVote,
+	committee.Decided,
+	committee.HappyFlow,
+	committee.PastMessageDutyNotFinished,
+	committee.PastMessageDutyFinished,
+	committee.PastMessageDutyDoesNotExist,
+	committee.ProposalWithConsensusData,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
@@ -147,13 +163,11 @@ var AllTests = []tests.TestF{
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
-	// valcheckattestations.Slashable,
-	// valcheckattestations.SourceHigherThanTarget,
-	// valcheckattestations.FarFutureTarget,
-	// valcheckattestations.CommitteeIndexMismatch,
-	// valcheckattestations.SlotMismatch,
-	// valcheckattestations.ConsensusDataNil,
-	// valcheckattestations.Valid,
+	valcheckattestations.Slashable,
+	valcheckattestations.SourceHigherThanTarget,
+	valcheckattestations.FarFutureTarget,
+	valcheckattestations.BeaconVoteDataNil,
+	valcheckattestations.Valid,
 	valcheckproposer.BlindedBlock,
 
 	dutyexe.WrongDutyRole,

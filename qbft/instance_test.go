@@ -3,9 +3,9 @@ package qbft_test
 import (
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,6 +23,7 @@ func TestInstance_Marshaling(t *testing.T) {
 		return testingutils.SignQBFTMsg(TestingRSASK, 1, TestingMessage)
 	}()
 	testingOperator := testingutils.TestingOperator(keySet)
+
 	i := &qbft.Instance{
 		State: &qbft.State{
 			Share:                           testingOperator,

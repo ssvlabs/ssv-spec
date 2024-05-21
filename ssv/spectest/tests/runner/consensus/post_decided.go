@@ -5,10 +5,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PostDecided tests a valid commit msg after returned decided already
@@ -25,7 +25,7 @@ func PostDecided() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
@@ -37,7 +37,7 @@ func PostDecided() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty,
 				Messages: append(
 					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
@@ -49,7 +49,7 @@ func PostDecided() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: append(
 					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID, testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),

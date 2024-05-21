@@ -10,19 +10,18 @@ import (
 )
 
 // ValidatorPK is an eth2 validator public key 48 bytes long
-// TODO: maybe we can use BLS pubkey simply?
 type ValidatorPK phase0.BLSPubKey
 
 // ShareValidatorPK is a partial eth2 validator public key 48 bytes long
 type ShareValidatorPK []byte
 
 const (
-	domainSize       = 4
-	domainStartPos   = 0
-	roleTypeSize     = 4
-	roleTypeStartPos = domainStartPos + domainSize
-	senderIDSize     = 48
-	senderIDStartPos = roleTypeStartPos + roleTypeSize
+	domainSize             = 4
+	domainStartPos         = 0
+	roleTypeSize           = 4
+	roleTypeStartPos       = domainStartPos + domainSize
+	dutyExecutorIDSize     = 48
+	dutyExecutorIDStartPos = roleTypeStartPos + roleTypeSize
 )
 
 type Validate interface {
@@ -33,7 +32,7 @@ type Validate interface {
 
 // MessageIDBelongs returns true if message ID belongs to validator
 func (vid ValidatorPK) MessageIDBelongs(msgID MessageID) bool {
-	toMatch := msgID.GetSenderID()
+	toMatch := msgID.GetDutyExecutorID()
 	return bytes.Equal(vid[:], toMatch)
 }
 
@@ -44,8 +43,8 @@ func (msg MessageID) GetDomain() []byte {
 	return msg[domainStartPos : domainStartPos+domainSize]
 }
 
-func (msg MessageID) GetSenderID() []byte {
-	return msg[senderIDStartPos : senderIDStartPos+senderIDSize]
+func (msg MessageID) GetDutyExecutorID() []byte {
+	return msg[dutyExecutorIDStartPos : dutyExecutorIDStartPos+dutyExecutorIDSize]
 }
 
 func (msg MessageID) GetRoleType() RunnerRole {
@@ -65,22 +64,22 @@ func (msgID MessageID) String() string {
 }
 
 func MessageIDFromBytes(mid []byte) MessageID {
-	if len(mid) < domainSize+senderIDSize+roleTypeSize {
+	if len(mid) < domainSize+dutyExecutorIDSize+roleTypeSize {
 		return MessageID{}
 	}
 	return newMessageID(
 		mid[domainStartPos:domainStartPos+domainSize],
 		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
-		mid[senderIDStartPos:senderIDStartPos+senderIDSize],
+		mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize],
 	)
 }
 
-func newMessageID(domain, senderID, roleByts []byte) MessageID {
+func newMessageID(domain, dutyExecutorID, roleByts []byte) MessageID {
 	mid := MessageID{}
 	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
 	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
-	prefixLen := senderIDSize - len(senderID)
-	copy(mid[senderIDStartPos+prefixLen:senderIDStartPos+senderIDSize], senderID)
+	prefixLen := dutyExecutorIDSize - len(dutyExecutorID)
+	copy(mid[dutyExecutorIDStartPos+prefixLen:dutyExecutorIDStartPos+dutyExecutorIDSize], dutyExecutorID)
 	return mid
 }
 
@@ -134,21 +133,7 @@ func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
-// Decode returns error if decoding failed
-func (msg *SSVMessage) Validate() error {
-
-	if msg.MsgType > DKGMsgType {
-		return errors.New("ssvmessage with unknown type")
-	}
-
-	if len(msg.Data) == 0 {
-		return errors.New("ssvmessage with no data")
-	}
-
-	return nil
-}
-
-// SSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
+// SignedSSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
 	OperatorIDs []OperatorID `ssz-max:"13"`
@@ -157,19 +142,9 @@ type SignedSSVMessage struct {
 	FullData []byte `ssz-max:"5243144"`
 }
 
-// GetOperatorIDs returns the sender operator ID
+// GetOperatorIDs returns the dutyExecutor operator ID
 func (msg *SignedSSVMessage) GetOperatorIDs() []OperatorID {
 	return msg.OperatorIDs
-}
-
-// GetSignature returns the signature of the OperatorID over Data
-func (msg *SignedSSVMessage) GetSignature() [][]byte {
-	return msg.Signatures
-}
-
-// GetData returns message Data as byte slice
-func (msg *SignedSSVMessage) GetSSVMessage() *SSVMessage {
-	return msg.SSVMessage
 }
 
 // Encode returns a msg encoded bytes or error
@@ -199,15 +174,16 @@ func (msg *SignedSSVMessage) Validate() error {
 		return errors.New("no signers")
 	}
 	// Check unique signers
-	signed := make(map[OperatorID]bool)
+	signed := make(map[OperatorID]struct{})
 	for _, operatorID := range msg.OperatorIDs {
-		if signed[operatorID] {
+		if _, exists := signed[operatorID]; exists {
 			return errors.New("non unique signer")
 		}
 		if operatorID == 0 {
 			return errors.New("signer ID 0 not allowed")
 		}
-		signed[operatorID] = true
+
+		signed[operatorID] = struct{}{}
 	}
 	// Validate Signature field
 	if len(msg.Signatures) == 0 {
@@ -227,7 +203,7 @@ func (msg *SignedSSVMessage) Validate() error {
 		return errors.New("nil SSVMessage")
 	}
 
-	return msg.SSVMessage.Validate()
+	return nil
 }
 
 func SSVMessageToSignedSSVMessage(msg *SSVMessage, operatorID OperatorID, signSSVMessageF SignSSVMessageF) (*SignedSSVMessage, error) {
@@ -330,7 +306,7 @@ func (msg *SignedSSVMessage) Aggregate(msgToAggregate *SignedSSVMessage) error {
 // Check if all signedMsg's signers belong to the given committee in O(n+m)
 func (msg *SignedSSVMessage) CheckSignersInCommittee(committee []*CommitteeMember) bool {
 	// Committee's operators map
-	committeeMap := make(map[uint64]struct{})
+	committeeMap := make(map[OperatorID]struct{})
 	for _, operator := range committee {
 		committeeMap[operator.OperatorID] = struct{}{}
 	}

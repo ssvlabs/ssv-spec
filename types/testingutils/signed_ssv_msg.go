@@ -6,8 +6,8 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/herumi/bls-eth-go-binary/bls"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 var TestingSignedSSVMessageSignature = []byte{1, 2, 3, 4}
@@ -73,6 +73,7 @@ var SignPartialSigSSVMessage = func(ks *TestKeySet, msg *types.SSVMessage) *type
 	} else {
 		signer = psigMsgs.Messages[0].Signer
 	}
+
 	// Convert SSVMessage to SignedSSVMessage
 	return SignedSSVMessageWithSigner(signer, ks.OperatorKeys[signer], msg)
 }

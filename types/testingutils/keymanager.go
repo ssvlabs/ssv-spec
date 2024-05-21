@@ -10,12 +10,12 @@ import (
 	"sync"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/ethereum/go-ethereum/common"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type testingKeyManager struct {
@@ -76,13 +76,23 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testin
 		}
 	}
 
+	for _, keySet := range TestingKeySetMap {
+		_ = ret.AddShare(keySet.ValidatorSK)
+		for _, s := range keySet.Shares {
+			_ = ret.AddShare(s)
+		}
+		for _, o := range keySet.DKGOperators {
+			ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+		}
+	}
+
 	instancesMap[hash] = ret
 
 	return ret
 }
 
 // IsAttestationSlashable returns error if attestation is slashable
-func (km *testingKeyManager) IsAttestationSlashable(pk []byte, data *spec.AttestationData) error {
+func (km *testingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, data *spec.AttestationData) error {
 	for _, r := range km.slashableDataRoots {
 		r2, _ := data.HashTreeRoot()
 		if bytes.Equal(r, r2[:]) {

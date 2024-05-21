@@ -3,6 +3,7 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -11,15 +12,15 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
-	consensusdataproposer "github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata/proposer"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/signedssvmsg"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
+	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata/proposer"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
 )
 
 func TestAll(t *testing.T) {
@@ -131,6 +132,12 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &ssvmsg.SSVMessageTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&duty.DutySpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &duty.DutySpecTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:

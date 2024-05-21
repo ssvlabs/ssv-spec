@@ -3,10 +3,10 @@ package pre_consensus_justifications
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // ValidNoRunningDuty tests a valid pre-consensus justification for a runner that has no running duty
@@ -76,29 +76,6 @@ func ValidNoRunningDuty() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 			},
-			// {
-
-			// 	Name:   "attester",
-			// 	Runner: decideFirstHeight(testingutils.CommitteeRunner(ks)),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "97ba097765d1b3e9e1b0dde97723d5ec3100e12ed197d567cdba32315409d20b",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	DontStartDuty:           true,
-			// },
-			// {
-			// 	Name:   "sync committee",
-			// 	Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
-			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "631bde3df3e21a17dac94c01623d58cc02b1c99f52120e85f0592c3d2626dddd",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// 	DontStartDuty:           true,
-			// },
 		},
 	}
 }

@@ -3,10 +3,10 @@ package pre_consensus_justifications
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // Valid7Operators tests a 7 operator valid pre-consensus justification
@@ -80,27 +80,6 @@ func Valid7Operators() tests.SpecTest {
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
-			// {
-
-			// 	Name:   "attester",
-			// 	Runner: decideFirstHeight(testingutils.CommitteeRunner(ks)),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "f1ef7edeed72c9592409c0c71f3358ce124954aefc91d53fc8aa66bee84311c0",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// },
-			// {
-			// 	Name:   "sync committee",
-			// 	Runner: decideFirstHeight(testingutils.SyncCommitteeRunner(ks)),
-			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
-			// 	Messages: []*types.SignedSSVMessage{
-			// 		msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-			// 	},
-			// 	PostDutyRunnerStateRoot: "8ed4e554fc95d86c7d80316baa132d2fd382e0cad1a7eb7b7f40fd6323823160",
-			// 	OutputMessages:          []*types.PartialSignatureMessages{},
-			// },
 		},
 	}
 }

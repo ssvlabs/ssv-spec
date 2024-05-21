@@ -9,10 +9,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // ChangeProposerFuncInstanceHeight tests with this height will return proposer operator ID 2
@@ -55,19 +55,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, test.Pre.State.Share.Committee))
-	if len(test.OutputMessages) > 0 || len(broadcastedSignedMsgs) > 0 {
-		require.Len(t, broadcastedSignedMsgs, len(test.OutputMessages))
-
-		for i, msg := range test.OutputMessages {
-			r1, _ := msg.GetRoot()
-
-			msg2 := broadcastedSignedMsgs[i]
-			r2, _ := msg2.GetRoot()
-
-			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
-		}
-	}
+	testingutils.CompareSignedSSVMessageOutputMessages(t, test.OutputMessages, broadcastedSignedMsgs, test.Pre.State.Share.Committee)
 
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot[:]) {

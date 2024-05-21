@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // FutureDecided tests a running instance at a certain height, then processing a decided msg from a larger height.
@@ -25,6 +25,7 @@ func FutureDecided() tests.SpecTest {
 	}
 
 	errStr := "failed processing consensus message: decided wrong instance"
+	errStrCommittee := "no runner found for message's slot"
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus future decided",
@@ -42,7 +43,7 @@ func FutureDecided() tests.SpecTest {
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStr,
+				ExpectedError:  errStrCommittee,
 			},
 			{
 				Name:   "sync committee",
@@ -57,7 +58,7 @@ func FutureDecided() tests.SpecTest {
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStr,
+				ExpectedError:  errStrCommittee,
 			},
 			{
 				Name:   "attester and sync committee",
@@ -72,7 +73,7 @@ func FutureDecided() tests.SpecTest {
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStr,
+				ExpectedError:  errStrCommittee,
 			},
 			{
 				Name:   "sync committee contribution",

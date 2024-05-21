@@ -3,10 +3,10 @@ package pre_consensus_justifications
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PastSlot tests justification with highestDecidedDutySlot >= data.BeaconDuty.Slot (not valid)
@@ -111,33 +111,6 @@ func PastSlot() tests.SpecTest {
 				},
 				ExpectedError: expectedErr,
 			},
-			// {
-
-			// 	Name:   "attester",
-			// 	Runner: testingutils.CommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingAttesterDuty,
-			// 	Messages: append(
-			// 		testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.RoleCommittee),
-			// 		msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID),
-			// 	),
-			// 	PostDutyRunnerStateRoot: "16c1db7c756f2e7dfff270c3ce0f9b1ee321b28bc57b9394cf030d99d29f25a1",
-			// 	OutputMessages: []*types.PartialSignatureMessages{
-			// 		testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight),
-			// 	},
-			// },
-			// {
-			// 	Name:   "sync committee",
-			// 	Runner: testingutils.SyncCommitteeRunner(ks),
-			// 	Duty:   &testingutils.TestingSyncCommitteeDuty,
-			// 	Messages: append(
-			// 		testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.RoleCommittee),
-			// 		msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID),
-			// 	),
-			// 	PostDutyRunnerStateRoot: "618756a8dbfef101c4a18ffc128de49c3bcac17388575bd3ab58db9ec3ce1b71",
-			// 	OutputMessages: []*types.PartialSignatureMessages{
-			// 		testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-			// 	},
-			// },
 		},
 	}
 }

@@ -3,10 +3,10 @@ package postconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidMessageSlot tests a valid SignedPartialSignatureMessage with an invalid msg slot
@@ -25,6 +25,7 @@ func InvalidMessageSlot() tests.SpecTest {
 	}
 
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot"
+	expectedErrCommittee := "no runner found for message's slot"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid msg slot",
@@ -38,12 +39,12 @@ func InvalidMessageSlot() tests.SpecTest {
 				),
 				Duty: testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          expectedErr,
+				ExpectedError:          expectedErrCommittee,
 			},
 			{
 				Name: "sync committee",
@@ -54,12 +55,12 @@ func InvalidMessageSlot() tests.SpecTest {
 				),
 				Duty: testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, invalidateSlot(testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, invalidateSlot(testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          expectedErr,
+				ExpectedError:          expectedErrCommittee,
 			},
 			{
 				Name: "attester and sync committee",
@@ -70,12 +71,12 @@ func InvalidMessageSlot() tests.SpecTest {
 				),
 				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(nil, invalidateSlot(testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, invalidateSlot(testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot)))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          expectedErr,
+				ExpectedError:          expectedErrCommittee,
 			},
 			{
 				Name: "sync committee contribution",

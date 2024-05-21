@@ -3,8 +3,8 @@ package qbft
 import (
 	"bytes"
 
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // UponCommit returns true if a quorum of commit messages was received.
@@ -168,7 +168,7 @@ func validateCommit(
 	}
 
 	if !bytes.Equal(proposedMsg.Root[:], msg.Root[:]) {
-		return errors.New("proposed data mistmatch")
+		return errors.New("proposed data mismatch")
 	}
 
 	return nil
