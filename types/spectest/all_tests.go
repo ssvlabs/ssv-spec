@@ -1,8 +1,10 @@
 package spectest
 
 import (
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
@@ -108,4 +110,6 @@ var AllTests = []SpecTest{
 	duty.MapValidatorRegistration(),
 	duty.MapVoluntaryExit(),
 	duty.MapUnknownRole(),
+
+	beaconvote.BeaconVoteEncoding(),
 }
