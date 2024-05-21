@@ -421,7 +421,13 @@ var postConsensusAttestationMsg = func(
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(TestingAttestationData.Target.Epoch, types.DomainAttester)
 
-	attData := TestingAttestationData
+	attData := &phase0.AttestationData{
+		Slot:            phase0.Slot(height),
+		Index:           TestingAttestationData.Index,
+		BeaconBlockRoot: TestingAttestationData.BeaconBlockRoot,
+		Source:          TestingAttestationData.Source,
+		Target:          TestingAttestationData.Target,
+	}
 	if wrongRoot {
 		attData = TestingWrongAttestationData
 	}
