@@ -2,7 +2,8 @@ package spectest
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+	committeemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/multipleduty"
+	committeesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/singleduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
@@ -68,16 +69,23 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
 
-	committee.StartDuty,
-	committee.StartNoDuty,
-	committee.ValidBeaconVote,
-	committee.WrongBeaconVote,
-	committee.Decided,
-	committee.HappyFlow,
-	committee.PastMessageDutyNotFinished,
-	committee.PastMessageDutyFinished,
-	committee.PastMessageDutyDoesNotExist,
-	committee.ProposalWithConsensusData,
+	committeesingleduty.StartDuty,
+	committeesingleduty.StartNoDuty,
+	committeesingleduty.ValidBeaconVote,
+	committeesingleduty.WrongBeaconVote,
+	committeesingleduty.Decided,
+	committeesingleduty.HappyFlow,
+	committeesingleduty.PastMessageDutyNotFinished,
+	committeesingleduty.PastMessageDutyFinished,
+	committeesingleduty.PastMessageDutyDoesNotExist,
+	committeesingleduty.ProposalWithConsensusData,
+
+	committeemultipleduty.SequencedDecidedDuties,
+	committeemultipleduty.SequencedHappyFlowDuties,
+	committeemultipleduty.ShuffledDecidedDuties,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithTheSameValidators,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
+	committeemultipleduty.FailedThanSuccessfulDuties,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
@@ -163,11 +171,15 @@ var AllTests = []tests.TestF{
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
+
 	valcheckattestations.Slashable,
 	valcheckattestations.SourceHigherThanTarget,
 	valcheckattestations.FarFutureTarget,
 	valcheckattestations.BeaconVoteDataNil,
 	valcheckattestations.Valid,
+	valcheckattestations.MinoritySlashable,
+	valcheckattestations.MajoritySlashable,
+
 	valcheckproposer.BlindedBlock,
 
 	dutyexe.WrongDutyRole,

@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -15,10 +16,23 @@ type testingVerifier struct {
 	signaturesCache map[types.OperatorID]map[[32]byte][]byte
 }
 
+var (
+	testingVerifierInstance     *testingVerifier
+	testingVerifierInstanceLock sync.Mutex
+)
+
 func NewTestingVerifier() types.SignatureVerifier {
-	return &testingVerifier{
-		signaturesCache: make(map[uint64]map[[32]byte][]byte),
+	if testingVerifierInstance == nil {
+		testingVerifierInstanceLock.Lock()
+		defer testingVerifierInstanceLock.Unlock()
+		if testingVerifierInstance == nil {
+			testingVerifierInstance = &testingVerifier{
+				signaturesCache: make(map[types.OperatorID]map[[32]byte][]byte),
+			}
+			return testingVerifierInstance
+		}
 	}
+	return testingVerifierInstance
 }
 
 func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types.CommitteeMember) error {
@@ -75,6 +89,8 @@ func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []by
 }
 
 func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byte, signature []byte) bool {
+	testingVerifierInstanceLock.Lock()
+	defer testingVerifierInstanceLock.Unlock()
 	if _, found := v.signaturesCache[operatorID]; !found {
 		return false
 	}
@@ -88,6 +104,8 @@ func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byt
 }
 
 func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]byte, signature []byte) {
+	testingVerifierInstanceLock.Lock()
+	defer testingVerifierInstanceLock.Unlock()
 	if _, found := v.signaturesCache[operatorID]; !found {
 		v.signaturesCache[operatorID] = make(map[[32]byte][]byte)
 	}

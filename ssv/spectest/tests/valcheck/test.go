@@ -1,12 +1,13 @@
 package valcheck
 
 import (
+	"testing"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type SpecTest struct {
@@ -14,7 +15,8 @@ type SpecTest struct {
 	Network            types.BeaconNetwork
 	RunnerRole         types.RunnerRole
 	Input              []byte
-	SlashableDataRoots [][]byte
+	SlashableDataRoots map[string][][]byte
+	ShareValidatorsPK  []types.ShareValidatorPK `json:"omitempty"` // Optional. Specify validators shares for beacon vote value check
 	ExpectedError      string
 	AnyError           bool
 }
@@ -46,12 +48,17 @@ func (test *SpecTest) Run(t *testing.T) {
 
 func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueCheckF {
 	pubKeyBytes := types.ValidatorPK(testingutils.TestingValidatorPubKey)
-	keySet := testingutils.Testing4SharesSet()
-	sharePK := keySet.Shares[1]
-	sharePKBytes := sharePK.Serialize()
+
+	shareValidatorsPK := test.ShareValidatorsPK
+	if len(shareValidatorsPK) == 0 {
+		keySet := testingutils.Testing4SharesSet()
+		sharePK := keySet.Shares[1]
+		sharePKBytes := sharePK.Serialize()
+		shareValidatorsPK = []types.ShareValidatorPK{sharePKBytes}
+	}
 	switch test.RunnerRole {
 	case types.RoleCommittee:
-		return ssv.BeaconVoteValueCheckF(signer, testingutils.TestingDutySlot, []types.ShareValidatorPK{sharePKBytes},
+		return ssv.BeaconVoteValueCheckF(signer, testingutils.TestingDutySlot, shareValidatorsPK,
 			testingutils.TestingDutyEpoch)
 	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)

@@ -3,12 +3,14 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 
 	"github.com/stretchr/testify/require"
 
@@ -138,6 +140,12 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &duty.DutySpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&beaconvote.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &beaconvote.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:

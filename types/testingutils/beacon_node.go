@@ -755,21 +755,6 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 	return nil
 }
 
-// GetBlindedBeaconBlock returns blinded beacon block by the given slot, graffiti, and randao.
-func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
-	version := VersionBySlot(slot)
-	vBlk := TestingBlindedBeaconBlockV(version)
-
-	switch version {
-	case spec.DataVersionCapella:
-		return vBlk.Capella, version, nil
-	case spec.DataVersionDeneb:
-		return vBlk.Deneb, version, nil
-	default:
-		panic("unsupported version")
-	}
-}
-
 // SubmitBlindedBeaconBlock submit the blinded block to the node
 func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlindedProposal, sig phase0.BLSSignature) error {
 	var r [32]byte
