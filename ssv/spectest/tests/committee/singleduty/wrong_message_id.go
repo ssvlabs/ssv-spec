@@ -1,8 +1,9 @@
-package committee
+package committeesingleduty
 
 import (
 	"crypto/rsa"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -42,9 +43,9 @@ func WrongMessageID() tests.SpecTest {
 
 	validatorsIndexList := testingutils.ValidatorIndexList(1)
 	ksMap := testingutils.KeySetMapForValidators(1)
-	multiSpecTest := &MultiCommitteeSpecTest{
+	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name: "wrong message ID",
-		Tests: []*CommitteeSpecTest{
+		Tests: []*committee.CommitteeSpecTest{
 			{
 				Name:      "sync committee",
 				Committee: testingutils.BaseCommittee(ksMap),
