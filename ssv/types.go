@@ -38,8 +38,6 @@ type AttesterCalls interface {
 type ProposerCalls interface {
 	// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
 	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
-	// GetBlindedBeaconBlock returns blinded beacon block by the given slot, graffiti, and randao.
-	GetBlindedBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// SubmitBeaconBlock submit the block to the node
 	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
 	// SubmitBlindedBeaconBlock submit the blinded block to the node
