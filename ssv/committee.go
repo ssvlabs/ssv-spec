@@ -166,6 +166,10 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 func (c *Committee) updateDutySlotMap(duty *types.CommitteeDuty) {
 	for _, beaconDuty := range duty.BeaconDuties {
 
+		if beaconDuty == nil {
+			continue
+		}
+
 		if _, exists := c.HighestDutySlotMap[beaconDuty.Type]; !exists {
 			c.HighestDutySlotMap[beaconDuty.Type] = make(map[spec.ValidatorIndex]spec.Slot)
 		}

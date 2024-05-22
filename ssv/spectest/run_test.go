@@ -1,8 +1,10 @@
 package spectest
 
 import (
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -49,14 +51,29 @@ func TestJson(t *testing.T) {
 		t.Fatalf("Failed to get working directory: %v", err)
 	}
 
-	path := filepath.Join(basedir, "generate", "tests.json")
+	path := filepath.Join(basedir, "generate", "tests.json.gz")
 	untypedTests := map[string]interface{}{}
-	byteValue, err := os.ReadFile(path)
+	// Open the gzip file
+	file, err := os.Open(path)
 	if err != nil {
-		t.Fatalf("Failed to read file: %v", err)
+		t.Fatalf("failed to open gzip file: %v", err)
+	}
+	defer file.Close()
+
+	// Create a gzip reader
+	gzipReader, err := gzip.NewReader(file)
+	if err != nil {
+		t.Fatalf("failed to create gzip reader: %v", err)
+	}
+	defer gzipReader.Close()
+
+	// Read the decompressed data
+	decompressedData, err := io.ReadAll(gzipReader)
+	if err != nil {
+		t.Fatalf("failed to read decompressed data: %v", err)
 	}
 
-	if err := json.Unmarshal(byteValue, &untypedTests); err != nil {
+	if err := json.Unmarshal(decompressedData, &untypedTests); err != nil {
 		t.Fatalf("Failed to unmarshal JSON: %v", err)
 	}
 

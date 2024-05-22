@@ -30,6 +30,13 @@ func WrongValidatorPK() tests.SpecTest {
 		Name: "wrong validator PK",
 		Tests: []*valcheck.SpecTest{
 			{
+				Name:       "committee",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleCommittee,
+				Input:      testingutils.TestBeaconVoteByts,
+				// No error since input doesn't contain validator public key
+			},
+			{
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
 				RunnerRole:    types.RoleSyncCommitteeContribution,

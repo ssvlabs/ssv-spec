@@ -390,7 +390,7 @@ var postConsensusAttestationMsgForAttestationData = func(
 ) *types.PartialSignatureMessages {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
-	d, _ := beacon.DomainData(TestingAttestationData.Target.Epoch, types.DomainAttester)
+	d, _ := beacon.DomainData(attData.Target.Epoch, types.DomainAttester)
 	signed, root, _ := signer.SignBeaconObject(attData, d, sk.GetPublicKey().Serialize(), types.DomainAttester)
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
@@ -419,7 +419,13 @@ var postConsensusAttestationMsg = func(
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(TestingAttestationData.Target.Epoch, types.DomainAttester)
 
-	attData := TestingAttestationData
+	attData := &phase0.AttestationData{
+		Slot:            phase0.Slot(height),
+		Index:           TestingAttestationData.Index,
+		BeaconBlockRoot: TestingAttestationData.BeaconBlockRoot,
+		Source:          TestingAttestationData.Source,
+		Target:          TestingAttestationData.Target,
+	}
 	if wrongRoot {
 		attData = TestingWrongAttestationData
 	}
@@ -432,7 +438,7 @@ var postConsensusAttestationMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
-		Slot: TestingDutySlot,
+		Slot: phase0.Slot(height),
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed,
@@ -943,11 +949,15 @@ var postConsensusAggregatorMsg = func(
 }
 
 var PostConsensusSyncCommitteeMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID) *types.PartialSignatureMessages {
+	return PostConsensusSyncCommitteeMsgForKeySetWithSlot(keySetMap, id, TestingDutySlot)
+}
+
+var PostConsensusSyncCommitteeMsgForKeySetWithSlot = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
 
 	var ret *types.PartialSignatureMessages
 	// Get post consensus for sync committees for each validator in shares
 	for valIdx, ks := range keySetMap {
-		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, TestingDutySlot, false, false, valIdx)
+		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
 		} else {
