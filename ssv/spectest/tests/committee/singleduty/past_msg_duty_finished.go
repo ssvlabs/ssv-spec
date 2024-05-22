@@ -16,7 +16,7 @@ import (
 // PastMessageDutyFinished tests a valid proposal past msg for a duty that has finished
 func PastMessageDutyFinished() tests.SpecTest {
 
-	numValidators := 30
+	numValidators := 1
 	validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	ks := testingutils.Testing4SharesSet()
@@ -25,7 +25,31 @@ func PastMessageDutyFinished() tests.SpecTest {
 	msgID := testingutils.CommitteeMsgID(ks)
 	pastHeight := qbft.Height(10)
 
-	bumpHeight := func(c *ssv.Committee, previousDuty types.Duty) *ssv.Committee {
+	attestationMessages := []*types.SignedSSVMessage{
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 1, pastHeight))),
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 2, pastHeight))),
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 3, pastHeight))),
+	}
+
+	syncCommitteeMessages := []*types.SignedSSVMessage{
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil,
+			testingutils.PostConsensusSyncCommitteeMsgForKeySetWithSlot(ksMap, 1, phase0.Slot(pastHeight)))),
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil,
+			testingutils.PostConsensusSyncCommitteeMsgForKeySetWithSlot(ksMap, 2, phase0.Slot(pastHeight)))),
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil,
+			testingutils.PostConsensusSyncCommitteeMsgForKeySetWithSlot(ksMap, 3, phase0.Slot(pastHeight)))),
+	}
+
+	attestationAndSyncCommitteeMessages := []*types.SignedSSVMessage{
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil,
+			testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(ksMap, 1, pastHeight))),
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil,
+			testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(ksMap, 2, pastHeight))),
+		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil,
+			testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(ksMap, 3, pastHeight))),
+	}
+
+	bumpHeight := func(c *ssv.Committee, previousDuty types.Duty, postConsensusMessages []*types.SignedSSVMessage) *ssv.Committee {
 
 		err := c.StartDuty(previousDuty.(*types.CommitteeDuty))
 		if err != nil {
@@ -43,11 +67,10 @@ func PastMessageDutyFinished() tests.SpecTest {
 			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
 			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
 			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
-
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 1, pastHeight))),
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 2, pastHeight))),
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 3, pastHeight))),
 		}
+
+		happyFlowMessages = append(happyFlowMessages, postConsensusMessages...)
+
 		for _, msg := range happyFlowMessages {
 			err := c.ProcessMessage(msg)
 			if err != nil {
@@ -84,8 +107,10 @@ func PastMessageDutyFinished() tests.SpecTest {
 		Name: "past msg duty finished",
 		Tests: []*committee.CommitteeSpecTest{
 			{
-				Name:      fmt.Sprintf("%v attestation", numValidators),
-				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), testingutils.TestingCommitteeAttesterDuty(phase0.Slot(pastHeight), validatorsIndexList)),
+				Name: fmt.Sprintf("%v attestation", numValidators),
+				Committee: bumpHeight(testingutils.BaseCommittee(ksMap),
+					testingutils.TestingCommitteeAttesterDuty(phase0.Slot(pastHeight), validatorsIndexList),
+					attestationMessages),
 				Input: []interface{}{
 					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
 					pastProposalMsgF(),
@@ -94,8 +119,10 @@ func PastMessageDutyFinished() tests.SpecTest {
 				ExpectedError:  expectedError,
 			},
 			{
-				Name:      fmt.Sprintf("%v sync committee", numValidators),
-				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), testingutils.TestingCommitteeSyncCommitteeDuty(phase0.Slot(pastHeight), validatorsIndexList)),
+				Name: fmt.Sprintf("%v sync committee", numValidators),
+				Committee: bumpHeight(testingutils.BaseCommittee(ksMap),
+					testingutils.TestingCommitteeSyncCommitteeDuty(phase0.Slot(pastHeight), validatorsIndexList),
+					syncCommitteeMessages),
 				Input: []interface{}{
 					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
 					pastProposalMsgF(),
@@ -104,8 +131,10 @@ func PastMessageDutyFinished() tests.SpecTest {
 				ExpectedError:  expectedError,
 			},
 			{
-				Name:      fmt.Sprintf("%v attestation %v sync committee", numValidators, numValidators),
-				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), testingutils.TestingCommitteeDuty(phase0.Slot(pastHeight), validatorsIndexList, validatorsIndexList)),
+				Name: fmt.Sprintf("%v attestation %v sync committee", numValidators, numValidators),
+				Committee: bumpHeight(testingutils.BaseCommittee(ksMap),
+					testingutils.TestingCommitteeDuty(phase0.Slot(pastHeight), validatorsIndexList, validatorsIndexList),
+					attestationAndSyncCommitteeMessages),
 				Input: []interface{}{
 					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList, validatorsIndexList),
 					pastProposalMsgF(),

@@ -234,9 +234,8 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 					cr.BaseRunner.FallBackAndVerifyEachSignature(cr.BaseRunner.State.PostConsensusContainer, root,
 						share.Committee, validator)
 				}
-				// An error shouldn't be returned here, as it may open an attack vector...
-				// Bad sig can block processing of other roots.
-				// An additional message may not retrigger processing if only first quorum is processed
+				// Record the error and continue to next validators
+				anyErr = errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
 				continue
 			}
 			specSig := phase0.BLSSignature{}
@@ -418,15 +417,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			}
 			beaconObjects[beaconDuty.ValidatorIndex][root] = unSignedAtt
 		case types.BNRoleSyncCommittee:
-			// Block root
-			blockRoot := types.SSZBytes(beaconVote.BlockRoot[:])
-			blockRootSlice := [32]byte{}
-			copy(blockRootSlice[:], blockRoot)
-
 			// Sync committee beacon object
 			syncMsg := &altair.SyncCommitteeMessage{
 				Slot:            slot,
-				BeaconBlockRoot: phase0.Root(blockRootSlice),
+				BeaconBlockRoot: beaconVote.BlockRoot,
 				ValidatorIndex:  beaconDuty.ValidatorIndex,
 			}
 
@@ -435,6 +429,8 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			if err != nil {
 				continue
 			}
+			// Eth root
+			blockRoot := types.SSZBytes(beaconVote.BlockRoot[:])
 			root, err := types.ComputeETHSigningRoot(blockRoot, domain)
 			if err != nil {
 				continue
