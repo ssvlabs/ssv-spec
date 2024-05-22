@@ -248,7 +248,7 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 }
 
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {
-	if !(c.Operator.CommitteeID.MessageIDBelongs(msg.GetID())) {
+	if !(c.Operator.ClusterID.MessageIDBelongs(msg.GetID())) {
 		return errors.New("msg ID doesn't match committee ID")
 	}
 
