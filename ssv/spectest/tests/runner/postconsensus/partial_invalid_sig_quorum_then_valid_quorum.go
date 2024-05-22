@@ -15,6 +15,7 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 	validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
+	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus partial invalid sig quorum then valid quorum",
@@ -37,6 +38,7 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedAttestationSSZRootForKeyMap(ksMap),
 				DontStartDuty:          true,
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -56,6 +58,7 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap),
 				DontStartDuty:          true,
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "attester and sync committee",
@@ -77,6 +80,7 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.TestingSignedAttestationSSZRootForKeyMap(ksMap),
 					testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap)...),
 				DontStartDuty: true,
+				ExpectedError: expectedError,
 			},
 		},
 	}
