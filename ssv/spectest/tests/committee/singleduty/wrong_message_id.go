@@ -53,7 +53,8 @@ func WrongMessageID() tests.SpecTest {
 					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
 					decidedMessage(),
 				},
-				ExpectedError: expectedError,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
 			},
 			{
 				Name:      "attestation",
@@ -62,7 +63,8 @@ func WrongMessageID() tests.SpecTest {
 					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
 					decidedMessage(),
 				},
-				ExpectedError: expectedError,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
 			},
 		},
 	}
