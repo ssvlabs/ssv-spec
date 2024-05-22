@@ -27,7 +27,7 @@
 								"State": {
 										"Share": {
 												"OperatorID": 1,
-												"CommitteeID": [
+												"ClusterID": [
 														223,
 														110,
 														165,
@@ -314,7 +314,7 @@
 										"State": {
 												"Share": {
 														"OperatorID": 1,
-														"CommitteeID": [
+														"ClusterID": [
 																223,
 																110,
 																165,
@@ -432,7 +432,7 @@
 						],
 						"Share": {
 								"OperatorID": 1,
-								"CommitteeID": [
+								"ClusterID": [
 										223,
 										110,
 										165,

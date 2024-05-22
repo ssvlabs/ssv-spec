@@ -15,7 +15,7 @@
 												"State": {
 														"Share": {
 																"OperatorID": 1,
-																"CommitteeID": [
+																"ClusterID": [
 																		207,
 																		151,
 																		173,
@@ -4108,7 +4108,7 @@
 														"State": {
 																"Share": {
 																		"OperatorID": 1,
-																		"CommitteeID": [
+																		"ClusterID": [
 																				207,
 																				151,
 																				173,
@@ -4766,7 +4766,7 @@
 										],
 										"Share": {
 												"OperatorID": 1,
-												"CommitteeID": [
+												"ClusterID": [
 														207,
 														151,
 														173,
@@ -4843,7 +4843,7 @@
 												"State": {
 														"Share": {
 																"OperatorID": 1,
-																"CommitteeID": [
+																"ClusterID": [
 																		207,
 																		151,
 																		173,
@@ -8936,7 +8936,7 @@
 														"State": {
 																"Share": {
 																		"OperatorID": 1,
-																		"CommitteeID": [
+																		"ClusterID": [
 																				207,
 																				151,
 																				173,
@@ -9594,7 +9594,7 @@
 										],
 										"Share": {
 												"OperatorID": 1,
-												"CommitteeID": [
+												"ClusterID": [
 														207,
 														151,
 														173,
@@ -9882,7 +9882,7 @@
 												"State": {
 														"Share": {
 																"OperatorID": 1,
-																"CommitteeID": [
+																"ClusterID": [
 																		207,
 																		151,
 																		173,
@@ -13975,7 +13975,7 @@
 														"State": {
 																"Share": {
 																		"OperatorID": 1,
-																		"CommitteeID": [
+																		"ClusterID": [
 																				207,
 																				151,
 																				173,
@@ -14633,7 +14633,7 @@
 										],
 										"Share": {
 												"OperatorID": 1,
-												"CommitteeID": [
+												"ClusterID": [
 														207,
 														151,
 														173,
@@ -14698,7 +14698,7 @@
 		},
 		"Operator": {
 				"OperatorID": 1,
-				"CommitteeID": [
+				"ClusterID": [
 						207,
 						151,
 						173,

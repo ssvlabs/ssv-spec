@@ -139,7 +139,7 @@
 						"StoredInstances": [],
 						"Share": {
 								"OperatorID": 1,
-								"CommitteeID": [
+								"ClusterID": [
 										207,
 										151,
 										173,
