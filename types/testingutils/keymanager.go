@@ -18,12 +18,17 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-type testingKeyManager struct {
-	keys           map[string]*bls.SecretKey
-	ecdsaKeys      map[string]*ecdsa.PrivateKey
-	encryptionKeys map[string]*rsa.PrivateKey
-	domain         types.DomainType
+type SignOutput struct {
+	Signature []byte
+	Root      [32]byte
+}
 
+type testingKeyManager struct {
+	keys               map[string]*bls.SecretKey
+	ecdsaKeys          map[string]*ecdsa.PrivateKey
+	encryptionKeys     map[string]*rsa.PrivateKey
+	domain             types.DomainType
+	signatureCache     map[string]map[string]map[spec.Domain]*SignOutput
 	slashableDataRoots map[string][][]byte
 }
 
@@ -66,6 +71,8 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]by
 		domain:         TestingSSVDomainType,
 
 		slashableDataRoots: slashableDataRoots,
+
+		signatureCache: make(map[string]map[string]map[spec.Domain]*SignOutput),
 	}
 
 	testingSharesSets := []*TestKeySet{Testing4SharesSet(), Testing7SharesSet(), Testing10SharesSet(), Testing13SharesSet()}
@@ -125,7 +132,17 @@ func (km *testingKeyManager) IsBeaconBlockSlashable(pk []byte, slot spec.Slot) e
 }
 
 func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (types.Signature, [32]byte, error) {
-	if k, found := km.keys[hex.EncodeToString(pk)]; found {
+	mu.Lock()
+	defer mu.Unlock()
+
+	pkString := hex.EncodeToString(pk)
+
+	if k, found := km.keys[pkString]; found {
+
+		if signOutput, has := km.hasSignRequest(pkString, obj, domain); has {
+			return signOutput.Signature, signOutput.Root, nil
+		}
+
 		r, err := types.ComputeETHSigningRoot(obj, domain)
 		if err != nil {
 			return nil, [32]byte{}, errors.Wrap(err, "could not compute signing root")
@@ -135,7 +152,11 @@ func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Doma
 		blsSig := spec.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
-		return sig.Serialize(), r, nil
+		sigString := sig.Serialize()
+
+		km.storeSignRequest(pkString, obj, domain, sigString, r)
+
+		return sigString, r, nil
 	}
 	return nil, [32]byte{}, errors.New("pk not found")
 }
@@ -169,4 +190,37 @@ func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {
 func (km *testingKeyManager) RemoveShare(pubKey string) error {
 	delete(km.keys, pubKey)
 	return nil
+}
+
+func (km *testingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain spec.Domain) (*SignOutput, bool) {
+	if _, exists := km.signatureCache[pk]; !exists {
+		return &SignOutput{}, false
+	}
+	objRoot, err := obj.HashTreeRoot()
+	if err != nil {
+		return &SignOutput{}, false
+	}
+	root := hex.EncodeToString(objRoot[:])
+	if _, exists := km.signatureCache[pk][root]; !exists {
+		return &SignOutput{}, false
+	}
+	if _, exists := km.signatureCache[pk][root][domain]; !exists {
+		return &SignOutput{}, false
+	}
+	return km.signatureCache[pk][root][domain], true
+}
+
+func (km *testingKeyManager) storeSignRequest(pk string, obj ssz.HashRoot, domain spec.Domain, sig types.Signature, r [32]byte) {
+	if _, exists := km.signatureCache[pk]; !exists {
+		km.signatureCache[pk] = make(map[string]map[spec.Domain]*SignOutput)
+	}
+	objRoot, err := obj.HashTreeRoot()
+	if err != nil {
+		panic(err)
+	}
+	root := hex.EncodeToString(objRoot[:])
+	if _, exists := km.signatureCache[pk][root]; !exists {
+		km.signatureCache[pk][root] = make(map[spec.Domain]*SignOutput)
+	}
+	km.signatureCache[pk][root][domain] = &SignOutput{Signature: sig, Root: r}
 }
