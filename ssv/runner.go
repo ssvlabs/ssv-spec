@@ -177,6 +177,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 }
 
 // basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg
+// returns whether at least one quorum exists and the roots of the quorums
 func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, psigMsgs *types.PartialSignatureMessages) (bool, [][32]byte, error) {
 	if err := b.ValidatePostConsensusMsg(runner, psigMsgs); err != nil {
 		return false, nil, errors.Wrap(err, "invalid post-consensus message")

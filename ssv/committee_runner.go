@@ -206,8 +206,13 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
 		if !found {
-			// TODO error?
-			continue
+			// Check if duty has terminated (runner has submitted for all duties)
+			if cr.HasSubmittedAllBeaconDuties(attestationMap, committeeMap) {
+				cr.BaseRunner.State.Finished = true
+			}
+			// All roots have quorum, so if we can't find validators for a root, it means we have a bug
+			// We assume it is safe to stop due to honest majority assumption
+			return errors.New("could not find validators for root")
 		}
 
 		for _, validator := range validators {
@@ -226,6 +231,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			pubKey := share.ValidatorPubKey
 			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
 				pubKey[:], validator)
+			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			if err != nil {
 				// If fail, fall back to verifying each partial signature
 				for root := range rootSet {
@@ -287,9 +293,15 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 
 // Returns true if the runner has done submissions for all validators for the given slot
 func (cr *CommitteeRunner) HasSubmittedAllBeaconDuties(attestationMap map[phase0.ValidatorIndex][32]byte, syncCommitteeMap map[phase0.ValidatorIndex][32]byte) bool {
+	stoppedCounter := 0
+	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty).BeaconDuties {
+		if duty.IsStopped {
+			stoppedCounter++
+		}
+	}
 
 	// Expected total
-	expectedTotalSubmissions := len(attestationMap) + len(syncCommitteeMap)
+	expectedTotalSubmissions := len(attestationMap) + len(syncCommitteeMap) - stoppedCounter
 
 	totalSubmissions := 0
 
@@ -363,6 +375,8 @@ func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot,
 	panic("not in use")
 }
 
+// expectedPostConsensusRootsAndBeaconObjects returns the expected roots and beacon objects for the post consensus
+// phase. It returns the attestation and sync committee validator to root map, as well as a root to beacon object map.
 func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	attestationMap map[phase0.ValidatorIndex][32]byte,
 	syncCommitteeMap map[phase0.ValidatorIndex][32]byte,
@@ -371,18 +385,14 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
 	beaconObjects = make(map[phase0.ValidatorIndex]map[[32]byte]ssz.HashRoot)
-	duty := cr.BaseRunner.State.StartingDuty
-	// TODO DecidedValue should be interface??
+	duty := cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty)
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
 	beaconVote, err := types.NewBeaconVote(beaconVoteData)
 	if err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
-	err = beaconVote.Decode(beaconVoteData)
-	if err != nil {
-		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
-	}
-	for _, beaconDuty := range duty.(*types.CommitteeDuty).BeaconDuties {
+
+	for _, beaconDuty := range duty.BeaconDuties {
 		if beaconDuty == nil || beaconDuty.IsStopped {
 			continue
 		}
@@ -417,15 +427,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			}
 			beaconObjects[beaconDuty.ValidatorIndex][root] = unSignedAtt
 		case types.BNRoleSyncCommittee:
-			// Block root
-			blockRoot := types.SSZBytes(beaconVote.BlockRoot[:])
-			blockRootSlice := [32]byte{}
-			copy(blockRootSlice[:], blockRoot)
-
 			// Sync committee beacon object
 			syncMsg := &altair.SyncCommitteeMessage{
 				Slot:            slot,
-				BeaconBlockRoot: phase0.Root(blockRootSlice),
+				BeaconBlockRoot: beaconVote.BlockRoot,
 				ValidatorIndex:  beaconDuty.ValidatorIndex,
 			}
 
@@ -434,6 +439,8 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			if err != nil {
 				continue
 			}
+			// Eth root
+			blockRoot := types.SSZBytes(beaconVote.BlockRoot[:])
 			root, err := types.ComputeETHSigningRoot(blockRoot, domain)
 			if err != nil {
 				continue
