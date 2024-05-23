@@ -19,15 +19,13 @@ var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSV
 var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 
 	// Identifier
-	ownerID := []byte{}
 	committee := make([]uint64, 0)
 	for _, op := range keySet.Committee() {
 		committee = append(committee, op.Signer)
 	}
-	clusterID := types.GetCommitteeID(committee)
-	copy(ownerID, clusterID[:])
+	committeeID := types.GetCommitteeID(committee)
 
-	ret := types.NewMsgID(TestingSSVDomainType, ownerID[:], types.RoleCommittee)
+	ret := types.NewMsgID(TestingSSVDomainType, committeeID[:], types.RoleCommittee)
 	return ret[:]
 }
 var AttesterMsgID = func() []byte {
