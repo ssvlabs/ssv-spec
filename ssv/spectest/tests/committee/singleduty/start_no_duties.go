@@ -22,6 +22,7 @@ func StartNoDuty() tests.SpecTest {
 				Input: []interface{}{
 					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, nil, nil),
 				},
+				ExpectedError:  "no beacon duties",
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
