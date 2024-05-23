@@ -16,7 +16,7 @@ import (
 // PastMessageDutyFinished tests a valid proposal past msg for a duty that has finished
 func PastMessageDutyFinished() tests.SpecTest {
 
-	numValidators := 1
+	numValidators := 30
 	validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	ks := testingutils.Testing4SharesSet()
