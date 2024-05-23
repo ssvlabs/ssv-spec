@@ -206,6 +206,10 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
 		if !found {
+			// Check if duty has terminated (runner has submitted for all duties)
+			if cr.HasSubmittedAllBeaconDuties(attestationMap, committeeMap) {
+				cr.BaseRunner.State.Finished = true
+			}
 			// All roots have quorum, so if we can't find validators for a root, it means we have a bug
 			// We assume it is safe to stop due to honest majority assumption
 			return errors.New("could not find validators for root")
@@ -289,9 +293,15 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 
 // Returns true if the runner has done submissions for all validators for the given slot
 func (cr *CommitteeRunner) HasSubmittedAllBeaconDuties(attestationMap map[phase0.ValidatorIndex][32]byte, syncCommitteeMap map[phase0.ValidatorIndex][32]byte) bool {
+	stoppedCounter := 0
+	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty).BeaconDuties {
+		if duty.IsStopped {
+			stoppedCounter++
+		}
+	}
 
 	// Expected total
-	expectedTotalSubmissions := len(attestationMap) + len(syncCommitteeMap)
+	expectedTotalSubmissions := len(attestationMap) + len(syncCommitteeMap) - stoppedCounter
 
 	totalSubmissions := 0
 
