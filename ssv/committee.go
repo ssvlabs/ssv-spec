@@ -113,6 +113,9 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	msg := signedSSVMessage.SSVMessage
+	if err := c.validateMessage(msg); err != nil {
+		return errors.Wrap(err, "Message invalid")
+	}
 
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
@@ -240,6 +243,18 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 	c.Operator = aux.Operator
 	c.Share = aux.Share
 	c.HighestDutySlotMap = aux.HighestDutySlotMap
+
+	return nil
+}
+
+func (c *Committee) validateMessage(msg *types.SSVMessage) error {
+	if !(c.Operator.ClusterID.MessageIDBelongs(msg.GetID())) {
+		return errors.New("msg ID doesn't match committee ID")
+	}
+
+	if len(msg.GetData()) == 0 {
+		return errors.New("msg data is invalid")
+	}
 
 	return nil
 }
