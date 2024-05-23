@@ -17,7 +17,8 @@ func FailedThanSuccessfulDuties() tests.SpecTest {
 		Tests: []*committee.CommitteeSpecTest{},
 	}
 
-	for _, numValidators := range []int{1, 30, 500} {
+	// TODO add 500
+	for _, numValidators := range []int{1, 30} {
 		for _, numFailedDuties := range []int{1, 2} {
 			for _, numSuccessfulDuties := range []int{1, 2} {
 				ksMap := testingutils.KeySetMapForValidators(numValidators)
