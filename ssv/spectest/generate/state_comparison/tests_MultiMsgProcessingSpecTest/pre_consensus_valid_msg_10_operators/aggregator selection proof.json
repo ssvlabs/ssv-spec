@@ -32,8 +32,7 @@
 								"CommitteeLength": 128,
 								"CommitteesAtSlot": 36,
 								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": null,
-								"IsStopped": false
+								"ValidatorSyncCommitteeIndices": null
 						}
 				},
 				"Share": {

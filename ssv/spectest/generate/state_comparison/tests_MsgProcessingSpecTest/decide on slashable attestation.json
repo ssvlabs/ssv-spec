@@ -1,29 +1,6 @@
 {
 		"BaseRunner": {
-				"State": {
-						"PreConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 3
-						},
-						"PostConsensusContainer": {
-								"Signatures": {},
-								"Quorum": 3
-						},
-						"RunningInstance": null,
-						"DecidedValue": null,
-						"Finished": false,
-						"BeaconDuty": {
-								"Type": 2,
-								"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-								"Slot": "5193728",
-								"ValidatorIndex": "1",
-								"CommitteeIndex": 3,
-								"CommitteeLength": 128,
-								"CommitteesAtSlot": 36,
-								"ValidatorCommitteeIndex": 11,
-								"ValidatorSyncCommitteeIndices": null
-						}
-				},
+				"State": null,
 				"Share": {
 						"1": {
 								"ValidatorIndex": "1",
@@ -129,7 +106,7 @@
 						}
 				},
 				"QBFTController": {
-						"Identifier": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 						"Height": 0,
 						"StoredInstances": [],
 						"Share": {
@@ -192,7 +169,7 @@
 						}
 				},
 				"BeaconNetwork": "now_test_network",
-				"RunnerRoleType": 2,
+				"RunnerRoleType": 0,
 				"OperatorSigner": null
 		}
 }

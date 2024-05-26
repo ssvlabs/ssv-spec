@@ -520,8 +520,5 @@
 						"Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 				}
 		},
-		"HighestDutySlotMap": {
-				"0": {},
-				"3": {}
-		}
+		"HighestDutySlotMap": null
 }
