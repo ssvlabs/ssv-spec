@@ -48,17 +48,6 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	return c.Runners[duty.Slot].StartNewDuty(duty)
 }
 
-func (c *Committee) stopDuties(validatorToStopMap map[spec.Slot][]spec.ValidatorIndex) {
-	for slot, validators := range validatorToStopMap {
-		for _, validator := range validators {
-			runner, exists := c.Runners[slot]
-			if exists {
-				runner.StopDuty(validator)
-			}
-		}
-	}
-}
-
 // ProcessMessage processes Network Message of all types
 func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
 	// Validate message

@@ -62,15 +62,6 @@ func (cr CommitteeRunner) Encode() ([]byte, error) {
 	return json.Marshal(cr)
 }
 
-// StopDuty stops the duty for the given validator
-func (cr *CommitteeRunner) StopDuty(validatorIndex phase0.ValidatorIndex) {
-	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty).BeaconDuties {
-		if duty.ValidatorIndex == validatorIndex {
-			duty.IsStopped = true
-		}
-	}
-}
-
 func (cr CommitteeRunner) Decode(data []byte) error {
 	return json.Unmarshal(data, &cr)
 }
@@ -298,15 +289,8 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 
 // Returns true if the runner has done submissions for all validators for the given slot
 func (cr *CommitteeRunner) HasSubmittedAllBeaconDuties(attestationMap map[phase0.ValidatorIndex][32]byte, syncCommitteeMap map[phase0.ValidatorIndex][32]byte) bool {
-	stoppedCounter := 0
-	for _, duty := range cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty).BeaconDuties {
-		if duty.IsStopped {
-			stoppedCounter++
-		}
-	}
-
 	// Expected total
-	expectedTotalSubmissions := len(attestationMap) + len(syncCommitteeMap) - stoppedCounter
+	expectedTotalSubmissions := len(attestationMap) + len(syncCommitteeMap)
 
 	totalSubmissions := 0
 
@@ -398,7 +382,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	}
 
 	for _, beaconDuty := range duty.BeaconDuties {
-		if beaconDuty == nil || beaconDuty.IsStopped {
+		if beaconDuty == nil {
 			continue
 		}
 		slot := beaconDuty.DutySlot()
