@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"os"
 	"reflect"
 	"testing"
@@ -20,10 +21,12 @@ import (
 )
 
 type MsgProcessingSpecTest struct {
-	Name                    string
-	Runner                  ssv.Runner
-	Duty                    types.Duty
-	Messages                []*types.SignedSSVMessage
+	Name     string
+	Runner   ssv.Runner
+	Duty     types.Duty
+	Messages []*types.SignedSSVMessage
+	// DecidedSlashable makes the decided value slashable. Simulates consensus instances running in parallel.
+	DecidedSlashable        bool `json:"omitempty"`
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
@@ -119,6 +122,12 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 			if err != nil {
 				lastErr = err
 			}
+			if test.DecidedSlashable && IsQBFTProposalMessage(msg) {
+				for _, validatorShare := range test.Runner.GetBaseRunner().Share {
+					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableDataRoot(validatorShare.
+						SharePubKey, testingutils.TestingAttestationDataRoot[:])
+				}
+			}
 		}
 
 	default:
@@ -138,6 +147,19 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	}
 
 	return v, c, lastErr
+}
+
+// IsQBFTProposalMessage checks if the message is a QBFT proposal message
+func IsQBFTProposalMessage(msg *types.SignedSSVMessage) bool {
+	if msg.SSVMessage.MsgType == types.SSVConsensusMsgType {
+		qbftMsg := qbft.Message{}
+		err := qbftMsg.Decode(msg.SSVMessage.Data)
+		if err != nil {
+			panic("could not decode message")
+		}
+		return qbftMsg.MsgType == qbft.ProposalMsgType
+	}
+	return false
 }
 
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {

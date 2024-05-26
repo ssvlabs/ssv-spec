@@ -23,7 +23,7 @@ type SignOutput struct {
 	Root      [32]byte
 }
 
-type testingKeyManager struct {
+type TestingKeyManager struct {
 	keys               map[string]*bls.SecretKey
 	ecdsaKeys          map[string]*ecdsa.PrivateKey
 	encryptionKeys     map[string]*rsa.PrivateKey
@@ -33,7 +33,7 @@ type testingKeyManager struct {
 }
 
 var (
-	instancesMap = make(map[uint64]*testingKeyManager)
+	instancesMap = make(map[uint64]*TestingKeyManager)
 	mu           sync.Mutex
 )
 
@@ -49,11 +49,11 @@ func getHash(data map[string][][]byte) uint64 {
 	return h.Sum64()
 }
 
-func NewTestingKeyManager() *testingKeyManager {
+func NewTestingKeyManager() *TestingKeyManager {
 	return NewTestingKeyManagerWithSlashableRoots(map[string][][]byte{})
 }
 
-func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]byte) *testingKeyManager {
+func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]byte) *TestingKeyManager {
 
 	hash := getHash(slashableDataRoots)
 
@@ -64,7 +64,7 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]by
 		return instance
 	}
 
-	ret := &testingKeyManager{
+	ret := &TestingKeyManager{
 		keys:           map[string]*bls.SecretKey{},
 		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 		encryptionKeys: nil,
@@ -102,8 +102,17 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]by
 	return ret
 }
 
+// AddSlashableDataRoot adds a slashable data root to the key manager
+func (km *TestingKeyManager) AddSlashableDataRoot(pk types.ShareValidatorPK, dataRoot []byte) {
+	entry := hex.EncodeToString(pk)
+	if km.slashableDataRoots[entry] == nil {
+		km.slashableDataRoots[entry] = make([][]byte, 0)
+	}
+	km.slashableDataRoots[entry] = append(km.slashableDataRoots[entry], dataRoot)
+}
+
 // IsAttestationSlashable returns error if attestation is slashable
-func (km *testingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, data *spec.AttestationData) error {
+func (km *TestingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, data *spec.AttestationData) error {
 	entry := hex.EncodeToString(pk)
 	for _, r := range km.slashableDataRoots[entry] {
 		r2, _ := data.HashTreeRoot()
@@ -114,7 +123,7 @@ func (km *testingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, d
 	return nil
 }
 
-func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureType, pk []byte) (types.Signature, error) {
+func (km *TestingKeyManager) SignRoot(data types.Root, sigType types.SignatureType, pk []byte) (types.Signature, error) {
 	if k, found := km.keys[hex.EncodeToString(pk)]; found {
 		computedRoot, err := types.ComputeSigningRoot(data, types.ComputeSignatureDomain(km.domain, sigType))
 		if err != nil {
@@ -127,11 +136,11 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 }
 
 // IsBeaconBlockSlashable returns error if the given block is slashable
-func (km *testingKeyManager) IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error {
+func (km *TestingKeyManager) IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error {
 	return nil
 }
 
-func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (types.Signature, [32]byte, error) {
+func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (types.Signature, [32]byte, error) {
 	mu.Lock()
 	defer mu.Unlock()
 
@@ -162,7 +171,7 @@ func (km *testingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Doma
 }
 
 // SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
-func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Address) (types.Signature, error) {
+func (km *TestingKeyManager) SignDKGOutput(output types.Root, address common.Address) (types.Signature, error) {
 	root, err := output.GetRoot()
 	if err != nil {
 		return nil, err
@@ -178,21 +187,21 @@ func (km *testingKeyManager) SignDKGOutput(output types.Root, address common.Add
 	return sig, nil
 }
 
-func (km *testingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {
+func (km *TestingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {
 	panic("implement")
 }
 
-func (km *testingKeyManager) AddShare(shareKey *bls.SecretKey) error {
+func (km *TestingKeyManager) AddShare(shareKey *bls.SecretKey) error {
 	km.keys[hex.EncodeToString(shareKey.GetPublicKey().Serialize())] = shareKey
 	return nil
 }
 
-func (km *testingKeyManager) RemoveShare(pubKey string) error {
+func (km *TestingKeyManager) RemoveShare(pubKey string) error {
 	delete(km.keys, pubKey)
 	return nil
 }
 
-func (km *testingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain spec.Domain) (*SignOutput, bool) {
+func (km *TestingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain spec.Domain) (*SignOutput, bool) {
 	if _, exists := km.signatureCache[pk]; !exists {
 		return &SignOutput{}, false
 	}
@@ -210,7 +219,7 @@ func (km *testingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain 
 	return km.signatureCache[pk][root][domain], true
 }
 
-func (km *testingKeyManager) storeSignRequest(pk string, obj ssz.HashRoot, domain spec.Domain, sig types.Signature, r [32]byte) {
+func (km *TestingKeyManager) storeSignRequest(pk string, obj ssz.HashRoot, domain spec.Domain, sig types.Signature, r [32]byte) {
 	if _, exists := km.signatureCache[pk]; !exists {
 		km.signatureCache[pk] = make(map[string]map[spec.Domain]*SignOutput)
 	}
