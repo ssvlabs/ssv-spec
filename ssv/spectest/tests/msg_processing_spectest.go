@@ -39,7 +39,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 
 // RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest
 func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
-	v, c, lastErr := test.runPreTesting()
+	v, c, runnerForRoot, lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
@@ -73,7 +73,7 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
 
 	// post root
-	postRoot, err := test.Runner.GetRoot()
+	postRoot, err := runnerForRoot.GetRoot()
 	require.NoError(t, err)
 
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
@@ -87,7 +87,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	test.RunAsPartOfMultiTest(t)
 }
 
-func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committee, error) {
+func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committee, ssv.Runner, error) {
 	var share *types.Share
 	ketSetMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
 	if len(test.Runner.GetBaseRunner().Share) == 0 {
@@ -103,6 +103,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 
 	var v *ssv.Validator
 	var c *ssv.Committee
+	var runnerForRoot ssv.Runner
 	var lastErr error
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
@@ -113,6 +114,8 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		} else {
 			c.Runners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
 		}
+
+		runnerForRoot = c.Runners[test.Duty.DutySlot()]
 
 		for _, msg := range test.Messages {
 			err := c.ProcessMessage(msg)
@@ -126,6 +129,8 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
 		v.Network = test.Runner.GetNetwork()
 
+		runnerForRoot = test.Runner
+
 		if !test.DontStartDuty {
 			lastErr = v.StartDuty(test.Duty)
 		}
@@ -137,7 +142,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		}
 	}
 
-	return v, c, lastErr
+	return v, c, runnerForRoot, lastErr
 }
 
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
@@ -177,12 +182,12 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 }
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
-	_, _, lastErr := test.runPreTesting()
+	_, _, runner, lastErr := test.runPreTesting()
 	if lastErr != nil && len(test.ExpectedError) == 0 {
 		return nil, lastErr
 	}
 
-	return test.Runner, nil
+	return runner, nil
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
