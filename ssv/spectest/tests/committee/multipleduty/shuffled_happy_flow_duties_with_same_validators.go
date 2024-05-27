@@ -11,19 +11,12 @@ import (
 )
 
 // ShuffledHappyFlowDutiesWithTheSameValidators performs the happy flow of duties with shuffled input messages (that preserves order between duty messages)
-// The duties are assigned to the same validators. This causes the previous duties to be stopped and only the beacon root of the last duty is submitted
+// The duties are assigned to the same validators.
 func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name:  "shuffled happy flow duties with same validators",
 		Tests: []*committee.CommitteeSpecTest{},
-	}
-
-	expectedError := func(numOfDuties int) string {
-		if numOfDuties == 1 {
-			return ""
-		}
-		return "could not find validators for root"
 	}
 
 	for _, numSequencedDuties := range []int{1, 2, 4} {
@@ -43,7 +36,6 @@ func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 					Input:                  testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, numValidators, 0, true),
 					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, 0),
 					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, numValidators, 0),
-					ExpectedError:          expectedError(numSequencedDuties),
 				},
 				{
 					Name:                   fmt.Sprintf("%v duties %v sync committee", numSequencedDuties, numValidators),
@@ -51,7 +43,6 @@ func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 					Input:                  testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, 0, numValidators, true),
 					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, 0, numValidators),
 					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, 0, numValidators),
-					ExpectedError:          expectedError(numSequencedDuties),
 				},
 				{
 					Name:                   fmt.Sprintf("%v duties %v attestations %v sync committees", numSequencedDuties, numValidators, numValidators),
@@ -59,7 +50,6 @@ func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 					Input:                  testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, numValidators, numValidators, true),
 					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, numValidators),
 					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuty(broadcastedBeaconRootSlot, numValidators, numValidators),
-					ExpectedError:          expectedError(numSequencedDuties),
 				},
 			}...)
 		}
