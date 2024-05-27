@@ -61,7 +61,8 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]by
 	defer mu.Unlock()
 
 	if instance, ok := instancesMap[hash]; ok {
-		return instance
+		// clone the instance so we can mutate it
+		return instance.Clone()
 	}
 
 	ret := &TestingKeyManager{
@@ -109,6 +110,39 @@ func (km *TestingKeyManager) AddSlashableDataRoot(pk types.ShareValidatorPK, dat
 		km.slashableDataRoots[entry] = make([][]byte, 0)
 	}
 	km.slashableDataRoots[entry] = append(km.slashableDataRoots[entry], dataRoot)
+}
+
+// Clone returns a new key manager with the same keys
+func (km *TestingKeyManager) Clone() *TestingKeyManager {
+	ret := &TestingKeyManager{
+		keys:               map[string]*bls.SecretKey{},
+		ecdsaKeys:          map[string]*ecdsa.PrivateKey{},
+		encryptionKeys:     map[string]*rsa.PrivateKey{},
+		domain:             km.domain,
+		signatureCache:     make(map[string]map[string]map[spec.Domain]*SignOutput),
+		slashableDataRoots: make(map[string][][]byte),
+	}
+
+	for k, v := range km.keys {
+		ret.keys[k] = v
+	}
+
+	for k, v := range km.ecdsaKeys {
+		ret.ecdsaKeys[k] = v
+	}
+
+	// copy encryption keys
+	for k, v := range km.encryptionKeys {
+		ret.encryptionKeys[k] = v
+	}
+
+	// copy slashable data roots
+	for k, v := range km.slashableDataRoots {
+		ret.slashableDataRoots[k] = make([][]byte, len(v))
+		ret.slashableDataRoots[k] = v
+	}
+
+	return ret
 }
 
 // IsAttestationSlashable returns error if attestation is slashable
