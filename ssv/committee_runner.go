@@ -354,14 +354,42 @@ func findValidators(
 }
 
 // unneeded
-func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
 	panic("not in use")
 }
 
-// This function signature returns only one domain type
-// instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
-func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	panic("not in use")
+// This function returns the post-consensus roots and their related DomainType
+func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
+	hashRoots := make([]ssz.HashRoot, 0)
+	domains := make([]phase0.DomainType, 0)
+	duty := cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty)
+	beaconVote, err := types.NewBeaconVote(cr.BaseRunner.State.DecidedValue)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "could not decode beacon vote")
+	}
+
+	for _, beaconDuty := range duty.BeaconDuties {
+		if beaconDuty == nil {
+			continue
+		}
+		switch beaconDuty.Type {
+		case types.BNRoleAttester:
+			// Attestation object
+			attestationData := constructAttestationData(beaconVote, beaconDuty)
+
+			// Add to lists
+			hashRoots = append(hashRoots, attestationData)
+			domains = append(domains, types.DomainAttester)
+
+		case types.BNRoleSyncCommittee:
+			blockRoot := types.SSZBytes(beaconVote.BlockRoot[:])
+
+			// Add to lists
+			hashRoots = append(hashRoots, blockRoot)
+			domains = append(domains, types.DomainSyncCommittee)
+		}
+	}
+	return hashRoots, domains, nil
 }
 
 // expectedPostConsensusRootsAndBeaconObjects returns the expected roots and beacon objects for the post consensus
