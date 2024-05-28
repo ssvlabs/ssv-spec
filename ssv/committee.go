@@ -44,6 +44,9 @@ func NewCommittee(
 
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
+	if len(duty.BeaconDuties) == 0 {
+		return errors.New("no beacon duties")
+	}
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
@@ -54,7 +57,9 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	// Stop validators with old duties
 	c.stopDuties(validatorToStopMap)
 	c.updateDutySlotMap(duty)
-	// TODO: check if there are beacon duties remaining
+	if len(duty.BeaconDuties) == 0 {
+		return errors.New("no beacon duties")
+	}
 	return c.Runners[duty.Slot].StartNewDuty(duty)
 }
 
