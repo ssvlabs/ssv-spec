@@ -30,7 +30,7 @@ func TooManyRoots() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				// No error for this runner type
+				ExpectedError:          err,
 			},
 			{
 				Name: "sync committee",
@@ -46,7 +46,7 @@ func TooManyRoots() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				// No error for this runner type
+				ExpectedError:          err,
 			},
 			{
 				Name: "attester and sync committee",
@@ -62,7 +62,7 @@ func TooManyRoots() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				// No error for this runner type
+				ExpectedError:          err,
 			},
 			{
 				Name: "sync committee contribution",

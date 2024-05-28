@@ -16,6 +16,8 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
+	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
+
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus partial invalid root quorum then valid quorum",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -37,6 +39,7 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedAttestationSSZRootForKeyMap(ksMap),
 				DontStartDuty:          true,
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -56,6 +59,7 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap),
 				DontStartDuty:          true,
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "attester and sync committee",
@@ -77,6 +81,7 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.TestingSignedAttestationSSZRootForKeyMap(ksMap),
 					testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap)...),
 				DontStartDuty: true,
+				ExpectedError: expectedError,
 			},
 		},
 	}

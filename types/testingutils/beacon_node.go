@@ -85,7 +85,7 @@ var TestWrongBeaconVote = types.BeaconVote{
 
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            TestingDutySlot,
-	Index:           3,
+	Index:           TestingCommitteeIndex,
 	BeaconBlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,

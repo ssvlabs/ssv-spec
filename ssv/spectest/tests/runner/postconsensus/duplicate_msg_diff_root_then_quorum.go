@@ -39,7 +39,7 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
 				DontStartDuty: true,
-				// No error is expected for this duty because it don't overwrite (in state) the previous message
+				ExpectedError: expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -60,7 +60,7 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 				DontStartDuty: true,
-				// No error is expected for this duty because it don't overwrite (in state) the previous message
+				ExpectedError: expectedError,
 			},
 			{
 				Name: "attester and sync committee",
@@ -82,7 +82,7 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 				DontStartDuty: true,
-				// No error is expected for this duty because it don't overwrite (in state) the previous message
+				ExpectedError: expectedError,
 			},
 			{
 				Name: "sync committee contribution",

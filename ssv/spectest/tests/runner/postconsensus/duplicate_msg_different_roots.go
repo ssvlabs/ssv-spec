@@ -34,6 +34,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -50,6 +51,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "attester and sync committee",
@@ -66,6 +68,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "sync committee contribution",

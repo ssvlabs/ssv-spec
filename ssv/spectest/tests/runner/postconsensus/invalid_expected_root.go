@@ -30,7 +30,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				// No error for this committee duty
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -46,7 +46,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				// No error for this committee duty
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "attester and sync committee",
@@ -62,7 +62,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				// No error for this committee duty
+				ExpectedError:          expectedError,
 			},
 			{
 				Name: "sync committee contribution",
