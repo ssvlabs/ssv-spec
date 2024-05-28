@@ -28,12 +28,11 @@ func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 
 			multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 				{
-					Name:           fmt.Sprintf("%v duties %v attestation", numSequencedDuties, numValidators),
-					Committee:      testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-					Input:          testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, numValidators, 0, true),
-					OutputMessages: testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, 0),
-					BeaconBroadcastedRoots: testingutils.
-						CommitteeBeaconBroadcastedRootsForDuties(numSequencedDuties, numValidators, 0),
+					Name:                   fmt.Sprintf("%v duties %v attestation", numSequencedDuties, numValidators),
+					Committee:              testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Input:                  testingutils.CommitteeInputForDutiesWithShuffle(numSequencedDuties, numValidators, 0, true),
+					OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, 0),
+					BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuties(numSequencedDuties, numValidators, 0),
 				},
 				{
 					Name:                   fmt.Sprintf("%v duties %v sync committee", numSequencedDuties, numValidators),
