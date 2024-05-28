@@ -100,6 +100,14 @@ func (cr CommitteeRunner) GetNetwork() Network {
 	return cr.network
 }
 
+func (cr CommitteeRunner) GetShare() *types.Share {
+	// TODO better solution for this
+	for _, share := range cr.BaseRunner.Share {
+		return share
+	}
+	return nil
+}
+
 func (cr CommitteeRunner) HasRunningDuty() bool {
 	return cr.BaseRunner.hasRunningDuty()
 }
@@ -151,8 +159,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		//TODO: The Domain will be updated after new Domain PR... Will be created after this PR is merged
-		MsgID: types.NewMsgID(types.GenesisMainnet, cr.GetBaseRunner().QBFTController.Share.ClusterID[:],
+		MsgID: types.NewMsgID(cr.GetShare().DomainType, cr.GetBaseRunner().QBFTController.Share.ClusterID[:],
 			cr.BaseRunner.RunnerRoleType),
 	}
 	ssvMsg.Data, err = postConsensusMsg.Encode()
@@ -160,7 +167,6 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	// TODO change GenesisMainnet to the correct network
 	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.Share.OperatorID,
 		cr.operatorSigner.SignSSVMessage)
 	if err != nil {
