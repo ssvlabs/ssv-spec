@@ -83,7 +83,6 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 
 	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
 
-
 	// get block data
 	obj, ver, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
 	if err != nil {
@@ -226,31 +225,31 @@ func (r *ProposerRunner) decidedBlindedBlock() bool {
 	return err == nil
 }
 
-func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.DutySlot())
-	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
+	return []ssz.HashRoot{types.SSZUint64(epoch)}, []phase0.DomainType{types.DomainRandao}, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
 
 	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
 	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
+		return nil, []phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
 	}
 	if r.decidedBlindedBlock() {
 		_, data, err := consensusData.GetBlindedBlockData()
 		if err != nil {
-			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block data")
+			return nil, []phase0.DomainType{}, errors.Wrap(err, "could not get blinded block data")
 		}
-		return []ssz.HashRoot{data}, types.DomainProposer, nil
+		return []ssz.HashRoot{data}, []phase0.DomainType{types.DomainProposer}, nil
 	}
 
 	_, data, err := consensusData.GetBlockData()
 	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
+		return nil, []phase0.DomainType{}, errors.Wrap(err, "could not get block data")
 	}
-	return []ssz.HashRoot{data}, types.DomainProposer, nil
+	return []ssz.HashRoot{data}, []phase0.DomainType{types.DomainProposer}, nil
 }
 
 // executeDuty steps:

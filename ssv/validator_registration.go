@@ -105,20 +105,20 @@ func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.Part
 	return errors.New("no post consensus phase for validator registration")
 }
 
-func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
 	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil {
-		return nil, types.DomainError, errors.New("no running duty to compute preconsensus roots and domain")
+		return nil, []phase0.DomainType{}, errors.New("no running duty to compute preconsensus roots and domain")
 	}
 	vr, err := r.calculateValidatorRegistration(r.BaseRunner.State.StartingDuty)
 	if err != nil {
-		return nil, types.DomainError, errors.Wrap(err, "could not calculate validator registration")
+		return nil, []phase0.DomainType{}, errors.Wrap(err, "could not calculate validator registration")
 	}
-	return []ssz.HashRoot{vr}, types.DomainApplicationBuilder, nil
+	return []ssz.HashRoot{vr}, []phase0.DomainType{types.DomainApplicationBuilder}, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, errors.New("no post consensus roots for validator registration")
+func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
+	return nil, []phase0.DomainType{}, errors.New("no post consensus roots for validator registration")
 }
 
 func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {

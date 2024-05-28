@@ -280,43 +280,47 @@ func (r *SyncCommitteeAggregatorRunner) generateContributionAndProof(contrib alt
 	return contribAndProof, contribAndProofRoot, nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
+	domains := make([]phase0.DomainType, 0)
 	sszIndexes := make([]ssz.HashRoot, 0)
 	for _, index := range r.GetState().StartingDuty.(*types.BeaconDuty).ValidatorSyncCommitteeIndices {
 		subnet, err := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(index))
 		if err != nil {
-			return nil, types.DomainError, errors.Wrap(err, "could not get sync committee subnet ID")
+			return nil, []phase0.DomainType{}, errors.Wrap(err, "could not get sync committee subnet ID")
 		}
 		data := &altair.SyncAggregatorSelectionData{
 			Slot:              r.GetState().StartingDuty.DutySlot(),
 			SubcommitteeIndex: subnet,
 		}
 		sszIndexes = append(sszIndexes, data)
+		domains = append(domains, types.DomainSyncCommitteeSelectionProof)
 	}
-	return sszIndexes, types.DomainSyncCommitteeSelectionProof, nil
+	return sszIndexes, domains, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
 	// get contributions
 	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
 	if err != nil {
-		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
+		return nil, []phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
 	}
 	contributions, err := consensusData.GetSyncCommitteeContributions()
 	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get contributions")
+		return nil, []phase0.DomainType{}, errors.Wrap(err, "could not get contributions")
 	}
 
 	ret := make([]ssz.HashRoot, 0)
+	domains := make([]phase0.DomainType, 0)
 	for _, contrib := range contributions {
 		contribAndProof, _, err := r.generateContributionAndProof(contrib.Contribution, contrib.SelectionProofSig)
 		if err != nil {
-			return nil, types.DomainError, errors.Wrap(err, "could not generate contribution and proof")
+			return nil, []phase0.DomainType{}, errors.Wrap(err, "could not generate contribution and proof")
 		}
 		ret = append(ret, contribAndProof)
+		domains = append(domains, types.DomainContributionAndProof)
 	}
-	return ret, types.DomainContributionAndProof, nil
+	return ret, domains, nil
 }
 
 // executeDuty steps:

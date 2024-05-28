@@ -199,22 +199,22 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.PartialSignatur
 	return nil
 }
 
-func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return []ssz.HashRoot{types.SSZUint64(r.GetState().StartingDuty.DutySlot())}, types.DomainSelectionProof, nil
+func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
+	return []ssz.HashRoot{types.SSZUint64(r.GetState().StartingDuty.DutySlot())}, []phase0.DomainType{types.DomainSelectionProof}, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, []phase0.DomainType, error) {
 	cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
 	if err != nil {
-		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
+		return nil, []phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
 	}
 	aggregateAndProof, err := cd.GetAggregateAndProof()
 	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get aggregate and proof")
+		return nil, []phase0.DomainType{}, errors.Wrap(err, "could not get aggregate and proof")
 	}
 
-	return []ssz.HashRoot{aggregateAndProof}, types.DomainAggregateAndProof, nil
+	return []ssz.HashRoot{aggregateAndProof}, []phase0.DomainType{types.DomainAggregateAndProof}, nil
 }
 
 // executeDuty steps:
