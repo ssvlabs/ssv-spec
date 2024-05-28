@@ -56,47 +56,42 @@ func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]by
 
 func NewTestingKeyStorage() *TestingKeyStorage {
 
+	mu.Lock()
+	defer mu.Unlock()
+
 	if keyStorageInstance == nil {
-		mu.Lock()
-		defer mu.Unlock()
 
-		if keyStorageInstance == nil {
-
-			ret := &TestingKeyStorage{
-				keys:           map[string]*bls.SecretKey{},
-				ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
-				encryptionKeys: nil,
-				domain:         TestingSSVDomainType,
-				signatureCache: make(map[string]map[string]map[spec.Domain]*SignOutput),
-			}
-
-			testingSharesSets := []*TestKeySet{Testing4SharesSet(), Testing7SharesSet(), Testing10SharesSet(), Testing13SharesSet()}
-
-			for _, testingShareSet := range testingSharesSets {
-				_ = ret.AddShare(testingShareSet.ValidatorSK)
-				for _, s := range testingShareSet.Shares {
-					_ = ret.AddShare(s)
-				}
-				for _, o := range testingShareSet.DKGOperators {
-					ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-				}
-			}
-
-			for _, keySet := range TestingKeySetMap {
-				_ = ret.AddShare(keySet.ValidatorSK)
-				for _, s := range keySet.Shares {
-					_ = ret.AddShare(s)
-				}
-				for _, o := range keySet.DKGOperators {
-					ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-				}
-			}
-
-			keyStorageInstance = ret
-
-			return keyStorageInstance
+		ret := &TestingKeyStorage{
+			keys:           map[string]*bls.SecretKey{},
+			ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
+			encryptionKeys: nil,
+			domain:         TestingSSVDomainType,
+			signatureCache: make(map[string]map[string]map[spec.Domain]*SignOutput),
 		}
 
+		testingSharesSets := []*TestKeySet{Testing4SharesSet(), Testing7SharesSet(), Testing10SharesSet(), Testing13SharesSet()}
+
+		for _, testingShareSet := range testingSharesSets {
+			_ = ret.AddShare(testingShareSet.ValidatorSK)
+			for _, s := range testingShareSet.Shares {
+				_ = ret.AddShare(s)
+			}
+			for _, o := range testingShareSet.DKGOperators {
+				ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+			}
+		}
+
+		for _, keySet := range TestingKeySetMap {
+			_ = ret.AddShare(keySet.ValidatorSK)
+			for _, s := range keySet.Shares {
+				_ = ret.AddShare(s)
+			}
+			for _, o := range keySet.DKGOperators {
+				ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
+			}
+		}
+
+		keyStorageInstance = ret
 	}
 
 	return keyStorageInstance
