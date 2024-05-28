@@ -6,16 +6,7 @@
 								"Quorum": 3
 						},
 						"PostConsensusContainer": {
-								"Signatures": {
-										"1": {
-												"4ae32f48079745930bc24da670a6fe72052e13e3832728c6aa2580adc0307b83": {
-														"1": "iU3PPG+KB+22Rz9ypL5hfg0kr6EuyvsUfyT4yiA5GaQmSuT2Q8z+NSRY8HljYoz2GFhYqJef2QekHSie73s4Ygn6jPp2Rf5ISQ/JHpbUTORk/oOdEPZPGBUc/yCeNTrt"
-												},
-												"85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
-														"1": "pyyG8N2IyWA8Ffzt+ZQnWI0FaaxLlyaYuyA9tgVDWRMBuRCGomjtnAKMlbYIXRx6DyaAsNFkT8yZcVtBR0QYMiBUCnOFAAOLUznXS16y5R1kGwJ0TpIfvlcym3M/QqX6"
-												}
-										}
-								},
+								"Signatures": {},
 								"Quorum": 3
 						},
 						"RunningInstance": {
