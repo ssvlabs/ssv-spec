@@ -40,11 +40,13 @@ func NewCommittee(
 
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
+	if len(duty.BeaconDuties) == 0 {
+		return errors.New("no beacon duties")
+	}
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
 	c.Runners[duty.Slot] = c.CreateRunnerFn(c.Share)
-	// TODO: check if there are beacon duties remaining
 	return c.Runners[duty.Slot].StartNewDuty(duty)
 }
 
