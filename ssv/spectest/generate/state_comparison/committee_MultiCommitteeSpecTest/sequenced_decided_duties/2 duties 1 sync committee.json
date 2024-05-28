@@ -688,8 +688,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														}
 												]
 										}
@@ -2214,8 +2213,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														}
 												]
 										}
@@ -3215,10 +3213,5 @@
 						"Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 				}
 		},
-		"HighestDutySlotMap": {
-				"0": {},
-				"3": {
-						"1": "13"
-				}
-		}
+		"HighestDutySlotMap": null
 }

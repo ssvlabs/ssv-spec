@@ -110,8 +110,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										}
 								]
 						}
@@ -375,7 +374,7 @@
 												"LastPreparedValue": null,
 												"ProposalAcceptedForCurrentRound": null,
 												"Decided": true,
-												"DecidedValue": "4o6jpoQHQ0udMQ4zn+/WS7nhrQsdiMzjLzOkzwC4QYs=",
+												"DecidedValue": "crmAJePj3BelR9WyLPaYBxE3Sm5SaIyF5GdbDURVj30=",
 												"ProposeContainer": {
 														"Msgs": {}
 												},

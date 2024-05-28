@@ -699,8 +699,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -711,8 +710,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														}
 												]
 										}
@@ -2962,8 +2960,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -2974,8 +2971,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														}
 												]
 										}
@@ -5225,8 +5221,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5237,8 +5232,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														}
 												]
 										}
@@ -7488,8 +7482,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -7500,8 +7493,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														}
 												]
 										}
@@ -9929,17 +9921,5 @@
 						"Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 				}
 		},
-		"HighestDutySlotMap": {
-				"0": {
-						"1": "12",
-						"2": "12",
-						"3": "13",
-						"4": "13",
-						"5": "14",
-						"6": "14",
-						"7": "15",
-						"8": "15"
-				},
-				"3": {}
-		}
+		"HighestDutySlotMap": null
 }
