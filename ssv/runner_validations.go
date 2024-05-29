@@ -97,7 +97,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSi
 		for i, rootI := range expectedRootObjs {
 			d, err := runner.GetBeaconNode().DomainData(epoch, domains[i])
 			if err != nil {
-				return nil, errors.Wrap(err, "could not get pre consensus root domain")
+				return nil, errors.Wrap(err, "could not get domain to compute ETH signing root")
 			}
 
 			r, err := types.ComputeETHSigningRoot(rootI, d)
