@@ -745,8 +745,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -761,8 +760,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -777,8 +775,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -793,8 +790,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -809,8 +805,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -825,8 +820,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -841,8 +835,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -857,8 +850,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														}
 												]
 										}
@@ -3286,17 +3278,5 @@
 						"Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 				}
 		},
-		"HighestDutySlotMap": {
-				"0": {},
-				"3": {
-						"1": "12",
-						"2": "12",
-						"3": "12",
-						"4": "12",
-						"5": "12",
-						"6": "12",
-						"7": "12",
-						"8": "12"
-				}
-		}
+		"HighestDutySlotMap": null
 }

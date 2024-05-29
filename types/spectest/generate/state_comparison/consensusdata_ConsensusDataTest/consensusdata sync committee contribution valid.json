@@ -14,8 +14,7 @@
 								0,
 								1,
 								2
-						],
-						"IsStopped": false
+						]
 				},
 				"Version": "deneb",
 				"PreConsensusJustifications": [

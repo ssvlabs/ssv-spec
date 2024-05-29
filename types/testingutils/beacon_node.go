@@ -97,6 +97,8 @@ var TestingAttestationData = &phase0.AttestationData{
 	},
 }
 
+var TestingAttestationDataRoot, _ = TestingAttestationData.HashTreeRoot()
+
 var TestingAttestationDataForBeaconDuty = func(duty *types.BeaconDuty) *phase0.AttestationData {
 	return &phase0.AttestationData{
 		Slot:            duty.Slot,

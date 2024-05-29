@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"os"
 	"reflect"
 	"testing"
@@ -20,10 +21,12 @@ import (
 )
 
 type MsgProcessingSpecTest struct {
-	Name                    string
-	Runner                  ssv.Runner
-	Duty                    types.Duty
-	Messages                []*types.SignedSSVMessage
+	Name     string
+	Runner   ssv.Runner
+	Duty     types.Duty
+	Messages []*types.SignedSSVMessage
+	// DecidedSlashable makes the decided value slashable. Simulates consensus instances running in parallel.
+	DecidedSlashable        bool
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
@@ -119,6 +122,12 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 			if err != nil {
 				lastErr = err
 			}
+			if test.DecidedSlashable && IsQBFTProposalMessage(msg) {
+				for _, validatorShare := range test.Runner.GetBaseRunner().Share {
+					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableDataRoot(validatorShare.
+						SharePubKey, testingutils.TestingAttestationDataRoot[:])
+				}
+			}
 		}
 
 	default:
@@ -138,6 +147,19 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	}
 
 	return v, c, lastErr
+}
+
+// IsQBFTProposalMessage checks if the message is a QBFT proposal message
+func IsQBFTProposalMessage(msg *types.SignedSSVMessage) bool {
+	if msg.SSVMessage.MsgType == types.SSVConsensusMsgType {
+		qbftMsg := qbft.Message{}
+		err := qbftMsg.Decode(msg.SSVMessage.Data)
+		if err != nil {
+			panic("could not decode message")
+		}
+		return qbftMsg.MsgType == qbft.ProposalMsgType
+	}
+	return false
 }
 
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
@@ -185,28 +207,29 @@ func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	return test.Runner, nil
 }
 
+// Create alias without duty
+type MsgProcessingSpecTestAlias struct {
+	Name   string
+	Runner ssv.Runner
+	// No duty from type types.Duty
+	Messages                []*types.SignedSSVMessage
+	DecidedSlashable        bool
+	PostDutyRunnerStateRoot string
+	PostDutyRunnerState     types.Root `json:"-"`
+	OutputMessages          []*types.PartialSignatureMessages
+	BeaconBroadcastedRoots  []string
+	DontStartDuty           bool
+	ExpectedError           string
+	BeaconDuty              *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
+	CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+}
+
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
-
-	// Create alias without duty
-	type MsgProcessingSpecTestAlias struct {
-		Name   string
-		Runner ssv.Runner
-		// No duty from type types.Duty
-		Messages                []*types.SignedSSVMessage
-		PostDutyRunnerStateRoot string
-		PostDutyRunnerState     types.Root `json:"-"`
-		OutputMessages          []*types.PartialSignatureMessages
-		BeaconBroadcastedRoots  []string
-		DontStartDuty           bool
-		ExpectedError           string
-		BeaconDuty              *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
-		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
-	}
-
 	alias := &MsgProcessingSpecTestAlias{
 		Name:                    t.Name,
 		Runner:                  t.Runner,
 		Messages:                t.Messages,
+		DecidedSlashable:        t.DecidedSlashable,
 		PostDutyRunnerStateRoot: t.PostDutyRunnerStateRoot,
 		PostDutyRunnerState:     t.PostDutyRunnerState,
 		OutputMessages:          t.OutputMessages,
@@ -230,23 +253,6 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 }
 
 func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
-
-	// Create alias without duty
-	type MsgProcessingSpecTestAlias struct {
-		Name   string
-		Runner ssv.Runner
-		// No duty from type types.Duty
-		Messages                []*types.SignedSSVMessage
-		PostDutyRunnerStateRoot string
-		PostDutyRunnerState     types.Root `json:"-"`
-		OutputMessages          []*types.PartialSignatureMessages
-		BeaconBroadcastedRoots  []string
-		DontStartDuty           bool
-		ExpectedError           string
-		BeaconDuty              *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
-		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
-	}
-
 	aux := &MsgProcessingSpecTestAlias{}
 
 	// Unmarshal the JSON data into the auxiliary struct
@@ -256,6 +262,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 
 	t.Name = aux.Name
 	t.Runner = aux.Runner
+	t.DecidedSlashable = aux.DecidedSlashable
 	t.Messages = aux.Messages
 	t.PostDutyRunnerStateRoot = aux.PostDutyRunnerStateRoot
 	t.PostDutyRunnerState = aux.PostDutyRunnerState
