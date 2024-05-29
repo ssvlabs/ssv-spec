@@ -23,8 +23,6 @@ var (
 )
 
 func NewTestingVerifier() types.SignatureVerifier {
-	testingVerifierInstanceLock.Lock()
-	defer testingVerifierInstanceLock.Unlock()
 	testingVerifierSingletonConstructor.Do(func() {
 		testingVerifierInstance = &testingVerifier{
 			signaturesCache: make(map[types.OperatorID]map[[32]byte][]byte),
