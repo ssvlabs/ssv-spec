@@ -160,10 +160,6 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
-	// update the highest decided slot
-	// TODO: bad name because it wasn't decided yet
-	b.highestDecidedSlot = b.State.StartingDuty.DutySlot()
-
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
 	}
@@ -172,6 +168,9 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 	if err != nil {
 		return true, nil, errors.Wrap(err, "could not encode decided value")
 	}
+
+	// update the highest decided slot
+	b.highestDecidedSlot = b.State.StartingDuty.DutySlot()
 
 	return true, decidedValue, nil
 }
