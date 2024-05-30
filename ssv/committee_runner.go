@@ -176,7 +176,6 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 }
 
-// TODO finish edge case where some roots may be missing
 func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	// Gets all the roots that received a quorum of signatures
 	quorum, rootsList, err := cr.BaseRunner.basePostConsensusMsgProcessing(&cr, signedMsg)
@@ -219,7 +218,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 
 		for _, validator := range validators {
 
-			// Skip if no quorum
+			// Skip if no quorum - We know that a root has quorum but not necessarily for the validator
 			if !cr.BaseRunner.State.PostConsensusContainer.HasQuorum(validator, root) {
 				continue
 			}
