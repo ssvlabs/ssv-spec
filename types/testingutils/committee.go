@@ -11,7 +11,7 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 
 	shareMap := make(map[phase0.ValidatorIndex]*types.SharedValidator)
 	for valIdx, ks := range keySetMap {
-		shareMap[valIdx] = TestingShare(ks, valIdx)
+		shareMap[valIdx] = TestingSharedValidator(ks, valIdx)
 	}
 
 	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.SharedValidator) *ssv.CommitteeRunner {
@@ -34,14 +34,14 @@ var BaseCommitteeWithRunnerSample = func(keySetMap map[phase0.ValidatorIndex]*Te
 
 	shareMap := make(map[phase0.ValidatorIndex]*types.SharedValidator)
 	for valIdx, ks := range keySetMap {
-		shareMap[valIdx] = TestingShare(ks, valIdx)
+		shareMap[valIdx] = TestingSharedValidator(ks, valIdx)
 	}
 
 	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.SharedValidator) *ssv.CommitteeRunner {
 		return ssv.NewCommitteeRunner(runnerSample.BaseRunner.BeaconNetwork,
 			shareMap,
 			qbft.NewController(runnerSample.BaseRunner.QBFTController.Identifier,
-				runnerSample.BaseRunner.QBFTController.Share,
+				runnerSample.BaseRunner.QBFTController.SharedValidator,
 				runnerSample.BaseRunner.QBFTController.GetConfig()),
 			NewTestingBeaconNode(),
 			NewTestingNetwork(1, keySetSample.OperatorKeys[1]),

@@ -22,7 +22,7 @@ func PostPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal post prepare",
 		Pre:           pre,
-		PostRoot:      "380ffb45dd2286dcff463af535abbb41e12a6f8bf9e0b0999188a3c573d4f405",
+		PostRoot:      "47e28da5a54a5fcb0cfb74db31cedd8e831c3ab58b21c944e95e13e38a523fa6",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),

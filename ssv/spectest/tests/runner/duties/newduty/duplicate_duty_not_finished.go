@@ -22,7 +22,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().QBFTController.Share,
+			r.GetBaseRunner().QBFTController.SharedValidator,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)

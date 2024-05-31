@@ -35,7 +35,7 @@ func JustificationPastRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change past round quorum",
 		Pre:            pre,
-		PostRoot:       "bce6ba7387eb6eca913347bf2267df5d17e88108997c4b25be8dd9359b400bcb",
+		PostRoot:       "e3c732b0fdeaa4b74e98e83924f8b1207e2e45b9a2256e6172cce2623325a041",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: past round",

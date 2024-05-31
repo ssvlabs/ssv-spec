@@ -74,7 +74,7 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *typ
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+		testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
 	)
 
@@ -84,10 +84,10 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *typ
 		instance := &qbft.Instance{
 			StartValue: []byte{1, 2, 3, 4},
 			State: &qbft.State{
-				Share:  testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
-				ID:     testingutils.TestingIdentifier,
-				Round:  qbft.FirstRound,
-				Height: qbft.Height(i),
+				SharedValidator: testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+				ID:              testingutils.TestingIdentifier,
+				Round:           qbft.FirstRound,
+				Height:          qbft.Height(i),
 			},
 		}
 

@@ -436,7 +436,7 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
 		if ret.GetBaseRunner().State != nil {
 			if ret.GetBaseRunner().State.RunningInstance != nil {
-				operator := testingutils.TestingShare(ks, testingutils.TestingValidatorIndex)
+				operator := testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex)
 				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, operator)
 			}
 		}
@@ -450,7 +450,7 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 	config.ValueCheckF = runner.GetValCheckF()
 	newContr := qbft.NewController(
 		contr.Identifier,
-		contr.Share,
+		contr.SharedValidator,
 		config,
 	)
 	newContr.Height = contr.Height
@@ -460,7 +460,7 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 		if inst == nil {
 			continue
 		}
-		operator := testingutils.TestingShare(ks, testingutils.TestingValidatorIndex)
+		operator := testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex)
 		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, operator)
 	}
 	return newContr
@@ -475,7 +475,7 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 
 	newInst.State.DecidedValue = inst.State.DecidedValue
 	newInst.State.Decided = inst.State.Decided
-	newInst.State.Share = inst.State.Share
+	newInst.State.SharedValidator = inst.State.SharedValidator
 	newInst.State.Round = inst.State.Round
 	newInst.State.Height = inst.State.Height
 	newInst.State.ProposalAcceptedForCurrentRound = inst.State.ProposalAcceptedForCurrentRound

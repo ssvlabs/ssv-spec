@@ -42,7 +42,7 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -55,7 +55,7 @@ func futureDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot + 1,
@@ -114,7 +114,7 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -127,7 +127,7 @@ func futureDecidedAggregatorSC() *comparable.StateComparison {
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot + 1,
@@ -186,7 +186,7 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
@@ -199,7 +199,7 @@ func futureDecidedProposerSC(version spec.DataVersion) *comparable.StateComparis
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version) + 1),
@@ -257,7 +257,7 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
@@ -270,7 +270,7 @@ func futureDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 
 			decidedInstance := &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version) + 1),

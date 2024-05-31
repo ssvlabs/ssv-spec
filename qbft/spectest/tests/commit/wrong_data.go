@@ -20,7 +20,7 @@ func WrongData1() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit data != acceptedProposalData.Data",
 		Pre:           pre,
-		PostRoot:      "a711e11c0e08204861008b7f3b8affa498bfc777199e0692bd661e40b09d55d6",
+		PostRoot:      "d3c3540b20d61319771ef7b01c26d172fbabeabad5c09b1415c72a34e0fd145f",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: proposed data mismatch",
 	}

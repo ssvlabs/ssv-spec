@@ -39,7 +39,7 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -83,7 +83,7 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -127,7 +127,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -171,7 +171,7 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,

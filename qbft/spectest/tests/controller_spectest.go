@@ -78,7 +78,7 @@ func (test *ControllerSpecTest) generateController() *qbft.Controller {
 	identifier := []byte{1, 2, 3, 4}
 	keySet := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(keySet)
-	share := testingutils.TestingShare(keySet, testingutils.TestingValidatorIndex)
+	share := testingutils.TestingSharedValidator(keySet, testingutils.TestingValidatorIndex)
 	return testingutils.NewTestingQBFTController(
 		identifier[:],
 		share,
@@ -181,7 +181,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 		lastErr = err
 	}
 
-	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.Share.Committee)
+	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.SharedValidator.Committee)
 
 	// test root
 	r, err := contr.GetRoot()

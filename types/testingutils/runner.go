@@ -195,7 +195,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 }
 
 var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, keySet *TestKeySet) ssv.Runner {
-	share := TestingShare(keySet, TestingValidatorIndex)
+	share := TestingSharedValidator(keySet, TestingValidatorIndex)
 
 	// Identifier
 	var ownerID []byte

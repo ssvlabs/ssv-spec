@@ -40,7 +40,7 @@ func invalidQuorumThenValidQuorumSyncCommitteeContributionSC() *comparable.State
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -86,7 +86,7 @@ func invalidQuorumThenValidQuorumAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -132,7 +132,7 @@ func invalidQuorumThenValidQuorumProposerSC(version spec.DataVersion) *comparabl
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -178,7 +178,7 @@ func invalidQuorumThenValidQuorumBlindedProposerSC(version spec.DataVersion) *co
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,

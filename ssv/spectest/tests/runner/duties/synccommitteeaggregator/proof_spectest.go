@@ -46,7 +46,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 
 func (test *SyncCommitteeAggregatorProofSpecTest) runPreTesting() (ssv.Runner, error) {
 	ks := testingutils.Testing4SharesSet()
-	share := testingutils.TestingShare(ks, testingutils.TestingValidatorIndex)
+	share := testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex)
 	v := testingutils.BaseValidator(testingutils.KeySetForShare(share))
 	r := v.DutyRunners[types.RoleSyncCommitteeContribution]
 	r.GetBeaconNode().(*testingutils.TestingBeaconNode).SetSyncCommitteeAggregatorRootHexes(test.ProofRootsMap)

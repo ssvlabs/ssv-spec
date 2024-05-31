@@ -28,7 +28,7 @@ func PostWrongDecided() tests.SpecTest {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().QBFTController.Share,
+			r.GetBaseRunner().QBFTController.SharedValidator,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
@@ -36,7 +36,7 @@ func PostWrongDecided() tests.SpecTest {
 
 		higherDecided := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().QBFTController.Share,
+			r.GetBaseRunner().QBFTController.SharedValidator,
 			r.GetBaseRunner().QBFTController.Identifier,
 			higherDecidedSlot)
 		higherDecided.State.Decided = true

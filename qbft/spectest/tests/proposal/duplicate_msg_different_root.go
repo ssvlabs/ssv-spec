@@ -38,7 +38,7 @@ func duplicateMsgDifferentRootStateComparison() *comparable.StateComparison {
 
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+			SharedValidator:                 testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 			ID:                              testingutils.TestingIdentifier,
 			Round:                           qbft.FirstRound,

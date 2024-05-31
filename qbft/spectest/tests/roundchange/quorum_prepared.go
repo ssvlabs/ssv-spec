@@ -30,7 +30,7 @@ func QuorumPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change prepared",
 		Pre:           pre,
-		PostRoot:      "67b769c6b7cc4e73a44e27dc6a5071dc2120f74c0c4a5a5e150ad46cc77ca404",
+		PostRoot:      "6dd7c43fc75050a7132fddafdf443cd57e2db62708a8c2bdad3b6a8a7a4ba826",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithParams(

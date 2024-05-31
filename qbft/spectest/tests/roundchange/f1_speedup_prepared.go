@@ -26,7 +26,7 @@ func F1SpeedupPrevPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up prev prepared",
 		Pre:           pre,
-		PostRoot:      "4d40f90f81f60412c81156aee15fda49d8fdb8962f74ed36ebd18062edb261a4",
+		PostRoot:      "270c5f6052f014dab1b88422dc0623c50c236b100f14007a7af64bf49a44803a",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,

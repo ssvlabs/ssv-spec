@@ -62,7 +62,7 @@ var TestingValidatorShare = func(keysSet *TestKeySet, opID types.OperatorID) typ
 	}
 }
 
-var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *types.SharedValidator {
+var TestingSharedValidator = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *types.SharedValidator {
 
 	// Decode validator public key
 	pkBytesSlice := keysSet.ValidatorPK.Serialize()
@@ -89,19 +89,19 @@ var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *type
 }
 
 var BaseInstance = func() *qbft.Instance {
-	return baseInstance(TestingShare(Testing4SharesSet(), TestingValidatorIndex), Testing4SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingSharedValidator(Testing4SharesSet(), TestingValidatorIndex), Testing4SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var SevenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingShare(Testing7SharesSet(), TestingValidatorIndex), Testing7SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingSharedValidator(Testing7SharesSet(), TestingValidatorIndex), Testing7SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var TenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingShare(Testing10SharesSet(), TestingValidatorIndex), Testing10SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingSharedValidator(Testing10SharesSet(), TestingValidatorIndex), Testing10SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var ThirteenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingShare(Testing13SharesSet(), TestingValidatorIndex), Testing13SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingSharedValidator(Testing13SharesSet(), TestingValidatorIndex), Testing13SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var baseInstance = func(share *types.SharedValidator, keySet *TestKeySet, identifier []byte) *qbft.Instance {

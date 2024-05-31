@@ -51,7 +51,7 @@ func decideRunnerForData(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv
 	r.GetBaseRunner().State = ssv.NewRunnerState(share.Quorum, duty)
 	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
-		r.GetBaseRunner().QBFTController.Share,
+		r.GetBaseRunner().QBFTController.SharedValidator,
 		r.GetBaseRunner().QBFTController.Identifier,
 		qbft.Height(duty.DutySlot()))
 	r.GetBaseRunner().State.RunningInstance.State.Decided = true

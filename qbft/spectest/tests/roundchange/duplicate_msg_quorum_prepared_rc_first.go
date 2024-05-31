@@ -66,9 +66,9 @@ func duplicateMsgQuorumPreparedRCFirstStateComparison() *comparable.StateCompari
 
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share: testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
-			ID:    testingutils.TestingIdentifier,
-			Round: 2,
+			SharedValidator: testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+			ID:              testingutils.TestingIdentifier,
+			Round:           2,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

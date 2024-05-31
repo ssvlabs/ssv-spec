@@ -32,12 +32,12 @@ func previousNotDecided1SC() *qbftcomparable.StateComparison {
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+		testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 		config,
 	)
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share:             testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+			SharedValidator:   testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            qbft.FirstHeight,
@@ -55,12 +55,12 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+		testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 		config,
 	)
 	instance1 := &qbft.Instance{
 		State: &qbft.State{
-			Share:             testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+			SharedValidator:   testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            qbft.FirstHeight,
@@ -73,7 +73,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 
 	instance2 := &qbft.Instance{
 		State: &qbft.State{
-			Share:             testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+			SharedValidator:   testingutils.TestingSharedValidator(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            1,

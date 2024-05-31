@@ -36,7 +36,7 @@ func validDecided7OperatorsSyncCommitteeContributionSC() *comparable.StateCompar
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -86,7 +86,7 @@ func validDecided7OperatorsAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -136,7 +136,7 @@ func validDecided7OperatorsProposerSC(version spec.DataVersion) *comparable.Stat
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
@@ -186,7 +186,7 @@ func validDecided7OperatorsBlindedProposerSC(version spec.DataVersion) *comparab
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+					SharedValidator:   testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),

@@ -38,7 +38,7 @@ func KeySetMapForValidators(limit int) map[phase0.ValidatorIndex]*TestKeySet {
 func ShareMapFromKeySetMap(keySetMap map[phase0.ValidatorIndex]*TestKeySet) map[phase0.ValidatorIndex]*types.SharedValidator {
 	ret := make(map[phase0.ValidatorIndex]*types.SharedValidator)
 	for valIdx, ks := range keySetMap {
-		ret[valIdx] = TestingShare(ks, valIdx)
+		ret[valIdx] = TestingSharedValidator(ks, valIdx)
 	}
 	return ret
 }

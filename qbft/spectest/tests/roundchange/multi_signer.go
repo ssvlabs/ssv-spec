@@ -25,7 +25,7 @@ func MultiSigner() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change multi signers",
 		Pre:            pre,
-		PostRoot:       "19223b167b62c31d66acd5c87f5bd1081067febb33662157b9795b5f576b3d31",
+		PostRoot:       "50829de8e9d4814e529e39647a5faf1dd7c93dad00e3b59ed1215559b408671f",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: msg allows 1 signer",
