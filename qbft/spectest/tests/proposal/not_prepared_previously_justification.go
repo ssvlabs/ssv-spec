@@ -24,7 +24,7 @@ func NotPreparedPreviouslyJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal justification (not prepared)",
 		Pre:           pre,
-		PostRoot:      "4c33cd42459175c9858a99fc450e517ac2f3f8c99ba0a1d74775e129117398b8",
+		PostRoot:      "efc76b7d9cc1d80062ee08c82d8afece2b8c336f4c9ed8e04ce30bcfdf43ab34",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),

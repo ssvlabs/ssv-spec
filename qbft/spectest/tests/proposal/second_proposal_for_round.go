@@ -18,7 +18,7 @@ func SecondProposalForRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "second proposal for round",
 		Pre:           pre,
-		PostRoot:      "a218ef33486e9bdebef968f145f69a3e4ec9c4d824842297d3f6510d72ed5003",
+		PostRoot:      "38b216b27c7948119a459b4491c3f9d1898410d6abe38ae115e6ee84013dfc76",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),

@@ -20,7 +20,7 @@ func DuplicateSigners() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:     "duplicate signers",
 		Pre:      pre,
-		PostRoot: "fc68d10ca3bc1250da3aa789d4feae5fa197d08964c26c9f16cdfd39931d38ce",
+		PostRoot: "141aa76b11c863caecab7640c39de47577964d1536706bd95fd4f8a5d6f4e059",
 		InputMessages: []*types.SignedSSVMessage{
 			commit,
 		},

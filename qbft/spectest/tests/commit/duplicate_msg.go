@@ -21,7 +21,7 @@ func DuplicateMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate commit message",
 		Pre:           pre,
-		PostRoot:      "9ba642975b869bc6b41c3d2444be8d44b8e6cff259c1379466d1a77949cddecf",
+		PostRoot:      "4640965aebf4b54485fd46338249566eab708fd84bdbf03cbf5ef9c7990a0ca5",
 		InputMessages: msgs,
 	}
 }
