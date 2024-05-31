@@ -10,6 +10,7 @@ type Share struct {
 	CommitteeID         CommitteeID       `ssz-size:"32"`
 	Committee           []*ValidatorShare `ssz-max:"13"`
 	Quorum              uint64
+	PartialQuorum       uint64
 	DomainType          DomainType `ssz-size:"4"`
 	FeeRecipientAddress [20]byte   `ssz-size:"20"`
 	Graffiti            []byte     `ssz-size:"32"`
@@ -19,6 +20,9 @@ type Share struct {
 // https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L259
 func (share *Share) HasQuorum(cnt int) bool {
 	return uint64(cnt) >= share.Quorum
+}
+func (share *Share) HasPartialQuorum(cnt int) bool {
+	return uint64(cnt) >= share.PartialQuorum
 }
 
 func (share *Share) Encode() ([]byte, error) {
