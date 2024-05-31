@@ -11,8 +11,6 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 		NewTestingBeaconNode(),
 		TestingOperator(keySet),
 		TestingShare(keySet, TestingValidatorIndex),
-		NewTestingKeyManager(),
-		NewTestingOperatorSigner(keySet, 1),
 		map[types.RunnerRole]ssv.Runner{
 			types.RoleCommittee:                 CommitteeRunner(keySet),
 			types.RoleProposer:                  ProposerRunner(keySet),
