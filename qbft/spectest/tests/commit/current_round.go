@@ -19,7 +19,7 @@ func CurrentRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit current round",
 		Pre:           pre,
-		PostRoot:      "4640965aebf4b54485fd46338249566eab708fd84bdbf03cbf5ef9c7990a0ca5",
+		PostRoot:      "b8c0eab5e863f851612551cda0e7135b4a9cf7faee2c0a0bb4b028d45e493700",
 		InputMessages: msgs,
 	}
 }

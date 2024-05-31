@@ -42,9 +42,9 @@ func f1DifferentFutureRoundsNotPreparedStateComparison() *comparable.StateCompar
 
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Operator: testingutils.TestingOperator(testingutils.Testing4SharesSet()),
-			ID:       testingutils.TestingIdentifier,
-			Round:    5,
+			Share: testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+			ID:    testingutils.TestingIdentifier,
+			Round: 5,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

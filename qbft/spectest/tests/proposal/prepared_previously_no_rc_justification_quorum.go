@@ -31,7 +31,7 @@ func PreparedPreviouslyNoRCJustificationQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "no rc quorum (prepared)",
 		Pre:            pre,
-		PostRoot:       "613745b592755d889d7fdec2b3a7e3b54ff8b5d981bf1a81683f3804f3350727",
+		PostRoot:       "3d11aa7331a7aa79d3403ac1af61569f1eae0547f54f15dca7e9e07b1ab0573d",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",

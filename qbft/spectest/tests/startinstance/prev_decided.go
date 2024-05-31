@@ -41,7 +41,7 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+		testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
 	)
 
@@ -51,10 +51,10 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 		instance := &qbft.Instance{
 			StartValue: []byte{1, 2, 3, 4},
 			State: &qbft.State{
-				Operator: testingutils.TestingOperator(testingutils.Testing4SharesSet()),
-				ID:       testingutils.TestingIdentifier,
-				Round:    qbft.FirstRound,
-				Height:   qbft.Height(i),
+				Share:  testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
+				ID:     testingutils.TestingIdentifier,
+				Round:  qbft.FirstRound,
+				Height: qbft.Height(i),
 			},
 		}
 

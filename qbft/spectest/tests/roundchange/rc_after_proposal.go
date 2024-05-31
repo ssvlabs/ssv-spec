@@ -31,7 +31,7 @@ func AfterProposal() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change after proposal accepted",
 		Pre:           pre,
-		PostRoot:      "a046b3a5975198f8dabca4e893ed15c02a8de1f1f0924a159d72a807f58e1fa0",
+		PostRoot:      "4c29bb6a1a052d7465ad8638d725c629a72711b9bfade6ca9a763b028d251a6a",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,

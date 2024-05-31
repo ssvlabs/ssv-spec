@@ -26,7 +26,7 @@ func MultiSignerNoOverlap() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "multi signer, no overlap",
 		Pre:           pre,
-		PostRoot:      "95fe5de3c322aec9abfbf377aee2aada792fac6e92c3f1c076c7362dbe8daacd",
+		PostRoot:      "6a457b6e6dfb84ba6c83bb5c82f5f1e01a3fe399a267590014f3d1bed960500c",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),

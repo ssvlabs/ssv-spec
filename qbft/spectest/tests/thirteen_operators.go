@@ -36,7 +36,7 @@ func ThirteenOperators() SpecTest {
 	return &MsgProcessingSpecTest{
 		Name:          "happy flow thirteen operators",
 		Pre:           pre,
-		PostRoot:      "89eff6728716b03054bcd944fa681a027ad58f1790ad13f181b337efaeaa9960",
+		PostRoot:      "98d2970ef085ab4c8dfec83fa0713150b0538eccd65068be760c6e24aff09ddd",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),

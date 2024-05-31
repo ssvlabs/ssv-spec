@@ -26,7 +26,7 @@ func PostDecided() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepare post decided",
 		Pre:           pre,
-		PostRoot:      "dcb45b76201328469f9ab1b01edff51ec855f137b96534f68f00a825746606e9",
+		PostRoot:      "09455a7888b65734452eef3f8a23b942e0658105f48f86215b477c50ce489eaa",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),

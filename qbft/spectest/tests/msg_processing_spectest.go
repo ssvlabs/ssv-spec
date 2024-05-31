@@ -55,7 +55,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	// test output message
 	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-	testingutils.CompareSignedSSVMessageOutputMessages(t, test.OutputMessages, broadcastedSignedMsgs, test.Pre.State.Operator.Committee)
+	testingutils.CompareSignedSSVMessageOutputMessages(t, test.OutputMessages, broadcastedSignedMsgs, test.Pre.State.Share.Committee)
 
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot[:]) {

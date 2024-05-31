@@ -50,14 +50,14 @@ func lateCommitStateComparison() *comparable.StateComparison {
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+		testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
 	)
 
 	instance := &qbft.Instance{
 		StartValue: []byte{1, 2, 3, 4},
 		State: &qbft.State{
-			Operator:                        testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 			ID:                              testingutils.TestingIdentifier,
 			Round:                           qbft.FirstRound,
 			Height:                          qbft.FirstHeight,

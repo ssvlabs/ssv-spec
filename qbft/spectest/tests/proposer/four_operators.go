@@ -31,7 +31,7 @@ func FourOperators() tests.SpecTest {
 
 	return &tests.RoundRobinSpecTest{
 		Name:      "4 member committee",
-		Share:     testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+		Share:     testingutils.TestingShare(testingutils.Testing4SharesSet(), testingutils.TestingValidatorIndex),
 		Heights:   heights,
 		Rounds:    rounds,
 		Proposers: proposers,

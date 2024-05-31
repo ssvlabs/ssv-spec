@@ -30,7 +30,7 @@ func JustificationMultiSigners() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "justification multi signer",
 		Pre:            pre,
-		PostRoot:       "16940232950c3eabfda761ace0bededa93336920e57e9992a9d0c02a4d86583c",
+		PostRoot:       "8d16cd46624954a7f76f40cc46e9b4a8b46a242d6f99103872c64d698adbc446",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: round change justification invalid: msg allows 1 signer",

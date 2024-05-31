@@ -26,7 +26,7 @@ func F1DuplicateSigner() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change f+1 duplicate",
 		Pre:            pre,
-		PostRoot:       "9e8efcd8918589b83fcd697954bc85449d653d06e1d15e66883688a0f1dfcda4",
+		PostRoot:       "1f69c26404dacf9499fa024a480a357ce39fb24b7c400fabd6fdc0ca161d1e68",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 	}

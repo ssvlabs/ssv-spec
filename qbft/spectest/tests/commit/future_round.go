@@ -19,7 +19,7 @@ func FutureRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit future round",
 		Pre:           pre,
-		PostRoot:      "141aa76b11c863caecab7640c39de47577964d1536706bd95fd4f8a5d6f4e059",
+		PostRoot:      "c4553827bb4f533b2ab89067540c954c2fa4994b5d78a26227a489545517d1d1",
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: wrong msg round",
 	}
