@@ -15,7 +15,6 @@ type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.Share) *Committ
 
 type Committee struct {
 	Runners           map[spec.Slot]*CommitteeRunner
-	Operator          types.Operator
 	SignatureVerifier types.SignatureVerifier
 	CreateRunnerFn    CreateRunnerFn
 	Share             map[spec.ValidatorIndex]*types.Share
@@ -23,14 +22,12 @@ type Committee struct {
 
 // NewCommittee creates a new cluster
 func NewCommittee(
-	operator types.Operator,
 	verifier types.SignatureVerifier,
 	share map[spec.ValidatorIndex]*types.Share,
 	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	c := &Committee{
 		Runners:           make(map[spec.Slot]*CommitteeRunner),
-		Operator:          operator,
 		SignatureVerifier: verifier,
 		CreateRunnerFn:    createRunnerFn,
 		Share:             share,
@@ -57,8 +54,14 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		return errors.Wrap(err, "invalid SignedSSVMessage")
 	}
 
+	var committee []*types.ValidatorShare
+	for _, share := range c.Share {
+		committee = share.Committee
+		break
+	}
+
 	// Verify SignedSSVMessage's signature
-	if err := c.SignatureVerifier.Verify(signedSSVMessage, c.Operator.Committee); err != nil {
+	if err := c.SignatureVerifier.Verify(signedSSVMessage, committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
@@ -133,17 +136,14 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners            map[spec.Slot]*CommitteeRunner
-		Operator           types.Operator
-		Share              map[spec.ValidatorIndex]*types.Share
-		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
+		Runners map[spec.Slot]*CommitteeRunner
+		Share   map[spec.ValidatorIndex]*types.Share
 	}
 
 	// Create object and marshal
 	alias := &CommitteeAlias{
-		Runners:  c.Runners,
-		Operator: c.Operator,
-		Share:    c.Share,
+		Runners: c.Runners,
+		Share:   c.Share,
 	}
 
 	byts, err := json.Marshal(alias)
@@ -154,10 +154,8 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
-		Runners            map[spec.Slot]*CommitteeRunner
-		Operator           types.Operator
-		Share              map[spec.ValidatorIndex]*types.Share
-		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
+		Runners map[spec.Slot]*CommitteeRunner
+		Share   map[spec.ValidatorIndex]*types.Share
 	}
 
 	// Unmarshal the JSON data into the auxiliary struct
@@ -168,14 +166,19 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	// Assign fields
 	c.Runners = aux.Runners
-	c.Operator = aux.Operator
 	c.Share = aux.Share
 
 	return nil
 }
 
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {
-	if !(c.Operator.ClusterID.MessageIDBelongs(msg.GetID())) {
+
+	var committeeID types.CommitteeID
+	for _, share := range c.Share {
+		committeeID = share.CommitteeID
+	}
+
+	if !(committeeID.MessageIDBelongs(msg.GetID())) {
 		return errors.New("msg ID doesn't match committee ID")
 	}
 
