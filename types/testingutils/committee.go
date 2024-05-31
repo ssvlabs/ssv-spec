@@ -56,7 +56,7 @@ var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeyS
 	)
 }
 
-var BaseCommitteeWithRunnerSample = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runnerSample *ssv.CommitteeRunner) *ssv.Committee {
+var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runnerSample *ssv.CommitteeRunner) *ssv.Committee {
 
 	var keySetSample *TestKeySet
 	for _, ks := range keySetMap {
