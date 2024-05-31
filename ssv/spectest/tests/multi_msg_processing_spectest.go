@@ -40,11 +40,11 @@ func (tests *MultiMsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	ret := make(map[string]types.Root, len(tests.Tests))
 	for _, test := range tests.Tests {
-		_, _, runner, err := test.runPreTesting()
+		_, _, err := test.runPreTesting()
 		if err != nil && test.ExpectedError != err.Error() {
 			return nil, err
 		}
-		ret[test.Name] = runner
+		ret[test.Name] = test.Runner
 	}
 	return ret, nil
 }
