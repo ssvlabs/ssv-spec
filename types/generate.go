@@ -1,8 +1,5 @@
 package types
 
-//go:generate rm -f ./operator_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path operator.go --include ./committee_id.go --exclude-objs OperatorID
-
 //go:generate rm -f ./validator_share_encoding.go
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path validator_share.go --include ./operator.go,./messages.go
 
