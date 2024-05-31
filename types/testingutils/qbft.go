@@ -69,80 +69,50 @@ var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *type
 	pkBytesArray := [48]byte{}
 	copy(pkBytesArray[:], pkBytesSlice)
 
+	operatorsCommittee := make([]types.OperatorID, 0)
+	for _, op := range keysSet.Committee() {
+		operatorsCommittee = append(operatorsCommittee, op.OperatorID)
+	}
+
 	return &types.Share{
 		ValidatorIndex:      valIdx,
 		ValidatorPubKey:     pkBytesArray,
 		OwnValidatorShare:   TestingValidatorShare(keysSet, 1),
+		CommitteeID:         types.GetCommitteeID(operatorsCommittee),
 		Committee:           keysSet.Committee(),
 		Quorum:              keysSet.Threshold,
+		PartialQuorum:       keysSet.PartialThreshold,
 		DomainType:          TestingSSVDomainType,
 		FeeRecipientAddress: TestingFeeRecipient,
 		Graffiti:            TestingGraffiti[:],
 	}
 }
 
-var TestingOperator = func(keysSet *TestKeySet) *types.Operator {
-	committeeMembers := []*types.CommitteeMember{}
-
-	for _, key := range keysSet.Committee() {
-
-		// Encode member's public key
-		pkBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[key.OperatorID])
-		if err != nil {
-			panic(err)
-		}
-
-		committeeMembers = append(committeeMembers, &types.CommitteeMember{
-			OperatorID:        key.OperatorID,
-			SSVOperatorPubKey: pkBytes,
-		})
-	}
-
-	opIds := []types.OperatorID{}
-	for _, key := range keysSet.Committee() {
-		opIds = append(opIds, key.OperatorID)
-	}
-
-	operatorPubKeyBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[1])
-	if err != nil {
-		panic(err)
-	}
-
-	return &types.Operator{
-		OperatorID:        1,
-		ClusterID:         types.GetCommitteeID(opIds),
-		SSVOperatorPubKey: operatorPubKeyBytes,
-		Quorum:            keysSet.Threshold,
-		PartialQuorum:     keysSet.PartialThreshold,
-		Committee:         committeeMembers,
-	}
-}
-
 var BaseInstance = func() *qbft.Instance {
-	return baseInstance(TestingOperator(Testing4SharesSet()), Testing4SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingShare(Testing4SharesSet(), TestingValidatorIndex), Testing4SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var SevenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingOperator(Testing7SharesSet()), Testing7SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingShare(Testing7SharesSet(), TestingValidatorIndex), Testing7SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var TenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingOperator(Testing10SharesSet()), Testing10SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingShare(Testing10SharesSet(), TestingValidatorIndex), Testing10SharesSet(), []byte{1, 2, 3, 4})
 }
 
 var ThirteenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingOperator(Testing13SharesSet()), Testing13SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingShare(Testing13SharesSet(), TestingValidatorIndex), Testing13SharesSet(), []byte{1, 2, 3, 4})
 }
 
-var baseInstance = func(operator *types.Operator, keySet *TestKeySet, identifier []byte) *qbft.Instance {
-	ret := qbft.NewInstance(TestingConfig(keySet), operator, identifier, qbft.FirstHeight)
+var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {
+	ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
 	ret.StartValue = TestingQBFTFullData
 	return ret
 }
 
 func NewTestingQBFTController(
 	identifier []byte,
-	share *types.Operator,
+	share *types.Share,
 	config qbft.IConfig,
 ) *qbft.Controller {
 	return qbft.NewController(

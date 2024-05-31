@@ -62,11 +62,19 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 
 var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
 
-	var keySetInstance *TestKeySet
-	for _, share := range shareMap {
-		keySetInstance = KeySetForShare(share)
-		break
+	// Get deterministic share sample (to be consistent through tests)
+	minValidatorIndex := -1
+	for valIdx, _ := range shareMap {
+		if minValidatorIndex == -1 {
+			minValidatorIndex = int(valIdx)
+		}
+		if valIdx < phase0.ValidatorIndex(minValidatorIndex) {
+			minValidatorIndex = int(valIdx)
+		}
 	}
+	shareSample := shareMap[phase0.ValidatorIndex(minValidatorIndex)]
+
+	keySetInstance := KeySetForShare(shareSample)
 
 	// Identifier
 	var ownerID []byte
@@ -85,8 +93,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 	net := NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
 
 	km := NewTestingKeyManager()
-	operator := TestingOperator(keySetInstance)
-	opSigner := NewTestingOperatorSigner(keySetInstance, operator.OperatorID)
+	opSigner := NewTestingOperatorSigner(keySetInstance, shareSample.OwnValidatorShare.OperatorID)
 
 	config := TestingConfig(keySetInstance)
 	config.ValueCheckF = valCheck
@@ -99,7 +106,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 
 	contr := qbft.NewController(
 		identifier[:],
-		operator,
+		shareSample,
 		config,
 	)
 
@@ -206,8 +213,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
-	operator := TestingOperator(keySet)
-	opSigner := NewTestingOperatorSigner(keySet, operator.OperatorID)
+	opSigner := NewTestingOperatorSigner(keySet, share.OwnValidatorShare.OperatorID)
 
 	config := TestingConfig(keySet)
 	config.ValueCheckF = valCheck
@@ -220,7 +226,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 
 	contr := qbft.NewController(
 		identifier[:],
-		operator,
+		share,
 		config,
 	)
 

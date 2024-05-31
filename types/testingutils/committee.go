@@ -9,12 +9,6 @@ import (
 
 var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.Committee {
 
-	var keySetSample *TestKeySet
-	for _, ks := range keySetMap {
-		keySetSample = ks
-		break
-	}
-
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	for valIdx, ks := range keySetMap {
 		shareMap[valIdx] = TestingShare(ks, valIdx)
@@ -24,7 +18,6 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 		return CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
 	}
 	return ssv.NewCommittee(
-		*TestingOperator(keySetSample),
 		NewTestingVerifier(),
 		shareMap,
 		createRunnerF,
@@ -59,7 +52,6 @@ var BaseCommitteeWithRunnerSample = func(keySetMap map[phase0.ValidatorIndex]*Te
 	}
 
 	return ssv.NewCommittee(
-		*TestingOperator(keySetSample),
 		NewTestingVerifier(),
 		shareMap,
 		createRunnerF,
