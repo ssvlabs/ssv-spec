@@ -27,7 +27,7 @@ func TestInstance_Marshaling(t *testing.T) {
 
 	i := &qbft.Instance{
 		State: &qbft.State{
-			Share:                           testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
+			SharedValidator:                 testingutils.TestingSharedValidator(ks, testingutils.TestingValidatorIndex),
 			ID:                              []byte{1, 2, 3, 4},
 			Round:                           1,
 			Height:                          1,

@@ -87,7 +87,7 @@ func (c *Config) GetSignatureVerifier() types.SignatureVerifier {
 }
 
 type State struct {
-	Share                           *types.SharedValidator
+	SharedValidator                 *types.SharedValidator
 	ID                              []byte // instance Identifier
 	Round                           Round
 	Height                          Height

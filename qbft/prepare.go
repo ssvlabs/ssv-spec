@@ -10,7 +10,7 @@ import (
 // uponPrepare process prepare message
 // Assumes prepare message is valid!
 func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsgContainer *MsgContainer) error {
-	hasQuorumBefore := HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round))
+	hasQuorumBefore := HasQuorum(i.State.SharedValidator, prepareMsgContainer.MessagesForRound(i.State.Round))
 
 	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
 	if err != nil {
@@ -24,7 +24,7 @@ func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsg
 		return nil // already moved to commit stage
 	}
 
-	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
+	if !HasQuorum(i.State.SharedValidator, prepareMsgContainer.MessagesForRound(i.State.Round)) {
 		return nil // no quorum yet
 	}
 
@@ -70,13 +70,13 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 			state.Height,
 			state.LastPreparedRound,
 			r,
-			state.Share.Committee,
+			state.SharedValidator.Committee,
 		); err == nil {
 			ret = append(ret, msg)
 		}
 	}
 
-	if !HasQuorum(state.Share, ret) {
+	if !HasQuorum(state.SharedValidator, ret) {
 		return nil, nil
 	}
 	return ret, nil
@@ -167,5 +167,5 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 		Root: root,
 	}
 
-	return MessageToSignedSSVMessage(msg, state.Share.OwnValidatorShare.OperatorID, config.GetOperatorSigner())
+	return MessageToSignedSSVMessage(msg, state.SharedValidator.OwnValidatorShare.OperatorID, config.GetOperatorSigner())
 }

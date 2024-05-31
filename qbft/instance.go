@@ -34,7 +34,7 @@ func NewInstance(
 ) *Instance {
 	return &Instance{
 		State: &State{
-			Share:                share,
+			SharedValidator:      share,
 			ID:                   identifier,
 			Round:                FirstRound,
 			Height:               height,
@@ -63,7 +63,7 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.config.GetTimer().TimeoutForRound(FirstRound)
 
 		// propose if this node is the proposer
-		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OwnValidatorShare.OperatorID {
+		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.SharedValidator.OwnValidatorShare.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			// nolint
 			if err != nil {
@@ -167,7 +167,7 @@ func (i *Instance) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
 			i.State.Height,
 			i.State.Round,
 			proposedMsg.Root,
-			i.State.Share.Committee,
+			i.State.SharedValidator.Committee,
 		)
 	case CommitMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
@@ -179,7 +179,7 @@ func (i *Instance) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
 			i.State.Height,
 			i.State.Round,
 			i.State.ProposalAcceptedForCurrentRound,
-			i.State.Share.Committee,
+			i.State.SharedValidator.Committee,
 		)
 	case RoundChangeMsgType:
 		return validRoundChangeForDataIgnoreSignature(i.State, i.config, signedMsg, i.State.Height, msg.Round, signedMsg.FullData)

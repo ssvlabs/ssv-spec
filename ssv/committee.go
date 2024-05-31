@@ -136,14 +136,14 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners map[spec.Slot]*CommitteeRunner
-		Share   map[spec.ValidatorIndex]*types.SharedValidator
+		Runners         map[spec.Slot]*CommitteeRunner
+		SharedValidator map[spec.ValidatorIndex]*types.SharedValidator
 	}
 
 	// Create object and marshal
 	alias := &CommitteeAlias{
-		Runners: c.Runners,
-		Share:   c.SharedValidator,
+		Runners:         c.Runners,
+		SharedValidator: c.SharedValidator,
 	}
 
 	byts, err := json.Marshal(alias)
@@ -154,8 +154,8 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
-		Runners map[spec.Slot]*CommitteeRunner
-		Share   map[spec.ValidatorIndex]*types.SharedValidator
+		Runners         map[spec.Slot]*CommitteeRunner
+		SharedValidator map[spec.ValidatorIndex]*types.SharedValidator
 	}
 
 	// Unmarshal the JSON data into the auxiliary struct
@@ -166,7 +166,7 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	// Assign fields
 	c.Runners = aux.Runners
-	c.SharedValidator = aux.Share
+	c.SharedValidator = aux.SharedValidator
 
 	return nil
 }
