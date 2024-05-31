@@ -804,7 +804,7 @@
 												]
 										}
 								},
-								"Share": {
+								"SharedValidator": {
 										"1": {
 												"ValidatorIndex": "1",
 												"ValidatorPubKey": [
