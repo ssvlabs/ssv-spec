@@ -3,8 +3,14 @@ package types
 //go:generate rm -f ./operator_encoding.go
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path operator.go --include ./committee_id.go --exclude-objs OperatorID
 
+//go:generate rm -f ./validator_share_encoding.go
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path validator_share.go --include ./operator.go,./messages.go
+
+//go:generate rm -f ./validator_committee_encoding.go
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path validator_committee.go --include ./committee_id.go,./validator_share.go,./operator.go,./messages.go
+
 //go:generate rm -f ./share_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path share.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.3/spec/phase0,./operator.go,./messages.go,./signer.go,./domain_type.go
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path share.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.3/spec/phase0,./operator.go,./messages.go,./signer.go,./domain_type.go,./validator_share.go
 
 //go:generate rm -f ./messages_encoding.go
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path messages.go --include ./operator.go --exclude-objs ValidatorPK,MessageID,MsgType,ShareValidatorPK
