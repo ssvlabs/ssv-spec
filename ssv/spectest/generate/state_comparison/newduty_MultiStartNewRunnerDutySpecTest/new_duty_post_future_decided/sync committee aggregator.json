@@ -11,7 +11,7 @@
 						},
 						"RunningInstance": {
 								"State": {
-										"Share": {
+										"Operator": {
 												"OperatorID": 1,
 												"ClusterID": [
 														207,
@@ -220,7 +220,7 @@
 						"StoredInstances": [
 								{
 										"State": {
-												"Share": {
+												"Operator": {
 														"OperatorID": 1,
 														"ClusterID": [
 																207,
@@ -303,7 +303,7 @@
 								},
 								{
 										"State": {
-												"Share": {
+												"Operator": {
 														"OperatorID": 1,
 														"ClusterID": [
 																207,
