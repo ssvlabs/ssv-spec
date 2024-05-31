@@ -32,16 +32,10 @@ func TestState_Decoding(t *testing.T) {
 		},
 	}
 
+	ks := testingutils.Testing4SharesSet()
+
 	state := &qbft.State{
-		Operator: &types.Operator{
-			OperatorID: 1,
-			Committee: []*types.CommitteeMember{
-				{
-					OperatorID:        1,
-					SSVOperatorPubKey: []byte{1, 2, 3, 4},
-				},
-			},
-		},
+		Share:                           testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 		ID:                              []byte{1, 2, 3, 4},
 		Round:                           1,
 		Height:                          2,
@@ -56,10 +50,10 @@ func TestState_Decoding(t *testing.T) {
 	decodedState := &qbft.State{}
 	require.NoError(t, decodedState.Decode(byts))
 
-	require.EqualValues(t, 1, decodedState.Operator.OperatorID)
+	require.EqualValues(t, 1, decodedState.Share.OwnValidatorShare.OperatorID)
 	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Operator.ValidatorPubKey)
 	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Operator.Committee[0].SharePubKey)
-	require.EqualValues(t, 1, decodedState.Operator.Committee[0].OperatorID)
+	require.EqualValues(t, 1, decodedState.Share.Committee[0].OperatorID)
 	//require.EqualValues(t, testingutils.TestingSSVDomainType, decodedState.Operator.DomainType)
 
 	require.EqualValues(t, 3, decodedState.LastPreparedRound)

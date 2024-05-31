@@ -22,11 +22,12 @@ func TestInstance_Marshaling(t *testing.T) {
 	testingSignedMsg := func() *types.SignedSSVMessage {
 		return testingutils.SignQBFTMsg(TestingRSASK, 1, TestingMessage)
 	}()
-	testingOperator := testingutils.TestingOperator(keySet)
+
+	ks := testingutils.Testing4SharesSet()
 
 	i := &qbft.Instance{
 		State: &qbft.State{
-			Operator:                        testingOperator,
+			Share:                           testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 			ID:                              []byte{1, 2, 3, 4},
 			Round:                           1,
 			Height:                          1,

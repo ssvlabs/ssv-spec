@@ -9,9 +9,9 @@ import "github.com/ssvlabs/ssv-spec/types"
 func RoundRobinProposer(state *State, round Round) types.OperatorID {
 	firstRoundIndex := 0
 	if state.Height != FirstHeight {
-		firstRoundIndex += int(state.Height) % len(state.Operator.Committee)
+		firstRoundIndex += int(state.Height) % len(state.Share.Committee)
 	}
 
-	index := (firstRoundIndex + int(round) - int(FirstRound)) % len(state.Operator.Committee)
-	return state.Operator.Committee[index].OperatorID
+	index := (firstRoundIndex + int(round) - int(FirstRound)) % len(state.Share.Committee)
+	return state.Share.Committee[index].OperatorID
 }

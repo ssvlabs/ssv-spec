@@ -28,13 +28,13 @@ type Instance struct {
 
 func NewInstance(
 	config IConfig,
-	operator *types.Operator,
+	share *types.Share,
 	identifier []byte,
 	height Height,
 ) *Instance {
 	return &Instance{
 		State: &State{
-			Operator:             operator,
+			Share:                share,
 			ID:                   identifier,
 			Round:                FirstRound,
 			Height:               height,
@@ -63,7 +63,7 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.config.GetTimer().TimeoutForRound(FirstRound)
 
 		// propose if this node is the proposer
-		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Operator.OperatorID {
+		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OwnValidatorShare.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			// nolint
 			if err != nil {
@@ -167,7 +167,7 @@ func (i *Instance) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
 			i.State.Height,
 			i.State.Round,
 			proposedMsg.Root,
-			i.State.Operator.Committee,
+			i.State.Share.Committee,
 		)
 	case CommitMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
@@ -179,7 +179,7 @@ func (i *Instance) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
 			i.State.Height,
 			i.State.Round,
 			i.State.ProposalAcceptedForCurrentRound,
-			i.State.Operator.Committee,
+			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
 		return validRoundChangeForDataIgnoreSignature(i.State, i.config, signedMsg, i.State.Height, msg.Round, signedMsg.FullData)
