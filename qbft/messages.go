@@ -14,7 +14,7 @@ func HashDataRoot(data []byte) ([32]byte, error) {
 }
 
 // HasQuorum returns true if a unique set of signers has quorum
-func HasQuorum(share *types.Share, msgs []*types.SignedSSVMessage) bool {
+func HasQuorum(share *types.SharedValidator, msgs []*types.SignedSSVMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
 		for _, signer := range msg.GetOperatorIDs() {
@@ -25,7 +25,7 @@ func HasQuorum(share *types.Share, msgs []*types.SignedSSVMessage) bool {
 }
 
 // HasPartialQuorum returns true if a unique set of signers has partial quorum
-func HasPartialQuorum(share *types.Share, msgs []*types.SignedSSVMessage) bool {
+func HasPartialQuorum(share *types.SharedValidator, msgs []*types.SignedSSVMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
 		for _, signer := range msg.GetOperatorIDs() {

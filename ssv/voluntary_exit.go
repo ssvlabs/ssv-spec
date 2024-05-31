@@ -27,7 +27,7 @@ type VoluntaryExitRunner struct {
 
 func NewVoluntaryExitRunner(
 	beaconNetwork types.BeaconNetwork,
-	share map[phase0.ValidatorIndex]*types.Share,
+	share map[phase0.ValidatorIndex]*types.SharedValidator,
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
@@ -35,9 +35,9 @@ func NewVoluntaryExitRunner(
 ) Runner {
 	return &VoluntaryExitRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType: types.RoleVoluntaryExit,
-			BeaconNetwork:  beaconNetwork,
-			Share:          share,
+			RunnerRoleType:  types.RoleVoluntaryExit,
+			BeaconNetwork:   beaconNetwork,
+			SharedValidator: share,
 		},
 
 		beacon:         beacon,
@@ -177,8 +177,8 @@ func (r *VoluntaryExitRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *VoluntaryExitRunner) GetShare() *types.Share {
-	for _, share := range r.BaseRunner.Share {
+func (r *VoluntaryExitRunner) GetShare() *types.SharedValidator {
+	for _, share := range r.BaseRunner.SharedValidator {
 		return share
 	}
 	return nil

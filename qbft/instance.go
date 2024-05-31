@@ -28,7 +28,7 @@ type Instance struct {
 
 func NewInstance(
 	config IConfig,
-	share *types.Share,
+	share *types.SharedValidator,
 	identifier []byte,
 	height Height,
 ) *Instance {

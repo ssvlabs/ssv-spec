@@ -24,7 +24,7 @@ type CommitteeRunner struct {
 }
 
 func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
-	share map[phase0.ValidatorIndex]*types.Share,
+	share map[phase0.ValidatorIndex]*types.SharedValidator,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
@@ -34,10 +34,10 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 ) Runner {
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType: types.RoleCommittee,
-			BeaconNetwork:  beaconNetwork,
-			Share:          share,
-			QBFTController: qbftController,
+			RunnerRoleType:  types.RoleCommittee,
+			BeaconNetwork:   beaconNetwork,
+			SharedValidator: share,
+			QBFTController:  qbftController,
 		},
 		beacon:          beacon,
 		network:         network,
@@ -91,9 +91,9 @@ func (cr CommitteeRunner) GetNetwork() Network {
 	return cr.network
 }
 
-func (cr CommitteeRunner) GetShare() *types.Share {
+func (cr CommitteeRunner) GetShare() *types.SharedValidator {
 	// TODO better solution for this
-	for _, share := range cr.BaseRunner.Share {
+	for _, share := range cr.BaseRunner.SharedValidator {
 		return share
 	}
 	return nil
@@ -130,7 +130,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		switch duty.Type {
 		case types.BNRoleAttester:
 			attestationData := constructAttestationData(beaconVote, duty)
-			err = cr.GetSigner().IsAttestationSlashable(cr.GetBaseRunner().Share[duty.ValidatorIndex].OwnValidatorShare.SharePubKey,
+			err = cr.GetSigner().IsAttestationSlashable(cr.GetBaseRunner().SharedValidator[duty.ValidatorIndex].OwnValidatorShare.SharePubKey,
 				attestationData)
 			if err != nil {
 				return errors.Wrap(err, "attempting to sign slashable attestation data")
@@ -229,7 +229,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			}
 
 			// Reconstruct signature
-			share := cr.BaseRunner.Share[validator]
+			share := cr.BaseRunner.SharedValidator[validator]
 			pubKey := share.ValidatorPubKey
 			sig, err := cr.BaseRunner.State.ReconstructBeaconSig(cr.BaseRunner.State.PostConsensusContainer, root,
 				pubKey[:], validator)

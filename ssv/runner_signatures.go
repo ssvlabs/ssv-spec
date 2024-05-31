@@ -17,7 +17,7 @@ func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.BeaconDuty,
 	}
 
 	sig, r, err := runner.GetSigner().SignBeaconObject(obj, domain,
-		runner.GetBaseRunner().Share[duty.ValidatorIndex].OwnValidatorShare.SharePubKey,
+		runner.GetBaseRunner().SharedValidator[duty.ValidatorIndex].OwnValidatorShare.SharePubKey,
 		domainType)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign beacon object")
@@ -46,7 +46,7 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 	for _, msg := range psigMsgs.Messages {
 
 		// Check if knows it has the validator index share
-		validatorShare, ok := b.Share[msg.ValidatorIndex]
+		validatorShare, ok := b.SharedValidator[msg.ValidatorIndex]
 		if !ok {
 			return errors.New("unknown validator index")
 		}
@@ -96,7 +96,7 @@ func (b *BaseRunner) resolveDuplicateSignature(container *PartialSigContainer, m
 	previousSignature, err := container.GetSignature(msg.ValidatorIndex, msg.Signer, msg.SigningRoot)
 	if err == nil {
 		err = b.verifyBeaconPartialSignature(msg.Signer, previousSignature, msg.SigningRoot,
-			b.Share[msg.ValidatorIndex].Committee)
+			b.SharedValidator[msg.ValidatorIndex].Committee)
 		if err == nil {
 			// Keep the previous sigature since it's correct
 			return
@@ -108,7 +108,7 @@ func (b *BaseRunner) resolveDuplicateSignature(container *PartialSigContainer, m
 
 	// Hold the new signature, if correct
 	err = b.verifyBeaconPartialSignature(msg.Signer, msg.PartialSignature, msg.SigningRoot,
-		b.Share[msg.ValidatorIndex].Committee)
+		b.SharedValidator[msg.ValidatorIndex].Committee)
 	if err == nil {
 		container.AddSignature(msg)
 	}

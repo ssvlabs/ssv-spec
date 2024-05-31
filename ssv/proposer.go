@@ -24,7 +24,7 @@ type ProposerRunner struct {
 
 func NewProposerRunner(
 	beaconNetwork types.BeaconNetwork,
-	share map[phase0.ValidatorIndex]*types.Share,
+	share map[phase0.ValidatorIndex]*types.SharedValidator,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
@@ -37,7 +37,7 @@ func NewProposerRunner(
 		BaseRunner: &BaseRunner{
 			RunnerRoleType:     types.RoleProposer,
 			BeaconNetwork:      beaconNetwork,
-			Share:              share,
+			SharedValidator:    share,
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,
 		},
@@ -82,7 +82,6 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 	}
 
 	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
-
 
 	// get block data
 	obj, ver, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
@@ -297,9 +296,9 @@ func (r *ProposerRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *ProposerRunner) GetShare() *types.Share {
+func (r *ProposerRunner) GetShare() *types.SharedValidator {
 	// TODO better solution for this
-	for _, share := range r.BaseRunner.Share {
+	for _, share := range r.BaseRunner.SharedValidator {
 		return share
 	}
 	return nil

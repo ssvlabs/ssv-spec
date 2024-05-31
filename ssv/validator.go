@@ -6,21 +6,21 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-// Validator represents an SSV ETH consensus validator Share assigned, coordinates duty execution and more.
+// Validator represents an SSV ETH consensus validator SharedValidator assigned, coordinates duty execution and more.
 // Every validator has a validatorID which is validator's public key.
 // Each validator has multiple DutyRunners, for each duty type.
 type Validator struct {
 	DutyRunners       DutyRunners
 	Network           Network
 	Beacon            BeaconNode
-	Share             *types.Share
+	SharedValidator   *types.SharedValidator
 	SignatureVerifier types.SignatureVerifier
 }
 
 func NewValidator(
 	network Network,
 	beacon BeaconNode,
-	share *types.Share,
+	share *types.SharedValidator,
 	runners map[types.RunnerRole]Runner,
 	signatureVerifier types.SignatureVerifier,
 ) *Validator {
@@ -28,7 +28,7 @@ func NewValidator(
 		DutyRunners:       runners,
 		Network:           network,
 		Beacon:            beacon,
-		Share:             share,
+		SharedValidator:   share,
 		SignatureVerifier: signatureVerifier,
 	}
 }
@@ -51,7 +51,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	// Verify SignedSSVMessage's signature
-	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.Share.Committee); err != nil {
+	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.SharedValidator.Committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
@@ -109,7 +109,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 }
 
 func (v *Validator) validateMessage(runner Runner, msg *types.SSVMessage) error {
-	if !v.Share.ValidatorPubKey.MessageIDBelongs(msg.GetID()) {
+	if !v.SharedValidator.ValidatorPubKey.MessageIDBelongs(msg.GetID()) {
 		return errors.New("msg ID doesn't match validator ID")
 	}
 

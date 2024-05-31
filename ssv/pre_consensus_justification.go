@@ -51,14 +51,14 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 	}
 
 	// validate justification quorum
-	if !b.Share[data.Duty.ValidatorIndex].HasQuorum(len(data.PreConsensusJustifications)) {
+	if !b.SharedValidator[data.Duty.ValidatorIndex].HasQuorum(len(data.PreConsensusJustifications)) {
 		return errors.New("no quorum")
 	}
 
 	signers := make(map[types.OperatorID]bool)
 	roots := make(map[[32]byte]bool)
 	rootCount := 0
-	partialSigContainer := NewPartialSigContainer(b.Share[data.Duty.ValidatorIndex].Quorum)
+	partialSigContainer := NewPartialSigContainer(b.SharedValidator[data.Duty.ValidatorIndex].Quorum)
 	for i, msg := range data.PreConsensusJustifications {
 		if err := msg.Validate(); err != nil {
 			return err
@@ -110,7 +110,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 
 	// Verify the reconstructed signature for each root
 	for root := range roots {
-		_, err := b.State.ReconstructBeaconSig(partialSigContainer, root, b.Share[data.Duty.ValidatorIndex].ValidatorPubKey[:], data.Duty.ValidatorIndex)
+		_, err := b.State.ReconstructBeaconSig(partialSigContainer, root, b.SharedValidator[data.Duty.ValidatorIndex].ValidatorPubKey[:], data.Duty.ValidatorIndex)
 		if err != nil {
 			return errors.Wrap(err, "wrong pre-consensus partial signature")
 		}

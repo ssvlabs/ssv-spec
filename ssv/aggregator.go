@@ -24,7 +24,7 @@ type AggregatorRunner struct {
 
 func NewAggregatorRunner(
 	beaconNetwork types.BeaconNetwork,
-	share map[phase0.ValidatorIndex]*types.Share,
+	share map[phase0.ValidatorIndex]*types.SharedValidator,
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
@@ -37,7 +37,7 @@ func NewAggregatorRunner(
 		BaseRunner: &BaseRunner{
 			RunnerRoleType:     types.RoleAggregator,
 			BeaconNetwork:      beaconNetwork,
-			Share:              share,
+			SharedValidator:    share,
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,
 		},
@@ -260,9 +260,9 @@ func (r *AggregatorRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *AggregatorRunner) GetShare() *types.Share {
+func (r *AggregatorRunner) GetShare() *types.SharedValidator {
 	// TODO better solution for this
-	for _, share := range r.BaseRunner.Share {
+	for _, share := range r.BaseRunner.SharedValidator {
 		return share
 	}
 	return nil

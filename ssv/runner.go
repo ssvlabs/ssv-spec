@@ -43,11 +43,11 @@ type Runner interface {
 }
 
 type BaseRunner struct {
-	State          *State
-	Share          map[spec.ValidatorIndex]*types.Share
-	QBFTController *qbft.Controller
-	BeaconNetwork  types.BeaconNetwork
-	RunnerRoleType types.RunnerRole
+	State           *State
+	SharedValidator map[spec.ValidatorIndex]*types.SharedValidator
+	QBFTController  *qbft.Controller
+	BeaconNetwork   types.BeaconNetwork
+	RunnerRoleType  types.RunnerRole
 	types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
@@ -56,7 +56,7 @@ type BaseRunner struct {
 
 func NewBaseRunner(
 	state *State,
-	share map[spec.ValidatorIndex]*types.Share,
+	share map[spec.ValidatorIndex]*types.SharedValidator,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
 	beaconRoleType types.RunnerRole,
@@ -65,7 +65,7 @@ func NewBaseRunner(
 ) *BaseRunner {
 	return &BaseRunner{
 		State:              state,
-		Share:              share,
+		SharedValidator:    share,
 		QBFTController:     controller,
 		BeaconNetwork:      beaconNetwork,
 		RunnerRoleType:     beaconRoleType,
@@ -82,8 +82,8 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
 	// start new state
 	// TODO nicer way to get quorum
-	var share *types.Share
-	for _, shareInstance := range b.Share {
+	var share *types.SharedValidator
+	for _, shareInstance := range b.SharedValidator {
 		share = shareInstance
 	}
 	b.State = NewRunnerState(share.Quorum, duty)

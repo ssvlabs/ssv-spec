@@ -11,26 +11,26 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.Share) *CommitteeRunner
+type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.SharedValidator) *CommitteeRunner
 
 type Committee struct {
 	Runners           map[spec.Slot]*CommitteeRunner
 	SignatureVerifier types.SignatureVerifier
 	CreateRunnerFn    CreateRunnerFn
-	Share             map[spec.ValidatorIndex]*types.Share
+	SharedValidator   map[spec.ValidatorIndex]*types.SharedValidator
 }
 
 // NewCommittee creates a new cluster
 func NewCommittee(
 	verifier types.SignatureVerifier,
-	share map[spec.ValidatorIndex]*types.Share,
+	share map[spec.ValidatorIndex]*types.SharedValidator,
 	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	c := &Committee{
 		Runners:           make(map[spec.Slot]*CommitteeRunner),
 		SignatureVerifier: verifier,
 		CreateRunnerFn:    createRunnerFn,
-		Share:             share,
+		SharedValidator:   share,
 	}
 	return c
 }
@@ -43,7 +43,7 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
-	c.Runners[duty.Slot] = c.CreateRunnerFn(c.Share)
+	c.Runners[duty.Slot] = c.CreateRunnerFn(c.SharedValidator)
 	return c.Runners[duty.Slot].StartNewDuty(duty)
 }
 
@@ -55,7 +55,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	var committee []*types.ValidatorShare
-	for _, share := range c.Share {
+	for _, share := range c.SharedValidator {
 		committee = share.Committee
 		break
 	}
@@ -137,13 +137,13 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
 		Runners map[spec.Slot]*CommitteeRunner
-		Share   map[spec.ValidatorIndex]*types.Share
+		Share   map[spec.ValidatorIndex]*types.SharedValidator
 	}
 
 	// Create object and marshal
 	alias := &CommitteeAlias{
 		Runners: c.Runners,
-		Share:   c.Share,
+		Share:   c.SharedValidator,
 	}
 
 	byts, err := json.Marshal(alias)
@@ -155,7 +155,7 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
 		Runners map[spec.Slot]*CommitteeRunner
-		Share   map[spec.ValidatorIndex]*types.Share
+		Share   map[spec.ValidatorIndex]*types.SharedValidator
 	}
 
 	// Unmarshal the JSON data into the auxiliary struct
@@ -166,7 +166,7 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	// Assign fields
 	c.Runners = aux.Runners
-	c.Share = aux.Share
+	c.SharedValidator = aux.Share
 
 	return nil
 }
@@ -174,7 +174,7 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {
 
 	var committeeID types.CommitteeID
-	for _, share := range c.Share {
+	for _, share := range c.SharedValidator {
 		committeeID = share.CommitteeID
 	}
 

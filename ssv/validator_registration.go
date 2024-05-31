@@ -25,7 +25,7 @@ type ValidatorRegistrationRunner struct {
 
 func NewValidatorRegistrationRunner(
 	beaconNetwork types.BeaconNetwork,
-	share map[phase0.ValidatorIndex]*types.Share,
+	share map[phase0.ValidatorIndex]*types.SharedValidator,
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
@@ -33,9 +33,9 @@ func NewValidatorRegistrationRunner(
 ) Runner {
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType: types.RoleValidatorRegistration,
-			BeaconNetwork:  beaconNetwork,
-			Share:          share,
+			RunnerRoleType:  types.RoleValidatorRegistration,
+			BeaconNetwork:   beaconNetwork,
+			SharedValidator: share,
 		},
 
 		beacon:         beacon,
@@ -79,11 +79,11 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 	copy(specSig[:], fullSig)
 
 	// Get share
-	if len(r.BaseRunner.Share) == 0 {
+	if len(r.BaseRunner.SharedValidator) == 0 {
 		return errors.New("no share to get validator public key")
 	}
-	var share *types.Share
-	for _, shareInstance := range r.BaseRunner.Share {
+	var share *types.SharedValidator
+	for _, shareInstance := range r.BaseRunner.SharedValidator {
 		share = shareInstance
 		break
 	}
@@ -153,11 +153,11 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 
 func (r *ValidatorRegistrationRunner) calculateValidatorRegistration(duty types.Duty) (*v1.ValidatorRegistration, error) {
 
-	if len(r.BaseRunner.Share) == 0 {
+	if len(r.BaseRunner.SharedValidator) == 0 {
 		return nil, errors.New("no share to get validator public key")
 	}
-	var share *types.Share
-	for _, shareInstance := range r.BaseRunner.Share {
+	var share *types.SharedValidator
+	for _, shareInstance := range r.BaseRunner.SharedValidator {
 		share = shareInstance
 		break
 	}
@@ -187,8 +187,8 @@ func (r *ValidatorRegistrationRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *ValidatorRegistrationRunner) GetShare() *types.Share {
-	for _, share := range r.BaseRunner.Share {
+func (r *ValidatorRegistrationRunner) GetShare() *types.SharedValidator {
+	for _, share := range r.BaseRunner.SharedValidator {
 		return share
 	}
 	return nil

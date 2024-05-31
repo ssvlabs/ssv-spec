@@ -215,8 +215,8 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
-	shareInstance := &types.Share{}
-	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
+	shareInstance := &types.SharedValidator{}
+	for _, share := range baseRunnerMap["SharedValidator"].(map[string]interface{}) {
 		shareBytes, err := json.Marshal(share)
 		if err != nil {
 			panic(err)
@@ -296,8 +296,8 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		}
 	}
 
-	shareInstance := &types.Share{}
-	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
+	shareInstance := &types.SharedValidator{}
+	for _, share := range baseRunnerMap["SharedValidator"].(map[string]interface{}) {
 		shareBytes, err := json.Marshal(share)
 		if err != nil {
 			panic(err)
@@ -402,7 +402,7 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 	c := &ssv.Committee{}
 	require.NoError(t, json.Unmarshal(byts, c))
 
-	c.CreateRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
+	c.CreateRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.SharedValidator) *ssv.CommitteeRunner {
 		return testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
 	}
 
@@ -410,8 +410,8 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 
 	for slot := range c.Runners {
 
-		var shareInstance *types.Share
-		for _, share := range c.Runners[slot].BaseRunner.Share {
+		var shareInstance *types.SharedValidator
+		for _, share := range c.Runners[slot].BaseRunner.SharedValidator {
 			shareInstance = share
 			break
 		}
@@ -466,7 +466,7 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 	return newContr
 }
 
-func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Share) *qbft.Instance {
+func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.SharedValidator) *qbft.Instance {
 	newInst := qbft.NewInstance(
 		contr.GetConfig(),
 		share,
