@@ -7,7 +7,7 @@ package types
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path validator_share.go --include ./operator.go,./messages.go
 
 //go:generate rm -f ./share_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path share.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.3/spec/phase0,./operator.go,./messages.go,./signer.go,./domain_type.go,./validator_share.go
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path share.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.3/spec/phase0,./operator.go,./messages.go,./signer.go,./domain_type.go,./validator_share.go,./committee_id.go
 
 //go:generate rm -f ./messages_encoding.go
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path messages.go --include ./operator.go --exclude-objs ValidatorPK,MessageID,MsgType,ShareValidatorPK

@@ -7,8 +7,10 @@ type Share struct {
 	ValidatorIndex      phase0.ValidatorIndex
 	ValidatorPubKey     ValidatorPK `ssz-size:"48"`
 	OwnValidatorShare   ValidatorShare
-	SharePubKey         ShareValidatorPK `ssz-size:"48"`
-	Committee           []*ShareMember   `ssz-max:"13"`
+	SharePubKey         ShareValidatorPK  `ssz-size:"48"`
+	CommitteeID         CommitteeID       `ssz-size:"32"`
+	ValidatorShares     []*ValidatorShare `ssz-max:"13"`
+	Committee           []*ShareMember    `ssz-max:"13"`
 	Quorum              uint64
 	DomainType          DomainType `ssz-size:"4"`
 	FeeRecipientAddress [20]byte   `ssz-size:"20"`
