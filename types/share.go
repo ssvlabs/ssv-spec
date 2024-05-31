@@ -15,12 +15,6 @@ type Share struct {
 	Graffiti            []byte     `ssz-size:"32"`
 }
 
-// ShareMember holds ShareValidatorPK and ValidatorIndex
-type ShareMember struct {
-	SharePubKey ShareValidatorPK `ssz-size:"48"`
-	Signer      OperatorID
-}
-
 // HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure
 // https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L259
 func (share *Share) HasQuorum(cnt int) bool {
