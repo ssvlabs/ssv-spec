@@ -4,10 +4,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"github.com/ssvlabs/ssv-spec/qbft"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/qbft"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
@@ -125,7 +126,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 			if test.DecidedSlashable && IsQBFTProposalMessage(msg) {
 				for _, validatorShare := range test.Runner.GetBaseRunner().Share {
 					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableDataRoot(validatorShare.
-						SharePubKey, testingutils.TestingAttestationDataRoot[:])
+						OwnValidatorShare.SharePubKey, testingutils.TestingAttestationDataRoot[:])
 				}
 			}
 		}

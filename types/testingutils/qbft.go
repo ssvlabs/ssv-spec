@@ -48,6 +48,20 @@ var TestingInvalidValueCheck = []byte{1, 1, 1, 1}
 
 var TestingGraffiti = [32]byte{1}
 
+var TestingValidatorShare = func(keysSet *TestKeySet, opID types.OperatorID) types.ValidatorShare {
+
+	operatorPKBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[opID])
+	if err != nil {
+		panic(err)
+	}
+
+	return types.ValidatorShare{
+		OperatorID:     opID,
+		OperatorPubKey: operatorPKBytes,
+		SharePubKey:    keysSet.Shares[opID].GetPublicKey().Serialize(),
+	}
+}
+
 var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *types.Share {
 
 	// Decode validator public key
@@ -58,7 +72,7 @@ var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *type
 	return &types.Share{
 		ValidatorIndex:      valIdx,
 		ValidatorPubKey:     pkBytesArray,
-		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
+		OwnValidatorShare:   TestingValidatorShare(keysSet, 1),
 		Committee:           keysSet.Committee(),
 		Quorum:              keysSet.Threshold,
 		DomainType:          TestingSSVDomainType,

@@ -17,7 +17,7 @@ func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.BeaconDuty,
 	}
 
 	sig, r, err := runner.GetSigner().SignBeaconObject(obj, domain,
-		runner.GetBaseRunner().Share[duty.ValidatorIndex].SharePubKey,
+		runner.GetBaseRunner().Share[duty.ValidatorIndex].OwnValidatorShare.SharePubKey,
 		domainType)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign beacon object")
