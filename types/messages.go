@@ -139,8 +139,8 @@ type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
 	OperatorIDs []OperatorID `ssz-max:"13"`
 	SSVMessage  *SSVMessage
-	// Full data max value is ConsensusData max value ~= 209 + 8 + 13 * 1888 + 3620872 = 3645633
-	FullData []byte `ssz-max:"3645633"`
+	// Full data max value is ConsensusData max value ~= 209 + 8 + 13 * 1888 + 4194304 = 4219065
+	FullData []byte `ssz-max:"4219065"`
 }
 
 // GetOperatorIDs returns the dutyExecutor operator ID
