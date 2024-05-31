@@ -48,7 +48,7 @@ func lateDecidedStateComparison() *comparable.StateComparison {
 	instance := &qbft.Instance{
 		StartValue: testingutils.TestingQBFTFullData,
 		State: &qbft.State{
-			Share:                           testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+			Operator:                        testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 			ID:                              testingutils.TestingIdentifier,
 			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 			LastPreparedRound:               qbft.FirstRound,

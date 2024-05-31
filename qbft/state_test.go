@@ -33,7 +33,7 @@ func TestState_Decoding(t *testing.T) {
 	}
 
 	state := &qbft.State{
-		Share: &types.Operator{
+		Operator: &types.Operator{
 			OperatorID: 1,
 			Committee: []*types.CommitteeMember{
 				{
@@ -56,11 +56,11 @@ func TestState_Decoding(t *testing.T) {
 	decodedState := &qbft.State{}
 	require.NoError(t, decodedState.Decode(byts))
 
-	require.EqualValues(t, 1, decodedState.Share.OperatorID)
-	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.ValidatorPubKey)
-	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.Committee[0].SharePubKey)
-	require.EqualValues(t, 1, decodedState.Share.Committee[0].OperatorID)
-	//require.EqualValues(t, testingutils.TestingSSVDomainType, decodedState.Share.DomainType)
+	require.EqualValues(t, 1, decodedState.Operator.OperatorID)
+	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Operator.ValidatorPubKey)
+	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Operator.Committee[0].SharePubKey)
+	require.EqualValues(t, 1, decodedState.Operator.Committee[0].OperatorID)
+	//require.EqualValues(t, testingutils.TestingSSVDomainType, decodedState.Operator.DomainType)
 
 	require.EqualValues(t, 3, decodedState.LastPreparedRound)
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.LastPreparedValue)

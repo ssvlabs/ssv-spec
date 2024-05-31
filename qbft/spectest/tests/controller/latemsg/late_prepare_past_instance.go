@@ -80,10 +80,10 @@ func latePreparePastInstanceStateComparison(height qbft.Height, lateMsg *types.S
 		instance := &qbft.Instance{
 			StartValue: []byte{1, 2, 3, 4},
 			State: &qbft.State{
-				Share:  testingutils.TestingOperator(testingutils.Testing4SharesSet()),
-				ID:     testingutils.TestingIdentifier,
-				Round:  qbft.FirstRound,
-				Height: qbft.Height(i),
+				Operator: testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+				ID:       testingutils.TestingIdentifier,
+				Round:    qbft.FirstRound,
+				Height:   qbft.Height(i),
 			},
 		}
 

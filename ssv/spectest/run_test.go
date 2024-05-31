@@ -475,7 +475,7 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 
 	newInst.State.DecidedValue = inst.State.DecidedValue
 	newInst.State.Decided = inst.State.Decided
-	newInst.State.Share = inst.State.Share
+	newInst.State.Operator = inst.State.Operator
 	newInst.State.Round = inst.State.Round
 	newInst.State.Height = inst.State.Height
 	newInst.State.ProposalAcceptedForCurrentRound = inst.State.ProposalAcceptedForCurrentRound

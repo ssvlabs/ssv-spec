@@ -59,9 +59,9 @@ func quorumMsgNotPreparedStateComparison() *comparable.StateComparison {
 
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share: testingutils.TestingOperator(testingutils.Testing4SharesSet()),
-			ID:    testingutils.TestingIdentifier,
-			Round: 2,
+			Operator: testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+			ID:       testingutils.TestingIdentifier,
+			Round:    2,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

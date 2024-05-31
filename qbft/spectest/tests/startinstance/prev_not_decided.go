@@ -37,7 +37,7 @@ func previousNotDecided1SC() *qbftcomparable.StateComparison {
 	)
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share:             testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+			Operator:          testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            qbft.FirstHeight,
@@ -60,7 +60,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 	)
 	instance1 := &qbft.Instance{
 		State: &qbft.State{
-			Share:             testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+			Operator:          testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            qbft.FirstHeight,
@@ -73,7 +73,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 
 	instance2 := &qbft.Instance{
 		State: &qbft.State{
-			Share:             testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+			Operator:          testingutils.TestingOperator(testingutils.Testing4SharesSet()),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            1,
