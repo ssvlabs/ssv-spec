@@ -25,7 +25,7 @@
 						},
 						"RunningInstance": {
 								"State": {
-										"Share": {
+										"SharedValidator": {
 												"ValidatorIndex": "1",
 												"ValidatorPubKey": [
 														142,
@@ -450,7 +450,7 @@
 						"StoredInstances": [
 								{
 										"State": {
-												"Share": {
+												"SharedValidator": {
 														"ValidatorIndex": "1",
 														"ValidatorPubKey": [
 																142,
@@ -664,7 +664,7 @@
 										"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
 								}
 						],
-						"Share": {
+						"SharedValidator": {
 								"ValidatorIndex": "1",
 								"ValidatorPubKey": [
 										142,

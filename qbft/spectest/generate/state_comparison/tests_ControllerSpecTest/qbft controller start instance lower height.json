@@ -5,7 +5,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"SharedValidator": {
 												"ValidatorIndex": "1",
 												"ValidatorPubKey": [
 														142,
@@ -174,7 +174,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"SharedValidator": {
 						"ValidatorIndex": "1",
 						"ValidatorPubKey": [
 								142,
@@ -326,7 +326,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"SharedValidator": {
 												"ValidatorIndex": "1",
 												"ValidatorPubKey": [
 														142,
@@ -495,7 +495,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"SharedValidator": {
 						"ValidatorIndex": "1",
 						"ValidatorPubKey": [
 								142,

@@ -167,7 +167,7 @@
 						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAATIFpUrpTzDYdjkW9gzM43GQn5KXV8G661TUf1GQ5oVo=",
 						"Height": 0,
 						"StoredInstances": [],
-						"Share": {
+						"SharedValidator": {
 								"ValidatorIndex": "1",
 								"ValidatorPubKey": [
 										142,

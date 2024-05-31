@@ -402,7 +402,7 @@
 						},
 						"RunningInstance": {
 								"State": {
-										"Share": {
+										"SharedValidator": {
 												"ValidatorIndex": "1",
 												"ValidatorPubKey": [
 														185,
@@ -5716,7 +5716,7 @@
 						"StoredInstances": [
 								{
 										"State": {
-												"Share": {
+												"SharedValidator": {
 														"ValidatorIndex": "1",
 														"ValidatorPubKey": [
 																185,
@@ -5885,7 +5885,7 @@
 										"StartValue": null
 								}
 						],
-						"Share": {
+						"SharedValidator": {
 								"ValidatorIndex": "1",
 								"ValidatorPubKey": [
 										185,

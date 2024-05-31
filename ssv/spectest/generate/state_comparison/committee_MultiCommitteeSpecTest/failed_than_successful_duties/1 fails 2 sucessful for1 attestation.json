@@ -13,7 +13,7 @@
 										},
 										"RunningInstance": {
 												"State": {
-														"Share": {
+														"SharedValidator": {
 																"ValidatorIndex": "1",
 																"ValidatorPubKey": [
 																		185,
@@ -929,7 +929,7 @@
 										"StoredInstances": [
 												{
 														"State": {
-																"Share": {
+																"SharedValidator": {
 																		"ValidatorIndex": "1",
 																		"ValidatorPubKey": [
 																				185,
@@ -1674,7 +1674,7 @@
 														"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 												}
 										],
-										"Share": {
+										"SharedValidator": {
 												"ValidatorIndex": "1",
 												"ValidatorPubKey": [
 														185,
@@ -1846,7 +1846,7 @@
 										},
 										"RunningInstance": {
 												"State": {
-														"Share": {
+														"SharedValidator": {
 																"ValidatorIndex": "1",
 																"ValidatorPubKey": [
 																		185,
@@ -2762,7 +2762,7 @@
 										"StoredInstances": [
 												{
 														"State": {
-																"Share": {
+																"SharedValidator": {
 																		"ValidatorIndex": "1",
 																		"ValidatorPubKey": [
 																				185,
@@ -3507,7 +3507,7 @@
 														"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 												}
 										],
-										"Share": {
+										"SharedValidator": {
 												"ValidatorIndex": "1",
 												"ValidatorPubKey": [
 														185,
@@ -3679,7 +3679,7 @@
 										},
 										"RunningInstance": {
 												"State": {
-														"Share": {
+														"SharedValidator": {
 																"ValidatorIndex": "1",
 																"ValidatorPubKey": [
 																		185,
@@ -4595,7 +4595,7 @@
 										"StoredInstances": [
 												{
 														"State": {
-																"Share": {
+																"SharedValidator": {
 																		"ValidatorIndex": "1",
 																		"ValidatorPubKey": [
 																				185,
@@ -5340,7 +5340,7 @@
 														"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 												}
 										],
-										"Share": {
+										"SharedValidator": {
 												"ValidatorIndex": "1",
 												"ValidatorPubKey": [
 														185,
@@ -5492,7 +5492,7 @@
 						}
 				}
 		},
-		"Share": {
+		"SharedValidator": {
 				"1": {
 						"ValidatorIndex": "1",
 						"ValidatorPubKey": [

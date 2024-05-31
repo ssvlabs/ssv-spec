@@ -3,7 +3,7 @@
 				"Identifier": "AQIDBA==",
 				"Height": 0,
 				"StoredInstances": [],
-				"Share": {
+				"SharedValidator": {
 						"ValidatorIndex": "1",
 						"ValidatorPubKey": [
 								142,
