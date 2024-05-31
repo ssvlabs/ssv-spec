@@ -21,7 +21,7 @@ func QuorumNotPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change not prepared",
 		Pre:           pre,
-		PostRoot:      "0207ff12f14536f5ac97c0cdfc3d654bd2e2feea8c6afa75abfd2be0a4aec43b",
+		PostRoot:      "752b6d3bbd6d02ba5c637111194ef104b419d406f222d5016b16cee78d73a736",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,

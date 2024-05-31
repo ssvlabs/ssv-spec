@@ -27,7 +27,7 @@ func InvalidRoundChangeJustification() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal rc msg invalid",
 		Pre:            pre,
-		PostRoot:       "3d11aa7331a7aa79d3403ac1af61569f1eae0547f54f15dca7e9e07b1ab0573d",
+		PostRoot:       "57e323705826bc5d475ead7f48015a785306be56b33b9fed163fdedf03743754",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: crypto/rsa: verification error",

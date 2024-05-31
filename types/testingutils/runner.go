@@ -16,7 +16,7 @@ var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
 }
 
-var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.SharedValidator) ssv.Runner {
 	return baseRunnerWithShareMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), shareMap)
 }
 
@@ -60,7 +60,7 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, UnknownDutyValueCheck(), keySet)
 }
 
-var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, shareMap map[phase0.ValidatorIndex]*types.SharedValidator) ssv.Runner {
 
 	// Get deterministic share sample (to be consistent through tests)
 	minValidatorIndex := -1
@@ -230,7 +230,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 		config,
 	)
 
-	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
+	shareMap := make(map[phase0.ValidatorIndex]*types.SharedValidator)
 	shareMap[share.ValidatorIndex] = share
 
 	switch role {

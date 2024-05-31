@@ -47,7 +47,7 @@ type TestKeySet struct {
 	}
 }
 
-func KeySetForShare(share *types.Share) *TestKeySet {
+func KeySetForShare(share *types.SharedValidator) *TestKeySet {
 	if share.Quorum == 5 {
 		return Testing7SharesSet()
 	}

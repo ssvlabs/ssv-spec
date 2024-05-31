@@ -12,7 +12,7 @@ import (
 
 type ShareTest struct {
 	Name                  string
-	Share                 types.Share
+	Share                 types.SharedValidator
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
 	ExpectedFullCommittee bool

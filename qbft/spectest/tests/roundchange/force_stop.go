@@ -21,7 +21,7 @@ func ForceStop() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "force stop round change message",
 		Pre:           pre,
-		PostRoot:      "c4553827bb4f533b2ab89067540c954c2fa4994b5d78a26227a489545517d1d1",
+		PostRoot:      "a711e11c0e08204861008b7f3b8affa498bfc777199e0692bd661e40b09d55d6",
 		InputMessages: msgs,
 		ExpectedError: "instance stopped processing messages",
 	}

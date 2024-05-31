@@ -20,7 +20,7 @@ func (test *EncodingTest) TestName() string {
 
 func (test *EncodingTest) Run(t *testing.T) {
 	// decode
-	decodedShare := &types.Share{}
+	decodedShare := &types.SharedValidator{}
 	require.NoError(t, decodedShare.Decode(test.Data))
 
 	// encode

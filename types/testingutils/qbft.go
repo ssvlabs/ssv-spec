@@ -62,7 +62,7 @@ var TestingValidatorShare = func(keysSet *TestKeySet, opID types.OperatorID) typ
 	}
 }
 
-var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *types.Share {
+var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *types.SharedValidator {
 
 	// Decode validator public key
 	pkBytesSlice := keysSet.ValidatorPK.Serialize()
@@ -74,7 +74,7 @@ var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *type
 		operatorsCommittee = append(operatorsCommittee, op.OperatorID)
 	}
 
-	return &types.Share{
+	return &types.SharedValidator{
 		ValidatorIndex:      valIdx,
 		ValidatorPubKey:     pkBytesArray,
 		OwnValidatorShare:   TestingValidatorShare(keysSet, 1),
@@ -104,7 +104,7 @@ var ThirteenOperatorsInstance = func() *qbft.Instance {
 	return baseInstance(TestingShare(Testing13SharesSet(), TestingValidatorIndex), Testing13SharesSet(), []byte{1, 2, 3, 4})
 }
 
-var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byte) *qbft.Instance {
+var baseInstance = func(share *types.SharedValidator, keySet *TestKeySet, identifier []byte) *qbft.Instance {
 	ret := qbft.NewInstance(TestingConfig(keySet), share, identifier, qbft.FirstHeight)
 	ret.StartValue = TestingQBFTFullData
 	return ret
@@ -112,7 +112,7 @@ var baseInstance = func(share *types.Share, keySet *TestKeySet, identifier []byt
 
 func NewTestingQBFTController(
 	identifier []byte,
-	share *types.Share,
+	share *types.SharedValidator,
 	config qbft.IConfig,
 ) *qbft.Controller {
 	return qbft.NewController(

@@ -63,13 +63,13 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		}
 		network = runnerInstance.GetNetwork().(*testingutils.TestingNetwork)
 		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
-		for _, share := range c.Share {
+		for _, share := range c.SharedValidator {
 			committee = share.Committee
 			break
 		}
 	default:
 		network = v.Network.(*testingutils.TestingNetwork)
-		committee = v.Share.Committee
+		committee = v.SharedValidator.Committee
 		beaconNetwork = test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
 	}
 
@@ -95,16 +95,16 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 }
 
 func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committee, error) {
-	var share *types.Share
+	var share *types.SharedValidator
 	ketSetMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
-	if len(test.Runner.GetBaseRunner().Share) == 0 {
+	if len(test.Runner.GetBaseRunner().SharedValidator) == 0 {
 		panic("No share in base runner for tests")
 	}
-	for _, validatorShare := range test.Runner.GetBaseRunner().Share {
+	for _, validatorShare := range test.Runner.GetBaseRunner().SharedValidator {
 		share = validatorShare
 		break
 	}
-	for valIdx, validatorShare := range test.Runner.GetBaseRunner().Share {
+	for valIdx, validatorShare := range test.Runner.GetBaseRunner().SharedValidator {
 		ketSetMap[valIdx] = testingutils.KeySetForShare(validatorShare)
 	}
 
@@ -127,7 +127,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 				lastErr = err
 			}
 			if test.DecidedSlashable && IsQBFTProposalMessage(msg) {
-				for _, validatorShare := range test.Runner.GetBaseRunner().Share {
+				for _, validatorShare := range test.Runner.GetBaseRunner().SharedValidator {
 					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableDataRoot(validatorShare.
 						OwnValidatorShare.SharePubKey, testingutils.TestingAttestationDataRoot[:])
 				}

@@ -20,7 +20,7 @@ func F1Speedup() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up",
 		Pre:           pre,
-		PostRoot:      "1bee6a2bedb60d9a43f751c2d1d991f9d665ba8e15a118041f6e4a24eed58bb3",
+		PostRoot:      "997d609675a2a6a322f537329a25d74ceaed86407dd58e06b9e65f31445b5791",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,

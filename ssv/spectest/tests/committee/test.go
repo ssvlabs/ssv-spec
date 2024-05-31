@@ -54,8 +54,8 @@ func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	}
 
 	// test output message (in asynchronous order)
-	var shareSample *types.Share
-	for _, share := range test.Committee.Share {
+	var shareSample *types.SharedValidator
+	for _, share := range test.Committee.SharedValidator {
 		shareSample = share
 		break
 	}

@@ -28,7 +28,7 @@ func QuorumOrder2() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum order 2",
 		Pre:           pre,
-		PostRoot:      "d3bad8d19e8719cfb30e9f85af4804f84f835153a330bd1ddec7ca10a8aafcca",
+		PostRoot:      "e920dffa11c8a667c74eb04ebeda6d375a34544268c7576a485c8a451d9e2480",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithParams(

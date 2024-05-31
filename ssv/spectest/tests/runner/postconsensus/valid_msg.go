@@ -39,11 +39,11 @@ func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ConsensusData) ssv.Ru
 
 func decideRunnerForData(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv.Runner {
 
-	var share *types.Share
-	if len(r.GetBaseRunner().Share) == 0 {
+	var share *types.SharedValidator
+	if len(r.GetBaseRunner().SharedValidator) == 0 {
 		panic("no share in base runner")
 	}
-	for _, valShare := range r.GetBaseRunner().Share {
+	for _, valShare := range r.GetBaseRunner().SharedValidator {
 		share = valShare
 		break
 	}

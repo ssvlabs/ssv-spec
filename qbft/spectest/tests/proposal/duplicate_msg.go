@@ -17,7 +17,7 @@ func DuplicateMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal duplicate message",
 		Pre:           pre,
-		PostRoot:      "01d4fd6278e6a2146c341f40c9ed984eef7a4ff86a868c3f3e6996f131de995d",
+		PostRoot:      "5055bfec8bafe3497909c2fc10d4f6b553633491af5819c0e4b786d753cdd1b2",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),

@@ -25,7 +25,7 @@ func NoPrepareQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit no prepare quorum",
 		Pre:           pre,
-		PostRoot:      "bb91f824f7d7a88c0e0f592d2d43250d2f177bb6b4d72613f86276a5877b0bb4",
+		PostRoot:      "98f4a464457ca3374644a797f2938e8870a9775011e936e1e5a5ad423280dce4",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
