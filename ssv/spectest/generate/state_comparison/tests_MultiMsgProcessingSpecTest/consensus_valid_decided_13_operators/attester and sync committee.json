@@ -1570,8 +1570,7 @@
 												"CommitteeLength": 128,
 												"CommitteesAtSlot": 36,
 												"ValidatorCommitteeIndex": 11,
-												"ValidatorSyncCommitteeIndices": null,
-												"IsStopped": false
+												"ValidatorSyncCommitteeIndices": null
 										},
 										{
 												"Type": 3,
@@ -1586,8 +1585,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										}
 								]
 						}

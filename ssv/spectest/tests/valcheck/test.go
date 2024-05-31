@@ -15,7 +15,7 @@ type SpecTest struct {
 	Network            types.BeaconNetwork
 	RunnerRole         types.RunnerRole
 	Input              []byte
-	SlashableDataRoots map[string][][]byte
+	SlashableDataRoots map[string][][]byte      // map share pk to a list of slashable data roots
 	ShareValidatorsPK  []types.ShareValidatorPK `json:"omitempty"` // Optional. Specify validators shares for beacon vote value check
 	ExpectedError      string
 	AnyError           bool

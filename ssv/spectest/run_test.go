@@ -318,6 +318,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		Duty:                    testDuty,
 		Runner:                  runner,
 		Messages:                msgs,
+		DecidedSlashable:        m["DecidedSlashable"].(bool),
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		DontStartDuty:           m["DontStartDuty"].(bool),
 		ExpectedError:           m["ExpectedError"].(string),

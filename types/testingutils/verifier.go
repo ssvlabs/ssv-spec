@@ -17,21 +17,17 @@ type testingVerifier struct {
 }
 
 var (
-	testingVerifierInstance     *testingVerifier
-	testingVerifierInstanceLock sync.Mutex
+	testingVerifierInstance             *testingVerifier
+	testingVerifierInstanceLock         sync.Mutex
+	testingVerifierSingletonConstructor sync.Once
 )
 
 func NewTestingVerifier() types.SignatureVerifier {
-	if testingVerifierInstance == nil {
-		testingVerifierInstanceLock.Lock()
-		defer testingVerifierInstanceLock.Unlock()
-		if testingVerifierInstance == nil {
-			testingVerifierInstance = &testingVerifier{
-				signaturesCache: make(map[types.OperatorID]map[[32]byte][]byte),
-			}
-			return testingVerifierInstance
+	testingVerifierSingletonConstructor.Do(func() {
+		testingVerifierInstance = &testingVerifier{
+			signaturesCache: make(map[types.OperatorID]map[[32]byte][]byte),
 		}
-	}
+	})
 	return testingVerifierInstance
 }
 
