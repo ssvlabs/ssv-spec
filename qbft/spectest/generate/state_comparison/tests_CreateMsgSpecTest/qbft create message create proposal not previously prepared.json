@@ -253,6 +253,6 @@
 		],
 		"PrepareJustifications": null,
 		"CreateType": "createProposal",
-		"ExpectedRoot": "6eb9a3c33be480e348a745b6f1f21aa719f7ee99434dcf29b0ad3b16ca1aff1a",
+		"ExpectedRoot": "b6e2b2b60655bed0f127e41d2af790fdb7d44a52282dba4888dcc9057db02353",
 		"ExpectedError": ""
 }

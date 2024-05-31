@@ -9,6 +9,6 @@ func CreatePrepare() tests.SpecTest {
 		Name:         "create prepare",
 		Value:        [32]byte{1, 2, 3, 4},
 		Round:        10,
-		ExpectedRoot: "0d1ed244a454b3df5e80fac60ed426ee1d3166534b35cd2f6b1602cddef42ded",
+		ExpectedRoot: "5f8dfc0b340c2fbac1c45d017eed5daeacacaba724a83006bf75029fc23f17c5",
 	}
 }

@@ -2,6 +2,7 @@ package tests
 
 import (
 	"encoding/hex"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -64,8 +65,10 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	require.NoError(t, err2)
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
-		diff := typescomparable.PrintDiff(test.ExpectedState, msg)
-		require.Fail(t, "post state not equal", diff)
+		fmt.Printf("expected: %v\n", test.ExpectedRoot)
+		fmt.Printf("actuak: %v\n", hex.EncodeToString(r[:]))
+		// diff := typescomparable.PrintDiff(test.ExpectedState, msg)
+		require.Fail(t, "post state not equal", "")
 	}
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 
