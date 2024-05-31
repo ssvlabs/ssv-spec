@@ -51,7 +51,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 	}
 
 	// validate justification quorum
-	if len(data.PreConsensusJustifications) >= b.State.Quorum {
+	if uint64(len(data.PreConsensusJustifications)) >= b.State.Quorum {
 		return errors.New("no quorum")
 	}
 

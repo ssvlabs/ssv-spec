@@ -50,7 +50,7 @@ func NewProposerRunner(
 	}
 }
 
-func (r *ProposerRunner) StartNewDuty(duty types.Duty, quorum int) error {
+func (r *ProposerRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 
