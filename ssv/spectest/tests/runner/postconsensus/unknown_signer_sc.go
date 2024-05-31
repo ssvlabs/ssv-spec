@@ -36,7 +36,7 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Operator:          testingutils.TestingOperator(ks),
+					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -78,7 +78,7 @@ func unknownSignerAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Operator:          testingutils.TestingOperator(ks),
+					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -120,7 +120,7 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Operator:          testingutils.TestingOperator(ks),
+					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -162,7 +162,7 @@ func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Operator:          testingutils.TestingOperator(ks),
+					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,

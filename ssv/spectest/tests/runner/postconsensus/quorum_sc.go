@@ -40,7 +40,7 @@ func quorumSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Operator:          testingutils.TestingOperator(ks),
+					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -86,7 +86,7 @@ func quorumAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Operator:          testingutils.TestingOperator(ks),
+					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -132,7 +132,7 @@ func quorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Operator:          testingutils.TestingOperator(ks),
+					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -178,7 +178,7 @@ func quorumBlindedProposerSC(version spec.DataVersion) *comparable.StateComparis
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Operator:          testingutils.TestingOperator(ks),
+					Share:             testingutils.TestingShare(ks, testingutils.TestingValidatorIndex),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,

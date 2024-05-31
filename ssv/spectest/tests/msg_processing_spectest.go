@@ -53,7 +53,7 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	network := &testingutils.TestingNetwork{}
 	beaconNetwork := &testingutils.TestingBeaconNode{}
-	var committee []*types.CommitteeMember
+	var committee []*types.ValidatorShare
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
 		var runnerInstance *ssv.CommitteeRunner
@@ -63,10 +63,13 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		}
 		network = runnerInstance.GetNetwork().(*testingutils.TestingNetwork)
 		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
-		committee = c.Operator.Committee
+		for _, share := range c.Share {
+			committee = share.Committee
+			break
+		}
 	default:
 		network = v.Network.(*testingutils.TestingNetwork)
-		committee = v.Operator.Committee
+		committee = v.Share.Committee
 		beaconNetwork = test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
 	}
 

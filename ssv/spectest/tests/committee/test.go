@@ -54,7 +54,12 @@ func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	}
 
 	// test output message (in asynchronous order)
-	testingutils.ComparePartialSignatureOutputMessagesInAsynchronousOrder(t, test.OutputMessages, broadcastedMsgs, test.Committee.Operator.Committee)
+	var shareSample *types.Share
+	for _, share := range test.Committee.Share {
+		shareSample = share
+		break
+	}
+	testingutils.ComparePartialSignatureOutputMessagesInAsynchronousOrder(t, test.OutputMessages, broadcastedMsgs, shareSample.Committee)
 
 	// test beacon broadcasted msgs
 	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, broadcastedRoots)
