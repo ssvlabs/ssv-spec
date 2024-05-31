@@ -52,7 +52,7 @@ func NewSyncCommitteeAggregatorRunner(
 	}
 }
 
-func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty types.Duty, quorum int) error {
+func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 

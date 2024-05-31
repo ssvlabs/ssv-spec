@@ -45,7 +45,7 @@ func NewValidatorRegistrationRunner(
 	}
 }
 
-func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty, quorum int) error {
+func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty), quorum)
 }

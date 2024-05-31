@@ -50,7 +50,7 @@ func NewAggregatorRunner(
 	}
 }
 
-func (r *AggregatorRunner) StartNewDuty(duty types.Duty, quorum int) error {
+func (r *AggregatorRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 

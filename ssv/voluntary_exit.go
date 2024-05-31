@@ -47,7 +47,7 @@ func NewVoluntaryExitRunner(
 	}
 }
 
-func (r *VoluntaryExitRunner) StartNewDuty(duty types.Duty, quorum int) error {
+func (r *VoluntaryExitRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	// Note: Voluntary exit doesn't require any consensus, it can start a new duty even if previous one didn't finish
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty), quorum)
 }

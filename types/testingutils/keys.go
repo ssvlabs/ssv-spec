@@ -37,7 +37,7 @@ Validator PK: 8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677a
 type TestKeySet struct {
 	ValidatorSK                             *bls.SecretKey
 	ValidatorPK                             *bls.PublicKey
-	ShareCount, Threshold, PartialThreshold int
+	ShareCount, Threshold, PartialThreshold uint64
 	Shares                                  map[types.OperatorID]*bls.SecretKey
 	OperatorKeys                            map[types.OperatorID]*rsa.PrivateKey
 	DKGOperators                            map[types.OperatorID]struct {

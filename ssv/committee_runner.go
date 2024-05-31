@@ -48,7 +48,7 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	}
 }
 
-func (cr CommitteeRunner) StartNewDuty(duty types.Duty, quorum int) error {
+func (cr CommitteeRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	err := cr.BaseRunner.baseStartNewDuty(cr, duty, quorum)
 	if err != nil {
 		return err
