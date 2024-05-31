@@ -87,20 +87,20 @@ var TestingOperator = func(keysSet *TestKeySet) *types.Operator {
 	for _, key := range keysSet.Committee() {
 
 		// Encode member's public key
-		pkBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[key.Signer])
+		pkBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[key.OperatorID])
 		if err != nil {
 			panic(err)
 		}
 
 		committeeMembers = append(committeeMembers, &types.CommitteeMember{
-			OperatorID:        key.Signer,
+			OperatorID:        key.OperatorID,
 			SSVOperatorPubKey: pkBytes,
 		})
 	}
 
 	opIds := []types.OperatorID{}
 	for _, key := range keysSet.Committee() {
-		opIds = append(opIds, key.Signer)
+		opIds = append(opIds, key.OperatorID)
 	}
 
 	operatorPubKeyBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[1])

@@ -22,7 +22,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		if role == types.RoleCommittee {
 			opIDs := make([]types.OperatorID, len(ks.Committee()))
 			for i, member := range ks.Committee() {
-				opIDs[i] = member.Signer
+				opIDs[i] = member.OperatorID
 			}
 			committeeID := types.GetCommitteeID(opIDs)
 			ret := types.NewMsgID(testingutils.TestingSSVDomainType, committeeID[:], role)

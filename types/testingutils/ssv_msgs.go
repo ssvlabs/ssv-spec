@@ -21,7 +21,7 @@ var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 	// Identifier
 	committee := make([]uint64, 0)
 	for _, op := range keySet.Committee() {
-		committee = append(committee, op.Signer)
+		committee = append(committee, op.OperatorID)
 	}
 	committeeID := types.GetCommitteeID(committee)
 

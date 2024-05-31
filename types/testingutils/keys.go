@@ -448,12 +448,19 @@ var pkFromHex = func(str string) *bls.PublicKey {
 	return ret
 }
 
-func (ks *TestKeySet) Committee() []*types.ShareMember {
-	committee := make([]*types.ShareMember, len(ks.Shares))
+func (ks *TestKeySet) Committee() []*types.ValidatorShare {
+	committee := make([]*types.ValidatorShare, len(ks.Shares))
 	for i, s := range ks.Shares {
-		committee[i-1] = &types.ShareMember{
-			Signer:      i,
-			SharePubKey: s.GetPublicKey().Serialize(),
+
+		operatorPKBytes, err := types.MarshalPublicKey(ks.OperatorKeys[i])
+		if err != nil {
+			panic(err)
+		}
+
+		committee[i-1] = &types.ValidatorShare{
+			OperatorID:     i,
+			OperatorPubKey: operatorPKBytes,
+			SharePubKey:    s.GetPublicKey().Serialize(),
 		}
 	}
 	return committee

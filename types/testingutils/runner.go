@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"bytes"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -72,7 +73,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 	if role == types.RoleCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySetInstance.Committee() {
-			committee = append(committee, op.Signer)
+			committee = append(committee, op.OperatorID)
 		}
 		committeeID := types.GetCommitteeID(committee)
 		ownerID = bytes.Clone(committeeID[:])
@@ -194,7 +195,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 	if role == types.RoleCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySet.Committee() {
-			committee = append(committee, op.Signer)
+			committee = append(committee, op.OperatorID)
 		}
 		clusterID := types.GetCommitteeID(committee)
 		ownerID = clusterID[:]

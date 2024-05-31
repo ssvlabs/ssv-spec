@@ -54,7 +54,7 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 		// Check if signer is in committee
 		signerInCommittee := false
 		for _, operator := range validatorShare.Committee {
-			if operator.Signer == msg.Signer {
+			if operator.OperatorID == msg.Signer {
 				signerInCommittee = true
 				break
 			}
@@ -68,9 +68,9 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 }
 
 func (b *BaseRunner) verifyBeaconPartialSignature(signer types.OperatorID, signature types.Signature, root [32]byte,
-	committee []*types.ShareMember) error {
+	committee []*types.ValidatorShare) error {
 	for _, n := range committee {
-		if n.Signer == signer {
+		if n.OperatorID == signer {
 			pk := &bls.PublicKey{}
 			if err := pk.Deserialize(n.SharePubKey); err != nil {
 				return errors.Wrap(err, "could not deserialized pk")
