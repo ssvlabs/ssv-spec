@@ -21,7 +21,7 @@ func (i *Instance) uponRoundChange(
 		return err
 	}
 
-	hasQuorumBefore := HasQuorum(i.State.Share, roundChangeMsgContainer.MessagesForRound(roundChangeMessage.Round))
+	hasQuorumBefore := HasQuorum(i.State.Operator, roundChangeMsgContainer.MessagesForRound(roundChangeMessage.Round))
 	// Currently, even if we have a quorum of round change messages, we update the container
 	addedMsg, err := roundChangeMsgContainer.AddFirstMsgForSignerAndRound(signedRoundChange)
 	if err != nil {
@@ -113,7 +113,7 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 		}
 	}
 
-	return HasPartialQuorum(state.Share, rc), rc
+	return HasPartialQuorum(state.Operator, rc), rc
 }
 
 // hasReceivedProposalJustificationForLeadingRound returns
@@ -137,7 +137,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 	roundChanges := roundChangeMsgContainer.MessagesForRound(roundChangeMessage.Round)
 
 	// optimization, if no round change quorum can return false
-	if !HasQuorum(state.Share, roundChanges) {
+	if !HasQuorum(state.Operator, roundChanges) {
 		return nil, nil, nil
 	}
 
@@ -204,7 +204,7 @@ func isProposalJustificationForLeadingRound(
 		return err
 	}
 
-	if proposer(state, config, roundChangeMsg.Round) != state.Share.OperatorID {
+	if proposer(state, config, roundChangeMsg.Round) != state.Operator.OperatorID {
 		return errors.New("not proposer")
 	}
 
@@ -273,7 +273,7 @@ func validRoundChangeForDataIgnoreSignature(
 		return errors.Wrap(err, "roundChange invalid")
 	}
 
-	if !signedMsg.CheckSignersInCommittee(state.Share.Committee) {
+	if !signedMsg.CheckSignersInCommittee(state.Operator.Committee) {
 		return errors.New("signer not in committee")
 	}
 
@@ -294,7 +294,7 @@ func validRoundChangeForDataIgnoreSignature(
 				state.Height,
 				msg.DataRound,
 				msg.Root,
-				state.Share.Committee); err != nil {
+				state.Operator.Committee); err != nil {
 				return errors.Wrap(err, "round change justification invalid")
 			}
 		}
@@ -303,7 +303,7 @@ func validRoundChangeForDataIgnoreSignature(
 			return errors.New("H(data) != root")
 		}
 
-		if !HasQuorum(state.Share, prepareMsgs) {
+		if !HasQuorum(state.Operator, prepareMsgs) {
 			return errors.New("no justifications quorum")
 		}
 
@@ -331,7 +331,7 @@ func validRoundChangeForDataVerifySignature(
 	}
 
 	// Verify signature
-	if err := config.GetSignatureVerifier().Verify(signedMsg, state.Share.Committee); err != nil {
+	if err := config.GetSignatureVerifier().Verify(signedMsg, state.Operator.Committee); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
@@ -434,5 +434,5 @@ func CreateRoundChange(state *State, config IConfig, newRound Round, instanceSta
 		DataRound:                round,
 		RoundChangeJustification: justificationsData,
 	}
-	return MessageToSignedSSVMessageWithFullData(msg, state.Share.OperatorID, config.GetOperatorSigner(), fullData)
+	return MessageToSignedSSVMessageWithFullData(msg, state.Operator.OperatorID, config.GetOperatorSigner(), fullData)
 }
