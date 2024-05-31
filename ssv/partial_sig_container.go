@@ -12,10 +12,10 @@ import (
 type PartialSigContainer struct {
 	Signatures map[phase0.ValidatorIndex]map[string]map[types.OperatorID][]byte
 	// Quorum is the number of min signatures needed for quorum
-	Quorum uint64
+	Quorum int
 }
 
-func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
+func NewPartialSigContainer(quorum int) *PartialSigContainer {
 	return &PartialSigContainer{
 		Quorum:     quorum,
 		Signatures: make(map[phase0.ValidatorIndex]map[string]map[types.OperatorID][]byte),
@@ -108,7 +108,7 @@ func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubK
 }
 
 func (ps *PartialSigContainer) HasQuorum(validatorIndex phase0.ValidatorIndex, root [32]byte) bool {
-	return uint64(len(ps.Signatures[validatorIndex][rootHex(root)])) >= ps.Quorum
+	return len(ps.Signatures[validatorIndex][rootHex(root)]) >= ps.Quorum
 }
 
 func rootHex(r [32]byte) string {

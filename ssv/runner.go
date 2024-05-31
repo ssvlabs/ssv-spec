@@ -24,7 +24,7 @@ type Runner interface {
 	Getters
 
 	// StartNewDuty starts a new duty for the runner, returns error if can't
-	StartNewDuty(duty types.Duty) error
+	StartNewDuty(duty types.Duty, quorum int) error
 	// HasRunningDuty returns true if it has a running duty
 	HasRunningDuty() bool
 	// ProcessPreConsensus processes all pre-consensus msgs, returns error if can't process
@@ -79,33 +79,27 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 }
 
 // setupForNewDuty is sets the runner for a new duty
-func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
-	// start new state
-	// TODO nicer way to get quorum
-	var share *types.Share
-	for _, shareInstance := range b.Share {
-		share = shareInstance
-	}
-	b.State = NewRunnerState(share.Quorum, duty)
+func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty, quorum int) {
+	b.State = NewRunnerState(quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
-func (b *BaseRunner) baseStartNewDuty(runner Runner, duty types.Duty) error {
+func (b *BaseRunner) baseStartNewDuty(runner Runner, duty types.Duty, quorum int) error {
 	if err := b.ShouldProcessDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start duty")
 	}
 
-	b.baseSetupForNewDuty(duty)
+	b.baseSetupForNewDuty(duty, quorum)
 
 	return runner.executeDuty(duty)
 }
 
 // baseStartNewBeaconDuty is a base func that all runner implementation can call to start a non-beacon duty
-func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.BeaconDuty) error {
+func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.BeaconDuty, quorum int) error {
 	if err := b.ShouldProcessNonBeaconDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start non-beacon duty")
 	}
-	b.baseSetupForNewDuty(duty)
+	b.baseSetupForNewDuty(duty, quorum)
 	return runner.executeDuty(duty)
 }
 

@@ -51,14 +51,14 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 	}
 
 	// validate justification quorum
-	if !b.Share[data.Duty.ValidatorIndex].HasQuorum(len(data.PreConsensusJustifications)) {
+	if len(data.PreConsensusJustifications) >= b.State.Quorum {
 		return errors.New("no quorum")
 	}
 
 	signers := make(map[types.OperatorID]bool)
 	roots := make(map[[32]byte]bool)
 	rootCount := 0
-	partialSigContainer := NewPartialSigContainer(b.Share[data.Duty.ValidatorIndex].Quorum)
+	partialSigContainer := NewPartialSigContainer(b.State.Quorum)
 	for i, msg := range data.PreConsensusJustifications {
 		if err := msg.Validate(); err != nil {
 			return err
@@ -151,7 +151,7 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 
 	// if no duty is running start one
 	if !b.hasRunningDuty() {
-		b.baseSetupForNewDuty(&cd.Duty)
+		b.baseSetupForNewDuty(&cd.Duty, b.State.Quorum)
 	}
 
 	// add pre-consensus sigs to state container

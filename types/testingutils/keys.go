@@ -37,7 +37,7 @@ Validator PK: 8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677a
 type TestKeySet struct {
 	ValidatorSK                             *bls.SecretKey
 	ValidatorPK                             *bls.PublicKey
-	ShareCount, Threshold, PartialThreshold uint64
+	ShareCount, Threshold, PartialThreshold int
 	Shares                                  map[types.OperatorID]*bls.SecretKey
 	OperatorKeys                            map[types.OperatorID]*rsa.PrivateKey
 	DKGOperators                            map[types.OperatorID]struct {
@@ -48,26 +48,26 @@ type TestKeySet struct {
 }
 
 func KeySetForShare(share *types.Share) *TestKeySet {
-	if share.Quorum == 5 {
+	if len(share.Committee) == 7 {
 		return Testing7SharesSet()
 	}
-	if share.Quorum == 7 {
+	if len(share.Committee) == 10 {
 		return Testing10SharesSet()
 	}
-	if share.Quorum == 9 {
+	if len(share.Committee) == 13 {
 		return Testing13SharesSet()
 	}
 	return Testing4SharesSet()
 }
 
 func KeySetForOperator(operator *types.Operator) *TestKeySet {
-	if operator.Quorum == 5 {
+	if operator.GetQuorum() == 5 {
 		return Testing7SharesSet()
 	}
-	if operator.Quorum == 7 {
+	if operator.GetQuorum() == 7 {
 		return Testing10SharesSet()
 	}
-	if operator.Quorum == 9 {
+	if operator.GetQuorum() == 9 {
 		return Testing13SharesSet()
 	}
 	return Testing4SharesSet()

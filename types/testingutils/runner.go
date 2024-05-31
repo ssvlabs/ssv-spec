@@ -326,7 +326,7 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	v := BaseValidator(keySet)
 	msgs := SSVDecidingMsgsForHeight(consensusInput, AttesterMsgID, height, keySet)
 
-	if err := v.DutyRunners[types.RoleCommittee].StartNewDuty(&consensusInput.Duty); err != nil {
+	if err := v.DutyRunners[types.RoleCommittee].StartNewDuty(&consensusInput.Duty, keySet.Threshold); err != nil {
 		panic(err.Error())
 	}
 	for _, msg := range msgs {
@@ -383,7 +383,7 @@ var SSVDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifi
 	msgs = append(msgs, s)
 
 	// prepare
-	for i := uint64(1); i <= keySet.Threshold; i++ {
+	for i := 1; i <= keySet.Threshold; i++ {
 		msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     height,
@@ -393,7 +393,7 @@ var SSVDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifi
 		}))
 	}
 	// commit
-	for i := uint64(1); i <= keySet.Threshold; i++ {
+	for i := 1; i <= keySet.Threshold; i++ {
 		msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 			MsgType:    qbft.CommitMsgType,
 			Height:     height,
@@ -420,7 +420,7 @@ var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msg
 	msgs = append(msgs, s)
 
 	// prepare
-	for i := uint64(1); i <= keySet.Threshold; i++ {
+	for i := 1; i <= keySet.Threshold; i++ {
 		msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 			MsgType:    qbft.PrepareMsgType,
 			Height:     height,
@@ -430,7 +430,7 @@ var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msg
 		}))
 	}
 	// commit
-	for i := uint64(1); i <= keySet.Threshold; i++ {
+	for i := 1; i <= keySet.Threshold; i++ {
 		msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 			MsgType:    qbft.CommitMsgType,
 			Height:     height,
@@ -475,7 +475,7 @@ var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier 
 		msgs = append(msgs, s)
 
 		// prepare
-		for i := uint64(1); i <= keySet.Threshold; i++ {
+		for i := 1; i <= keySet.Threshold; i++ {
 			msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				MsgType:    qbft.PrepareMsgType,
 				Height:     h,
@@ -485,7 +485,7 @@ var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier 
 			}))
 		}
 		// commit
-		for i := uint64(1); i <= keySet.Threshold; i++ {
+		for i := 1; i <= keySet.Threshold; i++ {
 			msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				MsgType:    qbft.CommitMsgType,
 				Height:     h,
@@ -514,7 +514,7 @@ var ExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIde
 		msgs = append(msgs, s)
 
 		// prepare
-		for i := uint64(1); i <= keySet.Threshold; i++ {
+		for i := 1; i <= keySet.Threshold; i++ {
 			msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				MsgType:    qbft.PrepareMsgType,
 				Height:     h,
@@ -524,7 +524,7 @@ var ExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIde
 			}))
 		}
 		// commit
-		for i := uint64(1); i <= keySet.Threshold; i++ {
+		for i := 1; i <= keySet.Threshold; i++ {
 			msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
 				MsgType:    qbft.CommitMsgType,
 				Height:     h,

@@ -112,7 +112,7 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 // runPreTesting runs the spec logic before testing the output
 // It simply starts a new duty
 func (test *StartNewRunnerDutySpecTest) runPreTesting() error {
-	err := test.Runner.StartNewDuty(test.Duty)
+	err := test.Runner.StartNewDuty(test.Duty, test.Runner.GetBaseRunner().State.Quorum)
 	return err
 }
 
