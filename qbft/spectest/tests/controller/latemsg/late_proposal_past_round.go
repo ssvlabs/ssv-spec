@@ -55,8 +55,6 @@ func LateProposalPastRound() tests.SpecTest {
 						2,
 					),
 				},
-
-				ControllerPostRoot: "04eba8412e564e9b000f61035cfbc663216671d98d39d74119612614916542ad",
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: past round",

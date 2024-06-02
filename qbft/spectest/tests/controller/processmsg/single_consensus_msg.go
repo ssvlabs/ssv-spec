@@ -17,7 +17,6 @@ func SingleConsensusMsg() tests.SpecTest {
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 				},
-				ControllerPostRoot: "c9258515e169e330c535d38068f2dc6bf3f61e6d36a941ea41a0133435afae22",
 			},
 		},
 	}

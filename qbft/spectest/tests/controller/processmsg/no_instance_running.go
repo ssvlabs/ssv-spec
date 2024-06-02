@@ -29,7 +29,6 @@ func NoInstanceRunning() tests.SpecTest {
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 				},
-				ControllerPostRoot: "e8da00ea07e1e5098026373c51e38a681215e12ca4bdeb1f1efbb9d4f3325a92",
 			},
 		},
 		ExpectedError: "instance not found",

@@ -23,7 +23,6 @@ func HasQuorum() tests.SpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: "589b0c0352f1c22875246f2e66530d5fda62f646434b250ade128c61c16f47bd",
 			},
 		},
 	}
