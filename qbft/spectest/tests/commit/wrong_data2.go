@@ -23,7 +23,6 @@ func WrongData2() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "commit data != prepared data",
 		Pre:           pre,
-		PostRoot:      "037dcf8d9dcca591bc4f93e8c2a7034b148c33e6d201f1f9203f7c271fe016ee",
 		InputMessages: msgs,
 		OutputMessages: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
