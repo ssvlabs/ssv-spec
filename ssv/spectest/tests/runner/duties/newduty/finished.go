@@ -43,6 +43,7 @@ func Finished() tests.SpecTest {
 				Runner: finishRunner(testingutils.SyncCommitteeContributionRunner(ks),
 					&testingutils.TestingSyncCommitteeContributionDuty, true),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "fbcf8689caa2138c117d9385daa53a0c8aae76b9f12014d13a66d984f6287edf",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
@@ -52,6 +53,7 @@ func Finished() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  finishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty, true),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "e5ffdb2d4b64133979b73370c757b94e2f82952238d7c2bcdc91fbe1782ec80a",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
@@ -62,6 +64,7 @@ func Finished() tests.SpecTest {
 				Runner: finishRunner(testingutils.ProposerRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionDeneb), true),
 				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "78a040ec69b6932809c8b582999277d3e9766d564eacde7eeb029f0749460f39",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
@@ -71,6 +74,7 @@ func Finished() tests.SpecTest {
 				Name:                    "attester",
 				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty, true),
 				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
@@ -78,6 +82,7 @@ func Finished() tests.SpecTest {
 				Name:                    "sync committee",
 				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty, true),
 				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
@@ -85,6 +90,7 @@ func Finished() tests.SpecTest {
 				Name:                    "attester and sync committee",
 				Runner:                  finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties, true),
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "cbfb9b6302ff1e7a1bf356f57a8e88dd4c4f7ddef6345c62dac125af1d1db4ce",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
@@ -92,6 +98,7 @@ func Finished() tests.SpecTest {
 				Name:                    "voluntary exit",
 				Runner:                  finishRunner(testingutils.VoluntaryExitRunner(ks), &testingutils.TestingVoluntaryExitDuty, false),
 				Duty:                    &testingutils.TestingVoluntaryExitDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
@@ -101,6 +108,7 @@ func Finished() tests.SpecTest {
 				Name:                    "validator registration",
 				Runner:                  finishRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty, false),
 				Duty:                    &testingutils.TestingValidatorRegistrationDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "6f6d918e15ebc7b84cb77e2d603019d1cbfb6d7293daddd48780da47c14e53ce",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty

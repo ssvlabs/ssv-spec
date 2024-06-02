@@ -37,6 +37,7 @@ func NotDecided() tests.SpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: notDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     notDecidedSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -47,6 +48,7 @@ func NotDecided() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  startRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: notDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     notDecidedAggregatorSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -57,12 +59,14 @@ func NotDecided() tests.SpecTest {
 				Name:           "attester",
 				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:           testingutils.TestingAttesterDutyNextEpoch,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:           "sync committee",
 				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
