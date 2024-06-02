@@ -93,6 +93,7 @@ func PostDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  decidedRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
@@ -107,6 +108,7 @@ func PostDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  decidedRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{

@@ -3,11 +3,11 @@
 				"State": {
 						"PreConsensusContainer": {
 								"Signatures": {},
-								"Quorum": 0
+								"Quorum": 3
 						},
 						"PostConsensusContainer": {
 								"Signatures": {},
-								"Quorum": 0
+								"Quorum": 3
 						},
 						"RunningInstance": null,
 						"DecidedValue": null,

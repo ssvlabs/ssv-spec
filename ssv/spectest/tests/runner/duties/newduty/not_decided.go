@@ -73,6 +73,7 @@ func NotDecided() tests.SpecTest {
 				Name:           "attester and sync committee",
 				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
 				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
@@ -84,6 +85,7 @@ func NotDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: notDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
@@ -98,6 +100,7 @@ func NotDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  startRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: notDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
