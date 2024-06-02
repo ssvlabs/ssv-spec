@@ -1,4 +1,4 @@
-package share
+package operator
 
 import (
 	reflect2 "reflect"
@@ -10,21 +10,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type ShareTest struct {
+type OperatorTest struct {
 	Name                  string
-	Share                 types.Share
+	Operator              types.Operator
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
 	ExpectedFullCommittee bool
 	ExpectedError         string
 }
 
-func (test *ShareTest) TestName() string {
-	return "share " + test.Name
+func (test *OperatorTest) TestName() string {
+	return "operator " + test.Name
 }
 
 // Returns the number of unique signers in the message signers list
-func (test *ShareTest) GetUniqueMessageSignersCount() int {
+func (test *OperatorTest) GetUniqueMessageSignersCount() int {
 	uniqueSigners := make(map[uint64]bool)
 
 	for _, element := range test.Message.GetOperatorIDs() {
@@ -34,7 +34,7 @@ func (test *ShareTest) GetUniqueMessageSignersCount() int {
 	return len(uniqueSigners)
 }
 
-func (test *ShareTest) Run(t *testing.T) {
+func (test *OperatorTest) Run(t *testing.T) {
 
 	// Validate message
 	err := test.Message.Validate()
@@ -43,6 +43,13 @@ func (test *ShareTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, err)
 	}
+
+	// Get unique signers
+	numSigners := test.GetUniqueMessageSignersCount()
+
+	// Test expected thresholds results
+	require.Equal(t, test.ExpectedHasQuorum, test.Operator.HasQuorum(numSigners))
+	require.Equal(t, test.ExpectedFullCommittee, (len(test.Operator.Committee) == numSigners))
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
