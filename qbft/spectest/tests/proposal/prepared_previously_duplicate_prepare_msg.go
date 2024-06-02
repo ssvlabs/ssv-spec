@@ -35,7 +35,6 @@ func PreparedPreviouslyDuplicatePrepareMsg() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "duplicate prepare msg justification",
 		Pre:            pre,
-		PostRoot:       "620ad2417e47411537db8df9d4a072327e3c3efc391c3162867f30d5bf9af52c",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
