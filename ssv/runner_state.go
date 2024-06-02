@@ -17,9 +17,7 @@ type State struct {
 	PreConsensusContainer  *PartialSigContainer
 	PostConsensusContainer *PartialSigContainer
 	RunningInstance        *qbft.Instance
-	// Quorum is the number of min signatures needed for quorum
-	Quorum       uint64
-	DecidedValue []byte
+	DecidedValue           []byte
 	// CurrentDuty is the duty the node pulled locally from the beacon node, might be different from decided duty
 	StartingDuty types.Duty
 	// flags
@@ -30,7 +28,6 @@ func NewRunnerState(quorum uint64, duty types.Duty) *State {
 	return &State{
 		PreConsensusContainer:  NewPartialSigContainer(quorum),
 		PostConsensusContainer: NewPartialSigContainer(quorum),
-		Quorum:                 quorum,
 
 		StartingDuty: duty,
 		Finished:     false,
