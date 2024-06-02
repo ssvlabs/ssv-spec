@@ -3,6 +3,7 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/operator"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -128,6 +129,12 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &share.ShareTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&operator.OperatorTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &operator.OperatorTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&ssvmsg.SSVMessageTest{}).String():
