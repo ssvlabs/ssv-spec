@@ -54,8 +54,7 @@
 														236
 												],
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
-												"Quorum": 9,
-												"PartialQuorum": 5,
+												"FaultyNodes": 4,
 												"Committee": [
 														{
 																"OperatorID": 1,
@@ -261,7 +260,6 @@
 												"Signer": 13
 										}
 								],
-								"Quorum": 9,
 								"DomainType": [
 										0,
 										0,
@@ -336,8 +334,7 @@
 																236
 														],
 														"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
-														"Quorum": 9,
-														"PartialQuorum": 5,
+														"FaultyNodes": 4,
 														"Committee": [
 																{
 																		"OperatorID": 1,
@@ -454,8 +451,7 @@
 										236
 								],
 								"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
-								"Quorum": 9,
-								"PartialQuorum": 5,
+								"FaultyNodes": 4,
 								"Committee": [
 										{
 												"OperatorID": 1,
