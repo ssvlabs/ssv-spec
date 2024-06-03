@@ -11,7 +11,7 @@
 						},
 						"RunningInstance": {
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														223,
@@ -1719,7 +1719,7 @@
 						"StoredInstances": [
 								{
 										"State": {
-												"Share": {
+												"CommitteeMember": {
 														"OperatorID": 1,
 														"CommitteeID": [
 																223,
@@ -3264,7 +3264,7 @@
 										"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 								}
 						],
-						"Share": {
+						"CommitteeMember": {
 								"OperatorID": 1,
 								"CommitteeID": [
 										223,

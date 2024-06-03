@@ -5,7 +5,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -164,7 +164,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -228,7 +228,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -389,7 +389,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -548,7 +548,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -612,7 +612,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -773,7 +773,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -934,7 +934,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -1093,7 +1093,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -1157,7 +1157,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -1318,7 +1318,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -1479,7 +1479,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -1640,7 +1640,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -1799,7 +1799,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -1863,7 +1863,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -2024,7 +2024,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -2185,7 +2185,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -2346,7 +2346,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -2507,7 +2507,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -2666,7 +2666,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -2730,7 +2730,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -2891,7 +2891,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -3052,7 +3052,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -3213,7 +3213,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -3374,7 +3374,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -3535,7 +3535,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -3694,7 +3694,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -3758,7 +3758,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -3919,7 +3919,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -4080,7 +4080,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -4241,7 +4241,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -4402,7 +4402,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -4563,7 +4563,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -4724,7 +4724,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -4883,7 +4883,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -4947,7 +4947,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -5108,7 +5108,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -5269,7 +5269,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -5430,7 +5430,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -5591,7 +5591,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -5752,7 +5752,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -5913,7 +5913,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -6074,7 +6074,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -6233,7 +6233,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -6297,7 +6297,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -6458,7 +6458,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -6619,7 +6619,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -6780,7 +6780,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -6941,7 +6941,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -7102,7 +7102,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -7263,7 +7263,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -7424,7 +7424,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -7585,7 +7585,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -7744,7 +7744,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -7808,7 +7808,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -7969,7 +7969,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -8130,7 +8130,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -8291,7 +8291,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -8452,7 +8452,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -8613,7 +8613,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -8774,7 +8774,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -8935,7 +8935,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -9096,7 +9096,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -9257,7 +9257,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -9416,7 +9416,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
@@ -9480,7 +9480,7 @@
 				"StoredInstances": [
 						{
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -9641,7 +9641,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -9802,7 +9802,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -9963,7 +9963,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -10124,7 +10124,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -10285,7 +10285,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -10446,7 +10446,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -10607,7 +10607,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -10768,7 +10768,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -10929,7 +10929,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -11090,7 +11090,7 @@
 						{
 								"forceStop": true,
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
 												"CommitteeID": [
 														207,
@@ -11249,7 +11249,7 @@
 								"StartValue": "AQIDBA=="
 						}
 				],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
 						"CommitteeID": [
 								207,
