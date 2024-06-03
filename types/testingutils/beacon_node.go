@@ -668,9 +668,15 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.AttestationData, spec.DataVersion, error) {
+func (bn *TestingBeaconNode) GetAttestationData(slot *phase0.Slot, committeeIndex *phase0.CommitteeIndex) (*phase0.
+	AttestationData, spec.DataVersion, error) {
 	data := *TestingAttestationData
-	data.Slot = slot
+	if slot != nil {
+		data.Slot = *slot
+	}
+	if committeeIndex != nil {
+		data.Index = *committeeIndex
+	}
 	return &data, spec.DataVersionPhase0, nil
 }
 

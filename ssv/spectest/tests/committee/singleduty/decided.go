@@ -34,7 +34,7 @@ func Decided() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("%v attestation", numValidators),
-				Committee: testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 				Input: []interface{}{
 					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
@@ -54,7 +54,7 @@ func Decided() tests.SpecTest {
 			},
 			{
 				Name:      fmt.Sprintf("%v sync committee", numValidators),
-				Committee: testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 				Input: []interface{}{
 					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
@@ -74,7 +74,7 @@ func Decided() tests.SpecTest {
 			},
 			{
 				Name:      fmt.Sprintf("%v attestations %v sync committees", numValidators, numValidators),
-				Committee: testingutils.BaseCommitteeWithRunnerSample(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 				Input: []interface{}{
 					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList, validatorsIndexList),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
