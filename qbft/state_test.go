@@ -33,9 +33,9 @@ func TestState_Decoding(t *testing.T) {
 	}
 
 	state := &qbft.State{
-		Share: &types.Operator{
+		Share: &types.CommitteeMember{
 			OperatorID: 1,
-			Committee: []*types.CommitteeMember{
+			Committee: []*types.Operator{
 				{
 					OperatorID:        1,
 					SSVOperatorPubKey: []byte{1, 2, 3, 4},

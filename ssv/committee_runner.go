@@ -155,7 +155,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID: types.NewMsgID(cr.GetShare().DomainType, cr.GetBaseRunner().QBFTController.Share.ClusterID[:],
+		MsgID: types.NewMsgID(cr.GetShare().DomainType, cr.GetBaseRunner().QBFTController.Share.CommitteeID[:],
 			cr.BaseRunner.RunnerRoleType),
 	}
 	ssvMsg.Data, err = postConsensusMsg.Encode()

@@ -94,7 +94,7 @@ func CreateCommit(state *State, config IConfig, root [32]byte) (*types.SignedSSV
 func baseCommitValidationIgnoreSignature(
 	signedCommit *types.SignedSSVMessage,
 	height Height,
-	operators []*types.CommitteeMember,
+	operators []*types.Operator,
 ) error {
 
 	if err := signedCommit.Validate(); err != nil {
@@ -124,7 +124,7 @@ func baseCommitValidationVerifySignature(
 	config IConfig,
 	signedCommit *types.SignedSSVMessage,
 	height Height,
-	operators []*types.CommitteeMember) error {
+	operators []*types.Operator) error {
 
 	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err
@@ -143,7 +143,7 @@ func validateCommit(
 	height Height,
 	round Round,
 	proposedSignedMsg *types.SignedSSVMessage,
-	operators []*types.CommitteeMember,
+	operators []*types.Operator,
 ) error {
 	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err

@@ -78,10 +78,10 @@ func (test *ControllerSpecTest) generateController() *qbft.Controller {
 	identifier := []byte{1, 2, 3, 4}
 	keySet := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(keySet)
-	operator := testingutils.TestingOperator(keySet)
+	committeeMember := testingutils.TestingCommitteeMember(keySet)
 	return testingutils.NewTestingQBFTController(
 		identifier[:],
-		operator,
+		committeeMember,
 		config,
 	)
 }
@@ -128,7 +128,7 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 	config qbft.IConfig,
 	identifier []byte,
 	runData *RunInstanceData,
-	committee []*types.CommitteeMember,
+	committee []*types.Operator,
 ) {
 	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
 		// test broadcasted

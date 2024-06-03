@@ -29,7 +29,7 @@ func GetCommitteeID(committee []OperatorID) CommitteeID {
 	return sha256.Sum256(bytes)
 }
 
-// [ERR]: failed to encode Operator: failed to encode CommitteeID: failed to encode CommitteeID: no ssz-size or ssz-max tags found for element. tag=
+// [ERR]: failed to encode CommitteeMember: failed to encode CommitteeID: failed to encode CommitteeID: no ssz-size or ssz-max tags found for element. tag=
 // exit status 1
 // types/generate.go:4: running "go": exit status 1
 // make: *** [generate-ssz] Error 1

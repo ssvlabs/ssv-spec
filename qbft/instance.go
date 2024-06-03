@@ -28,7 +28,7 @@ type Instance struct {
 
 func NewInstance(
 	config IConfig,
-	share *types.Operator,
+	share *types.CommitteeMember,
 	identifier []byte,
 	height Height,
 ) *Instance {

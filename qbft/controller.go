@@ -17,11 +17,11 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	Share           *types.Operator
+	Share           *types.CommitteeMember
 	config          IConfig
 }
 
-func NewController(identifier []byte, share *types.Operator, config IConfig) *Controller {
+func NewController(identifier []byte, share *types.CommitteeMember, config IConfig) *Controller {
 	return &Controller{
 		Identifier:      identifier,
 		Height:          FirstHeight,

@@ -7,25 +7,25 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 )
 
-// MarshalSSZ ssz marshals the Operator object
-func (o *Operator) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the CommitteeMember object
+func (o *CommitteeMember) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(o)
 }
 
-// MarshalSSZTo ssz marshals the Operator object to a target array
-func (o *Operator) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the CommitteeMember object to a target array
+func (o *CommitteeMember) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(338)
 
 	// Field (0) 'OperatorID'
 	dst = ssz.MarshalUint64(dst, uint64(o.OperatorID))
 
-	// Field (1) 'ClusterID'
-	dst = append(dst, o.ClusterID[:]...)
+	// Field (1) 'CommitteeID'
+	dst = append(dst, o.CommitteeID[:]...)
 
 	// Field (2) 'SSVOperatorPubKey'
 	if size := len(o.SSVOperatorPubKey); size != 294 {
-		err = ssz.ErrBytesLengthFn("Operator.SSVOperatorPubKey", size, 294)
+		err = ssz.ErrBytesLengthFn("CommitteeMember.SSVOperatorPubKey", size, 294)
 		return
 	}
 	dst = append(dst, o.SSVOperatorPubKey...)
@@ -36,7 +36,7 @@ func (o *Operator) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Field (3) 'Committee'
 	if size := len(o.Committee); size > 13 {
-		err = ssz.ErrListTooBigFn("Operator.Committee", size, 13)
+		err = ssz.ErrListTooBigFn("CommitteeMember.Committee", size, 13)
 		return
 	}
 	for ii := 0; ii < len(o.Committee); ii++ {
@@ -48,8 +48,8 @@ func (o *Operator) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the Operator object
-func (o *Operator) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the CommitteeMember object
+func (o *CommitteeMember) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 338 {
@@ -62,8 +62,8 @@ func (o *Operator) UnmarshalSSZ(buf []byte) error {
 	// Field (0) 'OperatorID'
 	o.OperatorID = OperatorID(ssz.UnmarshallUint64(buf[0:8]))
 
-	// Field (1) 'ClusterID'
-	copy(o.ClusterID[:], buf[8:40])
+	// Field (1) 'CommitteeID'
+	copy(o.CommitteeID[:], buf[8:40])
 
 	// Field (2) 'SSVOperatorPubKey'
 	if cap(o.SSVOperatorPubKey) == 0 {
@@ -87,10 +87,10 @@ func (o *Operator) UnmarshalSSZ(buf []byte) error {
 		if err != nil {
 			return err
 		}
-		o.Committee = make([]*CommitteeMember, num)
+		o.Committee = make([]*Operator, num)
 		for ii := 0; ii < num; ii++ {
 			if o.Committee[ii] == nil {
-				o.Committee[ii] = new(CommitteeMember)
+				o.Committee[ii] = new(Operator)
 			}
 			if err = o.Committee[ii].UnmarshalSSZ(buf[ii*302 : (ii+1)*302]); err != nil {
 				return err
@@ -100,8 +100,8 @@ func (o *Operator) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the Operator object
-func (o *Operator) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the CommitteeMember object
+func (o *CommitteeMember) SizeSSZ() (size int) {
 	size = 338
 
 	// Field (3) 'Committee'
@@ -110,24 +110,24 @@ func (o *Operator) SizeSSZ() (size int) {
 	return
 }
 
-// HashTreeRoot ssz hashes the Operator object
-func (o *Operator) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the CommitteeMember object
+func (o *CommitteeMember) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(o)
 }
 
-// HashTreeRootWith ssz hashes the Operator object with a hasher
-func (o *Operator) HashTreeRootWith(hh ssz.HashWalker) (err error) {
+// HashTreeRootWith ssz hashes the CommitteeMember object with a hasher
+func (o *CommitteeMember) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'OperatorID'
 	hh.PutUint64(uint64(o.OperatorID))
 
-	// Field (1) 'ClusterID'
-	hh.PutBytes(o.ClusterID[:])
+	// Field (1) 'CommitteeID'
+	hh.PutBytes(o.CommitteeID[:])
 
 	// Field (2) 'SSVOperatorPubKey'
 	if size := len(o.SSVOperatorPubKey); size != 294 {
-		err = ssz.ErrBytesLengthFn("Operator.SSVOperatorPubKey", size, 294)
+		err = ssz.ErrBytesLengthFn("CommitteeMember.SSVOperatorPubKey", size, 294)
 		return
 	}
 	hh.PutBytes(o.SSVOperatorPubKey)
@@ -152,18 +152,18 @@ func (o *Operator) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	return
 }
 
-// GetTree ssz hashes the Operator object
-func (o *Operator) GetTree() (*ssz.Node, error) {
+// GetTree ssz hashes the CommitteeMember object
+func (o *CommitteeMember) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(o)
 }
 
-// MarshalSSZ ssz marshals the CommitteeMember object
-func (c *CommitteeMember) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the Operator object
+func (c *Operator) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(c)
 }
 
-// MarshalSSZTo ssz marshals the CommitteeMember object to a target array
-func (c *CommitteeMember) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the Operator object to a target array
+func (c *Operator) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 
 	// Field (0) 'OperatorID'
@@ -171,7 +171,7 @@ func (c *CommitteeMember) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Field (1) 'SSVOperatorPubKey'
 	if size := len(c.SSVOperatorPubKey); size != 294 {
-		err = ssz.ErrBytesLengthFn("CommitteeMember.SSVOperatorPubKey", size, 294)
+		err = ssz.ErrBytesLengthFn("Operator.SSVOperatorPubKey", size, 294)
 		return
 	}
 	dst = append(dst, c.SSVOperatorPubKey...)
@@ -179,8 +179,8 @@ func (c *CommitteeMember) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the CommitteeMember object
-func (c *CommitteeMember) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the Operator object
+func (c *Operator) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size != 302 {
@@ -199,19 +199,19 @@ func (c *CommitteeMember) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the CommitteeMember object
-func (c *CommitteeMember) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the Operator object
+func (c *Operator) SizeSSZ() (size int) {
 	size = 302
 	return
 }
 
-// HashTreeRoot ssz hashes the CommitteeMember object
-func (c *CommitteeMember) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the Operator object
+func (c *Operator) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(c)
 }
 
-// HashTreeRootWith ssz hashes the CommitteeMember object with a hasher
-func (c *CommitteeMember) HashTreeRootWith(hh ssz.HashWalker) (err error) {
+// HashTreeRootWith ssz hashes the Operator object with a hasher
+func (c *Operator) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'OperatorID'
@@ -219,7 +219,7 @@ func (c *CommitteeMember) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 
 	// Field (1) 'SSVOperatorPubKey'
 	if size := len(c.SSVOperatorPubKey); size != 294 {
-		err = ssz.ErrBytesLengthFn("CommitteeMember.SSVOperatorPubKey", size, 294)
+		err = ssz.ErrBytesLengthFn("Operator.SSVOperatorPubKey", size, 294)
 		return
 	}
 	hh.PutBytes(c.SSVOperatorPubKey)
@@ -228,7 +228,7 @@ func (c *CommitteeMember) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	return
 }
 
-// GetTree ssz hashes the CommitteeMember object
-func (c *CommitteeMember) GetTree() (*ssz.Node, error) {
+// GetTree ssz hashes the Operator object
+func (c *Operator) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(c)
 }

@@ -100,7 +100,7 @@ func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
 func validateFutureMsg(
 	config qbft.IConfig,
 	msg *types.SignedSSVMessage,
-	operator *types.Operator,
+	committeeMember *types.CommitteeMember,
 ) error {
 	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
@@ -111,7 +111,7 @@ func validateFutureMsg(
 	}
 
 	// verify signature
-	if err := config.GetSignatureVerifier().Verify(msg, operator.Committee); err != nil {
+	if err := config.GetSignatureVerifier().Verify(msg, committeeMember.Committee); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 

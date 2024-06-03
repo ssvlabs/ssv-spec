@@ -60,14 +60,14 @@ func KeySetForShare(share *types.Share) *TestKeySet {
 	return Testing4SharesSet()
 }
 
-func KeySetForOperator(operator *types.Operator) *TestKeySet {
-	if operator.Quorum == 5 {
+func KeySetForCommitteeMember(committeeMember *types.CommitteeMember) *TestKeySet {
+	if committeeMember.Quorum == 5 {
 		return Testing7SharesSet()
 	}
-	if operator.Quorum == 7 {
+	if committeeMember.Quorum == 7 {
 		return Testing10SharesSet()
 	}
-	if operator.Quorum == 9 {
+	if committeeMember.Quorum == 9 {
 		return Testing13SharesSet()
 	}
 	return Testing4SharesSet()

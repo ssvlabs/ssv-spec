@@ -31,7 +31,7 @@ func NewTestingVerifier() types.SignatureVerifier {
 	return testingVerifierInstance
 }
 
-func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types.CommitteeMember) error {
+func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types.Operator) error {
 
 	encodedMsg, err := msg.SSVMessage.Encode()
 	if err != nil {
@@ -51,7 +51,7 @@ func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types
 	return nil
 }
 
-func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []byte, signer types.OperatorID, operators []*types.CommitteeMember) error {
+func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []byte, signer types.OperatorID, operators []*types.Operator) error {
 
 	for _, op := range operators {
 		// Find signer
@@ -109,7 +109,7 @@ func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]by
 }
 
 // Verifies a list of SignedSSVMessage using the operators list
-func VerifyListOfSignedSSVMessages(msgs []*types.SignedSSVMessage, operators []*types.CommitteeMember) error {
+func VerifyListOfSignedSSVMessages(msgs []*types.SignedSSVMessage, operators []*types.Operator) error {
 	verifier := NewTestingVerifier()
 
 	for _, msg := range msgs {

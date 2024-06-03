@@ -436,8 +436,8 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
 		if ret.GetBaseRunner().State != nil {
 			if ret.GetBaseRunner().State.RunningInstance != nil {
-				operator := testingutils.TestingOperator(ks)
-				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, operator)
+				committeeMember := testingutils.TestingCommitteeMember(ks)
+				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, committeeMember)
 			}
 		}
 	}
@@ -460,13 +460,13 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 		if inst == nil {
 			continue
 		}
-		operator := testingutils.TestingOperator(ks)
-		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, operator)
+		committeeMember := testingutils.TestingCommitteeMember(ks)
+		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, committeeMember)
 	}
 	return newContr
 }
 
-func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Operator) *qbft.Instance {
+func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.CommitteeMember) *qbft.Instance {
 	newInst := qbft.NewInstance(
 		contr.GetConfig(),
 		share,

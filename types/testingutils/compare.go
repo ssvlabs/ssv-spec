@@ -22,7 +22,7 @@ func filterPartialSigs(messages []*types.SSVMessage) []*types.SSVMessage {
 	return ret
 }
 
-func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.CommitteeMember) {
+func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.Operator) {
 
 	require.NoError(t, VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
 
@@ -47,7 +47,7 @@ func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*typ
 }
 
 // Compare partial sig output messages without assuming any order between messages (asynchonous)
-func ComparePartialSignatureOutputMessagesInAsynchronousOrder(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.CommitteeMember) {
+func ComparePartialSignatureOutputMessagesInAsynchronousOrder(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.Operator) {
 
 	require.NoError(t, VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
 
@@ -138,7 +138,7 @@ func ComparePartialSignatureMessages(msg1 *types.PartialSignatureMessages, msg2 
 	return nil
 }
 
-func CompareSignedSSVMessageOutputMessages(t *testing.T, expectedMessages []*types.SignedSSVMessage, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.CommitteeMember) {
+func CompareSignedSSVMessageOutputMessages(t *testing.T, expectedMessages []*types.SignedSSVMessage, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.Operator) {
 
 	require.NoError(t, VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
 

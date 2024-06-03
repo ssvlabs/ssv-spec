@@ -4,10 +4,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"github.com/ssvlabs/ssv-spec/qbft"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/qbft"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
@@ -52,7 +53,7 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	network := &testingutils.TestingNetwork{}
 	beaconNetwork := &testingutils.TestingBeaconNode{}
-	var committee []*types.CommitteeMember
+	var committee []*types.Operator
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
 		var runnerInstance *ssv.CommitteeRunner
@@ -62,10 +63,10 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		}
 		network = runnerInstance.GetNetwork().(*testingutils.TestingNetwork)
 		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
-		committee = c.Operator.Committee
+		committee = c.CommitteeMember.Committee
 	default:
 		network = v.Network.(*testingutils.TestingNetwork)
-		committee = v.Operator.Committee
+		committee = v.CommitteeMember.Committee
 		beaconNetwork = test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
 	}
 
