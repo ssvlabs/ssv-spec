@@ -57,7 +57,7 @@ func lateCommitStateComparison() *comparable.StateComparison {
 	instance := &qbft.Instance{
 		StartValue: []byte{1, 2, 3, 4},
 		State: &qbft.State{
-			Share:                           testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			CommitteeMember:                 testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 			ID:                              testingutils.TestingIdentifier,
 			Round:                           qbft.FirstRound,
 			Height:                          qbft.FirstHeight,

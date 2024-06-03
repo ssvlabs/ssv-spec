@@ -53,8 +53,8 @@ func TestJson(t *testing.T) {
 				// a little trick we do to instantiate all the internal instance params
 				preByts, _ := typedTest.Pre.Encode()
 				pre := qbft.NewInstance(
-					testingutils.TestingConfig(testingutils.KeySetForCommitteeMember(typedTest.Pre.State.Share)),
-					typedTest.Pre.State.Share,
+					testingutils.TestingConfig(testingutils.KeySetForCommitteeMember(typedTest.Pre.State.CommitteeMember)),
+					typedTest.Pre.State.CommitteeMember,
 					typedTest.Pre.State.ID,
 					typedTest.Pre.State.Height,
 				)
@@ -105,8 +105,8 @@ func TestJson(t *testing.T) {
 				// a little trick we do to instantiate all the internal instance params
 				preByts, _ := typedTest.Pre.Encode()
 				pre := qbft.NewInstance(
-					testingutils.TestingConfig(testingutils.KeySetForCommitteeMember(typedTest.Pre.State.Share)),
-					typedTest.Pre.State.Share,
+					testingutils.TestingConfig(testingutils.KeySetForCommitteeMember(typedTest.Pre.State.CommitteeMember)),
+					typedTest.Pre.State.CommitteeMember,
 					typedTest.Pre.State.ID,
 					typedTest.Pre.State.Height,
 				)

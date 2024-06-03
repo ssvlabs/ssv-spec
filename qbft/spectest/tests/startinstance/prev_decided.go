@@ -51,10 +51,10 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 		instance := &qbft.Instance{
 			StartValue: []byte{1, 2, 3, 4},
 			State: &qbft.State{
-				Share:  testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
-				ID:     testingutils.TestingIdentifier,
-				Round:  qbft.FirstRound,
-				Height: qbft.Height(i),
+				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+				ID:              testingutils.TestingIdentifier,
+				Round:           qbft.FirstRound,
+				Height:          qbft.Height(i),
 			},
 		}
 

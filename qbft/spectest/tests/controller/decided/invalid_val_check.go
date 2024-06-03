@@ -66,11 +66,11 @@ func invalidValCheckDataStateComparison() *comparable.StateComparison {
 	instance := &qbft.Instance{
 		StartValue: []byte{1, 2, 3, 4},
 		State: &qbft.State{
-			Share:        testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
-			ID:           testingutils.TestingIdentifier,
-			Decided:      true,
-			DecidedValue: testingutils.TestingInvalidValueCheck,
-			Round:        qbft.FirstRound,
+			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ID:              testingutils.TestingIdentifier,
+			Decided:         true,
+			DecidedValue:    testingutils.TestingInvalidValueCheck,
+			Round:           qbft.FirstRound,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

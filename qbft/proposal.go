@@ -72,7 +72,7 @@ func isValidProposal(
 		return errors.New("msg allows 1 signer")
 	}
 
-	if !signedProposal.CheckSignersInCommittee(state.Share.Committee) {
+	if !signedProposal.CheckSignersInCommittee(state.CommitteeMember.Committee) {
 		return errors.New("signer not in committee")
 	}
 
@@ -145,7 +145,7 @@ func isProposalJustification(
 		}
 
 		// check there is a quorum
-		if !HasQuorum(state.Share, roundChangeMsgs) {
+		if !HasQuorum(state.CommitteeMember, roundChangeMsgs) {
 			return errors.New("change round has no quorum")
 		}
 
@@ -173,7 +173,7 @@ func isProposalJustification(
 		} else {
 
 			// check prepare quorum
-			if !HasQuorum(state.Share, prepareMsgs) {
+			if !HasQuorum(state.CommitteeMember, prepareMsgs) {
 				return errors.New("prepares has no quorum")
 			}
 
@@ -208,7 +208,7 @@ func isProposalJustification(
 					height,
 					rcMsg.DataRound,
 					rcMsg.Root,
-					state.Share.Committee,
+					state.CommitteeMember.Committee,
 				); err != nil {
 					return errors.New("signed prepare not valid")
 				}
@@ -262,5 +262,5 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		PrepareJustification:     preparesData,
 	}
 
-	return MessageToSignedSSVMessageWithFullData(msg, state.Share.OperatorID, config.GetOperatorSigner(), fullData)
+	return MessageToSignedSSVMessageWithFullData(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner(), fullData)
 }

@@ -39,7 +39,7 @@ func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingCommitteeMember(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -86,7 +86,7 @@ func quorum7OperatorsAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingCommitteeMember(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -195,10 +195,10 @@ func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateCompa
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				StartValue: cdBytes,
 				State: &qbft.State{
-					Share:  testingutils.TestingCommitteeMember(ks),
-					ID:     ret.GetBaseRunner().QBFTController.Identifier,
-					Round:  qbft.FirstRound,
-					Height: qbft.Height(testingutils.TestingDutySlotV(version)),
+					CommitteeMember: testingutils.TestingCommitteeMember(ks),
+					ID:              ret.GetBaseRunner().QBFTController.Identifier,
+					Round:           qbft.FirstRound,
+					Height:          qbft.Height(testingutils.TestingDutySlotV(version)),
 				},
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
@@ -239,10 +239,10 @@ func quorum7OperatorsBlindedProposerSC(version spec.DataVersion) *comparable.Sta
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				StartValue: cdBytes,
 				State: &qbft.State{
-					Share:  testingutils.TestingCommitteeMember(ks),
-					ID:     ret.GetBaseRunner().QBFTController.Identifier,
-					Round:  qbft.FirstRound,
-					Height: qbft.Height(testingutils.TestingDutySlotV(version)),
+					CommitteeMember: testingutils.TestingCommitteeMember(ks),
+					ID:              ret.GetBaseRunner().QBFTController.Identifier,
+					Round:           qbft.FirstRound,
+					Height:          qbft.Height(testingutils.TestingDutySlotV(version)),
 				},
 			}
 			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})

@@ -49,9 +49,9 @@ func roundChangePartialQuorumStateComparison() *comparable.StateComparison {
 
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
-			ID:    testingutils.TestingIdentifier,
-			Round: 2,
+			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ID:              testingutils.TestingIdentifier,
+			Round:           2,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

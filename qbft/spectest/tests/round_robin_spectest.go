@@ -20,9 +20,9 @@ func (test *RoundRobinSpecTest) Run(t *testing.T) {
 	for i, h := range test.Heights {
 		r := test.Rounds[i]
 		s := &qbft.State{
-			Height: h,
-			Round:  r,
-			Share:  test.Share,
+			Height:          h,
+			Round:           r,
+			CommitteeMember: test.Share,
 		}
 
 		require.EqualValues(t, test.Proposers[i], qbft.RoundRobinProposer(s, r))
