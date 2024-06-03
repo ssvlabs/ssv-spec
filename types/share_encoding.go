@@ -26,7 +26,7 @@ func (s *Share) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Field (2) 'SharePubKey'
 	if size := len(s.SharePubKey); size != 48 {
-		err = ssz.ErrBytesLengthFn("Share.SharePubKey", size, 48)
+		err = ssz.ErrBytesLengthFn("CommitteeMember.SharePubKey", size, 48)
 		return
 	}
 	dst = append(dst, s.SharePubKey...)
@@ -43,14 +43,14 @@ func (s *Share) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Field (6) 'Graffiti'
 	if size := len(s.Graffiti); size != 32 {
-		err = ssz.ErrBytesLengthFn("Share.Graffiti", size, 32)
+		err = ssz.ErrBytesLengthFn("CommitteeMember.Graffiti", size, 32)
 		return
 	}
 	dst = append(dst, s.Graffiti...)
 
 	// Field (3) 'Committee'
 	if size := len(s.Committee); size > 13 {
-		err = ssz.ErrListTooBigFn("Share.Committee", size, 13)
+		err = ssz.ErrListTooBigFn("CommitteeMember.Committee", size, 13)
 		return
 	}
 	for ii := 0; ii < len(s.Committee); ii++ {
@@ -153,7 +153,7 @@ func (s *Share) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 
 	// Field (2) 'SharePubKey'
 	if size := len(s.SharePubKey); size != 48 {
-		err = ssz.ErrBytesLengthFn("Share.SharePubKey", size, 48)
+		err = ssz.ErrBytesLengthFn("CommitteeMember.SharePubKey", size, 48)
 		return
 	}
 	hh.PutBytes(s.SharePubKey)
@@ -182,7 +182,7 @@ func (s *Share) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 
 	// Field (6) 'Graffiti'
 	if size := len(s.Graffiti); size != 32 {
-		err = ssz.ErrBytesLengthFn("Share.Graffiti", size, 32)
+		err = ssz.ErrBytesLengthFn("CommitteeMember.Graffiti", size, 32)
 		return
 	}
 	hh.PutBytes(s.Graffiti)

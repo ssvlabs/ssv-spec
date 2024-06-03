@@ -57,10 +57,10 @@ func TestState_Decoding(t *testing.T) {
 	require.NoError(t, decodedState.Decode(byts))
 
 	require.EqualValues(t, 1, decodedState.Share.OperatorID)
-	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.ValidatorPubKey)
-	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.Share.Committee[0].SharePubKey)
+	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.CommitteeMember.ValidatorPubKey)
+	//require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.CommitteeMember.Committee[0].SharePubKey)
 	require.EqualValues(t, 1, decodedState.Share.Committee[0].OperatorID)
-	//require.EqualValues(t, testingutils.TestingSSVDomainType, decodedState.Share.DomainType)
+	//require.EqualValues(t, testingutils.TestingSSVDomainType, decodedState.CommitteeMember.DomainType)
 
 	require.EqualValues(t, 3, decodedState.LastPreparedRound)
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.LastPreparedValue)

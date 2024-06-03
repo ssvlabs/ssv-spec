@@ -181,7 +181,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 		lastErr = err
 	}
 
-	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.Share.Committee)
+	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.CommitteeMember.Committee)
 
 	// test root
 	r, err := contr.GetRoot()

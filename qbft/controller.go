@@ -17,15 +17,15 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	Share           *types.CommitteeMember
+	CommitteeMember *types.CommitteeMember
 	config          IConfig
 }
 
-func NewController(identifier []byte, share *types.CommitteeMember, config IConfig) *Controller {
+func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig) *Controller {
 	return &Controller{
 		Identifier:      identifier,
 		Height:          FirstHeight,
-		Share:           share,
+		CommitteeMember: committeeMember,
 		StoredInstances: InstanceContainer{},
 		config:          config,
 	}
@@ -69,7 +69,7 @@ func (c *Controller) ProcessMsg(msg *types.SignedSSVMessage) (*types.SignedSSVMe
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	isDecided, err := IsDecidedMsg(c.Share, msg)
+	isDecided, err := IsDecidedMsg(c.CommitteeMember, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func (c *Controller) isFutureMessage(signedMsg *types.SignedSSVMessage) (bool, e
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
+	i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, c.Height)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }

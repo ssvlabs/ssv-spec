@@ -216,7 +216,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	}
 
 	shareInstance := &types.Share{}
-	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
+	for _, share := range baseRunnerMap["CommitteeMember"].(map[string]interface{}) {
 		shareBytes, err := json.Marshal(share)
 		if err != nil {
 			panic(err)
@@ -298,7 +298,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	}
 
 	shareInstance := &types.Share{}
-	for _, share := range baseRunnerMap["Share"].(map[string]interface{}) {
+	for _, share := range baseRunnerMap["CommitteeMember"].(map[string]interface{}) {
 		shareBytes, err := json.Marshal(share)
 		if err != nil {
 			panic(err)
@@ -451,7 +451,7 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 	config.ValueCheckF = runner.GetValCheckF()
 	newContr := qbft.NewController(
 		contr.Identifier,
-		contr.Share,
+		contr.CommitteeMember,
 		config,
 	)
 	newContr.Height = contr.Height

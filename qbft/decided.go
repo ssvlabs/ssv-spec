@@ -12,7 +12,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 	if err := ValidateDecided(
 		c.config,
 		signedMsg,
-		c.Share,
+		c.CommitteeMember,
 	); err != nil {
 		return nil, errors.Wrap(err, "invalid decided msg")
 	}
@@ -28,7 +28,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 	isFutureDecided := msg.Height > c.Height
 
 	if inst == nil {
-		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Height)
+		i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, msg.Height)
 		i.State.Round = msg.Round
 		i.State.Decided = true
 		i.State.DecidedValue = signedMsg.FullData
