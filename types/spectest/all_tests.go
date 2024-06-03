@@ -3,6 +3,8 @@ package spectest
 import (
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
+
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 
@@ -39,16 +41,11 @@ var AllTests = []SpecTest{
 	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
-	// //share.HasQuorum(),
-	// //share.QuorumWithDuplicate(),
-	// //share.HasQuorum3f1(),
-	// //share.NoQuorum(),
-	// //share.NoQuorumDuplicate(),
-	// //share.HasPartialQuorum(),
-	// //share.PartialQuorumWithDuplicate(),
-	// //share.HasPartialQuorum2f1(),
-	// //share.NoPartialQuorum(),
-	// //share.NoPartialQuorumDuplicate(),
+
+	committeemember.HasQuorum(),
+	committeemember.HasQuorum3f1(),
+	committeemember.NoQuorumDuplicate(),
+	committeemember.QuorumWithDuplicate(),
 
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
@@ -96,11 +93,6 @@ var AllTests = []SpecTest{
 	signedssvmsg.NilSSVMessage(),
 	signedssvmsg.EmptySignature(),
 	signedssvmsg.ZeroSigner(),
-
-	share.HasQuorum(),
-	share.HasQuorum3f1(),
-	share.NoQuorumDuplicate(),
-	share.QuorumWithDuplicate(),
 
 	duty.MapAttester(),
 	duty.MapProposer(),

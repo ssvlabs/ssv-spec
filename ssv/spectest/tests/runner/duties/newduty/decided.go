@@ -39,6 +39,7 @@ func PostDecided() tests.SpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  decidedRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -49,6 +50,7 @@ func PostDecided() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  decidedRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: postDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     postDecidedAggregatorSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -59,6 +61,7 @@ func PostDecided() tests.SpecTest {
 				Name:                    "attester",
 				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -67,6 +70,7 @@ func PostDecided() tests.SpecTest {
 				Name:                    "sync committee",
 				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -75,6 +79,7 @@ func PostDecided() tests.SpecTest {
 				Name:                    "attester and sync committee",
 				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: postDecidedCommitteeSC().Root(),
 				PostDutyRunnerState:     postDecidedCommitteeSC().ExpectedState,
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -88,6 +93,7 @@ func PostDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  decidedRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
@@ -102,6 +108,7 @@ func PostDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  decidedRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{

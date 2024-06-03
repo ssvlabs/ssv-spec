@@ -235,6 +235,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		Name:                    m["Name"].(string),
 		Duty:                    testDuty,
 		Runner:                  runner,
+		Threshold:               ks.Threshold,
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		ExpectedError:           m["ExpectedError"].(string),
 		OutputMessages:          outputMsgs,

@@ -47,7 +47,7 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
 	c.Runners[duty.Slot] = c.CreateRunnerFn(c.Share)
-	return c.Runners[duty.Slot].StartNewDuty(duty)
+	return c.Runners[duty.Slot].StartNewDuty(duty, c.CommitteeMember.GetQuorum())
 }
 
 // ProcessMessage processes Network Message of all types

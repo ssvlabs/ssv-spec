@@ -60,7 +60,6 @@ var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *type
 		ValidatorPubKey:     pkBytesArray,
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
 		Committee:           keysSet.Committee(),
-		Quorum:              keysSet.Threshold,
 		DomainType:          TestingSSVDomainType,
 		FeeRecipientAddress: TestingFeeRecipient,
 		Graffiti:            TestingGraffiti[:],
@@ -98,8 +97,7 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 		OperatorID:        1,
 		CommitteeID:       types.GetCommitteeID(opIds),
 		SSVOperatorPubKey: operatorPubKeyBytes,
-		Quorum:            keysSet.Threshold,
-		PartialQuorum:     keysSet.PartialThreshold,
+		FaultyNodes:       (keysSet.Threshold - 1) / 2,
 		Committee:         operators,
 	}
 }

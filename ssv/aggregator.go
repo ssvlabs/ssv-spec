@@ -50,8 +50,8 @@ func NewAggregatorRunner(
 	}
 }
 
-func (r *AggregatorRunner) StartNewDuty(duty types.Duty) error {
-	return r.BaseRunner.baseStartNewDuty(r, duty)
+func (r *AggregatorRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
+	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)

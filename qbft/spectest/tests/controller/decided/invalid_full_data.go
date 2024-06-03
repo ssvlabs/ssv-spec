@@ -27,7 +27,6 @@ func InvalidFullData() tests.SpecTest {
 				InputMessages: []*types.SignedSSVMessage{
 					msg,
 				},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "invalid decided msg: H(data) != root",

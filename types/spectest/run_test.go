@@ -9,6 +9,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
+
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 
@@ -128,6 +130,12 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &share.ShareTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&committeemember.CommitteeMemberTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &committeemember.CommitteeMemberTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&ssvmsg.SSVMessageTest{}).String():

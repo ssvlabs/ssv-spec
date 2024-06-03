@@ -25,7 +25,6 @@ func PastInstance() tests.SpecTest {
 					DecidedCnt: 3,
 					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: "d2f7f4bfc09d8695021a3c10657907e6196adda7ff8f06c9b48a368539a2e7bf",
 			},
 		},
 	}

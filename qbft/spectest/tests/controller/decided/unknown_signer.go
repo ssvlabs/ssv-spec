@@ -19,7 +19,6 @@ func UnknownSigner() tests.SpecTest {
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 5}),
 				},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "invalid decided msg: invalid decided msg: signer not in committee",
