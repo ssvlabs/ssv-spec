@@ -70,7 +70,7 @@ func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *types.
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingOperator(testingutils.Testing4SharesSet()),
+		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
 	)
 
@@ -81,10 +81,10 @@ func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *types.
 		instance := &qbft.Instance{
 			StartValue: []byte{1, 2, 3, 4},
 			State: &qbft.State{
-				Share:  testingutils.TestingOperator(testingutils.Testing4SharesSet()),
-				ID:     testingutils.TestingIdentifier,
-				Round:  qbft.FirstRound,
-				Height: qbft.Height(i),
+				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+				ID:              testingutils.TestingIdentifier,
+				Round:           qbft.FirstRound,
+				Height:          qbft.Height(i),
 			},
 		}
 

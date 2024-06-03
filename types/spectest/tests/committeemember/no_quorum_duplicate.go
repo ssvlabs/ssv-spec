@@ -1,4 +1,4 @@
-package operator
+package committeemember
 
 import (
 	"crypto/rsa"
@@ -8,16 +8,16 @@ import (
 )
 
 // NoQuorumDuplicate tests msg with < unique 2f+1 signers (but 2f+1 signers including duplicates)
-func NoQuorumDuplicate() *OperatorTest {
+func NoQuorumDuplicate() *CommitteeMemberTest {
 	ks := testingutils.Testing4SharesSet()
-	operator := testingutils.TestingOperator(ks)
+	committeeMember := testingutils.TestingCommitteeMember(ks)
 
 	msg := testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[3], ks.OperatorKeys[2]}, []types.OperatorID{1, 3, 2})
 	msg.OperatorIDs = []types.OperatorID{1, 1, 2}
 
-	return &OperatorTest{
+	return &CommitteeMemberTest{
 		Name:                  "no quorum duplicate",
-		Operator:              *operator,
+		CommitteeMember:       *committeeMember,
 		Message:               *msg,
 		ExpectedHasQuorum:     false,
 		ExpectedFullCommittee: false,

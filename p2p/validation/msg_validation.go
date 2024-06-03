@@ -62,12 +62,12 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	isDecided, err := qbft.IsDecidedMsg(contr.Share, signedMsg)
+	isDecided, err := qbft.IsDecidedMsg(contr.CommitteeMember, signedMsg)
 	if err != nil {
 		return err
 	}
 	if isDecided {
-		return qbft.ValidateDecided(contr.GetConfig(), signedMsg, contr.Share)
+		return qbft.ValidateDecided(contr.GetConfig(), signedMsg, contr.CommitteeMember)
 	}
 
 	msg, err := qbft.DecodeMessage(signedMsg.SSVMessage.Data)
@@ -76,7 +76,7 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 	}
 
 	if msg.Height > contr.Height {
-		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.Share)
+		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.CommitteeMember)
 	}
 
 	if inst := contr.StoredInstances.FindInstance(msg.Height); inst != nil {
@@ -100,7 +100,7 @@ func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
 func validateFutureMsg(
 	config qbft.IConfig,
 	msg *types.SignedSSVMessage,
-	operator *types.Operator,
+	committeeMember *types.CommitteeMember,
 ) error {
 	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
@@ -111,7 +111,7 @@ func validateFutureMsg(
 	}
 
 	// verify signature
-	if err := config.GetSignatureVerifier().Verify(msg, operator.Committee); err != nil {
+	if err := config.GetSignatureVerifier().Verify(msg, committeeMember.Committee); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 

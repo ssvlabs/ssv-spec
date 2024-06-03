@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"bytes"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -84,8 +85,8 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 	net := NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
 
 	km := NewTestingKeyManager()
-	operator := TestingOperator(keySetInstance)
-	opSigner := NewTestingOperatorSigner(keySetInstance, operator.OperatorID)
+	committeeMember := TestingCommitteeMember(keySetInstance)
+	opSigner := NewTestingOperatorSigner(keySetInstance, committeeMember.OperatorID)
 
 	config := TestingConfig(keySetInstance)
 	config.ValueCheckF = valCheck
@@ -98,7 +99,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 
 	contr := qbft.NewController(
 		identifier[:],
-		operator,
+		committeeMember,
 		config,
 	)
 
@@ -205,8 +206,8 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
-	operator := TestingOperator(keySet)
-	opSigner := NewTestingOperatorSigner(keySet, operator.OperatorID)
+	committeeMember := TestingCommitteeMember(keySet)
+	opSigner := NewTestingOperatorSigner(keySet, committeeMember.OperatorID)
 
 	config := TestingConfig(keySet)
 	config.ValueCheckF = valCheck
@@ -219,7 +220,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 
 	contr := qbft.NewController(
 		identifier[:],
-		operator,
+		committeeMember,
 		config,
 	)
 

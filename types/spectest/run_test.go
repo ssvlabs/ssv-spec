@@ -3,12 +3,13 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/operator"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
@@ -131,10 +132,10 @@ func TestJson(t *testing.T) {
 				typedTest := &share.ShareTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
-			case reflect.TypeOf(&operator.OperatorTest{}).String():
+			case reflect.TypeOf(&committeemember.CommitteeMemberTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
-				typedTest := &operator.OperatorTest{}
+				typedTest := &committeemember.CommitteeMemberTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&ssvmsg.SSVMessageTest{}).String():

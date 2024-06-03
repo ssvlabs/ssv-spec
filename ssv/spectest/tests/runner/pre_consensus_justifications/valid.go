@@ -13,7 +13,7 @@ import (
 var decideFirstHeight = func(r ssv.Runner) ssv.Runner {
 	i := qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
-		r.GetBaseRunner().QBFTController.Share,
+		r.GetBaseRunner().QBFTController.CommitteeMember,
 		r.GetBaseRunner().QBFTController.Identifier,
 		qbft.FirstHeight)
 	i.State.DecidedValue = []byte{1, 2, 3, 4}

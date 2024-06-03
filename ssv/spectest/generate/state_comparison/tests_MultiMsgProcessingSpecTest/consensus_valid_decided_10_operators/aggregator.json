@@ -23,9 +23,9 @@
 						},
 						"RunningInstance": {
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														39,
 														43,
 														195,
@@ -1418,9 +1418,9 @@
 						"StoredInstances": [
 								{
 										"State": {
-												"Share": {
+												"CommitteeMember": {
 														"OperatorID": 1,
-														"ClusterID": [
+														"CommitteeID": [
 																39,
 																43,
 																195,
@@ -2667,9 +2667,9 @@
 										"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
 								}
 						],
-						"Share": {
+						"CommitteeMember": {
 								"OperatorID": 1,
-								"ClusterID": [
+								"CommitteeID": [
 										39,
 										43,
 										195,

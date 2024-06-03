@@ -3,9 +3,9 @@
 				"Identifier": "AQIDBA==",
 				"Height": 0,
 				"StoredInstances": [],
-				"Share": {
+				"CommitteeMember": {
 						"OperatorID": 1,
-						"ClusterID": [
+						"CommitteeID": [
 								207,
 								151,
 								173,

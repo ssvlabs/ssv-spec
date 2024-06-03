@@ -40,7 +40,7 @@ func invalidThenQuorumSyncCommitteeContributionSC() *comparable.StateComparison 
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -86,7 +86,7 @@ func invalidThenQuorumAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -132,7 +132,7 @@ func invalidThenQuorumProposerSC(version spec.DataVersion) *comparable.StateComp
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -178,7 +178,7 @@ func invalidThenQuorumBlindedProposerSC(version spec.DataVersion) *comparable.St
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,

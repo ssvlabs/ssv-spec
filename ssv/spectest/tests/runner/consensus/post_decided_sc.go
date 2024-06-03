@@ -36,7 +36,7 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -89,7 +89,7 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            testingutils.TestingDutySlot,
@@ -142,7 +142,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
@@ -196,7 +196,7 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingOperator(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),

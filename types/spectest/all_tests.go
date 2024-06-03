@@ -1,8 +1,9 @@
 package spectest
 
 import (
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/operator"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
@@ -41,10 +42,10 @@ var AllTests = []SpecTest{
 
 	share.Encoding(),
 
-	operator.HasQuorum(),
-	operator.HasQuorum3f1(),
-	operator.NoQuorumDuplicate(),
-	operator.QuorumWithDuplicate(),
+	committeemember.HasQuorum(),
+	committeemember.HasQuorum3f1(),
+	committeemember.NoQuorumDuplicate(),
+	committeemember.QuorumWithDuplicate(),
 
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),

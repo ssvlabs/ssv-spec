@@ -1,7 +1,7 @@
 {
-		"Share": {
+		"CommitteeMember": {
 				"OperatorID": 1,
-				"ClusterID": [
+				"CommitteeID": [
 						39,
 						43,
 						195,

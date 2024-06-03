@@ -17,9 +17,9 @@
 						},
 						"RunningInstance": {
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														76,
 														129,
 														105,
@@ -249,9 +249,9 @@
 						"StoredInstances": [
 								{
 										"State": {
-												"Share": {
+												"CommitteeMember": {
 														"OperatorID": 1,
-														"ClusterID": [
+														"CommitteeID": [
 																76,
 																129,
 																105,
@@ -342,9 +342,9 @@
 										"StartValue": null
 								}
 						],
-						"Share": {
+						"CommitteeMember": {
 								"OperatorID": 1,
-								"ClusterID": [
+								"CommitteeID": [
 										76,
 										129,
 										105,

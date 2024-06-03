@@ -75,8 +75,8 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share: testingutils.TestingOperator(ks),
-		ID:    []byte{1, 2, 3, 4},
+		CommitteeMember: testingutils.TestingCommitteeMember(ks),
+		ID:              []byte{1, 2, 3, 4},
 	}
 	config := testingutils.TestingConfig(ks)
 
@@ -86,8 +86,8 @@ func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share: testingutils.TestingOperator(ks),
-		ID:    []byte{1, 2, 3, 4},
+		CommitteeMember: testingutils.TestingCommitteeMember(ks),
+		ID:              []byte{1, 2, 3, 4},
 	}
 	config := testingutils.TestingConfig(ks)
 
@@ -97,8 +97,8 @@ func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) 
 func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share: testingutils.TestingOperator(ks),
-		ID:    []byte{1, 2, 3, 4},
+		CommitteeMember: testingutils.TestingCommitteeMember(ks),
+		ID:              []byte{1, 2, 3, 4},
 	}
 	config := testingutils.TestingConfig(ks)
 
@@ -108,7 +108,7 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share:            testingutils.TestingOperator(ks),
+		CommitteeMember:  testingutils.TestingCommitteeMember(ks),
 		ID:               []byte{1, 2, 3, 4},
 		PrepareContainer: qbft.NewMsgContainer(),
 	}
