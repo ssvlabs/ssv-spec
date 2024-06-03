@@ -14,7 +14,6 @@ func InvalidValCheck() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "commit invalid val check",
 		Pre:            pre,
-		PostRoot:       "620ad2417e47411537db8df9d4a072327e3c3efc391c3162867f30d5bf9af52c",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 	}

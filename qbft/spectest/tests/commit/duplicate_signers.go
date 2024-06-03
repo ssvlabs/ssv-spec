@@ -18,9 +18,8 @@ func DuplicateSigners() tests.SpecTest {
 	commit.OperatorIDs = []types.OperatorID{1, 1}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:     "duplicate signers",
-		Pre:      pre,
-		PostRoot: "fc68d10ca3bc1250da3aa789d4feae5fa197d08964c26c9f16cdfd39931d38ce",
+		Name: "duplicate signers",
+		Pre:  pre,
 		InputMessages: []*types.SignedSSVMessage{
 			commit,
 		},

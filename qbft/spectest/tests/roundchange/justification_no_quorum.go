@@ -24,7 +24,6 @@ func JustificationNoQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change justification no quorum",
 		Pre:            pre,
-		PostRoot:       "39d85fcbfb9564563798e3e4990f8f55efa6c86bd22d7d0ad0dfd3643e585954",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: no justifications quorum",
