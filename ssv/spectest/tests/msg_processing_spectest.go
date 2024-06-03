@@ -109,7 +109,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	var lastErr error
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
-		c = testingutils.BaseCommitteeWithRunnerSample(ketSetMap, test.Runner.(*ssv.CommitteeRunner))
+		c = testingutils.BaseCommitteeWithRunner(ketSetMap, test.Runner.(*ssv.CommitteeRunner))
 
 		if !test.DontStartDuty {
 			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))
