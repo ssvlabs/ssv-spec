@@ -14,7 +14,7 @@ type CommitteeMember struct {
 	Committee []*Operator `ssz-max:"13"`
 }
 
-// Operator represents all data in order to verify a committee member's identity
+// Operator represents a node in the network that holds an ID and a public key
 type Operator struct {
 	OperatorID        OperatorID
 	SSVOperatorPubKey []byte `ssz-size:"294"`
