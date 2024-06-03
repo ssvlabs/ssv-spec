@@ -24,7 +24,6 @@ func WrongMsgType() tests.SpecTest {
 						qbft.FirstHeight,
 					),
 				},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: msg allows 1 signer",

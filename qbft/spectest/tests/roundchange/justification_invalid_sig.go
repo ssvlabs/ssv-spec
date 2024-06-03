@@ -25,7 +25,6 @@ func JustificationInvalidSig() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "justification invalid sig",
 		Pre:            pre,
-		PostRoot:       "39d85fcbfb9564563798e3e4990f8f55efa6c86bd22d7d0ad0dfd3643e585954",
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: round change justification invalid: msg signature invalid: crypto/rsa: verification error",

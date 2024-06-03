@@ -326,7 +326,7 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	v := BaseValidator(keySet)
 	msgs := SSVDecidingMsgsForHeight(consensusInput, AttesterMsgID, height, keySet)
 
-	if err := v.DutyRunners[types.RoleCommittee].StartNewDuty(&consensusInput.Duty); err != nil {
+	if err := v.DutyRunners[types.RoleCommittee].StartNewDuty(&consensusInput.Duty, keySet.Threshold); err != nil {
 		panic(err.Error())
 	}
 	for _, msg := range msgs {

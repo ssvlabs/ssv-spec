@@ -31,7 +31,6 @@ func InvalidIdentifier() tests.SpecTest {
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: nil,
 				},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "invalid msg: message doesn't belong to Identifier",

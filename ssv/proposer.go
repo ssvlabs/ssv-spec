@@ -50,8 +50,8 @@ func NewProposerRunner(
 	}
 }
 
-func (r *ProposerRunner) StartNewDuty(duty types.Duty) error {
-	return r.BaseRunner.baseStartNewDuty(r, duty)
+func (r *ProposerRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
+	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -82,7 +82,6 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 	}
 
 	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
-
 
 	// get block data
 	obj, ver, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)

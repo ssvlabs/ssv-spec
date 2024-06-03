@@ -23,7 +23,6 @@ func Valid() tests.SpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: "f552f5aedb2e0d7933e77c4297c69e761000e88f78ae02e0afd4d053847b8d5c",
 			},
 		},
 	}

@@ -49,7 +49,7 @@ func (v *Validator) StartDuty(duty types.Duty) error {
 	if dutyRunner == nil {
 		return errors.Errorf("duty type %s not supported", role.String())
 	}
-	return dutyRunner.StartNewDuty(duty)
+	return dutyRunner.StartNewDuty(duty, v.Operator.GetQuorum())
 }
 
 // ProcessMessage processes Network Message of all types

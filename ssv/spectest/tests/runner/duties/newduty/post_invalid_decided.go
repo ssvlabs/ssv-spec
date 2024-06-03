@@ -61,6 +61,7 @@ func PostInvalidDecided() tests.SpecTest {
 				Runner: decideWrong(testingutils.SyncCommitteeContributionRunner(ks),
 					&testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "4112802181d740f78b68b0c67e4220e689af2ac1011a51d0f4c10c4df315fac5",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -71,6 +72,7 @@ func PostInvalidDecided() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "b0ec12e65623dd1a95203d4a0a753bb6758f6bed3141a467bb7955530ae35ded",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
@@ -80,6 +82,7 @@ func PostInvalidDecided() tests.SpecTest {
 				Name:                    "proposer",
 				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
 				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
@@ -90,6 +93,7 @@ func PostInvalidDecided() tests.SpecTest {
 				Name:                    "attester",
 				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
@@ -97,6 +101,7 @@ func PostInvalidDecided() tests.SpecTest {
 				Name:                    "sync committee",
 				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
@@ -104,6 +109,7 @@ func PostInvalidDecided() tests.SpecTest {
 				Name:                    "attester and sync committee",
 				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},

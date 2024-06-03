@@ -25,7 +25,6 @@ func PostFutureDecided() tests.SpecTest {
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 				},
-				ControllerPostRoot: "589b0c0352f1c22875246f2e66530d5fda62f646434b250ade128c61c16f47bd",
 			},
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -33,8 +32,6 @@ func PostFutureDecided() tests.SpecTest {
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 0,
 				},
-
-				ControllerPostRoot: "589b0c0352f1c22875246f2e66530d5fda62f646434b250ade128c61c16f47bd",
 			},
 		},
 		ExpectedError: "attempting to start an instance with a past height",

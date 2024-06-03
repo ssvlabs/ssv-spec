@@ -23,6 +23,7 @@ type StartNewRunnerDutySpecTest struct {
 	Name                    string
 	Runner                  ssv.Runner
 	Duty                    types.Duty
+	Threshold               uint64
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages          []*types.PartialSignatureMessages
@@ -112,7 +113,7 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 // runPreTesting runs the spec logic before testing the output
 // It simply starts a new duty
 func (test *StartNewRunnerDutySpecTest) runPreTesting() error {
-	err := test.Runner.StartNewDuty(test.Duty)
+	err := test.Runner.StartNewDuty(test.Duty, test.Threshold)
 	return err
 }
 

@@ -99,8 +99,7 @@
 																		114
 																],
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-																"Quorum": 3,
-																"PartialQuorum": 2,
+																"FaultyNodes": 1,
 																"Committee": [
 																		{
 																				"OperatorID": 1,
@@ -903,7 +902,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1005,7 +1003,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1107,7 +1104,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1209,7 +1205,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1311,7 +1306,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1413,7 +1407,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1515,7 +1508,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1617,7 +1609,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1692,8 +1683,7 @@
 																				114
 																		],
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-																		"Quorum": 3,
-																		"PartialQuorum": 2,
+																		"FaultyNodes": 1,
 																		"Committee": [
 																				{
 																						"OperatorID": 1,
@@ -2350,8 +2340,7 @@
 														114
 												],
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-												"Quorum": 3,
-												"PartialQuorum": 2,
+												"FaultyNodes": 1,
 												"Committee": [
 														{
 																"OperatorID": 1,
@@ -2476,8 +2465,7 @@
 																		114
 																],
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-																"Quorum": 3,
-																"PartialQuorum": 2,
+																"FaultyNodes": 1,
 																"Committee": [
 																		{
 																				"OperatorID": 1,
@@ -3280,7 +3268,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3382,7 +3369,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3484,7 +3470,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3586,7 +3571,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3688,7 +3672,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3790,7 +3773,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3892,7 +3874,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3994,7 +3975,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -4069,8 +4049,7 @@
 																				114
 																		],
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-																		"Quorum": 3,
-																		"PartialQuorum": 2,
+																		"FaultyNodes": 1,
 																		"Committee": [
 																				{
 																						"OperatorID": 1,
@@ -4727,8 +4706,7 @@
 														114
 												],
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-												"Quorum": 3,
-												"PartialQuorum": 2,
+												"FaultyNodes": 1,
 												"Committee": [
 														{
 																"OperatorID": 1,
@@ -4792,8 +4770,7 @@
 						114
 				],
 				"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-				"Quorum": 3,
-				"PartialQuorum": 2,
+				"FaultyNodes": 1,
 				"Committee": [
 						{
 								"OperatorID": 1,
@@ -4885,7 +4862,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -4987,7 +4963,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -5089,7 +5064,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -5191,7 +5165,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -5293,7 +5266,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -5395,7 +5367,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -5497,7 +5468,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -5599,7 +5569,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,

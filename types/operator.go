@@ -8,8 +8,8 @@ type Operator struct {
 	OperatorID        OperatorID
 	ClusterID         CommitteeID `ssz-size:"32"`
 	SSVOperatorPubKey []byte      `ssz-size:"294"`
-	// TODO: change with one parameter F
-	Quorum, PartialQuorum uint64
+	// FaultyNodes is the number of nodes that are considered faulty or malicious in the operator's committee
+	FaultyNodes uint64
 	// All the members of the committee
 	Committee []*CommitteeMember `ssz-max:"13"`
 }
@@ -23,13 +23,17 @@ type CommitteeMember struct {
 // HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure
 // https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L259
 func (operator *Operator) HasQuorum(cnt int) bool {
-	return uint64(cnt) >= operator.Quorum
+	return uint64(cnt) >= operator.GetQuorum()
+}
+
+func (operator *Operator) GetQuorum() uint64 {
+	return 2*operator.FaultyNodes + 1
 }
 
 // HasPartialQuorum returns true if at least f+1 items present (cnt is the number of items). It assumes nothing about those items, not their type or structure.
 // https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L244
 func (operator *Operator) HasPartialQuorum(cnt int) bool {
-	return uint64(cnt) >= operator.PartialQuorum
+	return uint64(cnt) >= operator.FaultyNodes+1
 }
 
 func (operator *Operator) Encode() ([]byte, error) {

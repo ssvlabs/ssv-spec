@@ -44,12 +44,5 @@ func (test *ShareTest) Run(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	// Get unique signers
-	numSigners := test.GetUniqueMessageSignersCount()
-
-	// Test expected thresholds results
-	require.Equal(t, test.ExpectedHasQuorum, test.Share.HasQuorum(numSigners))
-	require.Equal(t, test.ExpectedFullCommittee, (len(test.Share.Committee) == numSigners))
-
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
