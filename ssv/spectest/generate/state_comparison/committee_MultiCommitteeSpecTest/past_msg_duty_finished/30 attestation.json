@@ -226,7 +226,7 @@
 												"State": {
 														"Share": {
 																"OperatorID": 1,
-																"ClusterID": [
+																"CommitteeID": [
 																		207,
 																		151,
 																		173,
@@ -4289,7 +4289,7 @@
 														"State": {
 																"Share": {
 																		"OperatorID": 1,
-																		"ClusterID": [
+																		"CommitteeID": [
 																				207,
 																				151,
 																				173,
@@ -4947,7 +4947,7 @@
 										],
 										"Share": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														207,
 														151,
 														173,
@@ -5024,7 +5024,7 @@
 												"State": {
 														"Share": {
 																"OperatorID": 1,
-																"ClusterID": [
+																"CommitteeID": [
 																		207,
 																		151,
 																		173,
@@ -8511,7 +8511,7 @@
 														"State": {
 																"Share": {
 																		"OperatorID": 1,
-																		"ClusterID": [
+																		"CommitteeID": [
 																				207,
 																				151,
 																				173,
@@ -8593,7 +8593,7 @@
 										],
 										"Share": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														207,
 														151,
 														173,
@@ -8656,9 +8656,9 @@
 						}
 				}
 		},
-		"Operator": {
+		"CommitteeMember": {
 				"OperatorID": 1,
-				"ClusterID": [
+				"CommitteeID": [
 						207,
 						151,
 						173,
