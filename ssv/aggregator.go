@@ -261,7 +261,7 @@ func (r *AggregatorRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *AggregatorRunner) GetShare() *types.Share {
-	// TODO better solution for this
+	// there is only 1 share
 	for _, share := range r.BaseRunner.Share {
 		return share
 	}

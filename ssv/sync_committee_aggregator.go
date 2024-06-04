@@ -374,7 +374,7 @@ func (r *SyncCommitteeAggregatorRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetShare() *types.Share {
-	// TODO better solution for this
+	// there is only one share
 	for _, share := range r.BaseRunner.Share {
 		return share
 	}
