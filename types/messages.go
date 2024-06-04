@@ -56,7 +56,7 @@ func NewMsgID(domain DomainType, pk []byte, role RunnerRole) MessageID {
 	roleByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 
-	return newMessageID(domain[:], pk, roleByts)
+	return newMessageID(domain[:], roleByts, pk)
 }
 
 func (msgID MessageID) String() string {
@@ -67,14 +67,10 @@ func MessageIDFromBytes(mid []byte) MessageID {
 	if len(mid) < domainSize+dutyExecutorIDSize+roleTypeSize {
 		return MessageID{}
 	}
-	return newMessageID(
-		mid[domainStartPos:domainStartPos+domainSize],
-		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
-		mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize],
-	)
+	return newMessageID(mid[domainStartPos:domainStartPos+domainSize], mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize], mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize])
 }
 
-func newMessageID(domain, dutyExecutorID, roleByts []byte) MessageID {
+func newMessageID(domain, roleByts, dutyExecutorID []byte) MessageID {
 	mid := MessageID{}
 	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
 	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
