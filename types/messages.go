@@ -63,13 +63,6 @@ func (msgID MessageID) String() string {
 	return hex.EncodeToString(msgID[:])
 }
 
-func MessageIDFromBytes(mid []byte) MessageID {
-	if len(mid) < domainSize+dutyExecutorIDSize+roleTypeSize {
-		return MessageID{}
-	}
-	return newMessageID(mid[domainStartPos:domainStartPos+domainSize], mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize], mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize])
-}
-
 func newMessageID(domain, roleByts, dutyExecutorID []byte) MessageID {
 	mid := MessageID{}
 	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
