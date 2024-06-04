@@ -69,8 +69,8 @@ func MessageIDFromBytes(mid []byte) MessageID {
 	}
 	return newMessageID(
 		mid[domainStartPos:domainStartPos+domainSize],
-		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
 		mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize],
+		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
 	)
 }
 
