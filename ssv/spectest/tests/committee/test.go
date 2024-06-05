@@ -53,8 +53,8 @@ func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		broadcastedRoots = append(broadcastedRoots, beaconNetwork.BroadcastedRoots...)
 	}
 
-	// test output message
-	testingutils.ComparePartialSignatureOutputMessages(t, test.OutputMessages, broadcastedMsgs, test.Committee.Operator.Committee)
+	// test output message (in asynchronous order)
+	testingutils.ComparePartialSignatureOutputMessagesInAsynchronousOrder(t, test.OutputMessages, broadcastedMsgs, test.Committee.CommitteeMember.Committee)
 
 	// test beacon broadcasted msgs
 	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, broadcastedRoots)

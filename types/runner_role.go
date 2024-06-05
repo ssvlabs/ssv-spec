@@ -1,6 +1,6 @@
 package types
 
-// TODO since this is on wire no real need to take 32 bits
+// https://github.com/ssvlabs/ssv-spec/issues/423 - this can be taken down to one byte on the wire
 type RunnerRole int32
 
 const (

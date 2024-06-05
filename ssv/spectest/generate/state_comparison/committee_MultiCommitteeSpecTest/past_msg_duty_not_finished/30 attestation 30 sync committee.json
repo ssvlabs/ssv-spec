@@ -13,9 +13,9 @@
 										},
 										"RunningInstance": {
 												"State": {
-														"Share": {
+														"CommitteeMember": {
 																"OperatorID": 1,
-																"ClusterID": [
+																"CommitteeID": [
 																		207,
 																		151,
 																		173,
@@ -50,8 +50,7 @@
 																		114
 																],
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-																"Quorum": 3,
-																"PartialQuorum": 2,
+																"FaultyNodes": 1,
 																"Committee": [
 																		{
 																				"OperatorID": 1,
@@ -71,14 +70,14 @@
 																		}
 																]
 														},
-														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 														"Round": 1,
 														"Height": 10,
 														"LastPreparedRound": 1,
 														"LastPreparedValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 														"ProposalAcceptedForCurrentRound": {
 																"Signatures": [
-																		"tRPKSrzuCcyT06lYq92W6Xf4UDIjvWno/4irBVzYqX7e45h6ut0KfqbaiQDgnAqw/BtR666E6bv1vV1kLu9RZtyWJX+ihwmTlriC0lJSGkpGsxsA+d/YFcB/6oSC0NI02LbYwnd11nKv0Q6E1+K5hXP8Ybi44YanaHT5uKkSsB0n2G4UNbCCaBlhUE5sImnmcKZ0YB+GKl4jifs1946MDknq+KTqhuvn6IgwQbJEe7JXKmt/Ff73OwoSiBW1vdXxbgu6C4gxKY0X0JL49qu/paqkb8EGUWB0HicizT2fYGUkNWJzqApWj9S0ydJEKFKTbmQyDsTdItKgfa9diZyHZg=="
+																		"xWX26cvuQeKSbFlvOGiRmk4j9j2fndSuZBMkS+uGl7nQYAP9svCv583uHgKMI6CehHFXpHHjHqydw46zYzDMDngTatvYKvP3zRskq9rlk5aGbLRCS8UdcgIphuZG7EiOCnlIUzd40My6PzuCKHswSieFhcSf7/1yyMGGjRB+8FvB5YHS2Nzj20wKQbvOAvdXE7T1SpMqUe36aDT36YtzSdWZ6OMVefjPJMfNwj/D7Rcs9/4jAEnVo/XN/Flu06WxS2dw+e0QgIWQ0/3Qk9XvewYTngTpKfUZI41OFzkriLmWHqkdZcPUaaljl9byaxWOex4AmpdYoN6UM6LY0yv3cQ=="
 																],
 																"OperatorIDs": [
 																		1
@@ -110,40 +109,40 @@
 																				0,
 																				0,
 																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0,
-																				0
+																				207,
+																				151,
+																				173,
+																				238,
+																				219,
+																				89,
+																				224,
+																				91,
+																				253,
+																				115,
+																				162,
+																				180,
+																				194,
+																				168,
+																				136,
+																				87,
+																				8,
+																				196,
+																				244,
+																				247,
+																				12,
+																				132,
+																				198,
+																				75,
+																				39,
+																				18,
+																				14,
+																				114,
+																				171,
+																				115,
+																				59,
+																				114
 																		],
-																		"Data": "AAAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																		"Data": "AAAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																},
 																"FullData": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 														},
@@ -154,7 +153,7 @@
 																		"1": [
 																				{
 																						"Signatures": [
-																								"tRPKSrzuCcyT06lYq92W6Xf4UDIjvWno/4irBVzYqX7e45h6ut0KfqbaiQDgnAqw/BtR666E6bv1vV1kLu9RZtyWJX+ihwmTlriC0lJSGkpGsxsA+d/YFcB/6oSC0NI02LbYwnd11nKv0Q6E1+K5hXP8Ybi44YanaHT5uKkSsB0n2G4UNbCCaBlhUE5sImnmcKZ0YB+GKl4jifs1946MDknq+KTqhuvn6IgwQbJEe7JXKmt/Ff73OwoSiBW1vdXxbgu6C4gxKY0X0JL49qu/paqkb8EGUWB0HicizT2fYGUkNWJzqApWj9S0ydJEKFKTbmQyDsTdItKgfa9diZyHZg=="
+																								"xWX26cvuQeKSbFlvOGiRmk4j9j2fndSuZBMkS+uGl7nQYAP9svCv583uHgKMI6CehHFXpHHjHqydw46zYzDMDngTatvYKvP3zRskq9rlk5aGbLRCS8UdcgIphuZG7EiOCnlIUzd40My6PzuCKHswSieFhcSf7/1yyMGGjRB+8FvB5YHS2Nzj20wKQbvOAvdXE7T1SpMqUe36aDT36YtzSdWZ6OMVefjPJMfNwj/D7Rcs9/4jAEnVo/XN/Flu06WxS2dw+e0QgIWQ0/3Qk9XvewYTngTpKfUZI41OFzkriLmWHqkdZcPUaaljl9byaxWOex4AmpdYoN6UM6LY0yv3cQ=="
 																						],
 																						"OperatorIDs": [
 																								1
@@ -186,40 +185,40 @@
 																										0,
 																										0,
 																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0
+																										207,
+																										151,
+																										173,
+																										238,
+																										219,
+																										89,
+																										224,
+																										91,
+																										253,
+																										115,
+																										162,
+																										180,
+																										194,
+																										168,
+																										136,
+																										87,
+																										8,
+																										196,
+																										244,
+																										247,
+																										12,
+																										132,
+																										198,
+																										75,
+																										39,
+																										18,
+																										14,
+																										114,
+																										171,
+																										115,
+																										59,
+																										114
 																								],
-																								"Data": "AAAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																								"Data": "AAAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																						},
 																						"FullData": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 																				}
@@ -231,7 +230,7 @@
 																		"1": [
 																				{
 																						"Signatures": [
-																								"h/k0I8aT6a81pagfNCIZ/bYGu5CBsoV9y6HqN5rBr0AeKHeekbmgAOodW/nUxX68hwaFx9Tq/71uIPNZkogZKquMf01li9Pnmf7AMBBjitTK0kdfPRxHrG9xQ6xd+ClWVi8EBoZsUcpDdGR8+9VKU+vLK9UQCbRaneXC3ec8GTFU8uMkIkfUQB4YcyXiTlO+z6/JxyyeAVqqDC8ql0X4ErqNh98REGGpqv5NuKGB1G4qnaJ4ymokSOLL8L4DWj7hZc0BfRdeS6ESqmChpj/E29Z+jsR7wPIziza0fwPp1kH3UwAs7D2Y3g/tXR+L5Tr2AF4Gvf+cRaCo4CFDfMZoqw=="
+																								"kUzfKrGB+q52mHpjWf7v7QYKhc3kKrReeCDrGy30ZSZsDqUzyCfUksjWeCRPkQEOqTDOyh7e1CFnpaqr3ZAPfmhaOfXkAgbSUJfM4w5XynYqdpjKngeBVVTY+XwIzbn0H4w5fHotJpn5pfY91q0AuxGydb0GwLqEZrzgNBZGPk0W/uWwsKV9CGmkQ0sA5jsYiQkEw2UTRY0Pqe1o0PKVE6QFLyrykjzt17UMFHd3p6CQnwYNkoOX9UHORDzTdJhEI/q+KL5kCGGOp3gz8aftfy0teRbTYyhckMBAFE8mxPayiHHY72ddmtXiewuSHkUGdthpcG3Ps3z7Lu4B/v+OCw=="
 																						],
 																						"OperatorIDs": [
 																								1
@@ -263,46 +262,46 @@
 																										0,
 																										0,
 																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0
+																										207,
+																										151,
+																										173,
+																										238,
+																										219,
+																										89,
+																										224,
+																										91,
+																										253,
+																										115,
+																										162,
+																										180,
+																										194,
+																										168,
+																										136,
+																										87,
+																										8,
+																										196,
+																										244,
+																										247,
+																										12,
+																										132,
+																										198,
+																										75,
+																										39,
+																										18,
+																										14,
+																										114,
+																										171,
+																										115,
+																										59,
+																										114
 																								],
-																								"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																								"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																						},
 																						"FullData": null
 																				},
 																				{
 																						"Signatures": [
-																								"HUglinSkM1bVWdCK/NXmvL1TXbXRYVQAIA+v44j1kKIiweLZxmIaMsbZHauS7MoFWStGW7fL5X3rkYStbF+NacvFy6oBTiTBGMtl/LhJhiK/9RBXhb8fJYa7CK68rIAQZbRUXUMN4Q+7DSmGfkQ+xrooDHtyy6WgJTH7WNbJxXtFwV3gGcDgkLCBJ8YSiNoWCTUP/tqFh7Z1atiUPno2mAw2e3JBC8BE0b8k/cXbOEOEPZ72T2XADk2HaJ4hSwPQ9QSZIi5FkGNTeBpkYYdBQIEll5MjS7qGJzjEQxnzwmf2syHln9tk2Ea6buieimKICQT4mL5OY/uWusEV4f1KxA=="
+																								"AVCgVXK/Uomdz36F00qjqcMYH0bCmY1SpwJsmg3wy8nswMtbNbgo931o5/DNT/nk1pWdbZaLkn3eDP3sfAtLCAhioRF6mR1Ue3jb3YMaFHUv7HLVgLtUXbTx1cHFqi9EgcWUtocE1S9826cWAYaN2mtSB0+9flk2gqHqqAJW5bKagkNufulBMlySoWKX4cxdecMYEKraRfWwtOMFPytD7c+CDbEj96hicxJlfGtsgpLlBcdfyjbXvnkObZJOGlXDSmOGfFq6L+ywAdwKihjbwmGXELCSO/5s5b2au4zd5YfgvR+Bfbj0axCOr0UVnD0o0SKHqwiLGFMH3prMOUjQpA=="
 																						],
 																						"OperatorIDs": [
 																								2
@@ -334,46 +333,46 @@
 																										0,
 																										0,
 																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0
+																										207,
+																										151,
+																										173,
+																										238,
+																										219,
+																										89,
+																										224,
+																										91,
+																										253,
+																										115,
+																										162,
+																										180,
+																										194,
+																										168,
+																										136,
+																										87,
+																										8,
+																										196,
+																										244,
+																										247,
+																										12,
+																										132,
+																										198,
+																										75,
+																										39,
+																										18,
+																										14,
+																										114,
+																										171,
+																										115,
+																										59,
+																										114
 																								],
-																								"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																								"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																						},
 																						"FullData": null
 																				},
 																				{
 																						"Signatures": [
-																								"tmZs1uOYs+XzRIv4xdYQcIBKYXd5LT/LwbU+m5v5PZYC8xc1nbHt/JCVm63wC6xM63bdwzv2xssg+vciC0CpETl1KRItnSxpywi8hoJvE1ARzjXz/MNYrmI05IhXxHJXUXBTiQL7Vuj0XKBR0urTEjL6NEjOIMJZ7tQF3Fv+jXi7wb6JXsqlZEn0JWa0tHvTVb82QVUxIRIijSrmTqsKuKrZwvw4CN8txzbJZN3m0tqnoYqckcywQYFherVic+RRcNZPQo41ZGF3pFyzTJzxf7uz63jaRlntqANixVV2K/fCUkbB5yBOeLi6U7zhE74ww9R/PKsh2EcSafHYhXCrWQ=="
+																								"fHvxfV/+EdgkCQd1ZjDzGxR+Q/NeYxTHLaclwfyzzNkPAa8y/YcI/Zy6XXCikQRFQEvlnq20+ye0r54goYD+n/1FyShR3FmNZE+FU+bRpz5YDvGnGDH55XFwe6VWWVPTXlwOaOGTq0Qz+tjZTMP1mkmbGPpRgjdM5xpTmfZf4jyrTwKlPokq0lM5BAaDXuGeMyWCoUlgBQsWBpHdn65mTpaRP/urbmn6sgmzQ9DI+rxOOo+ZvLDHO5IqWtBqvn/4IUmze1fdrpPaKPifmGRB6ZZzwyOt2Uv700K3ueqtmifVDdZatIOED33czdaJ2+QOEnUl4hcJq0KZ4rRMZ4PAKQ=="
 																						],
 																						"OperatorIDs": [
 																								3
@@ -405,40 +404,40 @@
 																										0,
 																										0,
 																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0
+																										207,
+																										151,
+																										173,
+																										238,
+																										219,
+																										89,
+																										224,
+																										91,
+																										253,
+																										115,
+																										162,
+																										180,
+																										194,
+																										168,
+																										136,
+																										87,
+																										8,
+																										196,
+																										244,
+																										247,
+																										12,
+																										132,
+																										198,
+																										75,
+																										39,
+																										18,
+																										14,
+																										114,
+																										171,
+																										115,
+																										59,
+																										114
 																								],
-																								"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																								"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																						},
 																						"FullData": null
 																				}
@@ -450,7 +449,7 @@
 																		"1": [
 																				{
 																						"Signatures": [
-																								"InE/ayq2CJOPN9fmKizuLGzNFa7SKb9JEJHWGZTh0Ui+jCBq2lFIrKrfPZokiMnqJrnhjhpREzeGnNhB500gfGmVRdO+z8YjaqACgdDGjAgojMcmEzC/VKr/nl4OkfXfBEqmv9tLmvqN2EIgDUBS2kOvkdBCk/zIsGKv53BLL42Tu9Vvs8hx5RXGm3NHAzHJLv6fPKQpLxcm5QkeYDcmXUiU4eAVsp3ZlrEaAfsOxcdlZPh1i4hDenq+H1GPKxyj2Ty0Z/S3LdDVjMkBNw6utO3PFLUcZD7ZPwMN/N+sz1fap0GV2z1TdW3NUGk9RCR4F/P1wp8XjSkZBhV8PvwSFQ=="
+																								"B6GAUw+Yf2B33GN6rmetOiqvlirm+Xcyj1GDuxbx3TzgPFfoeB1kctofITbqlO910LU1MH3x43SW9DRgabDvCk+i1e6nQoj9tCjibIe4MKhdpoK/BWBGnIxpWYdFaBUx1Znsz1txOdV9jrr1yg048PnYd1v3zppxffeqKdpDiGxZ8WubG+GNEcohDDfDJE8bpD11ALrIGAQVvwHxsoXGN6uyHo1hyIRj06wHgIwv76/+1p/vgs4SIfkKDHmkutCEZ8mxKswQd6X6TVogLx8Ckl9wj9FJaRa5tww9TS2CRaKxdF8lPd5yCjhJGHkouVMQ2NygDGGrO3LAsS8hsA8VqA=="
 																						],
 																						"OperatorIDs": [
 																								1
@@ -482,46 +481,46 @@
 																										0,
 																										0,
 																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0
+																										207,
+																										151,
+																										173,
+																										238,
+																										219,
+																										89,
+																										224,
+																										91,
+																										253,
+																										115,
+																										162,
+																										180,
+																										194,
+																										168,
+																										136,
+																										87,
+																										8,
+																										196,
+																										244,
+																										247,
+																										12,
+																										132,
+																										198,
+																										75,
+																										39,
+																										18,
+																										14,
+																										114,
+																										171,
+																										115,
+																										59,
+																										114
 																								],
-																								"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																								"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																						},
 																						"FullData": null
 																				},
 																				{
 																						"Signatures": [
-																								"jd7rfiCG/3po9Kr3BM4GgDvPJ9jVrfc3CLbLrnuTiiN0LfbOf/4kTzDLxBe0FioiU1FRtmmLWrpsNxn1lW4cWaOO1ZIAbyvCY8hLD1PipJm482wgPbF5GtuQHL6LcjiCa1jfZYXogxmyjEN90n5rOFc8wRVHsJRmoiWzR455RXH+U/UYlNYJSByFjVzURQprozXg1os3wnXKkOCSvLa+9K4cP7i4bdgJJeKf8xbOyugAkruIs5lEHhndg8rs6d2qPrU0FtziTqfHlA2dvCNT9HFVzxnjNdarLY6cAXjxOo734p6pFOXJpcyF+zqtPpS67aOlHpTBIiS58xOcnkaJlg=="
+																								"KPT95/toLGuc/zUJebqcyF4V/TOkTgvo/wWq7sVwxcO3U8xHpyqNTPm9RmzQwf1n5WF+CY6K93L34uYYsQDUznJxndhYOuq/b7yXCrbeS16HsoWQTUueGhNX2K1wis9NUTNs+4RT2dBehFjiDT2V5MlrMVZTmgUtQEq2DE9v6doS0rKHH1g3137gm1xB8AkqlCC5dg4dTggh0OO97ZI2o9yoD4DJcwOnH7+QMuqAfLXJwdwPBSzaY7lGj5ZZo2usU1sd3FNv/gOdX7byvXpvnk9PJjNKgT8LJHVIV3Cbn9Xi3UTOZyQi52eHocaHtdnHSeTFiAvTyVAehhywxS8+PA=="
 																						],
 																						"OperatorIDs": [
 																								2
@@ -553,46 +552,46 @@
 																										0,
 																										0,
 																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0
+																										207,
+																										151,
+																										173,
+																										238,
+																										219,
+																										89,
+																										224,
+																										91,
+																										253,
+																										115,
+																										162,
+																										180,
+																										194,
+																										168,
+																										136,
+																										87,
+																										8,
+																										196,
+																										244,
+																										247,
+																										12,
+																										132,
+																										198,
+																										75,
+																										39,
+																										18,
+																										14,
+																										114,
+																										171,
+																										115,
+																										59,
+																										114
 																								],
-																								"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																								"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																						},
 																						"FullData": null
 																				},
 																				{
 																						"Signatures": [
-																								"q+A+BXsqHARoGG6pF1r9uIQsK4nw/42bJCfRwNKxTstxLxQR3KM6uNyylqoNO5K2b+wOkOzzlzSa45OZX2moQuX5AnqaFKXzvI4Vu8/UoiBo9rMoZGpwgKVHWbF9REEV/GoU8IKkptI2uNBb8CAzckkPY1E5vg5VQPxiRd5z8gToqHKjkXgybN9fHXdxtPKMJ8TGTBBu+b1hBiIV+0pkt32CmCLlddv6V4NglrG+q+2PG+tUHAKaZrdC0SPd6uO4ADma2+TdZlXTOqZ49V3TnzqQIuMo2ddQNbhTUBRI6r8YLUYM5cC6g7EBmoQ5YO8WDDp5w0gLP8Eql4jBhP08TA=="
+																								"kJ8rgrHRCvYIY+kSOsvzh++4qmaCxxPrA2ZQRvM5rV8zQkLzcDG7qHgBmlaIu0fJmD3JOWlJJcM+xFpiY0et+sxfBngotXVkbNa9QvvaPgZwdxkFKxJNggmzV3sOJx1gCvvFNG66I/SMGazW1D5kG2cZQaaoIN4gvmXE6OVD2z9IlHhXhtKRj+brMVCpWz5Dc+CkpVk8N8kIRQMquYU8A7QOs7tDTIHhrl4i5r+7Egah9d3DpUyL7XFIaTHyOLfCQKS8aDcOHxrF7wurf171YBu6vcBxbRGqMoBKo/Otg/8i7Oh23EEluqg5OMNoBkduYl/XjzX8TSL3W2BgcExxxg=="
 																						],
 																						"OperatorIDs": [
 																								3
@@ -624,40 +623,40 @@
 																										0,
 																										0,
 																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0,
-																										0
+																										207,
+																										151,
+																										173,
+																										238,
+																										219,
+																										89,
+																										224,
+																										91,
+																										253,
+																										115,
+																										162,
+																										180,
+																										194,
+																										168,
+																										136,
+																										87,
+																										8,
+																										196,
+																										244,
+																										247,
+																										12,
+																										132,
+																										198,
+																										75,
+																										39,
+																										18,
+																										14,
+																										114,
+																										171,
+																										115,
+																										59,
+																										114
 																								],
-																								"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																								"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																						},
 																						"FullData": null
 																				}
@@ -684,8 +683,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -696,8 +694,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -708,8 +705,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -720,8 +716,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -732,8 +727,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -744,8 +738,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -756,8 +749,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -768,8 +760,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -780,8 +771,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -792,8 +782,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -804,8 +793,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -816,8 +804,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -828,8 +815,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -840,8 +826,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -852,8 +837,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -864,8 +848,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -876,8 +859,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -888,8 +870,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -900,8 +881,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -912,8 +892,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -924,8 +903,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -936,8 +914,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -948,8 +925,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -960,8 +936,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -972,8 +947,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -984,8 +958,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -996,8 +969,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -1008,8 +980,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -1020,8 +991,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -1032,8 +1002,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": true
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 3,
@@ -1048,8 +1017,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1064,8 +1032,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1080,8 +1047,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1096,8 +1062,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1112,8 +1077,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1128,8 +1092,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1144,8 +1107,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1160,8 +1122,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1176,8 +1137,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1192,8 +1152,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1208,8 +1167,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1224,8 +1182,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1240,8 +1197,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1256,8 +1212,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1272,8 +1227,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1288,8 +1242,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1304,8 +1257,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1320,8 +1272,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1336,8 +1287,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1352,8 +1302,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1368,8 +1317,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1384,8 +1332,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1400,8 +1347,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1416,8 +1362,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1432,8 +1377,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1448,8 +1392,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1464,8 +1407,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1480,8 +1422,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1496,8 +1437,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														},
 														{
 																"Type": 3,
@@ -1512,8 +1452,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": true
+																]
 														}
 												]
 										}
@@ -1590,7 +1529,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1692,7 +1630,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1794,7 +1731,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1896,7 +1832,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -1998,7 +1933,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2100,7 +2034,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2202,7 +2135,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2304,7 +2236,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2406,7 +2337,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2508,7 +2438,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2610,7 +2539,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2712,7 +2640,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2814,7 +2741,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -2916,7 +2842,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3018,7 +2943,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3120,7 +3044,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3222,7 +3145,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3324,7 +3246,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3426,7 +3347,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3528,7 +3448,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3630,7 +3549,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3732,7 +3650,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3834,7 +3751,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -3936,7 +3852,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -4038,7 +3953,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -4140,7 +4054,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -4242,7 +4155,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -4344,7 +4256,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -4446,7 +4357,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -4548,7 +4458,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -4581,14 +4490,14 @@
 										}
 								},
 								"QBFTController": {
-										"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+										"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 										"Height": 10,
 										"StoredInstances": [
 												{
 														"State": {
-																"Share": {
+																"CommitteeMember": {
 																		"OperatorID": 1,
-																		"ClusterID": [
+																		"CommitteeID": [
 																				207,
 																				151,
 																				173,
@@ -4623,8 +4532,7 @@
 																				114
 																		],
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-																		"Quorum": 3,
-																		"PartialQuorum": 2,
+																		"FaultyNodes": 1,
 																		"Committee": [
 																				{
 																						"OperatorID": 1,
@@ -4644,14 +4552,14 @@
 																				}
 																		]
 																},
-																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 																"Round": 1,
 																"Height": 10,
 																"LastPreparedRound": 1,
 																"LastPreparedValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 																"ProposalAcceptedForCurrentRound": {
 																		"Signatures": [
-																				"tRPKSrzuCcyT06lYq92W6Xf4UDIjvWno/4irBVzYqX7e45h6ut0KfqbaiQDgnAqw/BtR666E6bv1vV1kLu9RZtyWJX+ihwmTlriC0lJSGkpGsxsA+d/YFcB/6oSC0NI02LbYwnd11nKv0Q6E1+K5hXP8Ybi44YanaHT5uKkSsB0n2G4UNbCCaBlhUE5sImnmcKZ0YB+GKl4jifs1946MDknq+KTqhuvn6IgwQbJEe7JXKmt/Ff73OwoSiBW1vdXxbgu6C4gxKY0X0JL49qu/paqkb8EGUWB0HicizT2fYGUkNWJzqApWj9S0ydJEKFKTbmQyDsTdItKgfa9diZyHZg=="
+																				"xWX26cvuQeKSbFlvOGiRmk4j9j2fndSuZBMkS+uGl7nQYAP9svCv583uHgKMI6CehHFXpHHjHqydw46zYzDMDngTatvYKvP3zRskq9rlk5aGbLRCS8UdcgIphuZG7EiOCnlIUzd40My6PzuCKHswSieFhcSf7/1yyMGGjRB+8FvB5YHS2Nzj20wKQbvOAvdXE7T1SpMqUe36aDT36YtzSdWZ6OMVefjPJMfNwj/D7Rcs9/4jAEnVo/XN/Flu06WxS2dw+e0QgIWQ0/3Qk9XvewYTngTpKfUZI41OFzkriLmWHqkdZcPUaaljl9byaxWOex4AmpdYoN6UM6LY0yv3cQ=="
 																		],
 																		"OperatorIDs": [
 																				1
@@ -4683,40 +4591,40 @@
 																						0,
 																						0,
 																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0,
-																						0
+																						207,
+																						151,
+																						173,
+																						238,
+																						219,
+																						89,
+																						224,
+																						91,
+																						253,
+																						115,
+																						162,
+																						180,
+																						194,
+																						168,
+																						136,
+																						87,
+																						8,
+																						196,
+																						244,
+																						247,
+																						12,
+																						132,
+																						198,
+																						75,
+																						39,
+																						18,
+																						14,
+																						114,
+																						171,
+																						115,
+																						59,
+																						114
 																				],
-																				"Data": "AAAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																				"Data": "AAAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																		},
 																		"FullData": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 																},
@@ -4727,7 +4635,7 @@
 																				"1": [
 																						{
 																								"Signatures": [
-																										"tRPKSrzuCcyT06lYq92W6Xf4UDIjvWno/4irBVzYqX7e45h6ut0KfqbaiQDgnAqw/BtR666E6bv1vV1kLu9RZtyWJX+ihwmTlriC0lJSGkpGsxsA+d/YFcB/6oSC0NI02LbYwnd11nKv0Q6E1+K5hXP8Ybi44YanaHT5uKkSsB0n2G4UNbCCaBlhUE5sImnmcKZ0YB+GKl4jifs1946MDknq+KTqhuvn6IgwQbJEe7JXKmt/Ff73OwoSiBW1vdXxbgu6C4gxKY0X0JL49qu/paqkb8EGUWB0HicizT2fYGUkNWJzqApWj9S0ydJEKFKTbmQyDsTdItKgfa9diZyHZg=="
+																										"xWX26cvuQeKSbFlvOGiRmk4j9j2fndSuZBMkS+uGl7nQYAP9svCv583uHgKMI6CehHFXpHHjHqydw46zYzDMDngTatvYKvP3zRskq9rlk5aGbLRCS8UdcgIphuZG7EiOCnlIUzd40My6PzuCKHswSieFhcSf7/1yyMGGjRB+8FvB5YHS2Nzj20wKQbvOAvdXE7T1SpMqUe36aDT36YtzSdWZ6OMVefjPJMfNwj/D7Rcs9/4jAEnVo/XN/Flu06WxS2dw+e0QgIWQ0/3Qk9XvewYTngTpKfUZI41OFzkriLmWHqkdZcPUaaljl9byaxWOex4AmpdYoN6UM6LY0yv3cQ=="
 																								],
 																								"OperatorIDs": [
 																										1
@@ -4759,40 +4667,40 @@
 																												0,
 																												0,
 																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0
+																												207,
+																												151,
+																												173,
+																												238,
+																												219,
+																												89,
+																												224,
+																												91,
+																												253,
+																												115,
+																												162,
+																												180,
+																												194,
+																												168,
+																												136,
+																												87,
+																												8,
+																												196,
+																												244,
+																												247,
+																												12,
+																												132,
+																												198,
+																												75,
+																												39,
+																												18,
+																												14,
+																												114,
+																												171,
+																												115,
+																												59,
+																												114
 																										],
-																										"Data": "AAAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																										"Data": "AAAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																								},
 																								"FullData": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 																						}
@@ -4804,7 +4712,7 @@
 																				"1": [
 																						{
 																								"Signatures": [
-																										"h/k0I8aT6a81pagfNCIZ/bYGu5CBsoV9y6HqN5rBr0AeKHeekbmgAOodW/nUxX68hwaFx9Tq/71uIPNZkogZKquMf01li9Pnmf7AMBBjitTK0kdfPRxHrG9xQ6xd+ClWVi8EBoZsUcpDdGR8+9VKU+vLK9UQCbRaneXC3ec8GTFU8uMkIkfUQB4YcyXiTlO+z6/JxyyeAVqqDC8ql0X4ErqNh98REGGpqv5NuKGB1G4qnaJ4ymokSOLL8L4DWj7hZc0BfRdeS6ESqmChpj/E29Z+jsR7wPIziza0fwPp1kH3UwAs7D2Y3g/tXR+L5Tr2AF4Gvf+cRaCo4CFDfMZoqw=="
+																										"kUzfKrGB+q52mHpjWf7v7QYKhc3kKrReeCDrGy30ZSZsDqUzyCfUksjWeCRPkQEOqTDOyh7e1CFnpaqr3ZAPfmhaOfXkAgbSUJfM4w5XynYqdpjKngeBVVTY+XwIzbn0H4w5fHotJpn5pfY91q0AuxGydb0GwLqEZrzgNBZGPk0W/uWwsKV9CGmkQ0sA5jsYiQkEw2UTRY0Pqe1o0PKVE6QFLyrykjzt17UMFHd3p6CQnwYNkoOX9UHORDzTdJhEI/q+KL5kCGGOp3gz8aftfy0teRbTYyhckMBAFE8mxPayiHHY72ddmtXiewuSHkUGdthpcG3Ps3z7Lu4B/v+OCw=="
 																								],
 																								"OperatorIDs": [
 																										1
@@ -4836,46 +4744,46 @@
 																												0,
 																												0,
 																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0
+																												207,
+																												151,
+																												173,
+																												238,
+																												219,
+																												89,
+																												224,
+																												91,
+																												253,
+																												115,
+																												162,
+																												180,
+																												194,
+																												168,
+																												136,
+																												87,
+																												8,
+																												196,
+																												244,
+																												247,
+																												12,
+																												132,
+																												198,
+																												75,
+																												39,
+																												18,
+																												14,
+																												114,
+																												171,
+																												115,
+																												59,
+																												114
 																										],
-																										"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																										"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																								},
 																								"FullData": null
 																						},
 																						{
 																								"Signatures": [
-																										"HUglinSkM1bVWdCK/NXmvL1TXbXRYVQAIA+v44j1kKIiweLZxmIaMsbZHauS7MoFWStGW7fL5X3rkYStbF+NacvFy6oBTiTBGMtl/LhJhiK/9RBXhb8fJYa7CK68rIAQZbRUXUMN4Q+7DSmGfkQ+xrooDHtyy6WgJTH7WNbJxXtFwV3gGcDgkLCBJ8YSiNoWCTUP/tqFh7Z1atiUPno2mAw2e3JBC8BE0b8k/cXbOEOEPZ72T2XADk2HaJ4hSwPQ9QSZIi5FkGNTeBpkYYdBQIEll5MjS7qGJzjEQxnzwmf2syHln9tk2Ea6buieimKICQT4mL5OY/uWusEV4f1KxA=="
+																										"AVCgVXK/Uomdz36F00qjqcMYH0bCmY1SpwJsmg3wy8nswMtbNbgo931o5/DNT/nk1pWdbZaLkn3eDP3sfAtLCAhioRF6mR1Ue3jb3YMaFHUv7HLVgLtUXbTx1cHFqi9EgcWUtocE1S9826cWAYaN2mtSB0+9flk2gqHqqAJW5bKagkNufulBMlySoWKX4cxdecMYEKraRfWwtOMFPytD7c+CDbEj96hicxJlfGtsgpLlBcdfyjbXvnkObZJOGlXDSmOGfFq6L+ywAdwKihjbwmGXELCSO/5s5b2au4zd5YfgvR+Bfbj0axCOr0UVnD0o0SKHqwiLGFMH3prMOUjQpA=="
 																								],
 																								"OperatorIDs": [
 																										2
@@ -4907,46 +4815,46 @@
 																												0,
 																												0,
 																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0
+																												207,
+																												151,
+																												173,
+																												238,
+																												219,
+																												89,
+																												224,
+																												91,
+																												253,
+																												115,
+																												162,
+																												180,
+																												194,
+																												168,
+																												136,
+																												87,
+																												8,
+																												196,
+																												244,
+																												247,
+																												12,
+																												132,
+																												198,
+																												75,
+																												39,
+																												18,
+																												14,
+																												114,
+																												171,
+																												115,
+																												59,
+																												114
 																										],
-																										"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																										"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																								},
 																								"FullData": null
 																						},
 																						{
 																								"Signatures": [
-																										"tmZs1uOYs+XzRIv4xdYQcIBKYXd5LT/LwbU+m5v5PZYC8xc1nbHt/JCVm63wC6xM63bdwzv2xssg+vciC0CpETl1KRItnSxpywi8hoJvE1ARzjXz/MNYrmI05IhXxHJXUXBTiQL7Vuj0XKBR0urTEjL6NEjOIMJZ7tQF3Fv+jXi7wb6JXsqlZEn0JWa0tHvTVb82QVUxIRIijSrmTqsKuKrZwvw4CN8txzbJZN3m0tqnoYqckcywQYFherVic+RRcNZPQo41ZGF3pFyzTJzxf7uz63jaRlntqANixVV2K/fCUkbB5yBOeLi6U7zhE74ww9R/PKsh2EcSafHYhXCrWQ=="
+																										"fHvxfV/+EdgkCQd1ZjDzGxR+Q/NeYxTHLaclwfyzzNkPAa8y/YcI/Zy6XXCikQRFQEvlnq20+ye0r54goYD+n/1FyShR3FmNZE+FU+bRpz5YDvGnGDH55XFwe6VWWVPTXlwOaOGTq0Qz+tjZTMP1mkmbGPpRgjdM5xpTmfZf4jyrTwKlPokq0lM5BAaDXuGeMyWCoUlgBQsWBpHdn65mTpaRP/urbmn6sgmzQ9DI+rxOOo+ZvLDHO5IqWtBqvn/4IUmze1fdrpPaKPifmGRB6ZZzwyOt2Uv700K3ueqtmifVDdZatIOED33czdaJ2+QOEnUl4hcJq0KZ4rRMZ4PAKQ=="
 																								],
 																								"OperatorIDs": [
 																										3
@@ -4978,40 +4886,40 @@
 																												0,
 																												0,
 																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0
+																												207,
+																												151,
+																												173,
+																												238,
+																												219,
+																												89,
+																												224,
+																												91,
+																												253,
+																												115,
+																												162,
+																												180,
+																												194,
+																												168,
+																												136,
+																												87,
+																												8,
+																												196,
+																												244,
+																												247,
+																												12,
+																												132,
+																												198,
+																												75,
+																												39,
+																												18,
+																												14,
+																												114,
+																												171,
+																												115,
+																												59,
+																												114
 																										],
-																										"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																										"Data": "AQAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																								},
 																								"FullData": null
 																						}
@@ -5023,7 +4931,7 @@
 																				"1": [
 																						{
 																								"Signatures": [
-																										"InE/ayq2CJOPN9fmKizuLGzNFa7SKb9JEJHWGZTh0Ui+jCBq2lFIrKrfPZokiMnqJrnhjhpREzeGnNhB500gfGmVRdO+z8YjaqACgdDGjAgojMcmEzC/VKr/nl4OkfXfBEqmv9tLmvqN2EIgDUBS2kOvkdBCk/zIsGKv53BLL42Tu9Vvs8hx5RXGm3NHAzHJLv6fPKQpLxcm5QkeYDcmXUiU4eAVsp3ZlrEaAfsOxcdlZPh1i4hDenq+H1GPKxyj2Ty0Z/S3LdDVjMkBNw6utO3PFLUcZD7ZPwMN/N+sz1fap0GV2z1TdW3NUGk9RCR4F/P1wp8XjSkZBhV8PvwSFQ=="
+																										"B6GAUw+Yf2B33GN6rmetOiqvlirm+Xcyj1GDuxbx3TzgPFfoeB1kctofITbqlO910LU1MH3x43SW9DRgabDvCk+i1e6nQoj9tCjibIe4MKhdpoK/BWBGnIxpWYdFaBUx1Znsz1txOdV9jrr1yg048PnYd1v3zppxffeqKdpDiGxZ8WubG+GNEcohDDfDJE8bpD11ALrIGAQVvwHxsoXGN6uyHo1hyIRj06wHgIwv76/+1p/vgs4SIfkKDHmkutCEZ8mxKswQd6X6TVogLx8Ckl9wj9FJaRa5tww9TS2CRaKxdF8lPd5yCjhJGHkouVMQ2NygDGGrO3LAsS8hsA8VqA=="
 																								],
 																								"OperatorIDs": [
 																										1
@@ -5055,46 +4963,46 @@
 																												0,
 																												0,
 																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0
+																												207,
+																												151,
+																												173,
+																												238,
+																												219,
+																												89,
+																												224,
+																												91,
+																												253,
+																												115,
+																												162,
+																												180,
+																												194,
+																												168,
+																												136,
+																												87,
+																												8,
+																												196,
+																												244,
+																												247,
+																												12,
+																												132,
+																												198,
+																												75,
+																												39,
+																												18,
+																												14,
+																												114,
+																												171,
+																												115,
+																												59,
+																												114
 																										],
-																										"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																										"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																								},
 																								"FullData": null
 																						},
 																						{
 																								"Signatures": [
-																										"jd7rfiCG/3po9Kr3BM4GgDvPJ9jVrfc3CLbLrnuTiiN0LfbOf/4kTzDLxBe0FioiU1FRtmmLWrpsNxn1lW4cWaOO1ZIAbyvCY8hLD1PipJm482wgPbF5GtuQHL6LcjiCa1jfZYXogxmyjEN90n5rOFc8wRVHsJRmoiWzR455RXH+U/UYlNYJSByFjVzURQprozXg1os3wnXKkOCSvLa+9K4cP7i4bdgJJeKf8xbOyugAkruIs5lEHhndg8rs6d2qPrU0FtziTqfHlA2dvCNT9HFVzxnjNdarLY6cAXjxOo734p6pFOXJpcyF+zqtPpS67aOlHpTBIiS58xOcnkaJlg=="
+																										"KPT95/toLGuc/zUJebqcyF4V/TOkTgvo/wWq7sVwxcO3U8xHpyqNTPm9RmzQwf1n5WF+CY6K93L34uYYsQDUznJxndhYOuq/b7yXCrbeS16HsoWQTUueGhNX2K1wis9NUTNs+4RT2dBehFjiDT2V5MlrMVZTmgUtQEq2DE9v6doS0rKHH1g3137gm1xB8AkqlCC5dg4dTggh0OO97ZI2o9yoD4DJcwOnH7+QMuqAfLXJwdwPBSzaY7lGj5ZZo2usU1sd3FNv/gOdX7byvXpvnk9PJjNKgT8LJHVIV3Cbn9Xi3UTOZyQi52eHocaHtdnHSeTFiAvTyVAehhywxS8+PA=="
 																								],
 																								"OperatorIDs": [
 																										2
@@ -5126,46 +5034,46 @@
 																												0,
 																												0,
 																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0
+																												207,
+																												151,
+																												173,
+																												238,
+																												219,
+																												89,
+																												224,
+																												91,
+																												253,
+																												115,
+																												162,
+																												180,
+																												194,
+																												168,
+																												136,
+																												87,
+																												8,
+																												196,
+																												244,
+																												247,
+																												12,
+																												132,
+																												198,
+																												75,
+																												39,
+																												18,
+																												14,
+																												114,
+																												171,
+																												115,
+																												59,
+																												114
 																										],
-																										"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																										"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																								},
 																								"FullData": null
 																						},
 																						{
 																								"Signatures": [
-																										"q+A+BXsqHARoGG6pF1r9uIQsK4nw/42bJCfRwNKxTstxLxQR3KM6uNyylqoNO5K2b+wOkOzzlzSa45OZX2moQuX5AnqaFKXzvI4Vu8/UoiBo9rMoZGpwgKVHWbF9REEV/GoU8IKkptI2uNBb8CAzckkPY1E5vg5VQPxiRd5z8gToqHKjkXgybN9fHXdxtPKMJ8TGTBBu+b1hBiIV+0pkt32CmCLlddv6V4NglrG+q+2PG+tUHAKaZrdC0SPd6uO4ADma2+TdZlXTOqZ49V3TnzqQIuMo2ddQNbhTUBRI6r8YLUYM5cC6g7EBmoQ5YO8WDDp5w0gLP8Eql4jBhP08TA=="
+																										"kJ8rgrHRCvYIY+kSOsvzh++4qmaCxxPrA2ZQRvM5rV8zQkLzcDG7qHgBmlaIu0fJmD3JOWlJJcM+xFpiY0et+sxfBngotXVkbNa9QvvaPgZwdxkFKxJNggmzV3sOJx1gCvvFNG66I/SMGazW1D5kG2cZQaaoIN4gvmXE6OVD2z9IlHhXhtKRj+brMVCpWz5Dc+CkpVk8N8kIRQMquYU8A7QOs7tDTIHhrl4i5r+7Egah9d3DpUyL7XFIaTHyOLfCQKS8aDcOHxrF7wurf171YBu6vcBxbRGqMoBKo/Otg/8i7Oh23EEluqg5OMNoBkduYl/XjzX8TSL3W2BgcExxxg=="
 																								],
 																								"OperatorIDs": [
 																										3
@@ -5197,40 +5105,40 @@
 																												0,
 																												0,
 																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0,
-																												0
+																												207,
+																												151,
+																												173,
+																												238,
+																												219,
+																												89,
+																												224,
+																												91,
+																												253,
+																												115,
+																												162,
+																												180,
+																												194,
+																												168,
+																												136,
+																												87,
+																												8,
+																												196,
+																												244,
+																												247,
+																												12,
+																												132,
+																												198,
+																												75,
+																												39,
+																												18,
+																												14,
+																												114,
+																												171,
+																												115,
+																												59,
+																												114
 																										],
-																										"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																										"Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
 																								},
 																								"FullData": null
 																						}
@@ -5244,9 +5152,9 @@
 														"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 												}
 										],
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														207,
 														151,
 														173,
@@ -5281,8 +5189,7 @@
 														114
 												],
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-												"Quorum": 3,
-												"PartialQuorum": 2,
+												"FaultyNodes": 1,
 												"Committee": [
 														{
 																"OperatorID": 1,
@@ -5321,9 +5228,9 @@
 										},
 										"RunningInstance": {
 												"State": {
-														"Share": {
+														"CommitteeMember": {
 																"OperatorID": 1,
-																"ClusterID": [
+																"CommitteeID": [
 																		207,
 																		151,
 																		173,
@@ -5358,8 +5265,7 @@
 																		114
 																],
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-																"Quorum": 3,
-																"PartialQuorum": 2,
+																"FaultyNodes": 1,
 																"Committee": [
 																		{
 																				"OperatorID": 1,
@@ -5379,7 +5285,7 @@
 																		}
 																]
 														},
-														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 														"Round": 1,
 														"Height": 12,
 														"LastPreparedRound": 0,
@@ -5416,8 +5322,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5428,8 +5333,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5440,8 +5344,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5452,8 +5355,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5464,8 +5366,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5476,8 +5377,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5488,8 +5388,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5500,8 +5399,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5512,8 +5410,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5524,8 +5421,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5536,8 +5432,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5548,8 +5443,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5560,8 +5454,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5572,8 +5465,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5584,8 +5476,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5596,8 +5487,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5608,8 +5498,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5620,8 +5509,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5632,8 +5520,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5644,8 +5531,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5656,8 +5542,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5668,8 +5553,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5680,8 +5564,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5692,8 +5575,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5704,8 +5586,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5716,8 +5597,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5728,8 +5608,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5740,8 +5619,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5752,8 +5630,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 0,
@@ -5764,8 +5641,7 @@
 																"CommitteeLength": 128,
 																"CommitteesAtSlot": 36,
 																"ValidatorCommitteeIndex": 11,
-																"ValidatorSyncCommitteeIndices": null,
-																"IsStopped": false
+																"ValidatorSyncCommitteeIndices": null
 														},
 														{
 																"Type": 3,
@@ -5780,8 +5656,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5796,8 +5671,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5812,8 +5686,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5828,8 +5701,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5844,8 +5716,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5860,8 +5731,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5876,8 +5746,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5892,8 +5761,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5908,8 +5776,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5924,8 +5791,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5940,8 +5806,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5956,8 +5821,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5972,8 +5836,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -5988,8 +5851,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6004,8 +5866,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6020,8 +5881,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6036,8 +5896,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6052,8 +5911,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6068,8 +5926,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6084,8 +5941,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6100,8 +5956,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6116,8 +5971,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6132,8 +5986,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6148,8 +6001,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6164,8 +6016,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6180,8 +6031,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6196,8 +6046,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6212,8 +6061,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6228,8 +6076,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														},
 														{
 																"Type": 3,
@@ -6244,8 +6091,7 @@
 																		0,
 																		1,
 																		2
-																],
-																"IsStopped": false
+																]
 														}
 												]
 										}
@@ -6322,7 +6168,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -6424,7 +6269,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -6526,7 +6370,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -6628,7 +6471,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -6730,7 +6572,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -6832,7 +6673,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -6934,7 +6774,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7036,7 +6875,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7138,7 +6976,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7240,7 +7077,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7342,7 +7178,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7444,7 +7279,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7546,7 +7380,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7648,7 +7481,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7750,7 +7582,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7852,7 +7683,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -7954,7 +7784,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8056,7 +7885,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8158,7 +7986,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8260,7 +8087,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8362,7 +8188,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8464,7 +8289,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8566,7 +8390,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8668,7 +8491,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8770,7 +8592,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8872,7 +8693,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -8974,7 +8794,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -9076,7 +8895,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -9178,7 +8996,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -9280,7 +9097,6 @@
 																"Signer": 4
 														}
 												],
-												"Quorum": 3,
 												"DomainType": [
 														0,
 														0,
@@ -9313,14 +9129,14 @@
 										}
 								},
 								"QBFTController": {
-										"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+										"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 										"Height": 12,
 										"StoredInstances": [
 												{
 														"State": {
-																"Share": {
+																"CommitteeMember": {
 																		"OperatorID": 1,
-																		"ClusterID": [
+																		"CommitteeID": [
 																				207,
 																				151,
 																				173,
@@ -9355,8 +9171,7 @@
 																				114
 																		],
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-																		"Quorum": 3,
-																		"PartialQuorum": 2,
+																		"FaultyNodes": 1,
 																		"Committee": [
 																				{
 																						"OperatorID": 1,
@@ -9376,7 +9191,7 @@
 																				}
 																		]
 																},
-																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 																"Round": 1,
 																"Height": 12,
 																"LastPreparedRound": 0,
@@ -9400,9 +9215,9 @@
 														"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 												}
 										],
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														207,
 														151,
 														173,
@@ -9437,8 +9252,7 @@
 														114
 												],
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-												"Quorum": 3,
-												"PartialQuorum": 2,
+												"FaultyNodes": 1,
 												"Committee": [
 														{
 																"OperatorID": 1,
@@ -9465,9 +9279,9 @@
 						}
 				}
 		},
-		"Operator": {
+		"CommitteeMember": {
 				"OperatorID": 1,
-				"ClusterID": [
+				"CommitteeID": [
 						207,
 						151,
 						173,
@@ -9502,8 +9316,7 @@
 						114
 				],
 				"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-				"Quorum": 3,
-				"PartialQuorum": 2,
+				"FaultyNodes": 1,
 				"Committee": [
 						{
 								"OperatorID": 1,
@@ -9595,7 +9408,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -9697,7 +9509,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -9799,7 +9610,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -9901,7 +9711,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10003,7 +9812,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10105,7 +9913,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10207,7 +10014,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10309,7 +10115,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10411,7 +10216,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10513,7 +10317,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10615,7 +10418,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10717,7 +10519,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10819,7 +10620,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -10921,7 +10721,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11023,7 +10822,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11125,7 +10923,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11227,7 +11024,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11329,7 +11125,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11431,7 +11226,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11533,7 +11327,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11635,7 +11428,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11737,7 +11529,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11839,7 +11630,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -11941,7 +11731,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -12043,7 +11832,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -12145,7 +11933,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -12247,7 +12034,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -12349,7 +12135,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -12451,7 +12236,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -12553,7 +12337,6 @@
 										"Signer": 4
 								}
 						],
-						"Quorum": 3,
 						"DomainType": [
 								0,
 								0,
@@ -12585,70 +12368,5 @@
 						"Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 				}
 		},
-		"HighestDutySlotMap": {
-				"0": {
-						"1": "12",
-						"10": "12",
-						"11": "12",
-						"12": "12",
-						"13": "12",
-						"14": "12",
-						"15": "12",
-						"16": "12",
-						"17": "12",
-						"18": "12",
-						"19": "12",
-						"2": "12",
-						"20": "12",
-						"21": "12",
-						"22": "12",
-						"23": "12",
-						"24": "12",
-						"25": "12",
-						"26": "12",
-						"27": "12",
-						"28": "12",
-						"29": "12",
-						"3": "12",
-						"30": "12",
-						"4": "12",
-						"5": "12",
-						"6": "12",
-						"7": "12",
-						"8": "12",
-						"9": "12"
-				},
-				"3": {
-						"1": "12",
-						"10": "12",
-						"11": "12",
-						"12": "12",
-						"13": "12",
-						"14": "12",
-						"15": "12",
-						"16": "12",
-						"17": "12",
-						"18": "12",
-						"19": "12",
-						"2": "12",
-						"20": "12",
-						"21": "12",
-						"22": "12",
-						"23": "12",
-						"24": "12",
-						"25": "12",
-						"26": "12",
-						"27": "12",
-						"28": "12",
-						"29": "12",
-						"3": "12",
-						"30": "12",
-						"4": "12",
-						"5": "12",
-						"6": "12",
-						"7": "12",
-						"8": "12",
-						"9": "12"
-				}
-		}
+		"HighestDutySlotMap": null
 }

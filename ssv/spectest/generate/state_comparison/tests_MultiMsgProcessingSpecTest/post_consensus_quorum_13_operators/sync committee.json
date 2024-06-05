@@ -25,9 +25,9 @@
 						},
 						"RunningInstance": {
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														223,
 														110,
 														165,
@@ -62,8 +62,7 @@
 														236
 												],
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
-												"Quorum": 9,
-												"PartialQuorum": 5,
+												"FaultyNodes": 4,
 												"Committee": [
 														{
 																"OperatorID": 1,
@@ -119,7 +118,7 @@
 														}
 												]
 										},
-										"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+										"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAA326ltZ8ObAPzkK1f6gu8GZ7DUkwKaCkTFI/Qca8YmOw=",
 										"Round": 1,
 										"Height": 12,
 										"LastPreparedRound": 0,
@@ -160,8 +159,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										}
 								]
 						}
@@ -274,7 +272,6 @@
 												"Signer": 13
 										}
 								],
-								"Quorum": 9,
 								"DomainType": [
 										0,
 										0,
@@ -307,14 +304,14 @@
 						}
 				},
 				"QBFTController": {
-						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAA326ltZ8ObAPzkK1f6gu8GZ7DUkwKaCkTFI/Qca8YmOw=",
 						"Height": 12,
 						"StoredInstances": [
 								{
 										"State": {
-												"Share": {
+												"CommitteeMember": {
 														"OperatorID": 1,
-														"ClusterID": [
+														"CommitteeID": [
 																223,
 																110,
 																165,
@@ -349,8 +346,7 @@
 																236
 														],
 														"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
-														"Quorum": 9,
-														"PartialQuorum": 5,
+														"FaultyNodes": 4,
 														"Committee": [
 																{
 																		"OperatorID": 1,
@@ -406,7 +402,7 @@
 																}
 														]
 												},
-												"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+												"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAA326ltZ8ObAPzkK1f6gu8GZ7DUkwKaCkTFI/Qca8YmOw=",
 												"Round": 1,
 												"Height": 12,
 												"LastPreparedRound": 0,
@@ -430,9 +426,9 @@
 										"StartValue": null
 								}
 						],
-						"Share": {
+						"CommitteeMember": {
 								"OperatorID": 1,
-								"ClusterID": [
+								"CommitteeID": [
 										223,
 										110,
 										165,
@@ -467,8 +463,7 @@
 										236
 								],
 								"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA21choNXxdMafLBk/xNUTUrQy96EWTzzz14vcgSMsabCqd00+1dafFp7S8AKEReI9O0mcgg+u5nbvCtbR26OGiqku6xuyI7JBgJvaJ1hRyP7wgtsVfkyxOJ0TjOTOWy8eRl70bTjgCQUSFDIEK0u5dicLpXQi1yK7n9u9AJ5gZRKsdcnNE63tAup0IeIdAme7i8JWQlGCn5fOXeYhzKjdWdSV8NMp3PKPEL2teXmlfWU50erdm82DtVvULqmWrTWJq9DsaFf5lkJd2t+1PUf37BR9czSFV+Lyn3p5fywiCPxozdpB4KiEMypCR9w1ScWAQ0Sae3VE2OgfoiXzlWCzvwIDAQAB",
-								"Quorum": 9,
-								"PartialQuorum": 5,
+								"FaultyNodes": 4,
 								"Committee": [
 										{
 												"OperatorID": 1,

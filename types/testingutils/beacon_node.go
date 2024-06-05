@@ -97,6 +97,8 @@ var TestingAttestationData = &phase0.AttestationData{
 	},
 }
 
+var TestingAttestationDataRoot, _ = TestingAttestationData.HashTreeRoot()
+
 var TestingAttestationDataForBeaconDuty = func(duty *types.BeaconDuty) *phase0.AttestationData {
 	return &phase0.AttestationData{
 		Slot:            duty.Slot,
@@ -666,9 +668,15 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.AttestationData, spec.DataVersion, error) {
+func (bn *TestingBeaconNode) GetAttestationData(slot *phase0.Slot, committeeIndex *phase0.CommitteeIndex) (*phase0.
+	AttestationData, spec.DataVersion, error) {
 	data := *TestingAttestationData
-	data.Slot = slot
+	if slot != nil {
+		data.Slot = *slot
+	}
+	if committeeIndex != nil {
+		data.Index = *committeeIndex
+	}
 	return &data, spec.DataVersionPhase0, nil
 }
 
@@ -753,21 +761,6 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
-}
-
-// GetBlindedBeaconBlock returns blinded beacon block by the given slot, graffiti, and randao.
-func (bn *TestingBeaconNode) GetBlindedBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error) {
-	version := VersionBySlot(slot)
-	vBlk := TestingBlindedBeaconBlockV(version)
-
-	switch version {
-	case spec.DataVersionCapella:
-		return vBlk.Capella, version, nil
-	case spec.DataVersionDeneb:
-		return vBlk.Deneb, version, nil
-	default:
-		panic("unsupported version")
-	}
 }
 
 // SubmitBlindedBeaconBlock submit the blinded block to the node

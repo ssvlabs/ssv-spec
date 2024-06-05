@@ -22,7 +22,7 @@ func NotDecided() tests.SpecTest {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().QBFTController.Share,
+			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.DutySlot()))
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
@@ -37,6 +37,7 @@ func NotDecided() tests.SpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: notDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     notDecidedSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -47,6 +48,7 @@ func NotDecided() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  startRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
 				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: notDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     notDecidedAggregatorSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -57,18 +59,21 @@ func NotDecided() tests.SpecTest {
 				Name:           "attester",
 				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
 				Duty:           testingutils.TestingAttesterDutyNextEpoch,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:           "sync committee",
 				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
 				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:           "attester and sync committee",
 				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
 				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
@@ -80,6 +85,7 @@ func NotDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: notDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
@@ -94,6 +100,7 @@ func NotDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  startRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: notDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{

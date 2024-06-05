@@ -282,9 +282,9 @@
 						},
 						"RunningInstance": {
 								"State": {
-										"Share": {
+										"CommitteeMember": {
 												"OperatorID": 1,
-												"ClusterID": [
+												"CommitteeID": [
 														207,
 														151,
 														173,
@@ -319,8 +319,7 @@
 														114
 												],
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-												"Quorum": 3,
-												"PartialQuorum": 2,
+												"FaultyNodes": 1,
 												"Committee": [
 														{
 																"OperatorID": 1,
@@ -340,7 +339,7 @@
 														}
 												]
 										},
-										"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+										"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 										"Round": 1,
 										"Height": 12,
 										"LastPreparedRound": 0,
@@ -381,8 +380,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -397,8 +395,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -413,8 +410,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -429,8 +425,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -445,8 +440,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -461,8 +455,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -477,8 +470,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -493,8 +485,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -509,8 +500,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -525,8 +515,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -541,8 +530,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -557,8 +545,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -573,8 +560,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -589,8 +575,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -605,8 +590,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -621,8 +605,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -637,8 +620,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -653,8 +635,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -669,8 +650,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -685,8 +665,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -701,8 +680,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -717,8 +695,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -733,8 +710,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -749,8 +725,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -765,8 +740,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -781,8 +755,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -797,8 +770,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -813,8 +785,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -829,8 +800,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										},
 										{
 												"Type": 3,
@@ -845,8 +815,7 @@
 														0,
 														1,
 														2
-												],
-												"IsStopped": false
+												]
 										}
 								]
 						}
@@ -923,7 +892,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1025,7 +993,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1127,7 +1094,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1229,7 +1195,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1331,7 +1296,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1433,7 +1397,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1535,7 +1498,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1637,7 +1599,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1739,7 +1700,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1841,7 +1801,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -1943,7 +1902,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2045,7 +2003,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2147,7 +2104,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2249,7 +2205,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2351,7 +2306,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2453,7 +2407,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2555,7 +2508,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2657,7 +2609,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2759,7 +2710,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2861,7 +2811,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -2963,7 +2912,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3065,7 +3013,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3167,7 +3114,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3269,7 +3215,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3371,7 +3316,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3473,7 +3417,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3575,7 +3518,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3677,7 +3619,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3779,7 +3720,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3881,7 +3821,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,
@@ -3914,14 +3853,14 @@
 						}
 				},
 				"QBFTController": {
-						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+						"Identifier": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 						"Height": 12,
 						"StoredInstances": [
 								{
 										"State": {
-												"Share": {
+												"CommitteeMember": {
 														"OperatorID": 1,
-														"ClusterID": [
+														"CommitteeID": [
 																207,
 																151,
 																173,
@@ -3956,8 +3895,7 @@
 																114
 														],
 														"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-														"Quorum": 3,
-														"PartialQuorum": 2,
+														"FaultyNodes": 1,
 														"Committee": [
 																{
 																		"OperatorID": 1,
@@ -3977,7 +3915,7 @@
 																}
 														]
 												},
-												"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+												"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
 												"Round": 1,
 												"Height": 12,
 												"LastPreparedRound": 0,
@@ -4001,9 +3939,9 @@
 										"StartValue": null
 								}
 						],
-						"Share": {
+						"CommitteeMember": {
 								"OperatorID": 1,
-								"ClusterID": [
+								"CommitteeID": [
 										207,
 										151,
 										173,
@@ -4038,8 +3976,7 @@
 										114
 								],
 								"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyMz2b+KZJIzBzRZwtpbyLv/g7Y4PFL8FTb4cF4qXsEXxJhu0lGJhT0YYYCxYCavMZf50NQDO4QCde3lsoEYBaw0eftkXNi2LX/xwij3cN856d2Go0hYf2BEV2JE3ozdSSr5chi/aTv13l8aMYcjW08lyAzlAUz3XgvRidVKmxxhjAPETf3Pmpuwhao3Yn/wL8RR6OAjCER4K7Rc/5vnKjvBh57lSQf7YFOdWfglHcMcXfwU5+evaEmRaiooazSBy01Ko2RDBpF/uE77sdf1C65TQJvoKy2F0JQbv0OQTSjW0CPw0hS2vOzBNU+vAEEX4wqBjz3X+PDu9LbwA54WmUQIDAQAB",
-								"Quorum": 3,
-								"PartialQuorum": 2,
+								"FaultyNodes": 1,
 								"Committee": [
 										{
 												"OperatorID": 1,

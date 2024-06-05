@@ -33,8 +33,7 @@
 								"CommitteeLength": 0,
 								"CommitteesAtSlot": 0,
 								"ValidatorCommitteeIndex": 0,
-								"ValidatorSyncCommitteeIndices": null,
-								"IsStopped": false
+								"ValidatorSyncCommitteeIndices": null
 						}
 				},
 				"Share": {
@@ -133,7 +132,6 @@
 												"Signer": 10
 										}
 								],
-								"Quorum": 7,
 								"DomainType": [
 										0,
 										0,

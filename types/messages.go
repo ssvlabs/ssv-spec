@@ -56,25 +56,14 @@ func NewMsgID(domain DomainType, pk []byte, role RunnerRole) MessageID {
 	roleByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 
-	return newMessageID(domain[:], pk, roleByts)
+	return newMessageID(domain[:], roleByts, pk)
 }
 
 func (msgID MessageID) String() string {
 	return hex.EncodeToString(msgID[:])
 }
 
-func MessageIDFromBytes(mid []byte) MessageID {
-	if len(mid) < domainSize+dutyExecutorIDSize+roleTypeSize {
-		return MessageID{}
-	}
-	return newMessageID(
-		mid[domainStartPos:domainStartPos+domainSize],
-		mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize],
-		mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize],
-	)
-}
-
-func newMessageID(domain, dutyExecutorID, roleByts []byte) MessageID {
+func newMessageID(domain, roleByts, dutyExecutorID []byte) MessageID {
 	mid := MessageID{}
 	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
 	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
@@ -305,11 +294,11 @@ func (msg *SignedSSVMessage) Aggregate(msgToAggregate *SignedSSVMessage) error {
 }
 
 // Check if all signedMsg's signers belong to the given committee in O(n+m)
-func (msg *SignedSSVMessage) CheckSignersInCommittee(committee []*CommitteeMember) bool {
+func (msg *SignedSSVMessage) CheckSignersInCommittee(operators []*Operator) bool {
 	// Committee's operators map
 	committeeMap := make(map[OperatorID]struct{})
-	for _, operator := range committee {
-		committeeMap[operator.OperatorID] = struct{}{}
+	for _, op := range operators {
+		committeeMap[op.OperatorID] = struct{}{}
 	}
 
 	// Check that all message signers belong to the map

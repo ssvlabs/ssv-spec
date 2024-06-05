@@ -3,12 +3,16 @@ package spectest
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 
 	"github.com/stretchr/testify/require"
 
@@ -128,6 +132,12 @@ func TestJson(t *testing.T) {
 				typedTest := &share.ShareTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
+			case reflect.TypeOf(&committeemember.CommitteeMemberTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &committeemember.CommitteeMemberTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
 			case reflect.TypeOf(&ssvmsg.SSVMessageTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
@@ -138,6 +148,12 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &duty.DutySpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&beaconvote.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &beaconvote.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:

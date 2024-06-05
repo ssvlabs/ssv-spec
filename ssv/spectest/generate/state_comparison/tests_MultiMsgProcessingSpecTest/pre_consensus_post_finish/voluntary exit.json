@@ -21,8 +21,7 @@
 								"CommitteeLength": 0,
 								"CommitteesAtSlot": 0,
 								"ValidatorCommitteeIndex": 0,
-								"ValidatorSyncCommitteeIndices": null,
-								"IsStopped": false
+								"ValidatorSyncCommitteeIndices": null
 						}
 				},
 				"Share": {
@@ -97,7 +96,6 @@
 												"Signer": 4
 										}
 								],
-								"Quorum": 3,
 								"DomainType": [
 										0,
 										0,

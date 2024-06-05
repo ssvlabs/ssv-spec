@@ -24,14 +24,39 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 		return CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
 	}
 	return ssv.NewCommittee(
-		*TestingOperator(keySetSample),
+		*TestingCommitteeMember(keySetSample),
 		NewTestingVerifier(),
 		shareMap,
 		createRunnerF,
 	)
 }
 
-var BaseCommitteeWithRunnerSample = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runnerSample *ssv.CommitteeRunner) *ssv.Committee {
+var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runner *ssv.CommitteeRunner) *ssv.Committee {
+
+	var keySetSample *TestKeySet
+	for _, ks := range keySetMap {
+		keySetSample = ks
+		break
+	}
+
+	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
+	for valIdx, ks := range keySetMap {
+		shareMap[valIdx] = TestingShare(ks, valIdx)
+	}
+
+	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
+		return runner
+	}
+
+	return ssv.NewCommittee(
+		*TestingCommitteeMember(keySetSample),
+		NewTestingVerifier(),
+		shareMap,
+		createRunnerF,
+	)
+}
+
+var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runnerSample *ssv.CommitteeRunner) *ssv.Committee {
 
 	var keySetSample *TestKeySet
 	for _, ks := range keySetMap {
@@ -48,10 +73,10 @@ var BaseCommitteeWithRunnerSample = func(keySetMap map[phase0.ValidatorIndex]*Te
 		return ssv.NewCommitteeRunner(runnerSample.BaseRunner.BeaconNetwork,
 			shareMap,
 			qbft.NewController(runnerSample.BaseRunner.QBFTController.Identifier,
-				runnerSample.BaseRunner.QBFTController.Share,
+				runnerSample.BaseRunner.QBFTController.CommitteeMember,
 				runnerSample.BaseRunner.QBFTController.GetConfig()),
-			runnerSample.GetBeaconNode(),
-			runnerSample.GetNetwork(),
+			NewTestingBeaconNode(),
+			NewTestingNetwork(1, keySetSample.OperatorKeys[1]),
 			runnerSample.GetSigner(),
 			runnerSample.GetOperatorSigner(),
 			runnerSample.GetValCheckF(),
@@ -59,7 +84,7 @@ var BaseCommitteeWithRunnerSample = func(keySetMap map[phase0.ValidatorIndex]*Te
 	}
 
 	return ssv.NewCommittee(
-		*TestingOperator(keySetSample),
+		*TestingCommitteeMember(keySetSample),
 		NewTestingVerifier(),
 		shareMap,
 		createRunnerF,

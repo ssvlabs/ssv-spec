@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -15,8 +14,6 @@ import (
 
 type ProposerRunner struct {
 	BaseRunner *BaseRunner
-	// ProducesBlindedBlocks is true when the runner will only produce blinded blocks
-	ProducesBlindedBlocks bool
 
 	beacon         BeaconNode
 	network        Network
@@ -53,8 +50,8 @@ func NewProposerRunner(
 	}
 }
 
-func (r *ProposerRunner) StartNewDuty(duty types.Duty) error {
-	return r.BaseRunner.baseStartNewDuty(r, duty)
+func (r *ProposerRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
+	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -86,20 +83,10 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 
 	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
 
-	var ver spec.DataVersion
-	var obj ssz.Marshaler
-	if r.ProducesBlindedBlocks {
-		// get block data
-		obj, ver, err = r.GetBeaconNode().GetBlindedBeaconBlock(duty.DutySlot(), r.GetShare().Graffiti, fullSig)
-		if err != nil {
-			return errors.Wrap(err, "failed to get Beacon block")
-		}
-	} else {
-		// get block data
-		obj, ver, err = r.GetBeaconNode().GetBeaconBlock(duty.DutySlot(), r.GetShare().Graffiti, fullSig)
-		if err != nil {
-			return errors.Wrap(err, "failed to get Beacon block")
-		}
+	// get block data
+	obj, ver, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
+	if err != nil {
+		return errors.Wrap(err, "failed to get Beacon block")
 	}
 
 	byts, err := obj.MarshalSSZ()
@@ -310,7 +297,7 @@ func (r *ProposerRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *ProposerRunner) GetShare() *types.Share {
-	// TODO better solution for this
+	// there is only one share
 	for _, share := range r.BaseRunner.Share {
 		return share
 	}

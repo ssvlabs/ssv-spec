@@ -13,7 +13,7 @@ type Validator struct {
 	DutyRunners       DutyRunners
 	Network           Network
 	Beacon            BeaconNode
-	Operator          *types.Operator
+	CommitteeMember   *types.CommitteeMember
 	Share             *types.Share
 	Signer            types.BeaconSigner
 	OperatorSigner    types.OperatorSigner
@@ -23,7 +23,7 @@ type Validator struct {
 func NewValidator(
 	network Network,
 	beacon BeaconNode,
-	operator *types.Operator,
+	committeeMember *types.CommitteeMember,
 	share *types.Share,
 	signer types.BeaconSigner,
 	operatorSigner types.OperatorSigner,
@@ -35,7 +35,7 @@ func NewValidator(
 		Network:           network,
 		Beacon:            beacon,
 		Share:             share,
-		Operator:          operator,
+		CommitteeMember:   committeeMember,
 		Signer:            signer,
 		OperatorSigner:    operatorSigner,
 		SignatureVerifier: signatureVerifier,
@@ -49,7 +49,7 @@ func (v *Validator) StartDuty(duty types.Duty) error {
 	if dutyRunner == nil {
 		return errors.Errorf("duty type %s not supported", role.String())
 	}
-	return dutyRunner.StartNewDuty(duty)
+	return dutyRunner.StartNewDuty(duty, v.CommitteeMember.GetQuorum())
 }
 
 // ProcessMessage processes Network Message of all types
@@ -60,7 +60,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	// Verify SignedSSVMessage's signature
-	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.Operator.Committee); err != nil {
+	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.CommitteeMember.Committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 

@@ -1,6 +1,8 @@
 package testingutils
 
 import (
+	"bytes"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -27,13 +29,11 @@ var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
 }
 
 var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
-	ret := baseRunner(
+	return baseRunner(
 		types.RoleProposer,
 		ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, (types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, nil),
 		keySet,
 	)
-	ret.(*ssv.ProposerRunner).ProducesBlindedBlocks = true
-	return ret
 }
 
 var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
@@ -69,24 +69,24 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 	}
 
 	// Identifier
-	ownerID := []byte{}
+	var ownerID []byte
 	if role == types.RoleCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySetInstance.Committee() {
 			committee = append(committee, op.Signer)
 		}
-		clusterID := types.GetCommitteeID(committee)
-		copy(ownerID, clusterID[:])
+		committeeID := types.GetCommitteeID(committee)
+		ownerID = bytes.Clone(committeeID[:])
 	} else {
 		ownerID = TestingValidatorPubKey[:]
 	}
-	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
+	identifier := types.NewMsgID(TestingSSVDomainType, ownerID, role)
 
 	net := NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
 
 	km := NewTestingKeyManager()
-	operator := TestingOperator(keySetInstance)
-	opSigner := NewTestingOperatorSigner(keySetInstance, operator.OperatorID)
+	committeeMember := TestingCommitteeMember(keySetInstance)
+	opSigner := NewTestingOperatorSigner(keySetInstance, committeeMember.OperatorID)
 
 	config := TestingConfig(keySetInstance)
 	config.ValueCheckF = valCheck
@@ -99,7 +99,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 
 	contr := qbft.NewController(
 		identifier[:],
-		operator,
+		committeeMember,
 		config,
 	)
 
@@ -191,14 +191,14 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 	share := TestingShare(keySet, TestingValidatorIndex)
 
 	// Identifier
-	ownerID := []byte{}
+	var ownerID []byte
 	if role == types.RoleCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySet.Committee() {
 			committee = append(committee, op.Signer)
 		}
 		clusterID := types.GetCommitteeID(committee)
-		copy(ownerID, clusterID[:])
+		ownerID = clusterID[:]
 	} else {
 		ownerID = TestingValidatorPubKey[:]
 	}
@@ -206,8 +206,8 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
-	operator := TestingOperator(keySet)
-	opSigner := NewTestingOperatorSigner(keySet, operator.OperatorID)
+	committeeMember := TestingCommitteeMember(keySet)
+	opSigner := NewTestingOperatorSigner(keySet, committeeMember.OperatorID)
 
 	config := TestingConfig(keySet)
 	config.ValueCheckF = valCheck
@@ -220,7 +220,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 
 	contr := qbft.NewController(
 		identifier[:],
-		operator,
+		committeeMember,
 		config,
 	)
 
@@ -327,7 +327,7 @@ var decideRunner = func(consensusInput *types.ConsensusData, height qbft.Height,
 	v := BaseValidator(keySet)
 	msgs := SSVDecidingMsgsForHeight(consensusInput, AttesterMsgID, height, keySet)
 
-	if err := v.DutyRunners[types.RoleCommittee].StartNewDuty(&consensusInput.Duty); err != nil {
+	if err := v.DutyRunners[types.RoleCommittee].StartNewDuty(&consensusInput.Duty, keySet.Threshold); err != nil {
 		panic(err.Error())
 	}
 	for _, msg := range msgs {

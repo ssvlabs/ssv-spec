@@ -28,7 +28,7 @@ func PostWrongDecided() tests.SpecTest {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().QBFTController.Share,
+			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
@@ -36,7 +36,7 @@ func PostWrongDecided() tests.SpecTest {
 
 		higherDecided := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().QBFTController.Share,
+			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
 			higherDecidedSlot)
 		higherDecided.State.Decided = true
@@ -60,6 +60,7 @@ func PostWrongDecided() tests.SpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  decideWrong(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty, 50),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "4fce8afe24a8f812c9daccfb54c8247771c88b48d161b06901669d1e23ce7a0d",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
@@ -70,6 +71,7 @@ func PostWrongDecided() tests.SpecTest {
 				Name:                    "aggregator",
 				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty, 50),
 				Duty:                    &testingutils.TestingAggregatorDuty,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "533fa28f89164dc4a26bdd4e2cd55cca8c17375d3e88251f2480ae727ced1ee1",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
@@ -80,6 +82,7 @@ func PostWrongDecided() tests.SpecTest {
 				Name:                    "proposer",
 				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb), qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50)),
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "fd8de7873c9cf83ec9366f856f4b8d81d77c215f935185d90cea8be8dcb44089",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
@@ -91,6 +94,7 @@ func PostWrongDecided() tests.SpecTest {
 				Name:           "attester",
 				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty, 50),
 				Duty:           testingutils.TestingAttesterDuty,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
@@ -98,6 +102,7 @@ func PostWrongDecided() tests.SpecTest {
 				Name:           "sync committee",
 				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty, 50),
 				Duty:           testingutils.TestingSyncCommitteeDuty,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
@@ -105,6 +110,7 @@ func PostWrongDecided() tests.SpecTest {
 				Name:           "attester and sync committee",
 				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties, 50),
 				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Threshold:      ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},

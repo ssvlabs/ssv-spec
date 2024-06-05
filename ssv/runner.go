@@ -24,7 +24,7 @@ type Runner interface {
 	Getters
 
 	// StartNewDuty starts a new duty for the runner, returns error if can't
-	StartNewDuty(duty types.Duty) error
+	StartNewDuty(duty types.Duty, quorum uint64) error
 	// HasRunningDuty returns true if it has a running duty
 	HasRunningDuty() bool
 	// ProcessPreConsensus processes all pre-consensus msgs, returns error if can't process
@@ -79,33 +79,27 @@ func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
 }
 
 // setupForNewDuty is sets the runner for a new duty
-func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty) {
-	// start new state
-	// TODO nicer way to get quorum
-	var share *types.Share
-	for _, shareInstance := range b.Share {
-		share = shareInstance
-	}
-	b.State = NewRunnerState(share.Quorum, duty)
+func (b *BaseRunner) baseSetupForNewDuty(duty types.Duty, quorum uint64) {
+	b.State = NewRunnerState(quorum, duty)
 }
 
 // baseStartNewDuty is a base func that all runner implementation can call to start a duty
-func (b *BaseRunner) baseStartNewDuty(runner Runner, duty types.Duty) error {
+func (b *BaseRunner) baseStartNewDuty(runner Runner, duty types.Duty, quorum uint64) error {
 	if err := b.ShouldProcessDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start duty")
 	}
 
-	b.baseSetupForNewDuty(duty)
+	b.baseSetupForNewDuty(duty, quorum)
 
 	return runner.executeDuty(duty)
 }
 
 // baseStartNewBeaconDuty is a base func that all runner implementation can call to start a non-beacon duty
-func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.BeaconDuty) error {
+func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.BeaconDuty, quorum uint64) error {
 	if err := b.ShouldProcessNonBeaconDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start non-beacon duty")
 	}
-	b.baseSetupForNewDuty(duty)
+	b.baseSetupForNewDuty(duty, quorum)
 	return runner.executeDuty(duty)
 }
 
@@ -160,10 +154,6 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
 	}
 
-	// update the highest decided slot
-	// TODO: bad name because it wasn't decided yet
-	b.highestDecidedSlot = b.State.StartingDuty.DutySlot()
-
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
 		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
 	}
@@ -173,10 +163,14 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		return true, nil, errors.Wrap(err, "could not encode decided value")
 	}
 
+	// update the highest decided slot
+	b.highestDecidedSlot = b.State.StartingDuty.DutySlot()
+
 	return true, decidedValue, nil
 }
 
 // basePostConsensusMsgProcessing is a base func that all runner implementation can call for processing a post-consensus msg
+// returns whether at least one quorum exists and the roots of the quorums
 func (b *BaseRunner) basePostConsensusMsgProcessing(runner Runner, psigMsgs *types.PartialSignatureMessages) (bool, [][32]byte, error) {
 	if err := b.ValidatePostConsensusMsg(runner, psigMsgs); err != nil {
 		return false, nil, errors.Wrap(err, "invalid post-consensus message")

@@ -16,7 +16,6 @@ func FirstHeight() tests.SpecTest {
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: nil,
 				},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 				ExpectedTimerState: &testingutils.TimerState{
 					Timeouts: 1,
 					Round:    qbft.FirstRound,

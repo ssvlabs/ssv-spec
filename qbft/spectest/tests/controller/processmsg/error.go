@@ -18,7 +18,6 @@ func MsgError() tests.SpecTest {
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], 1, 100),
 				},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: proposal not justified: change round has no quorum",

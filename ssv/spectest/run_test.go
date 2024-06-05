@@ -1,8 +1,10 @@
 package spectest
 
 import (
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -49,14 +51,29 @@ func TestJson(t *testing.T) {
 		t.Fatalf("Failed to get working directory: %v", err)
 	}
 
-	path := filepath.Join(basedir, "generate", "tests.json")
+	path := filepath.Join(basedir, "generate", "tests.json.gz")
 	untypedTests := map[string]interface{}{}
-	byteValue, err := os.ReadFile(path)
+	// Open the gzip file
+	file, err := os.Open(path)
 	if err != nil {
-		t.Fatalf("Failed to read file: %v", err)
+		t.Fatalf("failed to open gzip file: %v", err)
+	}
+	defer file.Close()
+
+	// Create a gzip reader
+	gzipReader, err := gzip.NewReader(file)
+	if err != nil {
+		t.Fatalf("failed to create gzip reader: %v", err)
+	}
+	defer gzipReader.Close()
+
+	// Read the decompressed data
+	decompressedData, err := io.ReadAll(gzipReader)
+	if err != nil {
+		t.Fatalf("failed to read decompressed data: %v", err)
 	}
 
-	if err := json.Unmarshal(byteValue, &untypedTests); err != nil {
+	if err := json.Unmarshal(decompressedData, &untypedTests); err != nil {
 		t.Fatalf("Failed to unmarshal JSON: %v", err)
 	}
 
@@ -218,6 +235,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		Name:                    m["Name"].(string),
 		Duty:                    testDuty,
 		Runner:                  runner,
+		Threshold:               ks.Threshold,
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		ExpectedError:           m["ExpectedError"].(string),
 		OutputMessages:          outputMsgs,
@@ -301,6 +319,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		Duty:                    testDuty,
 		Runner:                  runner,
 		Messages:                msgs,
+		DecidedSlashable:        m["DecidedSlashable"].(bool),
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		DontStartDuty:           m["DontStartDuty"].(bool),
 		ExpectedError:           m["ExpectedError"].(string),
@@ -414,17 +433,12 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 
 	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
 
-	// specific for blinded block
-	if blindedBlocks, ok := runnerMap["ProducesBlindedBlocks"]; ok {
-		ret.(*ssv.ProposerRunner).ProducesBlindedBlocks = blindedBlocks.(bool)
-	}
-
 	if ret.GetBaseRunner().QBFTController != nil {
 		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
 		if ret.GetBaseRunner().State != nil {
 			if ret.GetBaseRunner().State.RunningInstance != nil {
-				operator := testingutils.TestingOperator(ks)
-				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, operator)
+				committeeMember := testingutils.TestingCommitteeMember(ks)
+				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, committeeMember)
 			}
 		}
 	}
@@ -437,7 +451,7 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 	config.ValueCheckF = runner.GetValCheckF()
 	newContr := qbft.NewController(
 		contr.Identifier,
-		contr.Share,
+		contr.CommitteeMember,
 		config,
 	)
 	newContr.Height = contr.Height
@@ -447,13 +461,13 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 		if inst == nil {
 			continue
 		}
-		operator := testingutils.TestingOperator(ks)
-		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, operator)
+		committeeMember := testingutils.TestingCommitteeMember(ks)
+		newContr.StoredInstances[i] = fixInstanceForRun(t, inst, newContr, committeeMember)
 	}
 	return newContr
 }
 
-func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.Operator) *qbft.Instance {
+func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.CommitteeMember) *qbft.Instance {
 	newInst := qbft.NewInstance(
 		contr.GetConfig(),
 		share,
@@ -462,7 +476,7 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 
 	newInst.State.DecidedValue = inst.State.DecidedValue
 	newInst.State.Decided = inst.State.Decided
-	newInst.State.Share = inst.State.Share
+	newInst.State.CommitteeMember = inst.State.CommitteeMember
 	newInst.State.Round = inst.State.Round
 	newInst.State.Height = inst.State.Height
 	newInst.State.ProposalAcceptedForCurrentRound = inst.State.ProposalAcceptedForCurrentRound

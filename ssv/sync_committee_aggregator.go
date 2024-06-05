@@ -52,8 +52,8 @@ func NewSyncCommitteeAggregatorRunner(
 	}
 }
 
-func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty types.Duty) error {
-	return r.BaseRunner.baseStartNewDuty(r, duty)
+func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
+	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -374,7 +374,7 @@ func (r *SyncCommitteeAggregatorRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *SyncCommitteeAggregatorRunner) GetShare() *types.Share {
-	// TODO better solution for this
+	// there is only one share
 	for _, share := range r.BaseRunner.Share {
 		return share
 	}

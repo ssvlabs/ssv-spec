@@ -12,7 +12,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 	if err := ValidateDecided(
 		c.config,
 		signedMsg,
-		c.Share,
+		c.CommitteeMember,
 	); err != nil {
 		return nil, errors.Wrap(err, "invalid decided msg")
 	}
@@ -28,7 +28,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 	isFutureDecided := msg.Height > c.Height
 
 	if inst == nil {
-		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Height)
+		i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, msg.Height)
 		i.State.Round = msg.Round
 		i.State.Decided = true
 		i.State.DecidedValue = signedMsg.FullData
@@ -69,7 +69,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 func ValidateDecided(
 	config IConfig,
 	signedDecided *types.SignedSSVMessage,
-	share *types.Operator,
+	share *types.CommitteeMember,
 ) error {
 
 	isDecided, err := IsDecidedMsg(share, signedDecided)
@@ -109,7 +109,7 @@ func ValidateDecided(
 }
 
 // IsDecidedMsg returns true if signed commit has all quorum sigs
-func IsDecidedMsg(share *types.Operator, signedDecided *types.SignedSSVMessage) (bool, error) {
+func IsDecidedMsg(share *types.CommitteeMember, signedDecided *types.SignedSSVMessage) (bool, error) {
 
 	msg, err := DecodeMessage(signedDecided.SSVMessage.Data)
 	if err != nil {

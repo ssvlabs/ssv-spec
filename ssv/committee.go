@@ -14,90 +14,40 @@ import (
 type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.Share) *CommitteeRunner
 
 type Committee struct {
-	Runners            map[spec.Slot]*CommitteeRunner
-	Operator           types.Operator
-	SignatureVerifier  types.SignatureVerifier
-	CreateRunnerFn     CreateRunnerFn
-	Share              map[spec.ValidatorIndex]*types.Share
-	HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
+	Runners           map[spec.Slot]*CommitteeRunner
+	CommitteeMember   types.CommitteeMember
+	SignatureVerifier types.SignatureVerifier
+	CreateRunnerFn    CreateRunnerFn
+	Share             map[spec.ValidatorIndex]*types.Share
 }
 
 // NewCommittee creates a new cluster
 func NewCommittee(
-	operator types.Operator,
+	committeeMember types.CommitteeMember,
 	verifier types.SignatureVerifier,
 	share map[spec.ValidatorIndex]*types.Share,
 	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	c := &Committee{
-		Runners:            make(map[spec.Slot]*CommitteeRunner),
-		Operator:           operator,
-		SignatureVerifier:  verifier,
-		CreateRunnerFn:     createRunnerFn,
-		Share:              share,
-		HighestDutySlotMap: make(map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot),
+		Runners:           make(map[spec.Slot]*CommitteeRunner),
+		CommitteeMember:   committeeMember,
+		SignatureVerifier: verifier,
+		CreateRunnerFn:    createRunnerFn,
+		Share:             share,
 	}
-	c.HighestDutySlotMap[types.BNRoleAttester] = make(map[spec.ValidatorIndex]spec.Slot)
-	c.HighestDutySlotMap[types.BNRoleSyncCommittee] = make(map[spec.ValidatorIndex]spec.Slot)
 	return c
 }
 
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
+	if len(duty.BeaconDuties) == 0 {
+		return errors.New("no beacon duties")
+	}
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
 	c.Runners[duty.Slot] = c.CreateRunnerFn(c.Share)
-	var validatorToStopMap map[spec.Slot][]spec.ValidatorIndex
-	// Filter old duties based on highest duty slot
-	duty, validatorToStopMap, c.HighestDutySlotMap = FilterCommitteeDuty(duty, c.HighestDutySlotMap)
-	// Stop validators with old duties
-	c.stopDuties(validatorToStopMap)
-	c.updateDutySlotMap(duty)
-	// TODO: check if there are beacon duties remaining
-	return c.Runners[duty.Slot].StartNewDuty(duty)
-}
-
-func (c *Committee) stopDuties(validatorToStopMap map[spec.Slot][]spec.ValidatorIndex) {
-	for slot, validators := range validatorToStopMap {
-		for _, validator := range validators {
-			runner, exists := c.Runners[slot]
-			if exists {
-				runner.StopDuty(validator)
-			}
-		}
-	}
-}
-
-// FilterCommitteeDuty filters the committee duties by the slots given per validator.
-// It returns the filtered duties, the validators to stop and updated slot map.
-func FilterCommitteeDuty(duty *types.CommitteeDuty, dutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot) (
-	*types.CommitteeDuty,
-	map[spec.Slot][]spec.ValidatorIndex,
-	map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot,
-) {
-	validatorsToStop := make(map[spec.Slot][]spec.ValidatorIndex)
-
-	for i, beaconDuty := range duty.BeaconDuties {
-
-		if _, exists := dutySlotMap[beaconDuty.Type]; !exists {
-			dutySlotMap[beaconDuty.Type] = make(map[spec.ValidatorIndex]spec.Slot)
-		}
-
-		slot, exists := dutySlotMap[beaconDuty.Type][beaconDuty.ValidatorIndex]
-		if exists {
-			if slot < beaconDuty.Slot {
-				if _, exists := validatorsToStop[slot]; !exists {
-					validatorsToStop[slot] = make([]spec.ValidatorIndex, 0)
-				}
-				validatorsToStop[slot] = append(validatorsToStop[slot], beaconDuty.ValidatorIndex)
-				dutySlotMap[beaconDuty.Type][beaconDuty.ValidatorIndex] = beaconDuty.Slot
-			} else { // else don't run duty with old slot
-				duty.BeaconDuties[i] = nil
-			}
-		}
-	}
-	return duty, validatorsToStop, dutySlotMap
+	return c.Runners[duty.Slot].StartNewDuty(duty, c.CommitteeMember.GetQuorum())
 }
 
 // ProcessMessage processes Network Message of all types
@@ -108,11 +58,14 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	// Verify SignedSSVMessage's signature
-	if err := c.SignatureVerifier.Verify(signedSSVMessage, c.Operator.Committee); err != nil {
+	if err := c.SignatureVerifier.Verify(signedSSVMessage, c.CommitteeMember.Committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
 	msg := signedSSVMessage.SSVMessage
+	if err := c.validateMessage(msg); err != nil {
+		return errors.Wrap(err, "Message invalid")
+	}
 
 	switch msg.GetType() {
 	case types.SSVConsensusMsgType:
@@ -159,23 +112,6 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 }
 
-// updateAttestingSlotMap updates the highest attesting slot map from beacon duties
-func (c *Committee) updateDutySlotMap(duty *types.CommitteeDuty) {
-	for _, beaconDuty := range duty.BeaconDuties {
-
-		if _, exists := c.HighestDutySlotMap[beaconDuty.Type]; !exists {
-			c.HighestDutySlotMap[beaconDuty.Type] = make(map[spec.ValidatorIndex]spec.Slot)
-		}
-
-		if _, ok := c.HighestDutySlotMap[beaconDuty.Type][beaconDuty.ValidatorIndex]; !ok {
-			c.HighestDutySlotMap[beaconDuty.Type][beaconDuty.ValidatorIndex] = beaconDuty.Slot
-		}
-		if c.HighestDutySlotMap[beaconDuty.Type][beaconDuty.ValidatorIndex] < beaconDuty.Slot {
-			c.HighestDutySlotMap[beaconDuty.Type][beaconDuty.ValidatorIndex] = beaconDuty.Slot
-		}
-	}
-}
-
 func (c *Committee) Encode() ([]byte, error) {
 	return json.Marshal(c)
 }
@@ -198,17 +134,16 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
 		Runners            map[spec.Slot]*CommitteeRunner
-		Operator           types.Operator
+		CommitteeMember    types.CommitteeMember
 		Share              map[spec.ValidatorIndex]*types.Share
 		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
 	}
 
 	// Create object and marshal
 	alias := &CommitteeAlias{
-		Runners:            c.Runners,
-		Operator:           c.Operator,
-		Share:              c.Share,
-		HighestDutySlotMap: c.HighestDutySlotMap,
+		Runners:         c.Runners,
+		CommitteeMember: c.CommitteeMember,
+		Share:           c.Share,
 	}
 
 	byts, err := json.Marshal(alias)
@@ -220,7 +155,7 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
 		Runners            map[spec.Slot]*CommitteeRunner
-		Operator           types.Operator
+		CommitteeMember    types.CommitteeMember
 		Share              map[spec.ValidatorIndex]*types.Share
 		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
 	}
@@ -233,9 +168,20 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	// Assign fields
 	c.Runners = aux.Runners
-	c.Operator = aux.Operator
+	c.CommitteeMember = aux.CommitteeMember
 	c.Share = aux.Share
-	c.HighestDutySlotMap = aux.HighestDutySlotMap
+
+	return nil
+}
+
+func (c *Committee) validateMessage(msg *types.SSVMessage) error {
+	if !(c.CommitteeMember.CommitteeID.MessageIDBelongs(msg.GetID())) {
+		return errors.New("msg ID doesn't match committee ID")
+	}
+
+	if len(msg.GetData()) == 0 {
+		return errors.New("msg data is invalid")
+	}
 
 	return nil
 }
