@@ -95,8 +95,8 @@ type SSVMessage struct {
 	MsgType MsgType
 	MsgID   MessageID `ssz-size:"56"`
 	// Data max size is the max between max(qbft.SignedMessage) and max(PartialSignatureMessages)
-	// i.e., = max(705240, 144016) = 705240
-	Data []byte `ssz-max:"705240"`
+	// i.e., = max(1012015, 158418) = 1012015
+	Data []byte `ssz-max:"1012015"`
 }
 
 func (msg *SSVMessage) GetType() MsgType {
@@ -128,8 +128,8 @@ type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
 	OperatorIDs []OperatorID `ssz-max:"13"`
 	SSVMessage  *SSVMessage
-	// Full data max value is ConsensusData max value ~= 209 + 8 + 13 * 1888 + 4194304 = 4219065
-	FullData []byte `ssz-max:"4219065"`
+	// Full data max value is ConsensusData max value ~= 209 + 8 + 13 * 1888 + 4194304 = 4219065. Encoding -> 4219184
+	FullData []byte `ssz-max:"4219184"`
 }
 
 // GetOperatorIDs returns the dutyExecutor operator ID
