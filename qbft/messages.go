@@ -52,8 +52,8 @@ type Message struct {
 
 	Root                     [32]byte `ssz-size:"32"`
 	DataRound                Round    // The last round that obtained a Prepare quorum
-	RoundChangeJustification [][]byte `ssz-max:"13,50624"` // 2^16
-	PrepareJustification     [][]byte `ssz-max:"13,3616"`  // 2^16
+	RoundChangeJustification [][]byte `ssz-max:"13,66770"`
+	PrepareJustification     [][]byte `ssz-max:"13,3991"`
 }
 
 // Creates a Message object from bytes
