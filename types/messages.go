@@ -95,8 +95,8 @@ type SSVMessage struct {
 	MsgType MsgType
 	MsgID   MessageID `ssz-size:"56"`
 	// Data max size is the max between max(qbft.SignedMessage) and max(PartialSignatureMessages)
-	// i.e., = max(1012015, 158418) = 1012015
-	Data []byte `ssz-max:"1012015"`
+	// i.e., = max(722412, 144020) = 722412
+	Data []byte `ssz-max:"722412"`
 }
 
 func (msg *SSVMessage) GetType() MsgType {
