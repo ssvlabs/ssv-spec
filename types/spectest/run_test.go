@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
@@ -154,6 +155,12 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &beaconvote.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&maxmsgsize.MaxMessageTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &maxmsgsize.MaxMessageTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:

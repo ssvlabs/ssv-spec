@@ -3,20 +3,18 @@ package spectest
 import (
 	"testing"
 
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
-
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
-
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata/proposer"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
-
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
 )
 
@@ -104,4 +102,19 @@ var AllTests = []SpecTest{
 	duty.MapUnknownRole(),
 
 	beaconvote.BeaconVoteEncoding(),
+
+	maxmsgsize.QBFTMessageWithNoJustification(),
+	maxmsgsize.SignedSSVMessageFromQBFTMessageWithNoJustification(),
+	maxmsgsize.QBFTMessageWith1Justification(),
+	maxmsgsize.SignedSSVMessageFromQBFTMessageWith1Justification(),
+	maxmsgsize.QBFTMessageWith2Justification(),
+	maxmsgsize.SignedSSVMessageFromQBFTMessageWith2Justification(),
+	maxmsgsize.PartialSignatureMessage(),
+	maxmsgsize.PartialSignatureMessages(),
+	maxmsgsize.SignedSSVMessageFromPartialSignatureMessages(),
+	maxmsgsize.SSVMessageFromQBFTMessage(),
+	maxmsgsize.SSVMessageFromPartialSignatureMessage(),
+	maxmsgsize.PartialSignatureMessagesForPreConsensus(),
+	maxmsgsize.ConsensusData(),
+	maxmsgsize.BeaconVote(),
 }
