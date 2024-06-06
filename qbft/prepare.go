@@ -167,5 +167,5 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 		Root: root,
 	}
 
-	return MessageToSignedSSVMessage(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	return Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
 }

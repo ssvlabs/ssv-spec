@@ -434,5 +434,10 @@ func CreateRoundChange(state *State, config IConfig, newRound Round, instanceSta
 		DataRound:                round,
 		RoundChangeJustification: justificationsData,
 	}
-	return MessageToSignedSSVMessageWithFullData(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner(), fullData)
+	signedMsg, err := Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	if err != nil {
+		return nil, errors.Wrap(err, "could not sign round change message")
+	}
+	signedMsg.FullData = fullData
+	return signedMsg, nil
 }

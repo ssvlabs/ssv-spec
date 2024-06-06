@@ -88,7 +88,7 @@ func CreateCommit(state *State, config IConfig, root [32]byte) (*types.SignedSSV
 
 		Root: root,
 	}
-	return MessageToSignedSSVMessage(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	return Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
 }
 
 func baseCommitValidationIgnoreSignature(

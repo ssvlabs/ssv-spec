@@ -137,16 +137,7 @@ func MarshalJustifications(msgs []*types.SignedSSVMessage) ([][]byte, error) {
 	return ret, nil
 }
 
-func MessageToSignedSSVMessageWithFullData(msg *Message, operatorID types.OperatorID, operatorSigner types.OperatorSigner, fullData []byte) (*types.SignedSSVMessage, error) {
-	signedSSVMessage, err := MessageToSignedSSVMessage(msg, operatorID, operatorSigner)
-	if err != nil {
-		return nil, err
-	}
-	signedSSVMessage.FullData = fullData
-	return signedSSVMessage, nil
-}
-
-func MessageToSignedSSVMessage(msg *Message, operatorID types.OperatorID, operatorSigner types.OperatorSigner) (*types.SignedSSVMessage, error) {
+func Sign(msg *Message, operatorID types.OperatorID, operatorSigner types.OperatorSigner) (*types.SignedSSVMessage, error) {
 
 	byts, err := msg.Encode()
 	if err != nil {

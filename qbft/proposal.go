@@ -262,5 +262,10 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		PrepareJustification:     preparesData,
 	}
 
-	return MessageToSignedSSVMessageWithFullData(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner(), fullData)
+	signedMsg, err := Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create proposal message")
+	}
+	signedMsg.FullData = fullData
+	return signedMsg, nil
 }
