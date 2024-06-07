@@ -35,8 +35,8 @@ func expectedPartialSignatureMessages(numSignatures int) *types.PartialSignature
 	}
 }
 
-func ExpectedPartialSignatureMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedPartialSignatureMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected PartialSignatureMessage",
 		Object:                expectedPartialSignatureMessage(),
 		ExpectedEncodedLength: expectedSizePartialSignatureMessage,
@@ -44,8 +44,8 @@ func ExpectedPartialSignatureMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedPartialSignatureMessages() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedPartialSignatureMessages() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected PartialSignatureMessages",
 		Object:                expectedPartialSignatureMessages(1),
 		ExpectedEncodedLength: expectedSizePartialSignatureMessages,

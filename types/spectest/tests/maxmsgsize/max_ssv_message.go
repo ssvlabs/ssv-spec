@@ -37,8 +37,8 @@ func maxSSVMessageFromPartialSignatureMessages() *types.SSVMessage {
 	return maxSSVMessageFromData(msgBytes)
 }
 
-func SSVMessageFromQBFTMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func SSVMessageFromQBFTMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "max SSVMessage from qbftMessage",
 		Object:                maxSSVMessageFromQBFTMessage(),
 		ExpectedEncodedLength: maxSizeSSVMessageFromQBFTMessage,
@@ -46,8 +46,8 @@ func SSVMessageFromQBFTMessage() *MaxMessageTest {
 	}
 }
 
-func SSVMessageFromPartialSignatureMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func SSVMessageFromPartialSignatureMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "max SSVMessage from PartialSignatureMessages",
 		Object:                maxSSVMessageFromPartialSignatureMessages(),
 		ExpectedEncodedLength: maxSizeSSVMessageFromPartialSignatureMessages,

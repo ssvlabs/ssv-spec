@@ -53,8 +53,8 @@ func expectedSignedSSVMessageWithFullDataFromObject(obj types.Encoder, numSigner
 	return msg
 }
 
-func ExpectedPrepareSignedSSVMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedPrepareSignedSSVMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected prepare SignedSSVMessage",
 		Object:                expectedSignedSSVMessageFromObject(expectedPrepare(), 1),
 		ExpectedEncodedLength: expectedSizePrepareSignedSSVMessage,
@@ -62,8 +62,8 @@ func ExpectedPrepareSignedSSVMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedCommitSignedSSVMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedCommitSignedSSVMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected commit SignedSSVMessage",
 		Object:                expectedSignedSSVMessageFromObject(expectedCommit(), 1),
 		ExpectedEncodedLength: expectedSizeCommitSignedSSVMessage,
@@ -71,8 +71,8 @@ func ExpectedCommitSignedSSVMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedDecidedSignedSSVMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedDecidedSignedSSVMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected decided SignedSSVMessage",
 		Object:                expectedSignedSSVMessageFromObject(expectedCommit(), 3),
 		ExpectedEncodedLength: expectedSizeDecidedSignedSSVMessage,
@@ -80,8 +80,8 @@ func ExpectedDecidedSignedSSVMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedRoundChangeSignedSSVMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedRoundChangeSignedSSVMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected round change SignedSSVMessage",
 		Object:                expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
 		ExpectedEncodedLength: expectedSizeRoundChangeSignedSSVMessage,
@@ -89,8 +89,8 @@ func ExpectedRoundChangeSignedSSVMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedProposalSignedSSVMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedProposalSignedSSVMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected proposal SignedSSVMessage",
 		Object:                expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
 		ExpectedEncodedLength: expectedSizeProposalSignedSSVMessage,
@@ -98,8 +98,8 @@ func ExpectedProposalSignedSSVMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedPartialSignatureSignedSSVMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedPartialSignatureSignedSSVMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected partial signature SignedSSVMessage",
 		Object:                expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
 		ExpectedEncodedLength: expectedSizePartialSignatureMessagesSignedSSVMessage,

@@ -46,8 +46,8 @@ func maxConsensusData() *types.ConsensusData {
 	}
 }
 
-func ConsensusData() *MaxMessageTest {
-	return &MaxMessageTest{
+func ConsensusData() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "max ConsensusData",
 		Object:                maxConsensusData(),
 		ExpectedEncodedLength: maxSizeFullData,

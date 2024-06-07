@@ -43,8 +43,8 @@ func maxSignedSSVMessageWithFullDataFromObject(obj types.Encoder) *types.SignedS
 	return msg
 }
 
-func SignedSSVMessageFromQBFTMessageWithNoJustification() *MaxMessageTest {
-	return &MaxMessageTest{
+func SignedSSVMessageFromQBFTMessageWithNoJustification() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "max SignedSSVMessage from qbftMessage with no justification",
 		Object:                maxSignedSSVMessageFromObject(maxQbftMessageNoJustification()),
 		ExpectedEncodedLength: maxSizeSignedSSVMessageFromQBFTWithNoJustification,
@@ -52,8 +52,8 @@ func SignedSSVMessageFromQBFTMessageWithNoJustification() *MaxMessageTest {
 	}
 }
 
-func SignedSSVMessageFromQBFTMessageWith1Justification() *MaxMessageTest {
-	return &MaxMessageTest{
+func SignedSSVMessageFromQBFTMessageWith1Justification() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "max SignedSSVMessage from qbftMessage with 1 justification",
 		Object:                maxSignedSSVMessageFromObject(maxQbftMessageWith1Justification()),
 		ExpectedEncodedLength: maxSizeSignedSSVMessageFromQBFTWith1Justification,
@@ -61,8 +61,8 @@ func SignedSSVMessageFromQBFTMessageWith1Justification() *MaxMessageTest {
 	}
 }
 
-func SignedSSVMessageFromQBFTMessageWith2Justification() *MaxMessageTest {
-	return &MaxMessageTest{
+func SignedSSVMessageFromQBFTMessageWith2Justification() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "max SignedSSVMessage from qbftMessage with 2 justifications",
 		Object:                maxSignedSSVMessageWithFullDataFromObject(maxQbftMessageWith2Justification()),
 		ExpectedEncodedLength: maxSizeSignedSSVMessageFromQBFTWith2Justification,
@@ -70,8 +70,8 @@ func SignedSSVMessageFromQBFTMessageWith2Justification() *MaxMessageTest {
 	}
 }
 
-func SignedSSVMessageFromPartialSignatureMessages() *MaxMessageTest {
-	return &MaxMessageTest{
+func SignedSSVMessageFromPartialSignatureMessages() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "max SignedSSVMessage from PartialSignatureMessages",
 		Object:                maxSignedSSVMessageFromObject(maxPartialSignatureMessages()),
 		ExpectedEncodedLength: maxSizeSignedSSVMessageFromPartialSignatureMessages,

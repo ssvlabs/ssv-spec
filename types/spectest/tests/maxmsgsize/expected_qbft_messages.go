@@ -106,8 +106,8 @@ func expectedProposal(quorum int) *qbft.Message {
 	return qbftMsg
 }
 
-func ExpectedPrepareQBFTMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedPrepareQBFTMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected prepare qbftMessage",
 		Object:                expectedPrepare(),
 		ExpectedEncodedLength: expectedSizePrepareQBFTMessage,
@@ -115,8 +115,8 @@ func ExpectedPrepareQBFTMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedCommitQBFTMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedCommitQBFTMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected commit qbftMessage",
 		Object:                expectedCommit(),
 		ExpectedEncodedLength: expectedSizeCommitQBFTMessage,
@@ -124,8 +124,8 @@ func ExpectedCommitQBFTMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedRoundChangeQBFTMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedRoundChangeQBFTMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected round change qbftMessage",
 		Object:                expectedRoundChange(3),
 		ExpectedEncodedLength: expectedSizeRoundChangeQBFTMessage,
@@ -133,8 +133,8 @@ func ExpectedRoundChangeQBFTMessage() *MaxMessageTest {
 	}
 }
 
-func ExpectedProposalQBFTMessage() *MaxMessageTest {
-	return &MaxMessageTest{
+func ExpectedProposalQBFTMessage() *StructureSizeTest {
+	return &StructureSizeTest{
 		Name:                  "expected proposal qbftMessage",
 		Object:                expectedProposal(3),
 		ExpectedEncodedLength: expectedSizeProposalQBFTMessage,

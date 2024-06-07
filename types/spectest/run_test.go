@@ -157,10 +157,10 @@ func TestJson(t *testing.T) {
 				typedTest := &beaconvote.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
-			case reflect.TypeOf(&maxmsgsize.MaxMessageTest{}).String():
+			case reflect.TypeOf(&maxmsgsize.StructureSizeTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
-				typedTest := &maxmsgsize.MaxMessageTest{}
+				typedTest := &maxmsgsize.StructureSizeTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:

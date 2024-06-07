@@ -10,18 +10,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type MaxMessageTest struct {
+type StructureSizeTest struct {
 	Name                  string
 	Object                types.Encoder
 	ExpectedEncodedLength int
 	IsMaxSizeForType      bool
 }
 
-func (test *MaxMessageTest) TestName() string {
-	return "maxmsgtest " + test.Name
+func (test *StructureSizeTest) TestName() string {
+	return "structure size test " + test.Name
 }
 
-func (test *MaxMessageTest) Run(t *testing.T) {
+func (test *StructureSizeTest) Run(t *testing.T) {
 	if test.Object == nil {
 		t.Fatal("no input object")
 	}
@@ -35,8 +35,8 @@ func (test *MaxMessageTest) Run(t *testing.T) {
 	require.Equal(t, test.ExpectedEncodedLength, len(encodedObject))
 }
 
-// Custom JSON unmarshaller for MaxMessageTest since json can't unmarshal the types.Encoder interface
-func (t *MaxMessageTest) UnmarshalJSON(data []byte) error {
+// Custom JSON unmarshaller for StructureSizeTest since json can't unmarshal the types.Encoder interface
+func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	// Define alias with a decodable Object field
 	type Alias struct {
 		Name                  string

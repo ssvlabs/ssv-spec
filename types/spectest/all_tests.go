@@ -117,4 +117,19 @@ var AllTests = []SpecTest{
 	maxmsgsize.PartialSignatureMessagesForPreConsensus(),
 	maxmsgsize.ConsensusData(),
 	maxmsgsize.BeaconVote(),
+
+	maxmsgsize.ExpectedPrepareQBFTMessage(),
+	maxmsgsize.ExpectedCommitQBFTMessage(),
+	maxmsgsize.ExpectedRoundChangeQBFTMessage(),
+	maxmsgsize.ExpectedProposalQBFTMessage(),
+
+	maxmsgsize.ExpectedPartialSignatureMessage(),
+	maxmsgsize.ExpectedPartialSignatureMessages(),
+
+	maxmsgsize.ExpectedPrepareSignedSSVMessage(),
+	maxmsgsize.ExpectedCommitSignedSSVMessage(),
+	maxmsgsize.ExpectedDecidedSignedSSVMessage(),
+	maxmsgsize.ExpectedRoundChangeSignedSSVMessage(),
+	maxmsgsize.ExpectedProposalSignedSSVMessage(),
+	maxmsgsize.ExpectedPartialSignatureSignedSSVMessage(),
 }
