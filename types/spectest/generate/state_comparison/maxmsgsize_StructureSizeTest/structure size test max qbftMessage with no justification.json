@@ -44,5 +44,5 @@
 				"PrepareJustification": []
 		},
 		"ExpectedEncodedLength": 132,
-		"IsMaxSizeForType": false
+		"IsMaxSize": false
 }

@@ -40,5 +40,5 @@
 				"ValidatorIndex": "1"
 		},
 		"ExpectedEncodedLength": 144,
-		"IsMaxSizeForType": true
+		"IsMaxSize": true
 }

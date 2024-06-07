@@ -514,5 +514,5 @@
 				]
 		},
 		"ExpectedEncodedLength": 1892,
-		"IsMaxSizeForType": false
+		"IsMaxSize": false
 }

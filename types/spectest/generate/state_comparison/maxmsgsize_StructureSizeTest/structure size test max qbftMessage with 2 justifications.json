@@ -72,5 +72,5 @@
 				]
 		},
 		"ExpectedEncodedLength": 722412,
-		"IsMaxSizeForType": true
+		"IsMaxSize": true
 }

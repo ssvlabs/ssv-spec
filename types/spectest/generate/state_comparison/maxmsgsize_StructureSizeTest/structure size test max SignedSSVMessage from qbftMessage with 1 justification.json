@@ -96,5 +96,5 @@
 				"FullData": null
 		},
 		"ExpectedEncodedLength": 51852,
-		"IsMaxSizeForType": false
+		"IsMaxSize": false
 }
