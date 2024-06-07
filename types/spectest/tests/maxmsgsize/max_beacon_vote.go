@@ -26,7 +26,7 @@ func maxBeaconVote() *types.BeaconVote {
 	}
 }
 
-func BeaconVote() *StructureSizeTest {
+func MaxBeaconVote() *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  "max BeaconVote",
 		Object:                maxBeaconVote(),

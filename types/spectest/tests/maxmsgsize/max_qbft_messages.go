@@ -80,7 +80,7 @@ func maxQbftMessageWith2Justification() *qbft.Message {
 	return qbftMsg
 }
 
-func QBFTMessageWithNoJustification() *StructureSizeTest {
+func MaxQBFTMessageWithNoJustification() *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  "max qbftMessage with no justification",
 		Object:                maxQbftMessageNoJustification(),
@@ -89,7 +89,7 @@ func QBFTMessageWithNoJustification() *StructureSizeTest {
 	}
 }
 
-func QBFTMessageWith1Justification() *StructureSizeTest {
+func MaxQBFTMessageWith1Justification() *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  "max qbftMessage with 1 justification",
 		Object:                maxQbftMessageWith1Justification(),
@@ -98,7 +98,7 @@ func QBFTMessageWith1Justification() *StructureSizeTest {
 	}
 }
 
-func QBFTMessageWith2Justification() *StructureSizeTest {
+func MaxQBFTMessageWith2Justification() *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  "max qbftMessage with 2 justifications",
 		Object:                maxQbftMessageWith2Justification(),
