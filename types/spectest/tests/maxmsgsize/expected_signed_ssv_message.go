@@ -58,7 +58,7 @@ func ExpectedPrepareSignedSSVMessage() *StructureSizeTest {
 		Name:                  "expected prepare SignedSSVMessage",
 		Object:                expectedSignedSSVMessageFromObject(expectedPrepare(), 1),
 		ExpectedEncodedLength: expectedSizePrepareSignedSSVMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -67,7 +67,7 @@ func ExpectedCommitSignedSSVMessage() *StructureSizeTest {
 		Name:                  "expected commit SignedSSVMessage",
 		Object:                expectedSignedSSVMessageFromObject(expectedCommit(), 1),
 		ExpectedEncodedLength: expectedSizeCommitSignedSSVMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -76,7 +76,7 @@ func ExpectedDecidedSignedSSVMessage() *StructureSizeTest {
 		Name:                  "expected decided SignedSSVMessage",
 		Object:                expectedSignedSSVMessageFromObject(expectedCommit(), 3),
 		ExpectedEncodedLength: expectedSizeDecidedSignedSSVMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -85,7 +85,7 @@ func ExpectedRoundChangeSignedSSVMessage() *StructureSizeTest {
 		Name:                  "expected round change SignedSSVMessage",
 		Object:                expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
 		ExpectedEncodedLength: expectedSizeRoundChangeSignedSSVMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -94,7 +94,7 @@ func ExpectedProposalSignedSSVMessage() *StructureSizeTest {
 		Name:                  "expected proposal SignedSSVMessage",
 		Object:                expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
 		ExpectedEncodedLength: expectedSizeProposalSignedSSVMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -103,6 +103,6 @@ func ExpectedPartialSignatureSignedSSVMessage() *StructureSizeTest {
 		Name:                  "expected partial signature SignedSSVMessage",
 		Object:                expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
 		ExpectedEncodedLength: expectedSizePartialSignatureMessagesSignedSSVMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }

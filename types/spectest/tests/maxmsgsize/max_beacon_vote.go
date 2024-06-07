@@ -31,6 +31,6 @@ func MaxBeaconVote() *StructureSizeTest {
 		Name:                  "max BeaconVote",
 		Object:                maxBeaconVote(),
 		ExpectedEncodedLength: maxSizeBeaconVote,
-		IsMaxSizeForType:      true,
+		IsMaxSize:             true,
 	}
 }

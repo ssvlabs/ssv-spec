@@ -51,6 +51,6 @@ func MaxConsensusData() *StructureSizeTest {
 		Name:                  "max ConsensusData",
 		Object:                maxConsensusData(),
 		ExpectedEncodedLength: maxSizeFullData,
-		IsMaxSizeForType:      true,
+		IsMaxSize:             true,
 	}
 }

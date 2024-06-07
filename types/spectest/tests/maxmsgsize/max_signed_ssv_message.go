@@ -48,7 +48,7 @@ func MaxSignedSSVMessageFromQBFTMessageWithNoJustification() *StructureSizeTest 
 		Name:                  "max SignedSSVMessage from qbftMessage with no justification",
 		Object:                maxSignedSSVMessageFromObject(maxQbftMessageNoJustification()),
 		ExpectedEncodedLength: maxSizeSignedSSVMessageFromQBFTWithNoJustification,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -57,7 +57,7 @@ func MaxSignedSSVMessageFromQBFTMessageWith1Justification() *StructureSizeTest {
 		Name:                  "max SignedSSVMessage from qbftMessage with 1 justification",
 		Object:                maxSignedSSVMessageFromObject(maxQbftMessageWith1Justification()),
 		ExpectedEncodedLength: maxSizeSignedSSVMessageFromQBFTWith1Justification,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -66,7 +66,7 @@ func MaxSignedSSVMessageFromQBFTMessageWith2Justification() *StructureSizeTest {
 		Name:                  "max SignedSSVMessage from qbftMessage with 2 justifications",
 		Object:                maxSignedSSVMessageWithFullDataFromObject(maxQbftMessageWith2Justification()),
 		ExpectedEncodedLength: maxSizeSignedSSVMessageFromQBFTWith2Justification,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             true,
 	}
 }
 
@@ -75,6 +75,6 @@ func MaxSignedSSVMessageFromPartialSignatureMessages() *StructureSizeTest {
 		Name:                  "max SignedSSVMessage from PartialSignatureMessages",
 		Object:                maxSignedSSVMessageFromObject(maxPartialSignatureMessages()),
 		ExpectedEncodedLength: maxSizeSignedSSVMessageFromPartialSignatureMessages,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }

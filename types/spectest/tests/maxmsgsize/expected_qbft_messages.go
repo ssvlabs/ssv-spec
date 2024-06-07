@@ -111,7 +111,7 @@ func ExpectedPrepareQBFTMessage() *StructureSizeTest {
 		Name:                  "expected prepare qbftMessage",
 		Object:                expectedPrepare(),
 		ExpectedEncodedLength: expectedSizePrepareQBFTMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -120,7 +120,7 @@ func ExpectedCommitQBFTMessage() *StructureSizeTest {
 		Name:                  "expected commit qbftMessage",
 		Object:                expectedCommit(),
 		ExpectedEncodedLength: expectedSizeCommitQBFTMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -129,7 +129,7 @@ func ExpectedRoundChangeQBFTMessage() *StructureSizeTest {
 		Name:                  "expected round change qbftMessage",
 		Object:                expectedRoundChange(3),
 		ExpectedEncodedLength: expectedSizeRoundChangeQBFTMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -138,6 +138,6 @@ func ExpectedProposalQBFTMessage() *StructureSizeTest {
 		Name:                  "expected proposal qbftMessage",
 		Object:                expectedProposal(3),
 		ExpectedEncodedLength: expectedSizeProposalQBFTMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }

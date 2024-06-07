@@ -14,7 +14,7 @@ type StructureSizeTest struct {
 	Name                  string
 	Object                types.Encoder
 	ExpectedEncodedLength int
-	IsMaxSizeForType      bool
+	IsMaxSize             bool
 }
 
 func (test *StructureSizeTest) TestName() string {
@@ -27,7 +27,7 @@ func (test *StructureSizeTest) Run(t *testing.T) {
 	}
 
 	// Check if object respects SSZ tags sizes
-	checkSSZTags(t, getReflectValueForObject(test.Object), test.IsMaxSizeForType)
+	checkSSZTags(t, getReflectValueForObject(test.Object), test.IsMaxSize)
 
 	// Check expected size
 	encodedObject, err := test.Object.Encode()
@@ -41,7 +41,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	type Alias struct {
 		Name                  string
 		ExpectedEncodedLength int
-		IsMaxSizeForType      bool
+		IsMaxSize             bool
 
 		Object interface{}
 	}
@@ -53,7 +53,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	}
 	t.Name = aliasObj.Name
 	t.ExpectedEncodedLength = aliasObj.ExpectedEncodedLength
-	t.IsMaxSizeForType = aliasObj.IsMaxSizeForType
+	t.IsMaxSize = aliasObj.IsMaxSize
 
 	// Treat Object field with appropriate decoder
 	byts, err := json.Marshal(aliasObj.Object)

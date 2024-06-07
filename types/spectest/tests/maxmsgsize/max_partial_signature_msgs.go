@@ -55,7 +55,7 @@ func MaxPartialSignatureMessage() *StructureSizeTest {
 		Name:                  "max PartialSignatureMessage",
 		Object:                maxPartialSignatureMessage(),
 		ExpectedEncodedLength: maxSizePartialSignatureMessage,
-		IsMaxSizeForType:      true,
+		IsMaxSize:             true,
 	}
 }
 
@@ -64,7 +64,7 @@ func MaxPartialSignatureMessages() *StructureSizeTest {
 		Name:                  "max PartialSignatureMessages",
 		Object:                maxPartialSignatureMessages(),
 		ExpectedEncodedLength: maxSizePartialSignatureMessages,
-		IsMaxSizeForType:      true,
+		IsMaxSize:             true,
 	}
 }
 
@@ -73,6 +73,6 @@ func MaxPartialSignatureMessagesForPreConsensus() *StructureSizeTest {
 		Name:                  "max PartialSignatureMessages for pre-consensus",
 		Object:                maxPartialSignatureMessagesForPreConsensus(),
 		ExpectedEncodedLength: maxSizePartialSignatureMessagesForPreConsensus,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }

@@ -40,7 +40,7 @@ func ExpectedPartialSignatureMessage() *StructureSizeTest {
 		Name:                  "expected PartialSignatureMessage",
 		Object:                expectedPartialSignatureMessage(),
 		ExpectedEncodedLength: expectedSizePartialSignatureMessage,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -49,6 +49,6 @@ func ExpectedPartialSignatureMessages() *StructureSizeTest {
 		Name:                  "expected PartialSignatureMessages",
 		Object:                expectedPartialSignatureMessages(1),
 		ExpectedEncodedLength: expectedSizePartialSignatureMessages,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }

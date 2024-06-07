@@ -85,7 +85,7 @@ func MaxQBFTMessageWithNoJustification() *StructureSizeTest {
 		Name:                  "max qbftMessage with no justification",
 		Object:                maxQbftMessageNoJustification(),
 		ExpectedEncodedLength: maxSizeQBFTMessageWithNoJustification,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -94,7 +94,7 @@ func MaxQBFTMessageWith1Justification() *StructureSizeTest {
 		Name:                  "max qbftMessage with 1 justification",
 		Object:                maxQbftMessageWith1Justification(),
 		ExpectedEncodedLength: maxSizeQBFTMessageWith1Justification,
-		IsMaxSizeForType:      false,
+		IsMaxSize:             false,
 	}
 }
 
@@ -103,6 +103,6 @@ func MaxQBFTMessageWith2Justification() *StructureSizeTest {
 		Name:                  "max qbftMessage with 2 justifications",
 		Object:                maxQbftMessageWith2Justification(),
 		ExpectedEncodedLength: maxSizeQBFTMessageWith2Justification,
-		IsMaxSizeForType:      true,
+		IsMaxSize:             true,
 	}
 }
