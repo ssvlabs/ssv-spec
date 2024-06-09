@@ -91,14 +91,6 @@ func (cr CommitteeRunner) GetNetwork() Network {
 	return cr.network
 }
 
-func (cr CommitteeRunner) GetShare() *types.Share {
-	// TODO better solution for this
-	for _, share := range cr.BaseRunner.Share {
-		return share
-	}
-	return nil
-}
-
 func (cr CommitteeRunner) HasRunningDuty() bool {
 	return cr.BaseRunner.hasRunningDuty()
 }
@@ -155,8 +147,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID: types.NewMsgID(cr.GetShare().DomainType, cr.GetBaseRunner().QBFTController.CommitteeMember.CommitteeID[:],
-			cr.BaseRunner.RunnerRoleType),
+		MsgID:   types.MessageID(cr.GetBaseRunner().QBFTController.Identifier),
 	}
 	ssvMsg.Data, err = postConsensusMsg.Encode()
 	if err != nil {
