@@ -514,18 +514,15 @@ of all the committees in the subnets they participate.
 that should store the last decided message of each committee in the network.
 Having such redundancy of decided messages helps to maintain the multiple states (per validator) across the network.
 
-**Validators Mapping**
+**Committee Mapping**
 
-Validator's public key is mapped to a subnet using a hash function,
-which helps to distribute validators across subnets in a balanced, distributed way:
+The committee ID is a hash of the operators IDs.
+This helps to distribute committees across subnets in a balanced, distributed way:
 
-`hash(validatiorPubKey) % num_of_subnets`
+`committee_id % num_of_subnets`
 
 Deterministic mapping is ensured as long as the number of subnets doesn't change,
 therefore it's a fixed number.
-
-A dynamic number of subnets (e.g. `log(numOfValidators)`) was also considered,
-but requires consistent hashing technics that can be investigated if we need so in the future.
 
 <br />
 
