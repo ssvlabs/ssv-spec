@@ -191,6 +191,8 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	}
 
 	var anyErr error
+	attestationsToSubmit := make(map[phase0.ValidatorIndex]*phase0.Attestation)
+
 	// For each root that got at least one quorum, find the duties associated to it and try to submit
 	for root := range rootSet {
 
@@ -225,7 +227,6 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 				pubKey[:], validator)
 			// If the reconstructed signature verification failed, fall back to verifying each partial signature
 			if err != nil {
-				// If fail, fall back to verifying each partial signature
 				for root := range rootSet {
 					cr.BaseRunner.FallBackAndVerifyEachSignature(cr.BaseRunner.State.PostConsensusContainer, root,
 						share.Committee, validator)
@@ -249,27 +250,42 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			sszObject := beaconObjects[validator][root]
 
 			// Submit
-			if role == types.BNRoleAttester {
-				att := sszObject.(*phase0.Attestation)
-				// Insert signature
-				att.Signature = specSig
-
-				if err := cr.beacon.SubmitAttestation(att); err != nil {
-					return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
-				}
-			} else if role == types.BNRoleSyncCommittee {
+			if role == types.BNRoleSyncCommittee {
 				syncMsg := sszObject.(*altair.SyncCommitteeMessage)
 
 				// Insert signature
 				syncMsg.Signature = specSig
 
+				// Submit SyncCommitteeMessage
 				if err := cr.beacon.SubmitSyncMessage(syncMsg); err != nil {
 					return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
 				}
+
+				// Record successful submission
+				cr.RecordSubmission(role, validator)
+
+			} else if role == types.BNRoleAttester {
+				att := sszObject.(*phase0.Attestation)
+				// Insert signature
+				att.Signature = specSig
+
+				// Store attestation for multiple submission
+				attestationsToSubmit[validator] = att
 			}
-			// Record successful submission
-			cr.RecordSubmission(role, validator)
 		}
+	}
+
+	// Submit multiple attestations
+	attestations := make([]*phase0.Attestation, 0)
+	for _, att := range attestationsToSubmit {
+		attestations = append(attestations, att)
+	}
+	if err := cr.beacon.SubmitAttestation(attestations); err != nil {
+		return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
+	}
+	// Record successful submissions
+	for validator := range attestationsToSubmit {
+		cr.RecordSubmission(types.BNRoleAttester, validator)
 	}
 
 	if anyErr != nil {
