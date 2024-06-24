@@ -29,10 +29,10 @@ type Network interface {
 // AttesterCalls interface has all attester duty specific calls
 type AttesterCalls interface {
 	// GetAttestationData returns attestation data by the given slot and committee index
-	GetAttestationData(slot *phase0.Slot, committeeIndex *phase0.CommitteeIndex) (*phase0.AttestationData,
+	GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.AttestationData,
 		spec.DataVersion, error)
 	// SubmitAttestation submit the attestation to the node
-	SubmitAttestation(attestations []*phase0.Attestation) error
+	SubmitAttestations(attestations []*phase0.Attestation) error
 }
 
 // ProposerCalls interface has all block proposer duty specific calls
@@ -58,7 +58,7 @@ type SyncCommitteeCalls interface {
 	// GetSyncMessageBlockRoot returns beacon block root for sync committee
 	GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.Root, spec.DataVersion, error)
 	// SubmitSyncMessage submits a signed sync committee msg
-	SubmitSyncMessage(msg *altair.SyncCommitteeMessage) error
+	SubmitSyncMessages(msgs []*altair.SyncCommitteeMessage) error
 }
 
 // SyncCommitteeContributionCalls interface has all sync committee contribution duty specific calls

@@ -192,6 +192,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 
 	var anyErr error
 	attestationsToSubmit := make(map[phase0.ValidatorIndex]*phase0.Attestation)
+	syncCommitteeMessagesToSubmit := make(map[phase0.ValidatorIndex]*altair.SyncCommitteeMessage)
 
 	// For each root that got at least one quorum, find the duties associated to it and try to submit
 	for root := range rootSet {
@@ -249,27 +250,19 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			}
 			sszObject := beaconObjects[validator][root]
 
-			// Submit
+			// Store objects for multiple submission
 			if role == types.BNRoleSyncCommittee {
 				syncMsg := sszObject.(*altair.SyncCommitteeMessage)
-
 				// Insert signature
 				syncMsg.Signature = specSig
 
-				// Submit SyncCommitteeMessage
-				if err := cr.beacon.SubmitSyncMessage(syncMsg); err != nil {
-					return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
-				}
-
-				// Record successful submission
-				cr.RecordSubmission(role, validator)
+				syncCommitteeMessagesToSubmit[validator] = syncMsg
 
 			} else if role == types.BNRoleAttester {
 				att := sszObject.(*phase0.Attestation)
 				// Insert signature
 				att.Signature = specSig
 
-				// Store attestation for multiple submission
 				attestationsToSubmit[validator] = att
 			}
 		}
@@ -280,12 +273,25 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	for _, att := range attestationsToSubmit {
 		attestations = append(attestations, att)
 	}
-	if err := cr.beacon.SubmitAttestation(attestations); err != nil {
+	if err := cr.beacon.SubmitAttestations(attestations); err != nil {
 		return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
 	}
 	// Record successful submissions
 	for validator := range attestationsToSubmit {
 		cr.RecordSubmission(types.BNRoleAttester, validator)
+	}
+
+	// Submit multiple sync committee
+	syncCommitteeMessages := make([]*altair.SyncCommitteeMessage, 0)
+	for _, syncMsg := range syncCommitteeMessagesToSubmit {
+		syncCommitteeMessages = append(syncCommitteeMessages, syncMsg)
+	}
+	if err := cr.beacon.SubmitSyncMessages(syncCommitteeMessages); err != nil {
+		return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
+	}
+	// Record successful submissions
+	for validator := range syncCommitteeMessagesToSubmit {
+		cr.RecordSubmission(types.BNRoleSyncCommittee, validator)
 	}
 
 	if anyErr != nil {
@@ -460,7 +466,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 
 func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 	slot := duty.DutySlot()
-	attData, _, err := cr.GetBeaconNode().GetAttestationData(&slot, nil)
+	attData, _, err := cr.GetBeaconNode().GetAttestationData(slot, phase0.CommitteeIndex(0))
 	if err != nil {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
