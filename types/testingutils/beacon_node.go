@@ -681,9 +681,11 @@ func (bn *TestingBeaconNode) GetAttestationData(slot *phase0.Slot, committeeInde
 }
 
 // SubmitAttestation submit the attestation to the node
-func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) error {
-	r, _ := attestation.HashTreeRoot()
-	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+func (bn *TestingBeaconNode) SubmitAttestation(attestations []*phase0.Attestation) error {
+	for _, att := range attestations {
+		r, _ := att.HashTreeRoot()
+		bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	}
 	return nil
 }
 

@@ -32,7 +32,7 @@ type AttesterCalls interface {
 	GetAttestationData(slot *phase0.Slot, committeeIndex *phase0.CommitteeIndex) (*phase0.AttestationData,
 		spec.DataVersion, error)
 	// SubmitAttestation submit the attestation to the node
-	SubmitAttestation(attestation *phase0.Attestation) error
+	SubmitAttestation(attestations []*phase0.Attestation) error
 }
 
 // ProposerCalls interface has all block proposer duty specific calls
