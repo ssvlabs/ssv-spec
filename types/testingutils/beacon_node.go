@@ -668,22 +668,22 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *TestingBeaconNode) GetAttestationData(slot *phase0.Slot, committeeIndex *phase0.CommitteeIndex) (*phase0.
+func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.
 	AttestationData, spec.DataVersion, error) {
 	data := *TestingAttestationData
-	if slot != nil {
-		data.Slot = *slot
-	}
-	if committeeIndex != nil {
-		data.Index = *committeeIndex
+	data.Slot = slot
+	if committeeIndex != 0 {
+		data.Index = committeeIndex
 	}
 	return &data, spec.DataVersionPhase0, nil
 }
 
-// SubmitAttestation submit the attestation to the node
-func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) error {
-	r, _ := attestation.HashTreeRoot()
-	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+// SubmitAttestations submit attestations to the node
+func (bn *TestingBeaconNode) SubmitAttestations(attestations []*phase0.Attestation) error {
+	for _, att := range attestations {
+		r, _ := att.HashTreeRoot()
+		bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	}
 	return nil
 }
 
@@ -812,9 +812,11 @@ func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.R
 }
 
 // SubmitSyncMessage submits a signed sync committee msg
-func (bn *TestingBeaconNode) SubmitSyncMessage(msg *altair.SyncCommitteeMessage) error {
-	r, _ := msg.HashTreeRoot()
-	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+func (bn *TestingBeaconNode) SubmitSyncMessages(msgs []*altair.SyncCommitteeMessage) error {
+	for _, msg := range msgs {
+		r, _ := msg.HashTreeRoot()
+		bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	}
 	return nil
 }
 
