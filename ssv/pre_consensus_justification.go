@@ -8,31 +8,24 @@ import (
 )
 
 // correctQBFTState returns true if QBFT controller state requires pre-consensus justification
-func (b *BaseRunner) correctQBFTState(msg *qbft.Message) bool {
+func (b *BaseRunner) correctQBFTState(msg *qbft.SignedMessage) bool {
 	inst := b.QBFTController.InstanceForHeight(b.QBFTController.Height)
 	decidedInstance := inst != nil && inst.State != nil && inst.State.Decided
 
 	// firstHeightNotDecided is true if height == 0 (special case) and did not start yet
-	firstHeightNotDecided := inst == nil && b.QBFTController.Height == msg.Height && msg.Height == qbft.FirstHeight
+	firstHeightNotDecided := inst == nil && b.QBFTController.Height == msg.Message.Height && msg.Message.Height == qbft.FirstHeight
 
 	// notFirstHeightDecided returns true if height != 0, height decided and the message is for next height
-	notFirstHeightDecided := decidedInstance && msg.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Height
+	notFirstHeightDecided := decidedInstance && msg.Message.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Message.Height
 
 	return firstHeightNotDecided || notFirstHeightDecided
 }
 
 // shouldProcessingJustificationsForHeight returns true if pre-consensus justification should be processed, false otherwise
-func (b *BaseRunner) shouldProcessingJustificationsForHeight(signedMsg *types.SignedSSVMessage) (bool, error) {
-
-	msg, err := qbft.DecodeMessage(signedMsg.SSVMessage.Data)
-	if err != nil {
-		return false, err
-	}
-
-	correctMsgTYpe := msg.MsgType == qbft.ProposalMsgType || msg.MsgType == qbft.RoundChangeMsgType
-	correctBeaconRole := b.RunnerRoleType == types.RoleProposer || b.RunnerRoleType == types.RoleAggregator || b.
-		RunnerRoleType == types.RoleSyncCommitteeContribution
-	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole, nil
+func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMessage) bool {
+	correctMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
+	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
+	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole
 }
 
 // validatePreConsensusJustifications returns an error if pre-consensus justification is invalid, nil otherwise
@@ -64,26 +57,24 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 			return err
 		}
 
-		signer := msg.Messages[0].Signer
-
 		// check unique signers
-		if !signers[signer] {
-			signers[signer] = true
+		if !signers[msg.Signer] {
+			signers[msg.Signer] = true
 		} else {
 			return errors.New("duplicate signer")
 		}
 
 		// verify all justifications have the same root count
 		if i == 0 {
-			rootCount = len(msg.Messages)
+			rootCount = len(msg.Message.Messages)
 		} else {
-			if rootCount != len(msg.Messages) {
+			if rootCount != len(msg.Message.Messages) {
 				return errors.New("inconsistent root count")
 			}
 		}
 
 		// validate roots
-		for _, partialSigMessage := range msg.Messages {
+		for _, partialSigMessage := range msg.Message.Messages {
 			// validate roots
 			if i == 0 {
 				// check signer did not sign duplicate root
@@ -130,13 +121,8 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 5) add pre-consensus sigs to container
 6) decided on duty
 */
-func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDecidedDutySlot phase0.Slot, msg *types.SignedSSVMessage) error {
-
-	shouldProcess, err := b.shouldProcessingJustificationsForHeight(msg)
-	if err != nil {
-		return err
-	}
-	if !shouldProcess {
+func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDecidedDutySlot phase0.Slot, msg *qbft.SignedMessage) error {
+	if !b.shouldProcessingJustificationsForHeight(msg) {
 		return nil
 	}
 

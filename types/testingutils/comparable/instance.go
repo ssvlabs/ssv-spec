@@ -5,19 +5,23 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-func SetMessages(instance *qbft.Instance, messages []*types.SignedSSVMessage) {
+func SetMessages(instance *qbft.Instance, messages []*types.SSVMessage) {
 	InitContainers(instance)
 
-	for _, signedSSVMessage := range messages {
-		if signedSSVMessage.SSVMessage.MsgType != types.SSVConsensusMsgType {
+	for _, ssvMsg := range messages {
+		if ssvMsg.MsgType != types.SSVConsensusMsgType {
 			continue
 		}
 
-		setMessage(instance, signedSSVMessage)
+		msg := &qbft.SignedMessage{}
+		if err := msg.Decode(ssvMsg.Data); err != nil {
+			panic(err.Error())
+		}
+		setMessage(instance, msg)
 	}
 }
 
-func SetSignedMessages(instance *qbft.Instance, messages []*types.SignedSSVMessage) {
+func SetSignedMessages(instance *qbft.Instance, messages []*qbft.SignedMessage) {
 	InitContainers(instance)
 
 	for _, msg := range messages {
@@ -33,33 +37,27 @@ func InitContainers(instance *qbft.Instance) {
 	instance.State.RoundChangeContainer = qbft.NewMsgContainer()
 }
 
-func setMessage(instance *qbft.Instance, signedMsg *types.SignedSSVMessage) {
-
-	msg, err := qbft.DecodeMessage(signedMsg.SSVMessage.Data)
-	if err != nil {
-		panic(err)
-	}
-
-	switch msg.MsgType {
+func setMessage(instance *qbft.Instance, msg *qbft.SignedMessage) {
+	switch msg.Message.MsgType {
 	case qbft.ProposalMsgType:
-		if instance.State.ProposeContainer.Msgs[msg.Round] == nil {
-			instance.State.ProposeContainer.Msgs[msg.Round] = []*types.SignedSSVMessage{}
+		if instance.State.ProposeContainer.Msgs[msg.Message.Round] == nil {
+			instance.State.ProposeContainer.Msgs[msg.Message.Round] = []*qbft.SignedMessage{}
 		}
-		instance.State.ProposeContainer.Msgs[msg.Round] = append(instance.State.ProposeContainer.Msgs[msg.Round], signedMsg)
+		instance.State.ProposeContainer.Msgs[msg.Message.Round] = append(instance.State.ProposeContainer.Msgs[msg.Message.Round], msg)
 	case qbft.PrepareMsgType:
-		if instance.State.PrepareContainer.Msgs[msg.Round] == nil {
-			instance.State.PrepareContainer.Msgs[msg.Round] = []*types.SignedSSVMessage{}
+		if instance.State.PrepareContainer.Msgs[msg.Message.Round] == nil {
+			instance.State.PrepareContainer.Msgs[msg.Message.Round] = []*qbft.SignedMessage{}
 		}
-		instance.State.PrepareContainer.Msgs[msg.Round] = append(instance.State.PrepareContainer.Msgs[msg.Round], signedMsg)
+		instance.State.PrepareContainer.Msgs[msg.Message.Round] = append(instance.State.PrepareContainer.Msgs[msg.Message.Round], msg)
 	case qbft.CommitMsgType:
-		if instance.State.CommitContainer.Msgs[msg.Round] == nil {
-			instance.State.CommitContainer.Msgs[msg.Round] = []*types.SignedSSVMessage{}
+		if instance.State.CommitContainer.Msgs[msg.Message.Round] == nil {
+			instance.State.CommitContainer.Msgs[msg.Message.Round] = []*qbft.SignedMessage{}
 		}
-		instance.State.CommitContainer.Msgs[msg.Round] = append(instance.State.CommitContainer.Msgs[msg.Round], signedMsg)
+		instance.State.CommitContainer.Msgs[msg.Message.Round] = append(instance.State.CommitContainer.Msgs[msg.Message.Round], msg)
 	case qbft.RoundChangeMsgType:
-		if instance.State.RoundChangeContainer.Msgs[msg.Round] == nil {
-			instance.State.RoundChangeContainer.Msgs[msg.Round] = []*types.SignedSSVMessage{}
+		if instance.State.RoundChangeContainer.Msgs[msg.Message.Round] == nil {
+			instance.State.RoundChangeContainer.Msgs[msg.Message.Round] = []*qbft.SignedMessage{}
 		}
-		instance.State.RoundChangeContainer.Msgs[msg.Round] = append(instance.State.RoundChangeContainer.Msgs[msg.Round], signedMsg)
+		instance.State.RoundChangeContainer.Msgs[msg.Message.Round] = append(instance.State.RoundChangeContainer.Msgs[msg.Message.Round], msg)
 	}
 }

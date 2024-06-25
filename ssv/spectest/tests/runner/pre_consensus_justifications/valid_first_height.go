@@ -13,7 +13,7 @@ import (
 func ValidFirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	msgF := func(obj *types.ConsensusData, id []byte) *qbft.SignedMessage {
 		fullData, _ := obj.Encode()
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
@@ -23,7 +23,7 @@ func ValidFirstHeight() tests.SpecTest {
 			Identifier: id,
 			Root:       root,
 		}
-		signed := testingutils.SignQBFTMsg(ks.OperatorKeys[1], 1, msg)
+		signed := testingutils.SignQBFTMsg(ks.Shares[1], 1, msg)
 		signed.FullData = fullData
 
 		return signed
@@ -37,10 +37,10 @@ func ValidFirstHeight() tests.SpecTest {
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(msgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID), nil)),
 				},
 				PostDutyRunnerStateRoot: "1c71e2154b44d39541e65319701ce50b3e2d39fab616d2eb06fd72a67bff5793",
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -49,10 +49,10 @@ func ValidFirstHeight() tests.SpecTest {
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(msgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID), nil)),
 				},
 				PostDutyRunnerStateRoot: "3b9877067deef7be6916fd4879878e51b5047a39d57a804a69589e113c4a893a",
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -61,10 +61,10 @@ func ValidFirstHeight() tests.SpecTest {
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(msgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID), nil)),
 				},
 				PostDutyRunnerStateRoot: "f7a63280b5e1ccfd430fd6ab9eaf4c7f0bf50b1b03f8d6c2dfdcfe89471d072a",
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 			},
@@ -73,12 +73,33 @@ func ValidFirstHeight() tests.SpecTest {
 				Runner: testingutils.ProposerBlindedBlockRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SignedSSVMessage{
-					msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(msgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID), nil)),
 				},
 				PostDutyRunnerStateRoot: "ef8bcdcf507151f25f8247b408e0ad47730c298b62068fff97b3fa8e3b6076c3",
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
+			},
+			{
+
+				Name:   "attester",
+				Runner: testingutils.AttesterRunner(ks),
+				Duty:   &testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(msgF(testingutils.TestAttesterConsensusData, testingutils.AttesterMsgID), nil)),
+				},
+				PostDutyRunnerStateRoot: "0d5b671f94eeddcb00025dd70fa52d259cafaa5f284645db4fd20e943e2e900d",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.SyncCommitteeRunner(ks),
+				Duty:   &testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(msgF(testingutils.TestSyncCommitteeConsensusData, testingutils.SyncCommitteeMsgID), nil)),
+				},
+				PostDutyRunnerStateRoot: "5adbf2c86193070a8f74596275e7a62d48a6a573259150d7ec694b3571c7a787",
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
 	}

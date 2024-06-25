@@ -18,7 +18,7 @@ type VoluntaryExitRunner struct {
 
 	beacon         BeaconNode
 	network        Network
-	signer         types.BeaconSigner
+	signer         types.KeyManager
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 
@@ -30,7 +30,7 @@ func NewVoluntaryExitRunner(
 	share map[phase0.ValidatorIndex]*types.Share,
 	beacon BeaconNode,
 	network Network,
-	signer types.BeaconSigner,
+	signer types.KeyManager,
 	operatorSigner types.OperatorSigner,
 ) Runner {
 	return &VoluntaryExitRunner{
@@ -59,7 +59,7 @@ func (r *VoluntaryExitRunner) HasRunningDuty() bool {
 
 // ProcessPreConsensus Check for quorum of partial signatures over VoluntaryExit and,
 // if has quorum, constructs SignedVoluntaryExit and submits to BeaconNode
-func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing voluntary exit message")
@@ -96,11 +96,11 @@ func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.PartialSignat
 	return nil
 }
 
-func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
+func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	return errors.New("no consensus phase for voluntary exit")
 }
 
-func (r *VoluntaryExitRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (r *VoluntaryExitRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	return errors.New("no post consensus phase for voluntary exit")
 }
 
@@ -133,19 +133,41 @@ func (r *VoluntaryExitRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "could not sign VoluntaryExit object")
 	}
 
-	msgs := &types.PartialSignatureMessages{
+	msgs := types.PartialSignatureMessages{
 		Type:     types.VoluntaryExitPartialSig,
 		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
+	// sign PartialSignatureMessages object
+	signature, err := r.GetSigner().SignRoot(msgs, types.PartialSignatureType, r.GetShare().SharePubKey)
 	if err != nil {
-		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
+		return errors.Wrap(err, "could not sign randao msg")
+	}
+	signedPartialMsg := &types.SignedPartialSignatureMessage{
+		Message:   msgs,
+		Signature: signature,
+		Signer:    r.GetShare().OperatorID,
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
+	// broadcast
+	data, err := signedPartialMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode signedPartialMsg with VoluntaryExit")
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		Data:    data,
+	}
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, r.BaseRunner.Share.OperatorID, r.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	if err := r.GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast signedPartialMsg with VoluntaryExit")
 	}
 
@@ -192,7 +214,7 @@ func (r *VoluntaryExitRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *VoluntaryExitRunner) GetSigner() types.BeaconSigner {
+func (r *VoluntaryExitRunner) GetSigner() types.KeyManager {
 	return r.signer
 }
 

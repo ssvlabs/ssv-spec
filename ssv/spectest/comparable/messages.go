@@ -9,16 +9,20 @@ import (
 
 func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*types.SignedSSVMessage) *ssv.PartialSigContainer {
 	for _, signedSSVMsg := range messages {
-		if signedSSVMsg.SSVMessage.MsgType != types.SSVPartialSignatureMsgType {
+		ssvMsg := &types.SSVMessage{}
+		if err := ssvMsg.Decode(signedSSVMsg.Data); err != nil {
+			panic(err)
+		}
+		if ssvMsg.MsgType != types.SSVPartialSignatureMsgType {
 			continue
 		}
 
-		msg := &types.PartialSignatureMessages{}
-		if err := msg.Decode(signedSSVMsg.SSVMessage.Data); err != nil {
+		msg := &types.SignedPartialSignatureMessage{}
+		if err := msg.Decode(ssvMsg.Data); err != nil {
 			panic(err.Error())
 		}
 
-		for _, partialSigMsg := range msg.Messages {
+		for _, partialSigMsg := range msg.Message.Messages {
 			root := hex.EncodeToString(partialSigMsg.SigningRoot[:])
 
 			if container.Signatures[partialSigMsg.ValidatorIndex] == nil {

@@ -31,36 +31,37 @@ func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.BeaconDuty,
 	}, nil
 }
 
+func (b *BaseRunner) signPostConsensusMsg(runner Runner, msg *types.PartialSignatureMessages) (*types.SignedPartialSignatureMessage, error) {
+	signature, err := runner.GetSigner().SignRoot(msg, types.PartialSignatureType, b.Share.SharePubKey)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not sign PartialSignatureMessage for PostConsensusContainer")
+	}
+
+	return &types.SignedPartialSignatureMessage{
+		Message:   *msg,
+		Signature: signature,
+		Signer:    b.Share.OperatorID,
+	}, nil
+}
+
 // Validate message content without verifying signatures
 func (b *BaseRunner) validatePartialSigMsgForSlot(
-	psigMsgs *types.PartialSignatureMessages,
+	signedMsg *types.SignedPartialSignatureMessage,
 	slot spec.Slot,
 ) error {
-	if err := psigMsgs.Validate(); err != nil {
-		return errors.Wrap(err, "PartialSignatureMessages invalid")
+	if err := signedMsg.Validate(); err != nil {
+		return errors.Wrap(err, "SignedPartialSignatureMessage invalid")
 	}
-	if psigMsgs.Slot != slot {
+	if signedMsg.Message.Slot != slot {
 		return errors.New("invalid partial sig slot")
 	}
 
-	for _, msg := range psigMsgs.Messages {
-
-		// Check if knows it has the validator index share
-		validatorShare, ok := b.Share[msg.ValidatorIndex]
-		if !ok {
-			return errors.New("unknown validator index")
-		}
-
-		// Check if signer is in committee
-		signerInCommittee := false
-		for _, operator := range validatorShare.Committee {
-			if operator.Signer == msg.Signer {
-				signerInCommittee = true
-				break
-			}
-		}
-		if !signerInCommittee {
-			return errors.New("unknown signer")
+	// Check if signer is in committee
+	signerInCommittee := false
+	for _, operator := range b.Share.Committee {
+		if operator.OperatorID == signedMsg.Signer {
+			signerInCommittee = true
+			break
 		}
 	}
 

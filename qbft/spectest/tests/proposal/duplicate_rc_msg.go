@@ -12,21 +12,21 @@ func DuplicateRCMsg() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+	rcMsgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
 	}
 
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData, testingutils.MarshalJustifications(rcMsgs), nil),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:           "duplicate rc msg justification",
 		Pre:            pre,
 		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
+		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
 	}
 }

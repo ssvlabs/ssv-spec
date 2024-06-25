@@ -12,23 +12,23 @@ func FutureRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
 	pre.State.Round = qbft.FirstRound
 
-	prepareMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 8),
-		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 8),
-		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 8),
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 8),
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], types.OperatorID(2), 8),
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 8),
 	}
 
-	rcMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
+	rcMsgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 10),
 	}
 
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
@@ -36,9 +36,10 @@ func FutureRound() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal future round prev prepared",
 		Pre:           pre,
+		PostRoot:      "d2fc09d3a518d77cc55b29504b67fe74fba261e308f51a827e4eb3cf3bafdab2",
 		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 1,

@@ -10,8 +10,12 @@ import (
 )
 
 type signing interface {
+	// GetShareSigner returns an share signer instance
+	GetShareSigner() types.ShareSigner
 	// GetSigner returns an operator signer instance
 	GetOperatorSigner() types.OperatorSigner
+	// GetSignatureDomainType returns the Domain type used for signatures
+	GetSignatureDomainType() types.DomainType
 }
 
 type IConfig interface {
@@ -24,22 +28,22 @@ type IConfig interface {
 	GetNetwork() Network
 	// GetTimer returns round timer
 	GetTimer() Timer
-	// GetSignatureVerifier returns the signature verifier for operator signatures
-	GetSignatureVerifier() types.SignatureVerifier
-	// GetCutOffRound returns the round that stops the instance
-	GetCutOffRound() Round
 }
 
 type Config struct {
-	OperatorSigner    types.OperatorSigner
-	SigningPK         []byte
-	Domain            types.DomainType
-	ValueCheckF       ProposedValueCheckF
-	ProposerF         ProposerF
-	Network           Network
-	Timer             Timer
-	SignatureVerifier types.SignatureVerifier
-	CutOffRound       Round
+	ShareSigner    types.ShareSigner
+	OperatorSigner types.OperatorSigner
+	SigningPK      []byte
+	Domain         types.DomainType
+	ValueCheckF    ProposedValueCheckF
+	ProposerF      ProposerF
+	Network        Network
+	Timer          Timer
+}
+
+// GetSigner returns a Signer instance
+func (c *Config) GetShareSigner() types.ShareSigner {
+	return c.ShareSigner
 }
 
 // GetSigner returns a Signer instance
@@ -77,15 +81,6 @@ func (c *Config) GetTimer() Timer {
 	return c.Timer
 }
 
-func (c *Config) GetCutOffRound() Round {
-	return c.CutOffRound
-}
-
-// GetSignatureVerifier returns the verifier for operator's signatures
-func (c *Config) GetSignatureVerifier() types.SignatureVerifier {
-	return c.SignatureVerifier
-}
-
 type State struct {
 	CommitteeMember                 *types.CommitteeMember
 	ID                              []byte // instance Identifier
@@ -93,7 +88,7 @@ type State struct {
 	Height                          Height
 	LastPreparedRound               Round
 	LastPreparedValue               []byte
-	ProposalAcceptedForCurrentRound *types.SignedSSVMessage
+	ProposalAcceptedForCurrentRound *SignedMessage
 	Decided                         bool
 	DecidedValue                    []byte
 

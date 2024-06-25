@@ -5,18 +5,18 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// NilSSVMessage tests an invalid SignedSSVMessageTest with nil SSVMessage
-func NilSSVMessage() *SignedSSVMessageTest {
+// NoData tests an invalid SignedSSVMessageTest with empty data
+func NoData() *SignedSSVMessageTest {
 
 	return &SignedSSVMessageTest{
-		Name: "nil ssvmessage",
+		Name: "no data",
 		Messages: []*types.SignedSSVMessage{
 			{
-				OperatorIDs: []types.OperatorID{1},
-				Signatures:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
-				SSVMessage:  nil,
+				OperatorID: 1,
+				Signature:  testingutils.TestingSignedSSVMessageSignature,
+				Data:       []byte{},
 			},
 		},
-		ExpectedError: "nil SSVMessage",
+		ExpectedError: "Data has length 0 in SignedSSVMessage",
 	}
 }

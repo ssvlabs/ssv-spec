@@ -1,9 +1,10 @@
 package prepare
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // NoPreviousProposal tests prepare msg without receiving a previous proposal state.ProposalAcceptedForCurrentRound == nil
@@ -11,8 +12,8 @@ func NoPreviousProposal() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 	}
 
 	return &tests.MsgProcessingSpecTest{

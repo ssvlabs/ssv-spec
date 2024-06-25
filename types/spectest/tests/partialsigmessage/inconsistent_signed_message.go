@@ -14,11 +14,11 @@ func InconsistentSignedMessage() *MsgSpecTest {
 	msg := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)
 	msgWithDifferentSigner := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)
 
-	msg.Messages = append(msg.Messages, msgWithDifferentSigner.Messages...)
+	msg.Message.Messages = append(msg.Message.Messages, msgWithDifferentSigner.Message.Messages...)
 
 	return &MsgSpecTest{
 		Name: "inconsistent signed message",
-		Messages: []*types.PartialSignatureMessages{
+		Messages: []*types.SignedPartialSignatureMessage{
 			msg,
 		},
 		ExpectedError: "inconsistent signers",

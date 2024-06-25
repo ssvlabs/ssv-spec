@@ -1,6 +1,7 @@
 package qbft
 
 import (
+	"bytes"
 	"crypto/sha256"
 
 	"github.com/pkg/errors"
@@ -14,10 +15,10 @@ func HashDataRoot(data []byte) ([32]byte, error) {
 }
 
 // HasQuorum returns true if a unique set of signers has quorum
-func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
+func HasQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorIDs() {
+		for _, signer := range msg.GetSigners() {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -25,10 +26,10 @@ func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) boo
 }
 
 // HasPartialQuorum returns true if a unique set of signers has partial quorum
-func HasPartialQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
+func HasPartialQuorum(share *types.Share, msgs []*SignedMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorIDs() {
+		for _, signer := range msg.GetSigners() {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -56,11 +57,36 @@ type Message struct {
 	PrepareJustification     [][]byte `ssz-max:"13,3700"`
 }
 
-// Creates a Message object from bytes
-func DecodeMessage(data []byte) (*Message, error) {
-	ret := &Message{}
-	err := ret.Decode(data)
-	return ret, err
+func (msg *Message) GetRoundChangeJustifications() ([]*SignedMessage, error) {
+	return unmarshalJustifications(msg.RoundChangeJustification)
+}
+
+func (msg *Message) GetPrepareJustifications() ([]*SignedMessage, error) {
+	return unmarshalJustifications(msg.PrepareJustification)
+}
+
+func unmarshalJustifications(data [][]byte) ([]*SignedMessage, error) {
+	ret := make([]*SignedMessage, len(data))
+	for i, d := range data {
+		sMsg := &SignedMessage{}
+		if err := sMsg.UnmarshalSSZ(d); err != nil {
+			return nil, err
+		}
+		ret[i] = sMsg
+	}
+	return ret, nil
+}
+
+func MarshalJustifications(msgs []*SignedMessage) ([][]byte, error) {
+	ret := make([][]byte, len(msgs))
+	for i, m := range msgs {
+		d, err := m.WithoutFUllData().MarshalSSZ()
+		if err != nil {
+			return nil, err
+		}
+		ret[i] = d
+	}
+	return ret, nil
 }
 
 // RoundChangePrepared returns true if message is a RoundChange and prepared
@@ -105,57 +131,174 @@ func (msg *Message) Validate() error {
 	return nil
 }
 
-func (msg *Message) GetRoundChangeJustifications() ([]*types.SignedSSVMessage, error) {
-	return unmarshalJustifications(msg.RoundChangeJustification)
+type SignedMessage struct {
+	Signature types.Signature    `ssz-size:"96"`
+	Signers   []types.OperatorID `ssz-max:"13"`
+	// Message max size is
+	//			3*8 + 56 + 32 + 8
+	//			13*SignedMessage(Nested types, estimated at 2^15)
+	//			13*SignedMessage(Nested types, estimated at 2^15)
+	//			= 852088 ~= 2^20
+	Message Message // message for which this signature is for
+
+	// Full data max value is ConsensusData max value ~= 2^8 + 8 + 2^20 + 2^22 = 5243144
+	FullData []byte `ssz-max:"5243144"`
 }
 
-func (msg *Message) GetPrepareJustifications() ([]*types.SignedSSVMessage, error) {
-	return unmarshalJustifications(msg.PrepareJustification)
+func (signedMsg *SignedMessage) GetSignature() types.Signature {
+	return signedMsg.Signature
+}
+func (signedMsg *SignedMessage) GetSigners() []types.OperatorID {
+	return signedMsg.Signers
 }
 
-func unmarshalJustifications(data [][]byte) ([]*types.SignedSSVMessage, error) {
-	ret := make([]*types.SignedSSVMessage, len(data))
-	for i, d := range data {
-		sMsg := &types.SignedSSVMessage{}
-		if err := sMsg.UnmarshalSSZ(d); err != nil {
-			return nil, err
+// MatchedSigners returns true if the provided signer ids are equal to GetSignerIds() without order significance
+func (signedMsg *SignedMessage) MatchedSigners(ids []types.OperatorID) bool {
+	if len(signedMsg.Signers) != len(ids) {
+		return false
+	}
+
+	for _, id := range signedMsg.Signers {
+		found := false
+		for _, id2 := range ids {
+			if id == id2 {
+				found = true
+			}
 		}
-		ret[i] = sMsg
-	}
-	return ret, nil
-}
 
-func MarshalJustifications(msgs []*types.SignedSSVMessage) ([][]byte, error) {
-	ret := make([][]byte, len(msgs))
-	for i, m := range msgs {
-		d, err := m.WithoutFullData().MarshalSSZ()
-		if err != nil {
-			return nil, err
+		if !found {
+			return false
 		}
-		ret[i] = d
 	}
-	return ret, nil
+	return true
 }
 
-func Sign(msg *Message, operatorID types.OperatorID, operatorSigner types.OperatorSigner) (*types.SignedSSVMessage, error) {
+// CommonSigners returns true if there is at least 1 common signer
+func (signedMsg *SignedMessage) CommonSigners(ids []types.OperatorID) bool {
+	for _, id := range signedMsg.Signers {
+		for _, id2 := range ids {
+			if id == id2 {
+				return true
+			}
+		}
+	}
+	return false
+}
 
-	byts, err := msg.Encode()
+// Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
+func (signedMsg *SignedMessage) Aggregate(sig types.MessageSignature) error {
+	if signedMsg.CommonSigners(sig.GetSigners()) {
+		return errors.New("duplicate signers")
+	}
+
+	r1, err := signedMsg.GetRoot()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not encode message")
+		return errors.Wrap(err, "could not get signature root")
 	}
-
-	msgID := types.MessageID{}
-	copy(msgID[:], msg.Identifier)
-
-	ssvMsg := &types.SSVMessage{
-		MsgType: types.SSVConsensusMsgType,
-		MsgID:   msgID,
-		Data:    byts,
-	}
-
-	signedSSVMessage, err := types.SSVMessageToSignedSSVMessage(ssvMsg, operatorID, operatorSigner.SignSSVMessage)
+	r2, err := sig.GetRoot()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+		return errors.Wrap(err, "could not get signature root")
 	}
-	return signedSSVMessage, nil
+	if !bytes.Equal(r1[:], r2[:]) {
+		return errors.New("can't aggregate, roots not equal")
+	}
+
+	aggregated, err := signedMsg.Signature.Aggregate(sig.GetSignature())
+	if err != nil {
+		return errors.Wrap(err, "could not aggregate signatures")
+	}
+	signedMsg.Signature = aggregated
+	signedMsg.Signers = append(signedMsg.Signers, sig.GetSigners()...)
+
+	return nil
+}
+
+// Encode returns a msg encoded bytes or error
+func (signedMsg *SignedMessage) Encode() ([]byte, error) {
+	return signedMsg.MarshalSSZ()
+}
+
+// Decode returns error if decoding failed
+func (signedMsg *SignedMessage) Decode(data []byte) error {
+	return signedMsg.UnmarshalSSZ(data)
+}
+
+// GetRoot returns the root used for signing and verification
+func (signedMsg *SignedMessage) GetRoot() ([32]byte, error) {
+	return signedMsg.Message.GetRoot()
+}
+
+// DeepCopy returns a new instance of SignedMessage, deep copied
+func (signedMsg *SignedMessage) DeepCopy() *SignedMessage {
+	ret := &SignedMessage{
+		Signers:   make([]types.OperatorID, len(signedMsg.Signers)),
+		Signature: make([]byte, len(signedMsg.Signature)),
+	}
+	copy(ret.Signers, signedMsg.Signers)
+	copy(ret.Signature, signedMsg.Signature)
+
+	ret.Message = Message{
+		MsgType:    signedMsg.Message.MsgType,
+		Height:     signedMsg.Message.Height,
+		Round:      signedMsg.Message.Round,
+		Identifier: make([]byte, len(signedMsg.Message.Identifier)),
+		//Data:       make([]byte, len(signedMsg.Message.Data)),
+
+		Root:                     signedMsg.Message.Root,
+		DataRound:                signedMsg.Message.DataRound,
+		PrepareJustification:     signedMsg.Message.PrepareJustification,
+		RoundChangeJustification: signedMsg.Message.RoundChangeJustification,
+	}
+	copy(ret.Message.Identifier, signedMsg.Message.Identifier)
+	//copy(ret.Message.Data, signedMsg.Message.Data)
+	copy(ret.FullData, signedMsg.FullData)
+	return ret
+}
+
+// Validate returns error if msg validation doesn't pass.
+// Msg validation checks the msg, it's variables for validity.
+func (signedMsg *SignedMessage) Validate() error {
+	if len(signedMsg.Signers) == 0 {
+		return errors.New("message signers is empty")
+	}
+
+	// check unique signers
+	signed := make(map[types.OperatorID]bool)
+	for _, signer := range signedMsg.Signers {
+		if signed[signer] {
+			return errors.New("non unique signer")
+		}
+		if signer == 0 {
+			return errors.New("signer ID 0 not allowed")
+		}
+		signed[signer] = true
+	}
+
+	return signedMsg.Message.Validate()
+}
+
+// WithoutFUllData returns SignedMessage without full data
+func (signedMsg *SignedMessage) WithoutFUllData() *SignedMessage {
+	return &SignedMessage{
+		Signers:   signedMsg.Signers,
+		Signature: signedMsg.Signature,
+		Message:   signedMsg.Message,
+	}
+}
+
+// Check if all signedMsg's signers belong to the given committee in O(n+m)
+func (signedMsg *SignedMessage) CheckSignersInCommittee(committee []*types.Operator) bool {
+	// Committee's operators map
+	committeeMap := make(map[uint64]struct{})
+	for _, operator := range committee {
+		committeeMap[operator.OperatorID] = struct{}{}
+	}
+
+	// Check that all message signers belong to the map
+	for _, signer := range signedMsg.Signers {
+		if _, ok := committeeMap[signer]; !ok {
+			return false
+		}
+	}
+	return true
 }

@@ -11,9 +11,9 @@ import (
 func InvalidValueCheck() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*types.SignedSSVMessage{
+	msgs := []*qbft.SignedMessage{
 		testingutils.TestingProposalMessageWithIdentifierAndFullData(
-			ks.OperatorKeys[1], types.OperatorID(1), []byte{1, 2, 3, 4}, testingutils.TestingInvalidValueCheck,
+			ks.Shares[1], types.OperatorID(1), []byte{1, 2, 3, 4}, testingutils.TestingInvalidValueCheck,
 			qbft.FirstHeight),
 	}
 
@@ -21,7 +21,7 @@ func InvalidValueCheck() tests.SpecTest {
 		Name:           "invalid proposal value check",
 		Pre:            pre,
 		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
+		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
 	}
 }

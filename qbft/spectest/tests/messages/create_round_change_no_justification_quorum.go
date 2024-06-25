@@ -1,11 +1,12 @@
 package messages
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/pkg/errors"
 )
 
 // CreateRoundChangeNoJustificationQuorum tests creating a round change msg that was previouly prepared
@@ -19,9 +20,9 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 		Name:          "create round change no justification quorum",
 		StateValue:    testingutils.TestingQBFTFullData,
 		ExpectedState: sc.ExpectedState,
-		PrepareJustifications: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		PrepareJustifications: []*qbft.SignedMessage{
+			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+			testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
 		},
 		ExpectedRoot: sc.Root(),
 	}
@@ -39,29 +40,16 @@ func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 		PrepareJustification:     nil,
 	}
 
-	encodedExpectedMsg, err := expectedMsg.Encode()
-	if err != nil {
-		panic(err)
-	}
-
-	ssvMsg := &types.SSVMessage{
-		MsgType: types.SSVConsensusMsgType,
-		MsgID:   [56]byte{1, 2, 3, 4},
-		Data:    encodedExpectedMsg,
-	}
-
 	ks := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(ks)
-
-	sig, err := config.OperatorSigner.SignSSVMessage(ssvMsg)
+	sig, err := config.GetShareSigner().SignRoot(&expectedMsg, types.QBFTSignatureType, config.GetSigningPubKey())
 	if err != nil {
-		panic(err)
+		panic(errors.Wrap(err, "unable to sign root for create_round_change_no_justification_quorum"))
 	}
-
-	signedMsg := &types.SignedSSVMessage{
-		Signatures:  [][]byte{sig},
-		OperatorIDs: []types.OperatorID{1},
-		SSVMessage:  ssvMsg,
+	signedMsg := &qbft.SignedMessage{
+		Signature: sig,
+		Signers:   []types.OperatorID{1},
+		Message:   expectedMsg,
 
 		FullData: testingutils.TestingQBFTFullData,
 	}

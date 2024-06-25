@@ -167,7 +167,7 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidThenQuorum,
 	preconsensus.InvalidQuorumThenValidQuorum,
 	preconsensus.InconsistentOperatorSigner,
-	preconsensus.NilSSVMessage,
+	preconsensus.InvalidDecode,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,

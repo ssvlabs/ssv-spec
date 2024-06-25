@@ -13,28 +13,28 @@ func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	prepareMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
 	}
-	rcMsgs := []*types.SignedSSVMessage{
+	rcMsgs := []*qbft.SignedMessage{
 		testingutils.TestingRoundChangeMessageWithParams(
-			ks.OperatorKeys[1], types.OperatorID(2), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+			ks.Shares[1], types.OperatorID(2), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs),
 		),
 		testingutils.TestingRoundChangeMessageWithParams(
-			ks.OperatorKeys[2], types.OperatorID(2), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+			ks.Shares[2], types.OperatorID(2), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs),
 		),
 		testingutils.TestingRoundChangeMessageWithParams(
-			ks.OperatorKeys[3], types.OperatorID(3), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+			ks.Shares[3], types.OperatorID(3), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
 
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
@@ -43,7 +43,7 @@ func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 		Name:           "proposal rc msg invalid (prepared)",
 		Pre:            pre,
 		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: crypto/rsa: verification error",
+		OutputMessages: []*qbft.SignedMessage{},
+		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: failed to verify signature",
 	}
 }

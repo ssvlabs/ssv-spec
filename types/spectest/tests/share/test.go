@@ -8,15 +8,18 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/bloxapp/ssv-spec/qbft"
 )
 
 type ShareTest struct {
-	Name                  string
-	Share                 types.Share
-	Message               types.SignedSSVMessage
-	ExpectedHasQuorum     bool
-	ExpectedFullCommittee bool
-	ExpectedError         string
+	Name                     string
+	Share                    types.Share
+	Message                  qbft.SignedMessage
+	ExpectedHasPartialQuorum bool
+	ExpectedHasQuorum        bool
+	ExpectedFullCommittee    bool
+	ExpectedError            string
 }
 
 func (test *ShareTest) TestName() string {
@@ -27,7 +30,7 @@ func (test *ShareTest) TestName() string {
 func (test *ShareTest) GetUniqueMessageSignersCount() int {
 	uniqueSigners := make(map[uint64]bool)
 
-	for _, element := range test.Message.GetOperatorIDs() {
+	for _, element := range test.Message.Signers {
 		uniqueSigners[element] = true
 	}
 

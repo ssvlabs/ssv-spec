@@ -13,20 +13,20 @@ func PastRoundProposalPrevPrepared() tests.SpecTest {
 	pre.State.Round = 10
 
 	ks := testingutils.Testing4SharesSet()
-	prepareMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 6),
-		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 6),
-		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 6),
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 6),
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], types.OperatorID(2), 6),
+		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 6),
 	}
 
-	rcMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 8),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 8),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 8),
+	rcMsgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 8),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 8),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 8),
 	}
 
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 8, qbft.FirstHeight,
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 8, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
 	}
@@ -34,7 +34,7 @@ func PastRoundProposalPrevPrepared() tests.SpecTest {
 		Name:           "proposal past round (not prev prepared)",
 		Pre:            pre,
 		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
+		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: past round",
 	}
 }

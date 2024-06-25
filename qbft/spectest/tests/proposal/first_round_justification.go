@@ -11,15 +11,16 @@ import (
 func FirstRoundJustification() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal first round justification",
 		Pre:           pre,
+		PostRoot:      "8ab10dfff2576fd50287a27a8e99111a443e62ec4c2c7210b4636c3802338242",
 		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 0,

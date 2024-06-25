@@ -13,20 +13,20 @@ func PreparedPreviouslyDuplicateRCQuorum() tests.SpecTest {
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
 
-	prepareMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
 	}
-	rcMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
+	rcMsgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
 	}
 
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
@@ -34,9 +34,10 @@ func PreparedPreviouslyDuplicateRCQuorum() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "duplicate rc msg justification (prepared) quorum",
 		Pre:           pre,
-		InputMessages: append(msgs, testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2)),
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		PostRoot:      "9b8ba5db19287d8cdc8a6a874dfde9af663fda957a8997379cb14260a8c18358",
+		InputMessages: append(msgs, testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2)),
+		OutputMessages: []*qbft.SignedMessage{
+			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
 		},
 	}
 }

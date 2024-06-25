@@ -10,28 +10,6 @@ import (
 )
 
 func TestState_Decoding(t *testing.T) {
-
-	proposalMsg := &qbft.Message{
-		MsgType:    qbft.CommitMsgType,
-		Height:     1,
-		Round:      2,
-		Identifier: []byte{1, 2, 3, 4},
-		Root:       testingutils.TestingSyncCommitteeBlockRoot,
-	}
-	proposalMsgBytes, err := proposalMsg.Encode()
-	if err != nil {
-		panic(err)
-	}
-	signedProposalMsg := &types.SignedSSVMessage{
-		OperatorIDs: []types.OperatorID{1},
-		Signatures:  [][]byte{{1, 2, 3, 4}},
-		SSVMessage: &types.SSVMessage{
-			MsgType: types.SSVConsensusMsgType,
-			MsgID:   [56]byte{1, 2, 3, 4},
-			Data:    proposalMsgBytes,
-		},
-	}
-
 	state := &qbft.State{
 		CommitteeMember: &types.CommitteeMember{
 			OperatorID: 1,
@@ -42,12 +20,22 @@ func TestState_Decoding(t *testing.T) {
 				},
 			},
 		},
-		ID:                              []byte{1, 2, 3, 4},
-		Round:                           1,
-		Height:                          2,
-		LastPreparedRound:               3,
-		LastPreparedValue:               []byte{1, 2, 3, 4},
-		ProposalAcceptedForCurrentRound: signedProposalMsg,
+		ID:                []byte{1, 2, 3, 4},
+		Round:             1,
+		Height:            2,
+		LastPreparedRound: 3,
+		LastPreparedValue: []byte{1, 2, 3, 4},
+		ProposalAcceptedForCurrentRound: &qbft.SignedMessage{
+			Message: qbft.Message{
+				MsgType:    qbft.CommitMsgType,
+				Height:     1,
+				Round:      2,
+				Identifier: []byte{1, 2, 3, 4},
+				Root:       testingutils.TestingSyncCommitteeBlockRoot,
+			},
+			Signature: []byte{1, 2, 3, 4},
+			Signers:   []types.OperatorID{1},
+		},
 	}
 
 	byts, err := state.Encode()
@@ -68,16 +56,11 @@ func TestState_Decoding(t *testing.T) {
 	require.EqualValues(t, 2, decodedState.Height)
 	require.EqualValues(t, 1, decodedState.Round)
 
-	decodedProposalMsg := &qbft.Message{}
-	if err := decodedProposalMsg.Decode(decodedState.ProposalAcceptedForCurrentRound.SSVMessage.Data); err != nil {
-		panic(err)
-	}
-
-	require.EqualValues(t, [][]byte{{1, 2, 3, 4}}, decodedState.ProposalAcceptedForCurrentRound.Signatures)
-	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.GetOperatorIDs())
-	require.EqualValues(t, qbft.CommitMsgType, decodedProposalMsg.MsgType)
-	require.EqualValues(t, 1, decodedProposalMsg.Height)
-	require.EqualValues(t, 2, decodedProposalMsg.Round)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedProposalMsg.Identifier)
-	require.EqualValues(t, testingutils.TestingSyncCommitteeBlockRoot, decodedProposalMsg.Root)
+	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Signature)
+	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.Signers)
+	require.EqualValues(t, qbft.CommitMsgType, decodedState.ProposalAcceptedForCurrentRound.Message.MsgType)
+	require.EqualValues(t, 1, decodedState.ProposalAcceptedForCurrentRound.Message.Height)
+	require.EqualValues(t, 2, decodedState.ProposalAcceptedForCurrentRound.Message.Round)
+	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.Message.Identifier)
+	require.EqualValues(t, testingutils.TestingSyncCommitteeBlockRoot, decodedState.ProposalAcceptedForCurrentRound.Message.Root)
 }

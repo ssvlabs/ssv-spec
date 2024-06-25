@@ -21,26 +21,15 @@ func NewTestingOperatorSigner(keySet *TestKeySet, operatorID types.OperatorID) *
 	}
 }
 
-func (km *testingOperatorSigner) SignSSVMessage(ssvMsg *types.SSVMessage) ([]byte, error) {
-	return SignSSVMessage(km.SSVOperatorSK, ssvMsg)
-}
-
-// GetOperatorID returns the operator ID
-func (km *testingOperatorSigner) GetOperatorID() types.OperatorID {
-	return km.operatorID
-}
-
-func SignSSVMessage(sk *rsa.PrivateKey, ssvMsg *types.SSVMessage) ([]byte, error) {
-	encodedMsg, err := ssvMsg.Encode()
+func (km *testingOperatorSigner) SignSSVMessage(data []byte) ([256]byte, error) {
+	hash := sha256.Sum256(data)
+	signature, err := rsa.SignPKCS1v15(rand.Reader, km.SSVOperatorSK, crypto.SHA256, hash[:])
 	if err != nil {
-		return nil, err
+		return [256]byte{}, err
 	}
 
-	hash := sha256.Sum256(encodedMsg)
-	signature, err := rsa.SignPKCS1v15(rand.Reader, sk, crypto.SHA256, hash[:])
-	if err != nil {
-		return []byte{}, err
-	}
+	sig := [256]byte{}
+	copy(sig[:], signature)
 
-	return signature, nil
+	return sig, nil
 }

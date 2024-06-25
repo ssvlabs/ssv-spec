@@ -45,7 +45,7 @@ func previousNotDecided1SC() *qbftcomparable.StateComparison {
 		},
 		StartValue: []byte{1, 2, 3, 4},
 	}
-	qbftcomparable.SetMessages(instance, []*types.SignedSSVMessage{})
+	qbftcomparable.SetMessages(instance, []*types.SSVMessage{})
 	contr.StoredInstances = append(contr.StoredInstances, instance)
 	return &qbftcomparable.StateComparison{ExpectedState: contr}
 }
@@ -68,7 +68,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 		},
 		StartValue: []byte{1, 2, 3, 4},
 	}
-	qbftcomparable.SetMessages(instance1, []*types.SignedSSVMessage{})
+	qbftcomparable.SetMessages(instance1, []*types.SSVMessage{})
 	instance1.ForceStop()
 
 	instance2 := &qbft.Instance{
@@ -81,7 +81,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 		},
 		StartValue: []byte{1, 2, 3, 4},
 	}
-	qbftcomparable.SetMessages(instance2, []*types.SignedSSVMessage{})
+	qbftcomparable.SetMessages(instance2, []*types.SSVMessage{})
 	contr.StoredInstances = []*qbft.Instance{instance2, instance1}
 	contr.Height = 1
 	return &qbftcomparable.StateComparison{ExpectedState: contr}

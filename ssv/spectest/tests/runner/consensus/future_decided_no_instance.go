@@ -1,10 +1,10 @@
 package consensus
 
 import (
-	"crypto/rsa"
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -32,14 +32,26 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		return ret[:]
 	}
 
-	getDecidedMessage := func(role types.RunnerRole, height qbft.Height) *types.SignedSSVMessage {
+	getDecidedMessage := func(role types.BeaconRole, height qbft.Height) *types.SSVMessage {
 		signedMsg := testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 			[]types.OperatorID{1, 2, 3},
 			height,
 			getID(role),
 		)
-		return signedMsg
+
+		byts, err := signedMsg.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
+
+		ssvMessage := &types.SSVMessage{
+			MsgType: types.SSVConsensusMsgType,
+			MsgID:   *(*types.MessageID)(getID(role)),
+			Data:    byts,
+		}
+
+		return ssvMessage
 	}
 
 	expectedErr := "no runner found for message's slot"
@@ -79,16 +91,32 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				Runner:         testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:           &testingutils.TestingSyncCommitteeContributionDuty,
 				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleSyncCommitteeContribution, testingutils.TestingDutySlot+1)},
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, getDecidedMessage(types.BNRoleSyncCommitteeContribution, testingutils.TestingDutySlot+1))},
+				OutputMessages: []*types.SignedPartialSignatureMessage{},
+			},
+			{
+				Name:           "sync committee",
+				Runner:         testingutils.SyncCommitteeRunner(ks),
+				Duty:           &testingutils.TestingSyncCommitteeDuty,
+				DontStartDuty:  true,
+				Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, getDecidedMessage(types.BNRoleSyncCommittee, testingutils.TestingDutySlot+1))},
+				OutputMessages: []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:           "aggregator",
 				Runner:         testingutils.AggregatorRunner(ks),
 				Duty:           &testingutils.TestingAggregatorDuty,
 				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregator, testingutils.TestingDutySlot+1)},
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, getDecidedMessage(types.BNRoleAggregator, testingutils.TestingDutySlot+1))},
+				OutputMessages: []*types.SignedPartialSignatureMessage{},
+			},
+			{
+				Name:           "attester",
+				Runner:         testingutils.AttesterRunner(ks),
+				Duty:           &testingutils.TestingAttesterDuty,
+				DontStartDuty:  true,
+				Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, getDecidedMessage(types.BNRoleProposer, testingutils.TestingDutySlot+1))},
+				OutputMessages: []*types.SignedPartialSignatureMessage{},
 			},
 		},
 	}
@@ -100,8 +128,8 @@ func FutureDecidedNoInstance() tests.SpecTest {
 			Runner:         testingutils.ProposerRunner(ks),
 			Duty:           testingutils.TestingProposerDutyV(version),
 			DontStartDuty:  true,
-			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
-			OutputMessages: []*types.PartialSignatureMessages{},
+			Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, getDecidedMessage(types.BNRoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1))},
+			OutputMessages: []*types.SignedPartialSignatureMessage{},
 		}
 	}
 
@@ -112,8 +140,8 @@ func FutureDecidedNoInstance() tests.SpecTest {
 			Runner:         testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:           testingutils.TestingProposerDutyV(version),
 			DontStartDuty:  true,
-			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
-			OutputMessages: []*types.PartialSignatureMessages{},
+			Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, getDecidedMessage(types.BNRoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1))},
+			OutputMessages: []*types.SignedPartialSignatureMessage{},
 		}
 	}
 

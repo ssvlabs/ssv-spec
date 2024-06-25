@@ -1,14 +1,15 @@
 package decided
 
 import (
-	"crypto/rsa"
 	"crypto/sha256"
 
-	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	"github.com/herumi/bls-eth-go-binary/bls"
+
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 )
 
 // InvalidValCheckData tests a decided message with invalid decided data (but should pass as it's decided)
@@ -21,9 +22,9 @@ func InvalidValCheckData() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*types.SignedSSVMessage{
+				InputMessages: []*qbft.SignedMessage{
 					testingutils.TestingCommitMultiSignerMessageWithParams(
-						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 						[]types.OperatorID{1, 2, 3},
 						qbft.FirstRound,
 						qbft.FirstHeight,
@@ -45,9 +46,9 @@ func InvalidValCheckData() tests.SpecTest {
 
 func invalidValCheckDataStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*types.SignedSSVMessage{
+	msgs := []*qbft.SignedMessage{
 		testingutils.TestingCommitMultiSignerMessageWithParams(
-			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 			[]types.OperatorID{1, 2, 3},
 			qbft.FirstRound,
 			qbft.FirstHeight,

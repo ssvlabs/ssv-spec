@@ -11,16 +11,16 @@ import (
 func RoundChangePrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	prepareMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
 	}
 
 	prepareMarshalled := testingutils.MarshalJustifications(prepareMsgs)
 
 	msg := testingutils.TestingRoundChangeMessageWithParams(
-		ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData, 1, prepareMarshalled)
+		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData, 1, prepareMarshalled)
 
 	msgRoot, err := msg.GetRoot()
 	if err != nil {
@@ -33,7 +33,7 @@ func RoundChangePrepared() tests.SpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "round change prepared",
-		Messages: []*types.SignedSSVMessage{
+		Messages: []*qbft.SignedMessage{
 			msg,
 		},
 		EncodedMessages: [][]byte{

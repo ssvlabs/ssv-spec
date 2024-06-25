@@ -11,10 +11,10 @@ func ValidContributionProofMetaData() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Type = types.ContributionProofs
+	msg.Message.Type = types.ContributionProofs
 
 	return &MsgSpecTest{
 		Name:     "valid meta data when type ContributionProofs",
-		Messages: []*types.PartialSignatureMessages{msg},
+		Messages: []*types.SignedPartialSignatureMessage{msg},
 	}
 }

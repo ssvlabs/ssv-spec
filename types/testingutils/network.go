@@ -28,7 +28,12 @@ func (net *TestingNetwork) Broadcast(msgID types.MessageID, message *types.Signe
 func ConvertBroadcastedMessagesToSSVMessages(signedMessages []*types.SignedSSVMessage) []*types.SSVMessage {
 	ret := make([]*types.SSVMessage, 0)
 	for _, msg := range signedMessages {
-		ret = append(ret, msg.SSVMessage)
+		ssvMsg := &types.SSVMessage{}
+		err := ssvMsg.Decode(msg.Data)
+		if err != nil {
+			panic(err)
+		}
+		ret = append(ret, ssvMsg)
 	}
 	return ret
 }

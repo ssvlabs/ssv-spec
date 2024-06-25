@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -76,11 +77,29 @@ func UnknownSigner() tests.SpecTest {
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 5, ks))),
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSigSyncCommitteeContributionWrongSignerMsg(ks.Shares[1], 5, 5, ks))),
 				},
 				PostDutyRunnerStateRoot: unknownSignerSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     unknownSignerSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+				ExpectedError:           expectedError,
+			},
+			{
+				Name: "sync committee",
+				Runner: decideRunner(
+					testingutils.SyncCommitteeRunner(ks),
+					&testingutils.TestingSyncCommitteeDuty,
+					testingutils.TestSyncCommitteeConsensusData,
+				),
+				Duty: &testingutils.TestingSyncCommitteeDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSigSyncCommitteeWrongBeaconSignerMsg(ks.Shares[1], 5, 5))),
+				},
+				PostDutyRunnerStateRoot: unknownSignerSyncCommitteeSC().Root(),
+				PostDutyRunnerState:     unknownSignerSyncCommitteeSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
@@ -94,11 +113,29 @@ func UnknownSigner() tests.SpecTest {
 				),
 				Duty: &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 5))),
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusSigAggregatorWrongBeaconSignerMsg(ks.Shares[1], 5, 5))),
 				},
 				PostDutyRunnerStateRoot: unknownSignerAggregatorSC().Root(),
 				PostDutyRunnerState:     unknownSignerAggregatorSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				BeaconBroadcastedRoots:  []string{},
+				DontStartDuty:           true,
+				ExpectedError:           expectedError,
+			},
+			{
+				Name: "attester",
+				Runner: decideRunner(
+					testingutils.AttesterRunner(ks),
+					&testingutils.TestingAttesterDuty,
+					testingutils.TestAttesterConsensusData,
+				),
+				Duty: &testingutils.TestingAttesterDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAttester(nil, testingutils.PostConsensusSigAttestationWrongBeaconSignerMsg(ks.Shares[1], 5, 5, qbft.FirstHeight))),
+				},
+				PostDutyRunnerStateRoot: unknownSignerAttesterSC().Root(),
+				PostDutyRunnerState:     unknownSignerAttesterSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
@@ -117,11 +154,11 @@ func UnknownSigner() tests.SpecTest {
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 5, version))),
+				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, version))),
 			},
 			PostDutyRunnerStateRoot: unknownSignerProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 			ExpectedError:           expectedError,
@@ -139,11 +176,11 @@ func UnknownSigner() tests.SpecTest {
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
 			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 5, version))),
+				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusSigProposerWrongBeaconSignerMsgV(ks.Shares[1], 5, 5, version))),
 			},
 			PostDutyRunnerStateRoot: unknownSignerBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
+			OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 			ExpectedError:           expectedError,

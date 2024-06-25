@@ -1,13 +1,13 @@
 package dutyexe
 
 import (
-	"crypto/rsa"
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // WrongDutyPubKey tests decided value with duty validator pubkey != the duty runner's pubkey
@@ -26,22 +26,23 @@ func WrongDutyPubKey() tests.SpecTest {
 	}
 
 	// Function to get decided message with wrong ID for role
-	decidedMessage := func(role types.RunnerRole) *types.SignedSSVMessage {
+	decidedMessage := func(role types.BeaconRole) *types.SSVMessage {
 		signedMessage := testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 			[]types.OperatorID{1, 2, 3},
 			testingutils.TestingDutySlot,
 			getWrongID(role))
 
-		signedMessage.SSVMessage.MsgID = getID(role)
+		btys, err := signedMessage.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 
-		sig1 := testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], signedMessage.SSVMessage).Signatures[0]
-		sig2 := testingutils.SignedSSVMessageWithSigner(2, ks.OperatorKeys[2], signedMessage.SSVMessage).Signatures[0]
-		sig3 := testingutils.SignedSSVMessageWithSigner(3, ks.OperatorKeys[3], signedMessage.SSVMessage).Signatures[0]
-
-		signedMessage.Signatures = [][]byte{sig1, sig2, sig3}
-
-		return signedMessage
+		return &types.SSVMessage{
+			MsgType: types.SSVConsensusMsgType,
+			MsgID:   getID(role),
+			Data:    btys,
+		}
 	}
 
 	expectedError := "failed processing consensus message: invalid msg: message doesn't belong to Identifier"
@@ -53,21 +54,37 @@ func WrongDutyPubKey() tests.SpecTest {
 				Name:     "sync committee contribution",
 				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:     &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleSyncCommitteeContribution)},
-				OutputMessages: []*types.PartialSignatureMessages{
+				Messages: []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleSyncCommitteeContribution))},
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedError,
 			},
 			{
+				Name:           "sync committee",
+				Runner:         testingutils.SyncCommitteeRunner(ks),
+				Duty:           &testingutils.TestingSyncCommitteeDuty,
+				Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleSyncCommittee))},
+				OutputMessages: []*types.SignedPartialSignatureMessage{},
+				ExpectedError:  expectedError,
+			},
+			{
 				Name:     "aggregator",
 				Runner:   testingutils.AggregatorRunner(ks),
 				Duty:     &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregator)},
-				OutputMessages: []*types.PartialSignatureMessages{
+				Messages: []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleAggregator))},
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedError,
+			},
+			{
+				Name:           "attester",
+				Runner:         testingutils.AttesterRunner(ks),
+				Duty:           &testingutils.TestingAttesterDuty,
+				Messages:       []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleAttester))},
+				OutputMessages: []*types.SignedPartialSignatureMessage{},
+				ExpectedError:  expectedError,
 			},
 		},
 	}
@@ -78,8 +95,8 @@ func WrongDutyPubKey() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:   testingutils.ProposerRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
-			OutputMessages: []*types.PartialSignatureMessages{
+			Messages: []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleProposer))},
+			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
 			ExpectedError: expectedError,
@@ -92,8 +109,8 @@ func WrongDutyPubKey() tests.SpecTest {
 			Name:     fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:   testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
-			OutputMessages: []*types.PartialSignatureMessages{
+			Messages: []*types.SignedSSVMessage{testingutils.SignedSSVMessageF(ks, decidedMessage(types.BNRoleProposer))},
+			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
 			ExpectedError: expectedError,

@@ -18,7 +18,7 @@ type ValidatorRegistrationRunner struct {
 
 	beacon         BeaconNode
 	network        Network
-	signer         types.BeaconSigner
+	signer         types.KeyManager
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
@@ -28,7 +28,7 @@ func NewValidatorRegistrationRunner(
 	share map[phase0.ValidatorIndex]*types.Share,
 	beacon BeaconNode,
 	network Network,
-	signer types.BeaconSigner,
+	signer types.KeyManager,
 	operatorSigner types.OperatorSigner,
 ) Runner {
 	return &ValidatorRegistrationRunner{
@@ -55,7 +55,7 @@ func (r *ValidatorRegistrationRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing validator registration message")
@@ -97,11 +97,11 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 	return nil
 }
 
-func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
+func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	return errors.New("no consensus phase for validator registration")
 }
 
-func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	return errors.New("no post consensus phase for validator registration")
 }
 
@@ -133,19 +133,41 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "could not sign validator registration")
 	}
-	msgs := &types.PartialSignatureMessages{
+	msgs := types.PartialSignatureMessages{
 		Type:     types.ValidatorRegistrationPartialSig,
 		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], types.RunnerRole(r.BaseRunner.RunnerRoleType))
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
+	// sign msg
+	signature, err := r.GetSigner().SignRoot(msgs, types.PartialSignatureType, r.GetShare().SharePubKey)
 	if err != nil {
-		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
+		return errors.Wrap(err, "could not sign randao msg")
+	}
+	signedPartialMsg := &types.SignedPartialSignatureMessage{
+		Message:   msgs,
+		Signature: signature,
+		Signer:    r.GetShare().OperatorID,
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
+	// broadcast
+	data, err := signedPartialMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode randao pre-consensus signature msg")
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		Data:    data,
+	}
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, r.BaseRunner.Share.OperatorID, r.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	if err := r.GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial randao sig")
 	}
 	return nil
@@ -202,7 +224,7 @@ func (r *ValidatorRegistrationRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *ValidatorRegistrationRunner) GetSigner() types.BeaconSigner {
+func (r *ValidatorRegistrationRunner) GetSigner() types.KeyManager {
 	return r.signer
 }
 

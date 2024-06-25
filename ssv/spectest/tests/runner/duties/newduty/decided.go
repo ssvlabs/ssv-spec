@@ -42,9 +42,17 @@ func PostDecided() tests.SpecTest {
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  decidedRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
+				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "aggregator",
@@ -53,7 +61,7 @@ func PostDecided() tests.SpecTest {
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: postDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     postDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
@@ -64,7 +72,7 @@ func PostDecided() tests.SpecTest {
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
 				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "sync committee",
@@ -96,7 +104,7 @@ func PostDecided() tests.SpecTest {
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.PartialSignatureMessages{
+			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}
@@ -111,7 +119,7 @@ func PostDecided() tests.SpecTest {
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.PartialSignatureMessages{
+			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}

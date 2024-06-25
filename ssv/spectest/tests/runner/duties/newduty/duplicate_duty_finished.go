@@ -58,10 +58,18 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c8ce3cec33a9e557f52c1392f96b613ed2d37b24b54a1c9429a7dbff91f212eb",
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  finishRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeDuty,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				PostDutyRunnerStateRoot: "9ed70d234980d27628811e78f59b0a723ae2bd768ad9ce02943aa3fdf737e2c5",
+				ExpectedError:           expectedError,
 			},
 			{
 				Name:                    "aggregator",
@@ -69,7 +77,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingAggregatorDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "3674c8986f519e022f76377d00c5d27ef2e53faaf6bffce4eb692bf5d387d6b2",
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
@@ -80,7 +88,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a91e014950037e5dc2ab9e801d0170b90b82f592029a2409c2332f252368d71d",
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
 				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
@@ -111,7 +119,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				OutputMessages:          []*types.PartialSignatureMessages{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedError,
 			},
 			{
@@ -121,7 +129,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages:          []*types.PartialSignatureMessages{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedTaskError,
 			},
 			{
@@ -131,7 +139,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingVoluntaryExitDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages:          []*types.PartialSignatureMessages{},
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 				ExpectedError:           expectedTaskError,
 			},
 		},

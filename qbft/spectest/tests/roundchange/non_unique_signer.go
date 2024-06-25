@@ -1,11 +1,11 @@
 package roundchange
 
 import (
-	"crypto/rsa"
-
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/herumi/bls-eth-go-binary/bls"
 )
 
 // NonUniqueSigner tests a round change msg with multiple signers and non unique signer
@@ -15,13 +15,13 @@ func NonUniqueSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingMultiSignerRoundChangeMessageWithRound(
-		[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]},
+		[]*bls.SecretKey{ks.Shares[1], ks.Shares[2]},
 		[]types.OperatorID{types.OperatorID(1), types.OperatorID(2)},
 		2,
 	)
-	msg.OperatorIDs = []types.OperatorID{types.OperatorID(1), types.OperatorID(1)}
+	msg.Signers = []types.OperatorID{types.OperatorID(1), types.OperatorID(1)}
 
-	msgs := []*types.SignedSSVMessage{
+	msgs := []*qbft.SignedMessage{
 		msg,
 	}
 
@@ -29,7 +29,7 @@ func NonUniqueSigner() tests.SpecTest {
 		Name:           "round change non unique signer",
 		Pre:            pre,
 		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: invalid SignedSSVMessage: non unique signer",
+		OutputMessages: []*qbft.SignedMessage{},
+		ExpectedError:  "invalid signed message: invalid signed message: non unique signer",
 	}
 }

@@ -12,7 +12,7 @@ import (
 
 type MsgSpecTest struct {
 	Name            string
-	Messages        []*types.PartialSignatureMessages
+	Messages        []*types.SignedPartialSignatureMessage
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
 	ExpectedError   string
@@ -37,7 +37,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			require.NoError(t, err)
 			require.EqualValues(t, test.EncodedMessages[i], byts)
 
-			decoded := &types.PartialSignatureMessages{}
+			decoded := &types.SignedPartialSignatureMessage{}
 			require.NoError(t, decoded.Decode(byts))
 			decodedRoot, err := decoded.GetRoot()
 			require.NoError(t, err)

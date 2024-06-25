@@ -13,16 +13,18 @@ func MessageSigner0() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msgPre := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)
-	msgPre.Messages[0].Signer = 0
+	msgPre.Message.Messages[0].Signer = 0
+	msgPre.Signer = 0
 	msgPost := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msgPost.Messages[0].Signer = 0
+	msgPost.Message.Messages[0].Signer = 0
+	msgPost.Signer = 0
 
 	return &MsgSpecTest{
 		Name: "message signer 0",
-		Messages: []*types.PartialSignatureMessages{
+		Messages: []*types.SignedPartialSignatureMessage{
 			msgPre,
 			msgPost,
 		},
-		ExpectedError: "message invalid: signer ID 0 not allowed",
+		ExpectedError: "signer ID 0 not allowed",
 	}
 }

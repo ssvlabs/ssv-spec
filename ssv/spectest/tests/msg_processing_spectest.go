@@ -31,7 +31,7 @@ type MsgProcessingSpecTest struct {
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
-	OutputMessages         []*types.PartialSignatureMessages
+	OutputMessages         []*types.SignedPartialSignatureMessage
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
@@ -160,7 +160,82 @@ func IsQBFTProposalMessage(msg *types.SignedSSVMessage) bool {
 		}
 		return qbftMsg.MsgType == qbft.ProposalMsgType
 	}
-	return false
+
+	return v, lastErr
+}
+
+func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {
+	broadcastedRoots := test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).BroadcastedRoots
+	require.Len(t, broadcastedRoots, len(test.BeaconBroadcastedRoots))
+	for _, r1 := range test.BeaconBroadcastedRoots {
+		found := false
+		for _, r2 := range broadcastedRoots {
+			if r1 == hex.EncodeToString(r2[:]) {
+				found = true
+				break
+			}
+		}
+		require.Truef(t, found, "broadcasted beacon root not found")
+	}
+}
+
+func (test *MsgProcessingSpecTest) compareOutputMsgs(t *testing.T, v *ssv.Validator) {
+	filterPartialSigs := func(messages []*types.SSVMessage) []*types.SSVMessage {
+		ret := make([]*types.SSVMessage, 0)
+		for _, msg := range messages {
+			if msg.MsgType != types.SSVPartialSignatureMsgType {
+				continue
+			}
+			ret = append(ret, msg)
+		}
+		return ret
+	}
+	broadcastedSignedMsgs := v.Network.(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, v.Share.Committee))
+	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
+	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
+	require.Len(t, broadcastedMsgs, len(test.OutputMessages))
+	index := 0
+	for _, msg := range broadcastedMsgs {
+		if msg.MsgType != types.SSVPartialSignatureMsgType {
+			continue
+		}
+
+		msg1 := &types.SignedPartialSignatureMessage{}
+		require.NoError(t, msg1.Decode(msg.Data))
+		msg2 := test.OutputMessages[index]
+		require.Len(t, msg1.Message.Messages, len(msg2.Message.Messages))
+
+		// messages are not guaranteed to be in order so we map them and then test all roots to be equal
+		roots := make(map[string]string)
+		for i, partialSigMsg2 := range msg2.Message.Messages {
+			r2, err := partialSigMsg2.GetRoot()
+			require.NoError(t, err)
+			if _, found := roots[hex.EncodeToString(r2[:])]; !found {
+				roots[hex.EncodeToString(r2[:])] = ""
+			} else {
+				roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
+			}
+
+			partialSigMsg1 := msg1.Message.Messages[i]
+			r1, err := partialSigMsg1.GetRoot()
+			require.NoError(t, err)
+
+			if _, found := roots[hex.EncodeToString(r1[:])]; !found {
+				roots[hex.EncodeToString(r1[:])] = ""
+			} else {
+				roots[hex.EncodeToString(r1[:])] = hex.EncodeToString(r1[:])
+			}
+		}
+		for k, v := range roots {
+			require.EqualValues(t, k, v, "missing output msg")
+		}
+
+		// test that slot is correct in broadcasted msg
+		require.EqualValues(t, msg1.Message.Slot, msg2.Message.Slot, "incorrect broadcasted slot")
+
+		index++
+	}
 }
 
 func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {

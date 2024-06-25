@@ -40,9 +40,17 @@ func NotDecided() tests.SpecTest {
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: notDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     notDecidedSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
+			},
+			{
+				Name:                    "sync committee",
+				Runner:                  startRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
+				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
+				PostDutyRunnerStateRoot: notDecidedSyncCommitteeSC().Root(),
+				PostDutyRunnerState:     notDecidedSyncCommitteeSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 			{
 				Name:                    "aggregator",
@@ -51,30 +59,17 @@ func NotDecided() tests.SpecTest {
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: notDecidedAggregatorSC().Root(),
 				PostDutyRunnerState:     notDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
+				OutputMessages: []*types.SignedPartialSignatureMessage{
 					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
-				Name:           "attester",
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
-				Duty:           testingutils.TestingAttesterDutyNextEpoch,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:           "sync committee",
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
-				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:           "attester and sync committee",
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
-				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:                    "attester",
+				Runner:                  startRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
+				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
+				PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
+				PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,
+				OutputMessages:          []*types.SignedPartialSignatureMessage{},
 			},
 		},
 	}
@@ -88,7 +83,7 @@ func NotDecided() tests.SpecTest {
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: notDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.PartialSignatureMessages{
+			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}
@@ -103,7 +98,7 @@ func NotDecided() tests.SpecTest {
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: notDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.PartialSignatureMessages{
+			OutputMessages: []*types.SignedPartialSignatureMessage{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}

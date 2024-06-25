@@ -1,7 +1,7 @@
 package latemsg
 
 import (
-	"crypto/rsa"
+	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
@@ -24,7 +24,7 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 			DecidedVal: testingutils.TestingQBFTFullData,
 			DecidedCnt: 1,
 			BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
-				[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+				[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 				[]types.OperatorID{1, 2, 3},
 				qbft.FirstHeight,
 			),
@@ -34,7 +34,7 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 	}
 
 	// Late proposal message for first height and round 2
-	lateMsg := testingutils.TestingMultiSignerProposalMessageWithParams([]*rsa.PrivateKey{ks.OperatorKeys[1]}, []types.OperatorID{1}, 2, qbft.FirstHeight, testingutils.TestingIdentifier, testingutils.TestingQBFTFullData, testingutils.TestingQBFTRootData)
+	lateMsg := testingutils.TestingMultiSignerProposalMessageWithParams([]*bls.SecretKey{ks.Shares[1]}, []types.OperatorID{1}, 2, qbft.FirstHeight, testingutils.TestingIdentifier, testingutils.TestingQBFTFullData, testingutils.TestingQBFTRootData)
 
 	sc := lateProposalPastInstanceStateComparison(1, lateMsg)
 
@@ -44,7 +44,7 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 			instanceData,
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*types.SignedSSVMessage{
+				InputMessages: []*qbft.SignedMessage{
 					lateMsg,
 				},
 				ControllerPostRoot:  sc.Root(),

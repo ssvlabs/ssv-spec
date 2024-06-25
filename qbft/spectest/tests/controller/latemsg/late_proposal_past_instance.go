@@ -1,7 +1,7 @@
 package latemsg
 
 import (
-	"crypto/rsa"
+	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
@@ -17,7 +17,7 @@ func LateProposalPastInstance() tests.SpecTest {
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
 
-	msgPerHeight := make(map[qbft.Height][]*types.SignedSSVMessage)
+	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
 
@@ -30,7 +30,7 @@ func LateProposalPastInstance() tests.SpecTest {
 				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
-					[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
 					height,
 				),
@@ -40,7 +40,7 @@ func LateProposalPastInstance() tests.SpecTest {
 		}
 	}
 
-	lateMsg := testingutils.TestingMultiSignerProposalMessageWithHeight([]*rsa.PrivateKey{ks.OperatorKeys[1]}, []types.OperatorID{1}, qbft.FirstHeight)
+	lateMsg := testingutils.TestingMultiSignerProposalMessageWithHeight([]*bls.SecretKey{ks.Shares[1]}, []types.OperatorID{1}, qbft.FirstHeight)
 	sc := lateProposalPastInstanceStateComparison(2, lateMsg)
 
 	return &tests.ControllerSpecTest{
@@ -50,7 +50,7 @@ func LateProposalPastInstance() tests.SpecTest {
 			instanceData(1),
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*types.SignedSSVMessage{
+				InputMessages: []*qbft.SignedMessage{
 					lateMsg,
 				},
 				ControllerPostRoot:  sc.Root(),
@@ -63,7 +63,7 @@ func LateProposalPastInstance() tests.SpecTest {
 
 // lateProposalPastInstanceStateComparison returns a comparable.StateComparison for controller running up until the given height.
 // latemsg is never added because it is invalid
-func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *types.SignedSSVMessage) *comparable.StateComparison {
+func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 5, ks)
 	offset := 7 // 7 messages per height (1 propose + 3 prepare + 3 commit)
@@ -95,7 +95,7 @@ func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *types.
 			break
 		}
 
-		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
 		instance.State.LastPreparedRound = qbft.FirstRound
 		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
 		instance.State.Decided = true

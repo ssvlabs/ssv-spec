@@ -1,7 +1,7 @@
 package latemsg
 
 import (
-	"crypto/rsa"
+	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
@@ -17,7 +17,7 @@ func LatePreparePastInstance() tests.SpecTest {
 	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
 
-	msgPerHeight := make(map[qbft.Height][]*types.SignedSSVMessage)
+	msgPerHeight := make(map[qbft.Height][]*qbft.SignedMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
 	msgPerHeight[1] = allMsgs[7:14]
 
@@ -28,7 +28,7 @@ func LatePreparePastInstance() tests.SpecTest {
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
 				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
-					[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+					[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
 					[]types.OperatorID{1, 2, 3},
 					height,
 				),
@@ -40,7 +40,7 @@ func LatePreparePastInstance() tests.SpecTest {
 		}
 	}
 
-	lateMsg := testingutils.TestingPrepareMultiSignerMessageWithHeight([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, qbft.FirstHeight)
+	lateMsg := testingutils.TestingPrepareMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[4]}, []types.OperatorID{4}, qbft.FirstHeight)
 	sc := latePreparePastInstanceStateComparison(2, lateMsg)
 
 	return &tests.ControllerSpecTest{
@@ -50,7 +50,7 @@ func LatePreparePastInstance() tests.SpecTest {
 			instanceData(1),
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*types.SignedSSVMessage{
+				InputMessages: []*qbft.SignedMessage{
 					lateMsg,
 				},
 				ControllerPostRoot:  sc.Root(),
@@ -63,7 +63,7 @@ func LatePreparePastInstance() tests.SpecTest {
 
 // latePreparePastInstanceStateComparison returns a comparable.StateComparison for controller running up to the given height.
 // lateMsg will be added to the prepare container of the instance at the proper height.
-func latePreparePastInstanceStateComparison(height qbft.Height, lateMsg *types.SignedSSVMessage) *comparable.StateComparison {
+func latePreparePastInstanceStateComparison(height qbft.Height, lateMsg *qbft.SignedMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
 	offset := 7 // 7 messages per height (1 propose + 3 prepare + 3 commit)
@@ -94,7 +94,7 @@ func latePreparePastInstanceStateComparison(height qbft.Height, lateMsg *types.S
 			break
 		}
 
-		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
 		instance.State.LastPreparedRound = qbft.FirstRound
 		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
 		instance.State.Decided = true

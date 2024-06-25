@@ -21,12 +21,12 @@ import (
 type DecidedState struct {
 	DecidedVal         []byte
 	DecidedCnt         uint
-	BroadcastedDecided *types.SignedSSVMessage
+	BroadcastedDecided *qbft.SignedMessage
 }
 
 type RunInstanceData struct {
 	InputValue           []byte
-	InputMessages        []*types.SignedSSVMessage
+	InputMessages        []*qbft.SignedMessage
 	ControllerPostRoot   string
 	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedTimerState   *testingutils.TimerState
@@ -37,7 +37,7 @@ type RunInstanceData struct {
 type ControllerSpecTest struct {
 	Name            string
 	RunInstanceData []*RunInstanceData
-	OutputMessages  []*types.SignedSSVMessage
+	OutputMessages  []*qbft.SignedMessage
 	ExpectedError   string
 	StartHeight     *qbft.Height `json:"omitempty"`
 }
@@ -134,27 +134,30 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 		// test broadcasted
 		broadcastedSignedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 		require.Greater(t, len(broadcastedSignedMsgs), 0)
-		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
+		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, operators))
+		broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 		found := false
-		for _, msg := range broadcastedSignedMsgs {
+		for _, msg := range broadcastedMsgs {
 
 			// a hack for testing non standard messageID identifiers since we copy them into a MessageID this fixes it
 			msgID := types.MessageID{}
 			copy(msgID[:], identifier)
 
-			if !bytes.Equal(msgID[:], msg.SSVMessage.MsgID[:]) {
+			if !bytes.Equal(msgID[:], msg.MsgID[:]) {
 				continue
 			}
 
-			r1, err := msg.GetRoot()
+			msg1 := &qbft.SignedMessage{}
+			require.NoError(t, msg1.Decode(msg.Data))
+			r1, err := msg1.GetRoot()
 			require.NoError(t, err)
 
 			r2, err := runData.ExpectedDecidedState.BroadcastedDecided.GetRoot()
 			require.NoError(t, err)
 
 			if r1 == r2 &&
-				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.GetOperatorIDs(), msg.GetOperatorIDs()) &&
-				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signatures, msg.Signatures) {
+				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signers, msg1.Signers) &&
+				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signature, msg1.Signature) {
 				require.False(t, found)
 				found = true
 			}

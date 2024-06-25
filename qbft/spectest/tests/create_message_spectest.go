@@ -6,6 +6,10 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
+	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -28,7 +32,7 @@ type CreateMsgSpecTest struct {
 	// ISSUE 217: rename to value
 	StateValue                                       []byte
 	Round                                            qbft.Round
-	RoundChangeJustifications, PrepareJustifications []*types.SignedSSVMessage
+	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
 	CreateType                                       string
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
@@ -36,7 +40,7 @@ type CreateMsgSpecTest struct {
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
-	var msg *types.SignedSSVMessage
+	var msg *qbft.SignedMessage
 	var err error
 	switch test.CreateType {
 	case CreateProposal:
@@ -75,7 +79,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
-func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
+func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
@@ -86,7 +90,7 @@ func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 	return qbft.CreateCommit(state, config, test.Value)
 }
 
-func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) {
+func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
@@ -97,7 +101,7 @@ func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) 
 	return qbft.CreatePrepare(state, config, test.Round, test.Value)
 }
 
-func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error) {
+func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
@@ -108,7 +112,7 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
 }
 
-func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, error) {
+func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember:  testingutils.TestingCommitteeMember(ks),
@@ -118,11 +122,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 	config := testingutils.TestingConfig(ks)
 
 	if len(test.PrepareJustifications) > 0 {
-		prepareMsg, err := qbft.DecodeMessage(test.PrepareJustifications[0].SSVMessage.Data)
-		if err != nil {
-			return nil, err
-		}
-		state.LastPreparedRound = prepareMsg.Round
+		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
 		state.LastPreparedValue = test.StateValue
 
 		for _, msg := range test.PrepareJustifications {

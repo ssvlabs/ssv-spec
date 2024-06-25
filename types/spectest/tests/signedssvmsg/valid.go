@@ -27,6 +27,6 @@ func Valid() *SignedSSVMessageTest {
 		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
-		RSAPublicKey: [][]byte{pkByts},
+		RSAPublicKey: pkByts,
 	}
 }

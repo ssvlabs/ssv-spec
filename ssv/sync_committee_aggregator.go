@@ -19,7 +19,7 @@ type SyncCommitteeAggregatorRunner struct {
 
 	beacon         BeaconNode
 	network        Network
-	signer         types.BeaconSigner
+	signer         types.KeyManager
 	operatorSigner types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
@@ -30,7 +30,7 @@ func NewSyncCommitteeAggregatorRunner(
 	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	network Network,
-	signer types.BeaconSigner,
+	signer types.KeyManager,
 	operatorSigner types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
@@ -61,7 +61,7 @@ func (r *SyncCommitteeAggregatorRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing sync committee selection proof message")
@@ -145,7 +145,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Par
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
+func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
@@ -185,19 +185,34 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 		Messages: msgs,
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID, r.operatorSigner)
+	postSignedMsg, err := r.BaseRunner.signPostConsensusMsg(r, postConsensusMsg)
 	if err != nil {
-		return errors.Wrap(err, "could not sign post-consensus partial signature message")
+		return errors.Wrap(err, "could not sign post consensus msg")
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
+	data, err := postSignedMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode post consensus signature msg")
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		Data:    data,
+	}
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, r.BaseRunner.Share.OperatorID, r.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	if err := r.GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
 	}
 	return nil
 }
 
-func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
 	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -326,7 +341,7 @@ func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([
 // 4) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedContributionAndProof (for each subcommittee) sig to the BN
 func (r *SyncCommitteeAggregatorRunner) executeDuty(duty types.Duty) error {
 	// sign selection proofs
-	msgs := &types.PartialSignatureMessages{
+	msgs := types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,
 		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{},
@@ -349,13 +364,35 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty types.Duty) error {
 		msgs.Messages = append(msgs.Messages, msg)
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
+	// package into signed partial sig
+	signature, err := r.GetSigner().SignRoot(msgs, types.PartialSignatureType, r.GetShare().SharePubKey)
 	if err != nil {
-		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
+		return errors.Wrap(err, "could not sign PartialSignatureMessage for contribution proofs")
+	}
+	signedPartialMsg := &types.SignedPartialSignatureMessage{
+		Message:   msgs,
+		Signature: signature,
+		Signer:    r.GetShare().OperatorID,
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
+	// broadcast
+	data, err := signedPartialMsg.Encode()
+	if err != nil {
+		return errors.Wrap(err, "failed to encode contribution proofs pre-consensus signature msg")
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
+		Data:    data,
+	}
+
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, r.BaseRunner.Share.OperatorID, r.operatorSigner.SignSSVMessage)
+	if err != nil {
+		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+	}
+
+	if err := r.GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial contribution proof sig")
 	}
 	return nil
@@ -389,7 +426,7 @@ func (r *SyncCommitteeAggregatorRunner) GetValCheckF() qbft.ProposedValueCheckF 
 	return r.valCheck
 }
 
-func (r *SyncCommitteeAggregatorRunner) GetSigner() types.BeaconSigner {
+func (r *SyncCommitteeAggregatorRunner) GetSigner() types.KeyManager {
 	return r.signer
 }
 

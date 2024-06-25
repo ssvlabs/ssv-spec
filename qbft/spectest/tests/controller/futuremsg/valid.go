@@ -1,10 +1,9 @@
 package futuremsg
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // ValidMsg tests future msg valid msg. This is a valid msg that is not yet ready to be processed.
@@ -13,7 +12,7 @@ func ValidMsg() tests.SpecTest {
 	identifier := []byte{1, 2, 3, 4}
 
 	msg := testingutils.TestingPrepareMessageWithParams(
-		ks.OperatorKeys[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData)
+		ks.Shares[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData)
 
 	// create base controller
 	contr := createBaseController()
@@ -23,7 +22,7 @@ func ValidMsg() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:          []byte{1, 2, 3, 4},
-				InputMessages:       []*types.SignedSSVMessage{msg},
+				InputMessages:       []*qbft.SignedMessage{msg},
 				ControllerPostState: contr,
 			},
 		},

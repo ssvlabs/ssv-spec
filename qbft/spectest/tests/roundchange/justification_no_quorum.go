@@ -1,9 +1,10 @@
 package roundchange
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // JustificationNoQuorum tests justifications with no quorum
@@ -12,12 +13,12 @@ func JustificationNoQuorum() tests.SpecTest {
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
 
-	prepareMsgs := []*types.SignedSSVMessage{
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+	prepareMsgs := []*qbft.SignedMessage{
+		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
 	}
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
@@ -25,7 +26,7 @@ func JustificationNoQuorum() tests.SpecTest {
 		Name:           "round change justification no quorum",
 		Pre:            pre,
 		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
+		OutputMessages: []*qbft.SignedMessage{},
 		ExpectedError:  "invalid signed message: no justifications quorum",
 	}
 }

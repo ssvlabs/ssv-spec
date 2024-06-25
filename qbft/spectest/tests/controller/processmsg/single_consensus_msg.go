@@ -1,9 +1,9 @@
 package processmsg
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // SingleConsensusMsg tests process msg of a single msg
@@ -14,8 +14,8 @@ func SingleConsensusMsg() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*types.SignedSSVMessage{
-					testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
+				InputMessages: []*qbft.SignedMessage{
+					testingutils.TestingProposalMessage(ks.Shares[1], 1),
 				},
 			},
 		},

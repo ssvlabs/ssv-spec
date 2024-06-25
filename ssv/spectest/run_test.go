@@ -207,10 +207,10 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		panic("no beacon or committee duty")
 	}
 
-	outputMsgs := make([]*types.PartialSignatureMessages, 0)
+	outputMsgs := make([]*types.SignedPartialSignatureMessage, 0)
 	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.PartialSignatureMessages{}
+		byts, _ = json.Marshal(msg)
+		typedMsg := &types.SignedPartialSignatureMessage{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
@@ -281,11 +281,11 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		msgs = append(msgs, typedMsg)
 	}
 
-	outputMsgs := make([]*types.PartialSignatureMessages, 0)
+	outputMsgs := make([]*types.SignedPartialSignatureMessage, 0)
 	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
 	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.PartialSignatureMessages{}
+		byts, _ = json.Marshal(msg)
+		typedMsg := &types.SignedPartialSignatureMessage{}
 		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}

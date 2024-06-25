@@ -1,9 +1,10 @@
 package commit
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/bloxapp/ssv-spec/qbft"
+	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+	"github.com/bloxapp/ssv-spec/types"
+	"github.com/bloxapp/ssv-spec/types/testingutils"
 )
 
 // PostCutoff tests processing a commit msg when round >= cutoff
@@ -13,8 +14,8 @@ func PostCutoff() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 15
 
-	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 15),
+	msgs := []*qbft.SignedMessage{
+		testingutils.TestingCommitMessageWithRound(ks.Shares[1], types.OperatorID(1), 15),
 	}
 
 	return &tests.MsgProcessingSpecTest{

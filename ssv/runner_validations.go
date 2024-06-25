@@ -10,12 +10,12 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
+func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
-	if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
+	if err := b.validatePartialSigMsgForSlot(signedMsg, b.State.StartingDuty.Slot); err != nil {
 		return err
 	}
 
@@ -24,7 +24,7 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.Part
 		return err
 	}
 
-	return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
+	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
 // Verify each signature in container removing the invalid ones
@@ -40,7 +40,7 @@ func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContain
 	}
 }
 
-func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
+func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
@@ -66,12 +66,9 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")
 		}
 
-		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
-	default:
-		decidedValue := &types.ConsensusData{}
-		if err := decidedValue.Decode(decidedValueBytes); err != nil {
-			return errors.Wrap(err, "failed to parse decided value to ConsensusData")
-		}
+	if err := b.validatePartialSigMsgForSlot(signedMsg, decidedValue.Duty.Slot); err != nil {
+		return err
+	}
 
 		if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {
 			return err
@@ -81,8 +78,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 			return err
 		}
 
-		return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
-	}
+	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
 }
 
 func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encoder) error {
@@ -97,8 +93,8 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encod
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSignatureMessages, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
-	if len(expectedRootObjs) != len(psigMsgs.Messages) {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
+	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
 		return errors.New("wrong expected roots count")
 	}
 
@@ -138,7 +134,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSi
 			return string(ret[i][:]) < string(ret[j][:])
 		})
 		return ret
-	}(*psigMsgs)
+	}(signedMsg.Message)
 
 	// verify roots
 	for i, r := range sortedRoots {

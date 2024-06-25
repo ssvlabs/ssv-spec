@@ -10,7 +10,7 @@ import (
 type SignatureDomain []byte
 type Signature []byte
 type SignatureType [4]byte
-type SignSSVMessageF = func(ssvMessage *SSVMessage) ([]byte, error)
+type SignSSVMessageF = func(data []byte) ([256]byte, error)
 
 func (sigType SignatureType) Equal(other SignatureType) bool {
 	return bytes.Equal(sigType[:], other[:])

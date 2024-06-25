@@ -4,6 +4,7 @@
 package qbft
 
 import (
+	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 )
 
@@ -253,7 +254,7 @@ func (m *Message) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		hh.Append(m.Identifier)
+		hh.PutBytes(m.Identifier)
 		hh.MerkleizeWithMixin(elemIndx, byteLen, (56+31)/32)
 	}
 
@@ -316,4 +317,201 @@ func (m *Message) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 // GetTree ssz hashes the Message object
 func (m *Message) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(m)
+}
+
+// MarshalSSZ ssz marshals the SignedMessage object
+func (s *SignedMessage) MarshalSSZ() ([]byte, error) {
+	return ssz.MarshalSSZ(s)
+}
+
+// MarshalSSZTo ssz marshals the SignedMessage object to a target array
+func (s *SignedMessage) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+	dst = buf
+	offset := int(108)
+
+	// Field (0) 'Signature'
+	if size := len(s.Signature); size != 96 {
+		err = ssz.ErrBytesLengthFn("SignedMessage.Signature", size, 96)
+		return
+	}
+	dst = append(dst, s.Signature...)
+
+	// Offset (1) 'Signers'
+	dst = ssz.WriteOffset(dst, offset)
+	offset += len(s.Signers) * 8
+
+	// Offset (2) 'Message'
+	dst = ssz.WriteOffset(dst, offset)
+	offset += s.Message.SizeSSZ()
+
+	// Offset (3) 'FullData'
+	dst = ssz.WriteOffset(dst, offset)
+	offset += len(s.FullData)
+
+	// Field (1) 'Signers'
+	if size := len(s.Signers); size > 13 {
+		err = ssz.ErrListTooBigFn("SignedMessage.Signers", size, 13)
+		return
+	}
+	for ii := 0; ii < len(s.Signers); ii++ {
+		dst = ssz.MarshalUint64(dst, uint64(s.Signers[ii]))
+	}
+
+	// Field (2) 'Message'
+	if dst, err = s.Message.MarshalSSZTo(dst); err != nil {
+		return
+	}
+
+	// Field (3) 'FullData'
+	if size := len(s.FullData); size > 5243144 {
+		err = ssz.ErrBytesLengthFn("SignedMessage.FullData", size, 5243144)
+		return
+	}
+	dst = append(dst, s.FullData...)
+
+	return
+}
+
+// UnmarshalSSZ ssz unmarshals the SignedMessage object
+func (s *SignedMessage) UnmarshalSSZ(buf []byte) error {
+	var err error
+	size := uint64(len(buf))
+	if size < 108 {
+		return ssz.ErrSize
+	}
+
+	tail := buf
+	var o1, o2, o3 uint64
+
+	// Field (0) 'Signature'
+	if cap(s.Signature) == 0 {
+		s.Signature = types.Signature(make([]byte, 0, len(buf[0:96])))
+	}
+	s.Signature = append(s.Signature, buf[0:96]...)
+
+	// Offset (1) 'Signers'
+	if o1 = ssz.ReadOffset(buf[96:100]); o1 > size {
+		return ssz.ErrOffset
+	}
+
+	if o1 < 108 {
+		return ssz.ErrInvalidVariableOffset
+	}
+
+	// Offset (2) 'Message'
+	if o2 = ssz.ReadOffset(buf[100:104]); o2 > size || o1 > o2 {
+		return ssz.ErrOffset
+	}
+
+	// Offset (3) 'FullData'
+	if o3 = ssz.ReadOffset(buf[104:108]); o3 > size || o2 > o3 {
+		return ssz.ErrOffset
+	}
+
+	// Field (1) 'Signers'
+	{
+		buf = tail[o1:o2]
+		num, err := ssz.DivideInt2(len(buf), 8, 13)
+		if err != nil {
+			return err
+		}
+		s.Signers = ssz.ExtendUint64(s.Signers, num)
+		for ii := 0; ii < num; ii++ {
+			s.Signers[ii] = types.OperatorID(ssz.UnmarshallUint64(buf[ii*8 : (ii+1)*8]))
+		}
+	}
+
+	// Field (2) 'Message'
+	{
+		buf = tail[o2:o3]
+		if err = s.Message.UnmarshalSSZ(buf); err != nil {
+			return err
+		}
+	}
+
+	// Field (3) 'FullData'
+	{
+		buf = tail[o3:]
+		if len(buf) > 5243144 {
+			return ssz.ErrBytesLength
+		}
+		if cap(s.FullData) == 0 {
+			s.FullData = make([]byte, 0, len(buf))
+		}
+		s.FullData = append(s.FullData, buf...)
+	}
+	return err
+}
+
+// SizeSSZ returns the ssz encoded size in bytes for the SignedMessage object
+func (s *SignedMessage) SizeSSZ() (size int) {
+	size = 108
+
+	// Field (1) 'Signers'
+	size += len(s.Signers) * 8
+
+	// Field (2) 'Message'
+	size += s.Message.SizeSSZ()
+
+	// Field (3) 'FullData'
+	size += len(s.FullData)
+
+	return
+}
+
+// HashTreeRoot ssz hashes the SignedMessage object
+func (s *SignedMessage) HashTreeRoot() ([32]byte, error) {
+	return ssz.HashWithDefaultHasher(s)
+}
+
+// HashTreeRootWith ssz hashes the SignedMessage object with a hasher
+func (s *SignedMessage) HashTreeRootWith(hh ssz.HashWalker) (err error) {
+	indx := hh.Index()
+
+	// Field (0) 'Signature'
+	if size := len(s.Signature); size != 96 {
+		err = ssz.ErrBytesLengthFn("SignedMessage.Signature", size, 96)
+		return
+	}
+	hh.PutBytes(s.Signature)
+
+	// Field (1) 'Signers'
+	{
+		if size := len(s.Signers); size > 13 {
+			err = ssz.ErrListTooBigFn("SignedMessage.Signers", size, 13)
+			return
+		}
+		subIndx := hh.Index()
+		for _, i := range s.Signers {
+			hh.AppendUint64(i)
+		}
+		hh.FillUpTo32()
+		numItems := uint64(len(s.Signers))
+		hh.MerkleizeWithMixin(subIndx, numItems, ssz.CalculateLimit(13, numItems, 8))
+	}
+
+	// Field (2) 'Message'
+	if err = s.Message.HashTreeRootWith(hh); err != nil {
+		return
+	}
+
+	// Field (3) 'FullData'
+	{
+		elemIndx := hh.Index()
+		byteLen := uint64(len(s.FullData))
+		if byteLen > 5243144 {
+			err = ssz.ErrIncorrectListSize
+			return
+		}
+		hh.PutBytes(s.FullData)
+		hh.MerkleizeWithMixin(elemIndx, byteLen, (5243144+31)/32)
+	}
+
+	hh.Merkleize(indx)
+	return
+}
+
+// GetTree ssz hashes the SignedMessage object
+func (s *SignedMessage) GetTree() (*ssz.Node, error) {
+	return ssz.ProofTree(s)
 }
