@@ -3,6 +3,7 @@ package qbft_test
 import (
 	"testing"
 
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -27,11 +28,24 @@ func TestInstance_Marshaling(t *testing.T) {
 	testingSignedMsg := func() *qbft.SignedMessage {
 		return testingutils.SignQBFTMsg(TestingSK, 1, TestingMessage)
 	}()
-	testingCommitteeMember := testingutils.TestingCommitteeMember(keySet)
-
+	testingValidatorPK := spec.BLSPubKey{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4}
+	testingShare := &types.Share{
+		OperatorID:      1,
+		ValidatorPubKey: testingValidatorPK[:],
+		SharePubKey:     TestingSK.GetPublicKey().Serialize(),
+		DomainType:      types.PrimusTestnet,
+		Quorum:          3,
+		PartialQuorum:   2,
+		Committee: []*types.Operator{
+			{
+				OperatorID:  1,
+				SharePubKey: TestingSK.GetPublicKey().Serialize(),
+			},
+		},
+	}
 	i := &qbft.Instance{
 		State: &qbft.State{
-			CommitteeMember:                 testingCommitteeMember,
+			Share:                           testingShare,
 			ID:                              []byte{1, 2, 3, 4},
 			Round:                           1,
 			Height:                          1,

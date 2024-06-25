@@ -38,7 +38,7 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 // returns true if there is a quorum for the current round for this provided value
 func commitQuorumForRoundRoot(state *State, commitMsgContainer *MsgContainer, root [32]byte, round Round) (bool, []*SignedMessage, error) {
 	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndRoot(round, root)
-	return state.CommitteeMember.HasQuorum(len(signers)), msgs, nil
+	return state.Share.HasQuorum(len(signers)), msgs, nil
 }
 
 func aggregateCommitMsgs(msgs []*SignedMessage, fullData []byte) (*SignedMessage, error) {
@@ -122,7 +122,8 @@ func baseCommitValidationVerifySignature(
 	config IConfig,
 	signedCommit *SignedMessage,
 	height Height,
-	operators []*types.Operator) error {
+	operators []*types.Operator,
+) error {
 
 	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
 		return err

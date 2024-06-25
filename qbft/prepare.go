@@ -24,7 +24,7 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 		return nil // already moved to commit stage
 	}
 
-	if !HasQuorum(i.State.CommitteeMember, prepareMsgContainer.MessagesForRound(i.State.Round)) {
+	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
 		return nil // no quorum yet
 	}
 
@@ -65,13 +65,13 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 			state.Height,
 			state.LastPreparedRound,
 			r,
-			state.CommitteeMember.Committee,
+			state.Share.Committee,
 		); err == nil {
 			ret = append(ret, msg)
 		}
 	}
 
-	if !HasQuorum(state.CommitteeMember, ret) {
+	if !HasQuorum(state.Share, ret) {
 		return nil, nil
 	}
 	return ret, nil

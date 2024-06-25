@@ -17,15 +17,19 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	CommitteeMember *types.CommitteeMember
+	Share           *types.Share
 	config          IConfig
 }
 
-func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig) *Controller {
+func NewController(
+	identifier []byte,
+	share *types.Share,
+	config IConfig,
+) *Controller {
 	return &Controller{
 		Identifier:      identifier,
 		Height:          FirstHeight,
-		CommitteeMember: committeeMember,
+		Share:           share,
 		StoredInstances: InstanceContainer{},
 		config:          config,
 	}
@@ -138,7 +142,7 @@ func (c *Controller) isFutureMessage(msg *SignedMessage) bool {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, c.Height)
+	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }

@@ -28,13 +28,13 @@ type Instance struct {
 
 func NewInstance(
 	config IConfig,
-	committeeMember *types.CommitteeMember,
+	share *types.Share,
 	identifier []byte,
 	height Height,
 ) *Instance {
 	return &Instance{
 		State: &State{
-			CommitteeMember:      committeeMember,
+			Share:                share,
 			ID:                   identifier,
 			Round:                FirstRound,
 			Height:               height,
@@ -63,7 +63,7 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.config.GetTimer().TimeoutForRound(FirstRound)
 
 		// propose if this node is the proposer
-		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.CommitteeMember.OperatorID {
+		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
 			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
 			// nolint
 			if err != nil {
@@ -155,6 +155,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.config,
 			msg,
 			i.config.GetValueCheckF(),
+			i.State.Share.Committee,
 		)
 	case PrepareMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
@@ -178,7 +179,7 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			i.State.Height,
 			i.State.Round,
 			i.State.ProposalAcceptedForCurrentRound,
-			i.State.CommitteeMember.Committee,
+			i.State.Share.Committee,
 		)
 	case RoundChangeMsgType:
 		return validRoundChangeForDataIgnoreSignature(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)

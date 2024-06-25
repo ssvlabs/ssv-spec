@@ -50,6 +50,7 @@ func isValidProposal(
 	config IConfig,
 	signedProposal *SignedMessage,
 	valCheck ProposedValueCheckF,
+	operators []*types.Operator,
 ) error {
 	if signedProposal.Message.MsgType != ProposalMsgType {
 		return errors.New("msg type is not proposal")
@@ -61,7 +62,7 @@ func isValidProposal(
 		return errors.New("msg allows 1 signer")
 	}
 
-	if !signedProposal.CheckSignersInCommittee(state.CommitteeMember.Committee) {
+	if !signedProposal.CheckSignersInCommittee(state.Share.Committee) {
 		return errors.New("signer not in committee")
 	}
 
@@ -134,7 +135,7 @@ func isProposalJustification(
 		}
 
 		// check there is a quorum
-		if !HasQuorum(state.CommitteeMember, roundChangeMsgs) {
+		if !HasQuorum(state.Share, roundChangeMsgs) {
 			return errors.New("change round has no quorum")
 		}
 
@@ -156,7 +157,7 @@ func isProposalJustification(
 		} else {
 
 			// check prepare quorum
-			if !HasQuorum(state.CommitteeMember, prepareMsgs) {
+			if !HasQuorum(state.Share, prepareMsgs) {
 				return errors.New("prepares has no quorum")
 			}
 

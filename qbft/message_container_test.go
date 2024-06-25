@@ -3,8 +3,6 @@ package qbft_test
 import (
 	"testing"
 
-	"testing"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"

@@ -82,7 +82,7 @@ func (c *Config) GetTimer() Timer {
 }
 
 type State struct {
-	CommitteeMember                 *types.CommitteeMember
+	Share                           *types.Share
 	ID                              []byte // instance Identifier
 	Round                           Round
 	Height                          Height

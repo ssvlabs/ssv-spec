@@ -95,7 +95,7 @@ func hasReceivedPartialQuorum(state *State, roundChangeMsgContainer *MsgContaine
 		}
 	}
 
-	return HasPartialQuorum(state.CommitteeMember, rc), rc
+	return HasPartialQuorum(state.Share, rc), rc
 }
 
 // hasReceivedProposalJustificationForLeadingRound returns
@@ -113,7 +113,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 	roundChanges := roundChangeMsgContainer.MessagesForRound(signedRoundChange.Message.Round)
 
 	// optimization, if no round change quorum can return false
-	if !HasQuorum(state.CommitteeMember, roundChanges) {
+	if !HasQuorum(state.Share, roundChanges) {
 		return nil, nil, nil
 	}
 
@@ -232,7 +232,7 @@ func validRoundChangeForDataIgnoreSignature(
 		return errors.Wrap(err, "roundChange invalid")
 	}
 
-	if !signedMsg.CheckSignersInCommittee(state.CommitteeMember.Committee) {
+	if !signedMsg.CheckSignersInCommittee(state.Share.Committee) {
 		return errors.New("signer not in committee")
 	}
 
@@ -262,7 +262,7 @@ func validRoundChangeForDataIgnoreSignature(
 			return errors.New("H(data) != root")
 		}
 
-		if !HasQuorum(state.CommitteeMember, prepareMsgs) {
+		if !HasQuorum(state.Share, prepareMsgs) {
 			return errors.New("no justifications quorum")
 		}
 
