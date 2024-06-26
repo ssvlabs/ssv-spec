@@ -9,7 +9,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// WrongBeaconRole tests wrong ConsensusData.BeaconDuty.Type != runner.RunnerRoleType
+// WrongBeaconRole tests wrong ConsensusData.ValidatorDuty.Type != runner.RunnerRoleType
 // (changed the consensus data object between runner types, e.g. sync committee receives contribution proof)
 func WrongBeaconRole() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()

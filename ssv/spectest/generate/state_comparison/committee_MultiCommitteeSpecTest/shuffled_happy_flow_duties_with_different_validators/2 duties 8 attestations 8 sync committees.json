@@ -722,7 +722,7 @@
 										"Finished": true,
 										"CommitteeDuty": {
 												"Slot": "12",
-												"BeaconDuties": [
+												"ValidatorDuties": [
 														{
 																"Type": 0,
 																"PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
@@ -3088,7 +3088,7 @@
 										"Finished": true,
 										"CommitteeDuty": {
 												"Slot": "13",
-												"BeaconDuties": [
+												"ValidatorDuties": [
 														{
 																"Type": 0,
 																"PubKey": "0x91e4ffe73dfe57e548450a65ffd1d685f6140d97ba1ee2fab7183c91d5cb2d50f53b133a2e2f1345f551381f3e38cf32",

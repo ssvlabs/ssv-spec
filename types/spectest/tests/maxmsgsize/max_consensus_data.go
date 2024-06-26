@@ -9,11 +9,11 @@ const (
 	maxSizeDataSSZ = 4194304
 )
 
-func maxBeaconDuty() types.BeaconDuty {
+func maxValidatorDuty() types.ValidatorDuty {
 
 	validatorSyncCommitteeIndices := [13]uint64{1}
 
-	return types.BeaconDuty{
+	return types.ValidatorDuty{
 		Type:                          types.BNRoleAttester,
 		PubKey:                        [48]byte{1},
 		Slot:                          1,
@@ -39,7 +39,7 @@ func maxConsensusData() *types.ConsensusData {
 	}
 
 	return &types.ConsensusData{
-		Duty:                       maxBeaconDuty(),
+		Duty:                       maxValidatorDuty(),
 		Version:                    spec.DataVersionAltair,
 		PreConsensusJustifications: preConsensusJustification,
 		DataSSZ:                    maxDataSSZ(),

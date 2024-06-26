@@ -17,7 +17,7 @@ func PostFinish() tests.SpecTest {
 
 	// TODO: check errors
 	// nolint
-	finishRunner := func(runner ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	finishRunner := func(runner ssv.Runner, duty *types.ValidatorDuty) ssv.Runner {
 		runner.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		runner.GetBaseRunner().State.Finished = true
 		return runner

@@ -95,7 +95,7 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty types.Duty, quorum uin
 }
 
 // baseStartNewBeaconDuty is a base func that all runner implementation can call to start a non-beacon duty
-func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.BeaconDuty, quorum uint64) error {
+func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.ValidatorDuty, quorum uint64) error {
 	if err := b.ShouldProcessNonBeaconDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start non-beacon duty")
 	}

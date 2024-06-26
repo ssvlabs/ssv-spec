@@ -38,7 +38,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 
 	// finishTaskRunner is a helper function that finishes a task runner and returns it
 	// task is an operation that isn't a beacon duty, e.g. validator registration
-	finishTaskRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	finishTaskRunner := func(r ssv.Runner, duty *types.ValidatorDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.Finished = true
 		return r

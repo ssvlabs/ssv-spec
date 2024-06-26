@@ -192,17 +192,17 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 			panic("cant unmarshal committee duty")
 		}
 		testDuty = committeeDuty
-	} else if _, ok := m["BeaconDuty"]; ok {
-		byts, err := json.Marshal(m["BeaconDuty"])
+	} else if _, ok := m["ValidatorDuty"]; ok {
+		byts, err := json.Marshal(m["ValidatorDuty"])
 		if err != nil {
 			panic("cant marshal beacon duty")
 		}
-		beaconDuty := &types.BeaconDuty{}
-		err = json.Unmarshal(byts, beaconDuty)
+		duty := &types.ValidatorDuty{}
+		err = json.Unmarshal(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
 		}
-		testDuty = beaconDuty
+		testDuty = duty
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -258,17 +258,17 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 			panic("cant unmarshal committee duty")
 		}
 		testDuty = committeeDuty
-	} else if _, ok := m["BeaconDuty"]; ok {
-		byts, err := json.Marshal(m["BeaconDuty"])
+	} else if _, ok := m["ValidatorDuty"]; ok {
+		byts, err := json.Marshal(m["ValidatorDuty"])
 		if err != nil {
 			panic("cant marshal beacon duty")
 		}
-		beaconDuty := &types.BeaconDuty{}
-		err = json.Unmarshal(byts, beaconDuty)
+		duty := &types.ValidatorDuty{}
+		err = json.Unmarshal(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
 		}
-		testDuty = beaconDuty
+		testDuty = duty
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -351,10 +351,10 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 			continue
 		}
 
-		beaconDuty := &types.BeaconDuty{}
-		err = getDecoder().Decode(&beaconDuty)
+		duty := &types.ValidatorDuty{}
+		err = getDecoder().Decode(&duty)
 		if err == nil {
-			inputs = append(inputs, beaconDuty)
+			inputs = append(inputs, duty)
 			continue
 		}
 

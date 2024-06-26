@@ -12,7 +12,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-// BeaconDuty runner for validator voluntary exit duty
+// ValidatorDuty runner for validator voluntary exit duty
 type VoluntaryExitRunner struct {
 	BaseRunner *BaseRunner
 
@@ -49,7 +49,7 @@ func NewVoluntaryExitRunner(
 
 func (r *VoluntaryExitRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	// Note: Voluntary exit doesn't require any consensus, it can start a new duty even if previous one didn't finish
-	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty), quorum)
+	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.ValidatorDuty), quorum)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -127,7 +127,7 @@ func (r *VoluntaryExitRunner) executeDuty(duty types.Duty) error {
 	}
 
 	// get PartialSignatureMessage with voluntaryExit root and signature
-	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), voluntaryExit, duty.DutySlot(),
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.ValidatorDuty), voluntaryExit, duty.DutySlot(),
 		types.DomainVoluntaryExit)
 	if err != nil {
 		return errors.Wrap(err, "could not sign VoluntaryExit object")
@@ -158,7 +158,7 @@ func (r *VoluntaryExitRunner) executeDuty(duty types.Duty) error {
 // Returns *phase0.VoluntaryExit object with current epoch and own validator index
 func (r *VoluntaryExitRunner) calculateVoluntaryExit() (*phase0.VoluntaryExit, error) {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
-	validatorIndex := r.GetState().StartingDuty.(*types.BeaconDuty).ValidatorIndex
+	validatorIndex := r.GetState().StartingDuty.(*types.ValidatorDuty).ValidatorIndex
 	return &phase0.VoluntaryExit{
 		Epoch:          epoch,
 		ValidatorIndex: validatorIndex,

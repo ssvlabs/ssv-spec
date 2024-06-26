@@ -40,7 +40,7 @@ func NewCommittee(
 
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
-	if len(duty.BeaconDuties) == 0 {
+	if len(duty.ValidatorDuties) == 0 {
 		return errors.New("no beacon duties")
 	}
 	if _, exists := c.Runners[duty.Slot]; exists {

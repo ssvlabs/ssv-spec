@@ -73,7 +73,7 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 		RunningInstance        *qbft.Instance
 		DecidedValue           []byte
 		Finished               bool
-		BeaconDuty             *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
+		ValidatorDuty          *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty          *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
 	}
 
@@ -86,12 +86,12 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 	}
 
 	if pcs.StartingDuty != nil {
-		if beaconDuty, ok := pcs.StartingDuty.(*types.BeaconDuty); ok {
-			alias.BeaconDuty = beaconDuty
+		if validatorDuty, ok := pcs.StartingDuty.(*types.ValidatorDuty); ok {
+			alias.ValidatorDuty = validatorDuty
 		} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
 		} else {
-			return nil, errors.New("can't marshal because BaseRunner.State.StartingDuty isn't BeaconDuty or CommitteeDuty")
+			return nil, errors.New("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty or CommitteeDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)
@@ -108,7 +108,7 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 		RunningInstance        *qbft.Instance
 		DecidedValue           []byte
 		Finished               bool
-		BeaconDuty             *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
+		ValidatorDuty          *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty          *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
 	}
 
@@ -126,8 +126,8 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 	pcs.Finished = aux.Finished
 
 	// Determine which type of duty was marshaled
-	if aux.BeaconDuty != nil {
-		pcs.StartingDuty = aux.BeaconDuty
+	if aux.ValidatorDuty != nil {
+		pcs.StartingDuty = aux.ValidatorDuty
 	} else if aux.CommitteeDuty != nil {
 		pcs.StartingDuty = aux.CommitteeDuty
 	}

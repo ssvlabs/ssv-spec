@@ -9,13 +9,13 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// PastSlot tests justification with highestDecidedDutySlot >= data.BeaconDuty.Slot (not valid)
+// PastSlot tests justification with highestDecidedDutySlot >= data.ValidatorDuty.Slot (not valid)
 func PastSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
 
 		// copy duty to isolate this change from all other spec tests
-		copyDuty := types.BeaconDuty{}
+		copyDuty := types.ValidatorDuty{}
 		byts, err := obj.Duty.MarshalSSZ()
 		if err != nil {
 			panic(err.Error())

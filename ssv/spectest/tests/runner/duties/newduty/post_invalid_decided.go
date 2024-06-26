@@ -18,7 +18,7 @@ func PostInvalidDecided() tests.SpecTest {
 
 	consensusDataByts := func() []byte {
 		cd := &types.ConsensusData{
-			Duty: types.BeaconDuty{
+			Duty: types.ValidatorDuty{
 				Type:                    100, // invalid
 				PubKey:                  testingutils.TestingValidatorPubKey,
 				Slot:                    testingutils.TestingDutySlot,

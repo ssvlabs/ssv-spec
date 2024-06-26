@@ -81,7 +81,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.PartialSignature
 		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 
-	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
+	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
 
 	// TODO waitToSlotTwoThirds
 
@@ -130,7 +130,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) e
 	}
 
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty),
+	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty),
 		aggregateAndProof,
 		decidedValue.(*types.ConsensusData).Duty.Slot,
 		types.DomainAggregateAndProof)
@@ -225,7 +225,7 @@ func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedAggregateSubmitRequest sig to the BN
 func (r *AggregatorRunner) executeDuty(duty types.Duty) error {
 	// sign selection proof
-	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), types.SSZUint64(duty.DutySlot()), duty.DutySlot(),
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.ValidatorDuty), types.SSZUint64(duty.DutySlot()), duty.DutySlot(),
 		types.DomainSelectionProof)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")

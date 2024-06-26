@@ -81,7 +81,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 
-	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
+	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
 
 	// get block data
 	obj, ver, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
@@ -139,7 +139,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 		}
 	}
 
-	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty), blkToSign,
+	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty), blkToSign,
 		cd.Duty.Slot,
 		types.DomainProposer)
 	if err != nil {
@@ -261,7 +261,7 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 func (r *ProposerRunner) executeDuty(duty types.Duty) error {
 	// sign partial randao
 	epoch := r.GetBeaconNode().GetBeaconNetwork().EstimatedEpochAtSlot(duty.DutySlot())
-	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), types.SSZUint64(epoch), duty.DutySlot(),
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.ValidatorDuty), types.SSZUint64(epoch), duty.DutySlot(),
 		types.DomainRandao)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")

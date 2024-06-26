@@ -723,7 +723,7 @@
 										"Finished": true,
 										"CommitteeDuty": {
 												"Slot": "12",
-												"BeaconDuties": [
+												"ValidatorDuties": [
 														{
 																"Type": 0,
 																"PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
@@ -5285,7 +5285,7 @@
 										"Finished": true,
 										"CommitteeDuty": {
 												"Slot": "13",
-												"BeaconDuties": [
+												"ValidatorDuties": [
 														{
 																"Type": 0,
 																"PubKey": "0xa77558846b46ea9dbd414f9ae93660e945de298af833e93910f5f3f8184e728ce1f04f8fcfb666b7d64afa2367a14e1b",
@@ -9847,7 +9847,7 @@
 										"Finished": true,
 										"CommitteeDuty": {
 												"Slot": "14",
-												"BeaconDuties": [
+												"ValidatorDuties": [
 														{
 																"Type": 0,
 																"PubKey": "0xadaeffbd52c20abe165ee908a7b33b7ba07f5b1a52af3651311d9c02a22bf747a79a53a324c91b41ca96f7fab3f15677",
@@ -14409,7 +14409,7 @@
 										"Finished": true,
 										"CommitteeDuty": {
 												"Slot": "15",
-												"BeaconDuties": [
+												"ValidatorDuties": [
 														{
 																"Type": 0,
 																"PubKey": "0x8eaa5c01dbb6c00cfd508c7c1b49d0901656ba2e6a23e329965a2571d4383264f429d5c7eadadcfe065abdd9ccdf8785",

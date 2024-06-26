@@ -105,7 +105,7 @@ func (c Contributions) SizeSSZ() int {
 type ConsensusData struct {
 	// Duty max size is
 	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
-	Duty    BeaconDuty
+	Duty    ValidatorDuty
 	Version spec.DataVersion
 	// PreConsensusJustifications max size is
 	//			13*[pre-consensus]SignedPartialSignatureMessage(1888) = 24544

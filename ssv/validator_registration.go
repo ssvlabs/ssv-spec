@@ -47,7 +47,7 @@ func NewValidatorRegistrationRunner(
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
-	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty), quorum)
+	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.ValidatorDuty), quorum)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -128,7 +128,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 	}
 
 	// sign partial randao
-	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), vr, duty.DutySlot(),
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.ValidatorDuty), vr, duty.DutySlot(),
 		types.DomainApplicationBuilder)
 	if err != nil {
 		return errors.Wrap(err, "could not sign validator registration")

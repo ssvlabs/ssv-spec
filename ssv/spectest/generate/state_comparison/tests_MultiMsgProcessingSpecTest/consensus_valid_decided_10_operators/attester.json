@@ -1263,7 +1263,7 @@
 						"Finished": false,
 						"CommitteeDuty": {
 								"Slot": "12",
-								"BeaconDuties": [
+								"ValidatorDuties": [
 										{
 												"Type": 0,
 												"PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",

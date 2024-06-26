@@ -73,14 +73,14 @@ var TestWrongBeaconVoteByts, _ = TestWrongBeaconVote.Encode()
 // ConsensusData - Attester
 
 var TestAttesterConsensusData = &types.ConsensusData{
-	Duty:    *TestingAttesterDuty.BeaconDuties[0],
+	Duty:    *TestingAttesterDuty.ValidatorDuties[0],
 	DataSSZ: TestingAttestationDataBytes,
 	Version: spec.DataVersionPhase0,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAttesterNextEpochConsensusData = &types.ConsensusData{
-	Duty:    *TestingAttesterDutyNextEpoch.BeaconDuties[0],
+	Duty:    *TestingAttesterDutyNextEpoch.ValidatorDuties[0],
 	DataSSZ: TestingAttestationNextEpochDataBytes,
 	Version: spec.DataVersionPhase0,
 }
@@ -103,7 +103,7 @@ var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.Co
 	}
 
 	return &types.ConsensusData{
-		Duty:                       *TestingAttesterDuty.BeaconDuties[0],
+		Duty:                       *TestingAttesterDuty.ValidatorDuties[0],
 		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingAttestationDataBytes,
@@ -135,7 +135,7 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 	}
 
 	return &types.ConsensusData{
-		Duty:                       *TestingSyncCommitteeDuty.BeaconDuties[0],
+		Duty:                       *TestingSyncCommitteeDuty.ValidatorDuties[0],
 		Version:                    spec.DataVersionDeneb,
 		PreConsensusJustifications: justif,
 		DataSSZ:                    TestingSyncCommitteeBlockRoot[:],
@@ -143,14 +143,14 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 }
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
-	Duty:    *TestingSyncCommitteeDuty.BeaconDuties[0],
+	Duty:    *TestingSyncCommitteeDuty.ValidatorDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
 var TestSyncCommitteeNextEpochConsensusData = &types.ConsensusData{
-	Duty:    *TestingSyncCommitteeDutyNextEpoch.BeaconDuties[0],
+	Duty:    *TestingSyncCommitteeDutyNextEpoch.ValidatorDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
 }
@@ -252,27 +252,27 @@ var PostConsensusCommitteeMsgForDuty = func(duty *types.CommitteeDuty, keySetMap
 
 	var ret *types.PartialSignatureMessages
 
-	for _, beaconDuty := range duty.BeaconDuties {
+	for _, validatorDuty := range duty.ValidatorDuties {
 
-		ks := keySetMap[beaconDuty.ValidatorIndex]
+		ks := keySetMap[validatorDuty.ValidatorIndex]
 
-		if beaconDuty.Type == types.BNRoleAttester {
-			attData := TestingAttestationDataForBeaconDuty(beaconDuty)
-			pSigMsgs := postConsensusAttestationMsgForAttestationData(ks.Shares[id], id, duty.Slot, attData, beaconDuty.ValidatorIndex)
+		if validatorDuty.Type == types.BNRoleAttester {
+			attData := TestingAttestationDataForValidatorDuty(validatorDuty)
+			pSigMsgs := postConsensusAttestationMsgForAttestationData(ks.Shares[id], id, duty.Slot, attData, validatorDuty.ValidatorIndex)
 			if ret == nil {
 				ret = pSigMsgs
 			} else {
 				ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
 			}
-		} else if beaconDuty.Type == types.BNRoleSyncCommittee {
-			pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, duty.Slot, false, false, beaconDuty.ValidatorIndex)
+		} else if validatorDuty.Type == types.BNRoleSyncCommittee {
+			pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, duty.Slot, false, false, validatorDuty.ValidatorIndex)
 			if ret == nil {
 				ret = pSigMsgs
 			} else {
 				ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
 			}
 		} else {
-			panic(fmt.Sprintf("type %v not expected", beaconDuty.Type))
+			panic(fmt.Sprintf("type %v not expected", validatorDuty.Type))
 		}
 	}
 

@@ -221,7 +221,7 @@ type MsgProcessingSpecTestAlias struct {
 	BeaconBroadcastedRoots  []string
 	DontStartDuty           bool
 	ExpectedError           string
-	BeaconDuty              *types.BeaconDuty    `json:"BeaconDuty,omitempty"`
+	ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 	CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
 }
 
@@ -240,12 +240,12 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 	}
 
 	if t.Duty != nil {
-		if beaconDuty, ok := t.Duty.(*types.BeaconDuty); ok {
-			alias.BeaconDuty = beaconDuty
+		if duty, ok := t.Duty.(*types.ValidatorDuty); ok {
+			alias.ValidatorDuty = duty
 		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
 		} else {
-			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't BeaconDuty or CommitteeDuty")
+			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty or CommitteeDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)
@@ -273,8 +273,8 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.ExpectedError = aux.ExpectedError
 
 	// Determine which type of duty was marshaled
-	if aux.BeaconDuty != nil {
-		t.Duty = aux.BeaconDuty
+	if aux.ValidatorDuty != nil {
+		t.Duty = aux.ValidatorDuty
 	} else if aux.CommitteeDuty != nil {
 		t.Duty = aux.CommitteeDuty
 	}
