@@ -6,7 +6,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
+	validatorconsensusdata "github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata/proposer"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
@@ -48,32 +48,32 @@ var AllTests = []SpecTest{
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
 
-	consensusdata.InvalidDuty(),
+	validatorconsensusdata.InvalidDuty(),
 
-	consensusdata.ProposerConsensusDataEncoding(),
-	consensusdata.BlindedProposerConsensusDataEncoding(),
-	consensusdata.CapellaBlockValidation(),
-	consensusdata.CapellaBlindedBlockValidation(),
-	consensusdata.ProposerNoJustifications(),
-	consensusdata.InvalidCapellaBlindedBlockValidation(),
-	consensusdata.InvalidCapellaBlockValidation(),
-	consensusdata.DenebBlockValidation(),
-	consensusdata.DenebBlindedBlockValidation(),
-	consensusdata.InvalidDenebBlockValidation(),
-	consensusdata.InvalidDenebBlindedBlockValidation(),
+	validatorconsensusdata.ProposerConsensusDataEncoding(),
+	validatorconsensusdata.BlindedProposerConsensusDataEncoding(),
+	validatorconsensusdata.CapellaBlockValidation(),
+	validatorconsensusdata.CapellaBlindedBlockValidation(),
+	validatorconsensusdata.ProposerNoJustifications(),
+	validatorconsensusdata.InvalidCapellaBlindedBlockValidation(),
+	validatorconsensusdata.InvalidCapellaBlockValidation(),
+	validatorconsensusdata.DenebBlockValidation(),
+	validatorconsensusdata.DenebBlindedBlockValidation(),
+	validatorconsensusdata.InvalidDenebBlockValidation(),
+	validatorconsensusdata.InvalidDenebBlindedBlockValidation(),
 
-	consensusdata.AggregatorConsensusDataEncoding(),
-	consensusdata.AggregatorValidation(),
-	consensusdata.AggregatorNoJustifications(),
-	consensusdata.InvalidAggregatorValidation(),
+	validatorconsensusdata.AggregatorConsensusDataEncoding(),
+	validatorconsensusdata.AggregatorValidation(),
+	validatorconsensusdata.AggregatorNoJustifications(),
+	validatorconsensusdata.InvalidAggregatorValidation(),
 
-	consensusdata.SyncCommitteeContributionConsensusDataEncoding(),
-	consensusdata.SyncCommitteeContributionValidation(),
-	consensusdata.SyncCommitteeContributionNoJustifications(),
-	consensusdata.InvalidSyncCommitteeContributionValidation(),
+	validatorconsensusdata.SyncCommitteeContributionConsensusDataEncoding(),
+	validatorconsensusdata.SyncCommitteeContributionValidation(),
+	validatorconsensusdata.SyncCommitteeContributionNoJustifications(),
+	validatorconsensusdata.InvalidSyncCommitteeContributionValidation(),
 
-	consensusdata.ValidatorRegistration(),
-	consensusdata.VoluntaryExit(),
+	validatorconsensusdata.ValidatorRegistration(),
+	validatorconsensusdata.VoluntaryExit(),
 
 	consensusdataproposer.VersionedBlockValidation(),
 	consensusdataproposer.VersionedBlindedBlockValidation(),

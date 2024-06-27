@@ -1,9 +1,9 @@
-package consensusdata
+package validatorconsensusdata
 
 import "github.com/ssvlabs/ssv-spec/types/testingutils"
 
 // InvalidAggregatorValidation tests an invalid consensus data with AggregateAndProof
-func InvalidAggregatorValidation() *ConsensusDataTest {
+func InvalidAggregatorValidation() *ValidatorConsensusDataTest {
 
 	ks := testingutils.Testing4SharesSet()
 
@@ -11,7 +11,7 @@ func InvalidAggregatorValidation() *ConsensusDataTest {
 
 	cd.DataSSZ = testingutils.TestingSyncCommitteeBlockRoot[:]
 
-	return &ConsensusDataTest{
+	return &ValidatorConsensusDataTest{
 		Name:          "invalid aggregator data",
 		ConsensusData: *cd,
 		ExpectedError: "could not unmarshal ssz: incorrect size",

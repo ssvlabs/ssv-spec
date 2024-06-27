@@ -27,7 +27,7 @@ func (test *ProposerSpecTest) TestName() string {
 
 func (test *ProposerSpecTest) Run(t *testing.T) {
 	// decode cd
-	cd := &types.ConsensusData{}
+	cd := &types.ValidatorConsensusData{}
 	require.NoError(t, cd.Decode(test.DataCd))
 
 	if test.Blinded {

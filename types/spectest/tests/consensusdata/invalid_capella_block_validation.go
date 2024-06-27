@@ -1,4 +1,4 @@
-package consensusdata
+package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -7,16 +7,16 @@ import (
 )
 
 // InvalidCapellaBlockValidation tests an invalid consensus data with capella block
-func InvalidCapellaBlockValidation() *ConsensusDataTest {
+func InvalidCapellaBlockValidation() *ValidatorConsensusDataTest {
 
 	version := spec.DataVersionCapella
 
-	cd := &types.ConsensusData{
+	cd := &types.ValidatorConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: []byte{},
 	}
-	return &ConsensusDataTest{
+	return &ValidatorConsensusDataTest{
 		Name:          "invalid capella block",
 		ConsensusData: *cd,
 		ExpectedError: "could not unmarshal ssz: incorrect size",

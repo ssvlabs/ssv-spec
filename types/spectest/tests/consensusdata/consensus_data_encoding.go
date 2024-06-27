@@ -1,4 +1,4 @@
-package consensusdata
+package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -6,8 +6,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// ConsensusDataEncoding tests encoding and decoding ConsensusData for all duties
-func ConsensusDataEncoding(name string, cd *types.ConsensusData) *EncodingTest {
+// ConsensusDataEncoding tests encoding and decoding ValidatorConsensusData for all duties
+func ConsensusDataEncoding(name string, cd *types.ValidatorConsensusData) *EncodingTest {
 
 	byts, err := cd.Encode()
 	if err != nil {

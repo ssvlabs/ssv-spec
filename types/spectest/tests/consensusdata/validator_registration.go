@@ -1,4 +1,4 @@
-package consensusdata
+package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -7,20 +7,20 @@ import (
 )
 
 // ValidatorRegistration tests an invalid consensus data for validator registration (has no consensus data)
-func ValidatorRegistration() *ConsensusDataTest {
+func ValidatorRegistration() *ValidatorConsensusDataTest {
 
 	dataByts, err := testingutils.TestingValidatorRegistration.MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
 
-	cd := types.ConsensusData{
+	cd := types.ValidatorConsensusData{
 		Duty:    testingutils.TestingValidatorRegistrationDuty,
 		Version: spec.DataVersionCapella,
 		DataSSZ: dataByts,
 	}
 
-	return &ConsensusDataTest{
+	return &ValidatorConsensusDataTest{
 		Name:          "validator registration",
 		ConsensusData: cd,
 		ExpectedError: "validator registration has no consensus data",

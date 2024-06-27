@@ -1,4 +1,4 @@
-package consensusdata
+package validatorconsensusdata
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
@@ -20,7 +20,7 @@ func (test *EncodingTest) TestName() string {
 
 func (test *EncodingTest) Run(t *testing.T) {
 	// decode
-	decoded := &types.ConsensusData{}
+	decoded := &types.ValidatorConsensusData{}
 	require.NoError(t, decoded.Decode(test.Data))
 
 	// encode

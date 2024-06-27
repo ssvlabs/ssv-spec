@@ -1,4 +1,4 @@
-package consensusdata
+package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -6,10 +6,10 @@ import (
 )
 
 // CapellaBlindedBlockValidation tests a valid consensus data with capella blinded block
-func CapellaBlindedBlockValidation() *ConsensusDataTest {
+func CapellaBlindedBlockValidation() *ValidatorConsensusDataTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &ConsensusDataTest{
+	return &ValidatorConsensusDataTest{
 		Name:          "valid capella blinded block",
 		ConsensusData: *testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionCapella),
 	}

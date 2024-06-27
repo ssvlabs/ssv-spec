@@ -12,7 +12,7 @@ import (
 // VersionedBlindedBlockUnknownVersion tests a valid consensus data with unknown block version
 func VersionedBlindedBlockUnknownVersion() *ProposerSpecTest {
 	unknownDataVersion := spec.DataVersion(100)
-	cd := &types.ConsensusData{
+	cd := &types.ValidatorConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 		Version: unknownDataVersion,
 		DataSSZ: testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),

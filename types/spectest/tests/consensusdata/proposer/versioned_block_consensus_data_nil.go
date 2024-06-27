@@ -9,7 +9,7 @@ import (
 
 // VersionedBlockConsensusDataNil tests an invalid consensus data with Deneb block
 func VersionedBlockConsensusDataNil() *ProposerSpecTest {
-	cd := &types.ConsensusData{
+	cd := &types.ValidatorConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 		Version: spec.DataVersionDeneb,
 		DataSSZ: nil,

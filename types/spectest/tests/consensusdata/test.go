@@ -1,25 +1,26 @@
-package consensusdata
+package validatorconsensusdata
 
 import (
-	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	reflect2 "reflect"
 	"testing"
+
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
 
-type ConsensusDataTest struct {
+type ValidatorConsensusDataTest struct {
 	Name          string
-	ConsensusData types.ConsensusData
+	ConsensusData types.ValidatorConsensusData
 	ExpectedError string
 }
 
-func (test *ConsensusDataTest) TestName() string {
-	return "consensusdata " + test.Name
+func (test *ValidatorConsensusDataTest) TestName() string {
+	return "validatorconsensusdata " + test.Name
 }
 
-func (test *ConsensusDataTest) Run(t *testing.T) {
+func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
 
 	err := test.ConsensusData.Validate()
 
