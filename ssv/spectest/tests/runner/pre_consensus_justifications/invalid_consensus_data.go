@@ -13,8 +13,8 @@ import (
 func InvalidConsensusData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	invalidateMsgDataF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
-		objCopy := &types.ConsensusData{
+	invalidateMsgDataF := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
+		objCopy := &types.ValidatorConsensusData{
 			Duty:                       obj.Duty,
 			Version:                    obj.Version,
 			PreConsensusJustifications: obj.PreConsensusJustifications,

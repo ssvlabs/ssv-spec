@@ -14,7 +14,7 @@ func InvalidJustification() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// setZeroSignerAndPrepareMsg will set justification signer to 0 to trigger msg.validate() != nil
-	setZeroSignerAndPrepareMsg := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	setZeroSignerAndPrepareMsg := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		if len(obj.PreConsensusJustifications) > 0 {
 			obj.PreConsensusJustifications[0].Messages[0].Signer = 0
 		}

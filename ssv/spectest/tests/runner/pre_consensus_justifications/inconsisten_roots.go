@@ -14,7 +14,7 @@ func InconsistentRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// changeRootsAndPrepareMsg will change signing roots
-	changeRootsAndPrepareMsg := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	changeRootsAndPrepareMsg := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		if len(obj.PreConsensusJustifications) > 0 {
 			obj.PreConsensusJustifications[1].Messages[0].SigningRoot = [32]byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 		}

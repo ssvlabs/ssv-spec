@@ -13,8 +13,8 @@ import (
 
 // FarFutureDutySlot tests duty.Slot higher than expected
 func FarFutureDutySlot() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
-		cdCopy := &types.ConsensusData{}
+	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
+		cdCopy := &types.ValidatorConsensusData{}
 
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, cdCopy); err != nil {
