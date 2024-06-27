@@ -191,19 +191,6 @@ func (msg *SignedSSVMessage) Validate() error {
 	return nil
 }
 
-func SSVMessageToSignedSSVMessage(msg *SSVMessage, operatorID OperatorID, signSSVMessageF SignSSVMessageF) (*SignedSSVMessage, error) {
-	sig, err := signSSVMessageF(msg)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign SSVMessage")
-	}
-
-	return &SignedSSVMessage{
-		Signatures:  [][]byte{sig},
-		OperatorIDs: []OperatorID{operatorID},
-		SSVMessage:  msg,
-	}, nil
-}
-
 // DeepCopy returns a new instance of SignedMessage, deep copied
 func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
 	ret := &SignedSSVMessage{

@@ -153,9 +153,16 @@ func Sign(msg *Message, operatorID types.OperatorID, operatorSigner types.Operat
 		Data:    byts,
 	}
 
-	signedSSVMessage, err := types.SSVMessageToSignedSSVMessage(ssvMsg, operatorID, operatorSigner.SignSSVMessage)
+	sig, err := operatorSigner.SignSSVMessage(ssvMsg)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+		return nil, errors.Wrap(err, "could not sign SSVMessage")
 	}
+
+	signedSSVMessage := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{operatorID},
+		SSVMessage:  ssvMsg,
+	}
+
 	return signedSSVMessage, nil
 }

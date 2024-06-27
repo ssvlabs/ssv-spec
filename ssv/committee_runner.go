@@ -154,8 +154,17 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.CommitteeMember.OperatorID,
-		cr.operatorSigner.SignSSVMessage)
+	sig, err := cr.operatorSigner.SignSSVMessage(ssvMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	msgToBroadcast := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{cr.BaseRunner.QBFTController.CommitteeMember.OperatorID},
+		SSVMessage:  ssvMsg,
+	}
+
 	if err != nil {
 		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
