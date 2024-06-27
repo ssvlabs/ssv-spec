@@ -94,7 +94,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 		return errors.Wrap(err, "could not marshal beacon block")
 	}
 
-	input := &types.ConsensusData{
+	input := &types.ValidatorConsensusData{
 		Duty:    *duty,
 		Version: ver,
 		DataSSZ: byts,
@@ -102,7 +102,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 
 	inputBytes, err := input.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not encode ConsensusData")
+		return errors.Wrap(err, "could not encode ValidatorConsensusData")
 	}
 
 	if err := r.BaseRunner.decide(r, input.Duty.DutySlot(), inputBytes); err != nil {
@@ -126,7 +126,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	// specific duty sig
 	var blkToSign ssz.HashRoot
 
-	cd := decidedValue.(*types.ConsensusData)
+	cd := decidedValue.(*types.ValidatorConsensusData)
 	if r.decidedBlindedBlock() {
 		_, blkToSign, err = cd.GetBlindedBlockData()
 		if err != nil {
@@ -186,12 +186,12 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+		validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
 		if r.decidedBlindedBlock() {
-			vBlindedBlk, _, err := consensusData.GetBlindedBlockData()
+			vBlindedBlk, _, err := validatorConsensusData.GetBlindedBlockData()
 			if err != nil {
 				return errors.Wrap(err, "could not get blinded block")
 			}
@@ -200,7 +200,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
 			}
 		} else {
-			vBlk, _, err := consensusData.GetBlockData()
+			vBlk, _, err := validatorConsensusData.GetBlockData()
 			if err != nil {
 				return errors.Wrap(err, "could not get block")
 			}
@@ -217,11 +217,11 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 // decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (r *ProposerRunner) decidedBlindedBlock() bool {
-	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
 	if err != nil {
 		return false
 	}
-	_, _, err = consensusData.GetBlindedBlockData()
+	_, _, err = validatorConsensusData.GetBlindedBlockData()
 	return err == nil
 }
 
@@ -233,19 +233,19 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 
-	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
 	}
 	if r.decidedBlindedBlock() {
-		_, data, err := consensusData.GetBlindedBlockData()
+		_, data, err := validatorConsensusData.GetBlindedBlockData()
 		if err != nil {
 			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block data")
 		}
 		return []ssz.HashRoot{data}, types.DomainProposer, nil
 	}
 
-	_, data, err := consensusData.GetBlockData()
+	_, data, err := validatorConsensusData.GetBlockData()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
 	}

@@ -95,7 +95,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.PartialSignature
 	if err != nil {
 		return errors.Wrap(err, "could not marshal aggregate and proof")
 	}
-	input := &types.ConsensusData{
+	input := &types.ValidatorConsensusData{
 		Duty:    *duty,
 		Version: ver,
 		DataSSZ: byts,
@@ -103,7 +103,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.PartialSignature
 
 	inputBytes, err := input.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not encode ConsensusData")
+		return errors.Wrap(err, "could not encode ValidatorConsensusData")
 	}
 
 	if err := r.BaseRunner.decide(r, input.Duty.Slot, inputBytes); err != nil {
@@ -124,7 +124,7 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) e
 		return nil
 	}
 
-	aggregateAndProof, err := decidedValue.(*types.ConsensusData).GetAggregateAndProof()
+	aggregateAndProof, err := decidedValue.(*types.ValidatorConsensusData).GetAggregateAndProof()
 	if err != nil {
 		return errors.Wrap(err, "could not get aggregate and proof")
 	}
@@ -132,14 +132,14 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) e
 	// specific duty sig
 	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty),
 		aggregateAndProof,
-		decidedValue.(*types.ConsensusData).Duty.Slot,
+		decidedValue.(*types.ValidatorConsensusData).Duty.Slot,
 		types.DomainAggregateAndProof)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.(*types.ConsensusData).Duty.Slot,
+		Slot:     decidedValue.(*types.ValidatorConsensusData).Duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
@@ -178,7 +178,7 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.PartialSignatur
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
+		cd, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
@@ -205,7 +205,7 @@ func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot,
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	cd, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
 	}

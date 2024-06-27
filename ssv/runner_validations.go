@@ -68,9 +68,9 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
 	default:
-		decidedValue := &types.ConsensusData{}
+		decidedValue := &types.ValidatorConsensusData{}
 		if err := decidedValue.Decode(decidedValueBytes); err != nil {
-			return errors.Wrap(err, "failed to parse decided value to ConsensusData")
+			return errors.Wrap(err, "failed to parse decided value to ValidatorConsensusData")
 		}
 
 		if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {

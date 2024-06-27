@@ -31,14 +31,14 @@ func maxDataSSZ() []byte {
 	return dataSSZ[:]
 }
 
-func maxConsensusData() *types.ConsensusData {
+func maxConsensusData() *types.ValidatorConsensusData {
 
 	preConsensusJustification := make([]*types.PartialSignatureMessages, 0)
 	for i := 0; i < 13; i++ {
 		preConsensusJustification = append(preConsensusJustification, maxPartialSignatureMessagesForPreConsensus())
 	}
 
-	return &types.ConsensusData{
+	return &types.ValidatorConsensusData{
 		Duty:                       maxValidatorDuty(),
 		Version:                    spec.DataVersionAltair,
 		PreConsensusJustifications: preConsensusJustification,
@@ -48,7 +48,7 @@ func maxConsensusData() *types.ConsensusData {
 
 func MaxConsensusData() *StructureSizeTest {
 	return &StructureSizeTest{
-		Name:                  "max ConsensusData",
+		Name:                  "max ValidatorConsensusData",
 		Object:                maxConsensusData(),
 		ExpectedEncodedLength: maxSizeFullData,
 		IsMaxSize:             true,

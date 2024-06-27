@@ -11,7 +11,7 @@ import (
 
 // WrongDutyType tests duty.Type not attester
 func WrongDutyType() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
+	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
 		input, _ := cd.Encode()
 		return input
 	}

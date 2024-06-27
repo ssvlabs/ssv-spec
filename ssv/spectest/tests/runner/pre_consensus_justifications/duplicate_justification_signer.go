@@ -14,7 +14,7 @@ func DuplicateJustificationSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// duplicateSignerAndPrepareMsg will duplicate a justification signer
-	duplicateSignerAndPrepareMsg := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	duplicateSignerAndPrepareMsg := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		if len(obj.PreConsensusJustifications) > 0 {
 			obj.PreConsensusJustifications[1] = obj.PreConsensusJustifications[0]
 		}

@@ -12,7 +12,7 @@ import (
 // PastSlot tests justification with highestDecidedDutySlot >= data.ValidatorDuty.Slot (not valid)
 func PastSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	msgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	msgF := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 
 		// copy duty to isolate this change from all other spec tests
 		copyDuty := types.ValidatorDuty{}
@@ -24,7 +24,7 @@ func PastSlot() tests.SpecTest {
 			panic(err.Error())
 		}
 		copyDuty.Slot = 5
-		data := &types.ConsensusData{
+		data := &types.ValidatorConsensusData{
 			Duty:                       copyDuty,
 			Version:                    obj.Version,
 			PreConsensusJustifications: obj.PreConsensusJustifications,

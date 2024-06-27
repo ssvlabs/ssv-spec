@@ -14,7 +14,7 @@ func DuplicateRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// duplicateRootsMsg will duplicate signing roots for justifications with more than 1 root
-	duplicateRootsMsg := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	duplicateRootsMsg := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		if len(obj.PreConsensusJustifications) > 0 {
 			for _, m := range obj.PreConsensusJustifications {
 				m.Messages = append(m.Messages, m.Messages[0])

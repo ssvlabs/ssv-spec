@@ -11,7 +11,7 @@ import (
 func HappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	consensusMsgs := func(cd *types.ConsensusData, role types.RunnerRole) []*types.SignedSSVMessage {
+	consensusMsgs := func(cd *types.ValidatorConsensusData, role types.RunnerRole) []*types.SignedSSVMessage {
 		id := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
 		return testingutils.SSVDecidingMsgsForHeight(cd, id[:], 2, ks)
 	}
