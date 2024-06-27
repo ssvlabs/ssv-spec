@@ -1,7 +1,7 @@
 package types
 
 //go:generate rm -f ./operator_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path operator.go --include ./committee_id.go --exclude-objs OperatorID
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path operator.go --include ./committee_id.go,./domain_type.go --exclude-objs OperatorID
 
 //go:generate rm -f ./share_encoding.go
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path share.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.21.3/spec/phase0,./operator.go,./messages.go,./signer.go,./domain_type.go
