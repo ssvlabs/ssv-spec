@@ -1,11 +1,6 @@
 package qbft
 
 import (
-	"crypto/sha256"
-	"encoding/json"
-
-	"github.com/pkg/errors"
-
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -101,24 +96,4 @@ type State struct {
 	PrepareContainer     *MsgContainer
 	CommitContainer      *MsgContainer
 	RoundChangeContainer *MsgContainer
-}
-
-// GetRoot returns the state's deterministic root
-func (s *State) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := s.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode state")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
-// Encode returns a msg encoded bytes or error
-func (s *State) Encode() ([]byte, error) {
-	return json.Marshal(s)
-}
-
-// Decode returns error if decoding failed
-func (s *State) Decode(data []byte) error {
-	return json.Unmarshal(data, &s)
 }
