@@ -8,9 +8,9 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-var TestProposerConsensusDataV = func(version spec.DataVersion) *types.ConsensusData {
+var TestProposerConsensusDataV = func(version spec.DataVersion) *types.ValidatorConsensusData {
 	duty := TestingProposerDutyV(version)
-	return &types.ConsensusData{
+	return &types.ValidatorConsensusData{
 		Duty:    *duty,
 		Version: version,
 		DataSSZ: TestingBeaconBlockBytesV(version),
@@ -23,7 +23,7 @@ var TestProposerConsensusDataBytsV = func(version spec.DataVersion) []byte {
 	return byts
 }
 
-var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
+var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ValidatorConsensusData {
 	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
 		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
@@ -34,7 +34,7 @@ var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version 
 	return cd
 }
 
-var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ConsensusData {
+var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ValidatorConsensusData {
 	justif := make([]*types.PartialSignatureMessages, 0)
 	for i := uint64(0); i <= ks.Threshold; i++ {
 		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
@@ -45,8 +45,8 @@ var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, v
 	return cd
 }
 
-var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ConsensusData {
-	return &types.ConsensusData{
+var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ValidatorConsensusData {
+	return &types.ValidatorConsensusData{
 		Duty:    *TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: TestingBlindedBeaconBlockBytesV(version),
