@@ -52,11 +52,11 @@ func (msg MessageID) GetRoleType() RunnerRole {
 	return RunnerRole(binary.LittleEndian.Uint32(roleByts))
 }
 
-func NewMsgID(domain DomainType, pk []byte, role RunnerRole) MessageID {
+func NewMsgID(domain DomainType, dutyExecutorID []byte, role RunnerRole) MessageID {
 	roleByts := make([]byte, 4)
 	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 
-	return newMessageID(domain[:], roleByts, pk)
+	return newMessageID(domain[:], roleByts, dutyExecutorID)
 }
 
 func (msgID MessageID) String() string {
