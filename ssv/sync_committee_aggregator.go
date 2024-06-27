@@ -128,7 +128,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Par
 	}
 
 	// create consensus object
-	input := &types.ConsensusData{
+	input := &types.ValidatorConsensusData{
 		Duty:    *duty,
 		Version: ver,
 		DataSSZ: byts,
@@ -136,7 +136,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Par
 
 	inputBytes, err := input.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not encode ConsensusData")
+		return errors.Wrap(err, "could not encode ValidatorConsensusData")
 	}
 
 	if err := r.BaseRunner.decide(r, input.Duty.DutySlot(), inputBytes); err != nil {
@@ -156,7 +156,7 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 		return nil
 	}
 
-	cd := decidedValue.(*types.ConsensusData)
+	cd := decidedValue.(*types.ValidatorConsensusData)
 	contributions, err := cd.GetSyncCommitteeContributions()
 	if err != nil {
 		return errors.Wrap(err, "could not get contributions")
@@ -208,11 +208,11 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Pa
 	}
 
 	// get contributions
-	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
 	if err != nil {
 		return errors.Wrap(err, "could not create consensus data")
 	}
-	contributions, err := consensusData.GetSyncCommitteeContributions()
+	contributions, err := validatorConsensusData.GetSyncCommitteeContributions()
 	if err != nil {
 		return errors.Wrap(err, "could not get contributions")
 	}
@@ -299,11 +299,11 @@ func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	// get contributions
-	consensusData, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
 	}
-	contributions, err := consensusData.GetSyncCommitteeContributions()
+	contributions, err := validatorConsensusData.GetSyncCommitteeContributions()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get contributions")
 	}
