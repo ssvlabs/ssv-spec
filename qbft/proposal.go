@@ -68,7 +68,7 @@ func isValidProposal(
 	if msg.Height != state.Height {
 		return errors.New("wrong msg height")
 	}
-	if len(signedProposal.GetOperatorIDs()) != 1 {
+	if len(signedProposal.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 

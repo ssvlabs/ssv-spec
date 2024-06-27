@@ -17,7 +17,7 @@ func HashDataRoot(data []byte) ([32]byte, error) {
 func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorIDs() {
+		for _, signer := range msg.OperatorIDs {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -28,7 +28,7 @@ func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) boo
 func HasPartialQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorIDs() {
+		for _, signer := range msg.OperatorIDs {
 			uniqueSigners[signer] = true
 		}
 	}
