@@ -145,16 +145,22 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		}
 	}
 
+	committeeMember := cr.BaseRunner.QBFTController.CommitteeMember
+	operatorIDs := make([]types.OperatorID, len(committeeMember.Committee))
+	for i, operator := range committeeMember.Committee {
+		operatorIDs[i] = operator.OperatorID
+	}
+	committeeID := types.GetCommitteeID(operatorIDs)
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.MessageID(cr.GetBaseRunner().QBFTController.Identifier),
+		MsgID:   types.NewMsgID(committeeMember.DomainType, committeeID[:], cr.BaseRunner.RunnerRoleType),
 	}
 	ssvMsg.Data, err = postConsensusMsg.Encode()
 	if err != nil {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.CommitteeMember.OperatorID,
+	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, committeeMember.OperatorID,
 		cr.operatorSigner.SignSSVMessage)
 	if err != nil {
 		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
