@@ -78,6 +78,12 @@
 																"OperatorID": 7,
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4+aw6y4DIqrhag4qXKK4xHdrOFSBz6D75DP8Pp0agytclXeFS9c0IYFgv0IBRUpH32P31fPET7ETL6R3ve/GqKy+pU4F46QfMOEBqM63J3Wyhby5UsGA+1/NhkIdBvYiKJJxeH1RNimnCZVYa5jNr8Vz85t78lQD63rSbTMQFWCM/ZZU344DXhpxcpyhy0TUDhlg5tl82snjVAiVQ3Io8pb49Utm04zGKQO6wWuJXOi9WZr4CIeMrkXI870Q2A4vYqiE095L714A0G2IXVZ7lodJuEUdFj0aEEjRnLFcTTjOvjj5nu2jm/uOpR6Rb/f+lh+jcR0uXiyVLQAJyPTdLwIDAQAB"
 														}
+												],
+												"DomainType": [
+														0,
+														0,
+														3,
+														1
 												]
 										},
 										"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAATIFpUrpTzDYdjkW9gzM43GQn5KXV8G661TUf1GQ5oVo=",
@@ -1185,6 +1191,12 @@
 																		"OperatorID": 7,
 																		"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4+aw6y4DIqrhag4qXKK4xHdrOFSBz6D75DP8Pp0agytclXeFS9c0IYFgv0IBRUpH32P31fPET7ETL6R3ve/GqKy+pU4F46QfMOEBqM63J3Wyhby5UsGA+1/NhkIdBvYiKJJxeH1RNimnCZVYa5jNr8Vz85t78lQD63rSbTMQFWCM/ZZU344DXhpxcpyhy0TUDhlg5tl82snjVAiVQ3Io8pb49Utm04zGKQO6wWuJXOi9WZr4CIeMrkXI870Q2A4vYqiE095L714A0G2IXVZ7lodJuEUdFj0aEEjRnLFcTTjOvjj5nu2jm/uOpR6Rb/f+lh+jcR0uXiyVLQAJyPTdLwIDAQAB"
 																}
+														],
+														"DomainType": [
+																0,
+																0,
+																3,
+																1
 														]
 												},
 												"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAATIFpUrpTzDYdjkW9gzM43GQn5KXV8G661TUf1GQ5oVo=",
@@ -2138,6 +2150,12 @@
 												"OperatorID": 7,
 												"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4+aw6y4DIqrhag4qXKK4xHdrOFSBz6D75DP8Pp0agytclXeFS9c0IYFgv0IBRUpH32P31fPET7ETL6R3ve/GqKy+pU4F46QfMOEBqM63J3Wyhby5UsGA+1/NhkIdBvYiKJJxeH1RNimnCZVYa5jNr8Vz85t78lQD63rSbTMQFWCM/ZZU344DXhpxcpyhy0TUDhlg5tl82snjVAiVQ3Io8pb49Utm04zGKQO6wWuJXOi9WZr4CIeMrkXI870Q2A4vYqiE095L714A0G2IXVZ7lodJuEUdFj0aEEjRnLFcTTjOvjj5nu2jm/uOpR6Rb/f+lh+jcR0uXiyVLQAJyPTdLwIDAQAB"
 										}
+								],
+								"DomainType": [
+										0,
+										0,
+										3,
+										1
 								]
 						}
 				},
