@@ -68,6 +68,12 @@
 																				"OperatorID": 4,
 																				"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 																		}
+																],
+																"DomainType": [
+																		0,
+																		0,
+																		3,
+																		1
 																]
 														},
 														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -852,6 +858,12 @@
 																						"OperatorID": 4,
 																						"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 																				}
+																		],
+																		"DomainType": [
+																				0,
+																				0,
+																				3,
+																				1
 																		]
 																},
 																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -1509,6 +1521,12 @@
 																"OperatorID": 4,
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 														}
+												],
+												"DomainType": [
+														0,
+														0,
+														3,
+														1
 												]
 										}
 								},
@@ -1585,6 +1603,12 @@
 																				"OperatorID": 4,
 																				"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 																		}
+																],
+																"DomainType": [
+																		0,
+																		0,
+																		3,
+																		1
 																]
 														},
 														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -2369,6 +2393,12 @@
 																						"OperatorID": 4,
 																						"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 																				}
+																		],
+																		"DomainType": [
+																				0,
+																				0,
+																				3,
+																				1
 																		]
 																},
 																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -3026,6 +3056,12 @@
 																"OperatorID": 4,
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 														}
+												],
+												"DomainType": [
+														0,
+														0,
+														3,
+														1
 												]
 										}
 								},
@@ -3102,6 +3138,12 @@
 																				"OperatorID": 4,
 																				"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 																		}
+																],
+																"DomainType": [
+																		0,
+																		0,
+																		3,
+																		1
 																]
 														},
 														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -3886,6 +3928,12 @@
 																						"OperatorID": 4,
 																						"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 																				}
+																		],
+																		"DomainType": [
+																				0,
+																				0,
+																				3,
+																				1
 																		]
 																},
 																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -4543,6 +4591,12 @@
 																"OperatorID": 4,
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 														}
+												],
+												"DomainType": [
+														0,
+														0,
+														3,
+														1
 												]
 										}
 								},
@@ -4619,6 +4673,12 @@
 																				"OperatorID": 4,
 																				"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 																		}
+																],
+																"DomainType": [
+																		0,
+																		0,
+																		3,
+																		1
 																]
 														},
 														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -5403,6 +5463,12 @@
 																						"OperatorID": 4,
 																						"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 																				}
+																		],
+																		"DomainType": [
+																				0,
+																				0,
+																				3,
+																				1
 																		]
 																},
 																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -6060,6 +6126,12 @@
 																"OperatorID": 4,
 																"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 														}
+												],
+												"DomainType": [
+														0,
+														0,
+														3,
+														1
 												]
 										}
 								},
@@ -6124,6 +6196,12 @@
 								"OperatorID": 4,
 								"SSVOperatorPubKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXzq/6XtVEfJTZ/v1PwkzSkNRXbpC/41a9LSQvskkICdG2dGw+QagkNVYpvKQsR3wAxBfDoQqdMoEv8Gh9xBaZaf6kLWknaVYYNJeWn6bEiDmXjVYDMq5dhl9od9UhK4EYT8rIf5alfyEa9+Ws9oeALS21cVPpRPobQHxsX8xo9uQCrLxOqc4EW8285Kj5vnQlfpGG21WFBfbHGR4Xa+amOfTKPlRLleVUMzwX+7peGJ/5H3jpLFl+oFar2C/YDH/EJz0+Nq6GJm71iJ7Mc1+c0P6FOay6ZqZ+ZDj9dpJd/mbqYzy3rK6bPo8NvNEYHSJfORD4KjNMIs4S1ypxZIwIDAQAB"
 						}
+				],
+				"DomainType": [
+						0,
+						0,
+						3,
+						1
 				]
 		},
 		"Share": {
