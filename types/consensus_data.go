@@ -101,6 +101,32 @@ func (c Contributions) SizeSSZ() int {
 	return size
 }
 
+// BeaconVote is used as the data to be agreed on consensus for the CommitteeRunner
+type BeaconVote struct {
+	BlockRoot phase0.Root `ssz-size:"32"`
+	Source    *phase0.Checkpoint
+	Target    *phase0.Checkpoint
+}
+
+// NewBeaconVote creates a new BeaconVote object
+func NewBeaconVote(rawSSZ []byte) (*BeaconVote, error) {
+	vote := &BeaconVote{}
+	if err := vote.Decode(rawSSZ); err != nil {
+		return nil, err
+	}
+	return vote, nil
+}
+
+// Encode the BeaconVote object
+func (b *BeaconVote) Encode() ([]byte, error) {
+	return b.MarshalSSZ()
+}
+
+// Decode the BeaconVote object
+func (b *BeaconVote) Decode(data []byte) error {
+	return b.UnmarshalSSZ(data)
+}
+
 // ConsensusData holds all relevant duty and data Decided on by consensus
 type ConsensusData struct {
 	// Duty max size is
