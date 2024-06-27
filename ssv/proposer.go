@@ -186,7 +186,8 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+		validatorConsensusData := &types.ValidatorConsensusData{}
+		err = validatorConsensusData.Decode(r.GetState().DecidedValue)
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
@@ -217,7 +218,8 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 // decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (r *ProposerRunner) decidedBlindedBlock() bool {
-	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData := &types.ValidatorConsensusData{}
+	err := validatorConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return false
 	}
@@ -232,8 +234,8 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-
-	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData := &types.ValidatorConsensusData{}
+	err := validatorConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
 	}

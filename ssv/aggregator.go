@@ -178,7 +178,8 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.PartialSignatur
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		cd, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+		cd := &types.ValidatorConsensusData{}
+		err = cd.Decode(r.GetState().DecidedValue)
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
@@ -205,7 +206,8 @@ func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot,
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	cd, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+	cd := &types.ValidatorConsensusData{}
+	err := cd.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
 	}

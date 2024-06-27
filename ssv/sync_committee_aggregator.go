@@ -208,7 +208,8 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPostConsensus(signedMsg *types.Pa
 	}
 
 	// get contributions
-	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData := &types.ValidatorConsensusData{}
+	err = validatorConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return errors.Wrap(err, "could not create consensus data")
 	}
@@ -299,7 +300,8 @@ func (r *SyncCommitteeAggregatorRunner) expectedPreConsensusRootsAndDomain() ([]
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *SyncCommitteeAggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	// get contributions
-	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData := &types.ValidatorConsensusData{}
+	err := validatorConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
 	}

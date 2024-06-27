@@ -169,12 +169,6 @@ type ValidatorConsensusData struct {
 	DataSSZ []byte `ssz-max:"4194304"` // 2^22
 }
 
-func CreateValidatorConsensusData(rawSSZ []byte) (*ValidatorConsensusData, error) {
-	cd := &ValidatorConsensusData{}
-	err := cd.Decode(rawSSZ)
-	return cd, err
-}
-
 func (cid *ValidatorConsensusData) Validate() error {
 	switch cid.Duty.Type {
 	case BNRoleAggregator:
