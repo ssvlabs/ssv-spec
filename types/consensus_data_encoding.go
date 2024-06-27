@@ -184,13 +184,13 @@ func (b *BeaconVote) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(b)
 }
 
-// MarshalSSZ ssz marshals the ConsensusData object
-func (c *ConsensusData) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the ValidatorConsensusData object
+func (c *ValidatorConsensusData) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(c)
 }
 
-// MarshalSSZTo ssz marshals the ConsensusData object to a target array
-func (c *ConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the ValidatorConsensusData object to a target array
+func (c *ValidatorConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(20)
 
@@ -219,7 +219,7 @@ func (c *ConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Field (2) 'PreConsensusJustifications'
 	if size := len(c.PreConsensusJustifications); size > 13 {
-		err = ssz.ErrListTooBigFn("ConsensusData.PreConsensusJustifications", size, 13)
+		err = ssz.ErrListTooBigFn("ValidatorConsensusData.PreConsensusJustifications", size, 13)
 		return
 	}
 	{
@@ -237,7 +237,7 @@ func (c *ConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Field (3) 'DataSSZ'
 	if size := len(c.DataSSZ); size > 4194304 {
-		err = ssz.ErrBytesLengthFn("ConsensusData.DataSSZ", size, 4194304)
+		err = ssz.ErrBytesLengthFn("ValidatorConsensusData.DataSSZ", size, 4194304)
 		return
 	}
 	dst = append(dst, c.DataSSZ...)
@@ -245,8 +245,8 @@ func (c *ConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the ConsensusData object
-func (c *ConsensusData) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the ValidatorConsensusData object
+func (c *ValidatorConsensusData) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 20 {
@@ -322,8 +322,8 @@ func (c *ConsensusData) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the ConsensusData object
-func (c *ConsensusData) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the ValidatorConsensusData object
+func (c *ValidatorConsensusData) SizeSSZ() (size int) {
 	size = 20
 
 	// Field (0) 'Duty'
@@ -341,13 +341,13 @@ func (c *ConsensusData) SizeSSZ() (size int) {
 	return
 }
 
-// HashTreeRoot ssz hashes the ConsensusData object
-func (c *ConsensusData) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the ValidatorConsensusData object
+func (c *ValidatorConsensusData) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(c)
 }
 
-// HashTreeRootWith ssz hashes the ConsensusData object with a hasher
-func (c *ConsensusData) HashTreeRootWith(hh ssz.HashWalker) (err error) {
+// HashTreeRootWith ssz hashes the ValidatorConsensusData object with a hasher
+func (c *ValidatorConsensusData) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'Duty'
@@ -390,7 +390,7 @@ func (c *ConsensusData) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	return
 }
 
-// GetTree ssz hashes the ConsensusData object
-func (c *ConsensusData) GetTree() (*ssz.Node, error) {
+// GetTree ssz hashes the ValidatorConsensusData object
+func (c *ValidatorConsensusData) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(c)
 }
