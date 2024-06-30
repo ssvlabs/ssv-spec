@@ -129,7 +129,7 @@ type SignedSSVMessage struct {
 	OperatorIDs []OperatorID `ssz-max:"13"`
 	SSVMessage  *SSVMessage
 	// Full data max value is the max value between ValidatorConsensusData and BeaconVote which is ~= 209 + 8 + 13 * 1888 + 4194304 = 4219065. Encoding -> 4219184
-	FullData []byte `ssz-max:"4219184"`
+	FullData []byte `ssz-max:"4194532"`
 }
 
 // GetOperatorIDs returns the dutyExecutor operator ID

@@ -9,7 +9,7 @@ const (
 	maxSizeSignedSSVMessageFromQBFTWith1Justification   = 51852
 	maxSizeSignedSSVMessageFromQBFTWith2Justification   = 4945164
 	maxSizeSignedSSVMessageFromPartialSignatureMessages = 147588
-	maxSizeFullData                                     = 4219184
+	maxSizeFullData                                     = 4194532
 )
 
 func maxSignedSSVMessageFromObject(obj types.Encoder) *types.SignedSSVMessage {
