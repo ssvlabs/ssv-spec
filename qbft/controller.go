@@ -2,8 +2,6 @@ package qbft
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/json"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -178,37 +176,6 @@ func (c *Controller) forceStopAllInstanceExceptCurrent() {
 			i.ForceStop()
 		}
 	}
-}
-
-// GetRoot returns the state's deterministic root
-func (c *Controller) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := json.Marshal(c)
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode state")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
-// Encode implementation
-func (c *Controller) Encode() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-// Decode implementation
-func (c *Controller) Decode(data []byte) error {
-	err := json.Unmarshal(data, &c)
-	if err != nil {
-		return errors.Wrap(err, "could not decode controller")
-	}
-
-	config := c.GetConfig()
-	for _, i := range c.StoredInstances {
-		if i != nil {
-			i.config = config
-		}
-	}
-	return nil
 }
 
 func (c *Controller) broadcastDecided(aggregatedCommit *types.SignedSSVMessage) error {

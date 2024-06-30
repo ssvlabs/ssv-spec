@@ -1,7 +1,6 @@
 package qbft
 
 import (
-	"encoding/json"
 	"fmt"
 	"sync"
 
@@ -204,21 +203,6 @@ func (i *Instance) GetConfig() IConfig {
 // GetHeight interface implementation
 func (i *Instance) GetHeight() Height {
 	return i.State.Height
-}
-
-// GetRoot returns the state's deterministic root
-func (i *Instance) GetRoot() ([32]byte, error) {
-	return i.State.GetRoot()
-}
-
-// Encode implementation
-func (i *Instance) Encode() ([]byte, error) {
-	return json.Marshal(i)
-}
-
-// Decode implementation
-func (i *Instance) Decode(data []byte) error {
-	return json.Unmarshal(data, &i)
 }
 
 // CanProcessMessages will return true if instance can process messages
