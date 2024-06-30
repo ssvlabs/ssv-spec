@@ -73,30 +73,6 @@ func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error 
 	return nil
 }
 
-func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessages, msgID MessageID, operatorSigner OperatorSigner) (*SignedSSVMessage, error) {
-	encodedMsg, err := psigMsgs.Encode()
-	if err != nil {
-		return nil, err
-	}
-
-	ssvMsg := &SSVMessage{
-		MsgType: SSVPartialSignatureMsgType,
-		MsgID:   msgID,
-		Data:    encodedMsg,
-	}
-
-	sig, err := operatorSigner.SignSSVMessage(ssvMsg)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign SSVMessage")
-	}
-
-	return &SignedSSVMessage{
-		Signatures:  [][]byte{sig},
-		OperatorIDs: []OperatorID{operatorSigner.GetOperatorID()},
-		SSVMessage:  ssvMsg,
-	}, nil
-}
-
 // PartialSignatureMessage is a msg for partial Beacon chain related signatures (like partial attestation, block, randao sigs)
 type PartialSignatureMessage struct {
 	PartialSignature Signature `ssz-size:"96"` // The Beacon chain partial Signature for a duty

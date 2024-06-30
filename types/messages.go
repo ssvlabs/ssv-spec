@@ -132,11 +132,6 @@ type SignedSSVMessage struct {
 	FullData []byte `ssz-max:"4219184"`
 }
 
-// GetOperatorIDs returns the dutyExecutor operator ID
-func (msg *SignedSSVMessage) GetOperatorIDs() []OperatorID {
-	return msg.OperatorIDs
-}
-
 // Encode returns a msg encoded bytes or error
 func (msg *SignedSSVMessage) Encode() ([]byte, error) {
 	return msg.MarshalSSZ()
@@ -196,26 +191,13 @@ func (msg *SignedSSVMessage) Validate() error {
 	return nil
 }
 
-func SSVMessageToSignedSSVMessage(msg *SSVMessage, operatorID OperatorID, signSSVMessageF SignSSVMessageF) (*SignedSSVMessage, error) {
-	sig, err := signSSVMessageF(msg)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign SSVMessage")
-	}
-
-	return &SignedSSVMessage{
-		Signatures:  [][]byte{sig},
-		OperatorIDs: []OperatorID{operatorID},
-		SSVMessage:  msg,
-	}, nil
-}
-
 // DeepCopy returns a new instance of SignedMessage, deep copied
 func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
 	ret := &SignedSSVMessage{
-		OperatorIDs: make([]OperatorID, len(signedMsg.GetOperatorIDs())),
+		OperatorIDs: make([]OperatorID, len(signedMsg.OperatorIDs)),
 		Signatures:  make([][]byte, len(signedMsg.Signatures)),
 	}
-	copy(ret.OperatorIDs, signedMsg.GetOperatorIDs())
+	copy(ret.OperatorIDs, signedMsg.OperatorIDs)
 	copy(ret.Signatures, signedMsg.Signatures)
 
 	retSSV := &SSVMessage{
@@ -238,11 +220,11 @@ func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
 
 // MatchedSigners returns true if the provided signer ids are equal to GetOperatorIDs() without order significance
 func (msg *SignedSSVMessage) MatchedSigners(ids []OperatorID) bool {
-	if len(msg.GetOperatorIDs()) != len(ids) {
+	if len(msg.OperatorIDs) != len(ids) {
 		return false
 	}
 
-	for _, id := range msg.GetOperatorIDs() {
+	for _, id := range msg.OperatorIDs {
 		found := false
 		for _, id2 := range ids {
 			if id == id2 {
@@ -259,7 +241,7 @@ func (msg *SignedSSVMessage) MatchedSigners(ids []OperatorID) bool {
 
 // CommonSigners returns true if there is at least 1 common signer
 func (msg *SignedSSVMessage) CommonSigners(ids []OperatorID) bool {
-	for _, id := range msg.GetOperatorIDs() {
+	for _, id := range msg.OperatorIDs {
 		for _, id2 := range ids {
 			if id == id2 {
 				return true
@@ -271,7 +253,7 @@ func (msg *SignedSSVMessage) CommonSigners(ids []OperatorID) bool {
 
 // Aggregate will aggregate the signed message if possible (unique signers, same digest, valid)
 func (msg *SignedSSVMessage) Aggregate(msgToAggregate *SignedSSVMessage) error {
-	if msg.CommonSigners(msgToAggregate.GetOperatorIDs()) {
+	if msg.CommonSigners(msgToAggregate.OperatorIDs) {
 		return errors.New("duplicate signers")
 	}
 
@@ -288,7 +270,7 @@ func (msg *SignedSSVMessage) Aggregate(msgToAggregate *SignedSSVMessage) error {
 	}
 
 	msg.Signatures = append(msg.Signatures, msgToAggregate.Signatures...)
-	msg.OperatorIDs = append(msg.OperatorIDs, msgToAggregate.GetOperatorIDs()...)
+	msg.OperatorIDs = append(msg.OperatorIDs, msgToAggregate.OperatorIDs...)
 
 	return nil
 }
@@ -302,7 +284,7 @@ func (msg *SignedSSVMessage) CheckSignersInCommittee(operators []*Operator) bool
 	}
 
 	// Check that all message signers belong to the map
-	for _, signer := range msg.GetOperatorIDs() {
+	for _, signer := range msg.OperatorIDs {
 		if _, ok := committeeMap[signer]; !ok {
 			return false
 		}

@@ -27,7 +27,7 @@ func (test *ShareTest) TestName() string {
 func (test *ShareTest) GetUniqueMessageSignersCount() int {
 	uniqueSigners := make(map[uint64]bool)
 
-	for _, element := range test.Message.GetOperatorIDs() {
+	for _, element := range test.Message.OperatorIDs {
 		uniqueSigners[element] = true
 	}
 

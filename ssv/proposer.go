@@ -144,9 +144,27 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID, r.operatorSigner)
+
+	encodedMsg, err := postConsensusMsg.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not sign post-consensus partial signature message")
+		return err
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   msgID,
+		Data:    encodedMsg,
+	}
+
+	sig, err := r.operatorSigner.SignSSVMessage(ssvMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	msgToBroadcast := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		SSVMessage:  ssvMsg,
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
@@ -178,7 +196,8 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+		validatorConsensusData := &types.ValidatorConsensusData{}
+		err = validatorConsensusData.Decode(r.GetState().DecidedValue)
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
@@ -209,7 +228,8 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 // decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
 // WARNING!! should be called after decided only
 func (r *ProposerRunner) decidedBlindedBlock() bool {
-	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData := &types.ValidatorConsensusData{}
+	err := validatorConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return false
 	}
@@ -224,8 +244,8 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-
-	validatorConsensusData, err := types.CreateValidatorConsensusData(r.GetState().DecidedValue)
+	validatorConsensusData := &types.ValidatorConsensusData{}
+	err := validatorConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
 	}
@@ -265,9 +285,27 @@ func (r *ProposerRunner) executeDuty(duty types.Duty) error {
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
+
+	encodedMsg, err := msgs.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
+		return err
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   msgID,
+		Data:    encodedMsg,
+	}
+
+	sig, err := r.operatorSigner.SignSSVMessage(ssvMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	msgToBroadcast := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		SSVMessage:  ssvMsg,
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
