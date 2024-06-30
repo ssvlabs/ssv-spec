@@ -39,10 +39,9 @@ func maxConsensusData() *types.ValidatorConsensusData {
 	}
 
 	return &types.ValidatorConsensusData{
-		Duty:                       maxValidatorDuty(),
-		Version:                    spec.DataVersionAltair,
-		PreConsensusJustifications: preConsensusJustification,
-		DataSSZ:                    maxDataSSZ(),
+		Duty:    maxValidatorDuty(),
+		Version: spec.DataVersionAltair,
+		DataSSZ: maxDataSSZ(),
 	}
 }
 

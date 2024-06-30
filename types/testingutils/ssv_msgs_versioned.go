@@ -23,28 +23,6 @@ var TestProposerConsensusDataBytsV = func(version spec.DataVersion) []byte {
 	return byts
 }
 
-var TestProposerWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ValidatorConsensusData {
-	justif := make([]*types.PartialSignatureMessages, 0)
-	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
-	}
-
-	cd := TestProposerConsensusDataV(version)
-	cd.PreConsensusJustifications = justif
-	return cd
-}
-
-var TestProposerBlindedWithJustificationsConsensusDataV = func(ks *TestKeySet, version spec.DataVersion) *types.ValidatorConsensusData {
-	justif := make([]*types.PartialSignatureMessages, 0)
-	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsgV(ks.Shares[i+1], i+1, version))
-	}
-
-	cd := TestProposerBlindedBlockConsensusDataV(version)
-	cd.PreConsensusJustifications = justif
-	return cd
-}
-
 var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ValidatorConsensusData {
 	return &types.ValidatorConsensusData{
 		Duty:    *TestingProposerDutyV(version),

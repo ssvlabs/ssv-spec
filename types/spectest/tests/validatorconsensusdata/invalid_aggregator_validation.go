@@ -5,9 +5,7 @@ import "github.com/ssvlabs/ssv-spec/types/testingutils"
 // InvalidAggregatorValidation tests an invalid consensus data with AggregateAndProof
 func InvalidAggregatorValidation() *ValidatorConsensusDataTest {
 
-	ks := testingutils.Testing4SharesSet()
-
-	cd := testingutils.TestAggregatorWithJustificationsConsensusData(ks)
+	cd := testingutils.TestAggregatorConsensusData
 
 	cd.DataSSZ = testingutils.TestingSyncCommitteeBlockRoot[:]
 
