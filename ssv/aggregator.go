@@ -98,12 +98,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.PartialSignature
 		DataSSZ: byts,
 	}
 
-	inputBytes, err := input.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode ValidatorConsensusData")
-	}
-
-	if err := r.BaseRunner.decide(r, input.Duty.Slot, inputBytes); err != nil {
+	if err := r.BaseRunner.decide(r, input.Duty.Slot, input); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 

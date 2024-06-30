@@ -171,10 +171,5 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 		return errors.New("invalid pre-consensus justification quorum")
 	}
 
-	inputBytes, err := cd.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode ValidatorConsensusData")
-	}
-
-	return b.decide(runner, cd.Duty.DutySlot(), inputBytes)
+	return b.decide(runner, cd.Duty.DutySlot(), cd)
 }
