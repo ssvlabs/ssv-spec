@@ -108,15 +108,6 @@ type BeaconVote struct {
 	Target    *phase0.Checkpoint
 }
 
-// NewBeaconVote creates a new BeaconVote object
-func NewBeaconVote(rawSSZ []byte) (*BeaconVote, error) {
-	vote := &BeaconVote{}
-	if err := vote.Decode(rawSSZ); err != nil {
-		return nil, err
-	}
-	return vote, nil
-}
-
 // Encode the BeaconVote object
 func (b *BeaconVote) Encode() ([]byte, error) {
 	return b.MarshalSSZ()
@@ -167,12 +158,6 @@ type ValidatorConsensusData struct {
 	// 		# Total size of Deneb.BlockContents and BeaconBlock without transactions
 	// 		total_size_without_execution_payload = KZG_PROOFS_SIZE + BLOBS_SIZE + BEACON_BLOCK_OVERHEAD + beacon_block_body_size_without_transactions
 	DataSSZ []byte `ssz-max:"4194304"` // 2^22
-}
-
-func CreateValidatorConsensusData(rawSSZ []byte) (*ValidatorConsensusData, error) {
-	cd := &ValidatorConsensusData{}
-	err := cd.Decode(rawSSZ)
-	return cd, err
 }
 
 func (cid *ValidatorConsensusData) Validate() error {

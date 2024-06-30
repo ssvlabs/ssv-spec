@@ -149,7 +149,7 @@ func validateCommit(
 		return err
 	}
 
-	if len(signedCommit.GetOperatorIDs()) != 1 {
+	if len(signedCommit.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 

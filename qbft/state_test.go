@@ -74,7 +74,7 @@ func TestState_Decoding(t *testing.T) {
 	}
 
 	require.EqualValues(t, [][]byte{{1, 2, 3, 4}}, decodedState.ProposalAcceptedForCurrentRound.Signatures)
-	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.GetOperatorIDs())
+	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.OperatorIDs)
 	require.EqualValues(t, qbft.CommitMsgType, decodedProposalMsg.MsgType)
 	require.EqualValues(t, 1, decodedProposalMsg.Height)
 	require.EqualValues(t, 2, decodedProposalMsg.Round)
