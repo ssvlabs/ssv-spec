@@ -2,7 +2,6 @@ package qbft
 
 import (
 	"bytes"
-	"encoding/json"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -145,14 +144,4 @@ func (c *MsgContainer) AddMsg(signedMsg *types.SignedSSVMessage) error {
 	c.Msgs[msg.Round] = append(c.Msgs[msg.Round], signedMsg)
 
 	return nil
-}
-
-// Encode returns the encoded struct in bytes or error
-func (c *MsgContainer) Encode() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-// Decode returns error if decoding failed
-func (c *MsgContainer) Decode(data []byte) error {
-	return json.Unmarshal(data, &c)
 }

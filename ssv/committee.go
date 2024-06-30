@@ -1,8 +1,6 @@
 package ssv
 
 import (
-	"crypto/sha256"
-	"encoding/json"
 	"fmt"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -110,68 +108,6 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 	return nil
 
-}
-
-func (c *Committee) Encode() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-func (c *Committee) Decode(data []byte) error {
-	return json.Unmarshal(data, &c)
-}
-
-// GetRoot returns the state's deterministic root
-func (c *Committee) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := c.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode state")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
-func (c *Committee) MarshalJSON() ([]byte, error) {
-
-	type CommitteeAlias struct {
-		Runners            map[spec.Slot]*CommitteeRunner
-		CommitteeMember    types.CommitteeMember
-		Share              map[spec.ValidatorIndex]*types.Share
-		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
-	}
-
-	// Create object and marshal
-	alias := &CommitteeAlias{
-		Runners:         c.Runners,
-		CommitteeMember: c.CommitteeMember,
-		Share:           c.Share,
-	}
-
-	byts, err := json.Marshal(alias)
-
-	return byts, err
-}
-
-func (c *Committee) UnmarshalJSON(data []byte) error {
-
-	type CommitteeAlias struct {
-		Runners            map[spec.Slot]*CommitteeRunner
-		CommitteeMember    types.CommitteeMember
-		Share              map[spec.ValidatorIndex]*types.Share
-		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
-	}
-
-	// Unmarshal the JSON data into the auxiliary struct
-	aux := &CommitteeAlias{}
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	// Assign fields
-	c.Runners = aux.Runners
-	c.CommitteeMember = aux.CommitteeMember
-	c.Share = aux.Share
-
-	return nil
 }
 
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {

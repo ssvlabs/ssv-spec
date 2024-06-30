@@ -61,6 +61,8 @@ func (msgs PartialSignatureMessages) Validate() error {
 	return nil
 }
 
+// ValidateForSigner checks if the PartialSignatureMessages are valid for a given signer
+// It checks if the signer is the same as the one in the messages
 func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error {
 	if err := msgs.Validate(); err != nil {
 		return err

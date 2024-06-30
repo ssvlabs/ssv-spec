@@ -1,9 +1,6 @@
 package ssv
 
 import (
-	"crypto/sha256"
-	"encoding/json"
-
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
@@ -56,23 +53,6 @@ func (cr CommitteeRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	cr.submittedDuties[types.BNRoleAttester] = make(map[phase0.ValidatorIndex]struct{})
 	cr.submittedDuties[types.BNRoleSyncCommittee] = make(map[phase0.ValidatorIndex]struct{})
 	return nil
-}
-
-func (cr CommitteeRunner) Encode() ([]byte, error) {
-	return json.Marshal(cr)
-}
-
-func (cr CommitteeRunner) Decode(data []byte) error {
-	return json.Unmarshal(data, &cr)
-}
-
-func (cr CommitteeRunner) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := cr.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
 }
 
 func (cr CommitteeRunner) GetBaseRunner() *BaseRunner {
@@ -477,17 +457,13 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
 
-	vote := types.BeaconVote{
+	vote := &types.BeaconVote{
 		BlockRoot: attData.BeaconBlockRoot,
 		Source:    attData.Source,
 		Target:    attData.Target,
 	}
-	voteByts, err := vote.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not marshal attestation data")
-	}
 
-	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), voteByts); err != nil {
+	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), vote); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
