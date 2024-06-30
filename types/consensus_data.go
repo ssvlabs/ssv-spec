@@ -133,9 +133,6 @@ type ValidatorConsensusData struct {
 	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
 	Duty    ValidatorDuty
 	Version spec.DataVersion
-	// PreConsensusJustifications max size is
-	//			13*[pre-consensus]SignedPartialSignatureMessage(1888) = 24544
-	PreConsensusJustifications []*PartialSignatureMessages `ssz-max:"13"`
 	// DataSSZ's max size if the size of the biggest object Deneb.BlockContents.
 	// Per definition, Deneb.BlockContents has a field for transaction of size 2^50.
 	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
