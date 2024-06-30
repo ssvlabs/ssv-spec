@@ -451,17 +451,13 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
 
-	vote := types.BeaconVote{
+	vote := &types.BeaconVote{
 		BlockRoot: attData.BeaconBlockRoot,
 		Source:    attData.Source,
 		Target:    attData.Target,
 	}
-	voteByts, err := vote.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not marshal attestation data")
-	}
 
-	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), voteByts); err != nil {
+	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), vote); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
