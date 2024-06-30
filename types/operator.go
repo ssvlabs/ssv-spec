@@ -17,7 +17,7 @@ type CommitteeMember struct {
 // Operator represents a node in the network that holds an ID and a public key
 type Operator struct {
 	OperatorID        OperatorID
-	SSVOperatorPubKey []byte `ssz-size:"294"`
+	SSVOperatorPubKey []byte `ssz-size:"459"`
 }
 
 // HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure
