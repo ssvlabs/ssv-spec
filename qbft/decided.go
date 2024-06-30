@@ -47,7 +47,7 @@ func (c *Controller) UponDecided(signedMsg *types.SignedSSVMessage) (*types.Sign
 		inst.State.DecidedValue = signedMsg.FullData
 	} else { // decide previously, add if has more signers
 		signers, _ := inst.State.CommitContainer.LongestUniqueSignersForRoundAndRoot(msg.Round, msg.Root)
-		if len(signedMsg.GetOperatorIDs()) > len(signers) {
+		if len(signedMsg.OperatorIDs) > len(signers) {
 			err := inst.State.CommitContainer.AddMsg(signedMsg)
 			if err != nil {
 				return nil, err
@@ -116,5 +116,5 @@ func IsDecidedMsg(share *types.CommitteeMember, signedDecided *types.SignedSSVMe
 		return false, err
 	}
 
-	return share.HasQuorum(len(signedDecided.GetOperatorIDs())) && msg.MsgType == CommitMsgType, nil
+	return share.HasQuorum(len(signedDecided.OperatorIDs)) && msg.MsgType == CommitMsgType, nil
 }

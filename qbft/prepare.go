@@ -114,7 +114,7 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 		return errors.New("proposed data mismatch")
 	}
 
-	if len(signedPrepare.GetOperatorIDs()) != 1 {
+	if len(signedPrepare.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
