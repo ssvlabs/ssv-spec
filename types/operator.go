@@ -11,7 +11,8 @@ type CommitteeMember struct {
 	// FaultyNodes is the number of nodes that are considered faulty or malicious in the operator's committee
 	FaultyNodes uint64
 	// All the members of the committee
-	Committee []*Operator `ssz-max:"13"`
+	Committee  []*Operator `ssz-max:"13"`
+	DomainType DomainType  `ssz-size:"4"`
 }
 
 // Operator represents a node in the network that holds an ID and a public key
