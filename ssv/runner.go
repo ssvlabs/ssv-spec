@@ -14,7 +14,7 @@ type Getters interface {
 	GetBeaconNode() BeaconNode
 	GetValCheckF() qbft.ProposedValueCheckF
 	GetSigner() types.BeaconSigner
-	GetOperatorSigner() types.OperatorSigner
+	GetOperatorSigner() *types.OperatorSigner
 	GetNetwork() Network
 }
 
@@ -48,7 +48,7 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	RunnerRoleType types.RunnerRole
-	types.OperatorSigner
+	*types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
 	highestDecidedSlot spec.Slot
@@ -60,7 +60,6 @@ func NewBaseRunner(
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
 	beaconRoleType types.RunnerRole,
-	operatorSigner types.OperatorSigner,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
 	return &BaseRunner{

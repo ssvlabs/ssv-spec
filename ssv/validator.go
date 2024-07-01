@@ -16,7 +16,7 @@ type Validator struct {
 	CommitteeMember   *types.CommitteeMember
 	Share             *types.Share
 	Signer            types.BeaconSigner
-	OperatorSigner    types.OperatorSigner
+	OperatorSigner    *types.OperatorSigner
 	SignatureVerifier types.SignatureVerifier
 }
 
@@ -26,7 +26,7 @@ func NewValidator(
 	committeeMember *types.CommitteeMember,
 	share *types.Share,
 	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
+	operatorSigner *types.OperatorSigner,
 	runners map[types.RunnerRole]Runner,
 	signatureVerifier types.SignatureVerifier,
 ) *Validator {

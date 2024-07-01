@@ -6,7 +6,7 @@ import (
 
 type signing interface {
 	// GetSigner returns an operator signer instance
-	GetOperatorSigner() types.OperatorSigner
+	GetOperatorSigner() *types.OperatorSigner
 }
 
 type IConfig interface {
@@ -26,7 +26,7 @@ type IConfig interface {
 }
 
 type Config struct {
-	OperatorSigner    types.OperatorSigner
+	OperatorSigner    *types.OperatorSigner
 	SigningPK         []byte
 	Domain            types.DomainType
 	ValueCheckF       ProposedValueCheckF
@@ -38,7 +38,7 @@ type Config struct {
 }
 
 // GetSigner returns a Signer instance
-func (c *Config) GetOperatorSigner() types.OperatorSigner {
+func (c *Config) GetOperatorSigner() *types.OperatorSigner {
 	return c.OperatorSigner
 }
 

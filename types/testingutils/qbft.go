@@ -20,7 +20,7 @@ var TestingCutOffRound = qbft.Round(15)
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
-		OperatorSigner: NewTestingOperatorSigner(keySet, 1),
+		OperatorSigner: NewOperatorSigner(keySet, 1),
 		SigningPK:      keySet.Shares[1].GetPublicKey().Serialize(),
 		Domain:         TestingSSVDomainType,
 		ValueCheckF: func(data []byte) error {

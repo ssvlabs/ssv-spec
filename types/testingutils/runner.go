@@ -86,7 +86,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 
 	km := NewTestingKeyManager()
 	committeeMember := TestingCommitteeMember(keySetInstance)
-	opSigner := NewTestingOperatorSigner(keySetInstance, committeeMember.OperatorID)
+	opSigner := NewOperatorSigner(keySetInstance, committeeMember.OperatorID)
 
 	config := TestingConfig(keySetInstance)
 	config.ValueCheckF = valCheck
@@ -207,7 +207,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
 	committeeMember := TestingCommitteeMember(keySet)
-	opSigner := NewTestingOperatorSigner(keySet, committeeMember.OperatorID)
+	opSigner := NewOperatorSigner(keySet, committeeMember.OperatorID)
 
 	config := TestingConfig(keySet)
 	config.ValueCheckF = valCheck
