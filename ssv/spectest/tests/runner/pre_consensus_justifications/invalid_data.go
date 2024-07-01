@@ -13,7 +13,7 @@ import (
 func InvalidData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// invalidateMsgDataF sets a non ConsensusData data in message, it will fail when decoding
+	// invalidateMsgDataF sets a non ValidatorConsensusData data in message, it will fail when decoding
 	invalidateMsgDataF := func(id []byte) *types.SignedSSVMessage {
 		msg := &qbft.Message{
 			MsgType:    qbft.ProposalMsgType,
@@ -28,7 +28,7 @@ func InvalidData() tests.SpecTest {
 		return signed
 	}
 
-	expectedErr := "failed processing consensus message: invalid pre-consensus justification: could not decoded ConsensusData: incorrect offset"
+	expectedErr := "failed processing consensus message: invalid pre-consensus justification: could not decoded ValidatorConsensusData: incorrect offset"
 
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus invalid data",

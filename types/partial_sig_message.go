@@ -61,6 +61,8 @@ func (msgs PartialSignatureMessages) Validate() error {
 	return nil
 }
 
+// ValidateForSigner checks if the PartialSignatureMessages are valid for a given signer
+// It checks if the signer is the same as the one in the messages
 func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error {
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -69,30 +71,6 @@ func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error 
 		return errors.New("signer from signed message is inconsistent with partial signature signers")
 	}
 	return nil
-}
-
-func PartialSignatureMessagesToSignedSSVMessage(psigMsgs *PartialSignatureMessages, msgID MessageID, operatorSigner OperatorSigner) (*SignedSSVMessage, error) {
-	encodedMsg, err := psigMsgs.Encode()
-	if err != nil {
-		return nil, err
-	}
-
-	ssvMsg := &SSVMessage{
-		MsgType: SSVPartialSignatureMsgType,
-		MsgID:   msgID,
-		Data:    encodedMsg,
-	}
-
-	sig, err := operatorSigner.SignSSVMessage(ssvMsg)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not sign SSVMessage")
-	}
-
-	return &SignedSSVMessage{
-		Signatures:  [][]byte{sig},
-		OperatorIDs: []OperatorID{operatorSigner.GetOperatorID()},
-		SSVMessage:  ssvMsg,
-	}, nil
 }
 
 // PartialSignatureMessage is a msg for partial Beacon chain related signatures (like partial attestation, block, randao sigs)

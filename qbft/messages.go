@@ -17,7 +17,7 @@ func HashDataRoot(data []byte) ([32]byte, error) {
 func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorIDs() {
+		for _, signer := range msg.OperatorIDs {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -28,7 +28,7 @@ func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) boo
 func HasPartialQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorIDs() {
+		for _, signer := range msg.OperatorIDs {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -153,9 +153,16 @@ func Sign(msg *Message, operatorID types.OperatorID, operatorSigner types.Operat
 		Data:    byts,
 	}
 
-	signedSSVMessage, err := types.SSVMessageToSignedSSVMessage(ssvMsg, operatorID, operatorSigner.SignSSVMessage)
+	sig, err := operatorSigner.SignSSVMessage(ssvMsg)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+		return nil, errors.Wrap(err, "could not sign SSVMessage")
 	}
+
+	signedSSVMessage := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{operatorID},
+		SSVMessage:  ssvMsg,
+	}
+
 	return signedSSVMessage, nil
 }

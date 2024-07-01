@@ -26,7 +26,7 @@ var decideFirstHeight = func(r ssv.Runner) ssv.Runner {
 func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	msgF := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		fullData, _ := obj.Encode()
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{

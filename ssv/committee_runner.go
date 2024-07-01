@@ -1,9 +1,6 @@
 package ssv
 
 import (
-	"crypto/sha256"
-	"encoding/json"
-
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
@@ -56,23 +53,6 @@ func (cr CommitteeRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	cr.submittedDuties[types.BNRoleAttester] = make(map[phase0.ValidatorIndex]struct{})
 	cr.submittedDuties[types.BNRoleSyncCommittee] = make(map[phase0.ValidatorIndex]struct{})
 	return nil
-}
-
-func (cr CommitteeRunner) Encode() ([]byte, error) {
-	return json.Marshal(cr)
-}
-
-func (cr CommitteeRunner) Decode(data []byte) error {
-	return json.Unmarshal(data, &cr)
-}
-
-func (cr CommitteeRunner) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := cr.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
 }
 
 func (cr CommitteeRunner) GetBaseRunner() *BaseRunner {
@@ -145,17 +125,32 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		}
 	}
 
+	committeeMember := cr.BaseRunner.QBFTController.CommitteeMember
+	operatorIDs := make([]types.OperatorID, len(committeeMember.Committee))
+	for i, operator := range committeeMember.Committee {
+		operatorIDs[i] = operator.OperatorID
+	}
+	committeeID := types.GetCommitteeID(operatorIDs)
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.MessageID(cr.GetBaseRunner().QBFTController.Identifier),
+		MsgID:   types.NewMsgID(committeeMember.DomainType, committeeID[:], cr.BaseRunner.RunnerRoleType),
 	}
 	ssvMsg.Data, err = postConsensusMsg.Encode()
 	if err != nil {
 		return errors.Wrap(err, "failed to encode post consensus signature msg")
 	}
 
-	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, cr.BaseRunner.QBFTController.CommitteeMember.OperatorID,
-		cr.operatorSigner.SignSSVMessage)
+	sig, err := cr.operatorSigner.SignSSVMessage(ssvMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	msgToBroadcast := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{cr.BaseRunner.QBFTController.CommitteeMember.OperatorID},
+		SSVMessage:  ssvMsg,
+	}
+
 	if err != nil {
 		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
@@ -394,8 +389,8 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	beaconObjects = make(map[phase0.ValidatorIndex]map[[32]byte]ssz.HashRoot)
 	duty := cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty)
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
-	beaconVote, err := types.NewBeaconVote(beaconVoteData)
-	if err != nil {
+	beaconVote := &types.BeaconVote{}
+	if err := beaconVote.Decode(beaconVoteData); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
 
@@ -471,17 +466,13 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
 
-	vote := types.BeaconVote{
+	vote := &types.BeaconVote{
 		BlockRoot: attData.BeaconBlockRoot,
 		Source:    attData.Source,
 		Target:    attData.Target,
 	}
-	voteByts, err := vote.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not marshal attestation data")
-	}
 
-	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), voteByts); err != nil {
+	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), vote); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil

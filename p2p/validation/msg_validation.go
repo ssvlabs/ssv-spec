@@ -106,7 +106,7 @@ func validateFutureMsg(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if len(msg.GetOperatorIDs()) != 1 {
+	if len(msg.OperatorIDs) != 1 {
 		return errors.New("allows 1 signer")
 	}
 

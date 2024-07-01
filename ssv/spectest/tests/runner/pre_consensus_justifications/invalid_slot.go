@@ -13,7 +13,7 @@ import (
 func InvalidSlot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	signedMsg := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	signedMsg := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		fullData, _ := obj.Encode()
 		root, _ := qbft.HashDataRoot(fullData)
 		msg := &qbft.Message{
@@ -29,7 +29,7 @@ func InvalidSlot() tests.SpecTest {
 		return signed
 	}
 
-	msgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	msgF := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		// change slot
 		if len(obj.PreConsensusJustifications) > 0 {
 			obj.PreConsensusJustifications[0].Slot = testingutils.TestingDutySlot2
@@ -37,7 +37,7 @@ func InvalidSlot() tests.SpecTest {
 		return signedMsg(obj, id)
 	}
 
-	msgFV := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	msgFV := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		// change slot
 		if len(obj.PreConsensusJustifications) > 0 {
 			obj.PreConsensusJustifications[0].Slot = testingutils.TestingInvalidDutySlotV(obj.Version)

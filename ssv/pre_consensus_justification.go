@@ -36,7 +36,7 @@ func (b *BaseRunner) shouldProcessingJustificationsForHeight(signedMsg *types.Si
 }
 
 // validatePreConsensusJustifications returns an error if pre-consensus justification is invalid, nil otherwise
-func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusData, highestDecidedDutySlot phase0.Slot) error {
+func (b *BaseRunner) validatePreConsensusJustifications(data *types.ValidatorConsensusData, highestDecidedDutySlot phase0.Slot) error {
 	//test invalid consensus data
 	if err := data.Validate(); err != nil {
 		return err
@@ -140,9 +140,9 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 		return nil
 	}
 
-	cd := &types.ConsensusData{}
+	cd := &types.ValidatorConsensusData{}
 	if err := cd.Decode(msg.FullData); err != nil {
-		return errors.Wrap(err, "could not decoded ConsensusData")
+		return errors.Wrap(err, "could not decoded ValidatorConsensusData")
 	}
 
 	if err := b.validatePreConsensusJustifications(cd, highestDecidedDutySlot); err != nil {
@@ -171,10 +171,5 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 		return errors.New("invalid pre-consensus justification quorum")
 	}
 
-	inputBytes, err := cd.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode ConsensusData")
-	}
-
-	return b.decide(runner, cd.Duty.DutySlot(), inputBytes)
+	return b.decide(runner, cd.Duty.DutySlot(), cd)
 }

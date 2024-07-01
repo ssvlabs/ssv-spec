@@ -148,14 +148,14 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 	case CommitteeRunner:
 		decidedValue = &types.BeaconVote{}
 	default:
-		decidedValue = &types.ConsensusData{}
+		decidedValue = &types.ValidatorConsensusData{}
 	}
 	if err := decidedValue.Decode(decidedSignedMsg.FullData); err != nil {
-		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
+		return true, nil, errors.Wrap(err, "failed to parse decided value to ValidatorConsensusData")
 	}
 
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
-		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
+		return true, nil, errors.Wrap(err, "decided ValidatorConsensusData invalid")
 	}
 
 	runner.GetBaseRunner().State.DecidedValue, err = decidedValue.Encode()
@@ -244,15 +244,19 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 	return true, nil
 }
 
-// decide input param can be a BeaconVote or ConsensusData
-func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input []byte) error {
-	if err := runner.GetValCheckF()(input); err != nil {
+// decide input param can be a BeaconVote or ValidatorConsensusData
+func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input types.Encoder) error {
+	byts, err := input.Encode()
+	if err != nil {
+		return errors.Wrap(err, "could not encode input data for consensus")
+	}
+	if err := runner.GetValCheckF()(byts); err != nil {
 		return errors.Wrap(err, "input data invalid")
 	}
 
 	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(
 		qbft.Height(slot),
-		input,
+		byts,
 	); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")
 	}

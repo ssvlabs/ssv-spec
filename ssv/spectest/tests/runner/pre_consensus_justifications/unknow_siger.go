@@ -13,7 +13,7 @@ import (
 func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msgF := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	msgF := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		// change signer to invalidate sig
 		if len(obj.PreConsensusJustifications) > 0 {
 			for _, m := range obj.PreConsensusJustifications[0].Messages {

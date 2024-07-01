@@ -14,7 +14,7 @@ func InconsistentRootCount() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// changeRootCountAndPrepareMsg will change signing root count
-	changeRootCountAndPrepareMsg := func(obj *types.ConsensusData, id []byte) *types.SignedSSVMessage {
+	changeRootCountAndPrepareMsg := func(obj *types.ValidatorConsensusData, id []byte) *types.SignedSSVMessage {
 		if len(obj.PreConsensusJustifications) > 0 {
 			obj.PreConsensusJustifications[1].Messages = append(obj.PreConsensusJustifications[1].Messages, obj.PreConsensusJustifications[1].Messages[0])
 		}

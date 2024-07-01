@@ -12,7 +12,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// ProposalWithConsensusData sends a proposal message to a cluster runner with a ConsensusData (which is wrong since it accepts only BeaconVote objects)
+// ProposalWithConsensusData sends a proposal message to a cluster runner with a ValidatorConsensusData (which is wrong since it accepts only BeaconVote objects)
 func ProposalWithConsensusData() tests.SpecTest {
 
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(1)]

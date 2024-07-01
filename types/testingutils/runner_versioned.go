@@ -13,7 +13,7 @@ var SSVDecidingMsgsForCommitteeRunner = func(beaconVote *types.BeaconVote, ks *T
 	return qbftMsgs
 }
 
-var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
+var SSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
 	signedF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {
@@ -59,7 +59,7 @@ var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, 
 	return base
 }
 
-var ExpectedSSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
+var ExpectedSSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
 	ssvMsgF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {

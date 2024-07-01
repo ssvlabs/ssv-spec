@@ -11,11 +11,11 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// InvalidDecidedValue tests an invalid decided value ConsensusData.Validate() != nil (unknown duty role)
+// InvalidDecidedValue tests an invalid decided value ValidatorConsensusData.Validate() != nil (unknown duty role)
 func InvalidDecidedValue() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func() []byte {
-		cd := &types.ConsensusData{
+		cd := &types.ValidatorConsensusData{
 			Duty: types.ValidatorDuty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
@@ -32,9 +32,9 @@ func InvalidDecidedValue() tests.SpecTest {
 		return byts
 	}
 
-	expectedErr := "failed processing consensus message: decided ConsensusData invalid: decided value is invalid" +
+	expectedErr := "failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid" +
 		": invalid value: unknown duty role"
-	expectedCommitteeErr := "failed processing consensus message: decided ConsensusData invalid: decided value" +
+	expectedCommitteeErr := "failed processing consensus message: decided ValidatorConsensusData invalid: decided value" +
 		" is invalid: attestation data source >= target"
 
 	return &tests.MultiMsgProcessingSpecTest{

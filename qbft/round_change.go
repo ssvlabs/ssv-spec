@@ -265,7 +265,7 @@ func validRoundChangeForDataIgnoreSignature(
 	if msg.Round != round {
 		return errors.New("wrong msg round")
 	}
-	if len(signedMsg.GetOperatorIDs()) != 1 {
+	if len(signedMsg.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
