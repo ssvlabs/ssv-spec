@@ -56,6 +56,10 @@ var AllTests = []tests.TestF{
 	postconsensus.PartialInvalidRootQuorumThenValidQuorum,
 	postconsensus.PartialInvalidSigQuorumThenValidQuorum,
 	postconsensus.MixedCommittees,
+	postconsensus.InvalidSignedMessageNoSignature,
+	postconsensus.InvalidSignedMessageEmptySignature,
+	postconsensus.InvalidSignedMessageDifferentLength,
+	postconsensus.InvalidSignedMessageNoSigners,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -168,6 +172,10 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidQuorumThenValidQuorum,
 	preconsensus.InconsistentOperatorSigner,
 	preconsensus.NilSSVMessage,
+	preconsensus.InvalidSignedMessageNoSigners,
+	preconsensus.InvalidSignedMessageNoSignatures,
+	preconsensus.InvalidSignedMessageEmptySignature,
+	preconsensus.InvalidSignedMessageDifferentLength,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
