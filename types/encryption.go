@@ -116,8 +116,3 @@ func GetPublicKeyPem(sk *rsa.PrivateKey) ([]byte, error) {
 
 	return pemByte, nil
 }
-
-// MarshalPublicKey decodes a rsa.PrivateKey into []byte with x509
-func MarshalPublicKey(sk *rsa.PrivateKey) ([]byte, error) {
-	return x509.MarshalPKIXPublicKey(&sk.PublicKey)
-}
