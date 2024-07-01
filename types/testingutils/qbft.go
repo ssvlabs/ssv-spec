@@ -72,7 +72,7 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 	for _, key := range keysSet.Committee() {
 
 		// Encode member's public key
-		pkBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[key.Signer])
+		pkBytes, err := types.GetPublicKeyPem(keysSet.OperatorKeys[key.Signer])
 		if err != nil {
 			panic(err)
 		}
@@ -88,7 +88,7 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 		opIds = append(opIds, key.Signer)
 	}
 
-	operatorPubKeyBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[1])
+	operatorPubKeyBytes, err := types.GetPublicKeyPem(keysSet.OperatorKeys[1])
 	if err != nil {
 		panic(err)
 	}
