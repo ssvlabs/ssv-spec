@@ -14,10 +14,10 @@ func HashDataRoot(data []byte) ([32]byte, error) {
 }
 
 // HasQuorum returns true if a unique set of signers has quorum
-func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
+func HasQuorum(share *types.CommitteeMember, msgs []*ProcessingMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.OperatorIDs {
+		for _, signer := range msg.SignedMessage.OperatorIDs {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -25,10 +25,10 @@ func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) boo
 }
 
 // HasPartialQuorum returns true if a unique set of signers has partial quorum
-func HasPartialQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
+func HasPartialQuorum(share *types.CommitteeMember, msgs []*ProcessingMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.OperatorIDs {
+		for _, signer := range msg.SignedMessage.OperatorIDs {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -165,4 +165,35 @@ func Sign(msg *Message, operatorID types.OperatorID, operatorSigner types.Operat
 	}
 
 	return signedSSVMessage, nil
+}
+
+// ProcessingMessage stores the network-exchanged signed message and the decoded SignedMessage.SSVMessage.Data (qbft message)
+// The signed message is used at the qbft level since it's used for qbft justifications
+type ProcessingMessage struct {
+	SignedMessage *types.SignedSSVMessage
+	QBFTMessage   *Message
+}
+
+// NewProcessingMessage creates a ProcessingMessage with the decoded qbft message
+func NewProcessingMessage(signedMessage *types.SignedSSVMessage) (*ProcessingMessage, error) {
+	msg := &Message{}
+	err := msg.Decode(signedMessage.SSVMessage.Data)
+	if err != nil {
+		return nil, err
+	}
+	return &ProcessingMessage{
+		SignedMessage: signedMessage,
+		QBFTMessage:   msg,
+	}, nil
+}
+
+// Validate checks the signed message and qbft message validation
+func (pm *ProcessingMessage) Validate() error {
+	if err := pm.SignedMessage.Validate(); err != nil {
+		return err
+	}
+	if err := pm.QBFTMessage.Validate(); err != nil {
+		return err
+	}
+	return nil
 }
