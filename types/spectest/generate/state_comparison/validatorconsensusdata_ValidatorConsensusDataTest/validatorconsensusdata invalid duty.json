@@ -13,7 +13,6 @@
 						"ValidatorSyncCommitteeIndices": null
 				},
 				"Version": "capella",
-				"PreConsensusJustifications": null,
 				"DataSSZ": "DAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQI="
 		},
 		"ExpectedError": "unknown duty role"
