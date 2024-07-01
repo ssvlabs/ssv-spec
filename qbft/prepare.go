@@ -96,7 +96,7 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 		return errors.New("wrong msg round")
 	}
 
-	if err := msg.SignedMessage.Validate(); err != nil {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "prepareData invalid")
 	}
 

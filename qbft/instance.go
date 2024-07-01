@@ -120,12 +120,8 @@ func (i *Instance) ProcessMsg(msg *ProcessingMessage) (decided bool, decidedValu
 }
 
 func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
-	if err := msg.SignedMessage.Validate(); err != nil {
-		return errors.Wrap(err, "invalid SignedSSVMessage")
-	}
-
-	if err := msg.QBFTMessage.Validate(); err != nil {
-		return errors.Wrap(err, "invalid Message")
+	if err := msg.Validate(); err != nil {
+		return err
 	}
 
 	if msg.QBFTMessage.Round < i.State.Round {

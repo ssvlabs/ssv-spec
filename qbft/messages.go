@@ -188,12 +188,34 @@ func NewProcessingMessage(signedMessage *types.SignedSSVMessage) (*ProcessingMes
 }
 
 // Validate checks the signed message and qbft message validation
-func (pm *ProcessingMessage) Validate() error {
-	if err := pm.SignedMessage.Validate(); err != nil {
+func (msg *ProcessingMessage) Validate() error {
+
+	// Validate
+	if err := msg.SignedMessage.Validate(); err != nil {
+		return errors.Wrap(err, "invalid SignedSSVMessage")
+	}
+
+	// Check if the decoded message is correct
+	decodedMsg := &Message{}
+	err := decodedMsg.Decode(msg.SignedMessage.SSVMessage.Data)
+	if err != nil {
 		return err
 	}
-	if err := pm.QBFTMessage.Validate(); err != nil {
+	decodedMsgRoot, err := decodedMsg.GetRoot()
+	if err != nil {
 		return err
+	}
+	qbftMsgRoot, err := msg.QBFTMessage.GetRoot()
+	if err != nil {
+		return err
+	}
+	if decodedMsgRoot != qbftMsgRoot {
+		return errors.New("signed message's decoded qbft message is different than object's qbft message")
+	}
+
+	// Validate
+	if err := msg.QBFTMessage.Validate(); err != nil {
+		return errors.Wrap(err, "invalid Message")
 	}
 	return nil
 }

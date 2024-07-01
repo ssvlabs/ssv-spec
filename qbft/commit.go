@@ -92,7 +92,7 @@ func baseCommitValidationIgnoreSignature(
 	operators []*types.Operator,
 ) error {
 
-	if err := msg.SignedMessage.Validate(); err != nil {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "signed commit invalid")
 	}
 
