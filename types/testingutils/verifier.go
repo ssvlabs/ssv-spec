@@ -5,7 +5,6 @@ import (
 	"crypto"
 	"crypto/rsa"
 	"crypto/sha256"
-	"crypto/x509"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -63,13 +62,9 @@ func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []by
 			}
 
 			// Get public key
-			parsedPk, err := x509.ParsePKIXPublicKey(op.SSVOperatorPubKey)
+			pk, err := types.PemToPublicKey(op.SSVOperatorPubKey)
 			if err != nil {
 				return errors.Wrap(err, "could not parse signer public key")
-			}
-			pk, ok := parsedPk.(*rsa.PublicKey)
-			if !ok {
-				return errors.New("could not parse signer public key")
 			}
 
 			// Verify
