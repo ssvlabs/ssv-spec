@@ -21,12 +21,12 @@ import (
 type DecidedState struct {
 	DecidedVal         []byte
 	DecidedCnt         uint
-	BroadcastedDecided *qbft.SignedMessage
+	BroadcastedDecided *types.SignedSSVMessage
 }
 
 type RunInstanceData struct {
 	InputValue           []byte
-	InputMessages        []*qbft.SignedMessage
+	InputMessages        []*types.SignedSSVMessage
 	ControllerPostRoot   string
 	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedTimerState   *testingutils.TimerState
@@ -37,7 +37,7 @@ type RunInstanceData struct {
 type ControllerSpecTest struct {
 	Name            string
 	RunInstanceData []*RunInstanceData
-	OutputMessages  []*qbft.SignedMessage
+	OutputMessages  []*types.SignedSSVMessage
 	ExpectedError   string
 	StartHeight     *qbft.Height `json:"omitempty"`
 }
@@ -76,10 +76,12 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 func (test *ControllerSpecTest) generateController() *qbft.Controller {
 	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	keySet := testingutils.Testing4SharesSet()
+	config := testingutils.TestingConfig(keySet)
+	committeeMember := testingutils.TestingCommitteeMember(keySet)
 	return testingutils.NewTestingQBFTController(
 		identifier[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		committeeMember,
 		config,
 	)
 }
@@ -126,36 +128,33 @@ func (test *ControllerSpecTest) testBroadcastedDecided(
 	config qbft.IConfig,
 	identifier []byte,
 	runData *RunInstanceData,
-	operators []*types.Operator,
+	committee []*types.Operator,
 ) {
 	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
 		// test broadcasted
 		broadcastedSignedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 		require.Greater(t, len(broadcastedSignedMsgs), 0)
-		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, operators))
-		broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
+		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
 		found := false
-		for _, msg := range broadcastedMsgs {
+		for _, msg := range broadcastedSignedMsgs {
 
 			// a hack for testing non standard messageID identifiers since we copy them into a MessageID this fixes it
 			msgID := types.MessageID{}
 			copy(msgID[:], identifier)
 
-			if !bytes.Equal(msgID[:], msg.MsgID[:]) {
+			if !bytes.Equal(msgID[:], msg.SSVMessage.MsgID[:]) {
 				continue
 			}
 
-			msg1 := &qbft.SignedMessage{}
-			require.NoError(t, msg1.Decode(msg.Data))
-			r1, err := msg1.GetRoot()
+			r1, err := msg.GetRoot()
 			require.NoError(t, err)
 
 			r2, err := runData.ExpectedDecidedState.BroadcastedDecided.GetRoot()
 			require.NoError(t, err)
 
 			if r1 == r2 &&
-				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signers, msg1.Signers) &&
-				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signature, msg1.Signature) {
+				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.OperatorIDs, msg.OperatorIDs) &&
+				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signatures, msg.Signatures) {
 				require.False(t, found)
 				found = true
 			}
@@ -182,7 +181,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 		lastErr = err
 	}
 
-	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.Share.Committee)
+	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.CommitteeMember.Committee)
 
 	// test root
 	r, err := contr.GetRoot()

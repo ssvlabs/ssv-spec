@@ -1,9 +1,8 @@
 package decided
 
 import (
+	"crypto/rsa"
 	"crypto/sha256"
-
-	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
@@ -22,9 +21,9 @@ func InvalidValCheckData() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
+				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessageWithParams(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						qbft.FirstRound,
 						qbft.FirstHeight,
@@ -46,9 +45,9 @@ func InvalidValCheckData() tests.SpecTest {
 
 func invalidValCheckDataStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*qbft.SignedMessage{
+	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingCommitMultiSignerMessageWithParams(
-			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 			[]types.OperatorID{1, 2, 3},
 			qbft.FirstRound,
 			qbft.FirstHeight,
@@ -60,18 +59,18 @@ func invalidValCheckDataStateComparison() *comparable.StateComparison {
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
 	)
 
 	instance := &qbft.Instance{
 		StartValue: []byte{1, 2, 3, 4},
 		State: &qbft.State{
-			Share:        testingutils.TestingShare(testingutils.Testing4SharesSet()),
-			ID:           testingutils.TestingIdentifier,
-			Decided:      true,
-			DecidedValue: testingutils.TestingInvalidValueCheck,
-			Round:        qbft.FirstRound,
+			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ID:              testingutils.TestingIdentifier,
+			Decided:         true,
+			DecidedValue:    testingutils.TestingInvalidValueCheck,
+			Round:           qbft.FirstRound,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

@@ -10,8 +10,7 @@ func EmptyValue() tests.SpecTest {
 		Name: "start instance empty value",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:         []byte{},
-				ControllerPostRoot: "baf3ccea443a6c639b76dccf2d9c4fb5e48318473797de9b55e4d8de48fccc6b",
+				InputValue: []byte{},
 			},
 		},
 		ExpectedError: "value invalid: invalid value",

@@ -16,6 +16,7 @@
 
 ## IDE
 .idea
+.DS_Store
 
 # binaries
 .bin

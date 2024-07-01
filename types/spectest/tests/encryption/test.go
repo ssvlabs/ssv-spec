@@ -1,10 +1,9 @@
 package encryption
 
 import (
-	"testing"
-
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 type EncryptionSpecTest struct {

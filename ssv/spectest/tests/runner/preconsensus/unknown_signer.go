@@ -28,7 +28,7 @@ func UnknownSigner() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: unknownSignerSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     unknownSignerSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
@@ -42,7 +42,7 @@ func UnknownSigner() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: unknownSignerAggregatorSC().Root(),
 				PostDutyRunnerState:     unknownSignerAggregatorSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
@@ -61,7 +61,7 @@ func UnknownSigner() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: unknownSignerProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 			ExpectedError: expectedError,
@@ -79,7 +79,7 @@ func UnknownSigner() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: unknownSignerBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 			ExpectedError: expectedError,

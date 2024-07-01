@@ -13,14 +13,12 @@ func EqualHeightRunningInstance() tests.SpecTest {
 		Name: "start instance equal height running instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:         []byte{1, 2, 3, 4},
-				Height:             &height,
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
+				InputValue: []byte{1, 2, 3, 4},
+				Height:     &height,
 			},
 			{
-				InputValue:         []byte{1, 2, 3, 4},
-				Height:             &height,
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
+				InputValue: []byte{1, 2, 3, 4},
+				Height:     &height,
 			},
 		},
 		ExpectedError: "instance already running",

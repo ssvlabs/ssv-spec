@@ -3,16 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"strings"
-
-	"github.com/pkg/errors"
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/qbft/spectest"
 )

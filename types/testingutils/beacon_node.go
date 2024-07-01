@@ -2,6 +2,8 @@ package testingutils
 
 import (
 	"encoding/hex"
+	"fmt"
+	"sort"
 
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
@@ -35,19 +37,78 @@ func GetSSZRootNoError(obj ssz.HashRoot) string {
 	return hex.EncodeToString(r[:])
 }
 
-var TestingAttestationData = &phase0.AttestationData{
-	Slot:            TestingDutySlot,
-	Index:           3,
-	BeaconBlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+var TestingBlockRoot = phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2}
+
+var TestingCommitteeIndex = phase0.CommitteeIndex(3)
+var TestingDifferentCommitteeIndex = phase0.CommitteeIndex(4)
+var TestingCommitteesAtSlot = uint64(36)
+var TestingCommitteeLenght = uint64(128)
+var TestingValidatorCommitteeIndex = uint64(11)
+
+// Beacon vote
+
+var TestBeaconVote = types.BeaconVote{
+	BlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 	Target: &phase0.Checkpoint{
 		Epoch: 1,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 }
+
+var TestBeaconVoteNextEpoch = types.BeaconVote{
+	BlockRoot: TestingBlockRoot,
+	Source: &phase0.Checkpoint{
+		Epoch: 0,
+		Root:  TestingBlockRoot,
+	},
+	Target: &phase0.Checkpoint{
+		Epoch: 1,
+		Root:  TestingBlockRoot,
+	},
+}
+
+var TestWrongBeaconVote = types.BeaconVote{
+	BlockRoot: phase0.Root{1, 2, 3, 4},
+	Source: &phase0.Checkpoint{
+		Epoch: 2,
+		Root:  phase0.Root{1, 2, 3, 4},
+	},
+	Target: &phase0.Checkpoint{
+		Epoch: 1,
+		Root:  phase0.Root{1, 2, 3, 5},
+	},
+}
+
+var TestingAttestationData = &phase0.AttestationData{
+	Slot:            TestingDutySlot,
+	Index:           3,
+	BeaconBlockRoot: TestingBlockRoot,
+	Source: &phase0.Checkpoint{
+		Epoch: 0,
+		Root:  TestingBlockRoot,
+	},
+	Target: &phase0.Checkpoint{
+		Epoch: 1,
+		Root:  TestingBlockRoot,
+	},
+}
+
+var TestingAttestationDataRoot, _ = TestingAttestationData.HashTreeRoot()
+
+var TestingAttestationDataForValidatorDuty = func(duty *types.ValidatorDuty) *phase0.AttestationData {
+	return &phase0.AttestationData{
+		Slot:            duty.Slot,
+		Index:           duty.CommitteeIndex,
+		BeaconBlockRoot: TestBeaconVote.BlockRoot,
+		Source:          TestBeaconVote.Source,
+		Target:          TestBeaconVote.Target,
+	}
+}
+
 var TestingAttestationDataBytes = func() []byte {
 	ret, _ := TestingAttestationData.MarshalSSZ()
 	return ret
@@ -56,14 +117,14 @@ var TestingAttestationDataBytes = func() []byte {
 var TestingAttestationNextEpochData = &phase0.AttestationData{
 	Slot:            TestingDutySlot2,
 	Index:           3,
-	BeaconBlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	BeaconBlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 	Target: &phase0.Checkpoint{
 		Epoch: 1,
-		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root:  TestingBlockRoot,
 	},
 }
 var TestingAttestationNextEpochDataBytes = func() []byte {
@@ -82,13 +143,58 @@ var TestingWrongAttestationData = func() *phase0.AttestationData {
 }()
 
 var TestingSignedAttestation = func(ks *TestKeySet) *phase0.Attestation {
-	aggregationBitfield := bitfield.NewBitlist(TestingAttesterDuty.CommitteeLength)
-	aggregationBitfield.SetBitAt(TestingAttesterDuty.ValidatorCommitteeIndex, true)
+	duty := TestingAttesterDuty.ValidatorDuties[0]
+	aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
+	aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
 	return &phase0.Attestation{
 		Data:            TestingAttestationData,
 		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
 		AggregationBits: aggregationBitfield,
 	}
+}
+
+var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+	ret := make([]string, 0)
+	for _, ks := range ksMap {
+		duty := TestingAttesterDuty.ValidatorDuties[0]
+		aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
+		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
+		ret = append(ret, GetSSZRootNoError(&phase0.Attestation{
+			Data:            TestingAttestationData,
+			Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+			AggregationBits: aggregationBitfield,
+		}))
+	}
+	return ret
+}
+
+var TestingSignedCommitteeBeaconObjectSSZRoot = func(duty *types.CommitteeDuty, ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+	ret := make([]string, 0)
+	for _, validatorDuty := range duty.ValidatorDuties {
+
+		ks := ksMap[validatorDuty.ValidatorIndex]
+
+		if validatorDuty.Type == types.BNRoleAttester {
+			attData := TestingAttestationDataForValidatorDuty(validatorDuty)
+			aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
+			aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
+			ret = append(ret, GetSSZRootNoError(&phase0.Attestation{
+				Data:            attData,
+				Signature:       signBeaconObject(attData, types.DomainAttester, ks),
+				AggregationBits: aggregationBitfield,
+			}))
+		} else if validatorDuty.Type == types.BNRoleSyncCommittee {
+			ret = append(ret, GetSSZRootNoError(&altair.SyncCommitteeMessage{
+				Slot:            validatorDuty.Slot,
+				BeaconBlockRoot: TestingBlockRoot,
+				ValidatorIndex:  validatorDuty.ValidatorIndex,
+				Signature:       signBeaconObject(types.SSZBytes(TestingBlockRoot[:]), types.DomainSyncCommittee, ks),
+			}))
+		} else {
+			panic(fmt.Sprintf("type %v not expected", validatorDuty.Type))
+		}
+	}
+	return ret
 }
 
 var TestingAggregateAndProof = &phase0.AggregateAndProof{
@@ -126,15 +232,16 @@ var TestingSignedAggregateAndProof = func(ks *TestKeySet) *phase0.SignedAggregat
 }
 
 const (
-	TestingDutySlot       = 12
-	TestingDutySlot2      = 50
-	TestingDutyEpoch      = 0
-	TestingValidatorIndex = 1
+	TestingDutySlot            = 12
+	TestingDutySlot2           = 50
+	TestingDutyEpoch           = 0
+	TestingValidatorIndex      = 1
+	TestingWrongValidatorIndex = 100
 
 	UnknownDutyType = 100
 )
 
-var TestingSyncCommitteeBlockRoot = phase0.Root{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+var TestingSyncCommitteeBlockRoot = TestingBlockRoot
 var TestingSyncCommitteeWrongBlockRoot = phase0.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommitteeMessage {
 	return &altair.SyncCommitteeMessage{
@@ -143,6 +250,19 @@ var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommi
 		ValidatorIndex:  TestingValidatorIndex,
 		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
 	}
+}
+
+var TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+	ret := make([]string, 0)
+	for valIdx, ks := range ksMap {
+		ret = append(ret, GetSSZRootNoError(&altair.SyncCommitteeMessage{
+			Slot:            TestingDutySlot,
+			BeaconBlockRoot: TestingBlockRoot,
+			ValidatorIndex:  valIdx,
+			Signature:       signBeaconObject(types.SSZBytes(TestingBlockRoot[:]), types.DomainSyncCommittee, ks),
+		}))
+	}
+	return ret
 }
 
 var TestingContributionProofIndexes = []uint64{0, 1, 2}
@@ -270,49 +390,134 @@ func TestingVoluntaryExitBySlot(slot phase0.Slot) *phase0.VoluntaryExit {
 }
 
 // TestingProposerDutyFirstSlot
-var TestingProposerDutyFirstSlot = types.Duty{
+var TestingProposerDutyFirstSlot = types.ValidatorDuty{
 	Type:           types.BNRoleProposer,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           0,
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-// TestingAttesterDutyFirstSlot
-var TestingAttesterDutyFirstSlot = types.Duty{
-	Type:                    types.BNRoleAttester,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    0,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+func getValPubKeyByValIdx(valIdx int) phase0.BLSPubKey {
+	return TestingValidatorPubKeyForValidatorIndex(phase0.ValidatorIndex(valIdx))
 }
 
-var TestingAttesterDuty = types.Duty{
-	Type:                    types.BNRoleAttester,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+func TestingCommitteeDuty(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int) *types.CommitteeDuty {
+	return TestingCommitteeDutyWithParams(slot, attestationValidatorIds, syncCommitteeValidatorIds, TestingCommitteeIndex, TestingCommitteesAtSlot, TestingCommitteeLenght, TestingValidatorCommitteeIndex)
 }
 
-var TestingAttesterDutyNextEpoch = types.Duty{
-	Type:                    types.BNRoleAttester,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot2,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          3,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int) *types.CommitteeDuty {
+	sort.Slice(attestationValidatorIds, func(i, j int) bool {
+		return attestationValidatorIds[i] < attestationValidatorIds[j]
+	})
+
+	var ret *types.CommitteeDuty
+	for i, valIdx := range attestationValidatorIds {
+		var duty *types.CommitteeDuty
+		if i < len(attestationValidatorIds)/2 {
+			duty = TestingCommitteeDuty(slot, []int{valIdx}, nil)
+		} else {
+			duty = TestingCommitteeDutyWithParams(slot, []int{valIdx}, nil, TestingDifferentCommitteeIndex, TestingCommitteesAtSlot, TestingCommitteeLenght, TestingValidatorCommitteeIndex)
+		}
+		if ret == nil {
+			ret = duty
+		} else {
+			ret.ValidatorDuties = append(ret.ValidatorDuties, duty.ValidatorDuties...)
+		}
+	}
+
+	sort.Slice(syncCommitteeValidatorIds, func(i, j int) bool {
+		return syncCommitteeValidatorIds[i] < syncCommitteeValidatorIds[j]
+	})
+
+	for i, valIdx := range syncCommitteeValidatorIds {
+		var duty *types.CommitteeDuty
+		if i < len(syncCommitteeValidatorIds)/2 {
+			duty = TestingCommitteeDuty(slot, nil, []int{valIdx})
+		} else {
+			duty = TestingCommitteeDutyWithParams(slot, nil, []int{valIdx}, TestingDifferentCommitteeIndex, TestingCommitteesAtSlot, TestingCommitteeLenght, TestingValidatorCommitteeIndex)
+		}
+		if ret == nil {
+			ret = duty
+		} else {
+			ret.ValidatorDuties = append(ret.ValidatorDuties, duty.ValidatorDuties...)
+		}
+	}
+
+	return ret
 }
 
-// TestingAggregatorDutyFirstSlot
-var TestingAggregatorDutyFirstSlot = types.Duty{
+func TestingCommitteeDutyWithParams(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int,
+	committeeIndex phase0.CommitteeIndex,
+	committeesAtSlot uint64,
+	committeeLenght uint64,
+	validatorCommitteeIndex uint64) *types.CommitteeDuty {
+
+	duties := make([]*types.ValidatorDuty, 0)
+
+	for _, valIdx := range attestationValidatorIds {
+		pk := getValPubKeyByValIdx(valIdx)
+		duties = append(duties, &types.ValidatorDuty{
+			Type:                    types.BNRoleAttester,
+			PubKey:                  pk,
+			Slot:                    slot,
+			ValidatorIndex:          phase0.ValidatorIndex(valIdx),
+			CommitteeIndex:          committeeIndex,
+			CommitteesAtSlot:        committeesAtSlot,
+			CommitteeLength:         committeeLenght,
+			ValidatorCommitteeIndex: validatorCommitteeIndex,
+		})
+	}
+
+	for _, valIdx := range syncCommitteeValidatorIds {
+		pk := getValPubKeyByValIdx(valIdx)
+		duties = append(duties, &types.ValidatorDuty{
+			Type:                          types.BNRoleSyncCommittee,
+			PubKey:                        pk,
+			Slot:                          slot,
+			ValidatorIndex:                phase0.ValidatorIndex(valIdx),
+			CommitteeIndex:                committeeIndex,
+			CommitteesAtSlot:              committeesAtSlot,
+			CommitteeLength:               committeeLenght,
+			ValidatorCommitteeIndex:       validatorCommitteeIndex,
+			ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+		})
+	}
+
+	return &types.CommitteeDuty{Slot: slot, ValidatorDuties: duties}
+}
+
+func TestingCommitteeAttesterDuty(slot phase0.Slot, validatorIds []int) *types.CommitteeDuty {
+	return TestingCommitteeDuty(slot, validatorIds, nil)
+}
+
+func TestingCommitteeSyncCommitteeDuty(slot phase0.Slot, validatorIds []int) *types.CommitteeDuty {
+	return TestingCommitteeDuty(slot, nil, validatorIds)
+}
+
+// Committee duty - Attestation only
+var TestingAttesterDuty = TestingCommitteeAttesterDuty(TestingDutySlot, []int{TestingValidatorIndex})
+
+var TestingAttesterDutyNextEpoch = TestingCommitteeAttesterDuty(TestingDutySlot2, []int{TestingValidatorIndex})
+
+var TestingAttesterDutyFirstSlot = TestingCommitteeAttesterDuty(0, []int{TestingValidatorIndex})
+
+// Committee duty - Sync Committee only
+
+var TestingSyncCommitteeDuty = TestingCommitteeSyncCommitteeDuty(TestingDutySlot, []int{TestingValidatorIndex})
+
+var TestingSyncCommitteeDutyNextEpoch = TestingCommitteeSyncCommitteeDuty(TestingDutySlot2, []int{TestingValidatorIndex})
+
+var TestingSyncCommitteeDutyFirstSlot = TestingCommitteeSyncCommitteeDuty(0, []int{TestingValidatorIndex})
+
+// Committee duty - Attestation and Sync Committee
+
+var TestingAttesterAndSyncCommitteeDuties = TestingCommitteeDuty(TestingDutySlot, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
+
+var TestingAttesterAndSyncCommitteeDutiesNextEpoch = TestingCommitteeDuty(TestingDutySlot2, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
+
+var TestingAttesterAndSyncCommitteeDutiesFirstSlot = TestingCommitteeDuty(0, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
+
+var TestingAggregatorDutyFirstSlot = types.ValidatorDuty{
 	Type:                    types.BNRoleAggregator,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    0,
@@ -323,7 +528,7 @@ var TestingAggregatorDutyFirstSlot = types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-var TestingAggregatorDuty = types.Duty{
+var TestingAggregatorDuty = types.ValidatorDuty{
 	Type:                    types.BNRoleAggregator,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot,
@@ -335,7 +540,7 @@ var TestingAggregatorDuty = types.Duty{
 }
 
 // TestingAggregatorDutyNextEpoch testing for a second duty start
-var TestingAggregatorDutyNextEpoch = types.Duty{
+var TestingAggregatorDutyNextEpoch = types.ValidatorDuty{
 	Type:                    types.BNRoleAggregator,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    TestingDutySlot2,
@@ -346,45 +551,8 @@ var TestingAggregatorDutyNextEpoch = types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-// TestingSyncCommitteeDutyFirstSlot
-var TestingSyncCommitteeDutyFirstSlot = types.Duty{
-	Type:                          types.BNRoleSyncCommittee,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          0,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
-}
-
-var TestingSyncCommitteeDuty = types.Duty{
-	Type:                          types.BNRoleSyncCommittee,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          TestingDutySlot,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
-}
-
-var TestingSyncCommitteeDutyNextEpoch = types.Duty{
-	Type:                          types.BNRoleSyncCommittee,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          TestingDutySlot2,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
-}
-
 // TestingSyncCommitteeContributionDutyFirstSlot
-var TestingSyncCommitteeContributionDutyFirstSlot = types.Duty{
+var TestingSyncCommitteeContributionDutyFirstSlot = types.ValidatorDuty{
 	Type:                          types.BNRoleSyncCommitteeContribution,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          0,
@@ -396,7 +564,7 @@ var TestingSyncCommitteeContributionDutyFirstSlot = types.Duty{
 	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
-var TestingSyncCommitteeContributionDuty = types.Duty{
+var TestingSyncCommitteeContributionDuty = types.ValidatorDuty{
 	Type:                          types.BNRoleSyncCommitteeContribution,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          TestingDutySlot,
@@ -409,7 +577,7 @@ var TestingSyncCommitteeContributionDuty = types.Duty{
 }
 
 // TestingSyncCommitteeContributionNexEpochDuty testing for a second duty start
-var TestingSyncCommitteeContributionNexEpochDuty = types.Duty{
+var TestingSyncCommitteeContributionNexEpochDuty = types.ValidatorDuty{
 	Type:                          types.BNRoleSyncCommitteeContribution,
 	PubKey:                        TestingValidatorPubKey,
 	Slot:                          TestingDutySlot2,
@@ -421,35 +589,35 @@ var TestingSyncCommitteeContributionNexEpochDuty = types.Duty{
 	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
-var TestingValidatorRegistrationDuty = types.Duty{
+var TestingValidatorRegistrationDuty = types.ValidatorDuty{
 	Type:           types.BNRoleValidatorRegistration,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot,
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-var TestingValidatorRegistrationDutyNextEpoch = types.Duty{
+var TestingValidatorRegistrationDutyNextEpoch = types.ValidatorDuty{
 	Type:           types.BNRoleValidatorRegistration,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot2,
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-var TestingVoluntaryExitDuty = types.Duty{
+var TestingVoluntaryExitDuty = types.ValidatorDuty{
 	Type:           types.BNRoleVoluntaryExit,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot,
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-var TestingVoluntaryExitDutyNextEpoch = types.Duty{
+var TestingVoluntaryExitDutyNextEpoch = types.ValidatorDuty{
 	Type:           types.BNRoleVoluntaryExit,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot2,
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-var TestingUnknownDutyType = types.Duty{
+var TestingUnknownDutyType = types.ValidatorDuty{
 	Type:                    UnknownDutyType,
 	PubKey:                  TestingValidatorPubKey,
 	Slot:                    12,
@@ -460,7 +628,7 @@ var TestingUnknownDutyType = types.Duty{
 	ValidatorCommitteeIndex: 11,
 }
 
-var TestingWrongDutyPK = types.Duty{
+var TestingWrongDutyPK = types.ValidatorDuty{
 	Type:                    types.BNRoleAttester,
 	PubKey:                  TestingWrongValidatorPubKey,
 	Slot:                    12,
@@ -500,16 +668,22 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, spec.DataVersion, error) {
+func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.
+	AttestationData, spec.DataVersion, error) {
 	data := *TestingAttestationData
 	data.Slot = slot
+	if committeeIndex != 0 {
+		data.Index = committeeIndex
+	}
 	return &data, spec.DataVersionPhase0, nil
 }
 
-// SubmitAttestation submit the attestation to the node
-func (bn *TestingBeaconNode) SubmitAttestation(attestation *phase0.Attestation) error {
-	r, _ := attestation.HashTreeRoot()
-	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+// SubmitAttestations submit attestations to the node
+func (bn *TestingBeaconNode) SubmitAttestations(attestations []*phase0.Attestation) error {
+	for _, att := range attestations {
+		r, _ := att.HashTreeRoot()
+		bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	}
 	return nil
 }
 
@@ -638,9 +812,11 @@ func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.R
 }
 
 // SubmitSyncMessage submits a signed sync committee msg
-func (bn *TestingBeaconNode) SubmitSyncMessage(msg *altair.SyncCommitteeMessage) error {
-	r, _ := msg.HashTreeRoot()
-	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+func (bn *TestingBeaconNode) SubmitSyncMessages(msgs []*altair.SyncCommitteeMessage) error {
+	for _, msg := range msgs {
+		r, _ := msg.HashTreeRoot()
+		bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	}
 	return nil
 }
 

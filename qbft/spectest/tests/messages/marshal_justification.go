@@ -11,16 +11,16 @@ import (
 func MarshalJustifications() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], 1, 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], 2, 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], 3, 2),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], 1, 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], 2, 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], 3, 2),
 	}
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
 
 	rcMarshalled := testingutils.MarshalJustifications(rcMsgs)
@@ -28,7 +28,7 @@ func MarshalJustifications() tests.SpecTest {
 	prepareMarshalled := testingutils.MarshalJustifications(prepareMsgs)
 
 	msg := testingutils.TestingProposalMessageWithParams(
-		ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+		ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		rcMarshalled, prepareMarshalled)
 
 	msgRoot, err := msg.GetRoot()
@@ -42,7 +42,7 @@ func MarshalJustifications() tests.SpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "marshal RC and Prepare justifications",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		EncodedMessages: [][]byte{

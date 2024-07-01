@@ -12,11 +12,11 @@ func RoundChangeDataEncoding() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingRoundChangeMessageWithParams(
-		ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingQBFTRootData, 2,
-		testingutils.MarshalJustifications([]*qbft.SignedMessage{
-			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-			testingutils.TestingPrepareMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-			testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		ks.OperatorKeys[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingQBFTRootData, 2,
+		testingutils.MarshalJustifications([]*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 		}))
 
 	r, _ := msg.GetRoot()
@@ -24,7 +24,7 @@ func RoundChangeDataEncoding() tests.SpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "round change data encoding",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		EncodedMessages: [][]byte{

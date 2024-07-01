@@ -3,6 +3,7 @@ package partialsigcontainer
 import (
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
@@ -25,19 +26,19 @@ func (test *PartialSigContainerTest) TestName() string {
 func (test *PartialSigContainerTest) Run(t *testing.T) {
 	ps := ssv.NewPartialSigContainer(test.Quorum)
 
-	roots := make(map[[32]byte]bool)
+	validatorIndexRoots := make(map[phase0.ValidatorIndex][32]byte)
 	// Add signature messages
 	for _, sigMsg := range test.SignatureMsgs {
 		ps.AddSignature(sigMsg)
-		roots[sigMsg.SigningRoot] = true
+		validatorIndexRoots[sigMsg.ValidatorIndex] = sigMsg.SigningRoot
 	}
 
-	for root := range roots {
+	for validatorIndex, root := range validatorIndexRoots {
 
 		// Check quorum
-		require.Equal(t, test.ExpectedQuorum, ps.HasQuorum(root))
+		require.Equal(t, test.ExpectedQuorum, ps.HasQuorum(validatorIndex, root))
 
-		result, err := ps.ReconstructSignature(root, test.ValidatorPubKey)
+		result, err := ps.ReconstructSignature(root, test.ValidatorPubKey, validatorIndex)
 		// Check the result and error
 		if len(test.ExpectedError) > 0 {
 			require.Error(t, err)

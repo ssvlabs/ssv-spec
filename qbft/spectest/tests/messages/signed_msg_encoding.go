@@ -11,12 +11,12 @@ import (
 func SignedMessageEncoding() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.TestingProposalMessageWithParams(
-		ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingQBFTRootData,
-		testingutils.MarshalJustifications([]*qbft.SignedMessage{
-			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		ks.OperatorKeys[1], types.OperatorID(1), qbft.FirstRound, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+		testingutils.MarshalJustifications([]*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		}),
-		testingutils.MarshalJustifications([]*qbft.SignedMessage{
-			testingutils.TestingRoundChangeMessage(ks.Shares[1], types.OperatorID(1)),
+		testingutils.MarshalJustifications([]*types.SignedSSVMessage{
+			testingutils.TestingRoundChangeMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		}),
 	)
 
@@ -24,7 +24,7 @@ func SignedMessageEncoding() tests.SpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "signed message encoding",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		EncodedMessages: [][]byte{

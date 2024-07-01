@@ -10,7 +10,7 @@ import (
 // MsgTypeUnknown tests Message type > 5
 func MsgTypeUnknown() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
+	msg := testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
 		MsgType:    4,
 		Height:     qbft.FirstHeight,
 		Round:      qbft.FirstRound,
@@ -20,7 +20,7 @@ func MsgTypeUnknown() tests.SpecTest {
 
 	return &tests.MsgSpecTest{
 		Name: "msg type unknown",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		ExpectedError: "message type is invalid",

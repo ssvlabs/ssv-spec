@@ -11,11 +11,11 @@ func InvalidMsg() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg.Message.Messages = append(msg.Message.Messages, &types.PartialSignatureMessage{})
+	msg.Messages = append(msg.Messages, &types.PartialSignatureMessage{})
 
 	return &MsgSpecTest{
 		Name:          "invalid message",
-		Messages:      []*types.SignedPartialSignatureMessage{msg},
+		Messages:      []*types.PartialSignatureMessages{msg},
 		ExpectedError: "inconsistent signers",
 	}
 }

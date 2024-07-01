@@ -3,15 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ssvlabs/ssv-spec/types/spectest"
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"strings"
-
-	"github.com/ssvlabs/ssv-spec/types/spectest"
-	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 //go:generate go run main.go

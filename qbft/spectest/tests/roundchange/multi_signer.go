@@ -1,8 +1,8 @@
 package roundchange
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
-	"github.com/ssvlabs/ssv-spec/qbft"
+	"crypto/rsa"
+
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +14,9 @@ func MultiSigner() tests.SpecTest {
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*qbft.SignedMessage{
+	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingMultiSignerRoundChangeMessageWithRound(
-			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2]},
+			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]},
 			[]types.OperatorID{types.OperatorID(1), types.OperatorID(2)},
 			2,
 		),
@@ -25,9 +25,8 @@ func MultiSigner() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:           "round change multi signers",
 		Pre:            pre,
-		PostRoot:       "96e6d7bdbb98a2d9937f3d97d6aa096bd3a58f923b61012048ac70ad52765919",
 		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: msg allows 1 signer",
 	}
 }

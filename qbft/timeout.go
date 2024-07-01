@@ -13,6 +13,14 @@ var (
 	CutoffRound = 15 // stop processing instances after 8*2+120*6 = 14.2 min (~ 2 epochs)
 )
 
+const (
+	// AttestationCutOffRound is the round after which the instance will stop processing attestations
+	AttestationCutOffRound = 12 // stop processing attestations after 8*2+120*3 = 6.2 min (~ 1 epoch)
+
+	// SyncCommitteeCutOffRound is the round after which the instance will stop processing sync committee messages
+	SyncCommitteeCutOffRound = 4 // stop processing sync committee messages after one slot
+)
+
 func (i *Instance) UponRoundTimeout() error {
 	if !i.CanProcessMessages() {
 		return errors.New("instance stopped processing timeouts")

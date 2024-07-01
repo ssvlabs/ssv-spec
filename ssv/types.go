@@ -13,7 +13,7 @@ import (
 )
 
 // DutyRunners is a map of duty runners mapped by msg id hex.
-type DutyRunners map[types.BeaconRole]Runner
+type DutyRunners map[types.RunnerRole]Runner
 
 // DutyRunnerForMsgID returns a Runner from the provided msg ID, or nil if not found
 func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) Runner {
@@ -29,9 +29,10 @@ type Network interface {
 // AttesterCalls interface has all attester duty specific calls
 type AttesterCalls interface {
 	// GetAttestationData returns attestation data by the given slot and committee index
-	GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, spec.DataVersion, error)
+	GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.AttestationData,
+		spec.DataVersion, error)
 	// SubmitAttestation submit the attestation to the node
-	SubmitAttestation(attestation *phase0.Attestation) error
+	SubmitAttestations(attestations []*phase0.Attestation) error
 }
 
 // ProposerCalls interface has all block proposer duty specific calls
@@ -57,7 +58,7 @@ type SyncCommitteeCalls interface {
 	// GetSyncMessageBlockRoot returns beacon block root for sync committee
 	GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.Root, spec.DataVersion, error)
 	// SubmitSyncMessage submits a signed sync committee msg
-	SubmitSyncMessage(msg *altair.SyncCommitteeMessage) error
+	SubmitSyncMessages(msgs []*altair.SyncCommitteeMessage) error
 }
 
 // SyncCommitteeContributionCalls interface has all sync committee contribution duty specific calls

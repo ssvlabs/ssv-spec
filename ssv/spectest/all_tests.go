@@ -2,6 +2,8 @@ package spectest
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	committeemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/multipleduty"
+	committeesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/singleduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
@@ -49,7 +51,11 @@ var AllTests = []tests.TestF{
 	postconsensus.InvalidThenQuorum,
 	postconsensus.InvalidQuorumThenValidQuorum,
 	postconsensus.InconsistentOperatorSigner,
-	postconsensus.InvalidDecode,
+	postconsensus.NilSSVMessage,
+	postconsensus.InvalidValidatorIndex,
+	postconsensus.PartialInvalidRootQuorumThenValidQuorum,
+	postconsensus.PartialInvalidSigQuorumThenValidQuorum,
+	postconsensus.MixedCommittees,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -62,6 +68,25 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyFinished,
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
+
+	committeesingleduty.StartDuty,
+	committeesingleduty.StartNoDuty,
+	committeesingleduty.ValidBeaconVote,
+	committeesingleduty.WrongBeaconVote,
+	committeesingleduty.Decided,
+	committeesingleduty.HappyFlow,
+	committeesingleduty.PastMessageDutyNotFinished,
+	committeesingleduty.PastMessageDutyFinished,
+	committeesingleduty.PastMessageDutyDoesNotExist,
+	committeesingleduty.ProposalWithConsensusData,
+	committeesingleduty.WrongMessageID,
+
+	committeemultipleduty.SequencedDecidedDuties,
+	committeemultipleduty.SequencedHappyFlowDuties,
+	committeemultipleduty.ShuffledDecidedDuties,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithTheSameValidators,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
+	committeemultipleduty.FailedThanSuccessfulDuties,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
@@ -76,6 +101,7 @@ var AllTests = []tests.TestF{
 	consensus.ValidDecided13Operators,
 	consensus.ValidMessage,
 	consensus.InvalidSignature,
+	consensus.DecidedSlashableAttestation,
 
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
@@ -85,33 +111,6 @@ var AllTests = []tests.TestF{
 	proposer.ProposeRegularBlockDecidedBlinded,
 	proposer.BlindedRunnerAcceptsNormalBlock,
 	proposer.NormalProposerAcceptsBlindedBlock,
-
-	// pre_consensus_justifications.PastSlot,
-	// pre_consensus_justifications.InvalidData,
-	// pre_consensus_justifications.FutureHeight,
-	// pre_consensus_justifications.PastHeight,
-	// pre_consensus_justifications.InvalidMsgType,
-	// pre_consensus_justifications.WrongBeaconRole,
-	// pre_consensus_justifications.InvalidConsensusData,
-	// pre_consensus_justifications.InvalidSlot,
-	// pre_consensus_justifications.UnknownSigner,
-	// pre_consensus_justifications.InvalidJustificationSignature,
-	// pre_consensus_justifications.DuplicateJustificationSigner,
-	// pre_consensus_justifications.DuplicateRoots,
-	// pre_consensus_justifications.InconsistentRootCount,
-	// pre_consensus_justifications.InconsistentRoots,
-	// pre_consensus_justifications.InvalidJustification,
-	// pre_consensus_justifications.MissingQuorum,
-	// pre_consensus_justifications.DecidedInstance,
-	// pre_consensus_justifications.ExistingValidPreConsensus,
-	// pre_consensus_justifications.Valid,
-	// pre_consensus_justifications.Valid7Operators,
-	// pre_consensus_justifications.Valid10Operators,
-	// pre_consensus_justifications.Valid13Operators,
-	// pre_consensus_justifications.ValidFirstHeight,
-	// pre_consensus_justifications.ValidNoRunningDuty,
-	// pre_consensus_justifications.ValidRoundChangeMsg,
-	// pre_consensus_justifications.HappyFlow,
 
 	preconsensus.NoRunningDuty,
 	preconsensus.TooFewRoots,
@@ -141,19 +140,21 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidThenQuorum,
 	preconsensus.InvalidQuorumThenValidQuorum,
 	preconsensus.InconsistentOperatorSigner,
-	preconsensus.InvalidDecode,
+	preconsensus.NilSSVMessage,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
+
 	valcheckattestations.Slashable,
 	valcheckattestations.SourceHigherThanTarget,
 	valcheckattestations.FarFutureTarget,
-	valcheckattestations.CommitteeIndexMismatch,
-	valcheckattestations.SlotMismatch,
-	valcheckattestations.ConsensusDataNil,
+	valcheckattestations.BeaconVoteDataNil,
 	valcheckattestations.Valid,
+	valcheckattestations.MinoritySlashable,
+	valcheckattestations.MajoritySlashable,
+
 	valcheckproposer.BlindedBlock,
 
 	dutyexe.WrongDutyRole,

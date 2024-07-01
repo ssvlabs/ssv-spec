@@ -1,0 +1,50 @@
+{
+		"Name": "expected PartialSignatureMessages",
+		"Object": {
+				"Type": 1,
+				"Slot": "1",
+				"Messages": [
+						{
+								"PartialSignature": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+								"SigningRoot": [
+										1,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0,
+										0
+								],
+								"Signer": 1,
+								"ValidatorIndex": "1"
+						}
+				]
+		},
+		"ExpectedEncodedLength": 164,
+		"IsMaxSize": false
+}

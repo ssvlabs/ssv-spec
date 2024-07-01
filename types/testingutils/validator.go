@@ -9,15 +9,17 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 	return ssv.NewValidator(
 		NewTestingNetwork(1, keySet.OperatorKeys[1]),
 		NewTestingBeaconNode(),
-		TestingShare(keySet),
+		TestingCommitteeMember(keySet),
+		TestingShare(keySet, TestingValidatorIndex),
 		NewTestingKeyManager(),
 		NewTestingOperatorSigner(keySet, 1),
-		map[types.BeaconRole]ssv.Runner{
-			types.BNRoleAttester:                  AttesterRunner(keySet),
-			types.BNRoleProposer:                  ProposerRunner(keySet),
-			types.BNRoleAggregator:                AggregatorRunner(keySet),
-			types.BNRoleSyncCommittee:             SyncCommitteeRunner(keySet),
-			types.BNRoleSyncCommitteeContribution: SyncCommitteeContributionRunner(keySet),
+		map[types.RunnerRole]ssv.Runner{
+			types.RoleCommittee:                 CommitteeRunner(keySet),
+			types.RoleProposer:                  ProposerRunner(keySet),
+			types.RoleAggregator:                AggregatorRunner(keySet),
+			types.RoleSyncCommitteeContribution: SyncCommitteeContributionRunner(keySet),
+			types.RoleValidatorRegistration:     ValidatorRegistrationRunner(keySet),
+			types.RoleVoluntaryExit:             VoluntaryExitRunner(keySet),
 		},
 		NewTestingVerifier(),
 	)

@@ -5,96 +5,103 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-var SSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
+var SSVDecidingMsgsForCommitteeRunner = func(beaconVote *types.BeaconVote, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
+	id := CommitteeMsgID(ks)
+
+	// consensus
+	qbftMsgs := SSVDecidingMsgsForHeightAndBeaconVote(beaconVote, id[:], height, ks)
+	return qbftMsgs
+}
+
+var SSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
-	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-		var byts []byte
-		var msgType types.MsgType
-		if partialSigMsg != nil {
-			msgType = types.SSVPartialSignatureMsgType
-			byts, _ = partialSigMsg.Encode()
-		} else {
-			msgType = types.SSVConsensusMsgType
-			byts, _ = qbftMsg.Encode()
-		}
-
-		return &types.SSVMessage{
-			MsgType: msgType,
+	signedF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {
+		byts, _ := partialSigMsg.Encode()
+		ssvMsg := &types.SSVMessage{
+			MsgType: types.SSVPartialSignatureMsgType,
 			MsgID:   id,
 			Data:    byts,
+		}
+		signer := partialSigMsg.Messages[0].Signer
+		sig, err := NewTestingOperatorSigner(ks, signer).SignSSVMessage(ssvMsg)
+		if err != nil {
+			panic(err)
+		}
+		return &types.SignedSSVMessage{
+			OperatorIDs: []types.OperatorID{signer},
+			Signatures:  [][]byte{sig},
+			SSVMessage:  ssvMsg,
 		}
 	}
 
 	// pre consensus msgs
-	base := make([]*types.SSVMessage, 0)
-	if role == types.BNRoleProposer {
+	base := make([]*types.SignedSSVMessage, 0)
+	if role == types.RoleProposer {
 		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusRandaoMsgV(ks.Shares[types.OperatorID(i)], types.OperatorID(i), consensusData.Version)))
+			base = append(base, signedF(PreConsensusRandaoMsgV(ks.Shares[types.OperatorID(i)], types.OperatorID(i), consensusData.Version)))
 		}
 	}
-	if role == types.BNRoleAggregator {
+	if role == types.RoleAggregator {
 		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
+			base = append(base, signedF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
-	if role == types.BNRoleSyncCommitteeContribution {
+	if role == types.RoleSyncCommitteeContribution {
 		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
+			base = append(base, signedF(PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
 
 	// consensus and post consensus
 	qbftMsgs := SSVDecidingMsgsForHeight(consensusData, id[:], qbft.Height(consensusData.Duty.Slot), ks)
-	for _, msg := range qbftMsgs {
-		base = append(base, ssvMsgF(msg, nil))
-	}
+	base = append(base, qbftMsgs...)
 	return base
 }
 
-var ExpectedSSVDecidingMsgsV = func(consensusData *types.ConsensusData, ks *TestKeySet, role types.BeaconRole) []*types.SSVMessage {
+var ExpectedSSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
-	ssvMsgF := func(qbftMsg *qbft.SignedMessage, partialSigMsg *types.SignedPartialSignatureMessage) *types.SSVMessage {
-		var byts []byte
-		var msgType types.MsgType
-		if partialSigMsg != nil {
-			msgType = types.SSVPartialSignatureMsgType
-			byts, _ = partialSigMsg.Encode()
-		} else {
-			msgType = types.SSVConsensusMsgType
-			byts, _ = qbftMsg.Encode()
-		}
+	ssvMsgF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {
+		byts, _ := partialSigMsg.Encode()
 
-		return &types.SSVMessage{
-			MsgType: msgType,
+		ssvMsg := &types.SSVMessage{
+			MsgType: types.SSVPartialSignatureMsgType,
 			MsgID:   id,
 			Data:    byts,
+		}
+		signer := partialSigMsg.Messages[0].Signer
+		sig, err := NewTestingOperatorSigner(ks, signer).SignSSVMessage(ssvMsg)
+		if err != nil {
+			panic(err)
+		}
+		return &types.SignedSSVMessage{
+			OperatorIDs: []types.OperatorID{signer},
+			Signatures:  [][]byte{sig},
+			SSVMessage:  ssvMsg,
 		}
 	}
 
 	// pre consensus msgs
-	base := make([]*types.SSVMessage, 0)
-	if role == types.BNRoleProposer {
+	base := make([]*types.SignedSSVMessage, 0)
+	if role == types.RoleProposer {
 		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusRandaoMsgV(ks.Shares[types.OperatorID(i)], types.OperatorID(i), consensusData.Version)))
+			base = append(base, ssvMsgF(PreConsensusRandaoMsgV(ks.Shares[types.OperatorID(i)], types.OperatorID(i), consensusData.Version)))
 		}
 	}
-	if role == types.BNRoleAggregator {
+	if role == types.RoleAggregator {
 		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
+			base = append(base, ssvMsgF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
-	if role == types.BNRoleSyncCommitteeContribution {
+	if role == types.RoleSyncCommitteeContribution {
 		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(nil, PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
+			base = append(base, ssvMsgF(PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
 
 	// consensus and post consensus
 	qbftMsgs := SSVExpectedDecidingMsgsForHeight(consensusData, id[:], qbft.Height(consensusData.Duty.Slot), ks)
-	for _, msg := range qbftMsgs {
-		base = append(base, ssvMsgF(msg, nil))
-	}
+	base = append(base, qbftMsgs...)
 	return base
 }

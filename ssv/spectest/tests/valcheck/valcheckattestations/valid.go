@@ -12,7 +12,7 @@ func Valid() tests.SpecTest {
 	return &valcheck.SpecTest{
 		Name:       "attestation value check valid",
 		Network:    types.PraterNetwork,
-		BeaconRole: types.BNRoleAttester,
-		Input:      testingutils.TestAttesterConsensusDataByts,
+		RunnerRole: types.RoleCommittee,
+		Input:      testingutils.TestBeaconVoteByts,
 	}
 }

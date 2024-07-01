@@ -16,7 +16,7 @@ func Duplicate() tests.SpecTest {
 	msg1 := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
 	msg2 := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
 	msg3 := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)
-	msgs := []*types.PartialSignatureMessage{msg1.Message.Messages[0], msg2.Message.Messages[0], msg3.Message.Messages[0]}
+	msgs := []*types.PartialSignatureMessage{msg1.Messages[0], msg2.Messages[0], msg3.Messages[0]}
 
 	return &PartialSigContainerTest{
 		Name:            "duplicate",

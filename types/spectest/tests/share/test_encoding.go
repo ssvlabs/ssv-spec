@@ -1,12 +1,11 @@
 package share
 
 import (
-	reflect2 "reflect"
-	"testing"
-
 	"github.com/ssvlabs/ssv-spec/types"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
+	reflect2 "reflect"
+	"testing"
 )
 
 type EncodingTest struct {

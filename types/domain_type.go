@@ -28,11 +28,14 @@ type DomainType [4]byte
 // Future references and modifications should acknowledge this historical inconsistency.
 var (
 	GenesisMainnet = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x0}
-	PrimusTestnet  = DomainType{0x0, 0x0, PrimusNetworkID.Byte(), 0x0}
-	ShifuTestnet   = DomainType{0x0, 0x0, ShifuNetworkID.Byte(), 0x0}
-	ShifuV2Testnet = DomainType{0x0, 0x0, ShifuNetworkID.Byte(), 0x1}
-	JatoTestnet    = DomainType{0x0, 0x0, JatoNetworkID.Byte(), 0x1}   // Note the fork version value
-	JatoV2Testnet  = DomainType{0x0, 0x0, JatoV2NetworkID.Byte(), 0x1} // Note the fork version value
+	AlanMainnet    = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x1}
+
+	PrimusTestnet   = DomainType{0x0, 0x0, PrimusNetworkID.Byte(), 0x0}
+	ShifuTestnet    = DomainType{0x0, 0x0, ShifuNetworkID.Byte(), 0x0}
+	ShifuV2Testnet  = DomainType{0x0, 0x0, ShifuNetworkID.Byte(), 0x1}
+	JatoTestnet     = DomainType{0x0, 0x0, JatoNetworkID.Byte(), 0x1}   // Note the fork version value
+	JatoV2Testnet   = DomainType{0x0, 0x0, JatoV2NetworkID.Byte(), 0x1} // Note the fork version value
+	JatoAlanTestnet = DomainType{0x0, 0x0, JatoNetworkID.Byte(), 0x2}
 )
 
 // ForkData is a simple structure holding fork information for a specific chain (and its fork)
@@ -92,6 +95,11 @@ func mainnetForks() []*ForkData {
 		{
 			Epoch:  0,
 			Domain: GenesisMainnet,
+		},
+		{
+			// TODO: Update this when the mainnet fork is known
+			Epoch:  0,
+			Domain: AlanMainnet,
 		},
 	}
 }

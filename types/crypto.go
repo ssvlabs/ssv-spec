@@ -12,47 +12,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-// VerifyByOperators verifies signature by the provided operators
-func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, sigType SignatureType, operators []*Operator) error {
-	// decode sig
-	sign := &bls.Sign{}
-	if err := sign.Deserialize(s); err != nil {
-		return errors.Wrap(err, "failed to deserialize signature")
-	}
-
-	// find operators
-	pks := make([]bls.PublicKey, 0)
-	for _, id := range data.GetSigners() {
-		found := false
-		for _, n := range operators {
-			if id == n.GetID() {
-				pk := bls.PublicKey{}
-				if err := pk.Deserialize(n.GetSharePublicKey()); err != nil {
-					return errors.Wrap(err, "failed to deserialize public key")
-				}
-
-				pks = append(pks, pk)
-				found = true
-			}
-		}
-		if !found {
-			return errors.New("unknown signer")
-		}
-	}
-
-	// compute root
-	computedRoot, err := ComputeSigningRoot(data, ComputeSignatureDomain(domain, sigType))
-	if err != nil {
-		return errors.Wrap(err, "could not compute signing root")
-	}
-
-	// verify
-	if res := sign.FastAggregateVerify(pks, computedRoot[:]); !res {
-		return errors.New("failed to verify signature")
-	}
-	return nil
-}
-
 func (s Signature) VerifyMultiPubKey(data Root, domain DomainType, sigType SignatureType, pks [][]byte) error {
 	var aggPK *bls.PublicKey
 	for _, pkByts := range pks {

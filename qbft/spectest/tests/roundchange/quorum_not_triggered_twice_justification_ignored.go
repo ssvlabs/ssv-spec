@@ -19,25 +19,25 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 	testData := []byte{1, 2}
 	testDataRoot := sha256.Sum256(testData)
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessageWithFullData(ks.Shares[1], types.OperatorID(1), testData),
-		testingutils.TestingPrepareMessageWithFullData(ks.Shares[2], types.OperatorID(2), testData),
-		testingutils.TestingPrepareMessageWithFullData(ks.Shares[3], types.OperatorID(3), testData),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithFullData(ks.OperatorKeys[1], types.OperatorID(1), testData),
+		testingutils.TestingPrepareMessageWithFullData(ks.OperatorKeys[2], types.OperatorID(2), testData),
+		testingutils.TestingPrepareMessageWithFullData(ks.OperatorKeys[3], types.OperatorID(3), testData),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
-		testingutils.TestingRoundChangeMessageWithParamsAndFullData(ks.Shares[4], types.OperatorID(4), 2, qbft.FirstHeight,
-			testDataRoot, 1, testData, testingutils.MarshalJustifications(prepareMsgs)),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithParamsAndFullData(ks.OperatorKeys[4], types.OperatorID(4), 2, qbft.FirstHeight,
+			testDataRoot, 1, testingutils.MarshalJustifications(prepareMsgs), testData),
 	}
 
 	return &tests.MsgProcessingSpecTest{
 		Name:          "quorum not triggered twice justification ignored",
 		Pre:           pre,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 				testingutils.TestingQBFTRootData, testingutils.MarshalJustifications(msgs[:len(msgs)-1]),
 				[][]byte{}),
 		},

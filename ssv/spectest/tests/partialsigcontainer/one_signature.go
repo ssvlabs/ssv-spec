@@ -14,7 +14,7 @@ func OneSignature() tests.SpecTest {
 
 	// Create PartialSignatureMessage for testing
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msgs := []*types.PartialSignatureMessage{msg.Message.Messages[0]}
+	msgs := []*types.PartialSignatureMessage{msg.Messages[0]}
 
 	// Verify the reconstructed signature
 	expectedSig, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature})

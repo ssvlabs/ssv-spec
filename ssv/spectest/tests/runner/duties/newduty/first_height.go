@@ -9,47 +9,60 @@ import (
 // FirstHeight tests a valid start duty at slot 0
 func FirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+
 	return &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty first height",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
-				Name:   "sync committee aggregator",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				Name:      "sync committee aggregator",
+				Runner:    testingutils.SyncCommitteeContributionRunner(ks),
+				Duty:      &testingutils.TestingSyncCommitteeContributionDutyFirstSlot,
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusCustomSlotContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, 0),
 					// broadcasts when starting a new duty
 				},
 			},
 			{
-				Name:           "sync committee",
-				Runner:         testingutils.SyncCommitteeRunner(ks),
-				Duty:           &testingutils.TestingSyncCommitteeDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{},
-			},
-			{
-				Name:   "aggregator",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   &testingutils.TestingAggregatorDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				Name:      "aggregator",
+				Runner:    testingutils.AggregatorRunner(ks),
+				Duty:      &testingutils.TestingAggregatorDutyFirstSlot,
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusCustomSlotSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, 0),
 					// broadcasts when starting a new duty
 				},
 			},
 			{
-				Name:   "proposer",
-				Runner: testingutils.ProposerRunner(ks),
-				Duty:   &testingutils.TestingProposerDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				Name:      "proposer",
+				Runner:    testingutils.ProposerRunner(ks),
+				Duty:      &testingutils.TestingProposerDutyFirstSlot,
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1),
 					// broadcasts when starting a new duty
 				},
 			},
 			{
 				Name:           "attester",
-				Runner:         testingutils.AttesterRunner(ks),
-				Duty:           &testingutils.TestingAttesterDutyFirstSlot,
-				OutputMessages: []*types.SignedPartialSignatureMessage{},
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingAttesterDutyFirstSlot,
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingSyncCommitteeDutyFirstSlot,
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           "attester and sync committee",
+				Runner:         testingutils.CommitteeRunner(ks),
+				Duty:           testingutils.TestingSyncCommitteeDutyFirstSlot,
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
 	}

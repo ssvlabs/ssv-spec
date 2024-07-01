@@ -5,61 +5,83 @@ import (
 	"crypto"
 	"crypto/rsa"
 	"crypto/sha256"
-	"crypto/x509"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type testingVerifier struct {
-	signaturesCache map[types.OperatorID]map[[32]byte][256]byte
+	signaturesCache map[types.OperatorID]map[[32]byte][]byte
 }
 
+var (
+	testingVerifierInstance             *testingVerifier
+	testingVerifierInstanceLock         sync.Mutex
+	testingVerifierSingletonConstructor sync.Once
+)
+
 func NewTestingVerifier() types.SignatureVerifier {
-	return &testingVerifier{
-		signaturesCache: make(map[uint64]map[[32]byte][256]byte),
-	}
+	testingVerifierSingletonConstructor.Do(func() {
+		testingVerifierInstance = &testingVerifier{
+			signaturesCache: make(map[types.OperatorID]map[[32]byte][]byte),
+		}
+	})
+	return testingVerifierInstance
 }
 
 func (v *testingVerifier) Verify(msg *types.SignedSSVMessage, operators []*types.Operator) error {
 
+	encodedMsg, err := msg.SSVMessage.Encode()
+	if err != nil {
+		return err
+	}
+
 	// Get message hash
-	hash := sha256.Sum256(msg.Data)
+	hash := sha256.Sum256(encodedMsg)
 
 	// Find operator that matches ID with the signer and verify signature
-	for _, op := range operators {
-		// Find operator
-		if op.OperatorID == msg.GetOperatorID() {
-
-			// Check cache
-			if v.HasSignature(op.OperatorID, hash, msg.Signature) {
-				return nil
-			}
-
-			// Get public key
-			parsedPk, err := x509.ParsePKIXPublicKey(op.SSVOperatorPubKey)
-			if err != nil {
-				return errors.Wrap(err, "could not parse signer public key")
-			}
-			pk, ok := parsedPk.(*rsa.PublicKey)
-			if !ok {
-				return errors.New("could not parse signer public key")
-			}
-
-			// Verify
-			err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, hash[:], msg.Signature[:])
-
-			if err == nil {
-				v.SaveSignature(op.OperatorID, hash, msg.Signature)
-			}
+	for i, signer := range msg.OperatorIDs {
+		if err := v.VerifySignatureForSigner(hash, msg.Signatures[i], signer, operators); err != nil {
 			return err
 		}
 	}
 
+	return nil
+}
+
+func (v *testingVerifier) VerifySignatureForSigner(root [32]byte, signature []byte, signer types.OperatorID, operators []*types.Operator) error {
+
+	for _, op := range operators {
+		// Find signer
+		if signer == op.OperatorID {
+
+			// Check cache
+			if v.HasSignature(op.OperatorID, root, signature) {
+				return nil
+			}
+
+			// Get public key
+			pk, err := types.PemToPublicKey(op.SSVOperatorPubKey)
+			if err != nil {
+				return errors.Wrap(err, "could not parse signer public key")
+			}
+
+			// Verify
+			err = rsa.VerifyPKCS1v15(pk, crypto.SHA256, root[:], signature)
+
+			if err == nil {
+				v.SaveSignature(op.OperatorID, root, signature)
+			}
+			return err
+		}
+	}
 	return errors.New("unknown signer")
 }
 
-func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byte, signature [256]byte) bool {
+func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byte, signature []byte) bool {
+	testingVerifierInstanceLock.Lock()
+	defer testingVerifierInstanceLock.Unlock()
 	if _, found := v.signaturesCache[operatorID]; !found {
 		return false
 	}
@@ -72,9 +94,11 @@ func (v *testingVerifier) HasSignature(operatorID types.OperatorID, root [32]byt
 	return bytes.Equal(storedSignature[:], signature[:])
 }
 
-func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]byte, signature [256]byte) {
+func (v *testingVerifier) SaveSignature(operatorID types.OperatorID, root [32]byte, signature []byte) {
+	testingVerifierInstanceLock.Lock()
+	defer testingVerifierInstanceLock.Unlock()
 	if _, found := v.signaturesCache[operatorID]; !found {
-		v.signaturesCache[operatorID] = make(map[[32]byte][256]byte)
+		v.signaturesCache[operatorID] = make(map[[32]byte][]byte)
 	}
 	v.signaturesCache[operatorID][root] = signature
 }

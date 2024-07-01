@@ -13,8 +13,8 @@ import (
 
 // WrongValidatorPK tests duty.PubKey wrong
 func WrongValidatorPK() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
-		cdCopy := &types.ConsensusData{}
+	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
+		cdCopy := &types.ValidatorConsensusData{}
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, cdCopy); err != nil {
 			panic(err.Error())
@@ -30,38 +30,31 @@ func WrongValidatorPK() tests.SpecTest {
 		Name: "wrong validator PK",
 		Tests: []*valcheck.SpecTest{
 			{
-				Name:          "sync committee aggregator",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
-				ExpectedError: expectedErr,
+				Name:       "committee",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleCommittee,
+				Input:      testingutils.TestBeaconVoteByts,
+				// No error since input doesn't contain validator public key
 			},
 			{
-				Name:          "sync committee",
+				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
+				RunnerRole:    types.RoleSyncCommitteeContribution,
+				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
 				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAggregator,
+				RunnerRole:    types.RoleAggregator,
 				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
 				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleProposer,
+				RunnerRole:    types.RoleProposer,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedError: expectedErr,
-			},
-			{
-				Name:          "attester",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
 				ExpectedError: expectedErr,
 			},
 		},

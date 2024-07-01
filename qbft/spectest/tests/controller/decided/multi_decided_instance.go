@@ -1,7 +1,8 @@
 package decided
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -15,8 +16,8 @@ func MultiDecidedInstances() tests.SpecTest {
 	instanceData := func(height qbft.Height, postRoot string) *tests.RunInstanceData {
 		return &tests.RunInstanceData{
 			InputValue: []byte{1, 2, 3, 4},
-			InputMessages: []*qbft.SignedMessage{
-				testingutils.TestingCommitMultiSignerMessageWithHeight([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}, height),
+			InputMessages: []*types.SignedSSVMessage{
+				testingutils.TestingCommitMultiSignerMessageWithHeight([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}, height),
 			},
 			ExpectedDecidedState: tests.DecidedState{
 				DecidedCnt: 1,

@@ -12,8 +12,7 @@ func Valid() tests.SpecTest {
 		Name: "start instance valid",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:         []byte{1, 2, 3, 4},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
+				InputValue: []byte{1, 2, 3, 4},
 				ExpectedTimerState: &testingutils.TimerState{
 					Timeouts: 1,
 					Round:    qbft.FirstRound,

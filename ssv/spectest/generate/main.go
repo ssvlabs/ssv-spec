@@ -1,19 +1,20 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"strings"
-
-	"github.com/pkg/errors"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest"
 )
@@ -136,9 +137,26 @@ func writeJson(data []byte) {
 	// try to create directory if it doesn't exist
 	_ = os.Mkdir(basedir, os.ModeDir)
 
-	file := filepath.Join(basedir, "tests.json")
-	log.Printf("writing spec tests json to: %s\n", file)
-	if err := os.WriteFile(file, data, 0644); err != nil {
+	file := filepath.Join(basedir, "tests.json.gz")
+
+	// Create a buffer to write the gzipped file to
+	buf := new(bytes.Buffer)
+
+	// Create a new gzip writer
+	gzipWriter := gzip.NewWriter(buf)
+
+	// Write the JSON data to the gzip writer
+	if _, err := gzipWriter.Write(data); err != nil {
+		panic(err.Error())
+	}
+
+	// Close the gzip writer
+	if err := gzipWriter.Close(); err != nil {
+		panic(err.Error())
+	}
+
+	// Write the gzipped data to a file
+	if err := os.WriteFile(file, buf.Bytes(), 0644); err != nil {
 		panic(err.Error())
 	}
 }

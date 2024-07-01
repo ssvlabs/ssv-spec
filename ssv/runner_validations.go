@@ -10,12 +10,12 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
-	if err := b.validatePartialSigMsgForSlot(signedMsg, b.State.StartingDuty.Slot); err != nil {
+	if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
 		return err
 	}
 
@@ -24,57 +24,68 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, signedMsg *types.Sig
 		return err
 	}
 
-	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
+	return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
 }
 
 // Verify each signature in container removing the invalid ones
-func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContainer, root [32]byte) {
+func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContainer, root [32]byte,
+	committee []*types.ShareMember, validatorIndex spec.ValidatorIndex) {
 
-	signatures := container.GetSignatures(root)
+	signatures := container.GetSignatures(validatorIndex, root)
 
 	for operatorID, signature := range signatures {
-		if err := b.verifyBeaconPartialSignature(operatorID, signature, root); err != nil {
-			container.Remove(operatorID, root)
+		if err := b.verifyBeaconPartialSignature(operatorID, signature, root, committee); err != nil {
+			container.Remove(validatorIndex, operatorID, root)
 		}
 	}
 }
 
-func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, signedMsg *types.SignedPartialSignatureMessage) error {
+func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
 		return errors.New("no running duty")
 	}
 
 	// TODO https://github.com/ssvlabs/ssv-spec/issues/142 need to fix with this issue solution instead.
-	if b.State.DecidedValue == nil {
+	if b.State.DecidedValue == nil || len(b.State.DecidedValue) == 0 {
 		return errors.New("no decided value")
 	}
 
 	if b.State.RunningInstance == nil {
 		return errors.New("no running consensus instance")
 	}
-	decided, decidedValueByts := b.State.RunningInstance.IsDecided()
+	decided, decidedValueBytes := b.State.RunningInstance.IsDecided()
 	if !decided {
 		return errors.New("consensus instance not decided")
 	}
 
-	decidedValue := &types.ConsensusData{}
-	if err := decidedValue.Decode(decidedValueByts); err != nil {
-		return errors.Wrap(err, "failed to parse decided value to ConsensusData")
-	}
+	// TODO maybe nicer to do this without switch
+	switch runner.(type) {
+	case *CommitteeRunner:
+		decidedValue := &types.BeaconVote{}
+		if err := decidedValue.Decode(decidedValueBytes); err != nil {
+			return errors.Wrap(err, "failed to parse decided value to BeaconData")
+		}
 
-	if err := b.validatePartialSigMsgForSlot(signedMsg, decidedValue.Duty.Slot); err != nil {
-		return err
-	}
+		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
+	default:
+		decidedValue := &types.ValidatorConsensusData{}
+		if err := decidedValue.Decode(decidedValueBytes); err != nil {
+			return errors.Wrap(err, "failed to parse decided value to ValidatorConsensusData")
+		}
 
-	roots, domain, err := runner.expectedPostConsensusRootsAndDomain()
-	if err != nil {
-		return err
-	}
+		if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {
+			return err
+		}
+		roots, domain, err := runner.expectedPostConsensusRootsAndDomain()
+		if err != nil {
+			return err
+		}
 
-	return b.verifyExpectedRoot(runner, signedMsg, roots, domain)
+		return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
+	}
 }
 
-func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.ConsensusData) error {
+func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encoder) error {
 	byts, err := val.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode decided value")
@@ -86,14 +97,14 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val *types.Cons
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPartialSignatureMessage, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
-	if len(expectedRootObjs) != len(signedMsg.Message.Messages) {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSignatureMessages, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
+	if len(expectedRootObjs) != len(psigMsgs.Messages) {
 		return errors.New("wrong expected roots count")
 	}
 
 	// convert expected roots to map and mark unique roots when verified
 	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][32]byte, error) {
-		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.Slot)
+		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.DutySlot())
 		d, err := runner.GetBeaconNode().DomainData(epoch, domain)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get pre consensus root domain")
@@ -127,7 +138,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, signedMsg *types.SignedPa
 			return string(ret[i][:]) < string(ret[j][:])
 		})
 		return ret
-	}(signedMsg.Message)
+	}(*psigMsgs)
 
 	// verify roots
 	for i, r := range sortedRoots {
