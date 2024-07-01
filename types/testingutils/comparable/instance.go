@@ -3,6 +3,7 @@ package comparable
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 func SetMessages(instance *qbft.Instance, messages []*types.SignedSSVMessage) {
@@ -43,23 +44,23 @@ func setMessage(instance *qbft.Instance, signedMsg *types.SignedSSVMessage) {
 	switch msg.MsgType {
 	case qbft.ProposalMsgType:
 		if instance.State.ProposeContainer.Msgs[msg.Round] == nil {
-			instance.State.ProposeContainer.Msgs[msg.Round] = []*types.SignedSSVMessage{}
+			instance.State.ProposeContainer.Msgs[msg.Round] = []*qbft.ProcessingMessage{}
 		}
-		instance.State.ProposeContainer.Msgs[msg.Round] = append(instance.State.ProposeContainer.Msgs[msg.Round], signedMsg)
+		instance.State.ProposeContainer.Msgs[msg.Round] = append(instance.State.ProposeContainer.Msgs[msg.Round], testingutils.ToProcessingMessage(signedMsg))
 	case qbft.PrepareMsgType:
 		if instance.State.PrepareContainer.Msgs[msg.Round] == nil {
-			instance.State.PrepareContainer.Msgs[msg.Round] = []*types.SignedSSVMessage{}
+			instance.State.PrepareContainer.Msgs[msg.Round] = []*qbft.ProcessingMessage{}
 		}
-		instance.State.PrepareContainer.Msgs[msg.Round] = append(instance.State.PrepareContainer.Msgs[msg.Round], signedMsg)
+		instance.State.PrepareContainer.Msgs[msg.Round] = append(instance.State.PrepareContainer.Msgs[msg.Round], testingutils.ToProcessingMessage(signedMsg))
 	case qbft.CommitMsgType:
 		if instance.State.CommitContainer.Msgs[msg.Round] == nil {
-			instance.State.CommitContainer.Msgs[msg.Round] = []*types.SignedSSVMessage{}
+			instance.State.CommitContainer.Msgs[msg.Round] = []*qbft.ProcessingMessage{}
 		}
-		instance.State.CommitContainer.Msgs[msg.Round] = append(instance.State.CommitContainer.Msgs[msg.Round], signedMsg)
+		instance.State.CommitContainer.Msgs[msg.Round] = append(instance.State.CommitContainer.Msgs[msg.Round], testingutils.ToProcessingMessage(signedMsg))
 	case qbft.RoundChangeMsgType:
 		if instance.State.RoundChangeContainer.Msgs[msg.Round] == nil {
-			instance.State.RoundChangeContainer.Msgs[msg.Round] = []*types.SignedSSVMessage{}
+			instance.State.RoundChangeContainer.Msgs[msg.Round] = []*qbft.ProcessingMessage{}
 		}
-		instance.State.RoundChangeContainer.Msgs[msg.Round] = append(instance.State.RoundChangeContainer.Msgs[msg.Round], signedMsg)
+		instance.State.RoundChangeContainer.Msgs[msg.Round] = append(instance.State.RoundChangeContainer.Msgs[msg.Round], testingutils.ToProcessingMessage(signedMsg))
 	}
 }
