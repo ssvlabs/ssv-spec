@@ -22,7 +22,7 @@ func TestState_Decoding(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	signedProposalMsg := &types.SignedSSVMessage{
+	signedProposalMsg := testingutils.ToProcessingMessage(&types.SignedSSVMessage{
 		OperatorIDs: []types.OperatorID{1},
 		Signatures:  [][]byte{{1, 2, 3, 4}},
 		SSVMessage: &types.SSVMessage{
@@ -30,7 +30,7 @@ func TestState_Decoding(t *testing.T) {
 			MsgID:   [56]byte{1, 2, 3, 4},
 			Data:    proposalMsgBytes,
 		},
-	}
+	})
 
 	state := &qbft.State{
 		CommitteeMember: &types.CommitteeMember{
@@ -68,16 +68,11 @@ func TestState_Decoding(t *testing.T) {
 	require.EqualValues(t, 2, decodedState.Height)
 	require.EqualValues(t, 1, decodedState.Round)
 
-	decodedProposalMsg := &qbft.Message{}
-	if err := decodedProposalMsg.Decode(decodedState.ProposalAcceptedForCurrentRound.SSVMessage.Data); err != nil {
-		panic(err)
-	}
-
-	require.EqualValues(t, [][]byte{{1, 2, 3, 4}}, decodedState.ProposalAcceptedForCurrentRound.Signatures)
-	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.OperatorIDs)
-	require.EqualValues(t, qbft.CommitMsgType, decodedProposalMsg.MsgType)
-	require.EqualValues(t, 1, decodedProposalMsg.Height)
-	require.EqualValues(t, 2, decodedProposalMsg.Round)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedProposalMsg.Identifier)
-	require.EqualValues(t, testingutils.TestingSyncCommitteeBlockRoot, decodedProposalMsg.Root)
+	require.EqualValues(t, [][]byte{{1, 2, 3, 4}}, decodedState.ProposalAcceptedForCurrentRound.SignedMessage.Signatures)
+	require.EqualValues(t, []types.OperatorID{1}, decodedState.ProposalAcceptedForCurrentRound.SignedMessage.OperatorIDs)
+	require.EqualValues(t, qbft.CommitMsgType, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.MsgType)
+	require.EqualValues(t, 1, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Height)
+	require.EqualValues(t, 2, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Round)
+	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Identifier)
+	require.EqualValues(t, testingutils.TestingSyncCommitteeBlockRoot, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Root)
 }

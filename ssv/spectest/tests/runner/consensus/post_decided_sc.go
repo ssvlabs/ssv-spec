@@ -42,9 +42,9 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
+					ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
-						qbft.Height(testingutils.TestingDutySlot)),
+						qbft.Height(testingutils.TestingDutySlot))),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -95,9 +95,9 @@ func postDecidedAggregatorSC() *comparable.StateComparison {
 					Height:            testingutils.TestingDutySlot,
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
+					ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
-						qbft.Height(testingutils.TestingDutySlot)),
+						qbft.Height(testingutils.TestingDutySlot))),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -148,9 +148,9 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
+					ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
-						qbft.Height(testingutils.TestingDutySlotV(version))),
+						qbft.Height(testingutils.TestingDutySlotV(version)))),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -202,9 +202,9 @@ func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateCom
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
+					ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes,
-						qbft.Height(testingutils.TestingDutySlotV(version))),
+						qbft.Height(testingutils.TestingDutySlotV(version)))),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},

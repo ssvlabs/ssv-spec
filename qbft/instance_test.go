@@ -19,9 +19,9 @@ func TestInstance_Marshaling(t *testing.T) {
 	}
 	keySet := testingutils.Testing4SharesSet()
 	TestingRSASK := keySet.OperatorKeys[1]
-	testingSignedMsg := func() *types.SignedSSVMessage {
+	testingSignedMsg := testingutils.ToProcessingMessage(func() *types.SignedSSVMessage {
 		return testingutils.SignQBFTMsg(TestingRSASK, 1, TestingMessage)
-	}()
+	}())
 	testingCommitteeMember := testingutils.TestingCommitteeMember(keySet)
 
 	i := &qbft.Instance{
@@ -37,28 +37,28 @@ func TestInstance_Marshaling(t *testing.T) {
 			DecidedValue:                    []byte{1, 2, 3, 4},
 
 			ProposeContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
+				Msgs: map[qbft.Round][]*qbft.ProcessingMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			PrepareContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
+				Msgs: map[qbft.Round][]*qbft.ProcessingMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			CommitContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
+				Msgs: map[qbft.Round][]*qbft.ProcessingMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			RoundChangeContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*types.SignedSSVMessage{
+				Msgs: map[qbft.Round][]*qbft.ProcessingMessage{
 					1: {
 						testingSignedMsg,
 					},

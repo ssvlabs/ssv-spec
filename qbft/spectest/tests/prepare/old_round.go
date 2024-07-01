@@ -19,9 +19,9 @@ func OldRound() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithParams(
 		ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData,
-		testingutils.MarshalJustifications(rcMsgs), nil)
+		testingutils.MarshalJustifications(rcMsgs), nil))
 
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], 1, 9),

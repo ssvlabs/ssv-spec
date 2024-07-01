@@ -14,7 +14,7 @@ func Round1() tests.SpecTest {
 	sc := round1StateComparison()
 
 	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 
 	return &SpecTest{
 		Name:      "round 1",

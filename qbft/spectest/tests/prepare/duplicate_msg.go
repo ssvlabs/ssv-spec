@@ -11,7 +11,7 @@ func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),

@@ -7,18 +7,18 @@ import (
 )
 
 type MsgContainer struct {
-	Msgs map[Round][]*types.SignedSSVMessage
+	Msgs map[Round][]*ProcessingMessage
 }
 
 func NewMsgContainer() *MsgContainer {
 	return &MsgContainer{
-		Msgs: map[Round][]*types.SignedSSVMessage{},
+		Msgs: map[Round][]*ProcessingMessage{},
 	}
 }
 
 // AllMessages returns all messages
-func (c *MsgContainer) AllMessages() []*types.SignedSSVMessage {
-	ret := make([]*types.SignedSSVMessage, 0)
+func (c *MsgContainer) AllMessages() []*ProcessingMessage {
+	ret := make([]*ProcessingMessage, 0)
 	for _, roundMsgs := range c.Msgs {
 		ret = append(ret, roundMsgs...)
 	}
@@ -26,74 +26,59 @@ func (c *MsgContainer) AllMessages() []*types.SignedSSVMessage {
 }
 
 // MessagesForRound returns all msgs for Height and round, empty slice otherwise
-func (c *MsgContainer) MessagesForRound(round Round) []*types.SignedSSVMessage {
+func (c *MsgContainer) MessagesForRound(round Round) []*ProcessingMessage {
 	if c.Msgs[round] != nil {
 		return c.Msgs[round]
 	}
-	return make([]*types.SignedSSVMessage, 0)
+	return make([]*ProcessingMessage, 0)
 }
 
 // MessagesForRoundAndRoot returns all msgs for round and value, empty slice otherwise
-func (c *MsgContainer) MessagesForRoundAndRoot(round Round, root [32]byte) []*types.SignedSSVMessage {
+func (c *MsgContainer) MessagesForRoundAndRoot(round Round, root [32]byte) []*ProcessingMessage {
 	if c.Msgs[round] != nil {
-		ret := make([]*types.SignedSSVMessage, 0)
+		ret := make([]*ProcessingMessage, 0)
 		for i := 0; i < len(c.Msgs[round]); i++ {
-			signedMsg := c.Msgs[round][i]
+			msg := c.Msgs[round][i]
 
-			m, err := DecodeMessage(signedMsg.SSVMessage.Data)
-			if err != nil {
+			if !bytes.Equal(msg.QBFTMessage.Root[:], root[:]) {
 				continue
 			}
-
-			if !bytes.Equal(m.Root[:], root[:]) {
-				continue
-			}
-			ret = append(ret, signedMsg)
+			ret = append(ret, msg)
 		}
 		return ret
 	}
-	return make([]*types.SignedSSVMessage, 0)
+	return make([]*ProcessingMessage, 0)
 }
 
 // LongestUniqueSignersForRoundAndRoot returns the longest set of unique signers and msgs for a specific round and value
-func (c *MsgContainer) LongestUniqueSignersForRoundAndRoot(round Round, root [32]byte) ([]types.OperatorID, []*types.SignedSSVMessage) {
+func (c *MsgContainer) LongestUniqueSignersForRoundAndRoot(round Round, root [32]byte) ([]types.OperatorID, []*ProcessingMessage) {
 	signersRet := make([]types.OperatorID, 0)
-	msgsRet := make([]*types.SignedSSVMessage, 0)
+	msgsRet := make([]*ProcessingMessage, 0)
 	if c.Msgs[round] == nil {
 		return signersRet, msgsRet
 	}
 
 	for i := 0; i < len(c.Msgs[round]); i++ {
-		signedMsg := c.Msgs[round][i]
+		msg := c.Msgs[round][i]
 
-		m, err := DecodeMessage(signedMsg.SSVMessage.Data)
-		if err != nil {
-			continue
-		}
-
-		if !bytes.Equal(m.Root[:], root[:]) {
+		if !bytes.Equal(msg.QBFTMessage.Root[:], root[:]) {
 			continue
 		}
 
 		currentSigners := make([]types.OperatorID, 0)
-		currentMsgs := make([]*types.SignedSSVMessage, 0)
-		currentMsgs = append(currentMsgs, signedMsg)
-		currentSigners = append(currentSigners, signedMsg.OperatorIDs...)
+		currentMsgs := make([]*ProcessingMessage, 0)
+		currentMsgs = append(currentMsgs, msg)
+		currentSigners = append(currentSigners, msg.SignedMessage.OperatorIDs...)
 		for j := i + 1; j < len(c.Msgs[round]); j++ {
-			signedMsg2 := c.Msgs[round][j]
+			msg2 := c.Msgs[round][j]
 
-			m2, err := DecodeMessage(signedMsg2.SSVMessage.Data)
-			if err != nil {
+			if !bytes.Equal(msg2.QBFTMessage.Root[:], root[:]) {
 				continue
 			}
 
-			if !bytes.Equal(m2.Root[:], root[:]) {
-				continue
-			}
-
-			if !signedMsg2.CommonSigners(currentSigners) {
-				currentMsgs = append(currentMsgs, signedMsg2)
-				currentSigners = append(currentSigners, signedMsg2.OperatorIDs...)
+			if !msg2.SignedMessage.CommonSigners(currentSigners) {
+				currentMsgs = append(currentMsgs, msg2)
+				currentSigners = append(currentSigners, msg2.SignedMessage.OperatorIDs...)
 			}
 		}
 
@@ -107,41 +92,31 @@ func (c *MsgContainer) LongestUniqueSignersForRoundAndRoot(round Round, root [32
 }
 
 // AddFirstMsgForSignerAndRound will add the first msg for each signer for a specific round, consequent msgs will not be added
-func (c *MsgContainer) AddFirstMsgForSignerAndRound(signedMsg *types.SignedSSVMessage) (bool, error) {
+func (c *MsgContainer) AddFirstMsgForSignerAndRound(msg *ProcessingMessage) (bool, error) {
 
-	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
-	if err != nil {
-		return false, err
+	if c.Msgs[msg.QBFTMessage.Round] == nil {
+		c.Msgs[msg.QBFTMessage.Round] = make([]*ProcessingMessage, 0)
 	}
 
-	if c.Msgs[msg.Round] == nil {
-		c.Msgs[msg.Round] = make([]*types.SignedSSVMessage, 0)
-	}
-
-	for _, existingMsg := range c.Msgs[msg.Round] {
-		if existingMsg.MatchedSigners(signedMsg.OperatorIDs) {
+	for _, existingMsg := range c.Msgs[msg.QBFTMessage.Round] {
+		if existingMsg.SignedMessage.MatchedSigners(msg.SignedMessage.OperatorIDs) {
 			return false, nil
 		}
 	}
 
 	// add msg
-	c.Msgs[msg.Round] = append(c.Msgs[msg.Round], signedMsg)
+	c.Msgs[msg.QBFTMessage.Round] = append(c.Msgs[msg.QBFTMessage.Round], msg)
 	return true, nil
 }
 
 // AddMsg will add any message regardless of signers
-func (c *MsgContainer) AddMsg(signedMsg *types.SignedSSVMessage) error {
+func (c *MsgContainer) AddMsg(msg *ProcessingMessage) error {
 
-	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
-	if err != nil {
-		return err
-	}
-
-	if c.Msgs[msg.Round] == nil {
-		c.Msgs[msg.Round] = make([]*types.SignedSSVMessage, 0)
+	if c.Msgs[msg.QBFTMessage.Round] == nil {
+		c.Msgs[msg.QBFTMessage.Round] = make([]*ProcessingMessage, 0)
 	}
 	// add msg
-	c.Msgs[msg.Round] = append(c.Msgs[msg.Round], signedMsg)
+	c.Msgs[msg.QBFTMessage.Round] = append(c.Msgs[msg.QBFTMessage.Round], msg)
 
 	return nil
 }

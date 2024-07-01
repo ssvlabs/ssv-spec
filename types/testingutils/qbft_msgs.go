@@ -85,6 +85,19 @@ var TestingMultiSignerInvalidMessage = func(sks []*rsa.PrivateKey, ids []types.O
 	return ret
 }
 
+var ToProcessingMessage = func(msg *types.SignedSSVMessage) *qbft.ProcessingMessage {
+	pm, _ := qbft.NewProcessingMessage(msg)
+	return pm
+}
+
+var ToProcessingMessages = func(msgs []*types.SignedSSVMessage) []*qbft.ProcessingMessage {
+	ret := make([]*qbft.ProcessingMessage, 0)
+	for _, msg := range msgs {
+		ret = append(ret, ToProcessingMessage(msg))
+	}
+	return ret
+}
+
 /*
 *
 Proposal messages

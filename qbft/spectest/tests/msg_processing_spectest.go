@@ -74,7 +74,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() error {
 
 	var lastErr error
 	for _, msg := range test.InputMessages {
-		_, _, _, err := test.Pre.ProcessMsg(msg)
+		_, _, _, err := test.Pre.ProcessMsg(testingutils.ToProcessingMessage(msg))
 		if err != nil {
 			lastErr = err
 		}
