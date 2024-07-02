@@ -76,13 +76,9 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 	copy(specSig[:], fullSig)
 
 	// Get share
-	if len(r.BaseRunner.Share) == 0 {
+	share := r.GetShare()
+	if share == nil {
 		return errors.New("no share to get validator public key")
-	}
-	var share *types.Share
-	for _, shareInstance := range r.BaseRunner.Share {
-		share = shareInstance
-		break
 	}
 
 	if err := r.beacon.SubmitValidatorRegistration(share.ValidatorPubKey[:],
