@@ -10,14 +10,13 @@ import (
 // Every validator has a validatorID which is validator's public key.
 // Each validator has multiple DutyRunners, for each duty type.
 type Validator struct {
-	DutyRunners       DutyRunners
-	Network           Network
-	Beacon            BeaconNode
-	CommitteeMember   *types.CommitteeMember
-	Share             *types.Share
-	Signer            types.BeaconSigner
-	OperatorSigner    *types.OperatorSigner
-	SignatureVerifier types.SignatureVerifier
+	DutyRunners     DutyRunners
+	Network         Network
+	Beacon          BeaconNode
+	CommitteeMember *types.CommitteeMember
+	Share           *types.Share
+	Signer          types.BeaconSigner
+	OperatorSigner  *types.OperatorSigner
 }
 
 func NewValidator(
@@ -28,17 +27,15 @@ func NewValidator(
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
 	runners map[types.RunnerRole]Runner,
-	signatureVerifier types.SignatureVerifier,
 ) *Validator {
 	return &Validator{
-		DutyRunners:       runners,
-		Network:           network,
-		Beacon:            beacon,
-		Share:             share,
-		CommitteeMember:   committeeMember,
-		Signer:            signer,
-		OperatorSigner:    operatorSigner,
-		SignatureVerifier: signatureVerifier,
+		DutyRunners:     runners,
+		Network:         network,
+		Beacon:          beacon,
+		Share:           share,
+		CommitteeMember: committeeMember,
+		Signer:          signer,
+		OperatorSigner:  operatorSigner,
 	}
 }
 
@@ -60,7 +57,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	// Verify SignedSSVMessage's signature
-	if err := v.SignatureVerifier.Verify(signedSSVMessage, v.CommitteeMember.Committee); err != nil {
+	if err := types.Verify(signedSSVMessage, v.CommitteeMember.Committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
@@ -73,7 +70,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	// Validate message for runner
-	if err := v.validateMessage(dutyRunner, msg); err != nil {
+	if err := v.validateMessage(msg); err != nil {
 		return errors.Wrap(err, "Message invalid")
 	}
 
@@ -117,7 +114,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 }
 
-func (v *Validator) validateMessage(runner Runner, msg *types.SSVMessage) error {
+func (v *Validator) validateMessage(msg *types.SSVMessage) error {
 	if !v.Share.ValidatorPubKey.MessageIDBelongs(msg.GetID()) {
 		return errors.New("msg ID doesn't match validator ID")
 	}

@@ -21,6 +21,5 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 			types.RoleValidatorRegistration:     ValidatorRegistrationRunner(keySet),
 			types.RoleVoluntaryExit:             VoluntaryExitRunner(keySet),
 		},
-		NewTestingVerifier(),
 	)
 }

@@ -4,13 +4,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-type Signing interface {
-	// GetSigner returns an operator signer instance
-	GetOperatorSigner() *types.OperatorSigner
-	// GetSignatureVerifier returns the signature verifier for operator signatures
-	GetSignatureVerifier() types.SignatureVerifier
-}
-
 type IConfig interface {
 	// GetValueCheckF returns value check function
 	GetValueCheckF() ProposedValueCheckF
@@ -25,13 +18,12 @@ type IConfig interface {
 }
 
 type Config struct {
-	Domain            types.DomainType
-	ValueCheckF       ProposedValueCheckF
-	ProposerF         ProposerF
-	Network           Network
-	Timer             Timer
-	SignatureVerifier types.SignatureVerifier
-	CutOffRound       Round
+	Domain      types.DomainType
+	ValueCheckF ProposedValueCheckF
+	ProposerF   ProposerF
+	Network     Network
+	Timer       Timer
+	CutOffRound Round
 }
 
 // GetSignatureDomainType returns the Domain type used for signatures
@@ -61,11 +53,6 @@ func (c *Config) GetTimer() Timer {
 
 func (c *Config) GetCutOffRound() Round {
 	return c.CutOffRound
-}
-
-// GetSignatureVerifier returns the verifier for operator's signatures
-func (c *Config) GetSignatureVerifier() types.SignatureVerifier {
-	return c.SignatureVerifier
 }
 
 type State struct {

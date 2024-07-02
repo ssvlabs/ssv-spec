@@ -12,26 +12,23 @@ import (
 type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.Share) *CommitteeRunner
 
 type Committee struct {
-	Runners           map[spec.Slot]*CommitteeRunner
-	CommitteeMember   types.CommitteeMember
-	SignatureVerifier types.SignatureVerifier
-	CreateRunnerFn    CreateRunnerFn
-	Share             map[spec.ValidatorIndex]*types.Share
+	Runners         map[spec.Slot]*CommitteeRunner
+	CommitteeMember types.CommitteeMember
+	CreateRunnerFn  CreateRunnerFn
+	Share           map[spec.ValidatorIndex]*types.Share
 }
 
 // NewCommittee creates a new cluster
 func NewCommittee(
 	committeeMember types.CommitteeMember,
-	verifier types.SignatureVerifier,
 	share map[spec.ValidatorIndex]*types.Share,
 	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	c := &Committee{
-		Runners:           make(map[spec.Slot]*CommitteeRunner),
-		CommitteeMember:   committeeMember,
-		SignatureVerifier: verifier,
-		CreateRunnerFn:    createRunnerFn,
-		Share:             share,
+		Runners:         make(map[spec.Slot]*CommitteeRunner),
+		CommitteeMember: committeeMember,
+		CreateRunnerFn:  createRunnerFn,
+		Share:           share,
 	}
 	return c
 }
@@ -56,7 +53,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	// Verify SignedSSVMessage's signature
-	if err := c.SignatureVerifier.Verify(signedSSVMessage, c.CommitteeMember.Committee); err != nil {
+	if err := types.Verify(signedSSVMessage, c.CommitteeMember.Committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 

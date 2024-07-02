@@ -34,9 +34,11 @@ func TestAll(t *testing.T) {
 		wait.Add(1)
 		go func(f tests2.TestF) {
 			test := f()
-			t.Run(test.TestName(), func(t *testing.T) {
-				test.Run(t)
-			})
+			t.Run(
+				test.TestName(), func(t *testing.T) {
+					test.Run(t)
+				},
+			)
 			wait.Done()
 		}(testF)
 	}
@@ -94,86 +96,88 @@ func TestJson(t *testing.T) {
 // parseAndTest will parse and test the spec test.
 func parseAndTest(t *testing.T, name string, test interface{}) {
 	testName := test.(map[string]interface{})["Name"].(string)
-	t.Run(testName, func(t *testing.T) {
-		testType := strings.Split(name, "_")[0]
-		switch testType {
-		case reflect.TypeOf(&tests2.MsgProcessingSpecTest{}).String():
-			typedTest := msgProcessingSpecTestFromMap(t, test.(map[string]interface{}))
-			typedTest.Run(t)
-		case reflect.TypeOf(&tests2.MultiMsgProcessingSpecTest{}).String():
-			subtests := test.(map[string]interface{})["Tests"].([]interface{})
-			typedTests := make([]*tests2.MsgProcessingSpecTest, 0)
-			for _, subtest := range subtests {
-				typedTests = append(typedTests, msgProcessingSpecTestFromMap(t, subtest.(map[string]interface{})))
+	t.Run(
+		testName, func(t *testing.T) {
+			testType := strings.Split(name, "_")[0]
+			switch testType {
+			case reflect.TypeOf(&tests2.MsgProcessingSpecTest{}).String():
+				typedTest := msgProcessingSpecTestFromMap(t, test.(map[string]interface{}))
+				typedTest.Run(t)
+			case reflect.TypeOf(&tests2.MultiMsgProcessingSpecTest{}).String():
+				subtests := test.(map[string]interface{})["Tests"].([]interface{})
+				typedTests := make([]*tests2.MsgProcessingSpecTest, 0)
+				for _, subtest := range subtests {
+					typedTests = append(typedTests, msgProcessingSpecTestFromMap(t, subtest.(map[string]interface{})))
+				}
+
+				typedTest := &tests2.MultiMsgProcessingSpecTest{
+					Name:  test.(map[string]interface{})["Name"].(string),
+					Tests: typedTests,
+				}
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&valcheck.SpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &valcheck.SpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &valcheck.MultiSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
+				subtests := test.(map[string]interface{})["Tests"].([]interface{})
+				typedTests := make([]*newduty.StartNewRunnerDutySpecTest, 0)
+				for _, subtest := range subtests {
+					typedTests = append(typedTests, newRunnerDutySpecTestFromMap(t, subtest.(map[string]interface{})))
+				}
+
+				typedTest := &newduty.MultiStartNewRunnerDutySpecTest{
+					Name:  test.(map[string]interface{})["Name"].(string),
+					Tests: typedTests,
+				}
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&partialsigcontainer.PartialSigContainerTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &partialsigcontainer.PartialSigContainerTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&committee.CommitteeSpecTest{}).String():
+				typedTest := committeeSpecTestFromMap(t, test.(map[string]interface{}))
+				typedTest.Run(t)
+			case reflect.TypeOf(&committee.MultiCommitteeSpecTest{}).String():
+				subtests := test.(map[string]interface{})["Tests"].([]interface{})
+				typedTests := make([]*committee.CommitteeSpecTest, 0)
+				for _, subtest := range subtests {
+					typedTests = append(typedTests, committeeSpecTestFromMap(t, subtest.(map[string]interface{})))
+				}
+
+				typedTest := &committee.MultiCommitteeSpecTest{
+					Name:  test.(map[string]interface{})["Name"].(string),
+					Tests: typedTests,
+				}
+
+				typedTest.Run(t)
+			default:
+				panic("unsupported test type " + testType)
 			}
-
-			typedTest := &tests2.MultiMsgProcessingSpecTest{
-				Name:  test.(map[string]interface{})["Name"].(string),
-				Tests: typedTests,
-			}
-
-			typedTest.Run(t)
-		case reflect.TypeOf(&valcheck.SpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &valcheck.SpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			typedTest.Run(t)
-		case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &valcheck.MultiSpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			typedTest.Run(t)
-		case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			typedTest.Run(t)
-		case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
-			subtests := test.(map[string]interface{})["Tests"].([]interface{})
-			typedTests := make([]*newduty.StartNewRunnerDutySpecTest, 0)
-			for _, subtest := range subtests {
-				typedTests = append(typedTests, newRunnerDutySpecTestFromMap(t, subtest.(map[string]interface{})))
-			}
-
-			typedTest := &newduty.MultiStartNewRunnerDutySpecTest{
-				Name:  test.(map[string]interface{})["Name"].(string),
-				Tests: typedTests,
-			}
-
-			typedTest.Run(t)
-		case reflect.TypeOf(&partialsigcontainer.PartialSigContainerTest{}).String():
-			byts, err := json.Marshal(test)
-			require.NoError(t, err)
-			typedTest := &partialsigcontainer.PartialSigContainerTest{}
-			require.NoError(t, json.Unmarshal(byts, &typedTest))
-
-			typedTest.Run(t)
-		case reflect.TypeOf(&committee.CommitteeSpecTest{}).String():
-			typedTest := committeeSpecTestFromMap(t, test.(map[string]interface{}))
-			typedTest.Run(t)
-		case reflect.TypeOf(&committee.MultiCommitteeSpecTest{}).String():
-			subtests := test.(map[string]interface{})["Tests"].([]interface{})
-			typedTests := make([]*committee.CommitteeSpecTest, 0)
-			for _, subtest := range subtests {
-				typedTests = append(typedTests, committeeSpecTestFromMap(t, subtest.(map[string]interface{})))
-			}
-
-			typedTest := &committee.MultiCommitteeSpecTest{
-				Name:  test.(map[string]interface{})["Name"].(string),
-				Tests: typedTests,
-			}
-
-			typedTest.Run(t)
-		default:
-			panic("unsupported test type " + testType)
-		}
-	})
+		},
+	)
 }
 
 func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newduty.StartNewRunnerDutySpecTest {
@@ -407,8 +411,6 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 		return testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
 	}
 
-	c.SignatureVerifier = testingutils.NewTestingVerifier()
-
 	for slot := range c.Runners {
 
 		var shareInstance *types.Share
@@ -417,7 +419,11 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 			break
 		}
 
-		fixedRunner := fixRunnerForRun(t, committeeMap["Runners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}), testingutils.KeySetForShare(shareInstance))
+		fixedRunner := fixRunnerForRun(
+			t,
+			committeeMap["Runners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
+			testingutils.KeySetForShare(shareInstance),
+		)
 		c.Runners[slot] = fixedRunner.(*ssv.CommitteeRunner)
 	}
 
@@ -438,7 +444,12 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 		if ret.GetBaseRunner().State != nil {
 			if ret.GetBaseRunner().State.RunningInstance != nil {
 				committeeMember := testingutils.TestingCommitteeMember(ks)
-				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(t, ret.GetBaseRunner().State.RunningInstance, ret.GetBaseRunner().QBFTController, committeeMember)
+				ret.GetBaseRunner().State.RunningInstance = fixInstanceForRun(
+					t,
+					ret.GetBaseRunner().State.RunningInstance,
+					ret.GetBaseRunner().QBFTController,
+					committeeMember,
+				)
 			}
 		}
 	}
@@ -449,7 +460,12 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller, ks *testingutils.TestKeySet) *qbft.Controller {
 	config := testingutils.TestingConfig(ks)
 	config.ValueCheckF = runner.GetValCheckF()
-	newContr := qbft.NewController(contr.Identifier, contr.CommitteeMember, config, testingutils.TestingOperatorSigner(ks))
+	newContr := qbft.NewController(
+		contr.Identifier,
+		contr.CommitteeMember,
+		config,
+		testingutils.TestingOperatorSigner(ks),
+	)
 	newContr.Height = contr.Height
 	newContr.StoredInstances = contr.StoredInstances
 
@@ -469,7 +485,8 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 		share,
 		contr.Identifier,
 		contr.Height,
-		contr.OperatorSigner)
+		contr.OperatorSigner,
+	)
 
 	newInst.State.DecidedValue = inst.State.DecidedValue
 	newInst.State.Decided = inst.State.Decided
