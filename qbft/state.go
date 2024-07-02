@@ -7,6 +7,8 @@ import (
 type signing interface {
 	// GetSigner returns an operator signer instance
 	GetOperatorSigner() *types.OperatorSigner
+	// GetSignatureVerifier returns the signature verifier for operator signatures
+	GetSignatureVerifier() types.SignatureVerifier
 }
 
 type IConfig interface {
@@ -19,8 +21,6 @@ type IConfig interface {
 	GetNetwork() Network
 	// GetTimer returns round timer
 	GetTimer() Timer
-	// GetSignatureVerifier returns the signature verifier for operator signatures
-	GetSignatureVerifier() types.SignatureVerifier
 	// GetCutOffRound returns the round that stops the instance
 	GetCutOffRound() Round
 }
