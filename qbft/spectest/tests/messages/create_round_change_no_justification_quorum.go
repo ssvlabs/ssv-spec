@@ -51,9 +51,9 @@ func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 	}
 
 	ks := testingutils.Testing4SharesSet()
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
-	sig, err := config.OperatorSigner.SignSSVMessage(ssvMsg)
+	sig, err := signer.SignSSVMessage(ssvMsg)
 	if err != nil {
 		panic(err)
 	}
